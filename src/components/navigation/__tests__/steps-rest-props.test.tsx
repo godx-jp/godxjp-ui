@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest";
 import { Steps } from "../steps";
 import { renderWithUi, screen } from "@/test/render";
 
-const ITEMS = [{ title: "申込" }, { title: "審査" }, { title: "完了" }];
+const ITEMS = [
+  { title: "申込" },
+  { title: "審査" },
+  { title: "完了" },
+];
 
 /**
  * `Steps` destructured a fixed prop list and forwarded nothing, so a consumer had no supported

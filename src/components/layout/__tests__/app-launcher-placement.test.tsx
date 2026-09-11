@@ -21,13 +21,13 @@ const apps = [{ id: "console", name: "Console", href: "/console" }] as const;
 const panel = () => screen.getByRole("dialog", { name: "Switch app" });
 
 describe("AppLauncher placement", () => {
-  it("a bar cell drops the grid below the trigger and aligns it to the bar end", () => {
+  it('a bar cell drops the grid below the trigger and aligns it to the bar end', () => {
     renderWithUi(<AppLauncher apps={apps} labels={labels} responsive="popover" open />);
     expect(panel()).toHaveAttribute("data-side", "bottom");
     expect(panel()).toHaveAttribute("data-align", "end");
   });
 
-  it("a rail opens BESIDE itself, aligned to the trigger start", () => {
+  it('a rail opens BESIDE itself, aligned to the trigger start', () => {
     // A rail is vertical, so its panel goes beside it — dropping it downward would lay the grid
     // over the host application's own sidebar.
     renderWithUi(
@@ -61,27 +61,13 @@ describe("AppLauncher placement", () => {
     // The two axes are independent: re-docking the launcher must not silently move a placement the
     // consumer chose explicitly.
     const { unmount } = renderWithUi(
-      <AppLauncher
-        apps={apps}
-        labels={labels}
-        appearance="icon"
-        side="top"
-        responsive="popover"
-        open
-      />,
+      <AppLauncher apps={apps} labels={labels} appearance="icon" side="top" responsive="popover" open />,
     );
     expect(panel()).toHaveAttribute("data-side", "top");
     unmount();
 
     renderWithUi(
-      <AppLauncher
-        apps={apps}
-        labels={labels}
-        appearance="bar"
-        side="top"
-        responsive="popover"
-        open
-      />,
+      <AppLauncher apps={apps} labels={labels} appearance="bar" side="top" responsive="popover" open />,
     );
     expect(panel()).toHaveAttribute("data-side", "top");
   });

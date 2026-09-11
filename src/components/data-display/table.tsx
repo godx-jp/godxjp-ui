@@ -96,8 +96,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
               "--table-action-collection-actions-width": columnWidths.actions,
               "--table-action-collection-actions-width-compact": columnWidths.actionsCompact,
               "--table-action-collection-meta-width-compact": columnWidths.metaCompact,
-              "--table-action-collection-min-inline-size-compact":
-                columnWidths.minInlineSizeCompact,
+              "--table-action-collection-min-inline-size-compact": columnWidths.minInlineSizeCompact,
             } as React.CSSProperties)
           : undefined
       }

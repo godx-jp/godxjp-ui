@@ -26,17 +26,17 @@ const COLUMNS: ColumnDef<Row>[] = [
  */
 describe("DataTable — rowTone", () => {
   const tone = (row: Row) =>
-    row.status === "failed"
-      ? ("destructive" as const)
-      : row.status === "late"
-        ? ("attention" as const)
-        : undefined;
+    row.status === "failed" ? ("destructive" as const)
+    : row.status === "late" ? ("attention" as const)
+    : undefined;
 
   const rowFor = (name: string) =>
     screen.getAllByRole("row").find((r) => within(r).queryByText(name))!;
 
   it("marks only the rows the resolver names", () => {
-    renderWithUi(<DataTable data={DATA} columns={COLUMNS} getRowId={(r) => r.id} rowTone={tone} />);
+    renderWithUi(
+      <DataTable data={DATA} columns={COLUMNS} getRowId={(r) => r.id} rowTone={tone} />,
+    );
     expect(rowFor("東京ロジ")).toHaveAttribute("data-tone", "destructive");
     expect(rowFor("ハノイ物流")).toHaveAttribute("data-tone", "attention");
     expect(rowFor("株式会社ベトヤ")).not.toHaveAttribute("data-tone");
@@ -50,7 +50,9 @@ describe("DataTable — rowTone", () => {
   });
 
   it("leaves the row's own content and semantics untouched", () => {
-    renderWithUi(<DataTable data={DATA} columns={COLUMNS} getRowId={(r) => r.id} rowTone={tone} />);
+    renderWithUi(
+      <DataTable data={DATA} columns={COLUMNS} getRowId={(r) => r.id} rowTone={tone} />,
+    );
     const row = rowFor("東京ロジ");
     expect(within(row).getByText("A-3")).toBeInTheDocument();
     // The tone is decoration on top of the row, never a substitute for the row's own name.

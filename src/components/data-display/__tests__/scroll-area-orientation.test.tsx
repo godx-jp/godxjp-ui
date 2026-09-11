@@ -86,12 +86,9 @@ describe("ScrollArea — orientation", () => {
   it("still forwards viewportRef, which names the element that scrolls", () => {
     const seen: (HTMLDivElement | null)[] = [];
     render(
-      <ScrollArea
-        orientation="horizontal"
-        viewportRef={(node) => {
+      <ScrollArea orientation="horizontal" viewportRef={(node) => {
           seen.push(node);
-        }}
-      >
+        }}>
         <div>参照</div>
       </ScrollArea>,
     );

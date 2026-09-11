@@ -276,33 +276,12 @@ const FACES = ["Noto Sans JP", "M PLUS 2", "Hiragino Sans", "system"] as const;
 /** Per-character advance, max over the four faces. The class constants are derived from these. */
 const MEASURED_CHARACTER_ADVANCE: Record<string, number> = {
   // full-width: every one exactly 1.0000 on all four faces
-  神: 1.0,
-  東: 1.0,
-  あ: 1.0,
-  ゴ: 1.0,
-  株: 1.0,
-  "「": 1.0,
-  "、": 1.0,
-  Ｇ: 1.0,
+  神: 1.0, 東: 1.0, あ: 1.0, ゴ: 1.0, 株: 1.0, "「": 1.0, "、": 1.0, Ｇ: 1.0,
   // the proportional forms that reach that em — all three on Hiragino Sans
-  W: 1.058,
-  m: 1.01,
-  M: 0.987,
+  W: 1.058, m: 1.01, M: 0.987,
   // the rest of the proportional forms
-  w: 0.863,
-  O: 0.838,
-  Q: 0.838,
-  U: 0.8291,
-  H: 0.826,
-  N: 0.821,
-  X: 0.811,
-  G: 0.79,
-  T: 0.7091,
-  "8": 0.712,
-  k: 0.652,
-  t: 0.4841,
-  g: 0.692,
-  l: 0.315,
+  w: 0.863, O: 0.838, Q: 0.838, U: 0.8291, H: 0.826, N: 0.821, X: 0.811,
+  G: 0.79, T: 0.7091, "8": 0.712, k: 0.652, t: 0.4841, g: 0.692, l: 0.315,
   // a collapsible space, measured as the delta between 東京 and 東 京
   " ": 0.333,
 };
@@ -310,38 +289,15 @@ const MEASURED_CHARACTER_ADVANCE: Record<string, number> = {
 /** Per-string advance, max over the four faces — the paint the box has to hold. */
 const MEASURED_ADVANCE: Record<string, number> = {
   // the issue's case and its neighbours
-  東京: 2.0,
-  神戸: 2.0,
-  ゴジ: 2.0,
-  株式: 2.0,
-  東京都: 3.0,
-  神A: 1.808,
-  Aあ: 1.808,
-  神: 1.0,
-  あ: 1.0,
+  東京: 2.0, 神戸: 2.0, ゴジ: 2.0, 株式: 2.0, 東京都: 3.0, 神A: 1.808, Aあ: 1.808,
+  神: 1.0, あ: 1.0,
   // full-width forms belonging to no script, Hangul, a CJK-Ext-B surrogate pair, half-width kana
-  ＧＸ: 2.0,
-  "「あ": 2.0,
-  한국: 1.73,
-  "𠮷野": 2.0,
-  "、。": 2.0,
-  ｱｲ: 1.0,
+  ＧＸ: 2.0, "「あ": 2.0, 한국: 1.73, "𠮷野": 2.0, "、。": 2.0, ｱｲ: 1.0,
   // white space: an ASCII space is collapsible and painted; U+3000 is a full-width form
-  "東 京": 2.333,
-  "東　京": 3.0,
+  "東 京": 2.333, "東　京": 3.0,
   // Latin and digits, including the em-wide forms
-  g: 0.692,
-  G: 0.79,
-  GX: 1.601,
-  TH: 1.535,
-  "8": 0.712,
-  MW: 2.045,
-  WW: 2.116,
-  mm: 2.02,
-  Mg: 1.6791,
-  OO: 1.676,
-  ww: 1.726,
-  HN: 1.647,
+  g: 0.692, G: 0.79, GX: 1.601, TH: 1.535, "8": 0.712,
+  MW: 2.045, WW: 2.116, mm: 2.02, Mg: 1.6791, OO: 1.676, ww: 1.726, HN: 1.647,
 };
 
 const TIERS = ["xs", "sm", "md", "lg"] as const;
@@ -476,9 +432,7 @@ describe("logoGlyphAdvance — the counts the fit cap is computed from", () => {
 describe("Logo glyph counts reach the element CSS reads them from", () => {
   it("emits all four counts on the glyph, not on the box", () => {
     render(<Logo glyph="東 京" label="mark" />);
-    const glyph = screen
-      .getByLabelText("mark")
-      .querySelector<HTMLElement>('[data-slot="logo-glyph"]');
+    const glyph = screen.getByLabelText("mark").querySelector<HTMLElement>('[data-slot="logo-glyph"]');
     expect(glyph?.style.getPropertyValue("--logo-glyph-fullwidth-count")).toBe("2");
     expect(glyph?.style.getPropertyValue("--logo-glyph-wide-count")).toBe("0");
     expect(glyph?.style.getPropertyValue("--logo-glyph-narrow-count")).toBe("0");
@@ -487,9 +441,7 @@ describe("Logo glyph counts reach the element CSS reads them from", () => {
 
   it("leaves artwork unmeasured — the library never guesses at a node it cannot read", () => {
     render(<Logo glyph={<svg data-testid="art" />} label="mark" />);
-    const glyph = screen
-      .getByLabelText("mark")
-      .querySelector<HTMLElement>('[data-slot="logo-glyph"]');
+    const glyph = screen.getByLabelText("mark").querySelector<HTMLElement>('[data-slot="logo-glyph"]');
     expect(glyph?.style.getPropertyValue("--logo-glyph-fullwidth-count")).toBe("");
   });
 });

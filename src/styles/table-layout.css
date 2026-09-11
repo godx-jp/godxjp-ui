@@ -58,7 +58,8 @@
   }
 
   .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
-    border-inline-start: var(--table-row-tone-rail-width) solid hsl(var(--table-row-tone-color));
+    border-inline-start: var(--table-row-tone-rail-width) solid
+      hsl(var(--table-row-tone-color));
     padding-inline-start: calc(var(--table-cell-space-x) - var(--table-row-tone-rail-width));
   }
 

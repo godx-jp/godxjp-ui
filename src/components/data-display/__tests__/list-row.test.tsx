@@ -69,7 +69,10 @@ describe("ListRow", () => {
     expect(item!.parentElement!.tagName).toBe("UL");
     const row = item!.querySelector('[data-slot="list-row"]');
     expect(row!.tagName).toBe("A");
-    expect(screen.getByRole("link", { name: /Alpha/ })).toHaveAttribute("href", "/projects/pkg");
+    expect(screen.getByRole("link", { name: /Alpha/ })).toHaveAttribute(
+      "href",
+      "/projects/pkg",
+    );
   });
 
   it("gives every row but the last a divider to carry, through the item", () => {

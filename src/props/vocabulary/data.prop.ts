@@ -117,7 +117,12 @@ export type OnTableDensityChangeProp = (density: TableDensityProp) => void;
  * is what makes that cell findable in a long table, not a replacement for it.
  */
 export type TableRowToneProp =
-  "primary" | "success" | "warning" | "info" | "attention" | "destructive";
+  | "primary"
+  | "success"
+  | "warning"
+  | "info"
+  | "attention"
+  | "destructive";
 
 /** Per-row tone resolver — return `undefined` for a row in the ordinary state. */
 export type RowToneProp<T> = (row: T) => TableRowToneProp | undefined;

@@ -64,15 +64,7 @@ describe("Legend", () => {
   it("the stylesheet fills a swatch for every tone in the vocabulary", () => {
     const css = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
 
-    for (const tone of [
-      "default",
-      "success",
-      "warning",
-      "destructive",
-      "info",
-      "muted",
-      "neutral",
-    ]) {
+    for (const tone of ["default", "success", "warning", "destructive", "info", "muted", "neutral"]) {
       expect(css).toMatch(new RegExp(`\\.ui-legend-swatch\\[data-tone="${tone}"\\]`));
     }
   });

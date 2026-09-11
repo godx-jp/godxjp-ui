@@ -118,6 +118,7 @@ describe("Label — khớp từng ký tự với @radix-ui/react-label", () => {
   });
 });
 
+
 describe("Label line box", () => {
   const controlTokens = readFileSync(
     resolve(process.cwd(), "src/tokens/components/control.css"),
@@ -136,17 +137,16 @@ describe("Label line box", () => {
      * 11px row and sat the lower half of the canonical Login card 8px high (gh#263).
      */
     expect(controlTokens).not.toMatch(/--control-label-line-height:\s*1\s*;/);
-    expect(controlTokens).toMatch(/--control-label-line-height:\s*var\(--line-height-normal\)/);
+    expect(controlTokens).toMatch(
+      /--control-label-line-height:\s*var\(--line-height-normal\)/,
+    );
   });
 
   it("keeps reading the token from the primitive, so a theme can still retune it", () => {
     // The Label carries `leading-[var(--control-label-line-height)]` as a UTILITY, which is the
     // only layer that can beat the components rules; if it stopped reading the token the fix above
     // would be silently unreachable from a service theme.
-    const label = readFileSync(
-      resolve(process.cwd(), "src/components/data-entry/label.tsx"),
-      "utf8",
-    );
+    const label = readFileSync(resolve(process.cwd(), "src/components/data-entry/label.tsx"), "utf8");
     expect(label).toContain("leading-[var(--control-label-line-height)]");
   });
 });

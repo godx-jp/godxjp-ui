@@ -61,10 +61,7 @@ describe("navRailPosition", () => {
 
   it('defaults to "start", so the shipped three-column shape is unchanged', () => {
     renderWithUi(
-      <AppShell
-        sidebar={<nav aria-label="主">ナビ</nav>}
-        navRail={<nav aria-label="組織">レール</nav>}
-      >
+      <AppShell sidebar={<nav aria-label="主">ナビ</nav>} navRail={<nav aria-label="組織">レール</nav>}>
         <p>本文</p>
       </AppShell>,
     );
@@ -73,9 +70,7 @@ describe("navRailPosition", () => {
 
   it("gives every position a grid map, at both topbar spans — an unnamed one falls back to one column", () => {
     for (const position of POSITIONS) {
-      const base = declarationsFor(
-        `.app-root[data-nav-rail][data-nav-rail-position="${position}"]`,
-      );
+      const base = declarationsFor(`.app-root[data-nav-rail][data-nav-rail-position="${position}"]`);
       const full = declarationsFor(
         `.app-root[data-nav-rail][data-nav-rail-position="${position}"][data-topbar-span="full"]`,
       );
@@ -93,9 +88,7 @@ describe("navRailPosition", () => {
       ).toMatch(/grid-template-columns:[^;]*--app-shell-nav-rail-width/);
     }
     for (const position of ["top", "bottom"] as const) {
-      const rule = declarationsFor(
-        `.app-root[data-nav-rail][data-nav-rail-position="${position}"]`,
-      );
+      const rule = declarationsFor(`.app-root[data-nav-rail][data-nav-rail-position="${position}"]`);
       expect(rule).toMatch(/grid-template-rows:[^;]*--app-shell-nav-rail-height/);
       // A strip must NOT be a column: a width token here would put it back in the column track.
       expect(rule).not.toMatch(/grid-template-columns:[^;]*--app-shell-nav-rail-width/);
@@ -106,12 +99,12 @@ describe("navRailPosition", () => {
     const strip = declarationsFor('.app-nav-rail[data-orientation="horizontal"]');
     expect(strip).toMatch(/flex-direction: row;/);
     expect(strip).toMatch(/border-inline-end: 0;/);
-    expect(declarationsFor('.app-nav-rail[data-edge="top"]')).toMatch(
-      /border-block-end: 1px solid/,
-    );
-    expect(declarationsFor('.app-nav-rail[data-edge="bottom"]')).toMatch(
-      /border-block-start: 1px solid/,
-    );
+    expect(
+      declarationsFor('.app-nav-rail[data-edge="top"]'),
+    ).toMatch(/border-block-end: 1px solid/);
+    expect(
+      declarationsFor('.app-nav-rail[data-edge="bottom"]'),
+    ).toMatch(/border-block-start: 1px solid/);
     // `end` mirrors the column, so its border faces the content it separates.
     expect(declarationsFor('.app-nav-rail[data-edge="end"]')).toMatch(
       /border-inline-start: 1px solid/,
@@ -128,7 +121,9 @@ describe("navRailPosition", () => {
     expect(rule).not.toMatch(/flex/);
     // And it must NOT be a blanket `> *`: that took the square cells with it — measured, the
     // launcher collapsed from 36x36 to 16x36, because an icon Button's width is a real square.
-    expect(declarationsFor('.app-nav-rail[data-orientation="horizontal"] > *')).toBe("");
+    expect(
+      declarationsFor('.app-nav-rail[data-orientation="horizontal"] > *'),
+    ).toBe("");
   });
 
   it("drops the strip's extra row below the breakpoint, where the rail is hidden", () => {
@@ -168,16 +163,16 @@ describe("navRailPosition", () => {
     const tokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
     // Same measure whichever edge it is docked to: two numbers for one rail is a shape that drifts
     // the moment either is retuned, and a service has to remember both.
-    expect(tokens).toMatch(/--app-shell-nav-rail-height:\s*var\(--app-shell-nav-rail-width\);/);
+    expect(tokens).toMatch(
+      /--app-shell-nav-rail-height:\s*var\(--app-shell-nav-rail-width\);/,
+    );
     // The rail sizes its own cells — a control carries its own band token, so a narrower TRACK
     // alone clips it instead of shrinking it (the rail clips).
     expect(tokens).toMatch(/--app-shell-nav-rail-item-size:\s*var\(--band-height-lg\);/);
     // EVERY cell tier, not one component's knob: retuning only the organization trigger left the
     // rail with two sizes and two left offsets (36x36 at x=1.5 beside 28x28 at x=5.5).
     const railCells = declarationsFor(".app-nav-rail");
-    expect(railCells).toMatch(
-      /--org-switcher-trigger-height:\s*var\(--app-shell-nav-rail-item-size\)/,
-    );
+    expect(railCells).toMatch(/--org-switcher-trigger-height:\s*var\(--app-shell-nav-rail-item-size\)/);
     expect(railCells).toMatch(/--control-height-sm:\s*var\(--app-shell-nav-rail-item-size\)/);
     // Rule #24 on a finger: both the cell and the track it must fit inside go back up together.
     const coarse = tokens.slice(tokens.indexOf("@media (pointer: coarse)"));

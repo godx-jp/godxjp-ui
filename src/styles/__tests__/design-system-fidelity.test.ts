@@ -28,7 +28,9 @@ describe("DXS hi-fi visual contract", () => {
      *
      * The default is `0px`, so a page that owns its window is byte-for-byte unchanged.
      */
-    expect(shell).toMatch(/height:\s*calc\(100vh - var\(--app-shell-viewport-inset, 0px\)\)/);
+    expect(shell).toMatch(
+      /height:\s*calc\(100vh - var\(--app-shell-viewport-inset, 0px\)\)/,
+    );
     expect(tokens).toMatch(/--app-shell-viewport-inset:\s*0px;/);
     expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(--card\)\)/s);
     // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,

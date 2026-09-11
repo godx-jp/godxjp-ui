@@ -408,14 +408,10 @@ describe("responsive shell geometry", () => {
     expect(railWidth).toBeDefined();
     expect(collapsedWidth).toBeDefined();
     expect(railWidth).not.toBe(collapsedWidth);
-    expect(
-      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
-    ).toMatch(
+    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
     );
-    expect(
-      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
-    ).toMatch(
+    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
       /grid-template-areas:\s*"navrail sidebar topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
     );
   });
@@ -424,12 +420,10 @@ describe("responsive shell geometry", () => {
     // Slack's behaviour, and the one that keeps the rail's destinations reachable while collapsed.
     // If this ever read `--app-shell-sidebar-collapsed-width` twice, both columns would shrink and
     // the workspace switcher would become a second strip of anonymous icons.
-    expect(
-      declarationsFor(
-        shellStyles,
-        '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
-      ),
-    ).toMatch(
+    expect(declarationsFor(
+      shellStyles,
+      '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
+    )).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
     );
   });

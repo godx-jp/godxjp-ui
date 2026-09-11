@@ -257,11 +257,7 @@ export function Calendar({
         ...(cellRender
           ? {
               DayButton: (dayButtonProps: React.ComponentProps<typeof DayButton>) => (
-                <>
-                  {cellRender(dayButtonProps.day.date, {
-                    originNode: <DayButton {...dayButtonProps} />,
-                  })}
-                </>
+                <>{cellRender(dayButtonProps.day.date, { originNode: <DayButton {...dayButtonProps} /> })}</>
               ),
             }
           : {}),

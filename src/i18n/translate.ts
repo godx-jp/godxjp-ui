@@ -45,7 +45,10 @@ const LIBRARY_NAMESPACES: ReadonlySet<string> = new Set(
  * distance, and only in the build where that call ran. Reach for the component's own labels prop
  * instead; every string this library renders has one.
  */
-export function registerMessages(locale: AppLocale, messages: Record<string, unknown>): void {
+export function registerMessages(
+  locale: AppLocale,
+  messages: Record<string, unknown>,
+): void {
   const reserved = [...LIBRARY_NAMESPACES].filter((key) => Object.hasOwn(messages, key));
 
   if (reserved.length > 0) {

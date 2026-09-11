@@ -272,9 +272,7 @@
   --focus-outline: 0; /* the kill switch — 0 = off (shipped default), 1 = on */
   --focus-outline-weight: var(--stroke-hairline); /* the heavy alternative is --stroke-lg */
   --focus-outline-color: var(--focus-ring-color, var(--ring));
-  --control-outline-width: calc(
-    var(--stroke-md) * var(--focus-outline)
-  ); /* the field halo spread */
+  --control-outline-width: calc(var(--stroke-md) * var(--focus-outline)); /* the field halo spread */
   --focus-outline-offset: 0px;
 
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).

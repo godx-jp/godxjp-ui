@@ -12,14 +12,14 @@ const labels = { trigger: "アプリ", title: "アプリ", empty: "なし", load
 const apps = [{ id: "console", name: "コンソール", href: "/" }];
 
 describe("AppLauncher appearance", () => {
-  it("defaults to the bar cell, so every shipped topbar is unchanged", () => {
+  it('defaults to the bar cell, so every shipped topbar is unchanged', () => {
     renderWithUi(<AppLauncher apps={apps} labels={labels} />);
     const trigger = screen.getByRole("button", { name: "アプリ" });
     expect(trigger).toHaveClass("ui-topbar-item");
     expect(trigger).toHaveClass("ui-app-launcher-trigger");
   });
 
-  it("renders a square ghost control for chrome that is not a bar", () => {
+  it('renders a square ghost control for chrome that is not a bar', () => {
     renderWithUi(<AppLauncher apps={apps} labels={labels} appearance="icon" />);
     const trigger = screen.getByRole("button", { name: "アプリ" });
     expect(trigger).toHaveClass("ui-button");
@@ -37,13 +37,7 @@ describe("AppLauncher appearance", () => {
     unmount();
 
     renderWithUi(
-      <AppLauncher
-        apps={apps}
-        labels={labels}
-        appearance="icon"
-        id="launcher"
-        data-test="launcher"
-      />,
+      <AppLauncher apps={apps} labels={labels} appearance="icon" id="launcher" data-test="launcher" />,
     );
     expect(screen.getByRole("button", { name: "アプリ" })).toHaveAttribute("data-test", "launcher");
   });

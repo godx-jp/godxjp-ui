@@ -239,7 +239,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProp>(
      * Only while empty — once there is a value the placeholder is not painted, and mirroring it
      * would hold the box open at the wrong height.
      */
-    const placeholderText = typeof props.placeholder === "string" ? props.placeholder : undefined;
+    const placeholderText =
+      typeof props.placeholder === "string" ? props.placeholder : undefined;
     const mirrorText = mirror.length > 0 ? mirror : (placeholderText ?? "");
 
     return (
