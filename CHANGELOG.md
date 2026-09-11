@@ -151,6 +151,35 @@ transparent` — đúng `hsl(var(--border))` trên nền trong suốt.
 
 ### Fixed
 
+- **Ô chọn nay NHẬN được con trỏ ở đúng chỗ nó được vẽ.** `react-aria-components` vẽ control lên
+  thẻ `<label>` và giấu `<input>` thật trong một span `VisuallyHidden` — 1px, bị cắt, ghim ở góc
+  trên-trái của label — và hình học ấy là style NỘI TUYẾN. Nên mọi cú chạm vào ô vuông rơi vào
+  label, còn vùng nhận sự kiện của input là một ô 13×13 ở một gốc toạ độ khác hẳn ô 16×16 trên màn
+  hình. Đo trên `data-entry-checkbox` trước bản sửa: quét 49 điểm trên chính ô ấy, **0** điểm chạm
+  tới input và 46 điểm chạm label; `check()` / `uncheck()` không `force` hết giờ với
+  `<label data-slot="checkbox"> intercepts pointer events`. `force: true` thì qua — đúng dấu hiệu
+  "control vẫn chạy, chỉ bị che", và cũng là lý do một bộ e2e vá bằng `force` giữ được CI xanh
+  trong khi người dùng vẫn bấm vào ô mà không thấy gì xảy ra.
+
+  Style nội tuyến chỉ `!important` mới thắng, nên thay vì đánh nhau với nó, **cái span ấy được
+  thay**: prop `render` trao lại đúng cây DOM mà react-aria dựng, và `withOwnHitTarget`
+  (`choice-hit-target.tsx`) đổi phần tử `VisuallyHidden` trong đó thành
+  `<span class="ui-choice-input">` mà `control.css` trải kín ô. Bản thân `<input>` — props, ref,
+  bàn phím, chỗ đứng trong cây a11y — không đổi một chữ. Áp cho `Checkbox`, `Radio` (cả thanh
+  `optionType="button"`), `Switch` và `Segmented`, vì cả bốn dựng trên cùng bộ phận ấy.
+
+  Sau bản sửa: input **14×14 đồng tâm trong ô 16×16** (switch 32×16 trong 36×20, segment phủ kín
+  36×28), **936/936** điểm quét bên trong viền chạm tới input trên 26 checkbox của frame,
+  `check()` / `uncheck()` không `force` trả về ngay, click chuột thật ở tâm VÀ ở vành viền đều lật
+  đúng MỘT lần, Space vẫn lật, `data-focus-visible` vẫn nằm trên ô được vẽ. Ảnh chụp 12 control
+  trước/sau: **11 giống nhau từng byte**, 1 (switch đang disabled) lệch tối đa **2/255** trên một
+  kênh — làm tròn khi hợp nhất lớp dưới `opacity: .5`, không phải thay đổi thị giác.
+
+  Cổng mới `check:choice-hit-target` (lane `ci-browser-full`, shard `interaction-semantics`) quét
+  lưới, gọi `check()` / `uncheck()` không `force`, click chuột thật và gõ phím trên bốn frame,
+  LTR và RTL. Đột biến: gỡ bản sửa → đỏ với **552 lỗi**, mở đầu bằng `input is off-centre by 6,6`.
+  Kèm một test jsdom ghim CẤU TRÚC mà bản sửa dựa vào (input nằm trong `.ui-choice-input`, không
+  mang style nội tuyến), để một bản nâng cấp react-aria đổi cây DOM sẽ đỏ chứ không im lặng.
 - **Dưới 900px, mọi trạng thái của `AppShell` mới thật sự về MỘT cột.** Bản reset một cột trong
   `@media (width <= 56.25rem)` liệt kê NĂM selector cho một ma trận BA MƯƠI trạng thái, và nó thua
   về độ đặc hiệu ngay ở trạng thái đầu tiên nó bỏ sót: `.app-root[data-topbar-span="full"]` không

@@ -441,6 +441,37 @@
     line-height: 0;
   }
 
+  /* ── THE HIT TARGET OF A CHOICE CONTROL (gh#476) ───────────────────────────────────────────
+   * react-aria paints the control on the `<label>` and hides the real `<input>` inside a 1px
+   * clipped span at that label's top-left, so a pointer aimed at the box lands on the LABEL and
+   * the input — the element a browser's own hit test, and every automated click, has to reach —
+   * is a 13x13 box at a different origin than the 16x16 one on screen. Measured on
+   * `data-entry-checkbox` before this rule: of 49 points scanned across the box, 0 reached the
+   * input and 46 reached the label, and Playwright `check()` without `force` timed out on
+   * "<label data-slot=\"checkbox\"> intercepts pointer events".
+   *
+   * The span is OURS, not react-aria's (choice-hit-target.tsx swaps it in through the `render`
+   * prop) — which is why this needs no `!important`: react-aria writes its VisuallyHidden
+   * geometry as an INLINE style, and nothing in a stylesheet can outrank that.
+   *
+   * The input stays invisible, so the paint is unchanged; it simply becomes the thing that
+   * receives the press. `cursor: inherit` keeps the label's cursor, `not-allowed` included. */
+  .ui-choice-input {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .ui-choice-input > input {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    cursor: inherit;
+    opacity: 0;
+  }
+
   .ui-choice-content {
     display: grid;
     gap: var(--choice-description-gap);
@@ -473,6 +504,8 @@
    * nhập cùng đổi viền theo một con số sẽ làm dấu chọn dày lên mất cân đối. Mặc định giữ nguyên. */
   .ui-checkbox,
   .ui-radio {
+    /* The real input is absolutely positioned over this box — see `.ui-choice-input` below. */
+    position: relative;
     width: var(--checkbox-size);
     height: var(--checkbox-size);
     flex-shrink: 0;
@@ -538,6 +571,8 @@
   }
 
   .ui-switch {
+    /* Containing block for `.ui-choice-input` — the real input covers the track. */
+    position: relative;
     display: inline-flex;
     width: var(--switch-width);
     height: var(--switch-height);
@@ -1207,6 +1242,8 @@
   }
 
   .ui-segmented-item {
+    /* Containing block for `.ui-choice-input` — the real input covers the segment. */
+    position: relative;
     display: inline-flex;
     min-width: 0;
     height: var(--segmented-item-height);
@@ -3344,6 +3381,8 @@
   }
 
   .ui-radio-button {
+    /* Containing block for `.ui-choice-input` — the real input covers the segment of the bar. */
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
