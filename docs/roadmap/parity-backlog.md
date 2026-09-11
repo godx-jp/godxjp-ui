@@ -31,7 +31,7 @@ compared against, or successive waves will silently measure against different ta
 
 ## P1 — grouped by owning file, so one agent owns one group
 
-**`data-entry`** — `Slider` missing `aria-valuetext` (`slider.tsx:138-157`) · `SearchInput` Enter does
+**`data-entry`** — `SearchInput` Enter does
 not commit (no `onKeyDown` in the file; `:59-63`) · `ColorPicker` has no `size`/`status`/`variant`
 and no `presets` (`data-entry.prop.ts:893-908`) · `PasswordStrength` uses `role="img"` instead of
 `role="meter"` (`:74-76`) · `Upload showUploadList` boolean-only (`:1196`) ·

@@ -1,13 +1,12 @@
 {
-  "files": 14,
-  "packages": 14,
+  "files": 12,
+  "packages": 13,
   "declared": [
     "@radix-ui/react-context-menu",
     "@radix-ui/react-menubar",
     "@radix-ui/react-navigation-menu",
     "@radix-ui/react-scroll-area",
-    "@radix-ui/react-select",
-    "@radix-ui/react-slider"
+    "@radix-ui/react-select"
   ],
   "sources": {
     "src/components/data-display/scroll-area.tsx": [
@@ -18,9 +17,6 @@
     ],
     "src/components/data-entry/select.tsx": [
       "@radix-ui/react-select"
-    ],
-    "src/components/data-entry/slider.tsx": [
-      "@radix-ui/react-slider"
     ],
     "src/components/navigation/context-menu.tsx": [
       "@radix-ui/react-context-menu"
@@ -50,9 +46,6 @@
     ],
     "src/lib/__tests__/use-client-directive.test.ts": [
       "@radix-ui/react-slot"
-    ],
-    "src/props/components/data-entry.prop.ts": [
-      "@radix-ui/react-slider"
     ]
   }
 }

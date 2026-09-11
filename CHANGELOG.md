@@ -6,6 +6,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`Slider` rời `@radix-ui/react-slider`, sang `react-aria-components`, và mang API của antd 6.**
+  Cùng nước đi đã làm với `Switch`, `Segmented`, `Radio` (#465). Hình dạng DOM đổi đúng theo cách
+  đó: phần tử nhận tiêu điểm không còn là phần tử được tô.
+
+  ```
+  Radix:  <span role="slider" class="ui-slider-thumb" aria-valuenow="40">
+  RAC:    <div class="ui-slider-thumb"><input type="range" value="40"></div>
+  ```
+
+  Giá trị nay là giá trị NATIVE của một `<input type="range">` (vai trò slider ngầm định), không
+  còn là `aria-valuenow` viết tay — ARIA in HTML bảo đừng lặp lại thuộc tính native, và
+  `getByRole("slider", { value: { now } })` của Testing Library chỉ đọc thuộc tính ARIA nên sẽ coi
+  mọi slider native là "không có giá trị". Test trong kho đọc qua `slider-test-utils` (ARIA trước,
+  native sau) — **14 ca hợp đồng thời Radix được viết và chạy XANH trên nền Radix TRƯỚC khi đổi**,
+  rồi giữ nguyên chữ: `number[]` + `onValueChange` / `onValueCommit`, `min`/`max`/`step`,
+  `disabled`, `orientation`, `dir`, `inverted`, `reverse`, `minStepsBetweenThumbs`, `marks`,
+  `tooltip`, `name` → `name[]`, PageUp/PageDown và Shift+Arrow = 10 bước, một thumb ở `min` khi
+  không truyền gì, và tên thumb từ `FormField` / `aria-labelledby`.
+
+  **Thêm theo antd 6** (mỗi thứ một test): `value` / `defaultValue` là SỐ (mảng vẫn chạy);
+  `onChange` / `onChangeComplete` (payload đi theo `range`: số khi không khai, mảng khi có);
+  `step={null}` — chỉ dừng ở marks, `min`, `max`, cả bằng con trỏ (gần nhất) lẫn bằng phím (mark
+  kế tiếp); `marks` dạng `{ style, label }`; `dots` theo marks khi `step={null}`; `range` dạng
+  object — `editable` (bấm lên rail THÊM thumb, Delete/Backspace bớt, giữa `minCount` và
+  `maxCount`), `draggableTrack` (kéo cả vệt, giữ nguyên khoảng cách); `vertical`; `disabled` dạng
+  mảng cho từng thumb; `tooltip` với `open` / `placement` / `autoAdjustOverflow` / `formatter`.
+  `tooltip.formatter` nay còn là **`aria-valuetext`** — mục P1 trong `docs/roadmap/
+parity-audit-data-entry.md`: một slider ¥/%/件 trước đây đọc lên đúng một con số trần.
+
+  **Hình học nằm ở thư viện này, không ở RAC, và đó là một quyết định có số.** RAC không có
+  `reverse`/`inverted` (Radix có, antd có, và nó là API công khai của component này), không có
+  `minStepsBetweenThumbs`, không có `step={null}`, và `pageSize` của nó là `(max − min)/10` chứ
+  không phải 10 bước: với `min=0 max=10 step=2`, PageUp thời Radix nhảy **10**, RAC nhảy **2**.
+  Mọi đường nhập của RAC suy ra hướng từ `useLocale()` và không có chỗ nào đảo. Nên phím và con trỏ
+  bị chặn ở pha CAPTURE trên track (trước handler của RAC ở pha bubble) rồi đi qua MỘT hàm đặt giá
+  trị. RAC vẫn giữ phần đắt nhất: trạng thái, `<input>` thật cho form và cho thao tác tăng/giảm của
+  trình đọc màn hình, nhãn từng thumb, tiêu điểm, hover.
+
+  **Vị trí là CSS logic, nên RTL và `reverse` không có nhánh mã thứ hai** — và điều đó sửa một lỗi
+  im lặng: `.ui-slider-mark` xưa nay đặt `inset-inline-start` rồi `transform: translateX(-50%)`,
+  mà ở RTL `inset-inline-start` đo từ mép phải còn `translateX` thì không lật, nên mọi nhãn marks
+  lệch nguyên một bề rộng về sai phía. Nay marks/dots/bong bóng căn bằng **margin logic** hoặc bằng
+  một neo rộng 0 với `justify-content: center` (một flex item tràn ra thì tràn đều hai bên, ở cả
+  hai hướng đọc). Slider dọc (`orientation="vertical"`, `vertical`) lần đầu có CSS thật, kèm token
+  `--slider-vertical-min-block-size` để nó không sập về 0 trong hộp không có chiều cao.
+
+  **Hệ quả cần biết khi nâng cấp:**
+  - `@radix-ui/react-slider` **biến mất khỏi `dependencies`** — consumer cài **5** gói Radix thay
+    vì 6 (`check:radix-surface` đã re-baseline trong chính commit này).
+  - `ref` nay là `HTMLDivElement` (Radix dựng `<span>`).
+  - Slider `disabled` **không còn submit**: `<input disabled>` không vào FormData, còn input ẩn
+    của Radix thì có. Thumb bị khoá nay cũng mờ đi — luật `--disabled-opacity` xưa nhắm
+    `.ui-slider-thumb:disabled`, một selector không bao giờ khớp một `<span>`.
+  - `onValueCommit` nay bắn **đúng một lần** cho mỗi phím (Radix bắn hai).
+  - `range` giữ trong một biến boolean thì không dùng được `onChange` (kiểu union không biết trả
+    số hay mảng) — dùng `onValueChange`, thứ luôn mang đủ mọi thumb.
+  - KHÔNG port: `keyboard={false}` (gỡ thao tác bàn phím khỏi `role="slider"` là vi phạm WCAG
+    2.1.1 — `parity-audit-data-entry.md` đã ghi WONT-PORT), `tooltip.getPopupContainer` (bong bóng
+    nằm TRONG thumb, không portal, nên không có container để chọn), `classNames` / `styles` theo
+    khe DOM (docs/WHAT-BELONGS-HERE.md xếp lỗ kiểu dáng tự do vào mục "không đáng"), và
+    `focus()` / `blur()` trên ref.
+
 ### Fixed
 
 - **`Segmented` bốn lựa chọn bị cắt chữ ở màn điện thoại — nay track XUỐNG DÒNG.** Catalog hứa

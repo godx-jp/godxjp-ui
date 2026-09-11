@@ -492,7 +492,7 @@
   /* Matching [data-disabled] too lets those share the one rule. */
   .ui-checkbox:disabled,
   .ui-radio:disabled,
-  .ui-slider-thumb:disabled,
+  .ui-slider-thumb[data-disabled],
   .ui-switch:disabled,
   .ui-checkbox[data-disabled],
   .ui-radio[data-disabled],
@@ -574,35 +574,91 @@
     transform: translateX(var(--switch-thumb-translate));
   }
 
+  /* SLIDER — react-aria-components underneath (slider.tsx). Every position below comes from ONE
+   * fraction the component hands over as a custom property, measured from the START of the value
+   * axis: the inline-start edge of a horizontal rail, the block-END (bottom) of a vertical one.
+   * `reverse` is already folded into that fraction, and RTL is the logical properties' job — so
+   * neither needs a rule of its own. Centring is done with logical margins or zero-size flex
+   * anchors, never `translateX(-50%)`, which only centres in LTR. */
   .ui-slider {
     position: relative;
     display: flex;
-    width: 100%;
+    inline-size: 100%;
     touch-action: none;
     user-select: none;
     align-items: center;
   }
 
+  .ui-slider[data-orientation="vertical"] {
+    inline-size: auto;
+    block-size: 100%;
+    min-block-size: var(--slider-vertical-min-block-size);
+    flex-direction: column;
+  }
+
+  /* The hit area (react-aria's SliderTrack): as tall as the thumb, so a press just off the painted
+   * rail still lands. Rail, thumbs and marks are all positioned inside it. */
+  .ui-slider-control {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    align-self: stretch;
+    align-items: center;
+    block-size: var(--slider-thumb-size);
+  }
+
+  .ui-slider[data-orientation="vertical"] .ui-slider-control {
+    flex-direction: column;
+    align-self: center;
+    inline-size: var(--slider-thumb-size);
+    block-size: auto;
+  }
+
   .ui-slider-track {
     position: relative;
-    height: var(--slider-track-height);
-    width: 100%;
     flex-grow: 1;
-    overflow: hidden;
+    align-self: center;
+    block-size: var(--slider-track-height);
     border-radius: var(--radius-pill);
     background: var(--slider-track-background, hsl(var(--primary) / 0.2));
   }
 
+  .ui-slider[data-orientation="vertical"] .ui-slider-track {
+    inline-size: var(--slider-track-height);
+    block-size: auto;
+  }
+
   .ui-slider-range {
     position: absolute;
-    height: 100%;
+    inset-block: 0;
+    inset-inline-start: var(--slider-range-start, 0%);
+    inline-size: var(--slider-range-size, 0%);
+    border-radius: inherit;
     background: var(--slider-range-background, hsl(var(--primary)));
   }
 
+  .ui-slider[data-orientation="vertical"] .ui-slider-range {
+    inset-block-start: auto;
+    inset-block-end: var(--slider-range-start, 0%);
+    inset-inline: 0;
+    inline-size: auto;
+    block-size: var(--slider-range-size, 0%);
+  }
+
+  /* antd `range.draggableTrack` — the painted span is itself a handle. */
+  .ui-slider-range[data-draggable="true"] {
+    cursor: grab;
+  }
+
   .ui-slider-thumb {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--slider-thumb-offset, 0%);
     display: block;
-    width: var(--slider-thumb-size);
-    height: var(--slider-thumb-size);
+    inline-size: var(--slider-thumb-size);
+    block-size: var(--slider-thumb-size);
+    margin-block-start: calc(var(--slider-thumb-size) / -2);
+    margin-inline-start: calc(var(--slider-thumb-size) / -2);
     border: 1px solid hsl(var(--primary) / 0.5);
     border-radius: var(--radius-pill);
     background: hsl(var(--background));
@@ -612,6 +668,14 @@
       background-color 150ms,
       border-color 150ms,
       box-shadow 150ms;
+  }
+
+  .ui-slider[data-orientation="vertical"] .ui-slider-thumb {
+    inset-block-start: auto;
+    inset-block-end: var(--slider-thumb-offset, 0%);
+    inset-inline-start: 50%;
+    margin-block-start: 0;
+    margin-block-end: calc(var(--slider-thumb-size) / -2);
   }
 
   .ui-color-picker {
@@ -3107,10 +3171,10 @@
   }
 
   /* ── SLIDER `marks` / `dots` / `tooltip` ─────────────────────────────────────────────────
-   * Both marks and dots are positioned from ONE fraction the component computes and hands over
-   * as `--slider-mark-offset-inline` / `-block`. It is a percentage of the rail, so it survives
-   * a resize, `reverse`, and a vertical rail without a second code path. */
-  .ui-slider[data-has-marks="true"] {
+   * Marks and dots read `--slider-mark-offset-inline` (horizontal) or `--slider-mark-offset-block`
+   * (vertical, from the bottom) — the same fraction the thumbs use, so they survive a resize,
+   * `reverse` and RTL without a second code path. */
+  .ui-slider[data-has-marks="true"]:not([data-orientation="vertical"]) {
     margin-block-end: calc(var(--slider-mark-space-block-start) + var(--font-size-lg));
   }
 
@@ -3122,13 +3186,38 @@
     block-size: 0;
   }
 
+  .ui-slider[data-orientation="vertical"] .ui-slider-marks {
+    inset-block: 0;
+    inset-inline-start: 100%;
+    inset-inline-end: auto;
+    margin-block-start: 0;
+    margin-inline-start: var(--slider-mark-space-block-start);
+    inline-size: 0;
+    block-size: auto;
+  }
+
+  /* A ZERO-WIDTH anchor sitting exactly on the mark's value, with the label centred on it by
+   * flex: an overflowing flex item under `justify-content: center` spills equally both ways, in
+   * either writing direction. */
   .ui-slider-mark {
     position: absolute;
     inset-inline-start: var(--slider-mark-offset-inline, 0%);
-    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    inline-size: 0;
     font-size: var(--slider-mark-font-size);
     color: hsl(var(--slider-mark-color));
     white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .ui-slider[data-orientation="vertical"] .ui-slider-mark {
+    inset-inline-start: 0;
+    inset-block-end: var(--slider-mark-offset-block, 0%);
+    align-items: center;
+    justify-content: flex-start;
+    inline-size: auto;
+    block-size: 0;
   }
 
   .ui-slider-dot {
@@ -3137,35 +3226,83 @@
     inset-inline-start: var(--slider-mark-offset-inline, 0%);
     inline-size: var(--slider-dot-size);
     block-size: var(--slider-dot-size);
-    transform: translate(-50%, -50%);
+    margin-block-start: calc(var(--slider-dot-size) / -2);
+    margin-inline-start: calc(var(--slider-dot-size) / -2);
     border-radius: var(--radius-pill);
     background: hsl(var(--slider-dot-background));
     border: var(--control-border-width) solid hsl(var(--slider-dot-border-color));
+  }
+
+  .ui-slider[data-orientation="vertical"] .ui-slider-dot {
+    inset-block-start: auto;
+    inset-block-end: var(--slider-mark-offset-block, 0%);
+    inset-inline-start: 50%;
+    margin-block-start: 0;
+    margin-block-end: calc(var(--slider-dot-size) / -2);
   }
 
   .ui-slider-dot[data-active="true"] {
     border-color: hsl(var(--slider-dot-active-border-color));
   }
 
+  /* The bubble's ANCHOR — zero-sized across the axis it centres on, like `.ui-slider-mark`, and
+   * pushed off the thumb by padding on the side facing it. `left` / `right` are the INLINE sides. */
   .ui-slider-tooltip {
     position: absolute;
-    inset-block-end: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+
+  .ui-slider-tooltip[data-placement="top"],
+  .ui-slider-tooltip[data-placement="bottom"] {
     inset-inline-start: 50%;
-    transform: translateX(-50%);
-    margin-block-end: var(--slider-tooltip-offset-block);
+    inline-size: 0;
+  }
+
+  .ui-slider-tooltip[data-placement="top"] {
+    inset-block-end: 100%;
+    padding-block-end: var(--slider-tooltip-offset-block);
+  }
+
+  .ui-slider-tooltip[data-placement="bottom"] {
+    inset-block-start: 100%;
+    padding-block-start: var(--slider-tooltip-offset-block);
+  }
+
+  .ui-slider-tooltip[data-placement="left"],
+  .ui-slider-tooltip[data-placement="right"] {
+    inset-block-start: 50%;
+    block-size: 0;
+  }
+
+  .ui-slider-tooltip[data-placement="left"] {
+    inset-inline-end: 100%;
+    padding-inline-end: var(--slider-tooltip-offset-block);
+  }
+
+  .ui-slider-tooltip[data-placement="right"] {
+    inset-inline-start: 100%;
+    padding-inline-start: var(--slider-tooltip-offset-block);
+  }
+
+  .ui-slider-tooltip-content {
     padding-inline: var(--slider-tooltip-padding-inline);
     border-radius: var(--slider-tooltip-radius);
     background: hsl(var(--slider-tooltip-background));
     color: hsl(var(--slider-tooltip-color));
     font-size: var(--slider-tooltip-font-size);
     white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 150ms;
   }
 
-  .ui-slider-thumb:hover .ui-slider-tooltip,
-  .ui-slider-thumb:focus-visible .ui-slider-tooltip,
+  /* Focus lands on the thumb's hidden range input, so react-aria's `data-focus-visible` on the
+   * painted thumb is the hook — `:focus-visible` never matches it. antd `tooltip.open` wins both
+   * ways: `true` always shows, `false` never does, even mid-drag. */
+  .ui-slider-thumb:is([data-hovered], [data-focus-visible], [data-dragging])
+    .ui-slider-tooltip:not([data-open="false"]),
   .ui-slider-tooltip[data-open="true"] {
     opacity: 1;
   }

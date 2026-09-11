@@ -1500,6 +1500,16 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: [],
   },
+  SliderMarkProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  SliderRangeConfigProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   ControlCountProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
