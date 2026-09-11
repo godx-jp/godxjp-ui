@@ -290,7 +290,17 @@ try {
       keyboard: "pass",
       rtl: {
         visualOrder: rtlVisualOrder,
-        keyboardDirection: "NOT COVERED — React Aria reads it from the locale, and no RTL locale ships",
+        // This said "NOT COVERED — React Aria reads it from the locale, and no RTL locale ships",
+        // and it was true of this gate and of the whole repo. It is no longer true of the repo:
+        // `src/__tests__/rtl-arrow-direction.test.tsx` renders Tabs, ToggleGroup and Segmented under
+        // an RTL LOCALE (`ar-AE`, which is what the components actually read) and asserts each of
+        // them twice — ArrowRight advances under LTR, ArrowLeft advances under RTL — so a control
+        // that ignored direction fails one half. It also pins the trap this gate's own `dir`
+        // handling sits next to: `<html dir="rtl">` alone does NOT reverse the arrows.
+        //
+        // It is still not covered HERE, and that distinction is the point: this gate measures
+        // VISUAL order in a browser, which is the half jsdom cannot see.
+        keyboardDirection: "covered in jsdom, not here — src/__tests__/rtl-arrow-direction.test.tsx",
         verdict: "pass",
       },
       axe: { tabsViolations, paginationViolations },
