@@ -70,7 +70,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" align="center" gap="md">
+            <Flex direction="row" align="center" gap="md" wrap>
               <Text>JE-0042 · 売上計上 ¥480,000</Text>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -102,7 +102,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" align="center" gap="md">
+            <Flex direction="row" align="center" gap="md" wrap>
               <DropdownMenu trigger={["contextMenu"]}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">仕訳 JE-0042 を右クリック</Button>
@@ -130,7 +130,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" align="center" gap="md">
+            <Flex direction="row" align="center" gap="md" wrap>
               <DropdownMenu trigger={["hover"]}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">エクスポート</Button>
@@ -171,7 +171,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" align="center" gap="md">
+            <Flex direction="row" align="center" gap="md" wrap>
               <span className="text-sm">
                 現在のステータス:{" "}
                 <strong>

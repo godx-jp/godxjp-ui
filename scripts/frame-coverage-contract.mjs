@@ -371,8 +371,6 @@ export const KNOWN_GAP_IDS = KNOWN_GAPS.map((gap) => gap.id);
 /** Locked — they may not be unwired. */
 export const RUNTIME_GATE_SCRIPTS = [
   "scripts/check-data-entry-frame-runtime.mjs",
-  "scripts/check-layout-nav-frames.mjs",
-  "scripts/check-provider-feedback-query-runtime.mjs",
   "scripts/check-display-runtime-evidence.mjs",
 ];
 

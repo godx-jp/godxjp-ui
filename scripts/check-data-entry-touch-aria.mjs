@@ -17,14 +17,18 @@ const base = `http://localhost:${port}`;
  */
 const cases = [
   ["data-entry-checkbox", '[data-slot="checkbox"]'],
-  ["data-entry-radio-group", '[role="radio"]'],
+  // Same trap the checkbox entry above records, one component later: react-aria renders a real
+  // `<input type="radio">` whose role is IMPLICIT, so a CSS `[role="radio"]` matches nothing —
+  // and since #487 that input sits inside `.ui-choice-input`, under the painted control. The
+  // painted control is what a finger lands on.
+  ["data-entry-radio-group", '[data-slot="radio-group-item"]'],
   // Radix ToggleGroup emits role="radiogroup" for type="single" (and "toolbar" for
   // type="multiple") — never role="group".
   ["data-entry-toggle-group", '[role="radiogroup"]'],
   // Segmented is a radiogroup too, and it was missing from this list while three of its own
   // documented props (`size`, `vertical`, `block`) had no rendered example anywhere — which is
   // how `size` came to be a silent no-op for as long as it did. The frame now carries all three.
-  ["data-entry-segmented", '[role="radio"]'],
+  ["data-entry-segmented", '[data-slot="segmented-item"]'],
   ["data-entry-command", "[cmdk-input]"],
   ["data-entry-input-otp", 'input[data-input-otp="true"]'],
   ["data-entry-label", "textarea"],
