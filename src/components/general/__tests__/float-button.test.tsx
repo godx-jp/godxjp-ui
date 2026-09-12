@@ -420,6 +420,48 @@ describe("FloatButton.BackTop", () => {
     region.remove();
   });
 
+  /**
+   * `duration` is a real tween, not decoration: antd's own easeInOutCubic over that many
+   * milliseconds. The proof it is animating rather than teleporting is that the container has NOT
+   * arrived by the time the click handler returns — a jump straight to 0 would pass "it reaches the
+   * top" just as well, which is why that assertion alone left this branch untested.
+   */
+  it("`duration` animates the scroll rather than teleporting", async () => {
+    const user = userEvent.setup();
+    const region = document.createElement("div");
+    document.body.append(region);
+    region.scrollTop = 900;
+
+    renderWithUi(<FloatButton.BackTop visibilityHeight={0} duration={400} target={() => region} />);
+    await user.click(screen.getByRole("button", { name: "Về đầu trang" }));
+
+    expect(region.scrollTop).toBeGreaterThan(0);
+    await waitFor(() => expect(region.scrollTop).toBe(0), { timeout: 2000 });
+    region.remove();
+  });
+
+  it("takes the instant path under prefers-reduced-motion (WCAG 2.3.3)", async () => {
+    const user = userEvent.setup();
+    const real = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      ...real(query),
+      matches: query.includes("prefers-reduced-motion"),
+    })) as typeof window.matchMedia;
+
+    const region = document.createElement("div");
+    document.body.append(region);
+    region.scrollTop = 900;
+
+    renderWithUi(<FloatButton.BackTop visibilityHeight={0} duration={400} target={() => region} />);
+    await user.click(screen.getByRole("button", { name: "Về đầu trang" }));
+
+    // Same `duration`, and no tween at all: it is already there.
+    expect(region.scrollTop).toBe(0);
+
+    window.matchMedia = real;
+    region.remove();
+  });
+
   it("watches the container it was given, not the document", async () => {
     const region = document.createElement("div");
     document.body.append(region);
