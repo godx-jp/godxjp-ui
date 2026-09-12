@@ -68,11 +68,42 @@ type TabsFrame = {
    * for byte what Radix produced.
    */
   selectionSuppressed: boolean;
+  /**
+   * The control tier the root was given. `TabsTrigger` needs it because a strip written the
+   * compound way never passes through the `items` renderer, which is where the tier used to be
+   * applied — `size` did nothing at all for that form (godx-jp/id#518).
+   */
+  size: TabsProp["size"];
 };
+
+/**
+ * The trigger's size tier, as utilities.
+ *
+ * Module scope because BOTH forms need it. The `items` path renders its own triggers; the compound
+ * `<TabsList><TabsTrigger>` form — which a navigation strip has to use — reads it from
+ * `TabsFrameContext`. It used to be computed inside `Tabs` and handed only to the `items` triggers,
+ * so `size` was inert for every compound strip: a consumer measured `data-size="sm"` on the root
+ * while the trigger still painted md padding (godx-jp/id#518).
+ *
+ * Utilities rather than a components-layer rule, for the reason recorded at the call site: the
+ * utilities layer beats components, the base trigger already claims `px-*`/`text-*` there, and
+ * tailwind-merge can only DROP the step it replaces when both are utilities.
+ */
+function triggerSizeClassName(size: TabsProp["size"]) {
+  return cn(
+    size === "sm" &&
+      "min-h-[var(--tabs-trigger-height-sm)] px-[var(--tabs-trigger-padding-x-sm)] text-[length:var(--tabs-trigger-font-size-sm)]",
+    size === "md" &&
+      "min-h-[var(--tabs-trigger-height-md)] px-[var(--tabs-trigger-padding-x-md)] text-[length:var(--tabs-trigger-font-size-md)]",
+    size === "lg" &&
+      "min-h-[var(--tabs-trigger-height-lg)] px-[var(--tabs-trigger-padding-x-lg)] text-[length:var(--tabs-trigger-font-size-lg)]",
+  );
+}
 
 const TabsFrameContext = React.createContext<TabsFrame>({
   orientation: "horizontal",
   selectionSuppressed: false,
+  size: "md",
 });
 
 /**
@@ -284,8 +315,8 @@ export function Tabs({
   const selectionSuppressed =
     value === undefined && items != null && items.length > 0 && resolvedDefault === undefined;
   const frame = React.useMemo<TabsFrame>(
-    () => ({ orientation: resolvedOrientation, selectionSuppressed }),
-    [resolvedOrientation, selectionSuppressed],
+    () => ({ orientation: resolvedOrientation, selectionSuppressed, size }),
+    [resolvedOrientation, selectionSuppressed, size],
   );
   const editable = variant === "editable-card";
 
@@ -352,14 +383,7 @@ export function Tabs({
   // `text-*` there — a components-layer `padding`/`font-size` for a size tier or a card face would
   // simply never paint. Writing them as utilities also keeps tailwind-merge able to DROP the base
   // step it replaces instead of stacking two values on one property.
-  const sizeTriggerClassName = cn(
-    size === "sm" &&
-      "min-h-[var(--tabs-trigger-height-sm)] px-[var(--tabs-trigger-padding-x-sm)] text-[length:var(--tabs-trigger-font-size-sm)]",
-    size === "md" &&
-      "min-h-[var(--tabs-trigger-height-md)] px-[var(--tabs-trigger-padding-x-md)] text-[length:var(--tabs-trigger-font-size-md)]",
-    size === "lg" &&
-      "min-h-[var(--tabs-trigger-height-lg)] px-[var(--tabs-trigger-padding-x-lg)] text-[length:var(--tabs-trigger-font-size-lg)]",
-  );
+  const sizeTriggerClassName = triggerSizeClassName(size);
 
   const list = items ? (
     <TabsList
@@ -753,7 +777,7 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   ({ className, value, disabled, children, onKeyDown, onClick, ...props }, ref) => {
-    const { orientation, selectionSuppressed } = React.useContext(TabsFrameContext);
+    const { orientation, selectionSuppressed, size } = React.useContext(TabsFrameContext);
     return (
       <AriaTab
         // RAC types `Tab`'s ref as `HTMLDivElement` because its DEFAULT element is a <div>. The
@@ -785,6 +809,8 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
           // border, focused is the 2px ring plus its halo outside it.
           "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          // The tier the root was given. Without this the compound form ignored `size` outright.
+          triggerSizeClassName(size),
           className,
         )}
         // A <button>, not RAC's default <div>: Radix rendered one, `disabled:` utilities need the
