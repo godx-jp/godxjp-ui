@@ -425,6 +425,24 @@
     padding: var(--card-space-body-y) var(--card-space-inset);
   }
 
+  /* `flush` has to reach THROUGH the tab panel, or it stops being a promise (gh#554).
+   *
+   * `CardContent flush` means "this body touches the card's edge", and the package already carries
+   * the exception that lets it reach a table: `[data-slot="card-content"][data-flush]
+   * .ui-data-table-scroll` zeroes the scroller's inline padding. But the most common detail-screen
+   * shape puts a `Tabs` in between, and the rule above re-applies `--card-space-inset` on the
+   * panel. Measured at 1280px on `Card > CardContent flush > Tabs > tabs-panel > DataTable`: every
+   * link in the ancestor chain was at inline padding 0 — surface, scroller, root, tabs, content,
+   * card — and the ONE link in the middle held 16px, insetting the table by 32px of card width.
+   *
+   * Scoped to the flush body rather than to `tabs-panel` generally: a panel inside an ordinary
+   * (non-flush) card still owns its inset, which is what makes prose in a tab read correctly.
+   * Only the block axis's body padding stays, for the same reason `[data-tight]`/`[data-solo]`
+   * keep theirs — a table needs its top gap under the tab list even when it is edge-to-edge. */
+  [data-slot="card-content"][data-flush] [data-slot="tabs-panel"] {
+    padding-inline: 0;
+  }
+
   /* ── Footer ──────────────────────────────────────────────────────────── */
   [data-slot="card-footer"] {
     display: flex;
