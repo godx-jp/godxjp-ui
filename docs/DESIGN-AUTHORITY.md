@@ -248,6 +248,95 @@ in page CSS.
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so
 those are deliberately NOT adopted — adopting them would re-open the hole the token tiers close.
 
+## One `Dialog`, not two families — and the rule a consumer picks by
+
+**Status:** accepted · 2026-09-12 · gh#567
+
+### The measurement that forced it
+
+On `dist/components/feedback/dialog.d.ts` at `23.2.0`, the feedback group published **26** things:
+**14** `Dialog*`, **12** `AlertDialog*`, **12 name-pairs**, **0** parts that only `AlertDialog`
+had, and 2 that only `Dialog` had (`DialogBody`, `DialogClose`). `AlertDialog` carried no part of
+its own; it was a full mirror minus two.
+
+The real difference was two internal props on one shared shell — `role` and `isDismissable` — and
+`AlertDialogRoot` is literally that shell with `role="alertdialog"` and `isDismissable={false}`.
+Twelve exports were the price of publishing one ARIA attribute.
+
+**A sweep of the whole public surface says this was the only place it happened.** Scanning the 270
+callable exports in `component-api-manifest.json` for a prefixed mirror of another export
+(`Alert*`, `Compact*`, `Simple*`, `Mini*`, `Basic*`, `Confirm*`, `Destructive*`) returns **11
+pairs, all 11 of them this one family**. There is no second drifted pair to find.
+
+### Why antd wins here
+
+antd has **one** `Modal`. Danger is a prop — `okType="danger"`, `okButtonProps`, with
+`Modal.confirm()` as the flat preset alongside `info/success/error/warning`. antd has no
+`AlertModal`. The split came from Radix, which ships `@radix-ui/react-dialog` and
+`@radix-ui/react-alert-dialog` as two packages — and this library no longer runs on Radix.
+react-aria-components has a single `Dialog` whose `role` is an ordinary prop, so the shape that
+made two families necessary is gone from the implementation as well as from the authority.
+
+### The decision
+
+`Dialog` takes **`variant`** (`"default" | "destructive"`), on the root or on `DialogContent`, and
+that one prop decides three things that always travel together in practice:
+
+| `variant`             | ARIA role     | outside click | primary action                                |
+| --------------------- | ------------- | ------------- | --------------------------------------------- |
+| `"default"` (default) | `dialog`      | dismisses     | default emphasis                              |
+| `"destructive"`       | `alertdialog` | ignored       | destructive emphasis (antd `okType="danger"`) |
+
+The 12 `AlertDialog*` exports **stay and keep working unchanged**. Deleting them is a breaking
+change and belongs in a major; nothing here retints or re-roles an existing tree, because the new
+prop defaults to `"default"` and no existing `AlertDialog*` call site passes it.
+
+### The rule for choosing — answer these in order
+
+1. **Is it dangerous or irreversible?** No → plain `Dialog`, no `variant`. Yes → keep going.
+2. **Does the flat preset cover it?** Title, description, confirm/cancel labels, an optional typed
+   challenge, an optional step-up re-auth, a pending state, and nothing else in the body → use the
+   `AlertDialog` **preset**. It is one element and it already forces the destructive tone.
+3. **Does the body need anything else** — a required reason field, a summary table, a diff, a
+   nested list? → `Dialog` with `variant="destructive"`. You get `role="alertdialog"` and the
+   non-dismissable scrim, plus `DialogBody` and `DialogClose`, which the `AlertDialog*` family
+   never had.
+4. **Are you writing new code with the `AlertDialog*` compound parts?** Don't. They are the legacy
+   spelling of step 3. Existing code stays valid.
+
+That third row is the reported case: a destructive confirmation with a **required free-text reason**
+that still has to be announced as an alert dialog. Before this, `Dialog` gave the form and lost the
+role, `AlertDialog` gave the role and forced the footer to be rebuilt, and either way it was a
+rewrite rather than a prop.
+
+### Four places this deliberately departs from the issue's proposal
+
+1. **The prop is `variant`, not `severity`.** antd has no name for a one-knob-three-effects switch,
+   so there is nothing to port verbatim. But the axis already exists here as `ConfirmVariantProp`
+   and the `AlertDialog` preset already spells it `variant` — and "this library's controlled
+   vocabulary wins on values" is the rule two sections up. `check:prop-vocabulary` maps a field
+   named `variant` to a `*VariantProp` type for exactly this reason.
+2. **Escape still closes a `destructive` dialog.** The issue wanted the prop to govern Escape too.
+   It does not, because Escape-closes-an-alertdialog is the behaviour the 12 existing exports have
+   today, with a test measuring it (`dialog-alert-primitives.test.tsx` · "closes on Escape and
+   restores focus"). Making the new prop disable Escape would make `variant="destructive"` differ
+   from `AlertDialogContent`, which is the one thing it must not do. antd agrees: `keyboard`
+   defaults to `true`. The prop governs the outside click; `maskClosable` is antd's name for that
+   same switch.
+3. **The corner ✕ defaults off under `destructive`.** It is a fourth effect, and it follows from
+   the second: a ✕ is an accidental-dismiss affordance like the scrim. It keeps
+   `DialogContent variant="destructive"` byte-identical to `AlertDialogContent`, and
+   `showCloseButton` still overrides it either way.
+4. **The header band tone is NOT forced.** `DialogHeader tone` is a separate published axis with
+   seven values; the preset is where a destructive tone is imposed on both the band and the button
+   at once. Forcing it from `variant` would put two props on the same pixel.
+
+### And the `Sheet` question in the same issue
+
+Asked, measured, no change. antd keeps `Drawer` and `Modal` as two components and splits them by
+**where the surface comes from**, not by danger — which is exactly the `Sheet` / `Dialog` boundary
+here. That pair never drifted from the authority, so there is nothing to merge.
+
 ## Derived colour is AUTHORED, and MEASUREMENT is what makes it authoritative
 
 **Twenty values, in `src/tokens/derived.css`:** `--primary-hover`, `--primary-active`,
