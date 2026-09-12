@@ -2329,6 +2329,50 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   SheetResponsiveProp: { group: "feedback", file: "components/feedback.prop.ts", vocabulary: [] },
   SkeletonRowsProp: { group: "feedback", file: "components/feedback.prop.ts", vocabulary: [] },
+  SkeletonProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
+  SkeletonAvatarProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["SizeProp", "ClassNameProp"],
+  },
+  SkeletonButtonProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["SizeProp", "ShapeProp", "ClassNameProp"],
+  },
+  SkeletonInputProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["SizeProp", "ClassNameProp"],
+  },
+  SkeletonNodeProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ChildrenProp", "ClassNameProp"],
+  },
+  SkeletonImageProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  SkeletonArticleProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      {
+        field: "title",
+        local: true,
+        reason:
+          "antd's Skeleton `title` is the presence/measure of the HEADING LINE, not the string TitleProp names — `false` drops the line and `{ width }` re-measures it.",
+      },
+    ],
+  },
   ToolbarProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

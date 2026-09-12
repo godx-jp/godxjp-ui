@@ -117,6 +117,56 @@ var(--ease-standard)`, mà cả tầng motion — `--duration-*`, `--ease-*`, `-
   còn và ảnh hưởng toàn thư viện** (mọi `var(--duration-*)` / `var(--ease-*)` ngoài
   `.ui-scale-fixed`), cần một bản sửa riêng.
 
+### Added
+
+- **`Skeleton` phủ hết bề mặt `Skeleton` của Ant Design 6** — port từ `ant-design/components/skeleton/`
+  (MIT), nối vào họ `Skeleton` đang có chứ không dựng một họ thứ hai bên cạnh. `Skeleton` vẫn là
+  KHỐI trơn như cũ (mọi call site hiện tại không đổi một pixel nào), nay thêm hai prop của antd:
+
+  - `active` — đổi nhịp đập đứng yên lấy vệt sáng chạy ngang. antd mặc định KHÔNG chuyển động, còn
+    khối ở kho này xưa nay vẫn đập, nên mặc định giữ nguyên: `active` chọn cái ồn hơn trong hai
+    chuyển động, không phải bật chuyển động lên.
+  - `loading` — `false` thì vẽ `children` thay cho khối. Bỏ trống vẫn vẽ khối, đúng phép
+    `loading || !("loading" in props)` của antd.
+
+  Năm hình dạng của antd về làm năm preset — `SkeletonAvatar` · `SkeletonButton` · `SkeletonInput` ·
+  `SkeletonNode` · `SkeletonImage` — cũng gọi được bằng lối viết antd (`Skeleton.Button`…). Mỗi
+  preset lấy hộp từ tầng `--control-height`, đúng tầng mà control thật lấy: nút rộng **2 lần** chiều
+  cao, ô nhập **5 lần**, node/ảnh vuông **3 lần** — chính các hệ số antd dùng. `size` đọc thang
+  `xs|sm|md|lg` của kho, `shape` của nút đọc thang `default|pill|sharp` của `Button` (`pill` là
+  `shape="round"` bên antd), `shape` của avatar đọc `circle|square` của `Avatar`.
+
+  `SkeletonArticle` là hình dạng `<Skeleton>` của chính antd (avatar + dòng tiêu đề + đoạn văn) —
+  cho một bình luận, một mục feed, một khối hồ sơ. Ma trận mặc định chép đúng antd, đo lại trong
+  Chromium: không avatar → tiêu đề **38%**, ba dòng, dòng cuối **61%**; có avatar → **50%**, hai
+  dòng; có tiêu đề mà không đoạn văn → avatar hoá **vuông**. `title`/`paragraph`/`avatar` nhận cả
+  `boolean` lẫn object (`{ width }` · `{ rows, width }` · `{ size, shape }`), `width` dạng mảng đo
+  từng dòng còn dạng đơn đo dòng CUỐI, số đọc là pixel. `round` bo viên mọi dòng.
+
+  Bốn thứ của antd cố tình KHÔNG lấy, mỗi thứ một lý do đã ghi: `prefixCls`, `classNames` và
+  `styles` (docs/DESIGN-AUTHORITY.md từ chối đích danh — kho này trả lời tầng ấy bằng token),
+  `size` dạng số thô trên element (luật tiêu dùng #8: kích thước đến từ prop, không phải `w-[240px]`),
+  và `shape="circle"` của nút (một nút chỉ-icon ở kho này là `size="icon"`; chỗ trống vuông là
+  `SkeletonAvatar shape="square"`).
+
+### Fixed
+
+- **Không còn skeleton nào chạy dưới `prefers-reduced-motion: reduce`.** Nhịp đập của
+  `.ui-skeleton-block` xưa nay không có cửa tắt — đo trong Chromium: **106/106** khối vẫn chạy khi
+  người dùng đã xin dừng chuyển động (WCAG 2.2.2 / 2.3.3). Nay cả nhịp đập lẫn vệt sáng mới đều
+  đứng, khối vẫn giữ nguyên mặt tô nên không mất gì.
+
+### Đã đo được, chưa sửa ở đây
+
+- **Cả tầng motion không với tới được từ `:root`.** `--duration-fast|base|slow`, `--ease-*`,
+  `--reveal-*`, `--duration-loop` và `--activity-*` chỉ được khai bên trong `.ui-scale-fixed`
+  (`src/tokens/foundation.css`), không có bản `:root` nào. Đo: `getPropertyValue("--duration-loop")`
+  trên `documentElement` trả về chuỗi RỖNG, nên mọi `animation` shorthand mang nó đều hỏng ở thì
+  computed-value — `.ui-activity-dot` tính ra `animation-name: none`, tức **chuyển động nền của
+  `Activity` không chạy ở đâu cả**. Đây là lỗi tầng foundation, sửa nó làm chuyển động đổi trên toàn
+  thư viện, nên nó được báo chứ không sửa kèm ở PR này; vệt sáng của Skeleton đọc
+  `var(--duration-loop, 1400ms)` để vẽ đúng ngay hôm nay và tự đọc token lại khi tầng ấy được chữa.
+
 ## [23.1.0] - 2026-09-12
 
 Bản này gần như toàn bộ đến từ báo cáo của consumer `gino-cloud` sau khi họ nâng 20.2.1 → 23.0.0 —

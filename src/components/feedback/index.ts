@@ -45,8 +45,36 @@ export { TwoFactorSetup } from "./two-factor-setup";
 export type { TwoFactorSetupLabels, TwoFactorSetupProps } from "./two-factor-setup";
 export { Toaster } from "./sonner";
 export { toast } from "./use-toast";
-export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "./skeleton";
-export type { SkeletonProps } from "./skeleton";
+export {
+  Skeleton,
+  SkeletonRows,
+  SkeletonTable,
+  SkeletonDetail,
+  SkeletonStat,
+  SkeletonArticle,
+  SkeletonAvatar,
+  SkeletonButton,
+  SkeletonInput,
+  SkeletonNode,
+  SkeletonImage,
+} from "./skeleton";
+export type {
+  SkeletonProp,
+  SkeletonProps,
+  SkeletonWidth,
+  SkeletonArticleProp,
+  SkeletonArticleProps,
+  SkeletonAvatarProp,
+  SkeletonAvatarProps,
+  SkeletonButtonProp,
+  SkeletonButtonProps,
+  SkeletonInputProp,
+  SkeletonInputProps,
+  SkeletonNodeProp,
+  SkeletonNodeProps,
+  SkeletonImageProp,
+  SkeletonImageProps,
+} from "./skeleton";
 export { Banner } from "./banner";
 export type { BannerProp, BannerProps } from "./banner";
 export {

@@ -3339,6 +3339,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--skeleton-element-radius",
+    "value": "var(--radius-sm)",
+    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every * element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` * tier, so a skeleton button is exactly as tall as the Button it stands in for and follows * density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); * they are unitless on purpose — a service widens the stand-in without leaving the height tier."
+  },
+  {
+    "name": "--skeleton-button-width-ratio",
+    "value": "2",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-input-width-ratio",
+    "value": "5",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-node-size",
+    "value": "calc(var(--control-height) * 3)",
+    "description": "antd's node/image square is `controlHeight * 1.5 * 2`."
+  },
+  {
+    "name": "--skeleton-image-glyph-size",
+    "value": "var(--icon-size-4xl)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-image-glyph-color",
+    "value": "initial",
+    "description": "Role-mirror (#44): `initial` so the glyph re-resolves under a scoped theme. * Default = hsl(var(--muted-foreground) / 0.4)."
+  },
+  {
+    "name": "--skeleton-article-avatar-gap",
+    "value": "var(--space-inline-lg)",
+    "description": "ARTICLE rhythm. antd: avatar gutter = `padding` (16), title offset beside an avatar = * `marginSM` (12), title→paragraph = `controlHeightSM` (24), line→line = `controlHeightXS` (16). * antd's fourth value — 28px (`marginLG + marginXXS`) for title→paragraph WITH an avatar — is not * a step of this repo's spacing scale (it goes 24 → 32), and docs/DESIGN-AUTHORITY.md says take a * step or leave it rather than invent a number, so both cases take the 24px step."
+  },
+  {
+    "name": "--skeleton-article-avatar-title-offset",
+    "value": "var(--space-3)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-article-title-gap",
+    "value": "var(--space-stack-lg)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-article-line-gap",
+    "value": "var(--space-stack-md)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--skeleton-paragraph-last-width",
+    "value": "61%",
+    "description": "antd's `li:last-child:not(:first-child):not(:nth-child(2))` short last line."
+  },
+  {
+    "name": "--skeleton-sweep-gradient",
+    "value": "initial",
+    "description": "The `active` sheen. One knob, not a from/to pair, so a service retunes the whole sweep once * (#45); `initial` keeps the default resolving at the call site under a scoped theme (#44). * Default = linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 37%, * hsl(var(--muted)) 63%) — antd's three stops, on this library's neutral surfaces."
+  },
+  {
     "name": "--query-load-more-space-block-start",
     "value": "var(--space-stack-md)",
     "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."

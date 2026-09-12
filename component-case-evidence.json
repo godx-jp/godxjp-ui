@@ -156,7 +156,7 @@
         },
         "columns": {
           "cases": [
-            "omitted \u2014 the stylesheet default of 3",
+            "omitted — the stylesheet default of 3",
             4
           ],
           "evidence": [
@@ -167,7 +167,7 @@
         "linkComponent": {
           "cases": [
             "router link component",
-            "omitted \u2014 plain anchor"
+            "omitted — plain anchor"
           ],
           "evidence": [
             "src/components/layout/__tests__/app-launcher.test.tsx"
@@ -252,7 +252,7 @@
         },
         "side": {
           "cases": [
-            "omitted \u2014 derived from appearance (bottom in a bar, right otherwise)",
+            "omitted — derived from appearance (bottom in a bar, right otherwise)",
             "top",
             "right",
             "bottom",
@@ -266,7 +266,7 @@
         },
         "align": {
           "cases": [
-            "omitted \u2014 derived from appearance (end in a bar, start otherwise)",
+            "omitted — derived from appearance (end in a bar, start otherwise)",
             "start",
             "center",
             "end"
@@ -2476,7 +2476,7 @@
       "props": {
         "ariaLabel": {
           "cases": [
-            "\u52d8\u5b9a\u79d1\u76ee\u30b3\u30fc\u30c9\u691c\u7d22"
+            "勘定科目コード検索"
           ],
           "evidence": [
             "docs/data-entry/search-input.tsx"
@@ -2503,7 +2503,7 @@
         "defaultValue": {
           "cases": [
             "",
-            "2026\u5e745\u6708"
+            "2026年5月"
           ],
           "evidence": [
             "docs/data-entry/search-input.tsx"
@@ -2726,6 +2726,244 @@
           ],
           "evidence": [
             "docs/feedback/sheet.tsx"
+          ]
+        }
+      }
+    },
+    "Skeleton": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "loading": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonArticle": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "loading": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "round": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "avatar": {
+          "cases": [
+            false,
+            true,
+            "{ size, shape }"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "title": {
+          "cases": [
+            false,
+            true,
+            "{ width }"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "paragraph": {
+          "cases": [
+            false,
+            true,
+            "{ rows, width }"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonAvatar": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "shape": {
+          "cases": [
+            "circle",
+            "square"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonButton": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "block": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "shape": {
+          "cases": [
+            "default",
+            "pill",
+            "sharp"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonImage": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonInput": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "block": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        },
+        "size": {
+          "cases": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
+          ]
+        }
+      }
+    },
+    "SkeletonNode": {
+      "props": {
+        "active": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "src/components/feedback/__tests__/skeleton-antd-parity.test.tsx",
+            "docs/feedback/skeleton.tsx"
           ]
         }
       }
@@ -3126,7 +3364,7 @@
       "props": {
         "aria-label": {
           "cases": [
-            "CC\u9001\u4fe1\u5148\u30e1\u30fc\u30eb"
+            "CC送信先メール"
           ],
           "evidence": [
             "docs/data-entry/tag-input.tsx"
@@ -3187,7 +3425,7 @@
         },
         "maxTagPlaceholder": {
           "cases": [
-            "function \u2192 \u307b\u304b2\u4ef6"
+            "function → ほか2件"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
@@ -3268,7 +3506,7 @@
         "value": {
           "cases": [
             [
-              "\u55b6\u696d\u90e8",
+              "営業部",
               "Q1"
             ]
           ],
@@ -3426,8 +3664,8 @@
       "props": {
         "label": {
           "cases": [
-            "\u9031\u30b7\u30d5\u30c8 2026\u5e745\u670811\u65e5\u301c15\u65e5",
-            "\u4f1a\u8b70\u5ba4\u306e\u4e88\u7d04 5\u670814\u65e5"
+            "週シフト 2026年5月11日〜15日",
+            "会議室の予約 5月14日"
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
