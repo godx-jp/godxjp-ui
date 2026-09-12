@@ -32,8 +32,8 @@
 @import "@fontsource/noto-sans-jp/700.css";
 
 /* The metric-matched `local()`-only fallback faces (issue #475) — no bytes over the network.
- * Shared with `@godxjp/ui/styles/core-with-fallbacks`, which carries this file WITHOUT the
- * @fontsource subsets above (issue #535). */
+ * Shared with `@godxjp/ui/styles/core-with-fallbacks` and `@godxjp/ui/styles/core-with-jis-level1`,
+ * which carry this file WITHOUT the @fontsource subsets above (issue #535). */
 @import "./font-fallbacks.css";
 
 /* Fill the font-token slots (see tokens/foundation.css + styles/base.css) with the bundled faces,

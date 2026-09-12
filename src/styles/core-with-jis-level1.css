@@ -1,0 +1,43 @@
+/*
+ * @godxjp/ui — CORE + the metric-matched fallbacks + Noto Sans JP merged to JIS X 0208 level 1.
+ * THREE font requests for the whole app instead of ~8 on every navigation (issue #535).
+ *
+ *   @import "@godxjp/ui/styles";                     // every layer + 729 woff2 subsets, sliced
+ *   @import "@godxjp/ui/styles/core";                // every layer, ZERO @font-face
+ *   @import "@godxjp/ui/styles/core-with-fallbacks"; // + 6 `local()`-only faces, ZERO bytes
+ *   @import "@godxjp/ui/styles/core-with-jis-level1";// + 3 merged faces, 1,534,636 bytes, 3 requests
+ *
+ * FOR: a Japanese app that wants the bundled face and not the per-screen round-trips. The bytes are
+ * paid once, on first paint, and no later screen can discover a face it has not already got —
+ * which is the whole of #535's complaint. Measured against the sliced entry, three weights:
+ *
+ *   694 distinct Japanese characters → sliced 150 requests / 1,772,728 B · here 3 / 1,534,636 B
+ *   448 (this package's ja labels)   → sliced  99 requests / 1,051,268 B · here 3 / 1,534,636 B
+ *
+ * So it is not free at the low end: below roughly 620 distinct characters the slices are fewer
+ * bytes, in ~100 requests. The full table, the coverage boundary and what is deliberately absent
+ * are in jis-level1-fonts.css; the short version is JIS level 1 + kana + symbols + Latin +
+ * Vietnamese, and NOT level 2, whose rare-surname kanji resolve from the platform face.
+ *
+ * YOU MUST NAME THE FAMILY. Like `core-with-fallbacks`, this entry declares faces and does not
+ * touch `--font-sans-base`, because `core` ships no brand face and an entry built on it naming one
+ * would point the cascade at a family it does not fully deliver — level 2 kanji are not here. Name
+ * a platform Japanese face after ours so those code points have somewhere to land:
+ *
+ *   :root {
+ *     --font-sans-base:
+ *       "Noto Sans JP", "Noto Sans JP Fallback", "Hiragino Sans", "Yu Gothic Medium", Meiryo,
+ *       system-ui, sans-serif;
+ *   }
+ *
+ * WHY NOT FOLD THIS INTO `styles` AND DROP THE SLICES. Because `styles` is the zero-config entry
+ * a lot of consumers already ship, and this is a coverage change: level 2 kanji that render today
+ * would start resolving from a platform face. A fourth entry lets a consumer take the trade
+ * knowingly; `check:packed-public-contract` pins the font budget of all four so neither can drift
+ * into the other.
+ *
+ * The layer-order contract is `core`'s, unchanged — this file adds faces, no rules and no layers.
+ * Cherry-picking `*-layout.css` is still unsupported; these four entries are the supported set.
+ */
+@import "./core-with-fallbacks.css";
+@import "./jis-level1-fonts.css";

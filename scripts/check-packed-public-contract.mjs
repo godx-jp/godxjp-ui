@@ -171,6 +171,31 @@ const styleContracts = [
     target: "./dist/styles/core-with-fallbacks.css",
     expect: { faces: 6, fontsource: false },
   },
+  {
+    subpath: "./styles/core-with-jis-level1",
+    target: "./dist/styles/core-with-jis-level1.css",
+    // 6 `local()`-only fallbacks + 3 merged JIS level 1 faces. This is the ONE entry whose faces
+    // cost network bytes without going through @fontsource, so the budget is a number too: the
+    // point of #535 is that a sliced Japanese page pays 1.05–3.49 MB over 99–216 requests, and
+    // this must stay under that in three. A regenerated woff2 is not byte-identical, hence a
+    // ceiling rather than an equality — but a ceiling close enough that a level 2 build (roughly
+    // double) or a dropped subset (roughly a tenth) cannot slip through it.
+    expect: {
+      faces: 9,
+      fontsource: false,
+      assets: {
+        dir: "dist/styles/fonts",
+        files: [
+          "noto-sans-jp-jis-level1-400.woff2",
+          "noto-sans-jp-jis-level1-500.woff2",
+          "noto-sans-jp-jis-level1-700.woff2",
+        ],
+        maxBytesEach: 560_000,
+        maxBytesTotal: 1_640_000,
+        minBytesEach: 400_000,
+      },
+    },
+  },
 ];
 
 function flattenPackedCss(tarball, path, seen = new Set()) {
@@ -227,8 +252,10 @@ function checkPackedStyleEntries(tarball, manifest, packedFiles) {
           `@fontsource subsets; expected the opposite (gh#535)`,
       );
     }
-    // Whatever faces an entry carries WITHOUT the subsets must be free: `local()`-only, no request.
-    if (!contract.expect.fontsource) {
+    // Whatever faces an entry carries WITHOUT the subsets must be free: `local()`-only, no request
+    // — UNLESS the entry declares its own woff2 assets, which is what `expect.assets` means.
+    const { assets } = contract.expect;
+    if (!contract.expect.fontsource && !assets) {
       for (const face of faces) {
         if (!/src:\s*local\(/.test(face) || /url\(/.test(face)) {
           errors.push(
@@ -236,6 +263,45 @@ function checkPackedStyleEntries(tarball, manifest, packedFiles) {
               `zero network bytes for fonts`,
           );
         }
+      }
+    }
+
+    // gh#535: the merged-subset entry trades bytes for round-trips, so BOTH halves are pinned —
+    // the files really ship (an `exports` line pointing at CSS that references a woff2 the tarball
+    // forgot is a 404 in a consumer, not a build error), and they weigh what this entry claims.
+    if (assets) {
+      const requesting = faces.filter((face) => /url\(/.test(face));
+      if (requesting.length !== assets.files.length) {
+        errors.push(
+          `${contract.subpath}: expected ${assets.files.length} @font-face blocks with a url(), ` +
+            `got ${requesting.length}`,
+        );
+      }
+      let totalBytes = 0;
+      for (const file of assets.files) {
+        const packedPath = `${assets.dir}/${file}`;
+        if (!packedFiles.has(packedPath)) {
+          errors.push(`${contract.subpath}: packed file missing ${packedPath}`);
+          continue;
+        }
+        if (!css.includes(file)) {
+          errors.push(`${contract.subpath}: packed cascade never references ${file}`);
+        }
+        const bytes = tarballBytes(tarball, packedPath).length;
+        totalBytes += bytes;
+        if (bytes > assets.maxBytesEach || bytes < assets.minBytesEach) {
+          errors.push(
+            `${contract.subpath}: ${file} is ${bytes} bytes, outside the declared ` +
+              `${assets.minBytesEach}–${assets.maxBytesEach} budget`,
+          );
+        }
+      }
+      if (totalBytes > assets.maxBytesTotal) {
+        errors.push(
+          `${contract.subpath}: the merged faces total ${totalBytes} bytes, over the declared ` +
+            `${assets.maxBytesTotal} — a Japanese page that hits 216 slices pays 3,491,840 in 216 ` +
+            `requests, and this entry has to stay well under that in ${assets.files.length}`,
+        );
       }
     }
   }
@@ -249,6 +315,15 @@ function tarballText(tarball, path) {
   return execFileSync("tar", ["-xzO", "-f", tarball, `package/${path}`], {
     cwd: root,
     encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+}
+
+/** Same extraction, undecoded — the font budget in gh#535 is a byte count, not text. */
+function tarballBytes(tarball, path) {
+  return execFileSync("tar", ["-xzO", "-f", tarball, `package/${path}`], {
+    cwd: root,
+    maxBuffer: 32 * 1024 * 1024,
     stdio: ["ignore", "pipe", "pipe"],
   });
 }
@@ -641,29 +716,48 @@ createRoot(document.getElementById("root")!).render(
     throw new Error("independent core consumer Vite build did not emit dist/index.html");
   }
 
-  // gh#535: the third styles entry must resolve through the INSTALLED package's exports map, not
-  // just exist in the tarball. Node's resolver is the same one Vite and Tailwind ask.
-  const resolved = execFileSync(
-    process.execPath,
-    [
-      "--input-type=module",
-      "-e",
-      'process.stdout.write(import.meta.resolve("@godxjp/ui/styles/core-with-fallbacks"))',
-    ],
-    { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-  ).trim();
-  const resolvedFile = fileURLToPath(resolved);
-  if (!resolvedFile.endsWith("/dist/styles/core-with-fallbacks.css")) {
-    throw new Error(
-      `@godxjp/ui/styles/core-with-fallbacks resolved to ${resolvedFile} in an installed consumer`,
-    );
-  }
-  const installedFaces =
-    flattenInstalledCss(resolvedFile).match(/@font-face\s*\{[^}]*\}/g)?.length ?? 0;
-  if (installedFaces !== 6) {
-    throw new Error(
-      `the installed core-with-fallbacks cascade carries ${installedFaces} @font-face blocks, expected 6`,
-    );
+  // gh#535: the font-budget styles entries must resolve through the INSTALLED package's exports
+  // map, not just exist in the tarball. Node's resolver is the same one Vite and Tailwind ask.
+  for (const [subpath, faceCount, assetCount] of [
+    ["core-with-fallbacks", 6, 0],
+    ["core-with-jis-level1", 9, 3],
+  ]) {
+    const resolved = execFileSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `process.stdout.write(import.meta.resolve("@godxjp/ui/styles/${subpath}"))`,
+      ],
+      { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    ).trim();
+    const resolvedFile = fileURLToPath(resolved);
+    if (!resolvedFile.endsWith(`/dist/styles/${subpath}.css`)) {
+      throw new Error(
+        `@godxjp/ui/styles/${subpath} resolved to ${resolvedFile} in an installed consumer`,
+      );
+    }
+    const installedCss = flattenInstalledCss(resolvedFile);
+    const installedFaces = installedCss.match(/@font-face\s*\{[^}]*\}/g) ?? [];
+    if (installedFaces.length !== faceCount) {
+      throw new Error(
+        `the installed ${subpath} cascade carries ${installedFaces.length} @font-face blocks, expected ${faceCount}`,
+      );
+    }
+    // A `url()` that resolves to nothing is a 404 in the consumer's browser and nowhere else, so
+    // follow every one of them to a real file inside the INSTALLED tree.
+    const urls = [...installedCss.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/g)].map((m) => m[1]);
+    if (urls.length !== assetCount) {
+      throw new Error(
+        `the installed ${subpath} cascade requests ${urls.length} font files, expected ${assetCount}`,
+      );
+    }
+    for (const url of urls) {
+      const asset = join(dirname(resolvedFile), url);
+      if (!existsSync(asset)) {
+        throw new Error(`the installed ${subpath} cascade points at a missing font file: ${url}`);
+      }
+    }
   }
 
   return { installedMandatoryPeerCount: installedPeers.length };

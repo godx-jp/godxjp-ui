@@ -10,7 +10,9 @@
  * no network bytes: they live in `styles/core-with-fallbacks`, a third entry, precisely so this
  * number keeps meaning what it says.
  *
- * These three are the ONLY supported subsets: fonts on, off, or local-only fallbacks.
+ * These FOUR are the ONLY supported subsets: fonts on (`styles`), off (here), local-only
+ * fallbacks (`styles/core-with-fallbacks`), or one merged JIS X 0208 level 1 file per weight
+ * (`styles/core-with-jis-level1`, three requests instead of ~8 per navigation — gh#535).
  * Cherry-picking `*-layout.css` files is not
  * supported — layers share rules (a Select's rows, a menu's surface, a form's rhythm) and a
  * consumer who omits one gets naked menus and unsized rows with no error. A real case: Bug Shot

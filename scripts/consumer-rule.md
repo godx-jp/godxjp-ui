@@ -12,12 +12,13 @@
 `docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
 `.claude/skills/godx-ui-guinea-pig/SKILL.md`.
 
-## Nạp style: BA lối vào, và hai lối sau không chở font
+## Nạp style: BỐN lối vào, và ba lối sau đều không chở 729 lát font
 
 ```css
-@import "@godxjp/ui/styles"; /* mọi layer + Noto Sans JP / M PLUS 2 đóng gói sẵn */
+@import "@godxjp/ui/styles"; /* mọi layer + 729 lát woff2 cắt theo unicode-range */
 @import "@godxjp/ui/styles/core"; /* CÙNG các layer ấy, KHÔNG một @font-face nào */
 @import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 khối local()-only, vẫn 0 byte mạng */
+@import "@godxjp/ui/styles/core-with-jis-level1"; /* + Noto Sans JP gộp JIS mức 1: 3 request, ~1,53 MB */
 ```
 
 Chọn `core` khi kho tự lo mặt chữ, hoặc khi không muốn chở font: `@fontsource` cắt
@@ -30,13 +31,31 @@ sổ swap không đội hình: nó chở đúng 6 `@font-face` metric-matched, `
 nên **không tải byte nào**. Nhớ tự xếp tên họ chữ ngay sau mặt chữ của bạn:
 `--font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;`
 
+Lối thứ tư dành cho **app tiếng Nhật vẫn muốn font kèm gói**, nhưng không muốn trả số
+vòng tải mỗi lần chuyển màn: nó thay 729 lát bằng **một tệp gộp cho mỗi weight**, phủ
+JIS X 0208 mức 1 (2965 kanji + kana + ký hiệu + Latin + tiếng Việt, 3861 code point).
+Đo trên ba weight, chỉ Noto Sans JP:
+
+| số ký tự Nhật khác nhau trên màn | `styles`                     | `core-with-jis-level1`     |
+| -------------------------------- | ---------------------------- | -------------------------- |
+| 448 (nhãn `ja` của chính gói)    | 99 request · 1.051.268 byte  | 3 request · 1.534.636 byte |
+| 694 (nhãn + tên, địa chỉ, câu)   | 150 request · 1.772.728 byte | 3 request · 1.534.636 byte |
+| 772 (thêm chút văn xuôi)         | 216 request · 3.491.840 byte | 3 request · 1.534.636 byte |
+
+Cột trái phình theo NỘI DUNG và phải trả lại ở mỗi màn có ký tự mới; cột phải không đổi.
+**Dưới khoảng 620 ký tự khác nhau thì cắt lát ít byte hơn** (đổi bằng ~100 request), nên
+app nào render ít chữ Nhật hơn cả menu của gói này thì cứ ở `styles`. Lối này KHÔNG chở
+JIS mức 2 — kanji trong họ tên hiếm sẽ rơi xuống mặt chữ của hệ điều hành, nên hãy xếp
+một mặt chữ Nhật của hệ ngay sau mặt chữ của gói. Nó cũng không đụng `--font-sans-base`,
+y như lối thứ ba.
+
 `core` giữ `@font-face` = **0** và đó là lời hứa đo được —
 `grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → `0`. Vì vậy các
 fallback nằm ở entry riêng chứ không nhét vào `core`.
 
-Không lối nào trong ba là cherry-pick: cả ba đều được hỗ trợ và thứ tự layer vẫn nguyên
-vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng thứ tự,
-không phải việc chọn lối vào.
+Không lối nào trong bốn là cherry-pick: cả bốn đều được hỗ trợ và thứ tự layer vẫn
+nguyên vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng thứ
+tự, không phải việc chọn lối vào.
 
 ## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
 

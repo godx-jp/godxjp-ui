@@ -1,0 +1,71 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * THE MERGED JIS X 0208 LEVEL 1 FACES — three files, three requests, once (issue #535).
+ *
+ * Carried by ONE entry: `@godxjp/ui/styles/core-with-jis-level1`. Never imported by `styles`,
+ * `styles/core` or `styles/core-with-fallbacks`, each of which promises a different font budget.
+ *
+ * WHAT PROBLEM. `styles` pulls `@fontsource/noto-sans-jp/400.css`, 124 woff2 faces split by
+ * `unicode-range`. A browser cannot know which of them it needs until it has laid out and measured
+ * the text, so every screen discovers a new handful and fires another round of requests — the
+ * shipped symptom in #535 was 8 font requests on a single navigation, no JS among them.
+ *
+ * Measured, Noto Sans JP only, three weights, against the @fontsource version this package pins:
+ *
+ *   distinct characters on screen │        sliced │      these files
+ *   ──────────────────────────────┼───────────────┼──────────────────
+ *   448 (this package's own ja    │  99 requests  │   3 requests
+ *        labels, no user data)    │  1,051,268 B  │   1,534,636 B
+ *   694 (labels + names,          │ 150 requests  │   3 requests
+ *        addresses, prose)        │  1,772,728 B  │   1,534,636 B
+ *   772 (a little more prose)     │ 216 requests  │   3 requests
+ *                                 │  3,491,840 B  │   1,534,636 B
+ *
+ * The sliced column grows with the CONTENT and is paid again on every screen that shows a
+ * character no earlier screen did; this column does not move. Under ~620 distinct characters the
+ * slices are fewer bytes and still ~100 requests — an app that renders less Japanese than this
+ * package's own menu labels is the one case where `styles` is the cheaper entry.
+ *
+ * COVERAGE. JIS X 0208 rows 1–47: the 2965 level 1 kanji, plus rows 1–8's kana, symbols and
+ * Cyrillic, plus every code point of Noto Sans JP's own latin / latin-ext / vietnamese subsets —
+ * 3861 in all. Level 2 (rows 48–84) is OUT: it roughly doubles the bytes for kanji that appear in
+ * rare surnames, and those resolve from the platform Japanese face named after this one in the
+ * stack. 59 row 1–8 code points are missing (Greek, Ⅰ–Ⅹ, ≒) because they are absent from the
+ * entire @fontsource Noto Sans JP build — `styles` does not render them today either.
+ *
+ * NO `unicode-range`, DELIBERATELY. Per-range discovery is the mechanism this entry exists to
+ * remove: a range would put the browser back to measuring text before it knows what to fetch.
+ * The cost of that choice, stated plainly: a Latin-only screen also downloads its weight's ~500 KB
+ * rather than the ~25 KB of Latin inside it. An app that is mostly Latin wants
+ * `styles/core-with-fallbacks` and its own faces instead.
+ *
+ * REGENERATE with `scripts/build-jis-level1-fonts.mjs` (fonttools, dev-time only, never a
+ * dependency). The byte budget below is asserted in `check:packed-public-contract` and in
+ * `src/styles/__tests__/core-font-entries.test.ts`.
+ *
+ * YOU MUST NAME THE FAMILY — this file declares faces and does not touch `--font-sans-base`, for
+ * the same reason `core-with-fallbacks` does not: `core` ships no brand face, so an entry built on
+ * it would be lying to name one. See core-with-jis-level1.css for the one declaration to copy.
+ * ───────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/noto-sans-jp-jis-level1-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/noto-sans-jp-jis-level1-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fonts/noto-sans-jp-jis-level1-700.woff2") format("woff2");
+}

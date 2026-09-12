@@ -125,11 +125,25 @@ Then name the family directly after your own face:
 node_modules/@godxjp/ui/dist/styles/core.css` → `0` is the promise, so the fallbacks got their own
 entry rather than being folded in.
 
+Japanese app that wants the bundled face without the per-screen round-trips? The fourth entry
+replaces the 729 sliced faces with one merged file per weight, JIS X 0208 level 1:
+
+```css
+@import "@godxjp/ui/styles/core-with-jis-level1"; /* core + fallbacks + 3 merged faces */
+```
+
+**3 requests, ~1.53 MB, all on first paint** — against 150 requests and 1,772,728 bytes for a
+694-character Japanese screen on `styles`, spread across screens. It does not cover JIS level 2
+(rare-surname kanji fall through to the platform face, so name one after ours) and it loses to the
+slices below roughly 620 distinct characters. Full table and reasoning in
+[docs/CUSTOMER-THEMING.md](docs/CUSTOMER-THEMING.md).
+
 > **Do not cherry-pick `*-layout.css` files.** Layers depend on each other (a
 > Select's rows, a menu's surface, a form's rhythm live in shared rules) and a
 > missing layer fails silently: menus render with no background, rows with no
-> height. `styles`, `styles/core` and `styles/core-with-fallbacks` are the three supported entries;
-> the runtime `visual-audit` flags a page whose layers are incomplete (`css-layers-missing`).
+> height. `styles`, `styles/core`, `styles/core-with-fallbacks` and
+> `styles/core-with-jis-level1` are the four supported entries; the runtime `visual-audit` flags a
+> page whose layers are incomplete (`css-layers-missing`).
 
 ## Golden ratio (φ ≈ 1.618)
 

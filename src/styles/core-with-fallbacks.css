@@ -4,6 +4,7 @@
  *   @import "@godxjp/ui/styles";                    // every layer + 737 bundled woff2 subsets (~13 MB)
  *   @import "@godxjp/ui/styles/core";               // every layer, ZERO @font-face
  *   @import "@godxjp/ui/styles/core-with-fallbacks";// every layer + 6 `local()`-only faces, ZERO bytes
+ *   @import "@godxjp/ui/styles/core-with-jis-level1";// + Noto Sans JP merged to JIS level 1, 3 requests
  *
  * FOR: a consumer who took `core` because the sliced bundle cost too much, supplies Noto Sans JP
  * themselves (next/font, self-hosted, a gateway), and still wants the swap window not to reflow.
@@ -29,8 +30,8 @@
  * keep a separate entry. `src/styles/__tests__/core-font-entries.test.ts` holds both numbers.
  *
  * The layer-order contract is `core`'s, unchanged — this file adds faces, no rules and no layers.
- * Cherry-picking `*-layout.css` is still unsupported; `styles`, `styles/core` and
- * `styles/core-with-fallbacks` are the three supported entries.
+ * Cherry-picking `*-layout.css` is still unsupported; `styles`, `styles/core`,
+ * `styles/core-with-fallbacks` and `styles/core-with-jis-level1` are the four supported entries.
  */
 @import "./core.css";
 @import "./font-fallbacks.css";

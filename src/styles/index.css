@@ -3,7 +3,9 @@
  * Zero-config: `@import "@godxjp/ui/styles";` and everything is styled.
  * Without the bundled fonts: `@import "@godxjp/ui/styles/core";` (same layers, no @font-face),
  * or `@import "@godxjp/ui/styles/core-with-fallbacks";` (core + the 6 `local()`-only
- * metric-matched faces, still zero network bytes — issue #535).
+ * metric-matched faces, still zero network bytes — issue #535), or
+ * `@import "@godxjp/ui/styles/core-with-jis-level1";` (that, plus Noto Sans JP merged to JIS
+ * X 0208 level 1 — 3 requests for the whole app instead of the ~8 each navigation costs here).
  * Do NOT cherry-pick `*-layout.css` files — layers depend on each other (Select rows, menu
  * surfaces, form rhythm) and a missing one fails silently. `core` is the supported subset.
  *

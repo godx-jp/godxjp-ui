@@ -28,7 +28,10 @@ for (const dir of CSS_DIRS) {
   mkdirSync(dirname(to), { recursive: true });
   cpSync(from, to, {
     recursive: true,
-    filter: (src) => src === from || statSync(src).isDirectory() || src.endsWith(".css"),
+    // `.woff2` ships too: src/styles/fonts holds the merged JIS level 1 faces that
+    // styles/core-with-jis-level1 points `url()` at (gh#535). Nothing else binary lives here.
+    filter: (src) =>
+      src === from || statSync(src).isDirectory() || src.endsWith(".css") || src.endsWith(".woff2"),
   });
 }
 
