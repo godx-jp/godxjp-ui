@@ -2129,6 +2129,86 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--conversations-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the creation button, each bucket, and each run of rows."
+  },
+  {
+    "name": "--conversations-list-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between rows inside one run."
+  },
+  {
+    "name": "--conversations-item-height",
+    "value": "var(--band-height-md)",
+    "description": "ROW BOX. The row is a CONTROL, so its height is the band tier, never a literal (rule #24 and * `pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--conversations-item-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-padding-inline",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-radius",
+    "value": "var(--radius)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-color",
+    "value": "initial",
+    "description": "ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at * the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a * value here at `:root` each one would resolve once, against the root palette, and freeze. * Default resting ink = hsl(var(--muted-foreground)) * Default active ground = hsl(var(--accent)) * Default active ink = hsl(var(--foreground))"
+  },
+  {
+    "name": "--conversations-item-active-background",
+    "value": "initial",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-active-color",
+    "value": "initial",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-active-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "Leading glyph inside a row."
+  },
+  {
+    "name": "--conversations-group-gap",
+    "value": "var(--space-1)",
+    "description": "BUCKET HEADING (\"今日\" / \"Previous 7 days\")."
+  },
+  {
+    "name": "--conversations-group-padding-inline",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-group-chevron-size",
+    "value": "var(--icon-size-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-separator-space-block",
+    "value": "var(--space-1)",
+    "description": "The `{ type: \"divider\" }` rule between two runs."
+  },
+  {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
     "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because * neither selector contains the word \"icon\"."
@@ -3617,6 +3697,131 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--flex-actions-offset-inline",
     "value": "initial",
     "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+  },
+  {
+    "name": "--float-button-offset-block-end",
+    "value": "var(--space-stack-xl)",
+    "description": "THE TWO CORNER INSETS gh#558 ASKED FOR BY NAME. Ant Design's are `marginXXL` (48px) from the bottom and `marginLG` (24px) from the inline end. Spelled here in this library's own stack/inline steps, which land on the same two numbers: --space-stack-xl = --space-10 = 40px, --space-6 = 24px. The block inset is the one a service actually has to move — a sticky action bar, a cookie strip, a mobile tab bar all live in that corner — and moving it is now retuning ONE custom property, not writing a media query at the call site (which is `no-arbitrary-spacing` and has no legal spelling)."
+  },
+  {
+    "name": "--float-button-offset-inline-end",
+    "value": "var(--space-6)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-size",
+    "value": "var(--control-height-lg)",
+    "description": "The control box. antd's float button is `controlHeightLG` square (40px); this reads the same tier the rest of the library's large controls read, so a density switch moves it with them."
+  },
+  {
+    "name": "--float-button-min-block-size",
+    "value": "var(--control-height-lg)",
+    "description": "A square float button carrying a line of text keeps the WIDTH and grows on the block axis, which is antd's `height: auto`; this is the floor it grows from."
+  },
+  {
+    "name": "--float-button-padding-block",
+    "value": "var(--space-2)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "The glyph. antd derives it as `fontSizeIcon * 1.5` = 18px; `--icon-size-md` is this library's step at that weight, and it is the step `Button` already gives an icon-only control."
+  },
+  {
+    "name": "--float-button-content-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "The line under the glyph, in the square shape. The smallest step, because it is a caption on a control, not body text."
+  },
+  {
+    "name": "--float-button-content-line-height",
+    "value": "var(--line-height-tight)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "Elevation. The mark sits ABOVE the page, so it needs the shadow that says so; the same step Popover and DropdownMenu sit on."
+  },
+  {
+    "name": "--float-button-group-gap",
+    "value": "var(--space-stack-md)",
+    "description": "Gap between the buttons of an open group, and between the group's list and its trigger. antd uses `padding` (16px) for both, so one token answers both."
+  },
+  {
+    "name": "--float-button-group-radius",
+    "value": "var(--radius-lg)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-background",
+    "value": "initial",
+    "description": "The corner count/dot mark. `--float-button-badge-background` is `initial` so a scoped [data-tenant]/.dark theme that retunes --destructive still reaches the mark; the fallback is resolved at the call site in float-button-layout.css."
+  },
+  {
+    "name": "--float-button-badge-foreground",
+    "value": "hsl(var(--destructive-foreground))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-size",
+    "value": "var(--space-4)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-inset-block-start",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-inset-inline-end",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-dot-size",
+    "value": "var(--space-2)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-offset",
+    "value": "0turn",
+    "description": "BackTop's `showProgress` ring. The component writes `--float-button-progress-offset: <n>turn` inline (a custom property, the sanctioned escape from `no-inline-magic-numbers`) and the ring is drawn from it with `conic-gradient` — no per-frame geometry ever reaches the call site."
+  },
+  {
+    "name": "--float-button-progress-width",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-color",
+    "value": "hsl(var(--primary))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-track-color",
+    "value": "hsl(var(--border))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-motion-translate",
+    "value": "var(--float-button-size)",
+    "description": "How far a group's list travels on the way in. TIMING IS NOT HERE — `--duration-fast` and `--ease-standard` live in the motion tier (foundation.css) and the stylesheet reads them directly, the rule activity.css states: the component-token name shape has no property word for a duration, and a second copy of the motion scale is how the two drift apart."
   },
   {
     "name": "--form-label-width",

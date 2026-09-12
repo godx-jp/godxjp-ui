@@ -1,0 +1,226 @@
+/* FLOAT BUTTON — the corner action, its group, and BackTop (Ant Design FloatButton).
+ *
+ * EVERY length in this file is a `var(--float-button-*)` or a shared tier token. That is not
+ * house style, it is the whole reason the component exists: gh#558 reports that pinning a Button
+ * to a corner meant a consumer writing `position: fixed` plus two hand-typed pixel insets at the
+ * call site, which `ui-audit` blocks (`no-utility-layout`, `no-arbitrary-spacing`) with no legal
+ * replacement. Moving those three declarations in here, behind two named insets, is the fix.
+ *
+ * PHYSICAL SIDES ARE NEVER WRITTEN. The corner is `inset-block-end` + `inset-inline-end`, so under
+ * `dir="rtl"` the mark lands in the bottom-LEFT corner without a second rule. The group's
+ * `placement="left" | "right"` are antd's names for the AXIS, and they resolve through
+ * `inset-inline-*` too — so an antd call site keeps its word and an Arabic reader still gets the
+ * menu opening inwards.
+ */
+
+@layer components {
+  /* ── THE CONTROL ──────────────────────────────────────────────────────────
+   *
+   * `position: fixed` sits on the BUTTON, not on a wrapper. A wrapper would become the positioned
+   * box and the button inside it would have to fill it, which is how a corner control ends up with
+   * an invisible rectangle around it that eats taps. Here the fixed box IS the control, so its hit
+   * area and its painted area are the same rectangle by construction.
+   */
+  .ui-float-button {
+    position: fixed;
+    z-index: var(--overlay-z-index);
+    inset-block-end: var(--float-button-offset-block-end);
+    inset-inline-end: var(--float-button-offset-inline-end);
+    box-shadow: var(--float-button-shadow);
+  }
+
+  /* Inside a group the buttons are laid out BY the group, so each one gives up the corner — and
+   * takes its pointer events back from a root that gave them up for the whole rectangle (see the
+   * group block below). */
+  .ui-float-button-group .ui-float-button {
+    position: relative;
+    inset: auto;
+    pointer-events: auto;
+  }
+
+  /* The square shape keeps the inline size and grows on the block axis — antd's `height: auto` —
+   * so a two-word caption makes the mark taller, never wider, and a row of them stays aligned. */
+  .ui-float-button[data-shape="square"] {
+    display: flex;
+    flex-direction: column;
+    block-size: auto;
+    inline-size: var(--float-button-size);
+    min-block-size: var(--float-button-min-block-size);
+    padding-block: var(--float-button-padding-block);
+    padding-inline: var(--float-button-padding-inline);
+  }
+
+  .ui-float-button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ui-float-button-icon > svg {
+    inline-size: var(--float-button-icon-size);
+    block-size: var(--float-button-icon-size);
+  }
+
+  /* A caption on a control, not body text: the smallest step, tight leading, and it may wrap to a
+   * second line rather than truncate — the reason antd allows it only on the square shape. */
+  .ui-float-button-content {
+    font-size: var(--float-button-content-font-size);
+    line-height: var(--float-button-content-line-height);
+    text-align: center;
+  }
+
+  /* ── THE CORNER MARK ──────────────────────────────────────────────────────
+   * Absolutely positioned INSIDE the control, so it cannot change the control's box. The fill is
+   * resolved here at the call site rather than frozen into the token, so a scoped
+   * `[data-tenant]` / `.dark` override of `--destructive` reaches it (docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`").
+   */
+  .ui-float-button-badge {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--float-button-badge-inset-block-start);
+    inset-inline-end: var(--float-button-badge-inset-inline-end);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--float-button-badge-size);
+    block-size: var(--float-button-badge-size);
+    padding-inline: var(--float-button-badge-padding-inline);
+    border-radius: var(--radius-pill);
+    background: var(--float-button-badge-background, hsl(var(--destructive)));
+    color: var(--float-button-badge-foreground);
+    font-size: var(--float-button-badge-font-size);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .ui-float-button-badge[data-dot] {
+    min-inline-size: var(--float-button-badge-dot-size);
+    inline-size: var(--float-button-badge-dot-size);
+    block-size: var(--float-button-badge-dot-size);
+    padding-inline: 0;
+  }
+
+  /* ── THE GROUP ────────────────────────────────────────────────────────────
+   *
+   * POINTER-EVENTS ARE THE SECOND THING gh#558 ASKED FOR. The group's root spans its buttons AND
+   * the gaps between them, and in menu mode it also reserves the strip the list opens into. On a
+   * touch viewport every one of those empty pixels is a place where a swipe meant for the page
+   * lands on the overlay instead and the page does not scroll. The root is therefore transparent to
+   * the pointer and each CONTROL takes its own events back — so the only interactive rectangles are
+   * the buttons themselves, which is already true of a lone FloatButton by construction.
+   */
+  .ui-float-button-group {
+    position: fixed;
+    z-index: var(--overlay-z-index);
+    inset-block-end: var(--float-button-offset-block-end);
+    inset-inline-end: var(--float-button-offset-inline-end);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--float-button-group-gap);
+    pointer-events: none;
+  }
+
+  .ui-float-button-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--float-button-group-gap);
+    border-radius: var(--float-button-group-radius);
+  }
+
+  /* A SQUARE group is one joined slab (antd renders `Space.Compact` there): no gap, one shadow
+   * around the stack, and only the outer corners rounded. A CIRCLE group keeps its marks apart. */
+  .ui-float-button-group:not([data-individual]) .ui-float-button-list {
+    gap: 0;
+    box-shadow: var(--float-button-shadow);
+  }
+
+  .ui-float-button-group:not([data-individual]) .ui-float-button {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ui-float-button-group:not([data-individual]) .ui-float-button-list > :first-child {
+    border-start-start-radius: var(--float-button-group-radius);
+    border-start-end-radius: var(--float-button-group-radius);
+  }
+
+  .ui-float-button-group:not([data-individual]) .ui-float-button-list > :last-child {
+    border-end-start-radius: var(--float-button-group-radius);
+    border-end-end-radius: var(--float-button-group-radius);
+  }
+
+  /* ── MENU MODE ────────────────────────────────────────────────────────────
+   * The list leaves the flow and hangs off the trigger, so opening it never moves the trigger —
+   * a menu whose own trigger walks away from the finger that opened it is the defect this avoids.
+   */
+  .ui-float-button-group[data-menu-mode] .ui-float-button-list {
+    position: absolute;
+  }
+
+  .ui-float-button-group[data-menu-mode][data-placement="top"] .ui-float-button-list {
+    inset-block-end: calc(var(--float-button-size) + var(--float-button-group-gap));
+  }
+
+  .ui-float-button-group[data-menu-mode][data-placement="bottom"] .ui-float-button-list {
+    inset-block-start: calc(var(--float-button-size) + var(--float-button-group-gap));
+  }
+
+  /* antd's `left` / `right` name the AXIS, and they resolve logically: `left` means "away from the
+   * corner the mark is pinned to", which under `dir="rtl"` is the other way round on screen. */
+  .ui-float-button-group[data-menu-mode][data-placement="left"] .ui-float-button-list,
+  .ui-float-button-group[data-menu-mode][data-placement="right"] .ui-float-button-list {
+    flex-direction: row;
+  }
+
+  .ui-float-button-group[data-menu-mode][data-placement="left"] .ui-float-button-list {
+    inset-inline-end: calc(var(--float-button-size) + var(--float-button-group-gap));
+  }
+
+  .ui-float-button-group[data-menu-mode][data-placement="right"] .ui-float-button-list {
+    inset-inline-start: calc(var(--float-button-size) + var(--float-button-group-gap));
+  }
+
+  .ui-float-button-group[data-menu-mode][data-state="open"] .ui-float-button-list {
+    animation: ui-float-button-list-in var(--duration-fast) var(--ease-standard);
+  }
+
+  /* ── BACKTOP'S PROGRESS RING ──────────────────────────────────────────────
+   * `--float-button-progress-offset` is written inline as `<n>turn` by the component — a custom
+   * property, which is the sanctioned way past `no-inline-magic-numbers`, and the only value that
+   * genuinely changes on every scroll frame. The ring is a conic gradient masked to an annulus, so
+   * nothing about it is a second element and nothing about it is a per-frame layout.
+   */
+  .ui-float-button-back-top[data-progress]::after {
+    position: absolute;
+    border-radius: inherit;
+    content: "";
+    inset: 0;
+    background: conic-gradient(
+      var(--float-button-progress-color) var(--float-button-progress-offset),
+      var(--float-button-progress-track-color) var(--float-button-progress-offset)
+    );
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - var(--float-button-progress-width)),
+      #000 calc(100% - var(--float-button-progress-width))
+    );
+    pointer-events: none;
+  }
+}
+
+/* Outside `@layer components` on purpose: a `@keyframes` is not a style rule, it takes no part in
+ * the cascade, and nesting it in a layer buys nothing while making it invisible to a grep for the
+ * name. `styles/motion.css` already drops every animation under `prefers-reduced-motion`. */
+@keyframes ui-float-button-list-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--float-button-motion-translate);
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}

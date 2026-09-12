@@ -1,0 +1,65 @@
+/* Float button component tokens — the corner action and its group (Ant Design FloatButton). */
+
+:root {
+  /* THE TWO CORNER INSETS gh#558 ASKED FOR BY NAME.
+     Ant Design's are `marginXXL` (48px) from the bottom and `marginLG` (24px) from the inline end.
+     Spelled here in this library's own stack/inline steps, which land on the same two numbers:
+     --space-stack-xl = --space-10 = 40px, --space-6 = 24px. The block inset is the one a service
+     actually has to move — a sticky action bar, a cookie strip, a mobile tab bar all live in that
+     corner — and moving it is now retuning ONE custom property, not writing a media query at the
+     call site (which is `no-arbitrary-spacing` and has no legal spelling). */
+  --float-button-offset-block-end: var(--space-stack-xl);
+  --float-button-offset-inline-end: var(--space-6);
+
+  /* The control box. antd's float button is `controlHeightLG` square (40px); this reads the same
+     tier the rest of the library's large controls read, so a density switch moves it with them. */
+  --float-button-size: var(--control-height-lg);
+  /* A square float button carrying a line of text keeps the WIDTH and grows on the block axis,
+     which is antd's `height: auto`; this is the floor it grows from. */
+  --float-button-min-block-size: var(--control-height-lg);
+  --float-button-padding-block: var(--space-2);
+  --float-button-padding-inline: var(--space-1);
+
+  /* The glyph. antd derives it as `fontSizeIcon * 1.5` = 18px; `--icon-size-md` is this library's
+     step at that weight, and it is the step `Button` already gives an icon-only control. */
+  --float-button-icon-size: var(--icon-size-md);
+  /* The line under the glyph, in the square shape. The smallest step, because it is a caption on a
+     control, not body text. */
+  --float-button-content-font-size: var(--font-size-2xs);
+  --float-button-content-line-height: var(--line-height-tight);
+
+  /* Elevation. The mark sits ABOVE the page, so it needs the shadow that says so; the same step
+     Popover and DropdownMenu sit on. */
+  --float-button-shadow: var(--shadow-lg);
+
+  /* Gap between the buttons of an open group, and between the group's list and its trigger.
+     antd uses `padding` (16px) for both, so one token answers both. */
+  --float-button-group-gap: var(--space-stack-md);
+  --float-button-group-radius: var(--radius-lg);
+
+  /* The corner count/dot mark. `--float-button-badge-background` is `initial` so a scoped
+     [data-tenant]/.dark theme that retunes --destructive still reaches the mark; the fallback is
+     resolved at the call site in float-button-layout.css. */
+  --float-button-badge-background: initial;
+  --float-button-badge-foreground: hsl(var(--destructive-foreground));
+  --float-button-badge-size: var(--space-4);
+  --float-button-badge-padding-inline: var(--space-1);
+  --float-button-badge-font-size: var(--font-size-2xs);
+  --float-button-badge-inset-block-start: calc(var(--space-1) * -1);
+  --float-button-badge-inset-inline-end: calc(var(--space-1) * -1);
+  --float-button-badge-dot-size: var(--space-2);
+
+  /* BackTop's `showProgress` ring. The component writes `--float-button-progress-offset: <n>turn`
+     inline (a custom property, the sanctioned escape from `no-inline-magic-numbers`) and the ring is
+     drawn from it with `conic-gradient` — no per-frame geometry ever reaches the call site. */
+  --float-button-progress-offset: 0turn;
+  --float-button-progress-width: var(--space-1);
+  --float-button-progress-color: hsl(var(--primary));
+  --float-button-progress-track-color: hsl(var(--border));
+
+  /* How far a group's list travels on the way in. TIMING IS NOT HERE — `--duration-fast` and
+     `--ease-standard` live in the motion tier (foundation.css) and the stylesheet reads them
+     directly, the rule activity.css states: the component-token name shape has no property word for
+     a duration, and a second copy of the motion scale is how the two drift apart. */
+  --float-button-motion-translate: var(--float-button-size);
+}

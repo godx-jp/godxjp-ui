@@ -337,6 +337,10 @@
       "download": "シークレットをダウンロード",
       "acknowledge": "保存しました"
     },
+    "floatButton": {
+      "backTop": "トップへ戻る",
+      "actions": "アクション"
+    },
     "numberInput": {
       "increment": "増やす",
       "decrement": "減らす",

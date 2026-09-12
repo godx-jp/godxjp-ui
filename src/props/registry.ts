@@ -1367,6 +1367,124 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  FloatButtonTypeProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
+  },
+  FloatButtonShapeProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
+  },
+  FloatButtonTriggerProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
+  },
+  FloatButtonPlacementProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [],
+  },
+  FloatButtonBadgeProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      {
+        field: "count",
+        local: true,
+        reason:
+          "Ant Badge's count/dot/overflowCount/showZero/color quartet, ported whole. The corner mark is FloatButton's own; there is no Badge-count primitive in this library to borrow a vocabulary from.",
+      },
+    ],
+  },
+  FloatButtonTooltipProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "side",
+        local: true,
+        reason:
+          "TooltipContent's own placement axis, re-exposed so the object form of `tooltip` can reach it without importing the overlay's types.",
+      },
+    ],
+  },
+  FloatButtonProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "DescriptionProp",
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "shape",
+        local: true,
+        reason:
+          "antd's circle/square, which is neither the control ShapeProp (default|pill|sharp) nor AvatarShapeProp (documented as an ENTITY mark). `square` is the only shape antd lets carry text.",
+      },
+      {
+        field: "type",
+        local: true,
+        reason:
+          "antd's word for the FILL, kept verbatim so an antd call site compiles unchanged. This library says `variant` everywhere else; `htmlType` carries the native button type, exactly as antd resolves the collision.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason: "The native anchor href — antd renders an <a> when it is present.",
+      },
+    ],
+  },
+  FloatButtonGroupProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "OpenProp",
+      "OnOpenChangeProp",
+      {
+        field: "trigger",
+        local: true,
+        reason:
+          "antd's click|hover, and its ABSENCE is the switch between a plain stack and a menu — so it can carry no default and no shared vocabulary.",
+      },
+      {
+        field: "placement",
+        local: true,
+        reason:
+          "antd's top|left|right|bottom for the menu's direction. Physical words kept verbatim so an antd call site compiles; the stylesheet resolves them through inset-inline-*, so the rendered side still flips under dir=rtl.",
+      },
+      {
+        field: "closeIcon",
+        local: true,
+        reason:
+          "The glyph the TRIGGER swaps to while the menu is open — a second icon slot on one control, which IconProp (a single glyph) cannot express.",
+      },
+    ],
+  },
+  FloatButtonBackTopProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "OnClickProp",
+      {
+        field: "target",
+        local: true,
+        reason:
+          "antd's lazy scroll-container getter. A FUNCTION, not an element, because the container may not exist on the first render — and it is what lets BackTop watch a shell's own scroll region instead of the document.",
+      },
+      {
+        field: "visibilityHeight",
+        local: true,
+        reason:
+          "antd's scroll threshold in px — a measurement of the reader's position, not a size tier.",
+      },
+    ],
+  },
   TextProp: {
     group: "general",
     file: "components/general.prop.ts",
