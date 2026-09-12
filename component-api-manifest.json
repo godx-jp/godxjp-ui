@@ -5508,6 +5508,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "triggerLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -13491,6 +13499,43 @@
           "required": false,
           "type": "SizeProp | undefined",
           "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonForm": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "fields",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]

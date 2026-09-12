@@ -355,9 +355,38 @@ describe("colSpan is honoured only where the grid has the columns (gh#321)", () 
     expect(gridQuery?.[1]).toBeDefined();
 
     const spanQuery = css.match(
-      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid > \.ui-form-field \{\s*grid-column: span var\(--form-field-col-span/,
+      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid > \.ui-form-field \{\s*grid-column: span min\(var\(--responsive-grid-sm/,
     );
     expect(spanQuery?.[1]).toBe(gridQuery?.[1]);
+  });
+
+  it("clamps the span to the columns that EXIST at every step, not just the first (gh#550)", () => {
+    // gh#321 fixed the one-column case with `grid-column: auto` and stopped there, so from 40rem
+    // upward colSpan had no ceiling at all. `columns={4}` is base 1 / sm 2 / md 3 / lg 4, so at
+    // 768px a colSpan={4} field in a 3-column grid grew an implicit fifth track and every
+    // `minmax(0, 1fr)` collapsed to 0px — measured: label 「区分*」 over 3 lines, 「開始日*」 over 4.
+    //
+    // Reading BOTH files is the point again: ResponsiveGridItem already had this exact shape, and
+    // the defect was that one of the two concepts named "how many columns does this take" did not.
+    const steps = [
+      ["40rem", "sm"],
+      ["48rem", "md"],
+      ["64rem", "lg"],
+    ] as const;
+
+    for (const [width, tier] of steps) {
+      const field = new RegExp(
+        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid > \\.ui-form-field \\{\\s*grid-column: span min\\(var\\(--responsive-grid-${tier}, 1\\), var\\(--form-field-col-span, 1\\)\\);`,
+      );
+      expect(css, `FormField is unclamped at ${width}`).toMatch(field);
+
+      // And the ceiling must be the SAME tier variable ResponsiveGridItem clamps against, or the
+      // two would drift into disagreeing about how many columns exist.
+      const item = new RegExp(
+        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid-item \\{\\s*grid-column: span min\\(var\\(--responsive-grid-${tier}, 1\\),`,
+      );
+      expect(read("src/styles/layout.css"), `ResponsiveGridItem moved at ${width}`).toMatch(item);
+    }
   });
 
   it("FormField hands the span to CSS as a custom property, never as grid-column", () => {

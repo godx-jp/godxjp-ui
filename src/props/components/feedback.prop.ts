@@ -113,6 +113,26 @@ export type SkeletonRowsProp = {
 };
 
 /**
+ * The skeleton of a `Form columns={N}` — label + control PAIRS on the same grid the form uses,
+ * not the flat line list `SkeletonRows` draws (gh#552).
+ *
+ * Why it is its own component rather than `SkeletonRows` with better defaults: `SkeletonRows` has
+ * no idea a form field is two stacked things, so a consumer approximating one got the column count
+ * right and the inside of every cell wrong. Worse, "close enough" is a thing that DRIFTS — change
+ * the form's `columns` and forget the skeleton and the layout jumps again on load, with nothing
+ * red to say so. Sharing `ResponsiveGrid` is what stops that: one `columns` value, one ladder.
+ */
+export type SkeletonFormProp = {
+  /** Columns of the form this stands in for — passed straight to `ResponsiveGrid`. */
+  columns?: number;
+  /** How many label+control pairs to draw. */
+  fields?: number;
+  /** Shimmer, matching the rest of the family. */
+  active?: boolean;
+  className?: string;
+};
+
+/**
  * A skeleton line's MEASURE. `number` is read as pixels, matching antd's
  * `SkeletonParagraphProps["width"]` (components/skeleton/Paragraph.tsx); a string is any CSS length
  * or percentage. It reaches the DOM as the `--skeleton-line-width` custom property rather than a

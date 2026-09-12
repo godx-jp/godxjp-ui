@@ -243,12 +243,28 @@
    * mechanism: one multiplier is the only shape in which a kill switch cannot be routed around by
    * a per-component rebind.
    *
-   * IT SHIPS OFF, AND THAT IS A PRODUCT DECISION WITH A KNOWN COST. Nothing paints a focus
-   * indicator by default. That deviates from WCAG 2.2 SC 2.4.7 Focus Visible (AA) and therefore
-   * from a JIS X 8341-3:2016 AA conformance claim — see docs/DESIGN-AUTHORITY.md for the reasoning
-   * and the price. A customer who needs that statement sets ONE attribute:
+   * IT SHIPS ON, as of gh#544 — it used to ship off, and that reversal is the point of this note.
    *
-   *     <html data-focus-outline="on">        (or AppProvider's equivalent)
+   * The old default was a real product decision: the indicator had been reported as intrusive and
+   * the owner accepted the cost, which was that this library did not satisfy WCAG 2.2 SC 2.4.7
+   * Focus Visible (AA) and so could carry no JIS X 8341-3:2016 AA statement. What changed is not
+   * the principle but two measurements.
+   *
+   * FIRST, what the default actually produced. Counting `data-focus-outline` across the four real
+   * consumers of this package: `ql` sets it (3 files); `godx-task`, `godx-chat` and the platform
+   * app set it NOWHERE. Three of four products shipped with no keyboard-focus indicator at all —
+   * not chosen, because the switch is only discoverable by reading this file.
+   *
+   * SECOND, what the ON state now costs. It is the HAIRLINE field indicator described below, not
+   * the 3px outline the original complaint was about. The thing being turned on is no longer the
+   * thing that was turned off.
+   *
+   * The escape hatch is the same shape it always was, one attribute, now pointing the other way:
+   *
+   *     <html data-focus-outline="off">       (or AppProvider's equivalent)
+   *
+   * `data-focus-outline="on"` still works and still means on, so every consumer that already set
+   * it is untouched.
    *
    * Every painted length below multiplies by `--focus-outline`, so with the switch off the outline
    * resolves to `0px`, the halo's spread resolves to `0px`, and `--focus-field-shadow` is `none`.
@@ -269,10 +285,11 @@
    * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #6dc0e3,
    * which measures 2.00:1 light and 1.66:1 dark and cannot satisfy SC 1.4.11 at any thickness.
    * A mark that fails the criterion is not an indicator. */
-  --focus-outline: 0; /* the kill switch — 0 = off (shipped default), 1 = on */
+  --focus-outline: 1; /* the switch — 1 = on (shipped default since gh#544), 0 = off */
   --focus-outline-weight: var(--stroke-hairline); /* the heavy alternative is --stroke-lg */
   --focus-outline-color: var(--focus-ring-color, var(--ring));
-  --control-outline-width: calc(var(--stroke-md) * var(--focus-outline)); /* the field halo spread */
+  /* the field halo spread */
+  --control-outline-width: calc(var(--stroke-md) * var(--focus-outline));
   --focus-outline-offset: 0px;
 
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
@@ -321,7 +338,8 @@
    * `none` is the OFF value, and it is `none` rather than a zero-spread shadow on purpose: a
    * literal `0 0 0 0 transparent` would still REPLACE the control's resting `--control-shadow`,
    * so a switched-off focus would quietly flatten every input on the page. */
-  --focus-field-shadow: none;
+  --focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)
+    hsl(var(--focus-ring-glow-color) / var(--focus-ring-glow-alpha));
   /* Gap between element and ring, for the OUTLINE form only (a star, a dot, a
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */
@@ -638,7 +656,6 @@
    * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
    * direction with no extra rule. */
   --activity-stagger-step: 160ms;
-
 }
 
 /* SCALE-FIXED — pin a subtree to the baseline size (--scaling 1) so persistent
@@ -708,8 +725,6 @@
   --space-chrome-y: var(--space-4);
   --space-chrome-gap: var(--space-2);
   --field-label-gap: var(--space-2);
-
-
 }
 
 .dark,
