@@ -7510,14 +7510,14 @@ export function BillingFields() {
       {
         name: "variant",
         type: '"default" | "destructive"',
-        default: '"default"',
+        defaultValue: '"default"',
         description:
           'How dangerous this dialog is. ONE prop, THREE results, because they always travel together: `destructive` renders `role="alertdialog"` instead of `role="dialog"`, stops an outside click from dismissing, and gives `DialogAction` the destructive emphasis (antd `okType="danger"`). It also defaults the corner ✕ off, because a ✕ is an accidental-dismiss affordance too. Escape still closes either way. Settable on the root (covers the tree) or on `DialogContent` (the nearer one wins). This is what replaces reaching for the separate `AlertDialog*` family — gh#567.',
       },
       {
         name: "modal",
         type: "boolean",
-        default: "true",
+        defaultValue: "true",
         description:
           "Kept from the Radix era. react-aria's Modal always locks scroll and hides the background from assistive tech, so `false` no longer turns that off.",
       },
