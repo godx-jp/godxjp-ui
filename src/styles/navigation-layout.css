@@ -1139,6 +1139,22 @@
     min-inline-size: 0;
   }
 
+  /* Label above timestamp, and the same `min-inline-size: 0` reason applies one level deeper: the
+   * ellipsis on the label can only bite once its own column is allowed to be narrower than the
+   * text. The timestamp is the second line rather than a trailing cell because a rail is narrow —
+   * side by side, a long conversation title would elide down to almost nothing to make room for a
+   * date that never changes width. */
+  .ui-conversations-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--conversations-line-gap);
+    min-inline-size: 0;
+  }
+
+  .ui-conversations-line > .ui-text {
+    min-inline-size: 0;
+  }
+
   .ui-conversations-icon {
     display: grid;
     inline-size: var(--conversations-icon-size);

@@ -2,6 +2,7 @@ import * as React from "react";
 import { ChevronDown, MoreHorizontal, Plus } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { formatDate } from "../../lib/datetime/format-date";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Text } from "../general/typography";
@@ -338,7 +339,21 @@ export const Conversations = React.forwardRef<HTMLDivElement, ConversationsProp>
                 {entry.icon}
               </span>
             ) : null}
-            <Text truncate>{entry.label}</Text>
+            <span className="ui-conversations-line">
+              <Text truncate>{entry.label}</Text>
+              {entry.timestamp === undefined ? null : (
+                /*
+                 * Through `formatDate`, never through `toLocaleString` or a sliced ISO string.
+                 * `docs/DATETIME.md` rule 1 forbids the alternatives for a measured reason: the
+                 * tenant's locale, timezone and 12/24h choice live in AppProvider, so the same
+                 * epoch has to read 2026/03/15 in a Japanese tenant and 15/03/2026 in a
+                 * Vietnamese one. A component that formats its own dates cannot do that.
+                 */
+                <Text size="xs" tone="muted" tabular className="ui-conversations-timestamp">
+                  {formatDate(new Date(entry.timestamp))}
+                </Text>
+              )}
+            </span>
           </Button>
 
           {rowMenu ? (

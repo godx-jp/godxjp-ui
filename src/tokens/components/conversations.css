@@ -42,6 +42,10 @@
 
   /* Leading glyph inside a row. */
   --conversations-icon-size: var(--icon-size-md);
+  /* Gap between a row's label and its timestamp. The TIGHTEST stack step, because the two lines
+   * are one thing being read, not two stacked items — anything larger and the row reads as two
+   * rows in a rail that is already narrow. */
+  --conversations-line-gap: var(--space-stack-xs);
 
   /* BUCKET HEADING ("今日" / "Previous 7 days"). */
   --conversations-group-gap: var(--space-1);
