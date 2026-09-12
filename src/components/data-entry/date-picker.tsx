@@ -643,17 +643,10 @@ export function DatePicker(props: DatePickerProp) {
           ?.focus();
         clear();
       }}
-      className={
-        range
-          ? "text-muted-foreground hover:text-foreground shrink-0"
-          : "ui-control-inline-affix-action"
-      }
+      className="ui-control-inline-affix-action"
     >
       {clearControl.clearIcon ?? (
-        <X
-          className={range ? "ui-month-picker-icon" : "ui-control-inline-affix-icon"}
-          aria-hidden="true"
-        />
+        <X className="ui-control-inline-affix-icon" aria-hidden="true" />
       )}
     </button>
   ) : (
@@ -673,16 +666,9 @@ export function DatePicker(props: DatePickerProp) {
               : t("dataEntry.datePicker.openCalendar")) ??
           "Open calendar"
         }
-        className={
-          range
-            ? "text-muted-foreground hover:text-foreground shrink-0"
-            : "ui-control-inline-affix-action"
-        }
+        className="ui-control-inline-affix-action"
       >
-        <CalendarIcon
-          className={range ? "ui-month-picker-icon" : "ui-control-inline-affix-icon"}
-          aria-hidden="true"
-        />
+        <CalendarIcon className="ui-control-inline-affix-icon" aria-hidden="true" />
       </button>
     </PopoverTrigger>
   );

@@ -1,13 +1,14 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 
 import { afterEach, describe, expect, it } from "vitest";
 
 // prettier-ignore
 // @ts-expect-error — plain ESM script without a declaration file
-import { ensureConsumerRules, guineaPigStamp, refreshGuineaPigSkill, stampedDigest, stampedVersion } from "../../scripts/_agent-setup.mjs";
+import { ensureConsumerRules, guineaPigStamp, KIT_VERSION, refreshGuineaPigSkill, stampedDigest, stampedVersion } from "../../scripts/_agent-setup.mjs";
 
 /*
  * `ensureConsumerRules` writes the package-owned rule file into a consumer repo. What it decides is
@@ -31,6 +32,38 @@ function consumerRepo(uiDir = "resources/js") {
 }
 
 const rulePath = (root: string) => join(root, ".ai", "rules", "godxjp-ui.md");
+
+function managedRuleBody(uiDir: string) {
+  const body = readFileSync(join(import.meta.dirname, "../../scripts/consumer-rule.md"), "utf8");
+  const front = `---\npaths:\n    - '${uiDir}/**'\n---\n\n`;
+  return `${front}${body}`;
+}
+
+function writeDigestMatchedStaleVersionStamp(root: string, uiDir: string, stamped = "23.3.0") {
+  const managed = managedRuleBody(uiDir);
+  const digest = createHash("sha256").update(managed).digest("hex").slice(0, 12);
+  mkdirSync(join(root, ".ai", "rules"), { recursive: true });
+  writeFileSync(
+    rulePath(root),
+    `<!-- godxjp-ui:version ${stamped} -->\n<!-- godxjp-ui:digest ${digest} -->\n${managed}`,
+  );
+}
+
+const auditScript = join(import.meta.dirname, "../../scripts/ui-audit.mjs");
+
+function auditOwnedRulesStale(root: string) {
+  mkdirSync(join(root, "node_modules", "@godxjp", "ui"), { recursive: true });
+  writeFileSync(
+    join(root, "node_modules", "@godxjp", "ui", "package.json"),
+    JSON.stringify({ name: "@godxjp/ui", version: KIT_VERSION }),
+  );
+  writeFileSync(join(root, "package.json"), JSON.stringify({ name: "consumer" }));
+  const result = spawnSync(process.execPath, [auditScript, "--format", "json"], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  return result.stdout;
+}
 
 afterEach(() => {
   while (roots.length > 0) rmSync(roots.pop()!, { recursive: true, force: true });
@@ -104,6 +137,30 @@ describe("ensureConsumerRules", () => {
     expect(written).toMatch(/platform/i);
     expect(written).toContain("--app-shell-nav-rail-width");
   });
+
+  describe("owned-rule version stamp vs digest (godx-jp/id#513)", () => {
+    it("resyncs the version stamp when digest matches but the release marker is behind", () => {
+      const root = consumerRepo();
+      writeDigestMatchedStaleVersionStamp(root, "resources/js");
+      expect(stampedVersion(readFileSync(rulePath(root), "utf8"))).toBe("23.3.0");
+
+      expect(ensureConsumerRules(root)).toBe("resources/js");
+      expect(stampedVersion(readFileSync(rulePath(root), "utf8"))).toBe(KIT_VERSION);
+      expect(auditOwnedRulesStale(root)).not.toContain('"owned-rules-stale"');
+    });
+
+    it("is idempotent after a version-stamp-only resync", () => {
+      const root = consumerRepo();
+      writeDigestMatchedStaleVersionStamp(root, "resources/js");
+      ensureConsumerRules(root);
+      const once = readFileSync(rulePath(root), "utf8");
+      const mtime = statSync(rulePath(root)).mtimeMs;
+
+      expect(ensureConsumerRules(root)).toBe(false);
+      expect(readFileSync(rulePath(root), "utf8")).toBe(once);
+      expect(statSync(rulePath(root)).mtimeMs).toBe(mtime);
+    });
+  });
 });
 
 describe("refreshGuineaPigSkill", () => {
@@ -119,13 +176,22 @@ describe("refreshGuineaPigSkill", () => {
     return root;
   }
 
-  it("is a no-op while the base text is unchanged, whatever the release number", () => {
-    // The marker tracks the BASE TEXT, not the release: a version marker means editing the skill
-    // without cutting a release reaches nobody, and the skill moves far more often than the
-    // version does. Same correction the consumer rule file needed, same reason.
+  it("is a no-op when the base text and opt-in stamp already match this release", () => {
     const root = optedIn();
     expect(refreshGuineaPigSkill(root)).toBe(false);
     expect(readFileSync(skillPath(root), "utf8")).toContain("stale base");
+  });
+
+  it("resyncs only the opt-in version half when the base digest already matches", () => {
+    const stamp = guineaPigStamp();
+    const digest = stamp.split(":").pop()!;
+    const root = optedIn(`23.3.0:${digest}`, "\n---\n\n# 8. This repo\n\nits own note\n");
+    expect(refreshGuineaPigSkill(root)).toBe(true);
+    expect(readFileSync(optinPath(root), "utf8").trim()).toBe(guineaPigStamp());
+    const written = readFileSync(skillPath(root), "utf8");
+    expect(written).toContain("# 8. This repo");
+    expect(written).toContain("its own note");
+    expect(written).toContain("stale base");
   });
 
   it("refreshes when the base text changed under an unchanged version", () => {
