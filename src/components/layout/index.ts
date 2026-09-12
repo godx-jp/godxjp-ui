@@ -84,6 +84,15 @@ export { MasterDetail } from "./master-detail";
 export type { MasterDetailProps } from "./master-detail";
 export { SplitPane } from "./split-pane";
 export type { SplitPaneProps } from "./split-pane";
+export { DraggablePanel } from "./draggable-panel";
+export type {
+  DraggablePanelProp,
+  DraggablePanelProps,
+  DraggablePanelPlacementProp,
+  DraggablePanelPositionProp,
+  DragAxisProp,
+  DragBoundsProp,
+} from "./draggable-panel";
 export { Separator } from "./separator";
 export type { SeparatorProp, SeparatorProps } from "./separator";
 export { AspectRatio } from "./aspect-ratio";

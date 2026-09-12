@@ -6304,6 +6304,118 @@
         }
       ]
     },
+    "DraggablePanel": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "axis",
+          "origin": "owned",
+          "required": false,
+          "type": "DragAxisProp | undefined",
+          "values": ["none", "x", "y", "both"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "bounds",
+          "origin": "owned",
+          "required": false,
+          "type": "DragBoundsProp | undefined",
+          "values": ["none", "viewport"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultPosition",
+          "origin": "owned",
+          "required": false,
+          "type": "DraggablePanelPositionProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "extra",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onClose",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onPositionChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((position: DraggablePanelPositionProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "placement",
+          "origin": "owned",
+          "required": false,
+          "type": "DraggablePanelPlacementProp | undefined",
+          "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "position",
+          "origin": "owned",
+          "required": false,
+          "type": "DraggablePanelPositionProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "DropdownMenu": {
       "group": "navigation",
       "props": [
