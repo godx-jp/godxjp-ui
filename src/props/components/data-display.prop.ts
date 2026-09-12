@@ -1008,3 +1008,24 @@ export type ThoughtChainItemProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+/**
+ * @see Card — one entry in the card-head tab strip. Ant Design `CardTabListType`, field for
+ * field: `key`, `tab`, `disabled`.
+ *
+ * IT KEEPS ANTD'S SPELLING, and that is the standing rule rather than an oversight
+ * (docs/DESIGN-AUTHORITY.md — "where antd names a capability, this library takes antd's name and
+ * antd's semantics"). It therefore does NOT read `TabItemProp`, whose `value`/`label`/`content`
+ * are the `Tabs` component's own API: that item carries the PANEL as well as the trigger, and a
+ * card-head tab carries only the trigger — the panel is the card body. Two different shapes, and
+ * folding them into one would mean publishing a `content` field on a card tab that the card can
+ * never render.
+ */
+export type CardTabItemProp = {
+  /** Ant Design `key` — the tab's identity, and what `activeTabKey` / `onTabChange` speak in. */
+  key: string;
+  /** Ant Design `tab` — the trigger's label. Any node. */
+  tab: React.ReactNode;
+  /** Ant Design `disabled` — the tab stays in the strip and in the roving focus, unselectable. */
+  disabled?: boolean;
+};

@@ -3020,6 +3020,30 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
+          "name": "activeTabKey",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultActiveTabKey",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
           "name": "density",
           "origin": "owned",
           "required": false,
@@ -3028,11 +3052,43 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
+          "name": "extra",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsExtraProp",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
           "name": "hoverable",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "onTabChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "tabList",
+          "origin": "owned",
+          "required": false,
+          "type": "CardTabItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "tabProps",
+          "origin": "owned",
+          "required": false,
+          "type": "Omit<TabsProps, \"children\" | \"defaultValue\" | \"value\" | \"extra\" | \"items\" | \"onValueChange\"> | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
@@ -3047,7 +3103,16 @@
     },
     "CardAction": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        }
+      ]
     },
     "CardBar": {
       "group": "data-display",
@@ -3059,6 +3124,14 @@
           "type": "\"none\" | \"block-start\" | \"block-end\" | \"both\" | undefined",
           "values": ["none", "block-start", "block-end", "both"],
           "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "extra",
@@ -3106,6 +3179,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
           "name": "flush",
           "origin": "owned",
           "required": false,
@@ -3133,11 +3214,29 @@
     },
     "CardCover": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        }
+      ]
     },
     "CardDescription": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        }
+      ]
     },
     "CardFooter": {
       "group": "data-display",
@@ -3149,6 +3248,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "flush",
@@ -3178,6 +3285,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -3191,6 +3306,14 @@
           "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | undefined",
           "values": ["div", "h1", "h2", "h3", "h4", "p"],
           "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "level",
@@ -15077,6 +15200,14 @@
           "type": "\"start\" | \"end\" | undefined",
           "values": ["start", "end"],
           "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "delta",
