@@ -424,9 +424,59 @@ function collect() {
     const fill = parse(s.backgroundColor);
     if (!fill || fill.a <= 0.5) continue;
 
+    /*
+     * A BINARY SCALE IS MEASURED AGAINST ITS OWN TRACK, not against the page.
+     *
+     * The progress bar gets this for free and by accident: its track CONTAINS the fill, so the
+     * track is skipped by the `el.children.length` test above and the fill's `effBg(parent)` is
+     * the track. A SEGMENTED meter has no such nesting — `PasswordStrength` paints four sibling
+     * spans, some lit and some not — so every segment was measured against the card, and the
+     * unlit ones were reported as 1.09:1 light / 1.22:1 dark findings. An unlit segment is not a
+     * failing mark; it is the TRACK. It carries the absence of the datum, and demanding 3:1 from
+     * it against the page would mean shipping a dark grey bar where the progress bar ships
+     * `--secondary`.
+     *
+     * What SC 1.4.11 actually asks for here is "adjacent color(s)": the state is "2 of 4 lit", and
+     * the colours a reader compares to read it are lit against unlit. So for a group of identical
+     * thin siblings carrying exactly TWO fills, the majority fill is the track: it is skipped, and
+     * the other is measured against it.
+     *
+     * Scoped to TWO fills on purpose. A stacked breakdown — many slices, many colours — keeps the
+     * old behaviour rather than having a "majority" invented for it; its neighbouring-slice
+     * question is a real one and it deserves its own measured decision, not this one by accident.
+     *
+     * NO MAJORITY HEURISTIC. The first version of this rule called the most common fill the track
+     * and skipped it, which is wrong the moment a meter is mostly LIT: at 3 of 4 the lit colour is
+     * the majority, so the rule would have skipped exactly the segments that carry the datum and
+     * measured the track against them. There is no need to decide which is which — 1.4.11 asks for
+     * the ratio between adjacent colours and that ratio is symmetric. So the group emits ONE record
+     * for the pair, from whichever member comes first in document order, and the other colour is
+     * what it is measured against.
+     */
+    let against = el.parentElement ? effBg(el.parentElement) : [255, 255, 255];
+    const cls = el.className && el.className.toString();
+    if (cls && el.parentElement) {
+      const group = [...el.parentElement.children].filter(
+        (sib) => sib.className && sib.className.toString() === cls,
+      );
+      if (group.length >= 3) {
+        const fills = group
+          .map((sib) => parse(getComputedStyle(sib).backgroundColor))
+          .filter((f) => f && f.a > 0.5)
+          .map((f) => f.rgb.join(","));
+        const distinct = [...new Set(fills)];
+        if (distinct.length === 2) {
+          const mine = fill.rgb.join(",");
+          // One record per group, from the first of the two colours to appear.
+          if (mine !== distinct[0]) continue;
+          against = distinct[1].split(",").map(Number);
+        }
+      }
+    }
+
     out.push({
       fg: fill.rgb,
-      bg: el.parentElement ? effBg(el.parentElement) : [255, 255, 255],
+      bg: against,
       nonText: true,
       size: 24,
       weight: 700,

@@ -80,6 +80,19 @@
     gap: var(--space-1);
   }
 
+  /* THE MARK TIER, same decision the legend and the progress bar already went through.
+   *
+   * A lit segment is a MARK: nothing is written on it, and how many segments are lit IS the datum,
+   * so SC 1.4.11 reaches it. It was painted from the FILL tier — which is tuned for a white label
+   * sitting ON it — and measured in Chromium against the card: `--success` 2.18:1 light,
+   * `--destructive` 2.95:1 dark, both under the 3:1 floor. Those are the same figures the legend
+   * swatch (2.18 success light / 2.95 destructive dark) and the progress fill (1.60 light) carried
+   * before they moved, on a third component.
+   *
+   * The pair that actually carries the meaning is LIT against UNLIT — those are the adjacent
+   * colours a reader compares to count the segments, not the card behind them. On the mark tier:
+   * 6.27:1 light and 4.51:1 dark. The unlit segment stays `--muted`: it is the TRACK, the absence
+   * of the datum rather than the datum, exactly as the progress bar's track is `--secondary`. */
   .ui-password-strength-segment {
     height: 0.5rem;
     border-radius: var(--radius-sm);
@@ -87,15 +100,15 @@
   }
 
   .ui-password-strength-segment[data-tone="destructive"] {
-    background: hsl(var(--destructive));
+    background: hsl(var(--mark-destructive));
   }
 
   .ui-password-strength-segment[data-tone="warning"] {
-    background: hsl(var(--warning));
+    background: hsl(var(--mark-warning));
   }
 
   .ui-password-strength-segment[data-tone="success"] {
-    background: hsl(var(--success));
+    background: hsl(var(--mark-success));
   }
 
   .ui-password-strength-meta {
