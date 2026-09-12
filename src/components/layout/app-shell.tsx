@@ -12,6 +12,7 @@ export type {
   AppShellProp,
   AppShellProp as AppShellProps,
 } from "../../props/components/layout.prop";
+import { isDevelopment } from "../../lib/dev";
 
 /** Same rail boundary as shell-layout.css; SSR starts in docked mode. */
 export function useAppShellNavigationMode(): "drawer" | "docked" {
@@ -149,7 +150,7 @@ export function AppShell({
    * là việc thay bố cục ấy. Nhận diện thương hiệu thì không: nó thuộc về khung, không thuộc về
    * nội dung của trang.
    */
-  if (process.env.NODE_ENV !== "production" && topbar !== undefined) {
+  if (isDevelopment() && topbar !== undefined) {
     const ignored = [
       topbarLeft !== undefined && "topbarLeft",
       topbarRight !== undefined && "topbarRight",

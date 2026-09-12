@@ -125,6 +125,7 @@ import type {
   TableStickyProp,
   TableSummaryProp,
 } from "../../props/vocabulary";
+import { isDevelopment } from "../../lib/dev";
 
 // DataTable supports all three density tiers (compact 28 / default 36 /
 // comfortable 48) so a 表示密度 control can drive the full set, not just a
@@ -1386,7 +1387,7 @@ DataTable.Content = function DataTableContent() {
     .map((col) => col.key)
     .join("|");
   React.useEffect(() => {
-    if (process.env.NODE_ENV === "production" || !missingHeaderNames) return;
+    if (!isDevelopment() || !missingHeaderNames) return;
     for (const key of missingHeaderNames.split("|")) {
       // eslint-disable-next-line no-console
       console.warn(

@@ -20,6 +20,7 @@ export type {
   ErrorSurfaceProp,
   ErrorSurfaceProp as ErrorSurfaceProps,
 } from "../../props/components/layout.prop";
+import { isDevelopment } from "../../lib/dev";
 export type { ErrorSurfaceModeProp, ErrorSurfaceStatusProp } from "../../props/vocabulary";
 
 /**
@@ -57,7 +58,7 @@ function singleAction(action: React.ReactNode): React.ReactNode {
       : [child],
   );
 
-  if (flattened.length > 1 && process.env.NODE_ENV !== "production") {
+  if (flattened.length > 1 && isDevelopment()) {
     console.error(
       "[@godxjp/ui] ErrorSurface: `action` takes EXACTLY ONE recovery action. The extra elements " +
         "were dropped. Put support contact or secondary guidance in `description`.",

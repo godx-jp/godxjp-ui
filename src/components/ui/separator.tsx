@@ -9,6 +9,7 @@ export type {
   SeparatorProp,
   SeparatorProp as SeparatorProps,
 } from "../../props/components/layout.prop";
+import { isDevelopment } from "../../lib/dev";
 
 /**
  * ACCESSIBILITY — the whole point of the labelled form is that the label is ANNOUNCED, exactly
@@ -44,7 +45,7 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProp>(
     // into a broken grid.
     const labelled = hasLabel && orientation === "horizontal";
 
-    if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+    if (isDevelopment()) {
       if (hasLabel && orientation === "vertical") {
         console.warn(
           'Separator: `label` is rendered on orientation="horizontal" only; it was ignored. ' +

@@ -35,6 +35,7 @@ export type {
   LinkProp,
   LinkProp as LinkProps,
 } from "../../props/components/general.prop";
+import { isDevelopment } from "../../lib/dev";
 
 /*
  * ═══════════════════════════════════════════════════════════════════════════════════════════════
@@ -747,7 +748,7 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     ellipsisRowCount > 1 ? ellipsisRowCount : ellipsis ? undefined : clampLines;
   const truncating = (truncate === true || ellipsisRowCount === 1) && effectiveClamp === undefined;
 
-  if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+  if (isDevelopment()) {
     if (clamp !== undefined && clampLines === undefined) {
       console.warn(`Text: \`clamp\` must be a finite number ≥ 1 (got ${String(clamp)}); ignored.`);
     }

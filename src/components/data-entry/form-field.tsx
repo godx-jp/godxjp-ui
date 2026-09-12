@@ -16,6 +16,7 @@ export type {
   FormFieldProp,
   FormFieldProp as FormFieldProps,
 } from "../../props/components/data-entry.prop";
+import { isDevelopment } from "../../lib/dev";
 
 const toCssLength = (v: WidthProp): string => (typeof v === "number" ? `${v}px` : v);
 
@@ -111,8 +112,7 @@ export function FormField({
 
   if (
     !isStatic &&
-    typeof process !== "undefined" &&
-    process.env?.NODE_ENV !== "production" &&
+    isDevelopment() &&
     !React.isValidElement(children)
   ) {
     // FormField wires aria-* onto a single control; multiple/no/text children can't receive them.

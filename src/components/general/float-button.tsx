@@ -34,6 +34,7 @@ export type {
   FloatButtonTriggerProp,
   FloatButtonTypeProp,
 } from "../../props/components/general.prop";
+import { isDevelopment } from "../../lib/dev";
 
 /**
  * What a `FloatButton` inherits from the `FloatButton.Group` above it.
@@ -162,7 +163,7 @@ const FloatButtonRoot = React.forwardRef<HTMLElement, FloatButtonProp>(function 
   const hasContent = isRenderable(mergedContent);
   const mergedIcon = !hasContent && icon == null ? DEFAULT_ICON : icon;
 
-  if (process.env.NODE_ENV !== "production" && mergedShape === "circle" && hasContent) {
+  if (isDevelopment() && mergedShape === "circle" && hasContent) {
     console.warn(
       "[@godxjp/ui] FloatButton: `content` is supported only when `shape` is `square` — a circle has no room for a line of text.",
     );
@@ -289,7 +290,7 @@ function FloatButtonGroup({
   const isControlled = open != null;
   const isOpen = isControlled ? open : uncontrolledOpen;
 
-  if (process.env.NODE_ENV !== "production" && isControlled && !trigger) {
+  if (isDevelopment() && isControlled && !trigger) {
     console.warn(
       "[@godxjp/ui] FloatButton.Group: `open` needs to be used together with `trigger`.",
     );

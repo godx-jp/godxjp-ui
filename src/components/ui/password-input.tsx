@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { Input } from "../data-entry/input";
+import { isDevelopment } from "../../lib/dev";
 
 /**
  * antd `Input.Password.visibilityToggle`. `false` removes the eye entirely — a kiosk, a shared
@@ -53,7 +54,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
     const toggleOwnsTrailing = showToggle;
     if (
       toggleOwnsTrailing &&
-      process.env?.NODE_ENV !== "production" &&
+      isDevelopment() &&
       (suffix != null || trailingIcon != null || allowClear)
     ) {
       console.warn(
