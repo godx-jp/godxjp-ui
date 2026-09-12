@@ -6,6 +6,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.3.0] - 2026-09-12
+
+Minor, và lý do là **một mặc định thị giác đổi**: dấu hiệu focus bàn phím nay BẬT sẵn. Phần còn lại
+là năm báo cáo của consumer, một lỗi hiệu năng đo được gấp 98 lần, và ba lớp cổng đã mù.
+
+### Changed — có ảnh hưởng THỊ GIÁC
+
+- **`--focus-outline` nay mặc định `1`: control vẽ dấu hiệu focus bàn phím khi Tab.** Trước đây
+  mặc định `0`. Đảo lại vì một con số, không phải vì sở thích: đếm `data-focus-outline` trên bốn
+  consumer thật thì chỉ `ql` đặt nó (3 tệp); `godx-task`, `godx-chat` và app platform **không đặt ở
+  đâu cả** — tức ba trên bốn sản phẩm đang chạy không vẽ dấu hiệu focus nào, và đó không phải một
+  lựa chọn, vì công tắc chỉ phát hiện được bằng cách đọc `foundation.css`.
+
+  Thứ được bật cũng **không còn là thứ đã bị tắt**: trạng thái ON giờ là dấu hiệu FIELD một nét tóc
+  1px (đo 5,05:1 sáng / 7,07:1 tối), không phải viền 3px từng bị phàn nàn.
+
+  **Đường thoát:** `<html data-focus-outline="off">`. `"on"` vẫn giữ và vẫn nghĩa là bật, nên mọi
+  consumer đã đặt nó dưới mặc định cũ không phải đổi gì.
+
+### Added
+
+- **`SkeletonForm columns fields`** — khung xương của một `Form columns={N}`, vẽ **cặp nhãn + ô**
+  qua **chính `ResponsiveGrid`** mà `Form` dùng. Một giá trị `columns`, một thang bậc (#552).
+- **`DatePicker triggerLabel`** — tên cho nút mở lịch. Mặc định giữ nguyên. Ba ô ngày trên một màn
+  trước đây cho trình đọc màn hình ba nút trùng tên (WCAG 2.2 SC 2.4.6) (#551).
+
+### Fixed
+
+- **`DatePicker` đang đóng tốn gấp 98 lần một `<input type="date">` (#557).** Đo qua
+  `react-dom/server`, 2.000 hàng mỗi lượt: **412,6µs** so với **4,2µs**. Mỗi instance ĐANG ĐÓNG dựng
+  **12 `Intl.DateTimeFormat`, 1 `Intl.NumberFormat` và 183 `Date`**.
+
+  Người báo đã xoá `Popover`/`PopoverContent` và thấy không đổi — vì DOM của popover chưa bao giờ là
+  chi phí. `const panel = (<PopoverContent>…</PopoverContent>)` **DỰNG** cả cây, tức chạy hết mọi
+  biểu thức con, rồi react-aria từ chối mount. Xoá chỗ mount thì phần dựng vẫn còn.
+
+  Hai bản sửa: `src/lib/intl-cache.ts` nhớ formatter theo locale + options — áp ở **cả 17 chỗ dựng
+  trên 11 tệp**, nên `Button`, `NumberInput`, `Toggle`, `ErrorSurface`, hai module chart,
+  `translate()` và các helper tiền tệ đều hết dựng lại; và `DatePicker` chỉ dựng nhánh panel nó thật
+  sự hiện. **Cộng lại: 412,6 → 121,1µs (−71%)**, Intl mỗi instance 13 → 0, `new Date()` 183 → 1.
+
+  CHƯA SỬA: `Select` vẫn 280µs/hàng. Profile không có điểm nóng — nó là số lượng element của
+  react-aria. #557 để mở cho phần đó.
+
+- **`Swatch` trả lời `not found` một bản sau khi nó ra đời (#553)** — và không phải vì thiếu mục
+  catalog. Một lần rebase hợp nhất đối tượng `Swatch` VÀO đối tượng `FeatureList` ngay sau nó, `name:`
+  sau thắng, hai mục thành một. **Bốn lớp cùng xanh**: `mcp/` không được tệp nào typecheck (tsconfig
+  gốc chỉ `["src"]`, còn TypeScript báo đúng lỗi này là `TS1117`); `check:mcp-catalog-coverage` dò
+  chuỗi con; `check:mcp-catalog-completeness` viết lại logic tra cứu thay vì gọi nó; và 317 khẳng
+  định của `catalog-integrity` soi những mục CÓ TỒN TẠI. Nay có `typecheck:mcp`, và một test gọi
+  `get_component` thật cho cả 270 tên công khai.
+
+- **`FormField colSpan` không có trần từ 40rem trở lên (#550).** `columns={4}` nở base 1 / sm 2 /
+  md 3 / lg 4, nên ở 768px một ô `colSpan={4}` trong lưới 3 cột mọc thêm một track ngầm và mọi
+  `minmax(0, 1fr)` tụt về **0px** — nhãn vỡ thành cột chữ dựng đứng, và không gì ném lỗi. #321 đã
+  sửa đúng lỗi này ở bậc một cột rồi dừng lại; nay `span min(…)` chạy ở cả sm/md/lg.
+
+- **`CardContent flush` không xuyên qua `tabs-panel` (#554).** Mọi mắt trong chuỗi tổ tiên ở
+  padding-inline 0, đúng một mắt ở giữa giữ 16px — 32px bề rộng thẻ.
+
 ## [23.2.1] - 2026-09-12
 
 Hai lỗi do một lượt review độc lập chỉ ra (#541, #542). Cả hai đều tái hiện được **trên bản đã phát
