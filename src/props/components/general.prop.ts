@@ -24,92 +24,115 @@ import type {
   TextSizeProp,
   TextToneProp,
   TextWhitespaceProp,
+  TitleLevelProp,
+  TypographyActionsConfigProp,
+  TypographyCopyConfigProp,
+  TypographyEditConfigProp,
+  TypographyEllipsisConfigProp,
+  TypographyTypeProp,
 } from "../vocabulary";
 
-/** @see Text — typographic primitive; replaces hand-rolled `<span className="text-[13px] …">`. */
-export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
-  /** Render element. Default `span`. */
-  as?:
-    | "span"
-    | "p"
-    | "div"
-    | "a"
-    | "label"
-    | "strong"
-    | "em"
-    | "small"
-    | "code"
-    | "kbd"
-    | "dt"
-    | "dd"
-    | "caption"
-    | "abbr";
-  /**
-   * Render the typography onto the child element instead of emitting one — for a router link
-   * (`<Text asChild link><Link href=…>…</Link></Text>`). The child owns the element and its
-   * navigation; Text owns the type step, tone, weight and truncation.
-   */
-  asChild?: AsChildProp;
-  /**
-   * This text IS a link: underline on hover and on keyboard focus, at the token underline offset,
-   * and the focus mark every other interactive element draws.
-   *
-   * It is an AFFORDANCE, not a colour — `tone` still owns the colour and simply defaults to
-   * `primary` here, so a destructive link (`link tone="destructive"`) reads destructive and still
-   * underlines. Use this INSTEAD of `className="text-primary hover:underline"`, and instead of
-   * `Button variant="link"` whenever the link sits in running content: `.ui-button` is a control
-   * box (`white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding),
-   * so in a table cell it cannot wrap and cannot share the cell's line height.
-   */
-  link?: boolean;
-  /** Size from the type scale — never an arbitrary px. Default `sm` (base). */
-  size?: TextSizeProp;
-  /** Semantic colour intent. Default `default` (foreground). */
-  tone?: TextToneProp;
-  /** Weight (system 2-weight: 400/500). Default `regular`. */
-  weight?: FontWeightProp;
-  align?: TextAlignProp;
-  /** Single-line ellipsis. Mutually exclusive with `clamp` — when both are set, `clamp` wins. */
-  truncate?: boolean;
-  /**
-   * Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Token-owned
-   * line-clamp styling (never write the `line-clamp-N` utility page-side).
-   */
-  clamp?: number;
-  /**
-   * Whitespace handling. Default `normal` (CSS's own: newlines and space runs collapse).
-   *
-   * `pre-wrap` is for text a PERSON typed — a plain-text note, an issue description, a pasted log
-   * — where the line breaks and the indentation are CONTENT, not formatting. It preserves both and
-   * still wraps long lines at the container edge, and it breaks an over-long unbroken token (a URL,
-   * an id) rather than letting it overflow.
-   *
-   * Precedence is explicit and resolved in the component, not by CSS ordering: `truncate` is a
-   * single-line contract and WINS (dev builds warn, and `data-whitespace` is not emitted), while
-   * `clamp` composes with it — a clamped pre-wrap block shows its first N real lines.
-   */
-  whitespace?: TextWhitespaceProp;
-  /** Tabular figures for aligned numbers. */
-  tabular?: boolean;
-  decoration?: "none" | "underline" | "line-through";
-  /** Inline code chip; use with as="code". */
-  chip?: boolean;
-  /** Monospace family (codes, ids). */
-  mono?: boolean;
-  htmlFor?: string;
-  /**
-   * Anchor attributes, for `as="a"` (and for the `<a>` a router link supplies under `asChild`).
-   *
-   * Declared explicitly rather than by widening the base to `AnchorHTMLAttributes`, and for the
-   * same reason `htmlFor` is declared explicitly for `as="label"`: the element union is the
-   * contract, so each polymorphic branch names the attributes it actually accepts instead of every
-   * span silently offering an `href` it will never render.
-   */
-  href?: string;
-  target?: React.HTMLAttributeAnchorTarget;
-  rel?: string;
-  download?: React.AnchorHTMLAttributes<HTMLAnchorElement>["download"];
-};
+/**
+ * @see Text — typographic primitive; replaces hand-rolled `<span className="text-[13px] …">`.
+ *
+ * This IS antd `Typography.Text`: every prop antd declares on it is here, alongside the props
+ * this library already shipped. Where the two name the same axis, BOTH spellings are accepted and
+ * the winner is stated at the prop — `tone` over `type`, `ellipsis` over `truncate` / `clamp`.
+ */
+export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
+  Omit<TypographyBlockProp, "ellipsis"> & {
+    /** Render element. Default `span`. */
+    as?:
+      | "span"
+      | "p"
+      | "div"
+      | "a"
+      | "label"
+      | "strong"
+      | "em"
+      | "small"
+      | "code"
+      | "kbd"
+      | "dt"
+      | "dd"
+      | "caption"
+      | "abbr";
+    /**
+     * Render the typography onto the child element instead of emitting one — for a router link
+     * (`<Text asChild link><Link href=…>…</Link></Text>`). The child owns the element and its
+     * navigation; Text owns the type step, tone, weight and truncation.
+     */
+    asChild?: AsChildProp;
+    /**
+     * This text IS a link: underline on hover and on keyboard focus, at the token underline offset,
+     * and the focus mark every other interactive element draws.
+     *
+     * It is an AFFORDANCE, not a colour — `tone` still owns the colour and simply defaults to
+     * `primary` here, so a destructive link (`link tone="destructive"`) reads destructive and still
+     * underlines. Use this INSTEAD of `className="text-primary hover:underline"`, and instead of
+     * `Button variant="link"` whenever the link sits in running content: `.ui-button` is a control
+     * box (`white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding),
+     * so in a table cell it cannot wrap and cannot share the cell's line height.
+     */
+    link?: boolean;
+    /** Size from the type scale — never an arbitrary px. Default `sm` (base). */
+    size?: TextSizeProp;
+    /** Semantic colour intent. Default `default` (foreground). */
+    tone?: TextToneProp;
+    /** Weight (system 2-weight: 400/500). Default `regular`. */
+    weight?: FontWeightProp;
+    align?: TextAlignProp;
+    /** Single-line ellipsis. Mutually exclusive with `clamp` — when both are set, `clamp` wins. */
+    truncate?: boolean;
+    /**
+     * Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Token-owned
+     * line-clamp styling (never write the `line-clamp-N` utility page-side).
+     */
+    clamp?: number;
+    /**
+     * antd `ellipsis`. `true` is one line; the object form carries `suffix`, `symbol`,
+     * `defaultExpanded` / `expanded`, `onEllipsis` and `tooltip`.
+     *
+     * antd omits `rows`, `expandable` and `onExpand` from `Typography.Text` — an inline run has no
+     * second line to expand into — and that omission is ported; reach for `Paragraph` when you want
+     * them. It OUTRANKS this library's own `truncate` and `clamp` when both are passed, because it
+     * is the only spelling that can also carry a suffix or a tooltip.
+     */
+    ellipsis?: boolean | Omit<TypographyEllipsisConfigProp, "rows" | "expandable" | "onExpand">;
+    /**
+     * Whitespace handling. Default `normal` (CSS's own: newlines and space runs collapse).
+     *
+     * `pre-wrap` is for text a PERSON typed — a plain-text note, an issue description, a pasted log
+     * — where the line breaks and the indentation are CONTENT, not formatting. It preserves both and
+     * still wraps long lines at the container edge, and it breaks an over-long unbroken token (a URL,
+     * an id) rather than letting it overflow.
+     *
+     * Precedence is explicit and resolved in the component, not by CSS ordering: `truncate` is a
+     * single-line contract and WINS (dev builds warn, and `data-whitespace` is not emitted), while
+     * `clamp` composes with it — a clamped pre-wrap block shows its first N real lines.
+     */
+    whitespace?: TextWhitespaceProp;
+    /** Tabular figures for aligned numbers. */
+    tabular?: boolean;
+    decoration?: "none" | "underline" | "line-through";
+    /** Inline code chip; use with as="code". */
+    chip?: boolean;
+    /** Monospace family (codes, ids). */
+    mono?: boolean;
+    htmlFor?: string;
+    /**
+     * Anchor attributes, for `as="a"` (and for the `<a>` a router link supplies under `asChild`).
+     *
+     * Declared explicitly rather than by widening the base to `AnchorHTMLAttributes`, and for the
+     * same reason `htmlFor` is declared explicitly for `as="label"`: the element union is the
+     * contract, so each polymorphic branch names the attributes it actually accepts instead of every
+     * span silently offering an `href` it will never render.
+     */
+    href?: string;
+    target?: React.HTMLAttributeAnchorTarget;
+    rel?: string;
+    download?: React.AnchorHTMLAttributes<HTMLAnchorElement>["download"];
+  };
 
 /** @see Heading — h1..h4 sized from the `--heading-h*` tokens. */
 export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"> & {
@@ -121,6 +144,152 @@ export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"
   truncate?: boolean;
   /** Weight (system canon: 400 · 500 · 700). Default `medium` — set `bold` for an emphasised title. */
   weight?: FontWeightProp;
+};
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * antd `Typography` — the ported family (antd 6.6.3, `es/typography/**`).
+ *
+ * DESIGN-AUTHORITY, "The PROP SURFACE of a component is antd's too": where antd names a
+ * capability, this library takes antd's name and antd's semantics. Every prop below is antd's,
+ * spelled antd's way. Where this library ALREADY had the same axis under a different name, BOTH
+ * spellings are accepted and the winner is written down at the prop.
+ *
+ * FOUR antd knobs are deliberately NOT ported, all for the one reason the same doc already gives:
+ * `prefixCls`, `rootClassName`, `classNames` and `styles` exist in antd so a consumer can replace
+ * or re-target the rendered markup. "A knob that only a fork could reach is not parity either…
+ * adopting them would re-open the hole the token tiers close." Re-tune through the `--text-*`
+ * component tokens instead. `direction` is a fifth: direction here comes from the document's `dir`,
+ * which is why `check:rtl` is a gate rather than a per-component prop.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/**
+ * @see Typography — antd's plain `<article>` wrapper for a run of prose (`TypographyProps`).
+ *
+ * It carries no emphasis of its own; it is the container `Title` / `Paragraph` / `Text` / `Link`
+ * sit inside, and the thing `Typography.Text` etc. hang off as a compound component.
+ */
+export type TypographyProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
+  /** Rendered element. Default `article`, matching antd. */
+  as?: string;
+  /**
+   * antd's (private) `component` — the rendered element.
+   *
+   * `as` is the spelling this library documents, and `as` WINS when both are passed. `component`
+   * exists so antd code pastes in unchanged.
+   */
+  component?: string;
+};
+
+/**
+ * The antd `BlockProps` behaviour shared by `Text` / `Title` / `Paragraph` / `Link`.
+ *
+ * The seven decoration flags each WRAP the content in a real element, in antd's own nesting order
+ * (strong → u → del → code → mark → kbd → i), so the meaning reaches a screen reader instead of
+ * only the pixels. That is why `strong` is not folded into `weight` and `code` is not folded into
+ * `mono`: `weight`/`mono` change how the text is painted, these change what it IS.
+ */
+export type TypographyBlockProp = {
+  /** Which side the copy / edit / expand cluster sits on. Default `{ placement: "end" }`. */
+  actions?: TypographyActionsConfigProp;
+  /**
+   * Emphasis, antd's spelling. This library's `tone` is the same axis and is WIDER, so **`tone`
+   * wins** when both are passed. Folds `secondary → muted`, `danger → destructive`.
+   */
+  type?: TypographyTypeProp;
+  /** Renders as unavailable — the disabled foreground, `not-allowed`, and no text selection. */
+  disabled?: boolean;
+  /** Copy affordance. `true` copies the rendered text; the object form is antd's `CopyConfig`. */
+  copyable?: boolean | TypographyCopyConfigProp;
+  /** In-place editing. `true` is the default trigger set; the object form is antd's `EditConfig`. */
+  editable?: boolean | TypographyEditConfigProp;
+  /**
+   * Truncation. `true` is one line; the object form is antd's `EllipsisConfig`.
+   *
+   * `Text` and `Link` NARROW this (antd does too — an inline run has no second line to expand
+   * into), which is why they intersect `Omit<TypographyBlockProp, "ellipsis">` and redeclare it.
+   */
+  ellipsis?: boolean | TypographyEllipsisConfigProp;
+  /** Wrap in `<code>`. (`mono` only swaps the FAMILY; this changes the element and its meaning.) */
+  code?: boolean;
+  /** Wrap in `<mark>` — highlighted. */
+  mark?: boolean;
+  /** Wrap in `<u>` — underlined. */
+  underline?: boolean;
+  /** Wrap in `<del>` — struck through. */
+  delete?: boolean;
+  /** Wrap in `<strong>` — bold, and semantically strong. Composes with `weight`. */
+  strong?: boolean;
+  /** Wrap in `<kbd>` — a key or key combination. */
+  keyboard?: boolean;
+  /** Wrap in `<i>` — italic. */
+  italic?: boolean;
+  /** antd's (private) `component` alias for `as`; `as` wins when both are passed. */
+  component?: string;
+};
+
+/**
+ * @see Title — antd `Typography.Title`.
+ *
+ * A SIBLING of `Heading`, not a replacement: `Heading` is this library's own four-level heading and
+ * stays exactly as it was. `Title` is antd's, so it reaches level 5 and carries the block
+ * behaviours (`copyable`, `editable`, `ellipsis`, the decorations).
+ *
+ * antd omits `strong` from `TitleProps` because a heading is already `fontWeightStrong`; that
+ * omission is ported.
+ *
+ * NAMED `TypographyTitleProp`, not `TitleProp`, for one measured reason: `TitleProp` is already a
+ * VOCABULARY type (`vocabulary/content.prop.ts` — the ReactNode heading slot a Card / Dialog /
+ * PageContainer takes), and `src/props/index.ts` re-exports `./vocabulary` and `./components`
+ * through the same `export *`. A second `TitleProp` there is an ambiguous re-export, which TS
+ * resolves by dropping BOTH. The component and its public `TitleProps` alias are still spelled
+ * antd's way; only the internal type name moves.
+ */
+export type TypographyTitleProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"> &
+  Omit<TypographyBlockProp, "strong"> & {
+    /** Heading level 1…5 — sets the `--heading-h*` size token AND the `<h1>`…`<h5>` element. */
+    level?: TitleLevelProp;
+    /** Override the rendered element (a visual h2 that is a real `<h1>`). */
+    as?: "h1" | "h2" | "h3" | "h4" | "h5" | "div";
+    /** Semantic colour intent. Outranks antd's `type`. */
+    tone?: TextToneProp;
+    align?: TextAlignProp;
+    /** This library's single-line ellipsis. `ellipsis` outranks it when both are passed. */
+    truncate?: boolean;
+    /** Weight (system canon: 400 · 500 · 700). Default `medium`. */
+    weight?: FontWeightProp;
+    /** Truncation — `true` is one line; the object form is antd's full `EllipsisConfig`. */
+    ellipsis?: boolean | TypographyEllipsisConfigProp;
+  };
+
+/**
+ * @see Paragraph — antd `Typography.Paragraph`.
+ *
+ * antd renders it as a `<div>`, not a `<p>`, because the editing textarea and the action cluster
+ * are block content that a `<p>` may not legally contain. That is ported verbatim; pass
+ * `as="p"` when the content is known to be phrasing-only.
+ */
+export type ParagraphProp = Omit<TextProp, "ellipsis" | "as"> & {
+  /** Rendered element. Default `div` — antd's choice; see above. */
+  as?: "div" | "p" | "span";
+  /** Truncation — `true` is one line; the object form is antd's full `EllipsisConfig`. */
+  ellipsis?: boolean | TypographyEllipsisConfigProp;
+};
+
+/**
+ * @see Link — antd `Typography.Link`.
+ *
+ * `Text link` is this library's own inline link affordance and is unchanged. `Link` is antd's
+ * anchor-by-default flavour of it: it renders `<a>`, defaults `tone` to `primary`, and adds
+ * antd's `rel="noopener noreferrer"` guard whenever `target="_blank"` is set without an explicit
+ * `rel`. antd restricts `ellipsis` to a boolean here, and that restriction is ported.
+ */
+export type LinkProp = Omit<TextProp, "ellipsis" | "as"> & {
+  /** Rendered element. Default `a`. */
+  as?: "a" | "span";
+  /** Single-line truncation. antd allows only a boolean on `Link`. */
+  ellipsis?: boolean;
 };
 
 /** @see Button */

@@ -12,3 +12,25 @@
   /* `auto` lets the face decide; a theme that wants a heavier rule names a length. */
   --text-link-underline-width: auto;
 }
+
+/* TYPOGRAPHY (antd parity) — the inline operation unit and the two decorations that need a fill.
+ *
+ * Size, weight and tone stay absent for the reason above. What is here is what the foundation
+ * tiers do not describe: the copy / edit / expand control that sits INSIDE a run of text, and the
+ * `<mark>` highlight, which needs a fill role and the foreground that was measured against it. */
+:root {
+  /* Gap between the text and the operation cluster, and between the operations. */
+  --text-action-gap: var(--space-1);
+  /* The operation reads as a link, because that is what it is — an affordance inside running text,
+   * not a control box. Same reasoning as `Text`'s own `link` prop. */
+  --text-action-color: hsl(var(--primary));
+  --text-action-color-hover: hsl(var(--primary-hover));
+  /* The icon box tracks the run it sits in: `em`, so a copy button beside `size="2xs"` shrinks
+   * with it instead of towering over the text. */
+  --text-action-size: 1em;
+  /* `<mark>` is a FILL plus the label measured against it — `--warning` / `--warning-foreground`
+   * are exactly that pair. NOT `--text-warning`, which is the AA-safe INK tier and would paint a
+   * dark yellow highlight with dark text on it. */
+  --text-mark-background: hsl(var(--warning));
+  --text-mark-foreground: hsl(var(--warning-foreground));
+}

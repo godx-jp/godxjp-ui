@@ -353,6 +353,13 @@
       "decrement": "Decrease",
       "incrementField": "Increase {label}",
       "decrementField": "Decrease {label}"
+    },
+    "typography": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "edit": "Edit",
+      "expand": "Expand",
+      "collapse": "Collapse"
     }
   },
   "navigation": {

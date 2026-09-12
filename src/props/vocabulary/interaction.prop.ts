@@ -2,6 +2,7 @@
  * Interaction & visual variant prop types.
  * @see docs/PROPS-VOCABULARY.md#interaction-variants
  */
+import type * as React from "react";
 
 /**
  * Button visual style.
@@ -62,6 +63,131 @@ export type TextAlignProp = "start" | "center" | "end";
  * remaining CSS keywords (`pre`, `pre-line`, `nowrap`) are values on the same axis, not more flags.
  */
 export type TextWhitespaceProp = "normal" | "pre-wrap";
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * antd `Typography` parity — the vocabulary antd names, spelled antd's way.
+ *
+ * `docs/DESIGN-AUTHORITY.md`: "where antd names a capability, this library takes antd's name and
+ * antd's semantics", read out of the INSTALLED types rather than from memory. These were read out
+ * of **antd 6.6.3**, `es/typography/Base/index.d.ts` (`BaseType`, `CopyConfig`, `EditConfig`,
+ * `EllipsisConfig`, `ActionsConfig`) in a throw-away checkout outside this repo — antd is NOT a
+ * dependency here and `check:no-antd-runtime` keeps it out.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/**
+ * antd `Typography` `type` — its four-value emphasis axis (`BaseType`).
+ *
+ * This library already publishes the same axis as `TextToneProp`, which is WIDER (it also carries
+ * `default`, `primary` and `info`) and which every existing call site is written in. Both spellings
+ * are accepted on `Text` / `Title` / `Paragraph` / `Link`; **`tone` WINS when both are passed**,
+ * because `tone` is the vocabulary `check:prop-vocabulary` governs and the one the CSS keys on.
+ * The fold is `secondary → muted`, `danger → destructive`, `success` / `warning` unchanged.
+ */
+export type TypographyTypeProp = "secondary" | "success" | "warning" | "danger";
+
+/**
+ * antd `Typography.Title` `level` — 1…5.
+ *
+ * `HeadingLevelProp` stops at 4 because `--heading-h4` is already 12.5px, BELOW the 14px body step.
+ * antd's fifth level is carried here rather than widened into `HeadingLevelProp`, so `Heading` —
+ * used across the package and at consumer call sites — keeps the four levels its tokens actually
+ * define while `Title` reaches antd's five. Level 5 reads `--heading-h5`, which is bound to the
+ * existing `--font-size-2xs` step (≈11.1px); it is not a new number.
+ */
+export type TitleLevelProp = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * antd `CopyConfig` — the copy affordance beside a run of text.
+ *
+ * `format: "text/html"` reaches the real `ClipboardItem` path. `tooltips` takes `false` to suppress
+ * the tooltip, one node for both states, or `[copy, copied]` for each.
+ */
+export type TypographyCopyConfigProp = {
+  /** Text to copy. A function may be async — it is awaited. Defaults to the rendered children. */
+  text?: string | (() => string | Promise<string>);
+  /** Fired AFTER the write resolves. Never fired when the clipboard refuses — see the component. */
+  onCopy?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+  /** Icon node, or `[copy, copied]` for the two states. */
+  icon?: React.ReactNode;
+  /** Tooltip text: `false` suppresses it, a node replaces both, `[copy, copied]` sets each. */
+  tooltips?: React.ReactNode;
+  /** `text/html` also writes an HTML flavour to the clipboard. Default `text/plain`. */
+  format?: "text/plain" | "text/html";
+  /** Tab order of the copy button. */
+  tabIndex?: number;
+};
+
+/** antd `EditConfig` — in-place editing of a run of text. */
+export type TypographyEditConfigProp = {
+  /** The value to edit. Falls back to the children when they are a plain string. */
+  text?: string;
+  /** Controlled editing state. */
+  editing?: boolean;
+  /** Icon node for the edit trigger. */
+  icon?: React.ReactNode;
+  /** Tooltip on the edit trigger; `false` suppresses it. */
+  tooltip?: React.ReactNode;
+  /** Fired when editing starts. */
+  onStart?: () => void;
+  /** Fired with the TRIMMED value when editing is confirmed (Enter, or blur). */
+  onChange?: (value: string) => void;
+  /** Fired when editing is abandoned (Escape). */
+  onCancel?: () => void;
+  /** Fired after Enter confirms — NOT after a blur, matching antd. */
+  onEnd?: () => void;
+  /** Character ceiling on the editing textarea. */
+  maxLength?: number;
+  /** Auto-grow the textarea. `true`, or `{ minRows, maxRows }`. Default `true`. */
+  autoSize?: boolean | { minRows?: number; maxRows?: number };
+  /** What opens the editor: the icon, the text itself, or both. Default `["icon"]`. */
+  triggerType?: ("icon" | "text")[];
+  /** Node shown in the editor's corner; `null` removes it. */
+  enterIcon?: React.ReactNode;
+  /** Tab order of the edit button. */
+  tabIndex?: number;
+};
+
+/**
+ * antd `EllipsisConfig` — the truncation contract.
+ *
+ * `Text` already carries this library's own `truncate` (one line) and `clamp` (N lines). All three
+ * spellings are accepted and **`ellipsis` WINS** when they collide, because it is the only one that
+ * can carry an expand control, a suffix or a tooltip.
+ */
+export type TypographyEllipsisConfigProp = {
+  /** Lines kept before truncating. Default 1. */
+  rows?: number;
+  /** Show an expand control. `"collapsible"` also keeps a collapse control once expanded. */
+  expandable?: boolean | "collapsible";
+  /** Text pinned AFTER the ellipsis (a unit, a count). */
+  suffix?: string;
+  /** The expand/collapse label — a node, or a function of the current state. */
+  symbol?: React.ReactNode | ((expanded: boolean) => React.ReactNode);
+  /** Uncontrolled initial expanded state. */
+  defaultExpanded?: boolean;
+  /** Controlled expanded state. */
+  expanded?: boolean;
+  /** Fired when the expand/collapse control is used. */
+  onExpand?: (e: React.MouseEvent<HTMLElement>, info: { expanded: boolean }) => void;
+  /** Fired when the measured overflow state flips. */
+  onEllipsis?: (ellipsis: boolean) => void;
+  /** Tooltip carrying the full text while it is truncated. `true` uses the children. */
+  tooltip?: React.ReactNode;
+};
+
+/**
+ * antd `ActionsConfig` — which side of the text the copy / edit / expand cluster sits on.
+ *
+ * The name is antd's. `PROP_ALIASES_FORBIDDEN` reserves the bare word `actions` for a ReactNode
+ * SLOT (`ActionsProp`, toolbars); this is not that — it is a placement config for controls the
+ * component renders itself, and antd's spelling wins per DESIGN-AUTHORITY's prop-surface rule.
+ * `start` / `end` are logical, so they mirror in RTL.
+ */
+export type TypographyActionsConfigProp = {
+  placement?: "start" | "end";
+};
 
 /** Badge visual style. */
 export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";

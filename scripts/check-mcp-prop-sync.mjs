@@ -58,6 +58,10 @@ const allPropsSrc = stripComments(propFiles.join("\n"));
 /** MCP component name → the `*Prop` type(s) whose literal fields it must document. */
 const TYPE_OVERRIDES = {
   Select: ["SelectDataProp"], // public Select is a union; the data-driven shape is what's documented
+  // `TitleProp` is taken by the ReactNode heading SLOT in vocabulary/content.prop.ts, so antd's
+  // Typography.Title carries its prop type under a non-colliding name. Without this line the
+  // gate resolves nothing for `Title` and SKIPS it — a gate that skips is a gate that drifts.
+  Title: ["TypographyTitleProp"],
 };
 /** Fields never required in the catalog (framework plumbing / native pass-through). */
 const IGNORED_FIELDS = new Set([
