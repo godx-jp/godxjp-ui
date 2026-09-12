@@ -11,7 +11,9 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   const [signupPassword, setSignupPassword] = useState("");
-  const [resetPassword, setResetPassword] = useState("");
+  /* Seeded so the PASSED state is on screen without typing: the checklist's success icon is
+   * otherwise only reachable by interaction, which means no sweep can measure it (gh#612). */
+  const [resetPassword, setResetPassword] = useState("Passw0rdSeed");
 
   return (
     <PageContainer

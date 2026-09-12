@@ -91,6 +91,24 @@ const ROUTES = routeArgs.length
       "/isolate/layout-auth-shell?theme=dark",
       "/isolate/layout-auth-recovery-examples-mfa-challenge",
       "/isolate/layout-auth-recovery-examples-mfa-challenge?theme=dark",
+      // THE TIER SWEEP (gh#612). gh#610 was one rule; nineteen more read a FILL token as ink, and
+      // the fill tier is tuned for a white label sitting ON it — 8 of 24 tone x surface x theme
+      // cells are under AA, `--warning` as ink being the worst at 1.74:1 on a light ground. These
+      // four routes are the ones that PAINT the swapped surfaces on mount, both themes each
+      // because the tiers are retuned per theme and light and dark fail on opposite tones:
+      //
+      //   data-entry-form-field-index   the required asterisk
+      //   data-entry-password-strength  the checklist's passed/failed icons (both, since the
+      //                                 second example is now seeded — see the docs page)
+      //   feedback-alert                the four tone icons, which now match the title beside them
+      //   general-activity              the activity mark, info and destructive on mount
+      "/isolate/data-entry-form-field-index",
+      "/isolate/data-entry-form-field-index?theme=dark",
+      "/isolate/data-entry-password-strength",
+      "/isolate/data-entry-password-strength?theme=dark",
+      "/isolate/feedback-alert?theme=dark",
+      "/isolate/general-activity",
+      "/isolate/general-activity?theme=dark",
     ];
 
 /*
