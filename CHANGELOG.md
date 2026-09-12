@@ -6,6 +6,111 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.5] - 2026-09-12
+
+### Fixed
+
+- **Mặt tab `card` của Tabs — port nguyên `genCardStyle` của antd.** Bốn chỗ lệch, mỗi chỗ đo trong
+  Chromium trên `/isolate/navigation-tabs` trước và sau.
+
+  1. **Tab card bị KÉO GIÃN.** `nav-list` của antd là `display: flex` trơn, không `flex-grow` trên
+     tab, nên tab card rộng bằng nội dung. Base trigger ở đây là `flex-1`: **ba tab trong một strip
+     942px ra 311px mỗi cái** cho nhãn cần ~70px, rồi `justify-center` đẩy nhãn và dấu × trôi vào
+     giữa cái hộp đó — × cách mép cuối của tab **90px** (179px ở strip hai tab), antd là 8px. Nay
+     9px. Đây cũng là lý do mặt tab đọc ra như một cái hộp có viền đứng rời thay vì một cái tab.
+  2. **Mặt tab ĐANG CHỌN sơn xanh cả bốn cạnh** — đo được
+     `oklab(0.536747 -0.0539504 -0.134581 / 0.25)`, tức `border-primary/25`, cạnh các tab không
+     chọn `rgb(215, 212, 209)`. Đó là hairline của biến thể **pill**, canh bằng
+     `group-data-[variant=default]/tabs-list:` — nhưng `card`/`editable-card` **cố ý** forward
+     `data-variant="default"` lên LIST, nên cái canh ấy luôn đúng với chúng. Nó còn thắng cả màu
+     viền của chính nhánh card, kể cả cạnh đáng lẽ phải hoà vào panel, nên tab được chọn thành một
+     **hộp kín** thay vì một cái tab mở. Canh nay gọi tên cả ROOT.
+  3. **`placement="bottom"` bị LỘN NGƯỢC:** radius ở hai góc trên, cạnh hoà ở cạnh dưới, rail chạy
+     dưới — cả ba hướng **ra xa** panel, mà với `bottom` thì panel nằm trên. Dòng hardcode được thay
+     bằng `CARD_FACE`, keyed theo union placement nên TypeScript bắt buộc đủ bốn case, và port
+     nguyên bốn block của antd (top/bottom/left/right — `start`/`end` viết bằng thuộc tính logic
+     nên khác antd, không cần sheet RTL thứ hai).
+  4. **`closeIcon` của consumer thoát hoàn toàn khỏi hợp đồng cỡ icon.** Luật cỡ bám class
+     `.ui-tabs-tab-remove-icon`, class chỉ gắn lên dấu × mặc định, nên `closeIcon={<Trash2 />}` ra
+     **24px** — mặc định của lucide, **gấp đôi** glyph 12px của chính tab, trong một tab cao 16px.
+     Nay cỡ theo **con của wrapper**, khép lại cho mọi icon bất kỳ ai truyền vào. antd không có lỗ
+     này vì nó cỡ icon bằng `font-size`, thứ mà `removeIcon` tự thừa hưởng.
+
+  Kèm theo: biến thể `line` vẽ **HAI đường**. Thanh active nằm **4px phía trên** hairline của strip
+  trên cả 13 strip `line` của trang tabs, vì strip phải mang padding trục block cho focus ring
+  (gh#376) trong khi hairline là `border-b` ở border box. Inset ngang nay cộng lại đúng phần padding
+  đó, viết bằng **cùng biểu thức** mà padding được dựng nên nên hai bên không thể lệch, và dừng ở
+  mép padding-box vì thêm một pixel là ra ngoài vùng clip của gh#376. Khác biệt còn lại, ghi thẳng
+  trong comment: thanh của antd **phủ** hairline (2px mực), của ta **kề** nó (3px).
+
+  Và demo làm lộ ra tất cả những điều trên đang dùng **thùng rác** để minh hoạ `closeIcon`. Đóng một
+  tab là dấu × ở mọi hệ, antd cũng vậy, và demo là thứ người đọc sao chép.
+
+- **`--border` là tầng SPLIT của antd, không phải tầng CONTROL.** antd chở hai token viền trung tính
+  và chúng không thay nhau được: `colorBorder` (`darken(#fff, 15)` → `#d9d9d9`) là cạnh **là** một
+  control (Input, Select, Button outline), còn `colorBorderSecondary` (`darken(#fff, 6)` → `#f0f0f0`)
+  là chrome — hairline của Tabs, viền Card, kẻ ô Table, Divider.
+
+  Hệ này **đã có đủ hai vai**: `--input` là vai thứ nhất, bị buộc ≥3:1 theo WCAG 2.2 SC 1.4.11 nên
+  cố ý đậm hơn antd, và `--border` là vai thứ hai. Nhưng `--border` lại đặt ở giá trị của vai thứ
+  nhất: cách nền **16 điểm**, trong khi tầng control của antd là 15 và tầng split là 6. Nên **mọi**
+  hairline, viền Card và kẻ Table trong thư viện đậm hơn antd một tầng; Tabs chỉ là chỗ nó lộ ra.
+
+  Giá trị mới là tỉ lệ của chính antd, không phải một con số chọn bằng mắt:
+
+  | | công thức antd | mới | đo được | antd |
+  | --- | --- | --- | --- | --- |
+  | light | 40% khoảng cách tầng control (6/15) | `30 7% 93%` = `#eeedec` | **1,15:1** | 1,14:1 |
+  | dark | 73% (`lighten 19` so với `lighten 26`) | `45 6% 19%` | **1,38:1** | 1,40:1 |
+
+  Con số dark là con số đáng nói: suy theo tỉ lệ rồi đo, nó rơi **đúng vào** giá trị thật của antd
+  (`#303030` trên `#141414` = 1,40:1), không phải "gần gần".
+
+  **Không phải hồi quy tương phản cần biện hộ:** một divider là trang trí, không có gì ở nó "cần để
+  nhận ra một component hay trạng thái của nó", nên SC 1.4.11 không với tới — và lưới table dày chữ
+  Nhật đọc dễ hơn khi nó im. Pass "rail" của `check:contrast` vốn chỉ đo viền **một cạnh dày ≥3px**,
+  nên hairline 1px chưa bao giờ nằm trong mẫu của nó.
+
+  Phép kiểm pin **khoảng cách tới nền**, không pin độ sáng tuyệt đối — đó mới là thứ làm nó thành một
+  *tầng*: đổi tông nền của theme thì cả hai dịch theo, chỉ tỉ lệ giữa chúng mang ý nghĩa.
+  `src/email/tokens.generated.ts` được **regenerate**, không sửa tay.
+
+- **Mười chín chỗ còn lại sơn chữ bằng token TÔ thay vì token CHỮ (#612) — nửa đầu.** #610 chuyển
+  **một** dòng chữ lỗi khỏi tầng TÔ; bản sửa hẹp ấy để nguyên cả lớp lỗi. Tính từ
+  `foundation.css`, **8 trong 24** ô tone × nền × chủ đề dưới AA, và mô hình trên giấy cho ra **đúng
+  2,95:1** ở ô mà #610 đo bằng Chromium — nên các ô còn lại không phải phỏng đoán.
+
+  Bảy chỗ là **văn xuôi**, và đó là lý do nó là lỗi chứ không phải chuyện chỉnh trang:
+  `.ui-filter-bar-error` (câu duy nhất nói vì sao bộ lọc bị từ chối), nhãn mục destructive của
+  dropdown (tức chữ "Xoá"), tiêu đề và control lỗi của `Steps`, placeholder destructive của
+  search-select, dấu sao bắt buộc của `FormField` — tất cả **2,95:1** trên nền tối.
+
+  Mười hai chỗ còn lại là biểu tượng và dấu, thuộc sàn 3:1 của 1.4.11 chứ không phải 4,5:1 của
+  1.4.3 — và chúng trượt **cả sàn đó**: `--warning` làm mực chỉ **1,74:1** trên nền sáng,
+  `--success` 2,19:1. Icon của `Alert` nay còn khớp với tiêu đề bên cạnh nó, thứ vốn đã đọc tầng chữ
+  từ trước.
+
+  **Hai ngôi sao rating GIỮ tầng TÔ**, kèm lý do ghi ngay cạnh luật: ngôi sao được phân biệt bằng
+  **hình dạng**, antd cũng chở đúng sắc hổ phách ấy, và một ngôi sao đỏ sẫm sẽ đọc ra như một dãy dấu
+  lỗi.
+
+  **Cổng được ĐẢO CHIỀU, không phải mở rộng.** Phép kiểm CSS cũ soi đúng `.ui-dialog-step-up-error`
+  và tự giải thích trong comment của nó vì sao sẽ không quét tiếp — chính lời giải thích ấy là thứ
+  che 19 chỗ này. Nay `color: hsl(var(--<fill>))` là **lỗi** trừ khi selector nằm trong `EXEMPT`,
+  nên quên là ồn ào còn ngoại lệ là một dòng ai đó phải viết ra.
+
+  Bốn bề mặt được thêm vào `check:contrast` (mỗi cái hai chủ đề), cộng một chỗ sửa trong docs để
+  checklist mật khẩu **vẽ được** trạng thái passed lúc mount — trước đó nó chỉ tới được bằng cách gõ,
+  nghĩa là không phép quét nào thấy. **Chưa đo được**, nêu tên thay vì để phát hiện lại:
+  `.ui-dropdown-menu-item[data-variant="destructive"]` (menu đóng lúc mount),
+  `.ui-steps-title[data-status="error"]` (sau một cú click), `.ui-filter-bar-error` (chưa có ví dụ
+  nào render lỗi). Ba chỗ đó hôm nay được canh bằng cổng quét nguồn đã đảo chiều ở trên, thứ **cấm
+  hẳn** hình dạng lỗi thay vì đo kết quả của nó.
+
+- **`ui-audit`: luật `card-table-needs-flush` bỏ sót `SkeletonTable` (#611).** Đã nằm trong 23.4.4;
+  nhắc lại ở đây vì nó cùng một hình dạng với hai mục trên — một cổng xanh về đúng thứ nó chưa bao
+  giờ soi tới.
+
 ## [23.4.4] - 2026-09-12
 
 ### Added
