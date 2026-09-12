@@ -4381,13 +4381,20 @@ import { Button } from "@godxjp/ui/general";
         description:
           "Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status.",
       },
+      {
+        name: "onRemove",
+        type: "() => void",
+        description:
+          "antd Tag `closable` + `onClose` — draws a × on the chip and calls this when the user activates it. Omit for a plain badge (no ×). Accessible name quotes the string label via `navigation.filterBar.removeFilter`.",
+      },
     ],
     usage: [
       "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
       "DO use `status` for entity lifecycle statuses (active, draft, pending, cancelled, failed, scheduled, etc.) so the component resolves the correct tone, icon, and i18n label.",
       "DO pass `variant` explicitly for localized labels or categorical tiers, and pass `icon={null}` when a lifecycle glyph would be misleading.",
-      'Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as="span"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. It carries no interactive semantics either way. If you need a clickable chip, wrap it in a `<button>` or use a Button with a matching variant — never add an `onClick` directly to Badge without an accessible role.',
-      "Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge, a Button, or interactive controls inside it; that breaks focus order and creates invalid HTML (div-in-inline-context).",
+      'Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as="span"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. With `onRemove`, the chip draws its own × (antd Tag closable); without it the chip is non-interactive. Do not add a naked `onClick` without an accessible role.',
+      "With `onRemove`, the × is part of the chip (antd Tag closable) — do not bolt a separate Button beside the label. Pass a string `children` label so the remover's accessible name quotes the chip.",
+      "Without `onRemove`, Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge or interactive controls inside it.",
       "Use semantic tokens for any className overrides (`text-muted-foreground`, `bg-destructive`) — never raw Tailwind palette classes like `bg-green-500`.",
       "DO pass `color` — never an inline `backgroundColor` — when the colour belongs to the RECORD rather than to its meaning (a status an administrator coloured, an issue type, a tag). A hand-filled chip has to choose a foreground, and no choice is readable for every colour a picker can produce; `color` moves the ground instead and keeps the label on the surface's own foreground.",
     ],

@@ -354,6 +354,11 @@ export type BadgeProp = {
   tabular?: boolean;
   className?: ClassNameProp;
   children?: ChildrenProp;
+  /**
+   * antd `Tag` `closable` + `onClose` — omit for a plain chip; set to draw a × that calls this once.
+   * Port name `onRemove` (not `onClose`) — see {@link Badge} JSDoc and `docs/DESIGN-AUTHORITY.md`.
+   */
+  onRemove?: () => void;
 };
 
 /** @see CredentialReveal */
