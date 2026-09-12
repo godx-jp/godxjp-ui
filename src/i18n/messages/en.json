@@ -600,5 +600,20 @@
         "other": "{count} new messages"
       }
     }
+  },
+  "general": {
+    "actions": {
+      "label": "Message actions",
+      "copy": "Copy",
+      "copied": "Copied",
+      "feedback": "Was this answer helpful?",
+      "like": "Helpful",
+      "dislike": "Not helpful",
+      "status": {
+        "running": "running",
+        "loading": "loading",
+        "error": "failed"
+      }
+    }
   }
 }
