@@ -6971,7 +6971,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-icon-size",
     "value": "var(--band-height-sm)",
-    "description": "The glyph column. A square, so an ordinal, an icon and a status mark share one track and the * connector below stays centred under all three."
+    "description": "The glyph column. A square, so an ordinal, an icon and a status mark share one track and the * connector below stays centred under all three. It reads the BAND height, not an icon step, so * the circle matches the title band it sits beside; 24px and 36px are the nearest steps and both * would break that alignment to buy nothing. * scale-exempt: 28px ordinal medallion sized to the title band, not a glyph"
   },
   {
     "name": "--thought-chain-icon-font-size",
