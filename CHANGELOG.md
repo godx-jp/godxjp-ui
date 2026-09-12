@@ -6,6 +6,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.6] - 2026-09-12
+
+### Fixed
+
+- **`process` không phải global của browser, mà gói đã publish đọc nó THÔ.** Tìm ra khi truy vì sao
+  một route preview không render được gì. App preview của chính kho này (Vite 8, dev) render
+  `/isolate/data-entry-password-strength` thành *"Preview render failed — process is not defined"*:
+  6 DOM node, không có trang.
+
+  **Tám** module được ship đọc `process.env.NODE_ENV` để bật cảnh báo dev. **Ba** cái có guard
+  `typeof process !== "undefined"`; **năm** cái không — `password-input`, `float-button` (×2),
+  `error-surface`, `app-shell`, `data-table`. Build không thay thế gì: `tsup.config.ts` không khai
+  `define`, và `grep -o 'process\.env' dist` trên tarball **23.4.4 đã publish** trả về **9 hit
+  thô**. `PasswordInput` nằm trong năm cái không guard, nên đúng trang đó trắng. Phần lớn toolchain
+  của consumer có define `process.env.NODE_ENV` nên lấp đi — đó là cách năm chỗ hở sống qua tám bản
+  phát hành — còn ai không define thì nhận **màn hình trắng thay cho một cảnh báo**.
+
+  **PHÁT HIỆN THỨ HAI NẶNG HƠN PHÁT HIỆN THỨ NHẤT.** Bản helper đầu tiên viết
+  `process.env?.NODE_ENV`, và test của chính nó **nổ**. Dump `isDevelopment.toString()` ra khỏi
+  pipeline thật giải thích:
+
+  ```
+  nguồn:      typeof process !== "undefined" && process.env?.NODE_ENV !== "production"
+  sau build:  typeof process !== "undefined" && process.env.NODE_ENV  !== "production"
+  ```
+
+  `?.` **bị xoá** — `define` của bundler khớp chuỗi `process.env` rồi thay thế xuyên qua, bỏ luôn
+  optional chain. Nên ba module *trông như* đã guard cũng chỉ guard một nửa: `typeof process` sống
+  sót, optional chain thì không. **Optional chaining trên `process.env` đọc như một guard và không
+  phải một guard.**
+
+  Helper vì thế được viết sao cho không phép biến đổi nào phá được, mà vẫn giữ literal cho bundler:
+
+  ```ts
+  if (typeof process === "undefined" || !process.env) return false;
+  return process.env.NODE_ENV !== "production";
+  ```
+
+  Một truthiness test sống sót thành truthiness test bất kể bị thay bằng gì, còn dòng cuối **giữ
+  đúng chuỗi** mà `define` tìm — nên bản production của consumer vẫn gập được nhánh và bỏ hẳn chuỗi
+  cảnh báo. Đọc global gián tiếp (`globalThis.process`) cũng chống crash như vậy nhưng lấy đi của
+  mọi consumer phép loại mã chết đó.
+
+  Nó **fail SAFE**: nơi không có `process` thì ta không phân biệt được dev với production, nên câu
+  trả lời là `false` và cảnh báo im. Thiếu một cảnh báo là mất một gợi ý cho developer; một component
+  throw khi đang render là mất cả trang của người dùng.
+
+  Ba assertion, và cái thứ ba là cái **duy nhất** lẽ ra bắt được lỗi gốc: helper không throw khi
+  thiếu `process`; không module nào trong `src/components/**` còn đọc `process.env` (nên chỗ thứ
+  mười không thể lặng lẽ xuất hiện); và **HÀM ĐÃ BIÊN DỊCH** vẫn mang guard — mọi assertion mức
+  nguồn đều xanh trong khi mã được ship đang hở. Trong `dist`: 9 chỗ đọc thô còn **2**, cả hai trong
+  chính helper.
+
+- **Rail của mặt card `Tabs` hướng về panel trên cả trục dọc.** Placement cuối cùng trong bốn cái.
+  `card` + `start`/`end` vẫn vẽ rail trục **block** — một đường kẻ dưới một *cột* tab, không hướng
+  về đâu. Sai **trục**, không phải sai dấu.
+
+  `box-shadow` không có offset logic, nên hai placement dọc được viết tay một lần cho mỗi chiều,
+  đúng như `.ui-data-table-pin-end` trong `table-layout.css` vốn đã làm, kèm cùng một ghi chú. Mặt
+  card thì không cần mirror: `CARD_FACE` dùng `rounded-s/-e` và `border-s/-e`, tự lật.
+
+  Đo trong Chromium trên `/isolate/navigation-tabs`, cả hai chiều:
+
+  | placement | dir | rail | cạnh hoà | radius |
+  | --- | --- | --- | --- | --- |
+  | `start` | LTR | `-1px` (mép phải) | PHẢI | `R 0 0 R` |
+  | `start` | RTL | `1px` (mép trái) | TRÁI | tự lật |
+  | `end` | LTR | `1px` (mép trái) | TRÁI | `0 R R 0` |
+  | `end` | RTL | `-1px` (mép phải) | PHẢI | tự lật |
+
+  Trong RTL panel **thật sự** đổi sang phía bên kia strip (`panelIsLeftOfStrip` lật theo), nên
+  "hướng về panel" là một khẳng định chứ không phải nói lại cái dấu. Trang docs nay render `card`
+  trên cả hai placement dọc — trước đó **không có** ví dụ nào, nên không route nào cho thấy được rail
+  ở bất kỳ chiều nào, và đó chính là lý do `card` + `bottom` từng ship lộn ngược mà không ai thấy.
+
+- **Hit area của nút sắp xếp trên header `DataTable` chạm 24px mà không làm xê dịch paint.** Tìm ra
+  bằng cách quét một consumer, không phải bằng đọc thư viện. Đo trong Chromium trên một bảng thật —
+  `/find/PKG` của godx-task, 1409 phần tử — nút sắp xếp ở header paint **56,3 × 17,8**, và
+  `elementFromPoint` ở tâm **±11px** (đúng khung SC 2.5.8 đòi) trả về `<th>` chứ không trả về nút.
+  Dưới 24px trên **mọi cột sắp xếp được của mọi `DataTable`** gói này ship.
+
+  Paint **không được** to ra: chiều cao của một ô header CHÍNH LÀ nhịp hàng của bảng, và `font:
+  inherit` cùng `padding: 0` là thứ giữ cho một header sắp-xếp-được giống hệt một header thường về
+  mặt chữ. Nên hit area do một pseudo-element căn giữa gánh — đúng câu trả lời mà
+  `.ui-control-inline-affix-action` đã ship cho affix lịch trong một field 32px.
+
+  Tiền lệ đó được **kiểm lại** trước khi tái sử dụng chứ không mặc định đúng: affix paint 20×20,
+  `::after` 24×24, cả bốn probe ±11px đều HIT. Đáng nói vì lần đọc đầu tiên của **cả hai** component
+  đều kết luận "20×20, hỏng" — affix thì vốn đã được sửa và probe của tôi đang đo paint box, còn
+  hit-test đầu tiên trên nó trả về `"nothing"` chỉ vì phần tử nằm ngoài viewport. **Cuộn vào trước,
+  rồi mới hit-test** — không thì một control đang chạy tốt đọc ra như một control hỏng.
+
+  Sau khi sửa, đo trên ba cột của `/isolate/data-display-data-table-index`: paint vẫn 17,8px,
+  `::after` 24px, tâm và ±11px đều HIT.
+
 ## [23.4.5] - 2026-09-12
 
 ### Fixed
