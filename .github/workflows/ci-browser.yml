@@ -54,7 +54,8 @@ on:
       - "LICENSE"
 
 concurrency:
-  group: ci-browser-${{ github.ref }}
+  # Per-COMMIT — see ci.yml for why a per-ref group cancels queued runs and strands releases.
+  group: ci-browser-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:

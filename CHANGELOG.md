@@ -6,6 +6,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.2] - 2026-09-12
+
+Patch. Sáu bản sửa do consumer báo, và bản vá dứt điểm cho thứ đã làm hai lần phát hành trước kẹt.
+
+### Fixed
+
+- **Index MCP lệch với gói (#605)** — `SkeletonRows` chỉ tồn tại như một `subPart` nên không ai tra
+  được, và `search_components "filter"` không trả `Segmented`. Đo lại thì bốn tên còn lại **có**
+  trong catalog đang phát hành; con số "93 primitive" mà người báo thấy là **#543 đang xảy ra ngoài
+  đời** — agent của họ chạy một bản catalog khác với gói đã cài.
+- **Badge trong Segmented tàng hình (#602)** — nền badge trùng **đúng** nền track, tỉ số **1,00:1**,
+  nên số đếm biến mất ở mọi mục chưa chọn.
+- **Không có primitive cho dải chip "điều kiện đang bật" (#604)** — `Badge` thiếu `onRemove`,
+  `TagInput` thì sai ngữ nghĩa vì nó là một ô nhập. Port theo `Tag` của antd (`closable`/`onClose`).
+- **DataTable rụng cột chỉ có một nấc (#603).**
+- **Catalog MCP không biết version UI của consumer (#543)** — launcher nay truyền version thật vào;
+  khi không có catalog tương thích thì tool trả **diagnostic** thay vì snippet của version khác.
+- **#546** — consumer fixture cài từ tarball, không symlink `node_modules` của kho.
+
+### Fixed — hạ tầng phát hành
+
+- **Nhóm concurrency của các làn push nay khoá theo COMMIT, không theo ref.** `cancel-in-progress:
+false` ở `23.4.1` là bản vá đầu và **chưa đủ**: GitHub vẫn tuần tự hoá một _group_, và một lần
+  chạy đang **xếp hàng** vẫn bị huỷ khi có lần chạy mới vào cùng group. Nên trên một nhánh nhận
+  merge dồn dập, **chỉ SHA cuối được phán xử**. Đo sau bản vá đầu: `47015e55` CANCELLED,
+  `a22696ef` FAILURE, `52fb1cda` success — và cái FAILURE ở giữa chỉ tới được vì lần chạy trước nó
+  không bao giờ chạy.
+
+  `npm-publish.yml` fail-closed trên đúng SHA được tag, nên một lần chạy bị huỷ làm bản phát hành
+  **không với tới được trong khi bảng điều khiển toàn xanh** — `23.4.0` kẹt hàng giờ vì đúng điều
+  này. Khoá group theo `github.sha` thì mỗi commit có phán quyết riêng và không bao giờ bị kẻ đến
+  sau huỷ. `pr-lane.yml` giữ nguyên huỷ, khoá theo số PR, vì ở đó huỷ là đúng.
+
 ## [23.4.1] - 2026-09-12
 
 Patch. Hai bản sửa công cụ, và một câu trả lời có số đo cho nửa còn lại của #557.

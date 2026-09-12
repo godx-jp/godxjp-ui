@@ -51,7 +51,8 @@ on:
     types: [labeled]
 
 concurrency:
-  group: ci-browser-full-${{ github.ref }}
+  # Per-COMMIT — see ci.yml for why a per-ref group cancels queued runs and strands releases.
+  group: ci-browser-full-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
