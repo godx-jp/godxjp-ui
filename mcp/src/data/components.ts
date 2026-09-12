@@ -4008,6 +4008,136 @@ import { Flex } from "@godxjp/ui/layout";
   <Text weight="medium">{brand.name}</Text>
 </Flex>`,
     storyPath: "data-display/Swatch.stories.tsx",
+    name: "FeatureList",
+    group: "data-display",
+    tagline:
+      "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line.",
+    props: [
+      {
+        name: "items",
+        type: '{ state: "included" | "excluded" | "limited"; label: ReactNode; description?: ReactNode }[]',
+        required: true,
+        description:
+          "The lines, in reading order. `state` drives the glyph, its mark colour and a localized sr-only word, so colour is never the only carrier (WCAG 1.4.1). `description` is a muted second line that WRAPS.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description:
+          "Root class. The rhythm and the glyph metric live in the --feature-list-* tokens, not here.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { FeatureList } from "@godxjp/ui/data-display";`',
+      'DO put a quantity INSIDE the label — there is no prop for it, because `<Text tone="muted" tabular>` in the label is already legal and already audit-clean.',
+      "DO leave `excluded` lines un-emphasised. The component mutes the label and draws a plain ✗; a red cross per omission reads as a list of errors instead of a list of facts.",
+      'DON\'T hand-roll it as a `<ul className="flex flex-col gap-2">` with an `mt-0.5` icon nudge — that is three ui-audit errors (no-utility-layout, no-utility-spacing ×2), and the 2px is below --space-1 so no token step spells it.',
+      "DON'T reach for ListRow: it is a single-line ENTITY row with a divider between every row and a trailing action slot, and it truncates where a statement has to wrap.",
+      "DON'T reach for Timeline: it is an ORDERED event rail with a connector line and done/current/pending statuses — that is time, not inclusion.",
+    ],
+    useCases: [
+      "A pricing-plan card listing what the plan includes, what it limits and what it leaves out.",
+      "A comparison surface where each tier repeats the same rows with different states.",
+      "A submission review: which requirements the upload met, which it met partially, which it missed.",
+      "A capability or compatibility list — supported / partially supported / unsupported.",
+    ],
+    related: [
+      "ListRow — a single-line entity row (session, token, passkey) with a trailing action; it truncates and it rules a line between rows.",
+      "Timeline — the same glyph rail, but ordered in TIME, with a connector and done/current/pending.",
+      "Descriptions — a term/value grid. A feature line has no value column; the state IS the value, and it is drawn.",
+      "Legend — the key that says what a COLOUR means across other marks; a FeatureList makes statements of its own.",
+    ],
+    example: `import { FeatureList } from "@godxjp/ui/data-display";
+
+<FeatureList
+  items={[
+    { state: "included", label: "SSO", description: "SAML と OIDC" },
+    { state: "limited", label: "API 呼び出し", description: "月 10,000 回まで" },
+    { state: "excluded", label: "監査ログのエクスポート" },
+  ]}
+/>`,
+    docPath: "data-display/feature-list.tsx",
+    storyPath: "data-display/FeatureList.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "Thumbnail",
+    group: "data-display",
+    tagline:
+      "A framed picture at a FIXED height with its own INTRINSIC width — the shape a wrapping row of screenshots with different aspect ratios needs.",
+    props: [
+      {
+        name: "src",
+        type: "string",
+        required: true,
+        description: "Image URL.",
+      },
+      {
+        name: "alt",
+        type: "string",
+        required: true,
+        description:
+          'Required by the type. Pass "" for a picture that carries no information the page does not already say — the empty string is a decision, a missing attribute is an omission (WCAG 1.1.1).',
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Frame height — sm 64px (an attachment strip), md 96px (a gallery row), lg 160px (a review screen). The width follows the picture's own ratio.",
+      },
+      {
+        name: "width",
+        type: "number",
+        description:
+          "The file's real pixel width. Pass it with `height` and the browser knows the ratio before the bytes land, so the frame takes its final width on the first paint instead of reflowing the row.",
+      },
+      {
+        name: "height",
+        type: "number",
+        description: "The file's real pixel height. See `width`.",
+      },
+      {
+        name: "loading",
+        type: '"lazy" | "eager"',
+        description:
+          "Native img attribute, passed through. Every other img attribute passes through too.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description:
+          "Root class. The three heights, the hairline and the radius live in the --thumbnail-* tokens.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { Thumbnail } from "@godxjp/ui/data-display";`',
+      'DO wrap a row of them in `<Flex gap="sm" wrap align="start">` — equal heights make the strip read as one row while each width stays natural.',
+      "DO pass the file's real `width` and `height` so the row does not reflow while the pictures load.",
+      "DON'T use AspectRatio for this: it spans `width: 100%` and pins ONE ratio, so a row of mixed-ratio screenshots comes out letterboxed or cropped. AspectRatio is for a slot whose ratio you choose.",
+      "DON'T use Avatar (an identity mark with an initials fallback) or Card (it pads the frame away from the picture). CardCover is the full-bleed media slot inside a Card, not a standalone thumbnail.",
+      'DON\'T hand-roll `<img className="h-40 w-auto rounded-md border" />` — `no-hand-rolled-surface` flags it, correctly: border + radius is a surface.',
+    ],
+    useCases: [
+      "A review screen showing a submission's screenshots, portrait and landscape in the same wrapping row.",
+      'An attachment strip beside a message or a ticket, at `size="sm"`.',
+      "A gallery row of uploaded images where each picture must stay uncropped.",
+      "Any picture that needs a hairline so a light image is distinguishable from the card behind it.",
+    ],
+    related: [
+      "AspectRatio — a ratio-constrained slot at full width; use it when YOU choose the ratio, not when the picture does.",
+      "Avatar — an identity mark for a person, team or entity, with an initials fallback.",
+      "CardCover — the full-bleed media slot at the top of a Card.",
+      "Carousel — for a set too large to lay out at once; a wrap row of 2–5 thumbnails is not a carousel.",
+    ],
+    example: `import { Thumbnail } from "@godxjp/ui/data-display";
+
+<Flex gap="sm" wrap align="start">
+  <Thumbnail src="/shot-portrait.png" width={360} height={640} alt="モバイル版の一覧画面" size="lg" />
+  <Thumbnail src="/shot-desktop.png" width={960} height={540} alt="デスクトップ版のダッシュボード" size="lg" />
+</Flex>`,
+    docPath: "data-display/thumbnail.tsx",
+    storyPath: "data-display/Thumbnail.stories.tsx",
     rules: [],
   },
   {

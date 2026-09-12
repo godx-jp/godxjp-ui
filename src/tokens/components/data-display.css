@@ -181,6 +181,29 @@
      rather than as a colour nobody chose. */
   --swatch-color: hsl(var(--muted));
 
+  /* FeatureList — a column of statements with a leading state glyph. */
+  /* Between statements: tight enough that the column reads as one list, loose enough that a
+     two-line item does not merge with the next one. */
+  --feature-list-space-gap: var(--space-stack-sm);
+  /* Glyph column ↔ label. */
+  --feature-list-space-inline: var(--space-inline-sm);
+  --feature-list-font-size: var(--font-size-sm);
+  --feature-list-description-font-size: var(--font-size-xs);
+  /* The glyph takes the same step a Button's icon takes, so a feature list beside a control tier
+     reads at the same weight. The mark BOX is `1lh` in the stylesheet — deliberately not a token,
+     because the one correct value is "however tall this text's line is". */
+  --feature-list-mark-icon-size: var(--icon-size-md);
+
+  /* Thumbnail — a framed picture at a fixed height, intrinsic width. Three steps, chosen for the
+     surfaces that asked for them rather than derived: an inline attachment strip, a gallery row,
+     and a review screen. The `height` axis has no named scale in this library on purpose (see
+     scripts/token-scale-bypass-rules.mjs — container heights barely repeat). */
+  --thumbnail-block-size-sm: 4rem; /* 64px — an attachment chip beside its filename. */
+  --thumbnail-block-size: 6rem; /* 96px — the default: a gallery row that still shows the shot. */
+  --thumbnail-block-size-lg: 10rem; /* 160px — a review screen, where the picture IS the content. */
+  --thumbnail-border-width: var(--stroke-hairline);
+  --thumbnail-radius: var(--radius);
+
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
      Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line. */
   --timeline-dot-done-background: initial;

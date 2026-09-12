@@ -141,6 +141,8 @@ const componentPrefixes = {
     "accordion",
     "carousel",
     "list-row",
+    "feature-list",
+    "thumbnail",
     "descriptions",
     "qr-code",
     "scroll-area",

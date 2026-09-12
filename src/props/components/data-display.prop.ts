@@ -131,6 +131,68 @@ export type SwatchProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "children" 
    * what is NOT offered is a third path where it is.
    */
   "aria-label"?: string;
+};
+
+/**
+ * Whether a `FeatureList` line is in, out, or in with a limit.
+ *
+ * Three members and no fourth: the axis is INCLUSION, and a list that also carried "coming soon",
+ * "beta" or "deprecated" would be encoding a roadmap on the same glyph column as a fact about
+ * today. Those are a `Badge` beside the label, which is content the screen already owns.
+ */
+export type FeatureStateProp = "included" | "excluded" | "limited";
+
+/**
+ * One line of a `FeatureList`: what state it is in, what it is called, and — optionally — a
+ * sentence about it that WRAPS.
+ *
+ * There is deliberately no field for a quantity ("10,000 req/mo"). Composing it into `label` as
+ * `<>API calls <Text tone="muted" tabular>10,000 req/mo</Text></>` is already legal and already
+ * audit-clean, so a prop for it would fail question 1 of docs/WHAT-BELONGS-HERE.md — the consumer
+ * has a move. What the consumer did NOT have a move for is the glyph column and its alignment,
+ * which is what this component owns.
+ */
+export type FeatureItemProp = {
+  /** In, out, or in with a limit. Drives the glyph, its mark colour and the `sr-only` prefix. */
+  state: FeatureStateProp;
+  /** What the line is about. Wraps. */
+  label: LabelProp;
+  /** An optional muted sentence under the label. Wraps; long unbroken tokens break. */
+  description?: DescriptionProp;
+};
+
+/**
+ * @see FeatureList — a list of statements, each with a leading state glyph: what a plan includes,
+ * what a tier supports, which requirements a submission met.
+ */
+export type FeatureListProp = Omit<React.HTMLAttributes<HTMLUListElement>, "children"> & {
+  items: FeatureItemProp[];
+  className?: ClassNameProp;
+};
+
+/**
+ * Fixed BLOCK size of a `Thumbnail`; the inline size stays intrinsic.
+ *
+ * A subset of the shared `SizeProp` ladder — `xs` is off the bottom because a 48px frame with a
+ * 1px hairline is a favicon, not a thumbnail, and nothing in the reported cases wanted one.
+ */
+export type ThumbnailSizeProp = Extract<SizeProp, "sm" | "md" | "lg">;
+
+/**
+ * @see Thumbnail — a framed image at a FIXED HEIGHT and its own intrinsic width, for a wrapping
+ * row of pictures whose aspect ratios differ.
+ */
+export type ThumbnailProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt"> & {
+  /** Image URL. */
+  src: string;
+  /**
+   * Required, with no way to omit it. Pass `""` for a picture that carries no information the
+   * page does not already say — the empty string is a DECISION the author has to make, where a
+   * missing attribute is an omission nobody notices (WCAG 1.1.1).
+   */
+  alt: string;
+  /** Frame height. Default `md`. The width follows the picture's own ratio. */
+  size?: ThumbnailSizeProp;
   className?: ClassNameProp;
 };
 

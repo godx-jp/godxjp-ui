@@ -4,6 +4,15 @@ export { Legend } from "./legend";
 export type { LegendItemProp, LegendProp, LegendProps } from "./legend";
 export { Swatch } from "./swatch";
 export type { SwatchProp, SwatchProps } from "./swatch";
+export { FeatureList } from "./feature-list";
+export type {
+  FeatureItemProp,
+  FeatureListProp,
+  FeatureListProps,
+  FeatureStateProp,
+} from "./feature-list";
+export { Thumbnail } from "./thumbnail";
+export type { ThumbnailProp, ThumbnailProps, ThumbnailSizeProp } from "./thumbnail";
 export { ListRow } from "./list-row";
 export type { ListRowProps, ListRowDensity } from "./list-row";
 export { CredentialReveal } from "./credential-reveal";

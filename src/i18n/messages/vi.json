@@ -277,6 +277,11 @@
       "dotsLabel": "Chọn slide",
       "goToSlide": "Đến slide {index}"
     },
+    "featureList": {
+      "included": "Có",
+      "excluded": "Không có",
+      "limited": "Giới hạn"
+    },
     "listRow": {
       "unread": "Chưa đọc",
       "read": "Đã đọc"

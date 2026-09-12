@@ -2734,6 +2734,48 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  FeatureStateProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  FeatureItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "DescriptionProp",
+      {
+        field: "state",
+        local: true,
+        reason: "Inclusion axis (included/excluded/limited) — FeatureList's own, not a tone.",
+      },
+    ],
+  },
+  FeatureListProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  ThumbnailSizeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["SizeProp"],
+  },
+  ThumbnailProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "SizeProp",
+      "ClassNameProp",
+      {
+        field: "alt",
+        local: true,
+        reason: "The native img alt contract, made required so it cannot be forgotten.",
+      },
+      { field: "src", local: true, reason: "The native img src attribute." },
+    ],
+  },
   CodeBlockProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
