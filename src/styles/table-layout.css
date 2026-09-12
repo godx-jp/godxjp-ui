@@ -160,6 +160,7 @@
 
   /* Sortable header label is a real button (keyboard + aria-sort); inherits the cell's type. */
   .ui-data-table-sort-button {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: var(--space-inline-xs);
@@ -169,6 +170,35 @@
     font: inherit;
     cursor: pointer;
     outline: none;
+  }
+
+  /* THE HIT AREA IS NOT THE PAINT, and this button had only the paint.
+   *
+   * Reported from a consumer, measured in Chromium on a real table
+   * (`/find/PKG` in godx-task, 1409 elements): the column-header sort button paints
+   * **56.3 x 17.8**, and `elementFromPoint` at the centre +-11px — the box SC 2.5.8 asks for —
+   * returned the `<th>`, not the button. So the effective target was under 24px tall on every
+   * sortable column of every DataTable this library ships.
+   *
+   * The paint must NOT grow: a header cell's height is the table's row rhythm, and `font: inherit`
+   * plus `padding: 0` is what keeps the button typographically identical to a non-sortable header.
+   * So the hit area is carried by a centred pseudo-element instead, which is the same answer
+   * `.ui-control-inline-affix-action` already ships for the calendar/clear affix inside a 32px
+   * field (control.css, with its own measurement). Verified there the same way before reusing it:
+   * paint 20x20, `::after` 24x24, and all four +-11px probes HIT.
+   *
+   * `inline-size: 100%` keeps a WIDE button's hit area its own width rather than shrinking it to
+   * the floor; `min-*` only ever raises a small one. */
+  .ui-data-table-sort-button::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   .ui-data-table-bulk {
