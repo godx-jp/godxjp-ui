@@ -3,9 +3,29 @@ import { Radio as AriaRadio, RadioGroup as AriaRadioGroup } from "react-aria-com
 import { withOwnHitTarget } from "../data-entry/choice-hit-target";
 
 import { cn } from "../../lib/utils";
+import { useTranslation } from "../../i18n/use-translation";
+import { numberFormat } from "../../lib/intl-cache";
+
+/** Counter pill fields on {@link SegmentedOption} — same vocabulary as `Button` / `Toggle`. */
+type SegmentedCountFields = {
+  /**
+   * Optional count rendered as a borderless pill after the label — do not nest `Badge` in `label`
+   * for this (gh#602): `Badge` `secondary` is `--muted`, which matches the Segmented track.
+   */
+  count?: number | string;
+  /** Cap for numeric `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). */
+  overflowCount?: number;
+  /** Render the pill when numeric `count` is 0. Default `true`. */
+  showZero?: boolean;
+  /**
+   * Localized description of what the count means, folded into the accessible name
+   * (`全件, 54 件` when supplied).
+   */
+  countLabel?: string;
+};
 
 /** One choice in a {@link Segmented}. */
-export type SegmentedOption = {
+export type SegmentedOption = SegmentedCountFields & {
   /** Wire value — what `onValueChange` reports and what a form submits. */
   value: string;
   /** Visible label. It is also the item's accessible name, so it is required. */
@@ -15,6 +35,35 @@ export type SegmentedOption = {
   /** Disable this one choice; the rest of the group stays operable. */
   disabled?: boolean;
 };
+
+function SegmentedCountPill({
+  count,
+  overflowCount = 99,
+  showZero = true,
+  countLabel,
+}: SegmentedCountFields) {
+  const { locale } = useTranslation();
+  const visible =
+    count != null && count !== "" && (typeof count !== "number" || count !== 0 || showZero);
+  const formatted = React.useMemo(() => {
+    if (count == null || count === "") return "";
+    if (typeof count === "string") return count;
+    const format = numberFormat(locale);
+    return count > overflowCount ? `${format.format(overflowCount)}+` : format.format(count);
+  }, [count, locale, overflowCount]);
+
+  if (!visible) return null;
+
+  const spoken = countLabel ? `${formatted} ${countLabel}` : formatted;
+  return (
+    <>
+      <span data-slot="segmented-count" className="ui-segmented-count" aria-hidden="true">
+        {formatted}
+      </span>
+      <span className="sr-only">{`, ${spoken}`}</span>
+    </>
+  );
+}
 
 export type SegmentedProp = {
   /** The closed set of choices, in reading order. */
@@ -147,6 +196,12 @@ export const Segmented = React.forwardRef<HTMLDivElement, SegmentedProp>(functio
           <span data-slot="segmented-item-label" className="ui-segmented-item-label">
             {option.label}
           </span>
+          <SegmentedCountPill
+            count={option.count}
+            overflowCount={option.overflowCount}
+            showZero={option.showZero}
+            countLabel={option.countLabel}
+          />
         </AriaRadio>
       ))}
     </AriaRadioGroup>
