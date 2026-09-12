@@ -130,6 +130,10 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--thought-chain-chevron-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--thought-chain-icon-size": ["1.75rem", "1.75rem", "1.75rem"],
   "--float-button-icon-size": ["1rem", "1rem", "1rem"],
+  // Attachments (#559) aliases the two Upload tokens rather than minting values of its own:
+  // the drop placeholder IS an upload dropzone and the card's × IS an upload row's remove.
+  "--attachments-placeholder-icon-size": ["2.5rem", "2.5rem", "2.5rem"],
+  "--attachments-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
 };
 
 // Must stay in step with the selector pattern in the ratchet below. They drifted apart once —
