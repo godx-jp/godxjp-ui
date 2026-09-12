@@ -3362,6 +3362,36 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/card.tsx",
     vocabulary: ["ToneProp", "ClassNameProp", "ChildrenProp"],
   },
+  AttachmentsProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason:
+          "Ant Design X / antd Upload `fileList`, kept as `items` so an Ant X call site compiles unchanged.",
+      },
+      {
+        field: "onChange",
+        local: true,
+        reason:
+          "antd Upload's `{ file, fileList }` callback — not the controlled-vocabulary `onValueChange`.",
+      },
+    ],
+  },
+  AttachmentsSemanticProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  AttachmentsOverflowProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   CardCoverProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",
