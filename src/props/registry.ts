@@ -3001,6 +3001,79 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["ClassNameProp"],
   },
+  DragAxisProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
+  DragBoundsProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
+  DraggablePanelPlacementProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
+  DraggablePanelPositionProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      {
+        field: "x",
+        local: true,
+        reason:
+          "react-draggable's inline offset in CSS pixels, on the physical axis the pointer reports.",
+      },
+      {
+        field: "y",
+        local: true,
+        reason:
+          "react-draggable's block offset in CSS pixels, on the physical axis the pointer reports.",
+      },
+    ],
+  },
+  DraggablePanelProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "ChildrenProp",
+      "ExtraProp",
+      "SizeProp",
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "placement",
+        local: true,
+        reason: "Resting corner, in logical directions so it mirrors under RTL.",
+      },
+      { field: "axis", local: true, reason: "react-draggable `axis`, ported verbatim." },
+      {
+        field: "bounds",
+        local: true,
+        reason:
+          "react-draggable `bounds`, trimmed to the forms that survive the RTL and no-DOM-selector rules.",
+      },
+      { field: "position", local: true, reason: "react-draggable `position` — controlled offset." },
+      {
+        field: "defaultPosition",
+        local: true,
+        reason: "react-draggable `defaultPosition` — uncontrolled starting offset.",
+      },
+      {
+        field: "onPositionChange",
+        local: true,
+        reason: "Reports the clamped offset; the library never persists it (gh#560).",
+      },
+      {
+        field: "onClose",
+        local: true,
+        reason: "Presence renders the title-bar close control — antd Modal's onCancel.",
+      },
+    ],
+  },
   ThumbnailSizeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

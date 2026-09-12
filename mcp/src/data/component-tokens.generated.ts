@@ -2944,6 +2944,86 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shaded label cell, the half of antd's bordered table that makes the pairs readable at a * glance. `initial` so the --muted default re-resolves under a scoped theme. * Default = hsl(var(--muted))."
   },
   {
+    "name": "--draggable-panel-inset",
+    "value": "var(--space-6)",
+    "description": "Resting inset from the viewport edge at the panel's placement corner."
+  },
+  {
+    "name": "--draggable-panel-offset-x",
+    "value": "0",
+    "description": "Applied offset from that corner, in CSS pixels. Written by the component."
+  },
+  {
+    "name": "--draggable-panel-offset-y",
+    "value": "0",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-step-offset",
+    "value": "var(--space-2)",
+    "description": "Keyboard nudge, one arrow press. Shift takes the larger step (WCAG 2.1.1 path)."
+  },
+  {
+    "name": "--draggable-panel-step-offset-lg",
+    "value": "var(--space-10)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-width-sm",
+    "value": "18rem",
+    "description": "Width ladder. A floating assistant is a column of text, so these are reading measures."
+  },
+  {
+    "name": "--draggable-panel-width",
+    "value": "22rem",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-width-lg",
+    "value": "28rem",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-max-block-size",
+    "value": "70vh",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-radius",
+    "value": "var(--radius-lg)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-border-width",
+    "value": "var(--stroke-hairline)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-bar-padding",
+    "value": "var(--space-2) var(--space-3)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-bar-gap",
+    "value": "var(--space-2)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-body-padding",
+    "value": "var(--space-4)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
+    "name": "--draggable-panel-handle-size",
+    "value": "var(--control-affix-icon-size)",
+    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+  },
+  {
     "name": "--email-shell-width",
     "value": "480px",
     "description": "── Shell — the 480px transactional-email geometry ─────────────────────────────────────── canonical transactional card width"

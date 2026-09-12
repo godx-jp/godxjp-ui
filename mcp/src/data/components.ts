@@ -2065,6 +2065,131 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     rules: [24, 40],
   },
   {
+    name: "DraggablePanel",
+    group: "layout",
+    importPath: "@godxjp/ui/layout",
+    tagline:
+      "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library.",
+    props: [
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Panel name, shown in the title bar. A string also becomes the region's accessible name.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "Panel body. Text stays selectable: only the title bar starts a drag.",
+      },
+      {
+        name: "extra",
+        type: "ReactNode",
+        description: "Trailing slot in the title bar, before the close control.",
+      },
+      {
+        name: "placement",
+        type: '"top-start" | "top-end" | "bottom-start" | "bottom-end"',
+        defaultValue: '"bottom-end"',
+        description:
+          "Resting corner before any movement. Logical directions, so it mirrors for an RTL locale with no extra work.",
+      },
+      {
+        name: "width",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Panel width from the token ladder (18rem / 22rem / 28rem).",
+      },
+      {
+        name: "axis",
+        type: '"both" | "x" | "y" | "none"',
+        defaultValue: '"both"',
+        description:
+          "react-draggable's axis, ported verbatim. `none` keeps the panel mounted but pinned where it started.",
+      },
+      {
+        name: "bounds",
+        type: '"viewport" | "none"',
+        defaultValue: '"viewport"',
+        description:
+          "react-draggable's bounds. `viewport` keeps the whole panel on screen so it can never be thrown off-screen and stranded. Its selector and {left, top, right, bottom} forms are deliberately absent: a selector reaches into internal DOM, and the object is spelled in physical directions that cannot mirror under RTL.",
+      },
+      {
+        name: "position / defaultPosition",
+        type: "{ x: number; y: number }",
+        description:
+          "react-draggable's controlled and uncontrolled offset from the resting corner, in CSS pixels on the physical axes. Pass `position` together with `onPositionChange` to own the value.",
+      },
+      {
+        name: "onPositionChange",
+        type: "(position: { x: number; y: number }) => void",
+        description:
+          "Fires with the CLAMPED offset after every pointer frame and every keyboard nudge. The panel reports where it is and never remembers it — where that is stored, and per what scope, is your decision.",
+      },
+      {
+        name: "onClose",
+        type: "() => void",
+        description:
+          "Presence renders the close control in the title bar (antd Modal's onCancel). Omit it for a panel the page controls entirely.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "react-draggable's disabled. The panel stays exactly where it is and the handle stops moving it, by pointer and by keyboard alike.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class. Geometry lives in the --draggable-panel-* tokens.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/layout`: `import { DraggablePanel } from "@godxjp/ui/layout";`',
+      "DO treat the position as yours. The panel reports it and stores nothing, so persisting it per user, per workspace or not at all is a decision you make.",
+      "DO keep the body text short enough to read at 22rem, or let it scroll — the body is its own scroll region and the panel is capped at 70vh.",
+      "DON'T hand-roll this with a fixed-position div and pointer maths: that is page-local CSS ui-audit blocks, and every consumer that floats anything would write it again.",
+      "DON'T reach for it when the surface should interrupt. This is a labelled region, not a dialog: it traps no focus, dims no page and announces nothing. Use Dialog when the decision must be made before anything else can happen.",
+      "DON'T drag from the whole surface by wrapping the body in your own pointer handler — dragging from anywhere makes the text unselectable in a panel whose whole purpose is text.",
+    ],
+    useCases: [
+      "A floating assistant or chat box over a data-dense screen, moved aside when it covers the column being asked about.",
+      "A persistent calculator, unit converter or note pad kept on screen while the person works in the page behind it.",
+      "A live preview or inspector panel positioned wherever the reviewer wants it for the screen they are on.",
+      "A media or call tile that has to stay visible but must not sit on top of the form being filled in.",
+    ],
+    related: [
+      "ResizablePanel — resizes panes WITHIN a layout (react-resizable-panels). It changes how much room a pane gets; it cannot move a floating element around the viewport.",
+      "Sheet — a panel pinned to an edge of the screen, with a scrim and focus handling. Reach for it when the panel is a step in a flow rather than a companion to the page.",
+      "Popover — anchored to its trigger and closed on outside press. Reach for it for something short-lived beside a control, not for a surface that stays.",
+      "Dialog — modal and focus-trapping. Reach for it when the page behind must be unusable until the person answers.",
+    ],
+    example: `import { useState } from "react";
+import { DraggablePanel, Flex } from "@godxjp/ui/layout";
+import { Text } from "@godxjp/ui/general";
+
+function Assistant() {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  return (
+    <DraggablePanel
+      title="アシスタント"
+      placement="bottom-end"
+      position={position}
+      onPositionChange={setPosition}
+    >
+      <Flex direction="col" gap="sm">
+        <Text size="sm">この請求書の消費税区分について質問できます。</Text>
+      </Flex>
+    </DraggablePanel>
+  );
+}`,
+    docPath: "layout/draggable-panel.tsx",
+    storyPath: "layout/DraggablePanel.stories.tsx",
+    rules: [23, 44],
+  },
+  {
     name: "SplitPane",
     group: "layout",
     tagline: "Two-column layout with a main content area and a fixed-width aside panel.",

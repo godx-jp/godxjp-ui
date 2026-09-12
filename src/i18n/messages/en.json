@@ -263,6 +263,9 @@
       "hintMove": "Move",
       "hintSelect": "Select",
       "hintClose": "Close"
+    },
+    "draggablePanel": {
+      "moveLabel": "Move panel. Use the arrow keys to move it, or hold Shift for larger steps."
     }
   },
   "dataDisplay": {
