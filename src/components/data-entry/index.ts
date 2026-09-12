@@ -140,3 +140,12 @@ export type { TimeRangePickerProps } from "./time-range-picker";
 export type { UploadRequestContext, UploadResult, UploadRejection } from "./upload-types";
 
 export type { UploadItemActions } from "./upload-types";
+export { Attachments } from "./attachments";
+export type {
+  AttachmentsProp,
+  AttachmentsProps,
+  AttachmentsItemProp,
+  AttachmentsPlaceholderProp,
+  AttachmentsOverflowProp,
+  AttachmentsRefProp,
+} from "./attachments";
