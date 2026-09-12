@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Lối vào CSS thứ tư, `@godxjp/ui/styles/core-with-jis-level1` — nửa còn lại của #535.**
+  `core-with-fallbacks` cho consumer đường TỪ CHỐI 729 lát woff2; nó không làm mặt chữ kèm gói rẻ
+  đi cho người vẫn muốn dùng, và người đó vẫn trả ~8 request font mỗi lần chuyển màn. Lối mới thay
+  729 lát bằng **một tệp gộp cho mỗi weight**, phủ JIS X 0208 mức 1.
+
+  Đo trước, chỉ Noto Sans JP (M PLUS 2 nằm sau nó trong mọi stack gói này chở, nên trình duyệt
+  không bao giờ tải tới), ba weight 400/500/700:
+
+  | số ký tự Nhật khác nhau trên màn | `styles`                     | `core-with-jis-level1`     |
+  | -------------------------------- | ---------------------------- | -------------------------- |
+  | 448 (nhãn `ja` của chính gói)    | 99 request · 1.051.268 byte  | 3 request · 1.534.636 byte |
+  | 694 (thêm tên, địa chỉ, câu)     | 150 request · 1.772.728 byte | 3 request · 1.534.636 byte |
+  | 772 (thêm chút văn xuôi)         | 216 request · 3.491.840 byte | 3 request · 1.534.636 byte |
+
+  Cột trái phình theo NỘI DUNG và phải trả lại ở mỗi màn có ký tự mới; cột phải không đổi. So với
+  con số khai báo 729 lát / 11.688.408 byte thì là so với thứ không ai từng tải, nên cột trái là
+  tổng các lát mà `unicode-range` của chúng thật sự khớp văn bản.
+
+  **Điểm cắt là ~620 ký tự khác nhau: DƯỚI mức đó cắt lát ít byte hơn** (đổi bằng ~100 request).
+  Đã nói thẳng điều này trong chính tệp entry và trong tài liệu, chứ không bán nó như một thắng lợi
+  tuyệt đối.
+
+  Nội dung: JIS X 0208 hàng 1–47 — 2965 kanji mức 1 cộng kana, ký hiệu và Cyrillic của hàng 1–8 —
+  hợp với toàn bộ code point của các subset `latin` / `latin-ext` / `vietnamese` của Noto Sans JP,
+  tổng 3861. Nửa Latin không phải tuỳ chọn: gói này hứa phủ tiếng Việt (`--font-sans-vi`).
+
+  KHÔNG làm, có chủ ý: JIS mức 2 (gần gấp đôi byte để đổi lấy kanji chỉ gặp ở họ tên hiếm — chúng
+  rơi xuống mặt chữ Nhật của hệ điều hành, nên entry dặn consumer xếp một mặt chữ ấy ngay sau);
+  M PLUS 2 (ba weight gộp của nó thêm 1.089.676 byte mà hôm nay không ai trả); `unicode-range` trên
+  các face gộp (một dải đưa trình duyệt về lại chỗ phải đo chữ trước khi biết tải gì — đúng cơ chế
+  entry này sinh ra để bỏ; giá phải trả, đã ghi trong tệp: một màn toàn Latin cũng tải ~500 KB của
+  weight đó thay vì ~25 KB Latin nằm trong). `styles`, `core` và `--font-sans-base` không bị đụng.
+
+  `check:packed-public-contract` nay đo ngân sách font của **cả bốn** lối vào ngay trong tarball, và
+  với lối mới thì đo cả ba tệp woff2 (mỗi tệp 400.000–560.000 byte, tổng ≤ 1.640.000) rồi lần theo
+  từng `url()` trong một bản `npm install` thật tới một tệp có thật.
+
 ### Fixed
 
 - **Chữ lỗi của `FormField` đọc tầng TÔ thay vì tầng CHỮ — 2,95:1 trên nền tối (#610).** Dòng
