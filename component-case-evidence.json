@@ -156,7 +156,7 @@
         },
         "columns": {
           "cases": [
-            "omitted — the stylesheet default of 3",
+            "omitted \u2014 the stylesheet default of 3",
             4
           ],
           "evidence": [
@@ -167,7 +167,7 @@
         "linkComponent": {
           "cases": [
             "router link component",
-            "omitted — plain anchor"
+            "omitted \u2014 plain anchor"
           ],
           "evidence": [
             "src/components/layout/__tests__/app-launcher.test.tsx"
@@ -252,7 +252,7 @@
         },
         "side": {
           "cases": [
-            "omitted — derived from appearance (bottom in a bar, right otherwise)",
+            "omitted \u2014 derived from appearance (bottom in a bar, right otherwise)",
             "top",
             "right",
             "bottom",
@@ -266,7 +266,7 @@
         },
         "align": {
           "cases": [
-            "omitted — derived from appearance (end in a bar, start otherwise)",
+            "omitted \u2014 derived from appearance (end in a bar, start otherwise)",
             "start",
             "center",
             "end"
@@ -728,7 +728,8 @@
         },
         "hoverable": {
           "cases": [
-            true
+            true,
+            false
           ],
           "evidence": [
             "docs/data-display/card/index.tsx"
@@ -2476,7 +2477,7 @@
       "props": {
         "ariaLabel": {
           "cases": [
-            "勘定科目コード検索"
+            "\u52d8\u5b9a\u79d1\u76ee\u30b3\u30fc\u30c9\u691c\u7d22"
           ],
           "evidence": [
             "docs/data-entry/search-input.tsx"
@@ -2503,7 +2504,7 @@
         "defaultValue": {
           "cases": [
             "",
-            "2026年5月"
+            "2026\u5e745\u6708"
           ],
           "evidence": [
             "docs/data-entry/search-input.tsx"
@@ -3364,7 +3365,7 @@
       "props": {
         "aria-label": {
           "cases": [
-            "CC送信先メール"
+            "CC\u9001\u4fe1\u5148\u30e1\u30fc\u30eb"
           ],
           "evidence": [
             "docs/data-entry/tag-input.tsx"
@@ -3425,7 +3426,7 @@
         },
         "maxTagPlaceholder": {
           "cases": [
-            "function → ほか2件"
+            "function \u2192 \u307b\u304b2\u4ef6"
           ],
           "evidence": [
             "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
@@ -3506,7 +3507,7 @@
         "value": {
           "cases": [
             [
-              "営業部",
+              "\u55b6\u696d\u90e8",
               "Q1"
             ]
           ],
@@ -3664,8 +3665,8 @@
       "props": {
         "label": {
           "cases": [
-            "週シフト 2026年5月11日〜15日",
-            "会議室の予約 5月14日"
+            "\u9031\u30b7\u30d5\u30c8 2026\u5e745\u670811\u65e5\u301c15\u65e5",
+            "\u4f1a\u8b70\u5ba4\u306e\u4e88\u7d04 5\u670814\u65e5"
           ],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
@@ -3896,7 +3897,8 @@
       "props": {
         "actions": {
           "cases": [
-            true
+            true,
+            false
           ],
           "evidence": [
             "docs/data-display/card/index.tsx"

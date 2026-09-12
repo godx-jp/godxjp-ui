@@ -63,6 +63,10 @@ const FROZEN: Record<string, [string, string, string]> = {
   // no-move row. The scanner found it before this table did, which is the whole point of the
   // scanner: a frozen table nobody updates is a table that stops describing the tier.
   "--tree-icon-size": ["1rem", "1rem", "1rem"],
+  // The glyph inside `SkeletonImage`'s placeholder frame, minted with the antd Skeleton port.
+  // It reads `--icon-size-4xl` — the placeholder stands in for a PICTURE, so the mark scales with
+  // the frame rather than with body text, and it is the largest step on the tier for that reason.
+  "--skeleton-image-glyph-size": ["3rem", "3rem", "3rem"],
   "--sidebar-product-caret-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--topbar-icon-size": ["1rem", "1rem", "1rem"],
   "--topbar-caret-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
