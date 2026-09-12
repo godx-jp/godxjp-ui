@@ -3860,6 +3860,54 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  ActionsVariantProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["ControlVariantProp"],
+  },
+  ActionsStatusProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["StatusProp"],
+  },
+  ActionsFeedbackValueProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["ValueProp"],
+  },
+  ActionsItemsProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["LabelProp", "IconProp", "OnClickProp", "ActionsProp"],
+  },
+  ActionsProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["ActionsProp", "OnClickProp", "LabelProp", "IdProp", "ClassNameProp"],
+  },
+  ActionsItemProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "StatusProp",
+      "IconProp",
+      "LabelProp",
+      "OnClickProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
+  ActionsCopyProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["IconProp", "LabelProp", "HandlerProp", "IdProp", "ClassNameProp"],
+  },
+  ActionsFeedbackProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["ValueProp", "OnChangeProp", "LabelProp", "IdProp", "ClassNameProp"],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;
