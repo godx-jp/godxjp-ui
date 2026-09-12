@@ -17,8 +17,13 @@ type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "de
  * borrowing the brand colour.
  */
 type CardAccentPlacement = "edge" | "perimeter";
-/** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
-type CardVariant = "default" | "muted" | "outline" | "featured";
+/**
+ * Surface fill and edge. `outline` is antd's `outlined` — it drops the FILL and keeps the
+ * hairline; `borderless` is antd's `variant="borderless"` (its deprecated `bordered={false}`) —
+ * it drops the HAIRLINE and keeps the fill. They are two different cards, which is why both
+ * values exist: neither one substitutes for the other.
+ */
+type CardVariant = "default" | "muted" | "outline" | "borderless" | "featured";
 /** Padding density — base 16px · tight 12px · cozy 20px. */
 type CardDensity = "tight" | "cozy";
 
@@ -40,15 +45,26 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
   accentPlacement?: CardAccentPlacement;
   variant?: CardVariant;
   density?: CardDensity;
+  /**
+   * Lift the card on hover (antd `hoverable`) — the resting elevation steps up to
+   * `--card-hover-shadow` and the pointer becomes a `pointer`.
+   *
+   * This is a PRESENTATION flag, not an interaction: it announces nothing and binds no handler.
+   * A card that looks clickable has to BE clickable for everyone, so pair it with a real control
+   * — a `Link`/`Button` in the header or footer, or the whole card rendered as one — never with a
+   * bare `onClick` on this div, which a keyboard or screen-reader user cannot reach.
+   */
+  hoverable?: boolean;
 };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, accent, accentPlacement, variant, density, ...props }, ref) => (
+  ({ className, accent, accentPlacement, variant, density, hoverable, ...props }, ref) => (
     <div
       ref={ref}
       className={cn("group/card", className)}
       data-slot="card"
       data-accent={accent}
+      data-hoverable={hoverable ? "" : undefined}
       // INERT DEFAULT: `edge` emits no attribute at all, so every existing accented Card keeps
       // the exact DOM and the exact leading-rail geometry it had.
       data-accent-placement={accentPlacement === "perimeter" ? "perimeter" : undefined}
@@ -146,15 +162,25 @@ export type CardFooterProps = React.HTMLAttributes<HTMLDivElement> & {
   separated?: boolean;
   /** Full-bleed footer (the conventional `actions` bar). */
   flush?: boolean;
+  /**
+   * Split the footer into EQUAL-WIDTH cells divided by vertical rules — antd's `actions` row.
+   *
+   * A different band from `separated`, which packs its children at the inline end at their
+   * natural widths: that is the right shape for a Save/Cancel pair and the wrong one for antd's
+   * divided strip. Self-sufficient — it draws its own top rule and full-bleed edges, because
+   * upstream's actions row is never anything else.
+   */
+  actions?: boolean;
 };
 
 export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ className, separated, flush, ...props }, ref) => (
+  ({ className, separated, flush, actions, ...props }, ref) => (
     <div
       ref={ref}
       data-slot="card-footer"
       data-separated={separated ? "" : undefined}
       data-flush={flush ? "" : undefined}
+      data-actions={actions ? "" : undefined}
       className={className}
       {...props}
     />

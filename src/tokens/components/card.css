@@ -66,6 +66,10 @@
    * surface box-shadow so a service can wash every card with the global glow, e.g.
    * --card-glow: var(--shadow-glow), with no markup change. */
   --card-glow: 0 0 0 0 transparent;
+  /* `hoverable` (antd `hoverable`) — the elevation a pointer-interactive card steps UP to on
+   * hover. One step above the resting `--card-shadow` on the same ramp, so a service that has
+   * already flattened or lifted every card keeps a proportional lift instead of a fixed one. */
+  --card-hover-shadow: var(--shadow-md);
   /* Fill tint — subtle role wash over the card background (default transparent = invisible).
    * Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once. */
   --card-tint: transparent;

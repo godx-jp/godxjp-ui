@@ -3396,7 +3396,7 @@ export default function InvoiceList({
     name: "Card",
     group: "data-display",
     tagline:
-      'Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.',
+      'Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.',
     props: [
       {
         name: "accent",
@@ -3413,21 +3413,22 @@ export default function InvoiceList({
       },
       {
         name: "variant",
-        type: '"default" | "muted" | "outline" | "featured"',
+        type: '"default" | "muted" | "outline" | "borderless" | "featured"',
         defaultValue: '"default"',
         description:
-          'Surface fill style. `featured` is the BRAND perimeter; its colour is now the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead.',
+          'Surface fill AND edge. `outline` is Ant Design\'s `outlined` — no fill, hairline kept. `borderless` is Ant Design\'s `variant="borderless"` (its deprecated `bordered={false}`) — no hairline, fill kept. The two are mirror images and neither substitutes for the other. `featured` is the BRAND perimeter; its colour is the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead.',
       },
       {
-        name: "size",
-        type: '"md" | "compact"',
-        defaultValue: '"md"',
-        description: "Card size preset.",
+        name: "hoverable",
+        type: "boolean",
+        description:
+          'Ant Design `hoverable` — the card lifts to `--card-hover-shadow` on hover and takes a pointer cursor. PRESENTATION ONLY: it announces nothing and binds no handler, so pair it with a real control (a Link/Button inside, or the whole card rendered as one). Never with a bare onClick on the Card div — a keyboard or screen-reader user cannot reach that. Composes with `accent`/`accentPlacement="perimeter"`: the hover raises the shadow TOKEN, so the attention ring survives the hover.',
       },
       {
         name: "density",
         type: '"tight" | "cozy"',
-        description: "Internal padding density (base 16 / tight 12 / cozy 20).",
+        description:
+          "Internal padding density (base 16 / tight 12 / cozy 20). This IS Ant Design's `size` axis; there is deliberately no `size` prop (removed 2026-08-24) — see docs/DESIGN-AUTHORITY.md, a capability this library already has keeps its own name.",
       },
     ],
     usage: [
@@ -3436,7 +3437,9 @@ export default function InvoiceList({
       'DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as="p"> so it is not announced as a heading.',
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
+      "DO use <CardFooter actions> for Ant Design's `actions` row — N EQUAL-WIDTH cells split by vertical hairlines (複製 / 共有 / 削除 under a profile or entity card). It is a different band from `separated`, which packs children at the inline end at their natural widths: that is the right shape for a Save/Cancel pair and the wrong one for a divided strip. `actions` is self-sufficient — it draws its own top rule and full-bleed edges, so it needs neither `separated` nor `flush` beside it. The dividers are logical (border-inline-start), so the strip mirrors under RTL.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
+      'ANT DESIGN PROPS THIS FAMILY ANSWERS BY COMPOSITION, not by a prop of the same name — do not ask for these to be added: `title`/`extra` are <CardHeader> + <CardTitle> + <CardAction> (and CardTitle.level emits a real heading, which antd does not). `cover` is <CardCover>. `actions` is <CardFooter actions>. `loading` is a Skeleton in the body — antd renders a Skeleton with paragraph rows and no title, so the equivalent is <CardContent solo><SkeletonRows rows={4} /></CardContent>. `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange` are <Tabs items value defaultValue onValueChange> inside <CardContent tight flush> (card-layout.css already insets the tabs list and panel to the card column); `tabBarExtraContent` is <CardBar extra>. `type="inner"` is variant="muted" plus <CardHeader banded>. `size` is `density`. `Card.Grid` is <ResponsiveGrid>; `Card.Meta` is <ListRow leading title description trailing>.',
       'DO reach for `accentPlacement="perimeter"` when the whole card needs attention, not one edge: `<Card accent="attention" accentPlacement="perimeter">` is the semantic-tone equivalent of `variant="featured"` (which is brand-toned by definition). Never hand-roll it with `className="border-2 border-[--attention]"` or a page-local `.card--attention` rule — the placement owns the border weight, the outer ring AND the slot-padding compensation, so text stays on the same column as an unaccented sibling.',
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
       "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT: `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: `<CardContent flush>` zeroes BOTH of its block edges — for ANY full-bleed body, not only one containing a <Table>` gate left a flush file LIST floating 18px off its header while the flush table beside it sat at 0) — so the plain header above it supplies the gap from its own `--card-space-body-y` bottom padding instead. `tight` and `solo` still own that axis themselves. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",

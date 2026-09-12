@@ -49,6 +49,18 @@
     background: transparent;
   }
 
+  /* antd `variant="borderless"` — no edge, fill retained. The MIRROR of `outline` above, not a
+   * synonym for it: `outline` drops the fill and keeps the hairline, this drops the hairline and
+   * keeps the fill, so neither value can stand in for the other.
+   *
+   * `border-color` is deliberately left alone rather than set transparent — the `[data-accent]`
+   * rail is declared LATER in this file at the same (0,2,0) specificity, so an accented
+   * borderless card still paints its semantic leading stripe and only loses the other three
+   * edges. A semantic signal must not vanish because the card asked for a quieter frame. */
+  [data-slot="card"][data-variant="borderless"] {
+    border-width: 0;
+  }
+
   /* `featured` = the brand-toned perimeter. */
   [data-slot="card"][data-variant="featured"] {
     border-color: var(--card-featured-border-color, hsl(var(--primary)));
@@ -127,6 +139,36 @@
   [data-slot="card"][data-accent][data-accent-placement="perimeter"]
     > [data-slot="card-footer"]:not([data-flush]) {
     padding-inline-start: var(--card-space-inset);
+  }
+
+  /* ── `hoverable` (antd `hoverable`) — the lift a pointer-interactive card takes ──────────
+   * Ported from `components/card/style/index.ts` (antd, MIT), which pairs `cursor: pointer` with
+   * a `box-shadow` transition and raises the shadow on hover.
+   *
+   * Written here as a REDEFINITION OF `--card-shadow`, never as a `box-shadow` of its own, and
+   * that is the whole point. The surface box-shadow is `var(--card-shadow), var(--card-glow)`,
+   * and the `accentPlacement="perimeter"` rule re-lists `var(--card-shadow)` behind its attention
+   * ring — so a hover rule that PAINTED a box-shadow would win at equal specificity and silently
+   * erase that ring (and any service `--card-glow`) for as long as the pointer sat on the card.
+   * Moving the step up one level means every rule that already composes the resting elevation
+   * composes the hovered one too, in whatever order the cascade happens to resolve.
+   *
+   * Upstream also sets `border-color: transparent` on hover; this does not, because that would
+   * take the semantic `[data-accent]` rail with it. */
+  [data-slot="card"][data-hoverable] {
+    cursor: pointer;
+    transition: box-shadow var(--duration-fast) var(--ease-standard);
+  }
+
+  [data-slot="card"][data-hoverable]:hover {
+    --card-shadow: var(--card-hover-shadow);
+  }
+
+  /* WCAG 2.3.3 — the elevation still changes, it just stops animating there. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="card"][data-hoverable] {
+      transition: none;
+    }
   }
 
   /* ── Header ──────────────────────────────────────────────────────────── */
@@ -395,6 +437,46 @@
   [data-slot="card-footer"][data-separated][data-flush] {
     padding-inline: 0;
     justify-content: stretch;
+  }
+
+  /* ── `actions` (antd `actions`) — equal cells, hairline between ────────────────────────
+   * Ported from `components/card/style/index.ts` · `genCardActionsStyle` and the `actions`
+   * branch of `components/card/Card.tsx` (antd, MIT).
+   *
+   * SELF-SUFFICIENT ON PURPOSE. antd's actions row is never anything but full-bleed with a top
+   * rule — upstream hard-codes both — so this flag draws its own chrome instead of asking for a
+   * `separated flush actions` triple. One antd behaviour, one prop, which is also what `CardBar`
+   * already does when it derives its separators from its own position. Writing `separated` or
+   * `flush` alongside is harmless: each declares the same thing this does.
+   *
+   * Upstream gives every cell `width: ${100 / actions.length}%` as an INLINE style. `flex: 1 1 0`
+   * buys the identical equal-width result from the stylesheet, so nothing has to count the
+   * children and no geometry lands in the DOM (cardinal rule #44).
+   *
+   * The rules are `border-inline-start` on every cell after the first — antd uses the mirror
+   * form, `borderInlineEnd` on every cell but the last; both are logical, so the strip mirrors
+   * under RTL either way. `gap: 0` because the rule IS the separation; a gap would leave each
+   * hairline floating in dead space. The cells own the block padding, so the divider runs the
+   * full height of the row exactly as the upstream `li` border does. */
+  [data-slot="card-footer"][data-actions] {
+    gap: 0;
+    flex-wrap: nowrap;
+    padding-inline: 0;
+    padding-block: 0;
+    border-top: var(--stroke-hairline) solid hsl(var(--card-border, var(--border)));
+  }
+
+  [data-slot="card-footer"][data-actions] > * {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--card-space-footer-y);
+  }
+
+  [data-slot="card-footer"][data-actions] > * + * {
+    border-inline-start: var(--stroke-hairline) solid hsl(var(--card-border, var(--border)));
   }
 
   /* ── Nested insets (table cells, grid cells — align to shell, not slot padding) ─ */
