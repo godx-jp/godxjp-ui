@@ -28,6 +28,33 @@
   color: hsl(var(--muted-foreground));
 }
 
+/* `!important` ON THE LEGEND LABEL, and it is the only way this rule can win.
+ *
+ * recharts writes the SERIES colour as an INLINE STYLE on the label span —
+ * `style="color: rgb(68, 136, 197); white-space: normal; …"` — so the declaration above never
+ * applied to it, in any consumer, since the day it was written. An inline style outranks every
+ * stylesheet rule regardless of specificity; the axis half of the same selector does work, because
+ * `.recharts-text` is SVG and recharts sets `fill` as a presentation ATTRIBUTE, which CSS beats.
+ *
+ * What it cost, measured in Chromium on a real consumer screen (godx-task `/projects/PKG`, the
+ * project-home status donut) at 12.47px:
+ *
+ *   未対応    #ed8077 on the card → 2.59:1
+ *   処理中    #4488c5             → 3.70:1
+ *   処理済み  #5eb5a6             → 2.39:1
+ *   完了      #a1af2f             → 2.37:1
+ *
+ * all four under AA's 4.5:1, on every donut, pie and cartesian legend this library renders. A
+ * series colour is a FILL — it is tuned to be a slice with nothing written on it — so read as ink
+ * it fails, which is the same tier confusion gh#610 and gh#612 were. The swatch beside the label
+ * is where that colour belongs and already carries it.
+ *
+ * The file's own precedent for the same upstream habit is `.recharts-default-tooltip` below, which
+ * carries `!important` for its border and background for exactly this reason. */
+.ui-chart .recharts-legend-item-text {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
 .ui-chart .recharts-default-tooltip {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border)) !important;
