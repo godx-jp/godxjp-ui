@@ -6,6 +6,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — `Sidebar` cân lại hai khe nằm trong dải thu gọn
+
+- **`Sidebar footer` nhận `(collapsed) => ReactNode`, đúng hình của `brand`** (gh#516). Hai khe ở
+  hai đầu của dải mà chỉ một khe biết mình đang thu gọn — và sự bất đối xứng ấy không có lý do nào
+  ghi ở đâu cả, `brand` chỉ được làm trước. Với `footer` thì consumer **không có nước đi nào đúng**:
+  tự đọc `collapsed` của mình thì `AppShell` đưa cùng một `Sidebar` sang drawer (drawer luôn mở
+  hàng ra) nên chân trang thành một glyph trơ giữa drawer toàn chiều rộng; dựng `Sidebar` thứ hai
+  cho `AppShell.mobileNav` thì chính cái override ấy tắt `railInDrawer`; không làm gì thì nội dung
+  của dải mở chảy tràn trong dải 64px.
+
+  Đo trên frame docs, cùng một node chân trang: **255×66 khi mở → 63×111 khi thu gọn**, tên người
+  dùng gãy làm ba dòng trong hộp rộng 47px. Sau bản sửa, dạng hàm trả về một `Avatar`: **63×45**,
+  `scrollWidth − clientWidth = 0`. Dạng `ReactNode` cũ chạy y nguyên; hàm trả `null` thì **không vẽ
+  khung chân trang** (không kẻ, không đệm) thay vì để lại một dải trống có đường kẻ.
+
+- **`SidebarItemProp.trailingIcon` — khe glyph ở đuôi hàng, tách khỏi khe đếm số** (gh#519). Mẫu
+  "hàng ở chân sidebar mở ra một menu" cần ba phần: biểu tượng + tên + mũi tên `⌃⌄`. Phần thứ ba
+  trước nay chỉ có thể nhét vào `badge`, mà `badge` là **viên thuốc đếm số**: `.sb-badge` vẽ bán
+  kính `9999px`, nền `hsl(var(--secondary))`, và **không ghim cỡ SVG**.
+
+  Đo lại trên `main` đúng bằng số của người báo lỗi: một `ChevronsUpDown` đặt vào `badge` ra
+  **36×24**, `border-radius: 9999px`, nền `rgb(244, 243, 240)`, **SVG 24×24** — cạnh một biểu tượng
+  dẫn đầu 16×16 trong cùng hàng 32px. Sau bản sửa, cùng glyph ấy qua `trailingIcon`: **hộp 16×16,
+  SVG 16×16**, nền `rgba(0, 0, 0, 0)`, `border-radius: 0px`, hàng vẫn cao 32px.
+
+  Không chọn "thêm một bậc cỡ cho `Badge`", vì cái sai không phải cỡ mà là **BỀ MẶT**: một viên
+  thuốc vẽ nền và bo góc, một glyph thì không vẽ gì cả. Nhận **COMPONENT** giống `icon` (không phải
+  `ReactNode`) — đó chính là thứ cho phép DS ghim cỡ; một lỗ `ReactNode` là cách `badge` đã để lọt
+  SVG 24px. Ẩn ở dải thu gọn trên đúng luật đang ẩn `.sb-badge`, vì consumer đặt hàng chuyển
+  workspace vào `footer` — nằm trong dải và **không** được dựng lại thành icon-only.
+
+  Đặt tên `trailingIcon` chứ không phải `affix` như đề nghị trong issue: `trailing` đã là từ của DS
+  cho khe đuôi của một hàng (`ListRow.trailing`), còn "affix" đang được dùng để mô tả chính
+  `badge` ("Count/status affix") nên sẽ là một từ mang hai nghĩa.
+
 ### Fixed
 
 - **`Tabs size` nay có tác dụng ở dạng compound.** Tầng kích thước được tính trong `Tabs` và chỉ

@@ -860,6 +860,21 @@ export type SidebarItemProp = {
    * merely unread: an @mention, a direct message, a failure waiting on them.
    */
   badgeTone?: SidebarBadgeToneProp;
+  /**
+   * TRAILING 16px glyph — the disclosure mark of a row that opens something (the `⌃⌄` of a
+   * workspace switcher, a `→` on a row that leaves the app). Pinned to the same box as `icon`,
+   * and hidden on the collapsed rail exactly like `badge`.
+   *
+   * It is NOT `badge`, and the difference is the pill: `badge` wraps whatever it is given in
+   * `.sb-badge` — a 9999px-radius `hsl(var(--secondary))` capsule sized for a COUNT — so a
+   * chevron passed there renders as a grey lozenge with a 24px SVG inside it (measured 36×24 with
+   * a 24×24 glyph, beside a 16×16 leading icon in the same 32px row). A glyph draws no surface,
+   * so it gets its own slot rather than a size tier on the count pill.
+   *
+   * Takes the COMPONENT, like `icon` — not an element. That is what lets the rail pin the size;
+   * a `ReactNode` hole is how `badge` ended up carrying an unsized 24px SVG.
+   */
+  trailingIcon?: ComponentType<SVGProps<SVGSVGElement>>;
   disabled?: boolean;
   /**
    * Destination of the row. It is the SOLE interactive element (no nested `<button>`), so
@@ -1236,7 +1251,22 @@ export type SidebarProp = {
    * canonical row.
    */
   renderItem?: (item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode;
-  footer?: ReactNode;
+  /**
+   * Footer slot pinned BELOW the scroll area — identity, status, a mode switch.
+   *
+   * Takes a FUNCTION for the same reason `brand` does, and it is the same reason twice because
+   * both slots live INSIDE the collapsible rail: a plain node is built outside this component and
+   * cannot see the EFFECTIVE collapsed state, so the consumer has no correct move. Reading their
+   * own `collapsed` boolean renders a glyph-only footer inside the full-width drawer (`AppShell`
+   * hands the same Sidebar to both surfaces and the drawer un-collapses); building a second
+   * Sidebar for `AppShell.mobileNav` is the override that switches `railInDrawer` off; doing
+   * neither leaves the expanded footer to reflow inside a 64px rail (measured: a two-line identity
+   * block went 255×66 docked → 63×111 collapsed, wrapping the name across three lines).
+   *
+   * The function is called with the surface-effective value. A plain `ReactNode` still works
+   * unchanged.
+   */
+  footer?: ReactNode | ((collapsed: boolean) => ReactNode);
   /** Override the nav landmark's accessible name. Defaults to a localized "Main navigation". */
   "aria-label"?: string;
 };

@@ -85,6 +85,23 @@ function SidebarIcon({ icon: Icon }: { icon?: SidebarItemData["icon"] }) {
 }
 
 /**
+ * The TRAILING 16px glyph slot — the disclosure mark of a row that opens something. Unlike
+ * `.sb-icon` the box is only rendered when there is a glyph: it carries no alignment duty (nothing
+ * follows it in the row), so an empty one would only add a gap at the row's inline end.
+ */
+function SidebarTrailingIcon({
+  icon: Icon,
+}: {
+  icon: NonNullable<SidebarItemData["trailingIcon"]>;
+}) {
+  return (
+    <span className="sb-trailing-icon">
+      <Icon aria-hidden="true" />
+    </span>
+  );
+}
+
+/**
  * Every row shape renders this: the leaf button, the `href` anchor, the `linkComponent` router
  * link, the `asChild` element and the group trigger.
  */
@@ -113,6 +130,7 @@ function SidebarRowContent({
           {item.badge}
         </span>
       ) : null}
+      {item.trailingIcon ? <SidebarTrailingIcon icon={item.trailingIcon} /> : null}
     </>
   );
 }
@@ -467,6 +485,12 @@ export function Sidebar({
    * the `navRail` from mobile. Accepting a function removes the reason to build that second node.
    */
   const brandNode = typeof brand === "function" ? brand(collapsed) : brand;
+  /*
+   * `footer` follows the SAME rule as `brand`, and deliberately through the same two lines rather
+   * than a second convention: both slots sit inside the collapsible rail, so both need the
+   * effective value, and a consumer who learnt the shape once should not learn it twice.
+   */
+  const footerNode = typeof footer === "function" ? footer(collapsed) : footer;
 
   return (
     <div className="sb-root" data-collapsed={collapsed ? "true" : undefined}>
@@ -560,7 +584,7 @@ export function Sidebar({
           ))}
       </nav>
 
-      {footer ? <div className="sb-footer">{footer}</div> : null}
+      {footerNode ? <div className="sb-footer">{footerNode}</div> : null}
     </div>
   );
 }
