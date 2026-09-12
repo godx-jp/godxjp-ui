@@ -276,6 +276,11 @@
       "dotsLabel": "スライドを選択",
       "goToSlide": "{index} 番目のスライドへ"
     },
+    "featureList": {
+      "included": "含む",
+      "excluded": "含まない",
+      "limited": "制限あり"
+    },
     "listRow": {
       "unread": "未読",
       "read": "既読"

@@ -6836,6 +6836,30 @@
         }
       ]
     },
+    "FeatureList": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "FeatureItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
     "Field": {
       "group": "data-entry",
       "props": [
@@ -14148,17 +14172,6 @@
           ]
         },
         {
-          "name": "className",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "node_modules/@types/react/index.d.ts",
-            "src/props/components/data-display.prop.ts"
-          ]
-        },
-        {
           "name": "color",
           "origin": "owned",
           "required": true,
@@ -15259,6 +15272,49 @@
           "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
           "values": ["default", "ghost", "outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "Thumbnail": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "alt",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "ThumbnailSizeProp | undefined",
+          "values": ["sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "src",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
         }
       ]
     },

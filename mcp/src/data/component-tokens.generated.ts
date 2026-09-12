@@ -2479,6 +2479,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The caller's colour — the only knob here that is PER-INSTANCE. swatch.tsx writes it inline on the element, and an inline declaration outranks this one, so this is the value only when the prop is empty. It has to be declared all the same: an undeclared custom property has no fallback to fall back TO, which is the failure check-dist-tokens-resolve.mjs exists to catch. `--muted` is the right default because an unset sample should read as \"no colour recorded\" rather than as a colour nobody chose."
   },
   {
+    "name": "--feature-list-space-gap",
+    "value": "var(--space-stack-sm)",
+    "description": "Between statements: tight enough that the column reads as one list, loose enough that a two-line item does not merge with the next one."
+  },
+  {
+    "name": "--feature-list-space-inline",
+    "value": "var(--space-inline-sm)",
+    "description": "Glyph column ↔ label."
+  },
+  {
+    "name": "--feature-list-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--feature-list-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--feature-list-mark-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "The glyph takes the same step a Button's icon takes, so a feature list beside a control tier reads at the same weight. The mark BOX is `1lh` in the stylesheet — deliberately not a token, because the one correct value is \"however tall this text's line is\"."
+  },
+  {
+    "name": "--thumbnail-block-size-sm",
+    "value": "4rem",
+    "description": "Thumbnail — a framed picture at a fixed height, intrinsic width. Three steps, chosen for the surfaces that asked for them rather than derived: an inline attachment strip, a gallery row, and a review screen. The `height` axis has no named scale in this library on purpose (see scripts/token-scale-bypass-rules.mjs — container heights barely repeat). 64px — an attachment chip beside its filename."
+  },
+  {
+    "name": "--thumbnail-block-size",
+    "value": "6rem",
+    "description": "96px — the default: a gallery row that still shows the shot."
+  },
+  {
+    "name": "--thumbnail-block-size-lg",
+    "value": "10rem",
+    "description": "160px — a review screen, where the picture IS the content."
+  },
+  {
+    "name": "--thumbnail-border-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--thumbnail-radius",
+    "value": "var(--radius)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--timeline-dot-done-background",
     "value": "initial",
     "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."

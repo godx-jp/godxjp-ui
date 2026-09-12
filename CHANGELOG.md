@@ -41,6 +41,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cho khe đuôi của một hàng (`ListRow.trailing`), còn "affix" đang được dùng để mô tả chính
   `badge` ("Count/status affix") nên sẽ là một từ mang hai nghĩa.
 
+### Added — hai primitive cho hai hình dạng consumer không viết ra được (gh#529, gh#530)
+
+- **`FeatureList`** (gh#529) — một cột các CÂU, mỗi câu một glyph trạng thái dẫn đầu
+  (`included` ✓ / `limited` − / `excluded` ✗), nhãn, và một mô tả mờ TỰ XUỐNG DÒNG. Ba component
+  gần nhất đều không phải: `ListRow` là hàng THỰC THỂ một dòng (có đường kẻ giữa mọi hàng, có khe
+  hành động cuối hàng, và nó cắt chữ chứ không xuống dòng), `Timeline` là rail sự kiện CÓ THỨ TỰ
+  với đường nối và trạng thái done/current/pending — đó là thời gian, không phải sự bao gồm, và
+  `Descriptions` là lưới thuật ngữ/giá trị, trong khi ở đây trạng thái CHÍNH LÀ giá trị và nó được
+  VẼ. Nên trang tự dựng `<ul className="flex flex-col gap-2">`: đo bằng `ui-audit --consumer` trên
+  đúng đoạn mã trong issue ra **3 lỗi** (`no-utility-layout`, `no-utility-spacing` ×2).
+
+  **Lỗi thứ ba là cái đáng kể: `mt-0.5`.** 2px nằm DƯỚI `--space-1`, không bậc nào của thang đọc
+  ra nó, và nó sai ngay khi cỡ chữ bên cạnh đổi. Ở đây glyph được cho một ô cao đúng MỘT HỘP DÒNG
+  (`block-size: 1lh`) rồi canh giữa trong ô ấy, nên nó rơi vào dòng ĐẦU của một nhãn xuống ba dòng,
+  ở mọi cỡ chữ và mọi mật độ, mà call site không có một con số nào. Đo trong Chromium (14px,
+  `--line-height-body` 1.7, hộp dòng 23,80px, tâm quang học của dải cap ở 12,77px dưới đỉnh dòng),
+  sai số có dấu của tâm MỰC của glyph:
+
+  | cách làm                               | sai số      |
+  | -------------------------------------- | ----------- |
+  | ô cao 1lh, glyph canh giữa (bản này)   | **−1,20px** |
+  | `align start` + `mt-0.5` (bản tự dựng) | −3,10px     |
+  | `align start`, không nudge             | −5,10px     |
+  | `align-items: baseline`                | −3,60px     |
+
+  Nên **`baseline` không phải câu trả lời**, và nó còn tệ hơn chính 2px mà nó định thay: `<svg>` là
+  phần tử thay thế, baseline của nó là mép dưới, nên canh baseline ném glyph lên cao gần một icon.
+  Phần dư 1,20px cố ý để nguyên: 0,33px trong đó là do path bất đối xứng của Lucide trong viewBox
+  24px, sai số theo HỘP chỉ 0,87px (dưới một pixel thiết bị ở 1×), và cách chữa duy nhất là viết
+  lại đúng cái literal ngoài thang mà luật này sinh ra để xoá.
+
+  Gói này **đã tự viết cùng số 2px ấy một lần rồi**: `--transfer-row-check-space-block-start:
+0.125rem` mang y hệt lời chú "sit level with the first line's cap height rather than its box".
+  Một con số ma đã vào design system hai lần — đó là bằng chứng nó đáng được quyết một lần.
+
+  Trạng thái mang màu tầng MARK (sàn 3:1, `foundation.css`) chứ không phải tầng FILL:
+  `included` → `--mark-success`, `limited` → `--mark-warning` (cách đọc xanh/hổ phách/xám mà một
+  bảng tương thích dùng cho "hỗ trợ có điều kiện"). `excluded` **cố ý không** lấy màu destructive:
+  một gói không kèm tính năng là một SỰ THẬT, không phải thất bại, và một cột dấu ✗ đỏ đọc thành
+  một danh sách lỗi. Hình dạng glyph khác nhau cộng một từ `sr-only` qua `t()` (en/ja/vi) lo phần
+  WCAG 1.4.1.
+
+  **Không có prop cho số lượng** ("· 10.000 req/mo"). Viết
+  `label={<>API calls <Text tone="muted" tabular>…</Text></>}` đã hợp lệ và đã sạch audit, nên một
+  prop cho nó trượt câu hỏi 1 của `docs/WHAT-BELONGS-HERE.md` — consumer có nước đi.
+
+- **`Thumbnail`** (gh#530) — ảnh có khung, CHIỀU CAO CỐ ĐỊNH và BỀ RỘNG THEO TỈ LỆ THẬT, cho một
+  hàng ảnh chụp màn hình xuống dòng mà tỉ lệ mỗi tấm một khác. `AspectRatio` ràng một TỈ LỆ và ghi
+  đè `width: 100%` sau `...style` (không sửa được từ call site), nên vài tỉ lệ khác nhau ép về một
+  số thì hoặc letterbox hoặc cắt; `Avatar` là dấu định danh; `Card` chèn padding giữa khung và ảnh;
+  `CardCover` là khe media BÊN TRONG một Card. Trong khi đó `no-hand-rolled-surface` chặn đúng
+  `<img className="h-40 w-auto rounded-md border" />` — luật cấm hình dạng duy nhất chạy được mà
+  catalog không có cái thay thế.
+
+  Khung nằm ngay TRÊN `<img>`, không node bọc: một node bọc muốn ôm sát thì phải biết bề rộng ảnh,
+  mà bề rộng ấy chưa tồn tại trước khi tải xong. Đo trong Chromium ở 1280px, bốn tỉ lệ thật
+  (360×640 · 960×540 · 480×270 · 96×96) trên cùng một hàng: cao **160,00px cả bốn**, cùng một
+  `top`, rộng lần lượt 90,88 · 282,88 · 282,88 · 160,00px — tỉ lệ hộp nội dung khớp tỉ lệ thật tới
+  4 chữ số, tức khung sát ảnh, không dải letterbox; `scrollWidth` = `clientWidth` = 1280. Ở 393px,
+  hàng `sm` và `md` vẫn giữ hai tấm trên một dòng (64/64 và 96/96, rộng 36,88 & 112,22 và 54,88 &
+  169,11), khung vẫn sát ảnh, không tràn ngang.
+
+  Ngoại lệ thành thật, đo được: ở 393px với `size="lg"`, một tấm 16:9 cần 284px trong khi cột chỉ
+  còn 259px, nên `max-inline-size: 100%` kẹp lại và `object-fit: contain` để lộ dải 12,6px. Đó là
+  đánh đổi có chủ ý — giữ chiều cao của dải và cho ảnh nguyên vẹn, thay vì để một tấm toàn cảnh
+  kéo cả trang trượt ngang.
+
+  `alt` **bắt buộc trong kiểu**, không có đường bỏ qua: ảnh trang trí truyền `alt=""` — chuỗi rỗng
+  là một QUYẾT ĐỊNH của người viết, còn thiếu thuộc tính là một sơ suất không ai thấy (WCAG 1.1.1).
+  Truyền thêm `width`/`height` thật của tệp thì trình duyệt biết tỉ lệ trước, và vì chiều cao đã cố
+  định nên khung có bề rộng cuối cùng ngay từ lần vẽ đầu — hàng không nhảy trong lúc ảnh tải.
+
 ### Fixed
 
 - **`Tabs size` nay có tác dụng ở dạng compound.** Tầng kích thước được tính trong `Tabs` và chỉ

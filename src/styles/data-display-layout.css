@@ -397,6 +397,131 @@
     forced-color-adjust: none;
   }
 
+  /* FeatureList — a column of STATEMENTS, each with a leading state glyph. Not ListRow (an entity
+   * row: entity padding, a divider between every row, a trailing action) and not Timeline (an
+   * ordered rail with a connector line and time-shaped statuses). */
+  .ui-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--feature-list-space-gap);
+  }
+
+  .ui-feature-list-item {
+    display: grid;
+    align-items: start;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--feature-list-space-inline);
+    font-size: var(--feature-list-font-size);
+    line-height: var(--line-height-body);
+  }
+
+  /* THE ALIGNMENT — a BOX, not a nudge, and this is the reason the component exists.
+   *
+   * `align-items: start` aligns the grid BOXES, which leaves a 16px glyph visibly high beside
+   * 14px text, so every call site patched it with `mt-0.5`: 2px, below `--space-1`, on no scale
+   * at all, and wrong the moment the text beside it changes size or the page changes density.
+   * This package had already written the same 2px itself — `--transfer-row-check-space-block-start`
+   * carries the identical comment about "the first line's cap height rather than its box" — which
+   * is how a magic number ends up in a design system twice.
+   *
+   * The mark is instead given a box exactly ONE LINE BOX tall and the glyph is centred in it, so
+   * it sits on the first line of a label that wraps to three. `1lh` is the element's own computed
+   * line-height, so the box follows the font size and the density with no number to maintain.
+   *
+   * MEASURED in Chromium at the default theme — 14px text, `--line-height-body` 1.7, so a 23.80px
+   * line box; the cap band (`H`, from TextMetrics) runs 7.64px→17.90px below the top of that line
+   * and its optical centre is 12.77px. Signed error of the glyph's painted INK centre against it:
+   *
+   *     this rule (1lh box, glyph centred)      −1.20px
+   *     align start + `mt-0.5` (the hand-roll)  −3.10px
+   *     align start, no nudge                   −5.10px
+   *     align-items: baseline                   −3.60px
+   *
+   * So `baseline` is NOT the answer, and it is worse than the 2px it would replace: an `<svg>` is
+   * a replaced element whose baseline is its bottom margin edge, so aligning it throws the glyph
+   * most of an icon above the text. (The Japanese ink band centres within 0.03px of the Latin cap
+   * band here, so the target is the same either way.)
+   *
+   * The residual 1.20px is left alone deliberately: 0.33px of it is Lucide's own asymmetric path
+   * inside its 24px viewBox, the glyph BOX error is 0.87px — under one device pixel at 1× — and
+   * the only cure is to write the off-scale literal this rule exists to delete. */
+  .ui-feature-list-mark {
+    display: grid;
+    block-size: 1lh;
+    place-items: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-feature-list-mark > svg {
+    inline-size: var(--feature-list-mark-icon-size);
+    block-size: var(--feature-list-mark-icon-size);
+  }
+
+  /* The MARK tier (3:1 non-text, foundation.css), not the FILL tier — a glyph with nothing
+   * written on it is exactly what that tier was added for. */
+  .ui-feature-list-item[data-state="included"] .ui-feature-list-mark {
+    color: hsl(var(--mark-success));
+  }
+
+  /* `limited` takes the amber of a partial answer — the same green/amber/grey reading a
+   * compatibility table gives a feature that is supported "with caveats". */
+  .ui-feature-list-item[data-state="limited"] .ui-feature-list-mark {
+    color: hsl(var(--mark-warning));
+  }
+
+  /* `excluded` deliberately stays on `--muted-foreground` rather than taking the destructive
+   * mark: a plan that does not include a feature is a FACT, not a failure, and a column of red
+   * crosses reads as a list of errors. The ✗ and the sr-only word carry it (WCAG 1.4.1). */
+  .ui-feature-list-item[data-state="excluded"] .ui-feature-list-label {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-feature-list-body {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    /* The description WRAPS — that is half of why ListRow could not do this job. `anywhere` also
+     * lowers the min-content width, so an unbroken token (a URL, a long JA/VI compound) cannot
+     * widen the list past its column. */
+    overflow-wrap: anywhere;
+  }
+
+  .ui-feature-list-description {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--feature-list-description-font-size);
+  }
+
+  /* Thumbnail — a framed picture at a fixed BLOCK size and its own intrinsic inline size, for a
+   * wrapping row of pictures whose ratios differ.
+   *
+   * The frame is on the `<img>` itself: a wrapper would need the picture's width to hug it, and
+   * that width does not exist until the bytes land. A border on the replaced element is flush at
+   * every ratio, with no wrapper to pad it away from the image (which is what Card would do). */
+  .ui-thumbnail {
+    display: block;
+    /* `auto` is the whole point: AspectRatio spans 100% and pins a ratio; this keeps each
+     * picture's own ratio and equalises only the height. */
+    inline-size: auto;
+    /* …but never past the container, or one panorama scrolls the page sideways. When the clamp
+     * bites, `contain` letterboxes inside the frame rather than distorting the picture. */
+    max-inline-size: 100%;
+    block-size: var(--thumbnail-block-size);
+    border: var(--thumbnail-border-width) solid hsl(var(--border));
+    border-radius: var(--thumbnail-radius);
+    /* A light screenshot on a light card needs something behind it while it loads, and a
+     * transparent PNG needs it for good. */
+    background: hsl(var(--muted));
+    object-fit: contain;
+  }
+
+  .ui-thumbnail[data-size="sm"] {
+    block-size: var(--thumbnail-block-size-sm);
+  }
+
+  .ui-thumbnail[data-size="lg"] {
+    block-size: var(--thumbnail-block-size-lg);
+  }
+
   .ui-timeline {
     display: flex;
     flex-direction: column;

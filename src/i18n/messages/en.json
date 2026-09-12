@@ -283,6 +283,11 @@
       "dotsLabel": "Choose slide",
       "goToSlide": "Go to slide {index}"
     },
+    "featureList": {
+      "included": "Included",
+      "excluded": "Not included",
+      "limited": "Limited"
+    },
     "listRow": {
       "unread": "Unread",
       "read": "Read"
