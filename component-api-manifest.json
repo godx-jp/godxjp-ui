@@ -6413,8 +6413,8 @@
           "name": "width",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | undefined",
+          "values": ["sm", "md", "lg", "xl"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]

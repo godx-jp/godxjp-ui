@@ -1548,8 +1548,8 @@ export type DraggablePanelProp = Omit<
   extra?: ExtraProp;
   /** Resting corner before any movement. Default `bottom-end`. */
   placement?: DraggablePanelPlacementProp;
-  /** Panel width, from the token scale. Default `md`. */
-  width?: Extract<SizeProp, "sm" | "md" | "lg">;
+  /** Panel width, from the token scale (`sm`–`xl`). Default `md`. */
+  width?: Extract<SizeProp, "sm" | "md" | "lg"> | "xl";
   /** react-draggable `axis`. Default `both`. */
   axis?: DragAxisProp;
   /** react-draggable `bounds`. Default `viewport`. */

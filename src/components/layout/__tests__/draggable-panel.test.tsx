@@ -91,7 +91,7 @@ describe("DraggablePanel — the surface", () => {
   });
 
   it("publishes every step of the width ladder as an attribute, not as a class", () => {
-    const widths = ["sm", "md", "lg"] as const;
+    const widths = ["sm", "md", "lg", "xl"] as const;
     const { rerender } = renderWithUi(<DraggablePanel title="アシスタント" />);
     for (const width of widths) {
       rerender(<DraggablePanel title="アシスタント" width={width} />);
@@ -479,9 +479,24 @@ describe("DraggablePanel — the stylesheet contract", () => {
       "--draggable-panel-width-sm",
       "--draggable-panel-width",
       "--draggable-panel-width-lg",
+      "--draggable-panel-width-xl",
+      "--draggable-panel-block-size",
       "--draggable-panel-inset",
     ]) {
       expect(tokens()).toMatch(new RegExp(`${token}:\\s*[^;]+;`));
     }
+  });
+
+  it("maps data-width=xl to the xl width token and keeps block-size default auto (gh#607)", () => {
+    const sheet = css();
+    renderWithUi(<DraggablePanel title="アシスタント" width="xl" />);
+    expect(panel()).toHaveAttribute("data-width", "xl");
+    expect(sheet).toMatch(
+      /\.ui-draggable-panel\[data-width="xl"\]\s*\{[^}]*inline-size:\s*var\(--draggable-panel-width-xl\)/,
+    );
+    expect(tokens()).toMatch(/--draggable-panel-block-size:\s*auto;/);
+    expect(sheet).toMatch(
+      /\.ui-draggable-panel\s*\{[^}]*block-size:\s*var\(--draggable-panel-block-size\)/,
+    );
   });
 });

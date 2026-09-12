@@ -2097,9 +2097,10 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       },
       {
         name: "width",
-        type: '"sm" | "md" | "lg"',
+        type: '"sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
-        description: "Panel width from the token ladder (18rem / 22rem / 28rem).",
+        description:
+          "Panel width from the token ladder (18rem / 22rem / 28rem / xl → --centered-shell-width-md).",
       },
       {
         name: "axis",
