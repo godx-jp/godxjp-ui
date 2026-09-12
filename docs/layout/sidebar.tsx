@@ -39,6 +39,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Search,
+  ChevronsUpDown,
 } from "lucide-react";
 
 /**
@@ -229,18 +230,31 @@ export default function Demo() {
         color: "hsl(var(--primary))",
       }}
       onProductClick={() => undefined}
-      footer={
-        <Flex direction="col" gap="xs">
-          <Text as="div" weight="medium">
-            山田 太郎
-          </Text>
-          <Flex align="center" gap="xs">
-            <span className="bg-success size-1.5 rounded-full" />
-            <Text size="xs" tone="muted">
-              オンライン
-            </Text>
+      /*
+       * footer · brand と同じ「関数を渡すと EFFECTIVE な collapsed が来る」形。自前の collapsed
+       * を読むと、AppShell が同じ Sidebar をドロワーにも渡す（ドロワーは展開表示に戻す）ため
+       * 全幅のドロワーの中でアイコンだけの足元になります。
+       */
+      footer={(railCollapsed) =>
+        railCollapsed ? (
+          <Flex justify="center">
+            <Avatar className="size-7 shrink-0">
+              <AvatarFallback>山</AvatarFallback>
+            </Avatar>
           </Flex>
-        </Flex>
+        ) : (
+          <Flex direction="col" gap="xs">
+            <Text as="div" weight="medium">
+              山田 太郎
+            </Text>
+            <Flex align="center" gap="xs">
+              <span className="bg-success size-1.5 rounded-full" />
+              <Text size="xs" tone="muted">
+                オンライン
+              </Text>
+            </Flex>
+          </Flex>
+        )
       }
     />
   );
@@ -574,6 +588,46 @@ export default function Demo() {
             </CardContent>
           </Card>
 
+          {/* trailingIcon · 行の末尾に置く 16px の「開くよ」グリフ。badge（件数ピル）とは別枠。 */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>trailingIcon プロップ（末尾のグリフ）</CardTitle>
+              <CardDescription>
+                ワークスペース切替のような「押すと何か開く」行の末尾に置く 16px
+                のグリフです。件数ピルの badge とは別の枠で、背景も角丸も描きません · badge に ⌃⌄
+                を入れると .sb-badge の灰色ピル（実測 36×24、中の SVG は 24×24）に
+                なってしまうため、サイズを DS 側で固定した専用の枠にしています。 icon
+                と同じくコンポーネントを渡す形なので、SVG の寸法は 16px に固定されます。
+                折りたたみレールでは badge と同じように隠れます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Card className="h-64 w-64 overflow-hidden">
+                <CardContent flush>
+                  <Flex direction="col">
+                    <Sidebar
+                      ariaLabel="切替行つきのナビゲーション"
+                      activeId={brandActiveId}
+                      onSelect={setBrandActiveId}
+                      sections={BRAND_SECTIONS}
+                      aria-label="trailingIcon 例のナビゲーション"
+                      footer={
+                        <SidebarItem
+                          item={{
+                            id: "workspace",
+                            label: "アクメ株式会社",
+                            icon: Building2,
+                            trailingIcon: ChevronsUpDown,
+                          }}
+                        />
+                      }
+                    />
+                  </Flex>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+
           {/* Feature notes */}
           <Card>
             <CardHeader>
@@ -590,6 +644,8 @@ export default function Demo() {
                   "badgeTone で未読（neutral）と自分宛て（destructive）を色だけで区別",
                   "disabled=true で項目を非活性化（クリック不可）",
                   "footer prop でスクロール外にユーザー情報を固定",
+                  "footer は brand と同じく関数も受け取る · 実効の collapsed が渡る",
+                  "trailingIcon で行の末尾に 16px のグリフ（切替の ⌃⌄ など）を置ける",
                   "linkComponent · ルーター Link は「要素だけ」渡す。行の中身はライブラリが組み立てる",
                   "linkComponent は葉・サブメニュー・折りたたみレール・フライアウトの全てに適用される",
                   "グループのトリガーは aria-expanded を持つ開閉ボタンのままなので linkComponent は適用されない",

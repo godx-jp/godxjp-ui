@@ -2307,6 +2307,28 @@
     color: var(--sidebar-badge-destructive-foreground, hsl(var(--destructive-foreground)));
   }
 
+  /* The row's TRAILING glyph (`item.trailingIcon`) — a disclosure mark, not a count. It pins the
+   * SVG to the same box as the leading `.sb-icon`, which is the asymmetry gh#519 measured:
+   * `.sb-icon` pinned 16px while `.sb-badge` let a 24px SVG through, so a chevron passed as a
+   * badge came out as a 36x24 grey pill. Colour is the ROW's (currentColor), like the group
+   * trigger's own `.sb-chevron` — the `--sidebar-nav-icon-*` knobs exist to darken the LEADING nav
+   * icon against muted labels, and a disclosure mark is not that. */
+  .sb-trailing-icon {
+    display: grid;
+    width: var(--sidebar-nav-icon-size);
+    height: var(--sidebar-nav-icon-size);
+    flex: 0 0 auto;
+    line-height: 0;
+    place-items: center;
+  }
+
+  .sb-trailing-icon svg {
+    display: block;
+    width: var(--sidebar-nav-icon-size);
+    height: var(--sidebar-nav-icon-size);
+    flex: 0 0 auto;
+  }
+
   .sb-footer {
     margin-top: auto;
     border-top: 1px solid hsl(var(--border));
@@ -2523,6 +2545,8 @@
   :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
     .sb-section-label,
   :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"]) .sb-label,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-trailing-icon,
   :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"]) .sb-badge {
     display: none;
   }

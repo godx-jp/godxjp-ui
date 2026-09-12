@@ -164,6 +164,81 @@ describe("SidebarItem", () => {
 });
 
 describe("SidebarHeader + SidebarSection", () => {
+  /*
+   * `trailingIcon` (gh#519) — the row's TRAILING glyph, a slot of its own rather than a size tier
+   * on the count pill, because a pill and a glyph disagree about the SURFACE, not about the size:
+   * `.sb-badge` draws a 9999px capsule and a glyph must draw nothing.
+   *
+   * Same split as `badgeTone` above: the DOM contract here, everything a cascade decides against
+   * the CSS SOURCE — jsdom runs no layout and applies no stylesheet.
+   */
+  describe("trailingIcon", () => {
+    const shellLayoutCss = readFileSync(
+      resolve(process.cwd(), "src/styles/shell-layout.css"),
+      "utf8",
+    );
+    const trailingRule = shellLayoutCss.match(/\n {2}\.sb-trailing-icon \{[^}]*\}/)?.[0] ?? "";
+    const trailingSvgRule =
+      shellLayoutCss.match(/\n {2}\.sb-trailing-icon svg \{[^}]*\}/)?.[0] ?? "";
+    const Chevron = () => <svg data-testid="chevron" />;
+
+    it("renders the glyph in its OWN box — never inside the count pill", () => {
+      const { container } = render(<SidebarItem item={item({ trailingIcon: Chevron })} />);
+      const slot = container.querySelector(".sb-trailing-icon");
+      expect(slot).not.toBeNull();
+      expect(slot!.querySelector("svg")).toBe(screen.getByTestId("chevron"));
+      // The failing move this axis replaces: the chevron went into `badge` and came out wrapped
+      // in `.sb-badge` — a grey capsule around a 24px SVG.
+      expect(container.querySelector(".sb-badge")).toBeNull();
+      expect(container.querySelector(".sb-badge .sb-trailing-icon")).toBeNull();
+    });
+
+    it("omits the box entirely when there is no glyph", () => {
+      const { container } = render(<SidebarItem item={item()} />);
+      expect(container.querySelector(".sb-trailing-icon")).toBeNull();
+    });
+
+    it("coexists with a count, and sits AFTER it at the row's inline end", () => {
+      const { container } = render(
+        <SidebarItem item={item({ badge: "9+", trailingIcon: Chevron })} />,
+      );
+      const row = container.querySelector(".sb-nav-item")!;
+      const order = [...row.children].map((child) => child.className);
+      expect(order).toEqual(["sb-icon", "sb-label", "sb-badge", "sb-trailing-icon"]);
+    });
+
+    it("rides the LIBRARY-composed row, so asChild links carry it too", () => {
+      const { container } = render(
+        <SidebarItem item={item({ trailingIcon: Chevron, href: "/x" })} asChild>
+          <a href="/x" />
+        </SidebarItem>,
+      );
+      expect(container.querySelector("a .sb-trailing-icon svg")).not.toBeNull();
+    });
+
+    it("PINS the glyph to the leading icon's box and draws no surface (gh#519)", () => {
+      // The measured defect: `.sb-icon` pinned 16px while `.sb-badge` let a 24px SVG through, so
+      // the same chevron rendered 36x24 in a grey pill next to a 16x16 leading icon.
+      expect(trailingRule).not.toBe("");
+      expect(trailingRule).toMatch(/width: var\(--sidebar-nav-icon-size\);/);
+      expect(trailingRule).toMatch(/height: var\(--sidebar-nav-icon-size\);/);
+      expect(trailingSvgRule).toMatch(/width: var\(--sidebar-nav-icon-size\);/);
+      expect(trailingSvgRule).toMatch(/height: var\(--sidebar-nav-icon-size\);/);
+      // A glyph is not a pill: no fill, no capsule, no inline padding of its own.
+      expect(trailingRule).not.toMatch(/background|border-radius|padding|min-width/);
+    });
+
+    it("hides on the collapsed rail, on the SAME rule that hides the count", () => {
+      // Consumers put a switcher row in `footer`, which is inside the rail and is NOT re-composed
+      // icon-only — so without this the glyph survives into a 64px rail on its own.
+      const collapsedRule =
+        shellLayoutCss.match(/\n {2}:is\([^{]*?\.sb-badge \{\s*display: none;\s*\}/s)?.[0] ?? "";
+      expect(collapsedRule).toContain(".sb-trailing-icon");
+      expect(collapsedRule).toContain(".sb-badge");
+      expect(collapsedRule).toContain(".sb-label");
+    });
+  });
+
   it("SidebarHeader renders its children", () => {
     render(<SidebarHeader>BRAND</SidebarHeader>);
     expect(screen.getByText("BRAND")).toBeInTheDocument();
