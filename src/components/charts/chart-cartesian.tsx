@@ -23,6 +23,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { ChartFrame, chartColor, chartHeight, useChartNumberFormat } from "./chart-frame";
 import { buildCartesianSummary } from "./chart-summary";
 import { useCategoryAxisMetrics } from "./chart-category-axis";
+import { listFormat } from "../../lib/intl-cache";
 
 /**
  * Shared cartesian renderer for Line / Bar / Area. Internal — the filename pascal
@@ -77,10 +78,7 @@ export function CartesianChart({
   assertRechartsPeer();
   const { t, locale } = useTranslation();
   const fmt = useChartNumberFormat(numberFormat);
-  const list = React.useMemo(
-    () => new Intl.ListFormat(locale, { style: "narrow", type: "unit" }),
-    [locale],
-  );
+  const list = React.useMemo(() => listFormat(locale, { style: "narrow", type: "unit" }), [locale]);
 
   const hasData = data.length > 0 && series.length > 0;
   const summary = buildCartesianSummary(data, series, categoryKey, fmt, list, (c) =>

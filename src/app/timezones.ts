@@ -1,5 +1,6 @@
 import { translate } from "../i18n/translate";
 import type { AppLocale } from "./types";
+import { dateTimeFormat } from "../lib/intl-cache";
 
 /** Curated preset — pass to `<AppProvider timezoneOptions={APP_TIMEZONE_PRESET} />`. */
 export const APP_TIMEZONE_PRESET = [
@@ -150,7 +151,7 @@ export function getTimezoneCityName(timezone: string): string {
 export function getTimezoneOffsetLabel(timezone: string, locale: AppLocale = "en"): string {
   if (timezone === "UTC") return "UTC";
   try {
-    const parts = new Intl.DateTimeFormat(locale, {
+    const parts = dateTimeFormat(locale, {
       timeZone: resolveTimezoneForIntl(timezone),
       timeZoneName: "shortOffset",
     }).formatToParts(new Date());

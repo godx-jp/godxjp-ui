@@ -7,6 +7,7 @@ import { pickFieldA11y } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { Input } from "./input";
 import type { NumberInputProp } from "../../props/components/data-entry.prop";
+import { numberFormat } from "../../lib/intl-cache";
 
 export type {
   NumberInputProp,
@@ -141,7 +142,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
     // Locale-aware formatter for the value AT REST (when not being edited).
     const intlFormatter = React.useMemo(
       () =>
-        new Intl.NumberFormat(locale, {
+        numberFormat(locale, {
           minimumFractionDigits: 0,
           maximumFractionDigits: Math.max(effectivePrecision, 0),
           useGrouping: false,

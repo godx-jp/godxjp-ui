@@ -2,6 +2,7 @@
 // inline string templates so the platform speaks one language for dates,
 // sizes, money, IDs.
 import { getSyncedLocale, translateCurrent } from "../i18n/translate";
+import { numberFormat } from "./intl-cache";
 
 /**
  * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number, e.g. "2.0
@@ -13,7 +14,7 @@ export function formatBytes(
 ): string {
   if (n == null) return "—";
   const num = (digits: number, scaled: number) =>
-    new Intl.NumberFormat(locale, {
+    numberFormat(locale, {
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     }).format(scaled);
@@ -33,7 +34,7 @@ export function formatCurrency(
   locale: string = getSyncedLocale(),
 ): string {
   if (amountMinor == null || !currency) return "—";
-  const formatter = new Intl.NumberFormat(locale, { style: "currency", currency });
+  const formatter = numberFormat(locale, { style: "currency", currency });
   const minorUnitDigits = formatter.resolvedOptions().maximumFractionDigits ?? 2;
   const major = amountMinor / Math.pow(10, minorUnitDigits);
   return formatter.format(major);
