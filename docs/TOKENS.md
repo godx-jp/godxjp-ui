@@ -53,7 +53,7 @@ in the source.
 | Tier     | Tokens                                      | What it paints                                                     | Contrast bar                                              |
 | -------- | ------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
 | **FILL** | `--success`, `--warning`, `--info`, `--destructive` | A solid chip, band or bar with a label ON it                        | AA **4.5:1** against its own `*-foreground` label          |
-| **TEXT** | `--text-success`, `--text-warning`, `--text-info`, `--text-error` | Small coloured type — a StatCard delta, an outline badge label      | AA **4.5:1** against the surface BEHIND it                 |
+| **TEXT** | `--text-success`, `--text-warning`, `--text-info`, `--text-error` | Small coloured type — a StatCard delta, an outline badge label, a field's error line | AA **4.5:1** against the surface BEHIND it                 |
 | **MARK** | `--mark-success`, `--mark-warning`, `--mark-info`, `--mark-destructive`, `--mark-primary`, `--mark-attention` | A thin shape carrying meaning with nothing written on it — a `Card accent` rail, a `DataTable rowTone` rail | SC 1.4.11 **3:1** against the surface it sits on |
 
 The MARK tier exists because both rails were reading FILL, and two of them were effectively
@@ -93,6 +93,24 @@ colour it is a key to is not a key.
 Worst case anywhere on the two routes after the move: **4.52:1**. `.ui-progress-bar` (meter and
 over-capacity) reads the same tokens as the slice, so a `tone="warning"` meter and a `warning`
 slice on one screen stay the same colour.
+
+**ERROR PROSE WAS THE THIRD PLACE THE SAME MISTAKE LIVED (gh#610).** `Alert`, `Text` and
+`Heading` resolved their destructive ink through TEXT from the start, but the `role="alert"` line
+the data-entry primitives render — `<FormField error>`, `Upload`'s rejections, the `Dialog` step-up
+failure — was on `text-destructive`, the FILL utility. So the same `tone` was readable inside an
+`Alert` and near-invisible one line below it, in the field that caused it. Measured in Chromium on
+`/isolate/layout-auth-recovery-examples-mfa-challenge`:
+
+| surface | ground | FILL (before) | TEXT (after) |
+| --- | --- | --- | --- |
+| `.ui-form-field-note[role="alert"]` | dark card | **2.95** | **5.52** |
+| `.ui-form-field-note[role="alert"]` | light card | 6.16 | **7.21** |
+
+Only the DARK branch failed, and the light one passing is why it survived: the fill is tuned for a
+white label ON it, so it darkens on light grounds and lightens on dark ones — the opposite of what
+ink needs. The guard is `error-text-tier.test.ts` (token ratios on `--background`/`--card`/
+`--muted` in both themes, plus a source scan for the fill utility), and `check:contrast` gained the
+two `ui-auth-shell` routes it had never loaded.
 
 **A theme that repoints `--secondary` owes `--progress-track-background`.** The track defaults to
 `hsl(var(--secondary))`, which is a pale neutral in the stock palette. `docs/showcase/acme-portal`

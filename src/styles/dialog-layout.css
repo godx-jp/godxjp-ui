@@ -119,10 +119,11 @@
     block-size: var(--control-affix-icon-size);
   }
 
-  /* Type-to-confirm challenge: the step-up failure line under the input. */
+  /* Type-to-confirm challenge: the step-up failure line under the input. Error PROSE reads the
+   * TEXT tier (--text-error), not the FILL tier (--destructive) — see gh#610. */
   .ui-dialog-step-up-error {
     font-size: var(--dialog-step-up-error-font-size);
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   [data-slot="dialog-footer"] {

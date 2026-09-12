@@ -538,7 +538,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         {rejection && (
-          <p role="alert" className="text-destructive">
+          <p role="alert" className="text-error-strong">
             {rejection}
           </p>
         )}
@@ -606,7 +606,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         {rejection && (
-          <p role="alert" className="text-destructive">
+          <p role="alert" className="text-error-strong">
             {rejection}
           </p>
         )}
@@ -637,7 +637,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         {rejection && (
-          <p role="alert" className="text-destructive">
+          <p role="alert" className="text-error-strong">
             {rejection}
           </p>
         )}
@@ -675,7 +675,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         {rejection && (
-          <p role="alert" className="text-destructive">
+          <p role="alert" className="text-error-strong">
             {rejection}
           </p>
         )}
@@ -694,7 +694,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         {rejection && (
-          <p role="alert" className="text-destructive">
+          <p role="alert" className="text-error-strong">
             {rejection}
           </p>
         )}
@@ -809,7 +809,7 @@ function UploadDraftActions({
   if (state.canUndoRemove) {
     return (
       <div className="ui-upload-draft-undo">
-        <span className="text-destructive">{t("dataEntry.upload.markedForDelete")}</span>
+        <span className="text-error-strong">{t("dataEntry.upload.markedForDelete")}</span>
         <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={undoRemove}>
           <RotateCcw className="ui-upload-draft-icon" aria-hidden="true" />
           {t("dataEntry.upload.undo")}
@@ -878,7 +878,7 @@ function UploadPictureCard({
         )}
       </div>
       {item.status === "error" && (
-        <span role="alert" className="text-destructive">
+        <span role="alert" className="text-error-strong">
           {item.error}
         </span>
       )}
@@ -969,7 +969,7 @@ function UploadFileList({
               <div className="text-muted-foreground text-xs">
                 {formatBytes(item.size)}
                 {item.status === "error" && item.error && (
-                  <span role="alert" className="text-destructive">
+                  <span role="alert" className="text-error-strong">
                     {" "}
                     · {item.error}
                   </span>

@@ -300,8 +300,13 @@ export function FormField({
           </span>
         ) : null}
         {helperPlacement === "after" ? helperNode : null}
+        {/* `text-error-strong` is the TEXT tier (--text-error), not the destructive FILL tier.
+            This line is the only sentence that tells a user why the field was rejected, and on the
+            dark spine the fill tier rendered it at 2.95:1 — measured in Chromium on
+            /isolate/layout-auth-recovery-examples-mfa-challenge?theme=dark, fg #be373e on #21201c
+            (gh#610). The text tier is 5.52:1 there and 7.21:1 on the light card. */}
         {error ? (
-          <p id={errorId} role="alert" className="ui-form-field-note text-destructive text-xs">
+          <p id={errorId} role="alert" className="ui-form-field-note text-error-strong text-xs">
             {error}
           </p>
         ) : null}

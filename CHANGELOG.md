@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Chữ lỗi của `FormField` đọc tầng TÔ thay vì tầng CHỮ — 2,95:1 trên nền tối (#610).** Dòng
+  `role="alert"` dưới một ô nhập là **câu duy nhất** nói cho người dùng biết vì sao ô bị từ chối, và
+  trên màn đăng nhập là thứ duy nhất một người bị khoá ngoài đọc được. Nó được sơn bằng
+  `text-destructive`, tức token **TÔ** `--destructive` — vốn được chỉnh cho một nhãn trắng nằm TRÊN
+  nó, nên trên sống tối nó cố tình sáng. Đo trong Chromium trên
+  `/isolate/layout-auth-recovery-examples-mfa-challenge?theme=dark`: **#be373e trên #21201c =
+  2,95:1**, dưới sàn AA 4,5:1. Nay đọc tầng **CHỮ** (`text-error-strong` → `--text-error`):
+  **5,52:1** tối và **7,21:1** sáng. Cùng một lượt sửa cho chín chỗ sơn giống hệt trong `Upload`,
+  `BranchScopePicker` và dòng lỗi step-up của `Dialog`.
+
+  `Alert`, `Text` và `Heading` đã đi qua tầng chữ từ trước, nên **cùng một `tone` đọc được trong
+  một `Alert` và gần như vô hình ở dòng ngay bên dưới** — trong chính cái ô gây ra nó.
+
+  **Vì sao cổng không bắt được:** danh sách `ROUTES` của `check:contrast` **chưa từng tải một route
+  `ui-auth-shell` nào**, ở cả hai chủ đề. Nay thêm `/isolate/layout-auth-shell` và
+  `/isolate/layout-auth-recovery-examples-mfa-challenge`, mỗi cái hai chủ đề, cộng một phép kiểm
+  tất định `src/tokens/__tests__/error-text-tier.test.ts` (token + quét nguồn).
+
 ## [23.4.3] - 2026-09-12
 
 Patch. Sáu bản sửa do consumer báo, một lối vào CSS mới, và hai chỗ lời khuyên của gói nói sai.

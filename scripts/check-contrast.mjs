@@ -73,10 +73,28 @@ const ROUTES = routeArgs.length
       "/isolate/data-display-legend?theme=dark",
       "/isolate/data-display-progress",
       "/isolate/data-display-progress?theme=dark",
+      // AUTH SHELL — the FIRST surface every consumer has, and the one surface this list had
+      // never loaded (gh#610). `.ui-auth-shell` appeared in no route above, in either theme, so
+      // the sign-in screen's coloured status text had never been measured by anything in this
+      // repo. What that cost: `<FormField error>` painted its `role="alert"` line with the
+      // destructive FILL tier, which on the dark spine is 2.95:1 (#be373e on #21201c) — the only
+      // sentence a locked-out user gets, below the AA floor, in the one place they cannot route
+      // around. Deterministic counterpart: src/tokens/__tests__/error-text-tier.test.ts.
+      //
+      // `layout-auth-recovery-examples-mfa-challenge` is the route that PAINTS it: five stacked
+      // panels that render `Alert tone="destructive"`, `FormField error` and `FormField` helper
+      // prose inside the shell on mount, with no interaction to stage. `layout-auth-shell` is the
+      // bare login shell — the plain ground, brand lockup and footer, which is what the report was
+      // actually looking at. Both themes each: `--text-error` and `--destructive` are retuned per
+      // theme and it was only the DARK branch that failed.
+      "/isolate/layout-auth-shell",
+      "/isolate/layout-auth-shell?theme=dark",
+      "/isolate/layout-auth-recovery-examples-mfa-challenge",
+      "/isolate/layout-auth-recovery-examples-mfa-challenge?theme=dark",
     ];
 
 /*
- * NOTHING IS HELD OUT OF THIS SWEEP ANY MORE.
+ * HELD OUT, WITH THE NUMBERS.
  *
  * This slot used to carry `/isolate/data-display-legend` and `/isolate/data-display-progress` with
  * their measurements and a reason: both painted the FILL tier as a standalone graphic (legend
@@ -84,8 +102,20 @@ const ROUTES = routeArgs.length
  * against its own track), and the two could not move apart because a swatch is a SAMPLE of the bar
  * beside it. They moved together, to `--mark-*`. Both routes are in the list above.
  *
- * If a surface ever has to come out again, it belongs HERE with its number and its reason — not
- * deleted, and not silently exempted inside the collector.
+ * TWO MORE AUTH-SHELL ROUTES ARE OUT, and they are out for a reason that is NOT gh#610:
+ *
+ *   /isolate/layout-auth-shell-registration              4 × 1.09 light · 2.95 + 4 × 1.22 dark
+ *   /isolate/layout-auth-recovery-examples-password-recovery  5 × 2.18 light · (text 2.95 dark)
+ *
+ * Every one of those is `span.ui-password-strength-segment` in the THIN FILL pass — the strength
+ * meter's segments, filled AND unfilled, measured against the card rather than against each other.
+ * That is the `--mark-*` question the legend and the progress bar already went through, on a third
+ * component, and it wants the same deliberate palette decision rather than a route added here and
+ * a token nudged until the number moves. Their dark TEXT failure (2.95, the `FormField` error line)
+ * is the defect gh#610 fixed, and it is measured on the two routes that ARE in the list.
+ *
+ * If a surface ever has to come out, it belongs HERE with its number and its reason — not deleted,
+ * and not silently exempted inside the collector.
  */
 
 /**
