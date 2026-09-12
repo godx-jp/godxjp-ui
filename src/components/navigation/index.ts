@@ -55,3 +55,15 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+export { Conversations } from "./conversations";
+export type {
+  ConversationsProp,
+  ConversationsProps,
+  ConversationsItemProp,
+  ConversationsDividerProp,
+  ConversationsEntryProp,
+  ConversationsMenuProp,
+  ConversationsMenuItemProp,
+  ConversationsGroupableProp,
+  ConversationsCreationProp,
+} from "./conversations";

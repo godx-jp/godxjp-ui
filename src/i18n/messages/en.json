@@ -437,6 +437,11 @@
     },
     "settingToggle": {
       "label": "{setting}: {value}"
+    },
+    "conversations": {
+      "label": "Conversations",
+      "creation": "New conversation",
+      "rowActions": "More actions for {label}"
     }
   },
   "locale": {

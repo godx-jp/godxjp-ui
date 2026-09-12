@@ -3545,6 +3545,65 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  ConversationsItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "IconProp", "DisabledProp"],
+  },
+  ConversationsDividerProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      {
+        field: "type",
+        local: true,
+        reason: "Ant Design X ItemType discriminant — the literal 'divider', not a styling axis",
+      },
+      {
+        field: "dashed",
+        local: true,
+        reason: "Ant Design X DividerItemType.dashed — the rule's stroke, local to this row kind",
+      },
+    ],
+  },
+  ConversationsEntryProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "IconProp", "DisabledProp"],
+  },
+  ConversationsMenuItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "IconProp", "DisabledProp", "ToneProp"],
+  },
+  ConversationsMenuProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["ActionsProp", "OnClickProp", "LabelProp"],
+  },
+  ConversationsGroupableProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "OpenProp", "DefaultOpenProp", "OnOpenChangeProp"],
+  },
+  ConversationsCreationProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "IconProp", "DisabledProp", "OnClickProp"],
+  },
+  ConversationsProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "ActionsProp",
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "LabelProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;

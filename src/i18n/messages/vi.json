@@ -425,6 +425,11 @@
     },
     "settingToggle": {
       "label": "{setting}: {value}"
+    },
+    "conversations": {
+      "label": "Danh sách hội thoại",
+      "creation": "Hội thoại mới",
+      "rowActions": "Thao tác khác cho {label}"
     }
   },
   "locale": {

@@ -424,6 +424,11 @@
     },
     "settingToggle": {
       "label": "{setting}：{value}"
+    },
+    "conversations": {
+      "label": "会話一覧",
+      "creation": "新しい会話",
+      "rowActions": "「{label}」のその他の操作"
     }
   },
   "locale": {

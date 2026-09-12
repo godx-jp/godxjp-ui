@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 272,
-    dimensionCells: 3808,
+    exports: 273,
+    dimensionCells: 3822,
     covered: 83,
-    untested: 2127,
-    notApplicable: 1598,
+    untested: 2134,
+    notApplicable: 1605,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -176,6 +176,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"CommandList","group":"data-entry","frame":"docs/data-entry/command.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"CommandPalette","group":"data-entry","frame":"docs/data-entry/command-palette.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"CompactBarTrend","group":"charts","frame":"docs/charts/compact-bar-trend.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
+  {"name":"Conversations","group":"navigation","frame":"docs/navigation/conversations.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"CredentialReveal","group":"data-display","frame":"docs/data-display/credential-reveal.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","variants"]},
   {"name":"DataState","group":"query","frame":"docs/query/data-state.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"DataTable","group":"data-display","frame":"docs/data-display/data-table/index.tsx","covered":["density"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["shapes","sizes","tones","variants"]},

@@ -519,3 +519,139 @@ export type TabsProp = {
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;
 };
+
+/**
+ * One conversation in the rail. Ant Design X `ConversationItemType`, field for field:
+ * `key`, `label`, `group`, `icon`, `disabled`.
+ *
+ * `key` is `string` and REQUIRED, as it is in Ant X — the rail's whole contract (which row is
+ * active, which row a menu command was aimed at, which row the roving tabindex is parked on) is
+ * addressed by it, and an optional identity would make every one of those "probably this one".
+ * @see Conversations
+ */
+export type ConversationsItemProp = {
+  /** Unique identity of the conversation. Ant Design X `key`. */
+  key: string;
+  /** What the row reads. Ant Design X `label`. */
+  label?: React.ReactNode;
+  /** Bucket this row belongs to, honoured only while `groupable` is on. Ant Design X `group`. */
+  group?: string;
+  /** Decorative leading node. Ant Design X `icon`. */
+  icon?: React.ReactNode;
+  /** Row stays visible and reachable by arrow key, but cannot be activated. Ant Design X `disabled`. */
+  disabled?: DisabledProp;
+};
+
+/**
+ * A rule between two runs of conversations. Ant Design X `DividerItemType`.
+ * @see Conversations
+ */
+export type ConversationsDividerProp = {
+  type: "divider";
+  key?: string;
+  /** Ant Design X `dashed`. */
+  dashed?: boolean;
+};
+
+/** Either kind of row `items` accepts. Ant Design X `ItemType`. @see Conversations */
+export type ConversationsEntryProp = ConversationsItemProp | ConversationsDividerProp;
+
+/**
+ * One command on a row's overflow menu — rename, duplicate, delete.
+ * @see Conversations
+ */
+export type ConversationsMenuItemProp = {
+  /** Identity handed back to `menu.onClick`. */
+  key: string;
+  label: React.ReactNode;
+  icon?: React.ReactNode;
+  /** Paints the command as irreversible (`DropdownMenuItem variant="destructive"`). Ant Design `danger`. */
+  danger?: boolean;
+  disabled?: DisabledProp;
+};
+
+/**
+ * The per-row overflow menu. Ant Design X takes antd's whole `MenuProps` here; this takes the two
+ * fields of it a conversation rail uses — the commands, and where a click lands — plus the
+ * accessible name the icon-only trigger needs and Ant X never had.
+ * @see Conversations
+ */
+export type ConversationsMenuProp = {
+  items: readonly ConversationsMenuItemProp[];
+  /** Fires with the command and the row it was aimed at. */
+  onClick?: (info: { key: string; conversation: ConversationsItemProp }) => void;
+  /**
+   * Accessible name of the icon-only trigger. Receives the row so the name can name it
+   * ("More actions for 請求書の下書き"), which is what keeps twelve identical "More" buttons apart
+   * in a screen reader's element list. A localized default applies when omitted.
+   */
+  triggerLabel?: (conversation: ConversationsItemProp) => string;
+};
+
+/**
+ * Grouping options. Ant Design X `GroupableProps` — `label`, `collapsible`, and the
+ * `defaultExpandedKeys` / `expandedKeys` / `onExpand` triad it inherits from `CollapsibleOptions`.
+ * @see Conversations
+ */
+export type ConversationsGroupableProp = {
+  /** Heading for a bucket. A function receives the raw `group` string. Ant Design X `label`. */
+  label?: React.ReactNode | ((group: string) => React.ReactNode);
+  /** Whether a bucket's heading collapses it. A function decides per bucket. Ant Design X `collapsible`. */
+  collapsible?: boolean | ((group: string) => boolean);
+  /** Uncontrolled initially-open buckets. Ant Design X `defaultExpandedKeys`. */
+  defaultExpandedKeys?: readonly string[];
+  /** Controlled open buckets. Ant Design X `expandedKeys`. */
+  expandedKeys?: readonly string[];
+  /** Fires with the next open set. Ant Design X `onExpand`. */
+  onExpand?: (keys: string[]) => void;
+};
+
+/**
+ * The "new conversation" button pinned above the rail. Ant Design X `creation`.
+ * @see Conversations
+ */
+export type ConversationsCreationProp = {
+  /** Button text. A localized default applies when omitted. Ant Design X `label`. */
+  label?: React.ReactNode;
+  /** Leading glyph. Defaults to a plus. Ant Design X `icon`. */
+  icon?: React.ReactNode;
+  disabled?: DisabledProp;
+  onClick?: () => void;
+};
+
+/**
+ * @see Conversations — the session rail of a chat surface (Ant Design X `Conversations`): the list
+ * of past conversations, the current one marked, a per-row overflow menu, and recency buckets.
+ *
+ * Ant X's own rail is a bare `<ul>` of `<li onClick>` with no roles, no `tabIndex` and no key
+ * handling — measured in `@ant-design/x@2.9.0`, `es/conversations/Item.js` renders a `<li>` whose
+ * only interactive affordance is `onClick`. That is the half of it this port does NOT copy: the
+ * rows here are real `Button`s under a single roving tabindex, so the whole rail is ONE tab stop
+ * and ↑/↓/Home/End move between conversations. Everything a caller passes keeps Ant X's spelling.
+ */
+export type ConversationsProp = {
+  /** The rows. Ant Design X `items`. */
+  items?: readonly ConversationsEntryProp[];
+  /** Controlled selection. Ant Design X `activeKey`. */
+  activeKey?: string;
+  /** Uncontrolled initial selection. Ant Design X `defaultActiveKey`. */
+  defaultActiveKey?: string;
+  /** Fires with the picked key and the entry behind it. Ant Design X `onActiveChange`. */
+  onActiveChange?: (key: string, item?: ConversationsEntryProp) => void;
+  /** One menu for every row, or a function returning the menu for one. Ant Design X `menu`. */
+  menu?:
+    | ConversationsMenuProp
+    | ((conversation: ConversationsItemProp) => ConversationsMenuProp | undefined);
+  /** Bucket rows by their `group` field. Ant Design X `groupable`. */
+  groupable?: boolean | ConversationsGroupableProp;
+  /** The "new conversation" button above the rail. Ant Design X `creation`. */
+  creation?: ConversationsCreationProp;
+  /**
+   * Accessible name of the rail — a plain STRING, because it lands on `aria-label`, which is a
+   * text attribute and cannot carry a node. Ant X has no equivalent because its rail has no role
+   * to name; a localized default applies when omitted.
+   */
+  label?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

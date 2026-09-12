@@ -1,0 +1,53 @@
+/* Conversations component tokens — the session rail of a chat surface (Ant Design X
+ * `Conversations`).
+ *
+ * Ant X answers "how do I retune this rail" with `styles={{ root, group, item, creation }}` — a
+ * free-form style hole that freezes its internal slot names into public API. This file is the
+ * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob
+ * a service sets once in its own theme.css.
+ *
+ * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by
+ * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is
+ * partly a complaint that the two halves of one surface were drawn by two different hands. Reading
+ * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail
+ * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters.
+ *   row band    --band-height-md   (32px)  = --sidebar-nav-item-height
+ *   row type    --font-size-xs             = --sidebar-nav-item-font-size
+ *   icon column --icon-size-md     (16px)  = --sidebar-nav-icon-size
+ */
+:root {
+  /* Gap between the creation button, each bucket, and each run of rows. */
+  --conversations-gap: var(--space-2);
+  /* Gap between rows inside one run. */
+  --conversations-list-gap: var(--space-1);
+
+  /* ROW BOX. The row is a CONTROL, so its height is the band tier, never a literal (rule #24 and
+   * `pnpm check:control-sizing`). */
+  --conversations-item-height: var(--band-height-md);
+  --conversations-item-gap: var(--space-inline-sm);
+  --conversations-item-padding-inline: var(--space-inline-sm);
+  --conversations-item-radius: var(--radius);
+  --conversations-item-font-size: var(--font-size-xs);
+
+  /* ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at
+   * the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a
+   * value here at `:root` each one would resolve once, against the root palette, and freeze.
+   * Default resting ink   = hsl(var(--muted-foreground))
+   * Default active ground = hsl(var(--accent))
+   * Default active ink    = hsl(var(--foreground)) */
+  --conversations-item-color: initial;
+  --conversations-item-active-background: initial;
+  --conversations-item-active-color: initial;
+  --conversations-item-active-font-weight: var(--font-weight-medium);
+
+  /* Leading glyph inside a row. */
+  --conversations-icon-size: var(--icon-size-md);
+
+  /* BUCKET HEADING ("今日" / "Previous 7 days"). */
+  --conversations-group-gap: var(--space-1);
+  --conversations-group-padding-inline: var(--space-inline-sm);
+  --conversations-group-chevron-size: var(--icon-size-sm);
+
+  /* The `{ type: "divider" }` rule between two runs. */
+  --conversations-separator-space-block: var(--space-1);
+}

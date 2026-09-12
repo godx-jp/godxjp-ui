@@ -1075,3 +1075,159 @@
     }
   }
 }
+
+@layer components {
+  /* CONVERSATIONS — the session rail (Ant Design X `Conversations`).
+   *
+   * The rail owns NO colour and NO length of its own: every value below is a knob declared in
+   * tokens/components/conversations.css, which is this library's answer to Ant X's
+   * `styles={{ root, group, item }}` hole. Structure (display/flex/min-inline-size) stays here
+   * because it is structure, not a service-tunable constant — the same split Tabs and the sidebar
+   * rows already use.
+   */
+  .ui-conversations {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--conversations-gap);
+  }
+
+  .ui-conversations-list {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    gap: var(--conversations-list-gap);
+    list-style: none;
+  }
+
+  /* The row and its overflow menu share one line, and the MENU is the fixed part: the label is
+   * what gives way when the rail narrows, never the action. `position: relative` is what lets the
+   * trigger reveal itself over the row's own end padding on hover/focus without reserving a
+   * gutter on every row that has no menu. */
+  .ui-conversations-item {
+    position: relative;
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+  }
+
+  .ui-conversations-row {
+    min-inline-size: 0;
+    height: var(--conversations-item-height);
+    flex: 1 1 auto;
+    gap: var(--conversations-item-gap);
+    padding-inline: var(--conversations-item-padding-inline);
+    border-radius: var(--conversations-item-radius);
+    color: var(--conversations-item-color, hsl(var(--muted-foreground)));
+    font-size: var(--conversations-item-font-size);
+  }
+
+  /* "Current" is carried by `aria-current` in the markup; this is only its paint. Both halves are
+   * required — a tint alone fails WCAG 1.4.1, an attribute alone is invisible. */
+  .ui-conversations-item[data-active="true"] .ui-conversations-row {
+    background: var(--conversations-item-active-background, hsl(var(--accent)));
+    color: var(--conversations-item-active-color, hsl(var(--foreground)));
+    font-weight: var(--conversations-item-active-font-weight);
+  }
+
+  /* A flex ITEM does not shrink below its content unless told to, so the label's own `truncate`
+   * (overflow + ellipsis) can only bite once the span is allowed to be narrower than its text.
+   * Without this the row's text pushes the overflow trigger out of the rail instead of eliding. */
+  .ui-conversations-row > .ui-text {
+    min-inline-size: 0;
+  }
+
+  .ui-conversations-icon {
+    display: grid;
+    inline-size: var(--conversations-icon-size);
+    block-size: var(--conversations-icon-size);
+    flex: 0 0 auto;
+    line-height: 0;
+    place-items: center;
+  }
+
+  .ui-conversations-icon svg {
+    inline-size: var(--conversations-icon-size);
+    block-size: var(--conversations-icon-size);
+  }
+
+  /* The trigger is always in the DOM (it is a keyboard target reached with the forward arrow, so
+   * it may not be conjured on hover), and it is always painted once the row is the active one, the
+   * pointer is over it, or focus is anywhere inside it. Everywhere else it is transparent rather
+   * than absent, so the label measure does not jump as the pointer travels down the rail. */
+  .ui-conversations-menu-trigger {
+    flex: 0 0 auto;
+    opacity: 0;
+  }
+
+  .ui-conversations-item:hover .ui-conversations-menu-trigger,
+  .ui-conversations-item:focus-within .ui-conversations-menu-trigger,
+  .ui-conversations-item[data-active="true"] .ui-conversations-menu-trigger,
+  .ui-conversations-menu-trigger[data-state="open"] {
+    opacity: 1;
+  }
+
+  /* A pointer that cannot hover has no hover state to reveal anything with, so on touch the
+   * trigger is simply always visible. */
+  @media (hover: none) {
+    .ui-conversations-menu-trigger {
+      opacity: 1;
+    }
+  }
+
+  .ui-conversations-group {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--conversations-group-gap);
+  }
+
+  .ui-conversations-group-label {
+    padding-inline: var(--conversations-group-padding-inline);
+  }
+
+  .ui-conversations-group-trigger {
+    min-inline-size: 0;
+    gap: var(--conversations-item-gap);
+    padding-inline: var(--conversations-group-padding-inline);
+  }
+
+  .ui-conversations-group-chevron {
+    inline-size: var(--conversations-group-chevron-size);
+    block-size: var(--conversations-group-chevron-size);
+    flex: 0 0 auto;
+    transform: rotate(-90deg);
+  }
+
+  /* Collapsed points along the reading direction, open points down. The rotation is the LOGICAL
+   * one: `rotate(-90deg)` in an RTL rail would aim the chevron away from the text it opens, so the
+   * closed state flips with `dir`. */
+  [dir="rtl"] .ui-conversations-group-chevron {
+    transform: rotate(90deg);
+  }
+
+  .ui-conversations-group-chevron[data-expanded="true"],
+  [dir="rtl"] .ui-conversations-group-chevron[data-expanded="true"] {
+    transform: rotate(0deg);
+  }
+
+  .ui-conversations-rule {
+    list-style: none;
+  }
+
+  .ui-conversations-separator {
+    margin-block: var(--conversations-separator-space-block);
+  }
+
+  /* Ant Design X `DividerItemType.dashed`. The plain rule is a filled 1px band (Separator paints
+   * `background`, not a border), so the dashed form has to REPLACE that paint with a border rather
+   * than add one — otherwise the solid band sits behind the dashes and nothing looks dashed. */
+  .ui-conversations-separator[data-dashed="true"] {
+    height: 0;
+    border-block-start: var(--separator-rule-size) dashed
+      hsl(var(--separator-rule-color, var(--border)));
+    background: transparent;
+  }
+}
