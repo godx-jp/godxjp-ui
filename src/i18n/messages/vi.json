@@ -257,6 +257,9 @@
       "hintMove": "Di chuyển",
       "hintSelect": "Chọn",
       "hintClose": "Đóng"
+    },
+    "draggablePanel": {
+      "moveLabel": "Di chuyển bảng. Dùng phím mũi tên để dời, giữ Shift để bước dài hơn."
     }
   },
   "dataDisplay": {

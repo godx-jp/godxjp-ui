@@ -665,6 +665,63 @@
         }
       }
     },
+    "DraggablePanel": {
+      "props": {
+        "placement": {
+          "cases": [
+            "top-start",
+            "top-end",
+            "bottom-start",
+            "bottom-end"
+          ],
+          "evidence": [
+            "docs/layout/draggable-panel.tsx",
+            "src/components/layout/__tests__/draggable-panel.test.tsx"
+          ]
+        },
+        "axis": {
+          "cases": [
+            "both",
+            "x",
+            "y",
+            "none"
+          ],
+          "evidence": [
+            "src/components/layout/__tests__/draggable-panel.test.tsx"
+          ]
+        },
+        "bounds": {
+          "cases": [
+            "viewport",
+            "none"
+          ],
+          "evidence": [
+            "src/components/layout/__tests__/draggable-panel.test.tsx"
+          ]
+        },
+        "width": {
+          "cases": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "evidence": [
+            "docs/layout/draggable-panel.tsx",
+            "src/components/layout/__tests__/draggable-panel.test.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [
+            false,
+            true
+          ],
+          "evidence": [
+            "docs/layout/draggable-panel.tsx",
+            "src/components/layout/__tests__/draggable-panel.test.tsx"
+          ]
+        }
+      }
+    },
     "ErrorSurface": {
       "props": {
         "tone": {

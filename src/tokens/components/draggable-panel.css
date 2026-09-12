@@ -1,0 +1,34 @@
+/*
+ * DRAGGABLE PANEL — a floating, movable surface (gh#560).
+ *
+ * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and
+ * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS
+ * without a literal in the TSX (`check:no-inline-magic-numbers`).
+ */
+:root {
+  /* Resting inset from the viewport edge at the panel's placement corner. */
+  --draggable-panel-inset: var(--space-6);
+
+  /* Applied offset from that corner, in CSS pixels. Written by the component. */
+  --draggable-panel-offset-x: 0;
+  --draggable-panel-offset-y: 0;
+
+  /* Keyboard nudge, one arrow press. Shift takes the larger step (WCAG 2.1.1 path). */
+  --draggable-panel-step-offset: var(--space-2);
+  --draggable-panel-step-offset-lg: var(--space-10);
+
+  /* Width ladder. A floating assistant is a column of text, so these are reading measures. */
+  --draggable-panel-width-sm: 18rem;
+  --draggable-panel-width: 22rem;
+  --draggable-panel-width-lg: 28rem;
+  --draggable-panel-max-block-size: 70vh;
+
+  --draggable-panel-radius: var(--radius-lg);
+  --draggable-panel-shadow: var(--shadow-lg);
+  --draggable-panel-border-width: var(--stroke-hairline);
+
+  --draggable-panel-bar-padding: var(--space-2) var(--space-3);
+  --draggable-panel-bar-gap: var(--space-2);
+  --draggable-panel-body-padding: var(--space-4);
+  --draggable-panel-handle-size: var(--control-affix-icon-size);
+}
