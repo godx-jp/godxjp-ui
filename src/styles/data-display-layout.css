@@ -2128,3 +2128,67 @@
     background: var(--tree-node-selected-background, hsl(var(--primary) / 0.12));
   }
 }
+
+@layer components {
+  /* WELCOME — the greeting block at the head of an empty conversation (Ant Design X `Welcome`).
+   *
+   * Two columns, and the `extra` slot sits on the TITLE row rather than under the description:
+   * that placement is the whole reason this is a component instead of a `Flex`, so it lives in
+   * structure here, not in a token. */
+  .ui-welcome {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    gap: var(--welcome-gap);
+    border-radius: var(--welcome-radius);
+  }
+
+  .ui-welcome[data-variant="filled"] {
+    padding-block: var(--welcome-padding-block);
+    padding-inline: var(--welcome-padding-inline);
+    border: var(--welcome-filled-border, var(--stroke-hairline) solid hsl(var(--border)));
+    background: var(--welcome-filled-background, hsl(var(--muted)));
+  }
+
+  .ui-welcome-icon {
+    display: grid;
+    inline-size: var(--welcome-icon-size);
+    block-size: var(--welcome-icon-size);
+    flex: 0 0 auto;
+    line-height: 0;
+    place-items: center;
+  }
+
+  .ui-welcome-icon svg,
+  .ui-welcome-icon img {
+    inline-size: var(--welcome-icon-size);
+    block-size: var(--welcome-icon-size);
+    object-fit: contain;
+  }
+
+  .ui-welcome-content {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--welcome-content-gap);
+  }
+
+  /* `align-items: flex-start` and not `center`: `extra` is often a small icon button beside a
+   * two-line title, and centring it would float it in the middle of the wrap. */
+  .ui-welcome-title-row {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--welcome-title-gap);
+  }
+
+  .ui-welcome-title {
+    min-inline-size: 0;
+  }
+
+  .ui-welcome-extra {
+    flex: 0 0 auto;
+  }
+}

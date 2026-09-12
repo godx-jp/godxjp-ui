@@ -15814,6 +15814,73 @@ const messages: ChatMessageProp[] = [
     storyPath: "navigation/Conversations.stories.tsx",
     rules: [2, 6, 23, 44, 45],
   },
+  {
+    name: "Welcome",
+    group: "data-display",
+    tagline:
+      "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW \u2014 which is the placement a hand-roll gets wrong.",
+    props: [
+      {
+        name: "icon",
+        type: "React.ReactNode | string",
+        description:
+          'Leading glyph. A STRING beginning with http(s) is rendered as a decorative <img alt=""> (Ant Design X does the same, with alt="icon"); any other string renders as text.',
+      },
+      {
+        name: "title",
+        type: "React.ReactNode",
+        description:
+          "The greeting. Renders as an <h4>, which is Ant Design X's hardcoded Typography.Title level={4}.",
+      },
+      { name: "description", type: "React.ReactNode", description: "The line under the greeting." },
+      {
+        name: "extra",
+        type: "React.ReactNode",
+        description:
+          "Trailing slot on the TITLE row \u2014 a dismiss button, a model picker. Not under the description.",
+      },
+      {
+        name: "variant",
+        type: '"filled" | "borderless"',
+        defaultValue: '"filled"',
+        description:
+          "filled gives the block its own tinted ground and hairline; borderless lets it sit on the page.",
+      },
+      { name: "id", type: "string", description: "DOM id of the block." },
+    ],
+    usage: [
+      "DO put it above the composer on an empty chat, with ChatSuggestion or a Prompts row beneath it \u2014 that is the surface it belongs to.",
+      "DO pass `extra` for the one action the greeting carries (dismiss, switch model). It lands beside the title, top-aligned, so a two-line title does not float it.",
+      "DON'T reach for it as a generic page header \u2014 that is PageContainer's title/subtitle/extra, which owns the page rhythm.",
+      "DON'T expect a heading-level prop: Ant Design X hardcodes level 4 and this ports that. Wrap it in your own heading hierarchy if the page needs a different rung.",
+      "DON'T expect `styles`/`classNames` from Ant Design X \u2014 retune through the --welcome-* tokens.",
+    ],
+    useCases: [
+      "The first screen of an assistant, before the first message.",
+      "The head of a fresh conversation started from the Conversations rail.",
+      "A feature introduction card inside a chat surface, dismissed through `extra`.",
+    ],
+    related: [
+      "EmptyState \u2014 the general 'nothing here yet' block for a list or a table. Welcome is the chat surface's greeting and carries an icon/title/description/extra shape of its own.",
+      "PageContainer \u2014 owns the PAGE header; Welcome sits inside the page body.",
+      "ChatSuggestion / ChatBubbleList \u2014 the rest of the same surface.",
+    ],
+    example: [
+      'import { Welcome } from "@godxjp/ui/data-display";',
+      'import { Button } from "@godxjp/ui/general";',
+      'import { Bot } from "lucide-react";',
+      "",
+      "<Welcome",
+      "  icon={<Bot />}",
+      '  title="\u3053\u3093\u306B\u3061\u306F"',
+      '  description="\u8ACB\u6C42\u3001\u7D4C\u8CBB\u3001\u52E4\u6020\u306E\u3053\u3068\u306A\u3089\u304A\u624B\u4F1D\u3044\u3067\u304D\u307E\u3059\u3002"',
+      '  extra={<Button variant="ghost" size="sm">\u9589\u3058\u308B</Button>}',
+      "/>",
+    ].join("\n"),
+    docPath: "data-display/welcome.tsx",
+    storyPath: "data-display/Welcome.stories.tsx",
+    rules: [2, 6, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

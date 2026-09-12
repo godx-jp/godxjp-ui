@@ -1,0 +1,28 @@
+/* Welcome component tokens — the greeting block at the head of an empty conversation
+ * (Ant Design X `Welcome`).
+ *
+ * Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file
+ * is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every
+ * Welcome on every surface follows.
+ */
+:root {
+  /* Gap between the glyph column and the text column. */
+  --welcome-gap: var(--space-4);
+  /* Gap between the title row and the description. */
+  --welcome-content-gap: var(--space-1);
+  /* Gap between the title and the `extra` slot on the title row. */
+  --welcome-title-gap: var(--space-3);
+  /* Inset of the `filled` form. `borderless` drops it to zero. */
+  --welcome-padding-block: var(--space-4);
+  --welcome-padding-inline: var(--space-4);
+  --welcome-radius: var(--radius-lg);
+  /* The glyph column. A square, so an image icon and an SVG icon occupy the same track. */
+  --welcome-icon-size: var(--icon-size-xl);
+
+  /* `filled` chrome. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default
+   * resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it.
+   * Default ground = hsl(var(--muted)) */
+  --welcome-filled-background: initial;
+  /* `outlined` is not an Ant X variant; the hairline below belongs to `filled` only. */
+  --welcome-filled-border: initial;
+}
