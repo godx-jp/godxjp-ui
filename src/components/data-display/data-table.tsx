@@ -133,10 +133,24 @@ export type Density = DensityProp;
 
 /**
  * Lean column definition — the simple, common-case column API. `render` shapes a cell; `sortable`
- * opts the column into the sort cycle; `align` / `width` / `pin` / `hiddenOnMobile` / `priority`
- * tune layout; `enableHiding` (default true) lists the column in DataTable.ViewOptions.
+ * opts the column into the sort cycle; `align` / `width` / `pin` / `hideBelow` / `hiddenOnMobile` /
+ * `priority` tune layout; `enableHiding` (default true) lists the column in DataTable.ViewOptions.
  */
 export type ColumnDef<T> = ColumnDefProp<T>;
+
+/** Same resolution DataTable stamps as `data-hide-below` — `hiddenOnMobile: true` → `md`. */
+export function resolveColumnHideBelow(
+  col: Pick<ColumnDef<unknown>, "hideBelow" | "hiddenOnMobile">,
+): BreakpointProp | undefined {
+  if (col.hideBelow) return col.hideBelow;
+  if (col.hiddenOnMobile) return "md";
+  return undefined;
+}
+
+function columnHideBelowProps(col: ColumnDef<unknown>) {
+  const step = resolveColumnHideBelow(col);
+  return step ? { "data-hide-below": step } : {};
+}
 
 // ── lean ColumnDef → TanStack column adapter ───────────────────────────────
 // We keep the lean ColumnDef as the public column shape and translate it into a
@@ -1477,7 +1491,6 @@ DataTable.Content = function DataTableContent() {
       columnWidth(col.width).className,
       col.align === "right" && "text-end",
       col.align === "center" && "text-center",
-      col.hiddenOnMobile && "hidden md:table-cell",
       col.ellipsis && "ui-data-table-ellipsis",
       edge === "end" && "ui-data-table-pin-end",
       edge === "start" && "ui-data-table-pin-start",
@@ -1661,6 +1674,7 @@ DataTable.Content = function DataTableContent() {
                         : undefined
                     }
                     {...fixedCellProps(col.key, fixedEdge(col))}
+                    {...columnHideBelowProps(col)}
                     style={columnCellStyle(col)}
                     className={cn(
                       columnCellClass(col),
@@ -1710,6 +1724,7 @@ DataTable.Content = function DataTableContent() {
                       key={col.key}
                       priority={col.priority}
                       data-align={col.align}
+                      {...columnHideBelowProps(col)}
                       style={columnCellStyle(col)}
                       className={cn(cellPadding, columnCellClass(col))}
                     >
@@ -1982,6 +1997,7 @@ DataTable.Content = function DataTableContent() {
                             data-align={col.align}
                             title={title}
                             {...fixedCellProps(col.key, fixedEdge(col))}
+                            {...columnHideBelowProps(col)}
                             style={columnCellStyle(col)}
                             className={cn(cellPadding, columnCellClass(col))}
                           >

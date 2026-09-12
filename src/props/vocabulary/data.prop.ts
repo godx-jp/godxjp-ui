@@ -42,6 +42,17 @@ export type ColumnDefProp<T> = {
    * usual case.
    */
   headerAlign?: ColumnAlignProp;
+  /**
+   * Hide this column below a canonical viewport step — the SAME contract as `Flex hideBelow`
+   * (sm 40rem · md 48rem · lg 64rem · xl 80rem). Stamped on both `<th>` and `<td>` as
+   * `data-hide-below`; a media query cannot read a `var()`, so the step values are the tokenized
+   * scale written out in the stylesheet. Wins over `hiddenOnMobile` when both are set.
+   */
+  hideBelow?: BreakpointProp;
+  /**
+   * @deprecated Prefer `hideBelow: 'md'`. When `hideBelow` is omitted, `true` is an alias for
+   * `hideBelow: 'md'`.
+   */
   hiddenOnMobile?: boolean;
   /**
    * List this column in DataTable.ViewOptions (the column show/hide "set view"
