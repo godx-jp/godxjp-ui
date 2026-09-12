@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.4] - 2026-09-12
+
 ### Added
 
 - **Lối vào CSS thứ tư, `@godxjp/ui/styles/core-with-jis-level1` — nửa còn lại của #535.**
@@ -46,6 +48,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   từng `url()` trong một bản `npm install` thật tới một tệp có thật.
 
 ### Fixed
+
+- **`ui-audit` không thấy `SkeletonTable` dưới một `CardContent` chưa `flush` (#611).** Luật
+  `card-table-needs-flush` chỉ khớp `<DataTable>` và `<Table>`, nên một consumer viết bảng và ô
+  chờ của chính nó cạnh nhau nhận **một** phát hiện cho **hai** lỗi y hệt — và nửa im lặng là nửa
+  tệ hơn, vì `SkeletonTable` là thứ chính gói này đưa ra để đứng thay `DataTable`. Đo trên đúng hai
+  hàm người báo lỗi gửi: **1 lỗi trước, 2 lỗi sau.**
+
+  Danh sách không đoán ra. Stylesheet của gói đã chở sẵn một ngoại lệ cho mỗi component cần `flush`
+  mới tới được nó (`[data-slot="card-content"][data-flush]`), và **chính ngoại lệ ấy là lời khẳng
+  định rằng cặp đó có ý nghĩa**: `.ui-data-table-root/-scroll/-surface/-toolbar` (`DataTable`),
+  `.ui-table-bordered` (`<Table bordered>`), `.ui-skeleton-table` (`SkeletonTable`). Luật nay suy
+  ra từ danh sách đó, và phép kiểm so hai bên **theo cả hai chiều**: một component có ngoại lệ CSS
+  mà luật bỏ qua thì đỏ và nêu tên nó, còn một class flush MỚI chưa được gán chủ cũng đỏ — không
+  thế thì lần sau quên lại đọc thành "không có gì cần kiểm", đúng sự im lặng mà #611 vốn là. Nhờ
+  chiều thứ hai mà `ui-data-table-surface` và `ui-table-bordered` — hai class phép suy ban đầu bỏ
+  sót — mới lộ ra.
 
 - **Chữ lỗi của `FormField` đọc tầng TÔ thay vì tầng CHỮ — 2,95:1 trên nền tối (#610).** Dòng
   `role="alert"` dưới một ô nhập là **câu duy nhất** nói cho người dùng biết vì sao ô bị từ chối, và
