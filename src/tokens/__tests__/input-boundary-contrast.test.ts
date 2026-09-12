@@ -86,3 +86,53 @@ describe.each(THEMES)("--input as a control boundary ($theme)", ({ selector }) =
     expect(hsl(body, "input")).not.toEqual(hsl(body, "border"));
   });
 });
+
+/**
+ * `--border` IS ANTD'S SPLIT TIER, NOT ITS CONTROL TIER.
+ *
+ * antd ships two neutral border tokens and they are not interchangeable: `colorBorder`
+ * (`darken(#fff, 15)` → #d9d9d9) is the edge that IS a control, and `colorBorderSecondary`
+ * (`darken(#fff, 6)` → #f0f0f0) is chrome — the Tabs hairline, Card edges, Table cell rules,
+ * Divider. In this system `--input` plays the first role (held to 3:1, see above) and `--border`
+ * plays the second.
+ *
+ * It shipped at the WRONG ONE: 83% light / 22% dark, a 16-point gap from the ground where antd's
+ * control tier is 15 — so every hairline, card edge and table rule was one tier too dark, and it
+ * was reported from a screenshot of the Tabs line strip. The values now follow antd's own
+ * proportion: its secondary sits at 6/15 = 40% of the control tier's gap in light, and
+ * `lighten(bg, 19)` against `lighten(bg, 26)` = 73% in dark. Measured in Chromium on
+ * /isolate/navigation-tabs: 1.15:1 light (antd 1.14:1) and 1.38:1 dark (antd 1.40:1).
+ *
+ * Pinned as the GAP FROM THE GROUND rather than as a literal lightness, because that is what
+ * makes it a tier: re-tinting a theme's ground moves both, and only the ratio between them
+ * carries the meaning.
+ */
+describe("--border tracks antd's colorBorderSecondary, not colorBorder", () => {
+  const GAP = {
+    // ground lightness − border lightness, in points, and what antd's own pair gives.
+    light: { body: block(":root {"), maxGap: 8, antdControlGap: 15 },
+    dark: { body: block('.dark,\n:root[data-theme="dark"] {'), maxGap: 11, antdControlGap: 17 },
+  } as const;
+
+  for (const [theme, { body: themeBody, maxGap, antdControlGap }] of Object.entries(GAP)) {
+    it(`${theme}: the gap from the ground stays in the SPLIT tier, well inside antd's control tier`, () => {
+      const groundL = hsl(themeBody, "background")[2];
+      const borderL = hsl(themeBody, "border")[2];
+      const gap = Math.abs(groundL - borderL);
+      expect(gap, `--border is ${gap} points off the ground; the split tier is <= ${maxGap}`)
+        .toBeLessThanOrEqual(maxGap);
+      expect(
+        gap,
+        `${gap} points is antd's CONTROL tier (~${antdControlGap}); that value belongs to --input`,
+      ).toBeLessThan(antdControlGap);
+    });
+
+    it(`${theme}: it is still visible — a split that renders as nothing is not a split`, () => {
+      const ground = hslToRgb(hsl(themeBody, "background"));
+      const border = hslToRgb(hsl(themeBody, "border"));
+      // antd's own pair is 1.14:1 light / 1.40:1 dark, so the floor is set just under the lower of
+      // the two rather than at some rounder number nobody measured.
+      expect(contrast(border, ground)).toBeGreaterThan(1.1);
+    });
+  }
+});

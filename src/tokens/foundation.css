@@ -33,7 +33,27 @@
   --accent-foreground: 48 8% 13%;
   --destructive: 357 64% 44%; /* 茜 #b7282e */
   --destructive-foreground: 60 33% 99%;
-  --border: 30 7% 83%; /* #d6d3d0 SmartHR BORDER */
+  /* DECORATIVE CHROME — antd's `colorBorderSecondary`, not its `colorBorder`.
+   *
+   * antd ships TWO neutral border tiers and uses them for different things: `colorBorder`
+   * (`darken(#fff, 15)` → #d9d9d9) is the edge that IS a control — Input, Select, the outline
+   * Button — and `colorBorderSecondary` (`darken(#fff, 6)` → #f0f0f0) is chrome: the Tabs
+   * hairline, Card edges, Table cell rules, Divider. This token is the SECOND of those. The
+   * first is `--input` below, which is held to WCAG 2.2 SC 1.4.11's 3:1 and therefore sits far
+   * darker than antd's — a deliberate, measured deviation recorded there.
+   *
+   * It shipped at 83%, a 16-point gap from the ground, which is antd's CONTROL value (15 points)
+   * being used for everything antd paints with the split value — so every hairline, card edge and
+   * table rule in the system was one tier too dark. Reported from a screenshot of the Tabs line
+   * strip: "ant design đường xám mờ hơn mà". 93% is antd's own proportion — its secondary sits at
+   * 6/15 = 40% of the control tier's gap, and 40% of our 16 points is 6.4 → 92.6%, rounded onto
+   * the scale. Measured: 1.15:1 on --background where antd's #f0f0f0 on #fff is 1.14:1.
+   *
+   * NOT a contrast regression to defend: a divider is decorative, nothing about it is "required
+   * to identify a component or its state", so 1.4.11 does not reach it — and the JP-dense table
+   * grid reads better for it. `check:contrast`'s rail pass measures one-sided borders of 3px or
+   * more, so a 1px hairline was never in its sample either way. */
+  --border: 30 7% 93%; /* #eeedec — antd colorBorderSecondary tier */
   /* CONTROL BOUNDARY role — deliberately NOT the same value as --border (gh#315).
    *
    * The two roles answer different questions and are held to different bars:
@@ -755,13 +775,19 @@
    * against the light label). Error TEXT on dark surfaces uses --text-error, not this fill token. */
   --destructive: 357 55% 48%;
   --destructive-foreground: 0 0% 100%;
-  --border: 45 6% 22%;
+  /* Same tier as the light block: antd's `colorBorderSecondary`, which on the dark spine is
+   * `lighten(bg, 19)` against `colorBorder`'s `lighten(bg, 26)` — 73% of the gap. Ours was 13
+   * points off the ground; 73% of that is 9.5 → 19%. Measured 1.38:1 on --background, and antd's
+   * own dark pair (#303030 on #141414) is 1.40:1 — the proportion lands on upstream's real value,
+   * not merely near it. */
+  --border: 45 6% 19%;
   /* Control boundary (dark) — recomputed on the dark spine, not merely lightened by eye
    * (gh#315). The dark pair shared `45 6% 22%`, which sat at 1.55:1 on --background and 1.43:1
    * on the --card/--popover surface where dialogs put their fields. 47% gives
    * --background 4.22:1 · --card/--popover 3.88:1 · --muted/--secondary 3.17:1 · zebra 3.81:1 ·
-   * hover 3.71:1. --border stays at 22%: dividers are decorative and a dark grid at 47% would
-   * read as a wireframe. See the light block above for the full reasoning. */
+   * hover 3.71:1. --border does NOT follow it up here — dividers are decorative and a dark grid
+   * at 47% would read as a wireframe; it sits at 19%, antd's split tier, for the reason recorded
+   * above it. See the light block for the full reasoning. */
   --input: 45 6% 47%; /* #7f7b71 — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   /* --ring and the dark halo alpha live in the DERIVED tier. The dark halo needs roughly 2.5× the
    * light alpha to read at all on a near-black ground — 0.29 dark against 0.11 light, which is

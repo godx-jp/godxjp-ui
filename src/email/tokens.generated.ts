@@ -38,7 +38,7 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "border": {
     "cssVar": "--border",
-    "hsl": "30 7% 83%"
+    "hsl": "30 7% 93%"
   },
   "primary": {
     "cssVar": "--primary",
@@ -98,7 +98,7 @@ export const EMAIL_COLOR_SOURCE_DARK = {
   },
   "border": {
     "cssVar": "--border",
-    "hsl": "45 6% 22%"
+    "hsl": "45 6% 19%"
   },
   "primary": {
     "cssVar": "--primary",
