@@ -683,7 +683,7 @@
           "evidence": ["src/components/layout/__tests__/draggable-panel.test.tsx"]
         },
         "width": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["sm", "md", "lg", "xl"],
           "evidence": [
             "docs/layout/draggable-panel.tsx",
             "src/components/layout/__tests__/draggable-panel.test.tsx"
