@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Tabs size` nay có tác dụng ở dạng compound.** Tầng kích thước được tính trong `Tabs` và chỉ
+  trao cho những trigger mà nhánh `items` tự dựng; một dải điều hướng buộc phải viết bằng
+  `<TabsList><TabsTrigger>` thì prop ấy **không làm gì cả** — consumer đo được `data-size="sm"` trên
+  root trong khi trigger vẫn vẽ `--tabs-trigger-padding-x-md`. Nay tầng đi qua `TabsFrameContext`,
+  một định nghĩa dùng chung cho cả hai dạng.
+
+- **`Card` trong lưới nay canh được footer xuống đáy, không cần utility.** `ResponsiveGrid` kéo mọi
+  ô cao bằng hàng, nên thẻ ngắn có chỗ thừa — và một thẻ `display: block` tiêu chỗ thừa ấy thành
+  khoảng trống DƯỚI footer: consumer đo hai nút trong cùng một hàng lệch nhau 40px, và đường duy
+  nhất của họ là `className="flex h-full flex-col"`, thứ mà `ui-audit` chặn đúng. Nay thẻ là cột và
+  footer nhận phần dôi. Đo sau bản sửa: hai thẻ nội dung dài ngắn khác nhau đặt footer ở cùng một
+  toạ độ (1028 và 1028). Thẻ vừa đúng chiều cao nội dung thì không đổi một pixel nào.
+
+### Fixed
+
 - **Cả tầng motion chưa từng có giá trị ở `:root`.** `--duration-*`, `--ease-*`, `--reveal-*`,
   `--duration-loop`, `--activity-*` được khai báo **chỉ bên trong `.ui-scale-fixed`** — một class mà
   các shell chỉ gắn lên dải chrome (topbar của AppShell, thanh của CenteredShell). Mọi nơi đọc chúng
