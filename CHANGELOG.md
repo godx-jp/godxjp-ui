@@ -6,6 +6,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.2.0] - 2026-09-12
+
+Bản này tồn tại vì một lý do đo được: **bốn issue đã sửa xong trên `main` vẫn bị mở lại**, và người
+báo đúng — họ đo trên `23.1.0` của npm, nơi chưa bản sửa nào có mặt. Một bản vá chưa phát hành thì
+với consumer là một bản vá không tồn tại. Nên trước khi kể tính năng, đây là bốn thứ mà **23.2.0 là
+bản ĐẦU TIÊN chở chúng ra registry**: vùng bấm nút mở lịch `DatePicker` 20×20 → 24×24 (#507),
+khoảng hở giữa hai hàng `Segmented` khi xuống dòng (#503), sáu bản sửa consumer mà 23.0.0 bỏ lại
+(#506), và tệp luật do gói sở hữu hết ruỗng im lặng khi consumer đặt `ignore-scripts=true` (#513).
+
+### Added
+
+- **`Card` bắt kịp Ant Design 6:** `hoverable`, `borderless`, và `actions` (#522).
+- **`Tabs` bắt kịp Ant Design 6:** `animated`, `indicator`, `moreIcon`, `onTabScroll` (#523).
+- **`Skeleton`** — cổng từ Ant Design 6 lên đúng họ component đã có ở đây, thay vì dựng một nhánh
+  riêng (#525).
+- **`Swatch`** cho ô màu do người dùng chọn, cùng hai cửa thoát `hideBelowRaw` / `hideFromRaw` cho
+  điểm gãy không nằm trên thang bậc tên (#527, #528).
+- **`FeatureList`** (`included` / `excluded` / `limited`) và **`Thumbnail`** — hai hình dạng mà
+  consumer không có nước đi hợp lệ nào: bản hand-roll trong issue cho **3 lỗi** `ui-audit`
+  (`no-utility-layout`, hai `no-utility-spacing`). Glyph của `FeatureList` canh bằng ô `1lh` chứ
+  không phải `align-items: baseline`: đo trên Chromium, sai số tâm ink là **−1,20px** với `1lh`, so
+  với −3,60px cho `baseline` và −3,10px cho `align start` + `mt-0.5` — tức `baseline`, câu hỏi để
+  ngỏ của người báo, là phương án TỆ HƠN thứ nó định thay (#529, #530).
+- **`Sidebar`**: `footer` nhận `(collapsed) => ReactNode`, và `trailingIcon` cho glyph cuối hàng
+  (#532).
+
+### Fixed
+
+- **Cả tầng token chuyển động được khai ở nơi gần như không gì đọc được nó** (#524). `--duration-*`,
+  `--ease-*`, `--reveal-*`, `--activity-*` nằm trong `.ui-scale-fixed`; ở `:root` chúng đo ra chuỗi
+  rỗng, mà một custom property rỗng làm khai báo dùng nó thành không hợp lệ và bị bỏ. Đo được: chấm
+  `Activity` chạy `0s` trước, `1.4s` sau.
+- **`Tabs` có prop `size` mà nó không làm gì**, và **`CardFooter` không xuống nổi đáy thẻ** (#531).
+- `check:mcp-catalog-coverage` nay soi đúng bề mặt export thật, thay vì một danh sách viết tay
+  (#526).
+- Hai cổng mà các PR đã merge mỗi cái để dở một nửa, khiến `main` đỏ (#533).
+
+### Docs
+
+- `scripts/consumer-rule.md` — tệp mà gói GHI VÀO mọi consumer — chưa từng nhắc tới
+  `@godxjp/ui/styles/core`, lối vào không kèm `@font-face`. Nó có thật, và nay có trong tệp (#535).
+- Quy trình: CI là việc của GitHub Actions. Lệnh chạy toàn bộ bộ test tại máy đã bị gỡ khỏi skill
+  chuột bạch và tài liệu quy trình.
+
 ### Added — `Sidebar` cân lại hai khe nằm trong dải thu gọn
 
 - **`Sidebar footer` nhận `(collapsed) => ReactNode`, đúng hình của `brand`** (gh#516). Hai khe ở
