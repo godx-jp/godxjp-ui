@@ -155,6 +155,72 @@ export function resolveHiddenTabValues(list: HTMLElement, values: readonly strin
 }
 
 /**
+ * The LOGICAL scroll offset of a strip: how far it has moved from its own start edge, growing
+ * towards `end` on whichever axis the strip is on and in whichever direction it is written.
+ *
+ * `scrollLeft` cannot be read raw. Per CSSOM-View an RTL scroller reports `0` at its START edge
+ * (the right one) and goes NEGATIVE towards the end, so "scrollLeft went up" means opposite things
+ * in the two directions — exactly the bug `start`/`end` exist to prevent, and it would have been
+ * invisible in an LTR test suite.
+ */
+export function readTabsScrollOffset(list: HTMLElement, vertical: boolean): number {
+  if (vertical) return list.scrollTop;
+  const rtl =
+    list.ownerDocument?.defaultView?.getComputedStyle(list).direction === "rtl" ||
+    list.closest("[dir]")?.getAttribute("dir") === "rtl";
+  return rtl ? -list.scrollLeft : list.scrollLeft;
+}
+
+/**
+ * Ant Design `onTabScroll`'s one piece of logic: which edge a movement of the scroll offset went
+ * towards. `null` when the offset did not move, so a scroll event that reports the same position
+ * (momentum settling, a programmatic re-pin that was already in place) reports nothing.
+ */
+export function resolveTabsScrollDirection(previous: number, next: number): "start" | "end" | null {
+  if (next === previous) return null;
+  return next > previous ? "end" : "start";
+}
+
+/**
+ * Reports every real movement of the strip's own scrollport to `onScroll` — Ant Design
+ * `onTabScroll`. The handler is held in a ref so a consumer's inline arrow function does not
+ * re-arm the listener on every render (same contract as `useTabsOverflowValues` above).
+ *
+ * It reports a `scrollIntoView` re-pin too, and deliberately: antd's does the same, and "the strip
+ * moved" is the fact a consumer is subscribing to — not "the user moved it".
+ */
+export function useTabsScrollReporter(
+  listRef: React.RefObject<HTMLElement | null>,
+  vertical: boolean,
+  onScroll: ((info: { direction: "start" | "end" }) => void) | undefined,
+): void {
+  const onScrollRef = React.useRef(onScroll);
+  React.useEffect(() => {
+    onScrollRef.current = onScroll;
+  });
+
+  const armed = onScroll !== undefined;
+  React.useEffect(() => {
+    if (!armed) return undefined;
+    const list = listRef.current;
+    if (!list) return undefined;
+
+    let last = readTabsScrollOffset(list, vertical);
+    const report = () => {
+      const next = readTabsScrollOffset(list, vertical);
+      const direction = resolveTabsScrollDirection(last, next);
+      last = next;
+      if (direction) onScrollRef.current?.({ direction });
+    };
+
+    list.addEventListener("scroll", report, { passive: true });
+    return () => {
+      list.removeEventListener("scroll", report);
+    };
+  }, [armed, listRef, vertical]);
+}
+
+/**
  * Keeps `onChange` fed with the values currently out of the scrollport, recomputing on the two
  * things that can move them: the strip resizing (a viewport change, a font swap, a tab added or
  * removed) and the strip scrolling (the user swiping, or `useKeepActiveTabVisible` re-pinning a

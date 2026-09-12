@@ -81,6 +81,13 @@
   --tabs-indicator-background: initial;
   --tabs-indicator-size: 2px;
   --tabs-indicator-offset: 0px;
+  /* Ant Design `indicator.size` — the bar's LENGTH along the strip, as the inset it leaves at EACH
+   * end of the trigger. `0px` = antd's own default (`getLength` returns `origin`, the tab's whole
+   * offset width), so the default paint does not move. `indicator={{ size: "label" }}` on the
+   * component repoints this at the trigger's own inline/block padding, which is what
+   * `size: (origin) => origin - 2 * padding` is written to produce upstream
+   * (@rc-component/tabs src/hooks/useIndicator.ts). */
+  --tabs-indicator-inset: 0px;
 
   /* TABS BOX GEOMETRY (#319) — the strip↔panel gap and the whole `line` trigger box were Tailwind
    * scale literals on tabs.tsx, so a service could only retune the tab rhythm by forking the

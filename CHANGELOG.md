@@ -61,6 +61,45 @@ HÀNH VI của antd đều với tới được, không phải mọi tên prop �
   `tabBarExtraContent` (`CardBar extra`), `type="inner"`, `Card.Grid`, `Card.Meta` — để lần sau
   không ai mở lại issue xin thêm prop cho thứ đã với tới được.
 
+### Added — `Tabs` khép nốt bề mặt Ant Design 6
+
+Bốn prop cuối còn thiếu, port thẳng từ mã nguồn antd / `@rc-component/tabs` chứ không suy từ tài liệu:
+
+- `animated` (`boolean | { inkBar, tabPane }`) — chép từ `components/tabs/hooks/useAnimateConfig.ts`:
+  `false` tắt cả hai, `true` **bật cả hai** (bản antd khác bản rc gốc ở đúng chỗ này), object thì
+  gộp lên `{ inkBar: true }`. `tabPane` của antd hoá ra chỉ là một lượt **mờ dần** (`opacity: 0 → 1`,
+  `components/tabs/style/motion.ts`), nên đây là bản port chứ không phải sáng tác. Cả hai công tắc
+  còn tắt thêm dưới `prefers-reduced-motion` — antd không có vế này.
+- `indicator` (`{ size, align }`) — hình học lấy từ `hooks/useIndicator.ts`. `align` giữ nguyên tên
+  và giá trị của antd (đã là logic sẵn). `size` giữ tên antd nhưng đổi sang trục CÓ TÊN: antd nhận
+  `number | (origin) => number`, hai thứ mà API này không nhận được; `full` là cả thẻ tab (mặc định
+  của antd), `label` là hộp nội dung của thẻ. Đo trên Chromium, tab 142px: `full` → thanh 141px,
+  `label` → 117px (= 141 − 2×12, đúng phần đệm ĐANG VẼ), `align="start"` → sát mép đầu, `"end"` →
+  sát mép cuối; trục dọc cũng vậy (46px → 30px).
+- `moreIcon` — glyph của nút `overflow="menu"`. Nút vẫn giữ `aria-label` của nó, nên một glyph tự
+  chọn không bao giờ làm mất tên của control.
+- `onTabScroll` — `{ direction: "start" | "end" }` thay cho `left | right | top | bottom` của antd.
+  Hai trong bốn giá trị ấy chỉ là trục kia của cùng một sự kiện, và antd đọc chúng từ DẤU của một
+  transform có biên bị lật khi RTL, nên cùng một cử chỉ báo ngược nhau giữa hai hướng viết.
+
+**Không port, có lý do ghi lại**: `tabBarGutter` (khoảng hở giữa các tab là token của theme —
+`--tabs-list-line-space-gap` / `--tabs-card-list-space-gap`; một con số pixel là hằng số, không phải
+trục), `tabBarStyle` · `renderTabBar` · `classNames`/`styles` · `more.popupRender` (thuộc lớp "thay
+markup đã dựng" mà `docs/DESIGN-AUTHORITY.md` từ chối đích danh), `destroyOnHidden` theo từng item
+(đã là `forceRender`), và `keyboard` — prop này **không tồn tại** ở antd 6, `@rc-component/tabs`
+liệt kê nó trong danh sách đã gỡ.
+
+### Fixed
+
+- Gạch chân `Tabs` (`line`) giờ THẬT SỰ có transition. Nó viết `var(--duration-fast)
+var(--ease-standard)`, mà cả tầng motion — `--duration-*`, `--ease-*`, `--reveal-*` — chỉ được
+  khai trong `.ui-scale-fixed` của `src/tokens/foundation.css`, **chưa bao giờ ở `:root`**. Đo trên
+  Chromium: `getPropertyValue("--duration-fast")` ở `:root` trả về chuỗi rỗng, khai báo hỏng nên bị
+  bỏ, và thanh gạch đo được `transition-duration: 0s` — một hiệu ứng chưa ai từng nhìn thấy. Hai
+  khai báo motion của `Tabs` nay có giá trị dự phòng nên chạy ngay; **khuyết tật ở tầng token vẫn
+  còn và ảnh hưởng toàn thư viện** (mọi `var(--duration-*)` / `var(--ease-*)` ngoài
+  `.ui-scale-fixed`), cần một bản sửa riêng.
+
 ## [23.1.0] - 2026-09-12
 
 Bản này gần như toàn bộ đến từ báo cáo của consumer `gino-cloud` sau khi họ nâng 20.2.1 → 23.0.0 —

@@ -625,6 +625,65 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>indicator · animated</CardTitle>
+            <CardDescription>
+              Ant Design の indicator
+              は下線バーの長さと寄せ方を決める。size=&quot;full&quot;(既定)はタブ全幅、size=&quot;label&quot;
+              はタブ自身の左右パディングを引いた分、つまりラベルの幅。align
+              はバーが短いときだけ効く。animated は inkBar(下線のクロスフェード・既定 ON)と
+              tabPane(パネルのフェードイン・既定 OFF)の二つのスイッチで、prefers-reduced-motion
+              では両方とも止まる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Tabs
+                id="antd-indicator-full"
+                defaultValue="pending"
+                variant="line"
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-indicator-label"
+                defaultValue="pending"
+                variant="line"
+                indicator={{ size: "label" }}
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-indicator-label-start"
+                defaultValue="pending"
+                variant="line"
+                indicator={{ size: "label", align: "start" }}
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-indicator-label-end"
+                defaultValue="pending"
+                variant="line"
+                indicator={{ size: "label", align: "end" }}
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-animated-off"
+                defaultValue="pending"
+                variant="line"
+                animated={false}
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-animated-pane"
+                defaultValue="pending"
+                variant="line"
+                animated={{ tabPane: true }}
+                items={journalItems}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

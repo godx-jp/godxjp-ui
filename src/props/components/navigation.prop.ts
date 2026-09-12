@@ -13,6 +13,7 @@ import type {
   PendingProp,
   PlaceholderProp,
   StickyProp,
+  TextAlignProp,
 } from "../vocabulary";
 import type { SearchSelectOptionProp } from "./data-entry.prop";
 
@@ -375,6 +376,60 @@ export type TabsOnTabClickProp = (
   event: React.MouseEvent<HTMLButtonElement>,
 ) => void;
 
+/**
+ * @see Tabs — Ant Design `animated`, same shape and same two switches.
+ *
+ * `inkBar` (default ON) is the `line` variant's active bar cross-fading between triggers.
+ * `tabPane` (default OFF, as in antd) fades the panel in when the selection moves.
+ *
+ * WHERE IT DIVERGES, and why: antd animates the PANE by laying every pane on one translated
+ * inline track and sliding it, which needs all of them mounted. This component destroys a hidden
+ * panel by default (`destroyOnHidden` — the opposite default from antd), so there is no track to
+ * slide; the pane animation is a token-owned fade-in on the panel that just became active
+ * (`--tabs-pane-motion-*`). The SWITCH is antd's, the motion is this library's, and both switches
+ * are additionally off under `prefers-reduced-motion` — which antd's is not.
+ */
+export type TabsAnimatedProp = boolean | { inkBar?: boolean; tabPane?: boolean };
+
+/**
+ * @see Tabs — Ant Design `indicator.size`, held to a NAMED axis instead of a pixel length.
+ *
+ * antd takes `number | (origin: number) => number` — a measured px length, or a function of the
+ * tab's own width. Neither can enter this library: a literal is what `no-arbitrary-spacing`
+ * exists to stop, and a function of the measured origin is the free-form escape hatch
+ * `docs/DESIGN-AUTHORITY.md` refuses by name. The two lengths that answer the actual request are
+ * named instead — `full` (the whole trigger, today's bar and the default) and `label` (the
+ * trigger's content box, i.e. minus its own inline padding), which is what
+ * `size: (origin) => origin - 2 * padding` is written to produce.
+ */
+export type TabsIndicatorSizeProp = "full" | "label";
+
+/**
+ * @see Tabs — Ant Design `indicator`. `align` keeps antd's own name AND its values, which are
+ * already logical, so it reads the shared `TextAlignProp` vocabulary rather than a second
+ * spelling of the same axis. It only has anything to place when `size` is shorter than the
+ * trigger, exactly as in antd.
+ */
+export type TabsIndicatorProp = {
+  size?: TabsIndicatorSizeProp;
+  align?: TextAlignProp;
+};
+
+/**
+ * @see Tabs — the edge a scroll of the trigger strip moved TOWARDS, on the logical axis.
+ *
+ * antd reports `left | right | top | bottom`; those four cannot mirror for an RTL locale and two
+ * of them are just the other axis of the same event. `start`/`end` say the same thing on whichever
+ * axis the strip is on — the same override that makes `tabPlacement` logical.
+ */
+export type TabsScrollDirectionProp = "start" | "end";
+
+/**
+ * @see Tabs — Ant Design `onTabScroll`. A NAMED alias for the same reason as `TabsOnEditProp`.
+ * Only fires for the `items` API, which is the path that owns the strip element.
+ */
+export type TabsOnScrollProp = (info: { direction: TabsScrollDirectionProp }) => void;
+
 /** @see Tabs — high-level tabs with optional `items` array. */
 export type TabsProp = {
   items?: TabItemProp[];
@@ -436,6 +491,30 @@ export type TabsProp = {
    * "click" would be a fiction. Use `onValueChange` for selection, whatever moved it.
    */
   onTabClick?: TabsOnTabClickProp;
+  /**
+   * Ant Design `animated`. Default `{ inkBar: true, tabPane: false }` — antd's own default, and
+   * byte for byte what this strip already painted. @see TabsAnimatedProp
+   */
+  animated?: TabsAnimatedProp;
+  /**
+   * Ant Design `indicator`. Governs the `line` variant's active bar only — the other variants
+   * have no bar to place. @see TabsIndicatorProp
+   */
+  indicator?: TabsIndicatorProp;
+  /**
+   * Ant Design `more.icon` — the glyph on the `overflow="menu"` button, flat here for the same
+   * reason `addIcon` and `closeIcon` are flat: `overflow` names the BEHAVIOUR, the icon is a slot.
+   */
+  moreIcon?: React.ReactNode;
+  /*
+   * ANT DESIGN `tabBarGutter` IS NOT HERE, and that is a standing decision rather than an
+   * oversight: the gutter between triggers is `--tabs-list-line-space-gap` /
+   * `--tabs-card-list-space-gap` (see src/tokens/components/navigation.css, which records why —
+   * a number of pixels is a constant, not a semantic axis, and a constant belongs to the theme).
+   * The pill strip has no gutter at all by design.
+   */
+  /** Ant Design `onTabScroll`, on the logical axis. @see TabsOnScrollProp */
+  onTabScroll?: TabsOnScrollProp;
   className?: ClassNameProp;
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;

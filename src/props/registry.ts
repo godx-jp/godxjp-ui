@@ -2482,6 +2482,39 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: [],
   },
+  TabsAnimatedProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  TabsIndicatorSizeProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  TabsIndicatorProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "TextAlignProp",
+      {
+        field: "size",
+        local: true,
+        reason:
+          "The LENGTH of the active bar along the strip (Ant Design `indicator.size`), not a control tier — `SizeProp` is the sm/md/lg band and reusing it here would say something false. Values stay a closed named axis (`full` | `label`) so no pixel length or origin-function enters the API.",
+      },
+    ],
+  },
+  TabsScrollDirectionProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  TabsOnScrollProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["HandlerProp"],
+  },
   TabItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
