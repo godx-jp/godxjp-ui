@@ -2506,6 +2506,112 @@ export function TermsPage() {
 
   // ─── general ────────────────────────────────────────────────────────────
   {
+    name: "FloatButton",
+    group: "general",
+    tagline:
+      "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query.",
+    props: [
+      {
+        name: "icon",
+        type: "ReactNode",
+        description:
+          "The glyph. Falls back to a document mark when the button carries neither an icon nor `content`, which is antd's own default.",
+      },
+      {
+        name: "content",
+        type: "ReactNode",
+        description:
+          'A short caption UNDER the glyph. Legal only with shape="square" — a circle has no room, and asking for one logs antd\'s dev warning.',
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        description:
+          "antd 6's deprecated spelling of `content`, kept so an antd call site compiles unchanged. `content` wins when both are given. Prefer `content` in new code.",
+      },
+      {
+        name: "type",
+        type: '"default" | "primary"',
+        defaultValue: '"default"',
+        description:
+          "antd's word for the FILL, not the native button type — `default` is the surface-with-hairline mark, `primary` the brand fill. The native attribute is `htmlType`.",
+      },
+      {
+        name: "shape",
+        type: '"circle" | "square"',
+        defaultValue: '"circle"',
+        description:
+          "Round mark or rounded square. A FloatButton inside a Group inherits the group's shape, so a stack can never mix the two.",
+      },
+      {
+        name: "tooltip",
+        type: "ReactNode | { title, side, align, sideOffset }",
+        description:
+          "Hover/focus label. When it is a STRING and no aria-label is given it also becomes the button's accessible name — an icon-only control needs a name, and a tooltip alone never reaches a touch user (WCAG 4.1.2).",
+      },
+      {
+        name: "href",
+        type: "string",
+        description: "Renders an <a> instead of a <button>, exactly as antd does.",
+      },
+      {
+        name: "target",
+        type: "string",
+        description: "Anchor target; only meaningful beside `href`.",
+      },
+      {
+        name: "badge",
+        type: "{ count?: number; dot?: boolean; overflowCount?: number; showZero?: boolean; color?: string }",
+        description:
+          "The corner count/dot mark. `overflowCount` defaults to 99 and `showZero` to false, both antd's. antd's `offset` and `size` are deliberately not ported — `offset` is a raw px tuple no token step spells.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description:
+          "Non-interactive. A Group's trigger inherits it. Remember the house rule: the REASON a control is disabled is visible text, never the tooltip.",
+      },
+      {
+        name: "htmlType",
+        type: '"button" | "submit" | "reset"',
+        defaultValue: '"button"',
+        description: "The native button type, since `type` is taken by the fill. antd 5.21+.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/general`: `import { FloatButton } from "@godxjp/ui/general";`',
+      "DO give every float button a name — `tooltip` as a plain string is enough, since it becomes the aria-label too.",
+      "DO move the mark with the `--float-button-offset-block-end` / `--float-button-offset-inline-end` tokens when a sticky action bar or a mobile tab bar is already in that corner.",
+      "DO pass `target={() => element}` to FloatButton.BackTop inside a shell that owns its own scroll region, so it watches that region rather than the document.",
+      "DON'T hand-roll it as a Button with `position: fixed` at the call site — that is page-local CSS the audit blocks, and it is the exact gap gh#558 was filed for.",
+      "DON'T reach for Popover: it anchors a PANEL to a trigger, so it answers where the panel goes, not where the trigger goes.",
+      'DON\'T put a caption on a circle. `content` needs shape="square".',
+    ],
+    useCases: [
+      "An assistant or composer that must stay reachable while the reader works — a chat you may want open is not a one-shot trigger in a bar.",
+      "A stack of secondary actions collapsed behind one corner trigger (share / export / print).",
+      "Back to top on a long document or a long list.",
+      "A corner action carrying an unread count, via `badge`.",
+    ],
+    related: [
+      "Button — the same control IN the layout flow. A float button is a Button that gave up its place in the page and took a corner instead.",
+      "Popover — anchors a panel to a trigger; it does not place the trigger.",
+      "Banner — a full-bleed strip, not a corner mark.",
+      "Toolbar / PageContainer extra — where an action belongs when it IS part of this page's content.",
+    ],
+    example: `import { FloatButton } from "@godxjp/ui/general";
+import { MessageCircle, Share2 } from "lucide-react";
+
+<FloatButton.Group trigger="click" type="primary" icon={<MessageCircle />} aria-label="Trợ lý">
+  <FloatButton tooltip="Hỏi trợ lý" badge={{ count: 3 }} />
+  <FloatButton tooltip="Chia sẻ" icon={<Share2 />} />
+  <FloatButton.BackTop />
+</FloatButton.Group>`,
+    docPath: "general/float-button.tsx",
+    storyPath: "general/FloatButton.stories.tsx",
+    rules: [],
+  },
+  {
     name: "Button",
     subParts: ["ButtonRefetch"],
     group: "general",

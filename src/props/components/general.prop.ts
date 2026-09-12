@@ -8,11 +8,14 @@ import type {
   ButtonVariantProp,
   ChildrenProp,
   ClassNameProp,
+  DescriptionProp,
   DisabledProp,
   FontWeightProp,
   HeadingLevelProp,
   LabelProp,
   OnClickProp,
+  OnOpenChangeProp,
+  OpenProp,
   PendingProp,
   RevealDelayProp,
   ShapeProp,
@@ -237,4 +240,182 @@ export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> 
    */
   announce?: ActivityAnnounceProp;
   className?: ClassNameProp;
+};
+
+/**
+ * FloatButton `type` — the two fills Ant Design gives the corner mark.
+ *
+ * Ported verbatim from antd 6.6.3 (`FloatButtonType`), including the name `type`, which is NOT
+ * this library's usual word for a fill (everything else says `variant`). Keeping antd's spelling
+ * is the point: a consumer porting a screen copies the antd call and it compiles. The two values
+ * map onto the two `Button` variants that already carry those fills — `default` → `outline`
+ * (a white/surface pill with a hairline), `primary` → `default` (the brand fill).
+ */
+export type FloatButtonTypeProp = "default" | "primary";
+
+/**
+ * FloatButton `shape` — a round mark or a rounded square.
+ *
+ * antd's own vocabulary (`FloatButtonShape`), deliberately NOT the control `ShapeProp`
+ * (`default | pill | sharp`) and NOT `AvatarShapeProp` (which is documented as an ENTITY mark).
+ * `square` is the only shape antd lets carry text: `circle` + `content` is an antd dev warning,
+ * and this port raises the same one.
+ */
+export type FloatButtonShapeProp = "circle" | "square";
+
+/**
+ * What opens a `FloatButton.Group`'s menu. antd `FloatButtonGroupTrigger`.
+ *
+ * Absent (the default) means the group is NOT a menu at all — it is a plain stack of buttons, all
+ * of them visible, with no trigger. That is antd's `isMenuMode = trigger && …` branch, and it is
+ * why `trigger` has no default value.
+ */
+export type FloatButtonTriggerProp = "click" | "hover";
+
+/**
+ * Which side of the trigger a `FloatButton.Group` menu opens towards. antd `placement`.
+ *
+ * PHYSICAL words, not logical ones, because they are antd's and a port that renamed them would
+ * break the copy-paste this whole component exists to allow. The stylesheet resolves `left` /
+ * `right` through `inset-inline-*`, so the RENDERED side still flips under `dir="rtl"`.
+ */
+export type FloatButtonPlacementProp = "top" | "left" | "right" | "bottom";
+
+/**
+ * The count/dot mark on a `FloatButton`'s corner. antd passes its whole `BadgeProps` here minus
+ * `status`/`text`/`title`/`children`; this is that surface restricted to the fields that survive
+ * this library's rules.
+ *
+ * NOT ported from antd's badge: `offset` (a raw `[x, y]` px tuple — geometry hand-written at the
+ * call site, which `no-hardcoded-geometry` forbids and no token step spells) and `size`
+ * (`default | small`, a second size ladder for a mark that is already the smallest thing on the
+ * button).
+ */
+export type FloatButtonBadgeProp = {
+  /** The number on the mark. Omit it (or pass `dot`) for a mark that carries no figure. */
+  count?: number;
+  /** A bare dot — "there is something here" with no quantity. Wins over `count`. */
+  dot?: boolean;
+  /** Cap: a `count` above this renders as `{overflowCount}+`. Default `99`, antd's. */
+  overflowCount?: number;
+  /** Whether `count={0}` still paints a mark. Default `false`, antd's. */
+  showZero?: boolean;
+  /** The mark's OWN colour as a CSS colour — data, not a semantic tone. Default: the brand fill. */
+  color?: string;
+};
+
+/**
+ * @see FloatButton — Ant Design's corner action: a control pinned to the viewport, above the
+ * page, for a tool that must stay reachable but is not part of this page's content.
+ *
+ * Ported from antd 6.6.3. `Button` is in the layout flow, so pinning one meant a consumer writing
+ * `position: fixed` themselves — page-local CSS that `ui-audit` blocks with no legal replacement
+ * (gh#558). The corner insets are `--float-button-offset-block-end` / `-inline-end`, so a service
+ * moves the mark by retuning a token instead of writing a media query.
+ *
+ * Deliberately NOT ported from antd: `classNames` / `styles` (per-slot style holes — they freeze
+ * internal DOM slot names into public API, which docs/WHAT-BELONGS-HERE.md rules out by name),
+ * `prefixCls` / `rootClassName` (antd's CSS-in-JS plumbing; this library ships static classes) and
+ * `_InternalPanelDoNotUseOrYouWillBeFired`.
+ */
+export type FloatButtonProp = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "type" | "content" | "color"
+> & {
+  /** The glyph. Defaults to a document mark when the button carries no `content`, as antd does. */
+  icon?: ChildrenProp;
+  /**
+   * A short line UNDER the icon. antd 6 renamed this to `content`; both spellings are accepted and
+   * `content` wins, exactly as antd resolves them.
+   *
+   * @deprecated Use `content`.
+   */
+  description?: DescriptionProp;
+  /** A short line under the icon. Only legal with `shape="square"` — a circle has no room. */
+  content?: ChildrenProp;
+  /** Fill. Default `default`. */
+  type?: FloatButtonTypeProp;
+  /** Round mark or rounded square. Default `circle`. Inherited from an enclosing Group. */
+  shape?: FloatButtonShapeProp;
+  /**
+   * Hover/focus label. A plain node is the tooltip's content; the object form takes the same
+   * `side` / `align` / `sideOffset` the `TooltipContent` primitive takes.
+   *
+   * When it is a STRING and no `aria-label` is given, it also becomes the button's accessible
+   * name — an icon-only control with no name is a WCAG 4.1.2 failure, and a tooltip alone never
+   * reaches a touch user.
+   */
+  tooltip?: ChildrenProp | FloatButtonTooltipProp;
+  /** Renders an `<a>` instead of a `<button>`. antd's `href`. */
+  href?: string;
+  /** Anchor target; only meaningful beside `href`. */
+  target?: React.HTMLAttributeAnchorTarget;
+  /** Count / dot mark on the corner. */
+  badge?: FloatButtonBadgeProp;
+  /** Non-interactive. Inherited by a Group's trigger. */
+  disabled?: DisabledProp;
+  /** The `<button type>` attribute, since `type` is taken by the fill. Default `button`. antd 5.21+. */
+  htmlType?: "button" | "submit" | "reset";
+  className?: ClassNameProp;
+};
+
+/**
+ * The object form of `FloatButton tooltip` — the subset of this library's `TooltipContent` props
+ * that positions a tooltip. antd passes its whole `TooltipProps` here; the placement fields are
+ * the ones that survive, because everything else antd offers (`color`, `overlayStyle`,
+ * `overlayClassName`) is a style hole.
+ */
+export type FloatButtonTooltipProp = {
+  /** What the tooltip says. */
+  title?: ChildrenProp;
+  /** Edge of the button the tooltip attaches to. Default `left`, so it clears the viewport edge. */
+  side?: "top" | "right" | "bottom" | "left";
+  /** Alignment along that edge. */
+  align?: "start" | "center" | "end";
+  /** Gap between button and tooltip, in px. */
+  sideOffset?: number;
+};
+
+/**
+ * @see FloatButton.Group — a stack of corner actions, optionally behind one trigger.
+ *
+ * Two modes, and `trigger` is the switch, exactly as in antd: WITHOUT it the group is a plain
+ * stack (every button visible, no trigger rendered); WITH it the children collapse behind a
+ * trigger that opens them on click or on hover.
+ */
+export type FloatButtonGroupProp = Omit<FloatButtonProp, "content" | "description" | "href"> & {
+  /** The buttons. `FloatButton` children inherit the group's `shape`. */
+  children?: ChildrenProp;
+  /** Menu mode: what opens the stack. Omit for a plain always-open stack. */
+  trigger?: FloatButtonTriggerProp;
+  /** Controlled open state. antd warns when it is passed without `trigger`; so does this. */
+  open?: OpenProp;
+  /** Fires when the menu opens or closes. */
+  onOpenChange?: OnOpenChangeProp;
+  /** Glyph on the trigger while the menu is OPEN. Default: a close mark. */
+  closeIcon?: ChildrenProp;
+  /** Which way the menu opens. Default `top`. */
+  placement?: FloatButtonPlacementProp;
+};
+
+/**
+ * @see FloatButton.BackTop — the corner action that returns a scroll container to the top once
+ * the reader is `visibilityHeight` px down it.
+ *
+ * `target` is antd's, and it is what makes this work in a shell that owns its own scroll: pass
+ * `() => element` and BackTop watches that element instead of the document — which is the answer
+ * to the objection that a document-bound BackTop competes with `MobileShell`'s single scroll
+ * region.
+ */
+export type FloatButtonBackTopProp = Omit<FloatButtonProp, "href" | "target"> & {
+  /** Scroll distance, in px, before the button appears. Default `400` (antd's). */
+  visibilityHeight?: number;
+  /** The scroll container to watch and to scroll. Default: the owning document. */
+  target?: () => HTMLElement | Window | Document | null;
+  /** Scroll-to-top animation length in ms. Default `450` (antd's); `prefers-reduced-motion` → 0. */
+  duration?: number;
+  /** Paint how far down the container the reader is, as a ring. Default `false`. antd 6.6+. */
+  showProgress?: boolean;
+  /** Fires after the scroll is started. */
+  onClick?: React.MouseEventHandler<HTMLElement>;
 };

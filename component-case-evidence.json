@@ -704,6 +704,32 @@
         }
       }
     },
+    "FloatButton": {
+      "props": {
+        "shape": {
+          "cases": ["circle", "square"],
+          "evidence": [
+            "src/components/general/__tests__/float-button.test.tsx",
+            "docs/general/float-button.tsx"
+          ]
+        },
+        "type": {
+          "cases": ["default", "primary"],
+          "evidence": [
+            "src/components/general/__tests__/float-button.test.tsx",
+            "docs/general/float-button.tsx"
+          ]
+        },
+        "htmlType": {
+          "cases": ["button", "submit", "reset"],
+          "evidence": ["src/components/general/__tests__/float-button.test.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": ["src/components/general/__tests__/float-button.test.tsx"]
+        }
+      }
+    },
     "Form": {
       "complete": true,
       "props": {

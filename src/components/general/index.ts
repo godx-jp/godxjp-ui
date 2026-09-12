@@ -6,6 +6,21 @@ export { Logo } from "./logo";
 export type { LogoMark, LogoProps, LogoSize, LogoTone } from "./logo";
 export { Reveal } from "./reveal";
 export type { RevealProp, RevealProps } from "./reveal";
+export { FloatButton } from "./float-button";
+export type {
+  FloatButtonBackTopProp,
+  FloatButtonBackTopProps,
+  FloatButtonBadgeProp,
+  FloatButtonGroupProp,
+  FloatButtonGroupProps,
+  FloatButtonPlacementProp,
+  FloatButtonProp,
+  FloatButtonProps,
+  FloatButtonShapeProp,
+  FloatButtonTooltipProp,
+  FloatButtonTriggerProp,
+  FloatButtonTypeProp,
+} from "./float-button";
 export { Activity } from "./activity";
 export type { ActivityProp, ActivityProps } from "./activity";
 export { VisuallyHidden } from "./visually-hidden";

@@ -3619,6 +3619,131 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
+    "name": "--float-button-offset-block-end",
+    "value": "var(--space-stack-xl)",
+    "description": "THE TWO CORNER INSETS gh#558 ASKED FOR BY NAME. Ant Design's are `marginXXL` (48px) from the bottom and `marginLG` (24px) from the inline end. Spelled here in this library's own stack/inline steps, which land on the same two numbers: --space-stack-xl = --space-10 = 40px, --space-6 = 24px. The block inset is the one a service actually has to move — a sticky action bar, a cookie strip, a mobile tab bar all live in that corner — and moving it is now retuning ONE custom property, not writing a media query at the call site (which is `no-arbitrary-spacing` and has no legal spelling)."
+  },
+  {
+    "name": "--float-button-offset-inline-end",
+    "value": "var(--space-6)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-size",
+    "value": "var(--control-height-lg)",
+    "description": "The control box. antd's float button is `controlHeightLG` square (40px); this reads the same tier the rest of the library's large controls read, so a density switch moves it with them."
+  },
+  {
+    "name": "--float-button-min-block-size",
+    "value": "var(--control-height-lg)",
+    "description": "A square float button carrying a line of text keeps the WIDTH and grows on the block axis, which is antd's `height: auto`; this is the floor it grows from."
+  },
+  {
+    "name": "--float-button-padding-block",
+    "value": "var(--space-2)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "The glyph. antd derives it as `fontSizeIcon * 1.5` = 18px; `--icon-size-md` is this library's step at that weight, and it is the step `Button` already gives an icon-only control."
+  },
+  {
+    "name": "--float-button-content-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "The line under the glyph, in the square shape. The smallest step, because it is a caption on a control, not body text."
+  },
+  {
+    "name": "--float-button-content-line-height",
+    "value": "var(--line-height-tight)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-shadow",
+    "value": "var(--shadow-lg)",
+    "description": "Elevation. The mark sits ABOVE the page, so it needs the shadow that says so; the same step Popover and DropdownMenu sit on."
+  },
+  {
+    "name": "--float-button-group-gap",
+    "value": "var(--space-stack-md)",
+    "description": "Gap between the buttons of an open group, and between the group's list and its trigger. antd uses `padding` (16px) for both, so one token answers both."
+  },
+  {
+    "name": "--float-button-group-radius",
+    "value": "var(--radius-lg)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-background",
+    "value": "initial",
+    "description": "The corner count/dot mark. `--float-button-badge-background` is `initial` so a scoped [data-tenant]/.dark theme that retunes --destructive still reaches the mark; the fallback is resolved at the call site in float-button-layout.css."
+  },
+  {
+    "name": "--float-button-badge-foreground",
+    "value": "hsl(var(--destructive-foreground))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-size",
+    "value": "var(--space-4)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-inset-block-start",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-inset-inline-end",
+    "value": "calc(var(--space-1) * -1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-badge-dot-size",
+    "value": "var(--space-2)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-offset",
+    "value": "0turn",
+    "description": "BackTop's `showProgress` ring. The component writes `--float-button-progress-offset: <n>turn` inline (a custom property, the sanctioned escape from `no-inline-magic-numbers`) and the ring is drawn from it with `conic-gradient` — no per-frame geometry ever reaches the call site."
+  },
+  {
+    "name": "--float-button-progress-width",
+    "value": "var(--space-1)",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-color",
+    "value": "hsl(var(--primary))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-progress-track-color",
+    "value": "hsl(var(--border))",
+    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+  },
+  {
+    "name": "--float-button-motion-translate",
+    "value": "var(--float-button-size)",
+    "description": "How far a group's list travels on the way in. TIMING IS NOT HERE — `--duration-fast` and `--ease-standard` live in the motion tier (foundation.css) and the stylesheet reads them directly, the rule activity.css states: the component-token name shape has no property word for a duration, and a second copy of the motion scale is how the two drift apart."
+  },
+  {
     "name": "--form-label-width",
     "value": "8rem",
     "description": "Fixed aligned label column by default (gh#284) — `max-content` sized each field's label * column to its own label, so horizontal forms (especially columns={2} grids) had controls * starting at ragged x positions. 8rem mirrors --descriptions-label-width so edit forms and * show pages share the same optical grid; the Form/FormField `labelWidth` prop overrides."

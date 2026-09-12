@@ -338,6 +338,10 @@
       "download": "Tải khóa bí mật",
       "acknowledge": "Tôi đã lưu"
     },
+    "floatButton": {
+      "backTop": "Về đầu trang",
+      "actions": "Hành động"
+    },
     "numberInput": {
       "increment": "Tăng",
       "decrement": "Giảm",

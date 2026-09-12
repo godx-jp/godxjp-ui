@@ -344,6 +344,10 @@
       "download": "Download secret",
       "acknowledge": "I've saved it"
     },
+    "floatButton": {
+      "backTop": "Back to top",
+      "actions": "Actions"
+    },
     "numberInput": {
       "increment": "Increase",
       "decrement": "Decrease",

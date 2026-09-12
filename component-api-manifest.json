@@ -2957,7 +2957,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +2965,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -7338,6 +7338,129 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "FloatButton": {
+      "group": "general",
+      "props": [
+        {
+          "name": "badge",
+          "origin": "owned",
+          "required": false,
+          "type": "FloatButtonBadgeProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/general.prop.ts"
+          ]
+        },
+        {
+          "name": "content",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/general.prop.ts"
+          ]
+        },
+        {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "htmlType",
+          "origin": "owned",
+          "required": false,
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "values": ["button", "submit", "reset"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "FloatButtonShapeProp | undefined",
+          "values": ["circle", "square"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "target",
+          "origin": "owned",
+          "required": false,
+          "type": "React.HTMLAttributeAnchorTarget | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tooltip",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode | FloatButtonTooltipProp",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "type",
+          "origin": "owned",
+          "required": false,
+          "type": "FloatButtonTypeProp | undefined",
+          "values": ["default", "primary"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
