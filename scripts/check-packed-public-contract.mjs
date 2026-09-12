@@ -5,11 +5,23 @@
  * `dist`, so a stale or absent build can expose an older API even while `src` is correct.
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  readdirSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
 const root = process.cwd();
+const libraryPackage = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const packDirectory = mkdtempSync(join(tmpdir(), "godxjp-ui-public-contract-"));
 
 const contracts = [
@@ -285,6 +297,296 @@ createRoot(document.getElementById("root")).render(
   }
 }
 
+function libraryVersion(name) {
+  const version =
+    libraryPackage.devDependencies?.[name] ?? libraryPackage.dependencies?.[name];
+  if (!version) {
+    throw new Error(`independent consumer fixture needs a pinned ${name} version in package.json`);
+  }
+  return version;
+}
+
+function mandatoryPeers(manifest) {
+  const peers = manifest.peerDependencies ?? {};
+  const meta = manifest.peerDependenciesMeta ?? {};
+  return Object.keys(peers).filter((peer) => !meta[peer]?.optional);
+}
+
+/**
+ * Independent consumers install with `npm install`, not symlinks from the library checkout. If
+ * anything under `node_modules` resolves into the repo, the fixture is lying about being a real
+ * install — the same gap gh#546 calls out.
+ */
+function assertNodeModulesIndependentOfLibraryRepo(consumerModules) {
+  const repoReal = realpathSync(root);
+  const violations = [];
+
+  function visit(current) {
+    let entries;
+    try {
+      entries = readdirSync(current, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const full = join(current, entry.name);
+      let stat;
+      try {
+        stat = lstatSync(full);
+      } catch {
+        continue;
+      }
+      if (stat.isSymbolicLink()) {
+        let resolved;
+        try {
+          resolved = realpathSync(full);
+        } catch {
+          violations.push(`broken symlink: ${full}`);
+          continue;
+        }
+        if (resolved === repoReal || resolved.startsWith(`${repoReal}/`)) {
+          violations.push(`${full} -> ${resolved}`);
+        }
+      }
+      if (stat.isDirectory() || stat.isSymbolicLink()) {
+        visit(full);
+      }
+    }
+  }
+
+  if (existsSync(consumerModules)) visit(consumerModules);
+  if (violations.length > 0) {
+    throw new Error(
+      "independent consumer fixture: node_modules must not symlink into the library checkout:\n  " +
+        violations.join("\n  "),
+    );
+  }
+}
+
+function writeIndependentConsumerPackageJson(consumer, tarball, manifest, extra = {}) {
+  const peers = {};
+  for (const name of mandatoryPeers(manifest)) {
+    peers[name] = manifest.peerDependencies[name];
+  }
+  for (const [name, range] of Object.entries(extra.dependencies ?? {})) {
+    peers[name] = range;
+  }
+
+  writeFileSync(
+    join(consumer, "package.json"),
+    JSON.stringify(
+      {
+        name: extra.name ?? "independent-packed-consumer",
+        private: true,
+        type: "module",
+        dependencies: {
+          "@godxjp/ui": `file:${tarball}`,
+          ...peers,
+        },
+        devDependencies: {
+          "@types/react": libraryVersion("@types/react"),
+          "@types/react-dom": libraryVersion("@types/react-dom"),
+          "@vitejs/plugin-react": libraryVersion("@vitejs/plugin-react"),
+          typescript: libraryVersion("typescript"),
+          vite: libraryVersion("vite"),
+          ...(extra.devDependencies ?? {}),
+        },
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+function npmInstallIndependentConsumer(consumer) {
+  // Optional peers stay absent; strict peer resolution would try to hoist conflicting optional trees.
+  writeFileSync(join(consumer, ".npmrc"), "legacy-peer-deps=true\n");
+  execFileSync("npm", ["install", "--no-fund", "--no-audit", "--ignore-scripts"], {
+    cwd: consumer,
+    env: { ...process.env, CI: "1" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+}
+
+function writeIndependentViteScaffold(consumer) {
+  mkdirSync(join(consumer, "src"), { recursive: true });
+  writeFileSync(
+    join(consumer, "index.html"),
+    '<!doctype html><html><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>',
+  );
+  writeFileSync(
+    join(consumer, "vite.config.mjs"),
+    `import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({ plugins: [react()] });
+`,
+  );
+  writeFileSync(
+    join(consumer, "tsconfig.json"),
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: "ES2022",
+          lib: ["ES2022", "DOM", "DOM.Iterable"],
+          module: "ESNext",
+          moduleResolution: "bundler",
+          jsx: "react-jsx",
+          strict: true,
+          skipLibCheck: true,
+          noEmit: true,
+        },
+        include: ["src"],
+      },
+      null,
+      2,
+    ),
+  );
+  writeFileSync(
+    join(consumer, "src", "vite-env.d.ts"),
+    '/// <reference types="vite/client" />\ndeclare module "@godxjp/ui/styles/core";\n',
+  );
+}
+
+function typecheckIndependentConsumer(consumer) {
+  execFileSync(
+    process.execPath,
+    [join(consumer, "node_modules/typescript/bin/tsc"), "--noEmit", "-p", "tsconfig.json"],
+    {
+      cwd: consumer,
+      env: { ...process.env, CI: "1" },
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+}
+
+function viteBuildIndependentConsumer(consumer) {
+  execFileSync(process.execPath, [join(consumer, "node_modules/vite/bin/vite.js"), "build"], {
+    cwd: consumer,
+    env: { ...process.env, CI: "1", NO_COLOR: "1", FORCE_COLOR: "0" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+}
+
+function assertMissingRechartsPeerBuildOutput(output) {
+  const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g");
+  const plain = output.replace(ansi, "");
+  const problems = [];
+  const missingExports = plain.match(/\[MISSING_EXPORT\]/g)?.length ?? 0;
+  if (missingExports !== 1) {
+    problems.push(
+      `expected exactly ONE [MISSING_EXPORT] diagnostic, got ${missingExports} — the peer must be ` +
+        "read through a single namespace import so the failure does not fan out",
+    );
+  }
+  if (!plain.includes("recharts")) {
+    problems.push("the diagnostic never mentions recharts, the package that is missing");
+  }
+  if (!plain.includes("install_recharts_or_use_charts_compact_bar_trend")) {
+    problems.push(
+      "the diagnostic does not carry the remedy — the probe import's alias in " +
+        "src/components/charts/recharts-peer.ts is what puts it on the printed source line",
+    );
+  }
+  if (problems.length > 0) {
+    throw new Error(
+      `missing recharts peer contract failed:\n  ${problems.join("\n  ")}\n--- build output ---\n${plain}`,
+    );
+  }
+  return plain;
+}
+
+/**
+ * gh#546 — consumer that `npm install`s the packed tarball into a clean tree (no library
+ * node_modules symlinks), imports a core component and stylesheet through public exports, and
+ * typechecks + production-builds.
+ */
+function buildIndependentCoreConsumer(tarball, manifest) {
+  const consumer = join(packDirectory, "independent-core-consumer");
+  mkdirSync(consumer, { recursive: true });
+  writeIndependentConsumerPackageJson(consumer, tarball, manifest, {
+    name: "independent-core-consumer",
+  });
+  npmInstallIndependentConsumer(consumer);
+  assertNodeModulesIndependentOfLibraryRepo(join(consumer, "node_modules"));
+
+  const installedPeers = mandatoryPeers(manifest);
+  for (const optionalPeer of Object.keys(manifest.peerDependenciesMeta ?? {}).filter(
+    (name) => manifest.peerDependenciesMeta[name]?.optional,
+  )) {
+    if (existsSync(join(consumer, "node_modules", ...optionalPeer.split("/")))) {
+      throw new Error(
+        `independent core consumer must not install optional peer ${optionalPeer} — ` +
+          "a Button-only app should not pull adapter integrations",
+      );
+    }
+  }
+
+  writeIndependentViteScaffold(consumer);
+  writeFileSync(
+    join(consumer, "src/main.tsx"),
+    `import "@godxjp/ui/styles/core";
+import { Button } from "@godxjp/ui/general";
+import { createRoot } from "react-dom/client";
+
+createRoot(document.getElementById("root")!).render(
+  <Button type="button">Save</Button>,
+);
+`,
+  );
+
+  typecheckIndependentConsumer(consumer);
+  viteBuildIndependentConsumer(consumer);
+  if (!existsSync(join(consumer, "dist/index.html"))) {
+    throw new Error("independent core consumer Vite build did not emit dist/index.html");
+  }
+
+  return { installedMandatoryPeerCount: installedPeers.length };
+}
+
+/**
+ * Same optional-peer contract as `buildMissingRechartsPeerConsumer`, but the install is a real
+ * `npm install` of the tarball — not symlinks from the library checkout.
+ */
+function buildIndependentMissingRechartsPeerConsumer(tarball, manifest) {
+  const consumer = join(packDirectory, "independent-missing-recharts-consumer");
+  mkdirSync(consumer, { recursive: true });
+  writeIndependentConsumerPackageJson(consumer, tarball, manifest, {
+    name: "independent-missing-recharts-consumer",
+  });
+  npmInstallIndependentConsumer(consumer);
+  assertNodeModulesIndependentOfLibraryRepo(join(consumer, "node_modules"));
+  if (existsSync(join(consumer, "node_modules", "recharts"))) {
+    throw new Error("independent missing-peer fixture must not contain the optional recharts peer");
+  }
+
+  writeIndependentViteScaffold(consumer);
+  writeFileSync(
+    join(consumer, "src/main.tsx"),
+    `import { BarChart } from "@godxjp/ui/charts";
+import { createRoot } from "react-dom/client";
+
+createRoot(document.getElementById("root")!).render(
+  <BarChart label="Acceptances" data={[]} series={[]} categoryKey="company" horizontal />,
+);
+`,
+  );
+
+  let output = "";
+  try {
+    viteBuildIndependentConsumer(consumer);
+  } catch (error) {
+    output = `${error.stdout ?? ""}${error.stderr ?? ""}`;
+  }
+
+  if (!output) {
+    throw new Error(
+      "an independently installed consumer that imports BarChart without the recharts peer must FAIL its build",
+    );
+  }
+  return assertMissingRechartsPeerBuildOutput(output);
+}
+
 /** Extract the packed tarball into a fresh consumer's node_modules and link its runtime deps. */
 function installPackedUi(consumer, tarball, manifest) {
   const consumerModules = join(consumer, "node_modules");
@@ -486,10 +788,15 @@ try {
   buildCompactTrendConsumer(tarball, manifest);
   buildMissingRechartsPeerConsumer(tarball, manifest);
   buildErrorSurfaceConsumer(tarball, manifest);
+  const independentCore = buildIndependentCoreConsumer(tarball, manifest);
+  const independentMissingRechartsDiagnostic =
+    buildIndependentMissingRechartsPeerConsumer(tarball, manifest);
 
   console.log(
-    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; a recharts-backed chart without the peer failed its build with ONE diagnostic naming the package and the remedy; ErrorSurface imported, built and server-rendered from the tarball in both modes`,
+    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; a recharts-backed chart without the peer failed its build with ONE diagnostic naming the package and the remedy; ErrorSurface imported, built and server-rendered from the tarball in both modes; independent core consumer npm-installed the tarball with ${independentCore.installedMandatoryPeerCount} mandatory peers (typecheck + Vite build exit 0, node_modules not symlinked to the library checkout); independent missing-recharts consumer failed its build with the same single diagnostic`,
   );
+  console.log("--- independent missing-recharts diagnostic (verbatim) ---");
+  console.log(independentMissingRechartsDiagnostic.trim());
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
