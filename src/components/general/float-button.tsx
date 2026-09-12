@@ -305,15 +305,20 @@ function FloatButtonGroup({
   );
 
   /*
-   * Click-outside, and the reason it is NOT `document.addEventListener` the way antd writes it.
+   * Click-outside, and the two ways it goes wrong in a shadow root.
    *
-   * Inside a shadow root an event's `target` is RETARGETED to the host element before it reaches a
-   * document listener, so `root.contains(event.target)` is false for a click on the group's own
-   * trigger — the menu would close on the same click that opened it, every time, and only inside a
-   * shadow root. `composedPath()` is the retargeting-proof answer: it lists the real nodes the
-   * event travelled through, host and shadow content alike. The listener also binds to the group's
-   * OWN root node (the ShadowRoot when there is one, the Document otherwise), so a click that never
-   * escapes the shadow tree is still seen.
+   * antd binds on `document` and tests `root.contains(event.target)`. Inside a shadow root the
+   * target is RETARGETED to the host before a document listener sees it, so that test is false for
+   * a click on the group's OWN trigger: the menu closes on the same click that opened it, every
+   * time, and only inside a shadow root — which is exactly where the GoDX Dock mounts
+   * (`OverlayPortalProvider`). `composedPath()` is the retargeting-proof answer: it lists the real
+   * nodes the event travelled through, shadow content and host alike.
+   *
+   * The listener stays on the DOCUMENT, and that half is not incidental. Binding to the group's own
+   * `getRootNode()` instead — the obvious-looking fix, and the one this first shipped with — closes
+   * the retargeting hole and opens a worse one: an event that happens OUTSIDE the shadow tree never
+   * reaches a listener bound inside it, so a click anywhere else on the page would leave the menu
+   * open forever. Mutation testing is what found that; the two shadow-root tests pin both halves.
    *
    * This is the first of the two things gh#558 asked for beyond the antd port.
    */
@@ -321,13 +326,13 @@ function FloatButtonGroup({
     if (trigger !== "click") return;
     const root = rootRef.current;
     if (!root) return;
-    const host = root.getRootNode() as Document | ShadowRoot;
+    const doc = root.ownerDocument;
     const onDocClick = (event: Event) => {
       if (event.composedPath().includes(root)) return;
       setOpen(false);
     };
-    host.addEventListener("click", onDocClick, { capture: true });
-    return () => host.removeEventListener("click", onDocClick, { capture: true });
+    doc.addEventListener("click", onDocClick, { capture: true });
+    return () => doc.removeEventListener("click", onDocClick, { capture: true });
   }, [trigger, setOpen]);
 
   const listContext = React.useMemo(() => ({ shape, individual }), [shape, individual]);

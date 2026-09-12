@@ -135,6 +135,16 @@ describe("FloatButton badge — antd's count / dot / overflowCount / showZero", 
   });
 });
 
+/** A real `attachShadow` tree with a mount point inside it — jsdom retargets for it exactly as a
+ * browser does, which is what makes the two shadow-root tests below worth anything. */
+function mountShadowHost() {
+  const host = document.createElement("div");
+  document.body.append(host);
+  const shadow = host.attachShadow({ mode: "open" });
+  shadow.append(document.createElement("div"));
+  return { host, shadow };
+}
+
 describe("FloatButton.Group", () => {
   it("without `trigger` it is a plain stack: every child visible, no trigger drawn", () => {
     renderWithUi(
@@ -271,29 +281,23 @@ describe("FloatButton.Group", () => {
   });
 
   /**
-   * THE FIRST OF THE TWO THINGS gh#558 ASKED FOR BEYOND THE PORT.
+   * THE FIRST OF THE TWO THINGS gh#558 ASKED FOR BEYOND THE PORT, and it has two halves that fail
+   * in opposite directions. Each of the next two tests pins one of them.
    *
-   * antd listens on `document` and tests `root.contains(event.target)`. Inside a shadow root the
-   * target is RETARGETED to the host before a document listener sees it, so that test is false for
-   * a click on the group's own trigger and the menu closes on the same click that opened it. The
-   * port listens on the group's own root node and reads `composedPath()`, which is not retargeted.
-   *
-   * This asserts the consequence, not the mechanism: a click on the trigger, inside a shadow root,
-   * leaves the menu open.
+   * Half one: antd tests `root.contains(event.target)`, and inside a shadow root the target is
+   * RETARGETED to the host before a document listener sees it — so that test is false for a click
+   * on the group's OWN trigger and the menu closes on the same click that opened it.
+   * `composedPath()` is not retargeted, so it sees the real trigger.
    */
   it("survives a shadow root: the trigger's own click does not close the menu", async () => {
     const user = userEvent.setup();
-    const host = document.createElement("div");
-    document.body.append(host);
-    const shadow = host.attachShadow({ mode: "open" });
-    const mount = document.createElement("div");
-    shadow.append(mount);
+    const { shadow, host } = mountShadowHost();
 
     renderWithUi(
       <FloatButton.Group trigger="click" aria-label="A">
         <FloatButton aria-label="One" />
       </FloatButton.Group>,
-      { container: mount },
+      { container: shadow.firstElementChild as HTMLElement },
     );
 
     const trigger = shadow.querySelector(
@@ -303,6 +307,53 @@ describe("FloatButton.Group", () => {
 
     expect(shadow.querySelectorAll('[data-slot="float-button"]')).toHaveLength(2);
     host.remove();
+  });
+
+  /**
+   * Half two, and the reason the listener stays on the DOCUMENT. Binding it to the group's own
+   * `getRootNode()` closes the retargeting hole and opens a worse one: an event OUTSIDE the shadow
+   * tree never reaches a listener bound inside it, so a click anywhere else on the page would leave
+   * the menu open forever. Mutation testing found this; without this test the bug shipped.
+   */
+  it("survives a shadow root the other way: a click out in the page still closes it", async () => {
+    const user = userEvent.setup();
+    const { shadow, host } = mountShadowHost();
+    const outside = document.createElement("button");
+    outside.type = "button";
+    outside.textContent = "out in the page";
+    document.body.append(outside);
+
+    renderWithUi(
+      <FloatButton.Group trigger="click" aria-label="A">
+        <FloatButton aria-label="One" />
+      </FloatButton.Group>,
+      { container: shadow.firstElementChild as HTMLElement },
+    );
+
+    const trigger = shadow.querySelector(
+      '[data-slot="float-button-group"] .ui-float-button-trigger',
+    ) as HTMLElement;
+    await user.click(trigger);
+    expect(shadow.querySelectorAll('[data-slot="float-button"]')).toHaveLength(2);
+
+    await user.click(outside);
+    await waitFor(() =>
+      expect(shadow.querySelectorAll('[data-slot="float-button"]')).toHaveLength(1),
+    );
+
+    outside.remove();
+    host.remove();
+  });
+
+  it("a controlled `open` of true renders the stack with no interaction at all", () => {
+    renderWithUi(
+      <FloatButton.Group trigger="click" open onOpenChange={() => {}} aria-label="A">
+        <FloatButton aria-label="One" />
+      </FloatButton.Group>,
+    );
+
+    expect(screen.getByRole("button", { name: "One" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "A" })).toHaveAttribute("aria-expanded", "true");
   });
 });
 
