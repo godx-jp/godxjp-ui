@@ -529,6 +529,17 @@ export type TabsProp = {
  * addressed by it, and an optional identity would make every one of those "probably this one".
  * @see Conversations
  */
+/**
+ * One row. Ant Design X calls this `Conversation` and this type carries every field of it.
+ *
+ * THREE ANT DESIGN X PROPS ARE DELIBERATELY ABSENT from `ConversationsProp`, and under
+ * `docs/DESIGN-AUTHORITY.md` an undocumented deviation is a bug, so here are the reasons:
+ * `styles`, `classNames` and `rootClassName` are antd's per-part style escape hatches. This
+ * library's equivalent is the token tier — a service retunes every Conversations list at once by
+ * rebinding `--conversations-*`, and `check:no-hardcoded-css-values` plus the CONSUMER-RULES ban
+ * on utility classes exist precisely so a call site cannot paint one list differently from its
+ * neighbours. Accepting them would hand back the thing those gates are for.
+ */
 export type ConversationsItemProp = {
   /** Unique identity of the conversation. Ant Design X `key`. */
   key: string;
@@ -540,6 +551,16 @@ export type ConversationsItemProp = {
   icon?: React.ReactNode;
   /** Row stays visible and reachable by arrow key, but cannot be activated. Ant Design X `disabled`. */
   disabled?: DisabledProp;
+  /**
+   * When the conversation last moved, as an epoch milliseconds number — Ant Design X `timestamp`.
+   *
+   * A NUMBER, not a formatted string, and that is the whole point: the row renders it through the
+   * app's own locale and timezone from `AppProvider`, so a Japanese tenant reads 2026/03/15 and a
+   * Vietnamese one reads 15/03/2026 from the SAME data. Handing the component a pre-formatted
+   * string is what `docs/DATETIME.md` rule 1 forbids, and it is the reason this prop is not
+   * `ReactNode` even though every other field here is.
+   */
+  timestamp?: number;
 };
 
 /**
