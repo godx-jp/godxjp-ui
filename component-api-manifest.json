@@ -2957,7 +2957,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +2965,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -18042,6 +18042,67 @@
     "VisuallyHidden": {
       "group": "general",
       "props": []
+    },
+    "Welcome": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "extra",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "WelcomeVariantProp | undefined",
+          "values": ["filled", "borderless"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
     }
   }
 }

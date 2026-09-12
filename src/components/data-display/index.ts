@@ -117,3 +117,5 @@ export type {
 } from "./chat-bubble";
 export { Tree } from "./tree";
 export type { TreeNodeProp, TreeProp, TreeProps } from "./tree";
+export { Welcome } from "./welcome";
+export type { WelcomeProp, WelcomeProps, WelcomeVariantProp } from "./welcome";

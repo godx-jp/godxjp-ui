@@ -877,3 +877,33 @@ export type ChatBubbleListProp = {
   className?: ClassNameProp;
   id?: IdProp;
 };
+
+/**
+ * Ant Design X `Welcome variant`. `filled` gives the block its own tinted ground; `borderless`
+ * lets it sit directly on the page.
+ * @see Welcome
+ */
+export type WelcomeVariantProp = "filled" | "borderless";
+
+/**
+ * @see Welcome — the greeting block at the head of an empty conversation (Ant Design X `Welcome`).
+ *
+ * Ant X's own slots, field for field: `icon`, `title`, `description`, `extra`, `variant`. The one
+ * behaviour worth naming is the `icon` STRING: Ant renders a `string` beginning with `http` as an
+ * `<img>` rather than as text (`es/welcome/index.js`), and that is ported — with `alt=""`, because
+ * the glyph beside a title it duplicates is decorative, where Ant hardcodes `alt="icon"`.
+ */
+export type WelcomeProp = {
+  /** Leading glyph, or an `http(s)` URL rendered as a decorative image. Ant Design X `icon`. */
+  icon?: React.ReactNode;
+  /** The greeting itself. Ant Design X `title`. */
+  title?: React.ReactNode;
+  /** The line under it. Ant Design X `description`. */
+  description?: React.ReactNode;
+  /** Trailing slot on the title row — a dismiss button, a model picker. Ant Design X `extra`. */
+  extra?: React.ReactNode;
+  /** Ant Design X `variant`. Default `filled`. */
+  variant?: WelcomeVariantProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
