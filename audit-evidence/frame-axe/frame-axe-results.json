@@ -1,0 +1,136 @@
+{
+  "generatedAt": "2026-09-08T03:57:49.758Z",
+  "base": "http://localhost:6008",
+  "summary": {
+    "status": "fail",
+    "frames": 6,
+    "shard": null,
+    "viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "chromeViolations": 0,
+    "componentViolations": 2,
+    "componentRegressions": 1,
+    "overlayFrames": 0,
+    "overlayViolations": 0,
+    "overlayRegressions": 0,
+    "overlayMissing": 0,
+    "infrastructureErrors": 0
+  },
+  "chrome": {},
+  "componentCurrent": {
+    "data-display-badge": {
+      "desktop": {
+        "image-alt": 1
+      },
+      "mobile": {
+        "image-alt": 1
+      }
+    }
+  },
+  "regressions": [
+    {
+      "frame": "data-display-badge",
+      "rule": "image-alt"
+    }
+  ],
+  "shrinkHints": [],
+  "overlayCurrent": {},
+  "overlayFrames": [],
+  "overlayRegressions": [],
+  "overlayShrinkHints": [],
+  "infraErrors": [],
+  "results": [
+    {
+      "id": "charts-compact-bar-trend",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": []
+        },
+        "mobile": {
+          "chrome": [],
+          "component": []
+        }
+      }
+    },
+    {
+      "id": "charts-size-tiers",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": []
+        },
+        "mobile": {
+          "chrome": [],
+          "component": []
+        }
+      }
+    },
+    {
+      "id": "data-display-accordion",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": []
+        },
+        "mobile": {
+          "chrome": [],
+          "component": []
+        }
+      }
+    },
+    {
+      "id": "data-display-avatar",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": []
+        },
+        "mobile": {
+          "chrome": [],
+          "component": []
+        }
+      }
+    },
+    {
+      "id": "data-display-badge",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": [
+            {
+              "id": "image-alt",
+              "impact": "critical",
+              "nodes": 1
+            }
+          ]
+        },
+        "mobile": {
+          "chrome": [],
+          "component": [
+            {
+              "id": "image-alt",
+              "impact": "critical",
+              "nodes": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "data-display-carousel",
+      "viewports": {
+        "desktop": {
+          "chrome": [],
+          "component": []
+        },
+        "mobile": {
+          "chrome": [],
+          "component": []
+        }
+      }
+    }
+  ]
+}
