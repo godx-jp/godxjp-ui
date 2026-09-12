@@ -6,6 +6,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.0] - 2026-09-12
+
+Bản này là một câu trả lời cho một câu hỏi: **Ant Design là chuẩn, thiếu gì port 100%.** Luật ấy đã
+nằm trong `docs/DESIGN-AUTHORITY.md` từ lâu — _"where antd names a capability, this library takes
+antd's name and antd's semantics"_ — nhưng nó được đọc như lời khuyên. Chủ repo phát biểu lại nó
+thành chuẩn (#569), và mọi thứ dưới đây là hệ quả.
+
+### Added
+
+- **`FloatButton`, `FloatButton.Group`, `FloatButton.BackTop`** (#558) — port từ chính tệp của
+  antd 6.6.3 chứ không từ trí nhớ, gồm cả `content`/`description` với cách antd giải khi cả hai
+  cùng truyền, quy tắc `individual` của Group, và `easeInOutCubic` 450ms của BackTop.
+- **`Typography` trọn vẹn** (#580) — `Typography`, `Title`, `Paragraph`, `Link`, và
+  `Typography.Text` **chính là** `Text` đang có chứ không phải một bản nghèo hơn đặt cạnh. `Text`
+  đi từ 19 lên **33 prop**: `copyable` và `editable` đầy đủ, `ellipsis` với `expandable`/`symbol`/
+  `onExpand`, cùng `mark` · `code` · `keyboard` · `italic` · `delete` · `underline` · `disabled`.
+  Không prop cũ nào đổi tên, đổi mặc định hay đổi `data-*`.
+- **Ant Design X đủ năm component** (#559): `Conversations` (#571), `Welcome` (#577), `Actions`
+  (#584), `ThoughtChain` (#592), `Attachments` (#596). `Actions` vào nhóm `general`, `ThoughtChain`
+  vào `data-display` — quyết định bằng cách đọc nhóm `feedback` hiện chứa gì (Alert, AlertDialog,
+  Toast, Skeleton): nó nghĩa là _hệ thống nói với người dùng_, không phải _người dùng đưa phản hồi_.
+- **`Card` nhận `tabList`** (#570) — `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/
+  `tabProps` giữ nguyên tên antd; `tabBarExtraContent` thành `extra` theo tiền lệ `TabsProp.extra`
+  đã có, vì `left`/`right` không mirror được dưới RTL. Dải tab nằm **trong đầu thẻ**, nên thẻ và
+  tab đọc thành một vật thể, và `CardContent flush` vẫn xuyên tới một `DataTable` trong tab.
+- **`DraggablePanel`** (#560) — antd không có component này; thứ antd có là demo _Draggable Modal_
+  dựng trên `react-draggable`, nên API lấy theo tên của thư viện ấy. **Không thêm dependency**:
+  phần kéo dùng lại mẫu con trỏ mức window đã có sẵn trong `slider.tsx`.
+
+### Changed
+
+- **`Dialog` và `AlertDialog` nay là MỘT họ, vai trò là prop** (#567). Hai họ ấy xuất 26 thứ với
+  **12 cặp trùng tên và 0 phần riêng của `AlertDialog`**, mà khác biệt thật chỉ là
+  `role="alertdialog"` cộng `isDismissable={false}` — hai prop mà shell đã nhận sẵn. antd chỉ có
+  một `Modal`. Nay `variant="destructive"` quyết định đồng thời vai trò ARIA, có đóng được bằng
+  click ra ngoài hay không, và nhấn mạnh của nút chính.
+
+  **12 export `AlertDialog*` KHÔNG bị xoá.** Xoá là breaking change cần bản major, và bộ test
+  trình duyệt của consumer đang bám `getByRole('alertdialog')`. Chúng chạy đúng như cũ; `variant`
+  là lối chuẩn, chúng là lối cũ, và quy tắc chọn nằm trong `docs/DESIGN-AUTHORITY.md`.
+
+  Một lượt đếm trên **cả 272 export công khai** xác nhận đây là cặp trôi DUY NHẤT:
+  `Skeleton.Avatar/Button/Input/Image/Node` trông y hệt hình dạng lỗi nhưng đó là tên antd đặt, tức
+  đang tuân luật chứ không vi phạm.
+
+### Fixed
+
+- **`Conversations` thiếu `timestamp`** (#576) — port lấy 5 trong 6 trường của Ant X. Nó nhận
+  **number**, không phải `ReactNode` như các trường khác, và vẽ qua `formatDate`: cùng một mốc thời
+  gian phải đọc ra `2026/03/15` ở tenant Nhật và `15/03/2026` ở tenant Việt, mà một component tự
+  định dạng ngày thì không làm được điều đó.
+- Ba lần `main` đỏ vì tệp sinh ra để cũ (#587, #589, #597): catalog token, `CardTabItemProp` chưa
+  export, và bảy token icon mới chưa đóng băng trong bảng.
+
 ## [23.3.0] - 2026-09-12
 
 Minor, và lý do là **một mặc định thị giác đổi**: dấu hiệu focus bàn phím nay BẬT sẵn. Phần còn lại
