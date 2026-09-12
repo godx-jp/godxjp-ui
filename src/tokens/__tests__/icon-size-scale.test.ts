@@ -50,7 +50,7 @@ const SCALE: ReadonlyArray<readonly [string, string, number]> = [
  * on half pixels and was snapped, while an 18px letter medallion is a whole pixel that simply
  * falls between two steps, and snapping it would be a visible 2px change bought for nothing.
  */
-const DECLARED_OFF_SCALE = new Set(["--topbar-chip-icon-size"]);
+const DECLARED_OFF_SCALE = new Set(["--topbar-chip-icon-size", "--thought-chain-icon-size"]);
 
 const FROZEN: Record<string, [string, string, string]> = {
   "--alert-dismiss-icon-size": ["1rem", "1rem", "1rem"],
@@ -122,6 +122,18 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--upload-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--upload-row-icon-size": ["1rem", "1rem", "1rem"],
   "--upload-tile-icon-size": ["1.5rem", "1.5rem", "1.5rem"],
+  // The Ant Design X family (#559) and FloatButton (#558), added after the migration. Each value
+  // was resolved with the same source resolver the assertions below use, not typed from the CSS.
+  "--conversations-icon-size": ["1rem", "1rem", "1rem"],
+  "--conversations-group-chevron-size": ["0.875rem", "0.875rem", "0.875rem"],
+  "--welcome-icon-size": ["1.5rem", "1.5rem", "1.5rem"],
+  "--thought-chain-chevron-size": ["0.875rem", "0.875rem", "0.875rem"],
+  "--thought-chain-icon-size": ["1.75rem", "1.75rem", "1.75rem"],
+  "--float-button-icon-size": ["1rem", "1rem", "1rem"],
+  // Attachments (#559) aliases the two Upload tokens rather than minting values of its own:
+  // the drop placeholder IS an upload dropzone and the card's × IS an upload row's remove.
+  "--attachments-placeholder-icon-size": ["2.5rem", "2.5rem", "2.5rem"],
+  "--attachments-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
 };
 
 // Must stay in step with the selector pattern in the ratchet below. They drifted apart once —
@@ -139,6 +151,7 @@ const decls = allDeclarations();
  */
 const NOT_AN_ICON_BOX = new Set([
   "--topbar-chip-icon-font-size", // a TYPE size for the medallion's letter, not the box
+  "--thought-chain-icon-font-size", // same as the topbar chip: the TYPE size of the step's ordinal
   "--otp-caret-block-size", // a text cursor's height — it tracks a line box, not an icon
   "--otp-caret-inline-size", // a text cursor's 1px bar — that is a stroke, not an icon
 ]);

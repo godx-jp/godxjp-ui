@@ -8,6 +8,11 @@ import type { HeadingLevelProp } from "../../props/vocabulary";
 import type { CardTabItemProp } from "../../props/components/data-display.prop";
 import { Tabs, type TabsExtraProp, type TabsProps } from "../navigation/tabs";
 
+export type {
+  CardTabItemProp,
+  CardTabItemProp as CardTabItemProps,
+} from "../../props/components/data-display.prop";
+
 /** Semantic accent tone. `accentPlacement` decides WHERE it is drawn — a leading-edge
  *  stripe (default) or the full perimeter. */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";

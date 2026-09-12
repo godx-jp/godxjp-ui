@@ -37,7 +37,7 @@ export {
   CardAction,
   StatCard,
 } from "./card";
-export type { StatCardProps, CardBarProps } from "./card";
+export type { StatCardProps, CardBarProps, CardTabItemProp, CardTabItemProps } from "./card";
 export {
   ServiceCatalogCta,
   ServiceLauncherCard,
