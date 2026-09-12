@@ -1421,7 +1421,7 @@
   }
 
   .ui-filter-bar-error {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   /* Every value reads a `--legal-document-*` component token, so a service re-tunes the measure,

@@ -133,11 +133,11 @@
   }
 
   .ui-password-strength-checklist-item[data-state="passed"] svg {
-    color: hsl(var(--success));
+    color: hsl(var(--text-success));
   }
 
   .ui-password-strength-checklist-item[data-state="failed"] svg {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 }
 

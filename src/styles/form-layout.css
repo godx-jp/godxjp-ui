@@ -30,7 +30,7 @@
    * trước nó do chính nó khai, vẫn đọc token chứ không phải một con số cứng. */
   .ui-form-field-required {
     margin-inline-start: var(--space-inline-xs);
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-form {

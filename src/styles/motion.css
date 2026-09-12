@@ -81,16 +81,16 @@
     color: hsl(var(--primary));
   }
   .ui-activity[data-tone="success"] .ui-activity-mark {
-    color: hsl(var(--success));
+    color: hsl(var(--text-success));
   }
   .ui-activity[data-tone="warning"] .ui-activity-mark {
-    color: hsl(var(--warning));
+    color: hsl(var(--text-warning));
   }
   .ui-activity[data-tone="destructive"] .ui-activity-mark {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
   .ui-activity[data-tone="info"] .ui-activity-mark {
-    color: hsl(var(--info));
+    color: hsl(var(--text-info));
   }
 
   /* dots — the ellipsis convention. */

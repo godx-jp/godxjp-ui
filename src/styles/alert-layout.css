@@ -78,19 +78,19 @@
   }
 
   [data-slot="alert-icon"][data-tone="destructive"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   [data-slot="alert-icon"][data-tone="warning"] {
-    color: hsl(var(--warning));
+    color: hsl(var(--text-warning));
   }
 
   [data-slot="alert-icon"][data-tone="success"] {
-    color: hsl(var(--success));
+    color: hsl(var(--text-success));
   }
 
   [data-slot="alert-icon"][data-tone="info"] {
-    color: hsl(var(--info));
+    color: hsl(var(--text-info));
   }
 
   /* Body stacks text vertically (title over description). */

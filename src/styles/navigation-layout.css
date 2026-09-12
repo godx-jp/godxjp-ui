@@ -505,7 +505,7 @@
   }
 
   .ui-dropdown-menu-item[data-variant="destructive"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-dropdown-menu-separator,
@@ -605,7 +605,7 @@
   }
 
   .ui-steps-inline-item[data-status="error"] .ui-steps-inline-control {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-steps-inline-item[data-status="wait"] .ui-steps-inline-control {
@@ -753,7 +753,7 @@
 
   .ui-dropdown-menu-item[data-variant="destructive"][data-highlighted] {
     background: hsl(var(--destructive) / 0.1);
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-dropdown-menu-item[data-disabled],
@@ -872,7 +872,7 @@
   }
 
   .ui-steps-title[data-status="error"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-steps-subtitle {

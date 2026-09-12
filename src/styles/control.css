@@ -1186,6 +1186,15 @@
     width: 1.25rem;
     height: 1.25rem;
   }
+  /* KEPT ON THE FILL TIER DELIBERATELY, and this is the record of that decision so the next sweep
+   * does not have to guess. `--warning` as TEXT is 1.74:1 on `--background` in the light theme,
+   * which is why every prose paint moved to `--text-warning` (see gh#612). A filled star is not
+   * prose: it falls under WCAG 1.4.11, and it is distinguished by SHAPE and by its unfilled
+   * neighbour, not by colour alone — an amber star on white is the convention users read, and
+   * antd ships `#fadb14` with the same ratio. Moving it to the text tier would make a rating look
+   * like a row of error marks. If a service needs a darker star, it retunes `--warning` in
+   * theme.css; do not repoint this rule at the text tier without saying what replaced it.
+   */
   .ui-rating-star-filled {
     color: hsl(var(--warning));
   }
@@ -1835,7 +1844,7 @@
   }
 
   .ui-search-select-placeholder[data-tone="destructive"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   .ui-search-select-footer {
@@ -3523,6 +3532,7 @@
     cursor: pointer;
   }
 
+  /* Half star — same deliberate exception as `.ui-rating-star-filled` above. */
   .ui-rating-star-half-filled {
     color: hsl(var(--warning));
   }
