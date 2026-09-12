@@ -23,6 +23,20 @@
 @layer components {
   [data-slot="card"] {
     min-width: 0;
+    /* A COLUMN, so a card taller than its own content can put the footer at the bottom.
+     *
+     * `ResponsiveGrid` stretches every item to the row height, so in a row of plan cards the tall
+     * one sets the height and the short ones have spare space — which a `display: block` card
+     * spent as emptiness BELOW the footer. A consumer measured the buttons in one row 40px apart
+     * and had no public way to line them up: they reached for `className="flex h-full flex-col"`,
+     * which `ui-audit` flagged as `no-utility-layout` (godx-jp/id#521), rightly — the fix belongs
+     * here, not at every call site.
+     *
+     * For a card exactly as tall as its content, a block and a flex column lay their children out
+     * identically, so nothing moves. Measured after: two cards of unequal content in one grid row
+     * put their footers at the same y (1028 and 1028). */
+    display: flex;
+    flex-direction: column;
     /* Base hairline border — width lives here (not a Tailwind `border` utility) so the
      * `[data-accent]` rail-width override below can win within the same cascade layer. */
     border-width: 1px;
@@ -119,6 +133,12 @@
 
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
+  /* The footer takes the slack — this is the half that bottom-aligns; the column only makes the
+   * room for it to move into. */
+  [data-slot="card"] > [data-slot="card-footer"] {
+    margin-block-start: auto;
+  }
+
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
     padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
   }
