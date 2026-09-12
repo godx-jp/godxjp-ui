@@ -2,10 +2,11 @@ name: PR · quick check
 
 # The lane that tells you a branch is broken BEFORE it is on `main`.
 #
-# WHAT IT DOES NOT DO — it does not block a merge, and nothing here should be read as claiming it
-# does. `main` has no branch protection (`gh api repos/godx-jp/godxjp-ui/branches/main/protection`
-# → 404, `/rulesets` → []) and none is planned. This lane gates by VISIBILITY only: whoever opens
-# the PR sees red next to the merge button and decides. That is the whole mechanism.
+# WHAT IT DOES NOW — as of gh#547 this lane DOES block a merge. `main` carries branch protection
+# requiring the four `PR tests (shard N/4)` check runs below. It used to gate by visibility only
+# ("whoever opens the PR sees red and decides"), and two commits reached `main` red in one morning
+# through exactly that mechanism, both because the thing that broke lives in `pnpm test` and
+# `pnpm test` ran only after the merge. The suite now runs here; see the `tests` job.
 #
 # WHY IT EXISTS, WITH THE MEASUREMENT
 # `pull_request` was removed from ci.yml and ci-browser.yml by f910af95 (2026-08-30) for a real,
@@ -51,10 +52,10 @@ on:
     # commit triggering all three per-merge workflows or none, and this lane is not one of them
     # and feeds no provenance. It mirrors them because the same paths are just as inert on a PR.
     paths-ignore:
-      - 'debate/**'
-      - '.agent-notes/**'
-      - '.design-sync/**'
-      - 'LICENSE'
+      - "debate/**"
+      - ".agent-notes/**"
+      - ".design-sync/**"
+      - "LICENSE"
 
 # L7. Push twice to a PR branch and the first run is cancelled; only the tip is worth judging.
 concurrency:
@@ -95,3 +96,40 @@ jobs:
 
       - name: build
         run: pnpm build
+
+  # THE SUITE, ON THE PR. Added for gh#547, at the owner's decision, and it deliberately reopens
+  # part of what f910af95 closed — so the reason is written here rather than argued later.
+  #
+  # WHAT f910af95 MEASURED AND WHY IT STILL STANDS. It removed `pull_request` from ci.yml and
+  # ci-browser.yml because a merge fired BOTH lanes twice — 73s + 653-745s on the PR and again on
+  # the push — on a pool shared with tempo, kintai and godx-chat. That is still true of the
+  # Chromium lanes, and they are still push-only. This job reopens the double-billing for the
+  # VITEST SUITE ALONE.
+  #
+  # WHAT IT BUYS, MEASURED ON THE DAY IT WAS ADDED. Two commits reached `main` red in one morning,
+  # both through a green `PR quick check`, because what broke was in `pnpm test` and `pnpm test`
+  # only ran after the merge: gh#533 (two gates each left half-done) and #540 (a token added in
+  # #537 and never entered in the frozen icon-size table, which stopped the 23.2.0 release mid-
+  # flight). Neither was catchable by typecheck, lint or build. The cost of NOT running the suite
+  # on the PR is paid by whoever cuts the next branch from a red `main`.
+  #
+  # THE NAMES ARE DELIBERATELY NOT `Tests (shard N/4)`. That name belongs to ci.yml's push lane and
+  # is in REQUIRED_CI_CHECK_RUNS; a `pull_request` run must never be able to satisfy a release gate
+  # that only the push lane is entitled to satisfy. `src/test/__tests__/release-workflow.test.ts`
+  # fails if that ever stops being true.
+  tests:
+    name: PR tests (shard ${{ matrix.shard }}/4)
+    runs-on: [self-hosted, swarm-pool]
+    # Same fork guard, same reason, as `quick` above: public repo, self-hosted pool.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      # No build step: the suite imports from `src`, not `dist`. And no bare `--` before the flag —
+      # see the measurement in ci.yml, where those two characters made all four shards run the
+      # whole suite while still reporting a quarter each.
+      - run: pnpm test --shard=${{ matrix.shard }}/4
