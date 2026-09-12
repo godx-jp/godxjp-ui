@@ -949,7 +949,16 @@ not the call site. Don't bake a one-off around it. If you can fix the library in
 do. If you can't (or you're a consumer agent without write access), open a detailed GitHub
 issue: use the draft_bug_report MCP tool to produce the issue body + a 'gh issue create
 --repo godx-jp/godxjp-ui …' command, linking the component (get_component) and the cardinal
-rule (get_rule) involved, with a minimal repro, expected vs actual, version, and env.`,
+rule (get_rule) involved, with a minimal repro, expected vs actual, version, and env.
+
+BEFORE filing a GEOMETRY bug — a hit area under 24×24, a label too close to an edge —
+read node_modules/@godxjp/ui/dist/contracts/measurement.json. getBoundingClientRect()
+returns the BORDER BOX, and several targets in this library are carried by a ::after that
+the border box cannot see, so a rect-based gate under-reports them permanently. Measure the
+target with elementFromPoint (the reference scan is in docs/MEASUREMENT-CONTRACT.md), and
+note that --space-* is the scale BETWEEN things, never a floor inside a control. gh#503,
+gh#506 and gh#507 were each filed and reopened four times on exactly this mismatch; a
+report that brings a hit-tested number is one a maintainer can act on in a single pass.`,
       },
     ],
   },

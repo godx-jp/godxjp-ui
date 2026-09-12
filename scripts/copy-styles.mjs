@@ -47,7 +47,20 @@ if (existsSync(messagesFrom)) {
   });
 }
 
-console.log("copied CSS trees + i18n messages -> dist");
+// The measurement contract ships as DATA, not as prose, because the gate that needs it is a
+// consumer's browser test and a gate cannot read `docs/`. gh#503/#506/#507 each survived four
+// releases on that gap (scripts/gen-measurement-contract.mjs has the numbers).
+const contractsFrom = join(root, "src", "contracts");
+const contractsTo = join(root, "dist", "contracts");
+if (existsSync(contractsFrom)) {
+  mkdirSync(contractsTo, { recursive: true });
+  cpSync(contractsFrom, contractsTo, {
+    recursive: true,
+    filter: (src) => src === contractsFrom || src.endsWith(".json"),
+  });
+}
+
+console.log("copied CSS trees + i18n messages + contracts -> dist");
 
 // dist CSS ships without comments (`/*!` license blocks are kept).
 function stripCssComments(css) {
