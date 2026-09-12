@@ -317,6 +317,15 @@
       "loading": "Loading child nodes…",
       "empty": "Nothing to show",
       "selected": "Selected"
+    },
+    "thoughtChain": {
+      "label": "Reasoning steps",
+      "status": {
+        "loading": "in progress",
+        "success": "done",
+        "error": "failed",
+        "abort": "stopped"
+      }
     }
   },
   "ui": {

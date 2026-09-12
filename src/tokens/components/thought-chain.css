@@ -1,0 +1,47 @@
+/* ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X
+ * `ThoughtChain`).
+ *
+ * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`.
+ * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as
+ * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that
+ * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is
+ * the complaint gh#559 opens with.
+ */
+:root {
+  /* Gap between two steps, and between the glyph column and the body. */
+  --thought-chain-gap: var(--space-4);
+  --thought-chain-node-gap: var(--space-3);
+  /* Gap between the header, the body and the footer of ONE step. */
+  --thought-chain-body-gap: var(--space-1);
+
+  /* The glyph column. A square, so an ordinal, an icon and a status mark share one track and the
+   * connector below stays centred under all three. */
+  --thought-chain-icon-size: var(--band-height-sm);
+  --thought-chain-icon-font-size: var(--font-size-xs);
+  --thought-chain-icon-radius: var(--radius-pill);
+  /* Role-mirror knobs (docs/TOKENS.md): `initial`, so each documented default resolves at the CALL
+   * SITE and a scoped `[data-tenant]` / `.dark` override still reaches it.
+   * Default ground = hsl(var(--muted)) · default ink = hsl(var(--muted-foreground)) */
+  --thought-chain-icon-background: initial;
+  --thought-chain-icon-color: initial;
+  /* Status tints. Same three roles the rest of the library uses for the same three meanings. */
+  --thought-chain-icon-success-color: initial;
+  --thought-chain-icon-error-color: initial;
+
+  /* The connector. Its inline position tracks HALF the glyph column so it stays centred whatever
+   * the column's size becomes — never a literal offset. */
+  --thought-chain-line-width: var(--stroke-hairline);
+  --thought-chain-line-color: initial; /* default = hsl(var(--border)) */
+
+  /* The collapsed body and its chevron. */
+  --thought-chain-chevron-size: var(--icon-size-sm);
+  --thought-chain-content-space-block: var(--space-2);
+
+  /* A STANDALONE step (ThoughtChainItem) — the chip an assistant drops inline. */
+  --thought-chain-item-gap: var(--space-2);
+  --thought-chain-item-padding-block: var(--space-2);
+  --thought-chain-item-padding-inline: var(--space-3);
+  --thought-chain-item-radius: var(--radius);
+  --thought-chain-item-solid-background: initial; /* default = hsl(var(--muted)) */
+  --thought-chain-item-outlined-border: initial; /* default = hairline solid hsl(var(--border)) */
+}

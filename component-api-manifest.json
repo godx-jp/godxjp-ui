@@ -2957,7 +2957,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +2965,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -15906,7 +15906,7 @@
           "name": "ellipsis",
           "origin": "owned",
           "required": false,
-          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"expandable\" | \"onExpand\"> | undefined",
+          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"onExpand\" | \"expandable\"> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -16197,6 +16197,160 @@
           "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
           "values": ["default", "ghost", "outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "ThoughtChain": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "defaultExpandedKeys",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "expandedKeys",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly ThoughtChainItemsProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "line",
+          "origin": "owned",
+          "required": false,
+          "type": "ThoughtChainLineProp | undefined",
+          "values": [false, true, "dashed", "solid", "dotted"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "onExpand",
+          "origin": "owned",
+          "required": false,
+          "type": "((keys: string[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
+    "ThoughtChainItem": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "blink",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "OnClickProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ThoughtChainStatusProp | undefined",
+          "values": ["success", "error", "loading", "abort"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ThoughtChainVariantProp | undefined",
+          "values": ["text", "outlined", "solid"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },

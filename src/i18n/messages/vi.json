@@ -311,6 +311,15 @@
       "loading": "Đang tải nút con…",
       "empty": "Không có gì để hiển thị",
       "selected": "Đã chọn"
+    },
+    "thoughtChain": {
+      "label": "Các bước suy luận",
+      "status": {
+        "loading": "đang chạy",
+        "success": "xong",
+        "error": "thất bại",
+        "abort": "đã dừng"
+      }
     }
   },
   "ui": {
