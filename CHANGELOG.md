@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.8] - 2026-09-13
+
 ### Added — hợp đồng đo được (gh#503, gh#506, gh#507)
 
 - **`dist/contracts/measurement.json` — thứ mà một cái cổng CI đọc được, thay cho văn xuôi mà nó
