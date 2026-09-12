@@ -77,10 +77,24 @@ describe("Flex raw breakpoints — the escape hatch the token steps never had (g
         <Flex hideFromRaw={920}>メニュー</Flex>
       </>,
     );
-    const rules = printedRules().join("\n");
-    const below = Number(rules.match(/\(width < (\d+)px\)/)![1]);
-    const from = Number(rules.match(/\(width >= (\d+)px\)/)![1]);
-    const hiddenAt = (width: number) => Number(width < below) + Number(width >= from);
+    // Read the OPERATOR out of each rule rather than assuming it, so a rule that folds on the
+    // wrong side of the seam is counted rather than skipped.
+    const conditions = printedRules().map((rule) => {
+      const [, operator, value] = rule.match(/\(width (<=|>=|<|>) (\d+)px\)/)!;
+      return { operator, value: Number(value) };
+    });
+    const hiddenAt = (width: number) =>
+      conditions.filter(({ operator, value }) =>
+        operator === "<"
+          ? width < value
+          : operator === "<="
+            ? width <= value
+            : operator === ">"
+              ? width > value
+              : width >= value,
+      ).length;
+
+    expect(conditions).toHaveLength(2);
 
     expect(hiddenAt(919)).toBe(1);
     expect(hiddenAt(920)).toBe(1);
