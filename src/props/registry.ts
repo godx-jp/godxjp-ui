@@ -3641,6 +3641,23 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  WelcomeVariantProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ControlVariantProp"],
+  },
+  WelcomeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IconProp",
+      "TitleProp",
+      "DescriptionProp",
+      "ExtraProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 273,
-    dimensionCells: 3822,
+    exports: 274,
+    dimensionCells: 3836,
     covered: 85,
-    untested: 2134,
-    notApplicable: 1603,
+    untested: 2142,
+    notApplicable: 1609,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -365,6 +365,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"TwoFactorSetup","group":"feedback","frame":"docs/feedback/two-factor-setup.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"Upload","group":"data-entry","frame":"docs/data-entry/upload.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones"]},
   {"name":"VisuallyHidden","group":"general","frame":"docs/general/typography.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"Welcome","group":"data-display","frame":"docs/data-display/welcome.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","variants"],"notApplicable":["density","ownership","shapes","sizes","states","tones"]},
 ];
 
 const BY_NAME = new Map(FRAME_COVERAGE.map((entry) => [entry.name.toLowerCase(), entry]));
