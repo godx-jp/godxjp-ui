@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 271,
-    dimensionCells: 3794,
+    exports: 272,
+    dimensionCells: 3808,
     covered: 83,
-    untested: 2120,
-    notApplicable: 1591,
+    untested: 2127,
+    notApplicable: 1598,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -314,6 +314,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"SkeletonAvatar","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":["shapes","sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","states","tones","variants"]},
   {"name":"SkeletonButton","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":["shapes","sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","states","tones","variants"]},
   {"name":"SkeletonDetail","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"SkeletonForm","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SkeletonImage","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SkeletonInput","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"SkeletonNode","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
