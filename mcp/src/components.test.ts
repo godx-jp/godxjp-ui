@@ -56,6 +56,48 @@ describe("component catalog integrity", () => {
   });
 });
 
+/**
+ * gh#526. `get_component name="CardCover"` answered "not found. Use `list_primitives` to
+ * discover" — for an export the catalog's own AspectRatio entry tells you to reach for. "Not
+ * found" is the sentence that sends an agent off to hand-roll a component that already ships, so
+ * a name the catalog HAS folded into a parent must never produce it.
+ */
+describe("sub-part names resolve to the entry that documents them", () => {
+  const OWNED = COMPONENTS.flatMap((c) =>
+    (c.subParts ?? []).map((part) => [part, c.name] as const),
+  );
+
+  it("the catalog folds a non-trivial number of exports into parents", () => {
+    expect(OWNED.length).toBeGreaterThanOrEqual(100);
+  });
+
+  it.each(OWNED)(
+    "get_component(%s) names %s instead of reporting it missing",
+    async (part, owner) => {
+      const out = await dispatchTool("get_component", { name: part });
+      expect(out).not.toMatch(/not found/i);
+      expect(out).toContain(owner);
+    },
+  );
+
+  it("resolves case-insensitively, like entry names do", async () => {
+    const [part, owner] = OWNED[0];
+    const out = await dispatchTool("get_component", { name: part.toLowerCase() });
+    expect(out).toContain(owner);
+  });
+
+  it("search_components finds the parent by a sub-part name", async () => {
+    const out = await dispatchTool("search_components", { query: "StatusBadge" });
+    expect(out).toContain("Badge");
+    expect(out).not.toMatch(/^No matches/);
+  });
+
+  it("a parent lists what it documents, so the fold is visible while reading it", async () => {
+    const out = await dispatchTool("get_component", { name: "Card" });
+    expect(out).toContain("CardCover");
+  });
+});
+
 describe("list_primitives", () => {
   it("lists every component when unfiltered", async () => {
     const out = await dispatchTool("list_primitives", {});

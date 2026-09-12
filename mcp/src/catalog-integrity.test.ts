@@ -105,7 +105,7 @@ describe("component catalog — every entry is structurally complete", () => {
 
   it("optional string-array fields, when present, are non-empty arrays of non-empty strings", () => {
     for (const c of COMPONENTS) {
-      for (const key of ["usage", "useCases", "related"] as const) {
+      for (const key of ["usage", "useCases", "related", "subParts"] as const) {
         const arr = c[key];
         if (arr === undefined) continue;
         expect(Array.isArray(arr), `${c.name}.${key} is array`).toBe(true);
@@ -115,6 +115,25 @@ describe("component catalog — every entry is structurally complete", () => {
           expect(s.trim().length, `${c.name}.${key} item non-empty`).toBeGreaterThan(0);
         }
       }
+    }
+  });
+
+  it("a sub-part is owned by exactly one entry, and never shadows an entry of its own", () => {
+    // `subParts` is what `check:mcp-catalog-completeness` reads to decide an export is documented,
+    // so two entries claiming one name means neither is definitively its documentation, and a name
+    // claimed as a sub-part while also having an entry means `get_component` has two answers.
+    const owners = new Map<string, string[]>();
+    for (const c of COMPONENTS) {
+      for (const part of c.subParts ?? []) {
+        owners.set(part, [...(owners.get(part) ?? []), c.name]);
+      }
+    }
+    for (const [part, claimants] of owners) {
+      expect(claimants, `${part} claimed by ${claimants.join(", ")}`).toHaveLength(1);
+      expect(NAME_SET.has(part), `${part} is both an entry and ${claimants[0]}'s sub-part`).toBe(
+        false,
+      );
+      expect(part, `${part} is its own owner`).not.toBe(claimants[0]);
     }
   });
 

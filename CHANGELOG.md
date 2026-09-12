@@ -58,6 +58,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Catalog MCP im lặng bỏ sót component đã phát hành, trong khi hai cổng canh nó đều xanh**
+  (gh#526). Luật dành cho consumer đặt catalog làm **thẩm quyền duy nhất** trả lời "ở đây đã có
+  gì" — nên một component tra không ra thì với agent kế tiếp là component KHÔNG TỒN TẠI, và nó
+  dựng lại bằng tay. `StatusBadge`, `ServiceCatalogCta`, `OverlayPortalProvider` đang ở đúng chỗ
+  đó. (`Tree`, cả nhà `Chat`, `Timeline`, `Transfer`, `Cascader`, `TreeSelect`, `QrCode` mà issue
+  liệt kê thì các lần gộp gần đây đã bù xong; đo lại trên `main` trước khi sửa.)
+
+  Hai cổng cũ không hỏng — chúng **không đo việc này**:
+
+  - `check:mcp-orphans` suy ra **MỘT tên mỗi tệp**, bằng cách PascalCase hoá TÊN TỆP. `StatusBadge`
+    nằm trong `badge.tsx`, nên cái tên duy nhất tệp ấy từng bị hỏi là `Badge` — đã có entry. Mọi
+    export THỨ CẤP đều vô hình với nó, mà export thứ cấp là phần lớn bề mặt công khai: **133 trên
+    276**.
+  - `check:mcp-catalog-coverage` hỏi tên có xuất hiện Ở ĐÂU ĐÓ trong `mcp/src/data/*.ts` không,
+    bằng `String.includes` — tức **khớp chuỗi con**. `Tree` là chuỗi con của `TreeSelect`, `Area`
+    của `ScrollArea`. Qua được phép kiểm ấy gần như miễn phí, nên nó không thể có nghĩa "catalog
+    đang mô tả bạn".
+
+  Thêm **một** cổng, `check:mcp-catalog-completeness`, hỏi đúng câu mà luật consumer dựa vào:
+  **`get_component` trả lời được cho tên này không?** Nó liệt kê mọi export PascalCase gọi được
+  của từng subpath công khai trong `package.json#exports` và đòi mỗi tên hoặc là `name` của một
+  entry, hoặc nằm trong `subParts` của **đúng một** entry. Không allowlist, không tính chuỗi con.
+  Đã nối vào `verify:ci:static`; `check:gate-coverage` thấy nó qua `ci.yml`. Đột biến: gỡ entry
+  `Timeline` → đỏ, nêu đúng tên; trả lại → xanh.
+
+  Kèm theo đó:
+
+  - `subParts` là trường mới trên `ComponentEntry` — nơi GHI LẠI quyết định "tên này được ghép vào
+    cha", thay cho suy đoán theo cách viết. 133 tên được gán cho 33 entry.
+  - `get_component name="CardCover"` không còn trả `not found. Use list_primitives to discover`
+    cho một export đang phát hành — nó nói CardCover thuộc `Card` và chỉ sang đó. Đúng ca mà issue
+    dựng lại: `AspectRatio` bảo đừng dựng lại `CardCover`, rồi catalog không tả nổi `CardCover`.
+  - `search_components` tính điểm cả `subParts`, nên tìm "StatusBadge" ra `Badge`.
+  - Bù ba entry thật: `ServiceCatalogCta` (ô CTA nét đứt khép lưới launcher) và
+    `OverlayPortalProvider` (chuyển TOÀN BỘ overlay sang một container — thứ duy nhất một app nằm
+    trong **shadow root** không thể làm bằng prop; `AppProvider` đã tả nó trong `related` mà
+    catalog không có entry để mở ra). `StatusBadge` là **alias của `Badge`**, không phải component
+    riêng, nên nó vào `subParts` của `Badge` chứ không có entry giả.
+  - `./ui/time-input` trong `exports` trỏ vào một tệp không tồn tại từ 16.0.0, khi `TimeInput` bị
+    gỡ vì trùng `TimePicker`. Cổng mới bắt được vì nó phải đi qua từng subpath; đã xoá.
+  - `loadComponentInventory` (frame-harness) đòi `group:` phải là dòng NGAY SAU `name:`, và im
+    lặng khi không phải. Trên `main` nó đã bỏ sót sẵn **4** entry (`FormRoot`, `FormFieldControl`,
+    `FormFieldArray`, `useZodForm`); chèn thêm một trường vào giữa làm rơi tiếp 33 cái nữa —
+    `Button`, `Card`, `Badge`, `Sidebar`, `Table` trong số đó — và báo cáo coverage tự sinh ra
+    NHỎ ĐI mà không lỗi ở đâu cả. Đổi sang neo theo `name:` rồi đọc `group:` trong chính khối
+    entry. Báo cáo lên lại 147 component.
+
 - **Cả tầng motion chưa từng có giá trị ở `:root`.** `--duration-*`, `--ease-*`, `--reveal-*`,
   `--duration-loop`, `--activity-*` được khai báo **chỉ bên trong `.ui-scale-fixed`** — một class mà
   các shell chỉ gắn lên dải chrome (topbar của AppShell, thanh của CenteredShell). Mọi nơi đọc chúng
