@@ -131,6 +131,20 @@ những thứ ấy trên PR. **Tới được bước này KHÔNG phải là đ�
 một câu hỏi, không phải một chướng ngại. Nếu bạn tin cổng ấy sai thì nói ra và
 đưa số đo, đừng lặng lẽ sửa nó.
 
+**VÀ ĐỪNG NGỒI CHỜ CI.** Đẩy nhánh, mở PR, rồi đi làm việc khác. Không có vòng lặp
+`until … gh pr checks … sleep` nào cả. CI chạy là việc của CI; nếu cần theo dõi thì
+mở một agent nền, đừng chặn người đang điều phối. Đo được ngày 12/09/2026: một lượt
+ngồi poll bốn shard đã ăn hơn một tiếng đồng hồ của chủ dự án để nhìn một thanh tiến
+trình, trong khi có việc khác đang xếp hàng.
+
+**Và full suite thì chạy theo LỊCH, không nằm trong vòng lặp sửa code của ai.** Cùng
+ngày, tôi thêm bốn shard vitest vào làn PR của kho DS và đặt chúng thành required
+check, để bịt một khoảng trống có thật (hai commit vào `main` đỏ qua một làn nhanh
+xanh). Khoảng trống là thật và phép đo trung thực — nhưng nó chỉ định giá **máy**.
+Máy chưa bao giờ là phần đắt. Từ lúc ấy mọi PR phải chờ bốn shard mới merge được.
+Đã hoàn nguyên. Một hàng rào làm người điều phối phải chờ không rẻ hơn một `main`
+đỏ; nó chỉ dời chi phí sang con đường duy nhất không song song hoá được.
+
 ### Bước 6 — Khép vòng
 
 Phát hành → nâng gói ở consumer → **gỡ vá tạm** → **gỡ mọi chú thích "chờ
