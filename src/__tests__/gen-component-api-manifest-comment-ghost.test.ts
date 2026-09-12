@@ -49,34 +49,54 @@ afterEach(() => {
 });
 
 describe("a comment cannot create a public prop (gh#586)", () => {
-  it("adding a comment that NAMES an inherited prop does not publish it", () => {
-    originalSource = readFileSync(target, "utf8");
-    originalManifest = readFileSync(manifest, "utf8");
+  /*
+   * EXPLICIT TIMEOUT, and it is not padding. Each `generate()` spawns the real generator, which
+   * runs the TypeScript compiler over the whole project: 3s on a laptop, and it blew through
+   * vitest's 8000ms default on the shared CI pool — this very file failed shard 4/4 on the 23.4.1
+   * release commit, with a timeout rather than an assertion, and the tag could not be pushed.
+   *
+   * Running the generator for real is the point: the bug was a REGEX over source text, so a test
+   * that stubbed the generator would prove nothing. The cost is accepted and bounded here instead
+   * of being hidden by making the test weaker.
+   */
+  const SPAWNS_THE_GENERATOR = 120_000;
 
-    const before = propNames(generate(), "Text");
-    expect(
-      before,
-      "Text should publish a real surface, or this test proves nothing",
-    ).not.toHaveLength(0);
-    expect(before).not.toContain("defaultValue");
+  it(
+    "adding a comment that NAMES an inherited prop does not publish it",
+    () => {
+      originalSource = readFileSync(target, "utf8");
+      originalManifest = readFileSync(manifest, "utf8");
 
-    // The exact mutation from the issue: a comment that DENIES the prop.
-    writeFileSync(target, `// this component does NOT accept defaultValue\n${originalSource}`);
-    const after = propNames(generate(), "Text");
+      const before = propNames(generate(), "Text");
+      expect(
+        before,
+        "Text should publish a real surface, or this test proves nothing",
+      ).not.toHaveLength(0);
+      expect(before).not.toContain("defaultValue");
 
-    expect(after).toEqual(before);
-  });
+      // The exact mutation from the issue: a comment that DENIES the prop.
+      writeFileSync(target, `// this component does NOT accept defaultValue\n${originalSource}`);
+      const after = propNames(generate(), "Text");
 
-  it("a prop genuinely forwarded through {...rest} IS published", () => {
-    // The other half, and the reason the first attempt at this fix was reverted. `PasswordInput`
-    // destructures what it needs and writes `<Input {...props} />`, so `value` reaches a real
-    // `<input>`. An AST detector that counts only destructured names drops it, and
-    // `audit:component-cases` then reports "evidence references a stale or nonexistent public
-    // prop" about a prop that is neither.
-    // REGENERATED, not read from the committed file. Reading the committed manifest passes even
-    // when the detector has stopped finding the prop — measured: deleting the forwarding rule left
-    // this test green until it generated its own answer.
-    originalManifest = readFileSync(manifest, "utf8");
-    expect(propNames(generate(), "PasswordInput")).toContain("value");
-  });
+      expect(after).toEqual(before);
+    },
+    SPAWNS_THE_GENERATOR,
+  );
+
+  it(
+    "a prop genuinely forwarded through {...rest} IS published",
+    () => {
+      // The other half, and the reason the first attempt at this fix was reverted. `PasswordInput`
+      // destructures what it needs and writes `<Input {...props} />`, so `value` reaches a real
+      // `<input>`. An AST detector that counts only destructured names drops it, and
+      // `audit:component-cases` then reports "evidence references a stale or nonexistent public
+      // prop" about a prop that is neither.
+      // REGENERATED, not read from the committed file. Reading the committed manifest passes even
+      // when the detector has stopped finding the prop — measured: deleting the forwarding rule left
+      // this test green until it generated its own answer.
+      originalManifest = readFileSync(manifest, "utf8");
+      expect(propNames(generate(), "PasswordInput")).toContain("value");
+    },
+    SPAWNS_THE_GENERATOR,
+  );
 });

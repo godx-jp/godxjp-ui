@@ -31,13 +31,13 @@ describe("DataTable", () => {
       />,
     );
 
-    expect(screen.getByRole("columnheader", { name: "Trạng thái" })).toHaveClass(
-      "hidden",
-      "md:table-cell",
+    expect(screen.getByRole("columnheader", { name: "Trạng thái" })).toHaveAttribute(
+      "data-hide-below",
+      "md",
     );
-    expect(screen.getAllByRole("cell", { name: "active" })[0]).toHaveClass(
-      "hidden",
-      "md:table-cell",
+    expect(screen.getAllByRole("cell", { name: "active" })[0]).toHaveAttribute(
+      "data-hide-below",
+      "md",
     );
   });
 

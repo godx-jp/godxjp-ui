@@ -1412,7 +1412,6 @@
   .ui-filter-bar-chip {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
     min-width: 0;
   }
 
@@ -1611,28 +1610,36 @@
    * query cannot read a `var()`, so the step values are the tokenized scale written out. */
   @media (width < 40rem) {
     .ui-flex[data-hide-below="sm"],
-    .ui-topbar-item[data-hide-below="sm"] {
+    .ui-topbar-item[data-hide-below="sm"],
+    [data-slot="table-head"][data-hide-below="sm"],
+    [data-slot="table-cell"][data-hide-below="sm"] {
       display: none;
     }
   }
 
   @media (width < 48rem) {
     .ui-flex[data-hide-below="md"],
-    .ui-topbar-item[data-hide-below="md"] {
+    .ui-topbar-item[data-hide-below="md"],
+    [data-slot="table-head"][data-hide-below="md"],
+    [data-slot="table-cell"][data-hide-below="md"] {
       display: none;
     }
   }
 
   @media (width < 64rem) {
     .ui-flex[data-hide-below="lg"],
-    .ui-topbar-item[data-hide-below="lg"] {
+    .ui-topbar-item[data-hide-below="lg"],
+    [data-slot="table-head"][data-hide-below="lg"],
+    [data-slot="table-cell"][data-hide-below="lg"] {
       display: none;
     }
   }
 
   @media (width < 80rem) {
     .ui-flex[data-hide-below="xl"],
-    .ui-topbar-item[data-hide-below="xl"] {
+    .ui-topbar-item[data-hide-below="xl"],
+    [data-slot="table-head"][data-hide-below="xl"],
+    [data-slot="table-cell"][data-hide-below="xl"] {
       display: none;
     }
   }

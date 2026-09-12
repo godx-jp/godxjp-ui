@@ -9,6 +9,7 @@ import {
   Pause,
   Play,
   Trash2,
+  X,
   XCircle,
 } from "lucide-react";
 
@@ -158,6 +159,19 @@ export interface BadgeProps
    */
   tabular?: boolean;
   children?: React.ReactNode;
+  /**
+   * antd `Tag` `closable` + `onClose` — one callback when the user activates the × the chip draws.
+   * Named `onRemove` (not `onClose`) because this DS already uses `onClose` on overlays and
+   * `onValueChange` on fields; the chip remover is not a dismiss surface. Omitting it is antd
+   * `closable={false}`: no × is rendered.
+   *
+   * The × accessible name is built from the visible label (`children`, or the resolved `status`
+   * label) via `navigation.filterBar.removeFilter` — pass a string `children` (or plain text
+   * label) so the name quotes the chip, e.g. `getByRole('button', { name: /期限: 今週/ })`.
+   */
+  onRemove?: () => void;
+  /** Disables only the × when `onRemove` is set (FilterBar bar/chip disabled). Label stays visible. */
+  removeDisabled?: boolean;
 }
 
 const badgeToneClass: Record<BadgeTone, string | undefined> = {
@@ -183,6 +197,8 @@ export function Badge({
   tabular,
   style,
   children,
+  onRemove,
+  removeDisabled,
   ...props
 }: BadgeProps) {
   const { t } = useTranslation();
@@ -194,6 +210,12 @@ export function Badge({
   const resolvedChildren =
     children ?? (status ? (status in STATUS_MAP ? t(`status.${status}`) : status) : undefined);
   const tinted = color != null && color !== "";
+  const removeLabel =
+    typeof children === "string"
+      ? children
+      : typeof resolvedChildren === "string"
+        ? resolvedChildren
+        : undefined;
 
   return (
     <Element
@@ -202,6 +224,7 @@ export function Badge({
       data-tinted={tinted ? "" : undefined}
       data-shape={shape ?? "default"}
       data-tabular={tabular ? "" : undefined}
+      data-removable={onRemove ? "" : undefined}
       className={cn(
         badgeVariants({
           variant: tinted ? "tinted" : (variant ?? "default"),
@@ -219,6 +242,25 @@ export function Badge({
           node rides the label visibly low inside the chip. Trim needs a real box: it does not
           reach an anonymous flex item. */}
       {resolvedChildren != null ? <span data-slot="badge-label">{resolvedChildren}</span> : null}
+      {onRemove ? (
+        <button
+          type="button"
+          data-slot="badge-remove"
+          className="ui-control-inline-affix-action ui-badge-remove"
+          aria-label={
+            removeLabel != null
+              ? t("navigation.filterBar.removeFilter", { label: removeLabel })
+              : t("common.delete")
+          }
+          onClick={(event) => {
+            event.stopPropagation();
+            onRemove();
+          }}
+          disabled={removeDisabled}
+        >
+          <X aria-hidden="true" />
+        </button>
+      ) : null}
     </Element>
   );
 }

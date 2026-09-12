@@ -24,6 +24,13 @@
    * it replaces did not track density. */
   --badge-icon-size: var(--icon-size-xs);
 
+  /* Removable chip (antd Tag closable) — × affix inside the pill. */
+  --badge-space-x-removable: var(--space-1);
+  --badge-remove-margin-end: calc(-1 * var(--space-1));
+  --badge-remove-icon-size: var(--badge-icon-size);
+  --badge-remove-rest-alpha: 0.7;
+  --badge-remove-hover-alpha: 1;
+
   /* DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone.
    *
    * A caller colour is DATA: a project administrator picks it for a status, an

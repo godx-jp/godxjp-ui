@@ -678,7 +678,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      'DataTable column definition — key/header/render/sortable/align/width/pin/hiddenOnMobile/enableHiding/ariaLabel plus `priority` (TableColumnPriorityProp), read by DataTable preset="action-collection"',
+      'DataTable column definition — key/header/render/sortable/align/width/pin/hideBelow/hiddenOnMobile/enableHiding/ariaLabel plus `priority` (TableColumnPriorityProp), read by DataTable preset="action-collection"',
   },
   SelectedIdsProp: {
     file: "vocabulary/data.prop.ts",
