@@ -6362,6 +6362,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "labels",
+          "origin": "owned",
+          "required": false,
+          "type": "DraggablePanelLabels | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "onClose",
           "origin": "owned",
           "required": false,

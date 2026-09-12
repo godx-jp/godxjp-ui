@@ -105,6 +105,30 @@ describe("DraggablePanel — the surface", () => {
     expect(handle()).toHaveAccessibleName(/Di chuyển bảng/);
   });
 
+  it("uses labels.move and labels.close over t() when provided (gh#606)", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    renderWithUi(
+      <DraggablePanel
+        title="アシスタント"
+        onClose={onClose}
+        labels={{ move: "Move panel", close: "Close panel" }}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Move panel" })).toBe(handle());
+    await user.click(screen.getByRole("button", { name: "Close panel" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("falls back to t() for handle and close when labels are omitted", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    renderWithUi(<DraggablePanel title="アシスタント" onClose={onClose} />);
+    expect(screen.getByRole("button", { name: /Di chuyển bảng/ })).toBe(handle());
+    await user.click(screen.getByRole("button", { name: /Đóng/ }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("renders the close control only when the consumer hands it a handler", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();

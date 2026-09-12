@@ -14,6 +14,7 @@ export type {
   DraggablePanelProp as DraggablePanelProps,
   DraggablePanelPlacementProp,
   DraggablePanelPositionProp,
+  DraggablePanelLabels,
   DragAxisProp,
   DragBoundsProp,
 } from "../../props/components/layout.prop";
@@ -44,6 +45,13 @@ export type {
  *     (`check:prop-vocabulary`). Vị trí được BÁO cho consumer chứ không được thư viện nhớ hộ:
  *     nhớ ở đâu, theo phạm vi nào, là quyết định của consumer (không `localStorage` nào trong
  *     tệp này).
+ *
+ * **`labels?: { close?: string; move?: string }`.** Embedded consumers (script-injected widgets)
+ * often cannot mount `AppProvider`: it writes `data-theme` / `data-density` / `data-brand` onto
+ * `document.documentElement`, which for an embed is the host page's root. `labels` lets them supply
+ * handle and close `aria-label` strings without a provider; each key wins over `t()` when set.
+ * A scoped `AppProvider` that limits those attributes to its own subtree is the better long-term
+ * fix (gh#606) but is not this component's job alone.
  *
  * **Không thêm dependency.** react-draggable không được cài; phần kéo dùng đúng khuôn pointer đã
  * có trong kho (`data-entry/slider.tsx`): nghe `pointermove`/`pointerup`/`pointercancel` ở mức
@@ -133,6 +141,7 @@ export const DraggablePanel = React.forwardRef<HTMLElement, DraggablePanelProp>(
       defaultPosition,
       onPositionChange,
       onClose,
+      labels,
       disabled = false,
       className,
       ...props
@@ -272,7 +281,7 @@ export const DraggablePanel = React.forwardRef<HTMLElement, DraggablePanelProp>(
             type="button"
             data-slot="draggable-panel-handle"
             className="ui-draggable-panel-handle ui-focus-ring"
-            aria-label={t("layout.draggablePanel.moveLabel")}
+            aria-label={labels?.move ?? t("layout.draggablePanel.moveLabel")}
             aria-disabled={movable ? undefined : "true"}
             onPointerDown={handlePointerDown}
             onKeyDown={handleKeyDown}
@@ -286,7 +295,7 @@ export const DraggablePanel = React.forwardRef<HTMLElement, DraggablePanelProp>(
               type="button"
               data-slot="draggable-panel-close"
               className="ui-draggable-panel-close ui-focus-ring"
-              aria-label={t("feedback.alert.dismiss")}
+              aria-label={labels?.close ?? t("feedback.alert.dismiss")}
               onClick={onClose}
             >
               <X className="ui-draggable-panel-close-icon" aria-hidden="true" />

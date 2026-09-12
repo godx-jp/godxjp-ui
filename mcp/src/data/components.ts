@@ -2134,6 +2134,12 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
           "Presence renders the close control in the title bar (antd Modal's onCancel). Omit it for a panel the page controls entirely.",
       },
       {
+        name: "labels",
+        type: "{ close?: string; move?: string }",
+        description:
+          "Optional localized strings for the close and move controls. Each key wins over t() when set. For script-injected embeds that cannot mount AppProvider without restyling the host page (gh#606).",
+      },
+      {
         name: "disabled",
         type: "boolean",
         defaultValue: "false",

@@ -11,6 +11,7 @@ export type {
   OrgSwitcherProp,
   DragAxisProp,
   DragBoundsProp,
+  DraggablePanelLabels,
   DraggablePanelPlacementProp,
   DraggablePanelPositionProp,
   DraggablePanelProp,

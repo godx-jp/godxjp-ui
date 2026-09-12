@@ -90,6 +90,7 @@ export type {
   DraggablePanelProps,
   DraggablePanelPlacementProp,
   DraggablePanelPositionProp,
+  DraggablePanelLabels,
   DragAxisProp,
   DragBoundsProp,
 } from "./draggable-panel";

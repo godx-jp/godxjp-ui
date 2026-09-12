@@ -1523,6 +1523,12 @@ export type DraggablePanelPlacementProp = "top-start" | "top-end" | "bottom-star
  */
 export type DraggablePanelPositionProp = { x: number; y: number };
 
+/** Optional overrides for title-bar control labels when `AppProvider` is not in scope (gh#606). */
+export type DraggablePanelLabels = {
+  close?: string;
+  move?: string;
+};
+
 /**
  * @see DraggablePanel — a floating surface the person using it can MOVE, so a docked assistant
  * stops covering the thing they are asking about.
@@ -1560,6 +1566,12 @@ export type DraggablePanelProp = Omit<
   onPositionChange?: (position: DraggablePanelPositionProp) => void;
   /** Presence renders the close control in the title bar (antd Modal's `onCancel`). */
   onClose?: () => void;
+  /**
+   * Localized strings for the close and move controls. Each key wins over `t()` when set; omit to
+   * keep the framework default. For script-injected embeds that cannot mount `AppProvider` without
+   * restyling the host page — a scoped provider subtree is the long-term fix (gh#606).
+   */
+  labels?: DraggablePanelLabels;
   /** react-draggable `disabled` — the panel stays, the handle stops moving it. */
   disabled?: DisabledProp;
   className?: ClassNameProp;
