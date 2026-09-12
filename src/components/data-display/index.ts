@@ -37,7 +37,9 @@ export {
   CardAction,
   StatCard,
 } from "./card";
-export type { StatCardProps, CardBarProps } from "./card";
+export type { StatCardProps, CardBarProps, CardProps } from "./card";
+/** antd's `CardTabListType` — an entry of `Card tabList`. @see CardTabItemProp */
+export type { CardTabItemProp } from "../../props/components/data-display.prop";
 export {
   ServiceCatalogCta,
   ServiceLauncherCard,

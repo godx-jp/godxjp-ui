@@ -38,7 +38,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | FormFieldControl | **✗** | · | · | · | · | · | · | · | · | · |
 | FormFieldArray | **✗** | · | · | · | · | · | · | · | · | · |
 | useZodForm | **✗** | · | · | · | · | · | · | · | · | · |
-| CardBar | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
+| CardBar | **✗** | N/A | N/A | · | · | · | · | · | · | · |
 | TimeRangePicker | ✓ | · | · | · | · | · | · | · | · | · |
 | VisuallyHidden | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | RangeTimeline | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -66,8 +66,8 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Reveal | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Activity | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | DataTable | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| Card | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| CardContent | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Card | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
+| CardContent | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | StatCard | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | ServiceLauncherCard | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | ServiceCatalogCta | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
@@ -102,7 +102,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Checkbox | ✓ | N/A | · | · | · | · | · | · | · | · |
 | RadioGroup | ✓ | N/A | · | · | · | · | · | · | · | · |
 | DatePicker | ✓ | · | · | · | · | · | · | · | · | · |
-| Dialog | ✓ | N/A | N/A | · | · | · | · | · | · | · |
+| Dialog | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
 | AlertDialog | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | AlertDialogRoot | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Sheet | ✓ | N/A | N/A | · | · | · | · | · | · | · |
@@ -185,4 +185,5 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | ChatBubbleList | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | ChatComposer | ✓ | · | · | · | · | · | · | · | · | · |
 | ChatSuggestion | ✓ | N/A | N/A | · | · | · | · | · | · | · |
+| Conversations | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 

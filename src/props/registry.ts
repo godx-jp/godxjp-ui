@@ -3319,6 +3319,26 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/card.tsx",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
+  CardTabItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "DisabledProp",
+      {
+        field: "key",
+        local: true,
+        reason:
+          "Ant Design `CardTabListType.key`. The tab's identity keeps antd's own spelling per docs/DESIGN-AUTHORITY.md; `ValueProp` is the Tabs component's axis, not the card head's.",
+      },
+      {
+        field: "tab",
+        local: true,
+        reason:
+          "Ant Design `CardTabListType.tab` — the trigger label under antd's name, for the same reason `key` is not `value`.",
+      },
+    ],
+  },
   StatCardProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",

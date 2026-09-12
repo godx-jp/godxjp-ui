@@ -443,6 +443,61 @@
     padding-inline: 0;
   }
 
+  /* ── `Card tabList` — antd's card-head tab strip (gh#570) ───────────────────────────────────
+   *
+   * A DIFFERENT SHAPE from the four rules above, which are for `Tabs` placed INSIDE a
+   * `CardContent`. Here the `Tabs` is a slot of the card itself: `Card` renders it between the
+   * header and the footer, so the strip sits under the title, inside the same border, on the same
+   * surface — one object, which is the whole point of antd's `tabList` and the thing a `Tabs`
+   * parked on the page beside a card cannot be.
+   *
+   * Everything the strip DOES (roving focus, the panel relationship, the line rail, overflow) is
+   * the package's own `Tabs`. The only card-owned question is where the boxes sit, and it is
+   * answered in three rules. */
+  [data-slot="card"] > [data-slot="tabs"] {
+    /* The gap between the head band and the body is a CARD gap — the body's own
+     * `--card-space-body-y`, exactly as under a plain header — not the tabs root's
+     * `--tabs-root-gap`, which would add a second one on top of it. */
+    gap: 0;
+    /* The middle child has to be able to take the slack, or `CardFooter`'s
+     * `margin-block-start: auto` has none to claim and a short-content card stops bottom-aligning
+     * its actions the moment it grows a tab strip. */
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  /* The panel WRAPS the card body, it is not the body: the consumer's `CardContent` still owns
+   * the inset. That is what keeps `flush` working unchanged inside a tab (gh#554) — the flush
+   * rules key on `[data-slot="card-content"][data-flush]` and its descendants, so a `DataTable`
+   * in a tab reaches the card edge by the same route it always did. Without this the generic
+   * in-card panel inset above would lay a second `--card-space-inset` around that body. */
+  [data-slot="card"] > [data-slot="tabs"] > [data-slot="tabs-panel"] {
+    padding: 0;
+  }
+
+  /* A plain header above the strip supplies its own bottom gap — the same rule, for the same
+   * reason, as a plain header above a flush body: the next band owns no top padding of its own. */
+  [data-slot="card"][data-tab-list] > [data-slot="card-header"]:not([data-banded]) {
+    padding-bottom: var(--card-space-body-y);
+  }
+
+  /* `extra` (antd `tabBarExtraContent`) rides the bar row beside the strip. The strip stands on
+   * the card column via a utility on the list; the extra slots need the same column from here,
+   * because nothing else puts them on it. */
+  [data-slot="card"]
+    > [data-slot="tabs"]
+    > .ui-tabs-bar
+    > [data-slot="tabs-extra"][data-side="end"] {
+    padding-inline-end: var(--card-space-inset);
+  }
+
+  [data-slot="card"]
+    > [data-slot="tabs"]
+    > .ui-tabs-bar
+    > [data-slot="tabs-extra"][data-side="start"] {
+    padding-inline-start: var(--card-space-inset);
+  }
+
   /* ── Footer ──────────────────────────────────────────────────────────── */
   [data-slot="card-footer"] {
     display: flex;

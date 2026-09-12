@@ -5,6 +5,8 @@ import type { LucideIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import type { HeadingLevelProp } from "../../props/vocabulary";
+import type { CardTabItemProp } from "../../props/components/data-display.prop";
+import { Tabs, type TabsExtraProp, type TabsProps } from "../navigation/tabs";
 
 /** Semantic accent tone. `accentPlacement` decides WHERE it is drawn — a leading-edge
  *  stripe (default) or the full perimeter. */
@@ -55,24 +57,193 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
    * bare `onClick` on this div, which a keyboard or screen-reader user cannot reach.
    */
   hoverable?: boolean;
+  /**
+   * Ant Design `tabList` — the tab strip that lives IN THE CARD'S HEAD, under the title, inside
+   * the same border and on the same surface, so the card and its tabs read as one object. The
+   * card's remaining children become the selected tab's body.
+   *
+   * Ported name for name and semantic for semantic (docs/DESIGN-AUTHORITY.md): the entry is
+   * antd's `{ key, tab, disabled }`, not the `Tabs` component's `{ value, label, content }`.
+   * @see CardTabItemProp for why the two item shapes stay apart.
+   */
+  tabList?: CardTabItemProp[];
+  /** Ant Design `activeTabKey` — the controlled selection. Pair it with `onTabChange`. */
+  activeTabKey?: string;
+  /**
+   * Ant Design `defaultActiveTabKey` — the uncontrolled initial selection. Without it the first
+   * entry of `tabList` opens, which is antd's own fallback.
+   */
+  defaultActiveTabKey?: string;
+  /** Ant Design `onTabChange` — fires with the newly selected `key`, however the selection moved. */
+  onTabChange?: (key: string) => void;
+  /**
+   * Ant Design `tabBarExtraContent`, RENAMED to `extra` and made logical — the one deviation from
+   * antd's spelling here, and it follows the precedent this package already set on
+   * `TabsProp.extra` ("Ant Design `tabBarExtraContent`, renamed and made logical"). A second
+   * spelling of a slot the package has already named once is exactly what
+   * `check:prop-vocabulary` exists to prevent, and antd's `{ left, right }` keys cannot mirror
+   * for an RTL locale where `{ start, end }` can.
+   *
+   * Inert without `tabList`: antd draws this content in the tab bar, and with no tab bar there is
+   * nowhere for it to go. A header-level action is `<CardAction>` inside `<CardHeader>`.
+   */
+  extra?: TabsExtraProp;
+  /**
+   * Ant Design `tabProps` — passed straight down to the `Tabs` that draws the strip, so
+   * `variant`, `size`, `centered`, `overflow`, `indicator` and the rest are reachable.
+   *
+   * The four fields the CARD owns are omitted rather than passed through: `items` is built from
+   * `tabList`, and `value` / `defaultValue` / `onValueChange` are what `activeTabKey` /
+   * `defaultActiveTabKey` / `onTabChange` already say. antd drops the same fields — it spreads
+   * `tabProps` first and then writes its own `items`/`activeKey`/`onChange` over them — so this
+   * is that behaviour made visible in the type instead of silent at runtime.
+   */
+  tabProps?: Omit<
+    TabsProps,
+    "items" | "value" | "defaultValue" | "onValueChange" | "extra" | "children"
+  >;
 };
 
+/**
+ * Which tab is open, given what the caller asked for. Mirrors `resolveFallbackTabValue` in
+ * navigation/tabs.tsx, and for the same gh#175 reason: a disabled tab cannot be the open one, and
+ * with EVERY tab disabled nothing is open at all — so the card body has no tab to belong to and
+ * is not rendered, exactly as the strip shows no selection.
+ */
+function resolveActiveCardTabKey(
+  tabList: CardTabItemProp[],
+  requested: string | undefined,
+): string | undefined {
+  if (requested !== undefined) {
+    const item = tabList.find((entry) => entry.key === requested);
+    if (item && !item.disabled) return requested;
+  }
+  return tabList.find((entry) => !entry.disabled)?.key;
+}
+
+/**
+ * Split the card's children into the three bands a `tabList` needs: what sits ABOVE the strip
+ * (cover, header), what becomes the selected tab's BODY, and what sits BELOW the panel (footer).
+ *
+ * By element TYPE, not by index: the head and the foot of a card are named slots, and a consumer
+ * who writes `<CardFooter>` before `<CardContent>` still means "footer". Anything that is not one
+ * of the three named slots is body — which is what makes a bare `<Card tabList>{rows}</Card>`
+ * behave exactly as antd's does, where `children` IS the body.
+ */
+function splitCardBands(children: React.ReactNode): {
+  head: React.ReactNode[];
+  body: React.ReactNode[];
+  foot: React.ReactNode[];
+} {
+  const head: React.ReactNode[] = [];
+  const body: React.ReactNode[] = [];
+  const foot: React.ReactNode[] = [];
+
+  for (const child of React.Children.toArray(children)) {
+    const type = React.isValidElement(child) ? child.type : undefined;
+    if (type === CardCover || type === CardHeader) head.push(child);
+    else if (type === CardFooter) foot.push(child);
+    else body.push(child);
+  }
+
+  return { head, body, foot };
+}
+
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, accent, accentPlacement, variant, density, hoverable, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn("group/card", className)}
-      data-slot="card"
-      data-accent={accent}
-      data-hoverable={hoverable ? "" : undefined}
-      // INERT DEFAULT: `edge` emits no attribute at all, so every existing accented Card keeps
-      // the exact DOM and the exact leading-rail geometry it had.
-      data-accent-placement={accentPlacement === "perimeter" ? "perimeter" : undefined}
-      data-variant={variant && variant !== "default" ? variant : undefined}
-      data-density={density}
-      {...props}
-    />
-  ),
+  (
+    {
+      className,
+      accent,
+      accentPlacement,
+      variant,
+      density,
+      hoverable,
+      tabList,
+      activeTabKey,
+      defaultActiveTabKey,
+      onTabChange,
+      extra,
+      tabProps,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    // The selection MIRROR, for the uncontrolled (`defaultActiveTabKey`) half. `activeTabKey`
+    // always wins when it is passed, so a controlled card never has two sources of truth. It is
+    // resolved on every render rather than seeded once, because `tabList` can arrive after the
+    // first paint (a fetched set of views) and a key seeded from an empty list would strand the
+    // body behind a selection that never becomes real.
+    const [mirroredKey, setMirroredKey] = React.useState<string | undefined>(undefined);
+    const activeKey = tabList?.length
+      ? resolveActiveCardTabKey(tabList, activeTabKey ?? mirroredKey ?? defaultActiveTabKey)
+      : undefined;
+    const handleTabChange = React.useCallback(
+      (key: string) => {
+        setMirroredKey(key);
+        onTabChange?.(key);
+      },
+      [onTabChange],
+    );
+
+    const { head, body, foot } = tabList?.length
+      ? splitCardBands(children)
+      : { head: undefined, body: undefined, foot: undefined };
+
+    return (
+      <div
+        ref={ref}
+        className={cn("group/card", className)}
+        data-slot="card"
+        data-accent={accent}
+        data-hoverable={hoverable ? "" : undefined}
+        // INERT DEFAULT: `edge` emits no attribute at all, so every existing accented Card keeps
+        // the exact DOM and the exact leading-rail geometry it had.
+        data-accent-placement={accentPlacement === "perimeter" ? "perimeter" : undefined}
+        data-variant={variant && variant !== "default" ? variant : undefined}
+        data-density={density}
+        // The hook card-layout.css keys the head band on. A card WITHOUT `tabList` emits nothing
+        // and keeps the exact DOM it had.
+        data-tab-list={tabList?.length ? "" : undefined}
+        {...props}
+      >
+        {tabList?.length ? (
+          <>
+            {head}
+            <Tabs
+              // The card head's strip is antd's: a rail of text triggers under the title, not the
+              // package's default pill strip floating on the card surface. `tabProps` still wins.
+              variant="line"
+              {...tabProps}
+              // Card-owned, so they are written AFTER the spread — the same precedence antd's own
+              // Card uses when it writes its `items`/`activeKey`/`onChange` over `tabProps`.
+              items={tabList.map((item) => ({
+                value: item.key,
+                label: item.tab,
+                disabled: item.disabled,
+                // The body belongs to the SELECTED tab and to no other: the card has exactly one
+                // set of children, so handing them to every panel would render them N times the
+                // moment `destroyOnHidden={false}` kept the hidden panels mounted.
+                content: item.key === activeKey ? body : null,
+              }))}
+              value={activeKey}
+              onValueChange={handleTabChange}
+              extra={extra}
+              // The strip has to stand on the CARD's column, or the first tab does not line up
+              // with the title above it. It goes on as an arbitrary-value UTILITY reading the card
+              // token, never as a components-layer rule: the line strip already claims `px-*` in
+              // the utilities layer, which outranks `@layer components` outright — which is why
+              // the `[data-slot="card"] [data-slot="tabs-list"]` rule below it never painted.
+              listClassName={cn("px-[var(--card-space-inset)]", tabProps?.listClassName)}
+            />
+            {foot}
+          </>
+        ) : (
+          children
+        )}
+      </div>
+    );
+  },
 );
 Card.displayName = "Card";
 

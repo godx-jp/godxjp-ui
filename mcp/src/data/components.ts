@@ -3772,7 +3772,7 @@ export default function InvoiceList({
     ],
     group: "data-display",
     tagline:
-      'Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.',
+      "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab toolbar/filter strip (list controls, filter chips) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.",
     props: [
       {
         name: "accent",
@@ -3806,6 +3806,42 @@ export default function InvoiceList({
         description:
           "Internal padding density (base 16 / tight 12 / cozy 20). This IS Ant Design's `size` axis; there is deliberately no `size` prop (removed 2026-08-24) — see docs/DESIGN-AUTHORITY.md, a capability this library already has keeps its own name.",
       },
+      {
+        name: "tabList",
+        type: "{ key: string; tab: ReactNode; disabled?: boolean }[]",
+        description:
+          "Ant Design `tabList` — the tab strip that lives IN THE CARD'S HEAD: under the title, on the same surface, inside the same border, so the card and its tabs read as ONE object. The entry keeps antd's own field names (`key`/`tab`/`disabled`), NOT the Tabs component's `value`/`label`/`content` — a card tab carries only the trigger, because the panel is the card body. The Card's children become the selected tab's body; wrap them in <CardContent> (or <CardContent flush> for an edge-to-edge DataTable, which still reaches the card edge inside a tab).",
+      },
+      {
+        name: "activeTabKey",
+        type: "string",
+        description:
+          "Ant Design `activeTabKey` — the CONTROLLED selection. With it set the card never moves itself; pair it with `onTabChange` and swap the children yourself, exactly as in antd.",
+      },
+      {
+        name: "defaultActiveTabKey",
+        type: "string",
+        description:
+          "Ant Design `defaultActiveTabKey` — the uncontrolled initial selection. Without it the first selectable entry of `tabList` opens (antd's own fallback); a disabled tab is never the open one.",
+      },
+      {
+        name: "onTabChange",
+        type: "(key: string) => void",
+        description:
+          "Ant Design `onTabChange` — fires with the newly selected `key`, however the selection moved (pointer or keyboard).",
+      },
+      {
+        name: "extra",
+        type: "ReactNode | { start?: ReactNode; end?: ReactNode }",
+        description:
+          "Ant Design `tabBarExtraContent`, RENAMED to `extra` and made logical — the same precedent `Tabs.extra` already set in this package, and antd's `left`/`right` keys are `start`/`end` here so an RTL locale gets the slot on the correct edge. It rides the TAB BAR beside the strip, so it is inert without `tabList`; a header-level action is <CardAction> inside <CardHeader>.",
+      },
+      {
+        name: "tabProps",
+        type: "Omit<TabsProps, 'items' | 'value' | 'defaultValue' | 'onValueChange' | 'extra' | 'children'>",
+        description:
+          "Ant Design `tabProps` — passed straight to the Tabs that draws the strip, so `variant`, `size`, `centered`, `overflow`, `indicator` and the rest are reachable. The fields the CARD owns are omitted rather than silently overwritten: `items` comes from `tabList`, `value`/`defaultValue`/`onValueChange` from `activeTabKey`/`defaultActiveTabKey`/`onTabChange`, and `extra` is the Card's own slot. antd drops the same fields — it writes its own over `tabProps` — so this is that behaviour made visible in the type.",
+      },
     ],
     usage: [
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
@@ -3815,7 +3851,8 @@ export default function InvoiceList({
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardFooter actions> for Ant Design's `actions` row — N EQUAL-WIDTH cells split by vertical hairlines (複製 / 共有 / 削除 under a profile or entity card). It is a different band from `separated`, which packs children at the inline end at their natural widths: that is the right shape for a Save/Cancel pair and the wrong one for a divided strip. `actions` is self-sufficient — it draws its own top rule and full-bleed edges, so it needs neither `separated` nor `flush` beside it. The dividers are logical (border-inline-start), so the strip mirrors under RTL.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
-      'ANT DESIGN PROPS THIS FAMILY ANSWERS BY COMPOSITION, not by a prop of the same name — do not ask for these to be added: `title`/`extra` are <CardHeader> + <CardTitle> + <CardAction> (and CardTitle.level emits a real heading, which antd does not). `cover` is <CardCover>. `actions` is <CardFooter actions>. `loading` is a Skeleton in the body — antd renders a Skeleton with paragraph rows and no title, so the equivalent is <CardContent solo><SkeletonRows rows={4} /></CardContent>. `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange` are <Tabs items value defaultValue onValueChange> inside <CardContent tight flush> (card-layout.css already insets the tabs list and panel to the card column); `tabBarExtraContent` is <CardBar extra>. `type="inner"` is variant="muted" plus <CardHeader banded>. `size` is `density`. `Card.Grid` is <ResponsiveGrid>; `Card.Meta` is <ListRow leading title description trailing>.',
+      'ANT DESIGN PROPS THIS FAMILY ANSWERS BY COMPOSITION, not by a prop of the same name — do not ask for these to be added: `title` is <CardHeader> + <CardTitle> (and CardTitle.level emits a real heading, which antd does not); a header-level action is <CardAction> inside <CardHeader>. `cover` is <CardCover>. `actions` is <CardFooter actions>. `loading` is a Skeleton in the body — antd renders a Skeleton with paragraph rows and no title, so the equivalent is <CardContent solo><SkeletonRows rows={4} /></CardContent>. `type="inner"` is variant="muted" plus <CardHeader banded>. `size` is `density`. `Card.Grid` is <ResponsiveGrid>; `Card.Meta` is <ListRow leading title description trailing>.',
+      "DO use `tabList` for a tab strip that belongs to the CARD — antd's card-head tabs, ported name for name (gh#570): `tabList={[{ key, tab, disabled? }]}` plus `activeTabKey`/`defaultActiveTabKey`/`onTabChange`, with `extra` for antd's `tabBarExtraContent` and `tabProps` for everything else on the Tabs underneath. The strip renders INSIDE the card head, under the title, on the same surface and inside the same border, and the Card's children become the selected tab's body (wrap them in <CardContent>, or <CardContent flush> for an edge-to-edge DataTable). DON'T hand-roll it as a <Tabs> parked on the page above the card (the strip floats off the card and the two read as two objects) or as a <Card> repeated inside each tab (the shell is copied per view). A <Tabs> INSIDE <CardContent tight flush> is still correct for a strip that belongs to the BODY rather than to the card head.",
       'DO reach for `accentPlacement="perimeter"` when the whole card needs attention, not one edge: `<Card accent="attention" accentPlacement="perimeter">` is the semantic-tone equivalent of `variant="featured"` (which is brand-toned by definition). Never hand-roll it with `className="border-2 border-[--attention]"` or a page-local `.card--attention` rule — the placement owns the border weight, the outer ring AND the slot-padding compensation, so text stays on the same column as an unaccented sibling.',
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
       "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT: `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: `<CardContent flush>` zeroes BOTH of its block edges — for ANY full-bleed body, not only one containing a <Table>` gate left a flush file LIST floating 18px off its header while the flush table beside it sat at 0) — so the plain header above it supplies the gap from its own `--card-space-body-y` bottom padding instead. `tight` and `solo` still own that axis themselves. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
@@ -3825,6 +3862,7 @@ export default function InvoiceList({
       'Invoice or order detail panel: <Card accent="primary"> with <CardHeader banded><CardTitle>, <CardContent> body rows (use <Descriptions> inside), and <CardFooter separated> holding approve/reject buttons.',
       "Section container on a settings or form page: a single <Card> wrapping a <CardHeader><CardTitle> plus <CardContent> containing <FormField> groups, with <CardFooter separated> for Save/Cancel.",
       "Data table with toolbar: <Card> + <CardHeader> (title + filter controls in <CardAction>) + <CardContent flush> containing <DataTable> — <CardContent flush> removes horizontal padding so the table header spans full width.",
+      "Detail screen with views: <Card tabList={[{key,tab}]} activeTabKey onTabChange extra={<Button/>}> with <CardHeader><CardTitle> above the strip and <CardContent flush><DataTable/></CardContent> as the body — one card, tabs in its head, and a table that reaches the card edge inside the tab (docs/data-display/card/examples/tab-list.tsx).",
       'Featured announcement or alert card: <Card variant="featured"> with an accent stripe (<accent="warning">) to visually elevate a card above sibling cards on the page.',
       "Media/cover card (e.g. entity profile): <CardCover> first (full-bleed image), then <CardHeader> + <CardContent> below it for structured metadata.",
     ],
