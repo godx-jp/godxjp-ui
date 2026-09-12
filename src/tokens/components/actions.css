@@ -1,0 +1,31 @@
+/* Actions component tokens — the strip of actions under an assistant message
+ * (Ant Design X `Actions`).
+ *
+ * Every action is a `Button`, so NOTHING here sets a control height: that comes from the
+ * `--control-height` tier through Button's own `size="icon-sm"` step, and restating it would
+ * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`).
+ */
+:root {
+  /* Gap between actions. Tight on purpose — the strip is a cluster, not a row of page buttons. */
+  --actions-gap: var(--space-1);
+  /* Inset of the `filled` / `outlined` forms. `borderless` drops both to zero. */
+  --actions-padding-block: var(--space-1);
+  --actions-padding-inline: var(--space-1);
+  --actions-radius: var(--radius);
+
+  /* Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each
+   * documented default resolves at the CALL SITE.
+   * Default filled ground   = hsl(var(--muted))
+   * Default outlined stroke = var(--stroke-hairline) solid hsl(var(--border)) */
+  --actions-filled-background: initial;
+  --actions-outlined-border: initial;
+
+  /* `fadeIn` / `fadeInLeft` — the distance the strip travels along the inline axis.
+   *
+   * The DURATION is deliberately not a knob here. Timing belongs to the motion tier, for the same
+   * reason `src/tokens/components/activity.css` records: `check-token-tiers`' component-token name
+   * shape (`--{component}-{part}-{property}`) has no property word for a duration, and a service
+   * retunes arrival motion once through `--duration-base` rather than per component. The
+   * animation reads that token directly, and drops to nothing under `prefers-reduced-motion`. */
+  --actions-fade-offset-inline: var(--space-2);
+}
