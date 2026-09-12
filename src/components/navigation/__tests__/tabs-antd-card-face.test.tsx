@@ -46,6 +46,7 @@ import { Tabs } from "../tabs";
 const ROOT = process.cwd();
 const tabsSource = readFileSync(join(ROOT, "src/components/navigation/tabs.tsx"), "utf8");
 const navigationCss = readFileSync(join(ROOT, "src/styles/navigation-layout.css"), "utf8");
+const tabsDocs = readFileSync(join(ROOT, "docs/navigation/tabs.tsx"), "utf8");
 
 /** The `CARD_FACE` table body, as authored. */
 function cardFace(): string {
@@ -146,6 +147,73 @@ describe("card face — antd genCardStyle, all four placements", () => {
     expect(rule, "the bottom rail must not reuse the negative (downward) offset").not.toContain(
       "calc(-1 * var(--tabs-card-rail-border-width))",
     );
+  });
+});
+
+describe("the card rail faces the panel on every axis, in both directions", () => {
+  /*
+   * The rail is an inset box-shadow (the reason is recorded beside the rule: an inset shadow lives
+   * inside the strip's clip, where a border plus a negative margin did not — gh#376). box-shadow
+   * has NO logical offset, so the two vertical placements are written once per direction by hand,
+   * the same way `.ui-data-table-pin-end` already is in table-layout.css.
+   *
+   * Measured in Chromium on /isolate/navigation-tabs, all four placements, LTR and RTL:
+   *
+   *   start  LTR  rail -1px (right edge)   active merges RIGHT   radius R 0 0 R
+   *   start  RTL  rail  1px (left edge)    active merges LEFT    (logical, flips itself)
+   *   end    LTR  rail  1px (left edge)    active merges LEFT    radius 0 R R 0
+   *   end    RTL  rail -1px (right edge)   active merges RIGHT
+   *   bottom      rail  0 1px (top edge)   active merges TOP     radius 0 0 R R
+   *
+   * and in RTL the panel really is on the other side of the strip, which is what makes "faces the
+   * panel" a claim rather than a restatement of the sign.
+   */
+  const NEGATIVE = "inset calc(-1 * var(--tabs-card-rail-border-width))";
+  const POSITIVE = "inset var(--tabs-card-rail-border-width)";
+
+  const RAILS = [
+    { placement: "start", ltr: NEGATIVE, rtl: POSITIVE },
+    { placement: "end", ltr: POSITIVE, rtl: NEGATIVE },
+  ] as const;
+
+  for (const { placement, ltr, rtl } of RAILS) {
+    it(`${placement}: the rail is on the edge facing the panel, and flips under dir=rtl`, () => {
+      const ltrAt = navigationCss.indexOf(
+        `[data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
+      );
+      expect(ltrAt, `no LTR rail rule for placement=${placement}`).toBeGreaterThan(-1);
+      expect(navigationCss.slice(ltrAt, navigationCss.indexOf("\n  }", ltrAt))).toContain(ltr);
+
+      const rtlAt = navigationCss.indexOf(
+        `[dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
+      );
+      expect(
+        rtlAt,
+        `no RTL rail rule for placement=${placement} — box-shadow has no logical offset, so it needs one`,
+      ).toBeGreaterThan(-1);
+      expect(navigationCss.slice(rtlAt, navigationCss.indexOf("\n  }", rtlAt))).toContain(rtl);
+    });
+  }
+
+  it("a vertical strip does not keep the HORIZONTAL rail", () => {
+    // What shipped: `start` and `end` drew the block-axis rail — a line under a COLUMN of tabs,
+    // facing nothing. The bug was not a wrong sign, it was the wrong axis.
+    for (const placement of ["start", "end"] as const) {
+      const at = navigationCss.indexOf(
+        `[data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
+      );
+      const rule = navigationCss.slice(at, navigationCss.indexOf("\n  }", at));
+      expect(rule, `${placement} must not draw a block-axis rail`).not.toMatch(
+        /box-shadow:\s*inset 0 /,
+      );
+    }
+  });
+
+  it("the docs page renders card on BOTH vertical placements, or none of this is measurable", () => {
+    // `card` + `bottom` shipped upside down and `start`/`end` had no card example at all, so no
+    // route could show the rail in either direction. Same pairing gh#612 needed.
+    expect(tabsDocs).toMatch(/variant="card"\s*\n\s*tabPlacement="start"/);
+    expect(tabsDocs).toMatch(/variant="card"\s*\n\s*tabPlacement="end"/);
   });
 });
 

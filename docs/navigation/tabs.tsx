@@ -600,6 +600,26 @@ export default function Demo() {
                 size="lg"
                 items={journalItems}
               />
+              {/* CARD on the vertical axis. `card` + `bottom` above had shipped upside down, and
+                  `start`/`end` had no card example at all — so the rail, which is drawn with a
+                  box-shadow and therefore cannot be logical, had nothing to be measured against
+                  in either direction. */}
+              <Tabs
+                id="antd-card-start"
+                defaultValue="pending"
+                variant="card"
+                tabPlacement="start"
+                size="sm"
+                items={journalItems}
+              />
+              <Tabs
+                id="antd-card-end"
+                defaultValue="pending"
+                variant="card"
+                tabPlacement="end"
+                size="sm"
+                items={journalItems}
+              />
             </Flex>
           </CardContent>
         </Card>
