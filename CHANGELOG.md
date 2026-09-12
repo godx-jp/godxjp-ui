@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.7] - 2026-09-13
+
+### Fixed — hạ tầng phát hành
+
+- **Registry của npm là read-after-write EVENTUAL, và 10 giây là không đủ.** Ngân sách xác minh sau
+  publish là `6 × 2s`. Đo trên run `34700604086` (v23.4.6): `npm publish` báo
+  `+ @godxjp/ui-mcp@23.4.6` lúc **14:55:36**, rồi bước xác minh abort lúc **14:55:52** với
+  `observed integrity=null, godx-staging=23.4.5` — vòng retry **cạn lượt** trong khi `dist-tags`
+  của npm vẫn trả về bản phát hành trước.
+
+  Artifact **không hề sai**: integrity của nó khớp tarball đã verify **từng ký tự**
+  (`sha512-1Y53FrcetsIPJG55jef641uau8QAyoT6VugvMhSh2UI4XtSVA0LN0CDbGxqoz3ZkVwb5OHEYYgQvyd3jxO/epA==`),
+  đối chiếu lại với registry sau đó.
+
+  **Cái giá nặng hơn một run đỏ.** Lúc abort thì **cả hai** package đã publish lên tag staging, nên
+  nó để lại `godx-staging=23.4.6` với `latest=23.4.5`; và lần chạy lại đâm vào
+  `Target version already exists; refusing partial/overwrite release` — **một guard đúng, nhưng tới
+  từ một trạng thái không đường nào ra được**. Một bản phát hành kẹt nửa đường, với bảng CI xanh
+  hoàn toàn. `--adopt-staged` cũng không mở được, vì nó đòi target **khác** `currentVersion`.
+
+  Nay `20 × 3s = 60s`. Đường thuận lợi không tốn gì — nó trả lời ngay lượt đầu; ngân sách này chỉ bị
+  tiêu khi registry thật sự chậm, và chờ một phút rẻ hơn để mắc kẹt một version.
+
+  Phép kiểm đòi **sàn ≥ 30 giây**, không pin `20 × 3000`: bài học là ngân sách, còn pin literal thì
+  lần sau ai đó tinh chỉnh đúng hướng cũng làm nó đỏ.
+
+- **23.4.6 không bao giờ tới được `latest`** vì đúng chuyện trên. Nó vẫn nằm trên registry ở tag
+  `godx-staging`; nội dung của nó có đủ trong bản này. Không ai cần cài 23.4.6.
+
 ## [23.4.6] - 2026-09-12
 
 ### Fixed

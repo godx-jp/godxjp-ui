@@ -1032,8 +1032,29 @@ export function createReleaseRuntime({
   mainRef = "refs/remotes/origin/main",
   wait = (milliseconds) =>
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
-  registryVerificationAttempts = 6,
-  registryVerificationDelayMs = 2_000,
+  /*
+   * THE REGISTRY IS READ-AFTER-WRITE EVENTUAL, AND 10 SECONDS WAS NOT ENOUGH.
+   *
+   * This budget was 6 x 2s. Measured on run 34700604086 (v23.4.6): `npm publish` reported
+   * `+ @godxjp/ui-mcp@23.4.6` at 14:55:36, and the verification aborted at 14:55:52 with
+   * `observed integrity=null, godx-staging=23.4.5` — the retry loop had exhausted while
+   * npm's dist-tag read still served the previous release. The published artifact was NOT
+   * wrong: its integrity matched the verified tarball byte for byte
+   * (sha512-1Y53FrcetsIPJG55jef641uau8QAyoT6VugvMhSh2UI4XtSVA0LN0CDbGxqoz3ZkVwb5OHEYYgQvyd3jxO/epA==),
+   * confirmed against the registry afterwards.
+   *
+   * What that cost is worse than a red run: the release had already published BOTH packages to
+   * the staging tag, so the abort left `godx-staging=23.4.6` with `latest=23.4.5`, and the
+   * re-run then hit `Target version already exists; refusing partial/overwrite release` — the
+   * right guard, reached from a state no path could leave. A release stuck half-done, with a
+   * fully green board.
+   *
+   * 20 x 3s = 60s. The happy path is unaffected: it returns on the first attempt and pays
+   * nothing. This budget is only ever spent when the registry is actually behind, and it is
+   * cheaper to wait a minute than to strand a version.
+   */
+  registryVerificationAttempts = 20,
+  registryVerificationDelayMs = 3_000,
 }) {
   const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
   const execute = (descriptor) => run(descriptor.binary, descriptor.args, cwdFor(descriptor.cwd));

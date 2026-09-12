@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 const {
   CI_PROOF_FOR_RELEASE_GATE,
@@ -1794,5 +1794,48 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
         plan.steps.filter((step: string) => step !== RELEASE_STEPS.VerifyTargetOutranksLatest),
       ),
     ).toThrow(`omits preflight gate "${RELEASE_STEPS.VerifyTargetOutranksLatest}"`);
+  });
+});
+
+/**
+ * THE DEFAULT REGISTRY-VERIFICATION BUDGET, as a floor rather than a literal.
+ *
+ * It was 6 x 2s = 10 seconds. Measured on run 34700604086 (v23.4.6): `npm publish` reported
+ * `+ @godxjp/ui-mcp@23.4.6` at 14:55:36 and the verification aborted at 14:55:52 with
+ * `observed integrity=null, godx-staging=23.4.5` — the loop exhausted while npm's dist-tag read
+ * still served the previous release. The artifact was not wrong; its integrity matched the
+ * verified tarball exactly.
+ *
+ * The cost was not a red run. Both packages were already published to the staging tag, so the
+ * abort left `godx-staging=23.4.6` with `latest=23.4.5`, and the re-run hit
+ * `Target version already exists; refusing partial/overwrite release` — the correct guard, reached
+ * from a state no path could leave.
+ *
+ * Asserted as "at least 30 seconds", not as `20 x 3000`: the lesson is the budget, and pinning the
+ * literals would fail the next time someone tunes them in the right direction.
+ */
+describe("registry verification waits long enough for npm to catch up", () => {
+  const source = readFileSync(
+    resolve(process.cwd(), "scripts/release-core.mjs"),
+    "utf8",
+  );
+
+  it("budgets at least 30s of read-after-write lag by default", () => {
+    const attempts = Number(
+      source.match(/registryVerificationAttempts = ([\d_]+)/)?.[1]?.replace(/_/g, ""),
+    );
+    const delay = Number(
+      source.match(/registryVerificationDelayMs = ([\d_]+)/)?.[1]?.replace(/_/g, ""),
+    );
+    expect(Number.isFinite(attempts) && Number.isFinite(delay)).toBe(true);
+    expect(
+      attempts * delay,
+      `10s exhausted on a real release (run 34700604086); got ${attempts} x ${delay}ms`,
+    ).toBeGreaterThanOrEqual(30_000);
+  });
+
+  it("still retries rather than asserting once", () => {
+    expect(source).toMatch(/for \(let attempt = 1; attempt <= registryVerificationAttempts/);
+    expect(source).toContain("wait(registryVerificationDelayMs)");
   });
 });
