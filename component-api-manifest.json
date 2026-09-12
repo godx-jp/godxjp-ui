@@ -5636,6 +5636,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ConfirmVariantProp | undefined",
+          "values": ["default", "destructive"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },
@@ -5820,6 +5828,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ConfirmVariantProp | undefined",
+          "values": ["default", "destructive"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },

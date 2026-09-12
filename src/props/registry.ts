@@ -2212,6 +2212,43 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "donut", local: true, reason: "Hollow-centre donut rendering." },
     ],
   },
+  DialogProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "ConfirmVariantProp",
+      "ChildrenProp",
+      {
+        field: "modal",
+        local: true,
+        reason:
+          "Radix-era spelling kept; RAC's Modal always locks scroll, so false no longer disables it.",
+      },
+    ],
+  },
+  DialogContentProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [
+      "ConfirmVariantProp",
+      "ClassNameProp",
+      "ChildrenProp",
+      {
+        field: "showCloseButton",
+        local: true,
+        reason: 'Corner ✕ opt-out; defaults to false under variant="destructive".',
+      },
+      { field: "showClose", local: true, reason: "shadcn-era spelling of showCloseButton." },
+      {
+        field: "overlayClassName",
+        local: true,
+        reason: "Class for the scrim the surface owns — RAC nests overlay > modal > dialog.",
+      },
+    ],
+  },
   AlertDialogProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",

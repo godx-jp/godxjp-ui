@@ -998,6 +998,34 @@
         }
       }
     },
+    "Dialog": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/feedback/dialog.tsx",
+            "src/components/feedback/__tests__/dialog-one-family-567.test.tsx"
+          ]
+        }
+      }
+    },
+    "DialogContent": {
+      "props": {
+        "variant": {
+          "cases": [
+            "default",
+            "destructive"
+          ],
+          "evidence": [
+            "docs/feedback/dialog.tsx",
+            "src/components/feedback/__tests__/dialog-one-family-567.test.tsx"
+          ]
+        }
+      }
+    },
     "DialogHeader": {
       "props": {
         "tone": {

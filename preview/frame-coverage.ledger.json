@@ -518,9 +518,9 @@
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
     "exports": 272,
     "dimensionCells": 3808,
-    "covered": 83,
+    "covered": 85,
     "untested": 2127,
-    "notApplicable": 1598,
+    "notApplicable": 1596,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -3032,12 +3032,12 @@
         "docs/feedback/dialog.tsx"
       ],
       "baseline": {
-        "covered": 0,
-        "notApplicable": 6,
+        "covered": 1,
+        "notApplicable": 5,
         "untested": 8
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -3172,12 +3172,12 @@
         "docs/feedback/dialog.tsx"
       ],
       "baseline": {
-        "covered": 0,
-        "notApplicable": 7,
+        "covered": 1,
+        "notApplicable": 6,
         "untested": 7
       },
       "dimensions": {
-        "variants": "not-applicable:api-manifest",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

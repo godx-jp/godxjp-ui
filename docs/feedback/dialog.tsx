@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   Dialog,
+  DialogAction,
+  DialogCancel,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -8,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@godxjp/ui/feedback";
+import { FormField, Textarea } from "@godxjp/ui/data-entry";
 import {
   Badge,
   Card,
@@ -40,6 +43,8 @@ export default function Demo() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [toneOpen, setToneOpen] = useState(false);
   const [headerTone, setHeaderTone] = useState<(typeof headerTones)[number]>("default");
+  const [terminateOpen, setTerminateOpen] = useState(false);
+  const [reason, setReason] = useState("");
 
   return (
     <PageContainer
@@ -185,6 +190,51 @@ export default function Demo() {
                 </DialogContent>
               </Dialog>
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Destructive confirmation with a required field</CardTitle>
+            <CardDescription>
+              variant is the one prop that decides three things that always travel together: the
+              ARIA role, whether an outside click dismisses, and the primary action emphasis.
+              variant=&quot;destructive&quot; renders role=&quot;alertdialog&quot;, ignores an
+              outside click and tints DialogAction, while the surface stays a plain Dialog, so a
+              required input can sit inside it. That combination used to need a rewrite: Dialog had
+              the form but lost the role, AlertDialog had the role but its parts assume a two-button
+              body. Escape still closes, exactly as the AlertDialog family already does.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Dialog open={terminateOpen} onOpenChange={setTerminateOpen} variant="destructive">
+              <DialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  提携を終了
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader
+                  tone="destructive"
+                  title="提携を終了しますか？"
+                  subtitle="この操作は元に戻せません。終了理由は監査ログに残ります。"
+                />
+                <FormField id="termination-reason" label="終了理由" required>
+                  <Textarea
+                    id="termination-reason"
+                    value={reason}
+                    onChange={(event) => setReason(event.target.value)}
+                    placeholder="契約違反の内容を記載してください"
+                  />
+                </FormField>
+                <DialogFooter>
+                  <DialogCancel asChild>
+                    <Button variant="ghost">キャンセル</Button>
+                  </DialogCancel>
+                  <DialogAction disabled={reason.trim().length === 0}>終了する</DialogAction>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
       </Flex>

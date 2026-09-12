@@ -25,7 +25,14 @@ export {
   AlertDialogCancel,
   AlertDialog,
 } from "./dialog";
-export type { AlertDialogProp, AlertDialogProps } from "./dialog";
+export type {
+  AlertDialogProp,
+  AlertDialogProps,
+  DialogProp,
+  DialogProps,
+  DialogContentProp,
+  DialogContentProps,
+} from "./dialog";
 export {
   Sheet,
   SheetBody,
