@@ -81,6 +81,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   trên cả hai placement dọc — trước đó **không có** ví dụ nào, nên không route nào cho thấy được rail
   ở bất kỳ chiều nào, và đó chính là lý do `card` + `bottom` từng ship lộn ngược mà không ai thấy.
 
+- **Nhãn legend của chart là VĂN XUÔI, không phải màu của series.** `chart-layout.css` đã đặt
+  `.recharts-legend-item-text { color: hsl(var(--muted-foreground)) }` từ ngày nó được viết, và
+  luật đó **chưa từng áp được** vào một legend nào ở bất kỳ consumer nào: recharts ghi màu series
+  thành **inline style** trên span nhãn (`style="color: rgb(68, 136, 197); …"`), mà inline style
+  thắng mọi luật stylesheet bất kể specificity.
+
+  Nửa trục của **cùng selector đó** thì lại chạy: `.recharts-text` là SVG và recharts đặt `fill`
+  như một **presentation attribute**, thứ mà CSS thắng. Một selector, hai cơ chế của upstream, và
+  chỉ một trong hai từng với tới được — đó là vì sao luật *đọc thì đúng* mà *đo thì sai*.
+
+  Đo trong Chromium trên một màn consumer thật (godx-task `/projects/PKG`, donut trạng thái ở
+  project home), chữ 12,47px:
+
+  | trạng thái | màu | tỉ số |
+  | --- | --- | --- |
+  | 未対応 | `#ed8077` | **2,59:1** |
+  | 処理中 | `#4488c5` | **3,70:1** |
+  | 処理済み | `#5eb5a6` | **2,39:1** |
+  | 完了 | `#a1af2f` | **2,37:1** |
+
+  Cả bốn dưới sàn AA 4,5:1, trên **mọi** legend của donut, pie và cartesian mà thư viện này render.
+  Màu series là một màu **TÔ** — nó được chỉnh để làm một lát bánh không có chữ nào trên đó — nên
+  đọc như mực thì trượt, đúng lớp lỗi tầng token của #610 và #612, lệch ra một lớp. Chỗ của màu đó
+  là ô swatch cạnh nhãn, và swatch vốn đã chở nó. Sau khi sửa: **13 nhãn** legend trên
+  `/isolate/data-display-charts` đều về `rgb(104, 102, 94)` ở **5,65:1**.
+
+  **VÌ SAO NÓ SỐNG ĐƯỢC** là phần đáng giữ lại. `showLegend` mặc định **true**, nên mọi consumer
+  đều thấy legend — còn **mọi** `showLegend` trong docs của chính kho này là `false`. Sáu chỗ,
+  không chỗ nào true. Legend **chưa từng được render bởi route nào** trong thư viện, nên không gì
+  đo nó được. Phép kiểm thứ ba đòi một ví dụ docs vẫn phải render legend, vì một mặc định mà không
+  ví dụ nào chạy qua là một mặc định không gì đo được.
+
+  `!important` chỉ đặt cho nhãn legend. Đặt cả lên trục là copy **hình dạng** của bản sửa thay vì
+  trả lời **nguyên nhân** của nó.
+
 - **Hit area của nút sắp xếp trên header `DataTable` chạm 24px mà không làm xê dịch paint.** Tìm ra
   bằng cách quét một consumer, không phải bằng đọc thư viện. Đo trong Chromium trên một bảng thật —
   `/find/PKG` của godx-task, 1409 phần tử — nút sắp xếp ở header paint **56,3 × 17,8**, và
