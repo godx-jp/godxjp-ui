@@ -35,6 +35,7 @@ import type {
   HeadingLevelProp,
   ToneProp,
   WidthProp,
+  SizeProp,
 } from "../vocabulary";
 import type { EmptyStateToneProp } from "./data-display.prop";
 
@@ -1494,5 +1495,72 @@ export type ServiceRolePanelProp = {
   masterViewport?: MasterDetailMasterViewportProp;
   collapseBelow?: BreakpointProp | false;
   id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * Which axis a `DraggablePanel` moves on. react-draggable's `axis`, ported verbatim including
+ * `"none"` (mounted, but pinned where it started).
+ */
+export type DragAxisProp = "both" | "x" | "y" | "none";
+
+/**
+ * How far a `DraggablePanel` may travel. react-draggable's `bounds`, trimmed to the two forms that
+ * survive this library's rules: `"viewport"` keeps the whole panel on screen, `"none"` lets it go
+ * anywhere. react-draggable also accepts `'parent'`, a CSS selector and a `{left, top, right,
+ * bottom}` object — the selector is a back door into internal DOM (the layer
+ * docs/DESIGN-AUTHORITY.md refuses alongside antd's `components` / `prefixCls`), and the object is
+ * spelled in PHYSICAL directions, which cannot mirror for an RTL locale.
+ */
+export type DragBoundsProp = "viewport" | "none";
+
+/** Resting corner of a `DraggablePanel`, in logical directions so it mirrors under RTL. */
+export type DraggablePanelPlacementProp = "top-start" | "top-end" | "bottom-start" | "bottom-end";
+
+/**
+ * Offset from the resting corner, in CSS pixels, on the PHYSICAL axes — the same frame the pointer
+ * reports in, so no RTL sign flip exists to get wrong. react-draggable's `{x, y}`.
+ */
+export type DraggablePanelPositionProp = { x: number; y: number };
+
+/**
+ * @see DraggablePanel — a floating surface the person using it can MOVE, so a docked assistant
+ * stops covering the thing they are asking about.
+ *
+ * The movement props take react-draggable's names, because react-draggable is what antd's own
+ * "Draggable Modal" demo prescribes and antd has no component of its own for this. The library is
+ * NOT a dependency here: the drag is the repo's existing window-level pointer pattern.
+ */
+export type DraggablePanelProp = Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "title" | "children" | "onDrag"
+> & {
+  /** Panel name. A string also becomes the region's accessible name. */
+  title: TitleProp;
+  children?: ChildrenProp;
+  /** Trailing slot in the title bar, before the close control. */
+  extra?: ExtraProp;
+  /** Resting corner before any movement. Default `bottom-end`. */
+  placement?: DraggablePanelPlacementProp;
+  /** Panel width, from the token scale. Default `md`. */
+  width?: Extract<SizeProp, "sm" | "md" | "lg">;
+  /** react-draggable `axis`. Default `both`. */
+  axis?: DragAxisProp;
+  /** react-draggable `bounds`. Default `viewport`. */
+  bounds?: DragBoundsProp;
+  /** react-draggable `position` — controlled offset. Pair with `onPositionChange`. */
+  position?: DraggablePanelPositionProp;
+  /** react-draggable `defaultPosition` — starting offset when uncontrolled. */
+  defaultPosition?: DraggablePanelPositionProp;
+  /**
+   * Fires with the clamped offset after every pointer frame and every keyboard nudge. The panel
+   * REPORTS its position and never stores it: where it is remembered, and per what scope, is the
+   * consumer's decision.
+   */
+  onPositionChange?: (position: DraggablePanelPositionProp) => void;
+  /** Presence renders the close control in the title bar (antd Modal's `onCancel`). */
+  onClose?: () => void;
+  /** react-draggable `disabled` — the panel stays, the handle stops moving it. */
+  disabled?: DisabledProp;
   className?: ClassNameProp;
 };

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 275,
-    dimensionCells: 3850,
+    exports: 276,
+    dimensionCells: 3864,
     covered: 86,
-    untested: 2151,
-    notApplicable: 1613,
+    untested: 2159,
+    notApplicable: 1619,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -195,6 +195,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"DialogPortal","group":"feedback","frame":"docs/feedback/dialog.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"DialogTitle","group":"feedback","frame":"docs/feedback/dialog.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"DialogTrigger","group":"feedback","frame":"docs/feedback/dialog.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"DraggablePanel","group":"layout","frame":"docs/layout/draggable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"DropdownMenu","group":"navigation","frame":"docs/navigation/dropdown-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"DropdownMenuCheckboxItem","group":"navigation","frame":"docs/navigation/dropdown-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"DropdownMenuContent","group":"navigation","frame":"docs/navigation/dropdown-menu.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

@@ -1902,3 +1902,148 @@
     column-gap: var(--space-inline-xl);
   }
 }
+
+@layer components {
+  /*
+   * DRAGGABLE PANEL (gh#560) — a floating surface the person using it can MOVE.
+   *
+   * The resting corner is chosen with LOGICAL properties off `data-placement`, so it mirrors for
+   * an RTL locale with no JS. The applied offset arrives as two UNITLESS custom properties the
+   * component writes (`--draggable-panel-offset-x/y`) and is multiplied by 1px here: that keeps
+   * every literal out of the TSX (`check:no-inline-magic-numbers`) and keeps the arithmetic where
+   * CSS can see it. `translate` is a PHYSICAL transform, which is correct — a pointer delta is
+   * physical too, so there is no RTL sign flip to get wrong.
+   */
+  .ui-draggable-panel {
+    position: fixed;
+    z-index: var(--overlay-z-index);
+    display: flex;
+    flex-direction: column;
+    inline-size: var(--draggable-panel-width);
+    max-inline-size: calc(100% - var(--draggable-panel-inset) - var(--draggable-panel-inset));
+    max-block-size: var(--draggable-panel-max-block-size);
+    border: var(--draggable-panel-border-width) solid hsl(var(--border));
+    border-radius: var(--draggable-panel-radius);
+    background-color: hsl(var(--background));
+    box-shadow: var(--draggable-panel-shadow);
+    overflow: hidden;
+    translate: calc(var(--draggable-panel-offset-x) * 1px)
+      calc(var(--draggable-panel-offset-y) * 1px);
+    transition: translate var(--duration-fast) var(--ease-standard);
+  }
+
+  .ui-draggable-panel[data-width="sm"] {
+    inline-size: var(--draggable-panel-width-sm);
+  }
+
+  .ui-draggable-panel[data-width="lg"] {
+    inline-size: var(--draggable-panel-width-lg);
+  }
+
+  .ui-draggable-panel[data-placement^="top"] {
+    inset-block-start: var(--draggable-panel-inset);
+  }
+
+  .ui-draggable-panel[data-placement^="bottom"] {
+    inset-block-end: var(--draggable-panel-inset);
+  }
+
+  .ui-draggable-panel[data-placement$="start"] {
+    inset-inline-start: var(--draggable-panel-inset);
+  }
+
+  .ui-draggable-panel[data-placement$="end"] {
+    inset-inline-end: var(--draggable-panel-inset);
+  }
+
+  /* A drag must track the finger exactly — an eased translate would lag it by a frame budget. */
+  .ui-draggable-panel[data-dragging] {
+    transition: none;
+    user-select: none;
+  }
+
+  .ui-draggable-panel-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--draggable-panel-bar-gap);
+    padding: var(--draggable-panel-bar-padding);
+    border-block-end: var(--draggable-panel-border-width) solid hsl(var(--border));
+    background-color: hsl(var(--muted) / 0.4);
+  }
+
+  /*
+   * The HANDLE, not the whole surface. Dragging from anywhere would make the body text
+   * unselectable in a panel whose whole purpose is text, so only this control starts a drag.
+   * `touch-action: none` is what makes a touch drag work at all: without it the browser claims
+   * the gesture for scrolling before `pointermove` ever fires.
+   */
+  .ui-draggable-panel-handle {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: hsl(var(--muted-foreground));
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .ui-draggable-panel[data-dragging] .ui-draggable-panel-handle {
+    cursor: grabbing;
+  }
+
+  .ui-draggable-panel-handle[aria-disabled="true"] {
+    cursor: default;
+  }
+
+  .ui-draggable-panel-handle-icon,
+  .ui-draggable-panel-close-icon {
+    inline-size: var(--draggable-panel-handle-size);
+    block-size: var(--draggable-panel-handle-size);
+  }
+
+  .ui-draggable-panel-title {
+    min-inline-size: 0;
+    flex: 1;
+    overflow: hidden;
+    font-weight: var(--font-weight-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-draggable-panel-extra {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--draggable-panel-bar-gap);
+  }
+
+  .ui-draggable-panel-close {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-draggable-panel-body {
+    min-block-size: 0;
+    flex: 1;
+    padding: var(--draggable-panel-body-padding);
+    overflow-y: auto;
+  }
+}
+
+/*
+ * REDUCED MOTION — the keyboard nudge is the only animated movement here, and it is exactly the
+ * kind of unrequested travel WCAG 2.3.3 (Animation from Interactions) is about. DELIBERATELY
+ * UNLAYERED, for the same reason the dialog block at the foot of `dialog-layout.css` is: an
+ * unlayered author declaration outranks every layered one, so this cannot be beaten by a utility.
+ * The panel still MOVES — only the tween is removed, never the affordance.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .ui-draggable-panel {
+    transition: none;
+  }
+}

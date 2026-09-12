@@ -256,6 +256,9 @@
       "hintMove": "移動",
       "hintSelect": "選択",
       "hintClose": "閉じる"
+    },
+    "draggablePanel": {
+      "moveLabel": "パネルを移動。矢印キーで移動、Shift キーを押しながらで大きく移動します。"
     }
   },
   "dataDisplay": {
