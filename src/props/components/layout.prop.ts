@@ -227,6 +227,47 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    */
   hideFrom?: BreakpointProp;
   /**
+   * ESCAPE HATCH: the same drop, at a width in PIXELS that is off every step of the scale — the
+   * `gapRaw`/`padRaw` contract applied to the breakpoint axis (gh#528).
+   *
+   * ## Why the token form stays the default
+   *
+   * An off-scale breakpoint is a LOCAL EXCEPTION, not a new tier. `sm`/`md`/`lg`/`xl` are the
+   * package's canonical steps, shared with `--master-detail-collapse-below` and with every
+   * `collapseBelow`, so two regions asked to fold "at the same place" actually fold together.
+   * A raw width folds one region and nothing else; spend the four named steps FIRST, and reach
+   * here only when the canonical design specifies a width the scale does not have (a nav that
+   * becomes a hamburger at 900px).
+   *
+   * ## The price, and why it is the right one
+   *
+   * It leaves `data-hide-below-raw` on the DOM, exactly like `data-gap-raw`/`data-pad-raw`, so
+   * every escape is COUNTABLE — grep the source or scan the DOM and a repo drifting off the scale
+   * shows up as a number instead of a feeling. Before this prop the only move left was
+   * `className="hidden min-[901px]:flex"`, which `ui-audit` blocks and which counts as nothing.
+   *
+   * It also prints ONE media rule per distinct width (a media query cannot read a `var()`, so an
+   * off-scale width can only reach CSS as a literal).
+   *
+   * ## The seam
+   *
+   * `hideBelowRaw` hides while `width < N`, `hideFromRaw` hides while `width >= N` — the SAME pair
+   * of comparisons as the token steps, so the two are exact complements and at exactly N the
+   * `hideBelowRaw` region is the visible one. Do NOT reach for an inclusive `<= N` here: pairing
+   * `<= N` with `>= N` leaves BOTH regions hidden at exactly N, which is the one-pixel hole a
+   * consumer measured on a hand-rolled `max-[900px]:` pair (gh#528).
+   *
+   * When present it WINS over `hideBelow`, which then emits no attribute, so the two cannot both
+   * match at one width.
+   */
+  hideBelowRaw?: number;
+  /**
+   * The inverse of `hideBelowRaw` — drop the region FROM a raw pixel width upwards. Same contract,
+   * same price, same seam (`width >= N`); it wins over `hideFrom` and leaves `data-hide-from-raw`
+   * on the DOM.
+   */
+  hideFromRaw?: number;
+  /**
    * Take the space the siblings leave — the Flex becomes the row's ELASTIC column.
    *
    * ## Vì sao là một trục, không phải một tiện ích

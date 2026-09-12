@@ -173,7 +173,7 @@ const RULES = [
       return /\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b/.test(cls) && /\b(?:border|bg-)/.test(cls);
     },
     message:
-      "Hand-rolled surface (rounded + border/bg) — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from the tokens (docs/CONSUMER-RULES.md §4).",
+      "Hand-rolled surface (rounded + border/bg) — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from the tokens (docs/CONSUMER-RULES.md §4). A read-only sample of a colour a USER chose is Swatch, which takes that value as a prop.",
   },
   {
     id: "no-space-xy",
@@ -871,8 +871,7 @@ function staleOwnedRules() {
       `This file is written by @godxjp/ui and says version ${stamped}, but the installed package ` +
       `is ${installed}. Its rules describe a different library than the one you are building ` +
       "against — most likely because `ignore-scripts=true` kept our postinstall from running.",
-    replacement:
-      "INIT_CWD=\"$PWD\" node node_modules/@godxjp/ui/scripts/postinstall.mjs",
+    replacement: 'INIT_CWD="$PWD" node node_modules/@godxjp/ui/scripts/postinstall.mjs',
     snippet: `<!-- godxjp-ui:version ${stamped} --> vs installed ${installed}`,
   };
 }
@@ -980,7 +979,7 @@ for (const dir of SCAN_DIRS) {
       let depth = 0;
       const tag = /<(\/?)Card(Content|Header|Cover|Footer|Bar)?\b/g;
       tag.lastIndex = from;
-      for (let m; (m = tag.exec(scanContent)); ) {
+      for (let m; (m = tag.exec(scanContent));) {
         const [, closing, slot] = m;
         if (!slot) {
           if (closing) {

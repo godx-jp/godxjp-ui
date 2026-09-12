@@ -120,6 +120,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Test ghim bằng văn bản CSS, vì khiếm khuyết nằm ở CHỖ KHAI BÁO và jsdom không phân giải cascade
   của custom property. Đột biến: đặt lại một token vào `.ui-scale-fixed` → đỏ.
 
+### Added — `Swatch`: một mẫu màu CHỈ ĐỌC cho màu do người dùng chọn (gh#527)
+
+Consumer lưu `primary_color` / `secondary_color` của tổ chức là mã màu **người dùng tự chọn**, rồi
+cần vẽ nó thành một chấm 16px cạnh tên tổ chức. Không có nước đi nào hợp lệ: `Legend` chỉ nhận
+`tone` — một tập ĐÓNG các vai ngữ nghĩa, `#c0392f` không bao giờ ánh xạ vào đó — `ColorPicker` là
+ô NHẬP (vẽ một input disabled để hiển thị còn tệ hơn), `Badge` là con chip có nền pha và viền, đọc
+ra như bấm được. Và tự vẽ `<span className="w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]" />` thì
+`ui-audit` chặn **ba lần một lúc** (`no-arbitrary-size`, `no-arbitrary-radius`, `no-arbitrary-hex`).
+Nước cuối cùng còn lại là một dòng `ui-audit-disable` — tức là luật cấm mọi cách vẽ một thứ mà màn
+hình bắt buộc phải vẽ.
+
+`Swatch` là **một** phần tử, một prop bắt buộc: `<Swatch color={brand.primary_color} aria-label=… />`.
+
+- **Màu là GIÁ TRỊ, không phải token** — đúng trục `Badge color` đã mở: nó đi vào `--swatch-color`
+  nội tuyến trên phần tử, **không một mã hex nào vào stylesheet**, nên `no-arbitrary-hex` và
+  `no-raw-palette-color` xanh vì cấu trúc chứ không phải vì được tha.
+- **Tên đọc màn hình đến từ prop, không từ chữ nhìn thấy.** Có `aria-label` → `role="img"` và đọc
+  đúng câu ấy; không có → `aria-hidden` (đúng luật của `Legend`), dành cho khi dòng chữ bên cạnh đã
+  nói màu ấy là gì. Không có đường thứ ba nơi màu là vật mang nghĩa duy nhất (WCAG 1.4.1).
+- **Vạch tóc là chức năng, không phải trang trí**: đo trên frame docs sáng, một mẫu `#ffffff` trên
+  thẻ `rgb(253,253,252)` có tỉ số **1,02:1** — tức là biến mất — còn vòng inset `--border` đo
+  **1,45:1**, đủ để thấy cạnh. Nó là vạch nghỉ chung của cả hệ, và chỉnh lại được qua
+  `--swatch-border-color`. Nền tối thì ngược lại: chính ô trắng đo **16,3:1**.
+- `forced-color-adjust: none`: ở đây màu CHÍNH LÀ nội dung, tô lại nó thành CanvasText không phải
+  "tăng tương phản" mà là xoá sạch thông tin duy nhất mà dấu này mang.
+
+Đo trong Chromium (frame `data-display-swatch`, 1024px): ô 16×16px, bo 2px, vòng
+`rgb(215,212,209) 0 0 0 1px inset`, `background` đúng bằng giá trị truyền vào. Đột biến: đổi
+`background: var(--swatch-color)` thành `hsl(var(--muted))` → test đỏ.
+
+### Added — `Flex hideBelowRaw` / `hideFromRaw`: cửa thoát cho một điểm gãy ngoài thang (gh#528)
+
+`gap` có `gapRaw`, `pad` có `padRaw`, bề rộng có `width` — cả ba đều để lại `data-*-raw` trên DOM
+nên mỗi lần thoát ĐẾM ĐƯỢC. Trục điểm gãy là trục duy nhất chưa có cửa ấy: `hideBelow` chỉ nhận
+`sm`/`md`/`lg`/`xl` (640/768/1024/1280), nên một thiết kế chốt hamburger ở **900px** không còn nước
+nào ngoài `className="hidden min-[901px]:flex"` — thứ `ui-audit` chặn và **không đếm được**.
+
+- Cùng hợp đồng với `gapRaw`: raw THẮNG bậc token (bậc khi ấy không phát attribute nào, nên hai
+  luật không thể cùng khớp), và nó để lại `data-hide-below-raw` / `data-hide-from-raw`.
+- Media query **không đọc được `var()`**, nên một bề rộng ngoài thang chỉ tới được CSS dưới dạng
+  literal: component tự in ĐÚNG MỘT luật cho mỗi bề rộng, khoá theo chính giá trị ấy, và React gộp
+  trùng theo `href`. Luật in ra cố ý **không nằm trong `@layer`** — `.ui-flex { display: flex }`
+  nằm trong `@layer components`, mà khai báo ngoài layer thắng mọi khai báo trong layer bất kể độ
+  đặc hiệu, nên cửa thoát không thể thua cascade vì thứ tự nạp stylesheet. `Flex` vẫn **không có
+  hook nào**, nên nó vẫn là module SERVER.
+- **Mối nối**: `hideBelowRaw` ẩn khi `width < N`, `hideFromRaw` ẩn khi `width >= N` — đúng cặp so
+  sánh của bậc token, nên hai bên bù nhau khít. Đừng dùng `max-width` bao gồm: `<= N` ghép với
+  `>= N` làm **cả hai** biến mất ở đúng N, chính cái lỗ 1px consumer đã đo trên cặp `max-[900px]:`
+  tự dựng.
+
+Đo trong Chromium (frame `layout-flex`, `hideBelowRaw={900}` + `hideFromRaw={900}`):
+899px → `none` / `flex`; **900px → `flex` / `none`**; 901px → `flex` / `none`. Đúng một vùng hiện ở
+mọi bề rộng. Đột biến: đổi `>=` thành `>` trong luật in ra → test mối nối đỏ.
+
 ### Added — `Card` khép ba khoảng trống thật so với Ant Design 6
 
 Đọc thẳng `components/card/Card.tsx` và `components/card/style/index.ts` của antd (MIT) rồi port

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 268,
-    dimensionCells: 3752,
+    exports: 269,
+    dimensionCells: 3766,
     covered: 83,
-    untested: 2098,
-    notApplicable: 1571,
+    untested: 2105,
+    notApplicable: 1578,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -324,6 +324,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"StatCard","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"StatusBadge","group":"data-display","frame":"docs/data-display/badge.tsx","covered":["shapes","tones","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","sizes","states"]},
   {"name":"Steps","group":"navigation","frame":"docs/navigation/steps.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","states","tones","variants"]},
+  {"name":"Swatch","group":"data-display","frame":"docs/data-display/swatch.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Switch","group":"data-entry","frame":"docs/data-entry/switch.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"Table","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"TableBody","group":"data-display","frame":"docs/data-display/table.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

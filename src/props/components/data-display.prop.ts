@@ -97,6 +97,43 @@ export type LegendProp = Omit<React.HTMLAttributes<HTMLUListElement>, "children"
   className?: ClassNameProp;
 };
 
+/**
+ * @see Swatch — a READ-ONLY sample of ONE colour a person chose.
+ *
+ * ## Why it is not a Legend, a ColorPicker or a Badge
+ *
+ * `Legend` is a KEY: a closed set of semantic TONES, each with required words beside it, because
+ * there the colour stands FOR something. Here the colour IS the content — a brand's
+ * `primary_color`, a calendar category, a label a user tinted — so there is no tone it maps to and
+ * no second thing for a word to name. `ColorPicker` is the INPUT for the same value, and rendering
+ * a disabled input to display one reads as a control that broke. `Badge` is a chip: tinted fill,
+ * border, clickable affordance — not a sample of the exact colour.
+ *
+ * Its mark is the same square Legend draws, one type step larger, because it stands beside a name
+ * rather than inside an 11px key.
+ */
+export type SwatchProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> & {
+  /**
+   * The colour to show, as a CSS colour VALUE — `#7C3AED`, `rgb(…)`, `oklch(…)`. It is DATA the
+   * same way `Badge`'s `color` is: a value a person picked in a settings screen, so it arrives as
+   * a prop and is never written into a stylesheet. Passing a semantic token's own colour here is
+   * the one thing to avoid — a tone that MEANS something belongs on a component that names the
+   * meaning (`Badge tone`, `Legend`), not on a sample.
+   */
+  color: string;
+  /**
+   * The accessible NAME of the sample, and the reason this component can exist without a visible
+   * label. Say what the colour is FOR and what it is: `aria-label={`${t.primaryColor}: ${hex}`}`.
+   *
+   * With it, the swatch is a `role="img"` that announces that sentence. Without it the swatch is
+   * `aria-hidden` — correct, and the only correct option, when a visible line beside it already
+   * states the colour. Either way colour is never the sole carrier of the meaning (WCAG 1.4.1);
+   * what is NOT offered is a third path where it is.
+   */
+  "aria-label"?: string;
+  className?: ClassNameProp;
+};
+
 /** @see EmptyState */
 /**
  * Semantic intent of the EmptyState icon medallion — a subset of the shared `ToneProp` vocabulary

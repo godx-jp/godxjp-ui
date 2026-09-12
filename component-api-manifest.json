@@ -7119,11 +7119,27 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "hideBelowRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "hideFrom",
           "origin": "owned",
           "required": false,
           "type": "BreakpointProp | undefined",
           "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "hideFromRaw",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -14114,6 +14130,41 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
+        }
+      ]
+    },
+    "Swatch": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "color",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },

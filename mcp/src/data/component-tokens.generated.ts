@@ -269,6 +269,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the * surface box-shadow so a service can wash every card with the global glow, e.g. * --card-glow: var(--shadow-glow), with no markup change."
   },
   {
+    "name": "--card-hover-shadow",
+    "value": "var(--shadow-md)",
+    "description": "`hoverable` (antd `hoverable`) — the elevation a pointer-interactive card steps UP to on * hover. One step above the resting `--card-shadow` on the same ramp, so a service that has * already flattened or lifted every card keeps a proportional lift instead of a fixed one."
+  },
+  {
     "name": "--card-tint",
     "value": "transparent",
     "description": "Fill tint — subtle role wash over the card background (default transparent = invisible). * Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once."
@@ -2449,6 +2454,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`initial` so the muted role re-resolves at the call site under a scoped theme. Default = hsl(var(--muted-foreground))."
   },
   {
+    "name": "--swatch-size",
+    "value": "1rem",
+    "description": "Swatch — a read-only sample of ONE colour a person chose (gh#527). The mark is Legend's square, one step larger: a legend swatch rides an 11-12px label, while this one stands beside a NAME at body size, and at 0.625rem beside 14px type it reads as a bullet rather than as a sample of a colour."
+  },
+  {
+    "name": "--swatch-radius",
+    "value": "0.125rem",
+    "description": "scale-exempt: the same corner as --legend-swatch-radius — --radius (6px) on a 16px square reads as a DOT, a different symbol, and a sample and a key mark must be the same shape."
+  },
+  {
+    "name": "--swatch-border-width",
+    "value": "var(--stroke-hairline)",
+    "description": "The hairline that keeps a white value visible on a white card. It is the resting border weight, not a decision of this component."
+  },
+  {
+    "name": "--swatch-border-color",
+    "value": "initial",
+    "description": "`initial` so the border role re-resolves at the call site under a scoped theme. Default = hsl(var(--border))."
+  },
+  {
+    "name": "--swatch-color",
+    "value": "hsl(var(--muted))",
+    "description": "The caller's colour — the only knob here that is PER-INSTANCE. swatch.tsx writes it inline on the element, and an inline declaration outranks this one, so this is the value only when the prop is empty. It has to be declared all the same: an undeclared custom property has no fallback to fall back TO, which is the failure check-dist-tokens-resolve.mjs exists to catch. `--muted` is the right default because an unset sample should read as \"no colour recorded\" rather than as a colour nobody chose."
+  },
+  {
     "name": "--timeline-dot-done-background",
     "value": "initial",
     "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
@@ -4147,6 +4177,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-indicator-offset",
     "value": "0px",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-indicator-inset",
+    "value": "0px",
+    "description": "Ant Design `indicator.size` — the bar's LENGTH along the strip, as the inset it leaves at EACH * end of the trigger. `0px` = antd's own default (`getLength` returns `origin`, the tab's whole * offset width), so the default paint does not move. `indicator={{ size: \"label\" }}` on the * component repoints this at the trigger's own inline/block padding, which is what * `size: (origin) => origin - 2 * padding` is written to produce upstream * (@rc-component/tabs src/hooks/useIndicator.ts)."
   },
   {
     "name": "--tabs-root-gap",
