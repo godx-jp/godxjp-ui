@@ -196,17 +196,32 @@ describe("status surfaces still read --success", () => {
    * `success` in Chromium. It reads `--mark-*` now (see docs/TOKENS.md, "The three tone tiers"),
    * and this row moved with it rather than holding the invisible half still a second time.
    *
+   * `data-entry-layout.css` is the THIRD instance of that same move, and it came out at the same
+   * two numbers a third time. `.ui-password-strength-segment` is a mark by the same test as the
+   * card rail: nothing is written on it, and how many segments are lit IS the datum. On the FILL
+   * tier it measured `--success` **2.18:1** light and `--destructive` **2.95:1** dark against the
+   * card in Chromium — so this row was holding an unreadable half still for the third time, on the
+   * one meter whose whole job is to be read at a glance. It reads `--mark-*` now: 6.27:1 light and
+   * 4.51:1 dark against the segment track beside it, which is the pair SC 1.4.11 actually asks
+   * about ("adjacent colours") rather than the card behind it.
+   *
    * `data-display-layout.css` still reads the FILL tier, and that is deliberate rather than
    * missed: a `.ui-legend-swatch` is a SAMPLE of the colour the bar beside it paints, so it
-   * cannot move to a different tier alone. Both it and `.ui-progress-segment` fail the same
-   * floor today — the numbers and the reason are recorded in scripts/check-contrast.mjs.
+   * cannot move to a different tier alone. The numbers and the reason are recorded in
+   * scripts/check-contrast.mjs.
+   *
+   * THE PATTERN, since it has now happened three times: a row here that pins a FILL token onto a
+   * surface which is really ink or really a mark does not protect the brand — it freezes a
+   * contrast defect and makes the test green while the surface is unreadable. When a status owner
+   * moves tier, this row moves with it, and the number that justified the move gets written down
+   * next to it.
    */
   const statusOwners = {
     "src/styles/alert-layout.css": /hsl\(var\(--success\)/,
     "src/styles/text-layout.css": /color: hsl\(var\(--text-success\)\)/,
     "src/styles/card-layout.css": /hsl\(var\(--mark-success\)\)/,
     "src/styles/data-display-layout.css": /hsl\(var\(--success\)\)/,
-    "src/styles/data-entry-layout.css": /hsl\(var\(--success\)\)/,
+    "src/styles/data-entry-layout.css": /hsl\(var\(--mark-success\)\)/,
   } as const;
 
   for (const [file, pattern] of Object.entries(statusOwners)) {
