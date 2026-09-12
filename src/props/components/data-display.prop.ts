@@ -1007,6 +1007,9 @@ export type ThoughtChainItemProp = {
   onClick?: OnClickProp;
   id?: IdProp;
   className?: ClassNameProp;
+};
+
+/**
  * @see Card — one entry in the card-head tab strip. Ant Design `CardTabListType`, field for
  * field: `key`, `tab`, `disabled`.
  *
