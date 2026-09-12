@@ -79,4 +79,20 @@
    * off the recessed track, which is the whole affordance. */
   --segmented-item-selected-background: var(--background);
   --segmented-item-selected-shadow: var(--shadow-sm);
+
+  /* Counter pill beside the label (gh#602). Geometry matches Button/Toggle count pills; colour does
+   * not. A Badge `secondary` fill is `--muted`, which is byte-identical to
+   * `--segmented-track-background`, so a consumer-nested Badge is 1.00:1 on unselected items. The
+   * pill therefore wears an opaque `--primary` / `--primary-foreground` pair that clears WCAG 2.2
+   * SC 1.4.11 against both the recessed track (`--muted`) and the lifted slab (`--background`) in
+   * light and dark — measured in segmented-count-contrast.test.ts. antd has no `count` on
+   * SegmentedItemType; this knob exists because every faceted filter in the wild needs one and
+   * nesting Badge in `label` was the only API until now. */
+  --segmented-count-min-width: var(--button-count-min-width);
+  --segmented-count-space-inline: var(--button-count-space-inline);
+  --segmented-count-font-size: var(--button-count-font-size);
+  --segmented-count-radius: var(--radius-pill);
+  --segmented-count-gap: var(--space-1);
+  --segmented-count-background: initial;
+  --segmented-count-color: initial;
 }

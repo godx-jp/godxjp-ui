@@ -13565,9 +13565,10 @@ export default function PasswordBlock() {
       },
       {
         name: "options",
-        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]",
+        type:
+          "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
-          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name.",
+          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
       },
       { name: "value", type: "string", description: "Controlled selection." },
       { name: "defaultValue", type: "string", description: "Uncontrolled initial selection." },
@@ -13591,6 +13592,7 @@ export default function PasswordBlock() {
       "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
+      "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
       "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
       "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
     ],
@@ -13616,6 +13618,16 @@ export default function PasswordBlock() {
     { value: "light", label: "Light" },
     { value: "dark", label: "Dark" },
     { value: "system", label: "System" },
+  ]}
+/>
+
+<Segmented
+  aria-label="Status filter"
+  value={status}
+  onValueChange={setStatus}
+  options={[
+    { value: "all", label: "All", count: 128 },
+    { value: "active", label: "Active", count: 96 },
   ]}
 />`,
     storyPath: "data-entry/Segmented.stories.tsx",

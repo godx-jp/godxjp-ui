@@ -1305,6 +1305,22 @@
     vertical-align: middle;
   }
 
+  .ui-segmented-count {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--segmented-count-min-width);
+    margin-inline-start: var(--segmented-count-gap);
+    border-radius: var(--segmented-count-radius);
+    padding-inline: var(--segmented-count-space-inline);
+    background: var(--segmented-count-background, hsl(var(--primary)));
+    color: var(--segmented-count-color, hsl(var(--primary-foreground)));
+    font-size: var(--segmented-count-font-size);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
   /* TagInput */
   .ui-tag-input {
     display: flex;
