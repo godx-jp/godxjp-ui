@@ -9,6 +9,22 @@
 `docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
 `.claude/skills/godx-ui-guinea-pig/SKILL.md`.
 
+## Nạp style: HAI lối vào, và lối thứ hai không chở font
+
+```css
+@import "@godxjp/ui/styles";      /* mọi layer + Noto Sans JP / M PLUS 2 đóng gói sẵn */
+@import "@godxjp/ui/styles/core"; /* CÙNG các layer ấy, KHÔNG một @font-face nào */
+```
+
+Chọn `core` khi kho tự lo mặt chữ, hoặc khi không muốn chở font: `@fontsource` cắt
+Noto Sans JP thành hàng trăm lát `unicode-range`, và trình duyệt chỉ biết cần lát nào
+SAU khi đã dựng bố cục — một consumer đo được **737 lát / 13 MB**, gấp bảy lần toàn bộ
+JavaScript của họ, cộng ~8 vòng tải mỗi lần chuyển màn.
+
+`core` không phải cherry-pick: nó là một trong hai lối vào được hỗ trợ, và thứ tự layer
+vẫn nguyên vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng
+thứ tự, không phải việc chọn lối vào.
+
 ## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
 
 Vỏ mặc định của mọi app trên platform là ba cột, dựng bằng một `AppShell`:
