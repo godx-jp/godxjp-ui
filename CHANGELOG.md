@@ -6,6 +6,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.1] - 2026-09-12
+
+Patch. Hai bản sửa công cụ, và một câu trả lời có số đo cho nửa còn lại của #557.
+
+### Fixed
+
+- **`component-api-manifest.json` công bố prop chỉ vì tên nó xuất hiện trong CHÚ THÍCH (#586).**
+  Máy sinh quyết định có công bố một prop kế thừa hay không bằng regex chạy trên **văn bản thô** của
+  module. Tái hiện: thêm đúng một dòng chú thích vào `typography.tsx` nói component **KHÔNG** nhận
+  `defaultValue`, `Text` mọc từ 33 lên 34 prop — chú thích phủ nhận prop, máy sinh công bố nó.
+
+  Điều đó không dừng ở một tệp JSON: **tám script đọc manifest này**, và nó là thứ `get_component`
+  kể cho agent. Một prop không tồn tại, được kể cho agent, sẽ được viết vào consumer rồi trả
+  `undefined` lúc chạy. Không cổng nào bắt được — với prop ma nằm trong manifest thì
+  `mcp-prop-sync`, `component-api-manifest`, `doc-prop-existence` đều **xanh**.
+
+  Nay phép dò là **cấu trúc**: prop được tính khi implementation destructure nó, đọc nó khỏi binding
+  props, hoặc **chuyển tiếp** nó qua `{...rest}` tới một đích được **nêu tên**. Kết quả: **137 prop
+  ma bị gỡ, 0 prop thật bị mất.**
+
+  Một bản thử trước đó (`bdd16035`) đã bị revert vì gỡ 138 prop mà thiếu phần phân loại, và kéo
+  theo `PasswordInput.value` — prop có thật, vì `PasswordInput` viết `<Input {...props} />` nên
+  `value` tới được một `<input>` thật.
+
+- **`ui-audit` báo `hardcoded-currency` với mọi `${…}` trong template string (#601).** Một URL không
+  phải là giá tiền. `¥{amount}` và `${price}円` vẫn báo đúng.
+
+- **CI của làn push huỷ chính lần chạy mà bản phát hành cần.** `npm-publish.yml` fail-closed: nó đòi
+  mọi check run phải `success` trên **đúng SHA** mà tag trỏ tới. Cả bốn làn push đều đặt
+  `cancel-in-progress: true`, nên mỗi commit mới trên `main` huỷ lần chạy trước. Đo trên ba commit
+  liên tiếp: `Docs lane`, `CI · release contract`, `CI · browser` xanh và `CI · code` **CANCELLED**
+  ở cả ba. `23.4.0` không tag được, và **không có gì đỏ** — bản phát hành chỉ đơn giản là không với
+  tới được. `pr-lane.yml` giữ nguyên cancel, vì ở đó huỷ là đúng.
+
+### Đã đo và CỐ Ý không sửa
+
+- **Nửa `Select` của #557.** Hồi quy tuyến tính trên số lựa chọn: **6,71µs mỗi `<option>` cộng
+  196,4µs cố định**. Tức **82% chi phí mỗi instance không phụ thuộc số lựa chọn**, và ở 5 option thì
+  `HiddenSelect` chỉ chiếm **18%**. Quy ra lưới 8.262 hàng của người báo: bỏ hẳn nó tiết kiệm
+  **0,33 giây trên 24 giây — 1,4%**. Phần cố định là bộ máy `Select` của react-aria, không phải thứ
+  gói này dựng.
+
+  Một bản vá đi hướng đó đã lọt vào `main` và bị revert: nó sửa react-aria **bên trong
+  `node_modules`** bằng cách khớp hash export đã minify, và tệp vá của nó không nằm trong `files[]`
+  nên **mọi `npm install` sẽ `ERR_MODULE_NOT_FOUND`**. Nó cũng không kèm phép đo nào.
+
 ## [23.4.0] - 2026-09-12
 
 Bản này là một câu trả lời cho một câu hỏi: **Ant Design là chuẩn, thiếu gì port 100%.** Luật ấy đã
