@@ -119,6 +119,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". * Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
   },
   {
+    "name": "--attachments-gap",
+    "value": "var(--space-2)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-card-size",
+    "value": "var(--upload-tile-size)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-card-radius",
+    "value": "var(--upload-tile-radius)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-card-gap",
+    "value": "var(--upload-tile-space-gap)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-space-inset",
+    "value": "var(--upload-dropzone-space-inset)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-radius",
+    "value": "var(--upload-dropzone-radius)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-icon-size",
+    "value": "var(--upload-dropzone-icon-size)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-title-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-description-font-size",
+    "value": "var(--upload-dropzone-meta-font-size)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-placeholder-gap",
+    "value": "var(--space-2)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-drop-overlay-background",
+    "value": "initial",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
+    "name": "--attachments-remove-icon-size",
+    "value": "var(--upload-remove-icon-size)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+  },
+  {
     "name": "--badge-space-gap",
     "value": "var(--space-inline-xs)",
     "description": "Badge component tokens."

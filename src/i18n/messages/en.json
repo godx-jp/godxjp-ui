@@ -178,6 +178,16 @@
         "one": "{count} suggestion",
         "other": "{count} suggestions"
       }
+    },
+    "attachments": {
+      "placeholderTitle": "Upload files",
+      "placeholderDescription": "Click or drag files here",
+      "dropLabel": "Drop files ({type})",
+      "inputLabel": "Choose attachment files",
+      "add": "Add attachment",
+      "remove": "Remove {name}",
+      "uploading": "Uploading attachment",
+      "error": "Upload failed"
     }
   },
   "feedback": {

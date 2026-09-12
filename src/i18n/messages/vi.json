@@ -175,6 +175,16 @@
         "one": "{count} gợi ý",
         "other": "{count} gợi ý"
       }
+    },
+    "attachments": {
+      "placeholderTitle": "Tải tệp lên",
+      "placeholderDescription": "Nhấp hoặc kéo thả tệp vào đây",
+      "dropLabel": "Thả tệp ({type})",
+      "inputLabel": "Chọn tệp đính kèm",
+      "add": "Thêm tệp đính kèm",
+      "remove": "Xóa {name}",
+      "uploading": "Đang tải tệp đính kèm",
+      "error": "Tải lên thất bại"
     }
   },
   "feedback": {
