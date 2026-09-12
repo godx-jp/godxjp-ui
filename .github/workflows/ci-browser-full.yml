@@ -52,7 +52,7 @@ on:
 
 concurrency:
   group: ci-browser-full-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   geometry:

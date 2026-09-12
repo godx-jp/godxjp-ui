@@ -75,22 +75,6 @@
       "group": "data-display",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "forceMount",
           "origin": "owned",
           "required": false,
@@ -103,22 +87,6 @@
     "AccordionItem": {
       "group": "data-display",
       "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
         {
           "name": "disabled",
           "origin": "owned",
@@ -147,46 +115,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/ui/accordion.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -837,38 +765,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -882,38 +778,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -1084,38 +948,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -3048,16 +2880,8 @@
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
+          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
+          "values": ["button", "reset", "submit"],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
@@ -3193,14 +3017,6 @@
           "type": "ButtonSizeProp | undefined",
           "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
           "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "variant",
@@ -3353,14 +3169,6 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "density",
           "origin": "owned",
           "required": false,
@@ -3420,16 +3228,7 @@
     },
     "CardAction": {
       "group": "data-display",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "CardBar": {
       "group": "data-display",
@@ -3441,14 +3240,6 @@
           "type": "\"none\" | \"block-start\" | \"block-end\" | \"both\" | undefined",
           "values": ["none", "block-start", "block-end", "both"],
           "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "extra",
@@ -3496,14 +3287,6 @@
       "group": "data-display",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "flush",
           "origin": "owned",
           "required": false,
@@ -3531,29 +3314,11 @@
     },
     "CardCover": {
       "group": "data-display",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "CardDescription": {
       "group": "data-display",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "CardFooter": {
       "group": "data-display",
@@ -3565,14 +3330,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "flush",
@@ -3602,14 +3359,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -3623,14 +3372,6 @@
           "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | undefined",
           "values": ["div", "h1", "h2", "h3", "h4", "p"],
           "declaredIn": ["src/components/data-display/card.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "level",
@@ -3685,77 +3426,11 @@
     },
     "CarouselNext": {
       "group": "data-display",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "CarouselPrevious": {
       "group": "data-display",
-      "props": [
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "Cascader": {
       "group": "data-entry",
@@ -4843,14 +4518,6 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
@@ -6434,38 +6101,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -6483,38 +6118,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -6528,38 +6131,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -6709,38 +6280,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -7308,16 +6847,7 @@
     },
     "DropdownMenuShortcut": {
       "group": "navigation",
-      "props": [
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "DropdownMenuSub": {
       "group": "navigation",
@@ -7490,43 +7020,11 @@
           "declaredIn": ["src/components/navigation/dropdown-menu.tsx"]
         },
         {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
@@ -8206,8 +7704,8 @@
           "name": "htmlType",
           "origin": "owned",
           "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
+          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
+          "values": ["button", "reset", "submit"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -8217,14 +7715,6 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "shape",
@@ -8257,14 +7747,6 @@
           "type": "FloatButtonTypeProp | undefined",
           "values": ["default", "primary"],
           "declaredIn": ["src/props/components/general.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -8764,14 +8246,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/ui/hover-card.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -9069,14 +8543,6 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "formatter",
           "origin": "owned",
           "required": false,
@@ -9198,14 +8664,6 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "HTMLInputTypeAttribute | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "value",
           "origin": "owned",
           "required": false,
@@ -9233,41 +8691,16 @@
           "type": "InputOTPGroupAppearanceProp | undefined",
           "values": ["slots", "grouped"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
     "InputOTPSeparator": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "InputOTPSlot": {
       "group": "data-entry",
       "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
         {
           "name": "index",
           "origin": "owned",
@@ -10836,16 +10269,7 @@
     },
     "PaginationItem": {
       "group": "navigation",
-      "props": [
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "PaginationLink": {
       "group": "navigation",
@@ -10876,14 +10300,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/navigation/pagination.tsx"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -10916,14 +10332,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/navigation/pagination.tsx"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -10956,14 +10364,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/navigation/pagination.tsx"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -11353,14 +10753,6 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "variant",
@@ -11856,38 +11248,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/popover.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -11925,14 +11285,6 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/query.prop.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -12083,43 +11435,11 @@
       "group": "data-entry",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
@@ -12298,43 +11618,11 @@
       "group": "data-entry",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
@@ -12694,14 +11982,6 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "onAnchoredChange",
@@ -13617,14 +12897,6 @@
           "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "forceMount",
           "origin": "owned",
           "required": false,
@@ -13700,24 +12972,7 @@
     },
     "SelectGroup": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "SelectItem": {
       "group": "data-entry",
@@ -13729,22 +12984,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-entry/select.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "disabled",
@@ -13782,87 +13021,19 @@
     },
     "SelectLabel": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "SelectScrollDownButton": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "SelectScrollUpButton": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "SelectSeparator": {
       "group": "data-entry",
-      "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        }
-      ]
+      "props": []
     },
     "SelectTrigger": {
       "group": "data-entry",
@@ -13892,35 +13063,11 @@
           "declaredIn": ["src/components/data-entry/select.tsx"]
         },
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
@@ -13946,22 +13093,6 @@
           "type": "ControlStatusProp | undefined",
           "values": ["warning", "error"],
           "declaredIn": ["src/components/data-entry/select.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "variant",
@@ -13999,22 +13130,6 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": ["src/components/data-entry/select.tsx"]
-        },
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "placeholder",
@@ -14449,38 +13564,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -14630,38 +13713,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/sheet.tsx"]
-        },
-        {
-          "name": "disabled",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [false, true],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -14822,14 +13873,6 @@
           "declaredIn": ["src/components/layout/sidebar.tsx"]
         },
         {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "onActivate",
           "origin": "owned",
           "required": false,
@@ -14852,22 +13895,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/layout/sidebar.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -15519,14 +14546,6 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "delta",
           "origin": "owned",
           "required": false,
@@ -15691,14 +14710,6 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "items",
@@ -15880,14 +14891,6 @@
           "type": "\"sm\" | \"md\" | undefined",
           "values": ["sm", "md"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "unCheckedChildren",
@@ -16293,22 +15296,6 @@
       "group": "navigation",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "forceMount",
           "origin": "owned",
           "required": false,
@@ -16329,22 +15316,6 @@
     "TabsList": {
       "group": "navigation",
       "props": [
-        {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
         {
           "name": "loop",
           "origin": "owned",
@@ -16367,22 +15338,6 @@
       "group": "navigation",
       "props": [
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -16392,22 +15347,6 @@
             "node_modules/@types/react/index.d.ts",
             "src/components/navigation/tabs.tsx"
           ]
-        },
-        {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "value",
@@ -18043,14 +16982,6 @@
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
-          "name": "name",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "onPressedChange",
           "origin": "owned",
           "required": false,
@@ -18089,14 +17020,6 @@
           "type": "\"sm\" | \"md\" | \"lg\" | null | undefined",
           "values": ["sm", "md", "lg"],
           "declaredIn": ["src/components/ui/toggle.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "variant",
@@ -18213,22 +17136,6 @@
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
-          "name": "defaultValue",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "dir",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
@@ -18259,14 +17166,6 @@
           "type": "\"sm\" | \"md\" | \"lg\" | null | undefined",
           "values": ["sm", "md", "lg"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         },
         {
           "name": "value",
@@ -18609,22 +17508,6 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/tooltip.tsx"]
-        },
-        {
-          "name": "type",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
-        },
-        {
-          "name": "value",
-          "origin": "inherited-behavioral",
-          "required": false,
-          "type": "string | number | readonly string[] | undefined",
-          "values": [],
-          "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]
     },
@@ -18739,8 +17622,8 @@
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
-          "values": ["button", "submit", "reset"],
+          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
+          "values": ["button", "reset", "submit"],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
         }
       ]

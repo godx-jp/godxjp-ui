@@ -44,7 +44,17 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # cancel-in-progress is OFF for the push-to-main lanes, and that is a RELEASE requirement, not a
+  # preference. `npm-publish.yml` fail-closes: it refuses to publish unless every check run it
+  # delegates to concluded `success` on the EXACT SHA the tag points at. With cancel-in-progress on,
+  # each new push to `main` cancelled the previous run, so three consecutive commits — 79aeb757,
+  # a02768f0, dcafa96c — all ended with `Docs lane` / `CI · release contract` / `CI · browser`
+  # green and `CI · code` CANCELLED, and 23.4.0 could not be tagged at all. Nothing was red: the
+  # release was simply unreachable, which is the worst shape a gate can fail in.
+  #
+  # Cancelling stays ON in pr-lane.yml, where it is correct — pushing twice to a PR branch means
+  # only the tip is worth judging, and nothing downstream depends on the older run.
+  cancel-in-progress: false
 
 jobs:
   static:
