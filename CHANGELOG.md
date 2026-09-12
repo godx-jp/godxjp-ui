@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.3] - 2026-09-12
+
+Patch. Sáu bản sửa do consumer báo, một lối vào CSS mới, và hai chỗ lời khuyên của gói nói sai.
+
+### Fixed
+
+- **Vùng bấm nút bước `NumberInput` chỉ 24×13 trên con trỏ mịn (#506).** Dưới sàn 24×24 của WCAG 2.2
+  SC 2.5.8, và **ngoại lệ Spacing cũng không cứu được**: nó đòi hai đường tròn đường kính 24px đặt
+  tâm ở mỗi hộp KHÔNG giao nhau, mà tâm cách 20px thì giao. Nay **vẽ 24×13, bấm 24×26**, hai hộp
+  chạm nhau chứ không ăn vào nhau — `::after` neo vào mép ngoài của từng nút.
+
+  Đáng nói là **cổng cũ chính là thứ đóng băng lỗi này**: nó khẳng định "hình học desktop KHÔNG
+  đổi", nên mọi bản sửa vùng bấm đều làm nó đỏ. Nay tách làm hai: phần **vẽ** không được dịch,
+  phần **bấm** phải tới 24×24 — cộng thêm kiểm chồng lấn và kiểm ăn sang nút bên cạnh.
+
+- **Nhánh `range` của `DatePicker` bỏ qua đúng bản sửa ấy (#609)** — `DateRangePicker` và
+  `MonthPicker` vẫn dùng `className` khác nên không nhận `::after`. Nay **vẽ 20×20, bấm 24×24**.
+  Phần vẽ không đổi: `--month-picker-icon-size` và `--control-inline-affix-icon-size` cùng giải về
+  `--icon-size-md` = 1rem.
+
+- **Tệp luật do gói sở hữu kẹt cứng ở dấu cũ (#513).** Bên ghi khoá theo **digest**, còn `ui-audit`
+  khoá theo **version**, nên một tệp luật không đổi nội dung sẽ giữ dấu cũ vĩnh viễn — và thông báo
+  lỗi bảo người dùng chạy lại đúng cái lệnh vừa không làm gì. Nay đóng dấu lại phần version khi
+  digest đã khớp, giữ nguyên thiết kế digest-là-khoá-nội-dung.
+
+- **`DraggablePanel`: nhãn không dịch được, bậc `width` chặn ở 28rem, và `bounds="viewport"` không
+  kẹp lại khi cửa sổ đổi kích thước (#606 #607 #608).** `--draggable-panel-width-xl` trỏ vào
+  `--centered-shell-width-md` = **46rem**, đúng bề rộng consumer đã tự nối tay.
+
+### Added
+
+- **Lối vào CSS thứ ba: `@godxjp/ui/styles/core-with-fallbacks` (#535)** — mang 6 khối `@font-face`
+  chỉ có `local()` (đo: **0** `url(`, tức 0 byte mạng) mà **không** mang 729 lát woff2 (~11,7 MB).
+
+  Vì sao là entry riêng chứ không nhét vào `core`: `core.css` đang hứa `@font-face` = **0**, và con
+  số ấy là thứ consumer grep để tin nó. Thêm khối vào đó phá một lời hứa **đo được**, dù không tốn
+  byte nào. `check:packed-public-contract` nay đo ngân sách font của cả ba lối vào trong tarball.
+
+### Fixed — lời khuyên gói GHI VÀO consumer
+
+`scripts/consumer-rule.md` và `scripts/guinea-pig-skill.md` được chép vào **mọi** consumer, nên sai
+ở đó là sai khắp nơi. Câu "`CardBar` trong manifest có đúng một prop (`extra`)" đo lại là **6 prop**,
+và luật vị trí nay nằm **trong chính catalog** — tức bằng chứng duy nhất cho cả tiêu đề "catalog chở
+PROP, không chở LUẬT BỐ CỤC" đã hết đúng từ lâu mà không cổng nào thấy: `check:doc-prop-existence`
+duyệt `docs/**` và `mcp/src/data/*.ts` nhưng **chưa bao giờ đọc `scripts/*.md`**.
+
+Bổ sung ba chỗ thiếu: `Dialog`/`AlertDialog` nay là một họ với `variant`; luật **antd là chuẩn,
+thiếu gì port 100%**; và 9 dòng nữa cho bảng "TRA, đừng dựng" — trong đó `Badge onRemove` chính là
+#604, nơi consumer với sang `TagInput` vì không ai bảo họ có sẵn.
+
 ### Added
 
 - **Entry thứ ba cho CSS: `@godxjp/ui/styles/core-with-fallbacks` (#535).** Bằng `styles/core` cộng
