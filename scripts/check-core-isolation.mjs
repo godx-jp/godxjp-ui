@@ -16,6 +16,11 @@ const FORBIDDEN = [
   "i18next",
   "react-hook-form",
   "@hookform",
+  // `zod` joins the list because gh#546 marked it an OPTIONAL peer, and an optional peer is a
+  // promise that the core entry never reaches it. That promise was measured once by hand and then
+  // guarded by nothing: the invariant test derives the optional set FROM this list, so a package
+  // missing here is a package declared optional with no gate behind the claim.
+  "zod",
 ];
 
 if (!existsSync(ROOT_ENTRY)) {

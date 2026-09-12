@@ -20,7 +20,7 @@
     }
   },
   "sideEffects": false,
-  "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
+  "description": "@godxjp/ui \u2014 shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
     "LICENSE",
     "dist",
@@ -413,10 +413,25 @@
     "zod": "^4.4.0"
   },
   "peerDependenciesMeta": {
-    "recharts": {
+    "@hookform/resolvers": {
+      "optional": true
+    },
+    "@tanstack/react-query": {
       "optional": true
     },
     "playwright": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "react-router-dom": {
+      "optional": true
+    },
+    "recharts": {
+      "optional": true
+    },
+    "zod": {
       "optional": true
     }
   },

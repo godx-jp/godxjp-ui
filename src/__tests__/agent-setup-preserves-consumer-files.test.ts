@@ -1,4 +1,13 @@
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -78,6 +87,32 @@ describe("a config we cannot parse is never written to (gh#541)", () => {
 
     const after = JSON.parse(readFileSync(path, "utf8"));
     expect(Object.keys(after.mcpServers).sort()).toEqual(["godx-ui", "other"]);
+  });
+
+  it("keeps the file's PERMISSIONS — `rename` does not carry them", () => {
+    // The temp-plus-rename that made writes atomic introduced this: the replacement file is born
+    // under the process umask, so a `.mcp.json` the consumer had chmod'd 600 came back 644 after
+    // the first sync. Silently, because the CONTENT was right. It happens on EVERY write, not only
+    // under contention, which makes it the worse half of the two atomicity defects.
+    const root = consumerRepo();
+    const path = join(root, ".mcp.json");
+    writeFileSync(path, JSON.stringify({ mcpServers: { other: { command: "x" } } }));
+    chmodSync(path, 0o600);
+
+    expect(ensureMcpJson(root)).toBe("added");
+
+    expect(statSync(path).mode & 0o777).toBe(0o600);
+  });
+
+  it("uses a UNIQUE temp name, so two installs cannot overwrite each other's", () => {
+    // A fixed `${path}.godxjp-ui-tmp` is a shared mutable file. Asserted on the source rather than
+    // by racing two processes: a race that passes once proves nothing, and one that fails is a
+    // flake. What must hold is that the name cannot collide by construction.
+    const source = readFileSync(join(process.cwd(), "scripts/_agent-setup.mjs"), "utf8");
+    const tmpName = /const tmp = `\$\{path\}([^`]*)`/.exec(source)?.[1] ?? "";
+
+    expect(tmpName, "no temp name found in writeFileAtomic").not.toBe("");
+    expect(tmpName, "the temp name is constant, so concurrent writes collide").toMatch(/\$\{/);
   });
 
   it("the control still works: no file at all is created", () => {

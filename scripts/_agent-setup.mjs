@@ -10,8 +10,17 @@
  * The guarantee is now structural: a file that exists but cannot be read, parsed, or recognised is
  * NEVER written to. We leave a `.godxjp-ui-suggested` sidecar next to it and say so.
  */
-import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { createHash, randomBytes } from "node:crypto";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -205,9 +214,31 @@ function readJson(path) {
  * write manufactured the precondition for the overwrite.
  */
 function writeFileAtomic(path, data) {
-  const tmp = `${path}.godxjp-ui-tmp`;
-  writeFileSync(tmp, data);
-  renameSync(tmp, path);
+  // UNIQUE temp name. A fixed `${path}.godxjp-ui-tmp` is a shared mutable file: two installs
+  // running at once — a workspace installing packages in parallel is enough — write over each
+  // other's temp and `rename` whichever finished last.
+  const tmp = `${path}.godxjp-ui-tmp-${process.pid}-${randomBytes(4).toString("hex")}`;
+  try {
+    writeFileSync(tmp, data);
+    // `rename` does NOT carry the target's permissions: the new file is born under the process
+    // umask. A `.mcp.json` the consumer had chmod 600 would come back 644 after the first sync,
+    // silently, because the CONTENT would be right. This happens on every write, not only under
+    // contention, which makes it the worse half of the two.
+    try {
+      chmodSync(tmp, statSync(path).mode & 0o7777);
+    } catch {
+      // No existing file (a create), or a filesystem that will not report/set the mode. Either
+      // way the default is correct and this must not abort the write.
+    }
+    renameSync(tmp, path);
+  } catch (error) {
+    try {
+      unlinkSync(tmp);
+    } catch {
+      // Nothing to clean up.
+    }
+    throw error;
+  }
 }
 
 /**
