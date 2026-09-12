@@ -38,16 +38,23 @@ import { chromium } from "playwright";
 const require = createRequire(import.meta.url);
 const ROOT = process.cwd();
 const FONTS_CSS = join(ROOT, "src/styles/fonts.css");
+/** The faces themselves live here since #535, because `styles/core-with-fallbacks` carries them
+ *  WITHOUT the @fontsource subsets; fonts.css `@import`s this file and owns the token stack. */
+const FONT_FALLBACKS_CSS = join(ROOT, "src/styles/font-fallbacks.css");
 const ORIGIN = "http://font-metrics.test";
 
 const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const source = stripComments(readFileSync(FONTS_CSS, "utf8"));
+const source = stripComments(
+  `${readFileSync(FONT_FALLBACKS_CSS, "utf8")}\n${readFileSync(FONTS_CSS, "utf8")}`,
+);
 
 const faces = (source.match(/@font-face\s*\{[^}]*"Noto Sans JP Fallback"[^}]*\}/g) ?? []).join(
   "\n",
 );
 if (!faces) {
-  console.error('✗ src/styles/fonts.css declares no "Noto Sans JP Fallback" face (issue #475).');
+  console.error(
+    '✗ src/styles/font-fallbacks.css declares no "Noto Sans JP Fallback" face (issue #475).',
+  );
   process.exit(1);
 }
 /** The bundled stack, and the same stack as it renders BEFORE the web fonts arrive. */
@@ -221,7 +228,7 @@ if (failures.length) {
   if (failures.length > 20) console.error(`  … ${failures.length - 20} more`);
   console.error(
     "\n  Every one of these is a reflow a cold visitor sees as layout shift. The numbers live in\n" +
-      "  src/styles/fonts.css: size-adjust is Noto Sans JP's advance ÷ the local face's over the\n" +
+      "  src/styles/font-fallbacks.css: size-adjust is Noto Sans JP's advance ÷ the local face's over the\n" +
       "  library's own English strings, and ascent/descent-override restate 116% / 28.8% of the em\n" +
       "  divided by that size-adjust. Re-derive them from the font files; do not widen this gate.",
   );

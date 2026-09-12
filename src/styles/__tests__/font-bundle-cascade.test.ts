@@ -132,7 +132,10 @@ describe("bundled-font cascade order (issue #210)", () => {
  * are the static halves of the contract; `check:font-fallback-metrics` measures the rendered half.
  */
 describe("metric-matched fallback for the swap window (issue #475)", () => {
-  const fonts = stripComments(readFileSync(resolve(STYLES_DIR, "fonts.css"), "utf8"));
+  // Flattened, not read raw: since #535 the faces live in `font-fallbacks.css` (so that
+  // `styles/core-with-fallbacks` can carry them without the @fontsource subsets) and reach the
+  // bundled entry through an `@import`. The token stack below is still fonts.css's own.
+  const fonts = flatten(resolve(STYLES_DIR, "fonts.css"));
   const faces = [...fonts.matchAll(/@font-face\s*\{([^}]*)\}/g)]
     .map((m) => m[1])
     .filter((body) => body.includes('"Noto Sans JP Fallback"'));

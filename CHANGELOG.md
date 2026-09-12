@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Entry thứ ba cho CSS: `@godxjp/ui/styles/core-with-fallbacks` (#535).** Bằng `styles/core` cộng
+  đúng **6 khối `@font-face` `local()`-only** (metric-matched fallback của #475) và **không một lát
+  woff2 nào** — `src` toàn `local()`, nên chi phí mạng so với `core` là **0 byte**. Dành cho
+  consumer đã bỏ bundle font (đo được: **729 lát woff2, ~11,7 MB** trong `@godxjp/ui/styles` ở bản
+  @fontsource hiện tại) nhưng tự cấp Noto Sans JP và vẫn muốn cửa sổ swap không đội hình.
+
+  **Vì sao là entry thứ ba chứ không nhét vào `core`:** `core.css` đang hứa `@font-face` = **0**, và
+  con số ấy là thứ consumer **grep** để tin nó (`grep -c '@font-face' dist/styles/core.css`). Thêm 6
+  khối vào đó phá một lời hứa **đo được**, dù không tải byte nào. Sáu dòng cho một entry riêng rẻ
+  hơn một lời hứa mất nghĩa.
+
+  Entry mới **không** đụng `--font-sans-base` — `core` không chở mặt chữ thương hiệu nào, nên đặt
+  tên một mặt chữ ở đó là nói dối. Consumer tự xếp `"Noto Sans JP Fallback"` ngay sau mặt chữ của
+  mình.
+
+  Sáu khối ấy nay ở `src/styles/font-fallbacks.css`, một nguồn duy nhất mà cả `fonts.css` lẫn
+  `core-with-fallbacks.css` `@import` — trước đó chúng nằm thẳng trong `fonts.css`, và một bản chép
+  thứ hai sẽ trôi khỏi các con số metric mà chỉ `check:font-fallback-metrics` (gate trình duyệt)
+  mới bắt được, hàng tháng sau.
+
+  `check:packed-public-contract` nay **đo** ngân sách font của cả ba entry trong chính tarball
+  (`./styles` → 6 `@font-face` + có `@fontsource`; `./styles/core` → 0; `./styles/core-with-fallbacks`
+  → 6, `local()`-only, không `@fontsource`), và consumer `npm install` thật giải được subpath mới
+  qua `exports`.
+
+  **Chưa giải:** 729 lát woff2 vẫn nặng nguyên với ai muốn dùng font kèm gói. #535 để mở.
+
 ## [23.4.2] - 2026-09-12
 
 Patch. Sáu bản sửa do consumer báo, và bản vá dứt điểm cho thứ đã làm hai lần phát hành trước kẹt.

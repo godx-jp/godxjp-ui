@@ -16,12 +16,26 @@ That single import ships everything: colors, the bundled fonts (**Noto Sans JP**
 
 ---
 
-## CSS entries — `styles` or `styles/core`, nothing smaller
+## CSS entries — `styles`, `styles/core`, `styles/core-with-fallbacks`, nothing smaller
 
-`@godxjp/ui/styles` bundles every component's CSS plus the fonts. When you manage fonts yourself (next/font, a system stack, a browser extension that must not ship font files), load the same layers without the faces:
+`@godxjp/ui/styles` bundles every component's CSS plus the fonts: **729 woff2 subsets, ~11.7 MB on disk** at the current @fontsource versions (issue #535 measured 737 files / 13 MB in a real consumer build). When you manage fonts yourself (next/font, a system stack, a browser extension that must not ship font files), load the same layers without the faces:
 
 ```css
 @import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
+```
+
+`core` carries **zero** `@font-face` — `grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → `0` — and that number is the point of it. If you supply Noto Sans JP yourself and also want the cold-visit swap to stop reflowing the page (issue #475), take the third entry: `core` plus the six metric-matched fallback faces, every one `local()`-only, so the extra cost over `core` is **zero network bytes**.
+
+```css
+@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 local()-only faces */
+```
+
+It declares the faces and nothing else — name the family yourself, directly after your own face:
+
+```css
+:root {
+  --font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;
+}
 ```
 
 The per-layer files (`control`, `card-layout`, `navigation-layout`, …) are the package's internal structure, **not a public menu**. Layers share rules — a Select's rows and a menu's surface, a form's rhythm, a card's header type — so a page that loads a subset renders naked menus and unsized rows with no error. The runtime `visual-audit` reports it as `css-layers-missing`.

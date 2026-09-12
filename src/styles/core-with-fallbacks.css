@@ -1,0 +1,36 @@
+/*
+ * @godxjp/ui — CORE + the metric-matched fallback faces, and NOT ONE woff2 subset (issue #535).
+ *
+ *   @import "@godxjp/ui/styles";                    // every layer + 737 bundled woff2 subsets (~13 MB)
+ *   @import "@godxjp/ui/styles/core";               // every layer, ZERO @font-face
+ *   @import "@godxjp/ui/styles/core-with-fallbacks";// every layer + 6 `local()`-only faces, ZERO bytes
+ *
+ * FOR: a consumer who took `core` because the sliced bundle cost too much, supplies Noto Sans JP
+ * themselves (next/font, self-hosted, a gateway), and still wants the swap window not to reflow.
+ * The faces here name fonts the visitor ALREADY has (Arial / Liberation Sans for Latin, Hiragino /
+ * Yu Gothic / Meiryo / Noto Sans CJK JP / IPAGothic for Japanese) and bend their metrics onto Noto
+ * Sans JP's, so the paint before your own face arrives occupies the same boxes. `src` is
+ * `local()`-only in all six, so the network cost of this entry over `core` is exactly zero bytes.
+ *
+ * YOU MUST NAME THE FAMILY. This entry declares the faces; it does not touch `--font-sans-base`,
+ * because `core` ships no brand face and it would be a lie to name one. Put it directly after your
+ * own face — anywhere later and a platform font paints the swap window instead:
+ *
+ *   :root {
+ *     --font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;
+ *   }
+ *
+ * WHY A THIRD ENTRY INSTEAD OF FOLDING THESE INTO `core` — the cheaper-looking option, and the
+ * wrong one. `core.css` promises `@font-face` = 0, and that number is what a consumer GREPS to
+ * believe it (`grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → 0). Six more
+ * blocks in there would break a MEASURABLE promise even though they download nothing, and the
+ * consumer who checks the number next month would find the check no longer means what it meant.
+ * A promise that can be verified with one command is worth more than the six lines it costs to
+ * keep a separate entry. `src/styles/__tests__/core-font-entries.test.ts` holds both numbers.
+ *
+ * The layer-order contract is `core`'s, unchanged — this file adds faces, no rules and no layers.
+ * Cherry-picking `*-layout.css` is still unsupported; `styles`, `styles/core` and
+ * `styles/core-with-fallbacks` are the three supported entries.
+ */
+@import "./core.css";
+@import "./font-fallbacks.css";

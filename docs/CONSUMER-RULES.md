@@ -2,7 +2,7 @@
 
 Read this once; the audit enforces it. Everything else in `docs/` is for contributors.
 
-1. Load styles with `@import "@godxjp/ui/styles"` (fonts bundled) or `@import "@godxjp/ui/styles/core"` (no fonts). Never cherry-pick `*-layout.css`.
+1. Load styles with `@import "@godxjp/ui/styles"` (fonts bundled), `@import "@godxjp/ui/styles/core"` (no `@font-face` at all) or `@import "@godxjp/ui/styles/core-with-fallbacks"` (`core` + six `local()`-only metric-matched faces, still zero network bytes — for when you supply Noto Sans JP yourself). Never cherry-pick `*-layout.css`.
 2. Every page is `<PageContainer title subtitle extra footer>`; its sections are spaced by the page. Group items inside a section with `<Flex direction="col" gap>` or `<ResponsiveGrid>`.
 3. No Tailwind layout on your own elements: no `flex`, `grid`, `gap-*`, `p-*`, `m-*`, `space-*`. Rows are `<Flex>` (default row), stacks are `<Flex direction="col">`, grids are `<ResponsiveGrid>`.
 4. No hand-rolled surfaces: no `rounded-* border bg-*` divs. A box is `Card`, a pill is `Badge`, a person is `Avatar`, a row is `ListRow`, a label/value pair is `Descriptions`, an empty area is `EmptyState`, a read-only sample of a colour the USER chose is `Swatch`.

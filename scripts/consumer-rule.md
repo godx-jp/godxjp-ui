@@ -9,11 +9,12 @@
 `docs/CONSUMER-RULES.md` (10 luật) và, với kho chuột bạch, ở
 `.claude/skills/godx-ui-guinea-pig/SKILL.md`.
 
-## Nạp style: HAI lối vào, và lối thứ hai không chở font
+## Nạp style: BA lối vào, và hai lối sau không chở font
 
 ```css
-@import "@godxjp/ui/styles";      /* mọi layer + Noto Sans JP / M PLUS 2 đóng gói sẵn */
+@import "@godxjp/ui/styles"; /* mọi layer + Noto Sans JP / M PLUS 2 đóng gói sẵn */
 @import "@godxjp/ui/styles/core"; /* CÙNG các layer ấy, KHÔNG một @font-face nào */
+@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 khối local()-only, vẫn 0 byte mạng */
 ```
 
 Chọn `core` khi kho tự lo mặt chữ, hoặc khi không muốn chở font: `@fontsource` cắt
@@ -21,9 +22,18 @@ Noto Sans JP thành hàng trăm lát `unicode-range`, và trình duyệt chỉ b
 SAU khi đã dựng bố cục — một consumer đo được **737 lát / 13 MB**, gấp bảy lần toàn bộ
 JavaScript của họ, cộng ~8 vòng tải mỗi lần chuyển màn.
 
-`core` không phải cherry-pick: nó là một trong hai lối vào được hỗ trợ, và thứ tự layer
-vẫn nguyên vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng
-thứ tự, không phải việc chọn lối vào.
+Lối thứ ba dành cho kho **tự cấp Noto Sans JP** (next/font, self-host) mà vẫn muốn cửa
+sổ swap không đội hình: nó chở đúng 6 `@font-face` metric-matched, `src` toàn `local()`
+nên **không tải byte nào**. Nhớ tự xếp tên họ chữ ngay sau mặt chữ của bạn:
+`--font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;`
+
+`core` giữ `@font-face` = **0** và đó là lời hứa đo được —
+`grep -c '@font-face' node_modules/@godxjp/ui/dist/styles/core.css` → `0`. Vì vậy các
+fallback nằm ở entry riêng chứ không nhét vào `core`.
+
+Không lối nào trong ba là cherry-pick: cả ba đều được hỗ trợ và thứ tự layer vẫn nguyên
+vẹn. Cherry-pick từng layer riêng lẻ thì vẫn cấm — đó là thứ làm vỡ hợp đồng thứ tự,
+không phải việc chọn lối vào.
 
 ## Bố cục chuẩn của platform: BA CỘT, và ba cột là BA PHẠM VI
 

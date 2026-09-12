@@ -19,6 +19,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const root = process.cwd();
 const libraryPackage = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
@@ -143,6 +144,106 @@ const contracts = [
     files: ["dist/components/charts/pie-chart.js", "dist/components/charts/pie-chart.d.ts"],
   },
 ];
+
+/**
+ * CSS entries ship as files, not barrels, so the JS contracts above cannot see them — and gh#535
+ * is a contract about a NUMBER (`grep -c '@font-face' dist/styles/core.css` → 0) that a consumer
+ * runs against the PACKED tree. Measure it there.
+ *
+ * `flatten` follows the relative `@import` graph the way a bundler does, because each entry file
+ * is a few `@import`s and every assertion below is about what the graph pulls in.
+ */
+const styleContracts = [
+  {
+    subpath: "./styles",
+    target: "./dist/styles/index.css",
+    // The bundled entry is the one that DOES carry the 737 subsets — pinned so a "fix" that
+    // quietly drops the fonts from the zero-config entry is a failure, not a silent behaviour swap.
+    expect: { faces: 6, fontsource: true },
+  },
+  {
+    subpath: "./styles/core",
+    target: "./dist/styles/core.css",
+    expect: { faces: 0, fontsource: false },
+  },
+  {
+    subpath: "./styles/core-with-fallbacks",
+    target: "./dist/styles/core-with-fallbacks.css",
+    expect: { faces: 6, fontsource: false },
+  },
+];
+
+function flattenPackedCss(tarball, path, seen = new Set()) {
+  if (seen.has(path)) return "";
+  seen.add(path);
+  const source = tarballText(tarball, path);
+  return source.replace(/@import\s+["']([^"']+)["']\s*;/g, (match, specifier) => {
+    if (!specifier.startsWith(".")) return match;
+    return flattenPackedCss(tarball, join(dirname(path), specifier), seen);
+  });
+}
+
+/** Same walk, over a real installed tree on disk rather than the tarball. */
+function flattenInstalledCss(file, seen = new Set()) {
+  if (seen.has(file)) return "";
+  seen.add(file);
+  return readFileSync(file, "utf8").replace(
+    /@import\s+["']([^"']+)["']\s*;/g,
+    (match, specifier) =>
+      specifier.startsWith(".") ? flattenInstalledCss(join(dirname(file), specifier), seen) : match,
+  );
+}
+
+function checkPackedStyleEntries(tarball, manifest, packedFiles) {
+  const errors = [];
+  for (const contract of styleContracts) {
+    const exported = manifest.exports?.[contract.subpath];
+    if (exported !== contract.target) {
+      errors.push(
+        `${contract.subpath}: packed exports map must point at ${contract.target}, got ${
+          exported ?? "nothing"
+        } — a wildcard match is not a declared entry`,
+      );
+      continue;
+    }
+    const path = contract.target.replace(/^\.\//, "");
+    if (!packedFiles.has(path)) {
+      errors.push(`${contract.subpath}: packed file missing ${path}`);
+      continue;
+    }
+
+    const css = flattenPackedCss(tarball, path);
+    const faces = css.match(/@font-face\s*\{[^}]*\}/g) ?? [];
+    if (faces.length !== contract.expect.faces) {
+      errors.push(
+        `${contract.subpath}: expected ${contract.expect.faces} @font-face blocks in the packed ` +
+          `cascade, got ${faces.length}`,
+      );
+    }
+    const reachesSubsets = css.includes("@fontsource/");
+    if (reachesSubsets !== contract.expect.fontsource) {
+      errors.push(
+        `${contract.subpath}: packed cascade ${reachesSubsets ? "reaches" : "does not reach"} the ` +
+          `@fontsource subsets; expected the opposite (gh#535)`,
+      );
+    }
+    // Whatever faces an entry carries WITHOUT the subsets must be free: `local()`-only, no request.
+    if (!contract.expect.fontsource) {
+      for (const face of faces) {
+        if (!/src:\s*local\(/.test(face) || /url\(/.test(face)) {
+          errors.push(
+            `${contract.subpath}: a packed @font-face is not local()-only — this entry promises ` +
+              `zero network bytes for fonts`,
+          );
+        }
+      }
+    }
+  }
+  if (errors.length > 0) {
+    throw new Error(`packed styles contract failed:\n  ${errors.join("\n  ")}`);
+  }
+  return styleContracts.map((c) => `${c.subpath} → ${c.expect.faces} @font-face`).join(", ");
+}
 
 function tarballText(tarball, path) {
   return execFileSync("tar", ["-xzO", "-f", tarball, `package/${path}`], {
@@ -298,8 +399,7 @@ createRoot(document.getElementById("root")).render(
 }
 
 function libraryVersion(name) {
-  const version =
-    libraryPackage.devDependencies?.[name] ?? libraryPackage.dependencies?.[name];
+  const version = libraryPackage.devDependencies?.[name] ?? libraryPackage.dependencies?.[name];
   if (!version) {
     throw new Error(`independent consumer fixture needs a pinned ${name} version in package.json`);
   }
@@ -539,6 +639,31 @@ createRoot(document.getElementById("root")!).render(
   viteBuildIndependentConsumer(consumer);
   if (!existsSync(join(consumer, "dist/index.html"))) {
     throw new Error("independent core consumer Vite build did not emit dist/index.html");
+  }
+
+  // gh#535: the third styles entry must resolve through the INSTALLED package's exports map, not
+  // just exist in the tarball. Node's resolver is the same one Vite and Tailwind ask.
+  const resolved = execFileSync(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      'process.stdout.write(import.meta.resolve("@godxjp/ui/styles/core-with-fallbacks"))',
+    ],
+    { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  ).trim();
+  const resolvedFile = fileURLToPath(resolved);
+  if (!resolvedFile.endsWith("/dist/styles/core-with-fallbacks.css")) {
+    throw new Error(
+      `@godxjp/ui/styles/core-with-fallbacks resolved to ${resolvedFile} in an installed consumer`,
+    );
+  }
+  const installedFaces =
+    flattenInstalledCss(resolvedFile).match(/@font-face\s*\{[^}]*\}/g)?.length ?? 0;
+  if (installedFaces !== 6) {
+    throw new Error(
+      `the installed core-with-fallbacks cascade carries ${installedFaces} @font-face blocks, expected 6`,
+    );
   }
 
   return { installedMandatoryPeerCount: installedPeers.length };
@@ -785,15 +910,19 @@ try {
     throw new Error(`packed public contract failed:\n  ${errors.join("\n  ")}`);
   }
 
+  const styleBudget = checkPackedStyleEntries(tarball, manifest, packedFiles);
+
   buildCompactTrendConsumer(tarball, manifest);
   buildMissingRechartsPeerConsumer(tarball, manifest);
   buildErrorSurfaceConsumer(tarball, manifest);
   const independentCore = buildIndependentCoreConsumer(tarball, manifest);
-  const independentMissingRechartsDiagnostic =
-    buildIndependentMissingRechartsPeerConsumer(tarball, manifest);
+  const independentMissingRechartsDiagnostic = buildIndependentMissingRechartsPeerConsumer(
+    tarball,
+    manifest,
+  );
 
   console.log(
-    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; a recharts-backed chart without the peer failed its build with ONE diagnostic naming the package and the remedy; ErrorSurface imported, built and server-rendered from the tarball in both modes; independent core consumer npm-installed the tarball with ${independentCore.installedMandatoryPeerCount} mandatory peers (typecheck + Vite build exit 0, node_modules not symlinked to the library checkout); independent missing-recharts consumer failed its build with the same single diagnostic`,
+    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); packed styles entries ${styleBudget}; compact trend Vite consumer built without recharts; a recharts-backed chart without the peer failed its build with ONE diagnostic naming the package and the remedy; ErrorSurface imported, built and server-rendered from the tarball in both modes; independent core consumer npm-installed the tarball with ${independentCore.installedMandatoryPeerCount} mandatory peers (typecheck + Vite build exit 0, node_modules not symlinked to the library checkout); independent missing-recharts consumer failed its build with the same single diagnostic`,
   );
   console.log("--- independent missing-recharts diagnostic (verbatim) ---");
   console.log(independentMissingRechartsDiagnostic.trim());

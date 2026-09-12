@@ -110,11 +110,26 @@ The framework ships colors, the type scale, the wa-iro palette, and (opt-in) bun
 @import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
 ```
 
+Supplying Noto Sans JP yourself and want the cold-visit swap not to reflow the page? Take the
+third entry instead — the same layers plus the six metric-matched fallback faces, whose `src` is
+`local()`-only, so it costs **zero network bytes** over `core`:
+
+```css
+@import "@godxjp/ui/styles/core-with-fallbacks"; /* core + 6 local()-only faces */
+```
+
+Then name the family directly after your own face:
+`--font-sans-base: "Noto Sans JP", "Noto Sans JP Fallback", system-ui, sans-serif;`
+
+`core` stays at **zero** `@font-face` on purpose — `grep -c '@font-face'
+node_modules/@godxjp/ui/dist/styles/core.css` → `0` is the promise, so the fallbacks got their own
+entry rather than being folded in.
+
 > **Do not cherry-pick `*-layout.css` files.** Layers depend on each other (a
 > Select's rows, a menu's surface, a form's rhythm live in shared rules) and a
 > missing layer fails silently: menus render with no background, rows with no
-> height. `styles` and `styles/core` are the two supported entries; the runtime
-> `visual-audit` flags a page whose layers are incomplete (`css-layers-missing`).
+> height. `styles`, `styles/core` and `styles/core-with-fallbacks` are the three supported entries;
+> the runtime `visual-audit` flags a page whose layers are incomplete (`css-layers-missing`).
 
 ## Golden ratio (φ ≈ 1.618)
 
