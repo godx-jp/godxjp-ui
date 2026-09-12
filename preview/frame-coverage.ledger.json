@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-09-11",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 262,
-    "dimensionCells": 3668,
-    "covered": 78,
-    "untested": 2054,
-    "notApplicable": 1536,
+    "exports": 268,
+    "dimensionCells": 3752,
+    "covered": 83,
+    "untested": 2098,
+    "notApplicable": 1571,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6595,6 +6595,118 @@
       "embeddable": true,
       "baseline": {
         "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonArticle": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonAvatar": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 2,
+        "notApplicable": 5,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
+        "shapes": "covered:prop-evidence:shape",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonButton": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 2,
+        "notApplicable": 5,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
+        "shapes": "covered:prop-evidence:shape",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonDetail": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
         "notApplicable": 7,
         "untested": 7
       },
@@ -6615,7 +6727,63 @@
         "reducedMotion": "untested"
       }
     },
-    "SkeletonDetail": {
+    "SkeletonImage": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonInput": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 1,
+        "notApplicable": 6,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "covered:prop-evidence:size",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonNode": {
       "group": "feedback",
       "owner": "feedback/skeleton",
       "frames": [

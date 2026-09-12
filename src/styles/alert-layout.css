@@ -323,6 +323,174 @@
     }
   }
 
+  /* ── ANTD SKELETON PARITY (ant-design/components/skeleton/style/index.ts) ───────────────────
+   * The element presets, the article shape and the `active` sheen. antd paints these from
+   * CSS-in-JS design tokens; the geometry is ported and the chrome rebound to the token tiers. */
+
+  /* `active` — antd's travelling sheen replaces the resting pulse rather than adding to it, so the
+   * block is never running two animations at once. The article's flag descends to its lines the
+   * same way antd's `&-active` selector does. */
+  .ui-skeleton-block[data-active],
+  .ui-skeleton-article[data-active] .ui-skeleton-block {
+    background-image: var(
+      --skeleton-sweep-gradient,
+      linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 37%, hsl(var(--muted)) 63%)
+    );
+    background-size: 400% 100%;
+    /* MEASURED 2026-09-12, and the reason this reads a fallback: the whole motion tier
+     * (--duration-fast/base/slow, --ease-*, --reveal-*, --duration-loop, --activity-*) is declared
+     * ONLY inside `.ui-scale-fixed` in tokens/foundation.css — there is no `:root` copy, so
+     * getComputedStyle(document.documentElement).getPropertyValue("--duration-loop") is "" on every
+     * page, and an `animation` shorthand carrying it is invalid at computed-value time (measured:
+     * `.ui-activity-dot` computes animation-name `none` on /frame/general-activity — Activity's
+     * ambient motion does not run at all). That is a foundation-tier bug, not a Skeleton one, and
+     * repairing it moves motion across the whole library, so it is reported rather than fixed here.
+     * 1400ms is antd's own skeleton duration AND the value --duration-loop declares, so this rule
+     * paints correctly today and starts reading the token the moment the tier is repaired. The
+     * pulse directly above already hard-codes its 2s for want of the same token. */
+    animation: ui-skeleton-sweep var(--duration-loop, 1400ms) ease infinite;
+  }
+
+  @keyframes ui-skeleton-sweep {
+    from {
+      background-position: 100% 50%;
+    }
+    to {
+      background-position: 0 50%;
+    }
+  }
+
+  /* WCAG 2.2.2 / 2.3.3 — a placeholder that never stops moving is exactly the loop the preference
+   * is about. Covers the resting pulse too: both motions paint on `.ui-skeleton-block`, and the
+   * block stays visible with its fill, so nothing is lost by standing still. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-skeleton-block,
+    .ui-skeleton-block[data-active],
+    .ui-skeleton-article[data-active] .ui-skeleton-block {
+      animation: none;
+    }
+  }
+
+  /* ELEMENT PRESETS — one block, one geometry attribute. Every box derives from the
+   * `--control-height` tier, which is what antd derives from too (`controlHeight` ±step). */
+  [data-skeleton-element] {
+    --skeleton-element-block-size: var(--control-height);
+
+    display: inline-block;
+    vertical-align: top;
+    block-size: var(--skeleton-element-block-size);
+    border-radius: var(--skeleton-element-radius);
+  }
+
+  [data-skeleton-element][data-size="xs"] {
+    --skeleton-element-block-size: var(--control-height-xs);
+  }
+
+  [data-skeleton-element][data-size="sm"] {
+    --skeleton-element-block-size: var(--control-height-sm);
+  }
+
+  [data-skeleton-element][data-size="lg"] {
+    --skeleton-element-block-size: var(--control-height-lg);
+  }
+
+  [data-skeleton-element="avatar"] {
+    inline-size: var(--skeleton-element-block-size);
+    border-radius: var(--avatar-square-radius);
+  }
+
+  [data-skeleton-element="avatar"][data-shape="circle"] {
+    border-radius: var(--radius-pill);
+  }
+
+  [data-skeleton-element="button"] {
+    inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-button-width-ratio));
+    min-inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-button-width-ratio));
+  }
+
+  /* Button corners speak Button's own `shape` vocabulary — `pill` is antd's `shape="round"`. */
+  [data-skeleton-element="button"][data-shape="pill"] {
+    border-radius: var(--radius-pill);
+  }
+
+  [data-skeleton-element="button"][data-shape="sharp"] {
+    border-radius: var(--radius-sharp);
+  }
+
+  [data-skeleton-element="input"] {
+    inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-input-width-ratio));
+    min-inline-size: calc(var(--skeleton-element-block-size) * var(--skeleton-input-width-ratio));
+  }
+
+  /* antd's `block` — the stand-in fills its column instead of holding the control's own measure. */
+  [data-skeleton-element][data-block] {
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  [data-skeleton-element="node"],
+  [data-skeleton-element="image"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    inline-size: var(--skeleton-node-size);
+    block-size: var(--skeleton-node-size);
+  }
+
+  .ui-skeleton-image-glyph {
+    inline-size: var(--skeleton-image-glyph-size);
+    block-size: var(--skeleton-image-glyph-size);
+    color: var(--skeleton-image-glyph-color, hsl(var(--muted-foreground) / 0.4));
+  }
+
+  /* ARTICLE — antd lays the avatar and the text out as table cells; a flex row is the same two
+   * columns with the text column free to shrink, and it needs no display:table on the root. */
+  .ui-skeleton-article {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--skeleton-article-avatar-gap);
+    inline-size: 100%;
+  }
+
+  .ui-skeleton-article-header {
+    flex: 0 0 auto;
+  }
+
+  .ui-skeleton-article-section {
+    display: grid;
+    flex: 1 1 auto;
+    gap: var(--skeleton-article-title-gap);
+    min-inline-size: 0;
+  }
+
+  /* Beside an avatar the heading drops to the avatar's optical centre line (antd's `marginSM`). */
+  .ui-skeleton-article[data-avatar] .ui-skeleton-article-title {
+    margin-block-start: var(--skeleton-article-avatar-title-offset);
+  }
+
+  .ui-skeleton-article-paragraph {
+    display: grid;
+    gap: var(--skeleton-article-line-gap);
+  }
+
+  .ui-skeleton-article-title,
+  .ui-skeleton-article-line {
+    block-size: var(--skeleton-block-height);
+    inline-size: var(--skeleton-line-width, 100%);
+  }
+
+  /* antd's short last line, for a paragraph long enough for it to read as a paragraph. */
+  .ui-skeleton-article-line:last-child:not(:first-child):not(:nth-child(2)) {
+    --skeleton-line-width: var(--skeleton-paragraph-last-width);
+  }
+
+  /* antd's `round` — its capsule radius is a large literal; here it is the pill token. */
+  .ui-skeleton-article[data-round] .ui-skeleton-block {
+    border-radius: var(--radius-pill);
+  }
+
   @keyframes pulse {
     50% {
       opacity: 0.5;

@@ -11698,23 +11698,268 @@ import { Separator } from "@godxjp/ui/layout";
   {
     name: "Skeleton",
     group: "feedback",
-    tagline: "Base pulsing skeleton block for custom loading placeholders.",
+    tagline:
+      "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
     props: [
       { name: "className", type: "string", description: "Size and layout classes for the block." },
+      {
+        name: "active",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Swap the resting pulse for a travelling sheen (Ant Design's `active`). The block already pulses without it — `active` picks the louder of the two motions, it does not turn motion on. Both stop under prefers-reduced-motion.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description:
+          "Pass `false` to render `children` INSTEAD of the placeholder, so a call site can swap without a ternary. Omitting it keeps the placeholder (Ant Design's `loading || !('loading' in props)`).",
+      },
     ],
     usage: [
-      "DO use Skeleton for a custom block when SkeletonRows/Table/Card do not match the final layout.",
+      "DO use Skeleton for a custom block when SkeletonRows/Table/Stat/Article do not match the final layout.",
+      "DO reach for a shaped preset before sizing a bare block by hand: SkeletonButton, SkeletonInput, SkeletonAvatar, SkeletonNode and SkeletonImage already carry the box of the control they stand in for, from the --control-height tier.",
       "DON'T use a spinner overlay for skeletonable page content.",
+      "DON'T reuse Skeleton as an ambient 'something is happening' mark — it hard-codes aria-busy + aria-live because it means CONTENT IS LOADING. Use Activity for ambient motion.",
     ],
     useCases: [
       "Single loading line",
       "Custom card media placeholder",
       "Inline metadata placeholder",
     ],
-    related: ["SkeletonRows", "SkeletonTable", "SkeletonStat"],
+    related: [
+      "SkeletonArticle",
+      "SkeletonRows",
+      "SkeletonTable",
+      "SkeletonStat",
+      "SkeletonButton",
+      "SkeletonInput",
+      "SkeletonAvatar",
+      "SkeletonNode",
+      "SkeletonImage",
+      "Activity — the ambient 'working…' mark. Skeleton is a SHAPE standing in for content that has not arrived; Activity is motion beside content that is already there.",
+    ],
     example: `import { Skeleton } from "@godxjp/ui/feedback";
 
-<Skeleton className="h-6 w-48" />`,
+<Skeleton className="h-6 w-48" />
+
+// The same component is the antd namespace:
+<Skeleton.Button size="sm" />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonArticle",
+    group: "feedback",
+    tagline:
+      "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item.",
+    props: [
+      {
+        name: "avatar",
+        type: "boolean | { size?: 'xs' | 'sm' | 'md' | 'lg'; shape?: 'circle' | 'square' }",
+        defaultValue: "false",
+        description:
+          "Leading avatar placeholder. `true` takes the antd default matrix: a large circle, or a large SQUARE when there is a title but no paragraph (an entity header rather than a person).",
+      },
+      {
+        name: "title",
+        type: "boolean | { width?: number | string }",
+        defaultValue: "true",
+        description:
+          "The heading LINE — not a string. `false` drops it; `{ width }` re-measures it. The default measure follows antd: 38% with a paragraph and no avatar, 50% with both, full width otherwise.",
+      },
+      {
+        name: "paragraph",
+        type: "boolean | { rows?: number; width?: number | string | (number | string)[] }",
+        defaultValue: "true",
+        description:
+          "The body lines. Default rows follow antd: 3 with a title and no avatar, else 2. A single `width` measures the LAST row; an array measures row by row. A number is read as pixels.",
+      },
+      {
+        name: "round",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Pill corners on every line.",
+      },
+      {
+        name: "active",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Travelling sheen instead of the resting pulse; descends to every line.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        description: "Pass `false` to render `children` in place of the placeholder.",
+      },
+      { name: "className", type: "string", description: "Extra classes on the article root." },
+    ],
+    usage: [
+      "DO use SkeletonArticle where the loaded content is 'a person/entity beside a block of prose' — a comment, an activity item, a profile header, a notification row.",
+      "DO match `paragraph.rows` to the copy you expect so the layout does not jump on hydration.",
+      "DON'T use it for a table (SkeletonTable), a KPI tile (SkeletonStat) or a record page (SkeletonDetail) — those house shapes already match their targets.",
+      "DON'T nest it in a Card just to get a border; it draws no surface of its own.",
+    ],
+    useCases: [
+      "Comment thread loading state",
+      "Notification / activity feed placeholder",
+      "Profile header while the account record resolves",
+      "Chat or review list pre-mount placeholder",
+    ],
+    related: [
+      "SkeletonDetail — the house record-page shape (title + metadata pairs); SkeletonArticle is the avatar + prose shape.",
+      "SkeletonRows — repeated flat rows with no avatar or prose rhythm.",
+      "Skeleton — the bare block SkeletonArticle is built from.",
+    ],
+    example: `import { SkeletonArticle } from "@godxjp/ui/feedback";
+
+<SkeletonArticle avatar active paragraph={{ rows: 3 }} />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonAvatar",
+    group: "feedback",
+    tagline:
+      "Avatar-shaped placeholder (also Skeleton.Avatar) sized from the --control-height tier.",
+    props: [
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Box, from the same height tier the real Avatar sizes from.",
+      },
+      {
+        name: "shape",
+        type: '"circle" | "square"',
+        defaultValue: '"circle"',
+        description:
+          "Circle for a person, square for an entity/service mark — Avatar's vocabulary.",
+      },
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO pair the `shape` with the Avatar it replaces so the swap does not change the silhouette.",
+      "DON'T hand-size a bare Skeleton into a circle — this preset already carries the tier box.",
+    ],
+    useCases: ["Member list loading rows", "Comment author placeholder", "Org switcher loading"],
+    related: ["Avatar", "SkeletonArticle", "Skeleton"],
+    example: `import { SkeletonAvatar } from "@godxjp/ui/feedback";
+
+<SkeletonAvatar size="lg" shape="square" />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonButton",
+    group: "feedback",
+    tagline: "Button-shaped placeholder (also Skeleton.Button) — two control-heights wide.",
+    props: [
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Height, from the --control-height tier Button sizes from.",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description: "Corner, in Button's own vocabulary. `pill` is Ant Design's shape=\"round\".",
+      },
+      {
+        name: "block",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Fill the inline axis instead of holding the control's own measure.",
+      },
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO use it in a toolbar or card footer whose actions depend on data that has not arrived.",
+      "DO pass `block` when the real Button spans its column, so the row does not reflow on swap.",
+      "DON'T render a disabled Button as a loading state — a disabled control announces a different thing.",
+    ],
+    useCases: ["Toolbar actions pre-mount", "Card footer CTA placeholder", "Form submit row"],
+    related: ["Button", "SkeletonInput", "Skeleton"],
+    example: `import { SkeletonButton } from "@godxjp/ui/feedback";
+
+<SkeletonButton size="sm" shape="pill" />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonInput",
+    group: "feedback",
+    tagline: "Field-shaped placeholder (also Skeleton.Input) — five control-heights wide.",
+    props: [
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Height, from the --control-height tier Input sizes from.",
+      },
+      {
+        name: "block",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Fill the inline axis — the usual choice inside a FormField column.",
+      },
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO use it for a form whose initial values are still loading, one per field.",
+      "DON'T render a real Input with a spinner inside it; an empty field invites typing that will be overwritten.",
+    ],
+    useCases: ["Edit form before the record resolves", "Filter bar pre-mount", "Settings panel"],
+    related: ["Input", "FormField", "SkeletonButton", "Skeleton"],
+    example: `import { SkeletonInput } from "@godxjp/ui/feedback";
+
+<SkeletonInput block />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonNode",
+    group: "feedback",
+    tagline: "Square media/custom placeholder (also Skeleton.Node); children centre inside it.",
+    props: [
+      { name: "children", type: "ReactNode", description: "Centred content, e.g. a glyph." },
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO use it as the generic square when no other preset matches — a chart slot, a map tile, a QR code.",
+      "DON'T put text in it; it is a shape, and its container is already aria-busy.",
+    ],
+    useCases: ["Chart panel placeholder", "Map / canvas slot", "QR or barcode slot"],
+    related: ["SkeletonImage", "Skeleton"],
+    example: `import { SkeletonNode } from "@godxjp/ui/feedback";
+
+<SkeletonNode />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonImage",
+    group: "feedback",
+    tagline: "SkeletonNode carrying the image glyph (also Skeleton.Image).",
+    props: [
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO use it where the loaded content is a picture, so the placeholder says WHICH kind of content is coming.",
+      "DON'T use it for a generic square — that is SkeletonNode.",
+    ],
+    useCases: ["Gallery grid loading", "Product thumbnail", "Attachment preview"],
+    related: ["SkeletonNode", "Skeleton"],
+    example: `import { SkeletonImage } from "@godxjp/ui/feedback";
+
+<SkeletonImage active />`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [3, 31],
   },

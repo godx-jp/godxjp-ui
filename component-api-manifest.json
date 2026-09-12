@@ -13285,7 +13285,262 @@
     },
     "Skeleton": {
       "group": "feedback",
-      "props": []
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonArticle": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "avatar",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | Pick<SkeletonAvatarProp, \"shape\" | \"size\"> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "paragraph",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { rows?: number; width?: SkeletonWidth | SkeletonWidth[]; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "round",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | { width?: SkeletonWidth; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonAvatar": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "AvatarShapeProp | undefined",
+          "values": ["circle", "square"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonButton": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "block",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "ShapeProp | undefined",
+          "values": ["default", "pill", "sharp"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonImage": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonInput": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "block",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
+    "SkeletonNode": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "active",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
     },
     "SkeletonRows": {
       "group": "feedback",

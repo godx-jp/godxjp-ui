@@ -1,6 +1,12 @@
 import {
   Skeleton,
+  SkeletonArticle,
+  SkeletonAvatar,
+  SkeletonButton,
   SkeletonDetail,
+  SkeletonImage,
+  SkeletonInput,
+  SkeletonNode,
   SkeletonRows,
   SkeletonStat,
   SkeletonTable,
@@ -14,6 +20,8 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  *   SkeletonTable · pre-mount DataTable placeholder (rows, columns props).
  *   SkeletonStat · StatCard/KPI tile placeholder (no props; use in ResponsiveGrid).
  *   SkeletonDetail · single-record detail placeholder (title + metadata rows, no props).
+ *   SkeletonArticle · avatar + heading + paragraph (Ant Design's own Skeleton shape).
+ *   SkeletonAvatar/Button/Input/Node/Image · the shaped presets, also on the Skeleton namespace.
  * Never use a spinner overlay on skeletonable content.
  */
 export default function Demo() {
@@ -43,6 +51,55 @@ export default function Demo() {
                   <Skeleton className="h-4 w-32" />
                   <Skeleton className="h-3 w-24" />
                 </Flex>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>SkeletonArticle · avatar + heading + paragraph</CardTitle>
+            <CardDescription>
+              Ant Design's own Skeleton shape. Defaults follow it exactly: no avatar, a 38% heading
+              and three body lines; with an avatar the heading drops to 50% and the body to two
+              lines. `active` swaps the resting pulse for the travelling sheen · `round` pills every
+              line · `loading={false}` renders children instead.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <SkeletonArticle />
+              <SkeletonArticle avatar />
+              <SkeletonArticle avatar active round paragraph={{ rows: 4, width: ["90%", "80%"] }} />
+              <SkeletonArticle avatar paragraph={false} title={{ width: "14rem" }} />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Shaped presets · the boxes the controls occupy</CardTitle>
+            <CardDescription>
+              Each preset carries the box of the control it stands in for, from the --control-height
+              tier · SkeletonButton is two heights wide, SkeletonInput five. Reachable as named
+              exports or through the Skeleton namespace (Skeleton.Button…).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" gap="sm" align="center" wrap>
+                <SkeletonAvatar size="sm" />
+                <SkeletonAvatar />
+                <SkeletonAvatar size="lg" shape="square" />
+                <SkeletonButton size="sm" />
+                <SkeletonButton />
+                <SkeletonButton size="lg" shape="pill" active />
+                <SkeletonInput size="sm" />
+              </Flex>
+              <SkeletonInput block />
+              <Flex direction="row" gap="sm" align="center" wrap>
+                <SkeletonNode />
+                <SkeletonImage active />
               </Flex>
             </Flex>
           </CardContent>

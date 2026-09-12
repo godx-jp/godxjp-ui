@@ -160,6 +160,37 @@
   --skeleton-stat-value-width: 8rem;
   --skeleton-stat-caption-width: 5rem;
 
+  /* SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every
+   * element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height`
+   * tier, so a skeleton button is exactly as tall as the Button it stands in for and follows
+   * density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×);
+   * they are unitless on purpose — a service widens the stand-in without leaving the height tier. */
+  --skeleton-element-radius: var(--radius-sm);
+  --skeleton-button-width-ratio: 2;
+  --skeleton-input-width-ratio: 5;
+  /* antd's node/image square is `controlHeight * 1.5 * 2`. */
+  --skeleton-node-size: calc(var(--control-height) * 3);
+  --skeleton-image-glyph-size: var(--icon-size-4xl);
+  /* Role-mirror (#44): `initial` so the glyph re-resolves under a scoped theme.
+   * Default = hsl(var(--muted-foreground) / 0.4). */
+  --skeleton-image-glyph-color: initial;
+  /* ARTICLE rhythm. antd: avatar gutter = `padding` (16), title offset beside an avatar =
+   * `marginSM` (12), title→paragraph = `controlHeightSM` (24), line→line = `controlHeightXS` (16).
+   * antd's fourth value — 28px (`marginLG + marginXXS`) for title→paragraph WITH an avatar — is not
+   * a step of this repo's spacing scale (it goes 24 → 32), and docs/DESIGN-AUTHORITY.md says take a
+   * step or leave it rather than invent a number, so both cases take the 24px step. */
+  --skeleton-article-avatar-gap: var(--space-inline-lg);
+  --skeleton-article-avatar-title-offset: var(--space-3);
+  --skeleton-article-title-gap: var(--space-stack-lg);
+  --skeleton-article-line-gap: var(--space-stack-md);
+  /* antd's `li:last-child:not(:first-child):not(:nth-child(2))` short last line. */
+  --skeleton-paragraph-last-width: 61%;
+  /* The `active` sheen. One knob, not a from/to pair, so a service retunes the whole sweep once
+   * (#45); `initial` keeps the default resolving at the call site under a scoped theme (#44).
+   * Default = linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 37%,
+   * hsl(var(--muted)) 63%) — antd's three stops, on this library's neutral surfaces. */
+  --skeleton-sweep-gradient: initial;
+
   /* QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed:
    * the "load more" button row and the "loading more…" caption. Both gaps were Tailwind literals
    * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not
