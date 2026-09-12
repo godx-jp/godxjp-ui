@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.2.1] - 2026-09-12
+
+Hai lỗi do một lượt review độc lập chỉ ra (#541, #542). Cả hai đều tái hiện được **trên bản đã phát
+hành**, nên bản này tồn tại để đưa bản sửa ra registry chứ không phải để đợi lần phát hành tính
+năng kế tiếp.
+
+### Fixed
+
+- **`postinstall` có thể xoá cấu hình của consumer (#541).** `readJson` trả `null` cho cả "không có
+  tệp" lẫn "tệp không parse được", nên `readJson(path) ?? {}` đọc một `.mcp.json` hỏng thành một
+  tệp rỗng rồi ghi đè lên — mọi MCP server khác của consumer biến mất, không ném lỗi, không cảnh
+  báo, không bản lưu. `.claude/settings.json` chạy đúng dòng ấy, tức **hook của chính consumer**
+  cũng nằm trong vùng rủi ro. Và `refreshBlock` đặt `tail = ""` khi thiếu marker đóng, nuốt sạch
+  phần consumer viết dưới khối do gói quản lý.
+
+  Một lỗi thứ ba không ai nêu: `writeFileSync` **không nguyên tử**. Một lần ngắt giữa chừng để lại
+  tệp cụt, mà lần chạy sau đọc ra "hỏng" rồi ghi đè — **hai nửa tự nuôi nhau**. Mọi lần ghi nay đi
+  qua tệp tạm rồi `rename`.
+
+  Bảo đảm nay là cấu trúc chứ không phải một câu hứa trong chú thích: **một tệp đang tồn tại mà
+  không đọc / không parse / không nhận dạng được thì KHÔNG BAO GIỜ bị ghi vào.** Gói để lại một tệp
+  `.godxjp-ui-suggested` bên cạnh và nói ra, thay vì đoán một cấu hình nó không đọc nổi. Ba lý do
+  từ chối được phân biệt — `not valid JSON`, `JSON, but not an object`, `unreadable`.
+
+- **`ui-audit --changed` khai một tệp nó chưa hề mở (#542).** `changedFiles()` chọn theo
+  `/\.(tsx|jsx)$/` trong khi `walk()` chỉ nhận `.tsx`/`.ts`. Một `.jsx` vừa đổi được chọn, **được
+  đếm vào dòng tổng kết `across …` như đã quét**, rồi bị walker bỏ; nếu nó là thay đổi duy nhất thì
+  lượt chạy in `no .tsx/.jsx changed on this branch` và thoát **0** — gọi đúng tên phần mở rộng vừa
+  đổi. Đo với nội dung giống hệt nhau ở hai tệp: **2 lỗi trước, 4 lỗi sau**.
+
+  Nay một hằng `SCANNABLE` duy nhất được cả bộ chọn lẫn walker đọc, nên chúng không lệch nhau lại
+  được; dòng tổng kết dựng từ những tệp **thật sự đã mở**; và `isJsx` tính cả `.jsx` — quét tệp mà
+  bỏ mọi luật JSX chỉ là cùng lỗi ấy ở dạng im hơn.
+
+  Cùng tệp, cùng họ lỗi: một lệnh git **thất bại** trả về đúng cùng chuỗi rỗng với một lệnh thành
+  công mà không tìm thấy gì, nên một clone không có `origin/main` cho ra một lượt chạy xanh sạch.
+  Nay thoát **2** và nói phải làm gì.
+
 ## [23.2.0] - 2026-09-12
 
 Bản này tồn tại vì một lý do đo được: **bốn issue đã sửa xong trên `main` vẫn bị mở lại**, và người
