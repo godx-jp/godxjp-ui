@@ -101,6 +101,28 @@ Thứ tự ưu tiên, chỉ tiến khi bước trước thật sự không diễ
 **dùng → ghép → thêm prop vào component đã có → tạo component mới.**
 Một prop nữa hơn một component nữa.
 
+**Và TÊN không phải của bạn — nó là của antd.** `docs/DESIGN-AUTHORITY.md` (mục
+"The PROP SURFACE of a component is antd's too"): **nơi antd đặt tên cho một năng
+lực, kho này lấy nguyên tên và nguyên ngữ nghĩa của antd. Một năng lực còn thiếu
+được port từ antd 100% TRƯỚC — tên, prop, ngữ nghĩa — rồi mới cải tiến. Không
+thiết kế lại trước, và không port một nửa.**
+
+Đây là luật mới nhất và là luật hay bị bỏ qua nhất, vì nó nghe như lời khuyên.
+Cái giá của việc bỏ qua đã đo được: `DataTable` mọc `pin: "end"` nơi antd có
+`fixed`, `sortable: true` nơi antd có `sorter`, và không có câu trả lời nào cho
+filter/expandable — mỗi lần một người quyết một kiểu. Cùng hình dạng lỗi:
+`Dialog` + `AlertDialog` từng là 26 export với **12 cặp trùng tên** và **0** phần
+chỉ `AlertDialog` mới có, trong khi antd chỉ có MỘT `Modal` (nguy hiểm là một
+PROP, `okType`). Nay là một họ, `variant` là lối chuẩn, 12 export cũ ở lại vì gỡ
+là breaking. Và cả họ Ant Design X từng tới nửa vời — thiếu `Conversations`,
+`Attachments`, `ThoughtChain`, `Welcome`, `Actions`, nay đã đủ.
+
+Ba chỗ cố ý lệch khỏi antd (logical thay `left/right`, từ vựng giá trị của kho
+này, `density` thay `size`) đều **ghi lý do trong DESIGN-AUTHORITY**. Lệch thêm
+thì phải viết vào đó, không lệch lặng lẽ. Và đọc bề mặt antd từ **type đã cài ở
+một checkout khác**, không từ trí nhớ — `antd` đã bị gỡ khỏi devDependencies của
+kho này từ 20.0.0 và `check:no-antd-runtime` canh cho nó không quay lại.
+
 ### Bước 4 — Kiểm bằng tarball TRƯỚC khi phát hành
 
 Đây là bước làm cho "vừa làm vừa trải nghiệm" thành thật. Đừng phát hành rồi
@@ -303,15 +325,22 @@ không tồn tại nên không hỏi**.
 Trước khi viết bất kỳ bố cục nào: `search_components` + `get_component`. Rẻ hơn
 mọi lần sửa sau.
 
-**Nhưng catalog chở PROP, không chở LUẬT BỐ CỤC** — và đó là một khoảng trống
-thật của catalog, không chỉ là lỗi của người dùng nó. Ví dụ đo được: `CardBar`
-trong manifest có đúng một prop (`extra`), không dòng nào nói nó **tự lấy đường
-kẻ theo VỊ TRÍ** — đầu thì kẻ dưới, cuối thì kẻ trên, ở giữa thì cả hai. Luật ấy
-chỉ nằm trong chú thích của `src/styles/card-layout.css`, cùng chỗ định nghĩa hai
-nhịp `section` (header phẳng) và `band` (header có kẻ).
+**Catalog từng chở PROP mà không chở LUẬT BỐ CỤC — và ví dụ ấy nay đã được vá,
+nên đừng trích nó nữa.** Bản trước của mục này viết: `CardBar` trong manifest có
+đúng một prop (`extra`), không dòng nào nói nó tự lấy đường kẻ theo VỊ TRÍ. Đo
+lại hôm nay: `CardBar` có **6 prop**, trong đó `border` (`"none" | "block-start"
+| "block-end" | "both"`) ép được đường kẻ khi xếp chồng, và luật vị trí (đầu: kẻ
+dưới · cuối: kẻ trên · giữa: cả hai) nằm **trong chính catalog** — ở `usage` của
+`CardBar` lẫn `description` của `Card`.
 
-Nên khi làm bố cục bên trong một component của DS: **mở tệp `*-layout.css` của
-nó ra đọc**. Một agent hỏi MCP đúng cách vẫn sẽ không biết những luật này.
+Bài học còn lại vẫn thật, chỉ đổi hình: một luật bố cục **có thể** chỉ sống
+trong chú thích CSS, và không có cổng nào bắt nó phải lên catalog. Nên:
+
+1. Hỏi `get_component` trước — nay nó thường trả lời cả hình dạng lẫn luật.
+2. `usage`/`description` im lặng về bố cục → mở `src/styles/*-layout.css` của
+   component ấy ra đọc (chỗ định nghĩa hai nhịp `section` và `band` chẳng hạn).
+3. Là chuột bạch, khi bước 2 phải dùng tới, đó là **khoảng trống catalog** — đưa
+   luật ấy lên `usage` trong cùng PR, theo §4. Đó là cách `CardBar` được vá.
 
 ## 6. Thứ KHÔNG đẩy lên DS
 
