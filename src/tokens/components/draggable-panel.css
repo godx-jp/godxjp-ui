@@ -21,6 +21,10 @@
   --draggable-panel-width-sm: 18rem;
   --draggable-panel-width: 22rem;
   --draggable-panel-width-lg: 28rem;
+  /* xl: nearest wide-content tier on the shell measure ladder (gh#607), not a one-off 46rem. */
+  --draggable-panel-width-xl: var(--centered-shell-width-md);
+  /* Definite height when set; `auto` keeps the pre-607 shrink-to-content behaviour. */
+  --draggable-panel-block-size: auto;
   --draggable-panel-max-block-size: 70vh;
 
   --draggable-panel-radius: var(--radius-lg);

@@ -3069,6 +3069,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
+    "name": "--draggable-panel-width-xl",
+    "value": "var(--centered-shell-width-md)",
+    "description": "xl: nearest wide-content tier on the shell measure ladder (gh#607), not a one-off 46rem."
+  },
+  {
+    "name": "--draggable-panel-block-size",
+    "value": "auto",
+    "description": "Definite height when set; `auto` keeps the pre-607 shrink-to-content behaviour."
+  },
+  {
     "name": "--draggable-panel-max-block-size",
     "value": "70vh",
     "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."

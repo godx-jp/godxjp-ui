@@ -1,6 +1,9 @@
 # @godxjp/ui
 
-> **Tệp này do gói `@godxjp/ui` sở hữu và bị GHI ĐÈ mỗi lần nâng cấp.**
+> **Tệp này do gói `@godxjp/ui` sở hữu.** Nội dung được ghi lại khi luật trong gói đổi (thường
+> qua postinstall sau `npm i`, trừ khi `.npmrc` có `ignore-scripts=true`). Khi đó chạy
+> `npx @godxjp/ui sync-rules`. Dấu `<!-- godxjp-ui:version -->` luôn được đồng bộ với phiên bản
+> gói đang cài — kể cả khi thân tệp không đổi giữa hai bản.
 > Đừng sửa ở đây — luật của riêng kho thuộc về một tệp khác trong `.ai/rules/`,
 > và index sẽ nạp cả hai. (Khác với `.claude/skills/.../SKILL.md`, nơi mục §8
 > trở đi là của kho và được giữ lại.)

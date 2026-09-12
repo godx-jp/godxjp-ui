@@ -1006,7 +1006,7 @@ function staleOwnedRules() {
       `This file is written by @godxjp/ui and says version ${stamped}, but the installed package ` +
       `is ${installed}. Its rules describe a different library than the one you are building ` +
       "against — most likely because `ignore-scripts=true` kept our postinstall from running.",
-    replacement: 'INIT_CWD="$PWD" node node_modules/@godxjp/ui/scripts/postinstall.mjs',
+    replacement: "npx @godxjp/ui sync-rules",
     snippet: `<!-- godxjp-ui:version ${stamped} --> vs installed ${installed}`,
   };
 }

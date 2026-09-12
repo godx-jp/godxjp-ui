@@ -5,6 +5,16 @@ import { NumberInput } from "../number-input";
 
 const field = () => screen.getByRole("spinbutton");
 
+describe("NumberInput — stepper hit-target classes", () => {
+  it("tags each stepper with directional classes for ::after anchoring (gh#506)", () => {
+    const { container } = renderWithUi(<NumberInput defaultValue={1} aria-label="数量" />);
+    const steps = container.querySelectorAll(".ui-number-input-step");
+    expect(steps).toHaveLength(2);
+    expect(steps[0]).toHaveClass("ui-number-input-step-up");
+    expect(steps[1]).toHaveClass("ui-number-input-step-down");
+  });
+});
+
 describe("NumberInput — step base + inferred precision", () => {
   it("steps from 0 with a decimal step, inferring precision from the step", async () => {
     const user = userEvent.setup();

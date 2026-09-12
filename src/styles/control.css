@@ -1577,6 +1577,33 @@
     block-size: 0.75rem;
   }
 
+  /* FINE POINTER — SC 2.5.8 without growing the 32px band (gh#506).
+   *
+   * Paint stays 24×13. Two centred 24×24 boxes would overlap (~10px) and the later stepper in DOM
+   * would swallow the overlap — measured as ~24×11 on the upper button. Instead, each ::after is
+   * anchored to the stepper edge that faces away from its sibling: up grows upward from its bottom,
+   * down grows downward from its top. The two 24×24 hit areas meet without intersecting. */
+  .ui-number-input-step {
+    position: relative;
+  }
+
+  .ui-number-input-step::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: var(--touch-target-min);
+    block-size: var(--touch-target-min);
+  }
+
+  .ui-number-input-step-up::after {
+    inset-block-end: 0;
+  }
+
+  .ui-number-input-step-down::after {
+    inset-block-start: 0;
+  }
+
   /* TOUCH: EACH STEPPER IS A REAL TARGET, NOT HALF OF ONE.
    *
    * Measured in Chromium with `(pointer: coarse)` matching, before this block: the default
