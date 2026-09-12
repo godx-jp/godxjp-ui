@@ -2129,6 +2129,86 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--conversations-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the creation button, each bucket, and each run of rows."
+  },
+  {
+    "name": "--conversations-list-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between rows inside one run."
+  },
+  {
+    "name": "--conversations-item-height",
+    "value": "var(--band-height-md)",
+    "description": "ROW BOX. The row is a CONTROL, so its height is the band tier, never a literal (rule #24 and * `pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--conversations-item-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-padding-inline",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-radius",
+    "value": "var(--radius)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-color",
+    "value": "initial",
+    "description": "ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at * the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a * value here at `:root` each one would resolve once, against the root palette, and freeze. * Default resting ink = hsl(var(--muted-foreground)) * Default active ground = hsl(var(--accent)) * Default active ink = hsl(var(--foreground))"
+  },
+  {
+    "name": "--conversations-item-active-background",
+    "value": "initial",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-active-color",
+    "value": "initial",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-active-font-weight",
+    "value": "var(--font-weight-medium)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-icon-size",
+    "value": "var(--icon-size-md)",
+    "description": "Leading glyph inside a row."
+  },
+  {
+    "name": "--conversations-group-gap",
+    "value": "var(--space-1)",
+    "description": "BUCKET HEADING (\"今日\" / \"Previous 7 days\")."
+  },
+  {
+    "name": "--conversations-group-padding-inline",
+    "value": "var(--space-inline-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-group-chevron-size",
+    "value": "var(--icon-size-sm)",
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-separator-space-block",
+    "value": "var(--space-1)",
+    "description": "The `{ type: \"divider\" }` rule between two runs."
+  },
+  {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
     "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because * neither selector contains the word \"icon\"."
