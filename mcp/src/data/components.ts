@@ -16116,6 +16116,119 @@ const messages: ChatMessageProp[] = [
     storyPath: "data-display/Welcome.stories.tsx",
     rules: [2, 6, 44, 45],
   },
+  {
+    name: "Attachments",
+    group: "data-entry",
+    tagline:
+      "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`.",
+    props: [
+      {
+        name: "items",
+        type: "AttachmentsItemProp[]",
+        description: "Controlled attachment list. Ant Design X `items` (= antd Upload `fileList`).",
+      },
+      {
+        name: "onChange",
+        type: "(info: { file: AttachmentsItemProp; fileList: AttachmentsItemProp[] }) => void",
+        description: "antd Upload `onChange` — NOT `onValueChange`.",
+      },
+      { name: "overflow", type: '"wrap" | "scrollX" | "scrollY"', description: "Ant Design X `overflow`." },
+      { name: "placeholder", type: "AttachmentsPlaceholderProp | ((type) => AttachmentsPlaceholderProp)", description: "Empty-state copy for inline and drop surfaces." },
+      { name: "getDropContainer", type: "() => HTMLElement | null", description: "Host for a full-screen drop overlay." },
+      { name: "maxCount", type: "number", description: "Maximum files (antd Upload `maxCount`)." },
+      { name: "disabled", type: "boolean", defaultValue: "false" },
+      { name: "accept", type: "string", description: "Forwarded to the hidden file input." },
+      { name: "children", type: "ReactElement", description: "Child mode: visible trigger; upload runs through a hidden input beside it." },
+    ],
+    usage: [
+      "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",
+      "DO use `ref.select({ accept, multiple })` to open the picker programmatically (Ant X 2.0).",
+      "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens.",
+    ],
+    useCases: [
+      "The attachment tray above a ChatComposer in an assistant surface.",
+      "A Sender.Header slot showing picked files before send.",
+    ],
+    related: ["Upload", "ChatComposer", "ChatBubbleList"],
+    example: `import { Attachments } from "@godxjp/ui/data-entry";
+
+<Attachments
+  items={files}
+  onChange={({ fileList }) => setFiles(fileList)}
+  overflow="scrollX"
+  maxCount={5}
+/>`,
+    docPath: "data-entry/attachments.tsx",
+    rules: [6, 44, 45],
+  },
+  {
+    name: "ThoughtChain",
+    group: "data-display",
+    tagline:
+      "Visualizes an Agent tool/action call chain (Ant Design X ThoughtChain): indexed nodes, status icons, collapsible content, and ThoughtChain.Item chips.",
+    subParts: ["ThoughtChain.Item"],
+    props: [
+      { name: "items", type: "ThoughtChainItemProp[]", description: "Nodes in call order." },
+      { name: "expandedKeys", type: "string[]", description: "Controlled expanded node keys." },
+      { name: "defaultExpandedKeys", type: "string[]" },
+      { name: "onExpand", type: "(keys: string[]) => void" },
+      { name: "line", type: 'boolean | "solid" | "dashed" | "dotted"', defaultValue: '"solid"' },
+    ],
+    usage: [
+      "DO give every collapsible node a stable `key` — it drives expandedKeys.",
+      "DO set `destroyOnHidden={false}` when collapsed content must stay mounted.",
+      "DON'T hand-roll a vertical stepper — this component owns the rail, status tint and collapse motion.",
+    ],
+    useCases: [
+      "An agent run log showing tool calls and their outcomes.",
+      "A nested plan-and-execute trace beside a streaming assistant reply.",
+    ],
+    related: ["Timeline", "ChatBubble", "Progress"],
+    example: `import { ThoughtChain } from "@godxjp/ui/data-display";
+
+<ThoughtChain
+  items={[
+    { key: "1", title: "Query knowledge", status: "success" },
+    { key: "2", title: "Invoke model", status: "loading", collapsible: true, content: "…" },
+  ]}
+/>`,
+    docPath: "data-display/thought-chain.tsx",
+    rules: [6, 44, 45],
+  },
+  {
+    name: "Actions",
+    group: "feedback",
+    tagline:
+      "Quick AI feedback and utility buttons beside a message (Ant Design X Actions): icon row, submenus, variants, and preset Actions.Feedback / Copy / Audio / Item.",
+    subParts: ["Actions.Feedback", "Actions.Copy", "Actions.Audio", "Actions.Item"],
+    props: [
+      { name: "items", type: "(ActionsItemProp | ReactNode)[]", description: "Action buttons or custom nodes." },
+      { name: "onClick", type: "({ item, key, keyPath, domEvent }) => void", description: "antd-style menu click callback." },
+      { name: "variant", type: '"borderless" | "outlined" | "filled"', defaultValue: '"borderless"' },
+      { name: "fadeIn", type: "boolean", description: "Fade-in mount animation (respects prefers-reduced-motion)." },
+      { name: "fadeInLeft", type: "boolean" },
+    ],
+    usage: [
+      "DO pass `label` on every icon-only item — tooltips use it as the accessible name.",
+      "DO use `subItems` for overflow actions instead of crowding the row.",
+      "DON'T render a second copy/like row — compose Actions.Feedback and Actions.Copy as `items` entries.",
+    ],
+    useCases: [
+      "Like/dislike and copy under an assistant bubble.",
+      "Overflow menu for regenerate, branch, or export on a long reply.",
+    ],
+    related: ["ChatBubble", "DropdownMenu", "Button"],
+    example: `import { Actions } from "@godxjp/ui/feedback";
+
+<Actions
+  items={[
+    { key: "copy", label: "Copy", icon: <CopyIcon />, onItemClick: () => copy(text) },
+    <Actions.Feedback value={feedback} onChange={setFeedback} />,
+  ]}
+/>`,
+    docPath: "feedback/actions.tsx",
+    rules: [6, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

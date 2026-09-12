@@ -3860,6 +3860,161 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  AttachmentsOverflowProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  AttachmentsPlaceholderProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["IconProp", "TitleProp", "DescriptionProp"],
+  },
+  AttachmentsSemanticProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  AttachmentsItemProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "name",
+        local: true,
+        reason: "antd UploadFile `name` — the file's basename, not a form LabelProp.",
+      },
+      {
+        field: "size",
+        local: true,
+        reason: "antd UploadFile `size` in bytes — a measurement, not a SizeProp tier.",
+      },
+      {
+        field: "error",
+        local: true,
+        reason: "antd UploadFile `error` payload — opaque upload failure data, not ErrorProp.",
+      },
+      {
+        field: "description",
+        local: true,
+        reason: "Ant Design X card subtitle — free ReactNode, not DescriptionProp copy.",
+      },
+    ],
+  },
+  AttachmentsProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "DisabledProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason:
+          "Ant Design X / antd Upload `fileList`, kept as `items` so an Ant X call site compiles unchanged.",
+      },
+      {
+        field: "onChange",
+        local: true,
+        reason:
+          "antd Upload's `{ file, fileList }` callback — not the controlled-vocabulary `onValueChange`.",
+      },
+    ],
+  },
+  AttachmentsRefProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  ThoughtChainItemStatusProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  ThoughtChainItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "IconProp",
+      "TitleProp",
+      "DescriptionProp",
+      {
+        field: "icon",
+        local: true,
+        reason: "Ant Design X allows `false` to suppress the icon slot — IconProp has no false sentinel.",
+      },
+    ],
+  },
+  ThoughtChainSemanticProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  ThoughtChainLineProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  ThoughtChainProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ClassNameProp", "IdProp"],
+  },
+  ThoughtChainStandaloneItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ClassNameProp", "OnClickProp"],
+  },
+  ActionsVariantProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [],
+  },
+  ActionsSemanticProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [],
+  },
+  ActionsItemProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["LabelProp", "IconProp"],
+  },
+  ActionsProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  ActionsFeedbackValueProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [],
+  },
+  ActionsFeedbackProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  ActionsCopyProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp", "IconProp"],
+  },
+  ActionsItemStatusProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [],
+  },
+  ActionsAudioProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  ActionsStatusItemProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp", "LabelProp", "IconProp"],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;

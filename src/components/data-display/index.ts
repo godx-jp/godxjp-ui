@@ -103,6 +103,15 @@ export type {
 } from "./permission-matrix";
 export { RangeTimeline } from "./range-timeline";
 export type { RangeTimelineProps, RangeTimelineRow } from "./range-timeline";
+export { ThoughtChain } from "./thought-chain";
+export type {
+  ThoughtChainProp,
+  ThoughtChainProps,
+  ThoughtChainItemProp,
+  ThoughtChainItemStatusProp,
+  ThoughtChainLineProp,
+  ThoughtChainStandaloneItemProp,
+} from "./thought-chain";
 export { ChatBubble, ChatBubbleList } from "./chat-bubble";
 export type {
   ChatBubbleListProp,

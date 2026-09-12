@@ -516,12 +516,16 @@
   "baseline": {
     "recordedAt": "2026-09-11",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 279,
-    "dimensionCells": 3906,
+    "exports": 282,
+    "dimensionCells": 3948,
     "covered": 86,
-    "untested": 2188,
-    "notApplicable": 1632,
-    "knownMissingFrames": [],
+    "untested": 2211,
+    "notApplicable": 1651,
+    "knownMissingFrames": [
+      "data-display/thought-chain",
+      "data-entry/attachments",
+      "feedback/actions"
+    ],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -658,6 +662,33 @@
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "Actions": {
+      "group": "feedback",
+      "owner": "feedback/actions",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "untested",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -1388,6 +1419,33 @@
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "Attachments": {
+      "group": "data-entry",
+      "owner": "data-entry/attachments",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",
@@ -7615,6 +7673,33 @@
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
         "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "ThoughtChain": {
+      "group": "data-display",
+      "owner": "data-display/thought-chain",
+      "frames": [],
+      "hasFrame": false,
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",

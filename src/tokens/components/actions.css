@@ -1,0 +1,12 @@
+/* Actions — Ant Design X AI feedback / utility button row beside a message. */
+:root {
+  --actions-gap: var(--space-1);
+  --actions-item-size: var(--control-height-sm);
+  --actions-item-radius: var(--radius);
+  --actions-item-font-size: var(--font-size-xs);
+  --actions-item-color: initial;
+  --actions-item-hover-background: initial;
+  --actions-item-outlined-border: hsl(var(--border));
+  --actions-item-filled-background: hsl(var(--muted) / 0.5);
+  --actions-item-danger-color: hsl(var(--destructive));
+}

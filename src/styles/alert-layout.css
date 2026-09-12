@@ -522,4 +522,110 @@
       opacity: 0.5;
     }
   }
+
+  /* ── Actions (Ant Design X) ───────────────────────────────────────────────────────────── */
+  .ui-actions {
+    display: inline-flex;
+    max-inline-size: 100%;
+    align-items: center;
+  }
+
+  .ui-actions-list {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--actions-gap);
+  }
+
+  .ui-actions-list[data-variant="outlined"] .ui-actions-item {
+    border: 1px solid var(--actions-item-outlined-border);
+  }
+
+  .ui-actions-list[data-variant="filled"] .ui-actions-item {
+    background: var(--actions-item-filled-background);
+  }
+
+  .ui-actions-item {
+    display: inline-grid;
+    inline-size: var(--actions-item-size);
+    block-size: var(--actions-item-size);
+    place-items: center;
+    border-radius: var(--actions-item-radius);
+    color: var(--actions-item-color, hsl(var(--muted-foreground)));
+    cursor: pointer;
+  }
+
+  .ui-actions-item:hover {
+    background: var(--actions-item-hover-background, hsl(var(--accent)));
+    color: hsl(var(--foreground));
+  }
+
+  .ui-actions-item[data-danger="true"] {
+    color: var(--actions-item-danger-color);
+  }
+
+  .ui-actions-item svg {
+    inline-size: var(--icon-size-sm);
+    block-size: var(--icon-size-sm);
+  }
+
+  .ui-actions-feedback {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--actions-gap);
+  }
+
+  .ui-actions-feedback-item[data-active="true"] {
+    color: hsl(var(--primary));
+  }
+
+  .ui-actions-fade {
+    animation: ui-actions-fade-in var(--motion-duration-md) ease-out both;
+  }
+
+  .ui-actions-fade-left {
+    animation: ui-actions-fade-in-left var(--motion-duration-md) ease-out both;
+  }
+
+  @keyframes ui-actions-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ui-actions-fade-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--space-2) * -1));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  [dir="rtl"] .ui-actions-fade-left {
+    animation-name: ui-actions-fade-in-right;
+  }
+
+  @keyframes ui-actions-fade-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(var(--space-2));
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-actions-fade,
+    .ui-actions-fade-left,
+    [dir="rtl"] .ui-actions-fade-left {
+      animation: none;
+    }
+  }
 }

@@ -907,3 +907,64 @@ export type WelcomeProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+/** Ant Design X thought-node status. */
+export type ThoughtChainItemStatusProp = "loading" | "success" | "error" | "abort";
+
+/** One node in an agent call chain. Ant Design X `ThoughtChainItemType`. */
+export type ThoughtChainItemProp = {
+  key?: string;
+  icon?: React.ReactNode | false;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  content?: React.ReactNode;
+  footer?: React.ReactNode;
+  status?: ThoughtChainItemStatusProp;
+  collapsible?: boolean;
+  blink?: boolean;
+  /** Default `true` — Ant Design X `destroyOnHidden`. */
+  destroyOnHidden?: boolean;
+};
+
+/** Connector line between nodes. Ant Design X `line` — `false` hides it. */
+export type ThoughtChainLineProp = boolean | "solid" | "dashed" | "dotted";
+
+export type ThoughtChainSemanticProp =
+  | "root"
+  | "item"
+  | "itemIcon"
+  | "itemHeader"
+  | "itemContent"
+  | "itemFooter";
+
+/**
+ * @see ThoughtChain — visualizes an Agent's tool/action call chain (Ant Design X `ThoughtChain`).
+ */
+export type ThoughtChainProp = {
+  items?: readonly ThoughtChainItemProp[];
+  defaultExpandedKeys?: readonly string[];
+  expandedKeys?: readonly string[];
+  onExpand?: (expandedKeys: string[]) => void;
+  line?: ThoughtChainLineProp;
+  classNames?: Partial<Record<ThoughtChainSemanticProp, string>>;
+  styles?: Partial<Record<ThoughtChainSemanticProp, React.CSSProperties>>;
+  rootClassName?: ClassNameProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+};
+
+/** Standalone thought chip — Ant Design X `ThoughtChain.Item`. */
+export type ThoughtChainStandaloneItemProp = {
+  icon?: React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  status?: ThoughtChainItemStatusProp;
+  variant?: "solid" | "outlined" | "text";
+  blink?: boolean;
+  disabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  className?: ClassNameProp;
+  rootClassName?: ClassNameProp;
+  classNames?: Partial<Record<"root" | "icon" | "title" | "description", string>>;
+  styles?: Partial<Record<"root" | "icon" | "title" | "description", React.CSSProperties>>;
+};

@@ -111,3 +111,16 @@ export type {
 } from "./alert";
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";
+export { Actions } from "./actions";
+export type {
+  ActionsProp,
+  ActionsProps,
+  ActionsItemProp,
+  ActionsVariantProp,
+  ActionsFeedbackProp,
+  ActionsFeedbackValueProp,
+  ActionsCopyProp,
+  ActionsAudioProp,
+  ActionsStatusItemProp,
+  ActionsItemStatusProp,
+} from "./actions";

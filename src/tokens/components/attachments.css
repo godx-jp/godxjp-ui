@@ -1,0 +1,19 @@
+/* Attachments — Ant Design X chat-surface file collection.
+ *
+ * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and
+ * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css.
+ */
+:root {
+  --attachments-gap: var(--space-2);
+  --attachments-card-size: var(--upload-tile-size);
+  --attachments-card-radius: var(--upload-tile-radius);
+  --attachments-card-gap: var(--upload-tile-space-gap);
+  --attachments-placeholder-space-inset: var(--upload-dropzone-space-inset);
+  --attachments-placeholder-radius: var(--upload-dropzone-radius);
+  --attachments-placeholder-icon-size: var(--upload-dropzone-icon-size);
+  --attachments-placeholder-title-font-size: var(--font-size-sm);
+  --attachments-placeholder-description-font-size: var(--upload-dropzone-meta-font-size);
+  --attachments-placeholder-gap: var(--space-2);
+  --attachments-drop-overlay-background: initial;
+  --attachments-remove-icon-size: var(--upload-remove-icon-size);
+}

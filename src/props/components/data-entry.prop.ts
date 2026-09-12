@@ -2061,3 +2061,90 @@ export type ChatSuggestionProp = {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+/** Ant Design X `Attachments` overflow modes — how the card list behaves when it exceeds its box. */
+export type AttachmentsOverflowProp = "wrap" | "scrollX" | "scrollY";
+
+/** Placeholder copy/icon when the attachment list is empty. Ant Design X `PlaceholderType`. */
+export type AttachmentsPlaceholderProp = {
+  icon?: React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+};
+
+/**
+ * One attachment row — Ant Design X `Attachment`, which extends antd `UploadFile` plus optional
+ * `description` and `cardType`. Field names are antd's (`thumbUrl`, `originFileObj`, …) so an Ant
+ * X call site compiles unchanged; internally the upload engine maps them to `UploadFileItem`.
+ *
+ * @see Attachments
+ */
+export type AttachmentsItemProp = {
+  uid: string;
+  name: string;
+  size?: number;
+  status?: "uploading" | "done" | "error" | "removed";
+  percent?: number;
+  url?: string;
+  thumbUrl?: string;
+  originFileObj?: File;
+  response?: unknown;
+  error?: unknown;
+  description?: React.ReactNode;
+  cardType?: string;
+};
+
+/** Semantic slots Ant Design X exposes on `Attachments`. */
+export type AttachmentsSemanticProp = "list" | "placeholder" | "upload" | "root" | "card" | "file";
+
+/**
+ * @see Attachments — the chat-surface attachment collection (Ant Design X `Attachments`).
+ *
+ * Inherits antd Upload behaviour (`accept`, `beforeUpload`, `customRequest`, …) but names the file
+ * list `items` (not `fileList`) and fires `onChange` with antd's `{ file, fileList }` shape. The
+ * ref exposes `nativeElement`, `fileNativeElement`, `upload(file)` and `select({ accept, multiple
+ * })` exactly as Ant X documents.
+ */
+export type AttachmentsProp = Omit<
+  UploadProp,
+  | "value"
+  | "defaultValue"
+  | "onValueChange"
+  | "variant"
+  | "showUploadList"
+  | "children"
+  | "onRemove"
+> & {
+  /** Controlled attachment list. Ant Design X `items` (= antd Upload `fileList`). */
+  items?: readonly AttachmentsItemProp[];
+  /** Fires when the list changes. Ant Design X / antd Upload `onChange`. */
+  onChange?: (info: { file: AttachmentsItemProp; fileList: AttachmentsItemProp[] }) => void;
+  /** antd Upload `onRemove` — receives the attachment row being removed. */
+  onRemove?: (item: AttachmentsItemProp) => boolean | void | Promise<boolean | void>;
+  /** How overflowing cards layout. Ant Design X `overflow`. */
+  overflow?: AttachmentsOverflowProp;
+  /** Empty-state copy, or a function for inline vs drop variants. Ant Design X `placeholder`. */
+  placeholder?:
+    | AttachmentsPlaceholderProp
+    | ((type: "inline" | "drop") => AttachmentsPlaceholderProp);
+  /** Host element for a full-screen drop overlay. Ant Design X `getDropContainer`. */
+  getDropContainer?: (() => HTMLElement | null | undefined) | null;
+  /** Semantic class names. Ant Design X `classNames`. */
+  classNames?: Partial<Record<AttachmentsSemanticProp, string>>;
+  /** Semantic inline styles. Ant Design X `styles`. */
+  styles?: Partial<Record<AttachmentsSemanticProp, React.CSSProperties>>;
+  /** Root class on the outermost node. Ant Design X `rootClassName`. */
+  rootClassName?: ClassNameProp;
+  /** Child mode: the visible trigger; upload runs through a hidden input beside it. Ant Design X `children`. */
+  children?: React.ReactElement;
+  /** Passthrough to the preview image. Ant Design X `imageProps` — reserved; no Image primitive yet. */
+  imageProps?: Record<string, unknown>;
+};
+
+/** Imperative handle Ant Design X documents on `Attachments` ref. */
+export type AttachmentsRefProp = {
+  nativeElement?: HTMLDivElement | null;
+  fileNativeElement?: HTMLInputElement | null;
+  upload: (file: File) => void;
+  select: (options?: { accept?: string; multiple?: boolean }) => void;
+};

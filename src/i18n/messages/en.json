@@ -93,6 +93,16 @@
       "rejectBeforeUpload": "{name}: file validation failed.",
       "readFailed": "Could not read the selected folder."
     },
+    "attachments": {
+      "placeholderTitle": "Upload files",
+      "placeholderDescription": "Click or drag files here",
+      "dropLabel": "Drop files ({type})",
+      "inputLabel": "Choose attachment files",
+      "add": "Add attachment",
+      "remove": "Remove {name}",
+      "uploading": "Uploading attachment",
+      "error": "Upload failed"
+    },
     "cascader": {
       "placeholder": "Select…",
       "searchPlaceholder": "Search…",
@@ -189,6 +199,16 @@
       "dismiss": "Dismiss",
       "verifying": "Verifying…",
       "stepUpFailed": "Re-authentication failed. Please try again."
+    },
+    "actions": {
+      "like": "Like",
+      "dislike": "Dislike",
+      "copy": "Copy",
+      "copied": "Copied",
+      "audio": "Play audio",
+      "audioLoading": "Loading audio",
+      "audioRunning": "Playing audio",
+      "audioError": "Audio failed"
     }
   },
   "layout": {

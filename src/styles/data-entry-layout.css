@@ -575,4 +575,152 @@
     min-inline-size: 0;
     text-align: start;
   }
+
+  /* ── Attachments (Ant Design X) ─────────────────────────────────────────────────────────── */
+  .ui-attachments {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--attachments-gap);
+  }
+
+  .ui-attachments-list {
+    display: flex;
+    min-inline-size: 0;
+    gap: var(--attachments-card-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-attachments-list[data-overflow="wrap"] {
+    flex-wrap: wrap;
+  }
+
+  .ui-attachments-list[data-overflow="scrollX"] {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .ui-attachments-list[data-overflow="scrollY"] {
+    overflow-y: auto;
+    max-block-size: calc(var(--attachments-card-size) * 2 + var(--attachments-card-gap));
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .ui-attachments-card {
+    position: relative;
+    display: flex;
+    inline-size: var(--attachments-card-size);
+    block-size: var(--attachments-card-size);
+    flex: 0 0 auto;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--attachments-card-radius);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+  }
+
+  .ui-attachments-card-preview {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .ui-attachments-card-placeholder {
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    place-items: center;
+    color: hsl(var(--muted-foreground));
+    background: hsl(var(--muted) / 0.35);
+  }
+
+  .ui-attachments-card-meta {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    padding: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: hsl(var(--foreground));
+    background: hsl(var(--background) / 0.85);
+  }
+
+  .ui-attachments-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--attachments-drop-overlay-background, hsl(var(--background) / 0.7));
+  }
+
+  .ui-attachments-card-remove {
+    position: absolute;
+    inset-block-start: var(--space-1);
+    inset-inline-end: var(--space-1);
+  }
+
+  .ui-attachments-placeholder {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--attachments-placeholder-gap);
+    padding: var(--attachments-placeholder-space-inset);
+    border-radius: var(--attachments-placeholder-radius);
+    border: var(--upload-dropzone-border-width) dashed hsl(var(--border));
+    text-align: center;
+  }
+
+  .ui-attachments-placeholder[data-drag-active="true"] {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.05);
+  }
+
+  .ui-attachments-placeholder-icon svg {
+    inline-size: var(--attachments-placeholder-icon-size);
+    block-size: var(--attachments-placeholder-icon-size);
+  }
+
+  .ui-attachments-placeholder-title {
+    font-size: var(--attachments-placeholder-title-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-attachments-placeholder-description {
+    font-size: var(--attachments-placeholder-description-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-attachments-upload-btn {
+    display: grid;
+    inline-size: var(--attachments-card-size);
+    block-size: var(--attachments-card-size);
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: var(--attachments-card-radius);
+    border: 1px dashed hsl(var(--border));
+  }
+
+  .ui-attachments-drop-layer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    pointer-events: none;
+  }
+
+  .ui-attachments-drop-layer[data-active="true"] {
+    pointer-events: auto;
+  }
+
+  .ui-attachments-input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
 }

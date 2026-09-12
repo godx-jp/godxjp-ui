@@ -254,3 +254,90 @@ export type SkeletonArticleProp = {
   children?: ChildrenProp;
   className?: ClassNameProp;
 };
+
+/** Ant Design X `Actions` variant. */
+export type ActionsVariantProp = "borderless" | "outlined" | "filled";
+
+/** One action button or submenu root. Ant Design X `ItemType`. */
+export type ActionsItemProp = {
+  key?: string;
+  label?: string;
+  icon?: React.ReactNode;
+  onItemClick?: (info?: ActionsItemProp) => void;
+  danger?: boolean;
+  subItems?: readonly Omit<ActionsItemProp, "subItems" | "triggerSubMenuAction" | "actionRender">[];
+  triggerSubMenuAction?: "hover" | "click";
+  actionRender?: ((item: ActionsItemProp) => React.ReactNode) | React.ReactNode;
+};
+
+export type ActionsSemanticProp = "root" | "item" | "itemDropdown";
+
+/**
+ * @see Actions — quick AI feedback/action buttons beside a message (Ant Design X `Actions`).
+ */
+export type ActionsProp = Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> & {
+  items?: readonly (ActionsItemProp | React.ReactNode)[];
+  onClick?: (info: {
+    item: ActionsItemProp;
+    key: string;
+    keyPath: string[];
+    domEvent: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>;
+  }) => void;
+  dropdownProps?: Record<string, unknown>;
+  variant?: ActionsVariantProp;
+  fadeIn?: boolean;
+  fadeInLeft?: boolean;
+  classNames?: Partial<Record<ActionsSemanticProp, string>>;
+  styles?: Partial<Record<ActionsSemanticProp, React.CSSProperties>>;
+  rootClassName?: ClassNameProp;
+  className?: ClassNameProp;
+};
+
+/** Ant Design X `Actions.Feedback` value. */
+export type ActionsFeedbackValueProp = "like" | "dislike" | "default";
+
+/** @see Actions.Feedback */
+export type ActionsFeedbackProp = {
+  value?: ActionsFeedbackValueProp;
+  onChange?: (value: ActionsFeedbackValueProp) => void;
+  className?: ClassNameProp;
+  rootClassName?: ClassNameProp;
+  classNames?: Partial<Record<"root" | "like" | "dislike" | "liked" | "disliked", string>>;
+  styles?: Partial<
+    Record<"root" | "like" | "dislike" | "liked" | "disliked", React.CSSProperties>
+  >;
+};
+
+/** @see Actions.Copy */
+export type ActionsCopyProp = {
+  text?: string;
+  icon?: React.ReactNode;
+  className?: ClassNameProp;
+  rootClassName?: ClassNameProp;
+  classNames?: Partial<Record<"root", string>>;
+  styles?: Partial<Record<"root", React.CSSProperties>>;
+};
+
+/** @see Actions.Audio / Actions.Item status axis. */
+export type ActionsItemStatusProp = "loading" | "error" | "running" | "default";
+
+/** @see Actions.Audio */
+export type ActionsAudioProp = {
+  status?: ActionsItemStatusProp;
+  className?: ClassNameProp;
+  rootClassName?: ClassNameProp;
+  classNames?: Partial<Record<ActionsSemanticProp | ActionsItemStatusProp, string>>;
+  styles?: Partial<Record<ActionsSemanticProp | ActionsItemStatusProp, React.CSSProperties>>;
+};
+
+/** @see Actions.Item */
+export type ActionsStatusItemProp = {
+  status?: ActionsItemStatusProp;
+  label?: string;
+  defaultIcon?: React.ReactNode;
+  runningIcon?: React.ReactNode;
+  className?: ClassNameProp;
+  rootClassName?: ClassNameProp;
+  classNames?: Partial<Record<ActionsSemanticProp | ActionsItemStatusProp, string>>;
+  styles?: Partial<Record<ActionsSemanticProp | ActionsItemStatusProp, React.CSSProperties>>;
+};

@@ -259,6 +259,94 @@
         }
       ]
     },
+    "Actions": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "classNames",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<ActionsSemanticProp, string>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "dropdownProps",
+          "origin": "owned",
+          "required": false,
+          "type": "Record<string, unknown> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "fadeIn",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "fadeInLeft",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly (React.ReactNode | ActionsItemProp)[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "((info: { item: ActionsItemProp; key: string; keyPath: string[]; domEvent: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>; }) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "rootClassName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "styles",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<ActionsSemanticProp, React.CSSProperties>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ActionsVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        }
+      ]
+    },
     "Activity": {
       "group": "general",
       "props": [
@@ -1564,6 +1652,323 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": ["src/components/ui/aspect-ratio.tsx"]
+        }
+      ]
+    },
+    "Attachments": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "accept",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": false,
+          "type": "string | ((file: File) => string | Promise<string>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "beforeUpload",
+          "origin": "owned",
+          "required": false,
+          "type": "((file: File, files: File[]) => boolean | File | Blob | typeof import(\"../../components/data-entry/upload-types\").UPLOAD_LIST_IGNORE | Promise<boolean | File | Blob | typeof import(\"../../components/data-entry/upload-types\").UPLOAD_LIST_IGNORE>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "classNames",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<AttachmentsSemanticProp, string>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "data",
+          "origin": "owned",
+          "required": false,
+          "type": "Record<string, string | Blob> | ((file: File) => Record<string, string | Blob> | Promise<Record<string, string | Blob>>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "directory",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "getDropContainer",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => HTMLElement | null | undefined) | null | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "headers",
+          "origin": "owned",
+          "required": false,
+          "type": "Record<string, string> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "imageProps",
+          "origin": "owned",
+          "required": false,
+          "type": "Record<string, unknown> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "itemRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((node: React.ReactElement, item: UploadFileItemProp, items: UploadFileItemProp[], actions: import(\"../../components/data-entry/upload-types\").UploadItemActions) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly AttachmentsItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "maxSizeBytes",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "method",
+          "origin": "owned",
+          "required": false,
+          "type": "\"POST\" | \"PUT\" | \"PATCH\" | undefined",
+          "values": ["POST", "PUT", "PATCH"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "multiple",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "name",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((info: { file: AttachmentsItemProp; fileList: AttachmentsItemProp[]; }) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onDownload",
+          "origin": "owned",
+          "required": false,
+          "type": "((item: UploadFileItemProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onDrop",
+          "origin": "owned",
+          "required": false,
+          "type": "React.DragEventHandler<HTMLElement> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onPreview",
+          "origin": "owned",
+          "required": false,
+          "type": "((item: UploadFileItemProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onReject",
+          "origin": "owned",
+          "required": false,
+          "type": "((rejection: import(\"../../components/data-entry/upload-types\").UploadRejection) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onRemove",
+          "origin": "owned",
+          "required": false,
+          "type": "((item: AttachmentsItemProp) => boolean | void | Promise<boolean | void>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onUpload",
+          "origin": "owned",
+          "required": false,
+          "type": "((file: File, item: UploadFileItemProp, context: import(\"../../components/data-entry/upload-types\").UploadRequestContext) => Promise<import(\"../../components/data-entry/upload-types\").UploadResult>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "openFileDialogOnClick",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "AttachmentsOverflowProp | undefined",
+          "values": ["wrap", "scrollX", "scrollY"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "pastable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "AttachmentsPlaceholderProp | ((type: \"inline\" | \"drop\") => AttachmentsPlaceholderProp) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "previewFile",
+          "origin": "owned",
+          "required": false,
+          "type": "((file: File) => Promise<string>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "readOnly",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "removable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "rootClassName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "styles",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<AttachmentsSemanticProp, React.CSSProperties>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "triggerSize",
+          "origin": "owned",
+          "required": false,
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | undefined",
+          "values": ["xs", "sm", "md", "lg", "default", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "triggerVariant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | undefined",
+          "values": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "withCredentials",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -15906,7 +16311,7 @@
           "name": "ellipsis",
           "origin": "owned",
           "required": false,
-          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"expandable\" | \"onExpand\"> | undefined",
+          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"onExpand\" | \"expandable\"> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -16197,6 +16602,91 @@
           "type": "\"default\" | \"ghost\" | ControlVariantProp | undefined",
           "values": ["default", "ghost", "outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "ThoughtChain": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "classNames",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<ThoughtChainSemanticProp, string>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "defaultExpandedKeys",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "expandedKeys",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly ThoughtChainItemProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "line",
+          "origin": "owned",
+          "required": false,
+          "type": "ThoughtChainLineProp | undefined",
+          "values": [false, true, "dashed", "solid", "dotted"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "onExpand",
+          "origin": "owned",
+          "required": false,
+          "type": "((expandedKeys: string[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "rootClassName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "styles",
+          "origin": "owned",
+          "required": false,
+          "type": "Partial<Record<ThoughtChainSemanticProp, React.CSSProperties>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },

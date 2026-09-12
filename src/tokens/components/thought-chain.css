@@ -1,0 +1,28 @@
+/* ThoughtChain — Ant Design X agent call-chain visualization.
+ *
+ * Ant X ships a dozen component tokens (itemSolidBg, colorTextBlink, …). The same roles are named
+ * here on the foundation/semantic steps so a service retunes once globally.
+ */
+:root {
+  --thought-chain-gap: var(--space-3);
+  --thought-chain-line-width: var(--stroke-sm);
+  --thought-chain-line-color: hsl(var(--border));
+  --thought-chain-icon-size: var(--icon-size-md);
+  --thought-chain-index-size: var(--band-height-sm);
+  --thought-chain-item-radius: var(--radius-md);
+  --thought-chain-item-gap: var(--space-2);
+  --thought-chain-header-gap: var(--space-1);
+  --thought-chain-content-space-inline-start: var(--space-6);
+  --thought-chain-content-gap: var(--space-2);
+  --thought-chain-title-font-size: var(--font-size-sm);
+  --thought-chain-description-font-size: var(--font-size-xs);
+  --thought-chain-footer-font-size: var(--font-size-xs);
+  --thought-chain-item-solid-background: hsl(var(--muted) / 0.5);
+  --thought-chain-item-outlined-background: hsl(var(--background));
+  --thought-chain-item-outlined-border: hsl(var(--border));
+  --thought-chain-status-loading-color: hsl(var(--primary));
+  --thought-chain-status-success-color: hsl(var(--success));
+  --thought-chain-status-error-color: hsl(var(--destructive));
+  --thought-chain-status-abort-color: hsl(var(--muted-foreground));
+  --thought-chain-chevron-size: var(--icon-size-sm);
+}

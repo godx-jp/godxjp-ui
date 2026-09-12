@@ -93,6 +93,16 @@
       "rejectBeforeUpload": "{name}: kiểm tra tệp thất bại.",
       "readFailed": "Không thể đọc thư mục đã chọn."
     },
+    "attachments": {
+      "placeholderTitle": "Tải tệp lên",
+      "placeholderDescription": "Nhấp hoặc kéo thả tệp vào đây",
+      "dropLabel": "Thả tệp ({type})",
+      "inputLabel": "Chọn tệp đính kèm",
+      "add": "Thêm tệp đính kèm",
+      "remove": "Xóa {name}",
+      "uploading": "Đang tải tệp đính kèm",
+      "error": "Tải lên thất bại"
+    },
     "cascader": {
       "placeholder": "Chọn…",
       "searchPlaceholder": "Tìm kiếm…",
@@ -186,6 +196,16 @@
       "dismiss": "Đóng",
       "verifying": "Đang xác minh…",
       "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại."
+    },
+    "actions": {
+      "like": "Thích",
+      "dislike": "Không thích",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "audio": "Phát âm thanh",
+      "audioLoading": "Đang tải âm thanh",
+      "audioRunning": "Đang phát âm thanh",
+      "audioError": "Phát âm thanh thất bại"
     }
   },
   "layout": {

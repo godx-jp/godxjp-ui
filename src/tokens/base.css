@@ -44,3 +44,6 @@
 @import "./components/welcome.css";
 @import "./components/conversations.css";
 @import "./components/float-button.css";
+@import "./components/attachments.css";
+@import "./components/thought-chain.css";
+@import "./components/actions.css";
