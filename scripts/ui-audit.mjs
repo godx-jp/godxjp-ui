@@ -902,8 +902,24 @@ function jsxOpeningEnd(source, start) {
  * filters AND a table is a mixed body, where the padding is correct — the reporter hit that trap
  * with a `childElementCount === 1` test.
  */
+/*
+ * The alternation is DERIVED from the stylesheet, not guessed. `SkeletonTable` was missing and the
+ * same mistake went through silently (gh#611) — which is the worse half, because `SkeletonTable`
+ * is the package's OWN stand-in for `DataTable`: a consumer writes the skeleton and the table side
+ * by side, one is flagged and the other is not.
+ *
+ * The list to match is exactly what `[data-slot="card-content"][data-flush]` special-cases in CSS,
+ * because a per-pair exception there IS the statement that the pair matters:
+ *
+ *     .ui-data-table-root · .ui-data-table-scroll · .ui-data-table-toolbar   → DataTable
+ *     .ui-skeleton-table                                                     → SkeletonTable
+ *
+ * `Table` stays because it is the primitive `DataTable` is built from and a consumer can place it
+ * directly. Adding a component to that CSS block without adding it here reopens this issue, so the
+ * two are checked against each other in the rule's test.
+ */
 const CARD_TABLE_FLUSH = new RegExp(
-  `<CardContent(?![^>]*\\bflush\\b)(?:\\s${ATTRS})?>\\s*<(?:DataTable|Table)\\b`,
+  `<CardContent(?![^>]*\\bflush\\b)(?:\\s${ATTRS})?>\\s*<(?:DataTable|SkeletonTable|Table)\\b`,
   "g",
 );
 
