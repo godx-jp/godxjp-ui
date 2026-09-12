@@ -207,6 +207,15 @@ describe("Card tabList — the strip is IN the card's head", () => {
     expect(generic.some((selector) => panel.matches(selector))).toBe(true);
     expect(zeroed.some((selector) => panel.matches(selector))).toBe(true);
     expect(css.indexOf(zeroed[0]!)).toBeGreaterThan(css.indexOf(generic[0]!));
+
+    // And it must actually ZERO the inset. Selecting the right element and then re-applying
+    // `--card-space-inset` would leave the body double-padded with the rule still in the file —
+    // the shape of gh#554, one link further down the chain.
+    const open = css.indexOf(
+      "{",
+      css.indexOf('[data-slot="card"] > [data-slot="tabs"] > [data-slot="tabs-panel"]'),
+    );
+    expect(css.slice(open + 1, css.indexOf("}", open)).trim()).toBe("padding: 0;");
   });
 });
 
