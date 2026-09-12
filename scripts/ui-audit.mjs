@@ -32,29 +32,72 @@ const dirArgs = args.filter((a) => !a.startsWith("--") && a !== "json");
  * local gate or in CI then covers every edit path, including the ones nobody thought of.
  */
 function changedFiles() {
-  const base =
-    spawnSync("git", ["merge-base", "HEAD", "origin/main"], { encoding: "utf8" }).stdout.trim() ||
-    "HEAD";
-  const run = (a) => spawnSync("git", a, { encoding: "utf8" }).stdout ?? "";
+  // A git command that FAILED used to be indistinguishable from one that found nothing: `run`
+  // returned `stdout ?? ""`, so a shallow clone with no `origin/main`, or a directory that is not
+  // a repository at all, produced an empty list and a clean, green, zero-exit run (gh#542).
+  const run = (a) => {
+    const r = spawnSync("git", a, { encoding: "utf8" });
+    return r.status === 0 ? (r.stdout ?? "") : null;
+  };
 
-  return [
-    ...new Set(
-      [
-        run(["diff", "--name-only", "--diff-filter=ACMR", base, "--"]),
-        run(["diff", "--name-only", "--diff-filter=ACMR", "--cached"]),
-        run(["ls-files", "--others", "--exclude-standard"]),
-      ]
-        .join("\n")
-        .split("\n")
-        .map((f) => f.trim())
-        .filter((f) => /\.(tsx|jsx)$/.test(f) && existsSync(join(CWD, f))),
-    ),
+  const mergeBase = run(["merge-base", "HEAD", "origin/main"]);
+  if (mergeBase === null) {
+    return {
+      error:
+        "ui-audit --changed could not resolve `git merge-base HEAD origin/main`. " +
+        "Without a base there is no such thing as \u201cwhat this branch changed\u201d, and reporting a " +
+        "clean audit from that is not a result. Fetch origin/main (a shallow clone may need " +
+        "`git fetch --unshallow`), or pass the directories to scan instead of `--changed`.",
+    };
+  }
+
+  const parts = [
+    run(["diff", "--name-only", "--diff-filter=ACMR", mergeBase.trim(), "--"]),
+    run(["diff", "--name-only", "--diff-filter=ACMR", "--cached"]),
+    run(["ls-files", "--others", "--exclude-standard"]),
   ];
+  if (parts.some((out) => out === null)) {
+    return {
+      error:
+        "ui-audit --changed: a `git diff`/`git ls-files` call failed; refusing to report a clean run.",
+    };
+  }
+
+  return {
+    files: [
+      ...new Set(
+        parts
+          .join("\n")
+          .split("\n")
+          .map((f) => f.trim())
+          // SCANNABLE, not a second hand-written list. Selecting `.jsx` here while `walk()` below
+          // accepted only `.tsx`/`.ts` meant a changed `.jsx` was picked, counted in the summary
+          // line as scanned, and then dropped by the walker without being opened — and if it was
+          // the only change, the run exited 0 saying "no .tsx/.jsx changed" (gh#542).
+          .filter((f) => SCANNABLE.test(f) && existsSync(join(CWD, f))),
+      ),
+    ],
+  };
 }
 
+/**
+ * The ONE extension set. `changedFiles()` selects with it and `walk()` admits with it, so the
+ * selector and the walker cannot drift apart again — that drift was gh#542.
+ */
+const SCANNABLE = /\.(tsx|jsx|ts)$/;
+
 const CHANGED = args.includes("--changed");
+const changed = CHANGED ? changedFiles() : null;
+if (changed?.error) {
+  if (asJson) {
+    process.stdout.write(JSON.stringify({ error: changed.error }, null, 2) + "\n");
+  } else {
+    console.error(changed.error);
+  }
+  process.exit(2);
+}
 const SCAN_DIRS = CHANGED
-  ? changedFiles()
+  ? changed.files
   : dirArgs.length
     ? dirArgs
     : SELF
@@ -728,7 +771,7 @@ function walk(dir, acc = []) {
   // Accept a FILE path directly (the per-file editor hook passes one), not just a directory.
   try {
     if (statSync(dir).isFile()) {
-      if (dir.endsWith(".tsx") || dir.endsWith(".ts")) acc.push(dir);
+      if (SCANNABLE.test(dir)) acc.push(dir);
       return acc;
     }
   } catch {
@@ -747,10 +790,7 @@ function walk(dir, acc = []) {
       // Test/story dirs are not product UI — never hold them to the UI-standardization rules.
       if (name === "__tests__" || name === "node_modules") continue;
       walk(full, acc);
-    } else if (
-      (name.endsWith(".tsx") || name.endsWith(".ts")) &&
-      !/\.(test|spec|stories)\.tsx?$/.test(name)
-    ) {
+    } else if (SCANNABLE.test(name) && !/\.(test|spec|stories)\.[jt]sx?$/.test(name)) {
       acc.push(full);
     }
   }
@@ -880,12 +920,15 @@ const findings = [];
 const stale = staleOwnedRules();
 if (stale) findings.push(stale);
 let filesScanned = 0;
+/** What was actually OPENED. The summary used to name the selection instead (gh#542). */
+const scannedFiles = [];
 for (const dir of SCAN_DIRS) {
   for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
     const rel = relative(CWD, file);
     // Framework test support is executable fixture markup, not a shipped product screen.
     if (SELF && !args.includes("--consumer") && rel.startsWith("src/test/")) continue;
     filesScanned += 1;
+    scannedFiles.push(rel);
     // A primitive implements native controls; asking Input to render Input recurses.
     // Consumer applications and executable docs still receive these composition checks.
     const fileRules =
@@ -902,7 +945,7 @@ for (const dir of SCAN_DIRS) {
     /** Both opt-outs, by line index: the per-line markers and the reason-carrying block. */
     const suppressed = (ruleId, i) =>
       isSuppressed(ruleId, origLines[i], origLines[i - 1]) || inDisabledBlock(ruleId, i);
-    const isJsx = file.endsWith(".tsx");
+    const isJsx = file.endsWith(".tsx") || file.endsWith(".jsx");
     // This compiler output intentionally resolves CSS variables to email-safe literals.
     // gen-email-tokens.mjs --check verifies it against its canonical token sources.
     const compiledEmailTokens =
@@ -1118,7 +1161,7 @@ if (filesScanned === 0) {
     console.log(`      ${C.dim}${f.snippet}${C.reset}`);
   }
   console.log(
-    `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset} across ${SCAN_DIRS.join(", ")}.`,
+    `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset} across ${scannedFiles.join(", ")}.`,
   );
   if (errors.length === 0 && warnings.length === 0) {
     console.log("✓ No UI-standardization violations found.");
