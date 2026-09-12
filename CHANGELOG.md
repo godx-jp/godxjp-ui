@@ -6,6 +6,234 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.0] - 2026-09-12
+
+Minor, và lý do đếm được: **bảy component mới, bốn export Typography mới, và một họ được gộp lại**
+— tất cả đã nằm trên `main` từ sau `v23.3.0` mà chưa cái nào ra tới registry. `23.3.0` trên npm
+không biết `FloatButton`, không biết `Typography.Paragraph`, không biết `Card tabList`, và không
+biết một chữ nào trong năm component Ant Design X. Đây là bài học của 23.2.0 lặp lại ở quy mô lớn
+hơn: một component chưa phát hành thì với consumer là một component không tồn tại.
+
+**Không có breaking change.** Đặc biệt: **12 export `AlertDialog*` KHÔNG bị xoá** — chi tiết ở mục
+`Dialog` bên dưới.
+
+### Added
+
+- **`FloatButton` — cổng nguyên vẹn từ antd 6.6.3: control, `Group`, `BackTop` (#558, #574).**
+  `grep -rhoE "\bFloatButton\b" dist/components/*/index.d.ts dist/index.d.ts` trên 23.2.1 trả về
+  **rỗng**, và nó rỗng vì một quyết định đã ghi:
+  `docs/roadmap/parity-audit-layout-navigation-general.md` §4.2 xếp FloatButton/BackTop là "C1/C2
+  fail — positioned by the screen that wants it". Dòng đó sai, và #558 nói vì sao bằng một câu: ghim
+  một `Button` vào góc màn nghĩa là consumer viết `position: fixed` cộng hai số pixel gõ tay tại
+  call site, mà `ui-audit` chặn cả hai (`no-utility-layout`, `no-arbitrary-spacing`) **không chừa
+  cách viết hợp lệ nào**. Không có nước đi. Dòng ấy nay bị gạch tại chỗ chứ không xoá, để việc đảo
+  quyết định còn đọc được.
+
+  Đọc ra từ chính tarball antd 6.6.3 (`es/float-button/*.d.ts` + `.js` bên cạnh), không từ trí nhớ:
+  `icon`, `content`, alias `description` đã bỏ (content thắng, cả hai cùng render), `type`, `shape`,
+  `tooltip` ở cả dạng node lẫn dạng object, `href`, `target`, `badge`, `disabled`, `htmlType`, cùng
+  glyph mặc định và cảnh báo dev của antd khi một hình tròn bị bắt mang chữ. `Group`: `trigger` và
+  **sự VẮNG MẶT của nó** làm công tắc giữa một chồng phẳng và một menu, `open`, `onOpenChange`,
+  `closeIcon`, `placement`, và luật `individual` của antd. `BackTop`: `visibilityHeight` (400),
+  `target` dạng getter lười, `duration` (450) chạy bằng chính `easeInOutCubic` của antd,
+  `showProgress`, `onClick`.
+
+  Hai lỗi của chính antd được sửa thêm, theo yêu cầu của #558: `Group` của antd nghe trên `document`
+  rồi thử `root.contains(event.target)` — trong shadow root, target bị **retarget** về host trước
+  khi listener trên document nhìn thấy, nên phép thử ấy sai ngay với một cú bấm vào chính nhóm.
+
+  KHÔNG cổng, mỗi thứ ghi lý do tại chỗ: `classNames`/`styles` (lỗ kiểu dáng theo slot — đóng băng
+  tên slot DOM nội bộ thành API công khai, `docs/WHAT-BELONGS-HERE.md` cấm đích danh),
+  `prefixCls`/`rootClassName` (ống nước CSS-in-JS của antd; gói này ship class tĩnh),
+  `badge.offset` (tuple `[x, y]` px không bậc token nào đánh vần được) và `badge.size`.
+
+- **`Typography` cổng 100%, không cắt mảnh (#570, #580).** Gói vốn ship `Text` và `Heading` rồi gọi
+  đó là typography. Đo với antd 6.6.3 `es/typography/**`: `Text` mang **19 prop**, còn
+  `Typography.Text` của antd khai **thêm 14 cái nữa** mà đây không có — `disabled`, `mark`,
+  `keyboard`, `italic`, `code`, `delete`, `underline`, `strong`, `type`, `actions`, `copyable`,
+  `editable`, `ellipsis`, `component`. **19 → 33.** Còn `Typography`, `.Paragraph`, `.Title`,
+  `.Link` thì **không tồn tại**.
+
+  Nay có đủ: `Typography` (container `<article>` và cũng là gốc compound), `Title` (năm bậc),
+  `Paragraph` (`<div>` của antd, kèm trọn hợp đồng `ellipsis`) và `Link` (anchor cộng lá chắn `rel`
+  của antd), mỗi cái cũng với tới được qua `Typography.Text` / `.Title` / `.Paragraph` / `.Link`.
+  `Typography.Text` **CHÍNH LÀ** export `Text` đang có — một component, không phải một cái thứ hai
+  nghèo hơn — nên một đoạn dán từ antd và một lời gọi viết theo lối của gói này biên dịch ra cùng
+  một thứ. `copyable` mang `text` (chuỗi hoặc hàm async), `onCopy`, `icon`, `tooltips`, `format`,
+  `tabIndex`; `editable` mang 14 trường; `ellipsis` mang `rows`, `expandable`, `symbol`, `onExpand`,
+  `suffix`, `tooltip`, `onEllipsis`, `defaultExpanded`, `expanded`.
+
+  **Không gì đang có bị xê dịch.** Mọi prop `Text` và `Heading` đã có đều giữ tên, giữ mặc định,
+  giữ thuộc tính `data-*` phát ra; **218 test** trong `src/components/general/__tests__` xanh mà
+  không phải sửa. Chỗ hai thư viện gọi cùng một trục thì **cả hai cách đánh vần đều nhận**, và kẻ
+  thắng được ghi NGAY TẠI prop: `tone` thắng `type` của antd (cùng trục, rộng hơn), `ellipsis`
+  thắng `truncate`/`clamp`, `as` thắng `component` của antd. Bản dev cảnh báo ở mọi va chạm.
+
+  **Cái giá, nói thẳng:** `src/components/general/typography.tsx` nay là module CLIENT. `copyable`,
+  `editable`, `ellipsis` cần state, mà `use-client-directive.test.ts` từng khẳng định tệp này không
+  hook để `Text`/`Heading` render được trong RSC. Lựa chọn còn lại là một component thứ hai cũng tên
+  `Text` — và một consumer đọc `<Text copyable>` trong catalog trong khi editor tự import cái tĩnh
+  là thất bại tệ hơn.
+
+- **Năm component Ant Design X, đóng #559.** Họ chat trước nay ship từng nửa: `ChatBubble`,
+  `ChatBubbleList`, `ChatComposer`, `ChatSuggestion` đã có, phần còn lại thì mọi consumer tự dựng
+  tay. Cả năm đọc prop surface ra từ `@ant-design/x@2.9.0` **giải nén vào thư mục tạm, không hề cài**
+  (`check:no-antd-runtime` vẫn xanh), đọc `es/**/*.d.ts` từng trường một:
+
+  - **`Conversations`** (`navigation`, #571) — cái rail mà bốn component chat kia ngồi cạnh. `items`
+    (kể cả `{ type: "divider", dashed }`), bộ ba `activeKey`/`defaultActiveKey`/`onActiveChange`,
+    `menu` phẳng hoặc theo hàng, `groupable` với `label`/`collapsible`/bộ ba `expandedKeys`, và
+    `creation`. Phép đi nhóm là `useGroupable` của Ant tái dựng đúng: một bucket sinh ra ở nơi thành
+    viên ĐẦU TIÊN của nó xuất hiện.
+  - **`Welcome`** (`data-display`, #577) — khối chào ở đầu một hội thoại rỗng. `icon`, `title`,
+    `description`, `extra`, `variant`, kể cả luật dễ sót: một `icon` dạng string bắt đầu bằng `http`
+    render thành `<img>` chứ không phải chữ.
+  - **`Actions`** (`general`, #584) — dải hành động dưới một câu trả lời: copy, thử lại, thích, và
+    một menu cho phần còn lại. `items`, `onClick({ item, key, keyPath, domEvent })`, `onItemClick`
+    thắng `onClick`, `danger`, `subItems`, `actionRender`, `variant`, `fadeIn`/`fadeInLeft` — kể cả
+    hai luật dễ sai: handler theo item **RETURN**, nên `onClick` của cả dải không bắn theo; và một
+    sub-item báo `keyPath: [subKey, parentKey]`.
+  - **`ThoughtChain`** (`data-display`, #592) — lập luận của mô hình, từng bước. `items` với đủ mười
+    trường, bộ ba `defaultExpandedKeys`/`expandedKeys`/`onExpand`, và `line`. Hai luật nhỏ dễ mất:
+    `icon: false` bỏ hẳn cột glyph trong khi `icon` vắng mặt thì hiện **số thứ tự 1-based** của bước,
+    và `destroyOnHidden` mặc định **TRUE** nên thân đang gập bị unmount chứ không phải bị giấu.
+    Một lỗi chính tả của Ant được sửa và đáng gọi tên: type của Ant đánh vần kiểu đường thứ ba là
+    `'dotted‌'` với một **U+200C ZERO WIDTH NON-JOINER** ở cuối, nên `line="dotted"` không
+    type-check nổi với chính `@ant-design/x`.
+  - **`Attachments`** (`data-entry`, #596) — bộ tệp đính kèm của bề mặt chat. Tên trường là của antd
+    (`thumbUrl`, `originFileObj`, `uid`, `percent`, …) nên một call site Ant X biên dịch không sửa;
+    `items` (= `fileList`), `onChange` với hình `{ file, fileList }`, `onRemove`, `overflow`
+    (`wrap`/`scrollX`/`scrollY`), `placeholder` ở cả dạng object lẫn dạng hàm `(type) => …`,
+    `getDropContainer`, và ref phơi đúng `nativeElement`, `fileNativeElement`, `upload(file)`,
+    `select({ accept, multiple })` như Ant X mô tả.
+
+  **QUYẾT ĐỊNH NHÓM, và lý do**, vì hai PR từng đề xuất hai nhóm khác nhau cho `Actions`: nhóm
+  `feedback` của gói này chứa `Alert`/`AlertDialog`/`Toast`/`Skeleton` — tức nghĩa của nó là **hệ
+  thống nói với người dùng**, không phải _người dùng đưa phản hồi_. Vậy một dải nút người dùng bấm
+  thuộc `general`, cạnh `Button` và `FloatButton`; còn thứ **hiển thị lý luận của mô hình** thuộc
+  `data-display`, cạnh `ChatBubble` và `Welcome`.
+
+  **Thứ được THÊM so với Ant X, và vì sao phải thêm.** Rail của Ant X không có mô hình bàn phím nào:
+  `es/conversations/Item.js` render `<li title onClick>` — không role, không `tabIndex`, không xử lý
+  phím. `es/actions/Item.js` render `<div className="…-item" onClick>` với nhãn chỉ cấp làm title
+  của `Tooltip`, mà `useMobile()` lại bỏ Tooltip ấy trên cảm ứng — nên dải hành động **không thể với
+  tới bằng bàn phím**, các nút **không có tên khả truy cập**, và trên điện thoại chúng không có cả
+  tên nhìn thấy được. `es/thought-chain/Status.js` vẽ một icon và không gì khác, nên "bước này hỏng"
+  chỉ đi bằng hình và sắc — đúng thứ WCAG 1.4.1 cấm làm kênh duy nhất.
+
+  Nên ở đây: hàng của `Conversations` là `Button` thật dưới **một roving tabindex** (APG composite) —
+  cả rail là một điểm dừng Tab, ↑/↓ đi và vòng, Home/End về hai đầu; `Actions` là một **APG Toolbar**
+  với mũi tên LOGICAL (→ trong LTR, ← trong RTL) — đo được: một dải 3 hành động theo sau bởi một nút
+  là Tab → hành động đầu, Tab → cái nút; `ThoughtChain` là một `<ol>` (trình đọc màn hình nghe "list,
+  4 items" và vị trí từng bước) với tiêu đề bước gập được là `<button aria-expanded aria-controls>`
+  thật, và trạng thái là một **TỪ** trong span ẩn thị giác bên cạnh glyph.
+
+  `styles`/`classNames`/`rootClassName` **không** cổng cho cả năm, cùng một lý do đã ghi:
+  `docs/WHAT-BELONGS-HERE.md` ("Lỗ kiểu dáng tự do") và `docs/DESIGN-AUTHORITY.md` ("A knob that only
+  a fork could reach is not parity either"). Câu trả lời là tầng token — `conversations.css` 17 núm,
+  `welcome.css` 10 núm, và tương tự cho ba cái còn lại.
+
+- **`DraggablePanel` (`layout`, #560, #591) — một bề mặt nổi mà người xem dời được thật.**
+  `search_components "draggable movable floating window panel"` trả về `ResizablePanel`, `Popover`,
+  `SplitPane`, `Sheet`, `Tabs`, `Transfer` — **mọi cái đều bị giữ chỗ bởi một thứ không phải người
+  đang nhìn**. `ResizablePanel` (react-resizable-panels) đổi cỡ các pane TRONG một layout; nó không
+  dời một phần tử nổi quanh viewport. Nên một trợ lý đã neo thì che mất thứ nằm ở góc nó đậu, mà
+  trên màn dày dữ liệu đó thường chính là thứ đang được hỏi.
+
+  antd không có component cho việc này. Thứ antd CÓ cho đúng ca này là demo "Draggable Modal":
+  `Modal` cộng slot `modalRender`, phần kéo do **react-draggable** làm. Nên prop surface ở đây là
+  của react-draggable, cổng theo tên — `axis`, `bounds`, `position`, `defaultPosition`, `disabled` —
+  với ba chỗ rẽ, mỗi chỗ tranh luận ngay tại nơi rẽ: `handle` (một CSS selector) **không** cổng, vì
+  nó là cửa sau vào DOM nội bộ và ở đây tay cầm là một phần thật của component; `bounds` chỉ giữ
+  `"viewport" | "none"`, vì dạng object của react-draggable đánh vần theo hướng VẬT LÝ mà
+  `check:rtl` chặn do không soi gương được cho RTL; `onDrag`/`onStop` thành `onPositionChange` — một
+  trục, một cách đánh vần (`check:prop-vocabulary`).
+
+  **KHÔNG dependency mới.** react-draggable không được cài, và `@react-aria/interactions` (nơi
+  `useMove` ở) không phải dependency trực tiếp của gói. Phần kéo là chính mẫu pointer mức window mà
+  `data-entry/slider.tsx` đã dùng: `pointermove`/`pointerup`/`pointercancel` trên `window`, lọc theo
+  `pointerId`, gỡ khi unmount. **Bốn mươi dòng thay cho một dependency.**
+
+- **`Card tabList` — dải tab thuộc về ĐẦU thẻ (#570, #595).** `tabList`, `activeTabKey`,
+  `defaultActiveTabKey`, `onTabChange` và `tabProps` giữ tên và ngữ nghĩa của antd; chỉ
+  `tabBarExtraContent` thành `extra`, theo đúng tiền lệ `TabsProp.extra` mà gói đã đặt một lần rồi,
+  vì `left`/`right` không soi gương được dưới RTL còn `start`/`end` thì được.
+
+  Điều làm nó là một component chứ không phải `Tabs` đặt cạnh `Card`: dải tab render **BÊN TRONG
+  đầu thẻ** — dưới tiêu đề, trong cùng đường viền, trên cùng mặt phẳng — nên thẻ và tab đọc ra là
+  MỘT vật. Và `CardContent flush` vẫn xuyên tới được một `DataTable` nằm trong một tab (#554).
+
+### Changed
+
+- **`Dialog` và `AlertDialog` nay là MỘT họ, phân biệt bằng `variant` (#567, #573).**
+  `dist/components/feedback/dialog.d.ts` từng phát hành **26 thứ**: 14 `Dialog*`, 12 `AlertDialog*`,
+  **12 cặp trùng tên**, 0 bộ phận chỉ `AlertDialog` có, và 2 chỉ `Dialog` có (`DialogBody`,
+  `DialogClose`). Toàn bộ khác biệt giữa hai họ là **hai prop nội bộ trên cùng một vỏ** —
+  `dialog.tsx:482` là `<DialogShell role="alertdialog" isDismissable={false}>`. **Mười hai export
+  cho một thuộc tính ARIA.**
+
+  antd, thứ mà `docs/DESIGN-AUTHORITY.md` chỉ định là thẩm quyền cho prop surface, có **một** `Modal`;
+  nguy hiểm là một prop (`okType="danger"`, `Modal.confirm()`), và không có `AlertModal` nào cả. Phép
+  chia đôi là hình của Radix — hai package — mà thư viện này đã rời Radix từ v20.
+  `react-aria-components` có một `Dialog` duy nhất với `role` là prop thường, nên phần cài đặt cũng
+  không cần phép chia.
+
+  `Dialog` nay nhận `variant` (`"default" | "destructive"`), đặt ở gốc hoặc ở `DialogContent`, và nó
+  quyết ba thứ luôn đi cùng nhau: `role=dialog`/`alertdialog`, một cú bấm ra ngoài có đóng không, và
+  độ nhấn của hành động chính.
+
+  **KHÔNG XOÁ GÌ. Cả 12 export `AlertDialog*` chạy y nguyên từng byte** — `variant` mặc định
+  `"default"` và không call site nào đang truyền nó, nên không cây nào đang có đổi role, đổi scrim
+  hay đổi màu nút. Xoá chúng là **breaking change và thuộc về một major**; consumer đang bám
+  `getByRole('alertdialog')` không phải sửa một dòng. Tài liệu nay gọi chúng là cách đánh vần cũ.
+
+  Escape **vẫn** đóng một dialog destructive, vì đó là hành vi đo được của 12 export đang có
+  (`dialog-alert-primitives.test.tsx` · "closes on Escape and restores focus") và `keyboard` của
+  antd mặc định true — prop này cai quản cú bấm RA NGOÀI (`maskClosable` của antd).
+
+### Fixed
+
+- **`Conversations` cổng về năm trên sáu trường item của Ant Design X (#576).** Thiếu `timestamp`.
+  Không gì báo — một caller truyền `timestamp` chỉ nhận một lỗi TypeScript về thuộc tính lạ. Nó
+  render qua `formatDate`, không bao giờ `toLocaleString` và không bao giờ một chuỗi ISO cắt ra, và
+  prop là **NUMBER** chứ không phải `ReactNode` vì cùng một lý do: locale, timezone và lựa chọn
+  12/24h của tenant sống trong `AppProvider`, nên một epoch phải đọc ra `2026/03/15` ở tenant Nhật và
+  `15/03/2026` ở tenant Việt. Timestamp xuống dòng thứ hai chứ không phải một ô đuôi: rail thì hẹp,
+  và đặt cạnh nhau thì một tiêu đề dài sẽ elide về không để nhường chỗ cho một ngày có bề rộng cố định.
+
+  **Bắt được khi đang viết, và đáng gọi tên vì nó im lặng:** token thoạt đầu đọc
+  `var(--space-stack-2xs)`, thứ **không tồn tại**. Một custom property rỗng làm cả khai báo thành
+  không hợp lệ và bị bỏ — cùng họ lỗi với tầng motion ở 23.3.0, nơi mọi duration resolve về `0s` vì
+  tầng được khai ở chỗ `:root` không nhìn thấy. **Không có lỗi nào được ném cho việc này**; khoảng hở
+  đơn giản là đã không có ở đó.
+
+- **Token MCP và chính tả `defaultValue` lệch với `main` (#587, #589)** — `component-tokens.generated.ts`
+  sinh lại cho `Actions` và cho phần còn lại của loạt.
+
+- **`CardTabItemProp` không có trên bề mặt công khai, và `main` đỏ vì thế (#597).** #595 thêm
+  `Card tabList`, thêm ví dụ tài liệu cho nó, và thêm chính cái type mà ví dụ ấy khai — nhưng
+  `card.tsx` chỉ **import** type đó còn barrel không hề re-export, nên cái tên mà ví dụ import
+  không tồn tại: `TS2305: Module '"@godxjp/ui/data-display"' has no exported member
+'CardTabItemProp'`. Mọi anh em cùng họ đã làm đúng cách từ trước (`thought-chain.tsx` re-export
+  tám type của nó, `welcome.tsx` ba), nên bản sửa là quy ước chứ không phải phát minh.
+
+  **Vì sao PR vẫn xanh:** `typecheck:docs` KHÔNG nằm trong `PR quick check`; nó chạy trong
+  `verify:ci:static`, tức job `CI · code` lúc push. Docs lane cũng không chạy nó. Một ví dụ tài
+  liệu vì vậy chỉ có thể đỏ SAU khi merge.
+
+- **Bảng đóng băng token icon đã ruỗng, và chính phép kiểm của nó bắt được (#597).** Chín token
+  icon được đúc qua #571, #574, #577, #592 và #596 mà không cái nào được ghi vào bảng —
+  `expected [ …(60) ] to deeply equal [ …(53) ]`. Bảy vào thẳng như hàng thường trên chín bậc. Hai
+  cái còn lại thì không: `--thought-chain-icon-font-size` **không phải hộp icon** mà là cỡ CHỮ của
+  số thứ tự in trong medallion — đúng ca của `--topbar-chip-icon-font-size` mà `NOT_AN_ICON_BOX` đã
+  loại trừ sẵn vì cùng lý do; còn `--thought-chain-icon-size` LÀ hộp và LÀ lệch chín bậc, vì nó đọc
+  `--band-height-sm` (28px) để vòng tròn khớp chiều cao dải tiêu đề bên cạnh, thứ giữ cho đường nối
+  ở giữa. 24 và 36 là hai bậc gần nhất và cả hai đều phá căn chỉnh ấy. Nó được khai trong
+  `DECLARED_OFF_SCALE` kèm lý do `scale-exempt:` ngay trên dòng khai báo.
+
+  Mọi giá trị đóng băng đều được giải bằng chính `resolveToken` của tệp đó trên ba cột mật độ,
+  không gõ tay từ CSS.
+
 ## [23.3.0] - 2026-09-12
 
 Minor, và lý do là **một mặc định thị giác đổi**: dấu hiệu focus bàn phím nay BẬT sẵn. Phần còn lại
