@@ -247,6 +247,10 @@ in page CSS.
   (gh#602, measured 1.00:1). This library adds `count` / `overflowCount` / `showZero` /
   `countLabel` on `SegmentedOption` with a DS-owned pill (`--segmented-count-*` tokens), same
   counter vocabulary as `Button` / `Toggle`.
+- **`DraggablePanel.labels`.** antd's Draggable Modal demo has no i18n hook for the drag handle.
+  Embedded consumers cannot mount `AppProvider` without writing theme attributes on the host
+  `document.documentElement` (gh#606). `labels?: { close?: string; move?: string }` overrides `t()`
+  per control; a scoped `AppProvider` subtree remains the long-term fix.
 - **`Badge.onRemove` instead of antd `Tag`'s `closable` + `onClose`.** Semantics match antd's
   closable tag (a chip that draws its own × and fires one callback). The boolean is folded into
   prop presence (`onRemove` omitted ⇒ no ×), and the callback is named `onRemove` rather than

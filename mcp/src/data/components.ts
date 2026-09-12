@@ -2097,9 +2097,10 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
       },
       {
         name: "width",
-        type: '"sm" | "md" | "lg"',
+        type: '"sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
-        description: "Panel width from the token ladder (18rem / 22rem / 28rem).",
+        description:
+          "Panel width from the token ladder (18rem / 22rem / 28rem / xl → --centered-shell-width-md).",
       },
       {
         name: "axis",
@@ -2132,6 +2133,12 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
         type: "() => void",
         description:
           "Presence renders the close control in the title bar (antd Modal's onCancel). Omit it for a panel the page controls entirely.",
+      },
+      {
+        name: "labels",
+        type: "{ close?: string; move?: string }",
+        description:
+          "Optional localized strings for the close and move controls. Each key wins over t() when set. For script-injected embeds that cannot mount AppProvider without restyling the host page (gh#606).",
       },
       {
         name: "disabled",

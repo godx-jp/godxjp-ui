@@ -3072,6 +3072,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Presence renders the title-bar close control — antd Modal's onCancel.",
       },
+      {
+        field: "labels",
+        local: true,
+        reason:
+          "Optional close/move strings for embeds that cannot mount AppProvider without restyling the host page (gh#606).",
+      },
     ],
   },
   ThumbnailSizeProp: {

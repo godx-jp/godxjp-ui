@@ -2011,6 +2011,7 @@
     flex-direction: column;
     inline-size: var(--draggable-panel-width);
     max-inline-size: calc(100% - var(--draggable-panel-inset) - var(--draggable-panel-inset));
+    block-size: var(--draggable-panel-block-size);
     max-block-size: var(--draggable-panel-max-block-size);
     border: var(--draggable-panel-border-width) solid hsl(var(--border));
     border-radius: var(--draggable-panel-radius);
@@ -2028,6 +2029,10 @@
 
   .ui-draggable-panel[data-width="lg"] {
     inline-size: var(--draggable-panel-width-lg);
+  }
+
+  .ui-draggable-panel[data-width="xl"] {
+    inline-size: var(--draggable-panel-width-xl);
   }
 
   .ui-draggable-panel[data-placement^="top"] {
