@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
-import type { ToneProp } from "../../props/vocabulary";
+import type { ConfirmVariantProp, ToneProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useOverlayCloseFocus } from "./overlay-close-focus";
 import { buttonVariants } from "../general/button";
@@ -14,11 +14,19 @@ import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
 import { Input } from "../data-entry/input";
 import { FormField } from "../data-entry/form-field";
-import type { AlertDialogProp } from "../../props/components/feedback.prop";
+import type {
+  AlertDialogProp,
+  DialogContentProp,
+  DialogProp,
+} from "../../props/components/feedback.prop";
 
 export type {
   AlertDialogProp,
   AlertDialogProp as AlertDialogProps,
+  DialogProp,
+  DialogProp as DialogProps,
+  DialogContentProp,
+  DialogContentProp as DialogContentProps,
 } from "../../props/components/feedback.prop";
 
 /*
@@ -75,6 +83,61 @@ export type {
  * `dom.section` là thẻ RAC chờ đợi ở `Dialog`; trả về `<div>` từ khe `render`
  * làm RAC log cảnh báo ở MỌI lần dựng trong dev. `role` phủ lên vai ngầm của
  * `<section>`, và không móc CSS nào trong `src/styles/` chọn theo tên thẻ.
+ *
+ * ## MỘT họ, không phải hai — `variant` là lối chuẩn (gh#567)
+ *
+ * Số đo trên `dist/components/feedback/dialog.d.ts` lúc issue được mở: 26
+ * export — 14 `Dialog*`, 12 `AlertDialog*`, **12 cặp trùng tên**, **0** phần
+ * chỉ `AlertDialog` mới có, 2 phần chỉ `Dialog` có (`DialogBody`,
+ * `DialogClose`). Khác biệt thật giữa hai họ nằm ở ĐÚNG hai prop nội bộ của
+ * `DialogShell`, và cả hai đã có sẵn ở đây từ trước: `role` và `isDismissable`
+ * (xem `AlertDialogContent` bên dưới).
+ *
+ * antd — thẩm quyền bề mặt prop của kho này (docs/DESIGN-AUTHORITY.md) — chỉ có
+ * MỘT `Modal`. Mức nguy hiểm ở antd là một PROP (`okType="danger"`, và
+ * `Modal.confirm()` cùng họ `info/success/error/warning`); antd KHÔNG có
+ * `AlertModal`. Hai họ tách rời là hình dạng của Radix
+ * (`@radix-ui/react-dialog` + `@radix-ui/react-alert-dialog`), thứ kho này
+ * không còn chạy trên nữa.
+ *
+ * Nên `DialogContent` — và `DialogRoot`, để consumer đặt được một lần ở gốc —
+ * nhận `variant`, và MỘT prop ấy quyết định ba thứ luôn đi cùng nhau:
+ *
+ *     variant="default"     → role="dialog"      · click ra ngoài ĐÓNG   · nút chính nhấn mạnh thường
+ *     variant="destructive" → role="alertdialog" · click ra ngoài KHÔNG  · nút chính nhấn mạnh destructive
+ *
+ * ### Bốn chỗ lệch khỏi đề nghị trong issue, và lý do từng chỗ
+ *
+ * 1. **Tên prop là `variant`, không phải `severity`.** antd không có tên cho
+ *    một-knob-ba-việc này, nên không có gì để port nguyên văn. Nhưng trục
+ *    "nhấn mạnh của xác nhận" thì kho này ĐÃ publish: `ConfirmVariantProp`
+ *    (`"default" | "destructive"`), và preset `AlertDialog` gọi nó là `variant`
+ *    từ trước. Thêm `severity` là thêm cách viết THỨ HAI cho cùng một trục —
+ *    đúng thứ `check:prop-vocabulary` (`^variant$` → `*VariantProp`) tồn tại để
+ *    chặn, và đúng luật "controlled vocabulary wins on values" trong
+ *    DESIGN-AUTHORITY.
+ * 2. **Escape VẪN đóng `variant="destructive"`.** Issue muốn prop quyết định cả
+ *    Esc. Nhưng Esc-đóng-alertdialog là hành vi ĐANG CHẠY của 12 export
+ *    `AlertDialog*`, có test đo (`dialog-alert-primitives.test.tsx` · "closes on
+ *    Escape and restores focus"); `isKeyboardDismissDisabled` để nguyên mặc
+ *    định `false` của RAC. Cho prop mới tắt Esc sẽ làm `variant="destructive"`
+ *    KHÁC `AlertDialogContent`, tức phá đúng lời hứa "prop mới thay được họ
+ *    cũ". antd đồng ý: `keyboard` mặc định `true`. Nên prop quyết định
+ *    click-ra-ngoài, KHÔNG quyết định Esc.
+ * 3. **Nút ✕ mặc định biến mất ở `destructive`** (`variant="default"` vẫn mặc
+ *    định hiện nó, y như trước). Một dấu ✕ LÀ một lối đóng-không-chủ-đích, cùng
+ *    họ với click ra ngoài, và `AlertDialogContent` mặc định
+ *    `showCloseButton={false}`. Nhờ vậy `<DialogContent variant="destructive">`
+ *    TRÙNG KHÍT `<AlertDialogContent>` chứ không "gần giống" — consumer vẫn bật
+ *    lại được bằng `showCloseButton`.
+ * 4. **Tông của dải header KHÔNG bị ép theo.** `DialogHeader tone` là một trục
+ *    đã publish riêng (7 giá trị `ToneProp`); chỗ ép `tone="destructive"` là
+ *    preset `AlertDialog`, nơi cả tiêu đề lẫn nút đều do preset dựng. Ép thêm ở
+ *    đây sẽ là trục thứ hai điều khiển cùng một pixel.
+ *
+ * 12 export `AlertDialog*` Ở LẠI và chạy y như cũ — gỡ chúng là breaking change
+ * và cần một bản major. Chúng là LỐI CŨ; `variant` là lối chuẩn. Quy tắc chọn
+ * cho consumer nằm trong `docs/DESIGN-AUTHORITY.md`.
  */
 
 /** Gói prop khe `render` của RAC trao lại — nó có thêm `data-rac`, thứ kiểu JSX không khai báo. */
@@ -134,6 +197,13 @@ const DialogLabelContext = React.createContext<{
   titleId: string;
   descriptionId: string;
 } | null>(null);
+
+/**
+ * Mức nguy hiểm đã giải, chảy từ `DialogRoot` / `DialogContent` xuống `DialogAction` — xem đầu
+ * tệp. Mặc định `"default"` nên mọi cây `AlertDialog*` hiện có (không cái nào đặt prop này) giữ
+ * nguyên nhấn mạnh nút chính như trước.
+ */
+const DialogVariantContext = React.createContext<ConfirmVariantProp>("default");
 
 const OVERLAY_CLASS =
   "ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0";
@@ -204,7 +274,7 @@ function DialogShell({
   );
 }
 
-interface DialogRootProps extends OverlayOpenProps {
+interface DialogRootProps extends OverlayOpenProps, Pick<DialogProp, "variant"> {
   /**
    * Giữ tên prop của Radix. RAC không có kiểu overlay không-modal: `Modal` LUÔN khoá cuộn và ẩn
    * nền khỏi trình đọc màn hình, nên `modal={false}` không còn tắt được điều đó.
@@ -214,9 +284,18 @@ interface DialogRootProps extends OverlayOpenProps {
 }
 
 /** `data-slot="dialog"` cũ nằm trên Root của Radix, thứ không dựng thẻ nào — nó chưa từng ra DOM. */
-function DialogRoot({ children, modal: _modal, ...openProps }: DialogRootProps) {
+function DialogRoot({
+  children,
+  modal: _modal,
+  variant = "default",
+  ...openProps
+}: DialogRootProps) {
   const state = useOverlayOpenState(openProps);
-  return <DialogOpenContext.Provider value={state}>{children}</DialogOpenContext.Provider>;
+  return (
+    <DialogOpenContext.Provider value={state}>
+      <DialogVariantContext.Provider value={variant}>{children}</DialogVariantContext.Provider>
+    </DialogOpenContext.Provider>
+  );
 }
 
 interface DialogTriggerProps extends React.ComponentPropsWithRef<"button"> {
@@ -288,7 +367,8 @@ function DialogOverlay(_props: DialogOverlayProps) {
 }
 DialogOverlay.displayName = "DialogOverlay";
 
-interface DialogContentProps extends Omit<React.ComponentPropsWithRef<"section">, "role"> {
+interface DialogContentProps
+  extends Omit<React.ComponentPropsWithRef<"section">, "role">, Pick<DialogContentProp, "variant"> {
   showClose?: boolean;
   showCloseButton?: boolean;
   overlayClassName?: string;
@@ -304,28 +384,44 @@ function DialogContent({
   showClose,
   showCloseButton: showCloseButtonProp,
   overlayClassName,
+  variant: variantProp,
   forceMount: _forceMount,
   ...props
 }: DialogContentProps) {
   const { t } = useTranslation();
-  const showCloseButton = showCloseButtonProp ?? showClose ?? true;
+  // Prop tại chỗ thắng; không có thì kế thừa `DialogRoot`. Xem đầu tệp cho ba thứ nó quyết định.
+  const inheritedVariant = React.useContext(DialogVariantContext);
+  const variant = variantProp ?? inheritedVariant;
+  const isDestructive = variant === "destructive";
+  // Dấu ✕ là một lối đóng-không-chủ-đích, cùng họ với click ra ngoài — nên nó theo `variant`, và
+  // `<DialogContent variant="destructive">` trùng khít `<AlertDialogContent>`.
+  const showCloseButton = showCloseButtonProp ?? showClose ?? !isDestructive;
 
   return (
-    <DialogShell isDismissable className={className} overlayClassName={overlayClassName} {...props}>
-      {children}
-      {showCloseButton ? (
-        <DialogClose
-          // `ui-focus-ring` is the ONE focus affordance (styles/focus-ring.css): it reads the
-          // four --focus-ring-* tokens, so a service retunes this ring with every other one.
-          // The hand-written `focus:ring-2 focus:ring-offset-2` it replaces was un-themeable
-          // AND fired on plain `:focus` (i.e. on a mouse click), unlike every other control.
-          className="ui-focus-ring transition-opacity disabled:pointer-events-none"
-        >
-          <X className="ui-dialog-close-icon" aria-hidden="true" />
-          <span className="sr-only">{t("feedback.alert.dismiss")}</span>
-        </DialogClose>
-      ) : null}
-    </DialogShell>
+    <DialogVariantContext.Provider value={variant}>
+      <DialogShell
+        role={isDestructive ? "alertdialog" : "dialog"}
+        isDismissable={!isDestructive}
+        data-variant={variant}
+        className={className}
+        overlayClassName={overlayClassName}
+        {...props}
+      >
+        {children}
+        {showCloseButton ? (
+          <DialogClose
+            // `ui-focus-ring` is the ONE focus affordance (styles/focus-ring.css): it reads the
+            // four --focus-ring-* tokens, so a service retunes this ring with every other one.
+            // The hand-written `focus:ring-2 focus:ring-offset-2` it replaces was un-themeable
+            // AND fired on plain `:focus` (i.e. on a mouse click), unlike every other control.
+            className="ui-focus-ring transition-opacity disabled:pointer-events-none"
+          >
+            <X className="ui-dialog-close-icon" aria-hidden="true" />
+            <span className="sr-only">{t("feedback.alert.dismiss")}</span>
+          </DialogClose>
+        ) : null}
+      </DialogShell>
+    </DialogVariantContext.Provider>
   );
 }
 DialogContent.displayName = "DialogContent";
@@ -547,15 +643,25 @@ interface DialogActionProps extends React.ComponentPropsWithRef<"button"> {
   asChild?: boolean;
 }
 
-/** Confirm mode — primary action (maps to Radix AlertDialogAction). */
+/**
+ * Confirm mode — primary action (maps to Radix AlertDialogAction). Nhấn mạnh đọc từ `variant` của
+ * hộp thoại: đây là phần thứ ba của một-prop-ba-việc ở đầu tệp, và là chỗ antd đặt `okType`.
+ */
 function DialogAction({ asChild, className, onClick, ...props }: DialogActionProps) {
   const state = useDialogOpenState("DialogAction");
+  const variant = React.useContext(DialogVariantContext);
   const Comp = (asChild ? Slot : "button") as React.ElementType;
 
   return (
     <Comp
       type="button"
-      className={cn(buttonVariants(), className)}
+      /*
+       * `data-variant` CHỈ khi tự dựng thẻ. Dưới `asChild`, gói prop này chảy vào con — và
+       * `Button` spread `{...props}` SAU `data-variant` của chính nó, nên một `data-variant` từ
+       * đây sẽ ghi đè và biến thuộc tính ấy thành lời khai sai về nút đang được vẽ.
+       */
+      data-variant={asChild ? undefined : variant}
+      className={cn(buttonVariants({ variant }), className)}
       {...props}
       onClick={chain(onClick, () => {
         state.setOpen(false);

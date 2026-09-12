@@ -9,6 +9,7 @@ import type {
   ClassNameProp,
   ConfirmLabelProp,
   ConfirmVariantProp,
+  DefaultOpenProp,
   DescriptionProp,
   HandlerProp,
   IconProp,
@@ -20,6 +21,41 @@ import type {
   ToneProp,
   TitleProp,
 } from "../vocabulary";
+
+/**
+ * @see Dialog — the compound modal ROOT.
+ *
+ * `variant` is the one prop that answers gh#567: it decides the ARIA role, whether an
+ * outside click dismisses, and the primary action's emphasis together, because those three
+ * always travel together. Set it here to cover the whole tree, or on `DialogContent` for one
+ * surface. `variant="destructive"` IS the 12 `AlertDialog*` exports, which stay for
+ * compatibility — see the file header of `components/feedback/dialog.tsx`.
+ */
+export type DialogProp = {
+  open?: OpenProp;
+  defaultOpen?: DefaultOpenProp;
+  onOpenChange?: OnOpenChangeProp;
+  variant?: ConfirmVariantProp;
+  /** Kept from Radix. RAC's `Modal` always locks scroll, so `false` no longer turns that off. */
+  modal?: boolean;
+  children?: ChildrenProp;
+};
+
+/**
+ * @see DialogContent — the modal surface. `variant` overrides the root's for this surface and
+ * is what actually resolves `role`, outside-click dismissal and the ✕ default.
+ */
+export type DialogContentProp = {
+  variant?: ConfirmVariantProp;
+  /** Show the corner ✕. Defaults to `true`, or `false` under `variant="destructive"`. */
+  showCloseButton?: boolean;
+  /** shadcn-era spelling of `showCloseButton`; kept working. */
+  showClose?: boolean;
+  /** Semantic class for the scrim the surface owns (RAC nests overlay → modal → dialog). */
+  overlayClassName?: ClassNameProp;
+  className?: ClassNameProp;
+  children?: ChildrenProp;
+};
 
 /** @see AlertDialog */
 export type AlertDialogProp = {

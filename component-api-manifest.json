@@ -2957,7 +2957,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +2965,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -5721,6 +5721,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ConfirmVariantProp | undefined",
+          "values": ["default", "destructive"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },
@@ -5905,6 +5913,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/feedback/dialog.tsx"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ConfirmVariantProp | undefined",
+          "values": ["default", "destructive"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },

@@ -65,6 +65,8 @@ export type {
 export type {
   AlertQueryErrorProp,
   AlertProp,
+  DialogProp,
+  DialogContentProp,
   AlertTitleProp,
   AlertContentProp,
   AlertDescriptionProp,

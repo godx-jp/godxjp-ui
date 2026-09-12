@@ -7157,13 +7157,34 @@ export function BillingFields() {
     props: [
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
+        name: "defaultOpen",
+        type: "boolean",
+        description: "Initial open state when uncontrolled.",
+      },
+      {
         name: "onOpenChange",
         type: "(open: boolean) => void",
         description: "Open-state change handler.",
       },
+      {
+        name: "variant",
+        type: '"default" | "destructive"',
+        default: '"default"',
+        description:
+          'How dangerous this dialog is. ONE prop, THREE results, because they always travel together: `destructive` renders `role="alertdialog"` instead of `role="dialog"`, stops an outside click from dismissing, and gives `DialogAction` the destructive emphasis (antd `okType="danger"`). It also defaults the corner ✕ off, because a ✕ is an accidental-dismiss affordance too. Escape still closes either way. Settable on the root (covers the tree) or on `DialogContent` (the nearer one wins). This is what replaces reaching for the separate `AlertDialog*` family — gh#567.',
+      },
+      {
+        name: "modal",
+        type: "boolean",
+        default: "true",
+        description:
+          "Kept from the Radix era. react-aria's Modal always locks scroll and hides the background from assistive tech, so `false` no longer turns that off.",
+      },
     ],
     usage: [
       "Use `Dialog` for form-style or wizard-style modal flows that need freeform content and a close action.",
+      'DO reach for `variant="destructive"` for a dangerous confirmation, INCLUDING one that needs a form inside it (a required reason, a typed challenge). It gives the alertdialog role and the non-dismissable scrim without giving up the freeform body. The separate `AlertDialog*` parts remain for existing code and still work, but they are the older way in.',
+      "DO leave `variant` alone for everything that is not destructive. The prop is a danger level, not a colour knob: to tint only the header band use `DialogHeader tone`, which is a separate axis with seven values.",
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
@@ -7174,6 +7195,7 @@ export function BillingFields() {
       "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state.",
     ],
     related: [
+      'AlertDialog — the flat confirm PRESET (title/description/challenge/step-up/pending, no markup of your own). Reach for the preset when it covers the case. When it does not, do NOT reach for the `AlertDialog*` compound parts: use `Dialog` with `variant="destructive"`, which is the same role and the same scrim with a freeform body.',
       "Sheet — use Sheet instead of Dialog when the content is a slide-in panel (filters, detail sidebar, settings drawer). Sheet uses `side` prop and is better suited for wide filter forms or contextual detail panels that don't demand full focus interruption.",
       "Alert — use Alert for inline, non-modal status messages (validation errors, success banners on the page). Dialog is modal and focus-trapping; Alert is inline and never blocks interaction.",
       "Popover — use Popover for lightweight non-modal overlays anchored to a trigger (quick-edit a single field, tooltip-style confirmation for low-stakes actions). Dialog is full-modal; Popover stays near its trigger and doesn't dim the page.",
@@ -7299,7 +7321,7 @@ function CreateDialog() {
     ],
     related: [
       "Dialog — use for form-style and non-destructive modal flows, no confirm preset behavior.",
-      "AlertDialogRoot — the compound counterpart. Reach for it only when the confirmation body needs content this flat preset does not cover (a summary table, a diff, a nested list); the preset already covers title/description/challenge/step-up.",
+      'AlertDialogRoot — the compound counterpart, and the OLDER way in. It still works and is not going away in this major, but a confirmation body the preset does not cover (a summary table, a diff, a required reason field) is now better written as `Dialog` with `variant="destructive"`: same `role="alertdialog"`, same non-dismissable scrim, freeform body, and `DialogBody` / `DialogClose` available — the two parts the `AlertDialog*` family never had (gh#567).',
     ],
     example: `import { AlertDialog } from "@godxjp/ui/feedback";
 
