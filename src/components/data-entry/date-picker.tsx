@@ -22,6 +22,7 @@ import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DatePickerProp } from "../../props/components/data-entry.prop";
+import { dateTimeFormat, numberFormat } from "../../lib/intl-cache";
 
 export type {
   DatePickerProp,
@@ -453,18 +454,18 @@ export function DatePicker(props: DatePickerProp) {
   // on top of the per-cell clamp below rather than instead of it, which is where the two month
   // pickers stopped.
   const pageStep = picker === "year" ? periodCells : 1;
-  const prevDisabled = !pickerDateAllowed(
-    periodPage(viewYear - pageStep)[periodCells - 1],
-    minimum,
-    undefined,
-  );
-  const nextDisabled = !pickerDateAllowed(periodPage(viewYear + pageStep)[0], undefined, maximum);
+  // Called from inside `renderPeriodPanel` only. Each one allocates a 12-Date page, and neither is
+  // meaningful for a day picker — see the note on `renderPeriodPanel`.
+  const prevDisabled = () =>
+    !pickerDateAllowed(periodPage(viewYear - pageStep)[periodCells - 1], minimum, undefined);
+  const nextDisabled = () =>
+    !pickerDateAllowed(periodPage(viewYear + pageStep)[0], undefined, maximum);
   const periodLabel = (date: Date, index: number) =>
     picker === "year"
-      ? new Intl.DateTimeFormat(locale, { year: "numeric" }).format(date)
+      ? dateTimeFormat(locale, { year: "numeric" }).format(date)
       : picker === "quarter"
         ? (t("dataEntry.datePicker.quarter", { quarter: index + 1 }) ?? `Q${index + 1}`)
-        : new Intl.DateTimeFormat(locale, { month: "short" }).format(date);
+        : dateTimeFormat(locale, { month: "short" }).format(date);
 
   const periodPick = (date: Date) => {
     if (!range) {
@@ -484,14 +485,22 @@ export function DatePicker(props: DatePickerProp) {
     if (!needConfirm) setOpen(false);
   };
 
-  const periodPanel = (
+  /*
+   * A FUNCTION, not a const holding JSX, and the same for `renderDayPanel` below. Building a JSX
+   * tree EVALUATES every child expression in it, so `const a = <X/>; const b = <Y/>; return cond ?
+   * a : b` builds both and throws one away. Measured for a closed `picker="date"` instance, which
+   * never shows this panel at all: 168 `new Date()` allocations per instance, 12 of them behind
+   * `periodDateAt` in the grid below and the rest behind `prevDisabled`/`nextDisabled` (gh#557).
+   * Multiply by the reporter's 8,262 rows.
+   */
+  const renderPeriodPanel = () => (
     <div className="ui-month-picker-panel">
       <div className="ui-month-picker-nav">
         <Button
           type="button"
           variant="outline"
           size="icon-sm"
-          disabled={prevDisabled}
+          disabled={prevDisabled()}
           aria-label={t("dataEntry.monthPicker.previousYear") ?? "Previous year"}
           className="ui-month-picker-nav-button"
           onClick={() => setViewYear(viewYear - pageStep)}
@@ -499,13 +508,13 @@ export function DatePicker(props: DatePickerProp) {
           <ChevronLeft className="ui-month-picker-icon" aria-hidden="true" />
         </Button>
         <span className="ui-month-picker-nav-label" aria-live="polite">
-          {new Intl.NumberFormat(locale, { useGrouping: false }).format(viewYear)}
+          {numberFormat(locale, { useGrouping: false }).format(viewYear)}
         </span>
         <Button
           type="button"
           variant="outline"
           size="icon-sm"
-          disabled={nextDisabled}
+          disabled={nextDisabled()}
           aria-label={t("dataEntry.monthPicker.nextYear") ?? "Next year"}
           className="ui-month-picker-nav-button"
           onClick={() => setViewYear(viewYear + pageStep)}
@@ -579,46 +588,47 @@ export function DatePicker(props: DatePickerProp) {
     onClose: () => setOpen(false),
   } as const;
 
-  const dayPanel = range ? (
-    <Calendar
-      mode="range"
-      selected={rangeValue}
-      // A range picker shows two months so a cross-month range can be picked without navigating.
-      numberOfMonths={2}
-      onSelect={(next) => {
-        choose(next);
-        setFromText(display(next?.from));
-        setToText(display(next?.to));
-      }}
-      disabled={calendarBounds}
-      {...calendarShared}
-    />
-  ) : multiple ? (
-    <Calendar
-      mode="multiple"
-      selected={Array.isArray(working) ? (working as Date[]) : []}
-      onSelect={choose}
-      disabled={(day) => !allowed(day)}
-      {...calendarShared}
-    />
-  ) : (
-    <Calendar
-      mode="single"
-      selected={selectedDate}
-      onSelect={(date) => {
-        if (date && showTime && selectedDate)
-          date.setHours(
-            selectedDate.getHours(),
-            selectedDate.getMinutes(),
-            selectedDate.getSeconds(),
-          );
-        choose(date);
-        if (!needConfirm && !multiple) setOpen(false);
-      }}
-      disabled={calendarBounds}
-      {...calendarShared}
-    />
-  );
+  const renderDayPanel = () =>
+    range ? (
+      <Calendar
+        mode="range"
+        selected={rangeValue}
+        // A range picker shows two months so a cross-month range can be picked without navigating.
+        numberOfMonths={2}
+        onSelect={(next) => {
+          choose(next);
+          setFromText(display(next?.from));
+          setToText(display(next?.to));
+        }}
+        disabled={calendarBounds}
+        {...calendarShared}
+      />
+    ) : multiple ? (
+      <Calendar
+        mode="multiple"
+        selected={Array.isArray(working) ? (working as Date[]) : []}
+        onSelect={choose}
+        disabled={(day) => !allowed(day)}
+        {...calendarShared}
+      />
+    ) : (
+      <Calendar
+        mode="single"
+        selected={selectedDate}
+        onSelect={(date) => {
+          if (date && showTime && selectedDate)
+            date.setHours(
+              selectedDate.getHours(),
+              selectedDate.getMinutes(),
+              selectedDate.getSeconds(),
+            );
+          choose(date);
+          if (!needConfirm && !multiple) setOpen(false);
+        }}
+        disabled={calendarBounds}
+        {...calendarShared}
+      />
+    );
 
   const trailing = showClear ? (
     <button
@@ -721,7 +731,7 @@ export function DatePicker(props: DatePickerProp) {
           ))}
         </Flex>
       ) : null}
-      {isPeriod ? periodPanel : dayPanel}
+      {isPeriod ? renderPeriodPanel() : renderDayPanel()}
       {showTime ? (
         <Flex pad="sm">
           <TimePicker

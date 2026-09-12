@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
 import type { ButtonProp } from "../../props/components/general.prop";
+import { numberFormat } from "../../lib/intl-cache";
 
 const buttonVariants = cva("ui-button", {
   variants: {
@@ -99,9 +100,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     const showCount = !asChild && count != null && (count !== 0 || showZero);
     const countLabel =
       showCount && count != null && count > overflowCount
-        ? `${new Intl.NumberFormat(locale).format(overflowCount)}+`
+        ? `${numberFormat(locale).format(overflowCount)}+`
         : count != null
-          ? new Intl.NumberFormat(locale).format(count)
+          ? numberFormat(locale).format(count)
           : "";
     const countNode = showCount ? (
       <span data-slot="button-count" className="ui-button-count">

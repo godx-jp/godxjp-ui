@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
+import { numberFormat } from "../../lib/intl-cache";
 
 /**
  * Shared chart chrome — owns the cross-cutting concerns every chart needs so the individual chart
@@ -42,7 +43,7 @@ export function chartHeight(size: "xs" | "sm" | "md" | "lg" = "md", height?: num
 /** A locale-bound number formatter for the active app locale. */
 export function useChartNumberFormat(options?: Intl.NumberFormatOptions): Intl.NumberFormat {
   const { locale } = useTranslation();
-  return React.useMemo(() => new Intl.NumberFormat(locale, options), [locale, options]);
+  return React.useMemo(() => numberFormat(locale, options), [locale, options]);
 }
 
 type ChartFrameProps = {

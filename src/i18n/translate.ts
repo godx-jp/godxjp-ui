@@ -2,6 +2,7 @@ import type { AppLocale } from "../app/types";
 import en from "./messages/en.json";
 import ja from "./messages/ja.json";
 import vi from "./messages/vi.json";
+import { numberFormat, pluralRules } from "../lib/intl-cache";
 
 export type Messages = typeof vi;
 
@@ -45,10 +46,7 @@ const LIBRARY_NAMESPACES: ReadonlySet<string> = new Set(
  * distance, and only in the build where that call ran. Reach for the component's own labels prop
  * instead; every string this library renders has one.
  */
-export function registerMessages(
-  locale: AppLocale,
-  messages: Record<string, unknown>,
-): void {
+export function registerMessages(locale: AppLocale, messages: Record<string, unknown>): void {
   const reserved = [...LIBRARY_NAMESPACES].filter((key) => Object.hasOwn(messages, key));
 
   if (reserved.length > 0) {
@@ -121,7 +119,7 @@ function selectPlural(value: MessageValue, locale: AppLocale, params?: Translate
   if (count === undefined) {
     return value.other ?? Object.values(value)[0] ?? "";
   }
-  const category = new Intl.PluralRules(locale).select(count);
+  const category = pluralRules(locale).select(count);
   return value[category] ?? value.other ?? Object.values(value)[0] ?? "";
 }
 
@@ -132,7 +130,7 @@ function interpolate(template: string, locale: AppLocale, params?: TranslatePara
     (text, [key, value]) =>
       text.replaceAll(
         `{${key}}`,
-        typeof value === "number" ? new Intl.NumberFormat(locale).format(value) : String(value),
+        typeof value === "number" ? numberFormat(locale).format(value) : String(value),
       ),
     template,
   );

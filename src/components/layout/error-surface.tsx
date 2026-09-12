@@ -13,6 +13,7 @@ import type {
 } from "../../props/components/layout.prop";
 import type { EmptyStateToneProp } from "../../props/components/data-display.prop";
 import type { IconProp } from "../../props/vocabulary";
+import { dateTimeFormat, numberFormat } from "../../lib/intl-cache";
 
 export type {
   ErrorSurfaceMaintenanceProp,
@@ -80,7 +81,7 @@ function formatMaintenanceWindow(maintenance: ErrorSurfaceMaintenanceProp, local
   const start = new Date(maintenance.start);
   if (Number.isNaN(start.getTime())) return maintenance.start;
 
-  const formatter = new Intl.DateTimeFormat(locale, options);
+  const formatter = dateTimeFormat(locale, options);
   if (maintenance.end === undefined) return formatter.format(start);
 
   const end = new Date(maintenance.end);
@@ -139,7 +140,7 @@ export const ErrorSurface = React.forwardRef<HTMLDivElement, ErrorSurfaceProp>(
       typeof maintenanceProgress === "number" && Number.isFinite(maintenanceProgress);
     const progressLabel = hasProgress
       ? t("layout.errorSurface.maintenanceProgress", {
-          percent: new Intl.NumberFormat(locale, {
+          percent: numberFormat(locale, {
             style: "percent",
             maximumFractionDigits: 0,
           }).format(Math.max(0, Math.min(100, maintenanceProgress)) / 100),

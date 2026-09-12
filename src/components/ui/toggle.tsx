@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "../../lib/utils";
 import { useTranslation } from "../../i18n/use-translation";
+import { numberFormat } from "../../lib/intl-cache";
 
 const toggleVariants = cva("ui-toggle", {
   variants: {
@@ -74,7 +75,7 @@ function useCounterPill({
   const visible = count != null && (count !== 0 || showZero);
   const formatted = React.useMemo(() => {
     if (count == null) return "";
-    const format = new Intl.NumberFormat(locale);
+    const format = numberFormat(locale);
     return count > overflowCount ? `${format.format(overflowCount)}+` : format.format(count);
   }, [count, locale, overflowCount]);
 

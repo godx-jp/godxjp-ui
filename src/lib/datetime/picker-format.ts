@@ -14,6 +14,7 @@ import type {
   PickerDateFormatProp,
 } from "../../props/components/data-entry.prop";
 import { parseDateInput, toIsoDate } from "./parse";
+import { dateTimeFormat } from "../intl-cache";
 
 /** The granularity axis a picker selects at — `DatePickerProp["picker"]`, resolved. */
 export type DatePickerPicker = NonNullable<DatePickerBaseProp["picker"]>;
@@ -27,7 +28,7 @@ export function formatPickerDate(
 ): string {
   if (!date || !isValid(date)) return "";
   if (typeof format === "function") return format(date);
-  if (typeof format === "object") return new Intl.DateTimeFormat(locale, format).format(date);
+  if (typeof format === "object") return dateTimeFormat(locale, format).format(date);
   if (typeof format === "string") return formatDate(date, format);
   return withTime ? formatDate(date, "yyyy-MM-dd HH:mm") : toIsoDate(date);
 }
