@@ -126,6 +126,18 @@ export function stampedDigest(text) {
 }
 
 /**
+ * Refresh only the human-readable release marker when the managed body is already current.
+ *
+ * The writer keys off digest; `ui-audit` keys off version (godx-jp/id#513). When rule text is
+ * unchanged across releases both must still agree after sync — without rewriting the body or
+ * breaking idempotency when digest and version already match.
+ */
+function resyncVersionStamp(text) {
+  if (stampedVersion(text) === KIT_VERSION) return null;
+  return text.replace(STAMP_RE, `<!-- godxjp-ui:version ${KIT_VERSION} -->`);
+}
+
+/**
  * Replace the MANAGED region of a file and leave everything else alone.
  *
  * Refreshing is only safe if it cannot eat hand-written content, so the contract is narrow: the
@@ -533,7 +545,14 @@ export function refreshGuineaPigSkill(root) {
    * to anyone reading it. Only the digest half is compared.
    */
   const stamp = `${KIT_VERSION}:${digestOf(base)}`;
-  if (readFileSync(optin, "utf8").trim().split(":").pop() === digestOf(base)) return false;
+  const optinLine = readFileSync(optin, "utf8").trim();
+  const optinDigest = optinLine.split(":").pop();
+  if (optinDigest === digestOf(base)) {
+    if (optinLine.split(":")[0] === KIT_VERSION) return false;
+    // Base unchanged — only the release half of `<version>:<digest>` drifted (same split as above).
+    writeFileAtomic(optin, `${stamp}\n`);
+    return true;
+  }
 
   const current = readFileSync(target, "utf8");
   const marker = "\n---\n\n# 8. ";
@@ -581,8 +600,14 @@ export function ensureConsumerRules(root) {
   const managed = `${front}${body}`;
   const next = `${OWNED_STAMP(managed)}\n${managed}`;
 
-  if (existsSync(target) && stampedDigest(readFileSync(target, "utf8")) === digestOf(managed)) {
-    return false;
+  if (existsSync(target)) {
+    const current = readFileSync(target, "utf8");
+    if (stampedDigest(current) === digestOf(managed)) {
+      const resynced = resyncVersionStamp(current);
+      if (resynced == null) return false;
+      writeFileAtomic(target, resynced);
+      return uiDir;
+    }
   }
   mkdirSync(dir, { recursive: true });
   writeFileAtomic(target, next);

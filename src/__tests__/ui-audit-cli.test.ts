@@ -353,7 +353,7 @@ describe("owned rule file drift (godx-jp/id#513)", () => {
 
     expect(out).toContain('"owned-rules-stale"');
     expect(out).toContain("19.6.0");
-    expect(out).toContain("postinstall.mjs");
+    expect(out).toContain("sync-rules");
   });
 
   it("says nothing when the file matches the installed package", () => {
