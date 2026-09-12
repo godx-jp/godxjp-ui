@@ -30,10 +30,10 @@ on:
     # agree, or a commit triggers some of the provenance-bearing workflows and not others, and
     # the missing ones are indistinguishable from "never ran".
     paths-ignore:
-      - 'debate/**'
-      - '.agent-notes/**'
-      - '.design-sync/**'
-      - 'LICENSE'
+      - "debate/**"
+      - ".agent-notes/**"
+      - ".design-sync/**"
+      - "LICENSE"
 
 jobs:
   lockstep:
@@ -49,6 +49,20 @@ jobs:
       # Build the exact public artifact first, then prove the packed subpath barrels contain the
       # runtime and declaration exports consumed by downstream applications. Packing only manifests
       # can pass while dist is absent or stale.
+      # TYPECHECK BEFORE BUILD, and in THIS job rather than ci.yml's static lane, for one
+      # mechanical reason: `mcp/` has its own dependency tree and this is the only job that
+      # installs it. Putting `typecheck:mcp` in `verify:ci:static` made that lane red on five
+      # `TS2307 Cannot find module '@modelcontextprotocol/sdk/...'` — the gate could not see the
+      # code it was meant to judge.
+      #
+      # WHY IT EXISTS AT ALL (gh#553). `mcp/` was typechecked by NOTHING: the root tsconfig
+      # includes only `["src"]`. A rebase merged the `Swatch` catalog entry into the `FeatureList`
+      # object that followed it, the later `name:` won, and `get_component name="Swatch"` answered
+      # "not found" in a published release. TypeScript reports that exact defect as TS1117 the
+      # instant it is pointed at the file. Nothing was pointing at the file.
+      - name: Typecheck MCP
+        run: pnpm typecheck:mcp
+
       - name: Build + test MCP
         run: pnpm --dir mcp build && pnpm --dir mcp test
 
