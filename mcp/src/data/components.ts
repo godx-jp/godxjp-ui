@@ -15584,6 +15584,108 @@ const messages: ChatMessageProp[] = [
     storyPath: "data-entry/ChatSuggestion.stories.tsx",
     rules: [2, 3, 6],
   },
+  {
+    name: "Conversations",
+    group: "navigation",
+    tagline:
+      "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets \u2014 the whole rail one roving-tabindex tab stop, not one tab stop per conversation.",
+    props: [
+      {
+        name: "items",
+        type: "(ConversationsItemProp | ConversationsDividerProp)[]",
+        description:
+          'The rows. A conversation is { key, label?, group?, icon?, disabled? }; a rule between runs is { type: "divider", key?, dashed? }. Ant Design X `items`.',
+      },
+      {
+        name: "activeKey",
+        type: "string",
+        description:
+          "Controlled selection \u2014 the key of the conversation on screen. Ant Design X `activeKey`.",
+      },
+      {
+        name: "defaultActiveKey",
+        type: "string",
+        description: "Uncontrolled initial selection. Ant Design X `defaultActiveKey`.",
+      },
+      {
+        name: "onActiveChange",
+        type: "(key: string, item?: ConversationsItemProp | ConversationsDividerProp) => void",
+        description:
+          "Fires with the picked key and the entry behind it. Ant Design X `onActiveChange`.",
+      },
+      {
+        name: "menu",
+        type: "ConversationsMenuProp | ((conversation: ConversationsItemProp) => ConversationsMenuProp | undefined)",
+        description:
+          "The per-row overflow menu: { items: [{ key, label, icon?, danger?, disabled? }], onClick?, triggerLabel? }. Pass a function to vary it per row, or return undefined for a row that has no menu. Ant Design X `menu` (antd MenuProps there).",
+      },
+      {
+        name: "groupable",
+        type: "boolean | ConversationsGroupableProp",
+        description:
+          "Bucket rows by their `group` field. The object form takes label (node or (group) => node), collapsible (boolean or (group) => boolean), defaultExpandedKeys, expandedKeys and onExpand. Ant Design X `groupable`.",
+      },
+      {
+        name: "creation",
+        type: "ConversationsCreationProp",
+        description:
+          'The "new conversation" button pinned above the rail: { label?, icon?, disabled?, onClick? }. Ant Design X `creation`.',
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name of the rail (a plain string \u2014 it lands on aria-label). Localized default otherwise.",
+      },
+      { name: "id", type: "string", description: "DOM id of the rail root." },
+    ],
+    usage: [
+      "DO give every conversation a stable `key` \u2014 it is what activeKey, onActiveChange and the menu callback all address. A key that changes on re-render moves the selection.",
+      "DO reach for `menu` for rename/delete instead of adding a second Button to each row. The trigger is keyboard-reachable with the forward arrow (\u2192 in LTR, \u2190 in RTL), so a row's second action costs no extra tab stop.",
+      'DO pass `menu.triggerLabel` when the rows are user content: the default names the row, and twelve identical "More actions" buttons are indistinguishable in a screen reader\'s element list.',
+      "DON'T hand-roll the rail out of full-width Buttons plus aria-current. That is one tab stop PER conversation; this is one for the whole rail, with \u2191/\u2193/Home/End inside it.",
+      "DON'T expect `styles`/`classNames` from Ant Design X \u2014 they are deliberately not ported. Retune the rail through the --conversations-* tokens (rules #44/#45).",
+      'DO use `groupable={{ collapsible: true }}` for "Today / Previous 7 days": the bucket headings join the same roving order, so collapsing a bucket is reachable without leaving the rail.',
+    ],
+    useCases: [
+      "The assistant rail of a chat product \u2014 past sessions, the current one marked, rename and delete per row.",
+      "Recency buckets over a long history (Today / Yesterday / Previous 7 days) with the older buckets collapsed.",
+      "A rail beside ChatBubbleList and ChatComposer: the three are one surface, and Conversations is the half that used to be missing.",
+    ],
+    related: [
+      "ChatBubbleList \u2014 the feed beside this rail; Conversations picks WHICH feed is shown.",
+      "ListRow \u2014 a single-line entity row with a trailing action, for short lists inside a Card. It has no selection, no roving focus and no grouping.",
+      "Sidebar / NavList \u2014 route navigation. Use those when a row changes the URL; use Conversations when a row changes which conversation the surface is on.",
+      "DropdownMenu \u2014 what the per-row `menu` renders; compose it directly when the menu is not attached to a conversation row.",
+    ],
+    example: [
+      'import { Conversations } from "@godxjp/ui/navigation";',
+      "",
+      'const [active, setActive] = useState("c1");',
+      "",
+      "<Conversations",
+      "  activeKey={active}",
+      "  onActiveChange={setActive}",
+      "  groupable={{ collapsible: true }}",
+      "  creation={{ onClick: () => startNewChat() }}",
+      "  items={[",
+      '    { key: "c1", label: "\u8ACB\u6C42\u66F8\u306E\u4E0B\u66F8\u304D", group: "today" },',
+      '    { key: "c2", label: "\u7D4C\u8CBB\u7CBE\u7B97\u306E\u898F\u5247", group: "today" },',
+      '    { key: "c3", label: "\u51FA\u5F35\u624B\u5F53\u306E\u78BA\u8A8D", group: "earlier" },',
+      "  ]}",
+      "  menu={{",
+      "    items: [",
+      '      { key: "rename", label: "\u540D\u524D\u3092\u5909\u66F4" },',
+      '      { key: "delete", label: "\u524A\u9664", danger: true },',
+      "    ],",
+      "    onClick: ({ key, conversation }) => run(key, conversation.key),",
+      "  }}",
+      "/>",
+    ].join("\n"),
+    docPath: "navigation/conversations.tsx",
+    storyPath: "navigation/Conversations.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

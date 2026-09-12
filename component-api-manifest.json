@@ -2957,7 +2957,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +2965,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -4590,6 +4590,91 @@
           "type": "string",
           "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
+        }
+      ]
+    },
+    "Conversations": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "activeKey",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "creation",
+          "origin": "owned",
+          "required": false,
+          "type": "ConversationsCreationProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "defaultActiveKey",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "groupable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | ConversationsGroupableProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly ConversationsEntryProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "menu",
+          "origin": "owned",
+          "required": false,
+          "type": "ConversationsMenuProp | ((conversation: ConversationsItemProp) => ConversationsMenuProp | undefined) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onActiveChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string, item?: ConversationsEntryProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
     },
