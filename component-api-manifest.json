@@ -2776,11 +2776,19 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
+          "name": "hoverable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
           "name": "variant",
           "origin": "owned",
           "required": false,
           "type": "CardVariant | undefined",
-          "values": ["default", "muted", "outline", "featured"],
+          "values": ["default", "muted", "outline", "borderless", "featured"],
           "declaredIn": ["src/components/data-display/card.tsx"]
         }
       ]
@@ -2882,6 +2890,14 @@
     "CardFooter": {
       "group": "data-display",
       "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
         {
           "name": "flush",
           "origin": "owned",

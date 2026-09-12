@@ -111,11 +111,51 @@ export default function Demo() {
               </CardHeader>
               <CardContent>枠線のみ</CardContent>
             </Card>
+            <Card variant="borderless">
+              <CardHeader>
+                <CardTitle level={2}>borderless</CardTitle>
+              </CardHeader>
+              <CardContent>塗りのみ · 枠線なし</CardContent>
+            </Card>
             <Card variant="featured">
               <CardHeader>
                 <CardTitle level={2}>featured</CardTitle>
               </CardHeader>
               <CardContent>強調サーフェス</CardContent>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            hoverable · actions — Ant Design の hoverable と actions
+          </Text>
+          <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+            {/*
+             * `hoverable` は見た目だけのフラグです。カード全体が押せるように見えるなら、
+             * キーボードでも届く本物のコントロールを必ず同居させます（ここでは footer の
+             * Button）。div に onClick を置くのは禁止です。
+             */}
+            <Card hoverable>
+              <CardHeader>
+                <CardTitle level={2}>ホバーで浮き上がる</CardTitle>
+                <CardDescription>--card-hover-shadow まで一段上がります</CardDescription>
+              </CardHeader>
+              <CardFooter actions>
+                <Button variant="ghost">複製</Button>
+                <Button variant="ghost">共有</Button>
+                <Button variant="ghost">削除</Button>
+              </CardFooter>
+            </Card>
+            <Card hoverable accent="info" accentPlacement="perimeter">
+              <CardHeader>
+                <CardTitle level={2}>accent と併用</CardTitle>
+                <CardDescription>ホバー中もアテンションのリングは消えません</CardDescription>
+              </CardHeader>
+              <CardFooter actions>
+                <Button variant="ghost">承認</Button>
+                <Button variant="ghost">却下</Button>
+              </CardFooter>
             </Card>
           </ResponsiveGrid>
         </Flex>

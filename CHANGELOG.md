@@ -6,6 +6,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — `Card` khép ba khoảng trống thật so với Ant Design 6
+
+Đọc thẳng `components/card/Card.tsx` và `components/card/style/index.ts` của antd (MIT) rồi port
+LOGIC sang, không chép nguyên khối: ở đây họ `Card` là **hợp thành** (`CardHeader`/`CardContent`/
+`CardFooter`), còn antd truyền `title`/`extra`/`cover`/`actions` bằng prop. Parity nghĩa là mọi
+HÀNH VI của antd đều với tới được, không phải mọi tên prop đều tồn tại.
+
+- **`Card hoverable`** (antd `hoverable`) — thẻ nâng lên `--card-hover-shadow` khi rê chuột, kèm
+  con trỏ `pointer`. Trước đó `card-layout.css` **không có một dòng hover nào**, và
+  `ServiceLauncherCard` — chỗ duy nhất có thể đã sở hữu ca "thẻ bấm được" — cũng không.
+
+  Viết thành **định nghĩa lại `--card-shadow`**, không phải một `box-shadow` riêng, và đó mới là
+  điểm chính: bề mặt thẻ vẽ `var(--card-shadow), var(--card-glow)`, còn luật
+  `accentPlacement="perimeter"` liệt kê lại `var(--card-shadow)` phía sau vòng cảnh báo của nó —
+  nên một luật hover TÔ box-shadow sẽ thắng ở cùng độ đặc hiệu và **xoá sạch vòng ấy** suốt lúc
+  con trỏ còn đậu trên thẻ. Nâng một tầng lên biến số thì mọi luật đang hợp thành độ nổi lúc nghỉ
+  đều hợp thành luôn độ nổi lúc hover. Đây là chỗ khác antd có chủ ý: upstream còn đặt
+  `border-color: transparent` khi hover, ở đây thì không, vì nó sẽ mang theo cả rail `[data-accent]`.
+
+  `hoverable` chỉ là TRÌNH BÀY: nó không thông báo gì và không gắn handler. Thẻ trông bấm được thì
+  phải bấm được với mọi người — ghép một control thật vào, đừng đặt `onClick` trần lên div.
+
+- **`Card variant="borderless"`** (antd `variant="borderless"`, tức `bordered={false}` đã khai tử)
+  — bỏ viền, giữ nền. Bản kiểm parity 10/09 xếp `outline` là "superset" của trục này; **sai đúng ở
+  điểm đó**: `outline` chỉ đụng `background`, viền hairline vẫn nguyên, nên "không viền" trước nay
+  **không có cách nào viết ra**. Hai giá trị là ảnh gương của nhau và không cái nào thay được cái
+  kia.
+
+  Thẻ `borderless` có `accent` vẫn giữ rail ngữ nghĩa của nó: luật `[data-accent]` khai sau ở cùng
+  độ đặc hiệu (0,2,0). Một tín hiệu trạng thái không được biến mất chỉ vì thẻ xin một cái khung
+  khẽ hơn.
+
+- **`CardFooter actions`** (antd `actions`) — N ô **RỘNG BẰNG NHAU** chia bởi kẻ dọc. Bản kiểm cũ
+  xếp nó là "đã có qua `CardFooter separated`", nhưng `separated` dồn con về mép cuối theo bề rộng
+  tự nhiên: đúng hình cho cặp Lưu/Huỷ, sai hình cho một dải chia ô. Upstream đặt
+  `width: ${100 / actions.length}%` bằng style nội tuyến; `flex: 1 1 0` cho kết quả y hệt từ
+  stylesheet nên không phải đếm con và **không có số đo nào rơi vào DOM** (luật #44).
+
+  Tự đủ: nó tự kẻ đường trên và tự full-bleed, vì dải actions của antd không bao giờ khác thế — một
+  hành vi antd, một prop, đúng lối `CardBar` đã đi. Kẻ dọc dùng `border-inline-start` nên dải tự
+  soi gương dưới RTL.
+
+### Fixed
+
+- **Catalog MCP quảng cáo một prop `Card size` đã bị xoá từ 24/08/2026.** `check:mcp-prop-sync` chỉ
+  canh một chiều — "mọi prop đã khai phải có trong catalog" — nên một prop chỉ còn trong catalog
+  thì không cổng nào thấy. Agent tra MCP đúng quy trình vẫn đọc ra `size: "md" | "compact"` và viết
+  mã theo. Đã gỡ, và `density` nay nói thẳng nó CHÍNH LÀ trục `size` của antd.
+
+- Catalog ghi luôn **những prop antd mà họ Card trả lời bằng hợp thành** — `title`/`extra`, `cover`,
+  `loading` (antd render một Skeleton, ở đây là `SkeletonRows` trong `CardContent solo`),
+  `tabList`/`activeTabKey`/`onTabChange` (`Tabs` trong `CardContent tight flush`),
+  `tabBarExtraContent` (`CardBar extra`), `type="inner"`, `Card.Grid`, `Card.Meta` — để lần sau
+  không ai mở lại issue xin thêm prop cho thứ đã với tới được.
+
 ## [23.1.0] - 2026-09-12
 
 Bản này gần như toàn bộ đến từ báo cáo của consumer `gino-cloud` sau khi họ nâng 20.2.1 → 23.0.0 —

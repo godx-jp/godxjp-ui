@@ -710,6 +710,7 @@
             "default",
             "muted",
             "outline",
+            "borderless",
             "featured"
           ],
           "evidence": [
@@ -720,6 +721,14 @@
           "cases": [
             "tight",
             "cozy"
+          ],
+          "evidence": [
+            "docs/data-display/card/index.tsx"
+          ]
+        },
+        "hoverable": {
+          "cases": [
+            true
           ],
           "evidence": [
             "docs/data-display/card/index.tsx"
@@ -3586,6 +3595,18 @@
           ],
           "evidence": [
             "docs/data-entry/upload.tsx"
+          ]
+        }
+      }
+    },
+    "CardFooter": {
+      "props": {
+        "actions": {
+          "cases": [
+            true
+          ],
+          "evidence": [
+            "docs/data-display/card/index.tsx"
           ]
         }
       }
