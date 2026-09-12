@@ -521,9 +521,7 @@
     "covered": 86,
     "untested": 2260,
     "notApplicable": 1672,
-    "knownMissingFrames": [
-      "data-entry/attachments"
-    ],
+    "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -1514,8 +1512,9 @@
     "Attachments": {
       "group": "data-entry",
       "owner": "data-entry/attachments",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/data-entry/attachments.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,

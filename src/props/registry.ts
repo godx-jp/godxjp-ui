@@ -3412,6 +3412,47 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: [],
   },
+  AttachmentsPlaceholderProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["IconProp", "TitleProp", "DescriptionProp"],
+  },
+  AttachmentsItemProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "DescriptionProp",
+      {
+        field: "name",
+        local: true,
+        reason:
+          "antd `UploadFile.name` — the file's own name as the browser reports it, not a `LabelProp` the caller writes.",
+      },
+      {
+        field: "status",
+        local: true,
+        reason:
+          "antd `UploadFile.status` (uploading/done/error/removed) — an upload's lifecycle, not the `StatusProp` tone vocabulary.",
+      },
+      {
+        field: "size",
+        local: true,
+        reason:
+          "antd `UploadFile.size` — the file's byte count, rendered through `formatBytes`. Not the `SizeProp` control-size ladder.",
+      },
+      {
+        field: "error",
+        local: true,
+        reason:
+          "antd `UploadFile.error` — whatever the failed request threw, carried opaquely. Not `ErrorProp`, which is a message a field shows.",
+      },
+    ],
+  },
+  AttachmentsRefProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   CardCoverProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",

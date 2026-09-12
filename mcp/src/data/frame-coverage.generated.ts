@@ -60,7 +60,7 @@ export const FRAME_COVERAGE_POLICY = {
     covered: 86,
     untested: 2260,
     notApplicable: 1672,
-    exportsWithoutFrame: 1,
+    exportsWithoutFrame: 0,
   },
   dimensions: [
     { id: "variants", title: "Variants", axis: "visual" },
@@ -127,7 +127,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"AppShell","group":"layout","frame":"docs/layout/app-shell.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AreaChart","group":"charts","frame":"docs/data-display/charts.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"AspectRatio","group":"layout","frame":"docs/layout/aspect-ratio.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
-  {"name":"Attachments","group":"data-entry","frame":null,"covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
+  {"name":"Attachments","group":"data-entry","frame":"docs/data-entry/attachments.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AuthAccountSummary","group":"layout","frame":"docs/layout/auth-account-summary.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AuthDivider","group":"layout","frame":"docs/layout/auth-divider.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AuthFooter","group":"layout","frame":"docs/layout/auth-footer.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
