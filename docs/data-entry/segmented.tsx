@@ -1,13 +1,6 @@
 import { useState } from "react";
 
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Segmented } from "@godxjp/ui/data-entry";
 import { Text, VisuallyHidden } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -108,17 +101,7 @@ export default function Demo() {
                 { value: "active", label: "実習中", count: 96 },
                 { value: "pending", label: "申請中", count: 12 },
                 { value: "gone", label: "失踪・帰国", count: 0 },
-              ].map(({ value, label, count }) => ({
-                value,
-                label: (
-                  <>
-                    {label}
-                    <Badge as="span" variant="secondary">
-                      {count}
-                    </Badge>
-                  </>
-                ),
-              }))}
+              ]}
             />
           </CardContent>
         </Card>

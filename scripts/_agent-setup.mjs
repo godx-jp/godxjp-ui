@@ -24,12 +24,36 @@ import {
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** The godxjp-ui MCP server — pulled on demand via npx (no extra dependency to ship). */
 /** This package's own root — the source of the version we stamp with. */
 const SELF_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-export const MCP_SERVER = { command: "npx", args: ["@godxjp/ui-mcp"] };
 export const MCP_KEY = "godx-ui";
+
+/** @deprecated Prefer `mcpServerFor(root)` — bare npx resolves latest on the registry (gh#543). */
+export const MCP_SERVER = { command: "npx", args: ["@godxjp/ui-mcp"] };
+
+function mcpEntryMatches(a, b) {
+  if (a?.command !== b?.command) return false;
+  const argsA = a?.args ?? [];
+  const argsB = b?.args ?? [];
+  if (argsA.length !== argsB.length || argsA.some((x, i) => x !== argsB[i])) return false;
+  const envA = a?.env ?? {};
+  const envB = b?.env ?? {};
+  const keysA = Object.keys(envA).sort();
+  const keysB = Object.keys(envB).sort();
+  if (keysA.length !== keysB.length || keysA.some((k, i) => k !== keysB[i])) return false;
+  return keysA.every((k) => envA[k] === envB[k]);
+}
+
+function mcpConfigMismatchMessage(root, existing, expected) {
+  const ui = readConsumerUiMetadata(root);
+  const pin = expected.args?.[0] ?? "@godxjp/ui-mcp";
+  const ver = ui?.version ?? "(unknown)";
+  return (
+    `present (custom godx-ui MCP entry — not overwritten; expected ${pin} with ` +
+    `env.GODX_UI_VERSION=${ver} from node_modules/@godxjp/ui)`
+  );
+}
 
 /** Commands wired into the consumer's .claude/settings.json. */
 export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
@@ -45,6 +69,31 @@ const SUGGESTED_HOOKS = {
 
 /** The per-session workflow mandate the SessionStart hook injects into the agent. */
 export const KIT_VERSION = readJson(join(SELF_ROOT, "package.json"))?.version ?? "0.0.0";
+
+/**
+ * Read the consumer's installed @godxjp/ui metadata (postinstall runs with UI already in
+ * node_modules). Returns null when absent — caller falls back to this package's release train.
+ */
+export function readConsumerUiMetadata(root) {
+  const uiPkg = readJson(join(root, "node_modules/@godxjp/ui/package.json"));
+  if (!uiPkg?.version) return null;
+  return {
+    version: String(uiPkg.version),
+    godxUiMcp: uiPkg.godxUiMcp ? String(uiPkg.godxUiMcp) : String(uiPkg.version),
+  };
+}
+
+/**
+ * MCP launch config for a consumer root: pin @godxjp/ui-mcp to godxUiMcp from the installed UI
+ * package and pass the real UI version via env (gh#543 — MCP must not read the repo to learn it).
+ */
+export function mcpServerFor(root) {
+  const meta = readConsumerUiMetadata(root);
+  const mcpPin = meta?.godxUiMcp ?? KIT_VERSION;
+  const server = { command: "npx", args: [`@godxjp/ui-mcp@${mcpPin}`] };
+  if (meta?.version) server.env = { GODX_UI_VERSION: meta.version };
+  return server;
+}
 
 const STAMP = (v) => `<!-- godxjp-ui:version ${v} -->`;
 const STAMP_RE = /<!-- godxjp-ui:version ([^\s]+) -->/;
@@ -291,13 +340,11 @@ export function refreshBlock(current, next, startMarker, endMarker) {
 
 export function ensureMcpJson(root) {
   const path = join(root, ".mcp.json");
+  const expected = mcpServerFor(root);
+  const suggested = JSON.stringify({ mcpServers: { [MCP_KEY]: expected } }, null, 2) + "\n";
   const read = readJsonFile(path);
   if (read.state !== "ok" && read.state !== "missing") {
-    return refuseAndSuggest(
-      path,
-      JSON.stringify({ mcpServers: { [MCP_KEY]: MCP_SERVER } }, null, 2) + "\n",
-      READ_FAILURE[read.state],
-    );
+    return refuseAndSuggest(path, suggested, READ_FAILURE[read.state]);
   }
   const json = read.state === "ok" ? read.json : {};
   if (
@@ -306,16 +353,17 @@ export function ensureMcpJson(root) {
       typeof json.mcpServers !== "object" ||
       Array.isArray(json.mcpServers))
   ) {
-    return refuseAndSuggest(
-      path,
-      JSON.stringify({ mcpServers: { [MCP_KEY]: MCP_SERVER } }, null, 2) + "\n",
-      "`mcpServers` is not an object",
-    );
+    return refuseAndSuggest(path, suggested, "`mcpServers` is not an object");
   }
   json.mcpServers = json.mcpServers ?? {};
-  if (json.mcpServers[MCP_KEY]) return "present";
+  if (json.mcpServers[MCP_KEY]) {
+    if (!mcpEntryMatches(json.mcpServers[MCP_KEY], expected)) {
+      return mcpConfigMismatchMessage(root, json.mcpServers[MCP_KEY], expected);
+    }
+    return "present";
+  }
   const created = read.state === "missing";
-  json.mcpServers[MCP_KEY] = MCP_SERVER;
+  json.mcpServers[MCP_KEY] = expected;
   writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
   return created ? "created" : "added";
 }

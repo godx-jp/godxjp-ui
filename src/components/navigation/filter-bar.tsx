@@ -178,22 +178,17 @@ export function Toolbar({
           className="ui-filter-bar-chips"
         >
           {chips!.map((chip) => (
-            <span key={chip.value} className="ui-filter-bar-chip">
-              <Badge variant="outline">{chip.label}</Badge>
-              {onChipRemove && (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  disabled={disabled || chip.disabled}
-                  aria-label={t("navigation.filterBar.removeFilter", {
-                    label: typeof chip.label === "string" ? chip.label : chip.value,
-                  })}
-                  onClick={() => onChipRemove(chip.value)}
-                >
-                  <X aria-hidden="true" />
-                </Button>
-              )}
-            </span>
+            <Badge
+              key={chip.value}
+              variant="outline"
+              className="ui-filter-bar-chip"
+              onRemove={
+                onChipRemove ? () => onChipRemove(chip.value) : undefined
+              }
+              removeDisabled={Boolean(disabled || chip.disabled)}
+            >
+              {typeof chip.label === "string" ? chip.label : chip.value}
+            </Badge>
           ))}
         </div>
       )}

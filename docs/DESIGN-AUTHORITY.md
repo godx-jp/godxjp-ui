@@ -242,6 +242,17 @@ in page CSS.
 - **A capability this library already has keeps its own name.** antd's `size`
   (`small | middle | large`) IS `density` (`compact | default | comfortable`); antd's `locale` IS
   the `t()` layer. Adding the antd spelling as an alias would be duplication, not parity.
+- **`SegmentedOption.count`.** antd's `SegmentedItemType` has no count field — consumers embed counts
+  in `label`. Nested `Badge` `secondary` is `--muted`, which matches the Segmented track
+  (gh#602, measured 1.00:1). This library adds `count` / `overflowCount` / `showZero` /
+  `countLabel` on `SegmentedOption` with a DS-owned pill (`--segmented-count-*` tokens), same
+  counter vocabulary as `Button` / `Toggle`.
+- **`Badge.onRemove` instead of antd `Tag`'s `closable` + `onClose`.** Semantics match antd's
+  closable tag (a chip that draws its own × and fires one callback). The boolean is folded into
+  prop presence (`onRemove` omitted ⇒ no ×), and the callback is named `onRemove` rather than
+  `onClose`, because `onClose` already means overlay dismiss across Dialog/Drawer and would read
+  as closing a surface, not removing one applied filter chip. Implemented on `Badge` — the DS chip
+  primitive — rather than adding a separate `Tag` export beside `Badge`.
 
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer

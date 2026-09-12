@@ -1,11 +1,4 @@
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Segmented } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -24,17 +17,7 @@ const OPTIONS = [
   { value: "ginou", label: "技能実習", count: 82 },
   { value: "tokutei", label: "特定技能", count: 51 },
   { value: "ikusei", label: "育成就労", count: 0 },
-].map(({ value, label, count }) => ({
-  value,
-  label: (
-    <>
-      {label}
-      <Badge as="span" variant="secondary">
-        {count}
-      </Badge>
-    </>
-  ),
-}));
+];
 
 export default function SegmentedInFilterRow() {
   return (

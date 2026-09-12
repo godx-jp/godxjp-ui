@@ -67,4 +67,29 @@
     height: var(--badge-icon-size);
     flex-shrink: 0;
   }
+
+  [data-slot="badge"][data-removable] {
+    padding-inline-end: var(--badge-space-x-removable);
+  }
+
+  [data-slot="badge-remove"] {
+    flex-shrink: 0;
+    margin-inline-end: var(--badge-remove-margin-end);
+    color: inherit;
+    opacity: var(--badge-remove-rest-alpha);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  [data-slot="badge-remove"]:hover,
+  [data-slot="badge-remove"]:focus-visible {
+    opacity: var(--badge-remove-hover-alpha);
+  }
+
+  [data-slot="badge-remove"] svg {
+    width: var(--badge-remove-icon-size);
+    height: var(--badge-remove-icon-size);
+  }
 }

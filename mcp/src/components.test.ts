@@ -147,6 +147,39 @@ describe("search_components", () => {
   });
 });
 
+/**
+ * gh#605 — five secondary exports consumers import directly were invisible in `list_primitives` /
+ * `search_components` when folded only into a parent entry or missed by filename-based orphan scans.
+ */
+describe("gh#605 — consumer-used exports are discoverable", () => {
+  const GH605 = [
+    "Segmented",
+    "CardBar",
+    "Legend",
+    "MasterDetail",
+    "SkeletonRows",
+  ] as const;
+
+  it.each(GH605)('list_primitives includes %s', async (name) => {
+    const out = await dispatchTool("list_primitives", {});
+    expect(out).toContain(`**${name}**`);
+  });
+
+  it('search_components "filter" surfaces Segmented for status-filter use cases', async () => {
+    const out = await dispatchTool("search_components", { query: "filter" });
+    expect(out).toContain("Segmented");
+    expect(out).not.toMatch(/^No matches/);
+  });
+
+  it.each(GH605)("get_component(%s) returns a full guide, not a sub-part steer-away", async (name) => {
+    const out = await dispatchTool("get_component", { name });
+    expect(out).toContain(`# ${name}`);
+    expect(out).toContain("## Props");
+    expect(out).not.toMatch(/not found/i);
+    expect(out).not.toContain("documented as part of");
+  });
+});
+
 describe("suggest_primitive", () => {
   const CASES: Array<[string, RegExp]> = [
     ["I need a registration form with validation", /Form \+ FormField/],

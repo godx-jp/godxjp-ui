@@ -4381,13 +4381,20 @@ import { Button } from "@godxjp/ui/general";
         description:
           "Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status.",
       },
+      {
+        name: "onRemove",
+        type: "() => void",
+        description:
+          "antd Tag `closable` + `onClose` — draws a × on the chip and calls this when the user activates it. Omit for a plain badge (no ×). Accessible name quotes the string label via `navigation.filterBar.removeFilter`.",
+      },
     ],
     usage: [
       "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
       "DO use `status` for entity lifecycle statuses (active, draft, pending, cancelled, failed, scheduled, etc.) so the component resolves the correct tone, icon, and i18n label.",
       "DO pass `variant` explicitly for localized labels or categorical tiers, and pass `icon={null}` when a lifecycle glyph would be misleading.",
-      'Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as="span"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. It carries no interactive semantics either way. If you need a clickable chip, wrap it in a `<button>` or use a Button with a matching variant — never add an `onClick` directly to Badge without an accessible role.',
-      "Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge, a Button, or interactive controls inside it; that breaks focus order and creates invalid HTML (div-in-inline-context).",
+      'Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as="span"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. With `onRemove`, the chip draws its own × (antd Tag closable); without it the chip is non-interactive. Do not add a naked `onClick` without an accessible role.',
+      "With `onRemove`, the × is part of the chip (antd Tag closable) — do not bolt a separate Button beside the label. Pass a string `children` label so the remover's accessible name quotes the chip.",
+      "Without `onRemove`, Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge or interactive controls inside it.",
       "Use semantic tokens for any className overrides (`text-muted-foreground`, `bg-destructive`) — never raw Tailwind palette classes like `bg-green-500`.",
       "DO pass `color` — never an inline `backgroundColor` — when the colour belongs to the RECORD rather than to its meaning (a status an administrator coloured, an issue type, a tag). A hand-filled chip has to choose a foreground, and no choice is readable for every colour a picker can produce; `color` moves the ground instead and keeps the label on the surface's own foreground.",
     ],
@@ -8172,6 +8179,55 @@ import { Button } from "@godxjp/ui/general";
 {!coupons ? <SkeletonTable rows={10} columns={6} /> : <DataTable data={coupons} columns={columns} />}`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [],
+  },
+  {
+    name: "SkeletonRows",
+    group: "feedback",
+    tagline:
+      "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
+    props: [
+      {
+        name: "rows",
+        type: "number",
+        defaultValue: "6",
+        description: "How many skeleton lines to draw.",
+      },
+      {
+        name: "columns",
+        type: "number",
+        defaultValue: "4",
+        description:
+          "Columns per row on the internal ResponsiveGrid — match the loaded list's column count so nothing reflows on hydration.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class override.",
+      },
+    ],
+    usage: [
+      "DO use SkeletonRows for a flat list of short bars — activity feeds without avatars, settings rows, filter result lists.",
+      "DO match `rows` and `columns` to the loaded layout so the skeleton does not jump when data arrives.",
+      "DON'T use it for tabular data with a header row — SkeletonTable matches DataTable's chrome.",
+      "DON'T use it for a form — SkeletonForm draws label + control pairs on the form's column grid.",
+      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
+    ],
+    useCases: [
+      "Card body while a simple list deferred prop resolves",
+      "Stacked settings rows before the record loads",
+      "Generic repeated rows when SkeletonArticle's avatar + prose rhythm is wrong",
+    ],
+    related: [
+      "SkeletonTable — tabular placeholder with a header band; not a flat line list.",
+      "SkeletonForm — label + control pairs on a form grid.",
+      "SkeletonArticle — avatar beside prose lines.",
+      "Skeleton — the bare block this preset is built from.",
+    ],
+    example: `import { SkeletonRows } from "@godxjp/ui/feedback";
+
+<SkeletonRows rows={6} columns={3} />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
   },
   {
     name: "Toaster",
@@ -12659,7 +12715,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Skeleton",
-    subParts: ["SkeletonDetail", "SkeletonRows", "SkeletonStat"],
+    subParts: ["SkeletonDetail", "SkeletonStat"],
     group: "feedback",
     tagline:
       "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
@@ -13541,7 +13597,7 @@ export default function PasswordBlock() {
     name: "Segmented",
     group: "data-entry",
     tagline:
-      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+      "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
       {
         name: "block",
@@ -13565,9 +13621,10 @@ export default function PasswordBlock() {
       },
       {
         name: "options",
-        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]",
+        type:
+          "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
-          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name.",
+          "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
       },
       { name: "value", type: "string", description: "Controlled selection." },
       { name: "defaultValue", type: "string", description: "Uncontrolled initial selection." },
@@ -13591,6 +13648,7 @@ export default function PasswordBlock() {
       "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
+      "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
       "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
       "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
     ],
@@ -13616,6 +13674,16 @@ export default function PasswordBlock() {
     { value: "light", label: "Light" },
     { value: "dark", label: "Dark" },
     { value: "system", label: "System" },
+  ]}
+/>
+
+<Segmented
+  aria-label="Status filter"
+  value={status}
+  onValueChange={setStatus}
+  options={[
+    { value: "all", label: "All", count: 128 },
+    { value: "active", label: "Active", count: 96 },
   ]}
 />`,
     storyPath: "data-entry/Segmented.stories.tsx",
