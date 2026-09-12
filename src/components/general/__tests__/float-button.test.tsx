@@ -345,6 +345,37 @@ describe("FloatButton.Group", () => {
     host.remove();
   });
 
+  /**
+   * The case that actually separates `composedPath()` from `root.contains(event.target)`, and the
+   * reason a single trigger click did not: on the FIRST click the document listener runs in the
+   * capture phase while the menu is still closed, so closing it again is a no-op and either
+   * spelling "passes". Pressing an ITEM while the menu is OPEN is where they part company — the
+   * retargeted target is the shadow HOST, which is an ANCESTOR of the group and therefore not
+   * `contains`ed by it, so antd's spelling treats the group's own item as an outside click and
+   * shuts the menu on the way to running the action.
+   */
+  it("a shadow-rooted menu stays open when one of its own items is pressed", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+    const { shadow, host } = mountShadowHost();
+
+    renderWithUi(
+      <FloatButton.Group trigger="click" aria-label="A">
+        <FloatButton aria-label="One" onClick={onAction} />
+      </FloatButton.Group>,
+      { container: shadow.firstElementChild as HTMLElement },
+    );
+
+    const trigger = shadow.querySelector(".ui-float-button-trigger") as HTMLElement;
+    await user.click(trigger);
+    const item = shadow.querySelector('[aria-label="One"]') as HTMLElement;
+    await user.click(item);
+
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(shadow.querySelectorAll('[data-slot="float-button"]')).toHaveLength(2);
+    host.remove();
+  });
+
   it("a controlled `open` of true renders the stack with no interaction at all", () => {
     renderWithUi(
       <FloatButton.Group trigger="click" open onOpenChange={() => {}} aria-label="A">
