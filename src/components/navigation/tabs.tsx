@@ -15,9 +15,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { useKeepActiveTabVisible, useTabsOverflowValues } from "./tabs-scroll";
+import {
+  useKeepActiveTabVisible,
+  useTabsOverflowValues,
+  useTabsScrollReporter,
+} from "./tabs-scroll";
 import type {
   TabItemProp,
+  TabsAnimatedProp,
   TabsExtraProp,
   TabsPlacementProp,
   TabsProp,
@@ -30,6 +35,11 @@ export type {
   TabsPlacementProp,
   TabsExtraProp,
   TabsOverflowProp,
+  TabsAnimatedProp,
+  TabsIndicatorProp,
+  TabsIndicatorSizeProp,
+  TabsScrollDirectionProp,
+  TabsOnScrollProp,
 } from "../../props/components/navigation.prop";
 
 export type TabsOrientation = "vertical" | "horizontal";
@@ -137,6 +147,27 @@ function resolveTabsExtra(extra: TabsExtraProp | undefined): {
 }
 
 /**
+ * Ant Design `animated` → the two switches, PORTED from antd's own
+ * `components/tabs/hooks/useAnimateConfig.ts` rather than re-derived: `false` turns both off,
+ * `true` turns both ON (note that antd's wrapper differs from rc-tabs' here — rc's `true` leaves
+ * `tabPane` off, antd's turns it on, and antd's is the behaviour this library documents), and an
+ * object is merged over `{ inkBar: true }`.
+ *
+ * `tabPaneMotion` is NOT carried across: upstream it exists only to hand rc-motion a class
+ * prefix, and antd fills it in itself with an opacity fade. That fade is a CSS rule here
+ * (src/styles/navigation-layout.css), so the switch is the whole API.
+ */
+function resolveTabsAnimated(animated: TabsAnimatedProp | undefined): {
+  inkBar: boolean;
+  tabPane: boolean;
+} {
+  if (animated === false) return { inkBar: false, tabPane: false };
+  if (animated === true) return { inkBar: true, tabPane: true };
+  if (animated === undefined) return { inkBar: true, tabPane: false };
+  return { inkBar: animated.inkBar ?? true, tabPane: animated.tabPane ?? false };
+}
+
+/**
  * `tabPlacement` owns the axis in antd 6.6.2, `orientation` owns it in Radix/WAI-ARIA. Neither is
  * dropped: whichever the caller actually passed decides, and the other is derived from it, so a
  * long-standing `orientation="vertical"` keeps working and `tabPlacement="start"` needs no second
@@ -226,12 +257,21 @@ export function Tabs({
   closeIcon,
   onTabClick,
   overflow = "scroll",
+  animated,
+  indicator,
+  moreIcon,
+  onTabScroll,
   listClassName,
   contentClassName,
   children,
   ...props
 }: TabsProps) {
   const { t } = useTranslation();
+  const motion = resolveTabsAnimated(animated);
+  // antd's own defaults: `align` falls back to `center` in @rc-component/tabs' useIndicator, and
+  // `size` falls back to the tab's whole width — `full` here.
+  const indicatorSize = indicator?.size ?? "full";
+  const indicatorAlign = indicator?.align ?? "center";
   const resolvedDefault = resolveFallbackTabValue(items, defaultValue);
   const narrow = useMaxWidthBreakpoint(
     TABS_PLACEMENT_BREAKPOINT_TOKEN,
@@ -271,6 +311,9 @@ export function Tabs({
     );
   }, []);
   useTabsOverflowValues(listRef, itemValues, handleHiddenChange);
+  // antd `onTabScroll`. It watches the SAME element the overflow measurement does — the strip is
+  // its own scrollport here, where antd moves a transform on an inner track.
+  useTabsScrollReporter(listRef, resolvedOrientation === "vertical", onTabScroll);
 
   // The selection MIRROR. Radix still owns the state; this only reflects it, so that the panels
   // can be told which of them is active from OUTSIDE a Trigger. `destroyOnHidden={false}` needs
@@ -487,6 +530,12 @@ export function Tabs({
         data-placement={placement}
         data-size={size}
         data-centered={centered ? "true" : undefined}
+        // antd `animated` / `indicator`: both are pure PAINT, so they travel to CSS as state on
+        // the root rather than as a measured inline style the way rc-tabs' ink bar does.
+        data-animated-ink-bar={motion.inkBar ? "true" : "false"}
+        data-animated-tab-pane={motion.tabPane ? "true" : "false"}
+        data-indicator-size={indicatorSize}
+        data-indicator-align={indicatorAlign}
         orientation={resolvedOrientation}
         keyboardActivation={activationMode}
         // CONTROLLED FROM THE MIRROR while the overflow menu exists, and only then. A menu item
@@ -520,6 +569,10 @@ export function Tabs({
             "data-placement": placement,
             "data-size": size,
             "data-centered": centered ? "true" : undefined,
+            "data-animated-ink-bar": motion.inkBar ? "true" : "false",
+            "data-animated-tab-pane": motion.tabPane ? "true" : "false",
+            "data-indicator-size": indicatorSize,
+            "data-indicator-align": indicatorAlign,
           })
         }
       >
@@ -555,7 +608,12 @@ export function Tabs({
                       className="ui-tabs-overflow"
                       aria-label={t("navigation.tabs.moreTabs")}
                     >
-                      <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+                      {/* antd `moreIcon` (its `more.icon` in 6.x, and the flat prop is still
+                          published there). The button keeps its own `aria-label` either way, so a
+                          custom glyph can never cost the control its name. */}
+                      {moreIcon ?? (
+                        <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+                      )}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent placement="bottomEnd">
                       {overflowItems.map((item) => (

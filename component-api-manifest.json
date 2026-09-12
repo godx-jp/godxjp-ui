@@ -14149,6 +14149,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "animated",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsAnimatedProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "centered",
           "origin": "owned",
           "required": false,
@@ -14224,6 +14232,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "indicator",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsIndicatorProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "items",
           "origin": "owned",
           "required": false,
@@ -14240,6 +14256,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "moreIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "onEdit",
           "origin": "owned",
           "required": false,
@@ -14252,6 +14276,14 @@
           "origin": "owned",
           "required": false,
           "type": "TabsOnTabClickProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onTabScroll",
+          "origin": "owned",
+          "required": false,
+          "type": "TabsOnScrollProp | undefined",
           "values": [],
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },

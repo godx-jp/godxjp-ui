@@ -3049,6 +3049,61 @@
           "evidence": [
             "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
           ]
+        },
+        "overflow": {
+          "cases": [
+            "scroll",
+            "menu"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-overflow-menu.test.tsx"
+          ]
+        },
+        "moreIcon": {
+          "cases": [
+            "default glyph",
+            "custom node"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-overflow-menu.test.tsx"
+          ]
+        },
+        "animated": {
+          "cases": [
+            "default",
+            false,
+            true,
+            "{ inkBar }",
+            "{ tabPane }"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
+          ]
+        },
+        "indicator": {
+          "cases": [
+            "size full",
+            "size label",
+            "align start",
+            "align center",
+            "align end"
+          ],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
+          ]
+        },
+        "onTabScroll": {
+          "cases": [
+            "start",
+            "end",
+            "no movement"
+          ],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-antd-parity.test.tsx"
+          ]
         }
       }
     },

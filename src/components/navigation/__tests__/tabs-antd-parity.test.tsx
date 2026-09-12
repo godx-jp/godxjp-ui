@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Tabs } from "../tabs";
+import { readTabsScrollOffset, resolveTabsScrollDirection } from "../tabs-scroll";
 
 const ITEMS = [
   { value: "a", label: "概要", content: "パネルA" },
@@ -382,5 +383,164 @@ describe("Tabs — antd `Tab.forceRender`", () => {
     render(<Tabs items={ITEMS_3} />);
     expect(screen.queryByText("パネルB")).toBeNull();
     expect(screen.queryByText("パネルC")).toBeNull();
+  });
+});
+
+describe("Tabs — antd `animated`", () => {
+  const motionOf = (container: HTMLElement) => {
+    const root = container.querySelector('[data-slot="tabs"]');
+    return {
+      inkBar: root?.getAttribute("data-animated-ink-bar"),
+      tabPane: root?.getAttribute("data-animated-tab-pane"),
+    };
+  };
+
+  it("defaults to antd's own `{ inkBar: true, tabPane: false }`", () => {
+    const { container } = render(<Tabs items={ITEMS} />);
+    expect(motionOf(container)).toEqual({ inkBar: "true", tabPane: "false" });
+  });
+
+  it("`false` turns BOTH switches off", () => {
+    const { container } = render(<Tabs items={ITEMS} animated={false} />);
+    expect(motionOf(container)).toEqual({ inkBar: "false", tabPane: "false" });
+  });
+
+  /**
+   * antd's wrapper and rc-tabs DISAGREE here, and the published behaviour is antd's:
+   * `components/tabs/hooks/useAnimateConfig.ts` maps `true` to `{ inkBar: true, tabPane: true }`,
+   * while `@rc-component/tabs`'s own hook leaves `tabPane` off. This asserts the antd one.
+   */
+  it("`true` turns both ON — antd's wrapper, not rc-tabs' bare default", () => {
+    const { container } = render(<Tabs items={ITEMS} animated />);
+    expect(motionOf(container)).toEqual({ inkBar: "true", tabPane: "true" });
+  });
+
+  it("an object MERGES over `{ inkBar: true }` rather than replacing it", () => {
+    const { container } = render(<Tabs items={ITEMS} animated={{ tabPane: true }} />);
+    expect(motionOf(container)).toEqual({ inkBar: "true", tabPane: "true" });
+  });
+
+  it("lets one switch be turned off without turning the other on", () => {
+    const { container } = render(<Tabs items={ITEMS} animated={{ inkBar: false }} />);
+    expect(motionOf(container)).toEqual({ inkBar: "false", tabPane: "false" });
+  });
+});
+
+describe("Tabs — antd `indicator`", () => {
+  const indicatorOf = (container: HTMLElement) => {
+    const root = container.querySelector('[data-slot="tabs"]');
+    return {
+      size: root?.getAttribute("data-indicator-size"),
+      align: root?.getAttribute("data-indicator-align"),
+    };
+  };
+
+  it("defaults to the whole trigger, centred — upstream `useIndicator`'s own defaults", () => {
+    const { container } = render(<Tabs items={ITEMS} variant="line" />);
+    expect(indicatorOf(container)).toEqual({ size: "full", align: "center" });
+  });
+
+  it("carries both fields to the root", () => {
+    const { container } = render(
+      <Tabs items={ITEMS} variant="line" indicator={{ size: "label", align: "start" }} />,
+    );
+    expect(indicatorOf(container)).toEqual({ size: "label", align: "start" });
+  });
+
+  it("takes `align` on its own and leaves the length at its default", () => {
+    const { container } = render(
+      <Tabs items={ITEMS} variant="line" indicator={{ align: "end" }} />,
+    );
+    expect(indicatorOf(container)).toEqual({ size: "full", align: "end" });
+  });
+
+  it("takes `size` on its own and leaves the alignment at antd's `center`", () => {
+    const { container } = render(
+      <Tabs items={ITEMS} variant="line" indicator={{ size: "label" }} />,
+    );
+    expect(indicatorOf(container)).toEqual({ size: "label", align: "center" });
+  });
+});
+
+/**
+ * Ant Design `onTabScroll`. Upstream reads the sign of an inner transform
+ * (`@rc-component/tabs` src/TabNavList/index.tsx: `onTabScroll({ direction: next > prev ? 'left'
+ * : 'right' })`); here the strip IS its own scrollport, so the same fact is read off its scroll
+ * offset. jsdom lays nothing out and pins `scrollLeft` at 0, so the offset is defined onto the
+ * element and the event delivered by hand — the two halves are split the way the overflow suite
+ * splits them.
+ */
+describe("Tabs — antd `onTabScroll`", () => {
+  const setOffset = (element: HTMLElement, offset: number) => {
+    Object.defineProperty(element, "scrollLeft", { value: offset, configurable: true });
+    element.dispatchEvent(new Event("scroll"));
+  };
+
+  it("reports a move towards the trailing edge as `end`", () => {
+    const onTabScroll = vi.fn();
+    render(<Tabs items={ITEMS} onTabScroll={onTabScroll} />);
+    setOffset(screen.getByRole("tablist"), 120);
+    expect(onTabScroll).toHaveBeenCalledWith({ direction: "end" });
+  });
+
+  it("reports a move back towards the leading edge as `start`", () => {
+    const onTabScroll = vi.fn();
+    render(<Tabs items={ITEMS} onTabScroll={onTabScroll} />);
+    const list = screen.getByRole("tablist");
+    setOffset(list, 120);
+    setOffset(list, 40);
+    expect(onTabScroll).toHaveBeenLastCalledWith({ direction: "start" });
+    expect(onTabScroll).toHaveBeenCalledTimes(2);
+  });
+
+  it("says nothing when a scroll event reports the position it already had", () => {
+    const onTabScroll = vi.fn();
+    render(<Tabs items={ITEMS} onTabScroll={onTabScroll} />);
+    const list = screen.getByRole("tablist");
+    setOffset(list, 120);
+    setOffset(list, 120);
+    expect(onTabScroll).toHaveBeenCalledTimes(1);
+  });
+
+  it("arms nothing when no handler is passed", () => {
+    render(<Tabs items={ITEMS} />);
+    // The absence of a listener cannot be asserted directly; that the strip survives a scroll
+    // event with no handler is what a consumer actually depends on.
+    expect(() => setOffset(screen.getByRole("tablist"), 80)).not.toThrow();
+  });
+});
+
+describe("tabs-scroll — the pure halves of `onTabScroll`", () => {
+  it("names the edge a movement went towards, and nothing when it did not move", () => {
+    expect(resolveTabsScrollDirection(0, 40)).toBe("end");
+    expect(resolveTabsScrollDirection(40, 0)).toBe("start");
+    expect(resolveTabsScrollDirection(40, 40)).toBeNull();
+  });
+
+  it("reads a horizontal strip's offset straight through in LTR", () => {
+    const list = document.createElement("div");
+    Object.defineProperty(list, "scrollLeft", { value: 90, configurable: true });
+    expect(readTabsScrollOffset(list, false)).toBe(90);
+  });
+
+  /**
+   * The bug this exists to stop. Per CSSOM-View an RTL scroller reports 0 at its START edge and
+   * goes NEGATIVE towards the end, so a raw `scrollLeft` would have called the same gesture `end`
+   * in Arabic and `start` in Japanese — invisible to an LTR-only suite, and the exact class of
+   * error antd's own `left`/`right` values still carry (its direction is the sign of a transform
+   * whose bounds are flipped for RTL).
+   */
+  it("flips an RTL strip's offset so `end` still means the trailing edge", () => {
+    const list = document.createElement("div");
+    list.setAttribute("dir", "rtl");
+    Object.defineProperty(list, "scrollLeft", { value: -90, configurable: true });
+    expect(readTabsScrollOffset(list, false)).toBe(90);
+  });
+
+  it("reads the block axis for a vertical strip, where direction does not apply", () => {
+    const list = document.createElement("div");
+    list.setAttribute("dir", "rtl");
+    Object.defineProperty(list, "scrollTop", { value: 55, configurable: true });
+    expect(readTabsScrollOffset(list, true)).toBe(55);
   });
 });

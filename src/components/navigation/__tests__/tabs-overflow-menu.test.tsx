@@ -244,4 +244,34 @@ describe('Tabs — antd `more` (shipped as overflow="menu")', () => {
       "true",
     );
   });
+
+  /* antd `moreIcon` (its `more.icon` in 6.x; the flat prop is still published). */
+  it("draws the default ellipsis glyph when no `moreIcon` is given", async () => {
+    render(<Tabs items={ITEMS} overflow="menu" />);
+    overflowTheStrip(2);
+    await waitFor(() => {
+      expect(overflowButton()).not.toBeNull();
+    });
+    expect(overflowButton()?.querySelector(".ui-tabs-overflow-icon")).not.toBeNull();
+  });
+
+  it("swaps in a custom `moreIcon` in place of the default glyph", async () => {
+    render(<Tabs items={ITEMS} overflow="menu" moreIcon={<span data-testid="more">…</span>} />);
+    overflowTheStrip(2);
+    await waitFor(() => {
+      expect(overflowButton()).not.toBeNull();
+    });
+    expect(overflowButton()?.querySelector('[data-testid="more"]')).not.toBeNull();
+    expect(overflowButton()?.querySelector(".ui-tabs-overflow-icon")).toBeNull();
+  });
+
+  it("keeps the button's accessible name — a custom glyph is not allowed to cost it one", async () => {
+    render(<Tabs items={ITEMS} overflow="menu" moreIcon={<span data-testid="more">…</span>} />);
+    overflowTheStrip(2);
+    await waitFor(() => {
+      expect(overflowButton()).not.toBeNull();
+    });
+    // Localized, so only that it HAS a name is asserted (WCAG 4.1.2).
+    expect(overflowButton()?.getAttribute("aria-label")).toBeTruthy();
+  });
 });

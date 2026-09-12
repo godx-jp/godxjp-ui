@@ -7448,6 +7448,32 @@ toast.error("保存に失敗しました");`,
         description:
           'Ant Design `onTabClick`. POINTER activation of a trigger, carrying the DOM event — that is what makes it a different prop from `onValueChange` rather than a second spelling of it. Keyboard activation is NOT routed here: under `activationMode="manual"` the arrow keys move focus without activating, so a key-driven "click" would be a fiction. Use `onValueChange` for the selection, whatever moved it. Note that `onValueChange` also fires when the ALREADY SELECTED tab is clicked, so `onTabClick` is not the way to detect a re-click.',
       },
+      {
+        name: "animated",
+        type: "boolean | { inkBar?: boolean; tabPane?: boolean }",
+        defaultValue: "{ inkBar: true, tabPane: false }",
+        description:
+          "Ant Design `animated`, ported from antd's own `useAnimateConfig`: `false` turns both switches off, `true` turns both ON, an object merges over `{ inkBar: true }`. `inkBar` is the `line` variant's active bar cross-fading between triggers (on by default, and the default is byte for byte what the strip already painted). `tabPane` fades the panel in when the selection moves — antd's motion really is an opacity fade and nothing else, so this is a port, not an invention; it reads `--tabs-pane-motion-duration`. Both switches are additionally off under `prefers-reduced-motion`, which antd's are not. What is NOT ported is antd's fade-OUT of the leaving pane (it parks the old node `position: absolute; inset: 0`): this component destroys a hidden panel by default, so there is usually no leaving node.",
+      },
+      {
+        name: "indicator",
+        type: '{ size?: "full" | "label"; align?: "start" | "center" | "end" }',
+        defaultValue: '{ size: "full", align: "center" }',
+        description:
+          "Ant Design `indicator`, governing the `line` variant's active bar only (no other variant has one). `align` keeps antd's name AND its values, which are already logical, so it reads the shared TextAlignProp vocabulary. `size` keeps antd's name with this library's values: antd takes `number | (origin) => number` — a px length or a function of the measured tab width — and neither can enter this API (a literal is what `no-arbitrary-spacing` stops; an origin function is the free-form escape hatch docs/DESIGN-AUTHORITY.md refuses). `full` is the whole trigger (antd's default, today's bar) and `label` is the trigger's content box, i.e. minus its own inline padding — which is what `size: (origin) => origin - 2 * padding` is written to produce. `align` only has anything to place once `size` is shorter than the trigger, exactly as upstream.",
+      },
+      {
+        name: "moreIcon",
+        type: "React.ReactNode",
+        description:
+          'Ant Design `moreIcon` (its `more.icon` in 6.x; the flat prop is still published there) — the glyph on the `overflow="menu"` button. Flat here for the same reason `addIcon` and `closeIcon` are: `overflow` names the BEHAVIOUR, the icon is a slot. The button keeps its own `aria-label`, so a custom glyph never costs the control its accessible name.',
+      },
+      {
+        name: "onTabScroll",
+        type: '(info: { direction: "start" | "end" }) => void',
+        description:
+          "Ant Design `onTabScroll`, fired whenever the trigger strip's own scrollport moves — a swipe, a wheel, or the component re-pinning the active trigger (antd reports its own re-pins too). LOGICAL VALUES instead of antd's `left | right | top | bottom`: two of those four are just the other axis of the same event, and upstream's pair is read off the sign of an inner transform, so in an RTL strip its `left` means the opposite of what it means in LTR. `start`/`end` say the same thing on whichever axis and in whichever direction the strip is written. Only fires for the `items` API, which is the path that owns the strip element.",
+      },
     ],
     usage: [
       "DO pass `items` when all tab content is known up front — each item needs a unique `value`, trigger `label`, and panel `content`.",
@@ -7461,6 +7487,7 @@ toast.error("保存に失敗しました");`,
       'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before that, a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
       'DO reach for `variant="editable-card"` + `onEdit` instead of hand-rolling a closable tab bar. The × inside a tab is an `aria-hidden` pointer shortcut and the announced keyboard route is Delete/Backspace on the focused tab (`aria-keyshortcuts`) — a real <button> there is an axe failure twice over (`aria-required-children`, because a tablist may own nothing but tabs, and `nested-interactive`). The ADD button is a real button because it sits outside the tablist.',
       "DO use `destroyOnHidden={false}` when a hidden panel must keep state — a mounted chart, a scroll position, an unsent draft. Note it is the opposite default from Ant Design: here panels are destroyed unless you say otherwise.",
+      "DON'T go looking for antd's `tabBarGutter`, `tabBarStyle`, `renderTabBar`, `classNames`/`styles` or `more.popupRender` — each is declined on the record, not missing. The gutter between triggers is a theme knob (`--tabs-list-line-space-gap`, `--tabs-card-list-space-gap`; the pill strip has no gutter by design) because a px number is a constant, not a semantic axis; the other four exist upstream to let a consumer replace the rendered markup, and this library answers that layer with tokens (docs/DESIGN-AUTHORITY.md refuses them by name).",
       "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't.",
     ],
     useCases: [

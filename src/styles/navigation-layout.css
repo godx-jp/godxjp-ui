@@ -64,22 +64,99 @@
     position: absolute;
     background: var(--tabs-indicator-background, hsl(var(--primary)));
     opacity: 0;
-    transition: opacity var(--duration-fast) var(--ease-standard);
+    /* THE FALLBACKS ARE LOAD-BEARING, and they are here because of a defect OUTSIDE this
+     * component: the whole motion tier (`--duration-*`, `--ease-*`, `--reveal-*`) is declared only
+     * inside `.ui-scale-fixed` in src/tokens/foundation.css and NEVER at `:root`. Measured in
+     * Chromium on the preview: `getComputedStyle(root).getPropertyValue("--duration-fast")` is the
+     * empty string, so this declaration was invalid and dropped, and the bar measured
+     * `transition-duration: 0s` — a cross-fade nobody has seen since it was written. That is not
+     * this change's to fix (it silently kills motion library-wide, far past Tabs), but
+     * `animated.inkBar` cannot be a real switch while the transition it turns off does not exist.
+     * The fallbacks restate the tier's own values, so the moment the tier is repaired at `:root`
+     * these rules pick it up again with no edit. */
+    transition: opacity var(--duration-fast, 150ms) var(--ease-standard, cubic-bezier(0.2, 0, 0, 1));
     pointer-events: none;
   }
 
+  /* ANT DESIGN `indicator` ({ size, align }) — ported from @rc-component/tabs
+   * `src/hooks/useIndicator.ts`. Upstream draws ONE absolutely-positioned bar over the whole nav
+   * and gives it `width: getLength(activeTabOffset.width)` plus, per `align`, `left` at the tab's
+   * start edge / its centre (with `translateX(-50%)`) / its end edge (with `translateX(-100%)`).
+   * Here the bar is a per-trigger `::after`, so the tab IS the coordinate system and the same
+   * three positions are `inset-inline-start: 0`, centred, and `inset-inline-end: 0` — the
+   * translate hops fall out. `--tabs-indicator-inset` is upstream's `origin - getLength(origin)`,
+   * halved, i.e. what is left over at each end; `align` decides where that leftover goes.
+   *
+   * `align` defaults to `center`, which is upstream's default too. With the default inset of 0px
+   * the bar still spans the whole trigger, so nothing moves until `size` shortens it. */
   [data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]
     [data-slot="tabs-trigger"]::after {
-    inset-inline: 0;
     inset-block-end: calc(-1 * var(--tabs-indicator-offset));
     block-size: var(--tabs-indicator-size);
+    inline-size: calc(100% - 2 * var(--tabs-indicator-inset));
+    inset-inline-start: var(--tabs-indicator-inset);
+  }
+
+  [data-slot="tabs"][data-indicator-align="start"]
+    [data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]
+    [data-slot="tabs-trigger"]::after {
+    inset-inline-start: 0;
+  }
+
+  [data-slot="tabs"][data-indicator-align="end"]
+    [data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]
+    [data-slot="tabs-trigger"]::after {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
 
   [data-slot="tabs-list"][data-variant="line"][data-orientation="vertical"]
     [data-slot="tabs-trigger"]::after {
-    inset-block: 0;
     inset-inline-end: calc(-1 * var(--tabs-indicator-offset));
     inline-size: var(--tabs-indicator-size);
+    block-size: calc(100% - 2 * var(--tabs-indicator-inset));
+    inset-block-start: var(--tabs-indicator-inset);
+  }
+
+  [data-slot="tabs"][data-indicator-align="start"]
+    [data-slot="tabs-list"][data-variant="line"][data-orientation="vertical"]
+    [data-slot="tabs-trigger"]::after {
+    inset-block-start: 0;
+  }
+
+  [data-slot="tabs"][data-indicator-align="end"]
+    [data-slot="tabs-list"][data-variant="line"][data-orientation="vertical"]
+    [data-slot="tabs-trigger"]::after {
+    inset-block-start: auto;
+    inset-block-end: 0;
+  }
+
+  /* `indicator={{ size: "label" }}` — the leftover IS the trigger's own padding on the axis the bar
+   * runs along, so the bar ends where the label does, and read from the ROOT so a hand-composed
+   * <TabsList> is untouched.
+   *
+   * THE INLINE AXIS READS THE SIZE TIER, NOT `--tabs-trigger-line-padding-x`, and that is measured
+   * rather than assumed: the trigger's class list ends `px-[var(--tabs-trigger-line-padding-x)] …
+   * px-[var(--tabs-trigger-padding-x-md)]`, and tailwind-merge keeps the LAST step in a group — so
+   * the line token never reaches the DOM on the inline axis. Measured in Chromium: the token says
+   * 1rem while the painted `padding-inline` is 12px (the `md` tier). Reading the line token here
+   * put the bar 4px short of the label on each side. The BLOCK axis is the other way round: only
+   * `py-[var(--tabs-trigger-line-padding-y)]` is ever emitted (the size tier sets `min-h`, not
+   * padding), measured at 8px, so the vertical rail keeps the line token. */
+  [data-slot="tabs"][data-indicator-size="label"][data-orientation="horizontal"][data-size="sm"] {
+    --tabs-indicator-inset: var(--tabs-trigger-padding-x-sm);
+  }
+
+  [data-slot="tabs"][data-indicator-size="label"][data-orientation="horizontal"][data-size="md"] {
+    --tabs-indicator-inset: var(--tabs-trigger-padding-x-md);
+  }
+
+  [data-slot="tabs"][data-indicator-size="label"][data-orientation="horizontal"][data-size="lg"] {
+    --tabs-indicator-inset: var(--tabs-trigger-padding-x-lg);
+  }
+
+  [data-slot="tabs"][data-indicator-size="label"][data-orientation="vertical"] {
+    --tabs-indicator-inset: var(--tabs-trigger-line-padding-y);
   }
 
   [data-slot="tabs-list"][data-variant="line"]
@@ -87,9 +164,46 @@
     opacity: 1;
   }
 
+  /* ANT DESIGN `animated.inkBar` (default ON). antd drops its `-ink-bar-animated` class when the
+   * switch is off; the equivalent here is dropping the cross-fade this bar is drawn with. */
+  [data-slot="tabs"][data-animated-ink-bar="false"]
+    [data-slot="tabs-list"][data-variant="line"]
+    [data-slot="tabs-trigger"]::after {
+    transition: none;
+  }
+
+  /* ANT DESIGN `animated.tabPane` (default OFF) — ported from antd
+   * `components/tabs/style/motion.ts`, which is an OPACITY fade and nothing else: the entering
+   * pane goes `opacity: 0 → 1` over `motionDurationSlow`. Upstream animates the LEAVING pane too
+   * by parking it `position: absolute; inset: 0` while it fades out; that half is deliberately not
+   * ported, because this component destroys a hidden panel by default (`destroyOnHidden`, the
+   * opposite default from antd) so there is usually no leaving node left to fade. */
+  @keyframes ui-tabs-pane-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  [data-slot="tabs"][data-animated-tab-pane="true"] [data-slot="tabs-panel"][data-state="active"],
+  [data-slot="tabs"][data-animated-tab-pane="true"]
+    [data-slot="tabs-content"][data-state="active"] {
+    animation: ui-tabs-pane-in var(--duration-base, 250ms)
+      var(--ease-standard, cubic-bezier(0.2, 0, 0, 1));
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]::after {
       transition: none;
+    }
+
+    /* antd's switch has no reduced-motion position; this one does. */
+    [data-slot="tabs"][data-animated-tab-pane="true"] [data-slot="tabs-panel"][data-state="active"],
+    [data-slot="tabs"][data-animated-tab-pane="true"]
+      [data-slot="tabs-content"][data-state="active"] {
+      animation: none;
     }
   }
 
