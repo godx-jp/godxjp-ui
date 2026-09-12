@@ -12,8 +12,11 @@ import {
   shouldSkip,
   writeWorkflowMd,
 } from "./_agent-setup.mjs";
+import { applyReactAriaHiddenSelectPatch } from "./patch-react-aria-hidden-select.mjs";
 
 const root = process.env.INIT_CWD || process.cwd();
+
+applyReactAriaHiddenSelectPatch(root);
 
 const skip = shouldSkip(root);
 if (skip) process.exit(0); // silent: CI / opt-out / self-install / no consumer project
