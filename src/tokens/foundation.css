@@ -596,6 +596,49 @@
   --phi-0: var(--phi-unit);
   --phi-p1: calc(var(--phi-unit) * var(--ratio-phi));
   --phi-p2: calc(var(--phi-p1) * var(--ratio-phi));
+
+  /* MOTION LIVES AT :root, and that is the whole point of this comment.
+   *
+   * This tier used to sit inside `.ui-scale-fixed` — a class the shells put on CHROME BANDS only
+   * (app topbar, centered-shell bar). Every one of its readers is elsewhere: control.css,
+   * card-layout, navigation-layout, shell-layout, alert-layout, layout, motion.css and one
+   * component. Measured on a docs frame before the move: `--duration-fast`, `--ease-standard`,
+   * `--duration-loop` and `--reveal-distance` all resolved to "" at :root, so every declaration
+   * reading them was invalid and dropped — the Tabs ink bar measured `transition-duration: 0s`,
+   * a cross-fade nobody has ever seen. A whole tier, silently inert, in a library that ships
+   * motion in eight stylesheets.
+   */
+  /* Motion — the primitive tier for animation, so enter/transition timing reads a token
+   * instead of a literal 0.5s / cubic-bezier(...) / translateY(10px) (cardinal rule #2).
+   * the reference design keeps motion LOW: short durations, a calm decelerate curve, a small reveal shift.
+   * Consumers honour prefers-reduced-motion at the call site. */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --reveal-distance: 10px;
+  /* One step of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering,
+   * so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay. */
+  --reveal-stagger-step: 60ms;
+
+  /* AMBIENT/LOOPING motion (gh#313) — the cycle member of the motion tier. `--duration-fast|base|
+   * slow` time a TRANSITION (something moves from A to B and stops); a loop needs an INTERVAL, so
+   * every ambient affordance in the product breathes at one rate. `Activity` reads these; the
+   * remaining Activity knobs (geometry / colour) live in tokens/components/activity.css.
+   * NOTE these two are Activity-scoped but live HERE, beside `--reveal-*`, because the motion tier
+   * is where timing belongs and because component-token names must carry a geometry/colour
+   * property word (`check-token-tiers`) — there is none for a duration. */
+  --duration-loop: 1400ms;
+  /* Per-component override (#45): a service tunes its typing rhythm without moving every loop. */
+  --activity-interval: var(--duration-loop);
+  /* Offset between the three `dots` marks — the loop counterpart to `--reveal-stagger-step`,
+   * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
+   * direction with no extra rule. */
+  --activity-stagger-step: 160ms;
+
 }
 
 /* SCALE-FIXED — pin a subtree to the baseline size (--scaling 1) so persistent
@@ -666,36 +709,7 @@
   --space-chrome-gap: var(--space-2);
   --field-label-gap: var(--space-2);
 
-  /* Motion — the primitive tier for animation, so enter/transition timing reads a token
-   * instead of a literal 0.5s / cubic-bezier(...) / translateY(10px) (cardinal rule #2).
-   * the reference design keeps motion LOW: short durations, a calm decelerate curve, a small reveal shift.
-   * Consumers honour prefers-reduced-motion at the call site. */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 500ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-emphasized: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
-  --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
-  --reveal-distance: 10px;
-  /* One step of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering,
-   * so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay. */
-  --reveal-stagger-step: 60ms;
 
-  /* AMBIENT/LOOPING motion (gh#313) — the cycle member of the motion tier. `--duration-fast|base|
-   * slow` time a TRANSITION (something moves from A to B and stops); a loop needs an INTERVAL, so
-   * every ambient affordance in the product breathes at one rate. `Activity` reads these; the
-   * remaining Activity knobs (geometry / colour) live in tokens/components/activity.css.
-   * NOTE these two are Activity-scoped but live HERE, beside `--reveal-*`, because the motion tier
-   * is where timing belongs and because component-token names must carry a geometry/colour
-   * property word (`check-token-tiers`) — there is none for a duration. */
-  --duration-loop: 1400ms;
-  /* Per-component override (#45): a service tunes its typing rhythm without moving every loop. */
-  --activity-interval: var(--duration-loop);
-  /* Offset between the three `dots` marks — the loop counterpart to `--reveal-stagger-step`,
-   * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
-   * direction with no extra rule. */
-  --activity-stagger-step: 160ms;
 }
 
 .dark,
