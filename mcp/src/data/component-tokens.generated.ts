@@ -9,6 +9,41 @@ export interface ComponentToken {
 
 export const COMPONENT_TOKENS: ComponentToken[] = [
   {
+    "name": "--actions-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between actions. Tight on purpose — the strip is a cluster, not a row of page buttons."
+  },
+  {
+    "name": "--actions-padding-block",
+    "value": "var(--space-1)",
+    "description": "Inset of the `filled` / `outlined` forms. `borderless` drops both to zero."
+  },
+  {
+    "name": "--actions-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-radius",
+    "value": "var(--radius)",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-filled-background",
+    "value": "initial",
+    "description": "Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each * documented default resolves at the CALL SITE. * Default filled ground = hsl(var(--muted)) * Default outlined stroke = var(--stroke-hairline) solid hsl(var(--border))"
+  },
+  {
+    "name": "--actions-outlined-border",
+    "value": "initial",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-fade-offset-inline",
+    "value": "var(--space-2)",
+    "description": "`fadeIn` / `fadeInLeft` — the distance the strip travels along the inline axis. * * The DURATION is deliberately not a knob here. Timing belongs to the motion tier, for the same * reason `src/tokens/components/activity.css` records: `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration, and a service * retunes arrival motion once through `--duration-base` rather than per component. The * animation reads that token directly, and drops to nothing under `prefers-reduced-motion`."
+  },
+  {
     "name": "--activity-mark-size",
     "value": "0.25em",
     "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore * `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
