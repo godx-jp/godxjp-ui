@@ -314,9 +314,18 @@ describe("owned rule file drift (godx-jp/id#513)", () => {
       join(cwd, "node_modules", "@godxjp", "ui", "package.json"),
       JSON.stringify({ name: "@godxjp/ui", version: "23.0.0" }),
     );
-    writeFileSync(join(cwd, ".ai", "rules", "godxjp-ui.md"), `<!-- godxjp-ui:version ${stamped} -->\n`);
-    writeFileSync(join(cwd, "resources", "js", "pages", "a.tsx"), "export const A = () => <Text>a</Text>;\n");
-    const result = spawnSync(process.execPath, [script, "--format", "json"], { cwd, encoding: "utf8" });
+    writeFileSync(
+      join(cwd, ".ai", "rules", "godxjp-ui.md"),
+      `<!-- godxjp-ui:version ${stamped} -->\n`,
+    );
+    writeFileSync(
+      join(cwd, "resources", "js", "pages", "a.tsx"),
+      "export const A = () => <Text>a</Text>;\n",
+    );
+    const result = spawnSync(process.execPath, [script, "--format", "json"], {
+      cwd,
+      encoding: "utf8",
+    });
     rmSync(cwd, { recursive: true, force: true });
     return result.stdout;
   }

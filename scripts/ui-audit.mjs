@@ -891,16 +891,47 @@ function staleOwnedRules() {
   const target = join(CWD, ".ai", "rules", "godxjp-ui.md");
   if (!existsSync(target)) return null;
 
-  const stamped = /<!-- godxjp-ui:version ([^\s]+) -->/.exec(readFileSync(target, "utf8"))?.[1];
+  // FOUR states, not two. `!stamped || !installed || stamped === installed` collapsed three very
+  // different situations into one silence, and only ONE of them is genuinely fine:
+  //
+  //   no rule file, consumer never opted into the agent kit  -> silent, and it MUST stay silent.
+  //     Turning this into a finding would make a UI audit into a tool that nags every consumer to
+  //     install an agent kit they did not ask for. (Handled by the existsSync above.)
+  //   rule file present but carrying NO stamp                -> compatibility UNKNOWN, say so.
+  //   installed version unreadable                           -> compatibility UNKNOWN, say so.
+  //   stamp != installed                                     -> stale, the original finding.
+  const contents = readFileSync(target, "utf8");
+  const stamped = /<!-- godxjp-ui:version ([^\s]+) -->/.exec(contents)?.[1];
+
   let installed;
   try {
     installed = JSON.parse(
       readFileSync(join(CWD, "node_modules", "@godxjp", "ui", "package.json"), "utf8"),
     ).version;
   } catch {
-    return null;
+    installed = undefined;
   }
-  if (!stamped || !installed || stamped === installed) return null;
+
+  if (!stamped || !installed) {
+    // A file the package OWNS, whose provenance cannot be established. That is not the same as
+    // "up to date", and reporting it as such is the whole class of bug this function exists for.
+    return {
+      file: ".ai/rules/godxjp-ui.md",
+      line: 1,
+      rule: "owned-rules-unknown",
+      severity: "warn",
+      message:
+        `This file is written by @godxjp/ui, but its version cannot be established ` +
+        `(${!stamped ? "the file carries no `<!-- godxjp-ui:version … -->` stamp" : "the installed package version could not be read"}). ` +
+        `An agent may be reading guidance from a different major. Refresh it with ` +
+        `\`npx @godxjp/ui init-agent\`, or delete the file if this project does not use the agent kit.`,
+      replacement: null,
+      standard: null,
+      snippet: (stamped ?? "(no stamp)") + " vs " + (installed ?? "(package version unreadable)"),
+    };
+  }
+
+  if (stamped === installed) return null;
 
   return {
     file: ".ai/rules/godxjp-ui.md",
@@ -1112,11 +1143,37 @@ const warnings = findings.filter((f) => f.severity === "warn");
 // "✓ No UI-standardization violations found." and exited 0 having read nothing at all.
 // …except under `--changed`, where "this branch touched no .tsx" is a clean run, not a
 // misconfigured path. Failing there would make the gate unusable on every backend-only commit.
-if (filesScanned === 0 && CHANGED) {
-  if (!quiet && !asJson) console.log("✓ ui-audit --changed: no .tsx/.jsx changed on this branch.");
+// "This branch touched no UI file" is a clean run — but ONLY if there is nothing else to say.
+//
+// `staleOwnedRules()` runs before the scan loop and pushes its finding into `findings`, and this
+// branch used to exit 0 regardless: a consumer whose package-owned rules were four majors out of
+// date got "✓ no .tsx/.jsx changed" and a clean exit on any commit that happened not to touch a
+// component. Under `--format json` it was worse — the exit came BEFORE anything was written, so
+// stdout was EMPTY and a CI step reading it could not tell that from a pass.
+//
+// Reproduced: rules stamped 19.6.0 against an installed 23.3.0, one README.md changed →
+// `✓ no .tsx/.jsx changed`, exit 0, empty JSON, while `ui-audit src --format json` on the same
+// tree at the same moment reported `owned-rules-stale`.
+//
+// Same defect as the `.jsx` one this file just fixed, one screen further down: a gate declaring
+// itself clean while holding a finding.
+/** `--changed` legitimately opened no file. NOT the same thing as a misconfigured scan path. */
+const changedNoFiles = CHANGED && filesScanned === 0;
+
+if (changedNoFiles && findings.length === 0) {
+  if (asJson) {
+    // ALWAYS emit a valid document on the JSON path. This branch used to exit before writing
+    // anything, so a CI step parsing stdout got an empty string and a zero exit.
+    process.stdout.write(
+      JSON.stringify({ summary: { errors: 0, warnings: 0 }, findings: [] }, null, 2) + "\n",
+    );
+  } else if (!quiet) {
+    console.log("✓ ui-audit --changed: no .tsx/.jsx changed on this branch.");
+  }
   process.exit(0);
 }
-if (filesScanned === 0) {
+
+if (filesScanned === 0 && !CHANGED) {
   const message =
     `ui-audit scanned 0 files — none of [${SCAN_DIRS.join(", ")}] exists (or all were filtered). ` +
     `Pass the directories to scan, e.g. \`node scripts/ui-audit.mjs src docs\`. ` +
@@ -1131,7 +1188,7 @@ if (filesScanned === 0) {
   process.exitCode = 2;
 }
 
-if (filesScanned === 0) {
+if (filesScanned === 0 && !changedNoFiles) {
   // already reported above
 } else if (asJson) {
   process.stdout.write(
@@ -1161,7 +1218,10 @@ if (filesScanned === 0) {
     console.log(`      ${C.dim}${f.snippet}${C.reset}`);
   }
   console.log(
-    `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset} across ${scannedFiles.join(", ")}.`,
+    `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset}` +
+      (scannedFiles.length > 0
+        ? ` across ${scannedFiles.join(", ")}.`
+        : " — no UI file changed on this branch, but the findings above are not about a file."),
   );
   if (errors.length === 0 && warnings.length === 0) {
     console.log("✓ No UI-standardization violations found.");
@@ -1169,4 +1229,4 @@ if (filesScanned === 0) {
 }
 
 // See the note above --rules: exitCode, so a large JSON report drains fully.
-if (filesScanned > 0) process.exitCode = errors.length > 0 ? 1 : 0;
+if (filesScanned > 0 || changedNoFiles) process.exitCode = errors.length > 0 ? 1 : 0;
