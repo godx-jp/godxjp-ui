@@ -107,6 +107,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nào render lỗi). Ba chỗ đó hôm nay được canh bằng cổng quét nguồn đã đảo chiều ở trên, thứ **cấm
   hẳn** hình dạng lỗi thay vì đo kết quả của nó.
 
+- **Thanh đo độ mạnh mật khẩu là một MARK, và một thang nhị phân có TRACK.** Cổng
+  `check:contrast` đỏ ngay trên route mà bản này vừa thêm, và đỏ **đúng chỗ**:
+  `/isolate/data-entry-password-strength` kéo vào đúng bề mặt mà `check-contrast.mjs` đã giữ ngoài
+  danh sách **kèm số đo**, và 19 phát hiện trùng khít từng con với ghi chú đó — `4 × 1,09 + 10 ×
+  2,18` sáng, `2,95 + 4 × 1,22` tối.
+
+  **Không phải do thay đổi `--border`**, dù đó là nghi phạm hiển nhiên: segment chưa sáng là
+  `--muted` (`244,243,240` sáng / `49,47,43` tối), không phải `--border` (`238,237,236` /
+  `51,50,46`). Đã dựng lại đủ 19 lỗi bằng cách trả cả hai bản sửa về cũ trên cùng đường build tĩnh.
+
+  Hai lỗi khác nhau chung một phần tử:
+
+  1. **Segment SÁNG là một mark.** Không có chữ nào trên nó và **số segment sáng chính là dữ kiện**,
+     nên SC 1.4.11 với tới — mà nó lại sơn bằng tầng TÔ, thứ được chỉnh cho một nhãn trắng nằm TRÊN.
+     `--success` 2,18:1 sáng, `--destructive` 2,95:1 tối. Đúng những con số mà swatch của legend và
+     fill của progress từng mang trước khi chuyển sang `--mark-*`; đây là component thứ ba với cùng
+     câu hỏi. Nay đọc `--mark-*`: **6,27:1** sáng và **4,51:1** tối so với track.
+  2. **Segment CHƯA sáng là TRACK, mà cổng đang đo nó như một mark.** Progress thoát được chuyện này
+     một cách tình cờ: track của nó **chứa** fill, nên `el.children.length` bỏ qua track và
+     `effBg(parent)` của fill chính là track. Meter dạng phân đoạn không có lồng nhau — bốn span
+     ngang hàng — nên từng cái bị đo so với card và những cái chưa sáng bị báo 1,09 / 1,22. Đòi 3:1
+     ở đó nghĩa là phải ship một thanh xám đậm, trong khi progress ship `--secondary`.
+
+     Thứ 1.4.11 đòi là "adjacent color(s)": trạng thái là "2 trong 4 đang sáng", và hai màu người
+     đọc so sánh là **sáng với chưa sáng**. Nên một nhóm anh em mảnh giống hệt nhau mang **đúng
+     HAI** màu nay phát ra **một** bản ghi cho cặp đó. Giới hạn ở hai màu là có chủ ý — một
+     breakdown xếp lớp nhiều màu giữ nguyên hành vi cũ, chứ không bị áp quyết định này một cách vô
+     tình.
+
+     Và **không có heuristic đa số**: bản đầu của luật gọi màu chiếm đa số là track, thứ đảo ngược
+     ngay khi meter sáng 3/4 — lúc đó nó sẽ bỏ qua đúng những segment mang dữ kiện. Tỉ số là đối
+     xứng, nên cặp ấy không cần ai thắng.
+
+  Đo đủ ba trạng thái: cả hai bản sửa → **sạch, 48 text node** ở cả hai chủ đề · chỉ luật, palette
+  trả về tầng TÔ → **10 × 2,18 đỏ** (tức mark vẫn đang được đo) · không bản sửa nào → **đúng 19 lỗi
+  ban đầu**. Đã chạy trọn 47 route tại máy trước khi đẩy thay vì đốt thêm một vòng CI đỏ: sạch hết,
+  gồm cả `data-display-legend` và `data-display-progress` — hai route có nhóm slice mà luật mới cũng
+  chạm tới.
+
 - **`ui-audit`: luật `card-table-needs-flush` bỏ sót `SkeletonTable` (#611).** Đã nằm trong 23.4.4;
   nhắc lại ở đây vì nó cùng một hình dạng với hai mục trên — một cổng xanh về đúng thứ nó chưa bao
   giờ soi tới.
