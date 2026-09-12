@@ -259,6 +259,258 @@
         }
       ]
     },
+    "Actions": {
+      "group": "general",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "fadeIn",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "fadeInLeft",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly ActionsItemsProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "((info: { item: ActionsItemsProp; key: string; keyPath: string[]; domEvent: React.MouseEvent<HTMLElement>; }) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "ActionsVariantProp | undefined",
+          "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
+    "ActionsCopy": {
+      "group": "general",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onCopy",
+          "origin": "owned",
+          "required": false,
+          "type": "((text: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "text",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
+    "ActionsFeedback": {
+      "group": "general",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "dislikeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "likeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: ActionsFeedbackValueProp) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "ActionsFeedbackValueProp | undefined",
+          "values": ["default", "like", "dislike"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
+    "ActionsItem": {
+      "group": "general",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "defaultIcon",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "onClick",
+          "origin": "owned",
+          "required": false,
+          "type": "OnClickProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "runningIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "ActionsStatusProp | undefined",
+          "values": ["default", "error", "loading", "running"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
     "Activity": {
       "group": "general",
       "props": [
@@ -2957,7 +3209,7 @@
           "name": "opts",
           "origin": "owned",
           "required": false,
-          "type": "Partial<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
+          "type": "Partial<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Options\").OptionsType> | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },
@@ -2965,7 +3217,7 @@
           "name": "plugins",
           "origin": "owned",
           "required": false,
-          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../../../Users/satoshi01/Herd/godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
+          "type": "import(\".pnpm/embla-carousel@8.6.0/node_modules/embla-carousel\").CreatePluginType<import(\"../../../../godxjp-ui/node_modules/.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel/esm/components/Plugins\").LoosePluginType, {}>[] | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/carousel.tsx"]
         },

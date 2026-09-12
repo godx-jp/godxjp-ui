@@ -12,6 +12,7 @@ import type {
   DisabledProp,
   FontWeightProp,
   HeadingLevelProp,
+  IdProp,
   LabelProp,
   OnClickProp,
   OnOpenChangeProp,
@@ -418,4 +419,145 @@ export type FloatButtonBackTopProp = Omit<FloatButtonProp, "href" | "target"> & 
   showProgress?: boolean;
   /** Fires after the scroll is started. */
   onClick?: React.MouseEventHandler<HTMLElement>;
+};
+
+/**
+ * Ant Design X `Actions variant`. Governs the strip's chrome, not the buttons' intent:
+ * `borderless` (the default) is a bare row of ghost buttons, `filled` gives the strip a tinted
+ * ground, `outlined` a hairline boundary.
+ * @see Actions
+ */
+export type ActionsVariantProp = "borderless" | "filled" | "outlined";
+
+/**
+ * Ant Design X `ACTIONS_ITEM_STATUS` — the four states one action can be in while it runs.
+ * @see ActionsItem
+ */
+export type ActionsStatusProp = "default" | "running" | "loading" | "error";
+
+/**
+ * Ant Design X `ActionsFeedback` value. `default` is "no opinion recorded", not "absent".
+ * @see ActionsFeedback
+ */
+export type ActionsFeedbackValueProp = "like" | "dislike" | "default";
+
+/** @see Actions — one action in the strip. Ant Design X `ItemType`. */
+export type ActionsItemsProp = {
+  /** Identity handed back to `onClick`. Ant Design X `key`. */
+  key: string;
+  /**
+   * What the action is called. It is the button's ACCESSIBLE NAME and its tooltip, not just the
+   * tooltip — Ant X puts it in a `Tooltip` only, so its icon-only `<div onClick>` reaches a screen
+   * reader as nothing at all. A plain string, because `aria-label` cannot carry a node.
+   */
+  label?: string;
+  /** The glyph. Ant Design X `icon`. */
+  icon?: React.ReactNode;
+  /** Per-item handler. When present it WINS over the strip's `onClick`. Ant Design X `onItemClick`. */
+  onItemClick?: (item: ActionsItemsProp) => void;
+  /** Paint the action as irreversible. Ant Design X `danger`. */
+  danger?: boolean;
+  /** Nest the action into a menu behind one trigger. Ant Design X `subItems`. */
+  subItems?: readonly Omit<ActionsItemsProp, "subItems" | "actionRender">[];
+  /** Replace the rendered action entirely. Ant Design X `actionRender`. */
+  actionRender?: ((item: ActionsItemsProp) => React.ReactNode) | React.ReactNode;
+};
+
+/**
+ * @see Actions — the strip of actions under an assistant message (Ant Design X `Actions`): copy,
+ * retry, like, and whatever else the turn offers.
+ *
+ * Ant X renders each action as a `<div onClick>` with the label in a `Tooltip`
+ * (`es/actions/Item.js`), so the strip is unreachable by keyboard and nameless to a screen reader.
+ * Here every action is a real `Button` carrying its `label` as the accessible name, and the strip
+ * is the WAI-ARIA APG **Toolbar**: one tab stop, arrows between the actions.
+ */
+export type ActionsProp = {
+  /** The actions, in order. Ant Design X `items`. */
+  items: readonly ActionsItemsProp[];
+  /**
+   * Fires for any action without its own `onItemClick`. `keyPath` is the path from the clicked
+   * action up to the strip, exactly as in Ant X (a sub-item gives `[subKey, parentKey]`).
+   * Ant Design X `onClick`.
+   */
+  onClick?: (info: {
+    item: ActionsItemsProp;
+    key: string;
+    keyPath: string[];
+    domEvent: React.MouseEvent<HTMLElement>;
+  }) => void;
+  /** Ant Design X `variant`. Default `borderless`. */
+  variant?: ActionsVariantProp;
+  /** Ant Design X `fadeIn` — the strip fades in on mount. Honours `prefers-reduced-motion`. */
+  fadeIn?: boolean;
+  /** Ant Design X `fadeInLeft` — the same fade, arriving along the inline axis. */
+  fadeInLeft?: boolean;
+  /**
+   * Accessible name of the toolbar — a plain STRING (it lands on `aria-label`). Ant X has no
+   * equivalent because its strip has no role to name; a localized default applies when omitted.
+   */
+  label?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ActionsItem — one status-aware action, usable on its own (Ant Design X `Actions.Item`).
+ *
+ * `status` swaps the glyph: `loading` and `error` bring their own, `running` uses `runningIcon`,
+ * and everything else uses `defaultIcon` — Ant X's exact table, from `es/actions/ActionsItem.js`.
+ */
+export type ActionsItemProp = {
+  /** Ant Design X `status`. Default `default`. */
+  status?: ActionsStatusProp;
+  /** The resting glyph. Ant Design X `defaultIcon`. */
+  defaultIcon: React.ReactNode;
+  /** The glyph while `status="running"`. Ant Design X `runningIcon`. */
+  runningIcon?: React.ReactNode;
+  /** Accessible name AND tooltip. Ant Design X `label` (tooltip only there). */
+  label?: string;
+  onClick?: OnClickProp;
+  disabled?: DisabledProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ActionsCopy — copy this message to the clipboard (Ant Design X `Actions.Copy`).
+ *
+ * Ant X delegates to antd's `Typography copyable`, which swaps the glyph to a tick for 3s. That
+ * feedback is reproduced, and the state change is ANNOUNCED as well as painted — a tick that only
+ * appears is invisible to a screen reader (WCAG 1.4.1 / 4.1.3).
+ */
+export type ActionsCopyProp = {
+  /** What lands on the clipboard. Ant Design X `text`. */
+  text?: string;
+  /** The resting glyph. Ant Design X `icon`. */
+  icon?: React.ReactNode;
+  /** Accessible name AND tooltip. Localized default otherwise. */
+  label?: string;
+  /** Fires after a successful write, so the caller can log or toast. */
+  onCopy?: (text: string) => void;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ActionsFeedback — the like / dislike pair (Ant Design X `Actions.Feedback`).
+ *
+ * Controlled through Ant X's own field names, `value` and `onChange`, because that is the API the
+ * issue asks to port. Clicking the recorded opinion again clears it back to `default`, as in Ant X.
+ */
+export type ActionsFeedbackProp = {
+  /** Ant Design X `value`. Default `default`. */
+  value?: ActionsFeedbackValueProp;
+  /** Ant Design X `onChange`. */
+  onChange?: (value: ActionsFeedbackValueProp) => void;
+  /** Accessible name of the pair's group. Localized default otherwise. */
+  label?: string;
+  /** Accessible names of the two buttons. Localized defaults otherwise. */
+  likeLabel?: string;
+  dislikeLabel?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
 };

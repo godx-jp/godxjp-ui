@@ -1902,3 +1902,86 @@
     column-gap: var(--space-inline-xl);
   }
 }
+
+@layer components {
+  /* ACTIONS — the strip under an assistant message (Ant Design X `Actions`).
+   *
+   * The strip owns no control height: every action is a `Button` at its own `size="icon-sm"` tier,
+   * so the row follows density with the rest of the page. What the strip owns is the gap, the two
+   * bounded variants' chrome, and the optional arrival motion. */
+  .ui-actions {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--actions-gap);
+    border-radius: var(--actions-radius);
+  }
+
+  .ui-actions[data-variant="filled"],
+  .ui-actions[data-variant="outlined"] {
+    padding-block: var(--actions-padding-block);
+    padding-inline: var(--actions-padding-inline);
+  }
+
+  .ui-actions[data-variant="filled"] {
+    background: var(--actions-filled-background, hsl(var(--muted)));
+  }
+
+  .ui-actions[data-variant="outlined"] {
+    border: var(--actions-outlined-border, var(--stroke-hairline) solid hsl(var(--border)));
+  }
+
+  .ui-actions-feedback {
+    display: flex;
+    align-items: center;
+    gap: var(--actions-gap);
+  }
+
+  /* The recorded opinion is carried by `aria-pressed` first; this is its paint. Both halves are
+   * required — `aria-pressed` alone is invisible, a tint alone is WCAG 1.4.1. */
+  .ui-actions-feedback [data-pressed] {
+    color: hsl(var(--primary));
+  }
+
+  /* `fadeIn` / `fadeInLeft`. The inline offset is a LOGICAL translation, so in an RTL strip the
+   * arrival comes from the reading-start edge rather than always from the left. */
+  @keyframes ui-actions-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes ui-actions-fade-in-inline {
+    from {
+      opacity: 0;
+      translate: calc(-1 * var(--actions-fade-offset-inline)) 0;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  [dir="rtl"] .ui-actions[data-fade-in-inline] {
+    --actions-fade-offset-inline: calc(-1 * var(--space-2));
+  }
+
+  .ui-actions[data-fade-in] {
+    animation: ui-actions-fade-in var(--duration-base) var(--ease-standard, ease) both;
+  }
+
+  .ui-actions[data-fade-in-inline] {
+    animation: ui-actions-fade-in-inline var(--duration-base) var(--ease-standard, ease) both;
+  }
+
+  /* A decorative arrival is exactly what SC 2.3.3 lets a reader switch off. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-actions[data-fade-in],
+    .ui-actions[data-fade-in-inline] {
+      animation: none;
+    }
+  }
+}

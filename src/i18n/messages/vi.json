@@ -587,5 +587,20 @@
         "other": "{count} tin nhắn mới"
       }
     }
+  },
+  "general": {
+    "actions": {
+      "label": "Thao tác với tin nhắn",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "feedback": "Câu trả lời này có hữu ích không",
+      "like": "Hữu ích",
+      "dislike": "Không hữu ích",
+      "status": {
+        "running": "đang chạy",
+        "loading": "đang tải",
+        "error": "thất bại"
+      }
+    }
   }
 }

@@ -15814,6 +15814,93 @@ const messages: ChatMessageProp[] = [
     storyPath: "navigation/Conversations.stories.tsx",
     rules: [2, 6, 23, 44, 45],
   },
+  {
+    name: "Actions",
+    group: "general",
+    tagline:
+      "The strip of actions under an assistant message (Ant Design X Actions): copy, retry, like, and a menu for the rest \u2014 a WAI-ARIA toolbar with ONE tab stop, where Ant X's own strip is <div onClick> with no role and no accessible name.",
+    subParts: ["ActionsItem", "ActionsCopy", "ActionsFeedback"],
+    props: [
+      {
+        name: "items",
+        type: "ActionsItemsProp[]",
+        required: true,
+        description:
+          "The actions: { key, label?, icon?, onItemClick?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
+      },
+      {
+        name: "onClick",
+        type: "(info: { item, key, keyPath, domEvent }) => void",
+        description:
+          "Fires for any action WITHOUT its own onItemClick \u2014 a per-item handler wins and this does not also fire, exactly as in Ant Design X. A sub-item reports keyPath [subKey, parentKey].",
+      },
+      {
+        name: "variant",
+        type: '"borderless" | "filled" | "outlined"',
+        defaultValue: '"borderless"',
+        description:
+          "Chrome of the STRIP, not the intent of the buttons (that is `danger` per item).",
+      },
+      {
+        name: "fadeIn",
+        type: "boolean",
+        description: "The strip fades in on mount. Zeroed under prefers-reduced-motion.",
+      },
+      {
+        name: "fadeInLeft",
+        type: "boolean",
+        description:
+          "The same fade, arriving along the LOGICAL inline axis (so it mirrors under dir=rtl).",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name of the toolbar (a plain string). Localized default otherwise.",
+      },
+      { name: "id", type: "string", description: "DOM id of the strip." },
+    ],
+    usage: [
+      "DO give every action a `label`. It becomes the accessible name and the tooltip; without one the key is used, which is better than nameless but worse than a sentence.",
+      "DO use `subItems` once the strip passes about five actions \u2014 it folds them behind one trigger instead of widening the row under every message.",
+      "DO reach for ActionsCopy and ActionsFeedback instead of hand-rolling copy and thumbs: ActionsCopy announces the copy through a live region (a tick alone is invisible to a screen reader), and ActionsFeedback keeps BOTH buttons on screen with aria-pressed rather than hiding the one you did not pick.",
+      "DON'T put a form control in the strip. It is a toolbar of buttons with one tab stop; a field inside would be unreachable by Tab.",
+      "DON'T expect `dropdownProps`, `triggerSubMenuAction`, `styles` or `classNames` from Ant Design X \u2014 they are not ported; the strip is retuned through the --actions-* tokens.",
+    ],
+    useCases: [
+      "Under an assistant answer: copy, regenerate, like/dislike, and a menu with share and report.",
+      'Under a streaming answer: an ActionsItem with status="running" while the audio plays back, error when it fails.',
+      "In a message hover strip inside ChatBubbleList.",
+    ],
+    related: [
+      "Toolbar / FilterBar \u2014 the list-page filter strip. Actions is the per-message action cluster, not a page-level control bar.",
+      "DropdownMenu \u2014 what `subItems` renders; compose it directly when the menu is not one action in a strip.",
+      "ChatBubble \u2014 the message the strip belongs to.",
+      "CredentialReveal \u2014 a copy affordance for a SECRET field; ActionsCopy copies message text.",
+    ],
+    example: [
+      'import { Actions, ActionsCopy, ActionsFeedback } from "@godxjp/ui/general";',
+      'import { RefreshCw, Share2 } from "lucide-react";',
+      "",
+      "<Actions",
+      '  label="\u56DE\u7B54\u306E\u64CD\u4F5C"',
+      "  items={[",
+      '    { key: "retry", label: "\u3084\u308A\u76F4\u3059", icon: <RefreshCw />, onItemClick: () => regenerate() },',
+      "    {",
+      '      key: "more",',
+      '      label: "\u305D\u306E\u4ED6",',
+      '      subItems: [{ key: "share", label: "\u5171\u6709", icon: <Share2 /> }],',
+      "    },",
+      '    { key: "copy", actionRender: <ActionsCopy text={answer} /> },',
+      '    { key: "feedback", actionRender: <ActionsFeedback value={vote} onChange={setVote} /> },',
+      "  ]}",
+      "  onClick={({ key }) => run(key)}",
+      "/>",
+    ].join("\n"),
+    docPath: "general/actions.tsx",
+    storyPath: "general/Actions.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {
