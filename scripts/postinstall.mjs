@@ -22,7 +22,7 @@ try {
   const r = ensureMcpJson(root);
   // A refusal is a full sentence, not one of the three status words — say it on its own line
   // rather than folding it into "MCP in .mcp.json (…)", where it would read as a success.
-  if (r.startsWith("left untouched")) {
+  if (r.startsWith("left untouched") || r.startsWith("present (custom godx-ui")) {
     console.log(`\n  @godxjp/ui → .mcp.json ${r}\n`);
   }
   // The mandate is plain text the agent reads every turn (CLAUDE.md block + workflow file). It

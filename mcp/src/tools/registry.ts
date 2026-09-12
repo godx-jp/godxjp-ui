@@ -566,6 +566,44 @@ function draftBugReport(args: Record<string, unknown>): string {
  * The catalog is version-pinned to the library: `pkg.version` is the release train and
  * `pkg.godxUiCompatibility` the minor-pinned range (e.g. "16.10.x") it faithfully describes.
  */
+function parseUiVersion(s: string) {
+  const m = /^(\d+)\.(\d+)\.(\d+)/.exec(s.trim());
+  return m ? { major: m[1], minor: m[2] } : null;
+}
+
+function catalogRangeMinor() {
+  const range = pkg.godxUiCompatibility as string | undefined;
+  return range ? /^(\d+)\.(\d+)\.x$/.exec(range) : null;
+}
+
+/** True when `installed` is in this catalog's godxUiCompatibility minor range. */
+export function uiVersionMatchesCatalog(installed: string): boolean {
+  const iv = parseUiVersion(installed);
+  const rangeMinor = catalogRangeMinor();
+  const range = pkg.godxUiCompatibility as string | undefined;
+  if (!iv || (range && !rangeMinor)) return false;
+  if (rangeMinor) return iv.major === rangeMinor[1] && iv.minor === rangeMinor[2];
+  return installed.trim() === pkg.version;
+}
+
+function installedUiFromLauncher(): string | undefined {
+  const v = process.env.GODX_UI_VERSION?.trim();
+  return v || undefined;
+}
+
+function catalogWithheldDiagnostic(
+  installed: string,
+  tool: "get_component" | "get_pattern",
+): string {
+  const verdict = checkCompatibility(installed);
+  return (
+    verdict +
+    `\n\n⛔ **Catalog withheld for \`${tool}\`** — props, examples, and pattern code are not ` +
+    `returned when the installed @godxjp/ui version does not match this MCP catalog. Align ` +
+    `versions (see above), restart the MCP, then retry.\n`
+  );
+}
+
 function checkCompatibility(installed?: string): string {
   const catalog = pkg.version;
   const range = pkg.godxUiCompatibility as string | undefined;
@@ -584,12 +622,9 @@ function checkCompatibility(installed?: string): string {
     );
   }
 
-  const parse = (s: string) => {
-    const m = /^(\d+)\.(\d+)\.(\d+)/.exec(s);
-    return m ? { major: m[1], minor: m[2] } : null;
-  };
-  const rangeMinor = range ? /^(\d+)\.(\d+)\.x$/.exec(range) : null;
-  const iv = parse(v);
+  const parse = (s: string) => parseUiVersion(s);
+  const rangeMinor = catalogRangeMinor();
+  const iv = v ? parse(v) : null;
 
   if (!iv || (range && !rangeMinor)) {
     return (
@@ -599,9 +634,7 @@ function checkCompatibility(installed?: string): string {
     );
   }
 
-  const matches = rangeMinor
-    ? iv.major === rangeMinor[1] && iv.minor === rangeMinor[2]
-    : v === catalog;
+  const matches = uiVersionMatchesCatalog(v);
 
   if (matches) {
     return (
@@ -821,6 +854,10 @@ function componentTokensFor(name: string) {
 }
 
 function getComponent(name: string, verbose = false): string {
+  const installed = installedUiFromLauncher();
+  if (installed && !uiVersionMatchesCatalog(installed)) {
+    return catalogWithheldDiagnostic(installed, "get_component");
+  }
   const c = findComponent(name);
   if (!c) {
     // A public export with no entry of its own is DOCUMENTED, not missing — say which entry has
@@ -976,6 +1013,10 @@ function getFrameCoverage(name?: string): string {
 }
 
 function getPattern(name: string): string {
+  const installed = installedUiFromLauncher();
+  if (installed && !uiVersionMatchesCatalog(installed)) {
+    return catalogWithheldDiagnostic(installed, "get_pattern");
+  }
   const p = findPattern(name);
   if (!p) {
     const candidates = searchPatterns(name);
