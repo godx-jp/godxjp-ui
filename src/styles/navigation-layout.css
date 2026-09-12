@@ -89,9 +89,42 @@
    *
    * `align` defaults to `center`, which is upstream's default too. With the default inset of 0px
    * the bar still spans the whole trigger, so nothing moves until `size` shortens it. */
+  /* THE BAR SITS ON THE HAIRLINE, and the second term is what puts it there.
+   *
+   * The horizontal line strip carries block padding it did not ask for: the focus ring reaches
+   * outside the trigger, the strip clips its block axis (`overflow-y: hidden` beside
+   * `overflow-x: auto`), so the ring's reach has to be paid for in layout (gh#376). The hairline
+   * is the strip's `border-b`, drawn at the BORDER box — below that padding. So the active bar,
+   * anchored to the trigger, ended up floating above the hairline with a gap, and the strip read
+   * as TWO lines: measured in Chromium on all 13 line strips of the tabs page, the bar's bottom
+   * edge sat exactly 4px above the rail (3px block padding + the 1px border).
+   *
+   * antd has one line: its ink bar lives on the NAV at `bottom: 0`, directly over
+   * `.ant-tabs-nav::before`, so the blue segment covers the grey hairline. It can afford that
+   * because antd's tab focus ring is an INSET outline (`genFocusOutline(token, -3)`) and needs no
+   * headroom at all.
+   *
+   * Adding the strip's own block padding back closes the gap to 0 — the bar's bottom edge now
+   * meets the hairline. It is written as the SAME expression the list's `py-` is built from, so
+   * the two cannot drift; if that padding changes, this follows. It stops at the padding-box edge
+   * on purpose: one pixel further and the bar is outside the scrollport, which is the clip that
+   * gh#376 was about. The residual difference from antd, stated rather than hidden: antd's bar
+   * COVERS its hairline, ours sits directly on top of it, so the active segment is 3px of ink
+   * where antd's is 2px.
+   *
+   * `--tabs-indicator-offset` stays the consumer's knob and is added on top, not replaced. */
   [data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]
     [data-slot="tabs-trigger"]::after {
-    inset-block-end: calc(-1 * var(--tabs-indicator-offset));
+    inset-block-end: calc(
+      -1 *
+        (
+          var(--tabs-indicator-offset) + var(--tabs-list-line-space-inset) +
+            var(
+              --tabs-list-focus-ring-space-inset,
+              calc(var(--focus-ring-width) + var(--focus-ring-glow-width))
+            )
+        )
+    );
     block-size: var(--tabs-indicator-size);
     inline-size: calc(100% - 2 * var(--tabs-indicator-inset));
     inset-inline-start: var(--tabs-indicator-inset);
@@ -295,6 +328,19 @@
     box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width)) 0 hsl(var(--border));
   }
 
+  /* …and for `placement="bottom"` it is the BLOCK-START edge, because the panel is above the
+   * strip. Measured before this rule: with `tabPlacement="bottom"` the rail still ran along the
+   * bottom, the active face still merged its bottom border into nothing, and the radius was still
+   * on the top corners — the whole card face was upside down, facing away from the panel it is
+   * supposed to open into. antd states it as two explicit blocks (`&-top { -tab-active {
+   * borderBottomColor } }` / `&-bottom { -tab-active { borderTopColor } }`); this is the rail half
+   * of the same statement, and `cardFaceClassName` is the border-and-radius half. */
+  [data-slot="tabs"][data-variant="card"][data-placement="bottom"] [data-slot="tabs-list"],
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="bottom"]
+    [data-slot="tabs-list"] {
+    box-shadow: inset 0 var(--tabs-card-rail-border-width) 0 hsl(var(--border));
+  }
+
   /* EDITABLE-CARD. The × is a pointer shortcut inside the tab, not a focusable control — see the
    * note in tabs.tsx for the axe measurement that decided that. It still needs a real hit box. */
   .ui-tabs-tab-remove {
@@ -316,7 +362,15 @@
     color: hsl(var(--accent-foreground));
   }
 
-  .ui-tabs-tab-remove-icon {
+  /* SIZED FROM THE WRAPPER, not from a class on the default glyph. `.ui-tabs-tab-remove-icon`
+   * only ever lands on the × this component renders itself, so a consumer passing `closeIcon`
+   * (antd `removeIcon`) escaped the contract entirely: measured in Chromium, the default × is
+   * 12px (`--tabs-tab-remove-icon-size`, 0.75rem) and `closeIcon={<Trash2 />}` rendered at
+   * **24px** — lucide's own default, exactly 2x the tab's own glyph, in a 16px-tall tab. antd
+   * has no such hole because its remove button sizes its icon by `font-size`, which any
+   * `removeIcon` inherits. Selecting the CHILD closes it for every icon anyone passes. */
+  .ui-tabs-tab-remove-icon,
+  .ui-tabs-tab-remove > :is(svg, img) {
     inline-size: var(--tabs-tab-remove-icon-size);
     block-size: var(--tabs-tab-remove-icon-size);
   }

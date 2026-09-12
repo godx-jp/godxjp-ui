@@ -385,6 +385,30 @@ export function Tabs({
   // step it replaces instead of stacking two values on one property.
   const sizeTriggerClassName = triggerSizeClassName(size);
 
+  /**
+   * The CARD face, per placement — antd's `genCardStyle`, ported whole. Upstream rounds the two
+   * corners AWAY from the panel and repaints the edge FACING the panel in the surface colour, so
+   * the active tab opens into the body instead of closing itself off:
+   *
+   *   &-top    { -tab { borderRadius: R R 0 0 }  -tab-active { borderBottomColor: colorBgContainer } }
+   *   &-bottom { -tab { borderRadius: 0 0 R R }  -tab-active { borderTopColor:    colorBgContainer } }
+   *   &-left   { -tab { borderRadius: R 0 0 R }  -tab-active { borderRightColor:  colorBgContainer } }
+   *   &-right  { -tab { borderRadius: 0 R R 0 }  -tab-active { borderLeftColor:   colorBgContainer } }
+   *
+   * antd keeps those four PHYSICAL (`_skip_check_: true`) and mirrors them in a second RTL sheet.
+   * `start`/`end` here are logical already, so they are written with logical utilities and need no
+   * mirror. Only `top` was ever implemented: `bottom` shipped with the radius and the merged edge
+   * both still on the top/bottom pair they have for `top`, i.e. upside down.
+   */
+  const CARD_FACE: Record<TabsPlacementProp, string> = {
+    top: "rounded-[var(--tabs-card-radius)_var(--tabs-card-radius)_0_0] data-[state=active]:border-b-background",
+    bottom:
+      "rounded-[0_0_var(--tabs-card-radius)_var(--tabs-card-radius)] data-[state=active]:border-t-background",
+    start:
+      "rounded-s-[var(--tabs-card-radius)] rounded-e-none data-[state=active]:border-e-background",
+    end: "rounded-e-[var(--tabs-card-radius)] rounded-s-none data-[state=active]:border-s-background",
+  };
+
   const list = items ? (
     <TabsList
       ref={listRef}
@@ -482,12 +506,22 @@ export function Tabs({
               // pixel and `justify-content` has nothing left to centre — measured, the leading and
               // trailing gaps were both 0px with `centered` on and off.
               centered && "flex-none",
-              // CARD face: a real boundary on every side, rounded on the leading block edge only.
-              // The ACTIVE face's block-end edge is the SURFACE colour, never `transparent`: the
-              // rail is an inset shadow at the strip's padding-box edge, so a see-through border
-              // would let that 1px of rail run straight across the tab it is joined to.
+              // The merged edge is the SURFACE colour, never `transparent`: the rail is an inset
+              // shadow at the strip's padding-box edge, so a see-through border would let that 1px
+              // of rail run straight across the tab it is joined to.
+              // CARD face: a real boundary on every side, opened toward the panel by
+              // `CARD_FACE`. `flex-none` is antd's geometry, not a preference — its
+              // `nav-list` is a plain `display: flex` with no `flex-grow` on the tab, so a
+              // card tab is CONTENT-WIDTH. The base trigger is `flex-1`, which made every
+              // card tab stretch to an equal share of the strip: measured, three tabs in a
+              // 942px strip came out 311px each for labels needing ~70px, and with
+              // `justify-center` the label and its × floated in the middle of that box —
+              // the × ended up 90px from the tab's own trailing edge (179px on a two-tab
+              // strip). antd's is 8px away. This is also why the face read as a free-standing
+              // bordered box rather than a tab.
               card &&
-                "data-[state=active]:border-b-background rounded-[var(--tabs-card-radius)_var(--tabs-card-radius)_0_0] border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))]",
+                "flex-none border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))]",
+              card && CARD_FACE[placement],
             )}
           >
             {item.icon ? (
@@ -808,7 +842,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // The line indicator lives in src/styles/navigation-layout.css so it reads --tabs-indicator-*.
           // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
           // border, focused is the 2px ring plus its halo outside it.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
           // The tier the root was given. Without this the compound form ignored `size` outright.
           triggerSizeClassName(size),
           className,

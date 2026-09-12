@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Trash2 } from "lucide-react";
+import { CircleX } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
@@ -547,7 +547,7 @@ export default function Demo() {
                 id="antd-remove-icon"
                 variant="editable-card"
                 defaultValue="je-0042"
-                closeIcon={<Trash2 aria-hidden="true" />}
+                closeIcon={<CircleX aria-hidden="true" />}
                 onEdit={() => undefined}
                 items={[
                   {

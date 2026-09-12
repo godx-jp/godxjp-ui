@@ -78,7 +78,7 @@ describe("Tabs line variant — no active ring (gh#248)", () => {
       const isSelectedStateRing = utility.includes("data-[state=active]");
       if (!isSelectedStateRing) continue;
       expect(
-        utility.startsWith("group-data-[variant=default]/tabs-list:"),
+        utility.includes("group-data-[variant=default]/tabs-list:"),
         `selected-state ring utility "${utility}" must be scoped to the default/card list`,
       ).toBe(true);
     }
@@ -100,8 +100,17 @@ describe("Tabs line variant — no active ring (gh#248)", () => {
         /(^|:)border-b-[1-9]/,
       );
       if (/(^|:)border-primary/.test(utility)) {
+        // `includes`, not `startsWith`: the guard is the SCOPE, and the scope got tighter. This
+        // utility now also requires the ROOT to be `default`
+        // (`group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:…`) because
+        // the card variants forward `data-variant="default"` on the LIST on purpose, so a
+        // list-only guard leaked the pill's `border-primary/25` onto every active CARD tab —
+        // measured in Chromium, the active card face was painting all four borders in
+        // `oklab(0.536747 -0.0539504 -0.134581 / 0.25)`, a blue, including the edge that is
+        // supposed to merge into the panel. A `startsWith` check called that tightening a
+        // violation.
         expect(
-          utility.startsWith("group-data-[variant=default]/tabs-list:"),
+          utility.includes("group-data-[variant=default]/tabs-list:"),
           `selected-state border "${utility}" must be scoped to the default/card list`,
         ).toBe(true);
       }
@@ -187,9 +196,26 @@ describe("Tabs line indicator — token-owned (gh#248)", () => {
   });
 
   it("positions the bar with LOGICAL insets so the vertical rail flips under dir=rtl", () => {
-    expect(navigationCss).toContain("inset-block-end: calc(-1 * var(--tabs-indicator-offset));");
+    // ASSERTS THE PROPERTY AND THE KNOB, not one literal expression. This used to pin the exact
+    // string `inset-block-end: calc(-1 * var(--tabs-indicator-offset));`, which made it a test of
+    // the VALUE rather than of the invariant in its own title — and the value had to change: the
+    // horizontal bar was floating 4px above the strip's hairline (measured, all 13 line strips on
+    // the tabs page), because the strip's block padding for the focus ring sits between the two.
+    // The horizontal inset now adds that padding back. What must not change is that both axes
+    // position the bar LOGICALLY, and that the consumer knob still participates in both.
+    expect(navigationCss).toMatch(/inset-block-end:\s*calc\(\s*-1 \*/);
     expect(navigationCss).toContain("inset-inline-end: calc(-1 * var(--tabs-indicator-offset));");
     expect(navigationCss).not.toMatch(/\[data-slot="tabs-trigger"\]::after[^}]*\bright:/);
+
+    // Both axes keep reading the knob.
+    for (const axis of ["horizontal", "vertical"] as const) {
+      const start = navigationCss.indexOf(
+        `[data-slot="tabs-list"][data-variant="line"][data-orientation="${axis}"]`,
+      );
+      expect(start, `no line rule for ${axis}`).toBeGreaterThan(-1);
+      const rule = navigationCss.slice(start, navigationCss.indexOf("\n  }", start));
+      expect(rule, `${axis} drops --tabs-indicator-offset`).toContain("--tabs-indicator-offset");
+    }
   });
 
   it("only shows the bar for the ACTIVE trigger of a line list", () => {
