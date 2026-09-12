@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Cả tầng motion chưa từng có giá trị ở `:root`.** `--duration-*`, `--ease-*`, `--reveal-*`,
+  `--duration-loop`, `--activity-*` được khai báo **chỉ bên trong `.ui-scale-fixed`** — một class mà
+  các shell chỉ gắn lên dải chrome (topbar của AppShell, thanh của CenteredShell). Mọi nơi đọc chúng
+  thì nằm chỗ khác: `control.css`, `card-layout`, `navigation-layout`, `shell-layout`,
+  `alert-layout`, `layout`, `motion.css` và một component.
+
+  Đo trên một frame docs trước bản sửa: `getPropertyValue("--duration-fast")` ở `:root` trả về
+  chuỗi **rỗng**, nên mọi khai báo đọc token ấy là khai báo không hợp lệ và bị trình duyệt bỏ. Các
+  dấu của `Activity` đo được `animation-duration: 0s` — hiệu ứng chưa từng chạy lần nào. Sau khi
+  chuyển tầng về `:root`: token phân giải đúng (`.15s`, `1.4s`, `10px`) và dấu `Activity` chạy
+  `ui-activity-bounce` ở **1.4s**.
+
+  Test ghim bằng văn bản CSS, vì khiếm khuyết nằm ở CHỖ KHAI BÁO và jsdom không phân giải cascade
+  của custom property. Đột biến: đặt lại một token vào `.ui-scale-fixed` → đỏ.
+
 ### Added — `Card` khép ba khoảng trống thật so với Ant Design 6
 
 Đọc thẳng `components/card/Card.tsx` và `components/card/style/index.ts` của antd (MIT) rồi port
