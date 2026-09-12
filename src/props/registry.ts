@@ -3971,6 +3971,38 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  ThoughtChainStatusProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["StatusProp"],
+  },
+  ThoughtChainLineProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["OrientationProp"],
+  },
+  ThoughtChainVariantProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ControlVariantProp"],
+  },
+  ThoughtChainItemsProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "FooterProp", "StatusProp"],
+  },
+  ThoughtChainProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "LabelProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
   ActionsCopyProp: {
     group: "general",
     file: "components/general.prop.ts",
@@ -3980,6 +4012,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "general",
     file: "components/general.prop.ts",
     vocabulary: ["ValueProp", "OnChangeProp", "LabelProp", "IdProp", "ClassNameProp"],
+  },
+  ThoughtChainItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "DescriptionProp",
+      "IconProp",
+      "StatusProp",
+      "ControlVariantProp",
+      "DisabledProp",
+      "OnClickProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
   },
 } as const;
 
