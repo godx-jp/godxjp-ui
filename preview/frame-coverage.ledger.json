@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-09-11",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 271,
-    "dimensionCells": 3794,
+    "exports": 272,
+    "dimensionCells": 3808,
     "covered": 83,
-    "untested": 2120,
-    "notApplicable": 1591,
+    "untested": 2127,
+    "notApplicable": 1598,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6728,6 +6728,34 @@
       }
     },
     "SkeletonDetail": {
+      "group": "feedback",
+      "owner": "feedback/skeleton",
+      "frames": [
+        "docs/feedback/skeleton.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "SkeletonForm": {
       "group": "feedback",
       "owner": "feedback/skeleton",
       "frames": [
