@@ -12,17 +12,17 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 
 ## The layers, and who owns each
 
-| Layer                                                              | Authority                                     | Status in this repo                                                                                                               |
-| ------------------------------------------------------------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Interaction semantics, keyboard, ARIA                              | **WAI-ARIA APG**                              | already followed — 33 references in `src/`                                                                                        |
-| Behaviour primitives                                               | **Radix**                                     | already the implementation — 193 references                                                                                       |
-| Component composition shape                                        | **shadcn**                                    | already the structural convention — 23 references                                                                                 |
-| Component taxonomy / grouping                                      | **Ant Design** groups                         | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed |
-| Colour foundation                                                  | **SmartHR**                                   | already the palette source — `--primary` = SmartHR MAIN `#0071bd`, `--foreground` = TEXT_BLACK, `--border` = BORDER               |
-| **Derived colour — the interaction states hanging off each seed**    | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold — see below |
-| **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                   | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves |
-| **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency) | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                       |
-| **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                | **NEW — this decision**                                                                                                           |
+| Layer                                                              | Authority                                       | Status in this repo                                                                                                                                  |
+| ------------------------------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interaction semantics, keyboard, ARIA                              | **WAI-ARIA APG**                                | already followed — 33 references in `src/`                                                                                                           |
+| Behaviour primitives                                               | **Radix**                                       | already the implementation — 193 references                                                                                                          |
+| Component composition shape                                        | **shadcn**                                      | already the structural convention — 23 references                                                                                                    |
+| Component taxonomy / grouping                                      | **Ant Design** groups                           | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed    |
+| Colour foundation                                                  | **SmartHR**                                     | already the palette source — `--primary` = SmartHR MAIN `#0071bd`, `--foreground` = TEXT_BLACK, `--border` = BORDER                                  |
+| **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold — see below |
+| **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                     | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves                    |
+| **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency)   | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                                          |
+| **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                  | **NEW — this decision**                                                                                                                              |
 
 The first five were already true and merely unwritten. The last three are the choices being made
 here. Carbon fills the one layer that had no outside answer at all: page rhythm, table density, form layout,
@@ -197,10 +197,34 @@ rows or a totals row — which is how a consumer ends up hand-rolling a `<tfoot>
 in page CSS.
 
 **The rule: where antd names a capability, this library takes antd's name and antd's semantics.**
-The gap is read out of the INSTALLED types (`antd/es/table/interface.d.ts`,
-`antd/es/table/InternalTable.d.ts` and the `@rc-component/table` interface they extend) — never
-from memory, because antd's own names move between majors (`fixed: 'left'` is deprecated in favour
-of `start` inside rc-table itself).
+
+> **Restated and widened by the repo owner on 2026-09-12, because the rule above was being read as
+> advice rather than as the standard it is: Ant Design IS the standard. A missing capability is
+> ported from antd 100% FIRST — its names, its props, its semantics — and improved afterwards.
+> Not redesigned first, and not half-ported.**
+>
+> Two things forced the restatement, both measured rather than felt:
+>
+> - `Dialog` + `AlertDialog` ship **26** exports with **12 name-for-name pairs and 0 parts unique
+>   to `AlertDialog`**, whose entire difference is `role="alertdialog"` plus `isDismissable={false}`
+>   — two props the shell already takes. antd has exactly one `Modal`, where danger is `okType`
+>   and `Modal.confirm()`. The shape here came from Radix, silently, against this very rule
+>   (gh#567). A package-wide sweep over all 272 public exports found this is the ONLY such pair:
+>   `Skeleton.Avatar/Button/Input/Image/Node` looks identical in shape but is antd's own naming,
+>   so it is compliance, not drift.
+> - Whole families arrived half-ported: Ant Design X without `Conversations`, `Attachments`,
+>   `ThoughtChain`, `Welcome` or `Actions` (gh#559); `FloatButton` never at all (gh#558);
+>   `Typography` reduced to `Text` + `Heading`, with `Paragraph`, `Link`, `copyable`, `editable`,
+>   `mark`, `keyboard` and `italic` simply absent.
+>
+> A deviation from antd is still allowed — the three below are — but it must be WRITTEN DOWN at
+> the point of deviation. An undocumented deviation is a bug, and gh#567 is what that bug costs:
+> a consumer forced to pick between the right ARIA role and a form it needs, and an accessibility
+> decision pushed onto the party least able to make it.
+> The gap is read out of the INSTALLED types (`antd/es/table/interface.d.ts`,
+> `antd/es/table/InternalTable.d.ts` and the `@rc-component/table` interface they extend) — never
+> from memory, because antd's own names move between majors (`fixed: 'left'` is deprecated in favour
+> of `start` inside rc-table itself).
 
 > Đọc sau 20.0.0: bản major ấy đã **gỡ `antd` khỏi devDependencies** cùng máy sinh màu của nó, và
 > `check:no-antd-runtime` canh cho nó không quay lại. Câu trên mô tả cách bề mặt prop này ĐƯỢC ĐỌC
@@ -240,12 +264,12 @@ to trust them had to.
 **The authority is now the measurement, not the derivation.** Four suites read `derived.css`
 directly and hold every value in it to a threshold this repo has already committed to:
 
-| suite                                                   | what it holds                                                                                                                                                        |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| suite                                                    | what it holds                                                                                                                                                          |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/tokens/__tests__/focus-ring-contrast.test.ts`       | the focus mark in both switch positions — ≥3:1 (WCAG 2.2 SC 1.4.11) on every surface a control sits on, and the halo proven to be decoration rather than the indicator |
-| `src/tokens/__tests__/interactive-fill-contrast.test.ts` | an interactive fill must clear **4.5:1** against the label sitting on it                                                                                              |
-| `src/tokens/__tests__/destructive-contrast.test.ts`      | `--destructive-hover` / `--destructive-active` against the same bar                                                                                                  |
-| `src/lib/__tests__/theme-tokens-css.test.ts`             | the tier is actually loaded, and complete in both themes                                                                                                             |
+| `src/tokens/__tests__/interactive-fill-contrast.test.ts` | an interactive fill must clear **4.5:1** against the label sitting on it                                                                                               |
+| `src/tokens/__tests__/destructive-contrast.test.ts`      | `--destructive-hover` / `--destructive-active` against the same bar                                                                                                    |
+| `src/lib/__tests__/theme-tokens-css.test.ts`             | the tier is actually loaded, and complete in both themes                                                                                                               |
 
 The first three also pin each value as a literal, so an edit to `derived.css` alone turns CI red
 rather than quietly retinting the library. **That is a stronger claim than the generator made, not
