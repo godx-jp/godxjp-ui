@@ -119,3 +119,14 @@ export { Tree } from "./tree";
 export type { TreeNodeProp, TreeProp, TreeProps } from "./tree";
 export { Welcome } from "./welcome";
 export type { WelcomeProp, WelcomeProps, WelcomeVariantProp } from "./welcome";
+export { ThoughtChain, ThoughtChainItem } from "./thought-chain";
+export type {
+  ThoughtChainProp,
+  ThoughtChainProps,
+  ThoughtChainItemsProp,
+  ThoughtChainItemProp,
+  ThoughtChainItemProps,
+  ThoughtChainStatusProp,
+  ThoughtChainLineProp,
+  ThoughtChainVariantProp,
+} from "./thought-chain";

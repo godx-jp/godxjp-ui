@@ -9,6 +9,41 @@ export interface ComponentToken {
 
 export const COMPONENT_TOKENS: ComponentToken[] = [
   {
+    "name": "--actions-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between actions. Tight on purpose — the strip is a cluster, not a row of page buttons."
+  },
+  {
+    "name": "--actions-padding-block",
+    "value": "var(--space-1)",
+    "description": "Inset of the `filled` / `outlined` forms. `borderless` drops both to zero."
+  },
+  {
+    "name": "--actions-padding-inline",
+    "value": "var(--space-1)",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-radius",
+    "value": "var(--radius)",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-filled-background",
+    "value": "initial",
+    "description": "Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each * documented default resolves at the CALL SITE. * Default filled ground = hsl(var(--muted)) * Default outlined stroke = var(--stroke-hairline) solid hsl(var(--border))"
+  },
+  {
+    "name": "--actions-outlined-border",
+    "value": "initial",
+    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+  },
+  {
+    "name": "--actions-fade-offset-inline",
+    "value": "var(--space-2)",
+    "description": "`fadeIn` / `fadeInLeft` — the distance the strip travels along the inline axis. * * The DURATION is deliberately not a knob here. Timing belongs to the motion tier, for the same * reason `src/tokens/components/activity.css` records: `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration, and a service * retunes arrival motion once through `--duration-base` rather than per component. The * animation reads that token directly, and drops to nothing under `prefers-reduced-motion`."
+  },
+  {
     "name": "--activity-mark-size",
     "value": "0.25em",
     "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore * `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
@@ -6837,6 +6872,106 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--text-mark-foreground",
     "value": "hsl(var(--warning-foreground))",
     "description": "TEXT — knobs for the typographic primitive's link affordance. * * Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`, * `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`. * A link adds two things those tiers do not describe — how far the rule sits from the baseline, * and how heavy it is."
+  },
+  {
+    "name": "--thought-chain-gap",
+    "value": "var(--space-4)",
+    "description": "Gap between two steps, and between the glyph column and the body."
+  },
+  {
+    "name": "--thought-chain-node-gap",
+    "value": "var(--space-3)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-body-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between the header, the body and the footer of ONE step."
+  },
+  {
+    "name": "--thought-chain-icon-size",
+    "value": "var(--band-height-sm)",
+    "description": "The glyph column. A square, so an ordinal, an icon and a status mark share one track and the * connector below stays centred under all three."
+  },
+  {
+    "name": "--thought-chain-icon-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-icon-radius",
+    "value": "var(--radius-pill)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-icon-background",
+    "value": "initial",
+    "description": "Role-mirror knobs (docs/TOKENS.md): `initial`, so each documented default resolves at the CALL * SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. * Default ground = hsl(var(--muted)) · default ink = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--thought-chain-icon-color",
+    "value": "initial",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-icon-success-color",
+    "value": "initial",
+    "description": "Status tints. Same three roles the rest of the library uses for the same three meanings."
+  },
+  {
+    "name": "--thought-chain-icon-error-color",
+    "value": "initial",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-line-width",
+    "value": "var(--stroke-hairline)",
+    "description": "The connector. Its inline position tracks HALF the glyph column so it stays centred whatever * the column's size becomes — never a literal offset."
+  },
+  {
+    "name": "--thought-chain-line-color",
+    "value": "initial",
+    "description": "default = hsl(var(--border))"
+  },
+  {
+    "name": "--thought-chain-chevron-size",
+    "value": "var(--icon-size-sm)",
+    "description": "The collapsed body and its chevron."
+  },
+  {
+    "name": "--thought-chain-content-space-block",
+    "value": "var(--space-2)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-item-gap",
+    "value": "var(--space-2)",
+    "description": "A STANDALONE step (ThoughtChainItem) — the chip an assistant drops inline."
+  },
+  {
+    "name": "--thought-chain-item-padding-block",
+    "value": "var(--space-2)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-item-padding-inline",
+    "value": "var(--space-3)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-item-radius",
+    "value": "var(--radius)",
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+  },
+  {
+    "name": "--thought-chain-item-solid-background",
+    "value": "initial",
+    "description": "default = hsl(var(--muted))"
+  },
+  {
+    "name": "--thought-chain-item-outlined-border",
+    "value": "initial",
+    "description": "default = hairline solid hsl(var(--border))"
   },
   {
     "name": "--toggle-count-min-width",

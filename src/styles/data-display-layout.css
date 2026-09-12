@@ -2192,3 +2192,202 @@
     flex: 0 0 auto;
   }
 }
+
+@layer components {
+  /* THOUGHT CHAIN — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`).
+   *
+   * The chain is an `<ol>`; the list markers are removed because the ordinal is drawn INSIDE the
+   * glyph column (where Ant paints it), and two numbers per step would be one too many. */
+  .ui-thought-chain {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    gap: var(--thought-chain-gap);
+    list-style: none;
+  }
+
+  /* Each step is its own grid so the connector can be drawn from the glyph column and nothing
+   * else has to know where that column is. `position: relative` is the connector's anchor. */
+  .ui-thought-chain-node {
+    position: relative;
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    gap: var(--thought-chain-node-gap);
+  }
+
+  /* THE CONNECTOR. It runs from below one step's glyph to the next step's, and it is drawn on the
+   * step rather than between steps so the LAST one can simply opt out with `:last-child`. Its
+   * inline position is half the glyph column, computed from the same token the column uses, so
+   * resizing the column keeps the line centred with no second number to update. */
+  .ui-thought-chain:not([data-line="none"]) .ui-thought-chain-node:not(:last-child)::before {
+    position: absolute;
+    inset-block: var(--thought-chain-icon-size) calc(-1 * var(--thought-chain-gap));
+    inset-inline-start: calc(var(--thought-chain-icon-size) / 2);
+    border-inline-start: var(--thought-chain-line-width) solid
+      var(--thought-chain-line-color, hsl(var(--border)));
+    content: "";
+    translate: calc(-1 * var(--thought-chain-line-width) / 2) 0;
+  }
+
+  .ui-thought-chain[data-line="dashed"] .ui-thought-chain-node::before {
+    border-inline-start-style: dashed;
+  }
+
+  .ui-thought-chain[data-line="dotted"] .ui-thought-chain-node::before {
+    border-inline-start-style: dotted;
+  }
+
+  .ui-thought-chain-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    inline-size: var(--thought-chain-icon-size);
+    block-size: var(--thought-chain-icon-size);
+    flex: 0 0 auto;
+    border-radius: var(--thought-chain-icon-radius);
+    background: var(--thought-chain-icon-background, hsl(var(--muted)));
+    color: var(--thought-chain-icon-color, hsl(var(--muted-foreground)));
+    font-size: var(--thought-chain-icon-font-size);
+    place-items: center;
+  }
+
+  .ui-thought-chain-icon svg {
+    inline-size: var(--thought-chain-chevron-size);
+    block-size: var(--thought-chain-chevron-size);
+  }
+
+  /* The status TINT. It is never the only channel — `StatusMark` also renders the word in a
+   * visually hidden span, because a colour-and-shape-only state fails WCAG 1.4.1. */
+  .ui-thought-chain-icon[data-status="success"] {
+    color: var(--thought-chain-icon-success-color, hsl(var(--success)));
+  }
+
+  .ui-thought-chain-icon[data-status="error"] {
+    color: var(--thought-chain-icon-error-color, hsl(var(--destructive)));
+  }
+
+  .ui-thought-chain-body {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--thought-chain-body-gap);
+  }
+
+  .ui-thought-chain-header {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--thought-chain-body-gap);
+  }
+
+  /* The disclosure. It is a real `<button>` (APG Disclosure), reset to read as the title it is
+   * rather than as a control box — a chain of four steps with four button chromes would be a
+   * toolbar, not a paragraph of reasoning. */
+  .ui-thought-chain-trigger {
+    display: flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--thought-chain-item-gap);
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: start;
+  }
+
+  .ui-thought-chain-chevron {
+    inline-size: var(--thought-chain-chevron-size);
+    block-size: var(--thought-chain-chevron-size);
+    flex: 0 0 auto;
+  }
+
+  /* Closed points along the reading direction, open points down. The closed rotation flips with
+   * `dir`, so an RTL chain does not aim its chevron away from the text it opens. */
+  [dir="rtl"] .ui-thought-chain-chevron {
+    scale: -1 1;
+  }
+
+  .ui-thought-chain-chevron[data-expanded="true"],
+  [dir="rtl"] .ui-thought-chain-chevron[data-expanded="true"] {
+    rotate: 90deg;
+    scale: 1 1;
+  }
+
+  .ui-thought-chain-content {
+    padding-block: var(--thought-chain-content-space-block);
+  }
+
+  /* `blink` — the pulse that says a step is still being written. Decorative by definition, so it
+   * is one of the first things SC 2.3.3 lets a reader switch off. */
+  @keyframes ui-thought-chain-blink {
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  /* Scoped to the chain, not global: `data-blink` is a cheap attribute name and an unscoped
+   * selector would pulse anything in a consumer's app that happens to carry it. */
+  .ui-thought-chain [data-blink],
+  .ui-thought-chain-item[data-blink] {
+    animation: ui-thought-chain-blink var(--duration-slow) ease-in-out infinite;
+  }
+
+  .ui-thought-chain-spinner {
+    animation: spin var(--duration-slow) linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-thought-chain [data-blink],
+    .ui-thought-chain-item[data-blink],
+    .ui-thought-chain-spinner {
+      animation: none;
+    }
+  }
+
+  /* A STANDALONE step — the chip an assistant drops inline to name the tool it just reached for. */
+  .ui-thought-chain-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--thought-chain-item-gap);
+    padding-block: var(--thought-chain-item-padding-block);
+    padding-inline: var(--thought-chain-item-padding-inline);
+    border: 0;
+    border-radius: var(--thought-chain-item-radius);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+  }
+
+  .ui-thought-chain-item[data-variant="solid"] {
+    background: var(--thought-chain-item-solid-background, hsl(var(--muted)));
+  }
+
+  .ui-thought-chain-item[data-variant="outlined"] {
+    border: var(
+      --thought-chain-item-outlined-border,
+      var(--stroke-hairline) solid hsl(var(--border))
+    );
+  }
+
+  button.ui-thought-chain-item {
+    cursor: pointer;
+  }
+
+  button.ui-thought-chain-item:disabled {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-thought-chain-item-text {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+  }
+}

@@ -16203,6 +16203,87 @@ const messages: ChatMessageProp[] = [
     storyPath: "general/Actions.stories.tsx",
     rules: [2, 6, 23, 44, 45],
   },
+  {
+    name: "ThoughtChain",
+    group: "data-display",
+    tagline:
+      "The assistant's reasoning, step by step (Ant Design X ThoughtChain): an ORDERED list of steps, each with an ordinal or a glyph, a status, and a body it can collapse \u2014 where Ant X's own step is a <div onClick> with no role and no aria-expanded.",
+    subParts: ["ThoughtChainItem"],
+    props: [
+      {
+        name: "items",
+        type: "ThoughtChainItemsProp[]",
+        description:
+          "The steps: { key?, icon?, title?, description?, content?, footer?, status?, collapsible?, blink?, destroyOnHidden? }. `icon: false` drops the glyph column; omitted, the step shows its 1-based ordinal (Ant Design X's own default).",
+      },
+      {
+        name: "defaultExpandedKeys",
+        type: "string[]",
+        description: "Uncontrolled initially-open steps.",
+      },
+      { name: "expandedKeys", type: "string[]", description: "Controlled open steps." },
+      {
+        name: "onExpand",
+        type: "(keys: string[]) => void",
+        description: "Fires with the NEXT open set.",
+      },
+      {
+        name: "line",
+        type: 'boolean | "solid" | "dashed" | "dotted"',
+        defaultValue: "true",
+        description:
+          'The connector drawn between steps. false draws none. (Ant Design X\'s own type spells the third with a stray U+200C, so `line="dotted"` does not type-check there; the clean spelling is used here.)',
+      },
+      {
+        name: "label",
+        type: "string",
+        description: "Accessible name of the chain (a plain string). Localized default otherwise.",
+      },
+      { name: "id", type: "string", description: "DOM id of the chain root." },
+    ],
+    usage: [
+      "DO give every step a stable `key` \u2014 it is what expandedKeys addresses and what onExpand reports.",
+      "DO set `collapsible` on a step whose `content` is long (a tool's raw output, a retrieved passage). The title then becomes a real disclosure button with aria-expanded, keyboard-reachable; without `collapsible` the body is simply always shown.",
+      "DO use `status` for how a step ENDED \u2014 loading / success / error / abort. The word rides along in a visually hidden span, so the state is never carried by the tint alone.",
+      "DO use `blink` while a step is still streaming; it pulses the title and body and collapses to nothing under prefers-reduced-motion.",
+      "DON'T reach for it for events that already happened \u2014 that is Timeline. A thought chain is a run IN PROGRESS, which is why it has loading and abort states and a body that opens.",
+      "DON'T expect `styles`/`classNames` from Ant Design X \u2014 retune through the --thought-chain-* tokens.",
+    ],
+    useCases: [
+      "An agent's tool calls under its answer: read the documents, search the policy, draft the reply \u2014 each with its output collapsed.",
+      "A long-running job's progress inside a chat: the current step blinking, the finished ones ticked, an aborted one greyed.",
+      "ThoughtChainItem alone: the chip an assistant drops inline to name the tool it just reached for.",
+    ],
+    related: [
+      "Timeline \u2014 the same vertical rail for events that ALREADY happened. Use it when nothing is in flight.",
+      "Steps \u2014 a wizard's progress across a form. ThoughtChain is the assistant's own reasoning, not the user's path.",
+      "Accordion \u2014 a general disclosure list with no rail, no ordinal and no status.",
+      "ChatBubble \u2014 the answer the chain explains.",
+    ],
+    example: [
+      'import { ThoughtChain } from "@godxjp/ui/data-display";',
+      "",
+      "<ThoughtChain",
+      '  label="\u601D\u8003\u306E\u624B\u9806"',
+      '  defaultExpandedKeys={["search"]}',
+      "  items={[",
+      '    { key: "read", title: "\u8CC7\u6599\u3092\u8AAD\u3080", description: "3\u4EF6", status: "success" },',
+      "    {",
+      '      key: "search",',
+      '      title: "\u793E\u5185\u898F\u7A0B\u3092\u691C\u7D22",',
+      '      status: "loading",',
+      "      collapsible: true,",
+      "      blink: true,",
+      "      content: <pre>{hits}</pre>,",
+      "    },",
+      '    { key: "write", title: "\u4E0B\u66F8\u304D\u3092\u66F8\u304F", status: "abort" },',
+      "  ]}",
+      "/>",
+    ].join("\n"),
+    docPath: "data-display/thought-chain.tsx",
+    storyPath: "data-display/ThoughtChain.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

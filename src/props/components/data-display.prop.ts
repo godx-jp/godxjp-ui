@@ -69,6 +69,7 @@ import type {
   TableStickyProp,
   TableSummaryProp,
   DisabledProp,
+  OnClickProp,
   ValueProp,
   DefaultValueProp,
   OnValueChangeProp,
@@ -904,6 +905,106 @@ export type WelcomeProp = {
   extra?: React.ReactNode;
   /** Ant Design X `variant`. Default `filled`. */
   variant?: WelcomeVariantProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * Ant Design X `THOUGHT_CHAIN_ITEM_STATUS` — how one step of the chain ended, or that it has not.
+ * @see ThoughtChain
+ */
+export type ThoughtChainStatusProp = "loading" | "success" | "error" | "abort";
+
+/**
+ * Ant Design X `ThoughtChainProps.line` — the connector drawn between two steps. `true` is the
+ * default solid rule, `false` draws none, and the three strings pick its stroke.
+ *
+ * Ant's own type spells the third `'dotted‌'` with a trailing U+200C ZERO WIDTH NON-JOINER
+ * (`es/thought-chain/interface.d.ts`), so `line="dotted"` does not type-check against it. The
+ * clean spelling is used here; that is a typo fix, not an API change.
+ * @see ThoughtChain
+ */
+export type ThoughtChainLineProp = boolean | "solid" | "dashed" | "dotted";
+
+/**
+ * Ant Design X `ThoughtChainItemProps.variant` — the chrome of a STANDALONE step.
+ * @see ThoughtChainItem
+ */
+export type ThoughtChainVariantProp = "solid" | "outlined" | "text";
+
+/** @see ThoughtChain — one step. Ant Design X `ThoughtChainItemType`, field for field. */
+export type ThoughtChainItemsProp = {
+  /** Identity, and what `expandedKeys` addresses. Ant Design X `key`. */
+  key?: string;
+  /**
+   * The step's glyph. `false` removes it entirely; omitted, the step shows its 1-based ORDINAL,
+   * which is Ant's default (`es/thought-chain/Node.js`). Ant Design X `icon`.
+   */
+  icon?: React.ReactNode | false;
+  /** Ant Design X `title`. */
+  title?: React.ReactNode;
+  /** The line under the title, always visible. Ant Design X `description`. */
+  description?: React.ReactNode;
+  /** The body the step collapses. Ant Design X `content`. */
+  content?: React.ReactNode;
+  /** Below the body, always visible. Ant Design X `footer`. */
+  footer?: React.ReactNode;
+  /** Ant Design X `status`. */
+  status?: ThoughtChainStatusProp;
+  /** Turn the title into a disclosure for `content`. Ant Design X `collapsible`. */
+  collapsible?: boolean;
+  /** Pulse the title and body while the step is still being written. Ant Design X `blink`. */
+  blink?: boolean;
+  /** Unmount the body while collapsed. Default `true`, as in Ant. Ant Design X `destroyOnHidden`. */
+  destroyOnHidden?: boolean;
+};
+
+/**
+ * @see ThoughtChain — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`).
+ *
+ * An ordered list: each step carries an ordinal or a glyph, a status, a title, and a body it can
+ * collapse. `Timeline` is the neighbour to check first — it is the same vertical rail for EVENTS
+ * that already happened; a thought chain is a run in progress, which is why a step has `loading`
+ * and `abort` states and a body that opens.
+ */
+export type ThoughtChainProp = {
+  /** The steps, in order. Ant Design X `items`. */
+  items?: readonly ThoughtChainItemsProp[];
+  /** Uncontrolled initially-open steps. Ant Design X `defaultExpandedKeys`. */
+  defaultExpandedKeys?: readonly string[];
+  /** Controlled open steps. Ant Design X `expandedKeys`. */
+  expandedKeys?: readonly string[];
+  /** Fires with the next open set. Ant Design X `onExpand`. */
+  onExpand?: (keys: string[]) => void;
+  /** The connector between steps. Default `true`. Ant Design X `line`. */
+  line?: ThoughtChainLineProp;
+  /**
+   * Accessible name of the chain — a plain STRING (it lands on `aria-label`). Ant X has no
+   * equivalent; a localized default applies when omitted.
+   */
+  label?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ThoughtChainItem — one step OUTSIDE a chain (Ant Design X `ThoughtChain.Item`): the chip an
+ * assistant drops inline to say which tool it just reached for.
+ *
+ * Ant renders it as a `<div onClick>`; here an item with `onClick` renders a real `<button>`, so
+ * the one interactive shape this component has is reachable by keyboard.
+ */
+export type ThoughtChainItemProp = {
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  icon?: React.ReactNode;
+  status?: ThoughtChainStatusProp;
+  /** Ant Design X `variant`. Default `solid`. */
+  variant?: ThoughtChainVariantProp;
+  /** Ant Design X `blink`. */
+  blink?: boolean;
+  disabled?: DisabledProp;
+  onClick?: OnClickProp;
   id?: IdProp;
   className?: ClassNameProp;
 };
