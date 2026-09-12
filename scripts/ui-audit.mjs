@@ -797,12 +797,76 @@ function walk(dir, acc = []) {
   return acc;
 }
 
+/** True when `index` sits inside an unclosed backtick template starting at or after `from`. */
+function insideTemplateLiteral(source, from, index) {
+  let ticks = 0;
+  for (let i = from; i < index; i++) {
+    if (source[i] === "\\") {
+      i++;
+      continue;
+    }
+    if (source[i] === "`") ticks++;
+  }
+  return ticks % 2 === 1;
+}
+
+/** `<TurnResult>(` is a generic call, not JSX — scanning after its `>` hits `` `/path/${id}` ``. */
+function isGenericTypeBeforeCall(source, openStart, closeIndex) {
+  const name = source.slice(openStart + 1, closeIndex);
+  if (!/^[A-Z][\w]*$/.test(name)) return false;
+  return /^\s*\(/.test(source.slice(closeIndex + 1));
+}
+
+/**
+ * Hand currency in JSX text after `>`: `>¥{amount}`, `>${price}`, `$1,200` — not `` `/chat/${id}` ``.
+ * `$` immediately before `{` inside a template literal is interpolation, never a price sigil.
+ */
+function findHandCurrencyInJsxText(source, from) {
+  for (let i = from; i < source.length; i++) {
+    const char = source[i];
+    if (char === "<") break;
+    if (char === "{") break;
+    if (char === "`") {
+      i++;
+      while (i < source.length) {
+        if (source[i] === "\\") {
+          i += 2;
+          continue;
+        }
+        if (source[i] === "`") break;
+        i++;
+      }
+      continue;
+    }
+    if (char === "$") {
+      if (insideTemplateLiteral(source, from, i)) continue;
+      const digits = source.slice(i).match(/^\$(?:\d[\d,]*(?:\.\d+)?|\d)/);
+      if (digits) return { end: i + digits[0].length };
+      const brace = source.slice(i).match(/^\$\s*\{/);
+      if (brace && !insideTemplateLiteral(source, from, i)) {
+        return { end: i + brace[0].length };
+      }
+      continue;
+    }
+    if (/[¥€£₫]/.test(char)) {
+      if (insideTemplateLiteral(source, from, i)) continue;
+      const brace = source.slice(i).match(/^[¥€£₫]\s*\{/);
+      if (brace) return { end: i + brace[0].length };
+    }
+  }
+  return null;
+}
+
 /** Match real JSX text after a balanced opening tag, including props with comparisons. */
 function* currencyMatches(source) {
   for (const opening of source.matchAll(/<(?:[A-Za-z][\w.:]*\b|(?=>))/g)) {
     const end = jsxOpeningEnd(source, opening.index);
-    const text = source.slice(end + 1).match(/^[^<>{}]*[¥$€£₫]\s*\{/);
-    if (text) yield { 0: source.slice(opening.index, end + 1) + text[0], index: opening.index };
+    if (end >= source.length) continue;
+    if (isGenericTypeBeforeCall(source, opening.index, end)) continue;
+    const hit = findHandCurrencyInJsxText(source, end + 1);
+    if (hit) {
+      yield { 0: source.slice(opening.index, hit.end), index: opening.index };
+    }
   }
   yield* source.matchAll(/\}\s*円\s*</g);
 }
