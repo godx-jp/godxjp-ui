@@ -1585,8 +1585,8 @@ export function HandyInbound() {
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away. Pass a FUNCTION `(collapsed) => node` whenever that content has to shrink on the rail: it is called with the EFFECTIVE collapsed value, so ONE Sidebar serves both the docked rail and AppShell's drawer. Returning null for a surface draws no footer chrome at all (no top border, no padding).",
       "DO: Put a row's trailing disclosure mark in `item.trailingIcon`, never in `item.badge`. `badge` wraps whatever it is given in the `.sb-badge` count capsule — a chevron passed there measures 36x24 with a 24x24 SVG inside, beside a 16x16 leading icon in the same 32px row. `trailingIcon` takes the component (`trailingIcon: ChevronsUpDown`) and the rail pins it to the leading icon's 16px box with no surface of its own.",
       "DO: Give every navigable item an `item.href` and let the library render it. A plain `href` becomes a real <a> (context-menu open-in-new-tab, middle-click); with `linkComponent` that same href drives your framework router's <Link>. Either way the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
-      "DO: Wire a framework router with `linkComponent` — `createSidebarLink(Link, 'to')` (React Router / TanStack), `createSidebarLink(Link)` (Next.js), or `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia`. That is the WHOLE integration: you pass the element type, the library composes the row. It threads through leaves, submenu children, the collapsed rail and the collapsed flyout. When you compose rows by hand, the same contract is `<SidebarItem item={item} asChild><Link to=… /></SidebarItem>` — write NO children; the library injects the icon, label and badge.",
-      "DON'T: Use `renderItem` in new code — it is DEPRECATED. It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <Link href={…}>{item.label}</Link>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
+      "DO: Wire a framework router with `linkComponent` — `createSidebarLink(Link, 'to')` (React Router / TanStack), `createSidebarLink(Link)` (Next.js), or `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia`. That is the WHOLE integration: you pass the element type, the library composes the row. It threads through leaves, submenu children, the collapsed rail and the collapsed flyout. When you compose rows by hand, the same contract is `<SidebarItem item={item} asChild><RouterLink to=… /></SidebarItem>` — write NO children; the library injects the icon, label and badge. (`RouterLink` here is YOUR router's link component; this library now exports a `Link` of its own — antd's Typography.Link — which takes `href`, not `to`.)",
+      "DON'T: Use `renderItem` in new code — it is DEPRECATED. It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <RouterLink href={…}>{item.label}</RouterLink>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DO: Theme the nav ICON and the row/label SEPARATELY with tokens — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover/active = `hsl(var(--foreground))`), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
       "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
@@ -2850,6 +2850,69 @@ import { Trash2 } from "lucide-react";
         type: "boolean | string",
         description: 'Anchor download hint, for `as="a"`.',
       },
+      {
+        name: "type",
+        type: '"secondary" | "success" | "warning" | "danger"',
+        description:
+          "antd's emphasis axis. This library's `tone` is the SAME axis and is wider (it also carries default/primary/info), so `tone` wins when both are passed and dev builds warn. Folds secondary → muted, danger → destructive.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description:
+          'Renders the run as unavailable: the disabled ink, `cursor: not-allowed`, no text selection, and `aria-disabled` so a screen reader hears "unavailable" rather than merely seeing it de-emphasised.',
+      },
+      {
+        name: "copyable",
+        type: "boolean | { text, onCopy, icon, tooltips, format, tabIndex }",
+        description:
+          'Copy affordance beside the text. `true` copies the rendered children. `text` may be a string or an async function, so the value can be fetched on demand. `icon` and `tooltips` each take `[idle, copied]`; `tooltips: false` drops the tooltip but keeps the accessible name. `format: "text/html"` writes an HTML flavour alongside the plain one. `onCopy` fires only AFTER the write resolves — a clipboard refusal leaves the button unconfirmed instead of claiming a copy that never happened.',
+      },
+      {
+        name: "editable",
+        type: "boolean | { text, editing, icon, tooltip, onStart, onChange, onCancel, onEnd, maxLength, autoSize, triggerType, enterIcon, tabIndex }",
+        description:
+          'In-place editing. The run is REPLACED by an auto-growing textarea that inherits its type step, family and weight, so editing is WYSIWYG. Enter confirms with the trimmed value then fires `onEnd`; blur confirms WITHOUT `onEnd` (antd\'s split); Escape cancels. `triggerType: ["text"]` makes the text itself the affordance and renders no icon. Focus returns to the edit button when the editor closes.',
+      },
+      {
+        name: "ellipsis",
+        type: "boolean | { suffix, symbol, defaultExpanded, expanded, onEllipsis, tooltip }",
+        description:
+          "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip.",
+      },
+      {
+        name: "actions",
+        type: '{ placement?: "start" | "end" }',
+        description:
+          "Which side the copy / edit / expand cluster sits on. Logical, so it mirrors in RTL. Default `end`.",
+      },
+      {
+        name: "code",
+        type: "boolean",
+        description:
+          "Wrap the content in a real `<code>` element. Different from `mono`, which only swaps the font family: this changes what the content IS, so it reaches assistive technology.",
+      },
+      { name: "mark", type: "boolean", description: "Wrap in `<mark>` — highlighted." },
+      { name: "underline", type: "boolean", description: "Wrap in `<u>` — underlined." },
+      { name: "delete", type: "boolean", description: "Wrap in `<del>` — struck through." },
+      {
+        name: "strong",
+        type: "boolean",
+        description:
+          "Wrap in `<strong>` — bold AND semantically strong. Composes with `weight`: `weight` paints, `strong` means. The seven decoration flags nest in antd's order (strong → u → del → code → mark → kbd → i).",
+      },
+      {
+        name: "keyboard",
+        type: "boolean",
+        description: "Wrap in `<kbd>` — a key or key combination.",
+      },
+      { name: "italic", type: "boolean", description: "Wrap in `<i>` — italic." },
+      {
+        name: "component",
+        type: "string",
+        description:
+          "antd's private alias for `as`. Accepted so antd code pastes in unchanged; `as` wins when both are passed.",
+      },
     ],
     usage: [
       "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
@@ -2924,6 +2987,178 @@ import { Trash2 } from "lucide-react";
 
 <Heading level={2}>請求書一覧</Heading>
 <Heading level={3} tone="muted">補足セクション</Heading>`,
+  },
+  {
+    name: "Typography",
+    group: "general",
+    tagline:
+      "antd's prose container — a plain <article> that Title / Paragraph / Text / Link sit inside, and the compound root so `<Typography.Text>` from an antd codebase compiles here unchanged.",
+    props: [
+      {
+        name: "as",
+        type: "string",
+        defaultValue: '"article"',
+        description: "Rendered element.",
+      },
+      {
+        name: "component",
+        type: "string",
+        description:
+          "antd's private alias for `as`. Accepted so antd code pastes in unchanged; `as` wins when both are passed.",
+      },
+    ],
+    usage: [
+      "DO reach for it when you have a RUN of prose — a heading, some paragraphs, a link — rather than one label. A single caption is just `<Text>`.",
+      "DO use the compound spelling when porting from antd: `Typography.Text`, `Typography.Title`, `Typography.Paragraph` and `Typography.Link` ARE the flat `Text` / `Title` / `Paragraph` / `Link` exports, not poorer copies of them.",
+      "DON'T use it as a layout box. It carries type, not spacing — sections are spaced by `PageContainer` and groups by `Flex` / `ResponsiveGrid`.",
+    ],
+    useCases: [
+      "A release-note body: a `Title`, two `Paragraph`s and a `Link`, wrapped so the block rhythm is owned in one place.",
+      "Pasting an antd screen in unchanged, `Typography.Paragraph` and all.",
+    ],
+    related: ["Text", "Title", "Paragraph", "Link", "Heading", "Prose"],
+    storyPath: "general/typography.tsx",
+    rules: [2, 23],
+    example: `import { Typography } from "@godxjp/ui/general";
+
+<Typography>
+  <Typography.Title level={3}>リリースノート</Typography.Title>
+  <Typography.Paragraph>請求書の一括ダウンロードに対応しました。</Typography.Paragraph>
+  <Typography.Link href="/changelog">変更履歴</Typography.Link>
+</Typography>`,
+  },
+  {
+    name: "Title",
+    group: "general",
+    tagline:
+      "antd Typography.Title — a heading with five levels and the antd block behaviours (copyable, editable, ellipsis, the decorations). A SIBLING of `Heading`, which is this library's own four-level heading and is unchanged.",
+    props: [
+      {
+        name: "level",
+        type: "1 | 2 | 3 | 4 | 5",
+        defaultValue: "1",
+        description:
+          "Sets BOTH the --heading-h{1..5} size token and the semantic <h1>..<h5>. Level 5 reads --heading-h5, which is bound to the existing --font-size-2xs step rather than being a new number. A value outside 1..5 falls back to h1, the way antd does — an <h7> from a runtime value would have no heading semantics at all. NOTE the default is antd's 1, while `Heading` defaults to 2.",
+      },
+      {
+        name: "as",
+        type: '"h1" | "h2" | "h3" | "h4" | "h5" | "div"',
+        description: "Override the rendered element — a visual h2 that is a real <h1>.",
+      },
+      {
+        name: "tone",
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"default"',
+        description: "Semantic foreground colour. Outranks antd's `type`.",
+      },
+      { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
+      {
+        name: "truncate",
+        type: "boolean",
+        description: "Single-line ellipsis. `ellipsis` outranks it when both are passed.",
+      },
+      {
+        name: "weight",
+        type: '"regular" | "medium" | "semibold" | "bold"',
+        defaultValue: '"medium"',
+        description: "Font weight, from the three-weight canon.",
+      },
+      {
+        name: "ellipsis",
+        type: "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }",
+        description:
+          "Truncation. `true` is one line; `rows` clamps to N. `expandable` adds an expand control, `symbol` relabels it, `onEllipsis` fires when the measured overflow flips.",
+      },
+    ],
+    usage: [
+      "DO use `Title` when you want antd's spelling, a fifth level, or a heading that is copyable / editable.",
+      "DO use `Heading` for everything else. It is the four-level heading the rest of this library is written in, and `CardTitle` / `PageContainer` already render one for you.",
+      "DON'T set `level` to pick a SIZE. It sets the semantic element too, so skipping from h1 to h4 for looks breaks the document outline — override the element with `as` instead.",
+    ],
+    useCases: [
+      "A project name a user can rename in place: `<Title level={2} editable={{ onChange: rename }}>{name}</Title>`.",
+      "A dense sub-label below the body step, where `Heading` has no level left: `<Title level={5}>内訳</Title>`.",
+    ],
+    related: ["Heading", "Typography", "Text", "CardTitle"],
+    storyPath: "general/typography.tsx",
+    rules: [2, 23],
+    example: `import { Title } from "@godxjp/ui/general";
+
+<Title level={2}>請求書一覧</Title>
+<Title level={3} editable={{ onChange: rename }}>{projectName}</Title>`,
+  },
+  {
+    name: "Paragraph",
+    group: "general",
+    tagline:
+      "antd Typography.Paragraph — a block of body text with the full ellipsis contract (rows + an expand control) and the antd block behaviours. Renders a <div>, matching antd.",
+    props: [
+      {
+        name: "as",
+        type: '"div" | "p" | "span"',
+        defaultValue: '"div"',
+        description:
+          'Rendered element. The default is antd\'s <div>, not <p>, because the editing textarea and the action cluster are BLOCK content: inside a <p> the parser would split the paragraph and leave the actions outside it. Pass `as="p"` when the content is known to be phrasing-only.',
+      },
+      {
+        name: "ellipsis",
+        type: "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }",
+        description:
+          'Truncation. `rows` clamps to N lines; `expandable` adds an expand control ("collapsible" keeps a collapse one); `symbol` relabels it; `suffix` pins text after the ellipsis; `onEllipsis` fires when the measured overflow flips. This is the antd spelling of `clamp` and outranks it. One deviation from antd: the expand control is a sibling AFTER the clamped box rather than inline at the end of the last line, because the truncation is done by CSS line-clamping here (antd re-slices the text in JavaScript, which drops any element after the cut).',
+      },
+    ],
+    usage: [
+      "DO use `Paragraph` for a block of body copy that may need to be clamped with a way to read the rest. `Text clamp={n}` clamps but has no expand control.",
+      "DO keep the default <div>. Change it to a <p> only when you know the content holds no interactive parts.",
+      'DON\'T stack Paragraphs and then space them by hand — put them in a `<Flex direction="col" gap>`; never write `mb-4` on your own element.',
+    ],
+    useCases: [
+      "An issue description clamped to three lines with a 続きを読む control: `<Paragraph ellipsis={{ rows: 3, expandable: true }}>{body}</Paragraph>`.",
+      "A release note whose text can be edited in place by an admin.",
+    ],
+    related: ["Text", "Typography", "Prose", "Title"],
+    storyPath: "general/typography.tsx",
+    rules: [2, 23],
+    example: `import { Paragraph } from "@godxjp/ui/general";
+
+<Paragraph ellipsis={{ rows: 3, expandable: true }}>{description}</Paragraph>
+<Paragraph copyable>{ticketBody}</Paragraph>`,
+  },
+  {
+    name: "Link",
+    group: "general",
+    tagline:
+      "antd Typography.Link — an anchor that already carries this library's inline link affordance (underline on hover AND on keyboard focus), plus antd's rel guard for target=\"_blank\".",
+    props: [
+      {
+        name: "as",
+        type: '"a" | "span"',
+        defaultValue: '"a"',
+        description: "Rendered element.",
+      },
+      {
+        name: "ellipsis",
+        type: "boolean",
+        description:
+          "Single-line truncation. antd allows only a boolean on `Link`, and that restriction is ported.",
+      },
+    ],
+    usage: [
+      "DO use `Link` when you want an anchor with the link affordance already on it. `<Text link>` is the same affordance for a run that is not an anchor, and `<Text asChild link>` is the shape a router link takes.",
+      "DON'T reach for `Button variant=\"link\"` inside running content: that is a CONTROL box (nowrap, a control height, inline padding), so in a table cell it neither wraps nor shares the cell's line box.",
+      'A `target="_blank"` with no `rel` of its own is given `noopener noreferrer`, because the opened document otherwise keeps a live handle back into this one.',
+    ],
+    useCases: [
+      'A documentation link at the end of a helper line: `<Link href="/docs/billing">請求の設定</Link>`.',
+      'An external link that must not leak the opener: `<Link href="https://example.com" target="_blank">外部サイト</Link>`.',
+    ],
+    related: ["Text", "Typography", "Button", "PrefetchLink"],
+    storyPath: "general/typography.tsx",
+    rules: [2, 6, 23],
+    example: `import { Link } from "@godxjp/ui/general";
+
+<Link href="/docs/billing">請求の設定</Link>
+<Link href="https://example.com" target="_blank">外部サイト</Link>`,
   },
   {
     name: "Logo",

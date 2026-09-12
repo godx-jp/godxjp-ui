@@ -347,6 +347,13 @@
       "decrement": "Giảm",
       "incrementField": "Tăng {label}",
       "decrementField": "Giảm {label}"
+    },
+    "typography": {
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "edit": "Sửa",
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn"
     }
   },
   "navigation": {

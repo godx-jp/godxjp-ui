@@ -8753,6 +8753,278 @@
         }
       ]
     },
+    "Link": {
+      "group": "general",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyActionsConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "TextAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"a\" | \"span\" | undefined",
+          "values": ["a", "span"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "chip",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "clamp",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "code",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "component",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "copyable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyCopyConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "decoration",
+          "origin": "owned",
+          "required": false,
+          "type": "\"none\" | \"underline\" | \"line-through\" | undefined",
+          "values": ["none", "underline", "line-through"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "delete",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "download",
+          "origin": "owned",
+          "required": false,
+          "type": "any",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEditConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "ellipsis",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "htmlFor",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "italic",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "keyboard",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "link",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mark",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "rel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/general.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "strong",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tabular",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "target",
+          "origin": "owned",
+          "required": false,
+          "type": "React.HTMLAttributeAnchorTarget | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "TextToneProp | undefined",
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "truncate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "type",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyTypeProp | undefined",
+          "values": ["warning", "success", "secondary", "danger"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "underline",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "weight",
+          "origin": "owned",
+          "required": false,
+          "type": "FontWeightProp | undefined",
+          "values": ["medium", "regular", "semibold", "bold"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "whitespace",
+          "origin": "owned",
+          "required": false,
+          "type": "TextWhitespaceProp | undefined",
+          "values": ["normal", "pre-wrap"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        }
+      ]
+    },
     "ListRow": {
       "group": "data-display",
       "props": [
@@ -9888,6 +10160,278 @@
           "type": "string | number | readonly string[] | undefined",
           "values": [],
           "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        }
+      ]
+    },
+    "Paragraph": {
+      "group": "general",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyActionsConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "TextAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"p\" | \"span\" | undefined",
+          "values": ["div", "p", "span"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "chip",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "clamp",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "code",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "component",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "copyable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyCopyConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "decoration",
+          "origin": "owned",
+          "required": false,
+          "type": "\"none\" | \"underline\" | \"line-through\" | undefined",
+          "values": ["none", "underline", "line-through"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "delete",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "download",
+          "origin": "owned",
+          "required": false,
+          "type": "any",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEditConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "ellipsis",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEllipsisConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "href",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "htmlFor",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "italic",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "keyboard",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "link",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mark",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mono",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "rel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/general.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "strong",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tabular",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "target",
+          "origin": "owned",
+          "required": false,
+          "type": "React.HTMLAttributeAnchorTarget | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "TextToneProp | undefined",
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "truncate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "type",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyTypeProp | undefined",
+          "values": ["warning", "success", "secondary", "danger"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "underline",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "weight",
+          "origin": "owned",
+          "required": false,
+          "type": "FontWeightProp | undefined",
+          "values": ["medium", "regular", "semibold", "bold"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "whitespace",
+          "origin": "owned",
+          "required": false,
+          "type": "TextWhitespaceProp | undefined",
+          "values": ["normal", "pre-wrap"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
@@ -15232,6 +15776,14 @@
       "group": "general",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyActionsConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "align",
           "origin": "owned",
           "required": false,
@@ -15287,6 +15839,30 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "code",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "component",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "copyable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyCopyConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "decoration",
           "origin": "owned",
           "required": false,
@@ -15295,10 +15871,42 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "delete",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "download",
           "origin": "owned",
           "required": false,
           "type": "any",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEditConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "ellipsis",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | Omit<TypographyEllipsisConfigProp, \"rows\" | \"expandable\" | \"onExpand\"> | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -15319,7 +15927,31 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "italic",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "keyboard",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "link",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mark",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -15354,6 +15986,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "strong",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "tabular",
           "origin": "owned",
           "required": false,
@@ -15379,6 +16019,22 @@
         },
         {
           "name": "truncate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "type",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyTypeProp | undefined",
+          "values": ["warning", "success", "secondary", "danger"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "underline",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -16212,6 +16868,163 @@
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "Title": {
+      "group": "general",
+      "props": [
+        {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyActionsConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "TextAlignProp | undefined",
+          "values": ["center", "start", "end"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | undefined",
+          "values": ["div", "h1", "h2", "h3", "h4", "h5"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "code",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "component",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "copyable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyCopyConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "delete",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "editable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEditConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "ellipsis",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyEllipsisConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "italic",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "keyboard",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "TitleLevelProp | undefined",
+          "values": [1, 2, 3, 4, 5],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "mark",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "TextToneProp | undefined",
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "truncate",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "type",
+          "origin": "owned",
+          "required": false,
+          "type": "TypographyTypeProp | undefined",
+          "values": ["warning", "success", "secondary", "danger"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "underline",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "weight",
+          "origin": "owned",
+          "required": false,
+          "type": "FontWeightProp | undefined",
+          "values": ["medium", "regular", "semibold", "bold"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },
@@ -17751,6 +18564,27 @@
           "type": "string[] | undefined",
           "values": [],
           "declaredIn": ["src/components/feedback/two-factor-setup.tsx"]
+        }
+      ]
+    },
+    "Typography": {
+      "group": "general",
+      "props": [
+        {
+          "name": "as",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "component",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
     },

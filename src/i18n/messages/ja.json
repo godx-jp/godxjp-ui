@@ -346,6 +346,13 @@
       "decrement": "減らす",
       "incrementField": "{label}を増やす",
       "decrementField": "{label}を減らす"
+    },
+    "typography": {
+      "copy": "コピー",
+      "copied": "コピーしました",
+      "edit": "編集",
+      "expand": "展開",
+      "collapse": "折りたたむ"
     }
   },
   "navigation": {

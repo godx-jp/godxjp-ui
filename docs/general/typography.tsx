@@ -1,5 +1,14 @@
 import { useTranslation } from "@godxjp/ui/i18n";
-import { Button, Heading, Text, VisuallyHidden } from "@godxjp/ui/general";
+import {
+  Button,
+  Heading,
+  Link,
+  Paragraph,
+  Text,
+  Title,
+  Typography,
+  VisuallyHidden,
+} from "@godxjp/ui/general";
 import {
   Card,
   CardContent,
@@ -227,6 +236,59 @@ export default function Demo() {
               <Text size="xs" tone="muted">
                 アクション（送信・展開）にはリンク風の Button variant=&quot;link&quot;
                 を使います。本文の中のリンクは Text link です。
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>antd Typography · Title / Paragraph / Link</CardTitle>
+            <CardDescription>
+              antd の Typography をそのまま移植したもの。Text と Heading は変わらず、Title は 5
+              段階、Paragraph は rows 付きの ellipsis、Link は target=&quot;_blank&quot; に rel
+              を自動で付けます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Typography>
+                <Title level={3}>請求サマリー</Title>
+                <Paragraph>今月の請求は 3 件です。明細は各行のリンクから確認できます。</Paragraph>
+                <Link href="#typography">変更履歴を見る</Link>
+              </Typography>
+
+              <Title level={5}>内訳（level 5 · Heading にはない段）</Title>
+
+              <Paragraph ellipsis={{ rows: 2, expandable: true }}>
+                ログイン画面の余白が狭く、パスワード再設定リンクが本文と重なって見えます。
+                発生条件は 390px 幅の端末で、日本語ロケールのときのみです。
+                再現手順とスクリーンショットは添付の通りです。
+              </Paragraph>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>copyable · editable · 装飾</CardTitle>
+            <CardDescription>
+              antd の copyable / editable と、7 つの装飾フラグ。装飾は本物の要素を包むので、意味が
+              スクリーンリーダーにも届きます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Text mono copyable>
+                RC-204881
+              </Text>
+              <Text editable>案件名をここで直接編集できます</Text>
+              <Text type="secondary">
+                type=&quot;secondary&quot;（tone=&quot;muted&quot; と同じ軸）
+              </Text>
+              <Text disabled>disabled · 使えないことを示します</Text>
+              <Text>
+                <Text code>npm run build</Text> と <Text keyboard>Ctrl</Text> +{" "}
+                <Text keyboard>S</Text>、<Text mark>強調</Text>、<Text delete>取り消し</Text>、
+                <Text strong>強い</Text>、<Text italic>斜体</Text>
               </Text>
             </Flex>
           </CardContent>

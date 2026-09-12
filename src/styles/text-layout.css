@@ -186,3 +186,198 @@
     font-size: var(--heading-h4);
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────────
+ * antd `Typography` — the parity layer.
+ *
+ * Everything above is unchanged; nothing here re-declares a property the rules above already own,
+ * so a plain `<Text>` paints exactly as it did before this file grew.
+ * ───────────────────────────────────────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Title level 5 — the one step `Heading` does not have. Levels 1..4 are shared with `Heading`
+   * by the `[data-slot="heading"]` rules above; only the fifth needs its own line. */
+  [data-slot="heading"][data-level="5"] {
+    font-size: var(--heading-h5);
+  }
+
+  /* `disabled` — antd paints the disabled ink, forbids the cursor and forbids selection. All three
+   * matter together: the colour alone reads as "muted", not "unavailable". */
+  [data-slot="text"][data-disabled],
+  [data-slot="heading"][data-disabled] {
+    color: hsl(var(--text-disabled));
+    cursor: not-allowed;
+    user-select: none;
+  }
+  /* A disabled LINK must also stop winning the hover/active colour it would otherwise take. */
+  [data-slot="text"][data-disabled][data-link]:hover,
+  [data-slot="text"][data-disabled][data-link]:active {
+    color: hsl(var(--text-disabled));
+  }
+
+  /* THE SEVEN DECORATIONS.
+   *
+   * Each is a real element inside the run, so these are descendant rules rather than attribute
+   * rules — that is the whole point of wrapping rather than restyling: `<del>` reaches a screen
+   * reader, `text-decoration: line-through` does not. Scoped under the slot so they cannot leak
+   * onto arbitrary page markup the way a bare `mark { … }` would. */
+  [data-slot="text"] mark,
+  [data-slot="heading"] mark {
+    padding: 0;
+    background-color: var(--text-mark-background);
+    color: var(--text-mark-foreground);
+  }
+  [data-slot="text"] u,
+  [data-slot="heading"] u {
+    text-decoration-line: underline;
+    text-decoration-skip-ink: auto;
+  }
+  [data-slot="text"] del,
+  [data-slot="heading"] del {
+    text-decoration-line: line-through;
+  }
+  [data-slot="text"] strong,
+  [data-slot="heading"] strong {
+    font-weight: var(--font-weight-bold);
+  }
+  [data-slot="text"] code,
+  [data-slot="text"] kbd,
+  [data-slot="heading"] code,
+  [data-slot="heading"] kbd {
+    background: hsl(var(--muted));
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--prose-code-radius);
+    padding-inline: var(--prose-code-space-inline);
+    font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
+    font-size: var(--prose-code-font-size);
+  }
+  /* A key cap reads as a key because of the thicker bottom edge — the one thing that distinguishes
+   * `<kbd>` from `<code>` at a glance. Logical, so it survives a vertical writing mode. */
+  [data-slot="text"] kbd,
+  [data-slot="heading"] kbd {
+    border-block-end-width: var(--stroke-md);
+  }
+
+  /* THE OPERATION CLUSTER (copy / edit / expand).
+   *
+   * `display: inline` is antd's, and it is load-bearing: the cluster shares the line box of the
+   * text it belongs to, so a copy button at the end of a table cell does not add a second line.
+   * There is no `flex` here on purpose — a flex container would take the cluster OUT of the line
+   * box and is exactly what consumer rule 3 forbids page-side for the same reason. */
+  .ui-typography-actions {
+    display: inline;
+    margin-inline-start: var(--text-action-gap);
+  }
+  .ui-typography-actions[data-placement="start"] {
+    margin-inline-start: 0;
+    margin-inline-end: var(--text-action-gap);
+  }
+
+  .ui-typography-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--text-action-gap);
+    margin-inline-start: var(--text-action-gap);
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--text-action-color);
+    font: inherit;
+    cursor: pointer;
+    vertical-align: baseline;
+  }
+  .ui-typography-actions[data-placement="start"] > .ui-typography-action:first-child,
+  .ui-typography-actions > .ui-typography-action:first-child {
+    margin-inline-start: 0;
+  }
+  .ui-typography-action:hover,
+  .ui-typography-action:focus-visible {
+    color: var(--text-action-color-hover);
+  }
+  /* The confirmed copy takes the AA-safe success INK tier, not the success FILL — the same
+   * distinction the tone rules above carry, and for the same measured reason. */
+  .ui-typography-action[data-copied] {
+    color: hsl(var(--text-success));
+  }
+  .ui-typography-icon {
+    inline-size: var(--text-action-size);
+    block-size: var(--text-action-size);
+  }
+  .ui-typography-icon-spin {
+    animation: ui-typography-spin var(--duration-loop) linear infinite;
+  }
+  /* Someone who has asked the OS for less motion gets the icon without the rotation; the loading
+   * state is still legible because the icon itself differs from the idle one. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-typography-icon-spin {
+      animation: none;
+    }
+  }
+
+  /* THE CONTENT WRAPPER.
+   *
+   * Present only when a clamped run also carries an action cluster or a suffix: `-webkit-line-clamp`
+   * clips everything inside its box, so the buttons have to live OUTSIDE it. The clamp declarations
+   * are the same ones `[data-clamp]` carries above — repeated here rather than shared, because the
+   * selector has to be the wrapper and a `:is()` across the two would raise the specificity of the
+   * plain case and start winning arguments it should not. */
+  .ui-typography-content[data-clamp] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--text-clamp, 2);
+    line-clamp: var(--text-clamp, 2);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .ui-typography-content[data-truncate] {
+    display: inline-block;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+  }
+
+  /* A truncated inline run needs a box to truncate INSIDE. antd sets the same two declarations on
+   * `a&-ellipsis, span&-ellipsis` for the same reason: an inline box has no width to overflow. */
+  [data-slot="text"][data-ellipsis][data-truncate] {
+    display: inline-block;
+    max-inline-size: 100%;
+    vertical-align: bottom;
+  }
+
+  /* THE EDITOR — antd `Editable`.
+   *
+   * The textarea inherits the edited run's typography so editing is WYSIWYG; browsers do not
+   * inherit font properties into form controls, so all four are named. */
+  .ui-typography-edit {
+    position: relative;
+  }
+  .ui-typography-edit-textarea {
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+  }
+  .ui-typography-edit-confirm {
+    position: absolute;
+    inset-inline-end: var(--space-2);
+    inset-block-end: var(--space-1);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* The prose container. It owns nothing but the block rhythm between the runs inside it. */
+  .ui-typography {
+    color: hsl(var(--foreground));
+    overflow-wrap: break-word;
+  }
+}
+
+@layer components {
+  @keyframes ui-typography-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}

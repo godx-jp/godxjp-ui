@@ -491,6 +491,42 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Whitespace handling normal | pre-wrap: `pre-wrap` keeps the newlines and indentation a person typed (a plain-text note, a pasted log) and still wraps at the container edge; `truncate` outranks it",
   },
+  TypographyTypeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd Typography `type` — secondary | success | warning | danger. The narrower spelling of TextToneProp, accepted alongside it; `tone` wins when both are passed (secondary → muted, danger → destructive)",
+  },
+  TitleLevelProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd Typography.Title `level` — 1..5. Wider than HeadingLevelProp (1..4) because antd has a fifth step; level 5 reads --heading-h5, bound to the existing --font-size-2xs step",
+  },
+  TypographyCopyConfigProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd CopyConfig — { text, onCopy, icon, tooltips, format, tabIndex } for the copy affordance beside a run of text",
+  },
+  TypographyEditConfigProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd EditConfig — { text, editing, icon, tooltip, onStart, onChange, onCancel, onEnd, maxLength, autoSize, triggerType, enterIcon, tabIndex } for in-place text editing",
+  },
+  TypographyEllipsisConfigProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd EllipsisConfig — { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }; the richer spelling of this library truncate/clamp, and the winner when they collide",
+  },
+  TypographyActionsConfigProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "antd ActionsConfig — { placement: start | end } for the copy/edit/expand cluster. Logical, so it mirrors in RTL; NOT the ReactNode slot ActionsProp names",
+  },
   SizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -1500,6 +1536,54 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "general",
     file: "components/general.prop.ts",
     vocabulary: ["HeadingLevelProp", "TextToneProp", "TextAlignProp", "ClassNameProp"],
+  },
+  TypographyProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      "ChildrenProp",
+      {
+        field: "component",
+        local: true,
+        reason:
+          "antd `component` — the rendered element. An ALIAS of `as`, kept so antd code pastes in unchanged; `as` wins when both are passed.",
+      },
+    ],
+  },
+  TypographyBlockProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "TypographyTypeProp",
+      "TypographyActionsConfigProp",
+      "TypographyCopyConfigProp",
+      "TypographyEditConfigProp",
+      "TypographyEllipsisConfigProp",
+      "DisabledProp",
+    ],
+  },
+  TypographyTitleProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "TitleLevelProp",
+      "TextToneProp",
+      "TextAlignProp",
+      "FontWeightProp",
+      "TypographyEllipsisConfigProp",
+      "ClassNameProp",
+    ],
+  },
+  ParagraphProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["TypographyEllipsisConfigProp", "TextToneProp", "TextSizeProp", "ClassNameProp"],
+  },
+  LinkProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["TypographyEllipsisConfigProp", "TextToneProp", "TextSizeProp", "ClassNameProp"],
   },
   InputProp: {
     group: "data-entry",

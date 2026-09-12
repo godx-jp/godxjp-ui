@@ -1,7 +1,21 @@
 export { Button, buttonVariants } from "./button";
 export type { ButtonProps } from "./button";
-export { Text, Heading } from "./typography";
-export type { TextProps, HeadingProps, TextProp, HeadingProp } from "./typography";
+export { Text, Heading, Typography, Title, Paragraph, Link } from "./typography";
+export type {
+  TextProps,
+  HeadingProps,
+  TextProp,
+  HeadingProp,
+  TypographyProp,
+  TypographyProps,
+  TypographyBlockProp,
+  TypographyTitleProp,
+  TitleProps,
+  ParagraphProp,
+  ParagraphProps,
+  LinkProp,
+  LinkProps,
+} from "./typography";
 export { Logo } from "./logo";
 export type { LogoMark, LogoProps, LogoSize, LogoTone } from "./logo";
 export { Reveal } from "./reveal";

@@ -48,6 +48,29 @@ describe("use client detection (gh#128 — Next.js App Router RSC)", () => {
     expect(has("src/components/general/index.ts")).toBe(false); // re-export barrel stays server
     expect(has("src/index.ts")).toBe(false); // root admin surface barrel
     // a pure presentational component (no hooks, no client import) stays server-renderable
-    expect(has("src/components/general/typography.tsx")).toBe(false); // Text / Heading
+    expect(has("src/components/general/visually-hidden.tsx")).toBe(false);
+  });
+
+  it("records typography.tsx leaving the server set, and what that cost", () => {
+    // Text and Heading WERE server-renderable, and this file asserted it. antd's
+    // `Typography.Text` declares `copyable`, `editable` and `ellipsis`; all three need state, so
+    // porting them (docs/DESIGN-AUTHORITY.md — antd is the standard) takes a hook call and the
+    // module is stamped.
+    //
+    // The alternative was a SECOND component also called Text, one static and server, one
+    // complete and client — a worse failure than the one being accepted here. The cost is the
+    // bundle graph only: a server component may still RENDER <Text>, nothing about its API or
+    // its DOM changes, and `Button` (as ubiquitous, and beside almost every Text on a real
+    // screen) has been client all along, so a page with any control was already past the
+    // boundary.
+    //
+    // Pinned rather than deleted: if this ever flips back to false, someone removed the antd
+    // behaviour and should say so.
+    const client = [...clientSources()].map((p) => p.replace(/\\/g, "/"));
+    const has = (suffix: string) => client.some((p) => p.endsWith(suffix));
+    expect(has("src/components/general/typography.tsx")).toBe(true);
+    // The barrel STAYS server, which is what `check:use-client`'s MUST_BE_SERVER list depends on:
+    // the client fixpoint propagates only through `.tsx` files, and this one is `.ts`.
+    expect(has("src/components/general/index.ts")).toBe(false);
   });
 });

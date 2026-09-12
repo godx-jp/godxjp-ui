@@ -449,6 +449,9 @@
   ); /* ≈ 18px */
   --heading-h3: var(--font-size-base); /* 14px — h3 */
   --heading-h4: var(--font-size-xs); /* ≈ 12.5px — h4 */
+  /* h5 exists for antd's `Typography.Title level={5}`; `Heading` still stops at 4. It takes the
+   * next step DOWN the same scale rather than a new number — see TitleLevelProp. */
+  --heading-h5: var(--font-size-2xs); /* ≈ 11.1px — h5 (antd Title only) */
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
