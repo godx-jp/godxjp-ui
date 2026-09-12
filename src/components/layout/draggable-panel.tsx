@@ -165,6 +165,22 @@ export const DraggablePanel = React.forwardRef<HTMLElement, DraggablePanelProp>(
 
     React.useEffect(() => () => stopDrag.current?.(), []);
 
+    /*
+     * Re-clamp when the viewport shrinks so a persisted offset cannot strand the panel (gh#608).
+     * `window` `resize` matches `clampToViewport`, which reads `innerWidth`/`innerHeight` — not a
+     * `ResizeObserver` on the panel, which would not fire when only the viewport changes. We do not
+     * listen to `visualViewport` (mobile virtual keyboard): reclamp on keyboard show/hide would
+     * jump a panel the user may still be reading; file a follow-up if embeds need that path.
+     */
+    React.useEffect(() => {
+      if (bounds !== "viewport" || typeof window === "undefined") return;
+      const onResize = () => {
+        commit(currentRef.current);
+      };
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
+    }, [bounds, commit]);
+
     const setPanel = React.useCallback(
       (node: HTMLElement | null) => {
         panelRef.current = node;

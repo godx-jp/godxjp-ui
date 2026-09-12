@@ -214,6 +214,78 @@ describe("DraggablePanel — bounds, so it cannot be thrown off-screen and stran
     expect(offset(panel()).y).toBe(0);
     release();
   });
+
+  it("re-clamps on viewport resize when bounds=viewport and fires onPositionChange with the new offset", () => {
+    const onPositionChange = vi.fn();
+    renderWithUi(
+      <DraggablePanel
+        title="アシスタント"
+        defaultPosition={{ x: 104, y: 68 }}
+        onPositionChange={onPositionChange}
+      />,
+    );
+    // Resting box 600,300 + offset 104,68 → flush to 1024×768 (see clamp test above).
+    stubGeometry({ left: 600, top: 300, width: 320, height: 400 });
+    onPositionChange.mockClear();
+
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 800 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 600 });
+    fireEvent(window, new Event("resize"));
+
+    // maxLeft at 800: 800-320-600 = -120; maxTop at 600: 600-400-300 = -100.
+    expect(offset(panel())).toEqual({ x: -120, y: -100 });
+    expect(onPositionChange).toHaveBeenCalledTimes(1);
+    expect(onPositionChange).toHaveBeenLastCalledWith({ x: -120, y: -100 });
+  });
+
+  it("does not attach a viewport resize listener when bounds=none", () => {
+    const addSpy = vi.spyOn(window, "addEventListener");
+    renderWithUi(<DraggablePanel title="アシスタント" bounds="none" />);
+    const resizeCalls = addSpy.mock.calls.filter(([type]) => type === "resize");
+    expect(resizeCalls).toHaveLength(0);
+    addSpy.mockRestore();
+  });
+
+  it("does not re-clamp or report on viewport resize when bounds=none", () => {
+    const onPositionChange = vi.fn();
+    renderWithUi(
+      <DraggablePanel
+        title="アシスタント"
+        bounds="none"
+        defaultPosition={{ x: 104, y: 68 }}
+        onPositionChange={onPositionChange}
+      />,
+    );
+    stubGeometry({ left: 600, top: 300, width: 320, height: 400 });
+    onPositionChange.mockClear();
+
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 800 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 600 });
+    fireEvent(window, new Event("resize"));
+
+    expect(offset(panel())).toEqual({ x: 104, y: 68 });
+    expect(onPositionChange).not.toHaveBeenCalled();
+  });
+
+  it("does not fire onPositionChange on resize when the clamped position is unchanged", () => {
+    const onPositionChange = vi.fn();
+    renderWithUi(
+      <DraggablePanel
+        title="アシスタント"
+        defaultPosition={{ x: 0, y: 0 }}
+        onPositionChange={onPositionChange}
+      />,
+    );
+    stubGeometry({ left: 100, top: 100, width: 320, height: 400 });
+    onPositionChange.mockClear();
+
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 900 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 700 });
+    fireEvent(window, new Event("resize"));
+
+    expect(offset(panel())).toEqual({ x: 0, y: 0 });
+    expect(onPositionChange).not.toHaveBeenCalled();
+  });
 });
 
 describe("DraggablePanel — the keyboard path (WCAG 2.1.1)", () => {
