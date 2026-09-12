@@ -2189,6 +2189,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Leading glyph inside a row."
   },
   {
+    "name": "--conversations-line-gap",
+    "value": "var(--space-stack-xs)",
+    "description": "Gap between a row's label and its timestamp. The TIGHTEST stack step, because the two lines * are one thing being read, not two stacked items — anything larger and the row reads as two * rows in a rail that is already narrow."
+  },
+  {
     "name": "--conversations-group-gap",
     "value": "var(--space-1)",
     "description": "BUCKET HEADING (\"今日\" / \"Previous 7 days\")."
@@ -6804,6 +6809,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`auto` lets the face decide; a theme that wants a heavier rule names a length."
   },
   {
+    "name": "--text-action-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between the text and the operation cluster, and between the operations."
+  },
+  {
+    "name": "--text-action-color",
+    "value": "hsl(var(--primary))",
+    "description": "The operation reads as a link, because that is what it is — an affordance inside running text, * not a control box. Same reasoning as `Text`'s own `link` prop."
+  },
+  {
+    "name": "--text-action-color-hover",
+    "value": "hsl(var(--primary-hover))",
+    "description": "TEXT — knobs for the typographic primitive's link affordance. * * Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`, * `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`. * A link adds two things those tiers do not describe — how far the rule sits from the baseline, * and how heavy it is."
+  },
+  {
+    "name": "--text-action-size",
+    "value": "1em",
+    "description": "The icon box tracks the run it sits in: `em`, so a copy button beside `size=\"2xs\"` shrinks * with it instead of towering over the text."
+  },
+  {
+    "name": "--text-mark-background",
+    "value": "hsl(var(--warning))",
+    "description": "`<mark>` is a FILL plus the label measured against it — `--warning` / `--warning-foreground` * are exactly that pair. NOT `--text-warning`, which is the AA-safe INK tier and would paint a * dark yellow highlight with dark text on it."
+  },
+  {
+    "name": "--text-mark-foreground",
+    "value": "hsl(var(--warning-foreground))",
+    "description": "TEXT — knobs for the typographic primitive's link affordance. * * Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`, * `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`. * A link adds two things those tiers do not describe — how far the rule sits from the baseline, * and how heavy it is."
+  },
+  {
     "name": "--toggle-count-min-width",
     "value": "var(--space-4)",
     "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
@@ -7197,5 +7232,50 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--upload-crop-zoom-space-inline",
     "value": "var(--space-2)",
     "description": "Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never * flush against the dialog padding."
+  },
+  {
+    "name": "--welcome-gap",
+    "value": "var(--space-4)",
+    "description": "Gap between the glyph column and the text column."
+  },
+  {
+    "name": "--welcome-content-gap",
+    "value": "var(--space-1)",
+    "description": "Gap between the title row and the description."
+  },
+  {
+    "name": "--welcome-title-gap",
+    "value": "var(--space-3)",
+    "description": "Gap between the title and the `extra` slot on the title row."
+  },
+  {
+    "name": "--welcome-padding-block",
+    "value": "var(--space-4)",
+    "description": "Inset of the `filled` form. `borderless` drops it to zero."
+  },
+  {
+    "name": "--welcome-padding-inline",
+    "value": "var(--space-4)",
+    "description": "Welcome component tokens — the greeting block at the head of an empty conversation * (Ant Design X `Welcome`). * * Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file * is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every * Welcome on every surface follows."
+  },
+  {
+    "name": "--welcome-radius",
+    "value": "var(--radius-lg)",
+    "description": "Welcome component tokens — the greeting block at the head of an empty conversation * (Ant Design X `Welcome`). * * Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file * is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every * Welcome on every surface follows."
+  },
+  {
+    "name": "--welcome-icon-size",
+    "value": "var(--icon-size-xl)",
+    "description": "The glyph column. A square, so an image icon and an SVG icon occupy the same track."
+  },
+  {
+    "name": "--welcome-filled-background",
+    "value": "initial",
+    "description": "`filled` chrome. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default * resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. * Default ground = hsl(var(--muted))"
+  },
+  {
+    "name": "--welcome-filled-border",
+    "value": "initial",
+    "description": "`outlined` is not an Ant X variant; the hairline below belongs to `filled` only."
   }
 ];
