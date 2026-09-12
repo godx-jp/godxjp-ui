@@ -20,13 +20,22 @@ if (skip) process.exit(0); // silent: CI / opt-out / self-install / no consumer 
 
 try {
   const r = ensureMcpJson(root);
+  // A refusal is a full sentence, not one of the three status words — say it on its own line
+  // rather than folding it into "MCP in .mcp.json (…)", where it would read as a success.
+  if (r.startsWith("left untouched")) {
+    console.log(`\n  @godxjp/ui → .mcp.json ${r}\n`);
+  }
   // The mandate is plain text the agent reads every turn (CLAUDE.md block + workflow file). It
   // changes nothing in the dev loop, so it is installed by default: an agent that never saw the
   // but no mandate). Only the hooks — which DO change the loop — stay behind `init-agent`.
   const md = ensureClaudeMd(root);
+  if (md.startsWith("left untouched")) {
+    console.log(`  @godxjp/ui → CLAUDE.md ${md}\n`);
+  }
   const wf = writeWorkflowMd(root);
   const skill = refreshGuineaPigSkill(root);
   const rules = ensureConsumerRules(root);
+  if (r.startsWith("left untouched") || md.startsWith("left untouched")) process.exit(0); // already reported
   if (r === "present" && md === "present" && !wf && !skill && !rules) process.exit(0); // current — stay quiet
   console.log(
     `\n  @godxjp/ui → MCP in .mcp.json (${r}); workflow mandate in CLAUDE.md (${md}).\n` +

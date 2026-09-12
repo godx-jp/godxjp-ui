@@ -3,10 +3,16 @@
  * init-agent-kit.mjs (explicit, full kit). Every writer is IDEMPOTENT and
  * NON-DESTRUCTIVE: it only creates a missing file or ADDS a missing key, never
  * overwrites existing config.
+ *
+ * That sentence was a claim, not a guarantee, until gh#541: `readJson` returned `null` for BOTH
+ * "no file" and "file I cannot parse", so `readJson(path) ?? {}` read a consumer's malformed
+ * `.mcp.json` as an empty one and wrote over it — their other MCP servers went with it, silently.
+ * The guarantee is now structural: a file that exists but cannot be read, parsed, or recognised is
+ * NEVER written to. We leave a `.godxjp-ui-suggested` sidecar next to it and say so.
  */
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /** The godxjp-ui MCP server — pulled on demand via npx (no extra dependency to ship). */
@@ -19,6 +25,14 @@ export const MCP_KEY = "godx-ui";
 /** Commands wired into the consumer's .claude/settings.json. */
 export const AUDIT_HOOK_CMD = "node node_modules/@godxjp/ui/scripts/audit-hook.mjs";
 export const PRIMER_CMD = "cat .claude/godxjp-ui-workflow.md";
+
+/** What `.claude/settings.json` would get, used only for the `.godxjp-ui-suggested` sidecar. */
+const SUGGESTED_HOOKS = {
+  PostToolUse: [
+    { matcher: "Write|Edit|MultiEdit", hooks: [{ type: "command", command: AUDIT_HOOK_CMD }] },
+  ],
+  SessionStart: [{ hooks: [{ type: "command", command: PRIMER_CMD }] }],
+};
 
 /** The per-session workflow mandate the SessionStart hook injects into the agent. */
 export const KIT_VERSION = readJson(join(SELF_ROOT, "package.json"))?.version ?? "0.0.0";
@@ -145,12 +159,65 @@ Full guide: \`.claude/godxjp-ui-workflow.md\`.
 <!-- godxjp-ui:end -->
 `;
 
-function readJson(path) {
+/**
+ * Read a JSON file and say WHICH failure happened. Collapsing "absent" and "corrupt" into one
+ * `null` is the whole of gh#541 — see the module header.
+ *
+ * @returns {{state:"ok",json:object}|{state:"missing"}|{state:"unreadable"}|{state:"invalid-json"}|{state:"wrong-shape"}}
+ */
+function readJsonFile(path) {
+  let raw;
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
-  } catch {
-    return null;
+    raw = readFileSync(path, "utf8");
+  } catch (error) {
+    return error.code === "ENOENT" ? { state: "missing" } : { state: "unreadable" };
   }
+  let json;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    return { state: "invalid-json" };
+  }
+  // `JSON.parse` happily returns `null`, `[]` or `"text"`. Merging keys into any of those and
+  // writing the result back is the same data loss by a different door, so it is a refusal too.
+  if (json === null || typeof json !== "object" || Array.isArray(json))
+    return { state: "wrong-shape" };
+  return { state: "ok", json };
+}
+
+/** The sentence that goes in the refusal, so a consumer knows which of the three it hit. */
+const READ_FAILURE = {
+  "invalid-json": "not valid JSON",
+  "wrong-shape": "JSON, but not an object",
+  unreadable: "unreadable",
+};
+
+/** Unusable-as-absent — only for the read-only callers, which never write anything back. */
+function readJson(path) {
+  const read = readJsonFile(path);
+  return read.state === "ok" ? read.json : null;
+}
+
+/**
+ * Write through a temp file + rename. `writeFileSync` is NOT atomic: an interrupt mid-write (^C
+ * during `npm install`, a full disk, the OOM killer) leaves a truncated file behind, which the
+ * next run reads as malformed. That is how the two halves of gh#541 fed each other — one bad
+ * write manufactured the precondition for the overwrite.
+ */
+function writeFileAtomic(path, data) {
+  const tmp = `${path}.godxjp-ui-tmp`;
+  writeFileSync(tmp, data);
+  renameSync(tmp, path);
+}
+
+/**
+ * Refuse to touch `path`, leave what we WOULD have written beside it, and return the sentence the
+ * caller prints. A diff the consumer can read beats a config we guessed at.
+ */
+function refuseAndSuggest(path, data, reason) {
+  const suggested = `${path}.godxjp-ui-suggested`;
+  writeFileAtomic(suggested, data);
+  return `left untouched (${reason}) — see ${basename(suggested)}`;
 }
 
 /** Ensure `.mcp.json` registers the godx-ui MCP server. Returns 'created' | 'added' | 'present'. */
@@ -164,22 +231,61 @@ function readJson(path) {
  * agent reading whatever guidance shipped the day the package was FIRST installed. The library
  * moved; the instructions for using it did not.
  */
+/**
+ * Replace the delimited managed region, or REFUSE.
+ *
+ * The old shape set `tail = ""` when the closing marker was missing and returned
+ * `current.slice(0, i) + next` — so a file whose end marker had been deleted (or truncated away by
+ * a half-finished write) lost everything after the opening marker. Whatever the consumer wrote
+ * below our block was simply gone (gh#541).
+ *
+ * There is no safe way to guess where a region ends, so we do not guess. Two refusals, both
+ * returning `null` for the caller to report:
+ *   • the opening marker appears more than once — which region is ours is ambiguous;
+ *   • the closing marker is missing — the region has no end.
+ * A closing marker that appears more than once is NOT a refusal: the first one after the opening
+ * marker is the region's end, and everything past it is preserved either way.
+ *
+ * @returns {string|null} the rewritten file, or `null` to say "do not write".
+ */
 export function refreshBlock(current, next, startMarker, endMarker) {
-  const i = current.indexOf(startMarker);
-  if (i < 0) return current.replace(/\s*$/, "") + "\n\n" + next;
-  const j = endMarker ? current.indexOf(endMarker, i) : -1;
-  const tail = j < 0 ? "" : current.slice(j + endMarker.length);
-  return current.slice(0, i) + next + tail;
+  const first = current.indexOf(startMarker);
+  if (first < 0) return current.replace(/\s*$/, "") + "\n\n" + next;
+  if (current.indexOf(startMarker, first + startMarker.length) >= 0) return null;
+  if (!endMarker) return null;
+  const j = current.indexOf(endMarker, first);
+  if (j < 0) return null;
+  return current.slice(0, first) + next + current.slice(j + endMarker.length);
 }
 
 export function ensureMcpJson(root) {
   const path = join(root, ".mcp.json");
-  const json = readJson(path) ?? {};
+  const read = readJsonFile(path);
+  if (read.state !== "ok" && read.state !== "missing") {
+    return refuseAndSuggest(
+      path,
+      JSON.stringify({ mcpServers: { [MCP_KEY]: MCP_SERVER } }, null, 2) + "\n",
+      READ_FAILURE[read.state],
+    );
+  }
+  const json = read.state === "ok" ? read.json : {};
+  if (
+    json.mcpServers !== undefined &&
+    (json.mcpServers === null ||
+      typeof json.mcpServers !== "object" ||
+      Array.isArray(json.mcpServers))
+  ) {
+    return refuseAndSuggest(
+      path,
+      JSON.stringify({ mcpServers: { [MCP_KEY]: MCP_SERVER } }, null, 2) + "\n",
+      "`mcpServers` is not an object",
+    );
+  }
   json.mcpServers = json.mcpServers ?? {};
   if (json.mcpServers[MCP_KEY]) return "present";
-  const created = !existsSync(path);
+  const created = read.state === "missing";
   json.mcpServers[MCP_KEY] = MCP_SERVER;
-  writeFileSync(path, JSON.stringify(json, null, 2) + "\n");
+  writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
   return created ? "created" : "added";
 }
 
@@ -187,7 +293,31 @@ export function ensureMcpJson(root) {
 export function ensureClaudeHooks(root) {
   const path = join(root, ".claude", "settings.json");
   mkdirSync(dirname(path), { recursive: true });
-  const json = readJson(path) ?? {};
+  const read = readJsonFile(path);
+  if (read.state !== "ok" && read.state !== "missing") {
+    // Same guard as ensureMcpJson, and the reason it is here rather than only there: this file
+    // holds the consumer's OWN hooks. Rewriting it from `{}` silently unhooks their tooling.
+    return [
+      refuseAndSuggest(
+        path,
+        JSON.stringify({ hooks: SUGGESTED_HOOKS }, null, 2) + "\n",
+        READ_FAILURE[read.state],
+      ),
+    ];
+  }
+  const json = read.state === "ok" ? read.json : {};
+  if (
+    json.hooks !== undefined &&
+    (json.hooks === null || typeof json.hooks !== "object" || Array.isArray(json.hooks))
+  ) {
+    return [
+      refuseAndSuggest(
+        path,
+        JSON.stringify({ hooks: SUGGESTED_HOOKS }, null, 2) + "\n",
+        "`hooks` is not an object",
+      ),
+    ];
+  }
   json.hooks = json.hooks ?? {};
   const added = [];
 
@@ -209,7 +339,7 @@ export function ensureClaudeHooks(root) {
     added.push("SessionStart:workflow-primer");
   }
 
-  writeFileSync(path, JSON.stringify(json, null, 2) + "\n");
+  writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
   return added;
 }
 
@@ -225,10 +355,10 @@ export function writeWorkflowMd(root) {
   if (existsSync(path)) {
     const cur = readFileSync(path, "utf8");
     if (cur.trim() === WORKFLOW_MD.trim()) return false;
-    writeFileSync(path, WORKFLOW_MD);
+    writeFileAtomic(path, WORKFLOW_MD);
     return "refreshed";
   }
-  writeFileSync(path, WORKFLOW_MD);
+  writeFileAtomic(path, WORKFLOW_MD);
   return true;
 }
 
@@ -248,7 +378,8 @@ function blockIsCurrent(existing, block) {
   const wanted = stampedDigest(block);
   const have = stampedDigest(existing);
   if (wanted && have) return wanted === have;
-  const region = (text) => text.slice(text.indexOf("<!-- godxjp-ui:start"), text.indexOf("<!-- godxjp-ui:end -->"));
+  const region = (text) =>
+    text.slice(text.indexOf("<!-- godxjp-ui:start"), text.indexOf("<!-- godxjp-ui:end -->"));
   return region(existing).trim() === region(block).trim();
 }
 
@@ -264,17 +395,22 @@ export function ensureClaudeMd(root) {
     // reached nobody, and the block still read as current. A file written before digest stamping
     // has no digest at all, so fall back to comparing the rendered body.
     if (blockIsCurrent(existing, CLAUDE_MD_BLOCK)) return "present";
-    writeFileSync(
-      path,
-      refreshBlock(existing, CLAUDE_MD_BLOCK, "<!-- godxjp-ui:start", "<!-- godxjp-ui:end -->"),
+    const next = refreshBlock(
+      existing,
+      CLAUDE_MD_BLOCK,
+      "<!-- godxjp-ui:start",
+      "<!-- godxjp-ui:end -->",
     );
+    if (next === null)
+      return refuseAndSuggest(path, CLAUDE_MD_BLOCK, "godxjp-ui markers are broken");
+    writeFileAtomic(path, next);
     return "refreshed";
   }
   if (existing == null) {
-    writeFileSync(path, CLAUDE_MD_BLOCK);
+    writeFileAtomic(path, CLAUDE_MD_BLOCK);
     return "created";
   }
-  writeFileSync(path, existing.replace(/\s*$/, "") + "\n\n" + CLAUDE_MD_BLOCK);
+  writeFileAtomic(path, existing.replace(/\s*$/, "") + "\n\n" + CLAUDE_MD_BLOCK);
   return "appended";
 }
 
@@ -323,8 +459,8 @@ export function refreshGuineaPigSkill(root) {
   const current = readFileSync(target, "utf8");
   const marker = "\n---\n\n# 8. ";
   const i = current.indexOf(marker);
-  writeFileSync(target, base.replace(/\s*$/, "") + "\n" + (i < 0 ? "" : current.slice(i)));
-  writeFileSync(optin, `${stamp}\n`);
+  writeFileAtomic(target, base.replace(/\s*$/, "") + "\n" + (i < 0 ? "" : current.slice(i)));
+  writeFileAtomic(optin, `${stamp}\n`);
   return true;
 }
 
@@ -370,7 +506,7 @@ export function ensureConsumerRules(root) {
     return false;
   }
   mkdirSync(dir, { recursive: true });
-  writeFileSync(target, next);
+  writeFileAtomic(target, next);
 
   // Prettier and this writer were fighting over the same file: the body holds aligned markdown
   // tables, Prettier reformats them, the digest changes, the next install writes it back, and
@@ -383,7 +519,7 @@ export function ensureConsumerRules(root) {
       (line) => !cur.includes(line),
     );
     if (owned.length) {
-      writeFileSync(
+      writeFileAtomic(
         ignoreFile,
         `${cur.replace(/\s*$/, "")}\n\n# Owned by @godxjp/ui — rewritten on every install, never hand-formatted.\n${owned.join("\n")}\n`,
       );
@@ -396,7 +532,7 @@ export function ensureConsumerRules(root) {
   if (existsSync(index)) {
     const cur = readFileSync(index, "utf8");
     if (!cur.includes(".ai/rules/godxjp-ui.md")) {
-      writeFileSync(
+      writeFileAtomic(
         index,
         cur.replace(/\s*$/, "") + `\n| ${uiDir}/** | .ai/rules/godxjp-ui.md |\n`,
       );
