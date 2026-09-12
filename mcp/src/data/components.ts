@@ -36,6 +36,17 @@ export interface ComponentEntry {
   useCases?: string[];
   /** Sibling/replacement components it is confused with, and when to pick each. */
   related?: string[];
+  /**
+   * Other PUBLIC exports this entry is the documentation for: compound sub-parts (`CardHeader`,
+   * `DialogFooter`), aliases (`StatusBadge` → `Badge`) and compatibility shims (`ScrollBar`).
+   *
+   * This is not decoration. `check:mcp-catalog-completeness` enumerates every component exported
+   * from a public subpath and demands that each one is either an entry name or named here by
+   * exactly one entry — so a name folded into a parent is a RECORDED decision rather than
+   * something inferred from its spelling. It is also what lets `get_component name="CardCover"`
+   * answer with Card instead of "not found", which is the failure gh#526 was filed for.
+   */
+  subParts?: string[];
   /** Deprecated components stay catalogued (so agents are steered to the replacement) but are flagged. */
   deprecated?: boolean;
   example: string;
@@ -1474,6 +1485,7 @@ export function HandyInbound() {
   },
   {
     name: "Sidebar",
+    subParts: ["SidebarHeader", "SidebarItem", "SidebarSection"],
     group: "layout",
     tagline:
       "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons.",
@@ -2483,6 +2495,7 @@ export function TermsPage() {
   // ─── general ────────────────────────────────────────────────────────────
   {
     name: "Button",
+    subParts: ["ButtonRefetch"],
     group: "general",
     tagline: "Core button with variant + size presets, built on cva and Radix Slot (asChild).",
     props: [
@@ -3396,6 +3409,14 @@ export default function InvoiceList({
   },
   {
     name: "Card",
+    subParts: [
+      "CardAction",
+      "CardCover",
+      "CardDescription",
+      "CardFooter",
+      "CardHeader",
+      "CardTitle",
+    ],
     group: "data-display",
     tagline:
       'Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card.',
@@ -3609,6 +3630,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
   },
   {
     name: "ServiceLauncherCard",
+    subParts: ["ServiceLauncherCardSkeleton"],
     group: "data-display",
     tagline:
       "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA.",
@@ -3724,7 +3746,64 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     rules: [40],
   },
   {
+    name: "ServiceCatalogCta",
+    group: "data-display",
+    tagline:
+      "Dashed companion tile that closes a launcher grid with the real catalog/add route — same Card geometry as ServiceLauncherCard, no status or metadata.",
+    props: [
+      {
+        name: "icon",
+        type: "LucideIcon",
+        defaultValue: "Plus",
+        description:
+          "Decorative glyph above the title, rendered aria-hidden. Override only when the route is not an add/browse action.",
+      },
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description: "Localized invitation, e.g. the label of the catalog route this tile opens.",
+      },
+      {
+        name: "action",
+        type: "ReactNode",
+        required: true,
+        description:
+          "The real navigation control — normally a Button, or Button asChild wrapping the catalog link. The tile itself is not clickable.",
+      },
+    ],
+    usage: [
+      "DO render it as the LAST child of the same ResponsiveGrid that holds the ServiceLauncherCards, so it inherits the 3→2→1 ladder and lines up with the tiles it follows.",
+      "DO give it a route that already exists. It is an invitation to a real catalog/add screen; a tile whose action goes nowhere reads as a broken service.",
+      "DON'T use it as an empty state for a grid that has no services — an empty launcher grid needs Empty, which explains the absence, not a CTA that implies there is something to add.",
+      "DON'T rebuild it as a Card with a dashed border and utility padding: the dashed surface, the medallion and the internal rhythm are token-owned (--card-service-launcher-*), same as the launcher tile.",
+    ],
+    useCases: [
+      "Closing tile of an organization console launcher grid, linking to the service catalog.",
+      "Add-a-service affordance beside the subscribed applications an admin already has.",
+    ],
+    related: [
+      "ServiceLauncherCard — the real service tile this one accompanies; it carries status, metadata and the launch action.",
+      "ServiceLauncherCardSkeleton — the loading placeholder for the launcher tiles, documented under ServiceLauncherCard.",
+      "EmptyState — the zero-state primitive to reach for when the grid has NO services at all; this CTA is a companion to existing tiles, not an empty state.",
+    ],
+    example: `import { ServiceCatalogCta } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+
+<ServiceCatalogCta
+  title={t("addFromCatalog")}
+  action={
+    <Button asChild variant="outline">
+      <a href={catalogUrl}>{t("viewCatalog")}</a>
+    </Button>
+  }
+/>`,
+    storyPath: "data-display/ServiceLauncherCard.stories.tsx",
+    rules: [40],
+  },
+  {
     name: "Badge",
+    subParts: ["StatusBadge"],
     group: "data-display",
     tagline:
       "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap.",
@@ -4726,6 +4805,7 @@ import remarkGfm from "remark-gfm";
   },
   {
     name: "Table",
+    subParts: ["TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"],
     group: "data-display",
     tagline:
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
@@ -5196,6 +5276,7 @@ import remarkGfm from "remark-gfm";
   },
   {
     name: "FormErrors",
+    subParts: ["FormErrorsProvider"],
     group: "data-entry",
     tagline:
       "The 'no field to stand on' error summary — renders the entries of the surrounding Form's server error bag that no mounted FormField name='…' claims: validation errors on hidden/derived fields (action_mode, page, a source-record id) that would otherwise fail silently. Composed on Alert tone='destructive' (role='alert'); renders nothing while every entry is claimed or the bag is empty.",
@@ -5627,6 +5708,17 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
   },
   {
     name: "Select",
+    subParts: [
+      "SelectContent",
+      "SelectGroup",
+      "SelectItem",
+      "SelectLabel",
+      "SelectScrollDownButton",
+      "SelectScrollUpButton",
+      "SelectSeparator",
+      "SelectTrigger",
+      "SelectValue",
+    ],
     group: "data-entry",
     tagline:
       "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>.",
@@ -6385,6 +6477,7 @@ export function PrioritySelect({ value, onValueChange }) {
   },
   {
     name: "Checkbox",
+    subParts: ["CheckboxVisual"],
     group: "data-entry",
     tagline:
       'Checkbox on react-aria-components; standalone or via CheckboxGroup with an options array. `role="checkbox"` is the real `<input>`; the painted box is the `<label>` around it and carries `data-state`.',
@@ -6448,6 +6541,7 @@ export function PrioritySelect({ value, onValueChange }) {
   },
   {
     name: "RadioGroup",
+    subParts: ["RadioGroupRoot"],
     group: "data-entry",
     tagline: "Radio group accepting an options array or RadioItem children.",
     props: [
@@ -6839,6 +6933,21 @@ export function BillingFields() {
   // ─── feedback ───────────────────────────────────────────────────────────
   {
     name: "Dialog",
+    subParts: [
+      "DialogAction",
+      "DialogBody",
+      "DialogCancel",
+      "DialogClose",
+      "DialogContent",
+      "DialogDescription",
+      "DialogFooter",
+      "DialogHeader",
+      "DialogOverlay",
+      "DialogPortal",
+      "DialogRoot",
+      "DialogTitle",
+      "DialogTrigger",
+    ],
     group: "feedback",
     tagline:
       "Compound modal. Controlled via open + onOpenChange. Parts available flat (DialogTrigger/DialogContent/…) or as Dialog.Trigger/Dialog.Content. Rendered with role=dialog.",
@@ -6895,6 +7004,18 @@ function CreateDialog() {
   },
   {
     name: "AlertDialog",
+    subParts: [
+      "AlertDialogAction",
+      "AlertDialogCancel",
+      "AlertDialogContent",
+      "AlertDialogDescription",
+      "AlertDialogFooter",
+      "AlertDialogHeader",
+      "AlertDialogOverlay",
+      "AlertDialogPortal",
+      "AlertDialogTitle",
+      "AlertDialogTrigger",
+    ],
     group: "feedback",
     tagline:
       'Canonical modal confirmation flow (destructive / high-stakes decisions). Preserves confirm semantics with `role="alertdialog"` and built-in cancel/confirm handling.',
@@ -7069,6 +7190,18 @@ function ConfirmSettlement() {
   },
   {
     name: "Sheet",
+    subParts: [
+      "SheetBody",
+      "SheetClose",
+      "SheetContent",
+      "SheetDescription",
+      "SheetFooter",
+      "SheetHeader",
+      "SheetOverlay",
+      "SheetPortal",
+      "SheetTitle",
+      "SheetTrigger",
+    ],
     group: "feedback",
     tagline:
       "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
@@ -7140,6 +7273,15 @@ import { Button } from "@godxjp/ui/general";
   },
   {
     name: "Alert",
+    subParts: [
+      "AlertActions",
+      "AlertBase",
+      "AlertContent",
+      "AlertDescription",
+      "AlertMutationFeedback",
+      "AlertQueryError",
+      "AlertTitle",
+    ],
     group: "feedback",
     tagline:
       "Inline alert banner with variant-aware icon + optional dismiss. Parts: Alert/AlertTitle/AlertDescription/AlertActions/AlertQueryError.",
@@ -7351,6 +7493,7 @@ toast.error("保存に失敗しました");`,
   // ─── navigation ─────────────────────────────────────────────────────────
   {
     name: "Tabs",
+    subParts: ["TabsContent", "TabsList", "TabsTrigger"],
     group: "navigation",
     tagline:
       "Radix tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control.",
@@ -7518,6 +7661,14 @@ toast.error("保存に失敗しました");`,
   },
   {
     name: "Pagination",
+    subParts: [
+      "PaginationContent",
+      "PaginationEllipsis",
+      "PaginationItem",
+      "PaginationLink",
+      "PaginationNext",
+      "PaginationPrevious",
+    ],
     group: "navigation",
     tagline: "Offset/page-based pagination bar. Sits below a table card.",
     props: [
@@ -7639,6 +7790,22 @@ toast.error("保存に失敗しました");`,
   },
   {
     name: "DropdownMenu",
+    subParts: [
+      "DropdownMenuCheckboxItem",
+      "DropdownMenuContent",
+      "DropdownMenuGroup",
+      "DropdownMenuItem",
+      "DropdownMenuLabel",
+      "DropdownMenuPortal",
+      "DropdownMenuRadioGroup",
+      "DropdownMenuRadioItem",
+      "DropdownMenuSeparator",
+      "DropdownMenuShortcut",
+      "DropdownMenuSub",
+      "DropdownMenuSubContent",
+      "DropdownMenuSubTrigger",
+      "DropdownMenuTrigger",
+    ],
     group: "navigation",
     tagline:
       "Dropdown menu (react-aria). Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator. `trigger` picks the gestures — click (default), hover, or contextMenu, which is what replaced the deleted ContextMenu component.",
@@ -7846,6 +8013,7 @@ import { Button } from "@godxjp/ui/general";
   },
   {
     name: "Toolbar",
+    subParts: ["ToolbarGroup"],
     group: "navigation",
     tagline:
       "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky.",
@@ -8097,6 +8265,55 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
   {children}
 </AppProvider>`,
     storyPath: "app/AppProvider.stories.tsx",
+    rules: [5],
+  },
+  {
+    name: "OverlayPortalProvider",
+    group: "providers",
+    importPath: "@godxjp/ui/app",
+    tagline:
+      "Moves EVERY overlay in this library (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard, Select, Cascader) into a container you name — the one thing an app mounted inside a SHADOW ROOT cannot do with props.",
+    props: [
+      {
+        name: "container",
+        type: "Element | undefined",
+        required: true,
+        description:
+          "The element overlays render into — pass the shadow root, or any element inside it. `undefined` restores the document.body default, so a subtree can opt back out.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "The subtree whose overlays are relocated.",
+      },
+    ],
+    usage: [
+      "DO mount it when this library is rendered inside a shadow root (an embedded bar, a widget injected into a host page, a Web Component wrapper). Overlays default to document.body, which is outside the tree carrying this library's stylesheet — measured on an embedded bar as border 0, radius 0, a transparent background and the anchor maths 40px off.",
+      "DO wrap the whole embedded subtree ONCE, the same way AppProvider is mounted once. Where overlays render is a fact about the tree, not about any one control, and a component that owns its own overlay (AppLauncher) has no prop a consumer could reach it through.",
+      "DO expect it to fix DISMISSAL and FOCUS too, not just paint: mounting it switches react-aria onto its shadow-DOM code paths, without which the click that opened an overlay reads as a click outside it (an embedded launchpad that opened and shut on one press) and a focus scope believes focus never entered the dialog.",
+      "DON'T mount it on an ordinary page. document.body is the right destination there, and the provider is not a styling knob — it changes nothing you would want changed outside a shadow root.",
+      "DON'T look for a per-overlay container prop instead. There is none by design; a consumer asked to remember six of them gets five right.",
+    ],
+    useCases: [
+      "A GoDX bar or launchpad injected into a third-party page inside a shadow root, where its Popover and DropdownMenu must stay styled and dismissable.",
+      "A Web Component wrapper around an app built with this library, mounting the React tree in its own shadow DOM.",
+      "A widget embedded in a host that happens to load this library too — the case where the default is not obviously broken, only subtly wrong, until the first host that does not load it.",
+    ],
+    related: [
+      "AppProvider — the other root-level provider (locale, timezone, theme axes). Both are mounted once at the root; neither replaces the other.",
+      "Popover — one of the overlays this provider relocates; its own `container` has no prop equivalent.",
+      "Dialog — likewise portals to document.body unless this provider names another container.",
+    ],
+    example: `import { OverlayPortalProvider } from "@godxjp/ui/app";
+
+// The React root lives inside a shadow root, so every overlay must portal there too.
+const shadowRoot = host.attachShadow({ mode: "open" });
+
+<OverlayPortalProvider container={shadowRoot}>
+  <AppProvider defaultLocale="ja">{children}</AppProvider>
+</OverlayPortalProvider>`,
+    storyPath: "app/OverlayPortalProvider.stories.tsx",
     rules: [5],
   },
   {
@@ -10181,6 +10398,7 @@ export function ReportRangeFilter() {
   },
   {
     name: "Command",
+    subParts: ["CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList"],
     group: "data-entry",
     tagline:
       "Accessible, keyboard-navigable command palette / combobox list built on cmdk — always pair CommandInput inside its own wrapper div, never render items outside CommandList.",
@@ -10504,6 +10722,7 @@ export function ControlledExample() {
   },
   {
     name: "Radio",
+    subParts: ["RadioItem"],
     group: "data-entry",
     tagline:
       'Radio group on react-aria-components, with an options-array shorthand — always use Radio.Group, never a bare radio input. `role="radio"` is the real `<input>`; the painted dot is the `<label>` around it and carries `data-state`.',
@@ -10635,6 +10854,14 @@ function CustomRadioGroup() {
   },
   {
     name: "Popover",
+    subParts: [
+      "PopoverAnchor",
+      "PopoverContent",
+      "PopoverDescription",
+      "PopoverHeader",
+      "PopoverTitle",
+      "PopoverTrigger",
+    ],
     group: "data-display",
     tagline:
       "Radix-backed floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay.",
@@ -10791,6 +11018,7 @@ export function ControlledPopover() {
   },
   {
     name: "ScrollArea",
+    subParts: ["ScrollBar"],
     group: "data-display",
     tagline:
       "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
@@ -10941,6 +11169,7 @@ const [atNewest, setAtNewest] = React.useState(true);
   },
   {
     name: "Collapsible",
+    subParts: ["CollapsibleContent", "CollapsibleTrigger"],
     group: "data-display",
     tagline:
       "Three-part compound (Collapsible + CollapsibleTrigger + CollapsibleContent) that toggles a region open/closed — never use just one part alone.",
@@ -11291,6 +11520,7 @@ export function PermissionTree() {
   },
   {
     name: "Tooltip",
+    subParts: ["TooltipContent", "TooltipProvider", "TooltipTrigger"],
     group: "feedback",
     tagline:
       "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
@@ -11525,6 +11755,7 @@ import { fetchInvoice } from "@/api/invoices";
   },
   {
     name: "Avatar",
+    subParts: ["AvatarFallback", "AvatarImage"],
     group: "data-display",
     tagline: "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
     props: [
@@ -11699,6 +11930,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Skeleton",
+    subParts: ["SkeletonDetail", "SkeletonRows", "SkeletonStat"],
     group: "feedback",
     tagline:
       "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
@@ -12046,6 +12278,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "ToggleGroup",
+    subParts: ["ToggleGroupItem"],
     group: "data-entry",
     tagline: "Radix ToggleGroup wrapper for single or multiple toggle selection.",
     props: [
@@ -12143,6 +12376,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Accordion",
+    subParts: ["AccordionContent", "AccordionItem", "AccordionTrigger"],
     group: "data-display",
     tagline:
       "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
@@ -12198,6 +12432,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "HoverCard",
+    subParts: ["HoverCardContent", "HoverCardTrigger"],
     group: "data-display",
     tagline:
       "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text).",
@@ -12372,6 +12607,7 @@ export default function PasswordBlock() {
   },
   {
     name: "InputOTP",
+    subParts: ["InputOTPGroup", "InputOTPSeparator", "InputOTPSlot"],
     group: "data-entry",
     tagline:
       "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot.",
@@ -12703,6 +12939,7 @@ export default function PasswordBlock() {
   },
   {
     name: "ResizablePanel",
+    subParts: ["ResizableHandle", "ResizablePanelGroup"],
     group: "layout",
     tagline: "Resizable panel group/child/handle primitives from react-resizable-panels.",
     props: [
@@ -12776,6 +13013,13 @@ export default function PasswordBlock() {
   },
   {
     name: "Carousel",
+    subParts: [
+      "CarouselContent",
+      "CarouselDots",
+      "CarouselItem",
+      "CarouselNext",
+      "CarouselPrevious",
+    ],
     group: "data-display",
     tagline:
       "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API.",
@@ -14218,6 +14462,7 @@ import { Badge } from "@godxjp/ui/data-display";
   },
   {
     name: "FilterBar",
+    subParts: ["FilterBarGroup"],
     group: "navigation",
     tagline:
       "Domain-neutral list-page filter toolbar with optional clear action and labelled groups.",
@@ -15097,6 +15342,22 @@ const messages: ChatMessageProp[] = [
 export function findComponent(name: string): ComponentEntry | undefined {
   const normalized = name.trim().toLowerCase();
   return COMPONENTS.find((c) => c.name.toLowerCase() === normalized);
+}
+
+/**
+ * The entry that DOCUMENTS a public export which has no entry of its own — `CardCover` → `Card`,
+ * `StatusBadge` → `Badge`, `ScrollBar` → `ScrollArea`.
+ *
+ * gh#526 was filed because `get_component name="CardCover"` answered "not found. Use
+ * `list_primitives` to discover" for a name the catalog had itself told the reader to reach for.
+ * "Not found" and "documented under its parent" are different answers, and only one of them is
+ * true. `check:mcp-catalog-completeness` guarantees every public export is one or the other.
+ */
+export function findSubPartOwner(name: string): ComponentEntry | undefined {
+  const normalized = name.trim().toLowerCase();
+  return COMPONENTS.find((c) =>
+    (c.subParts ?? []).some((part) => part.toLowerCase() === normalized),
+  );
 }
 
 export function componentsByGroup(group: ComponentGroup): ComponentEntry[] {

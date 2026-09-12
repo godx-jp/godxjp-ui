@@ -14,6 +14,7 @@ import {
   COMPONENTS,
   componentsByGroup,
   findComponent,
+  findSubPartOwner,
   type ComponentGroup,
 } from "../data/components.js";
 import { PROP_VOCABULARY, findVocab } from "../data/prop-vocabulary.js";
@@ -821,7 +822,21 @@ function componentTokensFor(name: string) {
 
 function getComponent(name: string, verbose = false): string {
   const c = findComponent(name);
-  if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
+  if (!c) {
+    // A public export with no entry of its own is DOCUMENTED, not missing — say which entry has
+    // it. Answering "not found" for a shipped name is what sends an agent off to hand-roll it
+    // (gh#526); `check:mcp-catalog-completeness` is what keeps this branch exhaustive.
+    const owner = findSubPartOwner(name);
+    if (owner) {
+      return (
+        `\`${name}\` ships, and it is documented as part of **${owner.name}** — it has no separate ` +
+        `entry because it is a compound sub-part, alias or shim of that component.\n\n` +
+        `Call \`get_component name="${owner.name}"\` for its props, usage and example. ` +
+        `Do NOT hand-roll \`${name}\`.`
+      );
+    }
+    return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
+  }
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
   const importPath = c.importPath ?? `@godxjp/ui/${c.group === "providers" ? "app" : c.group}`;
   out += `  ·  **Import:** \`import { ${c.name} } from "${importPath}"\`\n\n`;
@@ -860,6 +875,11 @@ function getComponent(name: string, verbose = false): string {
   // state which contract dimensions are actually proven, so the example is never mistaken for
   // a support claim.
   out += coverageBlock(findFrameCoverage(c.name), c.name);
+  if (c.subParts && c.subParts.length) {
+    out += `## Also exported here — documented by this entry\n\n`;
+    out += `These ship from the same import and have no separate entry. They are real exports: use them, don't rebuild them.\n\n`;
+    out += c.subParts.map((p) => `\`${p}\``).join(" · ") + `\n\n`;
+  }
   if (c.related && c.related.length) {
     out += `## Related — don't confuse / don't reinvent\n\n`;
     for (const r of c.related) out += `- ${r}\n`;
@@ -1100,10 +1120,15 @@ function searchComponents(query: string): string {
     const usage = (c.usage ?? []).join(" ").toLowerCase();
     const related = (c.related ?? []).join(" ").toLowerCase();
     const props = c.props.map((p) => p.name.toLowerCase());
+    // Sub-part names are SEARCHABLE TEXT of their parent. Someone hunting "status badge" or
+    // "card cover" is hunting a real export, and the entry that documents it is the right hit.
+    const subParts = (c.subParts ?? []).join(" ").toLowerCase();
     let score = 0;
     if (name === q) score += 100; // exact-name → luôn lên đầu
+    if (subParts.split(" ").includes(q)) score += 90; // exact sub-part name → its parent, near the top
     for (const t of terms) {
       if (name.includes(t)) score += 5;
+      if (subParts.includes(t)) score += 4;
       if (tagline.includes(t)) score += 3;
       if (useCases.includes(t)) score += 2;
       if (usage.includes(t)) score += 1;

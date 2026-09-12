@@ -225,18 +225,24 @@ export function loadComponentInventory() {
   const start = src.indexOf("export const COMPONENTS");
   const body = start >= 0 ? src.slice(start) : src;
   const entries = [];
-  // Match each object head: name → (…) → group, tolerating props in between.
-  const re = /\n {4}name: "([^"]+)",\n {4}group: "([^"]+)",/g;
-  let m;
-  while ((m = re.exec(body))) {
-    const name = m[1];
-    const group = m[2];
-    // deprecated flag may appear later in the same entry (before the next `name:`)
-    const next = re.lastIndex;
-    const nextName = body.indexOf('\n    name: "', next);
-    const slice = body.slice(next, nextName < 0 ? undefined : nextName);
-    const deprecated = /\n {4}deprecated: true,/.test(slice);
-    entries.push({ name, group, deprecated });
+  /*
+   * Anchor on `name:` ALONE and read the rest out of the entry's own block.
+   *
+   * This used to demand that `group:` be the very next line (`name: "X",\n    group: "Y",`). It
+   * was silent when that stopped being true: adding one field between them dropped 33 components
+   * — Button, Card, Badge, Sidebar, Table among them — out of the coverage inventory, and the
+   * report regenerated smaller with no error anywhere. A coverage report that quietly stops
+   * counting the components it is supposed to cover is worse than one that fails.
+   */
+  const starts = [...body.matchAll(/\n {4}name: "([^"]+)",\n/g)].map((m) => ({
+    name: m[1],
+    at: m.index,
+  }));
+  for (const [i, entry] of starts.entries()) {
+    const slice = body.slice(entry.at, i + 1 < starts.length ? starts[i + 1].at : undefined);
+    const group = slice.match(/\n {4}group: "([^"]+)",/)?.[1];
+    if (!group) continue;
+    entries.push({ name: entry.name, group, deprecated: /\n {4}deprecated: true,/.test(slice) });
   }
   return entries;
 }
