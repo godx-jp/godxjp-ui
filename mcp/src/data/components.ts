@@ -8174,6 +8174,55 @@ import { Button } from "@godxjp/ui/general";
     rules: [],
   },
   {
+    name: "SkeletonRows",
+    group: "feedback",
+    tagline:
+      "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
+    props: [
+      {
+        name: "rows",
+        type: "number",
+        defaultValue: "6",
+        description: "How many skeleton lines to draw.",
+      },
+      {
+        name: "columns",
+        type: "number",
+        defaultValue: "4",
+        description:
+          "Columns per row on the internal ResponsiveGrid — match the loaded list's column count so nothing reflows on hydration.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Root class override.",
+      },
+    ],
+    usage: [
+      "DO use SkeletonRows for a flat list of short bars — activity feeds without avatars, settings rows, filter result lists.",
+      "DO match `rows` and `columns` to the loaded layout so the skeleton does not jump when data arrives.",
+      "DON'T use it for tabular data with a header row — SkeletonTable matches DataTable's chrome.",
+      "DON'T use it for a form — SkeletonForm draws label + control pairs on the form's column grid.",
+      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
+    ],
+    useCases: [
+      "Card body while a simple list deferred prop resolves",
+      "Stacked settings rows before the record loads",
+      "Generic repeated rows when SkeletonArticle's avatar + prose rhythm is wrong",
+    ],
+    related: [
+      "SkeletonTable — tabular placeholder with a header band; not a flat line list.",
+      "SkeletonForm — label + control pairs on a form grid.",
+      "SkeletonArticle — avatar beside prose lines.",
+      "Skeleton — the bare block this preset is built from.",
+    ],
+    example: `import { SkeletonRows } from "@godxjp/ui/feedback";
+
+<SkeletonRows rows={6} columns={3} />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
     name: "Toaster",
     group: "feedback",
     tagline:
@@ -12659,7 +12708,7 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Skeleton",
-    subParts: ["SkeletonDetail", "SkeletonRows", "SkeletonStat"],
+    subParts: ["SkeletonDetail", "SkeletonStat"],
     group: "feedback",
     tagline:
       "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
@@ -13541,7 +13590,7 @@ export default function PasswordBlock() {
     name: "Segmented",
     group: "data-entry",
     tagline:
-      "One-of-N from a small, closed, always-visible set — the enterprise Segmented drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+      "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
     props: [
       {
         name: "block",
