@@ -89,6 +89,11 @@ this library holds — or the track grows to 44px (28 + 8 × 2) and stops lining
 control. The same derivation is why a `Button`'s own label sits ~5px inside its border. A control
 is sized by its band; the band is what a dense enterprise UI is for.
 
+**For a gate, not a reader.** This derivation also ships as data at
+`dist/contracts/measurement.json` (`spacing`), because gh#503 was reopened twice *after* this
+section was written — prose cannot be read by the browser test that files the bug. See
+`docs/MEASUREMENT-CONTRACT.md`.
+
 **The knob, if a service wants a roomier control.** `--segmented-track-padding` is a published
 component token (`src/tokens/components/segmented.css`); raising it re-derives the item height from
 the same formula, so the track stays exactly one control tall. Do not reach for a Tailwind `p-*` on

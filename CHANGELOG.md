@@ -6,6 +6,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — hợp đồng đo được (gh#503, gh#506, gh#507)
+
+- **`dist/contracts/measurement.json` — thứ mà một cái cổng CI đọc được, thay cho văn xuôi mà nó
+  không đọc được.** Ba issue trên bị đóng rồi mở lại **bốn lần** trong khoảng 23.0.0 → 23.4.5. Mỗi
+  lần mở lại đều mang một phép đo ĐÚNG, và mỗi lần đóng đều mang một bản sửa ĐÚNG — hai bên chỉ
+  đang đo hai cái hộp khác nhau:
+
+  | issue | gate của consumer đọc | thứ thư viện thật sự ship |
+  | --- | --- | --- |
+  | #507 | `20×20` | target **24×24** |
+  | #506 | `24×13` | target **24×26** |
+  | #503 | chữ cách mép `5.1px` | 5.1px **dẫn xuất** từ dải control |
+
+  `getBoundingClientRect()` trả **border box**, và border box không bao gồm pseudo-element định vị
+  tuyệt đối. WCAG 2.2 SC 2.5.8 đo **target** — vùng nhận thao tác con trỏ — và nới bằng
+  pseudo-element là kỹ thuật mà Understanding 2.5.8 nêu tên. Nên một cổng dựng trên
+  `getBoundingClientRect` sẽ báo cùng một con số mãi mãi bất kể thư viện ship gì, tức nó không thể
+  phân biệt *đã sửa* với *đã bỏ qua* — và mở lại issue là việc ĐÚNG cho nó làm.
+
+  Văn xuôi không lấp được khoảng đó: `docs/SPACING.md` đã mang dẫn xuất của #503 từ 23.4.0, và issue
+  vẫn bị mở lại hai lần sau đó, vì **một cái cổng không đọc được văn xuôi**. Nên sự thật nay ship
+  dưới dạng **dữ liệu**, trong gói, cho mọi ngôn ngữ đọc được.
+
+- **Hợp đồng được DẪN XUẤT, không phải KHAI BÁO.** `scripts/gen-measurement-contract.mjs` đọc danh
+  sách expander ra từ `src/styles/*.css`; một danh sách gõ tay chính là kiểu hỏng mà hợp đồng này
+  sinh ra để chấm dứt — "grep bảo có, đo bảo không".
+
+- **Và hợp đồng được CHỨNG MINH, không phải được tin.** `check:measurement-contract-browser`
+  hit-test từng mục bằng `elementFromPoint` trên **con trỏ mịn** (đúng môi trường desktop mà gate
+  của consumer chạy, và đúng nhánh mà bản sửa media-query của #506 từng bỏ sót), và thêm một phép
+  đo nữa: target đã nới KHÔNG được nuốt tâm của phần tử tương tác bên cạnh — với tới sàn bằng cách
+  ăn sang nút hàng xóm là dời lỗi đi, không phải sửa nó. Đo được, ở 23.4.7:
+
+  ```
+  .ui-control-inline-affix-action    paint 20×20      hit 24.5×24.5
+  .ui-data-table-sort-button         paint 53.06×17.81 hit 54×24.5
+  .ui-number-input-step              paint 24×13      hit 24.5×25.25
+  ```
+
+- `docs/MEASUREMENT-CONTRACT.md` mang bản cài đặt tham chiếu của `hitRegion()` và cách đấu nó vào
+  một cổng sẵn có. Skill `report-bug` của MCP nay bắt đọc hợp đồng TRƯỚC khi mở một issue hình học.
+
+
 ## [23.4.7] - 2026-09-13
 
 ### Fixed — hạ tầng phát hành
