@@ -26,7 +26,7 @@
 
   /* Removable chip (antd Tag closable) — × affix inside the pill. */
   --badge-space-x-removable: var(--space-1);
-  --badge-remove-margin-end: calc(-1 * var(--space-1));
+  --badge-remove-offset-inline-end: calc(-1 * var(--space-1));
   --badge-remove-icon-size: var(--badge-icon-size);
   --badge-remove-rest-alpha: 0.7;
   --badge-remove-hover-alpha: 1;

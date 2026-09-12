@@ -74,7 +74,7 @@
 
   [data-slot="badge-remove"] {
     flex-shrink: 0;
-    margin-inline-end: var(--badge-remove-margin-end);
+    margin-inline-end: var(--badge-remove-offset-inline-end);
     color: inherit;
     opacity: var(--badge-remove-rest-alpha);
     border: 0;

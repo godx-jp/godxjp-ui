@@ -75,6 +75,9 @@ const FROZEN: Record<string, [string, string, string]> = {
   // Minted for a rule that baked `1.25rem`. Same step, so this row is a no-move row.
   "--alert-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
   "--badge-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
+  // The × on a removable Badge (antd Tag closable) reads the badge glyph step itself, so this
+  // is a no-move row: it tracks --badge-icon-size and cannot drift away from it (gh#604).
+  "--badge-remove-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--app-setting-picker-icon-size": ["1rem", "1rem", "1rem"],
   "--app-shell-mobile-nav-icon-size": ["1.25rem", "1.25rem", "1.25rem"],
   "--auth-account-summary-avatar-glyph-size": ["0.875rem", "0.805rem", "0.945rem"],
