@@ -300,6 +300,38 @@ export default function Demo() {
             </DropdownMenu>
           </CardContent>
         </Card>
+        {/* defaultOpen — OPEN ON MOUNT, on purpose, and this is the only example on the page that
+            is. A menu paints nothing until it is opened, so for as long as this page has existed
+            no sweep has ever measured a single menu pixel: that is how
+            `.ui-dropdown-menu-item[data-variant="destructive"]` — the label on a Delete row, i.e.
+            prose — kept the destructive FILL tier at 2.95:1 on dark (gh#612). Same reasoning as
+            `?toast=` in check-contrast's route list: a surface that needs an interaction is a
+            surface no gate sees. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>defaultOpen · 計測できる状態で開いておく</CardTitle>
+            <CardDescription>
+              antd の open/defaultOpen。ここだけはマウント時から開いたままにしてある。
+              閉じたメニューは 1 ピクセルも描かないので、どのスイープにも測れない。
+              destructive の行が読める色で描かれているかは、開いていて初めて測れる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DropdownMenu defaultOpen>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  仕訳アクション
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem>編集</DropdownMenuItem>
+                <DropdownMenuItem>複製</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

@@ -128,6 +128,26 @@ export default function Demo() {
           />
         </Flex>
 
+        {/* error — the ONE sentence that says why a filter set was refused, and the reason this
+            page has an example at all: `.ui-filter-bar-error` was painted with the destructive
+            FILL tier (2.95:1 on dark, gh#612) and NO route rendered it, so no sweep could ever
+            have caught that. Static, not behind a submit: a surface that needs an interaction is
+            a surface `check:contrast` does not measure. */}
+        <Flex direction="col" gap="xs">
+          <Text size="xs" tone="muted">
+            error · role=&quot;alert&quot; line under the bar, painted from the TEXT tier
+          </Text>
+          <FilterBar
+            search={{
+              value: modelQuery,
+              onValueChange: setModelQuery,
+              placeholder: "氏名・メールで検索",
+              ariaLabel: "メンバーを検索",
+            }}
+            error="期間の開始日が終了日より後です。条件を修正してください。"
+          />
+        </Flex>
+
         {/* overflow="wrap" (default) — stacked below 640px, wrapping rows above. */}
         <Flex direction="col" gap="xs">
           <Text size="xs" tone="muted">

@@ -109,6 +109,23 @@ const ROUTES = routeArgs.length
       "/isolate/feedback-alert?theme=dark",
       "/isolate/general-activity",
       "/isolate/general-activity?theme=dark",
+      // …and the three gh#612 surfaces that needed a DOCS change before any route could show them.
+      // Each was invisible to this sweep for a different reason, and all three reasons are the same
+      // reason `?toast=` exists: a surface that needs an interaction is a surface nothing measures.
+      //
+      //   navigation-filter-bar    `.ui-filter-bar-error` — no example rendered an error AT ALL, so
+      //                            the one sentence that says why a filter set was refused had never
+      //                            been painted in this repo. The page now has a static one.
+      //   navigation-steps         `status="error"` sat behind a button click; the demo's toggle now
+      //                            starts from the error state and clears instead of setting it.
+      //   navigation-dropdown-menu a menu paints nothing until opened, so not one menu pixel had
+      //                            ever been measured — the `defaultOpen` example exists for this.
+      "/isolate/navigation-filter-bar",
+      "/isolate/navigation-filter-bar?theme=dark",
+      "/isolate/navigation-steps",
+      "/isolate/navigation-steps?theme=dark",
+      "/isolate/navigation-dropdown-menu",
+      "/isolate/navigation-dropdown-menu?theme=dark",
     ];
 
 /*

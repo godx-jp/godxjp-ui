@@ -143,3 +143,58 @@ describe("no component paints prose with the destructive FILL tier (gh#610)", ()
     expect(offenders, "move these to the --text-* tier, or add the selector to EXEMPT with a reason in the CSS").toEqual([]);
   });
 });
+
+/**
+ * A ROUTE IN THE SWEEP IS NOT COVERAGE — THE ROUTE MUST STILL PAINT THE THING.
+ *
+ * This is the failure that gh#610 and gh#612 both turned out to be, twice over. `check:contrast`
+ * measures whatever its routes paint on mount, and three of the surfaces gh#612 found were
+ * invisible to it for three different reasons: no example rendered a `FilterBar` error at all,
+ * the `Steps` error sat behind a button click, and a dropdown menu paints nothing until it is
+ * opened. Adding the routes was therefore only half the fix — the docs pages had to change too,
+ * exactly as `?toast=` had to exist before a toast could be measured.
+ *
+ * So the two halves are checked AGAINST EACH OTHER. Deleting the `error` prop from the FilterBar
+ * example, or flipping the Steps demo back to starting from `false`, or dropping `defaultOpen`,
+ * would leave the route listed and green while measuring nothing — a state this repo has now
+ * reached three times, and the only kind of green that is worse than red.
+ */
+describe("the contrast sweep's new routes still paint what they were added for (gh#612)", () => {
+  const sweep = readFileSync(join(ROOT, "scripts/check-contrast.mjs"), "utf8");
+
+  const SURFACES = [
+    {
+      route: "/isolate/navigation-filter-bar",
+      docs: "docs/navigation/filter-bar.tsx",
+      // The one sentence that says why a filter set was refused.
+      renders: /<FilterBar[^>]*\n(?:.*\n)*?\s+error="/,
+      why: "no example rendered a FilterBar error at all",
+    },
+    {
+      route: "/isolate/navigation-steps",
+      docs: "docs/navigation/steps.tsx",
+      // The demo's toggle must START from the error state, not reach it by click.
+      renders: /useState\(true\)/,
+      why: "status=\"error\" was behind a button click",
+    },
+    {
+      route: "/isolate/navigation-dropdown-menu",
+      docs: "docs/navigation/dropdown-menu.tsx",
+      // A closed menu paints nothing.
+      renders: /<DropdownMenu defaultOpen>/,
+      why: "a menu paints nothing until it is opened",
+    },
+  ] as const;
+
+  for (const { route, docs, renders, why } of SURFACES) {
+    it(`${route} is swept AND ${docs} still paints it (${why})`, () => {
+      expect(sweep, `${route} is missing from check:contrast ROUTES`).toContain(`"${route}"`);
+      expect(sweep, `${route} must be swept in BOTH themes — the tiers are retuned per theme`)
+        .toContain(`"${route}?theme=dark"`);
+      expect(
+        readFileSync(join(ROOT, docs), "utf8"),
+        `${docs} no longer paints the state ${route} was added to measure`,
+      ).toMatch(renders);
+    });
+  }
+});

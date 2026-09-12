@@ -27,7 +27,11 @@ const onboardingSteps = [
 export default function Demo() {
   const [approvalCurrent, setApprovalCurrent] = useState(1);
   const [wizardCurrent, setWizardCurrent] = useState(0);
-  const [hasError, setHasError] = useState(false);
+  /* Seeded TRUE so `status="error"` paints on mount. The toggle below is still the point of the
+   * demo, but starting from `false` meant the error state was reachable only by clicking —
+   * and a surface that needs an interaction is a surface no sweep measures (gh#612), which is
+   * how `.ui-steps-title[data-status="error"]` kept the destructive FILL tier unnoticed. */
+  const [hasError, setHasError] = useState(true);
 
   return (
     <PageContainer
@@ -253,6 +257,15 @@ export default function Demo() {
               <Steps
                 type="inline"
                 separator="arrow"
+                value={1}
+                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+              {/* status="error" on the INLINE form too. The vertical/horizontal error title had a
+                  route; `.ui-steps-inline-item[data-status="error"] .ui-steps-inline-control` did
+                  not, and it reads the same tone token (gh#612). */}
+              <Steps
+                type="inline"
+                status="error"
                 value={1}
                 items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
               />
