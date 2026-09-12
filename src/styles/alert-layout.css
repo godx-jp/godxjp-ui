@@ -246,6 +246,32 @@
     gap: var(--skeleton-cell-gap);
   }
 
+  /* A form field is a short label STACKED on a full-width control, and both measures come from the
+   * real FormField's own tier — `--form-field-row-gap` between fields and `--space-stack-xs`
+   * between a label and its control — so the skeleton and the form it stands in for lay out on the
+   * same rhythm rather than on two that merely agree today (gh#552). */
+  .ui-skeleton-form-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-stack-xs);
+    min-inline-size: 0;
+  }
+
+  .ui-skeleton-form-label {
+    block-size: var(--skeleton-caption-height);
+    inline-size: var(--skeleton-label-width);
+    max-inline-size: 100%;
+    border-radius: var(--skeleton-radius);
+    background: var(--skeleton-background, hsl(var(--muted)));
+  }
+
+  .ui-skeleton-form-control {
+    block-size: var(--control-height);
+    inline-size: 100%;
+    border-radius: var(--skeleton-element-radius);
+    background: var(--skeleton-background, hsl(var(--muted)));
+  }
+
   .ui-skeleton-table {
     overflow: hidden;
     border: 1px solid hsl(var(--border));

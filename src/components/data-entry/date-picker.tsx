@@ -76,6 +76,7 @@ export function DatePicker(props: DatePickerProp) {
     disabledDate,
     cellRender,
     allowClear,
+    triggerLabel,
     format: formatProp,
     parseFormat,
     minDate,
@@ -651,12 +652,16 @@ export function DatePicker(props: DatePickerProp) {
         type="button"
         disabled={allDisabled}
         tabIndex={-1}
+        // `triggerLabel` first: three date fields on one screen otherwise give a screen reader
+        // three buttons with the identical name and nothing to tell them apart (gh#551).
         aria-label={
+          triggerLabel ??
           (isPeriod
             ? t("dataEntry.monthPicker.openGrid")
             : range
               ? t("dataEntry.dateRangePicker.openCalendar")
-              : t("dataEntry.datePicker.openCalendar")) ?? "Open calendar"
+              : t("dataEntry.datePicker.openCalendar")) ??
+          "Open calendar"
         }
         className={
           range

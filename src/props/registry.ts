@@ -2344,6 +2344,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["SizeProp", "ShapeProp", "ClassNameProp"],
   },
+  SkeletonFormProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
   SkeletonInputProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",

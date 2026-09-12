@@ -11,12 +11,14 @@
 import * as React from "react";
 import { ImageIcon } from "lucide-react";
 
+import { ResponsiveGrid } from "../layout/responsive-grid";
 import { cn } from "../../lib/utils";
 import { tableCellPaddingClass, tableRowHeightClass } from "../../lib/control-styles";
 import type {
   SkeletonArticleProp,
   SkeletonAvatarProp,
   SkeletonButtonProp,
+  SkeletonFormProp,
   SkeletonImageProp,
   SkeletonInputProp,
   SkeletonNodeProp,
@@ -27,6 +29,8 @@ import type {
 export type {
   SkeletonProp,
   SkeletonProp as SkeletonProps,
+  SkeletonFormProp,
+  SkeletonFormProp as SkeletonFormProps,
   SkeletonWidth,
   SkeletonArticleProp,
   SkeletonArticleProp as SkeletonArticleProps,
@@ -297,6 +301,29 @@ export function SkeletonRows({ rows = 6, columns = 4, className }: SkeletonRowsP
           ))}
         </div>
       ))}
+    </div>
+  );
+}
+
+/**
+ * Skeleton of a `Form columns={N}` — label + control PAIRS on the form's own grid (gh#552).
+ *
+ * It renders through `ResponsiveGrid` with the SAME `columns` value the form takes, so the two
+ * share one breakpoint ladder rather than two that agree today. `SkeletonRows` could get the column
+ * count right and never the inside of a cell: a form field is a short label stacked on a full-width
+ * control, and a flat line list is neither.
+ */
+export function SkeletonForm({ columns = 1, fields = 6, active, className }: SkeletonFormProp) {
+  return (
+    <div className={cn("ui-skeleton-form", className)} aria-busy="true">
+      <ResponsiveGrid columns={columns}>
+        {Array.from({ length: fields }).map((_, i) => (
+          <div key={i} className="ui-skeleton-form-field">
+            <Skeleton active={active} className="ui-skeleton-form-label" />
+            <Skeleton active={active} className="ui-skeleton-form-control" />
+          </div>
+        ))}
+      </ResponsiveGrid>
     </div>
   );
 }

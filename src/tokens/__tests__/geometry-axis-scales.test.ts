@@ -69,9 +69,10 @@ const BAND: ReadonlyArray<readonly [string, string, number]> = [
  * rewrite; a single moved value fails.
  */
 const FROZEN: Record<string, [string, string, string, string]> = {
-  // The focus mark ships OFF (`--focus-outline: 0`), so the PAINTED width resolves to 0 at every
-  // density. The WEIGHT it would paint at is frozen instead — see --focus-ring-weight below.
-  "--focus-ring-width": ["0px", "0px", "0px", "0px"],
+  // The focus mark ships ON since gh#544 (`--focus-outline: 1`), so the PAINTED width is now the
+  // weight itself — the hairline — and it must NOT follow density: a focus mark that thickens with
+  // the comfortable scale is a different mark, and SC 1.4.11 is about contrast, not thickness.
+  "--focus-ring-width": ["1px", "1px", "1px", "1px"],
   "--focus-ring-weight": ["1px", "1px", "1px", "1px"],
   "--focus-outline-weight": ["1px", "1px", "1px", "1px"],
   "--card-accent-rail-width": ["6px", "6px", "6px", "6px"],

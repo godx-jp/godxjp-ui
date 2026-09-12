@@ -67,9 +67,32 @@
     grid-column: auto;
   }
 
+  /* colSpan is CLAMPED to the columns that exist at this breakpoint — the same shape
+   * `.ui-responsive-grid-item` has carried all along, and the absence of it here was gh#550.
+   *
+   * `columns={4}` expands to base 1 / sm 2 / md 3 / lg 4, while colSpan used to take effect from
+   * 40rem with no ceiling. So between 40rem and 64rem a `colSpan={4}` field standing in a 3-column
+   * grid grew an IMPLICIT fifth column, and every `minmax(0, 1fr)` track collapsed to 0px.
+   * Measured at 768px on a `columns={4}` form: the 「区分*」 label wrapped to 3 lines, 「開始日*」 to
+   * 4, track width 0px — and nothing threw, so the form still rendered, as columns of vertical
+   * text. The consumer's only way out was splitting one logical form into two <form> elements.
+   *
+   * `min()` is the whole fix: a field can ask for more columns than the breakpoint has and simply
+   * receive all of them. The base step stays `grid-column: auto` above — gh#321 fixed this same
+   * defect at the one-column breakpoint and stopped there. */
   @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid > .ui-form-field {
-      grid-column: span var(--form-field-col-span, 1);
+      grid-column: span min(var(--responsive-grid-sm, 1), var(--form-field-col-span, 1));
+    }
+  }
+  @container responsive-grid (min-width: 48rem) {
+    .ui-responsive-grid > .ui-form-field {
+      grid-column: span min(var(--responsive-grid-md, 1), var(--form-field-col-span, 1));
+    }
+  }
+  @container responsive-grid (min-width: 64rem) {
+    .ui-responsive-grid > .ui-form-field {
+      grid-column: span min(var(--responsive-grid-lg, 1), var(--form-field-col-span, 1));
     }
   }
 

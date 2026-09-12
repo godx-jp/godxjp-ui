@@ -47,6 +47,7 @@ export { Toaster } from "./sonner";
 export { toast } from "./use-toast";
 export {
   Skeleton,
+  SkeletonForm,
   SkeletonRows,
   SkeletonTable,
   SkeletonDetail,
@@ -68,6 +69,8 @@ export type {
   SkeletonAvatarProps,
   SkeletonButtonProp,
   SkeletonButtonProps,
+  SkeletonFormProp,
+  SkeletonFormProps,
   SkeletonInputProp,
   SkeletonInputProps,
   SkeletonNodeProp,

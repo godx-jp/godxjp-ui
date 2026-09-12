@@ -96,18 +96,21 @@ describe("focus ring — single source", () => {
   });
 
   // Turning the ring off must stay possible AND stay a deliberate act: the
-  // shipped default is on (WCAG 2.4.7), and width:0 is the documented switch.
-  it("ships the mark OFF by default, behind the one multiplier flag", () => {
+  // shipped default is on (WCAG 2.4.7), and the attribute is the documented switch.
+  it("ships the mark ON by default, behind the one multiplier flag", () => {
     const foundation = readFileSync(join(STYLES_DIR, "../tokens/foundation.css"), "utf8");
     const axes = readFileSync(join(STYLES_DIR, "../tokens/axes.css"), "utf8");
-    // OFF is the shipped default and a recorded product decision — docs/DESIGN-AUTHORITY.md.
-    expect(foundation).toMatch(/--focus-outline:\s*0;/);
+    // ON is the shipped default since gh#544 — three of four consumers had silently shipped with
+    // no indicator, because the old OFF default was discoverable only by reading foundation.css.
+    expect(foundation).toMatch(/--focus-outline:\s*1;/);
     // The thickness is still a member of the stroke scale rather than a parallel authority, so a
     // theme retunes marks and borders together. The ON weight is the hairline stroke = 1px.
     expect(foundation).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
     expect(foundation).toMatch(/--stroke-hairline:\s*1px;/);
     expect(foundation).toMatch(/--focus-ring-opacity:\s*1/);
-    // And ONE attribute turns the whole thing back on, with no code change.
+    // And ONE attribute turns the whole thing off, with no code change. `"on"` is kept so every
+    // consumer that already set it under the old default keeps working.
+    expect(axes).toContain(':root[data-focus-outline="off"]');
     expect(axes).toContain(':root[data-focus-outline="on"]');
     // The per-surface off switch is the composed halo token (`.ui-command-input`).
     expect(FOCUS_RING_CSS).toContain("--focus-field-shadow: none");

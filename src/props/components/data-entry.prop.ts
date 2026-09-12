@@ -866,6 +866,17 @@ export type PickerDateFormatProp = string | Intl.DateTimeFormatOptions | ((date:
  */
 export type DatePickerBaseProp = FieldA11yProps &
   PickerChromeProp & {
+    /**
+     * The accessible NAME of the button that opens the calendar, for a screen where more than one
+     * date field exists. Default 「カレンダーを開く」 / "Open calendar" — correct for one picker on a
+     * page, and useless for three: a reader hears the same sentence three times with nothing to
+     * say which field each button belongs to (WCAG 2.2 SC 2.4.6, gh#551).
+     *
+     * Same axis, same shape, same reason as Select's `clearLabel`: name the control after the
+     * FIELD it serves — `開始日のカレンダーを開く`. The default is unchanged, so nothing moves until
+     * a caller says something.
+     */
+    triggerLabel?: string;
     /** Display format; native submission remains ISO. */
     format?: PickerDateFormatProp;
     /** Parser for a custom display function or Intl era display; ISO always remains accepted. */

@@ -98,18 +98,22 @@
   }
 }
 
-/* ── focus-outline axis — the ONE switch that turns the keyboard-focus indicator on.
+/* ── focus-outline axis — the ONE switch for the keyboard-focus indicator.
  *
- * SHIPPED OFF. `--focus-outline: 0` in foundation.css means nothing paints a focus mark, and that
- * is a deliberate product decision: the indicator was reported as intrusive, and the owner accepted
- * the cost. The cost is real and is recorded in docs/DESIGN-AUTHORITY.md — with the switch off this
- * library does not satisfy WCAG 2.2 SC 2.4.7 Focus Visible (AA), and therefore cannot carry a
- * JIS X 8341-3:2016 AA conformance statement.
+ * SHIPPED ON since gh#544. `--focus-outline: 1` in foundation.css paints the hairline field
+ * indicator by default, so a consumer that does nothing satisfies WCAG 2.2 SC 2.4.7 Focus Visible
+ * (AA) and can carry a JIS X 8341-3:2016 AA statement. The reasoning for the reversal, including
+ * the count of consumers that had silently shipped with no indicator, is in foundation.css beside
+ * the token; the accepted cost of the OLD default is in docs/DESIGN-AUTHORITY.md.
  *
- * A customer who needs that statement sets ONE attribute on the root element and changes nothing
- * else — no component edit, no re-authored tokens, no fork:
+ * A product that wants it gone sets ONE attribute on the root element and changes nothing else —
+ * no component edit, no re-authored tokens, no fork:
  *
- *     <html data-focus-outline="on">
+ *     <html data-focus-outline="off">
+ *
+ * `data-focus-outline="on"` is kept and still means on. It is now redundant, and that is
+ * deliberate: every consumer that already set it keeps working, and nobody has to find out from a
+ * broken build that the default moved.
  *
  * WHY THE ATTRIBUTE AND NOT JUST THE TOKEN. `--focus-outline` alone drives every painted LENGTH,
  * as a single 0/1 multiplier. Two things are not lengths — the halo, which must be `none` rather
@@ -125,4 +129,12 @@
   --focus-outline: 1;
   --focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)
     hsl(var(--focus-ring-glow-color) / var(--focus-ring-glow-alpha));
+}
+
+/* The OFF position. Both non-length values are set here for the same reason the ON block sets
+ * them: the halo must be `none` rather than a zero-spread shadow, or it flattens a control's
+ * resting shadow instead of disappearing. */
+:root[data-focus-outline="off"] {
+  --focus-outline: 0;
+  --focus-field-shadow: none;
 }

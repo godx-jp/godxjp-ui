@@ -222,29 +222,37 @@ describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, s
     expect(contrast(primaryBorder, background)).toBeLessThan(NON_TEXT);
   });
 
-  it("the switch exists, and turning it on is the documented remedy", () => {
+  it("both positions of the switch exist, and the hue is the focus hue", () => {
+    // "on" is kept although the default IS on (gh#544), so every consumer that already set it
+    // keeps working; "off" is the new escape hatch. Losing either is a silent break for somebody.
     expect(axes).toContain(':root[data-focus-outline="on"]');
+    expect(axes).toContain(':root[data-focus-outline="off"]');
     expect(css).toMatch(/--focus-outline-color:\s*var\(--focus-ring-color, var\(--ring\)\)/);
   });
 });
 
 /* ────────────────────────────────────────────────────────────────────────────
- * 3. THE SWITCH — both positions, because only one of them ever runs by default.
+ * 3. THE SWITCH — both positions, because a consumer runs one or the other.
  *
- * The library ships `--focus-outline: 0`: nothing paints a focus indicator. That is a product
- * decision with a recorded cost (docs/DESIGN-AUTHORITY.md — it forfeits WCAG 2.2 SC 2.4.7 and any
- * JIS X 8341-3:2016 AA claim). The ON position is what a customer demanding that statement runs,
- * so it is gated here as hard as the default is: the day someone flips the attribute, the tests
- * must already prove the mark is correct rather than merely present.
+ * The library ships `--focus-outline: 1` (gh#544). It used to ship 0, and the reversal was driven
+ * by a count rather than a preference: of the four real consumers, three set `data-focus-outline`
+ * NOWHERE and so shipped with no keyboard-focus indicator at all — not a choice, since the switch
+ * was discoverable only by reading foundation.css. The ON state is also no longer the 3px outline
+ * the original complaint was about; it is the hairline field indicator.
+ *
+ * The OFF position is what a product that wants the mark gone runs, so it is gated exactly as hard
+ * as the default: flipping the attribute must not leave a zero-spread shadow flattening controls.
  * ──────────────────────────────────────────────────────────────────────────── */
-describe("the switch is OFF by default, and nothing can paint around it", () => {
+describe("the switch is ON by default, and the OFF position still zeroes everything", () => {
   const root = block(css, ":root {");
+  const off = block(axes, ':root[data-focus-outline="off"] {');
 
-  it("is a single multiplier flag, at 0", () => {
+  it("is a single multiplier flag, at 1", () => {
     // The flag is the one seam: every focus length in CSS multiplies by it, so setting it to 0
     //   focus width = weight * --focus-outline
-    // zeroes every painted length at once, and no component rebind can bring one back.
-    expect(root).toMatch(/--focus-outline:\s*0;/);
+    // zeroes every painted length at once, and no component rebind can bring one back. The
+    // multiplication is what this asserts; the DEFAULT VALUE is the separate claim above it.
+    expect(root).toMatch(/--focus-outline:\s*1;/);
     expect(root).toMatch(
       /--focus-ring-width:\s*calc\(var\(--focus-ring-weight\) \* var\(--focus-outline\)\)/,
     );
@@ -253,10 +261,21 @@ describe("the switch is OFF by default, and nothing can paint around it", () => 
     );
   });
 
+  it("the OFF position zeroes the flag", () => {
+    expect(off).toMatch(/--focus-outline:\s*0;/);
+  });
+
   it("the halo is `none` when off, not a zero-spread shadow", () => {
     // A literal `0 0 0 0 transparent` would still REPLACE the control's resting `--control-shadow`,
-    // so a switched-off focus would quietly flatten every input on the page.
-    expect(root).toMatch(/--focus-field-shadow:\s*none;/);
+    // so a switched-off focus would quietly flatten every input on the page. This is why the halo
+    // is set per POSITION and does not ride the multiplier: it is not a length.
+    expect(off).toMatch(/--focus-field-shadow:\s*none;/);
+  });
+
+  it("the default halo actually paints — the flip is not cosmetic", () => {
+    // Turning the multiplier to 1 while leaving the halo at `none` would give a default that
+    // passes every structural assertion above and still paints half the indicator.
+    expect(root).toMatch(/--focus-field-shadow:\s*0 0 0 var\(--focus-ring-glow-width\)/);
   });
 
   it("EVERY painted path multiplies by the switch — no rule paints a raw length", () => {
@@ -555,13 +574,18 @@ describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ t
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("one focus language, applied consistently", () => {
   it("the whole halo is ONE token, so the switch has exactly one seam to move", () => {
-    expect(block(css, ":root {")).toMatch(/--focus-field-shadow:\s*none;/);
+    // One consumer, one declaration: whichever position is active, exactly this token is read.
     expect(focusRing).toContain("box-shadow: var(--focus-field-shadow);");
-    // Every stop of the ON value reads a token — no literal colour, no literal length.
-    const declaration = block(axes, ':root[data-focus-outline="on"] {').match(
-      /--focus-field-shadow:([\s\S]+?);/,
-    )![1];
-    expect(declaration).not.toMatch(/#[0-9a-f]{3,8}|rgba?\(|\b[1-9]\d*px\b/i);
+    expect(block(axes, ':root[data-focus-outline="off"] {')).toMatch(
+      /--focus-field-shadow:\s*none;/,
+    );
+    // Every stop of the PAINTING value reads a token — no literal colour, no literal length. Both
+    // writers of it are checked, because since gh#544 the default is a painting one too and a
+    // literal could now enter through `:root` rather than only through the attribute block.
+    for (const source of [block(css, ":root {"), block(axes, ':root[data-focus-outline="on"] {')]) {
+      const declaration = source.match(/--focus-field-shadow:([\s\S]+?);/)![1];
+      expect(declaration).not.toMatch(/#[0-9a-f]{3,8}|rgba?\(|\b[1-9]\d*px\b/i);
+    }
   });
 
   it("a focused field's BOUNDARY becomes the focus hue — the grey never survives", () => {

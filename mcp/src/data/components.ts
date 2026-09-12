@@ -4008,6 +4008,9 @@ import { Flex } from "@godxjp/ui/layout";
   <Text weight="medium">{brand.name}</Text>
 </Flex>`,
     storyPath: "data-display/Swatch.stories.tsx",
+    rules: [],
+  },
+  {
     name: "FeatureList",
     group: "data-display",
     tagline:
@@ -7055,11 +7058,18 @@ export function PrioritySelect({ value, onValueChange }) {
         description:
           "Inline ✕ that resets the value when one is set (antd `allowClear`). The object form replaces the icon and/or the accessible label. Pass `false` on a required field.",
       },
+      {
+        name: "triggerLabel",
+        type: "string",
+        description:
+          "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`.",
+      },
     ],
     usage: [
       'ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker="month" />` is a month range.',
       "DO use `name` to make the field form-submittable — it emits ISO-8601 at the picker's own precision (`2026-03` for a month, `2026` for a year, `2026-03-01` for a day). No hidden input of your own is needed.",
       "DO wrap it in FormField like every other labelled control; FormField injects the id/aria wiring onto the input.",
+      "DO pass `triggerLabel` whenever a screen has MORE THAN ONE date field. Without it every calendar button on the page carries the identical name and a screen-reader user cannot tell which field each one opens.",
       "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
       "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
       "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
@@ -12346,6 +12356,50 @@ import { Separator } from "@godxjp/ui/layout";
     example: `import { SkeletonInput } from "@godxjp/ui/feedback";
 
 <SkeletonInput block />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonForm",
+    group: "feedback",
+    tagline:
+      "The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws.",
+    props: [
+      {
+        name: "columns",
+        type: "number",
+        defaultValue: "1",
+        description:
+          "Columns of the form this stands in for. Passed straight to ResponsiveGrid, so it is the SAME value and the SAME breakpoint ladder the Form uses — that shared source is the point of the component.",
+      },
+      {
+        name: "fields",
+        type: "number",
+        defaultValue: "6",
+        description: "How many label+control pairs to draw.",
+      },
+      { name: "active", type: "boolean", description: "Travelling sheen instead of the pulse." },
+      { name: "className", type: "string", description: "Extra classes." },
+    ],
+    usage: [
+      "DO pass the same `columns` the Form takes. Anything else and the layout jumps when the data lands.",
+      "DO use it instead of SkeletonRows for a form: a field is a short label stacked on a full-width control, and SkeletonRows has no idea a cell has an inside.",
+      "DON'T hand-assemble SkeletonInput inside a ResponsiveGrid to approximate one — that is what this replaces, and 'close enough' drifts the first time someone changes the Form's columns.",
+    ],
+    useCases: [
+      "An edit form before the record resolves",
+      "A multi-column settings panel on first paint",
+      "A wizard step whose defaults arrive from the server",
+    ],
+    related: [
+      "Form — the thing this stands in for; give both the same `columns`.",
+      "FormField — the label+control pair each cell here draws.",
+      "SkeletonRows — a FLAT list of lines, for a list. Not a form.",
+      "SkeletonInput — one field's control on its own, when you are composing something else.",
+    ],
+    example: `import { SkeletonForm } from "@godxjp/ui/feedback";
+
+{loading ? <SkeletonForm columns={4} fields={8} /> : <Form columns={4}>…</Form>}`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [3, 31],
   },
