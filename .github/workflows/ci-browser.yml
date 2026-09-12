@@ -55,7 +55,7 @@ on:
 
 concurrency:
   group: ci-browser-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   visual:
