@@ -372,6 +372,31 @@
     background: hsl(var(--muted-foreground));
   }
 
+  /* Swatch — the same square as a legend mark, standing on its own beside a name (gh#527).
+   * The colour is a VALUE the caller writes into --swatch-color inline; nothing here knows it.
+   *
+   * The hairline is drawn as an INSET ring rather than a border so the mark's box stays exactly
+   * --swatch-size whatever box-sizing the consumer's reset happens to set, and so a theme can
+   * retune the weight without the sample changing size on the row.
+   *
+   * `forced-color-adjust: none` because the colour IS the content: repainting a brand's
+   * #7C3AED as CanvasText would not "improve contrast", it would delete the only information the
+   * mark carries. The ring keeps it separated from the surface in that mode too. */
+  .ui-swatch {
+    display: inline-block;
+    flex: none;
+    /* Beside running text, an inline-block sits on the BASELINE and hangs the mark below the
+       x-height; in a Flex this is ignored, so it costs the common case nothing. */
+    vertical-align: middle;
+    inline-size: var(--swatch-size);
+    block-size: var(--swatch-size);
+    border-radius: var(--swatch-radius);
+    background: var(--swatch-color);
+    box-shadow: inset 0 0 0 var(--swatch-border-width)
+      var(--swatch-border-color, hsl(var(--border)));
+    forced-color-adjust: none;
+  }
+
   .ui-timeline {
     display: flex;
     flex-direction: column;

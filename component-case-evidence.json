@@ -1125,6 +1125,24 @@
           "evidence": [
             "src/components/layout/__tests__/flex-gap-scale-v20.test.tsx"
           ]
+        },
+        "hideBelowRaw": {
+          "cases": [
+            900
+          ],
+          "evidence": [
+            "src/components/layout/__tests__/flex-hide-raw-528.test.tsx",
+            "docs/layout/flex.tsx"
+          ]
+        },
+        "hideFromRaw": {
+          "cases": [
+            900
+          ],
+          "evidence": [
+            "src/components/layout/__tests__/flex-hide-raw-528.test.tsx",
+            "docs/layout/flex.tsx"
+          ]
         }
       }
     },
@@ -3902,6 +3920,29 @@
           ],
           "evidence": [
             "docs/data-display/card/index.tsx"
+          ]
+        }
+      }
+    },
+    "Swatch": {
+      "props": {
+        "color": {
+          "cases": [
+            "#7C3AED",
+            "oklch(0.7 0.15 200)"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/swatch-527.test.tsx",
+            "docs/data-display/swatch.tsx"
+          ]
+        },
+        "aria-label": {
+          "cases": [
+            "\u30d6\u30e9\u30f3\u30c9\u30ab\u30e9\u30fc: #7C3AED"
+          ],
+          "evidence": [
+            "src/components/data-display/__tests__/swatch-527.test.tsx",
+            "docs/data-display/swatch.tsx"
           ]
         }
       }

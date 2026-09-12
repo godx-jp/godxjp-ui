@@ -282,6 +282,35 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle level={2}>刻みにない幅で折りたたむ</CardTitle>
+            <CardDescription>
+              hideBelow の 4 段（40/48/64/80rem）に無い幅は hideBelowRaw / hideFromRaw
+              で指定します。900px ちょうどでは「広い側」だけが残り、両方消える隙間はありません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex align="center" gap="sm">
+              <Flex id="raw-wide-nav" hideBelowRaw={900} align="center" gap="sm">
+                <Button variant="ghost" size="sm">
+                  機能
+                </Button>
+                <Button variant="ghost" size="sm">
+                  料金
+                </Button>
+                <Button variant="ghost" size="sm">
+                  導入事例
+                </Button>
+              </Flex>
+              <Flex id="raw-narrow-nav" hideFromRaw={900} align="center" gap="sm">
+                <Button variant="outline" size="sm">
+                  メニュー
+                </Button>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>軽い強調と行アクション</CardTitle>
           </CardHeader>
           <CardContent>

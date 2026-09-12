@@ -2715,6 +2715,25 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["ClassNameProp"],
   },
+  SwatchProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      {
+        field: "color",
+        local: true,
+        reason:
+          "A CSS colour VALUE a person chose (a brand's primary_color, a tag tint) — DATA, the same axis as Badge's `color`, and deliberately not ToneProp: a tone is a closed set of meanings and this colour means only itself (gh#527).",
+      },
+      {
+        field: "aria-label",
+        local: true,
+        reason:
+          "The sample's accessible NAME, which is what lets a read-only colour be shown with no visible label. Absent, the mark is aria-hidden (Legend's rule) — so colour is never the sole carrier either way.",
+      },
+    ],
+  },
   CodeBlockProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

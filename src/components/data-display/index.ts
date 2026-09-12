@@ -2,6 +2,8 @@ export { Badge, StatusBadge } from "./badge";
 export type { BadgeProps, BadgeTone } from "./badge";
 export { Legend } from "./legend";
 export type { LegendItemProp, LegendProp, LegendProps } from "./legend";
+export { Swatch } from "./swatch";
+export type { SwatchProp, SwatchProps } from "./swatch";
 export { ListRow } from "./list-row";
 export type { ListRowProps, ListRowDensity } from "./list-row";
 export { CredentialReveal } from "./credential-reveal";

@@ -132,6 +132,7 @@ const componentPrefixes = {
   "data-display": [
     "progress",
     "legend",
+    "swatch",
     "permission-matrix",
     "tree",
     "timeline",

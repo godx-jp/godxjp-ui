@@ -832,6 +832,18 @@ export default function OrdersPage() {
         description:
           "Inverse of hideBelow — drop the region FROM that step upwards, i.e. keep it only on the narrow side (a compact-only affordance).",
       },
+      {
+        name: "hideBelowRaw",
+        type: "number",
+        description:
+          "ESCAPE HATCH: the same drop, at a width in PIXELS off every step of the scale — the gapRaw/padRaw contract on the breakpoint axis (gh#528). An off-scale breakpoint is a LOCAL EXCEPTION, not a new tier: sm/md/lg/xl are shared with collapseBelow and --master-detail-collapse-below, so two regions asked to fold at the same step really do fold together, while a raw width folds one region only. Spend the four steps first; reach here when the canonical design specifies a width the scale has not got (a nav that becomes a hamburger at 900px). It leaves data-hide-below-raw on the DOM so every escape stays countable, and prints one deduped media rule per distinct width (a media query cannot read a var()). It wins over hideBelow, which then emits nothing.",
+      },
+      {
+        name: "hideFromRaw",
+        type: "number",
+        description:
+          "Inverse of hideBelowRaw, same contract and same price (data-hide-from-raw). THE SEAM: hideBelowRaw hides while width < N and hideFromRaw hides while width >= N — the same comparisons as the token steps, so the pair is exact complements and at exactly N the hideBelowRaw region is the visible one. Never hand-roll this with an inclusive max-width: `<= N` paired with `>= N` hides BOTH at exactly N, the 1px hole a consumer measured on a hand-rolled max-[900px]: pair.",
+      },
     ],
     usage: [
       'DO import from `@godxjp/ui/layout` and reach for Flex when the axis, alignment, justification, or wrap behavior is part of the component contract: `import { Flex } from "@godxjp/ui/layout"`.',
@@ -3919,7 +3931,7 @@ import { Button } from "@godxjp/ui/general";
       "DO put it in the `CardAction` slot of the card whose bars or chart it explains, so the key sits on the same line as the card title and reads before the data.",
       "DO feed it the same tone order as the marks it explains — a key whose order differs from the bars forces the reader to map three colours by hand.",
       "DON'T build a key out of Badges. A Badge is a chip that reads as clickable and carries a tinted fill + border; a legend swatch is a SAMPLE of the exact colour the mark uses.",
-      'DON\'T hand-roll a coloured square: `<span className="w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex).',
+      'DON\'T hand-roll a coloured square: `<span className="w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex). For a colour the USER chose — a brand colour, a tag tint — reach for `Swatch`, which takes that value as a prop.',
       "DON'T give the swatch its own text or aria — it is aria-hidden on purpose, because it repeats the label beside it.",
     ],
     useCases: [
@@ -3931,6 +3943,7 @@ import { Button } from "@godxjp/ui/general";
     related: [
       "Progress — `segments` draws the breakdown this key explains; the two take the same tones.",
       "Badge — a Badge labels ONE thing in place; a Legend explains a colour used across many marks.",
+      "Swatch — one read-only sample of an ARBITRARY colour (a brand's primary_color). Legend is a key over the closed semantic tones and always shows words; Swatch shows a value and takes its name from aria-label.",
       "CardAction — the header slot a Legend usually sits in, so the key lands opposite the CardTitle.",
     ],
     example: `import { Legend } from "@godxjp/ui/data-display";
@@ -3945,6 +3958,56 @@ import { Button } from "@godxjp/ui/general";
   />
 </CardAction>`,
     storyPath: "data-display/Legend.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "Swatch",
+    group: "data-display",
+    tagline:
+      "A READ-ONLY sample of ONE colour a person chose — a brand's primary_color, a calendar category, a tag tint. The colour is a VALUE on the element, never a token in a stylesheet.",
+    props: [
+      {
+        name: "color",
+        type: "string",
+        required: true,
+        description:
+          "The colour to show, as any CSS colour value (#7C3AED, rgb(…), oklch(…)). It is DATA, the same axis as Badge's `color`: a value a person picked in a settings screen, so it arrives as a prop and never enters a stylesheet. A colour that MEANS something (success, overdue) is not this prop — use Badge `tone` or Legend, which name the meaning.",
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          "The sample's accessible NAME, and the reason a swatch can be shown with no visible label: say what the colour is for AND what it is, e.g. `プライマリカラー: #7C3AED`. With it the mark is role=img and announces that sentence; WITHOUT it the mark is aria-hidden, which is correct only when a visible line beside it already states the colour. Colour is never the sole carrier of meaning either way (WCAG 1.4.1).",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/data-display`: `import { Swatch } from "@godxjp/ui/data-display";`',
+      "DO give it an aria-label whenever it is the only thing on screen saying what the colour is, and omit the label when the row's own text already says it — a swatch that repeats its neighbour announces the same thing twice.",
+      "DO let the hairline do its job: it is built in so a white or near-white value is still a visible sample on a white card, and it survives forced-colors (the colour IS the content here, so it is not repainted).",
+      "DON'T reach for it for a STATUS colour. success/warning/overdue are meanings, and a meaning belongs on Badge `tone` or in a Legend, which spell the meaning out in words.",
+      "DON'T render a disabled ColorPicker to display a colour — that is an input that looks broken. ColorPicker is for CHOOSING the value; Swatch is for showing it.",
+      "DON'T size it with a className. The mark's size, radius and hairline are the --swatch-* tokens, so a theme retunes every sample at once.",
+    ],
+    useCases: [
+      "An organisation's brand card: primary_color and secondary_color beside the organisation name, read-only, with the hex in the accessible name.",
+      "A list of calendar categories, label colours or tags where each row's own text already names the colour and the mark is purely visual.",
+      "A settings screen showing the colour currently saved, next to the ColorPicker that changes it.",
+      "A table cell whose column is 'colour' — one sample per row, named by the row header.",
+    ],
+    related: [
+      "Legend — the KEY for a colour-coded surface: closed semantic tones, each with required words. Swatch is one sample of an arbitrary value and takes its name from aria-label.",
+      "ColorPicker — the INPUT for the same value. Swatch displays; ColorPicker chooses.",
+      "Badge — a chip that labels a thing (and can carry the entity's own `color` as a wash). Swatch is the colour itself, with no chip around it.",
+    ],
+    example: `import { Swatch } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
+
+<Flex align="center" gap="sm">
+  <Swatch color={brand.primary_color} aria-label={\`プライマリカラー: \${brand.primary_color}\`} />
+  <Text weight="medium">{brand.name}</Text>
+</Flex>`,
+    storyPath: "data-display/Swatch.stories.tsx",
     rules: [],
   },
   {

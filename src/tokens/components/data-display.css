@@ -161,6 +161,26 @@
      Default = hsl(var(--muted-foreground)). */
   --legend-color: initial;
 
+  /* Swatch — a read-only sample of ONE colour a person chose (gh#527). The mark is Legend's
+     square, one step larger: a legend swatch rides an 11-12px label, while this one stands beside
+     a NAME at body size, and at 0.625rem beside 14px type it reads as a bullet rather than as a
+     sample of a colour. */
+  --swatch-size: 1rem;
+  --swatch-radius: 0.125rem; /* scale-exempt: the same corner as --legend-swatch-radius — --radius (6px) on a 16px square reads as a DOT, a different symbol, and a sample and a key mark must be the same shape. */
+  /* The hairline that keeps a white value visible on a white card. It is the resting border
+     weight, not a decision of this component. */
+  --swatch-border-width: var(--stroke-hairline);
+  /* `initial` so the border role re-resolves at the call site under a scoped theme.
+     Default = hsl(var(--border)). */
+  --swatch-border-color: initial;
+  /* The caller's colour — the only knob here that is PER-INSTANCE. swatch.tsx writes it inline on
+     the element, and an inline declaration outranks this one, so this is the value only when the
+     prop is empty. It has to be declared all the same: an undeclared custom property has no
+     fallback to fall back TO, which is the failure check-dist-tokens-resolve.mjs exists to catch.
+     `--muted` is the right default because an unset sample should read as "no colour recorded"
+     rather than as a colour nobody chose. */
+  --swatch-color: hsl(var(--muted));
+
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
      Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line. */
   --timeline-dot-done-background: initial;

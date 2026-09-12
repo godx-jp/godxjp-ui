@@ -60,7 +60,7 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "warn",
     category: "composition",
     standard: null,
-    fix: "A rounded+border/bg div is a fake surface — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from tokens.",
+    fix: "A rounded+border/bg div is a fake surface — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from tokens. A read-only sample of a colour a USER chose is Swatch, which takes that value as a prop (gh#527).",
   },
   {
     id: "sibling-cards-need-flex",
