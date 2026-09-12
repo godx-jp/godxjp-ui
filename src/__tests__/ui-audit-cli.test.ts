@@ -225,6 +225,22 @@ describe("consumer audit CLI regressions", () => {
     }
   });
 
+  it("does not flag template URLs or generics as hardcoded currency (#601)", () => {
+    const quiet = [
+      "const result = await context.request<TurnResult>(`/chat/${queued.turn_id}`);",
+      "const path = `/api/${id}/x`;",
+      "const joined = `${a}-${b}`;",
+      "const Box = styled.div`padding: ${space}px`;",
+    ];
+    for (const source of quiet) {
+      expect(audit(source).output, source).not.toContain('"hardcoded-currency"');
+    }
+    expect(
+      audit('<span>${price}円</span>').output,
+    ).toContain('"hardcoded-currency"');
+    expect(audit("<Text>¥{amount}</Text>").output).toContain('"hardcoded-currency"');
+  });
+
   it("does not mistake Markdown interpolation for JSX currency", () => {
     expect(audit("const quote = lines.map((line) => `> ${line}`);").status).toBe(0);
     expect(audit("<Button onClick={() => router.post(`/view/${id}`)}>Save</Button>").status).toBe(

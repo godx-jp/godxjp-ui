@@ -40,7 +40,7 @@ on:
 
 concurrency:
   group: docs-lane-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   docs:
