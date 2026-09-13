@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — `check:state-legible`: hai trạng thái phải NHÌN thấy khác nhau (gh#622)
+
+- **Phép đo của gh#615 nay phủ 14 frame thay vì 4.** Assertion ấy sinh ra trong
+  `check:choice-hit-target`, và nó chỉ hỏi được 4 surface mà gate đó vốn đã lái — vì sáu assertion
+  còn lại cần một `<input>` thật bên trong hộp được vẽ. `Tabs`, `Tree`, `ToggleGroup`, `Steps`,
+  `Pagination` và dòng `DataTable` được chọn **không có input**, nên chúng chưa từng được đo trên
+  trục này. Giữ nó ở đó là đóng băng độ phủ ở con số 4.
+
+  Đo được: **41 cặp trạng thái trên 14 frame, tất cả phân biệt được.** Đã mutation-test — gỡ bản vá
+  gh#615 ra thì gate đỏ và gọi đúng tên:
+
+  ```
+  data-entry-radio-group: .ui-radio @ 16x16 renders IDENTICALLY across
+    data-state=checked vs data-state=unchecked
+  ```
+
+- **Ba cách làm sai trước khi làm đúng**, ghi lại vì mỗi cách đều từng buộc tội nhầm một component
+  đang chạy tốt:
+  1. **Không tắt transition.** `Switch` tween cái thumb, nên đọc 120ms sau khi lật thì nó vẫn vẽ
+     trạng thái đang RỜI ĐI. Gate nay giết mọi transition trước khi đọc và **không toggle gì cả** —
+     trang được đọc đúng như nó render.
+  2. **Một bucket cho mỗi attribute.** `ToggleGroup` mang `aria-checked` ở biến thể này và
+     `aria-pressed` ở biến thể kia; ghép theo attribute là đem một mục đã chọn so với một mục chỉ
+     đang nói bằng quy ước khác — `.ui-toggle` bị buộc tội **tám lần**. Nay mỗi phần tử có **một**
+     trạng thái hiệu dụng.
+  3. **Selector indicator đặt tên sẵn.** Danh sách phẩy trong `querySelector` trả về **thứ tự
+     document**, không phải thứ tự danh sách, nên trên Radio nó trả về `.ui-choice-indicator`
+     WRAPPER — thứ không bao giờ đổi paint — và báo một control đang hỏng là bình thường. Nay ký
+     **cả cây con**.
+
+- Một cặp còn phải **cùng kích thước vẽ**, để một biến thể size không bao giờ bị nhầm là một trạng
+  thái. Và một frame không sinh nổi cặp nào sẽ **đỏ** — đó là mất độ phủ, không phải một lần xanh.
+
+
 ## [23.4.10] - 2026-09-13
 
 ### Added — `dialog-needs-body` (gh#617)
