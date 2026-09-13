@@ -39,15 +39,33 @@ function decomment(css) {
   return css.replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
-/** Every `X::after`/`::before` whose body carries --touch-target-min — i.e. every expanded target. */
+/**
+ * Every rule that raises a target to --touch-target-min, keyed by the CONTROL it applies to.
+ *
+ * Two shapes, and the second was missed at first (gh#626). A control with no real input carries its
+ * target on a pseudo-element — `.ui-control-inline-affix-action::after`. A control that HAS one
+ * carries it on that input instead — `.ui-switch > .ui-choice-input` — because a pseudo-element on
+ * the label would sit on top of the input and `elementFromPoint` would stop returning it. Both are
+ * "the target is bigger than this selector's border box", which is the only thing a consumer gate
+ * needs to know, so both belong in the contract. Parsing only `::after` published one and hid the
+ * other, and a reporter measuring `label.ui-switch` read 20px with nothing in the file to explain it.
+ */
 function parseExpanders(file, css) {
   const found = [];
   for (const [, selector, body] of decomment(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     if (!body.includes("--touch-target-min")) continue;
     const sel = selector.trim().replace(/\s+/g, " ");
-    const m = /^(\S+)::(after|before)$/.exec(sel);
-    if (!m) continue;
-    found.push({ selector: m[1], via: `::${m[2]}`, source: file });
+    // `.ui-x::after` / `.ui-x::before` — the target rides a pseudo-element.
+    const pseudo = /^(\.[\w-]+)::(after|before)$/.exec(sel);
+    if (pseudo) {
+      found.push({ selector: pseudo[1], via: `::${pseudo[2]}`, source: file });
+      continue;
+    }
+    // `.ui-x > .child` / `.ui-x .child` — the target rides a real descendant (an <input>).
+    const descendant = /^(\.[\w-]+)\s*[>\s]\s*(\S+)$/.exec(sel);
+    if (descendant) {
+      found.push({ selector: descendant[1], via: descendant[2], source: file });
+    }
   }
   return found;
 }

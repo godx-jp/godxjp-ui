@@ -339,6 +339,11 @@
         "error": "failed",
         "abort": "stopped"
       }
+    },
+    "timeline": {
+      "statusDone": "Completed: ",
+      "statusCurrent": "Current: ",
+      "statusPending": "Upcoming: "
     }
   },
   "ui": {

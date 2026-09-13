@@ -6,6 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — `Switch` dưới sàn 24×24 và không có gì để consumer đọc (gh#626)
+
+- **Đo trên 23.4.10: vẽ 36×20, hit 36.5×20.5, không `::after`.** Dưới sàn WCAG 2.2 SC 2.5.8 trên
+  trục dọc — và khác `NumberInput`/affix, nó **không có mục nào trong `targetSize.expanders`** để một
+  cổng phía consumer đọc. Người báo tìm ra nó bằng **chính cái probe họ vừa viết lại để tôn trọng hợp
+  đồng đo**; đó là hợp đồng đang làm đúng việc của nó: nó khiến lời khẳng định của chúng ta kiểm được,
+  và phép kiểm tìm ra một lỗ.
+
+- **KHÔNG dùng `::after`** — đó là câu trả lời cho hai ca kia. Control này có một `<input>` **thật**
+  phủ khít track (gh#476), nên pseudo-element trên label sẽ nằm **đè lên nó** và `elementFromPoint`
+  bắt đầu trả về label — đúng cái regression mà `check:choice-hit-target` sinh ra để bắt. Nới chính
+  **input** thì hit-test vẫn rơi vào input, và phần vẽ không đổi: track vẫn 36×20.
+
+- **Neo theo TÂM, không inset từ hai mép.** Một hộp định vị tuyệt đối giải insets và chiều cao phần
+  trăm theo **padding box** của containing block, mà track mang `border: 2px` — nên padding box cao
+  16px chứ không phải 20px, và `inset-block: -2px` đối xứng ra **20px** thay vì 24px. Đã đo đúng như
+  vậy trước khi sửa lại.
+
+  Sau: **vẽ 36×20, hit 36.5×24.5, lệch tâm 0.00, hit-test vẫn trả về INPUT.**
+
+- **Generator của hợp đồng học thêm một hình dạng thứ hai.** Nó chỉ bắt `X::after`, nên nó publish
+  một kiểu và giấu kiểu kia. Nay bắt cả `.ui-x > .child` — cả hai đều là "target lớn hơn border box
+  của selector này", thứ duy nhất một cổng consumer cần biết. `measurement.json`: **3 → 4 expanders**.
+
+### Fixed — `Timeline`: tiền tố sr-only ghi cứng tiếng Anh (gh#627)
+
+- **`"Completed: " / "Current: " / "Upcoming: "`** đi thẳng vào một `<span className="sr-only">`,
+  không prop, không đi qua i18n. Trên màn tiếng Nhật, người dùng trình đọc màn hình nghe
+  「Completed: 入国前講習」 — nửa Anh nửa Nhật, và **nửa tiếng Anh là nửa mang TRẠNG THÁI**.
+
+- Người báo đề nghị một prop `statusLabels`. **`t()` là câu trả lời đúng hơn** và là luật của chính
+  thư viện này — mọi chuỗi hiển thị VÀ mọi chữ sr-only đều đi qua nó — nên consumer đã khởi tạo i18n
+  thì nhận tiếng Nhật mà **không phải đổi một dòng nào ở call site**.
+
+- Test cũ assert `"Completed:"` **không bao giờ bắt được lỗi này** — đó là chuỗi đúng ở sai ngôn ngữ.
+  Nay render **cùng một component dưới ba locale** và khẳng định thêm: không còn tiền tố tiếng Anh nào
+  sót trên màn tiếng Nhật.
+
+
 ### Added — `check:state-legible`: hai trạng thái phải NHÌN thấy khác nhau (gh#622)
 
 - **Phép đo của gh#615 nay phủ 14 frame thay vì 4.** Assertion ấy sinh ra trong

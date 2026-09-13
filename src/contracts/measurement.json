@@ -39,6 +39,17 @@
         "components": [
           "number-input"
         ]
+      },
+      {
+        "selector": ".ui-switch",
+        "via": ".ui-choice-input",
+        "source": "src/styles/control.css",
+        "targetMin": 24,
+        "components": [
+          "label",
+          "slider",
+          "switch"
+        ]
       }
     ]
   },

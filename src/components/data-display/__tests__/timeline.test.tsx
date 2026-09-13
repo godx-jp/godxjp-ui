@@ -1,6 +1,8 @@
+import type * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+import { AppProvider } from "../../../app/app-provider";
 import { Timeline } from "../timeline";
 import type { TimelineItem } from "../timeline";
 
@@ -8,6 +10,15 @@ const ITEMS: TimelineItem[] = [
   { title: "出荷", location: "東京", time: "09:00", note: "倉庫A" },
   { title: "輸送中", current: true },
 ];
+
+/** The prefix is localized, so every assertion about it has to name the locale it expects. */
+function renderIn(locale: "en" | "ja" | "vi", ui: React.ReactElement) {
+  return render(
+    <AppProvider persist={false} defaultLocale={locale} fallbackLocale="en">
+      {ui}
+    </AppProvider>,
+  );
+}
 
 describe("Timeline", () => {
   it("renders one entry per item with full metadata", () => {
@@ -19,8 +30,8 @@ describe("Timeline", () => {
     expect(screen.getByText("倉庫A")).toBeInTheDocument();
   });
 
-  it("marks the current item with aria-current + data-current and the right prefix", () => {
-    render(<Timeline items={ITEMS} />);
+  it("marks the current item with aria-current + data-current and a localized prefix", () => {
+    renderIn("en", <Timeline items={ITEMS} />);
     const current = screen.getByText("輸送中").closest("li")!;
     expect(current).toHaveAttribute("aria-current", "step");
     expect(current.querySelector('[data-current="true"]')).not.toBeNull();
@@ -28,10 +39,38 @@ describe("Timeline", () => {
   });
 
   it("uses the completed prefix and no aria-current for past items", () => {
-    render(<Timeline items={ITEMS} />);
+    renderIn("en", <Timeline items={ITEMS} />);
     const past = screen.getByText("出荷").closest("li")!;
     expect(past).not.toHaveAttribute("aria-current");
     expect(past).toHaveTextContent("Completed:");
+  });
+
+  /**
+   * gh#627 — THE STATUS PREFIX FOLLOWS THE LOCALE.
+   *
+   * These three strings were hardcoded English going straight into a `sr-only` span, with no prop
+   * and no route through i18n. On a Japanese screen a screen-reader user heard
+   * 「Completed: 入国前講習」: half English, half Japanese, and the ENGLISH half carried the status.
+   *
+   * Asserting "Completed:" alone could never catch that — it was the correct string in the wrong
+   * language. Only rendering the SAME component under two locales can, which is what this does.
+   */
+  it.each([
+    ["ja", "完了:", "現在:"],
+    ["vi", "Đã xong:", "Hiện tại:"],
+    ["en", "Completed:", "Current:"],
+  ])("speaks the reader's language: %s", (locale, done, current) => {
+    renderIn(locale as "ja" | "vi" | "en", <Timeline items={ITEMS} />);
+    expect(screen.getByText("出荷").closest("li")!).toHaveTextContent(done);
+    expect(screen.getByText("輸送中").closest("li")!).toHaveTextContent(current);
+  });
+
+  it("never leaves an English status prefix on a Japanese screen", () => {
+    renderIn("ja", <Timeline items={ITEMS} />);
+    const list = screen.getAllByRole("listitem").map((li) => li.textContent ?? "").join(" ");
+    for (const english of ["Completed:", "Current:", "Upcoming:"]) {
+      expect(list).not.toContain(english);
+    }
   });
 
   it("omits optional metadata nodes when absent", () => {
@@ -99,7 +138,7 @@ describe("Timeline", () => {
   });
 
   it("status:'current' behaves like current:true (aria-current + emphasis)", () => {
-    render(<Timeline items={[{ title: "p" }, { title: "live", status: "current" }]} />);
+    renderIn("en", <Timeline items={[{ title: "p" }, { title: "live", status: "current" }]} />);
     const live = screen.getByText("live").closest("li")!;
     expect(live).toHaveAttribute("aria-current", "step");
     expect(live).toHaveAttribute("data-status", "current");
@@ -107,7 +146,7 @@ describe("Timeline", () => {
   });
 
   it("emits a Pending SR prefix for pending items", () => {
-    render(<Timeline variant="ordinal" items={[{ title: "soon", status: "pending" }]} />);
+    renderIn("en", <Timeline variant="ordinal" items={[{ title: "soon", status: "pending" }]} />);
     const soon = screen.getByText("soon").closest("li")!;
     expect(soon).toHaveTextContent("Upcoming:");
     expect(soon).not.toHaveAttribute("aria-current");

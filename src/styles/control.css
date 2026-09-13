@@ -616,6 +616,35 @@
     transition-duration: 150ms;
   }
 
+  /* THE SWITCH'S TARGET IS THE INPUT, NOT A PSEUDO-ELEMENT (gh#626).
+   *
+   * Measured on /isolate/data-entry-switch at 23.4.10: paint 36×20, hit 36.5×20.5, `::after` none.
+   * Under WCAG 2.2 SC 2.5.8's 24×24 on the block axis, and — unlike the NumberInput steppers and
+   * the inline affix — with nothing in `targetSize.expanders` for a consumer gate to read. The
+   * reporter found it with the very probe they rewrote to honour that contract, which is the
+   * contract working: it made our claim checkable and the check found a hole.
+   *
+   * NOT a `::after`, which is the answer for the other two. This control has a REAL `<input>`
+   * absolutely covering its track (gh#476, `.ui-choice-input`), and a pseudo-element on the label
+   * would sit ON TOP of it — `elementFromPoint` would start returning the label, which is the exact
+   * regression `check:choice-hit-target` was built to catch. Growing the input instead keeps the
+   * hit test landing on the input AND leaves the paint untouched: the track is still 36×20.
+   *
+   * CENTRED ON THE BLOCK AXIS, not inset from both edges. An absolutely-positioned box resolves
+   * its insets and its percentage height against the containing block's PADDING box, and the track
+   * carries `border: 2px` — so the padding box is 16px tall, not 20px, and a symmetric
+   * `inset-block: -2px` produced 20px rather than 24px. Measured exactly that way before this was
+   * corrected. Anchoring the centre and sizing with `max()` is independent of the border.
+   *
+   * `max(100%, …)` so the rule only ever GROWS the box: at a band already ≥ 24 it stays 100%.
+   * Only the block axis is touched — the track is 36px wide and already clears the floor. */
+  .ui-switch > .ui-choice-input {
+    inset-block-start: 50%;
+    inset-block-end: auto;
+    block-size: max(100%, var(--touch-target-min));
+    translate: 0 -50%;
+  }
+
   .ui-switch[data-state="checked"] {
     background: var(--switch-checked-background, hsl(var(--primary)));
   }
