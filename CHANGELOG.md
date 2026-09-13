@@ -6,6 +6,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.10] - 2026-09-13
+
+### Added — `dialog-needs-body` (gh#617)
+
+- **`DialogContent` không có `DialogBody` thì KHÔNG cuộn được.** Phần cuộn nằm trên body, và chỉ trên
+  body: `[data-slot="dialog-body"]` có `max-height: min(60vh, 32rem); overflow-y: auto`, còn
+  `[data-slot="dialog-content"]` là `overflow: hidden` không max-height (có chủ ý). Nội dung cao hơn
+  màn hình bị cắt **cả hai đầu**, mang theo nút ở footer, và Escape là lối ra duy nhất.
+
+  Người báo mở issue về **code của chính họ** — `grep -rln DialogBody` không ra gì, `DialogContent` ra
+  5 tệp. Nhưng `ui-audit` **im lặng**, và đó là phần của chúng tôi. Cùng hình dạng gh#611: một hợp
+  đồng bố cục **có thật trong stylesheet** mà **không có chốt canh**.
+
+- **`Sheet` cũng được bao**, đúng nguyên tắc gh#611 đã dạy: khi một luật kể tên component, hỏi xem
+  các slot anh em bắt buộc của nó có được kiểm không. CSS của `Sheet` mang đúng cặp
+  `:has([data-slot="sheet-body"])`.
+
+### Fixed — luật mới bắt ngay 10 ca, 4 trong chính `src/`
+
+```
+src/components/data-entry/upload-crop-dialog.tsx
+src/components/data-entry/upload.tsx
+src/components/feedback/dialog.tsx          ← chính preset AlertDialog
+src/components/layout/app-launcher.tsx
++ 6 trang docs + ví dụ Dialog trong MCP catalog
+```
+
+Sửa hết, **không baseline**. Preset `AlertDialog` đáng nêu riêng: nó dựng header → field → footer, nên
+một nhãn thử thách dài hay một dòng lỗi step-up đẩy nút xác nhận và huỷ ra khỏi màn hình — ở đúng cái
+hộp thoại mà toàn bộ mục đích là để người ta bấm một cái nút.
+
+Đo sau khi sửa: body có mặt, `overflow-y: auto`, `max-height 492px`, footer trên màn hình, console
+sạch. Hình dạng antd confirm của 23.4.9 còn nguyên (nền header `rgba(0,0,0,0)`, glyph còn đó); header
+nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành dải** — một đường kẻ giữa header cố
+định và vùng cuộn là cách đọc đúng ranh giới ấy.
+
+### Fixed — `docs/FRAME-COVERAGE-REPORT.md` không có ai canh (gh#619)
+
+- File **tracked**, script **luôn ghi đè**, và không gì khẳng định nó tươi. Nó đã trôi:
+  **152 → 163** public component, zero-frame **17 → 21**. Câu trả lời cho 「component nào chưa test」
+  đã sai suốt ba bản phát hành mà chưa bản build nào đỏ.
+- Nó còn một cái giá khó thấy hơn: vì script luôn ghi, mọi job chạy `check:frame-coverage` để lại
+  **cây bẩn** — và công cụ release từ chối publish một cây khác với commit đã verify. Bản release
+  `--full-verify` của v23.4.9 đi hết verify xanh (1310 test, lockstep, npm auth) rồi abort ở bước
+  cuối vì đúng chuyện này. Nay có `--check`, đã wire vào `verify:ci:static`.
+
+
 ## [23.4.9] - 2026-09-13
 
 ### Fixed — `RadioGroup`: chấm tròn vẽ VÔ ĐIỀU KIỆN (gh#615)
