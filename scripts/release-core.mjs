@@ -352,11 +352,37 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
    */
   const RELEASE_BLOCK_EXEMPT = [];
 
+  /**
+   * Check runs that are DEPLOYMENTS, not gates — a different thing from an exempt gate (gh#634).
+   *
+   * The rule above — "a gate we do not name is still a gate" — is right, and this is not a hole in
+   * it. A gate makes a CLAIM ABOUT THE COMMIT; a deployment performs an ACTION SOMEWHERE ELSE. When
+   * the Pages preview fails, nothing has been learned about the tarball, so refusing to publish on
+   * it is not caution, it is a category error.
+   *
+   * It cost two hours on 23.4.11. Every gate on the commit was green — four test shards, guards,
+   * contrast, lockstep — and the release still aborted:
+   *
+   *     ✗ Refusing to publish f4191588: CI has not proven this commit green.
+   *       - other red check: deploy (failure)
+   *
+   * `deploy` had failed on a GitHub 502, with the action itself saying so: "Server error, is
+   * githubstatus.com reporting a Pages outage? Please re-run the deployment at a later time."
+   * Re-running it turned the release green in 26 seconds.
+   *
+   * NARROW ON PURPOSE — an exact-match anchor, not a prefix. Anything that verifies belongs in
+   * REQUIRED_CI_CHECK_RUNS, and anything that is a BROKEN gate belongs in RELEASE_BLOCK_EXEMPT
+   * above, where writing the justification down is the point. This list is only for jobs that never
+   * made a claim about the commit in the first place.
+   */
+  const NOT_A_GATE = [/^deploy$/];
+
   const collateral = [...latestByName.values()]
     .filter(
       (run) =>
         !REQUIRED_CI_CHECK_RUNS.includes(run.name) &&
         !RELEASE_BLOCK_EXEMPT.some((re) => re.test(run.name)) &&
+        !NOT_A_GATE.some((re) => re.test(run.name)) &&
         run.status === "completed" &&
         FAILED_CONCLUSIONS.has(run.conclusion),
     )
@@ -373,8 +399,11 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
     `Refusing to publish ${sha}: CI has not proven this commit green.\n` +
       problems.map((problem) => `  - ${problem}`).join("\n") +
       "\nEvery gate in verify:release is delegated to a CI check run on this exact SHA (see " +
-      "CI_PROOF_FOR_RELEASE_GATE). Wait for CI, fix it, or re-run the release with --full-verify " +
-      "to verify this tree locally instead.",
+      "CI_PROOF_FOR_RELEASE_GATE). A `not successful:` line is a gate that made a claim about this " +
+      "commit and failed — fix the code. An `other red check:` line is a job nobody named as a " +
+      "gate; read it before assuming it is one, and if it turns out not to verify anything, it " +
+      "belongs in NOT_A_GATE rather than in a retry loop (gh#634). Wait for CI, fix it, or re-run " +
+      "the release with --full-verify to verify this tree locally instead.",
   );
 }
 
