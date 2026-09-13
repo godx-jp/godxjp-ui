@@ -167,8 +167,14 @@ async function measure(page, { route, selector }, { dark, on }) {
   const resolved = await page.evaluate(
     ([sel, wantDark, wantOn]) => {
       const root = document.documentElement;
-      if (wantOn) root.setAttribute("data-focus-outline", "on");
-      else root.removeAttribute("data-focus-outline");
+      // OFF IS AN EXPLICIT VALUE, NOT AN ABSENCE — and this gate said otherwise for six nights.
+      //
+      // gh#544 flipped the shipped default to ON (`--focus-outline: 1` in foundation.css), so
+      // REMOVING the attribute no longer means off; it means "take the default", which is on. The
+      // gate kept removing it and kept asserting "the switch ships OFF; nothing may paint", so it
+      // reported 14 failures a night against a library doing exactly what gh#544 asked for.
+      // `foundation.css` names the off form itself: `<html data-focus-outline="off">`.
+      root.setAttribute("data-focus-outline", wantOn ? "on" : "off");
       // The consumer scenario this was reported from: the switch on AND the weight raised.
       root.style.setProperty("--focus-ring-weight", "2px");
       if (wantDark && root.dataset.theme !== "dark") return { error: "theme=dark was ignored" };
@@ -280,7 +286,7 @@ async function main() {
       if (off.focused.outlineWidth > 0) {
         failures.push(
           `✗ ${target.label} · ${theme} · switch OFF — still ${off.focused.outlineWidth}px of ` +
-            `outline on focus. The switch ships OFF; nothing may paint.`,
+            `outline on focus. With data-focus-outline="off" nothing may paint.`,
         );
       } else if (off.focused.boxShadow !== off.resting.boxShadow) {
         failures.push(

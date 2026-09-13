@@ -109,7 +109,28 @@ jobs:
           - name: interaction-semantics
             port: 6041
             stories: ""
-            command: pnpm check:data-entry-touch-aria && pnpm check:app-shell-narrow-grid && pnpm check:choice-hit-target && pnpm check:data-table-empty-inset && pnpm check:number-input-step-target && pnpm check:focus-ring-paint && pnpm check:measurement-contract-browser && pnpm check:state-legible
+            command: |
+              # NOT `&&`: a chain stops at the first red gate and HIDES every one after it.
+              # check:focus-ring-paint was red for six consecutive nights on a stale assertion, and
+              # the two gates behind it — measurement-contract-browser and state-legible — never ran
+              # once. A gate that cannot run is a gate that does not exist, which is the same defect
+              # gh#611/#615/#617 are all instances of. Run every gate, report every failure, fail once.
+              #
+              # Each gate is spelled out in full rather than looped over a list, because
+              # check:gate-coverage scans these workflows for a literal `pnpm check:<name>` — and it
+              # caught the first version of this block, which hid all eight behind a shell variable
+              # and read as eight DEAD GATES. The wiring detector must be able to see the wiring.
+              fail=0
+              run() { echo "::group::$*"; if "$@"; then echo "PASS $*"; else echo "FAIL $*"; fail=1; fi; echo "::endgroup::"; }
+              run pnpm check:data-entry-touch-aria
+              run pnpm check:app-shell-narrow-grid
+              run pnpm check:choice-hit-target
+              run pnpm check:data-table-empty-inset
+              run pnpm check:number-input-step-target
+              run pnpm check:focus-ring-paint
+              run pnpm check:measurement-contract-browser
+              run pnpm check:state-legible
+              exit $fail
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
