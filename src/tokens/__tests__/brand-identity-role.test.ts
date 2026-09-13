@@ -97,8 +97,11 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     }
   });
 
-  it("light --brand IS the canonical emerald oklch(0.595 0.137 162.94) = #009766", () => {
-    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#009766");
+  it("light --brand IS the canonical GoDX violet #7A00FF", () => {
+    // Brand identity v2.3 (`01_GoDX`, `06_UI_Design_System/dist/godx.theme.resolved.json` →
+    // core.action.primary.bg). It replaced 翠 emerald #009766, which this line pinned from gh#250
+    // until the identity itself changed.
+    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#7a00ff");
   });
 
   it("dark --brand keeps the canonical hue and chroma, lifted only in lightness", () => {
@@ -121,9 +124,21 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     }
   });
 
-  it("--brand is not a copy of --primary either", () => {
+  it("--brand is DECLARED independently of --primary, even while they hold the same value", () => {
+    /*
+     * This used to compare VALUES, which worked only while the identity was green and the action
+     * colour blue. Under identity v2.3 both are #7A00FF, and value inequality would now fail on a
+     * design that is correct.
+     *
+     * The property that actually matters — and the one gh#250 was written for — is that --brand
+     * does not READ --primary. A service re-theming the action colour must not drag the identity
+     * with it. That is a fact about the DECLARATION, so check the declaration.
+     */
     for (const body of Object.values(THEMES)) {
-      expect(hsl(body, "brand")).not.toEqual(hsl(body, "primary"));
+      const declaration = /^\s*--brand:\s*([^;]+);/m.exec(body)?.[1] ?? "";
+      expect(declaration).not.toBe("");
+      expect(declaration).not.toContain("var(");
+      expect(declaration).not.toContain("--primary");
     }
   });
 

@@ -42,7 +42,7 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "primary": {
     "cssVar": "--primary",
-    "hsl": "204 100% 37%"
+    "hsl": "268.7 100% 50%"
   },
   "primaryForeground": {
     "cssVar": "--primary-foreground",
@@ -50,11 +50,11 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "focus": {
     "cssVar": "--primary",
-    "hsl": "204 100% 37%"
+    "hsl": "268.7 100% 50%"
   },
   "brand": {
     "cssVar": "--brand",
-    "hsl": "160.5 100% 29.6%"
+    "hsl": "268.7 100% 50%"
   },
   "brandForeground": {
     "cssVar": "--brand-foreground",
@@ -102,7 +102,7 @@ export const EMAIL_COLOR_SOURCE_DARK = {
   },
   "primary": {
     "cssVar": "--primary",
-    "hsl": "204 90% 60%"
+    "hsl": "268.7 100% 86.9%"
   },
   "primaryForeground": {
     "cssVar": "--primary-foreground",
@@ -110,11 +110,11 @@ export const EMAIL_COLOR_SOURCE_DARK = {
   },
   "focus": {
     "cssVar": "--primary",
-    "hsl": "204 90% 60%"
+    "hsl": "268.7 100% 86.9%"
   },
   "brand": {
     "cssVar": "--brand",
-    "hsl": "160.5 100% 36%"
+    "hsl": "268.7 100% 86.9%"
   },
   "brandForeground": {
     "cssVar": "--brand-foreground",
@@ -171,4 +171,15 @@ export const EMAIL_GEOMETRY_SOURCE = {
   "--email-mobile-page-padding": "12px",
   "--email-mobile-heading-font-size": "16px",
   "--email-mobile-cta-width": "100%"
+} as const;
+
+/**
+ * The GoDX identity artwork — the same two paths `<Logo mark="godx" />` paints, from
+ * `src/brand/godx-mark.ts`. Regenerate with the rest of this file; `--check` fails on drift.
+ */
+export const EMAIL_MARK_SOURCE = {
+  "viewBox": "0 0 32 32",
+  "transform": "translate(0 3.917) scale(0.132780)",
+  "bodyPath": "M93.0 0.0H158.0C161.0 0.0 162.0 1.0 164.0 3.0L197.0 41.0Q201.0 46.0 195.0 46.0H97.0C71.0 46.0 50.0 68.0 50.0 94.0C50.0 119.0 72.0 138.0 97.0 138.0H126.0Q132.0 138.0 128.0 143.0L95.0 180.0Q93.0 182.0 90.0 182.0C65.0 182.0 44.0 171.0 25.0 151.0C7.0 132.0 0.0 115.0 0.0 94.0C0.0 69.0 11.0 52.0 31.0 31.0C52.0 9.0 70.0 0.0 93.0 0.0Z",
+  "arrowPath": "M106.0 74.0H219.0Q222.0 74.0 224.0 77.0L239.0 94.0Q243.0 99.0 239.0 104.0L169.0 178.0Q165.0 182.0 160.0 182.0H114.0Q108.0 182.0 112.0 178.0L151.0 137.0Q154.0 134.0 151.0 131.0L104.0 81.0Q98.0 74.0 106.0 74.0Z"
 } as const;

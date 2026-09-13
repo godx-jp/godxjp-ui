@@ -37,13 +37,28 @@ function declarations(body: string): Record<string, string> {
   return scope;
 }
 
+const DARK_SELECTOR = '.dark,\n:root[data-theme="dark"] {';
 const COMPONENT_SCOPE = declarations(blockOf(logoTokens, ":root {"));
+
+/*
+ * ORDER MATTERS AND IT USED TO BE BACKWARDS. `tokens/base.css` imports foundation.css BEFORE
+ * components/logo.css, and `:root` / `.dark` carry equal specificity, so in a browser the LATER
+ * file wins. This object spread previously put foundation last, i.e. modelled the opposite
+ * precedence — harmless only while no token was declared in both files, and silently wrong the
+ * moment one is. Component scope now goes last on both sides, matching the cascade.
+ *
+ * The dark scope also reads logo.css's own dark block, which exists as of the violet identity:
+ * --logo-identity-foreground can no longer be one value for both themes, so a dark scope that
+ * ignored it would have measured the LIGHT ink against the DARK fill and reported a failure the
+ * browser never has.
+ */
 const THEME_SCOPES = {
-  light: { ...COMPONENT_SCOPE, ...declarations(blockOf(foundation, ":root {")) },
+  light: { ...declarations(blockOf(foundation, ":root {")), ...COMPONENT_SCOPE },
   dark: {
-    ...COMPONENT_SCOPE,
     ...declarations(blockOf(foundation, ":root {")),
-    ...declarations(blockOf(foundation, '.dark,\n:root[data-theme="dark"] {')),
+    ...declarations(blockOf(foundation, DARK_SELECTOR)),
+    ...COMPONENT_SCOPE,
+    ...declarations(blockOf(logoTokens, DARK_SELECTOR)),
   },
 } as const;
 
@@ -167,14 +182,27 @@ describe('boxed <Logo mark="glyph"> text clears WCAG 2.2 AA on its fill', () => 
     expect(ruleBody('.ui-logo[data-tone="success"]')).not.toContain("--brand-foreground");
   });
 
-  it("the ink token is theme-invariant, so dark renders exactly as it always did", () => {
+  it("the ink FLIPS with the theme, because the identity fill flips lightness", () => {
+    /*
+     * This assertion used to say the opposite — "the ink token is theme-invariant" — and it was
+     * right for as long as --brand was 翠 emerald, which is a light fill in both themes.
+     *
+     * Brand identity v2.3 makes the fill #7A00FF in light and #DCBCFF in dark: dark ink on a dark
+     * fill in one theme, light ink on a light fill in the other. One value cannot serve both, and
+     * the measurement is not close — near-black on the light violet is 2.77:1 against a 4.5:1
+     * floor. So the ink flips, and what this test guards is that it flips the RIGHT WAY rather
+     * than merely that it changed.
+     */
     const light = glyphPair('.ui-logo[data-tone="success"]', "light");
     const dark = glyphPair('.ui-logo[data-tone="success"]', "dark");
-    expect(hex(light.ink)).toBe(hex(dark.ink));
-    // The dark theme already inked the glyph with this near-black spine via --brand-foreground.
-    expect(hex(dark.ink)).toBe(
-      hex(hslToRgb(resolveTriplet("var(--brand-foreground)", THEME_SCOPES.dark))),
-    );
+
+    expect(hex(light.ink)).not.toBe(hex(dark.ink));
+
+    // Each ink sits on the opposite side of its own fill: light theme = light ink on a dark fill,
+    // dark theme = dark ink on a light fill. Relative luminance says so without naming a colour,
+    // so this keeps holding if either violet is retuned.
+    expect(luminance(light.ink)).toBeGreaterThan(luminance(light.fill));
+    expect(luminance(dark.ink)).toBeLessThan(luminance(dark.fill));
   });
 
   it("no Logo type tier reaches the SC 1.4.3 large-text threshold, so 4.5:1 is the real floor", () => {

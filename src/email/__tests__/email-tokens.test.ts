@@ -414,16 +414,41 @@ describe("no relative or external asset dependency", () => {
 
 // ── 5. The mark is the canonical GoDX artwork, capsule AND internal glyph ───────────────────────
 describe("canonical GoDX brand mark", () => {
+  /*
+   * THE DRIFT THIS GUARDS HAS MOVED, so the measurement moved with it.
+   *
+   * It used to regex a literal `d="…"` out of logo.tsx and compare it to the email copy — the only
+   * check possible while the two were hand-kept copies, and the check that caught the web mark
+   * becoming the real v2.3 artwork while email stayed a placeholder capsule.
+   *
+   * Both now read ONE source: `src/brand/godx-mark.ts`. The component imports it; email cannot
+   * (src/email may only import its own siblings, so it stays consumable without the component
+   * runtime) and receives a GENERATED copy instead. So the remaining way to diverge is a stale
+   * generated file, and that is what these compare — the artwork module on disk against the
+   * constants email actually paints with. `gen-email-tokens.mjs --check` guards the same thing in
+   * CI; this fails in the unit suite too, where it is seen sooner.
+   */
+  const artwork = readFileSync(join(ROOT, "src/brand/godx-mark.ts"), "utf8");
+  const artworkConst = (name: string) =>
+    new RegExp(`export const ${name} =\\s*"([^"]+)"`).exec(artwork)?.[1] ?? "";
   const logo = readFileSync(join(ROOT, "src/components/general/logo.tsx"), "utf8");
-  const logoPath = /d="([^"]+)"/.exec(logo)?.[1] ?? "";
 
-  it('the capsule path is byte-identical to the one <Logo mark="godx" /> paints', () => {
-    expect(logoPath).not.toBe("");
-    expect(logoPath.startsWith(EMAIL_BRAND_MARK.capsulePath)).toBe(true);
+  it('the mark paths are byte-identical to the ones <Logo mark="godx" /> paints', () => {
+    for (const name of ["GODX_MARK_BODY_PATH", "GODX_MARK_ARROW_PATH"]) {
+      expect(artworkConst(name)).not.toBe("");
+    }
+    expect(EMAIL_BRAND_MARK.capsulePath).toBe(artworkConst("GODX_MARK_BODY_PATH"));
+    expect(EMAIL_BRAND_MARK.glyphPath).toBe(artworkConst("GODX_MARK_ARROW_PATH"));
+
+    // …and the component really does render from that module rather than a literal of its own.
+    expect(logo).toContain("GODX_MARK_BODY_PATH");
+    expect(logo).toContain("GODX_MARK_ARROW_PATH");
+    expect(logo).not.toMatch(/\sd="[Mm]/);
   });
 
   it("uses the component's 32×32 viewBox, rendered in the canonical 22px header box", () => {
-    expect(logo).toContain(`viewBox="${EMAIL_BRAND_MARK.viewBox}"`);
+    expect(artworkConst("GODX_MARK_VIEW_BOX")).toBe(EMAIL_BRAND_MARK.viewBox);
+    expect(logo).toContain("GODX_MARK_VIEW_BOX");
     // The ARTWORK space is the component's; only the RENDERED box is email-specific
     expect(EMAIL_BRAND_MARK.viewBox).toBe("0 0 32 32");
     expect(EMAIL_BRAND_MARK.widthPx).toBe(22);

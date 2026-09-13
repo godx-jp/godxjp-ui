@@ -9,6 +9,26 @@ import { join } from "node:path";
 
 const ROOT = process.cwd();
 const FOUNDATION = join(ROOT, "src/tokens/foundation.css");
+// The identity artwork. Email carries the SAME two paths the web component paints, and it is
+// GENERATED rather than imported because src/email may only import its own siblings — it has to
+// stay consumable without the component runtime. Hand-copying is exactly what let the email mark
+// stay a placeholder capsule while the web mark became the real artwork.
+const MARK = join(ROOT, "src/brand/godx-mark.ts");
+
+/** Pull an `export const NAME = "value";` string literal out of the shared artwork module. */
+function markConst(source, name) {
+  const m = new RegExp(`export const ${name} =\\s*"([^"]+)"`).exec(source);
+  if (!m) throw new Error(`gen-email-tokens: ${name} not found in src/brand/godx-mark.ts`);
+  return m[1];
+}
+
+const markSource = readFileSync(MARK, "utf8");
+const mark = {
+  viewBox: markConst(markSource, "GODX_MARK_VIEW_BOX"),
+  transform: markConst(markSource, "GODX_MARK_TRANSFORM"),
+  bodyPath: markConst(markSource, "GODX_MARK_BODY_PATH"),
+  arrowPath: markConst(markSource, "GODX_MARK_ARROW_PATH"),
+};
 const EMAIL_CSS = join(ROOT, "src/tokens/components/email.css");
 const OUT = join(ROOT, "src/email/tokens.generated.ts");
 const OUT_REL = "src/email/tokens.generated.ts";
@@ -123,6 +143,12 @@ export const EMAIL_COLOR_SOURCE_DARK = ${JSON.stringify(dark, null, 2)} as const
 
 /** Raw \`--email-*\` declarations from the component token tier, verbatim. */
 export const EMAIL_GEOMETRY_SOURCE = ${JSON.stringify(geometry, null, 2)} as const;
+
+/**
+ * The GoDX identity artwork — the same two paths \`<Logo mark="godx" />\` paints, from
+ * \`src/brand/godx-mark.ts\`. Regenerate with the rest of this file; \`--check\` fails on drift.
+ */
+export const EMAIL_MARK_SOURCE = ${JSON.stringify(mark, null, 2)} as const;
 `;
 
 if (process.argv.includes("--check")) {

@@ -1,4 +1,10 @@
 import * as React from "react";
+import {
+  GODX_MARK_ARROW_PATH,
+  GODX_MARK_BODY_PATH,
+  GODX_MARK_TRANSFORM,
+  GODX_MARK_VIEW_BOX,
+} from "../../brand/godx-mark";
 
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
@@ -221,17 +227,32 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
   return (
     <svg
       data-slot="logo-artwork"
-      viewBox="0 0 32 32"
+      viewBox={GODX_MARK_VIEW_BOX}
       width="32"
       height="32"
       focusable="false"
       aria-hidden="true"
     >
-      <path
-        fill="currentColor"
-        fillRule="evenodd"
-        d="M8 7h16a7 7 0 0 1 7 7v4a7 7 0 0 1-7 7H8a7 7 0 0 1-7-7v-4a7 7 0 0 1 7-7Zm0 6a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H8Z"
-      />
+      {/*
+        THE REAL GoDX MARK, from brand identity v2.3 (`01_GoDX/assets/logos/GoDX-icon-flat.svg`).
+        What stood here before was a generic rounded capsule with a hole — a placeholder, not the
+        identity. Two paths: the "G" body and the "X" arrow.
+
+        MONOCHROME ON PURPOSE. The kit also ships a gradient version (#7A00FF -> #3700A6 ->
+        #0B0F3B), and it is the wrong artwork for this component: the mark here is painted by
+        `--logo-godx-color` (defaulting to the --brand role) so it re-tints per theme and knocks out
+        against a dark surface. A baked gradient cannot do either, and would be the one element on
+        the page that ignores the theme. The flat cut is the kit's own answer for exactly this use.
+
+        FITTED, NOT REDRAWN. Source viewBox is `30 30 241 182`; the transform maps it into this
+        component's square 32x32 box, centred vertically (scale 32/241 = 0.13278, y offset
+        (32 - 182 x 0.13278) / 2 = 3.917). Every coordinate below is the kit's, untouched — so a
+        future artwork revision is a copy-paste of two `d` attributes, not a redraw.
+      */}
+      <g fill="currentColor" fillRule="evenodd" transform={GODX_MARK_TRANSFORM}>
+        <path d={GODX_MARK_BODY_PATH} />
+        <path d={GODX_MARK_ARROW_PATH} />
+      </g>
     </svg>
   );
 }
