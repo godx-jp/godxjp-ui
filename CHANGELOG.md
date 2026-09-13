@@ -6,6 +6,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — hai lỗi hình học đo được, và một cổng khoá đúng cái nó phải bắt
+
+- **`PageContainer`: cụm nút header ĐÈ LÊN tiêu đề ở dải 721–859px.** `.ui-page-header-extra` được
+  phép co dưới nội dung từ 640px (bản sửa gh#300), nhưng phần cho nội dung **xuống hàng** lại bị
+  khoá trong `@media (max-width: 720px)`. Một cụm nút không wrap được thì không hẹp lại khi hộp của
+  nó hẹp — nó **tràn ra ngoài**, và vì hộp là `justify-content: flex-end` nên phần tràn chạy
+  **ngược** lên trên tiêu đề. Đo trên `/isolate/layout-app-shell`, bốn nút tiếng Nhật:
+
+  ```
+  width  title   extra box  inner flex  tràn-trái  số dòng title
+  720    151.6     520.4      520.4         0          2      (media query áp dụng)
+  760    157.5     538.5      609.8      71.3          2      ĐÈ lên <h1>
+  800    166.5     569.5      609.8      40.3          2      ĐÈ lên <h1>
+  900    178.3     609.8      609.8         0          1      (vừa, không phải tính cho ai)
+  ```
+
+  Sau khi sửa: tràn-trái = 0 ở 640/700/720/740/760/780/800/830/860/900/1024/1280/1440, không bề
+  rộng nào còn đè. **Và chính cái test là thứ đóng băng lỗi này** —
+  `page-header-extra-wrap-geometry` khẳng định rule wrap phải NẰM TRONG media query 720px, nên mọi
+  bản sửa cho desktop đều làm nó đỏ. Nay nó khẳng định điều ngược lại, kèm số đo.
+
+- **`DialogHeader tone`: tô nền mà không có dải.** Component gắn `bg-<tone>/10` vô điều kiện, nhưng
+  **hình học** của dải — full-bleed, padding, đường kẻ dưới — lại bị gated sau
+  `:has([data-slot="dialog-body"])`. Preset nào dựng header → field → footer (đúng những gì
+  `AlertDialog` làm) thì khớp phần tô mà không khớp phần hình. Đo trên
+  `/isolate/feedback-danger-confirm` trước khi sửa:
+
+  ```
+  padding 0px · border-bottom 0px · margin-inline 0px
+  band top    349.3 == title top          349.3
+  band bottom 422.9 == description bottom 422.9
+  ```
+
+  tức vệt màu **ôm khít chữ**, không một pixel thở. Chèn đúng một `[data-slot=dialog-body]` vào
+  cùng DOM ấy làm nó lật sang `padding 16px 24px · border 1px · margin-inline -24px` — đó là cách
+  nguyên nhân được ghim vào `:has()` chứ không phải vào class tone.
+
+### Changed — `AlertDialog` theo đúng `Modal.confirm` của Ant Design
+
+- **Tín hiệu nguy hiểm là một GLYPH, không phải một mảng nền được tô.** antd vẽ icon trạng thái
+  cạnh tiêu đề và để nguyên nền ở `colorBgElevated`; nó **chưa bao giờ** tô nền header của Modal
+  (nền `colorErrorBg` mềm của antd thuộc về `Alert`/`Tag`/`message`, và luôn đi kèm padding + viền).
+  Preset trước đây ép `tone="destructive"` lên header, đặt tín hiệu nguy hiểm **thứ ba** lên một màn
+  vốn đã có nút destructive và một thử thách gõ-để-xác-nhận (mạnh nhất trong ba), mà lại không
+  giống antd cũng chẳng phải một dải tử tế.
+
+  Đo sau khi đổi: nền header `rgba(0,0,0,0)`, `data-tone="default"`, glyph 24×24, đỉnh icon và đỉnh
+  title cùng 349.3, cách nhau **12px** đúng bằng margin của antd, Escape vẫn đóng, console sạch.
+
+- **Glyph đọc TEXT tier, không đọc FILL tier.** Bản nháp đầu dùng `--destructive` và bị
+  `error-text-tier` (gh#610/gh#612) bắt đúng: một glyph nằm trên mặt nền là **mực**, phải qua cùng
+  ngưỡng tương phản với dòng lỗi step-up ngay dưới nó. Nay đọc `--text-error` — đo được **7.21:1**
+  trên mặt dialog, vượt cả AAA.
+
+- `DialogHeader tone` VẪN là trục công khai bảy giá trị; preset chỉ thôi tự ép nó. Ai muốn dải màu
+  vẫn đặt `tone` trực tiếp — và nay nó thật sự có hình dải.
+
+
 ## [23.4.8] - 2026-09-13
 
 ### Added — hợp đồng đo được (gh#503, gh#506, gh#507)

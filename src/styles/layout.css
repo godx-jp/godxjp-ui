@@ -830,6 +830,26 @@
     width: 100%;
   }
 
+  /* THE BOX SHRINKING IS ONLY HALF THE FIX, and the other half was scoped to a media query.
+   *
+   * `.ui-page-header-extra` is allowed to shrink below its content at >=640px (see the rule under
+   * that breakpoint). An action group that cannot WRAP does not get narrower when its box does —
+   * it overflows the box, and because the box is `justify-content: flex-end` the overflow runs
+   * backwards, over the title. Measured on `/isolate/layout-app-shell`, four JA buttons:
+   *
+   *     width  title  extra box  inner flex  overflow  title lines
+   *     720    151.6    520.4      520.4        0        2      (wrap — the media query applied)
+   *     760    157.5    538.5      609.8      71.3       2      OVERLAPS the <h1>
+   *     800    166.5    569.5      609.8      40.3       2      OVERLAPS the <h1>
+   *     900    178.3    609.8      609.8        0        1      (fits, nothing to charge)
+   *
+   * The wrap lived under `max-width: 720px`, so 721px-859px had a shrinkable box around unshrinkable
+   * content. Wrapping is correct at EVERY width: where the row fits, `wrap` changes nothing. */
+  .ui-page-header-extra > .ui-flex[data-direction="row"] {
+    flex-wrap: wrap;
+    max-inline-size: 100%;
+  }
+
   /* The band sits on the title's baseline row at the token-owned gap and WRAPS under the title
    * when the viewport (390px) or a long JA/VI title leaves no room — never clips, never overlaps. */
   .ui-page-header-title-row {
@@ -881,11 +901,6 @@
 
     .ui-page-header .ui-page-subtitle {
       font-size: var(--page-subtitle-font-size-compact);
-    }
-
-    .ui-page-header-extra > .ui-flex[data-direction="row"] {
-      flex-wrap: wrap;
-      max-width: 100%;
     }
   }
 
