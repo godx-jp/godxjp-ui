@@ -6,6 +6,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.12] - 2026-09-13
+
+### Fixed — `DropdownMenuItem` nuốt `data-*` / `id` (gh#631)
+
+- Trigger của **chính cụm component này** đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG
+  ghi: *"trước đó bị nuốt, nên selector e2e của consumer rời ra trong im lặng"*. Phần **item** thì
+  chưa — nên hai nửa của một component hành xử ngược nhau.
+- **TypeScript không bắt được**, và đó là phần tệ nhất: JSX luôn cho qua mọi thuộc tính có gạch nối,
+  nên `data-testid` biên dịch sạch, `tsc` xanh, build xanh, và chỉ hỏng lúc chạy ở chỗ không ai nhìn.
+  Với `id` còn tệ hơn — nó là thứ `aria-activedescendant` trỏ vào, và nó biến mất không một lời.
+- Chuyển tiếp **sau cùng** trong gói prop, để giá trị của consumer thắng phần bookkeeping của slot
+  chứ không bị nó ghi đè; kèm test khẳng định bookkeeping vẫn còn khi consumer không đặt gì.
+- **`SelectItem` KHÔNG dính** — đo lại thì nó đã có `splitDomProps` + spread. Khoảng trống thật nằm ở
+  API `options` (`{value,label,group?}` không có lối truyền thuộc tính); đã ghi rõ ở issue.
+
+### Fixed — nhãn trong `DropdownMenuRadioGroup` đặt tên cho cả nhóm (gh#632)
+
+- Chẩn đoán ra **khác** báo cáo, và nặng hơn. Người báo nói tiêu đề *"bị loại khỏi a11y tree"*. Đo:
+
+  ```
+  section [role=group aria-labelledby=_r_5_]
+    div   [role=menuitemradio] "Live"
+    div   [id=_r_5_ role=presentation] "Archived"
+    div   [role=menuitemradio] "Old"
+  ```
+
+  Đối chiếu `aria-labelledby` với `id`: chữ **không mất** — RAC lấy `Header` làm **TÊN CỦA SECTION**
+  rồi ẩn nó để khỏi đọc đúp. Nên group chứa **cả hai** item mang tên "Archived". Không phải bị bỏ
+  rơi mà **bị đôn lên làm nhãn của nhóm nó không mô tả**.
+
+- **Ba cách sửa KHÔNG chạy, mỗi cách đều đo chứ không đoán:** `aria-label` riêng cho section (RAC vẫn
+  ghi `aria-labelledby` trỏ header, thắng trong accname) · ép `aria-labelledby: undefined` (RAC đặt
+  lại) · render nhãn bằng phần tử thường (collection builder của RAC **nuốt luôn item phía sau** —
+  mất hai con, không phải một). Thêm `Header` thứ hai cũng bế tắc: **cả hai nhận trùng `id`**.
+
+- Bản sửa: **nhãn mở một section mới** — hình dạng cả RAC lẫn ARIA đều muốn, một group cho mỗi tiêu
+  đề. Selection không đổi vì nó khoá theo item; có test bấm xuyên chỗ tách để chứng minh.
+
+### Fixed — một deployment không phải một gate (gh#634)
+
+- Guard release từ chối publish vì `deploy` (preview GitHub Pages) đỏ do **502 của GitHub**, trong
+  khi **mọi gate thật trên commit đều xanh**. Một preview docs không dựng được **không nói gì** về
+  tarball. Chạy lại Pages → publish qua trong **26 giây**.
+- **Không phải nới guard.** Luật *"một gate ta không kê tên vẫn là một gate"* vẫn đúng, và
+  `RELEASE_BLOCK_EXEMPT` vẫn để rỗng. Chỗ này là **phân loại sai**: gate *khẳng định về commit*,
+  deployment *thực hiện việc ở nơi khác*. Khớp bằng mẫu neo chính xác — `deploy-and-verify` vẫn chặn.
+- 7 test chốt **cả hai phía** ranh giới, vì nới nhầm là cách một guard thôi canh.
+
+
 ## [23.4.11] - 2026-09-13
 
 ### Fixed — `Switch` dưới sàn 24×24 và không có gì để consumer đọc (gh#626)
