@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.11] - 2026-09-13
+
 ### Fixed — `Switch` dưới sàn 24×24 và không có gì để consumer đọc (gh#626)
 
 - **Đo trên 23.4.10: vẽ 36×20, hit 36.5×20.5, không `::after`.** Dưới sàn WCAG 2.2 SC 2.5.8 trên
