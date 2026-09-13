@@ -43,9 +43,10 @@ describe("AlertDialog preset — antd Modal.confirm shape", () => {
     renderChallenge();
     const header = document.querySelector('[data-slot="dialog-header"]');
     expect(header).not.toBeNull();
+    // `data-tone` IS the contract — the tint is whatever the stylesheet paints for a tone, so
+    // asserting the utility here would report on the stylesheet rather than on the component.
+    // (`check:no-tailwind-class-assertions` catches exactly that, and caught it on this line.)
     expect(header).toHaveAttribute("data-tone", "default");
-    // The tint class is what painted the band; its absence is the whole change.
-    expect(header?.className ?? "").not.toContain("bg-destructive");
   });
 
   it("paints a leading status glyph instead", () => {
