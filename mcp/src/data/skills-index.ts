@@ -951,6 +951,15 @@ issue: use the draft_bug_report MCP tool to produce the issue body + a 'gh issue
 --repo godx-jp/godxjp-ui …' command, linking the component (get_component) and the cardinal
 rule (get_rule) involved, with a minimal repro, expected vs actual, version, and env.
 
+WHAT A CLOSE FROM US SHOULD LOOK LIKE, so you know when to push back. A close as
+FIXED carries a number — the new measurement, or the release that carries the fix
+("fixed in 23.4.9: unchecked dot 4/4 to 0/6"). If your measurement will NOT change,
+because the threshold or the method is what we disagree with, that is a REFUSAL: it
+must be labelled wontfix with a reason, not closed as fixed. And a fix merged to main
+is not a fix you have — if you run the published package, ask which release carries
+it. A close with none of that is worth reopening, and saying so: gh#620 is the issue
+that established this, and it was right.
+
 BEFORE filing a GEOMETRY bug — a hit area under 24×24, a label too close to an edge —
 read node_modules/@godxjp/ui/dist/contracts/measurement.json. getBoundingClientRect()
 returns the BORDER BOX, and several targets in this library are carried by a ::after that
