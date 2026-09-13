@@ -166,7 +166,7 @@ export default function Demo() {
               </CardTitle>
               <CardDescription>
                 トリガー文字は差し替えられます。1つの入力欄に対して1つの
-                ChatSuggestion — 2種類を同時に見張るのではなく、用途ごとに別の欄にします。
+                ChatSuggestion。2種類を同時に見張るのではなく、用途ごとに別の欄にします。
               </CardDescription>
             </CardHeader>
             <CardContent>

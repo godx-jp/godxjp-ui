@@ -267,7 +267,7 @@ export default function Demo() {
             <CardTitle level={2}>tabular · 数字を桁で揃える</CardTitle>
             <CardDescription>
               件数のチップが縦に並ぶときは tabular を。プロポーショナル数字だと 1 が 0
-              より狭いので、列で見たときに桁がずれてチップ幅も揺れます。既定はオフ — 語を載せる
+              より狭いので、列で見たときに桁がずれてチップ幅も揺れます。既定はオフ。語を載せる
               チップまで幅の広い数字を払う必要はありません。
             </CardDescription>
           </CardHeader>

@@ -528,8 +528,21 @@ const RULES = [
   {
     id: "hand-rolled-close-glyph",
     severity: "warn",
-    // A literal close glyph as JSX text — almost always a hand-rolled dismiss that should be a slot.
+    /*
+     * A literal close glyph as JSX text — almost always a hand-rolled dismiss that should be a slot.
+     *
+     * NOT when the glyph carries a name. The rule's own message is "a bare glyph has no accessible
+     * name", so a glyph that HAS one is the pattern this rule wants, not the one it forbids:
+     *
+     *     <span aria-hidden="true">×</span>
+     *     <VisuallyHidden>未実施</VisuallyHidden>
+     *
+     * That is the ○ / △ / × status scale, and it was reported against our own `Segmented` docs page
+     * — one of ten standing warnings here. Flagging it would push every consumer doing the right
+     * thing toward either a suppression comment or a worse glyph.
+     */
     test: />\s*[✕✖×╳]\s*</,
+    exempt: /<VisuallyHidden\b|sr-only/,
     standard: "WAI-ARIA 1.2 (dialog) · WCAG 2.2 SC 4.1.2 · @godxjp/ui Alert/Dialog anatomy",
     message:
       "Don't hand-roll a ✕ close. Pass onDismiss to <Alert> (renders the × top-right with an aria-label), or use <Dialog>/<Sheet> which ship their own labelled close. A bare glyph has no accessible name.",
@@ -762,9 +775,25 @@ function isSuppressed(ruleId, sameLine, prevLine) {
 
 /** A rule's own in-place escape (see the `exempt` note on RULES), on the same line or the one above.
  *  Read from the ORIGINAL lines, because the scanner blanks comments before `rule.test` runs. */
-function isExempt(rule, sameLine, prevLine) {
+/**
+ * Also looks at the NEXT line, not just this one and the one before.
+ *
+ * An accessible name for a symbol is written AFTER the symbol, because that is the reading order:
+ *
+ *     <span aria-hidden="true">×</span>
+ *     <VisuallyHidden>未実施</VisuallyHidden>
+ *
+ * Checking only backwards could never see it, so `hand-rolled-close-glyph` fired on the ○/△/×
+ * status scale in our own `Segmented` docs — a glyph that is named, which is the pattern the rule
+ * wants rather than the one it forbids.
+ */
+function isExempt(rule, sameLine, prevLine, nextLine) {
   if (!rule.exempt) return false;
-  return rule.exempt.test(sameLine ?? "") || rule.exempt.test(prevLine ?? "");
+  return (
+    rule.exempt.test(sameLine ?? "") ||
+    rule.exempt.test(prevLine ?? "") ||
+    rule.exempt.test(nextLine ?? "")
+  );
 }
 
 function walk(dir, acc = []) {
@@ -857,12 +886,45 @@ function findHandCurrencyInJsxText(source, from) {
   return null;
 }
 
+/**
+ * Is `index` inside a quoted string or a template literal, counted from the start of the file?
+ *
+ * `insideTemplateLiteral` only counts backticks, and only from an arbitrary `from` — enough for the
+ * text scan, not enough to decide whether a `<` is JSX at all. A tag written INSIDE a string is not
+ * markup, and treating it as markup sends the scan off through the rest of the file:
+ *
+ *     console.warn(`[DataTable] Column "${key}" renders a <th> with no visible text…`)
+ *
+ * That `<th>` was read as an opening tag, the text scan walked past the closing backtick, skipped
+ * from quote to quote, and eventually found a currency glyph somewhere else entirely — reporting
+ * `hardcoded-currency` against a dev warning containing no currency at all. One of ten standing
+ * warnings in this repo, and the only one in `src/`.
+ */
+function insideStringLiteral(source, index) {
+  let quote = "";
+  for (let i = 0; i < index; i++) {
+    const char = source[i];
+    if (char === "\\") {
+      i++;
+      continue;
+    }
+    if (quote) {
+      if (char === quote) quote = "";
+    } else if (char === '"' || char === "'" || char === "`") {
+      quote = char;
+    }
+  }
+  return quote !== "";
+}
+
 /** Match real JSX text after a balanced opening tag, including props with comparisons. */
 function* currencyMatches(source) {
   for (const opening of source.matchAll(/<(?:[A-Za-z][\w.:]*\b|(?=>))/g)) {
     const end = jsxOpeningEnd(source, opening.index);
     if (end >= source.length) continue;
     if (isGenericTypeBeforeCall(source, opening.index, end)) continue;
+    // A tag inside a string or template literal is prose about markup, not markup.
+    if (insideStringLiteral(source, opening.index)) continue;
     const hit = findHandCurrencyInJsxText(source, end + 1);
     if (hit) {
       yield { 0: source.slice(opening.index, hit.end), index: opening.index };
@@ -1096,7 +1158,7 @@ for (const dir of SCAN_DIRS) {
         if (
           (typeof rule.test === "function" ? rule.test(target) : rule.test.test(target)) &&
           !suppressed(rule.id, i) &&
-          !isExempt(rule, origLines[i], origLines[i - 1])
+          !isExempt(rule, origLines[i], origLines[i - 1], origLines[i + 1])
         ) {
           findings.push({
             file: rel,
