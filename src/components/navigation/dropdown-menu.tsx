@@ -798,9 +798,22 @@ interface DropdownMenuItemPropsOwn {
   textValue?: string;
   /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
   asChild?: boolean;
+  /**
+   * `id` và mọi `data-*` ĐI XUỐNG phần tử gốc của item (gh#631).
+   *
+   * Trigger của chính cụm này đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG ghi:
+   * "trước đó bị nuốt, nên selector e2e của consumer rời ra trong im lặng". Phần item thì chưa,
+   * nên hai nửa của cùng một component hành xử ngược nhau.
+   *
+   * TypeScript không bắt được: JSX luôn cho qua mọi thuộc tính có gạch nối, nên `data-testid`
+   * biên dịch sạch và chỉ hỏng lúc chạy. Với `id` còn tệ hơn — nó là thứ `aria-activedescendant`
+   * trỏ vào, và nó biến mất không một lời.
+   */
+  id?: string;
 }
 
-type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
+type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn> &
+  Record<`data-${string}`, unknown>;
 
 export function DropdownMenuItem({
   children,
@@ -811,6 +824,7 @@ export function DropdownMenuItem({
   onSelect,
   textValue,
   asChild,
+  ...forwarded
 }: DropdownMenuItemProps) {
   const tag = borrowedTag(children, asChild);
   return (
@@ -832,6 +846,9 @@ export function DropdownMenuItem({
             "data-inset": inset,
             "data-variant": variant,
             ...radixItemState(state),
+            // LAST, so a consumer's own `id`/`data-*` wins over ours rather than being
+            // overwritten by the slot bookkeeping above (gh#631).
+            ...forwarded,
           },
           content,
         );
