@@ -557,6 +557,36 @@
     fill: currentColor;
   }
 
+  /* THE DOT IS THE ANSWER, SO IT MUST ONLY APPEAR WHEN THERE IS ONE (gh#615).
+   *
+   * `Radio` renders `<Circle className="ui-radio-icon">` UNCONDITIONALLY — unlike `Checkbox`,
+   * which renders its glyph only for `checked || indeterminate`. The state did reach the DOM as
+   * `data-state="checked" | "unchecked"` on this same `<label>`; no rule read it. Measured on
+   * `/isolate/data-entry-radio-group` before this rule: 4 of 4 UNCHECKED radios painted a 7.2px
+   * dot at rgb(0, 113, 189) — pixel-identical to the 3 checked ones.
+   *
+   * The report is worth keeping: a user clicked, the VALUE changed, and the screen did not. At the
+   * keyboard, "no feedback" and "not clickable" are one experience, so they concluded the control
+   * was broken. Worse, a group where every option looks chosen cannot be read at all — the one
+   * that shipped it gated whether a form demanded a 理由 field, on a record that goes to audit.
+   *
+   * `visibility`, NOT `opacity`, and not `display`. Measured, in that order:
+   *   - `display: none` would collapse the 7.2px box and move the paint.
+   *   - `opacity: 0` HIDES the dot and breaks the click. An element with opacity < 1 forms a
+   *     stacking context, which lifted the icon above the absolutely-positioned real `<input>`:
+   *     `check:choice-hit-target` went from 0 failures to 12, every one of them
+   *     `inner point → the label, not the input`, plus `locator.check: Timeout` — the exact gh#476
+   *     shape, reintroduced by a rule meant to fix the paint. An invisible dot you cannot click
+   *     through is not better than a visible one that lies.
+   *   - `visibility: hidden` keeps the box, takes the element out of hit-testing, and forms no
+   *     stacking context. Gate back to 0 failures.
+   *
+   * The sibling controls already read their own state: `.ui-checkbox[data-state="checked"]`,
+   * `.ui-switch[data-state="checked"|"unchecked"]`, `.ui-radio-button[data-state="checked"]`. */
+  .ui-radio[data-state="unchecked"] .ui-radio-icon {
+    visibility: hidden;
+  }
+
   /* The painted box is a `<label>` (react-aria) and `aria-invalid` lives on the real `<input>`
    * inside it, so the box reaches its own state through `:has()`. `data-invalid` is NOT available
    * here: react-aria owns that attribute on this element and overwrites whatever is passed in. */

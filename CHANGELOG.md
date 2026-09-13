@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — `RadioGroup`: chấm tròn vẽ VÔ ĐIỀU KIỆN (gh#615)
+
+- **Mọi lựa chọn đều trông như đang được chọn.** `Radio` render `<Circle className="ui-radio-icon">`
+  **vô điều kiện** — khác `Checkbox`, vốn chỉ render glyph khi `checked || indeterminate`. Trạng thái
+  CÓ ra tới DOM, dưới dạng `data-state="checked" | "unchecked"` trên đúng cái `<label>` mang
+  `.ui-radio`. Không rule nào đọc nó. Đo trên `/isolate/data-entry-radio-group` trước khi sửa:
+  **4/4 radio UNCHECKED vẫn vẽ chấm 7.2px màu `rgb(0, 113, 189)`**, giống hệt từng pixel 3 cái
+  checked. Sau khi sửa: 0/6 unchecked vẽ chấm, 4/4 checked có, và sau một cú bấm thì paint bám đúng
+  state (0 sai lệch).
+
+  Người dùng báo là **"không bấm được"**. Nó bấm được: giá trị ĐỔI thật ở mọi cú bấm, còn màn hình
+  thì không. Với máy hai chuyện đó khác nhau; với người ngồi trước máy chúng là **một**. Nặng hơn:
+  một nhóm mà mọi lựa chọn đều trông như đang chọn thì **không đọc được** — nhóm làm lộ ra lỗi này
+  quyết định biểu mẫu có bắt buộc ô 理由 hay không, trên một hồ sơ sẽ đi vào 監査.
+
+- **`visibility: hidden`, KHÔNG phải `opacity: 0`** — và đây là phần đáng ghi lại. Bản vá đầu dùng
+  `opacity: 0`: chấm biến mất đúng như mong đợi, nhưng một phần tử có `opacity < 1` **tạo stacking
+  context**, đẩy icon lên trên cái `<input>` thật đang định vị tuyệt đối.
+  `check:choice-hit-target` từ **0 lỗi nhảy lên 12**, tất cả đều là
+  `inner point → the label, not the input` kèm `locator.check: Timeout` — đúng hình dạng gh#476, tái
+  sinh bởi một rule sinh ra để sửa phần vẽ. Một cái chấm vô hình mà bấm không xuyên qua được thì
+  không khá hơn một cái chấm hiện lên để nói dối.
+
+### Added — cổng bắt được lớp lỗi này, không chỉ bắt ca này
+
+- **`check:choice-hit-target` khẳng định thêm điều thứ 7: hai trạng thái KHÔNG được vẽ giống nhau.**
+  Đây là điều không ai review thấy — ảnh chụp một radio đã chọn trông hoàn toàn bình thường; khiếm
+  khuyết chỉ tồn tại **GIỮA** hai trạng thái. Gate so hai control **cùng kích thước** đang ở hai
+  trạng thái ngược nhau, lấy chữ ký paint của cả cây con (không phải một selector indicator đặt tên
+  sẵn — bản nháp đầu dùng `querySelector` với danh sách phẩy, mà danh sách phẩy trả về **thứ tự
+  document**, nên trên Radio nó trả về `.ui-choice-indicator` WRAPPER và báo một control đang hỏng
+  là bình thường). Đã mutation-test: gỡ bản vá ra thì gate đỏ, lắp vào thì xanh.
+
+
 ### Fixed — hai lỗi hình học đo được, và một cổng khoá đúng cái nó phải bắt
 
 - **`PageContainer`: cụm nút header ĐÈ LÊN tiêu đề ở dải 721–859px.** `.ui-page-header-extra` được
