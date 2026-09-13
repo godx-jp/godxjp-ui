@@ -23,6 +23,7 @@ class Box {
   ariaHidden = false;
   visibility = "visible";
   opacity = "1";
+  position = "static";
   #scrollLeft = 0;
 
   /** Clamped exactly like a real scroll container — a container cannot scroll past its content. */
@@ -86,6 +87,7 @@ function withFrame(build: (frame: Box) => void) {
     overflowX: n.overflowX,
     visibility: n.visibility,
     opacity: n.opacity,
+    position: n.position,
   });
   return measure() as { overflowX: boolean; clipped: number };
 }
@@ -194,6 +196,45 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     // Guard against over-broad exclusion: opacity 1, not aria-hidden, unreachable → real defect.
     const r = withFrame((frame) => {
       focusable(frame.append(new Box({ x: 400, width: 41 })));
+    });
+    expect(r.clipped).toBe(1);
+  });
+
+  it("does NOT count a VIEWPORT-ANCHORED control that lands outside the frame", () => {
+    // general-float-button: `.ui-float-button` is `position: fixed`, so the viewport is its
+    // containing block, not the frame. Measured on /frame/general-float-button before this rule:
+    // 3 clipped at 768px and at 1920px, and 0 at 320px — where the frame nearly fills the viewport
+    // and the fixed box happens to fall inside it. The width-dependence is the tell: the control's
+    // geometry never changed, only how far the frame was inset.
+    //
+    // FloatButton was ported in gh#558/gh#574, after the 2026-08-19 baseline was taken, so it
+    // entered the sweep as 7 permanent "NEW regressions" and the browser lane was red on them
+    // every night. A user can always reach a fixed control; it simply does not live in the frame.
+    const r = withFrame((frame) => {
+      const fixed = frame.append(new Box({ x: 708, width: 36 }));
+      fixed.position = "fixed";
+      focusable(fixed);
+    });
+    expect(r.clipped).toBe(0);
+  });
+
+  it("does NOT count a control nested inside a viewport-anchored group", () => {
+    // `.ui-float-button-group` is the fixed box; the buttons inside it are `position: relative`
+    // and inherit the group's containing block. Walking only the element itself would have missed
+    // them and left the frame red for the same reason.
+    const r = withFrame((frame) => {
+      const group = frame.append(new Box({ x: 708, width: 36 }));
+      group.position = "fixed";
+      focusable(group.append(new Box({ x: 708, width: 36 })));
+    });
+    expect(r.clipped).toBe(0);
+  });
+
+  it("STILL counts an ordinary control at the same coordinates", () => {
+    // The exemption must be about the containing block, not about being far to the right — or it
+    // would silence the real gh#2.1.1 defect this gate exists for.
+    const r = withFrame((frame) => {
+      focusable(frame.append(new Box({ x: 708, width: 36 })));
     });
     expect(r.clipped).toBe(1);
   });

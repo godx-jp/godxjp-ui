@@ -79,6 +79,31 @@ export function measure() {
     return true;
   };
 
+  /**
+   * A VIEWPORT-ANCHORED control is not clipped BY THE FRAME, because the frame is not its
+   * containing block. `position: fixed` resolves against the viewport, so a `FloatButton` — whose
+   * entire purpose is to sit in a viewport corner, exactly as antd's does — lands outside the demo
+   * frame's box at every width where the frame is inset from the viewport, and no amount of
+   * scrolling the frame will move it. The rule "a control the user cannot bring into the frame"
+   * does not describe it: the user can always reach it, it simply does not live in the frame.
+   *
+   * Measured on `/frame/general-float-button` before this: 3 clipped at 768px and at 1920px
+   * (`.ui-float-button` / `.ui-float-button-group`, both `position: fixed`, plus the badge
+   * absolutely positioned inside them), and 0 at 320px — where the frame nearly fills the viewport
+   * and the fixed box happens to fall inside it. That width-dependence is the tell: the geometry
+   * of the control never changed, only how much the frame was inset.
+   *
+   * FloatButton was ported in gh#558/gh#574, AFTER the 2026-08-19 baseline was generated, so it
+   * entered the sweep as 7 permanent "NEW regressions" — one per width above 320 — and the browser
+   * lane had been red on them every night since.
+   */
+  const viewportAnchored = (el) => {
+    for (let e = el; e && e !== frame; e = e.parentElement) {
+      if (getComputedStyle(e).position === "fixed") return true;
+    }
+    return false;
+  };
+
   let clipped = 0;
   for (const el of frame.querySelectorAll(
     "a[href], button, [role=button], input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex='-1'])",
@@ -86,6 +111,7 @@ export function measure() {
     const r = el.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) continue;
     if (!isControl(el)) continue;
+    if (viewportAnchored(el)) continue;
     if (r.right > fr.right + 1 || r.left < fr.left - 1) {
       if (!reachableByScroll(el)) clipped++;
     }
