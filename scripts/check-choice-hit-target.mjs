@@ -28,7 +28,20 @@ import { chromium } from "playwright";
  *      (native click plus react-aria's press) would pass 1-3 and still be broken;
  *   5. the box keeps the size its tokens ask for, so nothing about the paint moved;
  *   6. the keyboard path is untouched: Space toggles, and the focus ring still lands on the
- *      painted box (`data-focus-visible`).
+ *      painted box (`data-focus-visible`);
+ *   7. THE TWO STATES DO NOT RENDER IDENTICALLY (gh#615).
+ *
+ * (7) is the one nobody reviews. `Radio` rendered its `<Circle className="ui-radio-icon">`
+ * unconditionally — unlike `Checkbox`, which renders its glyph only for `checked || indeterminate`
+ * — and no CSS rule read the `data-state` that was sitting right there on the same `<label>`.
+ * Measured on `/isolate/data-entry-radio-group`: 4 of 4 UNCHECKED radios painted a 7.2px dot at
+ * rgb(0, 113, 189), pixel-identical to the 3 checked ones. Every option looked chosen.
+ *
+ * The user who reported it said the control "wasn't clickable". It was: the VALUE changed on every
+ * click and the screen did not, and at the keyboard those two are one experience. A screenshot of a
+ * single selected radio looks perfectly correct — the defect only exists BETWEEN two states, which
+ * is exactly what no static review and no single-state snapshot can see, and what this assertion
+ * can. Assertions 1–6 all passed throughout.
  */
 const port = Number(process.env.PREVIEW_PORT) || 6019;
 const base = `http://localhost:${port}`;
@@ -163,6 +176,96 @@ try {
         }
       } catch (error) {
         failures.push(`${frame} ${dir}: ${error.message.split("\n")[0]}`);
+      }
+
+      /**
+       * (7) TWO CONTROLS IN DIFFERENT STATES MUST NOT PAINT THE SAME.
+       *
+       * Read-only, and deliberately so. The first draft toggled the control and compared before
+       * with after; that produced false failures on `Switch`, whose thumb TRANSITIONS — 120ms after
+       * the flip the transform had not landed, so a control that plainly does answer read as one
+       * that does not. Comparing two controls already sitting in opposite states needs no toggle,
+       * no restore and no animation window.
+       *
+       * Same painted size on both sides, so a size variant can never be mistaken for a state
+       * difference. The signature covers the box AND its indicator, because a control may answer
+       * with either — Checkbox fills its box, Radio shows a dot, Switch slides a thumb — and an
+       * identical signature on both means it answers with NEITHER.
+       */
+      // Let every transition land first. The toggle above just flipped one control, and `Switch`
+      // TWEENS its thumb — read too early and a just-unchecked switch still paints checked, which
+      // is how the first draft of this assertion accused a working control twice over.
+      //
+      // A fixed wait, NOT `getAnimations().finished`: a page with any looping animation on it
+      // never settles, and awaiting that hung this gate past ten minutes.
+      await page.waitForTimeout(600);
+
+      const distinguishable = await page.locator(selector).evaluateAll((nodes) => {
+        const paint = (el) => {
+          if (!el) return "absent";
+          const cs = getComputedStyle(el);
+          return [
+            cs.backgroundColor,
+            cs.borderColor,
+            cs.color,
+            cs.opacity,
+            cs.visibility,
+            cs.display,
+            cs.transform,
+          ].join("|");
+        };
+        /**
+         * The box AND every element it paints inside, in document order.
+         *
+         * NOT a named indicator selector: the first draft used
+         * `querySelector(".ui-radio-icon, .ui-checkbox-icon, .ui-switch-thumb, .ui-choice-indicator")`
+         * and a comma list returns the first match in DOCUMENT order, not in list order — so on a
+         * Radio it returned the `.ui-choice-indicator` WRAPPER, whose paint never changes, and
+         * reported a working control as identical. Walking the whole subtree cannot pick the wrong
+         * element, and it also catches a control that answers somewhere nobody thought to name.
+         * The real `<input>` is skipped: it is visually hidden in both states by design.
+         */
+        const signature = (box) =>
+          [box, ...box.querySelectorAll("*")]
+            .filter((el) => el.tagName !== "INPUT")
+            .map(paint)
+            .join("  ::  ");
+        const size = (box) => {
+          const r = box.getBoundingClientRect();
+          return `${Math.round(r.width)}x${Math.round(r.height)}`;
+        };
+
+        const buckets = new Map();
+        for (const box of nodes) {
+          const input = box.querySelector("input");
+          if (!input || input.disabled) continue;
+          const key = size(box);
+          const bucket = buckets.get(key) ?? { on: null, off: null };
+          if (input.checked) bucket.on ??= signature(box);
+          else bucket.off ??= signature(box);
+          buckets.set(key, bucket);
+        }
+        for (const [key, { on, off }] of buckets) {
+          if (on === null || off === null) continue;
+          return { compared: key, same: on === off, signature: on };
+        }
+        return { compared: null };
+      });
+
+      if (distinguishable.compared === null) {
+        // Not a component failure — a COVERAGE gap. This assertion can only speak when the frame
+        // shows both answers at one size, and a frame that never does is a frame where this class
+        // of defect is invisible. Name it rather than pass quietly.
+        failures.push(
+          `${frame} ${dir}: no two same-sized ${selector} in OPPOSITE states on this frame, so ` +
+            `"checked and unchecked look different" could not be measured at all (gh#615).`,
+        );
+      } else if (distinguishable.same) {
+        failures.push(
+          `${frame} ${dir}: checked and unchecked render IDENTICALLY at ${distinguishable.compared} ` +
+            `— ${distinguishable.signature}. The value changes and the screen does not, and users ` +
+            `read that as "not clickable" (gh#615).`,
+        );
       }
 
       const fresh = await browser.newPage({ viewport: { width: 1024, height: 900 } });
