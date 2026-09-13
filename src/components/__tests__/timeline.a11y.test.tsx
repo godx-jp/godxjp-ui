@@ -1,5 +1,7 @@
+import type * as React from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { AppProvider } from "../../app/app-provider";
 import { Timeline } from "../data-display/timeline";
 import type { TimelineItem } from "../data-display/timeline";
 
@@ -12,6 +14,15 @@ const statusItems: TimelineItem[] = [
   { title: "Posted", status: "pending" },
 ];
 
+/** The sr-only status prefix follows the locale, so a test that reads it must set one. */
+function renderIn(locale: "en" | "ja" | "vi", ui: React.ReactElement) {
+  return render(
+    <AppProvider persist={false} defaultLocale={locale} fallbackLocale="en">
+      {ui}
+    </AppProvider>,
+  );
+}
+
 describe("Timeline a11y", () => {
   it("sets aria-current='step' only on the current item", () => {
     render(<Timeline variant="status" items={statusItems} />);
@@ -22,7 +33,9 @@ describe("Timeline a11y", () => {
   });
 
   it("provides a screen-reader prefix for all three states", () => {
-    render(<Timeline variant="status" items={statusItems} />);
+    // The prefix is localized (gh#627), so the assertion has to name the locale it expects.
+    // Without a provider the library's default locale is `vi`, not English.
+    renderIn("en", <Timeline variant="status" items={statusItems} />);
     expect(screen.getByText("Issued").closest("li")!).toHaveTextContent("Completed:");
     expect(screen.getByText("Awaiting approval").closest("li")!).toHaveTextContent("Current:");
     expect(screen.getByText("Posted").closest("li")!).toHaveTextContent("Upcoming:");
