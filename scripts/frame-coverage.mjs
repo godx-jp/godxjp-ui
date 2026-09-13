@@ -262,7 +262,48 @@ function writeReport(cov) {
     lines.push(`| ${r.component} | ${frameCell} | ${cells.join(" | ")} |`);
   }
   lines.push("");
-  writeFileSync(REPORT_MD, lines.join("\n") + "\n");
+
+  /**
+   * `--check` IS NOT AN EXTRA HERE, for a reason this repo has now paid for twice.
+   *
+   * `docs/FRAME-COVERAGE-REPORT.md` is TRACKED, and nothing asserted it was fresh — so it drifted
+   * from 152 public components to 163 (zero-frame 17 → 21) without a single red build, and the
+   * agent-facing answer to "what is untested" was three releases stale. That is the same shape as
+   * the stale MCP token catalog: a file regenerated when somebody remembered, and otherwise wrong.
+   *
+   * It also has a second cost that is easy to miss. Because this script always WRITES, any job that
+   * runs `check:frame-coverage` leaves a dirty tree behind — and the release tool refuses to
+   * publish a tree that differs from the verified commit. The v23.4.9 release aborted on exactly
+   * that, at the last step, after a full green verify:
+   *
+   *     ✗ Refusing to publish tag v23.4.9: the working tree differs from the verified commit
+   *     -  M docs/FRAME-COVERAGE-REPORT.md
+   */
+  const body = lines.join("\n") + "\n";
+  if (process.argv.includes("--check")) {
+    let current = "";
+    try {
+      current = readFileSync(REPORT_MD, "utf8");
+    } catch {
+      /* missing → stale */
+    }
+    if (current !== body) {
+      console.error(
+        `✗ check:frame-coverage-report — docs/FRAME-COVERAGE-REPORT.md is stale. ` +
+          `Run \`node scripts/frame-coverage.mjs\`.`,
+      );
+      // Say WHAT moved: the two counts are the whole story in most cases.
+      const count = (text, label) => text.match(new RegExp(`${label}: \\*\\*(\\d+)\\*\\*`))?.[1] ?? "?";
+      console.error(
+        `    public components: ${count(current, "Public components")} → ${count(body, "Public components")}`,
+      );
+      console.error(`    zero-frame: ${count(current, "zero-frame")} → ${count(body, "zero-frame")}`);
+      process.exit(1);
+    }
+    console.log(`✓ check:frame-coverage-report — the tracked report matches the frames on disk.`);
+    return;
+  }
+  writeFileSync(REPORT_MD, body);
 }
 
 main();
