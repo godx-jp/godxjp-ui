@@ -3504,6 +3504,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--dialog-confirm-icon-size",
+    "value": "var(--icon-size-xl)",
+    "description": "Confirm/alert leading icon (antd `Modal.confirm` parity). antd paints a 22px status glyph to * the inline-start of the title and leaves the surface untinted; the icon IS the danger signal. * 22px is not a step on the icon scale, so this rides --icon-size-xl (24px) — the nearest named * step, and no new value enters the scale. The gap mirrors antd's 12px margin on the glyph."
+  },
+  {
+    "name": "--dialog-confirm-space-gap",
+    "value": "var(--space-3)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
     "name": "--dialog-header-close-space-inline-end",
     "value": "var(--space-8)",
     "description": "Inline room the header reserves so a long title or the extra slot never runs under the * absolutely-positioned close button; retune together with --dialog-close-space-offset. * Mirrors --sheet-header-close-space-inline-end."

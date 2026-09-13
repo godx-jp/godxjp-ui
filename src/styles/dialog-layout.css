@@ -139,9 +139,25 @@
     }
   }
 
-  /* Without a body the dividers (and their band padding) collapse — fixes the double-border +
-   * oversized gap. */
-  [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-header"] {
+  /* Without a body an UNTONED header's divider (and its band padding) collapses — that fixes the
+   * double-border + oversized gap. A TONED header is a different case; see below.
+   *
+   * A TINT WITHOUT A BAND IS A HIGHLIGHTER PEN, and that is what this guard shipped.
+   *
+   * `DialogHeader tone` paints `bg-<tone>/10` unconditionally from the component, but the band's
+   * GEOMETRY — full-bleed, padding, the rule under it — was gated on the dialog having a
+   * `dialog-body`. A preset that renders header → field → footer (AlertDialog does) matched the
+   * tint and not the geometry. Measured on `/isolate/feedback-danger-confirm` before this rule:
+   *
+   *     padding 0px · border-bottom 0px · margin-inline 0px
+   *     band top 349.3 == title top 349.3 · band bottom 422.9 == description bottom 422.9
+   *
+   * i.e. the tint hugged the glyphs with no breathing room on either edge. Inserting a single
+   * `[data-slot=dialog-body]` into the same DOM flipped it to `padding 16px 24px · border 1px ·
+   * margin-inline -24px`, which is how the cause was pinned. A toned header is a band wherever it
+   * appears; the body only decides whether an UNTONED header gets its divider. */
+  [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-header"],
+  [data-slot="dialog-header"]:not([data-tone="default"]) {
     margin-inline: calc(-1 * var(--dialog-space-x));
     margin-block-start: calc(-1 * var(--dialog-space-y));
     padding: var(--dialog-space-y) var(--dialog-space-x);
@@ -242,6 +258,33 @@
 
   [data-slot="dialog-header"]:not([data-tone="default"]) [data-slot="dialog-description"] {
     color: hsl(var(--foreground));
+  }
+
+  /* ANT DESIGN `Modal.confirm` BODY. antd signals danger with a status GLYPH beside the title and
+   * leaves the surface at `colorBgElevated` — it never tints a modal header. (Its soft `colorErrorBg`
+   * appears on `Alert`/`Tag`/`message` only, and always with padding and a border.) The preset
+   * follows that shape: icon at the inline-start, title and description stacked beside it. */
+  .ui-dialog-confirm-body {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--dialog-confirm-space-gap);
+  }
+
+  /* The glyph reads the TEXT tier, not the FILL tier (gh#610/gh#612): it is ink on the dialog
+   * surface and must clear the same contrast bar as the step-up error line below it, which is why
+   * `.ui-dialog-step-up-error` already reads --text-error. `--destructive` is a button's fill. */
+  .ui-dialog-confirm-icon {
+    flex: none;
+    inline-size: var(--dialog-confirm-icon-size);
+    block-size: var(--dialog-confirm-icon-size);
+    color: hsl(var(--text-error));
+  }
+
+  .ui-dialog-confirm-text {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    gap: var(--dialog-title-block-space-gap);
   }
 }
 

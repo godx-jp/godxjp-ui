@@ -89,6 +89,10 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--card-service-launcher-icon-size": ["2.25rem", "2.07rem", "2.43rem"],
   "--cascader-option-icon-size": ["1rem", "1rem", "1rem"],
   "--control-affix-icon-size": ["1rem", "1rem", "1rem"],
+  // antd `Modal.confirm` parity (the leading status glyph on the AlertDialog preset). antd draws
+  // 22px, which is not a step; this rides --icon-size-xl, the nearest named one, so no new value
+  // enters the scale. Fixed, not density-tracking: a status mark is chrome, not a control glyph.
+  "--dialog-confirm-icon-size": ["1.5rem", "1.5rem", "1.5rem"],
   "--control-icon-size": ["1rem", "0.92rem", "1.08rem"],
   "--control-icon-size-sm": ["0.875rem", "0.805rem", "0.945rem"],
   "--control-inline-affix-icon-size": ["1rem", "1rem", "1rem"],

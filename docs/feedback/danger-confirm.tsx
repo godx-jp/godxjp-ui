@@ -7,7 +7,8 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 /**
  * DangerConfirm recipe (godxui#193) — high-stakes deletion built on the AlertDialog preset.
  * No new component: `challenge` gates the confirm button behind an exact typed slug, and `stepUp`
- * runs an async passkey / 2FA re-auth before onConfirm fires. Both force the destructive tone.
+ * runs an async passkey / 2FA re-auth before onConfirm fires. Both force the destructive shape
+ * (button + leading status glyph, untinted surface — antd `Modal.confirm` parity).
  * Mirrors DXS SCR-203 (org delete by slug) and SCR-209 (refund with step-up).
  */
 export default function Demo() {
@@ -25,8 +26,10 @@ export default function Demo() {
             <CardTitle level={2}>Organization delete · typed slug challenge</CardTitle>
             <CardDescription>
               The confirm button stays disabled until the operator types the exact organization slug
-              (<code>acme-inc</code>). A typed challenge always forces the destructive tone and a
-              soft danger header band.
+              (<code>acme-inc</code>). A typed challenge always forces the destructive shape: the
+              destructive confirm button and antd&rsquo;s leading status glyph. The header surface
+              stays untinted — the glyph is the signal, exactly as <code>Modal.confirm</code> does
+              it.
             </CardDescription>
           </CardHeader>
           <CardContent>

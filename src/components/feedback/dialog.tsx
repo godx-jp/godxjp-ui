@@ -2,7 +2,7 @@ import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
 import { chain, mergeRefs } from "@react-aria/utils";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
-import { X } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { Slot } from "../../lib/slot";
@@ -131,9 +131,9 @@ export type {
  *    TRÙNG KHÍT `<AlertDialogContent>` chứ không "gần giống" — consumer vẫn bật
  *    lại được bằng `showCloseButton`.
  * 4. **Tông của dải header KHÔNG bị ép theo.** `DialogHeader tone` là một trục
- *    đã publish riêng (7 giá trị `ToneProp`); chỗ ép `tone="destructive"` là
- *    preset `AlertDialog`, nơi cả tiêu đề lẫn nút đều do preset dựng. Ép thêm ở
- *    đây sẽ là trục thứ hai điều khiển cùng một pixel.
+ *    đã publish riêng (7 giá trị `ToneProp`). Preset `AlertDialog` cũng KHÔNG còn
+ *    ép nó nữa: theo antd, tín hiệu nguy hiểm là một GLYPH cạnh tiêu đề, không
+ *    phải một mảng nền được tô. Ai muốn dải màu vẫn đặt `tone` trực tiếp.
  *
  * 12 export `AlertDialog*` Ở LẠI và chạy y như cũ — gỡ chúng là breaking change
  * và cần một bản major. Chúng là LỐI CŨ; `variant` là lối chuẩn. Quy tắc chọn
@@ -694,7 +694,8 @@ const AlertDialogCancel = DialogCancel;
 
 /**
  * Preset: confirm / destructive / typed-challenge / step-up without compound markup. Both flows
- * force the destructive tone (button + soft header band).
+ * force the destructive shape: the confirm button plus antd's leading status glyph. The header
+ * surface stays untinted — see the note on `showDangerIcon` below.
  */
 function AlertDialog({
   open,
@@ -724,7 +725,18 @@ function AlertDialog({
   const needsPhrase = phrase != null && phrase.length > 0;
   const phraseMatches = !needsPhrase || typed === phrase;
   const effectiveVariant = needsPhrase ? "destructive" : variant;
-  const headerTone: ToneProp = effectiveVariant === "destructive" ? "destructive" : "default";
+  // ANT DESIGN PARITY: the DANGER SIGNAL IS A GLYPH, NOT A TINTED SURFACE.
+  //
+  // antd's `Modal.confirm` paints a red status icon beside the title and leaves the surface at
+  // `colorBgElevated`; it never tints a modal header. (Its soft `colorErrorBg` belongs to
+  // `Alert`/`Tag`/`message`, and always arrives with padding and a border.) The preset used to
+  // force `tone="destructive"` on the header instead, which put a third danger signal on a screen
+  // that already has a destructive button and a type-to-confirm challenge — the strongest of the
+  // three — while matching neither antd nor a proper band.
+  //
+  // `DialogHeader tone` stays a published seven-value axis for a caller who wants the band; the
+  // preset simply stops imposing it (DESIGN-AUTHORITY.md §4 keeps that separation).
+  const showDangerIcon = effectiveVariant === "destructive";
   const resolvedConfirm = confirmLabel ?? (needsPhrase ? t("common.delete") : t("common.continue"));
   const resolvedCancel = cancelLabel ?? t("common.cancel");
   const busy = pending || verifying;
@@ -772,9 +784,14 @@ function AlertDialog({
   return (
     <AlertDialogRoot open={open} onOpenChange={handleOpenChange}>
       <AlertDialogContent>
-        <DialogHeader tone={headerTone}>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
+        <DialogHeader>
+          <div className="ui-dialog-confirm-body">
+            {showDangerIcon && <AlertCircle className="ui-dialog-confirm-icon" aria-hidden />}
+            <div className="ui-dialog-confirm-text">
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              {description ? <AlertDialogDescription>{description}</AlertDialogDescription> : null}
+            </div>
+          </div>
         </DialogHeader>
 
         {needsPhrase && (

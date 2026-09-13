@@ -7827,7 +7827,7 @@ function CreateDialog() {
     ],
     usage: [
       "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
-      "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive tone.",
+      "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive shape: the destructive confirm button plus a leading status glyph beside the title, which is Ant Design `Modal.confirm` parity. The header surface stays UNTINTED — antd signals danger with the glyph and never tints a modal header (its soft `colorErrorBg` belongs to Alert/Tag/message). To tint the band anyway, set `DialogHeader tone` yourself; it is a separate seven-value axis the preset no longer imposes.",
       "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",
       "Pass `keepOpenOnConfirm` when the confirm handler advances a multi-step flow and should not close immediately.",
     ],

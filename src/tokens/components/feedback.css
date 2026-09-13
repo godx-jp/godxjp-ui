@@ -49,6 +49,12 @@
   --dialog-title-row-space-gap: var(--space-3);
   --dialog-title-block-space-gap: var(--space-1);
   --dialog-extra-space-gap: var(--space-2);
+  /* Confirm/alert leading icon (antd `Modal.confirm` parity). antd paints a 22px status glyph to
+   * the inline-start of the title and leaves the surface untinted; the icon IS the danger signal.
+   * 22px is not a step on the icon scale, so this rides --icon-size-xl (24px) — the nearest named
+   * step, and no new value enters the scale. The gap mirrors antd's 12px margin on the glyph. */
+  --dialog-confirm-icon-size: var(--icon-size-xl);
+  --dialog-confirm-space-gap: var(--space-3);
   /* Inline room the header reserves so a long title or the extra slot never runs under the
    * absolutely-positioned close button; retune together with --dialog-close-space-offset.
    * Mirrors --sheet-header-close-space-inline-end. */

@@ -104,11 +104,38 @@ describe("PageContainer header extra · desktop wrap geometry (gh#300)", () => {
     expect(layoutCss).not.toMatch(/\.ui-page-header-heading\s*\{[^}]*flex:\s*0\s+0/);
   });
 
-  it("leaves the compact (<=720px) arrangement untouched", () => {
-    // Measured identical before/after at 390px: below the 640px step `extra` is a full-width row
-    // of its own, so the desktop rule never applies and the <=720px inner-Flex wrap still owns it.
-    expect(layoutCss).toMatch(
-      /@media \(max-width: 720px\) \{[\s\S]*?\.ui-page-header-extra > \.ui-flex\[data-direction="row"\] \{\s*flex-wrap:\s*wrap;/,
+  it("wraps the inner action group at EVERY width, not only below 720px", () => {
+    // THIS ASSERTION USED TO REQUIRE THE BUG. It read:
+    //
+    //     @media (max-width: 720px) { .ui-page-header-extra > .ui-flex[…] { flex-wrap: wrap; …
+    //
+    // i.e. it pinned the wrap INSIDE the compact media query and called that "leaving the compact
+    // arrangement untouched" — so any fix that let the group wrap on a desktop turned it red. The
+    // gate was guarding the half of the geometry that was broken.
+    //
+    // Letting the BOX shrink (the rule above) without letting its CONTENT wrap does not make the
+    // group narrower; it makes it OVERFLOW, and since the box is `justify-content: flex-end`, the
+    // overflow runs backwards over the <h1>. Measured on `/isolate/layout-app-shell`, four JA
+    // buttons, before the fix:
+    //
+    //     width  extra box  inner flex  overflow-left
+    //     720      520.4      520.4          0        (the media query applied)
+    //     760      538.5      609.8       71.3        OVERLAPPED the title
+    //     800      569.5      609.8       40.3        OVERLAPPED the title
+    //     900      609.8      609.8          0        (fits)
+    //
+    // After: overflow-left is 0 at every width from 640 to 1440, and nothing overlaps the title.
+    // The compact arrangement IS still untouched — where the row fits, `wrap` changes nothing —
+    // which is why the rule belongs at the top level rather than under a breakpoint.
+    const rules = [
+      ...layoutCss.matchAll(
+        /\.ui-page-header-extra\s*>\s*\.ui-flex\[data-direction="row"\]\s*\{([^}]*)\}/g,
+      ),
+    ];
+    expect(rules).toHaveLength(1);
+    expect(rules[0][1]).toMatch(/flex-wrap:\s*wrap/);
+    expect(layoutCss).not.toMatch(
+      /@media \(max-width: 720px\) \{[\s\S]*?\.ui-page-header-extra > \.ui-flex\[data-direction="row"\]/,
     );
   });
 });
