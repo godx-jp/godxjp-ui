@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.4.9] - 2026-09-13
+
 ### Fixed — `RadioGroup`: chấm tròn vẽ VÔ ĐIỀU KIỆN (gh#615)
 
 - **Mọi lựa chọn đều trông như đang được chọn.** `Radio` render `<Circle className="ui-radio-icon">`
