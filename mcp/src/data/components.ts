@@ -7720,7 +7720,7 @@ export function BillingFields() {
       "AlertMutationFeedback — use AlertMutationFeedback for toast/inline feedback after the Dialog closes, not inside it. Putting a success toast inside a Dialog that is about to unmount causes it to disappear immediately; emit the feedback after `onOpenChange(false)` resolves.",
     ],
     example: `import { useState } from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@godxjp/ui/feedback";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter } from "@godxjp/ui/feedback";
 import { Button } from "@godxjp/ui/general";
 
 function CreateDialog() {
@@ -7733,7 +7733,9 @@ function CreateDialog() {
           <DialogTitle>新規クーポン作成</DialogTitle>
           <DialogDescription>クーポン情報を入力してください。</DialogDescription>
         </DialogHeader>
-        {/* fields */}
+        {/* The middle MUST be a DialogBody — that is the only scrolling box. Without it, content
+            taller than the viewport is clipped at both ends and the footer goes with it. */}
+        <DialogBody>{/* fields */}</DialogBody>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>キャンセル</Button>
           <Button onClick={() => setOpen(false)}>保存</Button>

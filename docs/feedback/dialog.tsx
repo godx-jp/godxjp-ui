@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogAction,
   DialogCancel,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -72,6 +73,7 @@ export default function Demo() {
                     借方・貸方科目と金額を入力して保存してください。
                   </DialogDescription>
                 </DialogHeader>
+                <DialogBody>
                 <Flex direction="col" gap="md">
                   <Flex direction="row" gap="sm" align="center">
                     <Text tone="muted" className="w-20 shrink-0">
@@ -92,6 +94,7 @@ export default function Demo() {
                     <Text>¥ 120,000</Text>
                   </Flex>
                 </Flex>
+                </DialogBody>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setCreateOpen(false)}>
                     キャンセル
@@ -123,6 +126,7 @@ export default function Demo() {
                   <DialogTitle>取引 #JE-2024-0042</DialogTitle>
                   <DialogDescription>2024年3月31日 · 月次決算仕訳</DialogDescription>
                 </DialogHeader>
+                <DialogBody>
                 <Flex direction="col" gap="sm">
                   <Flex direction="row" justify="between">
                     <Text tone="muted">借方</Text>
@@ -137,6 +141,7 @@ export default function Demo() {
                     <Text>3月売上計上</Text>
                   </Flex>
                 </Flex>
+                </DialogBody>
               </DialogContent>
             </Dialog>
           </CardContent>
@@ -178,10 +183,12 @@ export default function Demo() {
                     subtitle={`見出し帯は tone="${headerTone}" で描画しています。`}
                     extra={<Badge tone={headerTone}>{headerTone}</Badge>}
                   />
-                  <Text size="sm">
-                    帯の色だけが tone に追従し、見出しと本文の文字色は変わりません。extra
-                    スロットは帯の右端に固定され、閉じるボタンとは重なりません。
-                  </Text>
+                  <DialogBody>
+                    <Text size="sm">
+                      帯の色だけが tone に追従し、見出しと本文の文字色は変わりません。extra
+                      スロットは帯の右端に固定され、閉じるボタンとは重なりません。
+                    </Text>
+                  </DialogBody>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setToneOpen(false)}>
                       閉じる
@@ -219,14 +226,16 @@ export default function Demo() {
                   title="提携を終了しますか？"
                   subtitle="この操作は元に戻せません。終了理由は監査ログに残ります。"
                 />
-                <FormField id="termination-reason" label="終了理由" required>
-                  <Textarea
-                    id="termination-reason"
-                    value={reason}
-                    onChange={(event) => setReason(event.target.value)}
-                    placeholder="契約違反の内容を記載してください"
-                  />
-                </FormField>
+                <DialogBody>
+                  <FormField id="termination-reason" label="終了理由" required>
+                    <Textarea
+                      id="termination-reason"
+                      value={reason}
+                      onChange={(event) => setReason(event.target.value)}
+                      placeholder="契約違反の内容を記載してください"
+                    />
+                  </FormField>
+                </DialogBody>
                 <DialogFooter>
                   <DialogCancel asChild>
                     <Button variant="ghost">キャンセル</Button>

@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover
 import {
   Dialog,
   DialogContent,
+  DialogBody,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -390,7 +391,7 @@ export function AppLauncher({
           <DialogHeader>
             <DialogTitle>{labels.title}</DialogTitle>
           </DialogHeader>
-          {panel}
+          <DialogBody>{panel}</DialogBody>
         </DialogContent>
       </Dialog>
     );

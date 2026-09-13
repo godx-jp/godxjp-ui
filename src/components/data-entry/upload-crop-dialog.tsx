@@ -5,6 +5,7 @@ import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -77,6 +78,7 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
           <DialogTitle>{t("dataEntry.upload.cropTitle")}</DialogTitle>
           <DialogDescription>{t("dataEntry.upload.cropDescription")}</DialogDescription>
         </DialogHeader>
+        <DialogBody>
         <div className="ui-stack-sm">
           {/* The round crop stage. Its size and radius are --upload-crop-* knobs so a service can
               keep the stage in proportion with its own --upload-avatar-size. */}
@@ -110,6 +112,7 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
             />
           </div>
         </div>
+        </DialogBody>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {t("common.cancel")}
