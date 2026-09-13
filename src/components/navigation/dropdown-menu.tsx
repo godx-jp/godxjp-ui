@@ -611,21 +611,67 @@ export function DropdownMenuRadioGroup({
   value,
   onValueChange,
 }: DropdownMenuRadioGroupProps) {
+  const selection = {
+    className,
+    selectionMode: "single" as const,
+    disallowEmptySelection: true,
+    selectedKeys: value == null ? [] : [value],
+    onSelectionChange: (keys: "all" | Set<React.Key>) => {
+      if (keys === "all") return;
+      const [first] = [...keys];
+      if (first != null) onValueChange?.(String(first));
+    },
+  };
+
+  /*
+   * A LABEL SPLITS THE GROUP, because RAC gives a section exactly one heading (gh#632).
+   *
+   * `MenuSection` takes a `Header` child as the SECTION'S accessible name and hides it with
+   * `role="presentation"` so it is not read twice. With a heading in the MIDDLE of a list that is
+   * actively wrong, and measured here before the fix:
+   *
+   *     section [role=group aria-labelledby=_r_5_]
+   *       div   [role=menuitemradio] "Live"
+   *       div   [id=_r_5_ role=presentation] "Archived"
+   *       div   [role=menuitemradio] "Old"
+   *
+   * The group holding BOTH items became named "Archived". The reporter read that as "the heading is
+   * dropped from the a11y tree"; it is worse — promoted to the name of a group it does not describe,
+   * so every live item sits under a heading saying it is archived.
+   *
+   * THREE THINGS THAT DO NOT WORK, each measured rather than assumed:
+   *   - an explicit `aria-label` on the section: RAC still writes `aria-labelledby` at the header,
+   *     and `aria-labelledby` wins the accname algorithm;
+   *   - forcing `aria-labelledby: undefined`: RAC puts it back;
+   *   - rendering the label as a plain element so it cannot be a label target: RAC's collection
+   *     builder drops unknown nodes AND swallowed the item after it — two children lost, not one.
+   *
+   * A second `Header` is not a way out either: both headers receive the SAME id (the section's
+   * label id), which is duplicate-ID invalid HTML.
+   *
+   * So the label starts a NEW section, which is the shape RAC and ARIA both want: one group per
+   * heading, each heading naming only the items beneath it. Selection is unaffected — it is keyed on
+   * the item, and `onSelectionChange` fires from whichever section owns the item that was picked.
+   */
+  const runs: { label: React.ReactNode; items: React.ReactNode[] }[] = [{ label: null, items: [] }];
+  for (const child of React.Children.toArray(children)) {
+    if (React.isValidElement(child) && child.type === DropdownMenuLabel) {
+      runs.push({ label: child, items: [] });
+    } else {
+      runs[runs.length - 1].items.push(child);
+    }
+  }
+  const sections = runs.filter((run) => run.label != null || run.items.length > 0);
+
   return (
-    <MenuSection
-      data-slot="dropdown-menu-radio-group"
-      className={className}
-      selectionMode="single"
-      disallowEmptySelection
-      selectedKeys={value == null ? [] : [value]}
-      onSelectionChange={(keys) => {
-        if (keys === "all") return;
-        const [first] = [...keys];
-        if (first != null) onValueChange?.(String(first));
-      }}
-    >
-      {children}
-    </MenuSection>
+    <>
+      {sections.map((run, index) => (
+        <MenuSection key={index} data-slot="dropdown-menu-radio-group" {...selection}>
+          {run.label}
+          {run.items}
+        </MenuSection>
+      ))}
+    </>
   );
 }
 
@@ -798,9 +844,22 @@ interface DropdownMenuItemPropsOwn {
   textValue?: string;
   /** Mượn thẻ của con thay vì dựng `<div>` riêng — chỗ để nhét một `<Link>` vào một mục menu. */
   asChild?: boolean;
+  /**
+   * `id` và mọi `data-*` ĐI XUỐNG phần tử gốc của item (gh#631).
+   *
+   * Trigger của chính cụm này đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG ghi:
+   * "trước đó bị nuốt, nên selector e2e của consumer rời ra trong im lặng". Phần item thì chưa,
+   * nên hai nửa của cùng một component hành xử ngược nhau.
+   *
+   * TypeScript không bắt được: JSX luôn cho qua mọi thuộc tính có gạch nối, nên `data-testid`
+   * biên dịch sạch và chỉ hỏng lúc chạy. Với `id` còn tệ hơn — nó là thứ `aria-activedescendant`
+   * trỏ vào, và nó biến mất không một lời.
+   */
+  id?: string;
 }
 
-type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn>;
+type DropdownMenuItemProps = React.PropsWithChildren<DropdownMenuItemPropsOwn> &
+  Record<`data-${string}`, unknown>;
 
 export function DropdownMenuItem({
   children,
@@ -811,6 +870,7 @@ export function DropdownMenuItem({
   onSelect,
   textValue,
   asChild,
+  ...forwarded
 }: DropdownMenuItemProps) {
   const tag = borrowedTag(children, asChild);
   return (
@@ -832,6 +892,9 @@ export function DropdownMenuItem({
             "data-inset": inset,
             "data-variant": variant,
             ...radixItemState(state),
+            // LAST, so a consumer's own `id`/`data-*` wins over ours rather than being
+            // overwritten by the slot bookkeeping above (gh#631).
+            ...forwarded,
           },
           content,
         );
