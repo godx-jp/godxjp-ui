@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+
+import { useTranslation } from "../../i18n/use-translation";
 import { Check, CheckCircle2, type LucideIcon, Plane } from "lucide-react";
 
 export type TimelineStatus = "done" | "current" | "pending";
@@ -27,11 +29,23 @@ export type TimelineProps = {
   variant?: TimelineVariant;
 };
 
-/** Screen-reader prefix for each resolved status (localize-agnostic English). */
-const SR_PREFIX: Record<TimelineStatus, string> = {
-  done: "Completed: ",
-  current: "Current: ",
-  pending: "Upcoming: ",
+/**
+ * Screen-reader prefix key for each resolved status.
+ *
+ * These were three HARDCODED ENGLISH strings — "Completed: " / "Current: " / "Upcoming: " — going
+ * straight into a `sr-only` span with no prop and no route through i18n (gh#627). On a Japanese
+ * screen a screen-reader user heard 「Completed: 入国前講習」: half English, half Japanese, and the
+ * ENGLISH half is the one carrying the status. It also leaks into `innerText` for some extraction
+ * paths, so a manual review reported it as visible copy.
+ *
+ * The reporter proposed a `statusLabels` prop. `t()` is the better answer and it is this library's
+ * own rule — every user-facing string AND every sr-only text goes through it — so a consumer who
+ * has already initialised i18n gets Japanese with no call-site change at all.
+ */
+const SR_PREFIX_KEY: Record<TimelineStatus, string> = {
+  done: "dataDisplay.timeline.statusDone",
+  current: "dataDisplay.timeline.statusCurrent",
+  pending: "dataDisplay.timeline.statusPending",
 };
 
 function resolveStatus(item: TimelineItem): TimelineStatus {
@@ -46,6 +60,7 @@ function resolveStatus(item: TimelineItem): TimelineStatus {
 }
 
 export function Timeline({ items, variant = "icon" }: TimelineProps) {
+  const { t } = useTranslation();
   return (
     <ol className="ui-timeline" data-variant={variant}>
       {items.map((item, index) => {
@@ -104,7 +119,7 @@ export function Timeline({ items, variant = "icon" }: TimelineProps) {
             <div className="ui-timeline-body">
               <div className="ui-timeline-head">
                 <span className="ui-timeline-title" data-current={isCurrent ? "true" : undefined}>
-                  <span className="sr-only">{SR_PREFIX[status]}</span>
+                  <span className="sr-only">{t(SR_PREFIX_KEY[status])}</span>
                   {item.title}
                 </span>
                 {item.time ? <span className="ui-timeline-time">{item.time}</span> : null}

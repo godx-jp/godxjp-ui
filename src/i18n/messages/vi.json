@@ -333,6 +333,11 @@
         "error": "thất bại",
         "abort": "đã dừng"
       }
+    },
+    "timeline": {
+      "statusDone": "Đã xong: ",
+      "statusCurrent": "Hiện tại: ",
+      "statusPending": "Sắp tới: "
     }
   },
   "ui": {

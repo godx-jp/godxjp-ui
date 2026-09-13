@@ -332,6 +332,11 @@
         "error": "失敗",
         "abort": "中断"
       }
+    },
+    "timeline": {
+      "statusDone": "完了: ",
+      "statusCurrent": "現在: ",
+      "statusPending": "予定: "
     }
   },
   "ui": {
