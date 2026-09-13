@@ -331,6 +331,7 @@
     "check:data-entry-touch-aria": "node scripts/check-data-entry-touch-aria.mjs",
     "check:display-runtime-evidence": "node scripts/check-display-runtime-evidence.mjs",
     "check:choice-hit-target": "node scripts/check-choice-hit-target.mjs",
+    "check:state-legible": "node scripts/check-state-legible.mjs",
     "check:app-shell-narrow-grid": "node scripts/check-app-shell-narrow-grid.mjs",
     "check:frame-contracts": "pnpm check:component-api-manifest && pnpm audit:component-cases && pnpm check:frame-coverage && pnpm check:frame-coverage-ledger && pnpm check:screen-reader-evidence && pnpm check:data-entry-owner-source && pnpm check:display-runtime-evidence",
     "check:frame-runtime": "pnpm check:data-entry-touch-aria && pnpm check:app-shell-narrow-grid && pnpm check:choice-hit-target",

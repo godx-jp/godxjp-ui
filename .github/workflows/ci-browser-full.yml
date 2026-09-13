@@ -109,7 +109,7 @@ jobs:
           - name: interaction-semantics
             port: 6041
             stories: ""
-            command: pnpm check:data-entry-touch-aria && pnpm check:app-shell-narrow-grid && pnpm check:choice-hit-target && pnpm check:data-table-empty-inset && pnpm check:number-input-step-target && pnpm check:focus-ring-paint && pnpm check:measurement-contract-browser
+            command: pnpm check:data-entry-touch-aria && pnpm check:app-shell-narrow-grid && pnpm check:choice-hit-target && pnpm check:data-table-empty-inset && pnpm check:number-input-step-target && pnpm check:focus-ring-paint && pnpm check:measurement-contract-browser && pnpm check:state-legible
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
