@@ -42,6 +42,13 @@ finding and needs no suppression.`;
 export const AUDIT_RULES: AuditRule[] = [
   // ── composition (layout owners, not utilities) ───────────────────────────
   {
+    id: "dialog-needs-body",
+    severity: "error",
+    category: "composition",
+    standard: null,
+    fix: "Wrap a Dialog/Sheet's middle in <DialogBody>/<SheetBody>. The scroll lives on the body — the content box is `overflow: hidden` with no max-height — so an overlay without one clips long content at BOTH ends and takes the footer's buttons with it, leaving Escape as the only way out. It only shows on real data, never on demo data (gh#617).",
+  },
+  {
     id: "no-utility-spacing",
     severity: "error",
     category: "composition",

@@ -923,6 +923,30 @@ const CARD_TABLE_FLUSH = new RegExp(
   "g",
 );
 
+/*
+ * A `DialogContent` / `SheetContent` that has chrome (a header or a footer) but no BODY.
+ *
+ * The scroll lives on the body, and only on the body:
+ *
+ *     [data-slot="dialog-body"]    { min-height: 0; max-height: min(60vh, 32rem); overflow-y: auto }
+ *     [data-slot="dialog-content"] { overflow: hidden }   // no max-height, deliberately
+ *
+ * So an overlay without one cannot scroll at all: content longer than the viewport is clipped at
+ * BOTH ends, taking the footer's buttons with it, and the only way out is Escape. Reported from a
+ * consumer whose five dialogs all had the defect and none of whose reviewers could see it — it only
+ * appears on real customer data, never on demo data (gh#617).
+ *
+ * THE SAME SHAPE AS gh#611, and the reporter named it as such: a layout contract that EXISTS in the
+ * stylesheet with no gate to enforce it. `Card`→`CardContent` had `card-needs-content`;
+ * `Dialog`→`DialogBody` had nothing. `Sheet` is included for the reason gh#611 taught: when a rule
+ * names a component, ask whether its required sibling slots are checked too — Sheet's CSS carries
+ * the identical `:has([data-slot="sheet-body"])` pair, so it carries the identical defect.
+ *
+ * Chrome is the trigger, not length: a bare `<DialogContent>` holding one line needs nothing, but
+ * once a header or footer is present the middle is a body and the middle is what scrolls.
+ */
+const OVERLAY_NEEDS_BODY = /<(Dialog|AlertDialog|Sheet)Content\b[^>]*>([\s\S]*?)<\/\1Content>/g;
+
 const CARD_FLUSH = new RegExp(
   `<Card(?!${ATTRS}\\bp-0\\b)(?:\\s${ATTRS})?>\\s*<(?!CardContent|CardHeader|CardCover|CardFooter|CardBar|\\/Card)`,
   "g",
@@ -1179,6 +1203,29 @@ for (const dir of SCAN_DIRS) {
         snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
       });
     }
+    for (const match of scanContent.matchAll(OVERLAY_NEEDS_BODY)) {
+      const [, family, inner] = match;
+      const slot = family === "Sheet" ? "Sheet" : "Dialog";
+      const hasChrome = new RegExp(`<${slot}(?:Header|Footer)\\b`).test(inner);
+      const hasBody = new RegExp(`<${slot}Body\\b`).test(inner);
+      if (!hasChrome || hasBody) continue;
+      const lineNo = scanContent.slice(0, match.index).split("\n").length;
+      if (suppressed("dialog-needs-body", lineNo - 1)) continue;
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "dialog-needs-body",
+        severity: "error",
+        message:
+          `<${family}Content> has a ${slot}Header/${slot}Footer but no <${slot}Body>. The scroll lives on ` +
+          `the body — the content box is \`overflow: hidden\` with no max-height — so content taller ` +
+          `than the viewport is clipped at BOTH ends and the footer's buttons go with it, leaving ` +
+          `Escape as the only way out. It only shows on real data, never on demo data.`,
+        replacement: `${slot}Body`,
+        snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+      });
+    }
+
     if (
       !(SELF && !args.includes("--consumer")) &&
       !/<(?:Flex|ResponsiveGrid|PageContainer)\b/.test(scanContent)

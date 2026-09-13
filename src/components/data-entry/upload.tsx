@@ -27,7 +27,7 @@ import {
 } from "./upload-types";
 import { readDroppedFiles } from "./upload-files";
 import { uploadRequest } from "./upload-request";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../feedback/dialog";
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from "../feedback/dialog";
 import { Progress } from "../data-display/progress";
 import { useUploadDraft } from "./use-upload-draft";
 
@@ -506,13 +506,15 @@ export function Upload({
           <DialogHeader>
             <DialogTitle>{previewItem?.name ?? t("dataEntry.upload.preview")}</DialogTitle>
           </DialogHeader>
-          {previewItem?.previewUrl && (
-            <img
-              src={previewItem.previewUrl}
-              alt={previewItem.name}
-              className="ui-upload-picture-img"
-            />
-          )}
+          <DialogBody>
+            {previewItem?.previewUrl && (
+              <img
+                src={previewItem.previewUrl}
+                alt={previewItem.name}
+                className="ui-upload-picture-img"
+              />
+            )}
+          </DialogBody>
         </DialogContent>
       </Dialog>
       <span aria-live="polite" className="sr-only" data-slot="upload-status">

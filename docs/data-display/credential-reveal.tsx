@@ -11,6 +11,7 @@ import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -51,12 +52,14 @@ export default function Demo() {
                     このキーはこの画面でのみ表示されます。安全な場所に保管してください。
                   </DialogDescription>
                 </DialogHeader>
-                <CredentialReveal
-                  label="APIキー"
-                  secret={API_KEY}
-                  downloadable
-                  onAcknowledge={() => setOpen(false)}
-                />
+                <DialogBody>
+                  <CredentialReveal
+                    label="APIキー"
+                    secret={API_KEY}
+                    downloadable
+                    onAcknowledge={() => setOpen(false)}
+                  />
+                </DialogBody>
               </DialogContent>
             </Dialog>
           </CardContent>

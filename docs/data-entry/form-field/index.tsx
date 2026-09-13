@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   Sheet,
+  SheetBody,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -312,14 +313,16 @@ export default function Demo() {
                 <SheetHeader>
                   <SheetTitle>請求先設定</SheetTitle>
                 </SheetHeader>
-                <Form>
-                  <FormField id="sheet-name" label="宛名" required>
-                    <Input id="sheet-name" />
-                  </FormField>
-                  <FormField id="sheet-note" label="備考">
-                    <Input id="sheet-note" />
-                  </FormField>
-                </Form>
+                <SheetBody>
+                  <Form>
+                    <FormField id="sheet-name" label="宛名" required>
+                      <Input id="sheet-name" />
+                    </FormField>
+                    <FormField id="sheet-note" label="備考">
+                      <Input id="sheet-note" />
+                    </FormField>
+                  </Form>
+                </SheetBody>
               </SheetContent>
             </Sheet>
           </CardContent>

@@ -794,6 +794,10 @@ function AlertDialog({
           </div>
         </DialogHeader>
 
+        {/* The middle is a BODY, and the body is where the scroll lives (gh#617). Without it a long
+            challenge label or a step-up error pushes the footer's buttons off-screen, with Escape as
+            the only way out — `[data-slot=dialog-content]` is `overflow: hidden` by design. */}
+        <DialogBody>
         {needsPhrase && (
           <FormField id={inputId} label={t("common.typeToConfirm", { phrase })}>
             <Input
@@ -816,6 +820,7 @@ function AlertDialog({
             {t("feedback.alert.stepUpFailed")}
           </p>
         )}
+        </DialogBody>
 
         <DialogFooter>
           <DialogCancel asChild>
