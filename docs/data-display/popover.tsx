@@ -210,7 +210,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>width · パネルの測り方</CardTitle>
             <CardDescription>
-              既定の panel は --popover-width（18rem）。auto は中身に測らせます — 自前の幅を持つもの
+              既定の panel は --popover-width（18rem）。auto は中身に測らせます。自前の幅を持つもの
               （Calendar、チャート、固定幅のプレビュー）はこれ以外に正解がありません。trigger
               はアンカーに合わせます。className に w-*
               を書くのは呼び出し側の定数で、どのテーマからも retune できません。flush が padding

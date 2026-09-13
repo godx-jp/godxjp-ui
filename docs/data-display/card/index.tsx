@@ -128,7 +128,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            hoverable · actions — Ant Design の hoverable と actions
+            hoverable · actions · Ant Design の hoverable と actions
           </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             {/*

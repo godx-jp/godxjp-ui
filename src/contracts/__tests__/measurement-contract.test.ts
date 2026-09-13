@@ -32,18 +32,33 @@ describe("measurement contract", () => {
     expect(contract.targetSize.note).toContain("getBoundingClientRect");
   });
 
-  it("names every selector whose target is carried by a pseudo-element, and no others", () => {
+  it("names every selector whose target is raised to the floor, and no others", () => {
     const declared = contract.targetSize.expanders.map((e) => e.selector).sort();
 
-    // Re-derive from the CSS the way the generator does, so a new ::after that reaches the floor
-    // cannot ship without appearing in the contract a consumer gate reads.
+    /*
+     * Re-derived from the CSS the way the generator does, so a new rule that reaches the floor
+     * cannot ship without appearing in the contract a consumer gate reads.
+     *
+     * BOTH SHAPES, and this test knew only the first one for a while. A control with no real input
+     * carries its target on a pseudo-element (`.ui-control-inline-affix-action::after`); a control
+     * that HAS one carries it on that input instead (`.ui-switch > .ui-choice-input`), because a
+     * pseudo-element on the label would cover the input and `elementFromPoint` would stop returning
+     * it. Extending the generator to gh#626's shape without extending this mirror is what turned
+     * `main` red: the assertion re-derived three entries and compared them against four.
+     */
     const found = new Set<string>();
     for (const [, selector, body] of allCss
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
       if (!body.includes("--touch-target-min")) continue;
-      const m = /^(\S+)::(after|before)$/.exec(selector.trim().replace(/\s+/g, " "));
-      if (m) found.add(m[1]);
+      const sel = selector.trim().replace(/\s+/g, " ");
+      const pseudo = /^(\.[\w-]+)::(after|before)$/.exec(sel);
+      if (pseudo) {
+        found.add(pseudo[1]);
+        continue;
+      }
+      const descendant = /^(\.[\w-]+)\s*[>\s]\s*(\S+)$/.exec(sel);
+      if (descendant) found.add(descendant[1]);
     }
 
     expect(declared).toEqual([...found].sort());
@@ -53,7 +68,8 @@ describe("measurement contract", () => {
   it("gives each expander a floor and at least one component that renders it", () => {
     for (const entry of contract.targetSize.expanders) {
       expect(entry.targetMin).toBe(contract.targetSize.min);
-      expect(entry.via).toMatch(/^::(after|before)$/);
+      // A pseudo-element, or the real descendant that carries the target (gh#626).
+      expect(entry.via).toMatch(/^(?:::(?:after|before)|\.[\w-]+)$/);
       expect(entry.components.length).toBeGreaterThan(0);
     }
   });

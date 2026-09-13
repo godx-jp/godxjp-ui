@@ -147,7 +147,7 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>バー以外の chrome — icon とパネルの向き</CardTitle>
+            <CardTitle level={2}>バー以外の chrome · icon とパネルの向き</CardTitle>
             <CardDescription>
               `appearance=&quot;icon&quot;` は正方形の ghost Button。バーではない chrome（nav rail、
               カードのヘッダ、ツールバー）のための箱で、glyph は同じです。 パネルは既定で chrome
@@ -172,7 +172,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Launchpad — 画面いっぱい</CardTitle>
+            <CardTitle level={2}>Launchpad · 画面いっぱい</CardTitle>
             <CardDescription>
               `responsive=&quot;fullscreen&quot;` は plaform の start bar のための形。背後のページを
               ぼかし、その地の上にタイルが並びます（macOS Launchpad / Windows Start）。 幅に関係なく

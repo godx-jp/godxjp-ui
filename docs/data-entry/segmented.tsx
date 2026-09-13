@@ -89,7 +89,7 @@ export default function Demo() {
             <CardTitle level={2}>4 択 + 件数（スマホ幅では折り返す）</CardTitle>
             <CardDescription>
               一覧の上の状態フィルター。4 つが 1 行に収まらない幅では、トラックが 2 行目に折り返し
-              ます — ラベルも件数も切り詰めません。`check:segmented-wrap` がこのカードを測ります。
+              ます。ラベルも件数も切り詰めません。`check:segmented-wrap` がこのカードを測ります。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -112,7 +112,7 @@ export default function Demo() {
             <CardDescription>
               size は 3 段（sm / md / lg）。トラックの高さは --control-height そのもので、
               MobileShell のようにその変数をスコープする領域では自動的にタッチ段（44px）になります。
-              vertical では 1 行ぶんが 1 コントロールの高さになります — 横 1 行のときだけトラック
+              vertical では 1 行ぶんが 1 コントロールの高さになります。横 1 行のときだけトラック
               内側の余白を引くので、積んだときは引きません。block は幅いっぱいに広げます。
             </CardDescription>
           </CardHeader>
