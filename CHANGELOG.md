@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [24.0.0] - 2026-09-15
+
+### Changed — GoDX brand identity v2.3 (BREAKING, visually)
+
+Không xoá API nào; `LogoMark` chỉ **thêm** `"godx-lockup"`. Đánh số major vì mọi consumer nâng lên
+sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một số minor không nói được điều đó.
+
+- **`--primary` 204 100% 37% (#0071bd) → 268.7 100% 50% (#7A00FF)**, dark → 268.7 100% 86.9%
+  (#DCBCFF). `--brand`, `--text-brand`, `--text-primary` và `--ring` đi theo. `--success`,
+  `--warning`, `--info`, `--destructive` **không đổi** — trạng thái không phải nhận diện.
+- **`<Logo mark="godx">` giờ vẽ mark GoDX thật**, thay hình capsule bo góc vốn chỉ là chỗ giữ chỗ.
+- **`mark="godx-lockup"` mới**: mark + logotype thật (chữ G, D, X có hình riêng), thay cho việc
+  *đánh máy* tên sản phẩm bằng font của design system.
+- **Master không còn bị nhuộm**. Guideline cấm: *"Logo master không bị nhuộm lại theo màu của một
+  module"*. Hai biến thể sáng/tối cùng ship và CSS chọn một — không filter, không đổi màu.
+- **`--logo-godx-ink-color`** mới cho mực logotype, đảo theo theme (#0B0F3B đo được 18.00:1 trên
+  nền sáng và 1.03:1 trên nền tối, nên một giá trị không phục vụ được cả hai).
+- **Mực glyph trong ô giờ đảo theo theme.** Trước đây bất biến, đúng khi `--brand` là màu lục sáng
+  ở cả hai theme; với tím thì đen trên nền sáng chỉ đạt 2.77:1 so với sàn 4.5:1.
+- Email giữ bản phẳng đơn sắc, có chủ đích: Outlook bỏ gradient SVG và thư đã gửi không đổi biến
+  thể được. Đó là một asset khác, không phải master bị nhuộm.
+- Mỗi instance `<Logo>` mang id SVG riêng (`useId`) — id trùng không gây lỗi vẽ (đo: khác 0 pixel)
+  nhưng là HTML không hợp lệ và nhân lên theo từng logo trên trang.
+
 ## [23.4.12] - 2026-09-13
 
 ### Fixed — `DropdownMenuItem` nuốt `data-*` / `id` (gh#631)
