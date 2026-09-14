@@ -72,6 +72,64 @@ const DROPDOWN_MENU_PLACEMENT: Record<
  * `data-state` / `data-side`.
  */
 
+/*
+ * A CHILD THE COLLECTION CANNOT BUILD USED TO KILL THE WHOLE APPLICATION (gh#637).
+ *
+ * RAC's hidden collection pass renders the menu's children into a FAKE `Document`
+ * (`react-aria/private/collections/Document` — `nodeType: 11`, `ownerDocument: this`). That object
+ * implements `createElement` and NOT `createElementNS` / `createTextNode`, so React 19's
+ * `completeWork` throws the moment one of those children is an SVG or a bare string:
+ *
+ *     TypeError: nextResource.createElementNS is not a function
+ *
+ * Measured on 24.0.0 / react-aria-components 1.21.1 / react-dom 19.2.8: an `<svg>`, a bare string,
+ * and a COMPONENT THAT RETURNS an svg (`<Check />`, `<Building2 />` — the shape a consumer actually
+ * writes) all crash, in `Menu` and in `MenuSection` alike. A `<span>` does not: `createElement`
+ * exists, so RAC merely drops the node, which is its documented answer for a child it cannot build
+ * (see the gh#632 note in DropdownMenuRadioGroup).
+ *
+ * WHY THIS IS A BOUNDARY AND NOT A TYPE, AND NOT A FILTER ON `children`. An uncaught error in
+ * render makes React 19 unmount the WHOLE ROOT, so on an Inertia consumer — where `<body>` holds
+ * nothing but the React tree — a misplaced icon is not a broken menu, it is a blank page with no
+ * message on a shop-floor iPad. No signature can see what a component returns, so types cannot
+ * reach it; and inspecting the child nodes cannot either, for the same reason — `<Check />` is a
+ * component, indistinguishable from a legitimate wrapper that returns a `MenuItem`. What IS
+ * reachable is the blast radius: contain the throw at the menu, name it, and let the rest of the
+ * application stay on screen.
+ *
+ * STOPGAP. The defect belongs upstream in `@react-aria/collections`; this only bounds the damage.
+ * The failed state is sticky for the life of the mount — resetting it on new children would re-run
+ * the same throwing render forever — and a menu unmounts when its popover closes, so re-opening a
+ * menu whose children have since been fixed renders it normally.
+ */
+class MenuCollectionBoundary extends React.Component<
+  { children: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  // Logged in EVERY build, not only development: "blank, with nothing in the console" is the half
+  // of gh#637 that cost the reporter a night of instrumenting `Object.prototype`.
+  componentDidCatch(error: unknown) {
+    console.error(
+      "[@godxjp/ui] DropdownMenu: the menu could not be built and was left empty; the rest of the " +
+        "application is unaffected. A menu's children must be collection nodes (DropdownMenuItem, " +
+        "DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, " +
+        "DropdownMenuGroup, DropdownMenuSub) or components returning one — an icon or a text label " +
+        "belongs INSIDE an item, not beside it. Underlying error:",
+      error,
+    );
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 /** Thuộc tính DOM mà `render` của một MenuItem nhận (nhánh không-phải-link của RAC). */
 type ItemDomProps = React.JSX.IntrinsicElements["div"];
 
@@ -815,9 +873,11 @@ export function DropdownMenuContent({
             `autoFocus: state.focusStrategy || true`, which is right for a click or a key — but on
             hover it would yank focus out of whatever the reader was typing in, just because the
             pointer crossed the trigger. Pointer hover moves no focus; every other route keeps it. */}
-        <Menu shouldFocusWrap={loop} autoFocus={openedByHover.current ? false : undefined}>
-          {children}
-        </Menu>
+        <MenuCollectionBoundary>
+          <Menu shouldFocusWrap={loop} autoFocus={openedByHover.current ? false : undefined}>
+            {children}
+          </Menu>
+        </MenuCollectionBoundary>
         {arrow ? (
           <OverlayArrow>
             <svg
@@ -1184,7 +1244,10 @@ export function DropdownMenuSubContent({
         />
       )}
     >
-      <Menu shouldFocusWrap={loop}>{children}</Menu>
+      {/* Same containment as the root menu — a submenu builds through the same collection. */}
+      <MenuCollectionBoundary>
+        <Menu shouldFocusWrap={loop}>{children}</Menu>
+      </MenuCollectionBoundary>
     </Popover>
   );
 }
