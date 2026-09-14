@@ -1,11 +1,19 @@
 import * as React from "react";
+import {
+  GODX_ARTWORK_ID_TOKEN,
+  GODX_LOCKUP_DARK,
+  GODX_LOCKUP_LIGHT,
+  GODX_MARK_DARK,
+  GODX_MARK_LIGHT,
+  type BrandArtwork,
+} from "../../brand/godx-artwork.generated";
 
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
 export type LogoTone = "primary" | "success";
-export type LogoMark = "glyph" | "godx";
+export type LogoMark = "glyph" | "godx" | "godx-lockup";
 
 export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /**
@@ -191,11 +199,28 @@ export function logoGlyphAdvance(glyph: React.ReactNode): LogoGlyphAdvance | und
 }
 
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
+  /*
+   * HOOKS FIRST — before the glyph branch returns. The first cut put `useId()` after it, so the
+   * hook ran only for the artwork marks; a Logo whose `mark` changed at runtime would have changed
+   * its hook count between renders, which React treats as a hard error.
+   */
+  const instanceId = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const artwork: readonly [BrandArtwork, BrandArtwork] =
+    mark === "godx-lockup"
+      ? [GODX_LOCKUP_LIGHT, GODX_LOCKUP_DARK]
+      : [GODX_MARK_LIGHT, GODX_MARK_DARK];
+  const html = React.useMemo(
+    () => artwork.map((a) => a.markup.replaceAll(GODX_ARTWORK_ID_TOKEN, instanceId)),
+    [artwork, instanceId],
+  );
+
   // The glyph gets its own element on purpose: `--logo-glyph-*-optical-offset` translates the INK,
   // which on `.ui-logo` (the grid container) would drag the fill and the rounded box with it.
   // `data-ink` is the half of the correction CSS cannot derive — see `.ui-logo-glyph` in
   // logo-layout.css for why one glyph-blind rule cannot centre every class, and the measurements.
-  if (mark !== "godx") {
+  // Only the boxed-glyph treatment takes this branch. Written as an equality rather than
+  // `!== "godx"` because that form silently swallowed `godx-lockup` when the union grew.
+  if (mark === "glyph") {
     const advance = logoGlyphAdvance(glyph);
     return (
       <span
@@ -218,21 +243,59 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
       </span>
     );
   }
+  /*
+   * THE MASTER ARTWORK, BOTH VARIANTS, NOT RE-TINTED (brand identity v2.3).
+   *
+   * The guidelines are explicit and an earlier cut of this component broke every one of them by
+   * shipping the FLAT artwork painted with a token:
+   *
+   *   "Logo master không bị nhuộm lại theo màu của một module."
+   *   "Logo dùng master SVG đúng biến thể sáng/tối."
+   *   "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
+   *
+   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter, not a
+   * recolour, not one artwork with swapped token values — the light and dark masters are different
+   * files in the kit and they stay different files here.
+   *
+   * `dangerouslySetInnerHTML` because the artwork is 8 gradients, a clipPath and 10 paths whose
+   * coordinates must stay byte-exact ("không đổi hình G, wordmark… construction"). It is
+   * package-owned generated content, never user input — see brand/godx-artwork.generated.ts.
+   */
+  /*
+   * A UNIQUE ID PREFIX PER INSTANCE.
+   *
+   * SVG ids are unique per DOCUMENT, not per file, so two <Logo>s on one page would otherwise emit
+   * the same `arrowClip` and the same eight gradient ids.
+   *
+   * WHAT THIS DOES NOT FIX, stated because the first version of this comment claimed otherwise and
+   * was wrong: it is not a rendering bug. Measured — two lockups, remove the first, screenshot the
+   * second — shared ids and unique ids produce byte-identical pixels, because every instance
+   * carries its own identical <defs> and `url(#…)` simply resolves to the first matching copy.
+   *
+   * It is a DOCUMENT-VALIDITY fix. Duplicate ids break getElementById, in-page anchors and any
+   * aria/label reference that lands on one, and they multiply with every Logo on the page. A
+   * design system should not be the thing emitting them.
+   *
+   * Memoised because the substitution runs over ~18 KB of markup: once per instance, not once per
+   * render, which is what the first cut did.
+   */
   return (
-    <svg
-      data-slot="logo-artwork"
-      viewBox="0 0 32 32"
-      width="32"
-      height="32"
-      focusable="false"
-      aria-hidden="true"
-    >
-      <path
-        fill="currentColor"
-        fillRule="evenodd"
-        d="M8 7h16a7 7 0 0 1 7 7v4a7 7 0 0 1-7 7H8a7 7 0 0 1-7-7v-4a7 7 0 0 1 7-7Zm0 6a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H8Z"
-      />
-    </svg>
+    <>
+      {(["light", "dark"] as const).map((scheme, index) => (
+        <svg
+          key={scheme}
+          data-slot="logo-artwork"
+          data-artwork={mark}
+          data-scheme={scheme}
+          viewBox={artwork[index].viewBox}
+          focusable="false"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{
+            __html: html[index],
+          }}
+        />
+      ))}
+    </>
   );
 }
 

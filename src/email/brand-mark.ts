@@ -5,7 +5,7 @@
  * component's, so the two can never diverge).
  */
 import { EMAIL_COLORS, type EmailHex } from "./color";
-import { EMAIL_GEOMETRY_SOURCE } from "./tokens.generated";
+import { EMAIL_GEOMETRY_SOURCE, EMAIL_MARK_SOURCE } from "./tokens.generated";
 
 /** A rounded rectangle in the mark's 32×32 coordinate space. */
 export interface EmailBrandMarkRect {
@@ -17,7 +17,8 @@ export interface EmailBrandMarkRect {
 }
 
 /** Intrinsic coordinate space of the mark artwork. */
-export const EMAIL_BRAND_MARK_VIEWBOX = "0 0 32 32";
+/** The component's box, read from the shared artwork so the two cannot drift. */
+export const EMAIL_BRAND_MARK_VIEWBOX = EMAIL_MARK_SOURCE.viewBox;
 
 /** The emerald capsule. */
 export const EMAIL_BRAND_MARK_CAPSULE: EmailBrandMarkRect = Object.freeze({
@@ -68,8 +69,14 @@ export interface EmailBrandMarkOptions {
   label?: string;
 }
 
-const CAPSULE_PATH = roundedRectPath(EMAIL_BRAND_MARK_CAPSULE);
-const GLYPH_PATH = roundedRectPath(EMAIL_BRAND_MARK_GLYPH);
+/*
+ * The mark's two paths come from `brand/godx-mark`, the same constants `<Logo mark="godx" />`
+ * paints — email-tokens.test.ts asserts they are byte-identical, and the only way to keep that
+ * true is for there to be one copy. The rounded-rect helper below still serves the geometry
+ * exports; it no longer draws the mark.
+ */
+const CAPSULE_PATH = EMAIL_MARK_SOURCE.bodyPath;
+const GLYPH_PATH = EMAIL_MARK_SOURCE.arrowPath;
 
 const DEFAULT_WIDTH = Number.parseFloat(EMAIL_GEOMETRY_SOURCE["--email-mark-width"]);
 const DEFAULT_HEIGHT = Number.parseFloat(EMAIL_GEOMETRY_SOURCE["--email-mark-height"]);
@@ -101,8 +108,10 @@ export function emailBrandMarkSvg(o: EmailBrandMarkOptions = {}): string {
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" ` +
     `viewBox="${EMAIL_BRAND_MARK_VIEWBOX}" focusable="false"${a11y} ` +
     `style="display:block;border:0;outline:none;text-decoration:none">` +
+    `<g transform="${EMAIL_MARK_SOURCE.transform}" fill-rule="evenodd">` +
     `<path fill="${color}" d="${CAPSULE_PATH}"/>` +
     `<path fill="${glyphColor}" d="${GLYPH_PATH}"/>` +
+    `</g>` +
     `</svg>`
   );
 }

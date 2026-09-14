@@ -97,8 +97,11 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     }
   });
 
-  it("light --brand IS the canonical emerald oklch(0.595 0.137 162.94) = #009766", () => {
-    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#009766");
+  it("light --brand IS the canonical GoDX violet #7A00FF", () => {
+    // Brand identity v2.3 (`01_GoDX`, `06_UI_Design_System/dist/godx.theme.resolved.json` →
+    // core.action.primary.bg). It replaced 翠 emerald #009766, which this line pinned from gh#250
+    // until the identity itself changed.
+    expect(hex(hslToRgb(hsl(THEMES.light, "brand")))).toBe("#7a00ff");
   });
 
   it("dark --brand keeps the canonical hue and chroma, lifted only in lightness", () => {
@@ -121,9 +124,21 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
     }
   });
 
-  it("--brand is not a copy of --primary either", () => {
+  it("--brand is DECLARED independently of --primary, even while they hold the same value", () => {
+    /*
+     * This used to compare VALUES, which worked only while the identity was green and the action
+     * colour blue. Under identity v2.3 both are #7A00FF, and value inequality would now fail on a
+     * design that is correct.
+     *
+     * The property that actually matters — and the one gh#250 was written for — is that --brand
+     * does not READ --primary. A service re-theming the action colour must not drag the identity
+     * with it. That is a fact about the DECLARATION, so check the declaration.
+     */
     for (const body of Object.values(THEMES)) {
-      expect(hsl(body, "brand")).not.toEqual(hsl(body, "primary"));
+      const declaration = /^\s*--brand:\s*([^;]+);/m.exec(body)?.[1] ?? "";
+      expect(declaration).not.toBe("");
+      expect(declaration).not.toContain("var(");
+      expect(declaration).not.toContain("--primary");
     }
   });
 
@@ -145,7 +160,14 @@ describe("Logo identity call sites read --brand, never --success", () => {
     // mark's solid bar match) and only owes 3:1 as non-text, while this branch paints real TEXT and
     // owes 4.5:1. The AA floor itself is guarded in logo-identity-contrast.test.ts.
     "color: hsl(var(--logo-success-foreground, var(--logo-identity-foreground)))",
-    "color: hsl(var(--logo-godx-color, var(--brand)))",
+    /*
+     * `color: hsl(var(--logo-godx-color, …))` on the ARTWORK used to be listed here. Brand
+     * identity v2.3 removed it: the master ships its own gradients and the guidelines forbid
+     * recolouring it ("Logo master không bị nhuộm lại theo màu của một module"), so there is no
+     * artwork fill left to pin. The knob survives for the flat cut; the master ignores it.
+     *
+     * The TYPESET wordmark is unaffected and still resolves through the identity role.
+     */
     "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
   ];
 

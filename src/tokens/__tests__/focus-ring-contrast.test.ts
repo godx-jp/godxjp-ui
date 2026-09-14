@@ -88,14 +88,15 @@ const THEMES = [
  */
 const DERIVED = {
   light: {
-    /** `--ring` resolves here through `var(--primary)`; the light seed is unchanged by derivation. */
-    ring: "#0071bd",
+    /** `--ring` resolves here through `var(--primary)`; the light seed is unchanged by derivation.
+     *  GoDX violet since brand identity v2.3 — the kit names the same value for core.focus.ring. */
+    ring: "#7a00ff",
     controlOutline: "rgba(0,182,228,0.11)",
     colorErrorOutline: "rgba(166,22,11,0.09)",
     primaryBorder: "#6dc0e3",
   },
   dark: {
-    ring: "#3dabf5",
+    ring: "#dcbcff",
     controlOutline: "rgba(61,175,254,0.29)",
     colorErrorOutline: "rgba(253,20,53,0.06)",
     primaryBorder: "#204158",

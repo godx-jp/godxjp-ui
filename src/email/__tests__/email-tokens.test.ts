@@ -414,16 +414,39 @@ describe("no relative or external asset dependency", () => {
 
 // ── 5. The mark is the canonical GoDX artwork, capsule AND internal glyph ───────────────────────
 describe("canonical GoDX brand mark", () => {
-  const logo = readFileSync(join(ROOT, "src/components/general/logo.tsx"), "utf8");
-  const logoPath = /d="([^"]+)"/.exec(logo)?.[1] ?? "";
+  /*
+   * EMAIL GETS THE FLAT CUT, AND THE WEB GETS THE MASTER — on purpose, not by neglect.
+   *
+   * The brand guidelines require the master SVG with its gradients and a proper light/dark
+   * VARIANT, and forbid re-tinting it. The web component does exactly that. An email cannot:
+   * Outlook's Word renderer drops SVG gradients entirely, `prefers-color-scheme` reaches only some
+   * clients, and there is no second pass to swap a variant in a message already delivered. A
+   * gradient master in email degrades to a black rectangle in the client that most needs it to
+   * work.
+   *
+   * So email paints the kit's own FLAT cut — which is why the kit ships one — in a single colour
+   * the template supplies. That is a different ASSET, not a re-tinted master, which is the
+   * distinction the guidelines actually draw ("Logo SVG và icon thương hiệu thuộc bộ brand", and
+   * flat/white/black are brand assets in their own right).
+   *
+   * What still has to hold, and what these check: the flat artwork email renders is the SAME flat
+   * artwork the package declares, byte for byte. `src/email` may only import its own siblings, so
+   * it receives a generated copy — and a stale copy is the one way these can drift.
+   */
+  const artwork = readFileSync(join(ROOT, "src/brand/godx-mark.ts"), "utf8");
+  const artworkConst = (name: string) =>
+    new RegExp(`export const ${name} =\\s*"([^"]+)"`).exec(artwork)?.[1] ?? "";
 
-  it('the capsule path is byte-identical to the one <Logo mark="godx" /> paints', () => {
-    expect(logoPath).not.toBe("");
-    expect(logoPath.startsWith(EMAIL_BRAND_MARK.capsulePath)).toBe(true);
+  it("paints the package's flat artwork, byte-identical to the declared paths", () => {
+    for (const name of ["GODX_MARK_BODY_PATH", "GODX_MARK_ARROW_PATH"]) {
+      expect(artworkConst(name)).not.toBe("");
+    }
+    expect(EMAIL_BRAND_MARK.capsulePath).toBe(artworkConst("GODX_MARK_BODY_PATH"));
+    expect(EMAIL_BRAND_MARK.glyphPath).toBe(artworkConst("GODX_MARK_ARROW_PATH"));
   });
 
-  it("uses the component's 32×32 viewBox, rendered in the canonical 22px header box", () => {
-    expect(logo).toContain(`viewBox="${EMAIL_BRAND_MARK.viewBox}"`);
+  it("uses the artwork's 32×32 viewBox, rendered in the canonical 22px header box", () => {
+    expect(artworkConst("GODX_MARK_VIEW_BOX")).toBe(EMAIL_BRAND_MARK.viewBox);
     // The ARTWORK space is the component's; only the RENDERED box is email-specific
     expect(EMAIL_BRAND_MARK.viewBox).toBe("0 0 32 32");
     expect(EMAIL_BRAND_MARK.widthPx).toBe(22);

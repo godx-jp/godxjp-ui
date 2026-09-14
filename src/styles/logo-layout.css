@@ -182,7 +182,6 @@
     height: var(--logo-godx-size, var(--logo-godx-size-md));
     border-radius: 0;
     background: transparent;
-    color: hsl(var(--logo-godx-color, var(--brand)));
   }
 
   .ui-logo[data-mark="godx"][data-size="xs"] {
@@ -198,6 +197,46 @@
   .ui-logo[data-mark="godx"][data-size="lg"] {
     width: var(--logo-godx-size, var(--logo-godx-size-lg));
     height: var(--logo-godx-size, var(--logo-godx-size-lg));
+  }
+
+  /* ── The full LOCKUP (`mark="godx-lockup"`) ────────────────────────────────────────────────
+   * Mark + logotype as one artwork, 4.787:1. Everything here exists because that ratio is NOT
+   * square and the branch above is:
+   *
+   *   · the SIZE TIER drives HEIGHT, and width follows the intrinsic ratio. Reusing the square
+   *     --logo-godx-size-* for both axes is what crushed the lockup into the mark's box on the
+   *     first attempt — a violet square with an illegible "GoDX" inside it.
+   *   · no background and no radius, same as the bare identity mark: this is artwork on the page,
+   *     not a glyph on a fill.
+   *   · `color` is the BRAND half only. The letters paint --logo-godx-ink-color themselves, because the
+   *     two are different roles and the ink has to flip with the theme while the brand does not.
+   *
+   * The selectors are exact-match, like the branch above — that is why `godx-lockup` inherited the
+   * boxed treatment until this block existed, and it is worth leaving as a warning for the next
+   * mark value somebody adds. */
+  .ui-logo[data-mark="godx-lockup"] {
+    width: auto;
+    height: var(--logo-godx-size, var(--logo-godx-size-md));
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="xs"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-xs));
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="sm"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-sm));
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="lg"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-lg));
+  }
+
+  .ui-logo[data-mark="godx-lockup"] [data-slot="logo-artwork"] {
+    display: block;
+    height: 100%;
+    width: auto;
   }
 
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {
@@ -239,4 +278,35 @@
   .ui-logo-lockup[data-tone="success"] .ui-logo-wordmark {
     color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))));
   }
+}
+
+/* ── Which MASTER variant is visible (brand identity v2.3) ────────────────────────────────────
+ * The guidelines require "master SVG đúng biến thể sáng/tối" and forbid both re-tinting the master
+ * and inverting it with a filter. So the component renders BOTH artworks and exactly one is shown.
+ *
+ * Three states, like every other theme-aware rule in this package: an explicit light choice, an
+ * explicit dark choice, and the un-stamped default where only the OS preference separates them.
+ * Getting that last one wrong is how a logo ends up correct for everyone who toggled the theme and
+ * wrong for everyone who never touched it. */
+[data-slot="logo-artwork"][data-scheme="dark"] {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="light"] {
+    display: none;
+  }
+  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="dark"] {
+    display: block;
+  }
+}
+
+.dark [data-slot="logo-artwork"][data-scheme="light"],
+:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="light"] {
+  display: none;
+}
+
+.dark [data-slot="logo-artwork"][data-scheme="dark"],
+:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="dark"] {
+  display: block;
 }

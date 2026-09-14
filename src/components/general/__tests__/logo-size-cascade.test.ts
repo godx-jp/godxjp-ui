@@ -125,12 +125,23 @@ describe("Logo size cascade — `size` drives the godx identity mark (regression
     expect(tokens).toContain("--logo-wordmark-font-size-lg");
   });
 
-  it("does not regress the --brand colour contract while resizing the mark", () => {
-    // Resizing must not touch the identity fill: the mark still reads --brand at the call site.
-    expect(winner("color", godx("lg"))).toBe("hsl(var(--logo-godx-color, var(--brand)))");
-    expect(winner("color", godx("xs"))).toBe("hsl(var(--logo-godx-color, var(--brand)))");
+  it("resizes the master artwork without RECOLOURING it", () => {
+    /*
+     * This used to assert the mark read --brand at the call site. Brand identity v2.3 ends that:
+     * the guidelines say "Logo master không bị nhuộm lại theo màu của một module", so the artwork
+     * carries its own gradients and the size rules must not paint over them.
+     *
+     * A `color` declaration in these rules would tint any `currentColor` in the artwork — which is
+     * exactly the regression this now guards, from the opposite direction.
+     */
+    // Read the identity RULES, not the cascade winner: `.ui-logo` still sets a colour for the
+    // boxed-glyph branch and that inherits harmlessly, because the master uses no `currentColor`.
+    // What must not exist is a colour declared ON the identity rules themselves.
+    for (const rule of layout.match(/\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g) ?? []) {
+      expect(rule).not.toMatch(/(^|[^-])color:/);
+    }
     expect(winner("background", godx("lg"))).toBe("transparent");
+    // And never the 若竹 STATUS green, which the identity borrowed once before gh#250.
     expect(layout).not.toMatch(/var\(--success\b/);
-    expect(tokens).toContain("--logo-godx-color: initial;");
   });
 });
