@@ -303,6 +303,16 @@
    * coarse-pointer override on a touch device. A knob here would be a second answer that goes
    * stale the moment either of those moves. */
   --topbar-item-padding-inline: var(--space-3);
+  /* THE CELL'S PHONE-WIDTH INSET (godx-jp/id#639). A second value rather than a media query on the
+   * first, for the same reason `--app-shell-bar-inset-compact` is a second value: the compact
+   * number is its own design decision, and a theme has to be able to retune the two independently.
+   *
+   * Measured at 320px on a bar carrying the shipped shape (drawer trigger · logo · search trigger ·
+   * four end cells): the cells alone spent 120px of a 320px viewport on padding, the bar overflowed
+   * by 44px, `.ui-topbar-start` collapsed to 0 and the search trigger was left painting 8px of
+   * itself from under the theme cell — a target axe scores at 8×28. At --space-2 the same bar fits
+   * with every cell whole. */
+  --topbar-item-padding-inline-compact: var(--space-2);
   --topbar-item-gap: var(--space-2);
   --topbar-item-min-width: var(--control-height);
   /* Square by default: a cell that meets both bar edges has no corner to round. A service that

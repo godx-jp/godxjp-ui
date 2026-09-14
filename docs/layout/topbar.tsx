@@ -94,10 +94,18 @@ export default function Demo() {
       >
         {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
       </Button>
-      {/* Decorative mark — hidden below sm so the budget goes to the two real controls. */}
-      <Avatar className="rounded-md">
-        <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
-      </Avatar>
+      {/* Decorative mark — hidden below sm so the budget goes to the two real controls. That was
+          only ever a COMMENT: nothing here hid anything, and at 320px the 32px mark was part of
+          why the switcher beside it was crushed to 0 visible px (gh#639). `hideBelow` is the
+          contract that makes the sentence true — a slot cannot shrink a control, so a bar that
+          does not fit has to drop one. */}
+      <Flex as="span" hideBelow="sm" gap="none">
+        <Avatar className="rounded-md">
+          <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+            C
+          </AvatarFallback>
+        </Avatar>
+      </Flex>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           {/* Button ships `shrink-0`, and only the LAST child of the start slot gets the built-in
@@ -150,10 +158,13 @@ export default function Demo() {
   // end · notifications + user menu, both consumer-composed.
   const end = (
     <>
-      {}
-      <Badge tone="warning" className="text-xs">
-        ステージング
-      </Badge>
+      {/* The environment marker is the end cluster's most optional item — 92px of a 320px bar, and
+          the single biggest reason the start cluster had nothing left. It goes first. */}
+      <Flex as="span" hideBelow="sm" gap="none">
+        <Badge tone="warning" className="text-xs">
+          ステージング
+        </Badge>
+      </Flex>
       <TopbarItem
         aria-label="通知"
         badge={unread ? 12 : undefined}

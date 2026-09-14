@@ -306,6 +306,43 @@ describe("responsive shell geometry", () => {
     expect(startTitle).toMatch(/white-space:\s*nowrap;/);
   });
 
+  it("compacts the bar's OWN cells at phone widths, not only the chip/search recipes (gh#639)", () => {
+    // MEASURED, on the shipped consumer shape (drawer trigger · logo · compact search trigger ·
+    // four end cells) at 320px, axe target-size only:
+    //   before — 1 violation on `.tb-search`: `partiallyObscured`, 8×28. `.ui-topbar-start`
+    //            computed to 0 and the 36px trigger painted from under the theme cell. The bar
+    //            overflowed by 44px and the trigger was whole only at ≥364px.
+    //   after  — 0 violations at 320/375/640/768/1024; the trigger is whole at ≥316px.
+    // The deficit was the bar's own padding: five cells × two --space-3 insets = 120px of a 320px
+    // viewport, while the recipe classes beside them had been on a compact step since gh#296.
+    const density = mediaBlocksMentioning(shellStyles, ".ui-topbar-item").filter(({ condition }) =>
+      condition.includes("max-width: 768px"),
+    );
+    expect(density).toHaveLength(1);
+    expect(density[0].body).toMatch(
+      /\.ui-topbar-item\s*\{[^}]*padding-inline:\s*var\(--topbar-item-padding-inline-compact\);/s,
+    );
+    expect(shellTokens).toContain("--topbar-item-padding-inline-compact: var(--space-2);");
+    // The inline inset is ALL that steps. The cell's height is the bar's (there is deliberately no
+    // height knob), and the 24px floor is held from below by --topbar-item-min-width.
+    expect(density[0].body).not.toMatch(/\.ui-topbar-item\s*\{[^}]*(height|block-size):/s);
+    expect(density[0].body).not.toMatch(/--topbar-item-min-width/);
+
+    // The compact trigger is the SAME icon button the bar already draws. `.tb-icon-btn` is a
+    // --control-height-sm square; this was --control-height WIDE and --control-height-sm TALL —
+    // 36×28, wider than tall and shorter than every cell beside it (the reporter's second point).
+    const compactSearch = density[0].body.match(/\.tb-search\s*\{([^}]*)\}/s)?.[1] ?? "";
+    for (const property of ["inline-size", "block-size", "min-inline-size", "min-width"]) {
+      expect(compactSearch, `compact .tb-search must state ${property}`).toMatch(
+        new RegExp(`(^|[^-])${property}:\\s*var\\(--control-height-sm\\);`),
+      );
+    }
+    // Square + the base rule's --space-2 inline padding would overflow the square it was just
+    // given, so the padding goes with it and the glyph centres itself instead.
+    expect(compactSearch).toMatch(/padding-inline:\s*0;/);
+    expect(compactSearch).toMatch(/justify-content:\s*center;/);
+  });
+
   it("owns canonical mobile drawer width, backdrop, safe areas and reduced motion", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
     // The scrim knob is `initial` at :root with the shared --overlay-background default resolved at
