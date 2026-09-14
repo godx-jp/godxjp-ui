@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — a menu child the collection cannot build no longer blanks the page (gh#637)
+
+React Aria dựng menu qua một `Document` thay thế có `createElement` nhưng **không có**
+`createElementNS`/`createTextNode`, nên một icon đặt **CẠNH** các item (thay vì bên trong) ném
+`TypeError` lúc render — và React 19 unmount cả root. Trên consumer Inertia đó là **trang trắng,
+console trống**. Đo lại trên 24.0.0 / RAC 1.21.1 / react-dom 19.2.8: 5/5 hình dạng crash.
+
+- `DropdownMenuContent` và `DropdownMenuSubContent` bọc `Menu` trong một boundary: cú throw dừng ở
+  menu, **phần còn lại của ứng dụng vẫn mount**, và console nêu đúng nguyên nhân ở **mọi** bản build.
+- Menu vẫn rỗng cho tới khi icon về đúng chỗ — đây là biện pháp tạm; lỗi gốc ở
+  `@react-aria/collections`.
+- Ràng buộc "chỉ collection node được làm con trực tiếp" đã vào catalog MCP.
+
+### Fixed — topbar cells kept desktop padding on a phone (gh#639)
+
+Ở 320px thanh trên tiêu 120px chỉ cho padding của các ô và tràn 44px; `.ui-topbar-start` có
+`min-width: 0` nên co về **0**, còn con của nó giữ nguyên 36px và vẽ đè dưới ô kế bên — axe đọc ra
+`partiallyObscured`, **8×28** (WCAG 2.2 SC 2.5.8). Sau khi sửa: **0 vi phạm** ở 320/375/640/768/1024.
+
+- **`--topbar-item-padding-inline-compact`** (`--space-2`) áp cho `.ui-topbar-item` ở ≤768px. Khối
+  compact trước đây chỉ nén các recipe chip/search, để nguyên các ô của chính thanh.
+- **`.tb-search` compact giờ là ô vuông `--control-height-sm`**, đúng hộp mà `.tb-icon-btn` vẫn là.
+  Trước đó rộng `--control-height` mà cao `--control-height-sm` — 36×28, rộng hơn chiều cao.
+- `scripts/topbar-collision-visual.mjs` giờ đo **các control**, không đo hộp cụm (một cụm rộng 0
+  vẫn thoả phép kiểm cũ trong khi cắt đôi control bên trong), và chạy thêm ở 320px.
+
 ## [24.0.0] - 2026-09-15
 
 ### Changed — GoDX brand identity v2.3 (BREAKING, visually)
