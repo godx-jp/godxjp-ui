@@ -1,5 +1,9 @@
 import * as React from "react";
 import {
+  GODX_LOCKUP_BRAND_PATHS,
+  GODX_LOCKUP_INK_PATHS,
+  GODX_LOCKUP_TRANSFORM,
+  GODX_LOCKUP_VIEW_BOX,
   GODX_MARK_ARROW_PATH,
   GODX_MARK_BODY_PATH,
   GODX_MARK_TRANSFORM,
@@ -11,7 +15,7 @@ import { cn } from "../../lib/utils";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
 export type LogoTone = "primary" | "success";
-export type LogoMark = "glyph" | "godx";
+export type LogoMark = "glyph" | "godx" | "godx-lockup";
 
 export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /**
@@ -201,7 +205,9 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
   // which on `.ui-logo` (the grid container) would drag the fill and the rounded box with it.
   // `data-ink` is the half of the correction CSS cannot derive — see `.ui-logo-glyph` in
   // logo-layout.css for why one glyph-blind rule cannot centre every class, and the measurements.
-  if (mark !== "godx") {
+  // Only the boxed-glyph treatment takes this branch. Written as an equality rather than
+  // `!== "godx"` because that form silently swallowed `godx-lockup` when the union grew.
+  if (mark === "glyph") {
     const advance = logoGlyphAdvance(glyph);
     return (
       <span
@@ -224,6 +230,44 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
       </span>
     );
   }
+  if (mark === "godx-lockup") {
+    /*
+     * THE FULL LOCKUP — mark + the real logotype, one artwork (identity v2.3).
+     *
+     * Two colour groups because they are two ROLES: the mark and the X carry the brand identity
+     * colour, the letters carry the logotype ink. Painting all eight paths in one colour would be
+     * a different logo, and painting the letters in --brand would lose the contrast the kit's
+     * indigo provides against it.
+     *
+     * The ink is a token, not the kit's literal #0B0F3B, because that indigo is invisible on a
+     * dark surface — see --logo-godx-ink-color in tokens/components/logo.css, which flips with the theme
+     * exactly as the boxed glyph's ink does.
+     *
+     * `width="100%"` with no height: the lockup is 4.787:1, so it cannot use the SQUARE
+     * --logo-godx-size-* scale. The wrapper sizes it (styles/logo-layout.css) and the intrinsic
+     * ratio does the rest — a fixed height here would fight the tier the `size` prop selects.
+     */
+    return (
+      <svg
+        data-slot="logo-artwork"
+        data-artwork="godx-lockup"
+        viewBox={GODX_LOCKUP_VIEW_BOX}
+        height="100%"
+        focusable="false"
+        aria-hidden="true"
+      >
+        <g transform={GODX_LOCKUP_TRANSFORM} fillRule="evenodd">
+          {GODX_LOCKUP_INK_PATHS.map((d) => (
+            <path key={d} d={d} fill="hsl(var(--logo-godx-ink-color))" />
+          ))}
+          {GODX_LOCKUP_BRAND_PATHS.map((d) => (
+            <path key={d} d={d} fill="currentColor" />
+          ))}
+        </g>
+      </svg>
+    );
+  }
+
   return (
     <svg
       data-slot="logo-artwork"

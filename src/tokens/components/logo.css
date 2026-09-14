@@ -61,6 +61,17 @@
    * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it. */
   --logo-identity-foreground: 60 33% 99%;
 
+  /* ── The LOGOTYPE ink (`<Logo mark="godx-lockup" />`, identity v2.3) ────────────────────────
+   * The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the
+   * brand identity colour and read --logo-godx-color instead. They are two ROLES, not a
+   * decorative split, so they get two knobs.
+   *
+   * A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1
+   * on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text
+   * colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way
+   * the boxed glyph's ink is. */
+  --logo-godx-ink-color: 235 68.6% 13.7%;
+
   /* ── Optical centring of the boxed GLYPH (`<Logo glyph="…" />`, gh#370) ─────────────────────
    * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every
    * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are
@@ -209,4 +220,6 @@
 .dark,
 :root[data-theme="dark"] {
   --logo-identity-foreground: 48 9% 9%;
+  /* The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas. */
+  --logo-godx-ink-color: 140 23.1% 97.5%;
 }

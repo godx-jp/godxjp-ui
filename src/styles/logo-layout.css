@@ -200,6 +200,47 @@
     height: var(--logo-godx-size, var(--logo-godx-size-lg));
   }
 
+  /* ── The full LOCKUP (`mark="godx-lockup"`) ────────────────────────────────────────────────
+   * Mark + logotype as one artwork, 4.787:1. Everything here exists because that ratio is NOT
+   * square and the branch above is:
+   *
+   *   · the SIZE TIER drives HEIGHT, and width follows the intrinsic ratio. Reusing the square
+   *     --logo-godx-size-* for both axes is what crushed the lockup into the mark's box on the
+   *     first attempt — a violet square with an illegible "GoDX" inside it.
+   *   · no background and no radius, same as the bare identity mark: this is artwork on the page,
+   *     not a glyph on a fill.
+   *   · `color` is the BRAND half only. The letters paint --logo-godx-ink-color themselves, because the
+   *     two are different roles and the ink has to flip with the theme while the brand does not.
+   *
+   * The selectors are exact-match, like the branch above — that is why `godx-lockup` inherited the
+   * boxed treatment until this block existed, and it is worth leaving as a warning for the next
+   * mark value somebody adds. */
+  .ui-logo[data-mark="godx-lockup"] {
+    width: auto;
+    height: var(--logo-godx-size, var(--logo-godx-size-md));
+    border-radius: 0;
+    background: transparent;
+    color: hsl(var(--logo-godx-color, var(--brand)));
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="xs"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-xs));
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="sm"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-sm));
+  }
+
+  .ui-logo[data-mark="godx-lockup"][data-size="lg"] {
+    height: var(--logo-godx-size, var(--logo-godx-size-lg));
+  }
+
+  .ui-logo[data-mark="godx-lockup"] [data-slot="logo-artwork"] {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {
     display: block;
     width: 100%;

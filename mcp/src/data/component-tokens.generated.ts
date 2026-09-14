@@ -4360,8 +4360,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-identity-foreground",
-    "value": "48 9% 9%",
-    "description": "Identity-fill INK — the ink `mark=\"glyph\"` sets its (caller-supplied) TEXT in when it sits on * the --brand identity fill. This is deliberately NOT --brand-foreground. * * --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks * --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background) * because `<Logo mark=\"godx\">` punches its inner bar as an evenodd HOLE and the email mark has to * paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11 * (3:1, non-text) — and at 3.67:1 on the emerald it does. * * The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px * bold is NOT \"large text\" — that needs 18.66px bold / 24px), and the knockout white measured * 3.67:1 → a genuine AA failure. This ink is 48 9% 9% (#191815), the same near-black spine the * DARK theme already inked the glyph with, so it is theme-INVARIANT: dark renders byte-identically * (6.89:1, unchanged) and light rises 3.67 → 4.74:1. A service that re-themes --brand to a dark * fill overrides --logo-success-foreground (the public knob) to re-invert the ink. * * NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it."
+    "value": "60 33% 99%",
+    "description": "Identity-fill INK — the ink `mark=\"glyph\"` sets its (caller-supplied) TEXT in when it sits on * the --brand identity fill. This is deliberately NOT --brand-foreground. * * --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks * --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background) * because `<Logo mark=\"godx\">` punches its inner bar as an evenodd HOLE and the email mark has to * paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11 * (3:1, non-text) — and at 3.67:1 on the emerald it does. * * The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px * bold is NOT \"large text\" — that needs 18.66px bold / 24px). * * THIS INK USED TO BE THEME-INVARIANT, AND THE VIOLET IDENTITY ENDED THAT. While --brand was * 翠 emerald the fill was light in BOTH themes, so one near-black ink cleared AA on both. Brand * identity v2.3 makes the fill #7A00FF in light and #DCBCFF in dark — dark and light * respectively — so a single ink cannot serve both: measured, near-black on the light-theme * violet is 2.77:1, a real AA failure, while the same ink on the dark-theme violet is 10.72:1. * * So the ink now FLIPS with the theme, and each side is measured: * * light ink 60 33% 99% (#fdfdfb) on #7A00FF = 6.30:1 * dark ink 48 9% 9% (#191815) on #DCBCFF = 10.72:1 * * The dark override lives HERE and not in foundation.css on purpose: `:root` and `.dark` have * equal specificity, and tokens/base.css imports this file AFTER foundation.css — so a `.dark` * rule there would lose to the `:root` rule here. Same file, later block, no ambiguity. * * A service that re-themes --brand to a fill of the opposite lightness overrides * --logo-success-foreground (the public knob) to re-invert the ink. * * NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it."
+  },
+  {
+    "name": "--logo-godx-ink-color",
+    "value": "235 68.6% 13.7%",
+    "description": "── The LOGOTYPE ink (`<Logo mark=\"godx-lockup\" />`, identity v2.3) ──────────────────────── * The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the * brand identity colour and read --logo-godx-color instead. They are two ROLES, not a * decorative split, so they get two knobs. * * A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1 * on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text * colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way * the boxed glyph's ink is."
   },
   {
     "name": "--logo-glyph-cap-baseline-optical-offset",
@@ -4482,6 +4487,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--logo-wordmark-color",
     "value": "initial",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-identity-foreground",
+    "value": "48 9% 9%",
+    "description": "The other half of the ink flip above — see --logo-identity-foreground. The dark fill is the LIGHT violet, so the glyph goes back to the near-black spine (10.72:1)."
+  },
+  {
+    "name": "--logo-godx-ink-color",
+    "value": "140 23.1% 97.5%",
+    "description": "The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas."
   },
   {
     "name": "--pagination-gap",
