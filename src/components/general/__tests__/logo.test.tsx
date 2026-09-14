@@ -164,16 +164,26 @@ describe("Logo brand tokens", () => {
   const layout = readFileSync(resolve(process.cwd(), "src/styles/logo-layout.css"), "utf8");
   const tokens = readFileSync(resolve(process.cwd(), "src/tokens/components/logo.css"), "utf8");
 
-  it("colours the identity mark and wordmark from --brand, never --primary or --success", () => {
-    expect(layout).toContain("color: hsl(var(--logo-godx-color, var(--brand)))");
+  it("never recolours the master artwork, and never borrows --primary or --success", () => {
+    /*
+     * Brand identity v2.3. The master ships its own gradients and the guidelines forbid tinting
+     * it — "Logo master không bị nhuộm lại theo màu của một module" — so the identity rules must
+     * declare no `color` at all. The TYPESET wordmark is a different thing and still reads the
+     * brand role; only the artwork is off limits.
+     */
+    // Anchored at `.ui-logo` and allowing only a size qualifier — a descendant selector like
+    // `[data-mark="godx"] .ui-logo-wordmark` is the TYPESET wordmark and legitimately has a colour.
+    const identityRules =
+      layout.match(/\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g) ?? [];
+    expect(identityRules.length).toBeGreaterThan(0);
+    for (const rule of identityRules) {
+      expect(rule).not.toMatch(/(^|[^-])color:/);
+      expect(rule).not.toContain("--primary");
+    }
     expect(layout).toContain(
       "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
     );
-    // The mark must not borrow the 若竹 STATUS green again.
     expect(layout).not.toMatch(/var\(--success\b/);
-    const identityRules = layout.match(/\[data-mark="godx"\][\s\S]*?\}/g) ?? [];
-    expect(identityRules.length).toBeGreaterThan(0);
-    for (const rule of identityRules) expect(rule).not.toContain("--primary");
   });
 
   it("declares every role-mirror knob `initial` (no :root freeze)", () => {

@@ -1,14 +1,11 @@
 import * as React from "react";
 import {
-  GODX_LOCKUP_BRAND_PATHS,
-  GODX_LOCKUP_INK_PATHS,
-  GODX_LOCKUP_TRANSFORM,
-  GODX_LOCKUP_VIEW_BOX,
-  GODX_MARK_ARROW_PATH,
-  GODX_MARK_BODY_PATH,
-  GODX_MARK_TRANSFORM,
-  GODX_MARK_VIEW_BOX,
-} from "../../brand/godx-mark";
+  GODX_LOCKUP_DARK,
+  GODX_LOCKUP_LIGHT,
+  GODX_MARK_DARK,
+  GODX_MARK_LIGHT,
+  type BrandArtwork,
+} from "../../brand/godx-artwork.generated";
 
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
@@ -230,74 +227,44 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
       </span>
     );
   }
-  if (mark === "godx-lockup") {
-    /*
-     * THE FULL LOCKUP — mark + the real logotype, one artwork (identity v2.3).
-     *
-     * Two colour groups because they are two ROLES: the mark and the X carry the brand identity
-     * colour, the letters carry the logotype ink. Painting all eight paths in one colour would be
-     * a different logo, and painting the letters in --brand would lose the contrast the kit's
-     * indigo provides against it.
-     *
-     * The ink is a token, not the kit's literal #0B0F3B, because that indigo is invisible on a
-     * dark surface — see --logo-godx-ink-color in tokens/components/logo.css, which flips with the theme
-     * exactly as the boxed glyph's ink does.
-     *
-     * `width="100%"` with no height: the lockup is 4.787:1, so it cannot use the SQUARE
-     * --logo-godx-size-* scale. The wrapper sizes it (styles/logo-layout.css) and the intrinsic
-     * ratio does the rest — a fixed height here would fight the tier the `size` prop selects.
-     */
-    return (
-      <svg
-        data-slot="logo-artwork"
-        data-artwork="godx-lockup"
-        viewBox={GODX_LOCKUP_VIEW_BOX}
-        height="100%"
-        focusable="false"
-        aria-hidden="true"
-      >
-        <g transform={GODX_LOCKUP_TRANSFORM} fillRule="evenodd">
-          {GODX_LOCKUP_INK_PATHS.map((d) => (
-            <path key={d} d={d} fill="hsl(var(--logo-godx-ink-color))" />
-          ))}
-          {GODX_LOCKUP_BRAND_PATHS.map((d) => (
-            <path key={d} d={d} fill="currentColor" />
-          ))}
-        </g>
-      </svg>
-    );
-  }
+  /*
+   * THE MASTER ARTWORK, BOTH VARIANTS, NOT RE-TINTED (brand identity v2.3).
+   *
+   * The guidelines are explicit and an earlier cut of this component broke every one of them by
+   * shipping the FLAT artwork painted with a token:
+   *
+   *   "Logo master không bị nhuộm lại theo màu của một module."
+   *   "Logo dùng master SVG đúng biến thể sáng/tối."
+   *   "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
+   *
+   * So BOTH variants render and CSS shows one (styles/logo-layout.css). Not a filter, not a
+   * recolour, not one artwork with swapped token values — the light and dark masters are different
+   * files in the kit and they stay different files here.
+   *
+   * `dangerouslySetInnerHTML` because the artwork is 8 gradients, a clipPath and 10 paths whose
+   * coordinates must stay byte-exact ("không đổi hình G, wordmark… construction"). It is
+   * package-owned generated content, never user input — see brand/godx-artwork.generated.ts.
+   */
+  const artwork: readonly [BrandArtwork, BrandArtwork] =
+    mark === "godx-lockup"
+      ? [GODX_LOCKUP_LIGHT, GODX_LOCKUP_DARK]
+      : [GODX_MARK_LIGHT, GODX_MARK_DARK];
 
   return (
-    <svg
-      data-slot="logo-artwork"
-      viewBox={GODX_MARK_VIEW_BOX}
-      width="32"
-      height="32"
-      focusable="false"
-      aria-hidden="true"
-    >
-      {/*
-        THE REAL GoDX MARK, from brand identity v2.3 (`01_GoDX/assets/logos/GoDX-icon-flat.svg`).
-        What stood here before was a generic rounded capsule with a hole — a placeholder, not the
-        identity. Two paths: the "G" body and the "X" arrow.
-
-        MONOCHROME ON PURPOSE. The kit also ships a gradient version (#7A00FF -> #3700A6 ->
-        #0B0F3B), and it is the wrong artwork for this component: the mark here is painted by
-        `--logo-godx-color` (defaulting to the --brand role) so it re-tints per theme and knocks out
-        against a dark surface. A baked gradient cannot do either, and would be the one element on
-        the page that ignores the theme. The flat cut is the kit's own answer for exactly this use.
-
-        FITTED, NOT REDRAWN. Source viewBox is `30 30 241 182`; the transform maps it into this
-        component's square 32x32 box, centred vertically (scale 32/241 = 0.13278, y offset
-        (32 - 182 x 0.13278) / 2 = 3.917). Every coordinate below is the kit's, untouched — so a
-        future artwork revision is a copy-paste of two `d` attributes, not a redraw.
-      */}
-      <g fill="currentColor" fillRule="evenodd" transform={GODX_MARK_TRANSFORM}>
-        <path d={GODX_MARK_BODY_PATH} />
-        <path d={GODX_MARK_ARROW_PATH} />
-      </g>
-    </svg>
+    <>
+      {(["light", "dark"] as const).map((scheme, index) => (
+        <svg
+          key={scheme}
+          data-slot="logo-artwork"
+          data-artwork={mark}
+          data-scheme={scheme}
+          viewBox={artwork[index].viewBox}
+          focusable="false"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: artwork[index].markup }}
+        />
+      ))}
+    </>
   );
 }
 

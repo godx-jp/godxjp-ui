@@ -3,74 +3,71 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * The GoDX LOCKUP — mark + the real logotype (brand identity v2.3).
+ * THE MASTER LOGO, AS THE BRAND GUIDELINES DEFINE IT (identity v2.3).
  *
- * Written after shipping it wrong once: `[data-mark="godx"]` is an EXACT-match selector, so
- * `godx-lockup` inherited the boxed-glyph treatment and rendered as a violet square with an
- * illegible "GoDX" crushed inside it. Every assertion here is one of the things that had to be
- * true for the lockup to read as the brand rather than as a squashed icon.
+ * Written after getting it wrong twice. The first cut shipped a placeholder capsule; the second
+ * shipped the FLAT artwork re-tinted by tokens, which broke four rules at once
+ * (`06_UI_Design_System/UI_UX_Guidelines.html`):
+ *
+ *   · "Logo master không bị nhuộm lại theo màu của một module."
+ *   · "Logo dùng master SVG đúng biến thể sáng/tối."
+ *   · "Dark asset: cung cấp biến thể phù hợp; không dùng filter đảo màu ảnh/logo."
+ *   · "Không đổi hình G, wordmark, tỷ lệ vàng hoặc construction chỉ vì theme cần khác màu."
+ *
+ * Each rule gets an assertion, because each was violated by an implementation that looked
+ * reasonable and rendered plausibly.
  */
 const root = process.cwd();
 const read = (rel: string) => readFileSync(join(root, rel), "utf8");
-const artwork = read("src/brand/godx-mark.ts");
+const artwork = read("src/brand/godx-artwork.generated.ts");
 const layout = read("src/styles/logo-layout.css");
-const tokens = read("src/tokens/components/logo.css");
 const component = read("src/components/general/logo.tsx");
 
-const constOf = (name: string) =>
-  new RegExp(`export const ${name} =\\s*"([^"]+)"`).exec(artwork)?.[1] ?? "";
-const groupOf = (name: string) => {
-  const block = new RegExp(`${name}: readonly string\\[\\] = Object\\.freeze\\(\\[(.*?)\\]\\)`, "s").exec(
-    artwork,
-  )?.[1];
-  return [...(block ?? "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-};
-
-describe("the lockup is artwork, not a squashed mark", () => {
-  it("carries both colour groups, and they are the kit's counts", () => {
-    // 5 violet (mark body, mark arrow, and the X's three facets) + 3 ink (G, o, D). A regression
-    // that dropped a group would still render something plausible, which is why this counts.
-    expect(groupOf("GODX_LOCKUP_BRAND_PATHS")).toHaveLength(5);
-    expect(groupOf("GODX_LOCKUP_INK_PATHS")).toHaveLength(3);
+describe("the master artwork ships as-is", () => {
+  it("carries BOTH variants, each with the master's gradients", () => {
+    for (const name of ["GODX_LOCKUP_LIGHT", "GODX_LOCKUP_DARK", "GODX_MARK_LIGHT", "GODX_MARK_DARK"]) {
+      expect(artwork).toContain(`export const ${name}`);
+    }
+    // The master is a gradient artwork; a variant that lost them would be the flat cut smuggled in.
+    const gradients = artwork.match(/Gradient/g) ?? [];
+    expect(gradients.length).toBeGreaterThan(20);
   });
 
-  it("is WIDE, so it must not be sized as a square", () => {
-    const [, w, h] =
-      /GODX_LOCKUP_SOURCE = Object\.freeze\(\{ width: ([\d.]+), height: ([\d.]+)/.exec(artwork) ?? [];
-    // The mark is square-ish (241x182 fitted into 32x32); the lockup is 871x182.
-    const ratio = Number(constOf("GODX_LOCKUP_VIEW_BOX").split(" ")[2]) / 182;
-    expect(ratio).toBeGreaterThan(4);
-    expect(Number(w) / Number(h)).toBeGreaterThan(4);
+  it("namespaces the gradient ids, or the second copy paints the first one's colours", () => {
+    // Both kit files declare `iconBodyGradient`. Inlined together without a prefix, every
+    // `url(#iconBodyGradient)` in the dark variant resolves to the LIGHT variant's stop list — a
+    // bug that renders as "dark mode shows the light logo" and nothing else.
+    expect(artwork).not.toMatch(/id=\\"iconBodyGradient\\"/);
+    expect(artwork).toMatch(/id=\\"gx-lockup-l-iconBodyGradient\\"/);
+    expect(artwork).toMatch(/id=\\"gx-lockup-d-iconBodyGradient\\"/);
   });
 
-  it("gets its own layout block instead of falling through to the boxed glyph", () => {
-    const block = /\.ui-logo\[data-mark="godx-lockup"\] \{([^}]+)\}/.exec(layout)?.[1] ?? "";
-    expect(block).not.toBe("");
-    // Height from the size tier, width from the intrinsic ratio — the opposite of the square branch.
-    expect(block).toMatch(/height: var\(--logo-godx-size/);
-    expect(block).toContain("width: auto");
-    // No fill and no radius: artwork on the page, not a glyph on a box.
-    expect(block).toContain("background: transparent");
-    expect(block).toMatch(/border-radius: 0/);
+  it("is NOT re-tinted — no fill, no colour, no currentColor on the artwork", () => {
+    for (const rule of layout.match(
+      /\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g,
+    ) ?? []) {
+      expect(rule).not.toMatch(/(^|[^-])color:/);
+      expect(rule).not.toMatch(/(^|[^-])fill:/);
+    }
+    expect(component).not.toContain('fill="currentColor"');
   });
 
-  it("paints the letters from a token that FLIPS with the theme", () => {
-    // The kit's indigo is 18.00:1 on the light canvas and 1.03:1 on the dark one — one value
-    // cannot serve both, so a single declaration here would mean an invisible logotype in dark.
-    const light = /:root \{[\s\S]*?--logo-godx-ink-color: ([^;]+);/.exec(tokens)?.[1];
-    const dark = /\.dark,[\s\S]*?--logo-godx-ink-color: ([^;]+);/.exec(tokens)?.[1];
-    expect(light).toBeTruthy();
-    expect(dark).toBeTruthy();
-    expect(light).not.toBe(dark);
-    // Light ink is dark, dark ink is light — compared as HSL lightness, so a retune still passes.
-    const lightness = (v: string) => Number(v.trim().split(/\s+/)[2].replace("%", ""));
-    expect(lightness(light!)).toBeLessThan(50);
-    expect(lightness(dark!)).toBeGreaterThan(50);
+  it("switches by VARIANT, never by a filter", () => {
+    // `filter: invert()` on a logo is explicitly forbidden — and it is the shortcut somebody
+    // reaches for when only one artwork is available.
+    expect(layout).not.toMatch(/filter:\s*invert/);
+    expect(layout).toMatch(/\[data-scheme="dark"\]\s*\{\s*display:\s*none/);
+    // All three theme states: explicit dark, explicit light, and the un-stamped OS default —
+    // missing the last is how a logo comes out right only for people who touched the toggle.
+    expect(layout).toContain("@media (prefers-color-scheme: dark)");
+    expect(layout).toContain(':root:not([data-theme="light"])');
+    expect(layout).toContain(':root[data-theme="dark"]');
   });
 
-  it("keeps the two roles apart in the component", () => {
-    // The brand half rides `currentColor` (so --logo-godx-color re-tints it); the letters do not.
-    expect(component).toContain('fill="hsl(var(--logo-godx-ink-color))"');
-    expect(component).toContain('fill="currentColor"');
+  it("keeps the construction untouched — geometry is the kit's", () => {
+    // The lockup viewBox is the kit's own (`30 30 871.285714 182`), not a re-fitted box. Changing
+    // it would mean the artwork was redrawn to suit a layout, which the guidelines forbid.
+    expect(artwork).toContain('"30 30 871.285714 182.000000"');
+    expect(artwork).toContain('"30 30 241.000000 182.000000"');
   });
 });

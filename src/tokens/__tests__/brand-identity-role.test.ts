@@ -160,7 +160,14 @@ describe("Logo identity call sites read --brand, never --success", () => {
     // mark's solid bar match) and only owes 3:1 as non-text, while this branch paints real TEXT and
     // owes 4.5:1. The AA floor itself is guarded in logo-identity-contrast.test.ts.
     "color: hsl(var(--logo-success-foreground, var(--logo-identity-foreground)))",
-    "color: hsl(var(--logo-godx-color, var(--brand)))",
+    /*
+     * `color: hsl(var(--logo-godx-color, …))` on the ARTWORK used to be listed here. Brand
+     * identity v2.3 removed it: the master ships its own gradients and the guidelines forbid
+     * recolouring it ("Logo master không bị nhuộm lại theo màu của một module"), so there is no
+     * artwork fill left to pin. The knob survives for the flat cut; the master ignores it.
+     *
+     * The TYPESET wordmark is unaffected and still resolves through the identity role.
+     */
     "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
   ];
 

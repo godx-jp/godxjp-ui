@@ -182,7 +182,6 @@
     height: var(--logo-godx-size, var(--logo-godx-size-md));
     border-radius: 0;
     background: transparent;
-    color: hsl(var(--logo-godx-color, var(--brand)));
   }
 
   .ui-logo[data-mark="godx"][data-size="xs"] {
@@ -220,7 +219,6 @@
     height: var(--logo-godx-size, var(--logo-godx-size-md));
     border-radius: 0;
     background: transparent;
-    color: hsl(var(--logo-godx-color, var(--brand)));
   }
 
   .ui-logo[data-mark="godx-lockup"][data-size="xs"] {
@@ -280,4 +278,35 @@
   .ui-logo-lockup[data-tone="success"] .ui-logo-wordmark {
     color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))));
   }
+}
+
+/* ── Which MASTER variant is visible (brand identity v2.3) ────────────────────────────────────
+ * The guidelines require "master SVG đúng biến thể sáng/tối" and forbid both re-tinting the master
+ * and inverting it with a filter. So the component renders BOTH artworks and exactly one is shown.
+ *
+ * Three states, like every other theme-aware rule in this package: an explicit light choice, an
+ * explicit dark choice, and the un-stamped default where only the OS preference separates them.
+ * Getting that last one wrong is how a logo ends up correct for everyone who toggled the theme and
+ * wrong for everyone who never touched it. */
+[data-slot="logo-artwork"][data-scheme="dark"] {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="light"] {
+    display: none;
+  }
+  :root:not([data-theme="light"]) [data-slot="logo-artwork"][data-scheme="dark"] {
+    display: block;
+  }
+}
+
+.dark [data-slot="logo-artwork"][data-scheme="light"],
+:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="light"] {
+  display: none;
+}
+
+.dark [data-slot="logo-artwork"][data-scheme="dark"],
+:root[data-theme="dark"] [data-slot="logo-artwork"][data-scheme="dark"] {
+  display: block;
 }
