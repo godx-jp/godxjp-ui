@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "23.4.12",
+  "version": "24.0.0",
   "godxUiMcp": "23.4.12",
   "license": "Apache-2.0",
   "repository": {
@@ -52,7 +52,7 @@
     "./styles/*": "./dist/styles/*.css",
     "./theme/*": "./dist/theme/*",
     "./tokens": "./dist/tokens/base.css",
-  "./contracts/measurement.json": "./dist/contracts/measurement.json",
+    "./contracts/measurement.json": "./dist/contracts/measurement.json",
     "./admin": {
       "types": "./dist/components/admin/index.d.ts",
       "import": "./dist/components/admin/index.js"
