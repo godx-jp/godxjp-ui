@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  GODX_ARTWORK_ID_TOKEN,
   GODX_LOCKUP_DARK,
   GODX_LOCKUP_LIGHT,
   GODX_MARK_DARK,
@@ -198,6 +199,21 @@ export function logoGlyphAdvance(glyph: React.ReactNode): LogoGlyphAdvance | und
 }
 
 function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }) {
+  /*
+   * HOOKS FIRST — before the glyph branch returns. The first cut put `useId()` after it, so the
+   * hook ran only for the artwork marks; a Logo whose `mark` changed at runtime would have changed
+   * its hook count between renders, which React treats as a hard error.
+   */
+  const instanceId = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const artwork: readonly [BrandArtwork, BrandArtwork] =
+    mark === "godx-lockup"
+      ? [GODX_LOCKUP_LIGHT, GODX_LOCKUP_DARK]
+      : [GODX_MARK_LIGHT, GODX_MARK_DARK];
+  const html = React.useMemo(
+    () => artwork.map((a) => a.markup.replaceAll(GODX_ARTWORK_ID_TOKEN, instanceId)),
+    [artwork, instanceId],
+  );
+
   // The glyph gets its own element on purpose: `--logo-glyph-*-optical-offset` translates the INK,
   // which on `.ui-logo` (the grid container) would drag the fill and the rounded box with it.
   // `data-ink` is the half of the correction CSS cannot derive — see `.ui-logo-glyph` in
@@ -245,11 +261,24 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
    * coordinates must stay byte-exact ("không đổi hình G, wordmark… construction"). It is
    * package-owned generated content, never user input — see brand/godx-artwork.generated.ts.
    */
-  const artwork: readonly [BrandArtwork, BrandArtwork] =
-    mark === "godx-lockup"
-      ? [GODX_LOCKUP_LIGHT, GODX_LOCKUP_DARK]
-      : [GODX_MARK_LIGHT, GODX_MARK_DARK];
-
+  /*
+   * A UNIQUE ID PREFIX PER INSTANCE.
+   *
+   * SVG ids are unique per DOCUMENT, not per file, so two <Logo>s on one page would otherwise emit
+   * the same `arrowClip` and the same eight gradient ids.
+   *
+   * WHAT THIS DOES NOT FIX, stated because the first version of this comment claimed otherwise and
+   * was wrong: it is not a rendering bug. Measured — two lockups, remove the first, screenshot the
+   * second — shared ids and unique ids produce byte-identical pixels, because every instance
+   * carries its own identical <defs> and `url(#…)` simply resolves to the first matching copy.
+   *
+   * It is a DOCUMENT-VALIDITY fix. Duplicate ids break getElementById, in-page anchors and any
+   * aria/label reference that lands on one, and they multiply with every Logo on the page. A
+   * design system should not be the thing emitting them.
+   *
+   * Memoised because the substitution runs over ~18 KB of markup: once per instance, not once per
+   * render, which is what the first cut did.
+   */
   return (
     <>
       {(["light", "dark"] as const).map((scheme, index) => (
@@ -261,7 +290,9 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
           viewBox={artwork[index].viewBox}
           focusable="false"
           aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: artwork[index].markup }}
+          dangerouslySetInnerHTML={{
+            __html: html[index],
+          }}
         />
       ))}
     </>

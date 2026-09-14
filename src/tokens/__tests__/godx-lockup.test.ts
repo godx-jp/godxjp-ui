@@ -33,13 +33,23 @@ describe("the master artwork ships as-is", () => {
     expect(gradients.length).toBeGreaterThan(20);
   });
 
-  it("namespaces the gradient ids, or the second copy paints the first one's colours", () => {
-    // Both kit files declare `iconBodyGradient`. Inlined together without a prefix, every
-    // `url(#iconBodyGradient)` in the dark variant resolves to the LIGHT variant's stop list — a
-    // bug that renders as "dark mode shows the light logo" and nothing else.
+  it("namespaces the ids per VARIANT and per INSTANCE", () => {
+    /*
+     * Both kit files declare `iconBodyGradient`, `arrowClip` and friends, so two variants in one
+     * document need a variant prefix — and two <Logo>s need an instance prefix on top, since SVG
+     * ids are unique per document rather than per file.
+     *
+     * NOT because of a rendering bug: measured in Chromium, shared ids and unique ids give
+     * byte-identical pixels, because each copy carries its own identical <defs>. It is document
+     * validity — duplicate ids break getElementById, anchors and aria references. An earlier
+     * version of this comment claimed a visible break; that was wrong.
+     */
     expect(artwork).not.toMatch(/id=\\"iconBodyGradient\\"/);
-    expect(artwork).toMatch(/id=\\"gx-lockup-l-iconBodyGradient\\"/);
-    expect(artwork).toMatch(/id=\\"gx-lockup-d-iconBodyGradient\\"/);
+    expect(artwork).toMatch(/id=\\"__GXID__-gx-lockup-l-iconBodyGradient\\"/);
+    expect(artwork).toMatch(/id=\\"__GXID__-gx-lockup-d-iconBodyGradient\\"/);
+    // The token must survive into every reference too, or half the ids would be instance-scoped
+    // and the other half not.
+    expect(artwork).toMatch(/url\(#__GXID__-gx-lockup-l-iconBodyGradient\)/);
   });
 
   it("is NOT re-tinted — no fill, no colour, no currentColor on the artwork", () => {
