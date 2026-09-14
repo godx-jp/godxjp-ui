@@ -2929,8 +2929,27 @@
     background: hsl(var(--attention));
   }
 
-  /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. */
+  /* TOPBAR DENSITY ONLY — this is NOT a second shell breakpoint.
+   *
+   * It used to compact the CHIPS AND THE SEARCH TRIGGER ONLY, and that asymmetry is what
+   * godx-jp/id#639 turned out to be: the recipe classes went compact while the bar's own cells kept
+   * their desktop inset, so on a 320px viewport `.ui-topbar-item` spent 120px of the bar on padding
+   * alone. The bar overflowed by 44px; `.ui-topbar-start` carries `min-width: 0` and so collapsed to
+   * ZERO while its child kept its 36px, which left the search trigger painting 8px of itself from
+   * under the neighbouring theme cell (axe target-size: `partiallyObscured`, 8×28).
+   *
+   * Note what that means for the failure MODE, because it is the part worth remembering: the two
+   * clusters never "collided" in the sense `scripts/topbar-collision-visual.mjs` asserts — the start
+   * BOX was inside the end BOX the whole time, being zero wide. A cluster that clips its own
+   * overflow can satisfy a box-level non-overlap assertion and still slice a control in half. */
   @media (max-width: 768px) {
+    /* The cells the bar itself draws — including AppShell's drawer trigger, which is one of these.
+     * Only the inline inset moves: the cell's height is still the bar's, and --topbar-item-min-width
+     * still holds the 24px floor from below. */
+    .ui-topbar-item {
+      padding-inline: var(--topbar-item-padding-inline-compact);
+    }
+
     .tb-chip-sep,
     .tb-search .kbd,
     /* The trigger's LABEL gets the same compact treatment the shortcut cap already had. Without a
@@ -2943,6 +2962,12 @@
       display: none;
     }
 
+    /* THE COMPACT TRIGGER IS AN ICON BUTTON, so it is the SAME icon button the bar already draws:
+     * `.tb-icon-btn` is a --control-height-sm square, and this was a --control-height-wide box that
+     * kept the base rule's --control-height-sm HEIGHT — 36×28, wider than it is tall, and shorter
+     * than every cell beside it. Naming one length on both axes is what makes it square; the
+     * padding has to go with it, or the icon plus two --space-2 insets overflows the square it was
+     * just given. */
     .tb-search {
       width: auto;
       /* Logical, so it actually beats the base rule's `min-inline-size` — `min-width` and
@@ -2950,8 +2975,12 @@
        * the cascade resolves the LAST one declared. Stating the same axis both ways would leave
        * the compact icon at the 16rem floor. */
       flex: 0 0 auto;
-      min-inline-size: var(--control-height);
-      min-width: var(--control-height);
+      min-inline-size: var(--control-height-sm);
+      min-width: var(--control-height-sm);
+      inline-size: var(--control-height-sm);
+      block-size: var(--control-height-sm);
+      justify-content: center;
+      padding-inline: 0;
     }
 
     .tb-search span {

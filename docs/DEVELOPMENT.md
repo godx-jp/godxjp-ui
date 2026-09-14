@@ -126,6 +126,25 @@ pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 
 `pnpm verify` and `pnpm verify:release` run these together (verify:release also builds) — **both include the full suite, so both belong to CI.** Locally, run them at most once immediately before opening a PR, never inside an edit loop and never while other agents are working on the same machine. It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
 
+### Reproducing one screen at one width — the frame routes
+
+Three gates and every bug report start here, so the addressing is written down rather than guessed
+(godx-jp/id#639 burned three attempts on `?frame=…`, which is not a thing):
+
+```
+pnpm preview                                  # :6008
+http://localhost:6008/isolate/<id>            # the demo ALONE, at the real viewport — measure here
+http://localhost:6008/frame/<id>              # the same demo inside the device-preset chrome
+```
+
+`<id>` is the demo's path under `docs/`, minus `.tsx`, with `/` turned into `-`:
+`docs/layout/topbar.tsx` → `layout-topbar`, `docs/data-entry/date-picker.tsx` → `data-entry-date-picker`.
+A file may override it with a `slug` in its frontmatter. Both routes accept
+`?dir=rtl&density=compact&theme=dark&locale=ja`; `/frame/**` additionally takes `?preset=`/`?w=`/`?h=`/`?zoom=`.
+
+For an axe measurement at a given width, drive `/isolate/<id>` with Playwright at that viewport —
+that is what `scripts/topbar-collision-visual.mjs` and the other `test:visual:*` gates do.
+
 All gates are **self-contained** — no internal/external tooling package required. The eslint, prettier, and vitest setup live in the package (`eslint.config.js`, `prettier.config.mjs`, `vitest.config.ts`, `src/test/`), so a fresh checkout can lint/type-check/test without anything beyond the declared devDependencies.
 
 The app side additionally runs **`npm run ui:audit`** (the design-system linter) and must report 0 errors for touched files.

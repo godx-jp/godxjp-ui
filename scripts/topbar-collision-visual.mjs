@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * Exercises long JA/EN/VI start + center labels at the DXS acceptance artboards. The center slot
- * remains available at 1440 and follows the package compact-display token at 1024/390; the start
- * title and end utilities must never overlap or escape the Topbar allocation.
+ * remains available at 1440 and follows the package compact-display token at 1024/390/320; the
+ * start title and end utilities must never overlap or escape the Topbar allocation — nor may a
+ * control be sliced by the slot that holds it (gh#639), which the slot-box checks cannot see.
  */
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -26,6 +27,9 @@ const viewports = [
   { width: 1440, height: 900 },
   { width: 1024, height: 900 },
   { width: 390, height: 844 },
+  // WCAG 2.2 SC 1.4.10's reflow width, and the width godx-jp/id's nightly gate runs at — the bar
+  // fit at 390 and sliced its start control at 320 (gh#639), so 390 alone was never the floor.
+  { width: 320, height: 568 },
 ];
 
 const { chromium } = await loadDeps({ axe: false });
@@ -115,11 +119,51 @@ try {
           whiteSpace: style.whiteSpace,
         };
       });
+      // `clip`, not `hidden` — gh#376 moved the truncation keyword deliberately, because this
+      // selector hits whatever the slot's last child is and `hidden` shaves the focus ring off an
+      // interactive one (`overflow-clip-margin` is ignored on `hidden`). This gate kept asserting
+      // the keyword that was replaced, so it has been failing on the shipped stylesheet ever since.
       assert.deepEqual(titleStyle, {
-        overflow: "hidden",
+        overflow: "clip",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
       });
+
+      /*
+       * THE BOX-LEVEL ASSERTIONS ABOVE CANNOT SEE A SLICED CONTROL (gh#639). Every slot carries
+       * `min-width: 0` + `overflow: clip`, so under pressure the slot BOX collapses — to zero, in
+       * the measured case — while its children keep their own size and paint outside it, under the
+       * next cluster. `start.x + start.width <= end.x` is then satisfied by a slot that is not
+       * there, and a consumer's search trigger was left showing 8 of its 36 px (axe target-size:
+       * `partiallyObscured`, 8×28) with nothing in this gate to say so.
+       *
+       * So measure the CONTROLS, not the slots: an interactive cell that leaves its own slot is a
+       * collision whatever the slot boxes say.
+       */
+      const escapees = await bar.evaluate((barElement) => {
+        const bad = [];
+        for (const slot of barElement.querySelectorAll("[data-slot^='topbar-']")) {
+          const slotBox = slot.getBoundingClientRect();
+          for (const control of slot.querySelectorAll("button, a, [role='button']")) {
+            const box = control.getBoundingClientRect();
+            if (box.width === 0 && box.height === 0) continue;
+            if (box.left < slotBox.left - 0.5 || box.right > slotBox.right + 0.5) {
+              bad.push({
+                slot: slot.getAttribute("data-slot"),
+                control: control.getAttribute("aria-label") || control.textContent?.trim() || "?",
+                visible: +Math.max(0, Math.min(box.right, slotBox.right) - box.left).toFixed(1),
+                width: +box.width.toFixed(1),
+              });
+            }
+          }
+        }
+        return bad;
+      });
+      assert.deepEqual(
+        escapees,
+        [],
+        `${viewport.width}/${locale}: a control was sliced by its own slot`,
+      );
 
       const documentWidth = await page.evaluate(() => ({
         clientWidth: document.documentElement.clientWidth,

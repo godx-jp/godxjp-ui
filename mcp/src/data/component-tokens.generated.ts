@@ -5759,6 +5759,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a * trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
   },
   {
+    "name": "--topbar-item-padding-inline-compact",
+    "value": "var(--space-2)",
+    "description": "THE CELL'S PHONE-WIDTH INSET (godx-jp/id#639). A second value rather than a media query on the * first, for the same reason `--app-shell-bar-inset-compact` is a second value: the compact * number is its own design decision, and a theme has to be able to retune the two independently. * * Measured at 320px on a bar carrying the shipped shape (drawer trigger · logo · search trigger · * four end cells): the cells alone spent 120px of a 320px viewport on padding, the bar overflowed * by 44px, `.ui-topbar-start` collapsed to 0 and the search trigger was left painting 8px of * itself from under the theme cell — a target axe scores at 8×28. At --space-2 the same bar fits * with every cell whole."
+  },
+  {
     "name": "--topbar-item-gap",
     "value": "var(--space-2)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
