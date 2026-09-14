@@ -9419,7 +9419,7 @@
           "origin": "owned",
           "required": false,
           "type": "LogoMark | undefined",
-          "values": ["glyph", "godx"],
+          "values": ["glyph", "godx", "godx-lockup"],
           "declaredIn": ["src/components/general/logo.tsx"]
         },
         {
