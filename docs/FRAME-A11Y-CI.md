@@ -100,7 +100,7 @@ which changes what `color-contrast` resolves a background to). Two sweeps after 
 
 |                                    |                                                                                     |
 | ---------------------------------- | ----------------------------------------------------------------------------------- |
-| full sweep                         | **3m20s** — 215 routes × 3 viewports, measured locally                              |
+| full sweep                         | **3m20s** locally · **12m01s** on the self-hosted runner — 215 routes × 3 viewports |
 | sequential                         | ~55 min — the three viewport passes run concurrently, which is the whole difference |
 | showcase only (`--scope=showcase`) | 30s                                                                                 |
 
@@ -109,9 +109,21 @@ names, which costs nothing here because none of them is in `REQUIRED_CI_CHECK_RU
 
 ## Where it runs
 
-`ci-browser.yml`, on push to `main` — the lane the deleted job lived in, inside CONTRACT.md L4's
-five-minute budget at the measurement above. **Not** the PR lane: that file's own header lists axe
-among what it deliberately excludes, at a measured 653–745s, and that decision is not reopened here.
+Two lanes, split on a **measurement taken on the runner, not on a laptop**:
+
+| lane                                                              | what                                      | when                                                           | measured                               |
+| ----------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------- | -------------------------------------- |
+| `ci-browser.yml` · `Per-frame axe (showcases, WCAG 2.2 AA)`       | `--scope=showcase` — 30 whole-page frames | every push to `main`                                           | 30s locally                            |
+| `ci-browser-full.yml` · `Per-frame axe (all frames, WCAG 2.2 AA)` | the full 215-route sweep                  | nightly, `workflow_dispatch`, or a `run-browser` label on a PR | **12m01s on the pool** (3m20s locally) |
+
+The full sweep went into the merge lane first, on the local 3m20s. On the pool's runner the same
+job took **12m01s** — three times the local wall clock and more than twice CONTRACT.md L4's
+five-minute budget for that whole lane. So the merge lane keeps the showcases, which are the only
+frames here shaped like the screens a consumer ships, and the wide matrix moved to the lane this
+repository already reserves for wide matrices.
+
+**Not** the PR lane: that file's own header lists axe among what it deliberately excludes, at a
+measured 653–745s, and that decision is not reopened here.
 
 The job is not in `REQUIRED_CI_CHECK_RUNS` (#492 removed it from the release proof map and this does
 not put it back). It still protects a release through `assertCiProvenance`'s collateral rule — **any**
