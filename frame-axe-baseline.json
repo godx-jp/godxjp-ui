@@ -1,0 +1,227 @@
+{
+  "generatedAt": "2026-09-15T00:18:22.813Z",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21aa",
+    "wcag22aa"
+  ],
+  "entries": {
+    "/isolate/data-display-carousel @320 target-size": {
+      "count": 3,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/data-display-carousel @375 target-size": {
+      "count": 3,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/data-display-carousel @1440 target-size": {
+      "count": 3,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/data-entry-attachments @320 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/data-entry-attachments @1440 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/data-entry-attachments @375 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/foundation-colors @320 color-contrast": {
+      "count": 8,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/isolate/foundation-colors @1440 color-contrast": {
+      "count": 8,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/isolate/foundation-colors @375 color-contrast": {
+      "count": 8,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/isolate/navigation-filter-bar @320 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/navigation-toolbar @320 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/navigation-filter-bar @1440 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/navigation-filter-bar @375 target-size": {
+      "count": 2,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/acme-portal @320 aria-prohibited-attr": {
+      "count": 3,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/showcase/acme-website @320 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case1-warehouse-dashboard @320 aria-prohibited-attr": {
+      "count": 4,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/isolate/navigation-toolbar @1440 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/isolate/navigation-toolbar @375 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/case5-shift-calendar @320 color-contrast": {
+      "count": 5,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case6-agency-handy @320 color-contrast": {
+      "count": 2,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/futurelastic-web @320 color-contrast": {
+      "count": 2,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/acme-portal @375 aria-prohibited-attr": {
+      "count": 3,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/showcase/acme-portal @1440 aria-prohibited-attr": {
+      "count": 3,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/showcase/acme-website @375 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/acme-website @1440 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case1-warehouse-dashboard @375 aria-prohibited-attr": {
+      "count": 4,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/showcase/case1-warehouse-dashboard @1440 aria-prohibited-attr": {
+      "count": 4,
+      "help": "Elements must only use permitted ARIA attributes"
+    },
+    "/showcase/table-crud-list @320 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/case5-shift-calendar @375 color-contrast": {
+      "count": 6,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case5-shift-calendar @1440 color-contrast": {
+      "count": 12,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/table-density @320 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case6-agency-handy @375 color-contrast": {
+      "count": 2,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/case6-agency-handy @1440 color-contrast": {
+      "count": 2,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/table-expandable-rows @320 aria-conditional-attr": {
+      "count": 4,
+      "help": "ARIA attributes must be used as specified for the element's role"
+    },
+    "/showcase/futurelastic-web @375 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/table-filter-chips @320 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/table-filter-chips @320 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/table-grouped-subtotals @320 aria-valid-attr-value": {
+      "count": 5,
+      "help": "ARIA attributes must conform to valid values"
+    },
+    "/showcase/table-bulk-actions @375 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/table-view-tabs @320 aria-valid-attr-value": {
+      "count": 1,
+      "help": "ARIA attributes must conform to valid values"
+    },
+    "/showcase/table-crud-list @375 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/table-density @375 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/table-crud-list @1440 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/table-expandable-rows @375 aria-conditional-attr": {
+      "count": 4,
+      "help": "ARIA attributes must be used as specified for the element's role"
+    },
+    "/showcase/table-density @1440 color-contrast": {
+      "count": 1,
+      "help": "Elements must meet minimum color contrast ratio thresholds"
+    },
+    "/showcase/table-filter-chips @375 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/table-filter-chips @375 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/table-expandable-rows @1440 aria-conditional-attr": {
+      "count": 4,
+      "help": "ARIA attributes must be used as specified for the element's role"
+    },
+    "/showcase/table-filter-chips @1440 button-name": {
+      "count": 3,
+      "help": "Buttons must have discernible text"
+    },
+    "/showcase/table-filter-chips @1440 target-size": {
+      "count": 1,
+      "help": "All touch targets must be 24px large, or leave sufficient space"
+    },
+    "/showcase/table-grouped-subtotals @375 aria-valid-attr-value": {
+      "count": 5,
+      "help": "ARIA attributes must conform to valid values"
+    },
+    "/showcase/table-grouped-subtotals @1440 aria-valid-attr-value": {
+      "count": 5,
+      "help": "ARIA attributes must conform to valid values"
+    },
+    "/showcase/table-view-tabs @375 aria-valid-attr-value": {
+      "count": 1,
+      "help": "ARIA attributes must conform to valid values"
+    },
+    "/showcase/table-view-tabs @1440 aria-valid-attr-value": {
+      "count": 1,
+      "help": "ARIA attributes must conform to valid values"
+    }
+  }
+}

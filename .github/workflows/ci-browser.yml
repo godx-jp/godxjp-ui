@@ -72,6 +72,41 @@ jobs:
       - run: pnpm preview:build
       - run: pnpm verify:browser
 
+  # ONE RULER, RUN WHERE THE CSS IS (gh#643). `scripts/visual-audit.mjs` holds eight rules; the
+  # consumer's nightly runs axe with 68, and the other sixty — names, roles, aria-*, contrast,
+  # target size — were checked nowhere in this repository. gh#639 is the bill: a topbar shipped,
+  # every gate here said green, and `target-size` failed downstream in a repo that cannot fix CSS.
+  #
+  # IN THIS LANE, NOT THE NIGHTLY, and inside L4's budget — measured, not hoped: 215 routes × 3
+  # viewports in 3m20s on this machine, because the three viewport passes run concurrently
+  # (sequentially the same sweep took ~55 minutes). Plus `preview:build`, roughly 4 minutes.
+  # `--shard=i/n` exists in the script for the day that stops being true; using it ADDS check-run
+  # names, which is free here because none of them is in REQUIRED_CI_CHECK_RUNS.
+  #
+  # NOT a required check run. #492 removed the old "Per-frame axe" job from the release proof map
+  # and this does not put it back — that is the owner's call to make separately. A red run still
+  # refuses a publish through assertCiProvenance's collateral rule, which is the protection that
+  # matters.
+  frame-axe:
+    name: Per-frame axe (WCAG 2.2 AA)
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      # A port of this job's OWN — self-hosted jobs share a host, and `visual` holds 6008.
+      PREVIEW_BASE: http://localhost:6011
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - run: pnpm preview:build
+      - run: pnpm check:frame-axe
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-axe-results
+          path: audit-evidence/frame-axe/results.json
+          if-no-files-found: warn
+
   # Chia shard chứ không dời chỗ. Tên job nằm trong REQUIRED_CI_CHECK_RUNS, nên dời sang nightly
   # là mọi bản phát hành báo "never ran"; thu nhỏ chính gate mới là lối ra. Đo tại chỗ: một lượt
   # trọn bộ 164 khung mất 626 giây, ba shard đưa đường găng xuống khoảng 210 giây, dưới ngân sách
