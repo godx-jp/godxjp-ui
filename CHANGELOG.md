@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [24.1.0] - 2026-09-15
+
 ### Fixed — a menu child the collection cannot build no longer blanks the page (gh#637)
 
 React Aria dựng menu qua một `Document` thay thế có `createElement` nhưng **không có**
@@ -31,6 +33,29 @@ console trống**. Đo lại trên 24.0.0 / RAC 1.21.1 / react-dom 19.2.8: 5/5 h
   Trước đó rộng `--control-height` mà cao `--control-height-sm` — 36×28, rộng hơn chiều cao.
 - `scripts/topbar-collision-visual.mjs` giờ đo **các control**, không đo hộp cụm (một cụm rộng 0
   vẫn thoả phép kiểm cũ trong khi cắt đôi control bên trong), và chạy thêm ở 320px.
+
+### Added — `check:frame-axe`: the consumer's ruler, run here (gh#643)
+
+`scripts/visual-audit.mjs` mang **8** luật; nightly của consumer chạy axe với **68**. Sáu trong tám
+luật của ta là quan điểm ngôn ngữ thiết kế không có tương đương trong axe — đúng chỗ của một design
+system. Sáu mươi luật còn lại (tên, vai trò, `aria-*`, tương phản, target size) **không được kiểm ở
+đâu trong kho này**, chỉ ở một kho không sửa được CSS.
+
+- `pnpm check:frame-axe` — tag `wcag2a wcag2aa wcag21aa wcag22aa` (đúng bộ của consumer) trên mọi
+  `/isolate/<id>` và `/showcase/<id>`, ở 1440 · 375 · **320**.
+- Lượt quét đầu tiên: **159 node vi phạm** trên mã đã qua mọi cổng khác — trong đó 18 `button-name`
+  (nút mà trình đọc màn hình đọc thành *không gì cả*) và 28 `target-size` trên `Carousel`,
+  `Attachments`, `FilterBar`, `Toolbar` ở **mọi** bề rộng, tức chính những khung mà luật
+  `target-size-min` của ta đang chạy và báo sạch — vì nó đo **hộp vẽ**, không đo target.
+- `frame-axe-baseline.json` là **sổ nợ**: cổng đỏ khi có dòng MỚI hoặc dòng cũ tăng số. Xoá dòng khi
+  sửa xong; thêm dòng bằng tay để build xanh là nước đi duy nhất mà tệp này sinh ra để phơi bày.
+- Chạy `--scope=showcase` (30 khung trang-đầy-đủ, 2m50s trên runner) ở lane merge, và trọn bộ 215
+  khung hằng đêm. Chi tiết và **ba thứ cổng này KHÔNG làm** nằm ở `docs/FRAME-A11Y-CI.md`.
+
+### Changed
+
+- `--topbar-item-padding-inline-compact` (`--space-2`) — knob mới cho inset ngang của ô thanh trên ở
+  ≤768px. Theme đặt lại được như mọi component token khác.
 
 ## [24.0.0] - 2026-09-15
 
