@@ -322,6 +322,7 @@
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "check:frame-coverage": "node scripts/frame-coverage.mjs",
     "check:frame-coverage-report": "node scripts/frame-coverage.mjs --check",
+    "check:frame-axe": "node scripts/check-frame-axe.mjs",
     "gen:frame-coverage-ledger": "node scripts/gen-frame-coverage-ledger.mjs",
     "check:frame-coverage-ledger": "node scripts/gen-frame-coverage-ledger.mjs --check && node scripts/check-frame-coverage-ledger.mjs",
     "check:screen-reader-evidence": "node scripts/check-screen-reader-evidence.mjs",
@@ -469,6 +470,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
     "@hookform/resolvers": "^5.9.1",
     "@radix-ui/react-accordion": "^1.2.20",

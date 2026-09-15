@@ -122,6 +122,7 @@ pnpm test                 # FULL suite — CI only, never from an agent loop
 pnpm preview:build        # integration test: examples + docs must build — at most once, pre-PR
 pnpm audit                # godxjp-ui-audit — 0 errors for touched files
 pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
+pnpm check:frame-axe      # WCAG 2.2 AA over every frame — see FRAME-A11Y-CI.md
 ```
 
 `pnpm verify` and `pnpm verify:release` run these together (verify:release also builds) — **both include the full suite, so both belong to CI.** Locally, run them at most once immediately before opening a PR, never inside an edit loop and never while other agents are working on the same machine. It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
