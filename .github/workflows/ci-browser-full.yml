@@ -45,7 +45,7 @@ name: CI · browser (full sweep)
 # filter that the trigger has not already decided.
 on:
   schedule:
-    - cron: '0 17 * * *'
+    - cron: "0 17 * * *"
   workflow_dispatch:
   pull_request:
     types: [labeled]
@@ -77,6 +77,35 @@ jobs:
         with:
           name: frame-geometry-evidence
           path: audit-evidence/frame-geometry/
+          if-no-files-found: ignore
+
+  # The other 185 frames of gh#643's gate. `ci-browser.yml` runs the thirty showcases on every
+  # merge; the component sweep is 215 routes × 3 viewports and measured 12m01s on this pool, which
+  # is a wide matrix by any reading of L4 — so it lives here, with the geometry sweep it most
+  # resembles. A red run still refuses a publish at the same commit through assertCiProvenance's
+  # collateral rule, which is the protection that matters.
+  frame-axe:
+    name: Per-frame axe (all frames, WCAG 2.2 AA)
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      PREVIEW_BASE: http://localhost:6039
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - run: pnpm preview:build
+      - name: axe sweep (every frame × 1440/375/320)
+        run: pnpm check:frame-axe
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frame-axe-evidence
+          path: audit-evidence/frame-axe/
           if-no-files-found: ignore
 
   rendered-runtime:
