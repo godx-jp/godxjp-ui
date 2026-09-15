@@ -110,12 +110,15 @@ jobs:
           chromium: "true"
       - run: pnpm preview:build
       - run: pnpm check:frame-axe -- --scope=showcase
-      - if: always()
-        uses: actions/upload-artifact@v4
+      # v7, the version every other upload in this repository uses. I wrote v4 and it failed the
+      # lane with `Failed to FinalizeArtifact … (403) Forbidden` on a run whose gate had already
+      # printed ✓ — a green measurement reported as a red merge, on the release commit itself.
+      - uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: frame-axe-results-showcase
-          path: audit-evidence/frame-axe/results.json
-          if-no-files-found: warn
+          path: audit-evidence/frame-axe/
+          if-no-files-found: ignore
 
   # Chia shard chứ không dời chỗ. Tên job nằm trong REQUIRED_CI_CHECK_RUNS, nên dời sang nightly
   # là mọi bản phát hành báo "never ran"; thu nhỏ chính gate mới là lối ra. Đo tại chỗ: một lượt
