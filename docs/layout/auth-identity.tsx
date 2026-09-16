@@ -6,9 +6,10 @@ import { AuthAccountSummary, AuthIdentity, AuthStack, PageContainer } from "@god
  * AuthIdentity — canonical identity title with optional relying-party request context. The
  * requester line is consumer data and may be omitted for first-party authentication.
  *
- * `brand` is the product's own artwork: it replaces the package mark AND the painted heading, so a
- * lockup that already reads "GoDX | ID" does not sit above an h1 that reads it again. The h1 stays
- * in the document, named by `title`, and the lockup is decorative — the block is announced once.
+ * `brand` is the product's own artwork, in the MARK's place: the h1 stays painted and keeps naming
+ * the block, and the artwork is decorative whatever fills it — so a lockup that spells "GoDX | ID"
+ * is not announced on top of the heading. When the lockup already carries the product name, make
+ * `title` the SCREEN'S purpose ("サインイン") rather than repeating the brand.
  */
 export default function Demo() {
   return (
@@ -41,20 +42,24 @@ export default function Demo() {
         <CardHeader>
           <CardTitle level={2}>brand · 製品ロックアップ</CardTitle>
           <CardDescription>
-            brandを渡すとパッケージのマークと見出しの描画が製品のロックアップに置き換わります。h1は
-            titleを読み上げ名として保持し、ロックアップは装飾扱いになるため製品名は一度だけ読まれます。
+            brandを渡すとパッケージのマークが製品のロックアップに置き換わります。h1はtitleを読み上げ名
+            として保持し、ロックアップは装飾扱いになるため製品名は一度だけ読まれます。ロックアップが製品名
+            を含む場合、titleには画面の目的を入れてください。
           </CardDescription>
         </CardHeader>
         <CardContent>
           <AuthStack>
-            <AuthIdentity title="GoDX ID" brand={<Logo mark="godx-lockup" productSuffix="ID" />} />
             <AuthIdentity
-              title="GoDX ID"
+              title="サインイン"
+              brand={<Logo mark="godx-lockup" productSuffix="ID" />}
+            />
+            <AuthIdentity
+              title="サインイン"
               brand={<Logo mark="godx-lockup" productSuffix="ID" size="lg" />}
               requester="勤怠管理が認証を要求しています"
             />
             <AuthIdentity
-              title="Acme ID"
+              title="サインイン"
               brand={<Logo glyph="a" wordmark="Acme" productSuffix="ID" />}
             />
           </AuthStack>

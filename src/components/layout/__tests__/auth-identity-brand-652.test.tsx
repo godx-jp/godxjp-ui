@@ -5,18 +5,23 @@ import { AuthIdentity } from "../auth-identity";
 import { Heading, Logo } from "../../general";
 
 /**
- * AuthIdentity `brand` — the consumer's own identity artwork on the auth screen (gh#652).
+ * AuthIdentity `brand` — the artwork slot is DECORATIVE, whatever fills it (gh#652).
  *
- * The block hardcoded `<Logo mark="godx">` plus a typeset `<Heading level={1}>`, so the one screen
- * users see first was the only surface that could not carry the product lockup. What is under test
- * is the whole contract of the opening: the artwork swaps, the `h1` survives, and the block still
- * announces the product name EXACTLY ONCE.
+ * `auth-identity.test.tsx` already covers the swap itself: the consumer's artwork renders, the
+ * package mark gives way, the `data-slot` / class / `h1` contract does not move. What is under
+ * test HERE is the one thing that markup inspection cannot see — that the block still announces
+ * the product name exactly ONCE once the artwork is a real lockup rather than a bare mark.
+ *
+ * The mark `brand` replaces was always out of the accessibility tree. A lockup is not a mark:
+ * `Logo mark="godx-lockup" productSuffix="ID"` puts "GoDX ID" in the tree as real text (gh#649's
+ * sr-only logotype plus the suffix), so an exposed one beside an `h1` named "GoDX ID" says the
+ * product twice. The last case renders that shape rather than describing it.
  */
 
 /**
  * What an assistive technology would announce for a subtree: its text with every `aria-hidden`
  * branch removed. Measured rather than reasoned about from the markup — the whole point of this
- * file is that the same pixels can be announced once or twice depending on one attribute.
+ * file is that the same pixels are announced once or twice depending on one attribute.
  */
 function announcedText(root: HTMLElement): string {
   const clone = root.cloneNode(true) as HTMLElement;
@@ -27,56 +32,55 @@ function announcedText(root: HTMLElement): string {
 /** The canonical hosted-identity title: the h1 IS the product name (docs/layout/auth-shell.tsx). */
 const PRODUCT = "GoDX ID";
 
-describe("AuthIdentity brand", () => {
-  it("keeps the package mark and the painted h1 when no brand is supplied", () => {
+const identityOf = (container: HTMLElement) =>
+  container.querySelector<HTMLElement>('[data-slot="auth-identity"]')!;
+
+describe("AuthIdentity brand (gh#652)", () => {
+  it("announces the product once with the package mark — the behaviour being preserved", () => {
     const { container } = render(<AuthIdentity title={PRODUCT} />);
-    const identity = container.querySelector<HTMLElement>('[data-slot="auth-identity"]')!;
-
     expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-mark", "godx");
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveAccessibleName(PRODUCT);
-    expect(heading).not.toHaveClass("sr-only");
-    expect(announcedText(identity)).toBe(PRODUCT);
+    expect(announcedText(identityOf(container))).toBe(PRODUCT);
   });
 
-  it("paints the supplied lockup instead of the mark and of the heading text", () => {
+  it("announces the product once with a consumer lockup, which a bare swap would not", () => {
     const { container } = render(
       <AuthIdentity title={PRODUCT} brand={<Logo mark="godx-lockup" productSuffix="ID" />} />,
     );
-
-    // The package mark is gone; the consumer's lockup took its place as the artwork child.
-    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeNull();
-    const lockup = container.querySelector('[data-slot="logo-lockup"]')!;
-    expect(lockup).toHaveAttribute("data-mark", "godx-lockup");
-    // Borrowed, not wrapped: the lockup is the direct flex child of `.ui-auth-identity` itself.
-    expect(lockup.parentElement).toHaveClass("ui-auth-identity");
-
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveClass("sr-only");
-    expect(heading).toHaveTextContent(PRODUCT);
-  });
-
-  it("still exposes one h1 named by title, and announces the product exactly once", () => {
-    const { container } = render(
-      <AuthIdentity title={PRODUCT} brand={<Logo mark="godx-lockup" productSuffix="ID" />} />,
-    );
-    const identity = container.querySelector<HTMLElement>('[data-slot="auth-identity"]')!;
-
-    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveAccessibleName(PRODUCT);
     expect(container.querySelector('[data-slot="logo-lockup"]')).toHaveAttribute(
       "aria-hidden",
       "true",
     );
-    expect(announcedText(identity)).toBe(PRODUCT);
+    expect(announcedText(identityOf(container))).toBe(PRODUCT);
   });
 
-  it("measures the shape that was rejected: an exposed lockup beside a painted heading", () => {
-    /*
-     * The alternative `mark?: LogoMark` (and any `brand` that left the heading painted) produces
-     * THIS. It is rendered here rather than described, because the double announcement is the
-     * reason `brand` also takes the painted heading and marks the artwork decorative.
-     */
+  it("borrows the consumer's element rather than wrapping it", () => {
+    // A wrapper would be the flex item, and an `inline-flex` lockup inside a block box is back on
+    // a line box whose strut descender lifts the mark — the defect `Logo`'s `asChild` removes.
+    const { container } = render(
+      <AuthIdentity title={PRODUCT} brand={<Logo mark="godx-lockup" productSuffix="ID" />} />,
+    );
+    expect(container.querySelector('[data-slot="logo-lockup"]')!.parentElement).toHaveClass(
+      "ui-auth-identity",
+    );
+  });
+
+  it("keeps the h1 PAINTED — the visible half of gh#652 is not taken here", () => {
+    const { container } = render(
+      <AuthIdentity title={PRODUCT} brand={<Logo mark="godx-lockup" productSuffix="ID" />} />,
+    );
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).not.toHaveClass("sr-only");
+    expect(heading).toHaveAccessibleName(PRODUCT);
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(identityOf(container).textContent).toContain(PRODUCT);
+  });
+
+  it("marks a non-element brand decorative too, via the wrapper path", () => {
+    const { container } = render(<AuthIdentity title={PRODUCT} brand="ACME" />);
+    expect(announcedText(identityOf(container))).toBe(PRODUCT);
+  });
+
+  it("measures the shape this exists to prevent: an exposed lockup beside the heading", () => {
     const { container } = render(
       <div>
         <Logo mark="godx-lockup" productSuffix="ID" />
@@ -87,32 +91,13 @@ describe("AuthIdentity brand", () => {
   });
 
   it("keeps the requesting-client line under a consumer lockup", () => {
-    const { container } = render(
+    render(
       <AuthIdentity
         title={PRODUCT}
         brand={<Logo mark="godx-lockup" productSuffix="ID" />}
         requester="Attendance is requesting sign in"
       />,
     );
-    const identity = container.querySelector<HTMLElement>('[data-slot="auth-identity"]')!;
-
-    expect(container.querySelector('[data-slot="auth-requester"]')).toBeInTheDocument();
-    // The requester is real content, so it joins the announcement (element boundaries insert no
-    // separator in `textContent`); the product name is still there exactly once.
-    expect(announcedText(identity)).toBe(`${PRODUCT}Attendance is requesting sign in`);
-  });
-
-  it("keeps the brand element's own props while merging aria-hidden onto it", () => {
-    const { container } = render(
-      <AuthIdentity
-        title={PRODUCT}
-        brand={<Logo mark="godx-lockup" productSuffix="ID" size="lg" className="probe" />}
-      />,
-    );
-    const lockup = container.querySelector('[data-slot="logo-lockup"]')!;
-
-    expect(lockup).toHaveClass("ui-logo-lockup", "probe");
-    expect(lockup).toHaveAttribute("data-size", "lg");
-    expect(lockup).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByText("Attendance is requesting sign in")).toBeInTheDocument();
   });
 });

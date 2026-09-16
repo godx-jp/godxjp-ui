@@ -14989,9 +14989,9 @@ export function NotifyRow() {
       { name: "title", type: "ReactNode", required: true, description: "Primary auth heading." },
       {
         name: "brand",
-        type: "ReactElement",
+        type: "ReactNode",
         description:
-          'The product\'s own identity artwork, replacing BOTH the package mark and the painted heading text. One element (a <Logo mark="godx-lockup" productSuffix="ID" />); the h1 stays in the document named by `title`.',
+          "Brand artwork in the MARK's place, for a service whose design ships a real lockup (mark + wordmark, sometimes a product suffix). Omit it and the canonical GoDX mark renders. data-slot, .ui-auth-identity spacing and the h1 are untouched, so swapping artwork never forks the block.",
       },
       {
         name: "requester",
@@ -15007,8 +15007,8 @@ export function NotifyRow() {
     usage: [
       "Only show `requester` when the consumer has authoritative client context.",
       'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
-      'DO put a product lockup in `brand` — `brand={<Logo mark="godx-lockup" productSuffix="ID" />}` — instead of rebuilding the block: it replaces the package mark AND stops the h1 being painted, because the canonical title IS the product name and a lockup reading "GoDX | ID" above it writes the name twice. The h1 stays in the DOM, keeps `title` as its accessible name, and the lockup is marked decorative, so the block is still announced exactly once (measured: "GoDX ID", not "GoDXIDGoDX ID").',
-      "DO pass `brand` exactly ONE element, and keep it non-interactive: `aria-hidden` is merged onto that element (no wrapper, so the lockup stays the direct flex child and the identity rhythm is unchanged), and aria-hidden over a focusable child is a WCAG failure.",
+      "To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN'S PURPOSE (\"Sign in\") rather than repeating the brand.",
+      'DO keep `brand` non-interactive. The slot is DECORATIVE at every fill: the mark it replaces was always aria-hidden, and a real lockup is not a mark — `Logo mark="godx-lockup" productSuffix="ID"` exposes "GoDX ID" as real text, so left in the tree beside the h1 the block announces the product twice (measured: "GoDXIDGoDX ID"). aria-hidden is merged onto your element, and aria-hidden over a focusable child is a WCAG failure.',
       "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
       "Public type: `AuthIdentityProp` (alias `AuthIdentityProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
     ],
