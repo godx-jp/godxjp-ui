@@ -390,8 +390,14 @@ export const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProp>(fu
       style={style}
       {...(props as object)}
     >
+      {/*
+       * `""`, not `null`, when no placeholder is given. React Aria treats a render function that
+       * returns null as "use my default", and its default is the English "Select an item" —
+       * rendered inside Japanese and Vietnamese screens (measured in Platform: 45 triggers). The
+       * Radix component this replaced drew nothing there, which is the contract consumers built on.
+       */}
       {({ isPlaceholder, defaultChildren }) =>
-        isPlaceholder ? (placeholder ?? null) : (children ?? defaultChildren)
+        isPlaceholder ? (placeholder ?? "") : (children ?? defaultChildren)
       }
     </AriaSelectValue>
   );
