@@ -8,10 +8,10 @@ export type { AuthIdentityProp } from "../../props/components/layout.prop";
 export type { AuthIdentityProp as AuthIdentityProps } from "../../props/components/layout.prop";
 
 /** Canonical hosted-identity mark, heading and optional real requesting-client context. */
-export function AuthIdentity({ title, requester, className }: AuthIdentityProp) {
+export function AuthIdentity({ title, brand, requester, className }: AuthIdentityProp) {
   return (
     <div data-slot="auth-identity" className={cn("ui-auth-identity", className)}>
-      <Logo mark="godx" tone="success" />
+      {brand ?? <Logo mark="godx" tone="success" />}
       <Heading level={1}>{title}</Heading>
       {requester !== undefined && requester !== null ? (
         <div data-slot="auth-requester" className="ui-auth-requester">
