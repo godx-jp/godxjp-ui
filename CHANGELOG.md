@@ -4,6 +4,65 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [25.1.0] - 2026-09-16
+
+MINOR. No API is removed and no colour moves; what changes is what the gate can SEE. The one
+user-visible fix is a `Select` viewport that stops handing a forbidden child to assistive tech.
+
+### Fixed — the axe gate opens the overlay before measuring it (gh#643)
+
+A menu, dialog or listbox closed at rest was never measured, so every rule that only exists while
+an overlay is open sat OUTSIDE the gate's field of view rather than slipping through it. A frame
+now declares its open step with `data-axe-open`; the gate presses it, waits for the overlay to
+attach, and scans again. Seven frames declare, seven open, and a declaration that does NOT open
+fails the gate — a broken declaration is a broken gate.
+
+- **The defect it found, `SelectSeparator`.** It rendered react-aria's `<Separator>` — i.e.
+  `role="separator"` — as a DIRECT CHILD of the viewport's `role="listbox"`. ARIA 1.2 lets a
+  listbox own `option` and `group` and nothing else, so `aria-required-children` fires CRITICAL on
+  the whole viewport. Invisible to every gate for the two releases the axe gate has existed,
+  because it only exists with the list OPEN. `menu` DOES own `separator`, so `DropdownMenuSeparator`
+  is unchanged.
+- **Both alternatives were tried and are recorded with the code.** A `group` role satisfies the
+  rule and lies — the grouping is already carried by the two `SelectGroup`s either side, so a
+  screen reader would announce an empty third group between them. A plain `<div>` BREAKS the
+  component: `AriaSeparator` is a `createLeafComponent` collection node, so react-aria truncates
+  the collection and every option after the divider stops existing.
+- **The 2026-09 teeth-proof no longer reproduces, and that is the finding.** It disabled
+  `inert-background.ts` and watched `aria-hidden-focus` go red. Those overlays are
+  react-aria-components now, not Radix: react-aria inerts the background itself, and stripping
+  every `inert` before the scan still leaves that rule in axe's *passes* bucket, because it needs
+  an `aria-hidden` ancestor to fire at all. `src/components/general/inert-background.ts` now has no
+  importer in `src/` — left in place, flagged rather than deleted.
+
+### Fixed — the component sweep runs at merge again, in four shards (gh#643)
+
+24.1.0 scoped the merge lane to the thirty showcases and sent the other 185 frames to the nightly,
+so a component-frame regression was caught at 02:00 rather than at merge. Four shards buy it back:
+the full sweep measured 721s and `--scope=showcase` 170s on the pool, giving 2.98s per route and
+~81s of fixed per-job cost, so a shard is 81 + (721−81)/N — **242s at N=4, 19% under CONTRACT.md
+L4's budget**. It costs four of the pool's eight browser slots on every merge, which is stated on
+the job rather than discovered later.
+
+### Fixed — a partial axe run could rewrite the whole ledger
+
+Both guards existed in the original gate and were dropped by the 24.1.0 rewrite. Latent only
+because `frame-axe-baseline.json` currently sits at zero rows:
+
+- `--update` now REFUSES under `--shard`, `--scope` or an explicit route list. It writes the
+  baseline from what the run found, so `--update --shard=1/4` rewrote it from a quarter of the
+  frames and silently deleted the other three quarters — the ledger going green by forgetting.
+- The "these baselined entries no longer fire" report is suppressed on a partial run. Under a shard
+  every sibling shard's rows read as fixed, and the line printed advice to `--update` them away.
+
+### Fixed — four claims in the CI docs that described machinery that was not there
+
+`ci-browser.yml` ENDED with a five-line comment describing a three-shard job, with no job after it:
+#492 deleted the job by deleting lines. The same deletion left three orphan half-sentences in that
+file's header, a claim in `ci-browser-full.yml` that the axe job is in `REQUIRED_CI_CHECK_RUNS`
+(it has not been since #492), and a list of eight gate names in `pr-lane.yml` of which one no
+longer exists. All corrected.
+
 ## [25.0.0] - 2026-09-16
 
 MAJOR, and for the reason 24.0.0 was: a consumer who upgrades sees the interface change on the next
