@@ -94,21 +94,23 @@ product name is not part of it.
   carries the word BREAK as `display: block`: measured, a `"GoDX "` text node loses its trailing
   space in accname and renames the lockup "GoDXID".
 
-### Added — `AuthIdentity` takes a consumer brand lockup (gh#652)
+### Fixed — the `AuthIdentity` brand slot is decorative, so the product is announced once (gh#652)
 
-New `brand?: ReactElement`. `AuthIdentity` hardcoded `<Logo mark="godx">`, so the first screen a
-user ever sees was the only surface that could not carry the product lockup — and a consumer could
-not drop the component either, because the canonical auth contract and its density selectors are
-pinned to `[data-slot="auth-identity"]`.
+`brand` shipped in 24.2.0 (#653) and replaces the package mark. The mark it replaces was always
+`aria-hidden` — the `h1` names the block — but a real LOCKUP is not a mark:
+`Logo mark="godx-lockup" productSuffix="ID"` puts "GoDX ID" into the accessibility tree as real
+text (gh#649's sr-only logotype plus the suffix). Left exposed beside an `h1` named "GoDX ID" the
+block announced the product TWICE — rendered rather than described, the announcement measured
+**"GoDXIDGoDX ID"**. The slot now carries the contract the mark had, at every fill.
 
-`brand` replaces the mark AND the painted heading, because the canonical block is already the
-product name twice (`title="GoDX ID"` above the mark) — measured, a lockup left exposed beside that
-`h1` announces **"GoDXIDGoDX ID"**. The `<h1>` stays in the DOM at level 1, still named by `title`,
-and goes `.sr-only`; the brand element is marked decorative via `Slot` rather than a wrapper, since
-a wrapper would become the flex item and put the `inline-flex` lockup back on a line box whose strut
-descender lifts the mark. Spacing is untouched: `.sr-only` is absolutely positioned, so the hidden
-heading is not a flex item. `mark?: LogoMark` was rejected — it cannot reach the handed-over lockup
-without also proxying `productSuffix`, then `size`, `tone`, `label`.
+`aria-hidden` merges onto the supplied element through `Slot` rather than onto a wrapper: a wrapper
+would be the flex item, and an `inline-flex` lockup inside a block box is back on a line box whose
+strut descender lifts the mark a few px — the measured defect `Logo`'s own `asChild` prop exists to
+remove. A `brand` that is not a single element has nothing to merge onto and takes the wrapper.
+
+The painted `h1` stays, so a lockup that already spells the product name still shows it twice on
+screen. That half of gh#652 is a separate decision: make `title` the SCREEN'S purpose ("Sign in")
+rather than repeating the brand.
 
 ### Fixed — `Select` called a hook below a conditional return
 
