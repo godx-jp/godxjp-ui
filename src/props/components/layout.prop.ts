@@ -1,6 +1,6 @@
 /** Layout component prop types — @see docs/COMPONENTS.md#layout */
 import type * as React from "react";
-import type { ComponentType, ReactNode, SVGProps } from "react";
+import type { ComponentType, ReactElement, ReactNode, SVGProps } from "react";
 import type {
   BreadcrumbProp,
   TitleProp,
@@ -681,8 +681,48 @@ export type AuthFooterProp = {
  * (`--auth-identity-gap` / `--auth-requester-*`) — a consumer never re-centres or re-spaces it.
  */
 export type AuthIdentityProp = {
-  /** Primary auth heading, rendered as the page `h1`. */
+  /**
+   * Primary auth heading, rendered as the page `h1`. With `brand` set it is still the `h1` and
+   * still the block's accessible NAME; it simply stops being painted — see `brand`.
+   */
   title: ReactNode;
+  /**
+   * The product's OWN identity artwork, replacing both the built-in `Logo mark="godx"` AND the
+   * painted heading text.
+   *
+   * DEFECT (gh#652). This block is the canonical header of every auth screen and it hardcoded its
+   * artwork, so the one screen users see first was the only surface that could not carry the
+   * product lockup every other surface already uses. A consumer cannot route around it: Platform
+   * has 6 screens on `AuthIdentity` and 5 test files pinned to `[data-slot="auth-identity"]`, one
+   * of them measuring `.ui-auth-shell-card > .ui-auth-identity`, and rebuilding the block
+   * consumer-side is copying a package component.
+   *
+   * IT REPLACES THE HEADING TOO, not only the mark, because the canonical block IS the product
+   * name twice over: the mark plus an `h1` whose text is the product ("GoDX ID" — see
+   * `docs/layout/auth-shell.tsx`). A lockup that already draws "GoDX | ID" sitting above that
+   * heading paints the name a second time, which is the reported defect. So the `h1` stays in the
+   * DOM, keeps `title` as its accessible name, and keeps the document outline auth screens rely
+   * on — it just stops being painted. It is hidden with `.sr-only`, which is absolutely
+   * positioned and therefore NOT a flex item, so `--auth-identity-gap` still measures one in-flow
+   * artwork child to the requester row, exactly as it did between the mark and the heading.
+   *
+   * THE NODE IS MARKED DECORATIVE, which is why it is ONE element and not any `ReactNode`.
+   * `Logo mark="godx-lockup" productSuffix="ID"` exposes "GoDX ID" as real text (gh#649's sr-only
+   * logotype plus the suffix), so leaving it in the accessibility tree beside an `h1` named
+   * "GoDX ID" announces the product twice — measured "GoDXIDGoDX ID" against the "GoDX ID" this
+   * block has always announced. `aria-hidden` is merged ONTO the supplied element (`Slot`) rather
+   * than onto a wrapper: a wrapper would be the flex item, and an `inline-flex` lockup inside a
+   * block box is back on a LINE BOX, whose strut descender lifts the mark a few px — the measured
+   * defect `Logo`'s own `asChild` prop exists to remove. Keep `brand` non-interactive: the `h1`
+   * names the block, and `aria-hidden` over a focusable child is a WCAG failure.
+   *
+   * REJECTED — `mark?: LogoMark` forwarded to `<Logo>`: it cannot reach the lockup design hands
+   * over ("GoDX | ID") without also proxying `productSuffix`, and then `size`, `tone`, `label` — a
+   * mirror of another component's API that grows every time that API does — and it still leaves
+   * the `h1` painting the product name a second time. `brand={<Logo mark="godx-lockup"
+   * productSuffix="ID" />}` covers everything it would have, with one prop.
+   */
+  brand?: ReactElement;
   /**
    * Optional real requesting-client context ("Attendance is requesting sign in"). Pass it ONLY
    * when the client identity is authoritative — never a placeholder.
