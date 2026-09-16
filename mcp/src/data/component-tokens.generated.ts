@@ -7110,13 +7110,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--text-link-underline-offset",
-    "value": "0.2em",
-    "description": "Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay * proportional across the seven type steps, and a px value that reads right at `lg` crowds the * descenders at `2xs`."
+    "value": "0.18em",
+    "description": "Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay * proportional across the seven type steps, and a px value that reads right at `lg` crowds the * descenders at `2xs`. GoDX v2.3 guideline: `.gx a { text-underline-offset: .18em }`"
   },
   {
     "name": "--text-link-underline-width",
     "value": "auto",
     "description": "`auto` lets the face decide; a theme that wants a heavier rule names a length."
+  },
+  {
+    "name": "--text-link-decoration-line",
+    "value": "underline",
+    "description": "THE LINK IS UNDERLINED AT REST, and the default is a measurement, not a taste (gh#664). * * It was `none` with the rule added only on hover/focus, so a link inside a sentence differed from * the words around it by hue alone — and that hue is 1.87:1 against body ink in light, 1.54:1 in * dark. WCAG 1.4.1 lets colour carry a link on its own only at 3:1 (technique G183), so the old * default failed it everywhere a link sat in running text. The consumer met it for real: \"97 * người đang dùng\" read as plain copy and nobody clicked it (godx-jp/id#1419). The v2.3 guideline * agrees: `.gx a` never removes the UA underline, and its prose says \"Chữ link có gạch chân\". * * `none` is still a legal value, because a link in a nav row or a card title carries its affordance * some other way. It is NOT a style knob for running text: at the shipped colours it re-opens the * 1.4.1 failure this default closes."
   },
   {
     "name": "--text-action-gap",
