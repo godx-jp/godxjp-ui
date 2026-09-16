@@ -1002,12 +1002,33 @@
     padding-inline-end: var(--search-input-end-padding);
   }
 
+  /*
+   * THE BUTTON'S OWN BOX IS 24×24 (gh#643, found by check:frame-axe).
+   *
+   * It was a 16px glyph with no padding, so it measured 16×16 — under WCAG 2.2 SC 2.5.8's floor,
+   * and not a target a consumer can grow: the size is neither a prop nor a token, and overriding
+   * it from outside is what ui-audit forbids.
+   *
+   * A CENTRED ::after WOULD NOT HAVE DONE IT, and that is the interesting half. That is the fix
+   * `.ui-control-inline-affix-action` uses and it IS correct by the standard — the pseudo-element
+   * takes the pointer, so the region that accepts the action really is 24×24, which is what
+   * SC 2.5.8 measures and what docs/MEASUREMENT-CONTRACT.md records under `expanders`. axe does
+   * not read it: it measures `getBoundingClientRect()` on the element, which is the border box and
+   * cannot see a pseudo-element. Tried it here first and the rule still fired at 16×16.
+   *
+   * So the BOX grows and the paint does not move: the button is transparent and centres its glyph,
+   * so a 24×24 box is invisible and the 16px icon lands exactly where it already was.
+   */
   .ui-search-input-clear {
     position: absolute;
+    display: grid;
+    min-inline-size: var(--touch-target-min);
+    min-block-size: var(--touch-target-min);
     inset-inline-end: var(--search-input-edge-inset);
     top: 50%;
-    transform: translateY(-50%);
+    place-items: center;
     color: hsl(var(--muted-foreground));
+    transform: translateY(-50%);
   }
 
   .ui-search-input-clear:hover {

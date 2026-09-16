@@ -267,7 +267,9 @@ export default function Demo() {
                     >
                       <Flex direction="row" align="center" gap="xs">
                         <span>{DENSITY_META[key].label}</span>
-                        <Text size="2xs" tone="muted" tabular>
+                        {/* `inherit` (gh#643): a SELECTED item fills with --primary, and `muted`
+                            is an absolute token — it measured 1.11:1 on that fill. */}
+                        <Text size="2xs" tone="inherit" tabular>
                           {DENSITY_META[key].px}
                         </Text>
                       </Flex>

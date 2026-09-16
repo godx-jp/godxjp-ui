@@ -493,7 +493,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -2098,6 +2107,14 @@
     "AuthIdentity": {
       "group": "layout",
       "props": [
+        {
+          "name": "brand",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
         {
           "name": "className",
           "origin": "owned",
@@ -8125,7 +8142,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -9249,7 +9275,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -9420,6 +9455,14 @@
           "required": false,
           "type": "LogoMark | undefined",
           "values": ["glyph", "godx", "godx-lockup"],
+          "declaredIn": ["src/components/general/logo.tsx"]
+        },
+        {
+          "name": "productSuffix",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": ["src/components/general/logo.tsx"]
         },
         {
@@ -10626,7 +10669,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -13264,7 +13316,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         }
       ]
@@ -15821,7 +15882,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -16952,7 +17022,16 @@
           "origin": "owned",
           "required": false,
           "type": "TextToneProp | undefined",
-          "values": ["default", "muted", "warning", "success", "destructive", "info", "primary"],
+          "values": [
+            "default",
+            "muted",
+            "warning",
+            "success",
+            "destructive",
+            "info",
+            "primary",
+            "inherit"
+          ],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

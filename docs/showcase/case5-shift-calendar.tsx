@@ -126,8 +126,10 @@ function ShiftPill({
       <Text as="span" size="2xs" weight="medium">
         {meta.label}
       </Text>
+      {/* `inherit`, not `muted` (gh#643): the chip is a TINTED surface, and `muted` is an absolute
+          token that measured 4.46:1 on it. Inheriting lets the chip's own ink win. */}
       {staff ? (
-        <Text as="span" size="2xs" tone="muted" truncate>
+        <Text as="span" size="2xs" tone="inherit" truncate>
           {staff}
         </Text>
       ) : null}
@@ -433,7 +435,7 @@ export default function ShiftCalendarShowcase() {
                     <Text size="xs" weight="medium" className="whitespace-nowrap">
                       {SHIFT_META[k].label}
                     </Text>
-                    <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
+                    <Text size="xs" tone="inherit" tabular className="whitespace-nowrap">
                       {SHIFT_META[k].time}
                     </Text>
                   </Badge>
@@ -582,7 +584,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                                 tone="destructive"
                                 variant="outline"
                                 shape="sharp"
-                                className="text-[var(--font-size-2xs)]"
+                                className="text-[length:var(--font-size-2xs)]"
                               >
                                 祝
                               </Badge>

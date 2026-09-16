@@ -261,15 +261,18 @@
     white-space: nowrap;
   }
 
-  .ui-logo-lockup[data-size="xs"] .ui-logo-wordmark {
+  .ui-logo-lockup[data-size="xs"] .ui-logo-wordmark,
+  .ui-logo-lockup[data-size="xs"] .ui-logo-product-suffix {
     font-size: var(--logo-wordmark-font-size-xs);
   }
 
-  .ui-logo-lockup[data-size="sm"] .ui-logo-wordmark {
+  .ui-logo-lockup[data-size="sm"] .ui-logo-wordmark,
+  .ui-logo-lockup[data-size="sm"] .ui-logo-product-suffix {
     font-size: var(--logo-wordmark-font-size-sm);
   }
 
-  .ui-logo-lockup[data-size="lg"] .ui-logo-wordmark {
+  .ui-logo-lockup[data-size="lg"] .ui-logo-wordmark,
+  .ui-logo-lockup[data-size="lg"] .ui-logo-product-suffix {
     font-size: var(--logo-wordmark-font-size-lg);
   }
 
@@ -277,6 +280,49 @@
   .ui-logo-lockup[data-mark="godx"] .ui-logo-wordmark,
   .ui-logo-lockup[data-tone="success"] .ui-logo-wordmark {
     color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))));
+  }
+
+  /* ── The PRODUCT SUFFIX — "GoDX | ID" (gh#649) ─────────────────────────────────────────────
+   * ONE master, one token system. The suffix is the SAME artwork as `mark="godx-lockup"` above
+   * plus TEXT; it is not a second lockup file. Why text and not drawn artwork, with the
+   * measurements: tokens/components/logo.css · "The PRODUCT SUFFIX".
+   *
+   * The rule is a `::before`, not an element. It is pure decoration with no text, so a DOM node
+   * would add nothing to the accessible name and one more child for every consumer snapshot to
+   * carry. As a pseudo-element it also inherits the suffix's own font-size, which is what lets
+   * --logo-divider-height be one `1em` for all four tiers instead of a per-tier ramp. (The word
+   * BREAK the rule implies is not free, though — the lockup emits an sr-only node for it; see
+   * `suffixNamePrefix` in components/general/logo.tsx.)
+   *
+   * TWO GAPS, BOTH TOKENS. Mark/wordmark → rule is the lockup's own `gap`
+   * (--logo-wordmark-gap); rule → suffix text is --logo-product-suffix-gap. They default to the
+   * same --space-2, so the rule sits optically centred in the break, and a service that wants an
+   * airier split moves the second without disturbing the mark↔wordmark pair.
+   *
+   * Logical properties throughout (`inline-size`/`block-size`, `gap`), so an RTL lockup puts the
+   * suffix on the start side and the rule flips with it — no `left`/`right` to re-specify. */
+  .ui-logo-lockup .ui-logo-product-suffix {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--logo-product-suffix-gap);
+    font-family: var(--logo-wordmark-font-family, var(--font-family-display));
+    font-size: var(--logo-wordmark-font-size-md);
+    font-weight: var(--logo-product-suffix-font-weight);
+    letter-spacing: var(--logo-wordmark-letter-spacing);
+    line-height: 1;
+    color: hsl(var(--logo-product-suffix-color, var(--foreground)));
+    white-space: nowrap;
+  }
+
+  .ui-logo-lockup .ui-logo-product-suffix::before {
+    content: "";
+    flex: 0 0 auto;
+    inline-size: var(--logo-divider-width);
+    block-size: var(--logo-divider-height);
+    border-radius: var(--logo-divider-width);
+    background: hsl(
+      var(--logo-divider-color, var(--logo-godx-ink-color)) / var(--logo-divider-alpha)
+    );
   }
 }
 

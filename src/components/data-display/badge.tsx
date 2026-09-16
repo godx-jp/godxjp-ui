@@ -217,9 +217,29 @@ export function Badge({
         ? resolvedChildren
         : undefined;
 
+  /*
+   * AN ACCESSIBLE NAME NEEDS A ROLE THAT ACCEPTS ONE (gh#643, found by check:frame-axe).
+   *
+   * A badge is a bare `<div>`, whose implicit role is `generic` — and ARIA 1.2 PROHIBITS
+   * `aria-label` / `aria-labelledby` there. Because the prop arrives through `...props`, JSX
+   * accepted it, the attribute rendered, and the name was dropped on the floor by every screen
+   * reader while axe scored it `aria-prohibited-attr`. 21 nodes across the showcases, every one of
+   * them a badge trying to say something longer than the two words it shows.
+   *
+   * `role="img"` is the role for a compact element that stands in for a longer text alternative,
+   * and it makes the name the caller already wrote actually announce.
+   *
+   * THREE THINGS IT DELIBERATELY DOES NOT DO: it never overrides a `role` the caller passed; it
+   * stays out of the way when there is no name to carry; and it leaves a REMOVABLE badge alone,
+   * because `role="img"` would take the remove button out of the accessibility tree with it.
+   */
+  const named = props["aria-label"] != null || props["aria-labelledby"] != null;
+  const nameRole = named && props.role === undefined && !onRemove ? "img" : undefined;
+
   return (
     <Element
       data-slot="badge"
+      role={nameRole}
       data-tone={tinted ? undefined : resolvedTone}
       data-tinted={tinted ? "" : undefined}
       data-shape={shape ?? "default"}

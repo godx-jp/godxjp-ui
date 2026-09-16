@@ -15,16 +15,20 @@ import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
  *   OUTLINE `outline: ${--focus-outline-weight} solid ${--primary-border}; outline-offset: 1`.
  *
  * That default is AA on a field and, measured rather than assumed, is NOT AA on the outline form:
- * `--primary-border` for this seed is #6dc0e3, which reaches 2.00:1 against the page. The stricter
+ * `--primary-border` for this seed is #a66de3, which reaches 3.49:1 against the page but only
+ * 2.92:1 on an accent panel — i.e. not on every surface a control sits on. The stricter
  * indicator is reached by raising ONE knob — `--focus-ring-weight` — with the mark taking the focus
  * hue rather than `--primary-border`; the second half of this file is the gate on that.
  *
  * THE TRAP THIS FILE STILL EXISTS TO CLOSE. A halo that soft is decoration. Measured against this
- * palette, a primary tint composited over the page reaches only 1.18:1 at alpha 0.11 and still
- * only 2.84:1 at alpha 0.7 — it can NEVER satisfy WCAG 2.2 SC 1.4.11's 3:1, at any value of the
- * knob. So the moment someone reads "the focus mark is a soft glow" and deletes the opaque half of
- * the AAA appearance, every control loses its indicator while still looking focused to a sighted
- * reviewer on a bright monitor.
+ * palette, a primary tint composited over the page reaches 1.23:1 at the shipped alpha of 0.11 and
+ * does not reach WCAG 2.2 SC 1.4.11's 3:1 until alpha 0.53 light / 0.85 dark — i.e. not until it
+ * has stopped being a halo and become a second solid mark. So the moment someone reads "the focus
+ * mark is a soft glow" and deletes the opaque half of the AAA appearance, every control loses its
+ * indicator while still looking focused to a sighted reviewer on a bright monitor. (Under the
+ * pre-v2.3 blue seed the tint could not reach 3:1 at ANY alpha; the violet can, at an opacity no
+ * one would call a glow, which is why the test below asserts the THRESHOLD rather than
+ * impossibility.)
  *
  * Surfaces are checked the thorough way, for the same reason input-boundary-contrast.test.ts
  * gives: a value that passes on a card and fails inside a filter bar is not a line anyone can
@@ -91,15 +95,15 @@ const DERIVED = {
     /** `--ring` resolves here through `var(--primary)`; the light seed is unchanged by derivation.
      *  GoDX violet since brand identity v2.3 — the kit names the same value for core.focus.ring. */
     ring: "#7a00ff",
-    controlOutline: "rgba(0,182,228,0.11)",
+    controlOutline: "rgba(109,0,228,0.11)",
     colorErrorOutline: "rgba(166,22,11,0.09)",
-    primaryBorder: "#6dc0e3",
+    primaryBorder: "#a66de3",
   },
   dark: {
     ring: "#dcbcff",
-    controlOutline: "rgba(61,175,254,0.29)",
+    controlOutline: "rgba(153,61,254,0.29)",
     colorErrorOutline: "rgba(253,20,53,0.06)",
-    primaryBorder: "#204158",
+    primaryBorder: "#3b2058",
   },
 } as const;
 
@@ -216,11 +220,15 @@ describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, s
     expect(contrast(ringOf(theme), background)).toBeGreaterThanOrEqual(NON_TEXT);
   });
 
-  it("the OUTLINE hue does NOT clear 3:1 — recorded, because it is the price of the default", () => {
+  it("the OUTLINE hue does NOT clear 3:1 on every surface — the price of the default", () => {
     // Not an aspiration and not a bug report: `colorPrimaryBorder` is a light tint by
-    // construction. If that hue is ever retuned, this test fails and the axis stops being needed.
+    // construction. The hue WAS retuned (gh#648, blue seed → GoDX violet) and the number moved:
+    // on the page the light tint now reads 3.49:1, where the blue one read 2.00:1. The claim is
+    // therefore measured on the WORST surface a control sits on rather than on the page alone —
+    // an accent panel, where it is 2.92:1 light and 1.03:1 dark. A mark that clears the criterion
+    // on a card and fails it inside a filter bar is not an indicator, so the axis stands.
     const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
-    expect(contrast(primaryBorder, background)).toBeLessThan(NON_TEXT);
+    expect(contrast(primaryBorder, hslToRgb(hsl(body, "accent")))).toBeLessThan(NON_TEXT);
   });
 
   it("both positions of the switch exist, and the hue is the focus hue", () => {
@@ -479,9 +487,13 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     expect(contrast(ring, background)).toBeGreaterThanOrEqual(contrast(input, background));
   });
 
-  it("the outline hue would NOT have cleared it — recorded, not assumed", () => {
+  it("the outline hue would NOT have cleared it — on every surface, not just the page", () => {
+    // The same measurement as the one above, against the same surface list the ring is held to:
+    // since gh#648 re-hued the tier, `--primary-border` clears 3:1 on the page and still fails on
+    // an accent panel, so the ring remains the only hue that carries the criterion everywhere.
     const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
-    expect(contrast(primaryBorder, background)).toBeLessThan(NON_TEXT);
+    const worst = Math.min(...SURFACES.map(([, surface]) => contrast(primaryBorder, surface())));
+    expect(worst).toBeLessThan(NON_TEXT);
   });
 
   it("every per-component ALPHA rebind keeps the mark opaque", () => {

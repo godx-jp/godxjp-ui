@@ -18,8 +18,8 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 | Behaviour primitives                                               | **Radix**                                       | already the implementation — 193 references                                                                                                          |
 | Component composition shape                                        | **shadcn**                                      | already the structural convention — 23 references                                                                                                    |
 | Component taxonomy / grouping                                      | **Ant Design** groups                           | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed    |
-| Colour foundation                                                  | **SmartHR**                                     | already the palette source — `--primary` = SmartHR MAIN `#0071bd`, `--foreground` = TEXT_BLACK, `--border` = BORDER                                  |
-| **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold — see below |
+| Colour foundation                                                  | **SmartHR**, brand roles aside                  | the NEUTRAL spine is SmartHR's — `--foreground` = TEXT_BLACK, `--border` = BORDER. `--primary` was SmartHR MAIN `#0071bd` until identity v2.3 took the brand roles back: it is GoDX violet `#7A00FF` today |
+| **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold, and a fifth holds it to the seed's HUE (gh#648) — see below |
 | **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                     | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves                    |
 | **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency)   | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                                          |
 | **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                  | **NEW — this decision**                                                                                                                              |
@@ -385,17 +385,25 @@ the property actually being sold.
 suite — that is CI's job on the PR), and if a threshold breaks the value is
 wrong. Do not relax the threshold.
 
-**The four overrides that existed even while a generator did** — the clearest evidence the
-algorithm was never the real authority. Stepping an interactive fill towards the label sitting on
-it lands under 4.5:1, so those four states take the same ramp at the same step size in the
-opposite direction:
+**The primary interaction ramp, and the one override left in it.** The light states are TAKEN from
+the identity v2.3 kit rather than computed — the kit publishes its own violet ramp — and each is
+snapped to the seed's hue (1.008:1 / 1.010:1 from the kit value, i.e. the same colour). Dark takes
+the kit's `action.primary.hover` and then reflects the pressed step, because the dark seed sits at
+86.9% L and the conventional step runs out of LIGHTNESS rather than out of contrast:
 
-| token                    | conventional step | shipped           |
-| ------------------------ | ----------------- | ----------------- |
-| light `--primary-hover`  | #208bc9 · 3.69:1  | #005596 · 7.53:1  |
-| light `--primary-active` | #005596 · 7.53:1  | #003c70 · 10.97:1 |
-| dark `--primary-hover`   | #61b6e8 · 7.92:1  | #61b6e8 · 7.92:1  |
-| dark `--primary-active`  | #2f76a6 · 3.60:1  | #8bd0f3 · 10.50:1 |
+| token                    | conventional step        | shipped                            |
+| ------------------------ | ------------------------ | ---------------------------------- |
+| light `--primary-hover`  | kit #6400D4              | #6500d4 · 8.23:1                   |
+| light `--primary-active` | kit #5200B0              | #5400b0 · 10.31:1                  |
+| dark `--primary-hover`   | kit #E8DAFF              | #ecdaff · 13.51:1                  |
+| dark `--primary-active`  | #fbf7ff · 1.056:1 from white | #cd9fff · 8.41:1 (sign flipped) |
+
+**The ratio is blind to hue, and that cost a release (gh#648).** Identity v2.3 moved the seed 63
+degrees and this tier stayed on the blue it was derived from: 24.0.0 and 24.1.0 shipped a primary
+button that was violet at rest and navy on hover, with all four contrast suites green throughout,
+because #005596 clears 7.53:1 on the primary label whatever the seed underneath it is. A threshold
+is still the right authority — it just answers one axis of two.
+`src/tokens/__tests__/derived-hue-lock.test.ts` answers the other, and asserts nothing else.
 
 **What was deliberately never derived, and why — each a measurement, not a preference:**
 
@@ -482,11 +490,16 @@ the **field** indicator on every control — one hairline (1px) in the focus hue
 `--control-outline` halo — rather than the heavy 3px outline form. Measured, in Chromium, on
 `ql.test` after the transition settles:
 
-| control                    | switch off                                           | switch on                                                             |
-| -------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
-| Input / Select trigger     | border `1px rgb(144,135,127)`, resting shadow intact | border `1px rgb(0,113,189)` + `rgba(0,182,228,0.11) 0 0 0 2px`        |
-| Button (primary)           | outline `0px`, resting shadow intact                 | `outline: 1px solid rgb(0,113,189)` @ `0px` + same halo               |
-| Sidebar nav row / list row | outline `0px`                                        | `outline: 1px solid rgb(0,113,189)` @ **`-1px`** (inset into the row) |
+| control                    | switch off                                           | switch on                                                      |
+| -------------------------- | ---------------------------------------------------- | -------------------------------------------------------------- |
+| Input / Select trigger     | border `1px rgb(144,135,127)`, resting shadow intact | border `1px` of `--ring` + `--control-outline` halo `0 0 0 2px` |
+| Button (primary)           | outline `0px`, resting shadow intact                 | `outline: 1px solid` `--ring` @ `0px` + same halo              |
+| Sidebar nav row / list row | outline `0px`                                        | `outline: 1px solid` `--ring` @ **`-1px`** (inset into the row) |
+
+The GEOMETRY above is the Chromium measurement; the COLOUR is named by token rather than pinned as
+a hex, because it follows the seed and the hexes this table used to carry were the pre-v2.3 blue —
+the same staleness gh#648 found one tier down. Today `--ring` resolves to rgb(122,0,255) light /
+rgb(220,188,255) dark and the halo to `rgba(109,0,228,0.11)` / `rgba(153,61,254,0.29)`.
 
 The field pair is the recoloured boundary plus the halo, exactly as the convention specifies for
 this seed. The nav row insets its mark into its own shape rather than wrapping an already-shaded surface,
@@ -497,10 +510,11 @@ after: the field form only recolours a border and an `outline` is painted outsid
 Input, Save and Delete all stay at 32.00px.
 
 **Two criteria, and only one is met by thickness alone.** SC 1.4.11 (AA, non-text contrast) is about
-COLOUR — the 1px mark measures 5.05:1 light and 7.07:1 dark on every surface a control sits on, so
-the light weight costs nothing there. `--primary-border` (#6dc0e3) measures **2.00:1 light /
-1.66:1 dark** and could not have satisfied it at any thickness, which is why the on-state takes the
-focus hue instead — the single place it departs from the outline form. SC 2.4.13 Focus Appearance
+COLOUR — the 1px mark measures at worst 5.30:1 light and 6.87:1 dark across every surface a control
+sits on (an accent panel in both themes), so the light weight costs nothing there. `--primary-border`
+(#a66de3) reaches 3.49:1 on the page and **2.92:1 light / 1.03:1 dark on that same accent panel**, so
+it still could not satisfy the criterion everywhere at any thickness, which is why the on-state takes
+the focus hue instead — the single place it departs from the outline form. SC 2.4.13 Focus Appearance
 (AAA) additionally wants a 2px perimeter; the on-state does not target it, and
 `--focus-outline-weight: var(--stroke-lg)` restores the 3px weight if a customer needs the area
 clause.

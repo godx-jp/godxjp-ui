@@ -62,6 +62,17 @@
   [data-slot="heading"][data-tone="muted"] {
     color: hsl(var(--muted-foreground));
   }
+  /* THE TONE FOR TEXT THAT IS NOT ON A PAGE SURFACE (gh#643).
+   *
+   * Every other tone above is an absolute token, so a `Text` dropped onto a coloured surface — a
+   * brand fill, a tinted calendar block, a status band — repaints itself in the PAGE's ink and
+   * loses to the surface. Measured at 2.45:1 on `bg-primary`, on this package's own colour-token
+   * page. `inherit` hands the decision back to the surface, which is the only thing that knows its
+   * own paired `*-foreground`. */
+  [data-slot="text"][data-tone="inherit"],
+  [data-slot="heading"][data-tone="inherit"] {
+    color: inherit;
+  }
   [data-slot="text"][data-tone="primary"],
   [data-slot="heading"][data-tone="primary"] {
     color: hsl(var(--primary));

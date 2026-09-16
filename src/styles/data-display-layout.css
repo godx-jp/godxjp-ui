@@ -800,14 +800,42 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  /* Zero, because each dot now carries a 24px target box of its own — see `.ui-carousel-dot`. A
+   * gap on top of that would only add dead space between adjacent targets. */
+  gap: 0;
   padding-top: var(--space-4);
 }
 
+/*
+ * THE BUTTON IS THE TARGET; THE DOT IS THE PAINT (gh#643, found by check:frame-axe).
+ *
+ * The dot measured 20×8 — a slide selector a WCAG 2.2 SC 2.5.8 AA audit fails outright, and the
+ * row's `--space-2` gap put each dot inside its neighbours' 24px circles, so the spacing exception
+ * did not save it either. The `--space-2` dot IS the visual idea, so growing the paint is not the
+ * fix; growing the BUTTON is, with the paint moved into a pseudo-element that keeps its old size.
+ *
+ * A centred `::after` carrying only the target was tried first — the same trick
+ * `.ui-control-inline-affix-action` uses, and correct by the standard, since the pseudo-element
+ * takes the pointer. axe does not read it: it measures `getBoundingClientRect()` on the element,
+ * which cannot see a pseudo-element. The rule still fired at 20×8. So the box itself grows.
+ *
+ * Pitch: 8px dot + 8px gap = 16px before, 24px box + 0 gap = 24px now. The gap goes to zero
+ * deliberately — adjacent targets with no dead space between them, rather than a wider row.
+ */
 .ui-carousel-dot {
+  display: grid;
+  min-inline-size: var(--touch-target-min);
+  min-block-size: var(--touch-target-min);
+  flex-shrink: 0;
+  place-items: center;
+  background: transparent;
+}
+
+.ui-carousel-dot::after {
+  content: "";
+  display: block;
   width: var(--space-2);
   height: var(--space-2);
-  flex-shrink: 0;
   border-radius: var(--radius-pill);
   background: hsl(var(--border));
   transition:
@@ -815,11 +843,11 @@
     background-color 150ms ease;
 }
 
-.ui-carousel-dot:hover {
+.ui-carousel-dot:hover::after {
   background: hsl(var(--muted-foreground));
 }
 
-.ui-carousel-dot[data-active] {
+.ui-carousel-dot[data-active]::after {
   width: var(--space-5);
   background: hsl(var(--primary));
 }
@@ -829,7 +857,7 @@
   flex-direction: column;
 }
 
-.ui-carousel[data-orientation="vertical"] .ui-carousel-dot[data-active] {
+.ui-carousel[data-orientation="vertical"] .ui-carousel-dot[data-active]::after {
   width: var(--space-2);
   height: var(--space-5);
 }

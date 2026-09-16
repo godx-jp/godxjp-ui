@@ -38,8 +38,17 @@ export type AvatarShapeProp = "circle" | "square";
 export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 
 /** Text colour intent — maps to semantic foreground tokens (no raw palette). */
+/**
+ * `inherit` is the one that is NOT a colour: it takes whatever the surface already set (gh#643).
+ *
+ * Every other member paints an ABSOLUTE token, which is right on a page surface and wrong the
+ * moment the text sits on a coloured one — a brand fill, a tinted calendar block, a status band.
+ * There was no way to say "use this surface's own foreground", so `Text` on `bg-primary` painted
+ * `--foreground` over `--primary` and measured 2.45:1. Found by check:frame-axe on this package's
+ * OWN colour-token page, of all places, and on two showcases besides.
+ */
 export type TextToneProp =
-  "default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info";
+  "default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit";
 
 /** Font weight — the reference-design canon is THREE weights only: `regular` (400 body), `medium` (500
  *  heading/label), `bold` (700 emphasis). 600/`semibold` is forbidden. */

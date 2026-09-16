@@ -232,7 +232,11 @@ function GroupHeaderRow({
           size="sm"
           onClick={onToggle}
           aria-expanded={open}
-          aria-controls={`grp-${group.id}`}
+          /* NO `aria-controls` (gh#643, found by check:frame-axe). It pointed at `grp-<id>`, and
+             no element in this table ever carried that id — axe: `aria-valid-attr-value`, 5 nodes.
+             It cannot simply be added, either: what this button expands is a RUN OF SIBLING `<tr>`s
+             with no single container to name. `aria-expanded` alone is complete and valid here —
+             `aria-controls` is optional, and a broken one is worse than none. */
           className="h-7 font-medium"
         >
           <Chevron className="text-muted-foreground size-4" aria-hidden="true" />

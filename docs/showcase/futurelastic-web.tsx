@@ -63,7 +63,15 @@ const THEME = `
 [data-tenant="futurelastic"] .fl-section { padding-block: 5.5rem; }
 [data-tenant="futurelastic"] .fl-navbar { position: sticky; top: 0; z-index: 30; background: hsl(var(--background) / 0.8);
   backdrop-filter: blur(12px); border-bottom: 1px solid hsl(var(--border)); }
-[data-tenant="futurelastic"] .fl-navbar-inner { height: 68px; display: flex; align-items: center; gap: 2rem; }
+/* REFLOW, NOT DECORATION (gh#643). This row was a fixed 68px flex line with no wrap, so at 320 its
+   content ran to x=569.6 inside a 320px nav: every link painted OUTSIDE the navbar's own
+   translucent box, over the page behind it, and axe read the white labels against the light
+   isolate background at 1.01:1 — 2 nodes at 320, 1 at 375. It was never a contrast bug; it was
+   WCAG 2.2 SC 1.4.10 reflow, reported by the contrast rule because that is what an overflowing
+   element looks like from the outside. min-height rather than height, so a wrapped row may be
+   taller than one line and the language cluster stops overflowing the bar vertically (measured at
+   320: it was 148.3px tall, starting at y=-40.2). */
+[data-tenant="futurelastic"] .fl-navbar-inner { min-height: 68px; display: flex; align-items: center; flex-wrap: wrap; column-gap: 2rem; row-gap: 0.75rem; padding-block: 0.75rem; }
 [data-tenant="futurelastic"] .fl-brand { font-family: var(--font-family-display); font-weight: 700; font-size: 1.25rem; color: hsl(var(--foreground)); }
 [data-tenant="futurelastic"] .fl-eyebrow { font-family: var(--font-family-body); font-weight: 600; font-size: 0.75rem;
   letter-spacing: 0.18em; text-transform: uppercase; color: hsl(var(--primary)); }
@@ -122,14 +130,14 @@ function Navbar() {
         <span className="fl-brand">
           futur<span className="fl-gold">elastic</span>
         </span>
-        <Flex direction="row" gap="xs" align="center">
+        <Flex direction="row" gap="xs" align="center" wrap>
           {links.map((l, i) => (
             <Button key={l} variant="ghost" size="sm" aria-current={i === 0 ? "page" : undefined}>
               {l}
             </Button>
           ))}
         </Flex>
-        <Flex direction="row" gap="sm" align="center" className="ms-auto">
+        <Flex direction="row" gap="sm" align="center" wrap className="ms-auto">
           <Text as="span" size="xs" tone="muted">
             EN · 日本語 · VI
           </Text>

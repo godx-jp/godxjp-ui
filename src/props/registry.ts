@@ -1049,6 +1049,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "TitleProp",
       "ClassNameProp",
       {
+        field: "brand",
+        local: true,
+        reason:
+          "The product's own identity artwork (a Logo lockup), replacing the package mark AND the painted h1; a single element, because the block marks it decorative by merging aria-hidden onto it.",
+      },
+      {
         field: "requester",
         local: true,
         reason:

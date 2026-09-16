@@ -125,6 +125,69 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Product suffix — 「GoDX | ID」</CardTitle>
+            <CardDescription>
+              productSuffix は製品名を lockup の内側に置きます。マスターは
+              mark=&quot;godx-lockup&quot; の 1 つだけで、区切り線・その前後の間隔・size
+              スケール・light/dark
+              の切替はすべてパッケージのトークンが所有します（--logo-divider-color / -width /
+              -height / -alpha、--logo-product-suffix-gap / -color /
+              -font-weight）。製品名は「描いた図形」ではなく wordmark と同じ組版
+              （--logo-wordmark-font-size-* /
+              -font-family）です。別座標系のマスターを増やさず、製品が増えても
+              リリースが要らず、ローカライズできるためです。 区切り線の色はロゴタイプの ink
+              （--logo-godx-ink-color）の 0.25 alpha で、light では #c1c2cb（1.74:1、 公式キットの
+              #c5c8d6 = 1.64:1 とほぼ同じ）、dark では #515150（2.30:1）。 キットの固定値と違い dark
+              の対応があります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* size は suffix にも効く — マークもロゴタイプも製品名も同じティアで動きます。 */}
+              <Flex direction="row" align="center" wrap gap="lg">
+                <Logo mark="godx-lockup" productSuffix="ID" size="xs" />
+                <Logo mark="godx-lockup" productSuffix="ID" size="sm" />
+                <Logo mark="godx-lockup" productSuffix="ID" />
+                <Logo mark="godx-lockup" productSuffix="ID" size="lg" />
+              </Flex>
+              {/* 将来の製品名も同じ API。追加のアセットもリリースも要りません。 */}
+              <Flex direction="row" align="center" wrap gap="lg">
+                <Logo mark="godx-lockup" productSuffix="Console" />
+                <Logo mark="godx-lockup" productSuffix="Admin" />
+                <Logo mark="godx-lockup" productSuffix="管理コンソール" />
+              </Flex>
+              {/* 描かれた "GoDX" は sr-only テキストで補われ、名前は "GoDX ID" になります。
+               * role="img" を使わないのは、asChild でリンクにしたとき link ロールを
+               * 上書きしてしまうためです。 */}
+              <Flex direction="col" gap="sm">
+                <Logo mark="godx-lockup" productSuffix="ID" size="lg" />
+                <Text size="2xs" mono tone="muted">
+                  {`mark="godx-lockup" productSuffix="ID" → accessible name "GoDX ID"`}
+                </Text>
+              </Flex>
+              {/* 組版の wordmark と併用すると、suffix はその後ろに入ります。 */}
+              <Flex direction="col" gap="sm">
+                <Logo glyph="c" wordmark="CoreBooks" productSuffix="Admin" />
+                <Text size="2xs" mono tone="muted">
+                  {`glyph + wordmark + productSuffix → name "CoreBooks Admin"`}
+                </Text>
+              </Flex>
+              {/* suffix がノードでも名前は壊れません。label は従来どおり上書きできます。 */}
+              <Logo
+                mark="godx-lockup"
+                productSuffix={<Text size="xs">ID</Text>}
+                label="GoDX ID ホーム"
+              />
+              {/* リンク化も同じ。lockup そのものが <a> になります。 */}
+              <Logo asChild mark="godx-lockup" productSuffix="ID">
+                <a href="#logo-product-suffix" />
+              </Logo>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

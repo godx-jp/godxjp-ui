@@ -10,6 +10,7 @@ import {
 
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
+import { VisuallyHidden } from "./visually-hidden";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
 export type LogoTone = "primary" | "success";
@@ -52,6 +53,22 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * (a string, or a node when the name needs its own markup).
    */
   wordmark?: React.ReactNode;
+  /**
+   * The PRODUCT name that follows the brand, set off by the lockup's own rule — "GoDX | ID",
+   * "GoDX | Console", "GoDX | Admin" (gh#649). Pass the localized product name; it renders after
+   * `wordmark` when both are set.
+   *
+   * It is TEXT, in the lockup's own type scale, not artwork. The kit's flattened "GoDX | ID" file
+   * is a SECOND master (`0 0 1234 242` against this package's `30 30 871.29 182`) with its own
+   * hardcoded ink, its own global `id="title"`/`id="desc"` and a `#C5C8D6` rule; drawing the
+   * suffix would mean one more of those, one more dark variant and one more release per product
+   * name, and no localization at all. The brand's own construction — the G, the arrow, the "GoDX"
+   * logotype — stays untouched inside `mark="godx-lockup"`; a product name is not part of it.
+   *
+   * The rule's colour/width/height and the gap around it are `--logo-divider-*` /
+   * `--logo-product-suffix-*` tokens, so a service retunes them once rather than per page.
+   */
+  productSuffix?: React.ReactNode;
   /**
    * Accessible name for the mark. When set, the logo is exposed to assistive tech as an image with
    * this name; when omitted the mark is decorative (`aria-hidden`) — the correct default when a
@@ -300,6 +317,13 @@ function MarkArtwork({ mark, glyph }: { mark: LogoMark; glyph: React.ReactNode }
 }
 
 /**
+ * The logotype the `godx-lockup` MASTER draws as paths. Not a translatable string: it is the
+ * registered brand name, identical in every locale, and it exists here only so a lockup whose
+ * brand half is artwork can still put that half into its accessible name (see `drawnWordmark`).
+ */
+const GODX_LOGOTYPE_TEXT = "GoDX";
+
+/**
  * Logo — the product brand-mark box: a glyph on the primary fill, or (with `wordmark`) the full
  * mark + wordmark LOCKUP. Size, radius, per-tier font-size, the wordmark's
  * face/weight/tracking/colour and the mark↔wordmark gap are all tokens.
@@ -312,6 +336,7 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
       size = "md",
       tone = "primary",
       wordmark,
+      productSuffix,
       label,
       asChild,
       children,
@@ -321,7 +346,48 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
     ref,
   ) => {
     const hasWordmark = wordmark !== undefined && wordmark !== null && wordmark !== false;
+    const hasProductSuffix =
+      productSuffix !== undefined && productSuffix !== null && productSuffix !== false;
     const identity = { "data-mark": mark, "data-size": size, "data-tone": tone } as const;
+
+    /*
+     * THE HALF OF THE NAME THAT IS DRAWN.
+     *
+     * `mark="godx-lockup"` paints "GoDX" as PATHS, so that word is not in the DOM and no assistive
+     * technology can reach it. Harmless while the lockup stands alone — the whole thing is
+     * `aria-hidden` and neighbouring text names the page — but the moment a product suffix is
+     * added, the only readable text in the lockup is the suffix, and a screen reader announces
+     * "ID" for a brand that reads "GoDX ID" on screen.
+     *
+     * So the drawn word is restored as VISUALLY HIDDEN TEXT, not as `role="img"` + `aria-label`.
+     * Both give the right name here; only one survives `asChild`. `role` on a borrowed `<a>`
+     * REPLACES the link role, so the lockup-as-link — the shape this component grew `asChild`
+     * for — would stop being announced as a link at all. Hidden text leaves the element's own
+     * role alone and simply joins the name computation, exactly as the typeset `wordmark` already
+     * does ("the wordmark text IS the accessible name"). It is also `.sr-only`, i.e. absolutely
+     * positioned, so it is not a flex item and adds no gap to the lockup row.
+     *
+     * AND IT CARRIES THE WORD BREAK, WHICH IS WHY IT IS RENDERED EVEN WHEN THE WORDMARK IS TEXT.
+     * The visible break is the divider, and the divider is a `::before` with no text, so nothing
+     * in the DOM says "two words". Measured: without this node the lockup is named "GoDXID", and
+     * `<Logo glyph="c" wordmark="CoreBooks" productSuffix="Admin" />` "CoreBooksAdmin".
+     *
+     * The break is a BLOCK, not a trailing space in the text. Accessible-name computation flattens
+     * each child's result (leading and trailing white space trimmed) and then joins the children
+     * with a separator only where the child is not inline — accname 1.2 §4.3.2 step 2.F.ii — so a
+     * `"GoDX "` text node loses its space and re-names the lockup "GoDXID". `display: block` is
+     * the mechanism the algorithm actually reads, and it costs no layout: `.sr-only` is absolutely
+     * positioned, so the node is not a flex item either way. It is an inline style rather than a
+     * class because it is what makes the NAME correct, and it must hold wherever the component is
+     * rendered — including in a test environment that loads no stylesheet.
+     *
+     * GODX_LOGOTYPE_TEXT is not routed through `t()`: it is the registered brand name the master
+     * draws, a proper noun identical in en/ja/vi that must not be translated. The PRODUCT name is
+     * the consumer's to localize, which is why it arrives as a prop. And an explicit `label` still
+     * wins — `role="img"` makes every descendant presentational, hidden text included.
+     */
+    const drawnWordmark = mark === "godx-lockup" && !hasWordmark;
+    const suffixNamePrefix = drawnWordmark ? GODX_LOGOTYPE_TEXT : "";
 
     /**
      * Dựng gốc: `<span>` như thường, hoặc thẻ đi mượn khi `asChild`. Ruột của thẻ mượn bị thay
@@ -349,7 +415,7 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
     // Lockup: the ROOT is the mark + wordmark row (ref/className/...props land on it, so the
     // consumer positions one element). The mark is always decorative here — the wordmark text is
     // the accessible name unless `label` overrides it (role="img" makes descendants presentational).
-    if (hasWordmark) {
+    if (hasWordmark || hasProductSuffix) {
       return renderRoot(
         {
           "data-slot": "logo-lockup",
@@ -368,9 +434,24 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
            * reads exactly this attribute. The wordmark is typeset identity, not readable UI copy —
            * the canonical GoDX emerald (--brand, #009766) is the brand's colour, not a choice the
            * library may darken. */}
-          <span data-slot="logo-wordmark" data-logotype className="ui-logo-wordmark">
-            {wordmark}
-          </span>
+          {hasWordmark ? (
+            <span data-slot="logo-wordmark" data-logotype className="ui-logo-wordmark">
+              {wordmark}
+            </span>
+          ) : null}
+          {hasProductSuffix ? (
+            <VisuallyHidden style={{ display: "block" }}>{suffixNamePrefix}</VisuallyHidden>
+          ) : null}
+          {/* The rule that separates brand from product is this element's `::before` — decoration
+           * with no name, so it stays out of the DOM and out of the accessibility tree
+           * (styles/logo-layout.css). NOT `data-logotype`: unlike the wordmark, the suffix is a
+           * readable product name set in UI ink (--foreground), so it owes SC 1.4.3 in full and
+           * must stay inside check:contrast's sample rather than claim the logotype exemption. */}
+          {hasProductSuffix ? (
+            <span data-slot="logo-product-suffix" className="ui-logo-product-suffix">
+              {productSuffix}
+            </span>
+          ) : null}
         </>,
       );
     }

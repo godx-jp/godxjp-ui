@@ -681,7 +681,10 @@ export type AuthFooterProp = {
  * (`--auth-identity-gap` / `--auth-requester-*`) — a consumer never re-centres or re-spaces it.
  */
 export type AuthIdentityProp = {
-  /** Primary auth heading, rendered as the page `h1`. */
+  /**
+   * Primary auth heading, rendered as the page `h1`. With `brand` set it is still the `h1` and
+   * still the block's accessible NAME; it simply stops being painted — see `brand`.
+   */
   title: ReactNode;
   /**
    * Brand artwork rendered in the mark's place, for a service whose design supplies a real
@@ -692,6 +695,23 @@ export type AuthIdentityProp = {
    * The node takes the MARK's slot only: `data-slot="auth-identity"`, the `.ui-auth-identity`
    * spacing and the `h1` contract are untouched, so a consumer swapping artwork does not fork
    * the identity block to do it. Pass an inline `<svg>`, never a bitmap.
+   *
+   * IT IS RENDERED DECORATIVE, and that is measured rather than assumed (gh#652). The mark it
+   * replaces was always `aria-hidden` — the `h1` names this block — but a real LOCKUP is not a
+   * mark: `Logo mark="godx-lockup" productSuffix="ID"` puts "GoDX ID" into the accessibility tree
+   * as real text (gh#649's sr-only logotype plus the suffix), so left exposed beside an `h1` named
+   * "GoDX ID" the block announces the product TWICE — measured "GoDXIDGoDX ID" against the
+   * "GoDX ID" it has announced since it shipped. `aria-hidden` is merged ONTO the supplied element
+   * through `Slot` rather than onto a wrapper: a wrapper would be the flex item, and an
+   * `inline-flex` lockup inside a block box is back on a LINE BOX, whose strut descender lifts the
+   * mark a few px — the measured defect `Logo`'s own `asChild` prop exists to remove. A `brand`
+   * that is not a single element cannot take a merged prop and is wrapped instead; artwork always
+   * is one, which is why the doc above says to pass an inline `<svg>`.
+   *
+   * Keep `brand` NON-INTERACTIVE: `aria-hidden` over a focusable child is a WCAG failure.
+   *
+   * The painted `h1` stays. A lockup that already draws the product name therefore shows it twice
+   * on screen; that half of gh#652 is a separate decision and is not taken here.
    */
   brand?: ReactNode;
   /**

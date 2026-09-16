@@ -74,7 +74,45 @@ type TabsFrame = {
    * applied — `size` did nothing at all for that form (godx-jp/id#518).
    */
   size: TabsProp["size"];
+  /**
+   * The values a `TabsContent` has actually been DECLARED for, or `null` when a trigger is
+   * rendered with no `Tabs` root above it (then RAC's own attribute is left exactly as it is).
+   *
+   * THE DEFECT THIS EXISTS FOR, measured on `/showcase/table-view-tabs` (gh#643). `Tabs`,
+   * `TabsList` and `TabsTrigger` are three separate public exports and nothing in their types
+   * asks for a fourth, so a saved-view ribbon — a strip that swaps a grid rendered somewhere
+   * else on the page — composes exactly those three. React Aria's `useTab` then writes an
+   * unconditional `aria-controls="<id>-tabpanel-<key>"`, and with no `TabsContent` anywhere that
+   * id never enters the document: axe `aria-valid-attr-value`, 1 node at every viewport, "Invalid
+   * ARIA attribute value: aria-controls=…-tabpanel-pending". A screen reader offers the user a
+   * region to jump to and there is nothing there. Exactly one node per viewport, because
+   * `useTab` writes `'aria-controls': isSelected ? tabPanelId : undefined` (react-aria 3.52.1,
+   * `dist/private/tabs/useTab.mjs`) — an unselected tab never claims a panel, which is also why a
+   * DECLARED panel is enough here and a mounted one is not required.
+   *
+   * REJECTED — letting the caller pass its own `aria-controls`. `withDomProps` lays the caller's
+   * raw props down FIRST and RAC's merged ones second, so today the attribute cannot be
+   * overridden at all; opening that door fixes the one strip whose author knows to use it and
+   * leaves the default broken for everyone else.
+   *
+   * REJECTED — swapping the showcase to `Segmented`. It is a `radiogroup` and it is the right
+   * component for a closed set of presets, but it does not make this composition of `Tabs` valid,
+   * and the composition is published.
+   *
+   * So a trigger claims a panel only when a `TabsContent` is declared for its value.
+   */
+  panels: ReadonlySet<string> | null;
 };
+
+/**
+ * The registrar, in its own context and deliberately NOT on `TabsFrame`: the frame object changes
+ * identity every time the panel set does, and a `TabsContent` whose effect depended on that would
+ * unregister and re-register itself on every sibling's mount.
+ */
+const TabsPanelRegistryContext = React.createContext<((value: string) => () => void) | null>(null);
+
+/** One frozen empty set, so a panel-less strip never re-renders on an identity change. */
+const NO_PANELS: ReadonlySet<string> = new Set<string>();
 
 /**
  * The trigger's size tier, as utilities.
@@ -104,6 +142,7 @@ const TabsFrameContext = React.createContext<TabsFrame>({
   orientation: "horizontal",
   selectionSuppressed: false,
   size: "md",
+  panels: null,
 });
 
 /**
@@ -314,9 +353,23 @@ export function Tabs({
   );
   const selectionSuppressed =
     value === undefined && items != null && items.length > 0 && resolvedDefault === undefined;
+  // Which values a `TabsContent` is declared for — see `TabsFrame.panels` for the defect. Empty
+  // on the first render and filled by the panels' own mount effects, so a strip that HAS panels
+  // pays one extra render at mount and a strip that has none never claims a panel at all.
+  const [panels, setPanels] = React.useState<ReadonlySet<string>>(NO_PANELS);
+  const registerPanel = React.useCallback((panelValue: string) => {
+    setPanels((prev) => (prev.has(panelValue) ? prev : new Set(prev).add(panelValue)));
+    return () =>
+      setPanels((prev) => {
+        if (!prev.has(panelValue)) return prev;
+        const next = new Set(prev);
+        next.delete(panelValue);
+        return next;
+      });
+  }, []);
   const frame = React.useMemo<TabsFrame>(
-    () => ({ orientation: resolvedOrientation, selectionSuppressed, size }),
-    [resolvedOrientation, selectionSuppressed, size],
+    () => ({ orientation: resolvedOrientation, selectionSuppressed, size, panels }),
+    [resolvedOrientation, selectionSuppressed, size, panels],
   );
   const editable = variant === "editable-card";
 
@@ -579,151 +632,153 @@ export function Tabs({
 
   return (
     <TabsFrameContext.Provider value={frame}>
-      <AriaTabs
-        data-slot="tabs"
-        data-orientation={resolvedOrientation}
-        // The variant AS ASKED FOR. The list deliberately collapses `card`/`editable-card` into
-        // what a service theme, and a test, need to key on.
-        data-variant={variant}
-        data-placement={placement}
-        data-size={size}
-        data-centered={centered ? "true" : undefined}
-        // antd `animated` / `indicator`: both are pure PAINT, so they travel to CSS as state on
-        // the root rather than as a measured inline style the way rc-tabs' ink bar does.
-        data-animated-ink-bar={motion.inkBar ? "true" : "false"}
-        data-animated-tab-pane={motion.tabPane ? "true" : "false"}
-        data-indicator-size={indicatorSize}
-        data-indicator-align={indicatorAlign}
-        orientation={resolvedOrientation}
-        keyboardActivation={activationMode}
-        // CONTROLLED FROM THE MIRROR while the overflow menu exists, and only then. A menu item
-        // is not a tab, so choosing one cannot go through React Aria's own press path — the
-        // selection has to be pushed in. `mirroredValue` already tracks every selection change
-        // (that is what it is for), so feeding it back as `selectedKey` makes the root controlled
-        // without inventing a second source of truth. Left uncontrolled otherwise: RAC's
-        // `useTabListState` re-selects a key whenever nothing is selected, and the gh#175
-        // all-disabled case depends on not fighting it.
-        selectedKey={value ?? (collapsible ? mirroredValue : undefined)}
-        defaultSelectedKey={value === undefined && !collapsible ? resolvedDefault : undefined}
-        onSelectionChange={(key) => handleValueChange(String(key))}
-        className={cn(
-          // Structure only. The paint (and the placement flip, which is `order`/`flex-direction`)
-          // lives in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
-          // can retune it.
-          "group/tabs flex data-[orientation=horizontal]:flex-col",
-          // PLACEMENT is a flex REVERSAL, never a re-ordered tree: the strip stays first in the DOM
-          // at every placement, so reading order and the APG tablist → tabpanel relationship do not
-          // depend on which edge the bar is painted on. Both classes carry the same modifier as the
-          // base step they replace, so tailwind-merge drops that step instead of stacking two
-          // flex-direction values on one element.
-          placement === "bottom" && "data-[orientation=horizontal]:flex-col-reverse",
-          placement === "end" && "flex-row-reverse",
-          className,
-        )}
-        render={(domProps) =>
-          withDomProps("div", "tabs", { dir, ...props }, domProps, {
-            "data-orientation": resolvedOrientation,
-            "data-variant": variant,
-            "data-placement": placement,
-            "data-size": size,
-            "data-centered": centered ? "true" : undefined,
-            "data-animated-ink-bar": motion.inkBar ? "true" : "false",
-            "data-animated-tab-pane": motion.tabPane ? "true" : "false",
-            "data-indicator-size": indicatorSize,
-            "data-indicator-align": indicatorAlign,
-          })
-        }
-      >
-        {items ? (
-          <>
-            {needsBar ? (
-              <div data-slot="tabs-bar" className="ui-tabs-bar">
-                {extraStart ? (
-                  <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
-                    {extraStart}
-                  </div>
-                ) : null}
-                {list}
-                {showAdd ? (
-                  <button
-                    type="button"
-                    data-slot="tabs-add"
-                    className="ui-tabs-add"
-                    aria-label={t("navigation.tabs.addTab")}
-                    onClick={(event) => onEdit?.(event, "add")}
-                  >
-                    {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
-                  </button>
-                ) : null}
-                {overflowItems.length > 0 ? (
-                  <DropdownMenu>
-                    {/* NO `data-slot` here, on purpose: DropdownMenuTrigger stamps
+      <TabsPanelRegistryContext.Provider value={registerPanel}>
+        <AriaTabs
+          data-slot="tabs"
+          data-orientation={resolvedOrientation}
+          // The variant AS ASKED FOR. The list deliberately collapses `card`/`editable-card` into
+          // what a service theme, and a test, need to key on.
+          data-variant={variant}
+          data-placement={placement}
+          data-size={size}
+          data-centered={centered ? "true" : undefined}
+          // antd `animated` / `indicator`: both are pure PAINT, so they travel to CSS as state on
+          // the root rather than as a measured inline style the way rc-tabs' ink bar does.
+          data-animated-ink-bar={motion.inkBar ? "true" : "false"}
+          data-animated-tab-pane={motion.tabPane ? "true" : "false"}
+          data-indicator-size={indicatorSize}
+          data-indicator-align={indicatorAlign}
+          orientation={resolvedOrientation}
+          keyboardActivation={activationMode}
+          // CONTROLLED FROM THE MIRROR while the overflow menu exists, and only then. A menu item
+          // is not a tab, so choosing one cannot go through React Aria's own press path — the
+          // selection has to be pushed in. `mirroredValue` already tracks every selection change
+          // (that is what it is for), so feeding it back as `selectedKey` makes the root controlled
+          // without inventing a second source of truth. Left uncontrolled otherwise: RAC's
+          // `useTabListState` re-selects a key whenever nothing is selected, and the gh#175
+          // all-disabled case depends on not fighting it.
+          selectedKey={value ?? (collapsible ? mirroredValue : undefined)}
+          defaultSelectedKey={value === undefined && !collapsible ? resolvedDefault : undefined}
+          onSelectionChange={(key) => handleValueChange(String(key))}
+          className={cn(
+            // Structure only. The paint (and the placement flip, which is `order`/`flex-direction`)
+            // lives in src/styles/navigation-layout.css so the gap reads --tabs-root-gap and a service
+            // can retune it.
+            "group/tabs flex data-[orientation=horizontal]:flex-col",
+            // PLACEMENT is a flex REVERSAL, never a re-ordered tree: the strip stays first in the DOM
+            // at every placement, so reading order and the APG tablist → tabpanel relationship do not
+            // depend on which edge the bar is painted on. Both classes carry the same modifier as the
+            // base step they replace, so tailwind-merge drops that step instead of stacking two
+            // flex-direction values on one element.
+            placement === "bottom" && "data-[orientation=horizontal]:flex-col-reverse",
+            placement === "end" && "flex-row-reverse",
+            className,
+          )}
+          render={(domProps) =>
+            withDomProps("div", "tabs", { dir, ...props }, domProps, {
+              "data-orientation": resolvedOrientation,
+              "data-variant": variant,
+              "data-placement": placement,
+              "data-size": size,
+              "data-centered": centered ? "true" : undefined,
+              "data-animated-ink-bar": motion.inkBar ? "true" : "false",
+              "data-animated-tab-pane": motion.tabPane ? "true" : "false",
+              "data-indicator-size": indicatorSize,
+              "data-indicator-align": indicatorAlign,
+            })
+          }
+        >
+          {items ? (
+            <>
+              {needsBar ? (
+                <div data-slot="tabs-bar" className="ui-tabs-bar">
+                  {extraStart ? (
+                    <div data-slot="tabs-extra" data-side="start" className="ui-tabs-extra">
+                      {extraStart}
+                    </div>
+                  ) : null}
+                  {list}
+                  {showAdd ? (
+                    <button
+                      type="button"
+                      data-slot="tabs-add"
+                      className="ui-tabs-add"
+                      aria-label={t("navigation.tabs.addTab")}
+                      onClick={(event) => onEdit?.(event, "add")}
+                    >
+                      {addIcon ?? <Plus className="ui-tabs-add-icon" aria-hidden="true" />}
+                    </button>
+                  ) : null}
+                  {overflowItems.length > 0 ? (
+                    <DropdownMenu>
+                      {/* NO `data-slot` here, on purpose: DropdownMenuTrigger stamps
                         `data-slot="dropdown-menu-trigger"` AFTER spreading the caller's props, so
                         one passed in would be silently dropped — a hook that reads correctly and
                         never reaches the DOM. `.ui-tabs-overflow` is the handle instead, which is
                         the design system's own name and what tests and gates select on. */}
-                    <DropdownMenuTrigger
-                      className="ui-tabs-overflow"
-                      aria-label={t("navigation.tabs.moreTabs")}
-                    >
-                      {/* antd `moreIcon` (its `more.icon` in 6.x, and the flat prop is still
+                      <DropdownMenuTrigger
+                        className="ui-tabs-overflow"
+                        aria-label={t("navigation.tabs.moreTabs")}
+                      >
+                        {/* antd `moreIcon` (its `more.icon` in 6.x, and the flat prop is still
                           published there). The button keeps its own `aria-label` either way, so a
                           custom glyph can never cost the control its name. */}
-                      {moreIcon ?? (
-                        <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
-                      )}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent placement="bottomEnd">
-                      {overflowItems.map((item) => (
-                        <DropdownMenuItem
-                          key={item.value}
-                          disabled={item.disabled}
-                          onSelect={() => handleValueChange(item.value)}
-                        >
-                          {item.label}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : null}
-                {extraEnd ? (
-                  <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
-                    {extraEnd}
-                  </div>
-                ) : null}
-              </div>
-            ) : (
-              list
-            )}
-            {items.map((item) => {
-              // `destroyOnHidden={false}` keeps EVERY panel mounted; antd's per-item
-              // `forceRender` keeps exactly THIS one mounted while the rest are still destroyed.
-              // Both land on the same two attributes, so they are resolved to one flag here.
-              //
-              // `forceMount` alone is not enough: Radix writes `hidden: !present` and `present` is
-              // `forceMount || isSelected`, so a force-mounted panel would paint on top of the
-              // active one. The attribute is therefore driven from the selection mirror.
-              const keepMounted = !destroyOnHidden || item.forceRender === true;
-              return (
-                <TabsContent
-                  key={item.value}
-                  value={item.value}
-                  data-slot="tabs-panel"
-                  forceMount={keepMounted ? true : undefined}
-                  hidden={keepMounted ? item.value !== activeValue : undefined}
-                  // No variant geometry: the panel has never carried a top margin (the root is a flex
-                  // column with --tabs-root-gap).
-                  className={contentClassName}
-                >
-                  {item.content}
-                </TabsContent>
-              );
-            })}
-          </>
-        ) : (
-          children
-        )}
-      </AriaTabs>
+                        {moreIcon ?? (
+                          <MoreHorizontal className="ui-tabs-overflow-icon" aria-hidden="true" />
+                        )}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent placement="bottomEnd">
+                        {overflowItems.map((item) => (
+                          <DropdownMenuItem
+                            key={item.value}
+                            disabled={item.disabled}
+                            onSelect={() => handleValueChange(item.value)}
+                          >
+                            {item.label}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : null}
+                  {extraEnd ? (
+                    <div data-slot="tabs-extra" data-side="end" className="ui-tabs-extra">
+                      {extraEnd}
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                list
+              )}
+              {items.map((item) => {
+                // `destroyOnHidden={false}` keeps EVERY panel mounted; antd's per-item
+                // `forceRender` keeps exactly THIS one mounted while the rest are still destroyed.
+                // Both land on the same two attributes, so they are resolved to one flag here.
+                //
+                // `forceMount` alone is not enough: Radix writes `hidden: !present` and `present` is
+                // `forceMount || isSelected`, so a force-mounted panel would paint on top of the
+                // active one. The attribute is therefore driven from the selection mirror.
+                const keepMounted = !destroyOnHidden || item.forceRender === true;
+                return (
+                  <TabsContent
+                    key={item.value}
+                    value={item.value}
+                    data-slot="tabs-panel"
+                    forceMount={keepMounted ? true : undefined}
+                    hidden={keepMounted ? item.value !== activeValue : undefined}
+                    // No variant geometry: the panel has never carried a top margin (the root is a flex
+                    // column with --tabs-root-gap).
+                    className={contentClassName}
+                  >
+                    {item.content}
+                  </TabsContent>
+                );
+              })}
+            </>
+          ) : (
+            children
+          )}
+        </AriaTabs>
+      </TabsPanelRegistryContext.Provider>
     </TabsFrameContext.Provider>
   );
 }
@@ -811,7 +866,10 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   ({ className, value, disabled, children, onKeyDown, onClick, ...props }, ref) => {
-    const { orientation, selectionSuppressed, size } = React.useContext(TabsFrameContext);
+    const { orientation, selectionSuppressed, size, panels } = React.useContext(TabsFrameContext);
+    // No `Tabs` root above this trigger (`panels === null`) leaves RAC's attribute alone; a root
+    // that has no panel declared for this value means the trigger controls nothing and says so.
+    const controlsAPanel = panels === null || panels.has(value);
     return (
       <AriaTab
         // RAC types `Tab`'s ref as `HTMLDivElement` because its DEFAULT element is a <div>. The
@@ -856,6 +914,10 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
             // here for BOTH states, exactly as Radix did.
             "data-state": renderProps.isSelected && !selectionSuppressed ? "active" : "inactive",
             "aria-selected": renderProps.isSelected && !selectionSuppressed,
+            // RAC writes this unconditionally; see `TabsFrame.panels` (gh#643).
+            "aria-controls": controlsAPanel
+              ? (domProps as { "aria-controls"?: string })["aria-controls"]
+              : undefined,
             "data-orientation": orientation,
             disabled,
             // CHAINED, not spread — the same reason `onKeyDown` below is. `withDomProps` lays the
@@ -901,6 +963,11 @@ type TabsContentProps = Omit<React.ComponentPropsWithoutRef<"div">, "value"> & {
 export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
   ({ className, value, forceMount, children, ...props }, ref) => {
     const { orientation, selectionSuppressed } = React.useContext(TabsFrameContext);
+    // A DECLARATION, not a mount: RAC renders only the selected key's panel, so a registration
+    // tied to the rendered element would come and go with the selection. Above the early return
+    // below, so the hook order never changes (gh#643).
+    const registerPanel = React.useContext(TabsPanelRegistryContext);
+    React.useEffect(() => registerPanel?.(value), [registerPanel, value]);
     // gh#175: every item disabled, so NOTHING is selected and Radix rendered no panel at all. RAC
     // still force-selects a key internally (see `TabsFrame`), and would mount that key's panel — so
     // the panel is dropped here, the panel-side half of the same mask the triggers apply. A

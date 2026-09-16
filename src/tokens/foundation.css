@@ -78,14 +78,40 @@
   --input: 30 7% 53%; /* #90877f — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   /* --ring lives in the DERIVED tier: there is no separate focus colour, a focused field simply
    * recolours its border to the primary. See src/tokens/derived.css. */
+  /* STATUS FILLS AND THE INK THAT RIDES ON THEM.
+   *
+   * The FILLS are the palette and they do not move: 若竹, 山吹, 群青, 朱 are named colours, every
+   * solid success/attention surface in every consumer is one of them, and a chip that changes hue
+   * on upgrade is a different design. What moved is the INK, and only where it failed to be
+   * readable (gh#643).
+   *
+   * Measured from these very tokens (src/tokens/__tests__/status-fill-contrast.test.ts, and
+   * confirmed in Chromium by `check:frame-axe` on /isolate/foundation-colors at 320/375/1440):
+   *
+   *   role         fill       WAS near-white ink   dark ink (48 8% 13%)
+   *   success      #68be8d    2.19:1  ✗            7.08:1  ✓
+   *   attention    #eb6101    3.32:1  ✗            4.68:1  ✓
+   *   warning      #f8b500    1.74:1  ✗            8.91:1  ✓  (already dark — the precedent)
+   *   primary      #7a00ff    6.32:1  ✓
+   *   destructive  …          6.10:1  ✓
+   *   info         #4c6cb3    5.00:1  ✓
+   *
+   * Two of the eight light-theme fills carried an ink their own lightness cannot support, and the
+   * package already knew the answer twice over: --warning-foreground has always been this same
+   * near-black on the equally pale 山吹, and the DARK theme flips --success-foreground /
+   * --attention-foreground to 48 9% 9% for exactly this reason. The light block was the outlier.
+   *
+   * REJECTED — darkening 若竹 and 朱 so the near-white ink clears 4.5:1. A fill needs luminance
+   * ≤ 0.183 for that; 若竹 sits at 0.422, so "keep the white text" means a different green, not a
+   * darker one. That is the palette change this deliberately is not. */
   --success: 146 40% 58%; /* 若竹 #68be8d */
-  --success-foreground: 60 33% 99%;
+  --success-foreground: 48 8% 13%; /* 7.08:1 on the fill — near-white was 2.19:1 (gh#643) */
   --warning: 44 100% 49%; /* 山吹 #f8b500 */
   --warning-foreground: 48 8% 13%;
   --info: 221 40% 50%; /* 群青 #4c6cb3 */
   --info-foreground: 60 33% 99%;
   --attention: 25 99% 46%; /* 朱 #eb6101 */
-  --attention-foreground: 60 33% 99%;
+  --attention-foreground: 48 8% 13%; /* 4.68:1 on the fill — near-white was 3.32:1 (gh#643) */
 
   /* IDENTITY role — the canonical GoDX emerald. This is the PRODUCT MARK colour (Logo `mark="godx"`
    * / `tone="success"`, its wordmark, the email brand capsule), and it is deliberately THREE-WAY
@@ -299,13 +325,14 @@
    * about: a 3px opaque outline stacked on an already-shaded selected nav row reads as two
    * treatments on one element. WCAG's AA bar for an indicator is CONTRAST (SC 1.4.11, 3:1), not
    * thickness, so the weight can come all the way down to the FIELD indicator — one hairline of
-   * `--ring`, which measures 5.05:1 light and 7.07:1 dark on every surface a control sits on —
-   * while the criterion is still met. The 3px weight is one token away: set
+   * `--ring`, which measures at worst 5.30:1 light and 6.87:1 dark across every surface a control
+   * sits on — while the criterion is still met. The 3px weight is one token away: set
    * `--focus-outline-weight: var(--stroke-lg)`.
    *
    * The hue is the focus hue itself, NOT `--primary-border`. That is the one place the ON state
-   * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #6dc0e3,
-   * which measures 2.00:1 light and 1.66:1 dark and cannot satisfy SC 1.4.11 at any thickness.
+   * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #a66de3,
+   * which reaches 3.49:1 on the page and 2.92:1 light / 1.03:1 dark on an accent panel, so it
+   * cannot satisfy SC 1.4.11 on every surface at any thickness.
    * A mark that fails the criterion is not an indicator. */
   --focus-outline: 1; /* the switch — 1 = on (shipped default since gh#544), 0 = off */
   --focus-outline-weight: var(--stroke-hairline); /* the heavy alternative is --stroke-lg */
@@ -342,11 +369,12 @@
    *
    * This block once hard-coded 0.12 light / 0.3 dark, eyeballed — close to, but not, the values
    * the tier now commits to: 0.11 and 0.29 for the seeds this library actually ships, with the
-   * halo hue rgb(0,182,228) rather than the primary itself.
+   * halo hue rgb(109,0,228) rather than the primary itself.
    *
    * The halo is DECORATION and must never be asked to carry the a11y contract: measured against
-   * this palette, a primary tint over the page tops out at 2.84:1 even at alpha 0.7, so no value
-   * of this knob reaches WCAG 2.2 SC 1.4.11's 3:1. What carries the state on a field is the
+   * this palette, a primary tint over the page reads 1.23:1 at the shipped 0.11 and does not
+   * reach WCAG 2.2 SC 1.4.11's 3:1 until alpha 0.53 light / 0.85 dark — past the point where it
+   * is a halo at all. What carries the state on a field is the
    * recoloured 1px border, and that only once `data-focus-outline="on"` is set — see the switch
    * above and docs/DESIGN-AUTHORITY.md. */
   --focus-ring-glow-width: var(--control-outline-width);

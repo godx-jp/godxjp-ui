@@ -205,8 +205,19 @@ function BulkActionBar({
     <Card className="bg-primary/5 border-primary/30">
       <CardContent solo>
         <Flex role="region" aria-label="一括操作" wrap align="center" gap="md">
-          {/* left: count + cross-page select-all escalation + safe batch actions */}
-          <Flex direction="row" align="center" gap="sm" className="min-w-0 flex-1">
+          {/* left: count + cross-page select-all escalation + safe batch actions.
+              THE `wrap`, AND THE ABSENT `min-w-0`, ARE BOTH LOAD-BEARING (gh#643). This cluster
+              used to carry `min-w-0 flex-1` — "squeeze me to nothing" — while every child inside
+              refuses to be squeezed: two `Button`s and a `whitespace-nowrap` count. At 375 the box
+              duly shrank to 113.6px, the content still ran to x=462, and it painted straight over
+              the destructive cluster beside it — 一括承認 at 264.6→360.2 under 解除 at
+              272.3→341.0, which axe reported as `target-size` with 19.2×30.2 of the button left
+              unobscured against SC 2.5.8's 24×24. Without `min-w-0` the cluster keeps a real
+              min-content width, and `wrap` is what makes that width small enough to be honest:
+              measured after, 375 puts the two clusters on separate rows (left 307px over two
+              lines, destructive below) and 1440 is unchanged — one 30.2px row, destructive still
+              pushed to x=1217.5 by `flex-1`. */}
+          <Flex direction="row" align="center" gap="sm" wrap className="flex-1">
             <Text tone="primary" weight="medium" tabular className="whitespace-nowrap">
               {effective}件を選択中
             </Text>

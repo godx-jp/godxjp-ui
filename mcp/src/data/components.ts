@@ -1588,12 +1588,12 @@ export function HandyInbound() {
       "DO: Wire a framework router with `linkComponent` — `createSidebarLink(Link, 'to')` (React Router / TanStack), `createSidebarLink(Link)` (Next.js), or `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia`. That is the WHOLE integration: you pass the element type, the library composes the row. It threads through leaves, submenu children, the collapsed rail and the collapsed flyout. When you compose rows by hand, the same contract is `<SidebarItem item={item} asChild><RouterLink to=… /></SidebarItem>` — write NO children; the library injects the icon, label and badge. (`RouterLink` here is YOUR router's link component; this library now exports a `Link` of its own — antd's Typography.Link — which takes `href`, not `to`.)",
       "DON'T: Use `renderItem` in new code — it is DEPRECATED. It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <RouterLink href={…}>{item.label}</RouterLink>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
-      "DO: Theme the nav ICON and the row/label SEPARATELY with tokens — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover/active = `hsl(var(--foreground))`), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
+      "DO: Theme the nav ICON and the row/label SEPARATELY with tokens — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Resting defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover = `hsl(var(--foreground))`; the ACTIVE row is its own group, see below), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
       "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
       "DO: Distinguish an UNREAD count from one ADDRESSED TO THE USER with `item.badgeTone` — 'neutral' (the default, the pill unchanged) versus 'destructive' for an @mention, a direct message or a failure awaiting them. It emits `data-tone=\"destructive\"` on the existing `.sb-badge` and swaps two colour tokens (`--sidebar-badge-destructive-background` / `-foreground`); the pill's min-width, radius, inline pad and font size are shared by both tones, so mention rows and unread rows stay aligned in the same column. Retune all four `--sidebar-badge-*` knobs in your theme rather than styling the pill.",
       "DON'T: Reach for `item.badge` to place a GLYPH (a chevron, an arrow, a status dot). That slot is a COUNT capsule — 9999px radius, `hsl(var(--secondary))` fill, sized for digits — and it does not pin the SVG, so a lucide glyph renders at its 24px default inside a 36x24 grey pill. The row's trailing glyph slot is `item.trailingIcon`.",
       "DON'T: Put a `<Badge>` (or anything else that draws its own pill) inside `item.badge` to colour a count — the row ALREADY wraps whatever you pass in a `.sb-badge` pill, so you get two nested pills with two borders (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>`). Pass the CONTENT only (`badge: 3`, `badge: '9+'`) and say what it MEANS with `badgeTone`.",
-      "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.",
+      "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground` — and since gh#651 BOTH nav depths default to the brand, not to neutral grey: the level-1 fill is `--primary` composited at `--sidebar-item-active-background-alpha` (12%, capped at 16% — above that the label drops under WCAG 2.2 SC 1.4.3) and the label is `hsl(var(--primary))` at level 1 and level 2 alike. If your theme was setting `--sidebar-item-active-background: hsl(var(--primary) / 0.12)` and `--sidebar-item-active-foreground: hsl(var(--primary))` to get that look, DELETE the block — it is the default now. The level-2 label knob used to be spelled `--sidebar-item-active-color`; that name is gone with no alias.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
       "DON'T: Put a PLATFORM switch in the sidebar — not an `OrgSwitcher`, not an app switcher, neither as a row nor stacked into `brand` under the product lockup. The sidebar is APP scope (this app's own sections); which organization or which app you are in survives changing app and belongs to `AppShell`'s `navRail` or to the topbar. Stacking a second lockup under the first also gives the sidebar header a different height from the topbar, which is the visible symptom people report as \"the two sides do not line up\".",
@@ -2902,7 +2902,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description:
           "Semantic foreground colour. Replaces `text-muted-foreground` etc. on a raw span.",
@@ -3098,7 +3098,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description: "Semantic foreground colour.",
       },
@@ -3179,7 +3179,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description: "Semantic foreground colour. Outranks antd's `type`.",
       },
@@ -3307,10 +3307,10 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "mark",
-        type: '"glyph" | "godx"',
+        type: '"glyph" | "godx" | "godx-lockup"',
         defaultValue: '"glyph"',
         description:
-          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size-{xs,sm,md,lg} driven by the `size` prop, pinnable at every tier via --logo-godx-size; --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
+          '"godx-lockup" renders the FULL master lockup — identity mark + the drawn "GoDX" logotype as one artwork (4.787:1, so the `size` tier drives HEIGHT and width follows); pair it with `productSuffix` for "GoDX | ID". "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size-{xs,sm,md,lg} driven by the `size` prop, pinnable at every tier via --logo-godx-size; --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
       },
       {
         name: "size",
@@ -3333,10 +3333,16 @@ import { Trash2 } from "lucide-react";
           'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is canonical emerald from the --brand identity role and NEVER reads --primary or --success.',
       },
       {
+        name: "productSuffix",
+        type: "React.ReactNode",
+        description:
+          'The PRODUCT name that follows the brand, set off by the lockup\'s own rule — `<Logo mark="godx-lockup" productSuffix="ID" />` renders "GoDX | ID" (later "GoDX | Console", "GoDX | Admin"). It renders after `wordmark` when both are set, and it turns Logo into a lockup on its own. The suffix is TEXT in the lockup\'s own type scale, NEVER a second artwork file: the rule\'s colour/width/height (--logo-divider-color / -width / -height / -alpha, the logotype ink at 0.25 alpha so it has a dark theme the kit\'s hardcoded #C5C8D6 does not) and the gap around it (--logo-product-suffix-gap) are package tokens. With mark="godx-lockup" and no `wordmark` the brand half is DRAWN (paths, unreachable by AT), so the package restores "GoDX" as sr-only text and the lockup is announced "GoDX <suffix>" — as TEXT rather than role="img"+aria-label, so an asChild link keeps its link role.',
+      },
+      {
         name: "label",
         type: "string",
         description:
-          "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup's name (the wordmark text is otherwise the name).",
+          'Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup\'s name (the wordmark text is otherwise the name). It also overrides the "GoDX <productSuffix>" name a drawn-logotype lockup composes for itself (role="img" makes the sr-only brand word presentational).',
       },
       {
         name: "asChild",
@@ -3352,6 +3358,8 @@ import { Trash2 } from "lucide-react";
       "DON'T pass more than 1–2 glyphs — the box is square and centres its content; a long string overflows. The product NAME goes in `wordmark`, never in `glyph`.",
       'DO use `wordmark` for the full lockup: `<Logo mark="godx" tone="success" wordmark="GoDX" />`. It replaces the hand-rolled `<span className="inline-flex items-center gap-2"><Logo/><Text/></span>` — the gap, face, weight, tracking, per-tier size and the brand colour are all tokens, so a shell header / auth brand bar needs no page CSS.',
       "NOTE: the package ships NO wordmark ARTWORK — `wordmark` typesets the name in the design-system display face (`--logo-wordmark-font-family`). When design supplies a real logotype, pass it as an inline `<svg>` node to `wordmark`; do not approximate letterforms in CSS.",
+      'DO use `<Logo mark="godx-lockup" productSuffix="ID" />` for a product surface branded "GoDX | ID" — the divider, the gaps, the `size` scale and the light/dark master are the package\'s. DON\'T inline the kit\'s flattened "GoDX | ID" SVG in the app: it is a second master in its own coordinate system, with global `id="title"`/`id="desc"` that collide across instances, a hardcoded `#0B0F3B` ink with no dark variant, and a hardcoded `#C5C8D6` rule (gh#649).',
+      "DON'T typeset the suffix yourself as `<Logo mark=\"godx-lockup\" /><Text>ID</Text>` — that has no divider and the spacing is not the lockup's token.",
       'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
       "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
       'DO make the brand a link with `asChild`, not with a wrapper: `<Logo asChild mark="godx" wordmark="GoDX"><Link href="/" /></Logo>`. Writing `<a className="flex"><Logo …/></a>` instead is the exact shape ui-audit rejects (no-utility-layout), and dropping the `flex` misaligns the mark.',
@@ -3363,6 +3371,7 @@ import { Trash2 } from "lucide-react";
       "Custom SVG brand — pass an inline `<svg>` as `glyph` to render a real logomark on the primary fill instead of a letter.",
       'Hosted GoDX identity surface — `<Logo mark="godx" tone="success" />` in an AuthShell `brand` bar or inside <AuthIdentity>: the canonical GoDX mark the package already owns. There is no separate identity-mark component and no asset to import.',
       'Brand lockup in a shell header / auth brand bar — `<Logo mark="godx" tone="success" wordmark="GoDX" />`: one element, brand-green, no wrapper div and no page CSS.',
+      'Product-branded surface ("GoDX ID" legal pages, a Console/Admin topbar) — `<Logo mark="godx-lockup" productSuffix="ID" />`: the master lockup, the package\'s divider, and one accessible name, "GoDX ID".',
     ],
     related: [
       "AuthIdentity (@godxjp/ui/layout) — the canonical auth heading block; it already renders the GoDX mark, so don't add a second Logo above it.",
@@ -3381,6 +3390,9 @@ import { Trash2 } from "lucide-react";
 
 // Bare mark standing alone → give it an accessible name.
 <Logo label="CoreBooks" size="lg" />
+
+// Product lockup — "GoDX | ID", one master, package-owned divider and gaps.
+<Logo mark="godx-lockup" productSuffix="ID" />
 
 // The whole lockup as a link — the <a> IS the lockup, no wrapper to align.
 <Logo asChild mark="godx" tone="success" wordmark="GoDX">
@@ -3471,7 +3483,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"muted"',
         description: "Semantic colour intent for the mark and the label.",
       },
@@ -12675,7 +12687,7 @@ import { fetchInvoice } from "@/api/invoices";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description:
           "Semantic emphasis of the label AND the rule together (never colour-only). `default` is the quiet chrome; use a role for an attention rule such as an unread watermark.",
@@ -13631,8 +13643,7 @@ export default function PasswordBlock() {
       },
       {
         name: "options",
-        type:
-          "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
+        type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]",
         description:
           "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
       },
@@ -14973,7 +14984,7 @@ export function NotifyRow() {
     name: "AuthIdentity",
     group: "layout",
     tagline:
-      "Hosted-auth identity heading with the shared mark and optional requesting-client context.",
+      "Hosted-auth identity heading with the shared mark (or the product's own lockup) and optional requesting-client context.",
     props: [
       { name: "title", type: "ReactNode", required: true, description: "Primary auth heading." },
       {
@@ -14997,12 +15008,17 @@ export function NotifyRow() {
       "Only show `requester` when the consumer has authoritative client context.",
       'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
       "To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN'S PURPOSE (\"Sign in\") rather than repeating the brand.",
+      'DO keep `brand` non-interactive. The slot is DECORATIVE at every fill: the mark it replaces was always aria-hidden, and a real lockup is not a mark — `Logo mark="godx-lockup" productSuffix="ID"` exposes "GoDX ID" as real text, so left in the tree beside the h1 the block announces the product twice (measured: "GoDXIDGoDX ID"). aria-hidden is merged onto your element, and aria-hidden over a focusable child is a WCAG failure.',
       "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
       "Public type: `AuthIdentityProp` (alias `AuthIdentityProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
     ],
     example: `import { AuthIdentity } from "@godxjp/ui/layout";
+import { Logo } from "@godxjp/ui/general";
 
-<AuthIdentity title="Sign in" requester="Acme Portal is requesting access" />`,
+<AuthIdentity title="Sign in" requester="Acme Portal is requesting access" />
+
+// The product's own lockup, with no artwork in the consumer's repo:
+<AuthIdentity title="GoDX ID" brand={<Logo mark="godx-lockup" productSuffix="ID" />} />`,
     storyPath: "layout/AuthIdentity.stories.tsx",
     rules: [45],
   },

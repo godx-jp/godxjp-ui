@@ -4489,6 +4489,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
+    "name": "--logo-divider-width",
+    "value": "var(--stroke-hairline)",
+    "description": "── The PRODUCT SUFFIX (`<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`, gh#649) ────────── * \"GoDX | ID\" — the brand lockup followed by a rule and the name of ONE product. Later also * \"GoDX | Console\", \"GoDX | Admin\", and each of those localized. * * WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over \"GoDX | ID\" as a single flattened * lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`), * so shipping it would put a SECOND master next to the one above — different box, different * gradients, its own `id=\"title\"`/`id=\"desc\"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6` * rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives * the next product: a drawn suffix means one more master, one more release and one more dark * variant for every name that is ever added, and it cannot be localized at all. So the suffix is * TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The * brand's own construction (the G, the arrow, the \"GoDX\" logotype, the golden ratio between * them) stays untouched inside the master; a PRODUCT NAME is not part of that construction. * * SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline, * in the same lockup, at the same optical level as the wordmark, so it reads * --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing * rather than growing a parallel ramp a service would then have to keep in step. Only the two * knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is * set in UI ink (--foreground) at a lighter weight, and \"GoDX\" stays the dominant word. * * THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as * tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px * against a 24 / 28 / 32 / 40px lockup box. * * ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the * shipped tokens: * light #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1 * the kit's hardcoded rule #c5c8d6 → 1.64:1 (ΔRGB ≤ 11, no dark counterpart) * --border (the table-grid hairline) → 1.15:1 (its own note above records this) * dark #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1 * So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal * — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already * flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured * topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name. * * ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md). * Documented defaults: * --logo-divider-color = var(--logo-godx-ink-color) * --logo-product-suffix-color = hsl(var(--foreground))"
+  },
+  {
+    "name": "--logo-divider-height",
+    "value": "1em",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-divider-alpha",
+    "value": "0.25",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-divider-color",
+    "value": "initial",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-product-suffix-gap",
+    "value": "var(--space-2)",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-product-suffix-font-weight",
+    "value": "500",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
+    "name": "--logo-product-suffix-color",
+    "value": "initial",
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+  },
+  {
     "name": "--logo-identity-foreground",
     "value": "48 9% 9%",
     "description": "The other half of the ink flip above — see --logo-identity-foreground. The dark fill is the LIGHT violet, so the glyph goes back to the near-black spine (10.72:1)."
@@ -6149,24 +6184,24 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
-    "name": "--sidebar-item-active-color",
-    "value": "initial",
-    "description": "Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override * never reaches it). A service re-tunes the active sub-item accent without forking CSS. * Defaults = hsl(var(--primary)) marker/tint."
-  },
-  {
-    "name": "--sidebar-item-active-tint",
-    "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
-  },
-  {
     "name": "--sidebar-item-active-background",
     "value": "initial",
-    "description": "Main nav-item active row — defaults mirror the hover state (accent bg, foreground text); a * service overrides these to brand the selected row (e.g. a gold tint + gold text on a navy * sidebar). `initial` so the defaults re-resolve under a scoped theme. * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text."
+    "description": "ONE ACTIVE LOOK FOR BOTH NAV LEVELS (gh#651) — the label knob is `-foreground` at every depth. * * The defect: the two levels of one nav column signalled the same meaning in two colour * languages. `.sb-nav-item[data-active=\"true\"]` painted `hsl(var(--accent))` + `hsl(var(-- * foreground))` — neutral grey — while `.sb-nav-item--sub[data-active=\"true\"]` painted * `hsl(var(--primary))`. A reader saw the open CHILD in the brand colour and its open PARENT in * grey. Both defaults are now the brand, measured (see the ceiling note below and * src/tokens/__tests__/sidebar-active-contrast.test.ts) — a DEFAULT change, not a hardcode: all * four knobs still override. * * AND THE LABEL HAD TWO NAMES: `--sidebar-item-active-foreground` at level 1, * `--sidebar-item-active-color` at level 2, each used exactly ONCE in shell-layout.css — naming * drift, not two roles, so a service that wanted to tint the whole column had to discover both. * `-color` is GONE with NO deprecation alias, which was the one judgement call here. Considered * and rejected: `var(--sidebar-item-active-foreground, var(--sidebar-item-active-color, …))`. It * would have kept the very ambiguity being removed (two names on one declaration, with the * winner decided by which one a theme happened to set), and it is not buying compatibility for * anyone — grepped before deleting: the old name had ZERO consumers outside its own call site. * Not in docs/CUSTOMER-THEMING.md, not in a docs/ showcase, not pinned by a test, not in * component-api-manifest.json; only the generated MCP catalog (regenerated from this file) and * one historical CHANGELOG line, which stays true as history. `-tint` keeps its own name: it is * the level-2 dot marker, a different part from the label. * * ROLE-MIRROR KNOBS — `initial` here with the role default at the CALL SITE, so a scoped * `[data-tenant]` / `.dark` re-tint of `--primary` reaches them (a `:root` binding to a role var * freezes at `:root` — docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = a `--primary` tint fill · `hsl(var(--primary))` label · `hsl(var(--primary))` dot."
   },
   {
     "name": "--sidebar-item-active-foreground",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "The open row's LABEL, at BOTH nav depths — one name since gh#651 (level 2 used to spell it * `--sidebar-item-active-color`). Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--sidebar-item-active-tint",
+    "value": "initial",
+    "description": "The level-2 dot marker (`.sb-nav-item--sub[data-active=\"true\"]::before`) — its own knob because * it is a different PART, not a second name for the label. Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--sidebar-item-active-background-alpha",
+    "value": "12%",
+    "description": "THE TINT STRENGTH, AND IT HAS A CEILING — rule #45, and the reason this is a knob at all. * * The fill is the brand at this alpha over whatever the nav sits on, so raising it walks the * fill TOWARDS the label that rides on it and contrast falls monotonically. Measured on HEAD * (GoDX violet #7a00ff light / #dcbcff dark, identity v2.3, derived tier as of gh#648), label * against the composited fill: * * alpha light on --card dark on --card dark on --background * 0.12 5.07:1 7.51:1 8.30:1 ← shipped * 0.16 4.69:1 6.78:1 7.49:1 ← the cap below * 0.18 4.51:1 6.44:1 7.11:1 ← last step still AA * 0.19 4.42:1 ← under SC 1.4.3 * * 16% is a CAP WITH HEADROOM, not the cliff edge: the cliff is 19%, and a service that also moves * the nav onto `hsl(var(--muted))` gets only 13% before the label fails — so the cap is set where * a re-tune stays safe on every shell surface rather than at the last passing step on the best * one. Rejected: publishing 18%, which is correct only for the two surfaces we ship. * `sidebar-active-contrast.test.ts` fails if this rises past it."
   },
   {
     "name": "--auth-shell-control-height",

@@ -213,6 +213,55 @@
   --logo-wordmark-letter-spacing: -0.01em;
   --logo-wordmark-font-family: initial;
   --logo-wordmark-color: initial;
+
+  /* ── The PRODUCT SUFFIX (`<Logo mark="godx-lockup" productSuffix="ID" />`, gh#649) ──────────
+   * "GoDX | ID" — the brand lockup followed by a rule and the name of ONE product. Later also
+   * "GoDX | Console", "GoDX | Admin", and each of those localized.
+   *
+   * WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over "GoDX | ID" as a single flattened
+   * lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`),
+   * so shipping it would put a SECOND master next to the one above — different box, different
+   * gradients, its own `id="title"`/`id="desc"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6`
+   * rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives
+   * the next product: a drawn suffix means one more master, one more release and one more dark
+   * variant for every name that is ever added, and it cannot be localized at all. So the suffix is
+   * TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The
+   * brand's own construction (the G, the arrow, the "GoDX" logotype, the golden ratio between
+   * them) stays untouched inside the master; a PRODUCT NAME is not part of that construction.
+   *
+   * SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline,
+   * in the same lockup, at the same optical level as the wordmark, so it reads
+   * --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing
+   * rather than growing a parallel ramp a service would then have to keep in step. Only the two
+   * knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is
+   * set in UI ink (--foreground) at a lighter weight, and "GoDX" stays the dominant word.
+   *
+   * THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as
+   * tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px
+   * against a 24 / 28 / 32 / 40px lockup box.
+   *
+   * ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the
+   * shipped tokens:
+   *   light  #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1
+   *   the kit's hardcoded rule            #c5c8d6      → 1.64:1   (ΔRGB ≤ 11, no dark counterpart)
+   *   --border (the table-grid hairline)               → 1.15:1   (its own note above records this)
+   *   dark   #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1
+   * So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal
+   * — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already
+   * flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured
+   * topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name.
+   *
+   * ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md).
+   * Documented defaults:
+   *   --logo-divider-color          = var(--logo-godx-ink-color)
+   *   --logo-product-suffix-color   = hsl(var(--foreground)) */
+  --logo-divider-width: var(--stroke-hairline);
+  --logo-divider-height: 1em;
+  --logo-divider-alpha: 0.25;
+  --logo-divider-color: initial;
+  --logo-product-suffix-gap: var(--space-2);
+  --logo-product-suffix-font-weight: 500;
+  --logo-product-suffix-color: initial;
 }
 
 /* The other half of the ink flip above — see --logo-identity-foreground. The dark fill is the
