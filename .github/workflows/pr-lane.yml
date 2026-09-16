@@ -36,10 +36,11 @@ name: PR · quick check
 # removed was the SAME expensive workflow charged twice for one merge; here the PR pays for a short
 # subset and the merge pays for the full set, and no work is done twice at full price.
 #
-# WHAT IS DELIBERATELY ABSENT — axe (653–745s), the visual/contrast gates, the geometry sweep, the
-# rendered-runtime shards and the whole vitest suite. They stay where they are: the two Chromium
-# gates on ci-browser.yml's push lane, the wide sweeps on ci-browser-full.yml's nightly. This lane
-# is meant to be short enough that nobody is tempted to skip it, not to be a second CI.
+# WHAT IS DELIBERATELY ABSENT — the visual/contrast gates, the geometry sweep, the rendered-runtime
+# shards and the whole vitest suite. They stay where they are: the visual gate on ci-browser.yml's
+# push lane, the wide sweeps on ci-browser-full.yml's nightly. This lane is meant to be short enough
+# that nobody is tempted to skip it, not to be a second CI. Axe is absent from EVERY workflow, not
+# only this one: it is local-only by the owner's standing rule (2026-09-17).
 #
 # CHECK-RUN NAMING IS LOAD-BEARING — READ scripts/release-core.mjs BEFORE RENAMING THE JOB BELOW.
 # `VerifyCommitProvenance` in npm-publish.yml fails CLOSED unless every name in
@@ -78,9 +79,8 @@ jobs:
   quick:
     # NOT any of REQUIRED_CI_CHECK_RUNS — see the note above. The seven names that list holds are
     # "Build · typecheck · lint · guards", "Tests (shard 1/4)" through "Tests (shard 4/4)",
-    # "Contrast + visual audit" and "lockstep". ("Per-frame axe (chrome blocking, component
-    # allowlisted)" was named here until #492 deleted that job; the axe shards that replaced it in
-    # ci-browser.yml are not in the list either.)
+    # "Contrast + visual audit" and "lockstep". No axe job is in it, because no workflow runs axe:
+    # it is local-only by the owner's standing rule (2026-09-17).
     name: PR quick check (build · typecheck · lint)
     runs-on: [self-hosted, swarm-pool]
 

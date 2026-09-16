@@ -122,7 +122,7 @@ pnpm test                 # FULL suite — CI only, never from an agent loop
 pnpm preview:build        # integration test: examples + docs must build — at most once, pre-PR
 pnpm audit                # godxjp-ui-audit — 0 errors for touched files
 pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
-pnpm check:frame-axe      # WCAG 2.2 AA over every frame — see FRAME-A11Y-CI.md
+pnpm check:frame-axe      # WCAG 2.2 AA over every frame — LOCAL ONLY, never in CI (FRAME-A11Y-CI.md)
 ```
 
 `pnpm verify` and `pnpm verify:release` run these together (verify:release also builds) — **both include the full suite, so both belong to CI.** Locally, run them at most once immediately before opening a PR, never inside an edit loop and never while other agents are working on the same machine. It needs `pnpm exec playwright install chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read the evidence, and regenerate its baseline after an accessibility fix.
@@ -190,5 +190,5 @@ npm versions are immutable, so you can never "fix" a bad published version in pl
 - [README](../README.md) — overview, component groups, consumer setup.
 - [CONSUMER-RULES.md](./CONSUMER-RULES.md) — the ten rules every consumer follows (the audit enforces them).
 - `docs/TOKENS.md`, `docs/SPACING.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`.
-- [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y + geometry + coverage CI gates.
+- [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y (**local only, never in CI**) + geometry + coverage gates.
 - **`godx-ui-component-placement`** skill — decide whether a component belongs here.

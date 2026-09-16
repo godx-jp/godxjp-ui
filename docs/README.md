@@ -12,7 +12,7 @@
 | [SPACING.md](./SPACING.md)                   | Golden ratio (φ) macro spacing — PageContainer sections, Flex gap, Card rhythm                                                                                                                                        |
 | [FORMS.md](./FORMS.md)                       | **Mandatory** react-hook-form + Zod 4                                                                                                                                                                                 |
 | [TESTING.md](./TESTING.md)                   | **Mandatory** Vitest per component                                                                                                                                                                                    |
-| [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md)       | Per-frame axe a11y + geometry + coverage CI gates — how to run/regenerate locally                                                                                                                                     |
+| [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md)       | Per-frame axe a11y (LOCAL ONLY, never CI) + geometry + coverage gates — how to run/regenerate                                                                                                                         |
 | [../README.md](../README.md)                 | Setup, workspace wiring, theme                                                                                                                                                                                        |
 
 ## Preview

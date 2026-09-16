@@ -35,7 +35,9 @@ const WORKFLOW_DIR = join(ROOT, ".github/workflows");
  *
  * A gate belongs here only if it genuinely cannot run unattended — it needs a human, a device or
  * a judgement call that a runner does not have. "It is slow" is not a reason to be here; that is
- * a reason to live in ci-browser-full.yml's nightly lane, which IS covered.
+ * a reason to live in ci-browser-full.yml's nightly lane, which IS covered. The one other reason is
+ * an explicit OWNER RULE forbidding a gate from CI — `check:frame-axe` is here on that basis, and
+ * its entry says so rather than dressing it up as a technical constraint.
  *
  * @type {Record<string, string>}
  */
@@ -47,6 +49,12 @@ const EXEMPT = {
     "are Linux, so this can never go green there. Run it by hand before an a11y release and " +
     "commit the evidence; check:screen-reader-evidence (which DOES run, inside " +
     "check:frame-contracts) is the gate that verifies what you committed.",
+  "check:frame-axe":
+    "LOCAL ONLY — the owner's standing rule (2026-09-17): axe must never run in CI/CD, only on a " +
+    "developer machine. gh#643 wired it into ci-browser.yml (four shards) and ci-browser-full.yml " +
+    "(nightly); both jobs were removed on that instruction. Run `pnpm check:frame-axe` locally against " +
+    "the STATIC preview before a PR that touches markup, ARIA or colour, and commit " +
+    "audit-evidence/frame-axe/ + frame-axe-baseline.json. Do NOT re-wire it into a workflow.",
   "check:frame-runtime":
     "ALIAS, not a gate — it chains eight browser gates that each run individually in " +
     "ci-browser-full.yml (rendered-runtime shards 1-5). Kept as a one-command local repro. " +
