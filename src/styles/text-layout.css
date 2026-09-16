@@ -160,10 +160,22 @@
    * The rule appears on hover AND on keyboard focus. `hover:underline` alone — the utility pair
    * this prop replaces at 54 consumer call sites — leaves a keyboard user with nothing but the
    * focus outline to say the thing under the caret is a link. */
+  /* Underlined at rest — see `--text-link-decoration-line` in tokens/components/text.css (gh#664). */
   [data-slot="text"][data-link] {
-    text-decoration-line: none;
+    text-decoration-line: var(--text-link-decoration-line);
     text-underline-offset: var(--text-link-underline-offset);
     text-decoration-thickness: var(--text-link-underline-width);
+  }
+  /* A link's DEFAULT tone is `primary`, and a link paints the LINK ink rather than the fill role
+   * (gh#664). `--primary` is #7A00FF — the action FILL — and the guideline gives links their own
+   * `--gx-link` #6400D4. Scoped to `[data-tone="primary"]` so an explicit `link tone="destructive"`
+   * still wins, and so `data-tone` stays exactly what `typography-link.test.tsx` pins.
+   *
+   * `:not([data-disabled])` is load-bearing, not tidiness: this selector is (0,3,0) and the disabled
+   * rule below is (0,2,0), so without it a DISABLED default link painted the live link ink at rest
+   * and read as clickable. */
+  [data-slot="text"][data-link][data-tone="primary"]:not([data-disabled]) {
+    color: hsl(var(--text-link));
   }
   [data-slot="text"][data-link]:hover,
   [data-slot="text"][data-link]:focus-visible {
