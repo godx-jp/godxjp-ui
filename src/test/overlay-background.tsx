@@ -59,7 +59,7 @@ function axeModalExemptionApplies(): boolean {
  *
  * TWO MECHANISMS, ONE QUESTION. Radix hides through the `aria-hidden` package: `aria-hidden="true"`
  * plus its own `data-aria-hidden` marker, and this library mirrors `inert` on top of that marker
- * (`components/general/inert-background.ts`). react-aria-components calls
+ * (`data-entry/__tests__/inert-background.fixture.ts`). react-aria-components calls
  * `ariaHideOutside(…, { shouldUseInert: true })`, which writes NEITHER of those two attributes: it
  * sets the `inert` PROPERTY where the platform has one, and falls back to a bare
  * `aria-hidden="true"` (no marker) where it does not. jsdom is the fallback case —
@@ -94,7 +94,7 @@ const NATIVE_INERT = "inert" in HTMLElement.prototype;
  *
  * The exemption is deliberately narrow, and the Radix path stays fully guarded: Radix's
  * `aria-hidden` package leaves `data-aria-hidden` behind, and this library's own mirror
- * (components/general/inert-background.ts) is what must put `inert` on top of that marker. An
+ * (data-entry/__tests__/inert-background.fixture.ts) is what must put `inert` on top of that marker. An
  * offender CARRYING the marker is still a real failure, in jsdom and everywhere else.
  *
  * Do not widen this into "skip the check in jsdom". The row it keeps honest used to be green for

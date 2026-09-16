@@ -788,7 +788,8 @@ type DropdownMenuContentProps = React.PropsWithChildren<DropdownMenuContentProps
  * phần tử mang `role="menu"`. `data-slot` và lớp `ui-dropdown-menu-content` ở lại trên HỘP, cùng
  * chỗ với `data-state` / `data-side` mà các utility animate đang đọc.
  *
- * `useInertHiddenBackground` đã được gỡ ở đây: RAC gọi `ariaHideOutside(..., {shouldUseInert:
+ * `useInertHiddenBackground` đã được gỡ ở đây, và nay đã rời hẳn `src/` sang
+ * `data-entry/__tests__/inert-background.fixture.ts` (gh#643): RAC gọi `ariaHideOutside(..., {shouldUseInert:
  * true})` — nền thành `inert` thật chứ không chỉ `aria-hidden`, nên axe `aria-hidden-focus` không
  * còn cửa để nổ. Và hiệu ứng đó khoá theo `state.isOpen`, không theo unmount, nên `inert` được nhả
  * NGAY ở ý định đóng: đúng lớp lỗi gh#385, đã sửa ở thượng nguồn. Phép đo là

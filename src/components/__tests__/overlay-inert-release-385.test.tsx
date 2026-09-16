@@ -30,7 +30,7 @@ import { Button } from "../general/button";
  * WHO GUARANTEES IT NOW. The menu is react-aria-components, and RAC's `usePopover` scopes
  * `ariaHideOutside` to an effect keyed on `state.isOpen` — so the release fires on CLOSE INTENT,
  * the same synchronous turn as the item's action, and cannot drift to unmount. That is the
- * upstream version of what `components/general/inert-background.ts` still hand-rolls for the
+ * upstream version of what `data-entry/__tests__/inert-background.fixture.ts` still hand-rolls for the
  * overlays that are still Radix (Select). This file is what proves the guarantee is
  * really there, whichever backing the menu has.
  *
