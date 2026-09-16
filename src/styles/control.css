@@ -146,6 +146,11 @@
     border: 1px solid hsl(var(--input));
     background: hsl(var(--background));
     color: hsl(var(--foreground));
+
+    /* Qua TOKEN, không qua utility: một service đặt `--shadow-sm: none` phải tắt được
+     * bóng ở mọi biến thể nút, không riêng `default`. Trước đây dòng này là
+     * `shadow-xs` trong chuỗi class của button.tsx và không knob nào với tới. (gh#662) */
+    box-shadow: var(--shadow-sm);
   }
 
   .ui-button--ghost {

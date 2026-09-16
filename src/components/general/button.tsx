@@ -17,8 +17,13 @@ const buttonVariants = cva("ui-button", {
       // (`--primary-hover`) could never take effect while `hover:bg-primary/90` was emitted here.
       default: "ui-button--default",
       destructive: "ui-button--destructive bg-destructive text-destructive-foreground",
+      // `shadow-xs` từng nằm ở đây và mắc ĐÚNG lỗi đã nêu ngay trên cho `default`:
+      // một utility thì out-rank tầng components, nên bóng của nút outline đi vòng
+      // qua tầng token — consumer đặt `--shadow-sm: none` thì `default` sạch bóng còn
+      // `outline` trơ ra. Nay bóng khai ở `.ui-button--outline` và đọc `var(--shadow-sm)`
+      // như mọi biến thể khác, nên nó tắt/đổi được qua theme. (gh#662)
       outline:
-        "ui-button--outline border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
+        "ui-button--outline border bg-background hover:bg-accent hover:text-accent-foreground",
       dashed:
         "ui-button--dashed border border-dashed bg-background hover:bg-accent hover:text-accent-foreground",
       secondary:
