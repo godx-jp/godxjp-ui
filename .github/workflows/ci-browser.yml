@@ -1,22 +1,28 @@
 name: CI · browser
 
-# The MANDATORY browser lane: the two Chromium gates that the release provenance names, and
-# nothing else. CONTRACT.md L4 gives this lane a 5-minute budget and forbids parking a wide
-# matrix in it.
+# The MANDATORY browser lane: the Chromium gates that run on every merge, and nothing else.
+# CONTRACT.md L4 gives this lane a 5-minute budget and forbids parking a wide matrix in it.
 #
-#   • visual — check:contrast (20 routes) + check:visual-audit. 55–59s measured at 11 routes (runs
-#              33974029465, 33976207776); the nine added routes are the Toast tone matrix (four
-#              types × two themes) plus a dark theme that `/isolate/**` now actually applies, and
-#              they cost +27s locally (12s → 39s for the contrast sweep alone). Still well inside
-#              the budget.
-#              violations are BLOCKING (0 allowed); component/demo violations are allowlisted
+#   • visual    — check:contrast (20 routes) + check:visual-audit. 55–59s measured at 11 routes
+#                 (runs 33974029465, 33976207776); the nine added routes are the Toast tone matrix
+#                 (four types × two themes) plus a dark theme that `/isolate/**` now actually
+#                 applies, and they cost +27s locally (12s → 39s for the contrast sweep alone).
+#                 Still well inside the budget.
+#   • frame-axe — @axe-core/playwright over EVERY frame, 215 routes × 3 viewports, split across
+#                 four shards so the critical path fits the budget. The arithmetic is on the job.
 #
+# ONLY `visual` IS NAMED BY THE RELEASE PROVENANCE, and the asymmetry is deliberate rather than an
 # oversight. This repo's real merge gate is not branch protection (main has none: `gh api
 # repos/godx-jp/godxjp-ui/branches/main/protection` → 404, and `/rulesets` → []). It is
 # `VerifyCommitProvenance` in npm-publish.yml, which fails CLOSED unless every name in
 # scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS has a green check run on the exact SHA being
-# component allowlisted)", and src/test/__tests__/release-workflow.test.ts asserts both names are
-# it, or scoping it to changed frames) is the way out; relocating it is not.
+# published. That list names "Contrast + visual audit"; it does NOT name the axe shards — #492
+# took the old axe job out of the proof map and gh#643 did not put it back, for the reason written
+# on the job below. A red shard still refuses a publish at that SHA through assertCiProvenance's
+# `collateral` rule, so the protection that matters does not depend on the name being in the list.
+#
+# (The three orphan half-sentences that sat here until gh#643 item 3 were what #492 left behind
+# when it deleted the axe job by deleting lines rather than rewriting the prose around them.)
 #
 # WHAT LEFT, AND WHERE IT WENT — ci-browser-full.yml (nightly / dispatch / `run-browser` label):
 # the viewport-matrix geometry sweep and the five rendered-runtime shards. Measured 1958s of
@@ -77,51 +83,101 @@ jobs:
   # target size — were checked nowhere in this repository. gh#639 is the bill: a topbar shipped,
   # every gate here said green, and `target-size` failed downstream in a repo that cannot fix CSS.
   #
-  # SCOPED TO THE SHOWCASES, AND THAT IS A BUDGET DECISION MADE ON A MEASUREMENT, NOT A GUESS.
-  # The full sweep — 215 routes × 3 viewports — runs 3m20s locally and I put it in this lane on
-  # that number. On this pool's runner the same job measured 12m01s (run 34913… , job "Per-frame
-  # axe (WCAG 2.2 AA)", 00:31:29 → 00:43:30): three times the local wall clock and more than twice
-  # L4's five-minute budget for this whole lane. A gate that busts a documented budget on its first
-  # merge is the "ma trận rộng" this file spends thirty lines telling people not to park here.
+  # SHARD, DO NOT RELOCATE — and FOUR is a number off a measurement, not a preference.
+  # #645 scoped this lane to `--scope=showcase` (30 frames) and sent the other 185 to the nightly,
+  # which left a component-frame regression caught at 02:00 instead of at merge — weaker than the
+  # "fails at PR time, in the repository that can fix it" gh#643 asked for, and the runner's clock
+  # rather than a design choice. Sharding buys it back. Two runner measurements fix the model:
   #
-  # So the merge lane runs `--scope=showcase`: the thirty whole-page frames, 30s locally. They are
-  # the only frames here shaped like the screens a consumer ships — a landmark tree, a focus order,
-  # real page reflow — and therefore the class gh#639 came from and the class the consumer's gate
-  # has been carrying alone. The other 185 component frames sweep nightly in ci-browser-full.yml,
-  # which is where this file's own header says a wide matrix belongs.
+  #     full sweep, 215 routes × 3 viewports   721s  (12m01s, job "Per-frame axe (WCAG 2.2 AA)")
+  #     showcase scope, 30 routes              170s  (2m50s)
   #
-  # `--shard=i/n` is in the script for the day the showcases outgrow this too; using it ADDS
-  # check-run names, which is free here because none of them is in REQUIRED_CI_CHECK_RUNS.
+  # ⇒ marginal cost k = (721 − 170) / 185 = 2.98s per route, and the fixed per-job cost (checkout
+  # + setup + `pnpm preview:build`) is O = 170 − 30k ≈ 81s. A shard's wall clock is therefore
+  # O + (721 − O)/N — and it does not matter WHICH routes land in a shard, because `shardOf` is a
+  # round robin over the SORTED route list, so every shard gets the same mix of the slower
+  # `/showcase/**` and the faster `/isolate/**`:
   #
-  # NOT a required check run. #492 removed the old "Per-frame axe" job from the release proof map
-  # and this does not put it back — that is the owner's call to make separately. A red run still
-  # refuses a publish through assertCiProvenance's collateral rule, which is the protection that
-  # matters.
+  #     N=2  →  403s  (6m43s)  over L4's 300s
+  #     N=3  →  296s  (4m56s)  inside it by four seconds, which is not margin on a pool whose own
+  #                             setup action varies 8–255s
+  #     N=4  →  242s  (4m02s)  19% under budget                                      ← CHOSEN
+  #     N=5  →  209s  (3m29s)  faster, but see the slot cost
+  #
+  # Measured locally to prove the partition rather than trust it: `--shard=1/3` selected 72 of the
+  # 215 routes (215/3 → 72 + 72 + 71, every route in exactly one shard) and ran in 45s against the
+  # STATIC preview. The dev server is not a substitute — it produces 1–3 spurious
+  # `route-did-not-render` rows from `page.goto` timeouts.
+  #
+  # WHAT IT COSTS, SAID PLAINLY: four of this pool's eight browser slots for ~4 minutes on every
+  # merge, where the showcase job took one. With `visual` that is five jobs at once, and
+  # ci-browser-full.yml records five CONCURRENT preview servers on one physical host as the
+  # configuration that failed to bind (hence its `max-parallel: 2`). The difference is weight and
+  # duration: those shards each held a preview for 589/598/328/129/314s while driving the
+  # interactive runtime gates, while these hold one for ~3 minutes to serve static files, and
+  # `visual` is a ~1-minute job that is gone before the shards are half done. If a bind failure
+  # does show up anyway, `max-parallel: 3` is the lever and it is paid for out of the budget —
+  # N=5 three-at-a-time, not a retreat to the nightly.
+  #
+  # Ports are this job's own, one per shard. `visual` holds 6008 and ci-browser-full.yml holds
+  # 6011, 6021, 6031, 6038, 6039 and 6041 — that lane CAN run at the same time as this one (a
+  # `run-browser` label, or a dispatch during a merge), so 6012–6015 collide with neither.
+  #
+  # TWO RULES `scripts/check-frame-axe.mjs` MUST KEEP UNDER `--shard`, both learned in b367b832:
+  #   (a) the "baselined entry no longer fires" report may run ONLY on a full sweep — one shard
+  #       cannot see another shard's frames, so under a shard every other shard's rows read as
+  #       fixed and following the advice to `--update` would delete them;
+  #   (b) `--update` must REFUSE under `--shard` — a shard would rewrite the ledger from its own
+  #       slice. This lane never passes `--update`, so the workflow is safe either way; the rules
+  #       are what protects a person running the same flags by hand.
+  #
+  # CHANGING THE SHARD COUNT RENAMES THE CHECK RUNS — Đổi số shard là ĐỔI TÊN check run. These
+  # names are not in scripts/release-core.mjs · CI_PROOF_FOR_RELEASE_GATE today; the day they are,
+  # that file and src/test/__tests__/release-workflow.test.ts must be edited in the SAME commit as
+  # this matrix, or every release refuses with "never ran: Per-frame axe (shard 1/4)".
+  #
+  # AND THEY ARE DELIBERATELY NOT IN IT. CI_PROOF_FOR_RELEASE_GATE is the map of gates
+  # `verify:release` WOULD have run → the check run that stands in for them, and `check:frame-axe`
+  # is not in `verify:release`; a gate absent from the left column has no business in the right.
+  # #492 took the old name out of that map and gh#643's reporter called putting it back "the
+  # owner's call, not a side effect of this". A red shard still refuses a publish at the same SHA
+  # through assertCiProvenance's `collateral` rule, which is the protection that matters.
   frame-axe:
-    name: Per-frame axe (showcases, WCAG 2.2 AA)
+    name: Per-frame axe (shard ${{ matrix.shard }}/4)
     runs-on: [self-hosted, swarm-pool]
+    strategy:
+      # Every shard runs to the end. One red shard must not cancel the other three — a CANCELLED
+      # check run is indistinguishable from one that never ran, and that is the failure mode the
+      # whole release-provenance mechanism is built to refuse.
+      fail-fast: false
+      matrix:
+        include:
+          - shard: 1
+            port: 6012
+          - shard: 2
+            port: 6013
+          - shard: 3
+            port: 6014
+          - shard: 4
+            port: 6015
     env:
-      # A port of this job's OWN — self-hosted jobs share a host, and `visual` holds 6008.
-      PREVIEW_BASE: http://localhost:6011
+      PREVIEW_BASE: http://localhost:${{ matrix.port }}
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
         with:
           chromium: "true"
       - run: pnpm preview:build
-      - run: pnpm check:frame-axe -- --scope=showcase
+      # Spelled out in full, not hidden behind a shell variable: check:gate-coverage reads these
+      # workflows for a literal `pnpm check:<name>` and a variable would read as a DEAD GATE.
+      - run: pnpm check:frame-axe -- --shard=${{ matrix.shard }}/4
       # v7, the version every other upload in this repository uses. I wrote v4 and it failed the
       # lane with `Failed to FinalizeArtifact … (403) Forbidden` on a run whose gate had already
       # printed ✓ — a green measurement reported as a red merge, on the release commit itself.
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: frame-axe-results-showcase
+          # One name per shard: four jobs uploading one name is a collision, not a merge.
+          name: frame-axe-results-shard-${{ matrix.shard }}
           path: audit-evidence/frame-axe/
           if-no-files-found: ignore
-
-  # Chia shard chứ không dời chỗ. Tên job nằm trong REQUIRED_CI_CHECK_RUNS, nên dời sang nightly
-  # là mọi bản phát hành báo "never ran"; thu nhỏ chính gate mới là lối ra. Đo tại chỗ: một lượt
-  # trọn bộ 164 khung mất 626 giây, ba shard đưa đường găng xuống khoảng 210 giây, dưới ngân sách
-  # 5 phút. Đổi số shard là ĐỔI TÊN check run, nên phải sửa CI_PROOF_FOR_RELEASE_GATE trong
-  # scripts/release-core.mjs và release-workflow.test.ts trong CÙNG một commit.
