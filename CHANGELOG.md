@@ -4,7 +4,16 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [25.0.0] - 2026-09-16
+
+MAJOR, and for the reason 24.0.0 was: a consumer who upgrades sees the interface change on the next
+build. Nothing is removed from the JS API — one theme token is (`--sidebar-item-active-color`), and
+the repaint is real: every primary hover and press, every open sidebar row, and the ink on the
+success and attention fills.
+
+`24.2.0` is in this history as a staged version that was never tagged or published — npm `latest`
+was 24.1.0 throughout. `AuthIdentity`'s `brand` slot (#653) therefore reaches consumers for the
+first time here, with the decorative fix below applied to it.
 
 ### Fixed — the derived colour tier was still on the pre-v2.3 blue seed (gh#648)
 
