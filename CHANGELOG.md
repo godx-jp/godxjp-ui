@@ -38,11 +38,20 @@ fails the gate — a broken declaration is a broken gate.
 ### Fixed — the component sweep runs at merge again, in four shards (gh#643)
 
 24.1.0 scoped the merge lane to the thirty showcases and sent the other 185 frames to the nightly,
-so a component-frame regression was caught at 02:00 rather than at merge. Four shards buy it back:
-the full sweep measured 721s and `--scope=showcase` 170s on the pool, giving 2.98s per route and
-~81s of fixed per-job cost, so a shard is 81 + (721−81)/N — **242s at N=4, 19% under CONTRACT.md
-L4's budget**. It costs four of the pool's eight browser slots on every merge, which is stated on
-the job rather than discovered later.
+so a component-frame regression was caught at 02:00 rather than at merge. Four shards buy it back.
+It costs four of the pool's eight browser slots on every merge, which is stated on the job rather
+than discovered later.
+
+**The predicted 242s did not hold, and the reason is worth more than the prediction.** The model —
+721s full sweep, 170s showcase scope ⇒ 2.98s/route and ~81s fixed per job — was right about the
+SWEEP: on the first merge that ran it the four shards measured 85 / 141 / 155 / 150s, a 70s spread,
+every one inside CONTRACT.md L4's 300s budget. The LANE still took 474s, because one job's
+`.github/actions/setup` drew **314s** while its three siblings drew 15–40s. That is this repo's own
+documented setup variance (8–255s, "node10's egress"), and 314s is past the top of it. The lesson
+for sharding: a lane's wall clock is max over N DRAWS from that distribution, so splitting one job
+into four does not divide the fixed cost — it takes four samples from a long tail instead of one.
+Kept at four regardless, because what item 3 asked for is delivered and the gate's own cost fits;
+the remaining budget risk is the setup action's egress, which is not caused by this job.
 
 ### Fixed — a partial axe run could rewrite the whole ledger
 
