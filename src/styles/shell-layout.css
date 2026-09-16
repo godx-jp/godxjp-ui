@@ -2245,12 +2245,39 @@
     color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));
   }
 
-  /* Active item reads its own bg/fg tokens (defaults = the hover look) so a service can give the
-   * selected nav row a brand treatment — e.g. a gold tint + gold text on a navy sidebar — without
-   * forking CSS. */
+  /* THE OPEN ROW IS THE BRAND COLOUR, at BOTH depths (gh#651).
+   *
+   * The defaults used to be "the hover look" — `hsl(var(--accent))` grey fill, `hsl(var(--
+   * foreground))` label — while the sub-row rule below has always painted `hsl(var(--primary))`.
+   * One nav column, one meaning, two colour languages: the open CHILD read as branded and its open
+   * PARENT read as grey. Both defaults are the brand now, and the knobs are untouched, so a service
+   * that wants the grey back (or gold on navy) still writes one declaration.
+   *
+   * MEASURED on HEAD rather than assumed, because `--primary` moved twice recently (GoDX violet in
+   * identity v2.3, derived tier re-hued in gh#648). Label on the composited fill at the shipped
+   * 12%: 5.07:1 light, 7.51:1 on the sidebar's own `--card` in dark and 8.30:1 where the nav sits
+   * straight on `--background` — all clear of SC 1.4.3's 4.5:1, and the fill is MORE distinct from
+   * the light sidebar surface than the grey it replaces (1.25:1 vs 1.19:1). The one number that
+   * moves the wrong way is the dark FILL separation (1.31:1 vs accent's 1.43:1), and it is not
+   * carrying the state alone: the label recolours and `--font-weight-medium` thickens it, so the
+   * row is not colour-only either way (WCAG 1.4.1). Pinned by
+   * src/tokens/__tests__/sidebar-active-contrast.test.ts, which also caps the alpha.
+   *
+   * The fill is composited rather than a flat role because a solid `--primary` row would put
+   * near-white on violet — a SELECTED look, not an OPEN one, and it would fight the rail's own
+   * surface. `color-mix` over `transparent` (not over `--card`) so the tint is correct on whatever
+   * ground the nav is dropped on; `--primary` resolves HERE, which is what keeps a scoped
+   * `[data-tenant]` re-tint reaching it. */
   .sb-nav-item[data-active="true"] {
-    background: var(--sidebar-item-active-background, hsl(var(--accent)));
-    color: var(--sidebar-item-active-foreground, hsl(var(--foreground)));
+    background: var(
+      --sidebar-item-active-background,
+      color-mix(
+        in srgb,
+        hsl(var(--primary)) var(--sidebar-item-active-background-alpha),
+        transparent
+      )
+    );
+    color: var(--sidebar-item-active-foreground, hsl(var(--primary)));
     font-weight: var(--font-weight-medium);
   }
 
@@ -2379,10 +2406,18 @@
     color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));
   }
 
+  /* The SAME label knob as level 1 — it used to be `--sidebar-item-active-color` here and
+   * `--sidebar-item-active-foreground` there, each appearing exactly once in this file, so a
+   * service tinting the open row had to find two names for one thing (gh#651). No alias was kept;
+   * the reasoning is recorded with the declarations in tokens/components/shell.css.
+   *
+   * The weight was a literal `500` while the rule above already read the scale — the same constant
+   * spelled two ways, which is what cardinal rule #45 exists to stop: a service re-tuning
+   * `--font-weight-medium` moved its parent rows and left its child rows behind. */
   .sb-nav-item--sub[data-active="true"] {
     background: transparent;
-    color: var(--sidebar-item-active-color, hsl(var(--primary)));
-    font-weight: 500;
+    color: var(--sidebar-item-active-foreground, hsl(var(--primary)));
+    font-weight: var(--font-weight-medium);
   }
 
   .sb-nav-item--sub[data-active="true"]::before {

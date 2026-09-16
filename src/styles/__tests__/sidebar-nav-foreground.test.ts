@@ -87,13 +87,12 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
   });
 
   it("active row still reads the pre-existing active knobs (no duplicate token)", () => {
+    // The DEFAULTS moved to the brand in gh#651 (the grey/primary split between the two nav levels
+    // is gone); the KNOBS did not, which is the contract this case has always guarded. Their
+    // measured floor lives in src/tokens/__tests__/sidebar-active-contrast.test.ts.
     const active = rule('.sb-nav-item[data-active="true"]');
-    expect(active).toContain(
-      "background: var(--sidebar-item-active-background, hsl(var(--accent)))",
-    );
-    expect(active).toContain(
-      "color: var(--sidebar-item-active-foreground, hsl(var(--foreground)))",
-    );
+    expect(active).toContain("background: var( --sidebar-item-active-background,");
+    expect(active).toContain("color: var(--sidebar-item-active-foreground, hsl(var(--primary)))");
     expect(sidebarTokens).not.toContain("--sidebar-nav-item-active-foreground");
   });
 
@@ -169,7 +168,10 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
 
 /* ---------------------------------------------------------------------------------------------
  * Light/dark contrast — the defaults AND the canonical override must clear WCAG 2.2 AA.
- * The sidebar surface is hsl(var(--card)); the hovered/active row sits on hsl(var(--accent)).
+ * The sidebar surface is hsl(var(--card)); the HOVERED row sits on hsl(var(--accent)). The ACTIVE
+ * row left that fill in gh#651 — it now composites `--primary` over whatever the nav sits on, and
+ * that pair is measured in src/tokens/__tests__/sidebar-active-contrast.test.ts, which owns the
+ * alpha ceiling too. Nothing below re-states it.
  * ------------------------------------------------------------------------------------------- */
 
 function hsl(body: string, name: string): [number, number, number] {
@@ -223,7 +225,7 @@ describe("Sidebar nav foreground contrast, both themes (gh#228)", () => {
       expect(contrast(muted, surface)).toBeGreaterThanOrEqual(AA_NON_TEXT);
     });
 
-    it(`${theme}: hover + active row (--foreground) on the accent fill meets AA`, () => {
+    it(`${theme}: hover row (--foreground) on the accent fill meets AA`, () => {
       expect(contrast(strong, hoverSurface)).toBeGreaterThanOrEqual(AA_TEXT);
     });
 
