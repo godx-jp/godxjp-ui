@@ -4,6 +4,53 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [25.2.0] - 2026-09-17
+
+MINOR — and it is a judgement call worth stating, because every consumer with a link WILL see links
+change on the next build. By this file's own rule that would be major (24.0.0, 25.0.0: "a consumer
+who upgrades sees the interface change"). The distinction 24.1.0 drew is the one that applies: a
+change that makes the package do what the published design already says is a FIX, not a new design.
+GoDX v2.3 has always specified an underlined `#6400D4` link; the package failed to implement it, and
+the failure was a WCAG 1.4.1 violation. Nothing is removed and no consumer has to change code.
+
+### Fixed — a link is the link colour and underlined at rest (gh#664)
+
+`Text link` painted `--primary` (#7A00FF, the action FILL) with no underline until hover.
+
+- **`--text-link` was still the pre-v2.3 blue.** `204 100% 39%` — hue 204°, the old #0071bd family —
+  missed by the v2.3 repaint the same way gh#648's derived tier was, and outside that issue's hue
+  lock. Now light #6400D4 / dark #DCBCFF, the kit's `core.link` and exactly `--gx-link` in the
+  guideline. The old blue was also an AA failure: 4.23:1 on `--muted`, 3.87:1 on `--accent`, 4.46:1
+  on a striped row. The new ink is 6.94:1 at worst.
+- **The underline is required, and the number is why.** The link ink measures 1.87:1 against body
+  ink in light and 1.54:1 in dark; WCAG 1.4.1 lets colour alone mark a link only at 3:1 (G183). New
+  `--text-link-decoration-line`, default `underline` — `none` stays legal for a link that carries its
+  affordance another way, but in running text it re-opens the failure.
+- `--text-link-underline-offset` 0.2em → 0.18em, the guideline's value.
+- `link tone="destructive"` still wins; `data-tone` and the JS API are unchanged.
+
+### Fixed — `Select` without a placeholder rendered React Aria's English "Select an item" (#665)
+
+A `SelectValue` with no placeholder returned `null` from its render function, and React Aria replaces
+a `null` render result with its own default — the English "Select an item" — so it appeared inside
+Japanese and Vietnamese screens (45 triggers in Platform). The Radix component this replaced drew
+nothing there. It renders empty again.
+
+### Fixed — the `outline` Button's shadow ignored the shadow token (#662, #663)
+
+`shadow-xs` sat in the `outline` variant's class string, out-ranked the components layer and routed
+around the token tier: a theme setting `--shadow-sm: none` flattened every Button except `outline`,
+which kept `rgba(0,0,0,0.05) 0 1px 2px` with no knob able to reach it. The GoDX v2.3 design system
+says "Card thường và nút mặc định không đổ bóng", so a consumer following it got stuck on exactly this
+button. The shadow now reads `var(--shadow-sm)` like every other variant. Default unchanged.
+
+### Removed from the tarball — `inert-background` (#660)
+
+`dist/components/general/inert-background.{js,d.ts}` shipped in every install though no index
+exported it and nothing in `src/` imported it: its Radix-era callers moved to react-aria-components,
+which inerts the background itself. It moved beside the only thing still using it, the Radix parity
+fixture that proves the two `Select` backends agree. Not importable before, not shipped now.
+
 ## [25.1.0] - 2026-09-16
 
 MINOR. No API is removed and no colour moves; what changes is what the gate can SEE. The one
