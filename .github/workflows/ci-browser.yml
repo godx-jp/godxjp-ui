@@ -102,6 +102,23 @@ jobs:
   #     N=3  →  296s  (4m56s)  inside it by four seconds, which is not margin on a pool whose own
   #                             setup action varies 8–255s
   #     N=4  →  242s  (4m02s)  19% under budget                                      ← CHOSEN
+  #
+  # THE MODEL WAS RIGHT ABOUT THE SWEEP AND WRONG ABOUT THE LANE. First merge that ran it
+  # (35047347097), per shard: setup 15 / 314 / 40 / 37s, sweep 85 / 141 / 155 / 150s. The SWEEP
+  # half is what the arithmetic predicted and the round robin does equalise it — a 70s spread
+  # across four shards, every one of them inside the budget on its own. The LANE still took 474s,
+  # because one job's `.github/actions/setup` drew 314s while its three siblings drew 15–40s.
+  #
+  # That is this file's own documented variance ("8–255s … node10's egress"), and 314s is past the
+  # top of it. The consequence for sharding is the part worth writing down: a lane's wall clock is
+  # max over N DRAWS from that distribution, so splitting one job into four does not divide the
+  # fixed cost — it takes four samples from a long tail instead of one. Sharding cannot fix that
+  # and slightly worsens it.
+  #
+  # Kept at four anyway, deliberately: the thing gh#643 item 3 asked for — a component-frame
+  # regression caught at merge instead of at 02:00 — is delivered, and the gate's own cost fits.
+  # The budget risk that remains is the setup action's egress, which is neither caused by this job
+  # nor fixable inside it. Do NOT re-tune N against a bad setup draw; measure the `sweep` step.
   #     N=5  →  209s  (3m29s)  faster, but see the slot cost
   #
   # Measured locally to prove the partition rather than trust it: `--shard=1/3` selected 72 of the
