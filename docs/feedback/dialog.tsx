@@ -64,7 +64,10 @@ export default function Demo() {
           <CardContent>
             <Dialog open={createOpen} onOpenChange={setCreateOpen}>
               <DialogTrigger asChild>
-                <Button size="sm">仕訳新規作成</Button>
+                {/* data-axe-open: check:frame-axe presses this before its overlay scan. */}
+                <Button data-axe-open size="sm">
+                  仕訳新規作成
+                </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg">
                 <DialogHeader>

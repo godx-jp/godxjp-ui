@@ -861,6 +861,32 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProp>(funct
   );
 });
 
+/**
+ * A RULE, NOT A ROLE — `role="separator"` is not a child a `listbox` may own (gh#643).
+ *
+ * It rendered react-aria's `<Separator>`, so a divider between two `SelectGroup`s landed in the
+ * viewport as `<div role="separator">`, a direct child of `role="listbox"`. ARIA 1.2 lets a
+ * `listbox` own `option` and `group` and nothing else, so axe's `aria-required-children` fires
+ * CRITICAL on the whole viewport: "Element has children which are not allowed: [role=separator]".
+ * Measured by `check:frame-axe`'s overlay scope on `/isolate/data-entry-select-matrix`, 1 node at
+ * each of 1440 / 375 / 320 — and only ever with the list OPEN, which is why nothing saw it for the
+ * two releases the gate has existed. `menu` DOES own `separator`, so `DropdownMenuSeparator` is
+ * correct as it stands; this is a listbox-only rule.
+ *
+ * MAKING IT A `group` INSTEAD WAS REJECTED. It would satisfy the rule and it would lie: the
+ * grouping is already carried by the two `SelectGroup` sections either side of it, and a screen
+ * reader would then announce an empty third group between them. The divider is decoration over a
+ * structure that is already announced, so it says so — `aria-hidden`, which takes it out of the
+ * accessibility tree and therefore out of the listbox's owned children. Same call `SelectLabel`
+ * already makes one component up, where the group's `<header>` renders `role="presentation"`
+ * because `aria-labelledby` is what actually names the section.
+ *
+ * DROPPING `AriaSeparator` FOR A PLAIN `<div>` WAS TRIED FIRST AND IS WRONG. It is a
+ * `createLeafComponent` collection node, not a styled element: react-aria builds the listbox's
+ * collection from the element TYPES of its children, so an unrecognised `<div>` truncates the
+ * collection and every option after the divider stops existing. `select-groups.test.tsx` caught
+ * it immediately — "Unable to find an accessible element with the role option and name バナナ".
+ */
 export const SelectSeparator = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
   function SelectSeparator({ className, ...props }, ref) {
     return (
@@ -869,6 +895,17 @@ export const SelectSeparator = React.forwardRef<HTMLElement, React.HTMLAttribute
         data-slot="select-separator"
         className={cn("ui-select-separator", className)}
         {...(splitDomProps(props).attributes as object)}
+        // `render`, not a prop: react-aria writes `role="separator"` from `useSeparator` AFTER the
+        // caller's props (`mergeProps(DOMProps, separatorProps)`), and `filterDOMProps` drops a
+        // bare `aria-hidden` on the way through — both were tried and neither reaches the DOM.
+        // The render override is the same escape hatch `SelectItem` above already uses.
+        render={(separatorProps) => (
+          <div
+            {...(separatorProps as React.HTMLAttributes<HTMLDivElement>)}
+            role={undefined}
+            aria-hidden="true"
+          />
+        )}
       />
     );
   },

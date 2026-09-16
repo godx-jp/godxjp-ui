@@ -41,7 +41,9 @@ export default function Demo() {
               形式に整形され、 解釈できない入力は元の値へ復帰する。
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {/* data-axe-open on the region: DatePicker owns its trigger DOM. The gate presses the
+              `[role="combobox"]` input inside, which is what opens the calendar. */}
+          <CardContent data-axe-open>
             <FormField id="issue-date" label="発行日" required>
               <DatePicker
                 id="issue-date"

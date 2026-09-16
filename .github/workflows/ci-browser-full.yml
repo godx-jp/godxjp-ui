@@ -15,10 +15,11 @@ name: CI · browser (full sweep)
 #
 # WHY THIS MOVE IS SAFE FOR THE RELEASE. npm-publish.yml fails closed unless every name in
 # scripts/release-core.mjs · REQUIRED_CI_CHECK_RUNS is green on the exact SHA. Neither `geometry`
-# nor any `rendered-runtime` shard is in that list — only "Build · typecheck · lint · guards",
-# the four test shards, "Contrast + visual audit", "Per-frame axe (…)" and "lockstep" are. So
-# moving these two out of the per-merge lane cannot make a release ship something unverified;
-# it removes work that was never part of the release's proof to begin with.
+# nor any `rendered-runtime` shard is in that list — only "Build · typecheck · lint · guards", the
+# four test shards, "Contrast + visual audit" and "lockstep" are. (ci-browser.yml's axe shards are
+# deliberately not in it either; that job carries the reason.) So moving these two out of the
+# per-merge lane cannot make a release ship something unverified; it removes work that was never
+# part of the release's proof to begin with.
 #
 # It does, however, still protect the release in the other direction: assertCiProvenance also
 # refuses on ANY OTHER red check run on the SHA being published (the `collateral` rule). A red
@@ -79,11 +80,16 @@ jobs:
           path: audit-evidence/frame-geometry/
           if-no-files-found: ignore
 
-  # The other 185 frames of gh#643's gate. `ci-browser.yml` runs the thirty showcases on every
-  # merge; the component sweep is 215 routes × 3 viewports and measured 12m01s on this pool, which
-  # is a wide matrix by any reading of L4 — so it lives here, with the geometry sweep it most
-  # resembles. A red run still refuses a publish at the same commit through assertCiProvenance's
-  # collateral rule, which is the protection that matters.
+  # THE ONLY UNSHARDED RUN OF gh#643'S GATE, AND THAT IS NOW ITS WHOLE JOB. Since item 3 the merge
+  # lane sweeps all 215 routes too — ci-browser.yml, four shards, `--shard=i/4` — so this is no
+  # longer where the component frames get measured. It stays for the one thing a shard cannot do:
+  # a shard sees a FRACTION of the frame list, so "this baselined entry no longer fires" is not a
+  # question it can answer, and `--update` refuses under `--shard` for the same reason. The ledger
+  # in frame-axe-baseline.json can therefore only ever be TIGHTENED off a run of this job.
+  #
+  # It also gives a PR the sweep before the merge rather than after it, via the `run-browser`
+  # label, which the push-triggered merge lane cannot. A red run still refuses a publish at the
+  # same commit through assertCiProvenance's collateral rule.
   frame-axe:
     name: Per-frame axe (all frames, WCAG 2.2 AA)
     if: >-

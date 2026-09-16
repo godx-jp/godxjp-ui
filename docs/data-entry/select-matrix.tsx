@@ -37,7 +37,9 @@ export default function Demo() {
               content. Radix owns keyboard focus and collision handling.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {/* data-axe-open on the region: the gate presses the first `[role="combobox"]` inside it,
+              which is the compound SelectTrigger. */}
+          <CardContent data-axe-open>
             <Flex direction="col" gap="md">
               <FormField
                 id="compound-controlled"

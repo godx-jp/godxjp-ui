@@ -31,6 +31,7 @@ pnpm check:frame-axe -- /isolate/layout-topbar   # one route, while fixing
 | tags      | `wcag2a` · `wcag2aa` · `wcag21aa` · `wcag22aa` — **the consumer's set, verbatim** |
 | routes    | every `/isolate/<id>` in `window.__STORY_MANIFEST__` + every `/showcase/<id>`     |
 | viewports | 1440×900 · 375×667 · **320×568**                                                  |
+| states    | as rendered, **plus** one overlay OPEN on the routes that declare `data-axe-open` |
 
 320 is not decoration: it is WCAG 2.2 SC 1.4.10's reflow width, it is the width the consumer's
 nightly runs, and it is the width gh#639 failed at while 390 passed.
@@ -38,6 +39,114 @@ nightly runs, and it is the width gh#639 failed at while 390 passed.
 Showcases are included on purpose. They are the only frames here shaped like a real screen — a whole
 page, a landmark tree, a focus order — which is precisely the class the component frames cannot
 reach and the consumer has been carrying alone.
+
+## The overlay scope — opening the thing before measuring it
+
+A menu, dialog, listbox or popover that is closed at rest **paints nothing**. Every axe rule whose
+condition only exists while one is open was therefore outside this gate's field of view, not passing
+it. The gate shipped in 24.1.0 without this half; it is back (gh#643 item 4), rebuilt from the
+version #492 deleted.
+
+A demo opts in **declaratively**, from the demo itself:
+
+```tsx
+// the trigger, when it forwards DOM props
+<DialogTrigger asChild>
+  <Button data-axe-open size="sm">仕訳新規作成</Button>
+</DialogTrigger>
+
+// the region that owns it, when the component renders its own trigger
+<CardContent data-axe-open>
+  <FormField id="status" label="状態"><Select … /></FormField>
+</CardContent>
+
+// right-click, for the gesture nothing else reaches
+<Button data-axe-open="contextmenu" variant="outline">…</Button>
+```
+
+What the gate then does, per route/viewport, **after** the default-state scan (opening an overlay is
+destructive to the state that scan measures):
+
+1. Take the **first** `[data-axe-open]` on the page. No declaration ⇒ the route skips this entirely
+   and costs nothing.
+2. Press **Escape** up to three times while any overlay is mounted. Several demos deliberately
+   render one open at rest (`popover`'s anchored panel, `dropdown-menu`'s `defaultOpen` card), and a
+   modal one makes the rest of the page unreachable. Dismissing first also makes the measurement a
+   real **closed → open** transition rather than whatever the demo happened to leave mounted.
+3. Resolve the click target: the declaring element itself when it matches
+   `button, [role=button], [role=combobox], [role=menuitem], a[href], summary`, otherwise the first
+   such control inside it. (`Select` and `DatePicker` own their trigger DOM and forward no `data-*`
+   to it — hence the declare-on-the-region form. `DatePicker`'s combobox `<input>` is what opens the
+   calendar, and it is what gets pressed.)
+4. Click (or right-click), then wait until **one more** overlay is mounted
+   (`[data-radix-popper-content-wrapper], [role=dialog], [role=alertdialog], [role=menu],
+[role=listbox]`) — never a bare timer.
+5. Scan again, and key the rows `@<viewport>+open`:
+
+```
+/isolate/data-entry-select-matrix @1440+open aria-required-children
+```
+
+**A declaration whose overlay never opens is a gate FAILURE**, recorded as `overlay-did-not-open`
+and red on the spot. A broken declaration otherwise reads exactly like a clean frame, which is the
+one thing this scope exists to prevent.
+
+**Routes declaring an open step today — 7 declared, 7 open:** `data-entry-select`,
+`data-entry-select-matrix`, `data-entry-date-picker`, `data-display-popover`,
+`navigation-dropdown-menu`, `feedback-dialog`, `feedback-sheet`. (The old `navigation-context-menu`
+frame is gone — `ContextMenu` was folded into `DropdownMenu trigger={["contextMenu"]}` in v23 — so
+the right-click gesture is declared on that card of `navigation-dropdown-menu` instead.)
+
+### What it found, and the proof it has teeth
+
+**`aria-required-children`, CRITICAL, on `/isolate/data-entry-select-matrix` at all three
+viewports.** `SelectSeparator` rendered react-aria's `<Separator>`, i.e. `role="separator"`, as a
+direct child of the viewport's `role="listbox"`. ARIA 1.2 lets a `listbox` own `option` and `group`
+and nothing else. Fixed in `src/components/data-entry/select.tsx` — the divider is decoration over a
+structure the two `SelectGroup`s already announce, so it now renders `aria-hidden` with no role.
+`menu` **does** own `separator`, so `DropdownMenuSeparator` is correct as it stands. Regression test:
+`src/components/data-entry/__tests__/select-groups.test.tsx`.
+
+The control run is the part worth keeping. On the **same defective build**:
+
+| declarations | result                                                                      |
+| ------------ | --------------------------------------------------------------------------- |
+| removed      | ✓ green, `0 route(s) opened a declared overlay`                             |
+| present      | ✗ red, 3 × `aria-required-children` on `@1440+open / @375+open / @320+open` |
+
+A `data-axe-open` on a `Button` that opens nothing turns the gate red with three
+`overlay-did-not-open` rows, one per viewport.
+
+**The original 2026-09 proof no longer reproduces, and the reason matters more than the proof.** That
+commit disabled `src/components/general/inert-background.ts` and watched `aria-hidden-focus` go red
+on `select`, `dropdown-menu` and `context-menu`. Disabling it today changes nothing measurable:
+these overlays are **react-aria-components**, not Radix: react-aria inerts the background itself —
+`#root` plus three focus sentinels carry `inert` the moment a listbox opens, with no `aria-hidden`
+anywhere on them. Stripping every `inert` attribute immediately before the scan still leaves the
+page clean and `aria-hidden-focus` in axe's `passes` bucket, because that rule needs an
+`aria-hidden` ancestor to fire at all. No `src/` component imports `useInertHiddenBackground` any
+more; the only importer is the Radix parity fixture
+`src/components/data-entry/__tests__/radix-select.fixture.tsx`. So `inert-background.ts` is dead
+for `Select` and `DropdownMenu`, and the overlay scope's value is no longer the rule it was built
+for.
+
+Be careful with the stronger version of that claim, because the first draft of this paragraph made
+it and it is false: `data-aria-hidden` is **not** absent from the built preview. The `aria-hidden`
+npm package ships inside the `command` chunk (`cmdk`'s dependency tree), so the marker exists in
+the bundle even though no first-party overlay sets it. What is measured above is the narrow claim —
+`Select` and `DropdownMenu` background-inert via `inert`, not `aria-hidden` — not a repo-wide
+absence. It is still the rule class: `aria-required-children` is the same
+shape, and nothing else here could see it.
+
+### What is still outside this scope, stated rather than hidden
+
+- Only the **first** declaration per route is exercised. A route with several distinct overlays is
+  measured on one of them.
+- Only **one step deep**: submenus, an overlay opened from inside another, and the state after a
+  selection are not reached.
+- **Keyboard opening is not exercised** — the gate clicks. A trigger that opens on click but not on
+  `Enter`/`Space` passes.
+- The overlay's **focus trap and focus order** are not asserted; axe cannot see a JS focus trap.
 
 ## What it found on its first run — and what came of it
 
@@ -105,12 +214,10 @@ The gate fails on a key that is **not** in the baseline, and on a baselined key 
 
 ## What this gate does NOT do — stated, not hidden
 
-The gate deleted in #492 did three things this one does not, and each is a real gap:
+The gate deleted in #492 did three things this one does not. One is now back; two are still gaps:
 
-1. **No overlay scope.** It scans the frame as rendered. A menu, dialog, listbox or popover that is
-   closed at rest is never measured, so `aria-hidden-focus` and friends stay outside its field of
-   view. The old gate opened one overlay per frame from a `data-axe-open` attribute; that attribute
-   was removed from the demos along with the gate and would have to come back.
+1. ~~**No overlay scope.**~~ Restored — see [the overlay
+   scope](#the-overlay-scope--opening-the-thing-before-measuring-it) above.
 2. **No chrome/component split.** The old gate held the preview toolbar to zero violations and
    allowlisted the component scope separately. `/isolate/**` renders the demo alone, so there is
    little chrome to separate — but `/showcase/**` is scanned whole.
@@ -127,11 +234,16 @@ which changes what `color-contrast` resolves a background to). Two sweeps after 
 
 ## Cost
 
-|                                    |                                                                                     |
-| ---------------------------------- | ----------------------------------------------------------------------------------- |
-| full sweep                         | **3m20s** locally · **12m01s** on the self-hosted runner — 215 routes × 3 viewports |
-| sequential                         | ~55 min — the three viewport passes run concurrently, which is the whole difference |
-| showcase only (`--scope=showcase`) | 30s                                                                                 |
+|                                       |                                                                                                                |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| full sweep                            | **3m20s** locally · **12m01s** on the self-hosted runner — 215 routes × 3 viewports                            |
+| sequential                            | ~55 min — the three viewport passes run concurrently, which is the whole difference                            |
+| showcase only (`--scope=showcase`)    | 30s                                                                                                            |
+| full sweep **with the overlay scope** | **2m14s** on the machine gh#643 item 4 was built on, same 215 × 3 — the runner number has not been re-measured |
+
+The overlay pass is bounded by declaration: only the 7 declaring routes pay it (21 extra scans plus
+their open steps), and no `/showcase/**` route declares one, so `--scope=showcase` — the merge lane —
+is unchanged.
 
 `--shard=i/n` is in the script for the day the sweep outgrows the lane. Using it adds check-run
 names, which costs nothing here because none of them is in `REQUIRED_CI_CHECK_RUNS`.

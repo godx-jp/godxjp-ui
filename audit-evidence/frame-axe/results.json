@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T00:49:09.462Z",
+  "generatedAt": "2026-09-16T02:10:55.550Z",
   "base": "http://localhost:6008",
   "tags": [
     "wcag2a",
@@ -12,6 +12,15 @@
     "1440",
     "375",
     "320"
+  ],
+  "openedRoutes": [
+    "/isolate/data-display-popover",
+    "/isolate/data-entry-date-picker",
+    "/isolate/data-entry-select",
+    "/isolate/data-entry-select-matrix",
+    "/isolate/feedback-dialog",
+    "/isolate/feedback-sheet",
+    "/isolate/navigation-dropdown-menu"
   ],
   "found": {}
 }

@@ -18,6 +18,14 @@
  *
  *     wcag2a · wcag2aa · wcag21aa · wcag22aa
  *
+ * TWO STATES PER ROUTE, NOT ONE (#355, restored in gh#643 item 4). A menu, dialog, listbox or
+ * popover that is closed at rest paints nothing, so every rule whose CONDITION only exists while an
+ * overlay is open — `aria-hidden-focus` first among them — was outside this gate's field of view
+ * rather than passing it. A demo declares its open step with `data-axe-open`; the gate presses it,
+ * waits for the overlay to actually mount, and scans again. Those rows are keyed `@<viewport>+open`.
+ * A declaration whose overlay never appears is a GATE FAILURE, not a silent skip — a broken
+ * declaration reads exactly like a clean frame.
+ *
  * A BASELINE, NOT A CLEAN SHEET. The package did not start compliant, and a gate that fails the
  * whole build on its first day gets deleted rather than obeyed. `frame-axe-baseline.json` records
  * what was already failing when the gate landed; the gate fails on anything NEW and on any
@@ -25,7 +33,7 @@
  * hand to make a red build green. `--update` rewrites it, and the diff is the review.
  *
  *   node scripts/check-frame-axe.mjs                 # every frame, 3 viewports
- *   node scripts/check-frame-axe.mjs --update        # rewrite the baseline
+ *   node scripts/check-frame-axe.mjs --update        # rewrite the baseline (FULL sweeps only)
  *   node scripts/check-frame-axe.mjs --shard=2/4     # CI split
  *   node scripts/check-frame-axe.mjs /isolate/layout-topbar   # one route, while fixing
  */
@@ -60,6 +68,27 @@ if (!["all", "showcase", "isolate"].includes(scope)) {
   throw new Error(`--scope expects all|showcase|isolate, got "${scope}"`);
 }
 
+/**
+ * A PARTIAL RUN MAY NOT WRITE THE LEDGER, AND THIS IS A RESTORED GUARD, NOT A NEW ONE.
+ *
+ * `b367b832` enforced it (*"--update-baseline TỪ CHỐI chạy dưới chế độ shard"*) and the rewrite in
+ * 24.1.0 dropped it along with the overlay scope. `--update` writes `entries` from what THIS run
+ * found, so `--update --shard=1/4` rewrites the file from a quarter of the frames and silently
+ * deletes the other three quarters — the ledger goes green by forgetting, which is the one move
+ * this file exists to make visible. `--scope=` has the identical shape and the same hole.
+ *
+ * Latent rather than harmless: it does nothing today only because the ledger is at 0 rows, and it
+ * goes live the moment one row is recorded. Explicit routes are covered too — they are the
+ * narrowest partition of all.
+ */
+if (update && (shardArg || scope !== "all" || explicitRoutes.length)) {
+  throw new Error(
+    "--update cannot run under --shard, --scope or an explicit route list: a partial run sees a " +
+      "FRACTION of the frames, so writing the baseline from it DELETES every row it did not " +
+      "visit. Regenerate from a full sweep.",
+  );
+}
+
 const BASELINE_PATH = path.join(REPO_ROOT, "frame-axe-baseline.json");
 const EVIDENCE_DIR = path.join(REPO_ROOT, "audit-evidence/frame-axe");
 
@@ -86,6 +115,58 @@ function readBaseline() {
 
 /** One stable key per (route, viewport, rule) — the unit a fix deletes. */
 const keyOf = (route, viewport, ruleId) => `${route} @${viewport} ${ruleId}`;
+
+/**
+ * DOM contract for the declared open step.
+ *
+ * A demo opts in by putting `data-axe-open` on the trigger it wants pressed — or, when the
+ * component owns its own trigger DOM and forwards no `data-*` to it (`DatePicker`, the
+ * data-driven `Select`), on the nearest element that DOES forward, with the gate resolving the
+ * real control inside it. `data-axe-open="contextmenu"` right-clicks the declaring element
+ * instead, for the one gesture nothing else reaches.
+ */
+const OPEN_DECLARATION = "[data-axe-open]";
+/** Controls a press can open an overlay from. Deliberately narrow — see the resolution above. */
+const OPEN_TARGET =
+  'button, [role="button"], [role="combobox"], [role="menuitem"], a[href], summary';
+/** An overlay that has actually mounted. Radix and react-aria both portal every one of these. */
+const OVERLAY_MOUNTED =
+  '[data-radix-popper-content-wrapper], [role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"]';
+
+/**
+ * Perform the route's declared open step. Returns false when nothing is declared (the vast
+ * majority of routes, which then cost nothing). Throws when a declaration exists but no overlay
+ * ever mounted — a broken declaration is a broken gate, and the caller records it as a violation.
+ */
+async function openDeclaredOverlay(page) {
+  const declaration = page.locator(OPEN_DECLARATION).first();
+  if ((await declaration.count()) === 0) return false;
+  // JSX `data-axe-open` with no value renders as "true"; only `contextmenu` selects a gesture.
+  const gesture =
+    (await declaration.getAttribute("data-axe-open")) === "contextmenu" ? "contextmenu" : "click";
+  // Some demos deliberately render an overlay OPEN at rest (a `defaultOpen` menu, so the closed
+  // state is not the only one anything ever measures). A modal one makes the rest of the page
+  // inert, so the declared trigger cannot be pressed while it stands. Dismissing first also makes
+  // this a real closed → open transition rather than whatever the demo happened to leave mounted.
+  for (let i = 0; i < 3 && (await page.locator(OVERLAY_MOUNTED).count()) > 0; i++) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(150);
+  }
+  const isTarget = await declaration.evaluate((el, sel) => el.matches(sel), OPEN_TARGET);
+  const target =
+    gesture === "contextmenu" || isTarget ? declaration : declaration.locator(OPEN_TARGET).first();
+  const before = await page.locator(OVERLAY_MOUNTED).count();
+  await target.click({ button: gesture === "contextmenu" ? "right" : "left", timeout: 10_000 });
+  // Settle on the OVERLAY, never on a timer: wait until one more is mounted than before the press.
+  await page.waitForFunction(
+    ({ sel, n }) => document.querySelectorAll(sel).length > n,
+    { sel: OVERLAY_MOUNTED, n: before },
+    { timeout: 8_000 },
+  );
+  // Animations are already zeroed above; this is the commit-and-position beat, not a fade.
+  await page.waitForTimeout(200);
+  return true;
+}
 
 function shardOf(list) {
   if (!shardArg) return list;
@@ -129,6 +210,17 @@ async function main() {
   const unexpected = [];
   const grown = [];
   let routes = [];
+  /** Routes whose declared open step actually ran, for the summary line. */
+  const opened = new Set();
+
+  /** Record one row and judge it against the ledger. The only place either verdict is decided. */
+  function record(route, viewport, ruleId, count, help) {
+    const key = keyOf(route, viewport, ruleId);
+    found[key] = { count, help };
+    const before = baseline.entries[key];
+    if (!before) unexpected.push({ key, count, help });
+    else if (count > before.count) grown.push({ key, from: before.count, to: count });
+  }
 
   try {
     const probe = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -195,32 +287,44 @@ async function main() {
       if (typeof status !== "number" || status >= 400) {
         // A route that does not render is a gate failure, never a skip: a missing page reports
         // zero violations, which reads exactly like a clean one.
-        const key = keyOf(route, viewport.id, "route-did-not-render");
-        found[key] = { count: 1, help: String(status ?? "no response") };
-        if (!baseline.entries[key]) {
-          unexpected.push({ key, count: 1, help: String(status ?? "no response") });
-        }
+        record(route, viewport.id, "route-did-not-render", 1, String(status ?? "no response"));
         continue;
       }
       let results;
       try {
         results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
       } catch (error) {
-        const key = keyOf(route, viewport.id, "axe-did-not-run");
-        found[key] = { count: 1, help: error.message.split("\n")[0] };
-        if (!baseline.entries[key]) {
-          unexpected.push({ key, count: 1, help: error.message.split("\n")[0] });
-        }
+        record(route, viewport.id, "axe-did-not-run", 1, error.message.split("\n")[0]);
         continue;
       }
       for (const violation of results.violations) {
-        const key = keyOf(route, viewport.id, violation.id);
-        found[key] = { count: violation.nodes.length, help: violation.help };
-        const before = baseline.entries[key];
-        if (!before) unexpected.push({ key, count: violation.nodes.length, help: violation.help });
-        else if (violation.nodes.length > before.count) {
-          grown.push({ key, from: before.count, to: violation.nodes.length });
-        }
+        record(route, viewport.id, violation.id, violation.nodes.length, violation.help);
+      }
+
+      /*
+       * The overlay state, and it runs LAST because opening one is destructive to the default
+       * state the scan above measures. Only routes that declare an open step pay anything at all.
+       */
+      const openViewport = `${viewport.id}+open`;
+      let didOpen;
+      try {
+        didOpen = await openDeclaredOverlay(page);
+      } catch (error) {
+        // A declaration that never opens is the worst outcome available: the route reports the
+        // overlay rules as clean while never having entered the state they live in. Red, loudly.
+        record(route, openViewport, "overlay-did-not-open", 1, error.message.split("\n")[0]);
+        continue;
+      }
+      if (!didOpen) continue;
+      opened.add(route);
+      try {
+        results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+      } catch (error) {
+        record(route, openViewport, "axe-did-not-run", 1, error.message.split("\n")[0]);
+        continue;
+      }
+      for (const violation of results.violations) {
+        record(route, openViewport, violation.id, violation.nodes.length, violation.help);
       }
     }
     await context.close();
@@ -229,10 +333,13 @@ async function main() {
   mkdirSync(EVIDENCE_DIR, { recursive: true });
   writeFileSync(
     path.join(EVIDENCE_DIR, "results.json"),
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), base, tags: TAGS, routes: routes.length, viewports: VIEWPORTS.map((v) => v.id), found }, null, 2)}\n`,
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), base, tags: TAGS, routes: routes.length, viewports: VIEWPORTS.map((v) => v.id), openedRoutes: [...opened].sort(), found }, null, 2)}\n`,
   );
 
   const total = Object.values(found).reduce((n, v) => n + v.count, 0);
+  // A count nobody can read is a count nobody checks. `declared` is the promise, `opened` is the
+  // delivery, and the two disagreeing is exactly the failure `overlay-did-not-open` reports.
+  const overlay = `${opened.size} route(s) opened a declared overlay`;
 
   if (update) {
     writeFileSync(
@@ -241,14 +348,28 @@ async function main() {
     );
     console.log(
       `✓ wrote frame-axe-baseline.json — ${Object.keys(found).length} entr(ies), ${total} node(s) ` +
-        `across ${routes.length} route(s) × ${VIEWPORTS.length} viewport(s).`,
+        `across ${routes.length} route(s) × ${VIEWPORTS.length} viewport(s); ${overlay}.`,
     );
     return;
   }
 
   // Entries in the baseline that no longer fire. Not an error — it is the gate's own progress
   // report, and the line that tells a fixer to delete the row.
-  const fixed = Object.keys(baseline.entries).filter((k) => !found[k]);
+  //
+  // ONLY A FULL SWEEP MAY ASK THIS QUESTION (the other half of b367b832's shard contract, lost in
+  // the same rewrite). A shard sees a fraction of the frame list, so every row belonging to a
+  // SIBLING shard has no hit in `found` and reads as fixed — and the line below would then tell a
+  // fixer to `--update` them away. `--scope=` and an explicit route list partition it just as
+  // hard. Suppressed rather than approximated: a count that is right for one partition and wrong
+  // for the next is worse than no count.
+  const partialRun = Boolean(shardArg) || scope !== "all" || explicitRoutes.length > 0;
+  const fixed = partialRun ? [] : Object.keys(baseline.entries).filter((k) => !found[k]);
+  if (partialRun && Object.keys(baseline.entries).length) {
+    console.log(
+      "· partial run — not reporting which baselined entries no longer fire; only a full sweep " +
+        "sees every frame.",
+    );
+  }
 
   for (const u of unexpected) console.error(`✗ NEW  ${u.key} — ${u.count} node(s) · ${u.help}`);
   for (const g of grown) console.error(`✗ GREW ${g.key} — ${g.from} → ${g.to} node(s)`);
@@ -263,7 +384,8 @@ async function main() {
   if (unexpected.length || grown.length) {
     console.error(
       `\n✗ check:frame-axe — ${unexpected.length} new and ${grown.length} grown violation(s) ` +
-        `on ${routes.length} route(s) × ${VIEWPORTS.length} viewport(s), tags ${TAGS.join(" ")}. ` +
+        `on ${routes.length} route(s) × ${VIEWPORTS.length} viewport(s) (${overlay}), ` +
+        `tags ${TAGS.join(" ")}. ` +
         `Fix them here; do NOT add rows to frame-axe-baseline.json to go green.`,
     );
     process.exit(1);
@@ -271,7 +393,7 @@ async function main() {
 
   console.log(
     `\n✓ check:frame-axe — no new WCAG violations on ${routes.length} route(s) × ` +
-      `${VIEWPORTS.length} viewport(s) (tags ${TAGS.join(" ")}); ` +
+      `${VIEWPORTS.length} viewport(s), ${overlay} (tags ${TAGS.join(" ")}); ` +
       `${Object.keys(found).length} baselined entr(ies) still open, ${total} node(s).`,
   );
 }
