@@ -45,6 +45,31 @@ describe("AuthIdentity", () => {
     );
   });
 
+  /**
+   * `brand` exists so a service whose design ships a REAL lockup (mark + wordmark, sometimes a
+   * product suffix) can use it without forking this block. The two assertions that matter are
+   * that the package mark steps aside — otherwise the screen carries two brand marks — and that
+   * the identity contract around it does not move, since consumer tests pin
+   * `[data-slot="auth-identity"]` and `.ui-auth-shell-card > .ui-auth-identity` for spacing.
+   */
+  it("puts consumer brand artwork in the mark's place, leaving the identity contract intact", () => {
+    const { container } = render(
+      <AuthIdentity title="Sign in" brand={<svg data-testid="consumer-lockup" />} />,
+    );
+
+    expect(screen.getByTestId("consumer-lockup")).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="logo"]')).toBeNull();
+
+    const root = container.querySelector('[data-slot="auth-identity"]')!;
+    expect(root).toHaveClass("ui-auth-identity");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Sign in");
+  });
+
+  it("falls back to the canonical GoDX mark when no brand artwork is supplied", () => {
+    const { container } = render(<AuthIdentity title="Sign in" />);
+    expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-mark", "godx");
+  });
+
   it("merges className onto the root without dropping the canonical class", () => {
     const { container } = render(<AuthIdentity title="Sign in" className={CONSUMER_CLASS} />);
     const root = container.querySelector('[data-slot="auth-identity"]')!;

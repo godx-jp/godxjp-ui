@@ -14977,6 +14977,12 @@ export function NotifyRow() {
     props: [
       { name: "title", type: "ReactNode", required: true, description: "Primary auth heading." },
       {
+        name: "brand",
+        type: "ReactNode",
+        description:
+          "Brand artwork in the MARK's place, for a service whose design ships a real lockup (mark + wordmark, sometimes a product suffix). Omit it and the canonical GoDX mark renders. data-slot, .ui-auth-identity spacing and the h1 are untouched, so swapping artwork never forks the block.",
+      },
+      {
         name: "requester",
         type: "ReactNode",
         description: "Optional real requesting-client context.",
@@ -14990,6 +14996,7 @@ export function NotifyRow() {
     usage: [
       "Only show `requester` when the consumer has authoritative client context.",
       'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
+      "To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN'S PURPOSE (\"Sign in\") rather than repeating the brand.",
       "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
       "Public type: `AuthIdentityProp` (alias `AuthIdentityProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
     ],

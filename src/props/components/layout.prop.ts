@@ -684,6 +684,17 @@ export type AuthIdentityProp = {
   /** Primary auth heading, rendered as the page `h1`. */
   title: ReactNode;
   /**
+   * Brand artwork rendered in the mark's place, for a service whose design supplies a real
+   * lockup (mark + wordmark, sometimes a product suffix) rather than the bare GoDX mark. Leave
+   * it out and the canonical `<Logo mark="godx">` renders, which is right for every plain
+   * hosted-GoDX surface.
+   *
+   * The node takes the MARK's slot only: `data-slot="auth-identity"`, the `.ui-auth-identity`
+   * spacing and the `h1` contract are untouched, so a consumer swapping artwork does not fork
+   * the identity block to do it. Pass an inline `<svg>`, never a bitmap.
+   */
+  brand?: ReactNode;
+  /**
    * Optional real requesting-client context ("Attendance is requesting sign in"). Pass it ONLY
    * when the client identity is authoritative — never a placeholder.
    */
