@@ -584,7 +584,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                                 tone="destructive"
                                 variant="outline"
                                 shape="sharp"
-                                className="text-[var(--font-size-2xs)]"
+                                className="text-[length:var(--font-size-2xs)]"
                               >
                                 祝
                               </Badge>

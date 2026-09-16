@@ -299,7 +299,7 @@ function DetailPanel({ employee }: { employee: Employee }) {
           {/* Per-day breakdown — quiet nested list, real Card chrome */}
           <Card>
             <CardHeader>
-              <CardTitle level={2} className="text-[var(--font-size-xs)]">
+              <CardTitle level={2} className="text-[length:var(--font-size-xs)]">
                 今週の打刻
               </CardTitle>
               <CardAction>

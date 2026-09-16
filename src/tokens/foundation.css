@@ -78,14 +78,40 @@
   --input: 30 7% 53%; /* #90877f — control boundary, ≥3:1 (WCAG 2.2 SC 1.4.11) */
   /* --ring lives in the DERIVED tier: there is no separate focus colour, a focused field simply
    * recolours its border to the primary. See src/tokens/derived.css. */
+  /* STATUS FILLS AND THE INK THAT RIDES ON THEM.
+   *
+   * The FILLS are the palette and they do not move: 若竹, 山吹, 群青, 朱 are named colours, every
+   * solid success/attention surface in every consumer is one of them, and a chip that changes hue
+   * on upgrade is a different design. What moved is the INK, and only where it failed to be
+   * readable (gh#643).
+   *
+   * Measured from these very tokens (src/tokens/__tests__/status-fill-contrast.test.ts, and
+   * confirmed in Chromium by `check:frame-axe` on /isolate/foundation-colors at 320/375/1440):
+   *
+   *   role         fill       WAS near-white ink   dark ink (48 8% 13%)
+   *   success      #68be8d    2.19:1  ✗            7.08:1  ✓
+   *   attention    #eb6101    3.32:1  ✗            4.68:1  ✓
+   *   warning      #f8b500    1.74:1  ✗            8.91:1  ✓  (already dark — the precedent)
+   *   primary      #7a00ff    6.32:1  ✓
+   *   destructive  …          6.10:1  ✓
+   *   info         #4c6cb3    5.00:1  ✓
+   *
+   * Two of the eight light-theme fills carried an ink their own lightness cannot support, and the
+   * package already knew the answer twice over: --warning-foreground has always been this same
+   * near-black on the equally pale 山吹, and the DARK theme flips --success-foreground /
+   * --attention-foreground to 48 9% 9% for exactly this reason. The light block was the outlier.
+   *
+   * REJECTED — darkening 若竹 and 朱 so the near-white ink clears 4.5:1. A fill needs luminance
+   * ≤ 0.183 for that; 若竹 sits at 0.422, so "keep the white text" means a different green, not a
+   * darker one. That is the palette change this deliberately is not. */
   --success: 146 40% 58%; /* 若竹 #68be8d */
-  --success-foreground: 60 33% 99%;
+  --success-foreground: 48 8% 13%; /* 7.08:1 on the fill — near-white was 2.19:1 (gh#643) */
   --warning: 44 100% 49%; /* 山吹 #f8b500 */
   --warning-foreground: 48 8% 13%;
   --info: 221 40% 50%; /* 群青 #4c6cb3 */
   --info-foreground: 60 33% 99%;
   --attention: 25 99% 46%; /* 朱 #eb6101 */
-  --attention-foreground: 60 33% 99%;
+  --attention-foreground: 48 8% 13%; /* 4.68:1 on the fill — near-white was 3.32:1 (gh#643) */
 
   /* IDENTITY role — the canonical GoDX emerald. This is the PRODUCT MARK colour (Logo `mark="godx"`
    * / `tone="success"`, its wordmark, the email brand capsule), and it is deliberately THREE-WAY

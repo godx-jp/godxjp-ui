@@ -66,7 +66,7 @@ export const EMAIL_COLOR_SOURCE = {
   },
   "urgencyForeground": {
     "cssVar": "--attention-foreground",
-    "hsl": "60 33% 99%"
+    "hsl": "48 8% 13%"
   }
 } as const;
 

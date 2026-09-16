@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T03:09:41.714Z",
+  "generatedAt": "2026-09-16T00:49:09.462Z",
   "base": "http://localhost:6008",
   "tags": [
     "wcag2a",
@@ -13,54 +13,5 @@
     "375",
     "320"
   ],
-  "found": {
-    "/isolate/foundation-colors @375 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/isolate/foundation-colors @320 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/isolate/foundation-colors @1440 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/case6-agency-handy @375 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/futurelastic-web @375 color-contrast": {
-      "count": 1,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/case6-agency-handy @320 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/case6-agency-handy @1440 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/futurelastic-web @320 color-contrast": {
-      "count": 2,
-      "help": "Elements must meet minimum color contrast ratio thresholds"
-    },
-    "/showcase/table-bulk-actions @375 target-size": {
-      "count": 1,
-      "help": "All touch targets must be 24px large, or leave sufficient space"
-    },
-    "/showcase/table-view-tabs @375 aria-valid-attr-value": {
-      "count": 1,
-      "help": "ARIA attributes must conform to valid values"
-    },
-    "/showcase/table-view-tabs @320 aria-valid-attr-value": {
-      "count": 1,
-      "help": "ARIA attributes must conform to valid values"
-    },
-    "/showcase/table-view-tabs @1440 aria-valid-attr-value": {
-      "count": 1,
-      "help": "ARIA attributes must conform to valid values"
-    }
-  }
+  "found": {}
 }

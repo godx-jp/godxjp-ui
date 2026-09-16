@@ -952,6 +952,16 @@ function DataSelect(props: PlainDataSelectProp) {
   // `showSearch={false}` beside it is ignored, and says so in the prop docs).
   const searchable = showSearch ?? (Boolean(props.loadOptions) || props.mode !== undefined);
 
+  // ABOVE the SearchSelect branch below, because that branch RETURNS and a hook after it runs on
+  // some renders and not others — `react-hooks/rules-of-hooks`, and at runtime "rendered more
+  // hooks than during the previous render" the first time a `Select` gains or loses `showSearch`.
+  // The values are read straight off `props`: `ariaProps` (further down) is `rest` filtered to
+  // `aria-*`, and neither key is destructured out of it. See the gh#643 note at its use below.
+  const inheritedName = useFieldNameFallback({
+    "aria-label": props["aria-label"],
+    "aria-labelledby": props["aria-labelledby"],
+  });
+
   // `mode !== undefined` rather than naming both multi modes: it is the discriminant that narrows
   // `props` to the single-value member below, which is what makes `value` a plain string there.
   if (props.mode !== undefined || searchable) {
@@ -1065,10 +1075,6 @@ function DataSelect(props: PlainDataSelectProp) {
    * and quietly undo that fix. Ask the context first; speak only when it has nothing to say.
    */
   const placeholderName = typeof placeholder === "string" ? placeholder : undefined;
-  const inheritedName = useFieldNameFallback({
-    "aria-label": ariaProps["aria-label"] as string | undefined,
-    "aria-labelledby": ariaProps["aria-labelledby"] as string | undefined,
-  });
   const nameFromPlaceholder =
     ariaProps["aria-label"] === undefined &&
     ariaProps["aria-labelledby"] === undefined &&

@@ -368,7 +368,7 @@ function TabBar({ active, onChange }: { active: string; onChange: (id: string) =
             onClick={() => onChange(t.id)}
             aria-current={isActive ? "page" : undefined}
             className={
-              "h-full flex-col rounded-none font-medium text-[var(--font-size-2xs)] " +
+              "h-full flex-col rounded-none text-[length:var(--font-size-2xs)] font-medium " +
               (isActive ? "text-primary" : "text-muted-foreground")
             }
           >
@@ -637,14 +637,16 @@ function InboundTab({
             <ToggleGroupItem
               key={f.id}
               value={f.id}
-              className="h-9 shrink-0 rounded-full whitespace-nowrap text-[var(--font-size-xs)]"
+              className="h-9 shrink-0 rounded-full text-[length:var(--font-size-xs)] whitespace-nowrap"
+              // The library's OWN counter pill, not a `Text` at 70% opacity (gh#643). The
+              // hand-rolled one measured 2.15:1 on the selected chip's --primary fill, because
+              // `opacity-70` blends whatever ink it inherits back towards the fill underneath it —
+              // `tone="inherit"` cannot help with that. `.ui-toggle[data-state="on"]
+              // .ui-toggle-count` inverts instead (--primary on --primary-foreground, 6.32:1) and
+              // folds the number into the accessible name.
+              count={f.count}
             >
               {f.label}
-              {/* `inherit` (gh#643): when the chip is selected its fill is --primary, and the
-                  default tone is an absolute token that measured 2.15:1 on it. */}
-              <Text size="xs" mono tabular tone="inherit" className="opacity-70">
-                {f.count}
-              </Text>
             </ToggleGroupItem>
           ))}
         </Flex>
@@ -850,19 +852,19 @@ function OutboundTab({ seg, setSeg }: { seg: string; setSeg: (v: string) => void
         <ResponsiveGrid columns={3} gap="xs">
           <ToggleGroupItem
             value="seal"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            className="h-9 rounded-xl text-[length:var(--font-size-xs)] whitespace-nowrap"
           >
             Chờ niêm phong
           </ToggleGroupItem>
           <ToggleGroupItem
             value="handoff"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            className="h-9 rounded-xl text-[length:var(--font-size-xs)] whitespace-nowrap"
           >
             Chờ bàn giao
           </ToggleGroupItem>
           <ToggleGroupItem
             value="done"
-            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+            className="h-9 rounded-xl text-[length:var(--font-size-xs)] whitespace-nowrap"
           >
             Đã bàn giao
           </ToggleGroupItem>
@@ -1016,7 +1018,7 @@ export default function AgencyHandyShowcase() {
                 <ToggleGroupItem
                   key={s}
                   value={s}
-                  className="size-7 rounded-md text-[var(--font-size-2xs)] uppercase"
+                  className="size-7 rounded-md text-[length:var(--font-size-2xs)] uppercase"
                   title={s}
                 >
                   {s[0]}
