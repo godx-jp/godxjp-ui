@@ -18,6 +18,12 @@
 - Never force-push shared branches or suppress their CI with `[skip ci]`. Local acceptance does not mean CI is green. If a later check reveals a failure caused by this work, fix it forward with priority and reopen/link an issue as needed. Package publication and deployment are separate actions, not prerequisites for this local development loop.
 - This decision supersedes older instructions requiring renewed push/merge approval or waiting for CI for this authorized work. A newer explicit user restriction takes precedence.
 
+## ⛔ axe is LOCAL ONLY — never in CI/CD (owner's standing rule, 2026-09-17)
+
+- **`pnpm check:frame-axe` must not run in any GitHub Actions workflow** — not on merge, not nightly, not behind a label, not sharded. It is a measurement you run on your own machine, against the STATIC preview (`pnpm build && pnpm preview:build`, then `pnpm check:frame-axe`).
+- Do not add an axe job, an `@axe-core/playwright` step, or a workflow that invokes `check:frame-axe`, even to fix a regression or to "restore coverage". `check:gate-coverage` lists the gate as EXEMPT for exactly this reason; its absence from `.github/workflows/` is a declaration, not a dead gate.
+- The cost is accepted, not overlooked: a new a11y defect is caught when someone runs the gate locally, not at merge. So run it before any PR that touches markup, ARIA, focus behaviour or colour, and commit `audit-evidence/frame-axe/`. Procedure and rationale: `docs/FRAME-A11Y-CI.md`.
+
 ## Two skill families — pick the right one first
 
 Skills are split by audience (see **`.claude/skills/README.md`** for the full map):

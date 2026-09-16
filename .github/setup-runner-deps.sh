@@ -8,7 +8,7 @@
 #   • `playwright install --with-deps` KHÔNG dùng được (--with-deps = apt, chỉ Debian/Ubuntu)
 #     → workflow dùng `playwright install chromium` (không --with-deps); system libs Chromium
 #     (libnss3/atk/gbm/asound…) đã có sẵn trên AlmaLinux 10.
-#   • Font: baseline geometry/axe chụp với Noto Sans CJK (Nhật) + Arabic/Hebrew (RTL). Thiếu →
+#   • Font: baseline geometry chụp với Noto Sans CJK (Nhật) + Arabic/Hebrew (RTL). Thiếu →
 #     glyph fallback rộng khác → geometry regression giả (navigation-pagination, tabs-rtl).
 set -euo pipefail
 

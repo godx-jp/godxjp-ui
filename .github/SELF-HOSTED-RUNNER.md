@@ -44,12 +44,13 @@ chromium` (không `--with-deps`); system libs Chromium (libnss3/atk/gbm/asound) 
    server → job đang chạy mất server (`ERR_CONNECTION_REFUSED`). GitHub-hosted mỗi job 1 VM
    nên không lộ. → mỗi job 1 port riêng qua env:
    - `frame-harness.mjs` `DEFAULT_BASE` đọc `PREVIEW_BASE` → frame-a11y đặt verify=6008
-     coverage=6018 axe=6028 geometry=6038.
+     coverage=6018 geometry=6038. (axe không còn chạy trên runner — chỉ đo ở máy local, theo
+     quy định của chủ repo 2026-09-17.)
    - `check-data-entry-frame-runtime.mjs` `port` đọc `PREVIEW_PORT` → 3 shard data-entry =
      6011/6021/6031 (matrix).
    - Cả 2 workflow có `concurrency: cancel-in-progress` (chặn run chồng nhau).
 
-5. **Font → geometry/axe lệch baseline.** Baseline chụp trên môi trường có Noto Sans CJK
+5. **Font → geometry lệch baseline.** Baseline chụp trên môi trường có Noto Sans CJK
    (Nhật) + Arabic/Hebrew (RTL). AlmaLinux thiếu → glyph fallback rộng khác → regression giả
    (`navigation-tabs-rtl@320`, `navigation-pagination@768`). → cài font (mục setup). Frame nào
    còn lệch ~1px thuần do hinting/subpixel (dù cùng Noto CJK) thì baseline chụp theo **canonical

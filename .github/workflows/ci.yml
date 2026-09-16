@@ -4,7 +4,8 @@ name: CI · code
 #
 # CI / CD SPLIT — visible from the workflow names, which all carry the side they belong to:
 #   CI · code             this file        build, typecheck, lint, guards, the test suite
-#   CI · browser          ci-browser.yml   axe, geometry, contrast/visual, rendered runtime
+#   CI · browser          ci-browser.yml   contrast/visual (per merge); geometry + rendered runtime
+#                         in ci-browser-full.yml (nightly). NO axe in any workflow — local only.
 #   CI · release contract release-integrity.yml   @godxjp/ui <-> @godxjp/ui-mcp lockstep, every PR
 #   CD · publish to npm   npm-publish.yml  manual, credential-gated, publishes both in lockstep
 #   CD · deploy preview   preview-pages.yml the Pages deploy

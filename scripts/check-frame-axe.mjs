@@ -34,7 +34,10 @@
  *
  *   node scripts/check-frame-axe.mjs                 # every frame, 3 viewports
  *   node scripts/check-frame-axe.mjs --update        # rewrite the baseline (FULL sweeps only)
- *   node scripts/check-frame-axe.mjs --shard=2/4     # CI split
+ *   node scripts/check-frame-axe.mjs --shard=2/4     # split a LOCAL run across terminals
+ *
+ * LOCAL ONLY — the owner's standing rule (2026-09-17): this script must never run in a CI/CD
+ * workflow. See docs/FRAME-A11Y-CI.md; check:gate-coverage lists it as EXEMPT for that reason.
  *   node scripts/check-frame-axe.mjs /isolate/layout-topbar   # one route, while fixing
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
@@ -58,10 +61,10 @@ const update = argv.includes("--update");
 const explicitRoutes = argv.filter((a) => a.startsWith("/"));
 const shardArg = argv.find((a) => a.startsWith("--shard="))?.slice("--shard=".length);
 /**
- * `all` (default) · `showcase` · `isolate`. The merge lane runs `showcase` — thirty whole-page
- * frames, the only ones here shaped like the screens a consumer ships, and therefore the class
- * that gh#639 came from. The nightly runs `all`. See docs/FRAME-A11Y-CI.md for why the whole sweep
- * cannot sit in a five-minute lane.
+ * `all` (default) · `showcase` · `isolate`. `showcase` is the thirty whole-page frames — the only
+ * ones here shaped like the screens a consumer ships, and therefore the class gh#639 came from —
+ * and the fast local check (~30s). `all` is the full sweep to run before a PR. Local only; see the
+ * header.
  */
 const scope = argv.find((a) => a.startsWith("--scope="))?.slice("--scope=".length) ?? "all";
 if (!["all", "showcase", "isolate"].includes(scope)) {

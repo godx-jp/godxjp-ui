@@ -1,6 +1,13 @@
-# Per-frame accessibility CI — `check:frame-axe`
+# Per-frame accessibility — `check:frame-axe` (LOCAL ONLY)
 
-One ruler, run in the repository that owns the CSS.
+One ruler, run in the repository that owns the CSS — **on a developer machine, never in CI/CD.**
+
+> **Owner's standing rule (2026-09-17): axe must not run in any GitHub Actions workflow.** It is a
+> local measurement only. gh#643 had wired it into `ci-browser.yml` (four shards on every merge) and
+> `ci-browser-full.yml` (nightly); both jobs are removed. `check:gate-coverage` lists
+> `check:frame-axe` as EXEMPT with this reason, so its absence from the workflows is a declaration,
+> not a dead gate. **Do not re-wire it into a workflow.** The file keeps its historical name so
+> existing links still resolve.
 
 ## Why it exists (gh#643)
 
@@ -234,41 +241,45 @@ which changes what `color-contrast` resolves a background to). Two sweeps after 
 
 ## Cost
 
-|                                       |                                                                                                                |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| full sweep                            | **3m20s** locally · **12m01s** on the self-hosted runner — 215 routes × 3 viewports                            |
-| sequential                            | ~55 min — the three viewport passes run concurrently, which is the whole difference                            |
-| showcase only (`--scope=showcase`)    | 30s                                                                                                            |
-| full sweep **with the overlay scope** | **2m14s** on the machine gh#643 item 4 was built on, same 215 × 3 — the runner number has not been re-measured |
+|                                       |                                                                                     |
+| ------------------------------------- | ----------------------------------------------------------------------------------- |
+| full sweep                            | **2m14s** locally, with the overlay scope — 215 routes × 3 viewports                |
+| sequential                            | ~55 min — the three viewport passes run concurrently, which is the whole difference |
+| showcase only (`--scope=showcase`)    | ~30s                                                                                |
+| one route (`pnpm check:frame-axe /isolate/…`) | seconds — the loop to use while fixing                                      |
 
 The overlay pass is bounded by declaration: only the 7 declaring routes pay it (21 extra scans plus
-their open steps), and no `/showcase/**` route declares one, so `--scope=showcase` — the merge lane —
-is unchanged.
+their open steps), and no `/showcase/**` route declares one, so `--scope=showcase` is unchanged by it.
 
-`--shard=i/n` is in the script for the day the sweep outgrows the lane. Using it adds check-run
-names, which costs nothing here because none of them is in `REQUIRED_CI_CHECK_RUNS`.
+## Where it runs: your machine
 
-## Where it runs
+**Never in CI/CD** — see the rule at the top. The procedure:
 
-Two lanes, split on a **measurement taken on the runner, not on a laptop**:
+```bash
+pnpm build && pnpm preview:build        # the STATIC preview — not `pnpm dev` / `pnpm preview`
+pnpm check:frame-axe                    # full sweep; must end with 0 baselined entries, 0 nodes
+pnpm check:frame-axe /isolate/<frame>   # one route, while fixing
+```
 
-| lane                                                              | what                                      | when                                                           | measured                               |
-| ----------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------- | -------------------------------------- |
-| `ci-browser.yml` · `Per-frame axe (showcases, WCAG 2.2 AA)`       | `--scope=showcase` — 30 whole-page frames | every push to `main`                                           | 30s locally                            |
-| `ci-browser-full.yml` · `Per-frame axe (all frames, WCAG 2.2 AA)` | the full 215-route sweep                  | nightly, `workflow_dispatch`, or a `run-browser` label on a PR | **12m01s on the pool** (3m20s locally) |
+Run it before a PR that touches markup, ARIA, focus behaviour or colour, and commit what it writes —
+`audit-evidence/frame-axe/results.json` and, only when a full sweep genuinely changed it,
+`frame-axe-baseline.json`.
 
-The full sweep went into the merge lane first, on the local 3m20s. On the pool's runner the same
-job took **12m01s** — three times the local wall clock and more than twice CONTRACT.md L4's
-five-minute budget for that whole lane. So the merge lane keeps the showcases, which are the only
-frames here shaped like the screens a consumer ships, and the wide matrix moved to the lane this
-repository already reserves for wide matrices.
+**The static preview, not the dev server.** Against the vite dev server the sweep produces 1–3
+spurious `route-did-not-render` / `axe-did-not-run` rows on different routes each run — 30s
+`page.goto` timeouts while three viewport contexts hammer an on-demand-transforming server. Each is
+clean alone. The static build does not do this.
 
-**Not** the PR lane: that file's own header lists axe among what it deliberately excludes, at a
-measured 653–745s, and that decision is not reopened here.
+**`--shard=i/n` and `--scope=` are for splitting a LOCAL run**, e.g. across two terminals. Two guards
+hold for both: `--update` refuses under either (a partial run would rewrite the ledger from a fraction
+of the frames and delete the rest), and the "no longer fires" report is suppressed on a partial run
+(every other partition's rows would read as fixed). Regenerate the baseline from a full sweep only.
 
-The job is not in `REQUIRED_CI_CHECK_RUNS` (#492 removed it from the release proof map and this does
-not put it back). It still protects a release through `assertCiProvenance`'s collateral rule — **any**
-red check run on the SHA being published refuses the publish.
+### What leaving CI costs, stated rather than discovered
+
+A regression is now caught when someone runs this, not on merge. Nothing in the pipeline will turn
+red on a new `aria-*` defect, a nameless button or a sub-24px target. That is the trade the rule
+makes, and the only thing that closes it is the local run above actually happening before a PR.
 
 ## Related
 
