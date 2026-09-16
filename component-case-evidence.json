@@ -101,14 +101,14 @@
           ]
         },
         "columns": {
-          "cases": ["omitted \u2014 the stylesheet default of 3", 4],
+          "cases": ["omitted — the stylesheet default of 3", 4],
           "evidence": [
             "docs/layout/app-launcher.tsx",
             "src/components/layout/__tests__/app-launcher.test.tsx"
           ]
         },
         "linkComponent": {
-          "cases": ["router link component", "omitted \u2014 plain anchor"],
+          "cases": ["router link component", "omitted — plain anchor"],
           "evidence": ["src/components/layout/__tests__/app-launcher.test.tsx"]
         },
         "loading": {
@@ -161,7 +161,7 @@
         },
         "side": {
           "cases": [
-            "omitted \u2014 derived from appearance (bottom in a bar, right otherwise)",
+            "omitted — derived from appearance (bottom in a bar, right otherwise)",
             "top",
             "right",
             "bottom",
@@ -175,7 +175,7 @@
         },
         "align": {
           "cases": [
-            "omitted \u2014 derived from appearance (end in a bar, start otherwise)",
+            "omitted — derived from appearance (end in a bar, start otherwise)",
             "start",
             "center",
             "end"
@@ -963,7 +963,16 @@
     "Heading": {
       "props": {
         "tone": {
-          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "primary",
+            "inherit"
+          ],
           "evidence": ["docs/general/typography.tsx"]
         }
       }
@@ -1537,7 +1546,7 @@
       "complete": true,
       "props": {
         "ariaLabel": {
-          "cases": ["\u52d8\u5b9a\u79d1\u76ee\u30b3\u30fc\u30c9\u691c\u7d22"],
+          "cases": ["勘定科目コード検索"],
           "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "className": {
@@ -1552,7 +1561,7 @@
           ]
         },
         "defaultValue": {
-          "cases": ["", "2026\u5e745\u6708"],
+          "cases": ["", "2026年5月"],
           "evidence": ["docs/data-entry/search-input.tsx"]
         },
         "disabled": {
@@ -2076,7 +2085,7 @@
       "complete": true,
       "props": {
         "aria-label": {
-          "cases": ["CC\u9001\u4fe1\u5148\u30e1\u30fc\u30eb"],
+          "cases": ["CC送信先メール"],
           "evidence": ["docs/data-entry/tag-input.tsx"]
         },
         "className": {
@@ -2110,7 +2119,7 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         },
         "maxTagPlaceholder": {
-          "cases": ["function \u2192 \u307b\u304b2\u4ef6"],
+          "cases": ["function → ほか2件"],
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         },
         "name": {
@@ -2148,7 +2157,7 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-selection.test.tsx"]
         },
         "value": {
-          "cases": [["\u55b6\u696d\u90e8", "Q1"]],
+          "cases": [["営業部", "Q1"]],
           "evidence": [
             "docs/data-entry/tag-input.tsx",
             "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
@@ -2181,7 +2190,16 @@
     "Text": {
       "props": {
         "tone": {
-          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "primary",
+            "inherit"
+          ],
           "evidence": ["docs/general/typography.tsx"]
         },
         "size": {
@@ -2241,10 +2259,7 @@
     "TimelineGrid": {
       "props": {
         "label": {
-          "cases": [
-            "\u9031\u30b7\u30d5\u30c8 2026\u5e745\u670811\u65e5\u301c15\u65e5",
-            "\u4f1a\u8b70\u5ba4\u306e\u4e88\u7d04 5\u670814\u65e5"
-          ],
+          "cases": ["週シフト 2026年5月11日〜15日", "会議室の予約 5月14日"],
           "evidence": [
             "docs/data-display/timeline-grid.tsx",
             "src/components/data-display/__tests__/timeline-grid-354.test.tsx",
@@ -2399,7 +2414,7 @@
           ]
         },
         "aria-label": {
-          "cases": ["\u30d6\u30e9\u30f3\u30c9\u30ab\u30e9\u30fc: #7C3AED"],
+          "cases": ["ブランドカラー: #7C3AED"],
           "evidence": [
             "src/components/data-display/__tests__/swatch-527.test.tsx",
             "docs/data-display/swatch.tsx"

@@ -96,6 +96,37 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>tone=&quot;inherit&quot; · 面が決める</CardTitle>
+            <CardDescription>
+              他の tone は絶対的なトークンを塗るため、色つきの面に置いた途端にページの文字色へ戻って
+              しまいます。inherit はその面が持つ対になる前景色をそのまま使う唯一のメンバーです。
+              これを入れる前、--primary の上の Text は --foreground を塗って 2.45:1
+              でした（gh#643）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* ui-audit-disable-next-line no-hand-rolled-surface no-utility-layout no-utility-spacing — the COLOURED SURFACE is the subject here, exactly as in docs/foundation/colors.tsx */}
+              <div className="bg-primary text-primary-foreground rounded-md p-4">
+                <Flex direction="col" gap="xs">
+                  <Heading level={3} tone="inherit">
+                    請求サマリー
+                  </Heading>
+                  <Text tone="inherit">今月の請求は締め処理まで完了しています。</Text>
+                  <Text size="2xs" mono tone="inherit">
+                    {`tone="inherit"`}
+                  </Text>
+                </Flex>
+              </div>
+              <Text size="xs" tone="muted">
+                同じ二行を tone=&quot;default&quot; で置くと、面ではなくページの文字色を塗ります。
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Text sizes</CardTitle>
             <CardDescription>
               size is a type-scale step (2xs / xs / sm / md / lg / xl) — sm is the base. No px.
