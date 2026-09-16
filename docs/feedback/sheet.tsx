@@ -104,7 +104,8 @@ export default function Demo() {
           <CardContent>
             <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm">
+                {/* data-axe-open: check:frame-axe presses this before its overlay scan. */}
+                <Button data-axe-open variant="outline" size="sm">
                   <SlidersHorizontal />
                   詳細検索
                 </Button>

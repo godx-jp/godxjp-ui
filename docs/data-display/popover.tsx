@@ -61,7 +61,9 @@ export default function Demo() {
           <CardContent>
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline">
+                {/* data-axe-open: check:frame-axe presses this before its overlay scan, so the
+                    panel is measured OPEN as well as closed. See docs/FRAME-A11Y-CI.md. */}
+                <Button data-axe-open variant="outline">
                   <SlidersHorizontal />
                   絞り込み
                 </Button>

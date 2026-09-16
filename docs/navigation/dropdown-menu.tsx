@@ -105,7 +105,14 @@ export default function Demo() {
             <Flex direction="row" align="center" gap="md" wrap>
               <DropdownMenu trigger={["contextMenu"]}>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">仕訳 JE-0042 を右クリック</Button>
+                  {/* data-axe-open="contextmenu": the gate RIGHT-clicks this before its overlay
+                      scan. It is declared here rather than on one of the click menus above
+                      because the `defaultOpen` card at the bottom of this page already holds a
+                      click-opened menu mounted at rest, so the click path is measured either way
+                      — the right-click path is the one nothing else on this page reaches. */}
+                  <Button data-axe-open="contextmenu" variant="outline">
+                    仕訳 JE-0042 を右クリック
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>編集</DropdownMenuItem>

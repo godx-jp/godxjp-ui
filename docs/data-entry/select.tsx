@@ -90,7 +90,10 @@ export default function Demo() {
               Pass an options array; name= submits the value with the form.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          {/* data-axe-open on the REGION, not the trigger: the data-driven Select renders its own
+              trigger and forwards no `data-*` to it, so the gate resolves the `[role="combobox"]`
+              inside this element and presses that. See docs/FRAME-A11Y-CI.md. */}
+          <CardContent data-axe-open>
             <FormField id="status" label="状態">
               <Select
                 id="status"
