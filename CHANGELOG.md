@@ -6,6 +6,142 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — the derived colour tier was still on the pre-v2.3 blue seed (gh#648)
+
+Identity v2.3 moved `--primary` 63 degrees (#0071bd → GoDX violet #7A00FF) and every value that
+hangs off it stayed on the blue it was derived from. **24.0.0 and 24.1.0 shipped a primary button
+that was violet at rest and NAVY on hover**, in every consumer running the default theme, with no
+local override to blame.
+
+- **Why no gate caught it, which is the actual defect.** The generator that held this tier to the
+  seed was removed and replaced by MEASUREMENT: four contrast suites read `derived.css` directly.
+  All four stayed green, because every one of them measures a RATIO, and a ratio is blind to hue —
+  #005596 clears 7.53:1 against the primary label and would have done so whatever colour sat
+  underneath it. New gate `src/tokens/__tests__/derived-hue-lock.test.ts` is the missing axis and
+  asserts nothing else; it fails on the shipped values.
+- **New values, taken from the kit rather than recomputed.** Light `--primary-hover` #6500d4
+  (8.23:1) and `--primary-active` #5400b0 (10.31:1) are identity v2.3's #6400D4 / #5200B0 snapped to
+  the seed hue (1.008:1 and 1.010:1 from the kit value, i.e. the same colour). Dark `--primary-hover`
+  #ecdaff (13.51:1) is the kit's `action.primary.hover`; dark `--primary-active` #cd9fff (8.41:1)
+  REFLECTS the step, because the dark seed sits at 86.9% L and the conventional step lands at
+  #fbf7ff — 1.056:1 from pure white. `--primary-border` and `--control-outline` re-hued with it.
+- **Two recordings moved and are now measured on the WORST surface, not the page.**
+  `--primary-border` is #a66de3: 3.49:1 on the page (the blue read 2.00:1) but 2.92:1 light /
+  1.03:1 dark on an accent panel, so the focus mark still takes the ring hue. And the halo tint,
+  which under the blue could not reach 3:1 at ANY alpha, now can at 0.53 light / 0.85 dark — past
+  the point where it is a halo at all.
+
+### Fixed — the status fills used near-white ink the light theme could not carry (gh#643)
+
+`--success-foreground` on 若竹 #68be8d measured **2.19:1** and `--attention-foreground` on 朱 #eb6101
+**3.32:1**. The package already knew the answer twice — `--warning-foreground` has always been
+near-black on the equally pale 山吹 (8.91:1), and the DARK theme already flips both of these. The
+light block was the outlier. **Ink only, fills untouched**: success 2.19 → **7.08:1**, attention
+3.32 → **4.68:1**. Darkening 若竹/朱 to keep the white ink was rejected by measurement: a fill needs
+luminance ≤ 0.183 for that and 若竹 sits at 0.422, i.e. a different green, not a darker one. New
+gate: `src/tokens/__tests__/status-fill-contrast.test.ts`.
+
+### Fixed — 159 axe violations on this package's own frames, down to ZERO (gh#643)
+
+`check:frame-axe` landed in 24.1.0 with a debt ledger of **54 rows / 159 nodes**.
+`frame-axe-baseline.json` is now **0 rows / 0 nodes**. Every fix is in `src/`, because each one was
+a library defect wearing a showcase's clothes:
+
+- **`button-name` (18).** A `role="combobox"` cannot be named by its CONTENTS, so an unlabelled
+  `Select` trigger announced as nothing at all. The placeholder is now the last-resort name —
+  below a caller's `aria-label`, below FormField's cloneElement wiring, and below the gh#303
+  `FieldNameContext` fallback that names a NESTED select after its field label.
+- **`aria-prohibited-attr` (21).** `Badge` is a bare `<div>`, i.e. role `generic`, where ARIA 1.2
+  PROHIBITS `aria-label`. JSX accepted the prop through `...props`, the attribute rendered, and
+  every screen reader dropped the name. A named badge now takes `role="img"` — never over a role
+  the caller passed, and never on a removable badge.
+- **`target-size` (28).** Four components under WCAG 2.2 SC 2.5.8's 24px floor. A centred `::after`
+  carrying the target is correct by the standard and axe cannot read it — it measures
+  `getBoundingClientRect()`, which cannot see a pseudo-element. So the BOX grows and the paint does
+  not move: the carousel dot keeps its 8px circle inside a 24px button.
+- **`color-contrast` (62).** `Text`/`Heading`/`Separator`/`Activity` had no way to say "use this
+  surface's own foreground": every tone is an ABSOLUTE token, so a `Text` dropped on `bg-primary`
+  painted `--foreground` over `--primary` and measured 2.45:1.
+- **`aria-valid-attr-value` (3).** `useTab` wrote `aria-controls` at a panel id that never entered
+  the document whenever a strip composed `Tabs`/`TabsList`/`TabsTrigger` without `TabsContent` —
+  and the caller could not override it, because `withDomProps` lays React Aria's props down after
+  the caller's. `TabsContent` now registers its value and the trigger emits `aria-controls` only
+  for a declared panel. No new public prop.
+
+### Added — `tone="inherit"` on `Text`, `Heading`, `Separator` and `Activity` (gh#643)
+
+The one member of `TextToneProp` that is not a colour: it takes whatever the surface already set.
+Every other member paints an absolute token, which is right on a page surface and wrong the moment
+the text sits on a coloured one — a brand fill, a tinted calendar block, a status band.
+
+### Added — `Logo` product-suffix lockup: "GoDX | ID" (gh#649)
+
+New `productSuffix?: ReactNode`. The suffix is **typeset text in the lockup's own token scale, not
+drawn artwork**, and that is the decision: the kit's flattened "GoDX | ID" is a SECOND master in its
+own coordinate space (`0 0 1234 242` against this package's `30 30 871.29 182`) with its own
+hardcoded `#0B0F3B` ink, its own global `id="title"`/`id="desc"` and a `#C5C8D6` rule — so drawing
+the suffix would mean one more master, one more dark variant and one more release for every product
+name, and no localization at all. The brand's own construction stays untouched inside the master; a
+product name is not part of it.
+
+- New tokens: `--logo-divider-width` / `-height` / `-alpha` / `-color`,
+  `--logo-product-suffix-gap` / `-font-weight` / `-color`. The rule is the logotype ink at 0.25
+  alpha — 1.74:1 light against the kit's hardcoded #c5c8d6 at 1.64:1 (ΔRGB ≤ 11), and unlike the
+  literal it HAS a dark value, because `--logo-godx-ink-color` already flips.
+- **The accessible name.** `mark="godx-lockup"` draws "GoDX" as PATHS, so with a suffix the only
+  readable text was "ID". The drawn word is restored as an sr-only node — deliberately not
+  `role="img"` + `aria-label`, because a role on an `asChild` `<a>` deletes the link role. That node
+  carries the word BREAK as `display: block`: measured, a `"GoDX "` text node loses its trailing
+  space in accname and renames the lockup "GoDXID".
+
+### Added — `AuthIdentity` takes a consumer brand lockup (gh#652)
+
+New `brand?: ReactElement`. `AuthIdentity` hardcoded `<Logo mark="godx">`, so the first screen a
+user ever sees was the only surface that could not carry the product lockup — and a consumer could
+not drop the component either, because the canonical auth contract and its density selectors are
+pinned to `[data-slot="auth-identity"]`.
+
+`brand` replaces the mark AND the painted heading, because the canonical block is already the
+product name twice (`title="GoDX ID"` above the mark) — measured, a lockup left exposed beside that
+`h1` announces **"GoDXIDGoDX ID"**. The `<h1>` stays in the DOM at level 1, still named by `title`,
+and goes `.sr-only`; the brand element is marked decorative via `Slot` rather than a wrapper, since
+a wrapper would become the flex item and put the `inline-flex` lockup back on a line box whose strut
+descender lifts the mark. Spacing is untouched: `.sr-only` is absolutely positioned, so the hidden
+heading is not a flex item. `mark?: LogoMark` was rejected — it cannot reach the handed-over lockup
+without also proxying `productSuffix`, then `size`, `tone`, `label`.
+
+### Fixed — `Select` called a hook below a conditional return
+
+`DataSelect` gained a `useFieldNameFallback` call positioned after the branch that returns
+`<SearchSelect>`, so at runtime the first `Select` to gain or lose `showSearch` would throw
+"rendered more hooks than during the previous render". Hoisted above the branch; the extra call on
+the SearchSelect path is an inert context read. Introduced and fixed within this release.
+
+### Changed — the open sidebar row is the BRAND colour at both nav depths (gh#651)
+
+`.sb-nav-item[data-active="true"]` painted a neutral `hsl(var(--accent))` fill with an
+`hsl(var(--foreground))` label while `.sb-nav-item--sub[data-active="true"]` painted
+`hsl(var(--primary))` — one nav column signalling the same meaning in two colour languages, so the
+open CHILD read as branded and its open PARENT read as grey.
+
+- **New defaults, same knobs.** `--sidebar-item-active-background` now resolves to `--primary`
+  composited at the new `--sidebar-item-active-background-alpha` (12%), and
+  `--sidebar-item-active-foreground` to `hsl(var(--primary))` at BOTH depths. This is a DEFAULT
+  change, not a hardcode: every knob still overrides. A service theme that was setting
+  `--sidebar-item-active-background: hsl(var(--primary) / 0.12)` +
+  `--sidebar-item-active-foreground: hsl(var(--primary))` to get this look can delete that block.
+- **Measured, not assumed** (`--primary` moved twice recently — identity v2.3, then gh#648). Label
+  on the composited fill at 12%: **5.07:1** light, **7.51:1** dark on the sidebar's `--card`,
+  **8.30:1** where the nav sits on `--background`. `--sidebar-item-active-background-alpha` is
+  **capped at 16%** — 18% is the last step still clearing WCAG 2.2 SC 1.4.3 on a shipped surface and
+  19% measures 4.42:1. New gate: `src/tokens/__tests__/sidebar-active-contrast.test.ts`.
+- **BREAKING (theme token, no alias): `--sidebar-item-active-color` is removed.** It was the level-2
+  spelling of `--sidebar-item-active-foreground`, used exactly once; set `-foreground` instead and
+  one declaration now tints both depths. No alias was kept because two live names on one declaration
+  is the ambiguity this change exists to remove.
+- `font-weight: 500` hardcoded on the level-2 active row is now `var(--font-weight-medium)`
+  (cardinal rule #45) — a service re-tuning that scale no longer moves parent rows only.
+
 ## [24.1.0] - 2026-09-15
 
 ### Fixed — a menu child the collection cannot build no longer blanks the page (gh#637)
