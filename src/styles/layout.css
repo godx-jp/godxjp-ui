@@ -80,6 +80,14 @@
     --separator-label-color: var(--separator-tone-info-label-color, var(--info));
   }
 
+  /* The surface decides — see TextToneProp · `inherit` (gh#643). Separator shares that union, so
+   * it has to answer to the member rather than accept it and paint the default rule anyway. The
+   * RULE takes the label's colour here: on a coloured surface the two are the same ink. */
+  .ui-separator[data-tone="inherit"] {
+    --separator-rule-color: currentcolor;
+    --separator-label-color: currentcolor;
+  }
+
   /* The ratio box holds whatever the consumer puts in it, and the common fill IS interactive — a
    * clickable media tile, a poster link, a video with controls — sized to the box, so its focus
    * ring paints entirely outside. Measured with a flush `a.ui-focus-ring`: under `hidden` the ring

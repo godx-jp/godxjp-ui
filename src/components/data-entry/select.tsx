@@ -1040,6 +1040,43 @@ function DataSelect(props: PlainDataSelectProp) {
     Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
   );
 
+  /*
+   * A `role="combobox"` CANNOT BE NAMED BY ITS CONTENTS (gh#643, found by check:frame-axe).
+   *
+   * The trigger shows the selected option — "全部署" — and that text is the VALUE, not the name:
+   * `combobox` is not a name-from-content role, so a trigger with no label has no accessible name
+   * at all. A screen reader announces "combobox" and stops. axe scored it `button-name`, 18 nodes,
+   * on three ordinary filter selects that look perfectly labelled on screen.
+   *
+   * This file already explains (note 1) why react-aria's own `aria-labelledby` is stripped: it
+   * names the trigger after its value and buries a real `<label htmlFor>`. That is right, and it
+   * left the unlabelled case naming the trigger after nothing.
+   *
+   * The PLACEHOLDER is the fallback, because it is the one string the author already wrote to say
+   * what the field is for ("部署", "状態", "期間"). It is a weaker name than a real label — it
+   * describes the field rather than being tied to it — so it yields to anything better, and there
+   * are TWO better things, not one: an `aria-label` / `aria-labelledby` from the caller or from
+   * FormField's cloneElement, which arrive in `ariaProps`; and the enclosing field's label reaching
+   * a NESTED select through `FieldNameContext` (gh#303), which arrives through no prop at all.
+   *
+   * The second one is why this is a hook call and not a ternary. Setting `aria-label` here makes
+   * the trigger `ownsName`, and a trigger that owns its name is one the gh#303 fallback leaves
+   * alone by design — so a placeholder set unconditionally would OUTRANK 対象年月 on the 年/月 combo
+   * and quietly undo that fix. Ask the context first; speak only when it has nothing to say.
+   */
+  const placeholderName = typeof placeholder === "string" ? placeholder : undefined;
+  const inheritedName = useFieldNameFallback({
+    "aria-label": ariaProps["aria-label"] as string | undefined,
+    "aria-labelledby": ariaProps["aria-labelledby"] as string | undefined,
+  });
+  const nameFromPlaceholder =
+    ariaProps["aria-label"] === undefined &&
+    ariaProps["aria-labelledby"] === undefined &&
+    inheritedName["aria-label"] === undefined &&
+    inheritedName["aria-labelledby"] === undefined
+      ? placeholderName
+      : undefined;
+
   const optionTestId = (optionValue: string) =>
     dataTestId ? `${dataTestId}-option-${optionValue}` : undefined;
   // Flat index across every group, so antd's `optionRender(option, { index })` gets the same
@@ -1112,6 +1149,7 @@ function DataSelect(props: PlainDataSelectProp) {
         status={status}
         width={width}
         aria-busy={loading || undefined}
+        aria-label={nameFromPlaceholder}
         className={cn(
           prefix === undefined || prefix === null ? undefined : "ui-select-trigger-prefixed",
           (showClear || loading) && "ui-control-trigger-affixed",

@@ -1,4 +1,19 @@
 @layer components {
+  /*
+   * A NATIVE FILE INPUT IS 0.2px SHORT OF THE FLOOR (gh#643, found by check:frame-axe).
+   *
+   * `Attachments` renders a bare `<input type="file">` and lets the platform draw it. Chromium
+   * lays that out at 23.8px tall at this package's base font — measured, and under WCAG 2.2
+   * SC 2.5.8's 24px by a fifth of a pixel. There is nothing for a consumer to override: the class
+   * carried no rule at all, which is why nothing here had ever put a number on it.
+   *
+   * The floor, not a height: the control keeps whatever the platform gives it the moment that is
+   * already 24px or more.
+   */
+  .ui-attachments-input {
+    min-block-size: var(--touch-target-min);
+  }
+
   .ui-combobox-content {
     min-width: 14rem;
     width: min(22rem, 90vw);

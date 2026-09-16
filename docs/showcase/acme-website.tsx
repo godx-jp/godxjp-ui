@@ -80,7 +80,9 @@ const THEME = `
 [data-tenant="acme-web"] .tx-h2 { font-family: var(--font-family-display); font-weight: 800; font-size: 2.25rem;
   line-height: 1.15; letter-spacing: -0.02em; margin: 0.75rem 0 0.625rem; color: hsl(var(--foreground)); }
 [data-tenant="acme-web"] .tx-lead { font-size: 1.1875rem; line-height: 1.6; color: hsl(var(--muted-foreground)); max-width: 480px; }
-[data-tenant="acme-web"] .tx-gold { color: hsl(var(--primary)); }
+/* --text-brand, not --primary (gh#643): --primary is a FILL role, and as ink it measured
+   2.01:1 here. The AA-safe text tier already exists and .tx-eyebrow above already reads it. */
+[data-tenant="acme-web"] .tx-gold { color: hsl(var(--text-brand)); }
 [data-tenant="acme-web"] .tx-stat { font-family: var(--font-family-display); font-weight: 800; font-size: 1.75rem; color: hsl(var(--primary)); }
 [data-tenant="acme-web"] .tx-hero-grid { display: grid; gap: 3rem; align-items: center; padding-block: 6rem; }
 @media (min-width: 1024px) { [data-tenant="acme-web"] .tx-hero-grid { grid-template-columns: 1.1fr 0.9fr; } }

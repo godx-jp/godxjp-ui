@@ -92,6 +92,12 @@
   .ui-activity[data-tone="info"] .ui-activity-mark {
     color: hsl(var(--text-info));
   }
+  /* The surface decides — see TextToneProp · `inherit` (gh#643). Shares the union with Text and
+   * Heading, so it must answer to the same member rather than silently accepting it and painting
+   * the page's ink anyway. */
+  .ui-activity[data-tone="inherit"] .ui-activity-mark {
+    color: inherit;
+  }
 
   /* dots — the ellipsis convention. */
   .ui-activity-dot {

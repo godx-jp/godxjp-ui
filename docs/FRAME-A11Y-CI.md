@@ -39,23 +39,41 @@ Showcases are included on purpose. They are the only frames here shaped like a r
 page, a landmark tree, a focus order — which is precisely the class the component frames cannot
 reach and the consumer has been carrying alone.
 
-## What it found on its first run
+## What it found on its first run — and what came of it
 
-54 rows, **159 violation nodes**, on code that passed every other gate in this repository:
+54 rows, **159 violation nodes**, on code that passed every other gate in this repository. Fixing
+them took it to **12 rows / 19 nodes**:
 
-| nodes | rows | rule                    | what it means                                                                                                                  |
-| ----: | ---: | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-|    62 |   17 | `color-contrast`        | text under 4.5:1 (SC 1.4.3)                                                                                                    |
-|    28 |   16 | `target-size`           | under 24×24 with no spacing exception (SC 2.5.8) — on `Carousel`, `Attachments`, `FilterBar` and `Toolbar`, at **every** width |
-|    21 |    6 | `aria-prohibited-attr`  | an `aria-*` on a role that does not allow it                                                                                   |
-|    18 |    6 | `button-name`           | **a button a screen reader announces as nothing**                                                                              |
-|    18 |    6 | `aria-valid-attr-value` | an `aria-*` pointing at an id that is not there                                                                                |
-|    12 |    3 | `aria-conditional-attr` | an `aria-*` that is invalid in the state it is in                                                                              |
+| rule                    | first run | now | what it was                                                                                                                              |
+| ----------------------- | --------: | --: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `color-contrast`        |        62 |  13 | text under 4.5:1 (SC 1.4.3)                                                                                                              |
+| `target-size`           |        28 |   1 | under 24×24 (SC 2.5.8) — `Carousel` dots, `SearchInput`'s clear button, `Attachments`' file input                                        |
+| `aria-prohibited-attr`  |        21 |   0 | `Badge`'s `aria-label` on a `generic` div — the name was dropped by every screen reader                                                  |
+| `button-name`           |        18 |   0 | **`Select`'s trigger is `role="combobox"`, which cannot be named by its contents** — every unlabelled Select shipped a nameless combobox |
+| `aria-valid-attr-value` |        18 |   3 | `aria-controls` pointing at ids that do not exist                                                                                        |
+| `aria-conditional-attr` |        12 |   0 | `aria-expanded` on a `<tr>`, which only a `treegrid` row may carry                                                                       |
 
-48 of those nodes are on `/isolate/**` — single components, this package's own output — and 111 on
-`/showcase/**`. None of the six rules exists in `scripts/visual-audit.mjs`. The `target-size` rows
-are the sharpest: our own `target-size-min` rule was running on those same frames and reporting them
-clean, because it measures a painted box.
+Four of those were LIBRARY defects, not demo slips — `Badge`, `Select`, `Carousel`, `SearchInput` —
+and the fifth produced a new vocabulary member: `tone="inherit"` on `Text` / `Heading` / `Title` /
+`Activity` / `Separator`, because every other tone is an absolute token and there was no way to put
+text on a coloured surface without fighting it.
+
+The `target-size` rows are the sharpest point about two rulers. Our own `target-size-min` was
+running on those same frames and reporting them clean, because it measures a painted box. And the
+fix axe wants is not the fix the standard wants: a centred `::after` genuinely makes the target
+24×24 — `docs/MEASUREMENT-CONTRACT.md` records that under `expanders` — but axe reads
+`getBoundingClientRect()`, which cannot see a pseudo-element. Both fixes were tried; the boxes had
+to grow.
+
+## What is still open, and why each one is not a quick fix
+
+| rows | what                                                                                                                     | why it is still here                                                                                                                                                                                                                                                                                   |
+| ---: | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|    3 | `foundation-colors` · `--success-foreground` on `--success` (2.18:1), `--attention-foreground` on `--attention` (3.32:1) | A PALETTE decision. These pairs fail AA as text, and changing either moves every solid success/attention surface in every consumer — an owner-level call, not a fix to slip into a PR.                                                                                                                 |
+|    3 | `case6-agency-handy` · a SELECTED `ToggleGroupItem` paints `--foreground` over `--primary` (2.45:1)                      | `.ui-toggle[data-state="on"]` sets `color: hsl(var(--primary-foreground))`, the rule is in the built CSS, its `background` half applies and its `color` half does not. Cause not yet found; measured, not guessed.                                                                                     |
+|    3 | `table-view-tabs` · a `Tab`'s `aria-controls` points at a `tabpanel` that is never rendered                              | The showcase uses `Tabs` as a filter ribbon with no `TabsContent`. A `tab` with no panel is invalid ARIA whatever the attribute says, so the real answer is either a "no panels" mode for `Tabs` or `Segmented` in the showcase — a design decision either way.                                        |
+|    2 | `futurelastic-web` @320/@375 · white ghost buttons read as 1.01:1                                                        | A dark tenant whose sticky navbar paints `hsl(var(--background) / 0.8)`. axe cannot resolve a semi-transparent background and falls back to the nearest opaque ancestor, which at 320 is the light isolate page. Probably a false positive — but "probably" is not a measurement, so it stays visible. |
+|    1 | `table-bulk-actions` @375 · `target-size`                                                                                | Not yet diagnosed.                                                                                                                                                                                                                                                                                     |
 
 ## The baseline is a debt ledger, not an allowlist
 

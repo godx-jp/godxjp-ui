@@ -69,7 +69,10 @@ function SwatchTile({ swatch, text }: { swatch: Swatch; text?: boolean }) {
       {/* ui-audit-disable-next-line no-hand-rolled-surface no-utility-layout no-utility-spacing — a swatch showing the token itself; the fill IS the subject */}
       <div className={`border-border flex h-14 items-end rounded-md border p-2 ${swatch.cls}`}>
         {text ? (
-          <Text size="xs" mono className="leading-none">
+          /* `tone="inherit"` — the specimen's whole job is to show the token's PAIRED foreground,
+             and every other tone is an absolute colour. Without it `Text` repainted itself in
+             `--foreground` over `--primary` and measured 2.45:1 on this very page (gh#643). */
+          <Text size="xs" mono tone="inherit" className="leading-none">
             Aa 亜
           </Text>
         ) : null}

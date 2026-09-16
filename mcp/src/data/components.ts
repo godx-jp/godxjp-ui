@@ -2902,7 +2902,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description:
           "Semantic foreground colour. Replaces `text-muted-foreground` etc. on a raw span.",
@@ -3098,7 +3098,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description: "Semantic foreground colour.",
       },
@@ -3179,7 +3179,7 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description: "Semantic foreground colour. Outranks antd's `type`.",
       },
@@ -3471,7 +3471,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"muted"',
         description: "Semantic colour intent for the mark and the label.",
       },
@@ -12675,7 +12675,7 @@ import { fetchInvoice } from "@/api/invoices";
       },
       {
         name: "tone",
-        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info" | "inherit"',
         defaultValue: '"default"',
         description:
           "Semantic emphasis of the label AND the rule together (never colour-only). `default` is the quiet chrome; use a role for an attention rule such as an unread watermark.",

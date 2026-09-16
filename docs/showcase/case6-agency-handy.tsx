@@ -640,7 +640,9 @@ function InboundTab({
               className="h-9 shrink-0 rounded-full whitespace-nowrap text-[var(--font-size-xs)]"
             >
               {f.label}
-              <Text size="xs" mono tabular className="opacity-70">
+              {/* `inherit` (gh#643): when the chip is selected its fill is --primary, and the
+                  default tone is an absolute token that measured 2.15:1 on it. */}
+              <Text size="xs" mono tabular tone="inherit" className="opacity-70">
                 {f.count}
               </Text>
             </ToggleGroupItem>

@@ -396,27 +396,37 @@ function ExpandableList() {
           const panelId = `row-detail-${emp.id}`;
           return (
             <React.Fragment key={emp.id}>
+              {/* THE DISCLOSURE IS THE BUTTON, NOT THE ROW (gh#643, found by check:frame-axe).
+                  This row used to carry `tabIndex={0}` + `aria-expanded` + `aria-controls` and be
+                  the control itself. `aria-expanded` is valid on a TREEGRID row and not on a table
+                  row, so axe scored it `aria-conditional-attr` — and the row was a focus stop with
+                  no role and no name, which is the worse half of the same mistake. The chevron is
+                  now a real button: it owns the state, the name and the tab stop. Clicking the row
+                  still works, as a pointer convenience that claims no semantics of its own. */}
               <TableRow
                 data-state={isOpen ? "selected" : undefined}
-                tabIndex={0}
-                aria-expanded={isOpen}
-                aria-controls={panelId}
                 onClick={() => {
                   toggle(emp.id);
                 }}
-                onKeyDown={(e) => {
-                  if (e.key !== "Enter" && e.key !== " ") return;
-                  if (e.target !== e.currentTarget) return;
-                  e.preventDefault();
-                  toggle(emp.id);
-                }}
-                className="hover:bg-muted/50 focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+                className="hover:bg-muted/50 cursor-pointer"
               >
                 <TableCell className={CELL}>
-                  <ChevronRight
-                    className={`text-muted-foreground size-4 transition-transform ${isOpen ? "rotate-90" : ""}`}
-                    aria-hidden="true"
-                  />
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-expanded={isOpen}
+                    aria-controls={isOpen ? panelId : undefined}
+                    aria-label={`${emp.name} の詳細を${isOpen ? "折りたたむ" : "展開する"}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggle(emp.id);
+                    }}
+                  >
+                    <ChevronRight
+                      className={`text-muted-foreground size-4 transition-transform ${isOpen ? "rotate-90" : ""}`}
+                      aria-hidden="true"
+                    />
+                  </Button>
                 </TableCell>
                 <TableCell className={CELL}>
                   <Text as="div" weight="medium">
