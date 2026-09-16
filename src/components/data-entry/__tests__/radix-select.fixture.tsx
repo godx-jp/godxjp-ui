@@ -16,7 +16,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { controlSurfaceTriggerClass } from "../../../lib/control-styles";
 import { controlSurfaceAttrs, resolveAriaInvalid } from "../control-surface";
-import { useInertHiddenBackground } from "../../general/inert-background";
+import { useInertHiddenBackground } from "./inert-background.fixture";
 import {
   mergeAriaIds,
   useFieldIdentity,
@@ -266,7 +266,8 @@ export const RadixSelectContent = React.forwardRef<
   }
 >(({ className, children, position = "popper", ...props }, ref) => {
   // Radix hides the app behind an open Select from assistive tech but leaves it tabbable —
-  // axe `aria-hidden-focus`. See components/general/inert-background.ts.
+  // axe `aria-hidden-focus`. See ./inert-background.fixture.ts — it moved here with this
+  // fixture when RAC took over the real Select and left it with no production caller (gh#643).
   // Đăng ký chính phần tử content: nó mang `data-state`, và đó là tín hiệu ý định đóng mà
   // nền dựa vào để nhả `inert` NGAY, thay vì đợi hết animation thoát (gh#385).
   const contentRef = useInertHiddenBackground(ref);

@@ -47,7 +47,7 @@ import { Button } from "../general/button";
  * `src/test/overlay-background.tsx`.
  *
  *   RADIX-BACKED (`hideOthers` → `aria-hidden` + `data-aria-hidden`, `inert` mirrored on top by
- *   `components/general/inert-background.ts`):
+ *   `data-entry/__tests__/inert-background.fixture.ts`):
  *   • Select ......... always modal — `hideOthers` unconditionally. role="listbox" → NOT exempt,
  *                      so the `inert` mirror is what keeps axe quiet. This is the row that goes
  *                      red first if that mirror regresses.

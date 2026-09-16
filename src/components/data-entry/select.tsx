@@ -69,7 +69,8 @@ import type {
  *    thoại (xem `radixSurfaceState` ở dropdown-menu.tsx — cùng lý do, cùng cách bỏ).
  *
  * Nền `inert` khi mở: react-aria gọi `ariaHideOutside(…, { shouldUseInert: true })`, nên
- * `useInertHiddenBackground` không còn việc gì ở đây.
+ * `useInertHiddenBackground` không còn việc gì ở đây — và không còn ở `src/` nữa: nó theo
+ * `radix-select.fixture.tsx` về `__tests__/inert-background.fixture.ts` (gh#643).
  */
 
 /** Compound-API props — the shape the Radix root had, plus the FormField field-a11y contract that
