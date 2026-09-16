@@ -16,9 +16,10 @@
  *     hairline width, plus `0 0 0 var(--control-outline-width) var(--control-outline)`;
  *   · everything else gets the same weight and the same hue as an `outline`, rather than the heavy
  *     outline form (3px of `--primary-border`). Two reasons, both measured: `--primary-border` is
- *     #6dc0e3 at 2.00:1 and cannot satisfy SC 1.4.11 at any thickness, and 3px of opaque brand
- *     around an already-shaded selected nav row is exactly the weight that was reported as
- *     intrusive. One hairline in the focus hue measures 5.05:1 light / 7.07:1 dark.
+ *     #a66de3, which reaches 3.49:1 on the page but only 2.92:1 on an accent panel, so it cannot
+ *     satisfy SC 1.4.11 on every surface at any thickness; and 3px of opaque brand around an
+ *     already-shaded selected nav row is exactly the weight that was reported as intrusive. One
+ *     hairline in the focus hue measures at worst 5.30:1 light / 6.87:1 dark.
  *
  * NO LAYOUT SHIFT IS POSSIBLE. The field form never changes a border WIDTH, only its colour, and
  * an `outline` is painted outside the box model. Nothing here can move a control's box. */

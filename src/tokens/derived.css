@@ -2,43 +2,59 @@
  *
  * These twenty values are AUTHORED, not generated. They used to fall out of a colour algorithm
  * run at build time; that generator is gone, so nothing re-derives them and nothing re-checks
- * them against a formula. What holds them correct now is MEASUREMENT: four contrast suites read
- * THIS FILE directly and hold every value to a WCAG threshold.
+ * them against a formula. What holds them correct now is MEASUREMENT: five suites read THIS FILE
+ * directly — four hold every value to a WCAG threshold, and the fifth holds it to the seed's hue.
  *
  *   src/tokens/__tests__/focus-ring-contrast.test.ts     the focus mark, both switch positions
  *   src/tokens/__tests__/destructive-contrast.test.ts    --destructive-hover / --destructive-active
  *   src/tokens/__tests__/interactive-fill-contrast.test.ts  a fill must clear 4.5:1 on its label
  *   src/lib/__tests__/theme-tokens-css.test.ts           the tier is loaded and complete
+ *   src/tokens/__tests__/derived-hue-lock.test.ts        every --primary-* carries the seed's hue
  *
  * TO CHANGE A VALUE HERE: change it, then run `pnpm test`. If a threshold breaks, the value is
  * wrong — the tests are the authority, not this comment. See docs/DESIGN-AUTHORITY.md.
  *
- * The seeds these were derived from, and which they must stay consistent with, live in
- * src/tokens/foundation.css:
- *   light primary #0071bd · error #b82830 · success #69bf8e · warning #fab700 · info #4d6db3
- *   dark  primary #3dabf5 · error #be373e · success #59c085 · warning #f9bf1f · info #698bd3
+ * MEASUREMENT DID NOT COVER HUE, AND THAT IS HOW THIS TIER SPENT A RELEASE IN THE WRONG COLOUR
+ * (gh#648). Identity v2.3 moved the seed from #0071bd to GoDX violet #7A00FF — 63 degrees — and
+ * every value below stayed on the blue it was derived from. All four contrast suites stayed green
+ * throughout, because a ratio is blind to hue: #005596 measures 7.53:1 on the primary label and
+ * would have done so whatever the seed underneath it was. A primary button therefore shipped
+ * violet at rest and NAVY on hover. The lock that closes it is
+ * derived-hue-lock.test.ts — every `--primary-*` here must carry the seed's hue.
  *
- * 4 interactive fill state(s) sit on the ramp in the OPPOSITE direction to the conventional
- * step, because stepping the fill towards the label sitting on it lands under 4.5:1
- * (JIS X 8341-3 / WCAG AA). Same ramp, same step size; only the sign moved, and only where
- * measured:
- *   light --primary-hover      #208bc9 3.69:1 → #005596 7.53:1
- *   light --primary-active     #005596 7.53:1 → #003c70 10.97:1
- *   dark  --primary-hover      #61b6e8 7.92:1 → #61b6e8 7.92:1
- *   dark  --primary-active     #2f76a6 3.60:1 → #8bd0f3 10.50:1
+ * The seeds these are derived from, and which they must stay consistent with, live in
+ * src/tokens/foundation.css:
+ *   light primary #7A00FF · error #b82830 · success #69bf8e · warning #fab700 · info #4d6db3
+ *   dark  primary #DCBCFF · error #be373e · success #59c085 · warning #f9bf1f · info #698bd3
+ *
+ * WHERE THE TWO PRIMARY STEPS COME FROM. The brand kit already publishes its own violet ramp, so
+ * the light states are TAKEN from it rather than computed: identity v2.3 gives #6400D4 one step
+ * below the action bg and #5200B0 as action.primary.pressed (this repo already carries both, as
+ * --text-brand and --text-primary). Each is snapped to the seed's hue exactly the way the dark
+ * seed itself was — 1.008:1 and 1.010:1 from the kit value, i.e. the same colour.
+ *
+ * 1 interactive fill state sits on the ramp in the OPPOSITE direction to the conventional step.
+ * Under the old blue seed there were four, and the reason was always the same: stepping the fill
+ * towards the label sitting on it lands under 4.5:1 (JIS X 8341-3 / WCAG AA). The violet seed
+ * needs the reflection in ONE place, and for the opposite reason — the dark seed sits so high on
+ * the ramp (86.9% L) that the conventional pressed step runs out of lightness rather than out of
+ * contrast:
+ *   dark --primary-active  the conventional step lands at 98.5% L = #fbf7ff, which is 1.056:1
+ *                          from pure white — the brand is simply gone. Reflected to the other
+ *                          side at the same step size: #cd9fff, 8.41:1 on its own label.
  */
 
 :root {
-  /* the conventional hover step, #208bc9, measures 3.69:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
-  --primary-hover: 206 100% 29.4%; /* ramp 1 step away from the label = #005596, 7.53:1 */
-  /* the conventional active step, #005596, clears the floor at 7.53:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
-  --primary-active: 208 100% 22%; /* ramp 2 steps away from the label = #003c70, 10.97:1 */
+  /* the kit's own step below the action bg, snapped to the seed hue */
+  --primary-hover: 268.7 100% 41.6%; /* identity v2.3 #6400D4 = #6500d4, 8.23:1 */
+  /* the kit's action.primary.pressed, snapped to the seed hue */
+  --primary-active: 268.7 100% 34.5%; /* identity v2.3 #5200B0 = #5400b0, 10.31:1 */
   /* the hue a focus outline paints on a control that has no boundary of its own */
-  --primary-border: 198 68% 66%; /* #6dc0e3 */
+  --primary-border: 268.7 68% 66%; /* #a66de3 */
   --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
   --destructive-active: 355 70.6% 33.3%; /* #911923 */
   /* the focus halo on a field */
-  --control-outline: 192.1 100% 44.7%; /* rgba(0,182,228,0.11) */
+  --control-outline: 268.7 100% 44.7%; /* rgba(109,0,228,0.11) */
   --control-outline-alpha: 0.11; /* the alpha half of that halo */
   /* the same halo on an invalid field */
   --control-outline-error: 4.3 87.6% 34.7%; /* rgba(166,22,11,0.09) */
@@ -55,16 +71,16 @@
 
 .dark,
 :root[data-theme="dark"] {
-  /* the conventional hover step, #61b6e8, clears the floor at 7.92:1 on its own label; it moves only because the ramp was reflected for its sibling state, and the two must stay one step apart */
-  --primary-hover: 202.2 74.6% 64.5%; /* ramp 1 step away from the label = #61b6e8, 7.92:1 */
-  /* the conventional active step, #2f76a6, measures 3.60:1 on its own label, under the 4.5:1 floor — same ramp, same step size, opposite sign */
-  --primary-active: 200.2 81.3% 74.9%; /* ramp 2 steps away from the label = #8bd0f3, 10.50:1 */
+  /* the kit's dark action.primary.hover, snapped to the seed hue */
+  --primary-hover: 268.7 100% 92.7%; /* identity v2.3 #E8DAFF = #ecdaff, 13.51:1 */
+  /* the conventional step lands at 98.5% L = #fbf7ff, 1.056:1 from white — the ramp runs out of lightness, so the sign flips; same ramp, same step size */
+  --primary-active: 268.7 100% 81.1%; /* ramp 1 step the other way = #cd9fff, 8.41:1 */
   /* the hue a focus outline paints on a control that has no boundary of its own */
-  --primary-border: 204.6 46.7% 23.5%; /* #204158 */
+  --primary-border: 268.7 46.7% 23.5%; /* #3b2058 */
   --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
   --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
   /* the focus halo on a field */
-  --control-outline: 204.6 99% 61.8%; /* rgba(61,175,254,0.29) */
+  --control-outline: 268.7 99% 61.8%; /* rgba(153,61,254,0.29) */
   --control-outline-alpha: 0.29; /* the alpha half of that halo */
   /* the same halo on an invalid field */
   --control-outline-error: 351.5 98.3% 53.5%; /* rgba(253,20,53,0.06) */

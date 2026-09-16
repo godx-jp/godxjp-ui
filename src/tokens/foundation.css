@@ -299,13 +299,14 @@
    * about: a 3px opaque outline stacked on an already-shaded selected nav row reads as two
    * treatments on one element. WCAG's AA bar for an indicator is CONTRAST (SC 1.4.11, 3:1), not
    * thickness, so the weight can come all the way down to the FIELD indicator — one hairline of
-   * `--ring`, which measures 5.05:1 light and 7.07:1 dark on every surface a control sits on —
-   * while the criterion is still met. The 3px weight is one token away: set
+   * `--ring`, which measures at worst 5.30:1 light and 6.87:1 dark across every surface a control
+   * sits on — while the criterion is still met. The 3px weight is one token away: set
    * `--focus-outline-weight: var(--stroke-lg)`.
    *
    * The hue is the focus hue itself, NOT `--primary-border`. That is the one place the ON state
-   * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #6dc0e3,
-   * which measures 2.00:1 light and 1.66:1 dark and cannot satisfy SC 1.4.11 at any thickness.
+   * departs from the OUTLINE form, and it is forced: `--primary-border` for this seed is #a66de3,
+   * which reaches 3.49:1 on the page and 2.92:1 light / 1.03:1 dark on an accent panel, so it
+   * cannot satisfy SC 1.4.11 on every surface at any thickness.
    * A mark that fails the criterion is not an indicator. */
   --focus-outline: 1; /* the switch — 1 = on (shipped default since gh#544), 0 = off */
   --focus-outline-weight: var(--stroke-hairline); /* the heavy alternative is --stroke-lg */
@@ -342,11 +343,12 @@
    *
    * This block once hard-coded 0.12 light / 0.3 dark, eyeballed — close to, but not, the values
    * the tier now commits to: 0.11 and 0.29 for the seeds this library actually ships, with the
-   * halo hue rgb(0,182,228) rather than the primary itself.
+   * halo hue rgb(109,0,228) rather than the primary itself.
    *
    * The halo is DECORATION and must never be asked to carry the a11y contract: measured against
-   * this palette, a primary tint over the page tops out at 2.84:1 even at alpha 0.7, so no value
-   * of this knob reaches WCAG 2.2 SC 1.4.11's 3:1. What carries the state on a field is the
+   * this palette, a primary tint over the page reads 1.23:1 at the shipped 0.11 and does not
+   * reach WCAG 2.2 SC 1.4.11's 3:1 until alpha 0.53 light / 0.85 dark — past the point where it
+   * is a halo at all. What carries the state on a field is the
    * recoloured 1px border, and that only once `data-focus-outline="on"` is set — see the switch
    * above and docs/DESIGN-AUTHORITY.md. */
   --focus-ring-glow-width: var(--control-outline-width);
