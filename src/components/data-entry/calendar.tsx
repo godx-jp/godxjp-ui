@@ -31,7 +31,7 @@ export function Calendar({
   onClose,
   footer,
   width = "auto",
-  bordered = false,
+  bordered = true,
   cellRender,
   month: monthProp,
   onMonthChange,

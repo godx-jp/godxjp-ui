@@ -2611,16 +2611,25 @@
    * in the stylesheet looking correct.
    *
    * So each cell draws only its START and BLOCK-START edge, and the grid closes the far side. Two
-   * neighbours therefore share exactly one line, with no collapse model involved. */
+   * neighbours therefore share exactly one line, with no collapse model involved.
+   *
+   * THE LINE COLOUR IS `--input`, NOT `--border` — and the ruling is ON by default. Both were
+   * reported together ("no borders, very hard to read"): the grid shipped off, and turning it on
+   * drew it in `--border`, the decorative tier, measured 1.15:1 on --background/--card/--popover
+   * (dark 1.38 / 1.27) and 1.05:1 on the --muted header row — a 1px line nobody can see.
+   * `--input` measures 3.47:1 light / 3.88:1 dark on the popover and still 3.18 / 3.17 on the
+   * header tint, while staying well under the selected day's --primary fill (5.50 / 7.76), so the
+   * selection remains the loudest shape. Read at the call site (`initial` knob + fallback) so a
+   * scoped theme retints it live. Pinned by calendar-grid-line-contrast.test.ts. */
   .ui-calendar[data-bordered="true"] .ui-calendar-day,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
-    border-inline-start: 1px solid hsl(var(--border));
-    border-block-start: 1px solid hsl(var(--border));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-week,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekdays {
-    border-inline-end: 1px solid hsl(var(--border));
+    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
   }
 
   /* The header row gets a tint once the grid is ruled. Unruled it reads as a header by position
@@ -2638,7 +2647,7 @@
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
   }
 
   /* The day button fills its ruled cell instead of floating inside it — otherwise the selection
@@ -2675,8 +2684,20 @@
   /* Week numbers are cells of the same grid; without this the column sat outside the ruling. */
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number,
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number-header {
-    border-inline-start: 1px solid hsl(var(--border));
-    border-block-start: 1px solid hsl(var(--border));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+  }
+
+  /* The ruled day cell takes the column width ITSELF, like the weekday cell above it. The button
+   * below fills the cell (`inline-size: 100%`), and a percentage of an auto-width flex item has
+   * nothing to resolve against — so with no width here the button shrank to its label and the
+   * whole week collapsed. Measured in Chromium once `bordered` became the default: cells 16.5px
+   * wide (under the 24px target), a two-digit week 12.7px apart, the rows ragged against a
+   * 225px header. `--control-height` is the same tier the weekday and the unruled button use, and
+   * border-box puts the 1px rule inside it, so the ruled grid is the unruled one plus the closing
+   * 1px edge. `width="full"` still overrides this (`flex: 1 1 0`, later and equally specific). */
+  .ui-calendar[data-bordered="true"] .ui-calendar-day {
+    inline-size: var(--control-height);
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-day-button {

@@ -76,6 +76,7 @@ export function DatePicker(props: DatePickerProp) {
     toDate,
     disabledDate,
     cellRender,
+    bordered,
     allowClear,
     triggerLabel,
     format: formatProp,
@@ -580,6 +581,7 @@ export function DatePicker(props: DatePickerProp) {
     onMonthChange: setViewAnchor,
     locale: dayPickerLocale,
     cellRender,
+    bordered,
     showWeekNumber: showWeek,
     startMonth: minimum,
     endMonth: maximum,
@@ -645,9 +647,7 @@ export function DatePicker(props: DatePickerProp) {
       }}
       className="ui-control-inline-affix-action"
     >
-      {clearControl.clearIcon ?? (
-        <X className="ui-control-inline-affix-icon" aria-hidden="true" />
-      )}
+      {clearControl.clearIcon ?? <X className="ui-control-inline-affix-icon" aria-hidden="true" />}
     </button>
   ) : (
     <PopoverTrigger asChild>
