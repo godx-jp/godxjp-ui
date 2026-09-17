@@ -2707,23 +2707,25 @@
    * So each cell draws only its START and BLOCK-START edge, and the grid closes the far side. Two
    * neighbours therefore share exactly one line, with no collapse model involved.
    *
-   * THE LINE COLOUR IS `--input`, NOT `--border` — and the ruling is ON by default. Both were
-   * reported together ("no borders, very hard to read"): the grid shipped off, and turning it on
-   * drew it in `--border`, the decorative tier, measured 1.15:1 on --background/--card/--popover
-   * (dark 1.38 / 1.27) and 1.05:1 on the --muted header row — a 1px line nobody can see.
-   * `--input` measures 3.47:1 light / 3.88:1 dark on the popover and still 3.18 / 3.17 on the
-   * header tint, while staying well under the selected day's --primary fill (5.50 / 7.76), so the
-   * selection remains the loudest shape. Read at the call site (`initial` knob + fallback) so a
+   * THE LINE COLOUR IS `--input` AT HALF ALPHA, NOT `--border` — and the ruling is ON by default.
+   * Both were reported together ("no borders, very hard to read"): the grid shipped off, and
+   * turning it on drew it in `--border`, the decorative tier, measured 1.15:1 on
+   * --background/--card/--popover (dark 1.38 / 1.27) and 1.05:1 on the --muted header row — a 1px
+   * line nobody can see. The full `--input` (3.47:1 light / 3.88:1 dark) then read too dark
+   * ("màu border … đậm quá"), so the line sits between the two: `--input / 0.5` measures 1.74:1
+   * light / 1.95:1 dark on the popover and 1.68 / 1.80 on the header tint, far under the selected
+   * day's --primary fill (5.50 / 7.76), so the selection remains the loudest shape. The same
+   * weight as the RangeTimeline grid. Read at the call site (`initial` knob + fallback) so a
    * scoped theme retints it live. Pinned by calendar-grid-line-contrast.test.ts. */
   .ui-calendar[data-bordered="true"] .ui-calendar-day,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-week,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekdays {
-    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
   }
 
   /* The header row gets a tint once the grid is ruled. Unruled it reads as a header by position
@@ -2741,7 +2743,7 @@
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {
-    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
   }
 
   /* The day button fills its ruled cell instead of floating inside it — otherwise the selection
@@ -2778,8 +2780,8 @@
   /* Week numbers are cells of the same grid; without this the column sat outside the ruling. */
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number,
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number-header {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input)));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
   }
 
   /* The ruled day cell takes the column width ITSELF, like the weekday cell above it. The button

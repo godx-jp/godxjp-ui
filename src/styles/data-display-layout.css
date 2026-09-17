@@ -1615,8 +1615,15 @@
     padding: var(--space-2);
     border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
   }
+  /* One track per UNIT, shared by the band row, the tick row and the body grid; every cell spans
+   * its `units`. With `flex: units` a cell's padding and rule sat outside the grow share, so a band
+   * of N days and N day cells did not sum to the same width — the month boundary drifted off the
+   * day-1 edge (measured 1.32px on a 6+7-day axis at 1440px, and growing with the band count).
+   * Tracks are sized by the grid alone (`minmax(0, 1fr)`), so padding can never move an edge and
+   * a band edge IS a day edge. Bars place by `units` percentages of the same width. */
   .ui-range-timeline-columns {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(var(--range-timeline-units, 1), minmax(0, 1fr));
   }
   .ui-range-timeline-column {
     min-inline-size: 0;
@@ -1630,7 +1637,7 @@
     min-inline-size: 0;
   }
   /* The body grid (gh#703). One decorative layer behind every row, built from the SAME grid
-   * template and the SAME flex/units + inline padding + inline-end rule as the header columns, so
+   * template and the SAME unit tracks + inline padding + inline-end rule as the header columns, so
    * each vertical line lands exactly under its header column edge for unequal `units` too — a
    * repeating gradient could only do that for equal columns. `isolation` + `z-index: -1` keep it
    * under the row rules, the sticky labels, the today marker and the bars; it never takes a pointer. */
@@ -1654,19 +1661,21 @@
   .ui-range-timeline-grid-column[data-muted="true"] {
     background: var(--range-timeline-muted-column-background, hsl(var(--muted)));
   }
-  /* Ruled (`bordered`, the default): every internal line reads the grid knob. `initial` in the token
-   * tier, the --input role at the call site — the ≥3:1 boundary tier the Calendar grid chose,
-   * because --border measured 1.15:1 and a 1px rule in it is not seen. Pinned by
-   * range-timeline-grid.test.ts. */
+  /* Ruled (`bordered`, the default): every internal line — row rules, the band/tick seam, the
+   * label-column divider, header and body column rules — reads the grid knob, so the header is no
+   * heavier than the body. `initial` in the token tier, --input at half alpha at the call site:
+   * 1.74:1 light / 1.95:1 dark on the card, 1.68 / 1.80 on the --muted header. The full --input
+   * (3.47:1) was reported as too dark; --border measured 1.15:1 and a 1px rule in it is not seen.
+   * The same weight as the Calendar grid. Pinned by range-timeline-grid.test.tsx. */
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column {
-    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input)));
+    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
   }
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row {
     border-block-start: var(--range-timeline-grid-width) solid
-      var(--range-timeline-grid-color, hsl(var(--input)));
+      var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
   }
   .ui-range-timeline-outside {
     position: absolute;

@@ -202,6 +202,42 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>月をまたぐ日単位の軸（bands）</CardTitle>
+            <CardDescription>
+              9月25日から10月7日まで。bands
+              の月の境界は、その月の1日の列の境界にぴったり重なります。
+              始まりが月の途中なので、最初の月の帯は6日分だけの幅です。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              bands={[
+                { label: monthLabel(8), units: 6 },
+                { label: monthLabel(9), units: 7 },
+              ]}
+              columns={Array.from({ length: 13 }, (_, index) => {
+                const date = new Date(Date.UTC(2026, 8, 25 + index));
+                return {
+                  label: new Intl.NumberFormat(locale).format(date.getUTCDate()),
+                  units: 1,
+                  muted: date.getUTCDay() === 0 || date.getUTCDay() === 6,
+                };
+              })}
+              rows={[
+                { id: "migration", label: "移行", start: 3, end: 8 },
+                { id: "october", label: "10月の作業", start: 6, end: 12 },
+              ].map((row) => ({
+                ...row,
+                startLabel: dayLabel(25 + row.start),
+                endLabel: dayLabel(25 + row.end),
+              }))}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>月単位の軸（列ごとに units が異なる）</CardTitle>
             <CardDescription>
               units

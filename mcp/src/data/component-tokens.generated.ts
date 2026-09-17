@@ -1926,7 +1926,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-grid-border-color",
     "value": "initial",
-    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--input)))` * so it follows a scoped theme. Default role --input, the ≥3:1 tier — the decorative --border * measured 1.15:1 and was invisible as a 1px line. Set any colour to retint, e.g. `hsl(var(--border))` for the old quiet line."
+    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--input) / 0.5))` * so it follows a scoped theme. Default --input at half alpha, 1.74:1 light / 1.95:1 dark on the * popover: the full --input (3.47 / 3.88) read too dark, the decorative --border (1.15) was * invisible. Same weight as the RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input))` for the heavier line."
   },
   {
     "name": "--transfer-pane-min-height",
@@ -3026,7 +3026,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--range-timeline-grid-color",
     "value": "initial",
-    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--input)))` so it follows a scoped * theme; --input is the ≥3:1 tier the Calendar grid chose, --border measured 1.15:1 and a 1px * rule in it is not seen. Set any colour to retint, e.g. `hsl(var(--border))` for a quieter grid."
+    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--input) / 0.5))` so it follows a * scoped theme; --input at half alpha, 1.74:1 light / 1.95:1 dark on the card, the same weight * as the Calendar grid — the full --input (3.47) read too dark, --border (1.15) is not seen. * Set any colour to retint, e.g. `hsl(var(--input))` for a heavier grid."
   },
   {
     "name": "--range-timeline-grid-width",

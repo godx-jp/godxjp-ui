@@ -86,7 +86,12 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       >
         <div
           className="ui-range-timeline-canvas"
-          style={{ "--range-timeline-columns": Math.max(1, columns.length) } as React.CSSProperties}
+          style={
+            {
+              "--range-timeline-columns": Math.max(1, columns.length),
+              "--range-timeline-units": units,
+            } as React.CSSProperties
+          }
         >
           {bands && bands.length > 0 && (
             <div className="ui-range-timeline-header">
@@ -96,7 +101,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                   <div
                     key={index}
                     className="ui-range-timeline-column"
-                    style={{ flex: band.units }}
+                    style={{ gridColumn: `span ${band.units}` }}
                   >
                     <Text size="xs" weight="medium">
                       {band.label}
@@ -115,7 +120,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                 <div
                   key={index}
                   className="ui-range-timeline-column"
-                  style={{ flex: column.units }}
+                  style={{ gridColumn: `span ${column.units}` }}
                 >
                   <Text size="xs">{column.label}</Text>
                 </div>
@@ -124,8 +129,8 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
           </div>
           <div className="ui-range-timeline-body">
             {(bordered || columns.some((column) => column.muted)) && (
-              // Decorative: the same flex/units layout as the header columns, laid once behind every
-              // row so each vertical rule runs the full body height exactly under its header column.
+              // Decorative: the same unit tracks as the header columns, laid once behind every row so
+              // each vertical rule runs the full body height exactly under its header column.
               <div className="ui-range-timeline-grid" aria-hidden="true">
                 <div />
                 <div className="ui-range-timeline-columns">
@@ -134,7 +139,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                       key={index}
                       className="ui-range-timeline-grid-column"
                       data-muted={column.muted ? "true" : undefined}
-                      style={{ flex: column.units }}
+                      style={{ gridColumn: `span ${column.units}` }}
                     />
                   ))}
                 </div>

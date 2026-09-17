@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { contrast, hsl, hslToRgb, NON_TEXT } from "../../../tokens/__tests__/wcag-contrast";
+import { contrast, hsl, hslToRgb, NON_TEXT, over } from "../../../tokens/__tests__/wcag-contrast";
 import { RangeTimeline } from "../range-timeline";
 
 /*
@@ -45,9 +45,40 @@ describe("RangeTimeline body grid (gh#703)", () => {
     const header = [...container.querySelectorAll<HTMLElement>(".ui-range-timeline-column")];
     const cells = [...grid.querySelectorAll<HTMLElement>(".ui-range-timeline-grid-column")];
     expect(cells).toHaveLength(header.length);
-    expect(cells.map((cell) => cell.style.flex)).toEqual(header.map((column) => column.style.flex));
+    expect(cells.map((cell) => cell.style.gridColumn)).toEqual(
+      header.map((column) => column.style.gridColumn),
+    );
     // One layer for the whole body, not one per row.
     expect(container.querySelectorAll(".ui-range-timeline-grid")).toHaveLength(1);
+  });
+
+  it("sizes bands, ticks and grid cells from one unit track, so a month edge IS a day edge", () => {
+    // A day axis crossing a month, starting mid-month (partial first band). With `flex: units` the
+    // Sep|Oct band edge sat 1.32px off the day-1 column edge at 1440px (LTR and RTL), and the gap
+    // grew with the number of bands, because each cell's padding and rule sat outside its grow
+    // share. On one grid of `units` tracks it measured 0px at 1440 and 1024, LTR and RTL.
+    const days = Array.from({ length: 13 }, (_, index) => ({ label: `${index}`, units: 1 }));
+    const { container } = render(
+      <RangeTimeline
+        label="Schedule"
+        bands={[
+          { label: "Sep", units: 6 },
+          { label: "Oct", units: 7 },
+        ]}
+        columns={days}
+        rows={[row("a", 3, 8)]}
+      />,
+    );
+    const canvas = container.querySelector<HTMLElement>(".ui-range-timeline-canvas")!;
+    expect(canvas.style.getPropertyValue("--range-timeline-units")).toBe("13");
+    const [bandRow, tickRow] = container.querySelectorAll(".ui-range-timeline-header");
+    const spans = (root: Element, selector: string) =>
+      [...root.querySelectorAll<HTMLElement>(selector)].map((cell) => cell.style.gridColumn);
+    expect(spans(bandRow, ".ui-range-timeline-column")).toEqual(["span 6", "span 7"]);
+    expect(spans(tickRow, ".ui-range-timeline-column")).toEqual(Array(13).fill("span 1"));
+    expect(spans(gridOf(container)!, ".ui-range-timeline-grid-column")).toEqual(
+      Array(13).fill("span 1"),
+    );
   });
 
   it("flags muted columns on the grid layer only", () => {
@@ -114,7 +145,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     return match[1];
   };
   const LINE =
-    "var(--range-timeline-grid-width) solid\n      var(--range-timeline-grid-color, hsl(var(--input)))";
+    "var(--range-timeline-grid-width) solid\n      var(--range-timeline-grid-color, hsl(var(--input) / 0.5))";
 
   it("rules every row and the header/body seam, across label and track", () => {
     const body = rule(
@@ -123,6 +154,14 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     // On the row (the label+track grid), so the rule spans both; the first row's rule is the
     // header/body seam, the header+header rule separates bands from ticks.
     expect(body).toContain(`border-block-start: ${LINE};`);
+  });
+
+  it("lays every column row on the same unit tracks, so padding cannot move an edge", () => {
+    const columns = rule(".ui-range-timeline-columns");
+    expect(columns).toMatch(/display:\s*grid;/);
+    expect(columns).toContain(
+      "grid-template-columns: repeat(var(--range-timeline-units, 1), minmax(0, 1fr));",
+    );
   });
 
   it("lays the grid behind the rows and out of the pointer's way", () => {
@@ -150,7 +189,9 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
       rule(
         '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
       ),
-    ).toContain("border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input)));");
+    ).toContain(
+      "border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input) / 0.5));",
+    );
   });
 
   it("tints muted columns from the knob with a surface-role fallback", () => {
@@ -188,9 +229,18 @@ describe.each([
   const body = foundation.slice(open + 1, foundation.indexOf("\n}", open));
   const rgb = (name: string) => hslToRgb(hsl(body, name));
 
-  it("the grid line is visible on the body and on a muted column (decorative, measured ≥3:1)", () => {
-    expect(contrast(rgb("input"), rgb("card"))).toBeGreaterThanOrEqual(NON_TEXT);
-    expect(contrast(rgb("input"), rgb("muted"))).toBeGreaterThanOrEqual(NON_TEXT);
+  // The owner found the full --input grid (3.47:1 on the card) too dark on a real Gantt: "màu
+  // border của gantt và date picker đang bị đậm quá cho mờ đi". Decorative lines have no WCAG
+  // floor, so the band is legibility: measured in Chromium, --input / 0.5 paints 1.74 light /
+  // 1.95 dark on the card and 1.68 / 1.80 on the --muted header and muted columns — the same
+  // weight as the Calendar grid.
+  it("the grid line reads on the body and on a muted column without dominating (1.5–2.0:1)", () => {
+    for (const surface of ["card", "muted"]) {
+      const ratio = contrast(over(rgb("input"), rgb(surface), 0.5), rgb(surface));
+      expect(ratio).toBeGreaterThanOrEqual(1.5);
+      expect(ratio).toBeLessThanOrEqual(2);
+      expect(ratio).toBeGreaterThan(contrast(rgb("border"), rgb(surface)));
+    }
   });
 
   it("a muted column keeps row text at AA and bars at 3:1", () => {

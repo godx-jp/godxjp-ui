@@ -554,7 +554,7 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input))`, 3.47:1 light / 3.88:1 dark on the card; the decorative `--border` measured 1.15:1), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
+          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input) / 0.5)`, 1.74:1 light / 1.95:1 dark on the card — lightened from the full --input (3.47 / 3.88) the owner found too dark, still well above the decorative `--border` at 1.15:1; the same weight as the Calendar grid), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
       },
     ],
     example:
@@ -7662,7 +7662,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "true",
         description:
-          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input))`).',
+          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input) / 0.5)`).',
       },
       {
         name: "disabledDate",
@@ -11088,7 +11088,7 @@ function PlanSlider() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job. Line colour is the `--calendar-grid-border-color` knob, default `hsl(var(--input))` (3.47:1 light / 3.88:1 dark on the popover; the decorative `--border` it used to draw in measured 1.15:1 and was invisible). Retint with `--calendar-grid-border-color: hsl(var(--border))` for the old quiet line. DatePicker forwards the same prop to its popup calendar.",
+          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job. Line colour is the `--calendar-grid-border-color` knob, default `hsl(var(--input) / 0.5)` (1.74:1 light / 1.95:1 dark on the popover — lighter than the full --input at 3.47 / 3.88, which the owner found too dark, and still clearly above the decorative `--border` it first drew in, 1.15:1 and invisible; the same weight as the RangeTimeline grid). Retint with `--calendar-grid-border-color: hsl(var(--input))` for the heavier line. DatePicker forwards the same prop to its popup calendar.",
       },
       {
         name: "width",
