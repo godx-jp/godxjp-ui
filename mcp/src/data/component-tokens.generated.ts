@@ -6921,7 +6921,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-expanded-background",
     "value": "initial",
-    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint."
+    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as * --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row."
   },
   {
     "name": "--table-selection-menu-gap",
@@ -6932,6 +6932,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-row-striped-background",
     "value": "initial",
     "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
+  },
+  {
+    "name": "--table-row-striped-alpha",
+    "value": "0%",
+    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row * paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full * stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real * alpha, not a flag: a theme may also dial a lighter stripe (`60%`). * * THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes * every Table and DataTable. The `striped` prop is the per-instance override on top of it — * `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out * inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root * without the freeze rule (docs/TOKENS.md)."
   },
   {
     "name": "--table-row-hover-background",

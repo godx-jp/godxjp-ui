@@ -473,6 +473,12 @@ export type DataTableProp<T> = {
   onRow?: OnRowProp<T>;
   /** Outer frame + vertical rules between columns (antd `bordered`). */
   bordered?: boolean;
+  /**
+   * Zebra rows by logical record (Element Plus `stripe`, Bootstrap `.table-striped`; antd has no
+   * prop). Omit to inherit the theme default `--table-row-striped-alpha`; `true` / `false`
+   * override it for this table.
+   */
+  striped?: boolean;
   /** Explain the next sort step in a tooltip on sortable headers (antd `showSorterTooltip`). */
   showSorterTooltip?: boolean;
   /** Table-wide sort cycle; a column's own `sortDirections` wins (antd `sortDirections`). */

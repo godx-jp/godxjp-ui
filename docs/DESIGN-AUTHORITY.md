@@ -266,6 +266,16 @@ in page CSS.
   `dataEntry.chatComposer.hintModEnter` with `{modifier}` from `isApplePlatform()`
   (`@godxjp/ui/lib/utils`). `allowEmptySubmit` (default `false`, antd's behaviour) sends `""`,
   still never while `loading` / `disabled` / `readOnly`.
+- **`Table.striped` / `DataTable.striped` (gh#700).** antd names no zebra capability — its docs
+  stripe through `rowClassName` — so there is no antd spelling to port. Element Plus calls it
+  `stripe`, Bootstrap `.table-striped`, MUI documents `:nth-of-type(odd)`. This library takes
+  `striped`: a positive boolean adjective, the shape `bordered` and `hoverable` already have on the
+  same component, and the spelling `DataTable` had shipped since 17f4a067. It is TRI-STATE on
+  purpose: omitted inherits the service default `--table-row-striped-alpha` (`0%` at `:root`, so
+  one theme line — `:root { --table-row-striped-alpha: 100%; }` — stripes every list table),
+  `true` / `false` override it per table. `rowClassName` is not the answer here: it counts DOM
+  rows, so an expanded detail row shifts every stripe after it, and `ui-audit` blocks the
+  utilities it would need.
 
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer

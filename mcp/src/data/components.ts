@@ -3632,8 +3632,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       {
         name: "striped",
         type: "boolean",
-        defaultValue: "false",
-        description: "Zebra-stripe the body rows (even rows get a subtle muted fill).",
+        description:
+          "Zebra rows: every EVEN LOGICAL record paints --table-row-striped-background (default --muted at 0.4 alpha, computed at the row so dark mode and scoped themes follow). Parity is by record, not DOM row — an expanded detail row is skipped when counting and wears its own record's stripe; on a paged table the count restarts per rendered page. Frozen (`fixed`) cells wear the stripe over their opaque base; hover, selection, `rowClassName` and `rowTone` all still read on a striped row. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` / `false` override it for this table. Element Plus `stripe` / Bootstrap `.table-striped`; antd has no prop.",
       },
       {
         name: "hoverable",
@@ -3807,6 +3807,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
       "SIX STATES, ZERO HAND-ROLLING: loading (`loading`), empty (automatic / `empty`), error (`error` + optional `onRetry`), denied (`denied`), pagination (`DataTable.Pagination`), row actions (`DataTable.RowActions`). Wire them straight off the query — `<DataTable loading={isPending} error={isError} denied={status === 403} onRetry={refetch} …/>` — and never branch the page around the table to render your own alert/empty/forbidden block. Precedence is loading > denied > error > empty > rows, so exactly one state ever shows.",
@@ -5587,6 +5588,12 @@ import remarkGfm from "remark-gfm";
           "Draw the full cell GRID: an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing.",
       },
       {
+        name: "striped",
+        type: "boolean",
+        description:
+          'Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.4 alpha). Mark a hand-composed detail row `<TableRow data-expanded-row="">` and it is skipped when counting and wears its record\'s stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped="" (100%), `false` emits data-striped="false" (0%) for this table only.',
+      },
+      {
         name: "preset",
         type: '"default" | "action-collection"',
         defaultValue: '"default"',
@@ -5605,6 +5612,7 @@ import remarkGfm from "remark-gfm";
       "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
       'DO use `TableHead` (not `TableCell`) for header cells — it renders `<th>` with `data-slot="table-head"` and the `--table-row-height` CSS variable for consistent header sizing across the design system. `TableCell` renders `<td>` with `data-slot="table-cell"` and is for body rows only.',
       'DO use `numeric` on TableHead/TableCell for tabular end-aligned numbers; `align="start|center|end"` overrides alignment, `wrap` allows multi-line text, and `width` sets a CSS column measure. These props replace alignment and width classes.',
+      'DO use `striped` on dense list tables so a row is easy to follow across its columns; to turn it on for EVERY Table and DataTable at once, set `:root { --table-row-striped-alpha: 100%; }` in the theme rather than passing the prop everywhere (`striped={false}` opts one table out). A detail row under a record is `<TableRow data-expanded-row="">` so the stripe counts records, not DOM rows — never stripe with `:nth-child` page CSS or row utilities.',
       "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
       "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
       'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. For text actions such as 対応する, set ColumnDef.width (or TableHead width) to reserve the label measure; leave a content column fluid. The default actions token is sized for icon actions. Do not add a hidden column or page-local breakpoint to make a table fit. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
