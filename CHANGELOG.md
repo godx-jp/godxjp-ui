@@ -4,7 +4,17 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [25.4.0] - 2026-09-17
+
+MINOR, stated rather than assumed, because two consumers will notice this on upgrade:
+
+- **Pages inside `AppShell` go full-width.** It fixes a reported defect under a product-owner
+  decision, and the old bound is one theme line away (`:root { --app-shell-page-max-width: 80rem; }`),
+  so no consumer has to change code — but the layout does change.
+- **`ui-audit` will report MORE errors, not fewer.** A consumer whose CI gates on `ui-audit` reaching
+  zero may turn red after upgrading. Nothing new is wrong in their code: those violations were always
+  there, and the old script could not see them because prettier had wrapped the tags. On godx-tempo
+  `no-raw-button` goes from 10 to 168. That is the fix working.
 
 ### Fixed
 
