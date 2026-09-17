@@ -4,6 +4,68 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.5.0] - 2026-09-17
+
+MINOR. Every default is unchanged; the new steps and axes are opt-in, with one measured repair to
+the Upload placeholder marks.
+
+### Added
+
+- **`Avatar` joins the control ladder — `size="xs | sm | md | lg"`** (gh#716). The mark was welded to
+  `--control-height`, so it could not enter a row whose height was already decided: measured in
+  Chromium at 1440 and 1024, a 32px avatar inside a 28px `<Button size="icon-sm">` hung 2.00px
+  outside it on every side (4.00px inside an `icon-xs`). `size` now reads the same
+  `--control-height-*` tier Button and Input read — 24 / 28 / 32 / 36px, each exactly equal to the
+  Button of the same step (overflow 2.00px → 0.00). The initials' type step and a glyph's box step
+  follow (11.11 / 12.47 / 14.00 / 17.65px and 12 / 14 / 16 / 20px off `--icon-size-*`), and
+  `shape="square"` rides the identical ladder. `md` is the inert default — it emits no attribute, so
+  every existing avatar keeps its DOM and its 32px box. New knobs `--avatar-size{,-xs,-sm,-lg}`,
+  `--avatar-font-size{,-xs,-sm,-lg}`, `--avatar-glyph-size-{xs,sm,lg}`.
+- **`Toggle` / `ToggleGroup` gain the 24px step — `size="xs"`** (gh#716), the fourth rung of the same
+  tier: 24.00px measured, level with `<Button size="xs">` in the same row. New knob
+  `--toggle-xs-font-size`.
+- **`Segmented` gains `size="xs"` (24px)** (gh#719), so a dense row carries a real one-of-N control
+  instead of a hand-rolled set of Buttons that loses the radiogroup semantics and the arrow keys.
+  Measured at 1440 and 1024: Segmented xs, an `xs` ToggleGroup and a `<Button size="xs">` all
+  24.00px, same top, same bottom. New knobs `--segmented-xs-font-size`,
+  `--segmented-xs-item-padding-inline`. Note that `xs` is the DENSE step: the track spends its 2px
+  inset at every step, so the segment itself is 20px and clears WCAG 2.2 SC 2.5.8 through the
+  Spacing exception rather than the 24px minimum.
+- **Prose — `--prose-link-*`, and `a[data-…]` as a supported consumer selector** (gh#717). Prose
+  styled `a` from the first commit and shipped thirteen tokens, none of them about links, so rule
+  #45 was unheld at the most common element in a wiki body: a link whose target does not exist yet
+  could not be told apart from one that resolves. `--prose-link-color` (default
+  `hsl(var(--primary))`) and `--prose-link-decoration-line` (default `underline`); the ink is
+  `initial` with the role as the CALL-SITE fallback, so a `[data-tenant]` re-tint reaches the anchor
+  instead of freezing at `:root` (gh#687). Unset is byte-identical to before — measured property for
+  property, `#7a00ff` light / `#dcbcff` dark, underline/solid, thickness and offset `auto`. The
+  underline is a SEPARATE knob from `--text-link-decoration-line`: `none` is legal in a nav row, but
+  Prose is running text, where the underline is WCAG 1.4.1 · G183. **Prose writes `data-*` on its own
+  root only**, so `a[data-…]` is yours — held by a test, documented in docs/CUSTOMER-THEMING.md
+  ("Selectors the package promises are YOURS"), with a wiki example measuring 8.28:1 resolved /
+  7.21:1 unresolved on the light card and 9.84:1 / 5.52:1 on the dark one.
+- **Upload `listType`** (gh#720) — antd's listing axis, independent of `variant`: `variant` decides
+  how a file is PICKED, `listType` how the picked ones are DRAWN. `picture` gives every row the same
+  leading box — the thumbnail when the item has a `previewUrl`, otherwise the glyph for its file kind
+  (image / pdf / archive / text / generic) on the `--icon-size-*` scale, with the kind exposed as
+  `data-file-kind` for theming. A `variant="dropzone"` can finally list a `.png` thumbnail beside a
+  `.json` and a `.txt` mark, on one row height (36×36 box, 20×20 mark, 58.41px row with or without
+  it, LTR and RTL). The default is per-variant and changes nothing: `picture` for
+  `variant="picture"`, `text` everywhere else. antd's `picture-card` is not offered as a `listType` —
+  it is `variant="picture-card"`, where the tile grid is also the picker.
+
+### Fixed
+
+- **Upload placeholder marks are on the icon scale** (gh#720). The avatar's camera and the picture
+  empty state were sized by `controlIconClass` (`--control-height`, 32px — a control height inside a
+  media placeholder, and not one of the nine icon steps). They now read `--upload-avatar-icon-size`
+  (`--icon-size-xl`, 24px) and `--upload-picture-icon-size` (`--icon-size-2xl`, 36px), so the avatar
+  and the picture-card tile — the same 96×96 box — finally draw the same 24px mark. Measured
+  glyph/box: dropzone 0.22, picture-empty 0.28, avatar 0.25, tile-add 0.25.
+- `eslint.config.js` ignores a git worktree checked out inside the repo. An agent worktree is a
+  second copy of the tree, tsconfig included, so the type-aware parser reported 3936 phantom
+  "multiple candidate TSConfigRootDirs" errors and stopped a release gate twice.
+
 ## [27.4.1] - 2026-09-17
 
 PATCH. **27.4.0 was tagged but never published** — the agent contract in the MCP skills index gained
