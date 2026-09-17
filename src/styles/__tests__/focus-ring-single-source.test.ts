@@ -76,7 +76,9 @@ describe("focus ring — single source", () => {
     // The MARK: width, hue and offset, each as a token. The width is `weight × switch`, so a
     // rule reading it can never paint while `--focus-outline` is 0.
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-width)");
-    expect(FOCUS_RING_CSS).toContain("var(--focus-outline-color)");
+    expect(FOCUS_RING_CSS).toContain(
+      "var(--focus-outline-color, var(--focus-ring-color, var(--ring)))",
+    );
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-offset)");
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-opacity, 1)");
 

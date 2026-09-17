@@ -930,8 +930,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-variant-filled-hover-background",
-    "value": "var(--accent)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
     "name": "--control-count-font-size",
@@ -1025,8 +1025,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--slider-dot-active-border-color",
-    "value": "var(--primary)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--primary), resolved at the call site"
   },
   {
     "name": "--slider-tooltip-background",
@@ -1075,23 +1075,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--choice-button-selected-color",
-    "value": "var(--primary)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "The four brand-coloured knobs default at the call site — a `:root` binding would freeze on the * root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). default = var(--primary)"
   },
   {
     "name": "--choice-button-selected-border-color",
-    "value": "var(--primary)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--primary)"
   },
   {
     "name": "--choice-button-solid-background",
-    "value": "var(--primary)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--primary)"
   },
   {
     "name": "--choice-button-solid-color",
-    "value": "var(--primary-foreground)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--primary-foreground)"
   },
   {
     "name": "--toggle-focus-ring-width",
@@ -4040,8 +4040,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--float-button-progress-color",
-    "value": "hsl(var(--primary))",
-    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+    "value": "initial",
+    "description": "default = hsl(var(--primary)), resolved at the call site"
   },
   {
     "name": "--float-button-progress-track-color",
@@ -5290,8 +5290,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-item-hover-background",
-    "value": "var(--accent)",
-    "description": "item hover fill = the lighter neutral · active fill = the heavier of the pair."
+    "value": "initial",
+    "description": "item hover fill = the lighter neutral · active fill = the heavier of the pair. default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
     "name": "--segmented-item-active-background",
@@ -5825,13 +5825,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--topbar-item-hover-background",
-    "value": "var(--accent)",
-    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically."
+    "value": "initial",
+    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
     "name": "--topbar-item-hover-color",
-    "value": "var(--accent-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "value": "initial",
+    "description": "default = var(--accent-foreground), resolved at the call site"
   },
   {
     "name": "--topbar-item-active-background",
@@ -6010,13 +6010,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-tile-hover-background",
-    "value": "var(--accent)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "value": "initial",
+    "description": "default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
     "name": "--app-launcher-tile-hover-color",
-    "value": "var(--accent-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "value": "initial",
+    "description": "default = var(--accent-foreground), resolved at the call site"
   },
   {
     "name": "--app-launcher-tile-current-background",

@@ -156,4 +156,16 @@ describe("a managed block with broken markers is refused, not guessed at (gh#541
     expect(out).toContain("keep me");
     expect(out).not.toContain("old");
   });
+
+  it("a refresh does not grow the file by a blank line each time", () => {
+    // The shipped block ends in its own newline; the old block's newline used to survive after the
+    // end marker as well, so every refresh added one blank line under the block.
+    const block = (body: string) => `${START} -->\n${body}\n${END}\n`;
+    const original = `# App\n\n${block("old")}\n## Mine\n`;
+    const once = refreshBlock(original, block("new"), START, END);
+    expect(once).toBe(`# App\n\n${block("new")}\n## Mine\n`);
+    expect(refreshBlock(once, block("newer"), START, END)).toBe(
+      `# App\n\n${block("newer")}\n## Mine\n`,
+    );
+  });
 });

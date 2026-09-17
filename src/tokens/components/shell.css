@@ -329,8 +329,8 @@
   --topbar-item-color: var(--muted-foreground);
   /* The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's
    * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. */
-  --topbar-item-hover-background: var(--accent);
-  --topbar-item-hover-color: var(--accent-foreground);
+  --topbar-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --topbar-item-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
   --topbar-item-active-background: var(--secondary);
   /* COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The
    * offsets are what a call site used to hand-write as `relative` + `absolute -end-0.5 -top-0.5`,
@@ -414,8 +414,8 @@
   --app-launcher-tile-min-height: var(--control-height-comfortable);
   --app-launcher-tile-radius: var(--radius);
   --app-launcher-tile-color: var(--foreground);
-  --app-launcher-tile-hover-background: var(--accent);
-  --app-launcher-tile-hover-color: var(--accent-foreground);
+  --app-launcher-tile-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --app-launcher-tile-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
   /* The app you are already in. `initial` so the role default re-resolves at the call site under a
    * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary)). */
   --app-launcher-tile-current-background: initial;

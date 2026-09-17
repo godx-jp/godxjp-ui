@@ -2024,8 +2024,8 @@
   }
 
   .ui-app-launcher-tile:hover {
-    background: hsl(var(--app-launcher-tile-hover-background));
-    color: hsl(var(--app-launcher-tile-hover-color));
+    background: hsl(var(--app-launcher-tile-hover-background, var(--accent)));
+    color: hsl(var(--app-launcher-tile-hover-color, var(--accent-foreground)));
   }
 
   /* The app you are already in. Keyed off `aria-current`, the attribute that CARRIES the meaning,
@@ -2745,8 +2745,8 @@
   }
 
   .ui-topbar-item:hover {
-    background: hsl(var(--topbar-item-hover-background));
-    color: hsl(var(--topbar-item-hover-color));
+    background: hsl(var(--topbar-item-hover-background, var(--accent)));
+    color: hsl(var(--topbar-item-hover-color, var(--accent-foreground)));
   }
 
   /* `[data-state="open"]` keeps the cell lit while the menu or popover it triggers is open — the
@@ -2754,7 +2754,7 @@
   .ui-topbar-item:active,
   .ui-topbar-item[data-state="open"] {
     background: hsl(var(--topbar-item-active-background));
-    color: hsl(var(--topbar-item-hover-color));
+    color: hsl(var(--topbar-item-hover-color, var(--accent-foreground)));
   }
 
   .ui-topbar-item:disabled,

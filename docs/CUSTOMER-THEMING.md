@@ -243,6 +243,9 @@ The interaction states are **derived from the `--primary` in scope, at the eleme
 | `--control-outline` | **yes** — the focused field's halo (`--control-outline-alpha` stays per theme) | light `h s calc(l - 5.3)`, dark `h calc(s * 0.99) calc(l - 25.1)` |
 | `--primary-border` | **yes** (painted by no package surface; kept for the measurement in DESIGN-AUTHORITY) | light `h calc(s * 0.68) calc(l + 16)`, dark `h calc(s * 0.467) calc(l * 0.27043)` |
 | `--sidebar-item-active-foreground` | **yes** — defaults to the live `--primary-active` | — |
+| `--focus-outline-color` | **yes, through `--ring`** — every keyboard-focus outline (gh#687) | `var(--focus-ring-color, var(--ring))`, read at the focused element — so it follows the `--ring` you set in the scope |
+| Radio button bar selected (`--choice-button-*`), Slider active dot, BackTop progress, `.ui-brand-glow` | **yes** (gh#687) | `var(--primary)` / `var(--primary-foreground)` at the call site |
+| Topbar item / AppLauncher tile / Segmented / filled-control hover | **follow `--accent`** (gh#687) | `var(--accent)` / `var(--accent-foreground)` at the call site |
 | `--primary-foreground` | **no — set it** | the label on a filled primary; you choose it for your seed |
 | `--ring` | **only on the element that declares `--primary`** — set it in a nested scope | `var(--primary)` on `:root` / `.dark`. `--ring` is a public role read as `hsl(var(--ring))` in consumer CSS, so it cannot become a live default; a scope below `<html>` inherits the root's |
 | `--destructive-*`, `--control-outline-error` | no — not brand | literals |
@@ -251,6 +254,7 @@ On the package seed these produce exactly the identity kit values the tier used 
 
 **Rules that come with it:**
 
+- **No token tier binds to a scoped role at `:root`.** Every knob whose default is `--primary`, `--primary-foreground`, `--ring`, `--accent` or `--accent-foreground` is `initial`, with the role as the call-site fallback — `--ring` itself is the one exception (above). `tenant-scope-freeze-687.test.ts` holds it.
 - **Override a state only by setting its knob** (`--primary-hover: 221 90% 72%`). A set knob wins over the derived default, in its own scope and below.
 - **Read a state through its fallback, not bare.** The four knobs are `initial` so that the default can resolve at the painting element (docs/TOKENS.md, the freeze rule). `hsl(var(--primary-hover))` on its own therefore paints nothing — use the utility (`bg-primary-hover`) or `hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))`.
 - **Label polarity.** The theme's pair steps AWAY from that theme's default label: `darken` under a light label, `lighten` under a dark one, which keeps a label that clears 4.5:1 at rest at 4.5:1 in hover and pressed for every seed (measured, `derived-seed-sweep.test.ts`). If your seed needs the OTHER polarity of label (a pale yellow with dark text in the light theme), point the pair at it too — `applyPrimaryColor()` does this automatically from the label it picks:

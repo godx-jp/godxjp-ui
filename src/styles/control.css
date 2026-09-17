@@ -1362,7 +1362,7 @@
    * Excluded on the selected item, as the spec excludes it — hovering the current choice must
    * not repaint the slab. */
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):hover {
-    background: hsl(var(--segmented-item-hover-background));
+    background: hsl(var(--segmented-item-hover-background, var(--accent)));
     color: hsl(var(--segmented-item-hover-color));
   }
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):active {
@@ -3292,7 +3292,7 @@
   }
 
   .ui-control--filled:hover:not(:disabled):not([readonly]):not([data-disabled]) {
-    background-color: hsl(var(--control-variant-filled-hover-background));
+    background-color: hsl(var(--control-variant-filled-hover-background, var(--accent)));
   }
 
   .ui-control--borderless {
@@ -3553,7 +3553,7 @@
   }
 
   .ui-slider-dot[data-active="true"] {
-    border-color: hsl(var(--slider-dot-active-border-color));
+    border-color: hsl(var(--slider-dot-active-border-color, var(--primary)));
   }
 
   /* The bubble's ANCHOR — zero-sized across the axis it centres on, like `.ui-slider-mark`, and
@@ -3680,14 +3680,14 @@
   }
 
   .ui-radio-button[data-state="checked"] {
-    color: hsl(var(--choice-button-selected-color));
-    border-color: hsl(var(--choice-button-selected-border-color));
+    color: hsl(var(--choice-button-selected-color, var(--primary)));
+    border-color: hsl(var(--choice-button-selected-border-color, var(--primary)));
   }
 
   .ui-radio-button-bar[data-button-style="solid"] .ui-radio-button[data-state="checked"] {
-    color: hsl(var(--choice-button-solid-color));
-    background: hsl(var(--choice-button-solid-background));
-    border-color: hsl(var(--choice-button-solid-background));
+    color: hsl(var(--choice-button-solid-color, var(--primary-foreground)));
+    background: hsl(var(--choice-button-solid-background, var(--primary)));
+    border-color: hsl(var(--choice-button-solid-background, var(--primary)));
   }
 
   /* `[data-disabled]` and not `:disabled`: the member is a `<label>` (react-aria) and the

@@ -4,6 +4,60 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.2.0] - 2026-09-17
+
+MINOR. A nested tenant scope now re-tints keyboard focus and the remaining brand and accent surfaces,
+and the `godxjp-ui` CLI gets real help.
+
+### Fixed — a nested tenant scope's `--ring` reaches the keyboard focus outline (gh#687)
+
+`--focus-outline-color` was bound on `:root` as `var(--focus-ring-color, var(--ring))`, so it
+computed once against the ROOT `--ring`. A scope such as `body[data-tenant] { --primary: …; --ring: … }`
+hovered and pressed in its own hue after 26.0.0 but kept the root-coloured focus outline. The knob is
+now `initial` and its default is read at the focused element:
+`hsl(var(--focus-outline-color, var(--focus-ring-color, var(--ring))) / …)`.
+
+The same `:root` freeze held fourteen more knobs, fixed the same way: `--choice-button-selected-color`,
+`--choice-button-selected-border-color`, `--choice-button-solid-background`,
+`--choice-button-solid-color` (the radio button bar), `--slider-dot-active-border-color`,
+`--float-button-progress-color`, `--brand-glow-color` and `--brand-glow` (composed at `.ui-brand-glow`
+now), and the accent hovers `--topbar-item-hover-background` / `-color`,
+`--app-launcher-tile-hover-background` / `-color`, `--segmented-item-hover-background`,
+`--control-variant-filled-hover-background`.
+
+Measured in Chromium on the built CSS, a nested scope with `--primary` / `--ring: 146 60% 30%`:
+focus outline, selected radio button and brand glow were `rgb(122, 0, 255)` (the root) and are now
+`rgb(31, 122, 70)`. The root is unchanged. `tenant-scope-freeze-687.test.ts` now fails on any token tier that
+binds a knob to `--primary`, `--primary-foreground`, `--ring`, `--accent`, `--accent-foreground` or
+`--focus-ring-color` at `:root` (`--ring: var(--primary)` is the declared exception).
+
+**Compatible for overrides:** setting any of these knobs works exactly as before. Reading one of them
+BARE in your own CSS (`hsl(var(--choice-button-selected-color))`) now paints nothing; read it with
+the default shown above as the fallback.
+
+### Added — `godxjp-ui --help`
+
+`godxjp-ui --help` / `help <command>` / `<command> --help` print the commands and each command's
+flags. Before, `--help` printed a one-line usage and exited 1, and `godxjp-ui audit --help` ran a full
+audit instead.
+
+### Fixed — `sync-rules` keeps the MCP pin current and stops growing CLAUDE.md
+
+- A `.mcp.json` `godx-ui` entry in the shape this package writes (`npx @godxjp/ui-mcp@<pin>`, env at
+  most `GODX_UI_VERSION`) is now moved to the installed pin. It used to be reported as a custom entry
+  and left alone, so a consumer kept `@godxjp/ui-mcp@25.4.0` after upgrading to 26.x. A genuinely
+  custom entry is still never overwritten.
+- Refreshing the managed CLAUDE.md block no longer adds a blank line under it on every refresh.
+
+### Docs / MCP
+
+- The MCP token catalog now carries the 26.0.0 derived family (`--primary-hover` / `-active` /
+  `-border` / `--control-outline`: `initial`, bare read paints nothing, `--*-channels`) and `--ring`
+  (set it in every nested scope). Before, `--primary` read only "Action color role." there.
+- `Select` `onValueChange` in the MCP catalog states the per-`mode` / `labelInValue` inferred
+  signature (gh#679).
+- `docs/CUSTOMER-THEMING.md` §Multi-tenant lists the focus outline and the knobs above.
+
 ## [26.1.0] - 2026-09-17
 
 MINOR, and both entries below are compatible: a type-only fix and a layout fix that leaves the
