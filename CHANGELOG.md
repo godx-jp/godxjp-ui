@@ -4,6 +4,21 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.3.1] - 2026-09-17
+
+PATCH. **27.3.0 was tagged but never published** — its release verification failed on a test of this
+repo's own CSS contract (Prettier had wrapped a declaration, so a single-line string match missed),
+fixed here. Everything listed under 27.3.0 and 27.2.0 ships in this release.
+
+### Fixed
+
+- **DataTable's pagination footer stays on a single page** (gh#711). The footer inherited the
+  standalone `Pagination`'s `hideOnSinglePage: true`, so a list filtered down to one page lost its
+  pager AND its total. antd's table default is `false`, and that is the default here now; the config
+  takes `hideOnSinglePage` to opt back in.
+- `rating-star-color-694.test.ts` compares the star rules with whitespace collapsed, so a formatter
+  wrapping a long declaration cannot fail the release.
+
 ## [27.3.0] - 2026-09-17
 
 MINOR. Nothing is removed and no consumer has to change code.

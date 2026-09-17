@@ -325,6 +325,13 @@ export type TablePaginationProp = {
   showSizeChanger?: boolean;
   /** antd `showTotal` — `true` for the localized total label, or a `(total, range)` render. */
   showTotal?: boolean | ((total: number, range: [number, number]) => React.ReactNode);
+  /**
+   * antd `hideOnSinglePage`, whose antd default is `false` — and that default is kept HERE, in the
+   * table footer, although the standalone `Pagination` defaults it to `true` (gh#711). A list
+   * screen's footer carries the total and the rows-per-page select, so hiding it on the last page
+   * of a shrinking filter makes the row count disappear exactly when the user is checking it.
+   */
+  hideOnSinglePage?: boolean;
   /** antd `position`, logical spelling. Default `["bottomEnd"]` (antd `bottomRight`). */
   position?: TablePaginationPositionProp[];
   onChange?: (page: number, pageSize: number) => void;
