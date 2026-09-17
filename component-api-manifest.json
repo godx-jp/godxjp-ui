@@ -1792,6 +1792,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "listType",
+          "origin": "owned",
+          "required": false,
+          "type": "UploadListTypeProp | undefined",
+          "values": ["picture", "text"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "maxCount",
           "origin": "owned",
           "required": false,
@@ -18822,6 +18830,14 @@
           "required": false,
           "type": "((node: React.ReactElement, item: UploadFileItemProp, items: UploadFileItemProp[], actions: import(\"../../components/data-entry/upload-types\").UploadItemActions) => React.ReactNode) | undefined",
           "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "listType",
+          "origin": "owned",
+          "required": false,
+          "type": "UploadListTypeProp | undefined",
+          "values": ["picture", "text"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

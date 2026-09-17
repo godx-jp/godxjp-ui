@@ -7639,6 +7639,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
+    "name": "--upload-picture-icon-size",
+    "value": "var(--icon-size-2xl)",
+    "description": "The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media * placeholder, and 32 is not a step of the icon scale at all. The 128px-tall empty box sits * between the 96px tile (24) and the 185px dropzone (40), so its mark does too."
+  },
+  {
     "name": "--upload-picture-empty-label-space-block-start",
     "value": "var(--space-2)",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
@@ -7682,6 +7687,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--upload-avatar-size",
     "value": "6rem",
     "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-icon-size",
+    "value": "var(--icon-size-xl)",
+    "description": "The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the * avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24."
   },
   {
     "name": "--upload-avatar-border-width",

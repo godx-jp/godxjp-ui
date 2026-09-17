@@ -224,6 +224,20 @@
     flex-shrink: 0;
   }
 
+  /* The non-image leading box of a `listType="picture"` row. It reads the SAME box token as the
+   * thumbnail above deliberately: a list mixing a .png with a .json must keep one row height. */
+  .ui-upload-list-glyph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--control-height-lg);
+    block-size: var(--control-height-lg);
+    border-radius: var(--radius);
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    flex-shrink: 0;
+  }
+
   .ui-upload-picture-item {
     inline-size: var(--upload-tile-size);
     overflow-wrap: anywhere;
@@ -362,6 +376,11 @@
     border-color: hsl(var(--primary));
   }
 
+  .ui-upload-picture-empty-icon {
+    inline-size: var(--upload-picture-icon-size);
+    block-size: var(--upload-picture-icon-size);
+  }
+
   .ui-upload-picture-empty-label {
     margin-block-start: var(--upload-picture-empty-label-space-block-start);
     font-size: var(--upload-picture-empty-label-font-size);
@@ -394,6 +413,11 @@
     align-items: center;
     justify-content: center;
     color: hsl(var(--muted-foreground));
+  }
+
+  .ui-upload-avatar-icon {
+    inline-size: var(--upload-avatar-icon-size);
+    block-size: var(--upload-avatar-icon-size);
   }
 
   .ui-upload-avatar-change {
