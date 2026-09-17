@@ -7675,6 +7675,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "marker",
+          "origin": "owned",
+          "required": false,
+          "type": "FlexMarkerProp | undefined",
+          "values": ["none", "disc", "decimal"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "pad",
           "origin": "owned",
           "required": false,

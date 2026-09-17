@@ -5,6 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ListRow,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -305,6 +306,64 @@ export default function Demo() {
                 <Button variant="outline" size="sm">
                   メニュー
                 </Button>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>marker=&quot;none&quot; · 装飾のない意味的リスト</CardTitle>
+            <CardDescription>
+              as=&quot;ul&quot; は既定で中黒と字下げが付きます。設定メニューのような「行の一覧」では
+              marker=&quot;none&quot; を指定すると、ul と li の意味づけと gap トークンは残したまま、
+              中黒も字下げも消えます。行は ListRow as=&quot;li&quot;
+              で、区切り線は行が自分で描きます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Flex id="semantic-list" as="ul" marker="none" direction="col" gap="none">
+              <ListRow
+                as="li"
+                title="二要素認証"
+                description="認証アプリ · 有効"
+                trailing={
+                  <Button size="xs" variant="outline">
+                    管理
+                  </Button>
+                }
+              />
+              <ListRow
+                as="li"
+                title="パスキー"
+                description="2 件登録済み"
+                trailing={
+                  <Button size="xs" variant="outline">
+                    管理
+                  </Button>
+                }
+              />
+              <ListRow
+                as="li"
+                title="回復コード"
+                description="未発行"
+                trailing={
+                  <Button size="xs" variant="outline">
+                    発行
+                  </Button>
+                }
+              />
+            </Flex>
+          </CardContent>
+          <CardContent>
+            <Flex id="semantic-list-gap" as="ul" marker="none" gap="sm" wrap>
+              <Flex as="li">
+                <Badge variant="outline">監査ログ</Badge>
+              </Flex>
+              <Flex as="li">
+                <Badge variant="outline">IP 制限</Badge>
+              </Flex>
+              <Flex as="li">
+                <Badge variant="outline">SSO</Badge>
               </Flex>
             </Flex>
           </CardContent>

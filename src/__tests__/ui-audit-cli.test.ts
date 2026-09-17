@@ -489,6 +489,44 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
     ).toEqual([]);
   });
 
+  /**
+   * `no-hand-rolled-list` (gh#714). A consumer's settings menu and dashboard lost EVERY divider
+   * because each row sat in a wrapper of its own, so `[data-slot="list-row"]:not(:last-child)`
+   * never matched — silently, and review saw nothing.
+   *
+   * ONE CLI process per source, every case read off the same report (see the note above about 27
+   * processes failing a merge on load alone).
+   */
+  it("flags a hand-rolled list, and stays quiet on the supported idiom", () => {
+    const handRolled = [
+      '<ul className="menu">',
+      "  <li>prose bullet</li>",
+      "</ul>",
+      '<div role="list">',
+      '  <div role="listitem">',
+      '    <ListRow title="Two-factor" />',
+      "  </div>",
+      "</div>",
+      "<li>",
+      "  <Card />",
+      "</li>",
+    ].join("\n");
+    // The raw container, both ARIA roles, and the wrapper around a library row — but NOT the
+    // prose `<li>` on line 2, which is what a bulleted <Flex as="ul"> is FOR.
+    expect(lines(handRolled, "no-hand-rolled-list")).toEqual([1, 4, 5, 9]);
+
+    const supported = [
+      '<Flex as="ul" marker="none" direction="col" gap="none">',
+      '  <ListRow as="li" title="Two-factor" />',
+      '  <ListRow as="li" title="Passkeys" />',
+      "</Flex>",
+      '<Flex as="ul" gap="xs">',
+      "  <li>prose bullet</li>",
+      "</Flex>",
+    ].join("\n");
+    expect(lines(supported, "no-hand-rolled-list")).toEqual([]);
+  });
+
   it("no-utility-layout and no-hand-rolled-surface read a className template spread over lines", () => {
     const wrapped =
       "<Flex>\n  <div\n    className={`\n      ${base}\n      rounded-md border\n      flex\n    `}\n  />\n</Flex>";
