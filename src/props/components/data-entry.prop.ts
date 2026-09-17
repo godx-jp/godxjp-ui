@@ -1939,10 +1939,13 @@ export type BranchScopePickerProp = FieldA11yProps & {
  *
  * `enter` (default) is the chat convention: `Enter` sends, `Shift+Enter` inserts a newline.
  * `shiftEnter` is the inverse, for composers that hold long, deliberately multi-line drafts.
- * Neither ever fires while an IME conversion is in flight.
+ * `modEnter` is this library's extension (antd X has only the first two; see
+ * docs/DESIGN-AUTHORITY.md): `⌘+Enter` on Apple platforms, `Ctrl+Enter` elsewhere sends, while
+ * `Enter` and `Shift+Enter` both insert a newline — the record-comment convention.
+ * None of them ever fires while an IME conversion is in flight.
  * @see ChatComposer
  */
-export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter";
+export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter" | "modEnter";
 
 /**
  * @see ChatComposer — the message input of a conversation (Ant Design X `Sender`; the industry
@@ -1967,7 +1970,8 @@ export type ChatComposerProp = Omit<
     onValueChange?: OnValueChangeProp<string>;
     /**
      * Send the draft. Receives the text as typed; never fires for an empty or whitespace-only
-     * draft, and never while `loading`, `disabled` or `readOnly`.
+     * draft (unless `allowEmptySubmit`, which then passes `""`), and never while `loading`,
+     * `disabled` or `readOnly`.
      */
     onSubmit?: (value: string) => void;
     /** Stop the in-flight response. Only reachable while `loading`. */
@@ -1979,6 +1983,13 @@ export type ChatComposerProp = Omit<
     loading?: PendingProp;
     /** Which keystroke sends and which breaks the line. Default `enter`. */
     submitType?: ChatComposerSubmitTypeProp;
+    /**
+     * Let an empty or whitespace-only draft be sent — for a composer whose `header`/`footer` carry
+     * payload of their own (a status change on a record). The send button stays enabled and both
+     * the button and the keyboard submit call `onSubmit("")`. Still blocked while `loading`,
+     * `disabled` or `readOnly`. Default `false`.
+     */
+    allowEmptySubmit?: boolean;
     /** Empty-state text of the draft box; pass it through `t()` at the call site. */
     placeholder?: PlaceholderProp;
     /** Disable the whole composer (draft box and every action). */

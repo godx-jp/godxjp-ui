@@ -15959,7 +15959,7 @@ const messages: ChatMessageProp[] = [
     name: "ChatComposer",
     group: "data-entry",
     tagline:
-      "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter/Shift+Enter is configurable and never fires during an IME conversion.",
+      "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion.",
     props: [
       {
         name: "value",
@@ -15977,7 +15977,7 @@ const messages: ChatMessageProp[] = [
         name: "onSubmit",
         type: "(value: string) => void",
         description:
-          "Send the draft. Never fires for empty or whitespace-only text, nor while loading/disabled/readOnly.",
+          'Send the draft. Never fires for empty or whitespace-only text (unless allowEmptySubmit, which passes ""), nor while loading/disabled/readOnly.',
       },
       {
         name: "onCancel",
@@ -15993,10 +15993,17 @@ const messages: ChatMessageProp[] = [
       },
       {
         name: "submitType",
-        type: '"enter" | "shiftEnter"',
+        type: '"enter" | "shiftEnter" | "modEnter"',
         defaultValue: '"enter"',
         description:
-          '"enter": Enter sends, Shift+Enter breaks the line. "shiftEnter": the inverse, for long deliberate drafts.',
+          '"enter": Enter sends, Shift+Enter breaks the line. "shiftEnter": the inverse, for long deliberate drafts. "modEnter" (library extension; antd X Sender has only the first two): ⌘+Enter on Apple platforms, Ctrl+Enter elsewhere sends, while Enter and Shift+Enter both break the line — the record-comment convention (GitHub, Jira, Linear).',
+      },
+      {
+        name: "allowEmptySubmit",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Let an empty or whitespace-only draft be sent when header/footer carry payload of their own (a status change on a record). The send button stays enabled and the button and keyboard submit call onSubmit(""). Still blocked while loading/disabled/readOnly.',
       },
       {
         name: "placeholder",
@@ -16086,13 +16093,15 @@ const messages: ChatMessageProp[] = [
       "DO wrap it in FormField when the composer is a labelled field; the label/helper/error contract lands on the <textarea>, which is the semantic focus target (ref goes there too).",
       "DON'T hand-roll Enter-to-send. An IME conversion (ja/vi) fires a real Enter to ACCEPT a candidate; ChatComposer already guards compositionstart/compositionend, and skipping that guard makes Japanese and Vietnamese input impossible.",
       "DON'T render your own stop button beside the send button — set `loading` and the trailing action becomes cancel. Exactly one trailing action exists at a time (the picker trailing-action discipline).",
-      "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter')) when you flip `submitType` — the keystroke contract is invisible otherwise.",
+      "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter') / 'hintShiftEnter') when you flip `submitType` — the keystroke contract is invisible otherwise. For submitType=\"modEnter\" use t('dataEntry.chatComposer.hintModEnter', { modifier: isApplePlatform() ? '⌘' : 'Ctrl' }) with isApplePlatform from @godxjp/ui/lib/utils — the same platform test the composer uses to pick metaKey vs ctrlKey.",
+      'DO set `allowEmptySubmit` (not a hidden fake draft) when the composer also submits field changes from `header`/`footer`; your onSubmit receives "" and decides whether anything changed.',
       "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme.",
     ],
     useCases: [
       "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
       "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
       'A long-form reply box where Enter must break the line: submitType="shiftEnter".',
+      'A comment bar on an issue/record where Enter breaks the line and ⌘/Ctrl+Enter posts, and a status change may be posted without text: submitType="modEnter" + allowEmptySubmit.',
       "A streaming answer the user can stop: loading + onCancel.",
     ],
     related: [
