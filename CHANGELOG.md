@@ -4,6 +4,26 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **AppShell no longer caps every page at 80rem, and a cap never lands on the footer (gh#672).**
+  Two defects. (1) `--app-shell-page-max-width` defaulted to `80rem` on `.ui-page-container`, so with
+  the sidebar COLLAPSED the page stopped at 1280px: measured at a 1512px viewport, `.app-main`
+  1448px, page 1280px, a 168px dead strip (576px at 1920px). The token now defaults to `none` — the
+  page is fluid in the main column at every sidebar state, like antd Pro Layout's
+  `contentWidth: "Fluid"`. (2) The cap bounded the whole container, so a sticky footer (a comment
+  composer) ended mid-screen. A service that still sets the token now caps the page HEADER, TOOLBAR
+  and BODY — the same bands `measure` caps — and never `.ui-page-footer`, which spans `.app-main`.
+  **Composition:** the shell cap is applied at `:where()` specificity, so a page's own `measure` /
+  `variant="narrow"` overrides it on that page (cap 80rem + `measure="narrow"` → body 672px).
+  After, sidebar collapsed at 1512px: default page/footer 1448px (strip 0); cap 80rem → header/body
+  1280px, footer 1448px; `measure="narrow"` → header/body 672px, footer 1448px. **Visible change:**
+  a consumer relying on the implicit 80rem bound gets full-width pages; restore it with one theme
+  line, `:root { --app-shell-page-max-width: 80rem; }`. New browser gate
+  `check:app-shell-page-width` (nightly `ci-browser-full`) measures it LTR + RTL at 1512/1920/390px.
+
 ## [25.3.0] - 2026-09-17
 
 MINOR, and the same judgement 25.2.0 stated: every consumer with a calendar WILL see grid lines appear

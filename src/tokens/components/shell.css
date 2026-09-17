@@ -159,7 +159,14 @@
    * `topbarSpan="content"`: there the rail runs to y=0 and its first row IS the shell's top row,
    * so it takes the bar's band instead and the three columns share one centre line. */
   --app-shell-nav-rail-inset: var(--space-3);
-  --app-shell-page-max-width: 80rem;
+  /* Optional shell-wide CONTENT cap (gh#672). Default `none`: inside AppShell the page is FLUID
+   * and spans the whole main column at every sidebar state (antd Pro Layout `contentWidth:
+   * "Fluid"`). It used to be 80rem on `.ui-page-container` as a whole, which left a 168px dead
+   * strip at a 1512px viewport once the sidebar was collapsed and cut a sticky footer short.
+   * A service that wants one bounded column sets it ONCE; it caps the page HEADER, TOOLBAR and
+   * BODY (the same bands `measure` caps) and NEVER the footer, which is page chrome. A page-level
+   * `measure` / `variant="narrow"` overrides it on that page. Never a page-local max-width. */
+  --app-shell-page-max-width: none;
   /* Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the
    * default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE
    * theme: `--surface-recessed` is re-stated by the dark arm in tokens/semantic/layout.css, and a

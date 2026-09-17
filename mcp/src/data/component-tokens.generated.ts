@@ -5635,8 +5635,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-shell-page-max-width",
-    "value": "80rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "value": "none",
+    "description": "Optional shell-wide CONTENT cap (gh#672). Default `none`: inside AppShell the page is FLUID * and spans the whole main column at every sidebar state (antd Pro Layout `contentWidth: * \"Fluid\"`). It used to be 80rem on `.ui-page-container` as a whole, which left a 168px dead * strip at a 1512px viewport once the sidebar was collapsed and cut a sticky footer short. * A service that wants one bounded column sets it ONCE; it caps the page HEADER, TOOLBAR and * BODY (the same bands `measure` caps) and NEVER the footer, which is page chrome. A page-level * `measure` / `variant=\"narrow\"` overrides it on that page. Never a page-local max-width."
   },
   {
     "name": "--app-shell-main-background",
