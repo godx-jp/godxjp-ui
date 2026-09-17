@@ -198,6 +198,7 @@ describe('Select mode="multiple" — clear + native submission', () => {
         options={OPTIONS}
         aria-label="都市"
         defaultValue={["tokyo", "osaka"]}
+        allowClear
         onValueChange={onValueChange}
       />,
     );

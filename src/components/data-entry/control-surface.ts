@@ -58,8 +58,11 @@ export type ResolvedAllowClear = {
  * Reconcile antd's `allowClear` with this library's own `clearable`.
  *
  * `allowClear` wins when present because it is the more specific statement — the object form
- * carries an icon and a label that `clearable` has no way to express. `clearable` remains the
- * name every existing call site uses, and keeps its `true` default.
+ * carries an icon and a label that `clearable` has no way to express. `clearable` stays as this
+ * library's own alias with the SAME default as antd's `allowClear` for the control: the caller
+ * passes that default (`undefined` reads as OFF — antd Select/TreeSelect/Input; a picker whose antd
+ * default is ON, DatePicker/TimePicker/Cascader, passes `true`). An antd-named prop takes antd's
+ * default too (docs/DESIGN-AUTHORITY.md), so a required select is not one click from empty.
  */
 export function resolveAllowClear(
   allowClear: AllowClearProp | undefined,
@@ -76,7 +79,7 @@ export function resolveAllowClear(
       label: allowClear.label ?? fallbackLabel,
     };
   }
-  return { enabled: clearable !== false, label: fallbackLabel };
+  return { enabled: clearable === true, label: fallbackLabel };
 }
 
 /**

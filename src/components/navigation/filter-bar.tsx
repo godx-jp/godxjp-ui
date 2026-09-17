@@ -134,8 +134,11 @@ export function Toolbar({
                 onValueChange={(selected: string) => filter.onSelectedChange?.(selected)}
                 placeholder={filter.placeholder}
                 disabled={disabled || filter.disabled}
-                /* THE ✕ IS NAMED AFTER THE FILTER IT CLEARS. Every Select ships a clear affix,
-                 * and its default name is the generic 「選択をクリア」 — measured on
+                /* A filter is optional by nature — "no filter" is its resting state — so the bar
+                 * asks for the ✕ explicitly now that `Select` follows antd and ships none by
+                 * default (#691). */
+                allowClear
+                /* THE ✕ IS NAMED AFTER THE FILTER IT CLEARS. The clear affix's default name is the generic 「選択をクリア」 — measured on
                  * /isolate/navigation-filter-bar after giving two filters a value: two buttons,
                  * one name, and nothing in either that says WHICH filter it empties. A consumer
                  * screen reported three on one screen. The chip row beside it already names

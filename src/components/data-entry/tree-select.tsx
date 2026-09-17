@@ -309,7 +309,7 @@ function TreeSelectRoot({
     }
   };
 
-  const clearControl = resolveAllowClear(allowClear, true, t("dataEntry.treeSelect.clear"));
+  const clearControl = resolveAllowClear(allowClear, false, t("dataEntry.treeSelect.clear"));
   // Read-only keeps the value visible and submitted but offers no way to MUTATE it, so the clear
   // affordance goes with the panel.
   const showClear =
