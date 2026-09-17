@@ -130,6 +130,12 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--table-toolbar-icon-size": ["1rem", "1rem", "1rem"],
   "--toast-icon-size": ["1rem", "1rem", "1rem"],
   "--transfer-action-icon-size": ["1rem", "1rem", "1rem"],
+  // The two placeholder marks minted in gh#720. They were `controlIconClass` — 32px of CONTROL
+  // height inside a media placeholder, off this scale entirely — and the avatar and the
+  // picture-card tile are the same 96px box drawing two different sizes. Both now read a step:
+  // the avatar takes the tile's (24), the taller 128px picture empty state takes 36.
+  "--upload-avatar-icon-size": ["1.5rem", "1.5rem", "1.5rem"],
+  "--upload-picture-icon-size": ["2.25rem", "2.25rem", "2.25rem"],
   "--upload-draft-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--upload-dropzone-icon-size": ["2.5rem", "2.5rem", "2.5rem"],
   "--upload-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],

@@ -10366,6 +10366,13 @@ export function AccountMapping() {
           "Controls the visual rendering mode. dropzone = large dashed drop area + file list; button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
       },
       {
+        name: "listType",
+        type: '"text" | "picture"',
+        defaultValue: '"picture" for variant="picture", otherwise "text"',
+        description:
+          "HOW THE CHOSEN FILES ARE LISTED — antd's listType, and an axis of its own: variant decides how files are PICKED, listType decides how the picked ones are DRAWN. text = name, size and actions (the classic dropzone/button row). picture = a leading box on every row: the thumbnail when the item has a previewUrl, otherwise the glyph for its file kind (image / pdf / archive / text / generic), both boxes the same size so a mixed list keeps one row height. The glyph is decorative (aria-hidden) and carries its kind as data-file-kind for theming. antd's picture-card is variant='picture-card' here — the tile grid IS the picker there, so it is not offered as a listType.",
+      },
+      {
         name: "value",
         type: "UploadFileItem[]",
         description:
@@ -10556,6 +10563,7 @@ export function AccountMapping() {
       "For native multipart or Inertia Form submissions, set name: staged local files are appended during the formdata event. Completed media uploads use collectUploadCommitActions instead.",
       "Avatar/picture variants (maxCount=1) use internal soft-delete draft logic: removing an item marks it pendingDelete so the user can undo before committing. On form submit, collectUploadCommitActions converts pendingDelete → deleteMediaIds and done mediaIds → promoteMediaIds.",
       "For avatar-crop: a crop dialog opens after pick. The cropped Blob is staged as a new UploadFileItem. The original file never enters the list — only the cropped version is passed to onUpload.",
+      "For a drawer or panel listing MIXED attachments (.png beside .json and .txt), keep variant='dropzone' and set listType='picture': the image rows draw their previewUrl as a thumbnail and every other row draws the glyph for its kind, on one row height. Do NOT switch to variant='picture' to get thumbnails — that variant also changes the picker, the default accept to image/* and maxCount to 1.",
     ],
     useCases: [
       "Profile / user avatar editor: use variant='avatar-crop' so users can crop the image before upload; wire onUpload to your media-service; call collectUploadCommitActions on profile form submit to promote or delete.",

@@ -36,6 +36,25 @@ export default function Demo() {
   const [pictureItem, setPictureItem] = useState<UploadFileItem[]>([]);
   const [avatarItem, setAvatarItem] = useState<UploadFileItem[]>([]);
   const [avatarCropItem, setAvatarCropItem] = useState<UploadFileItem[]>([]);
+  /** A test-result drawer: one screenshot, one machine-readable result, one log, one archive. */
+  const mixedItems: UploadFileItem[] = [
+    {
+      uid: "mixed-screenshot",
+      name: "screenshot.png",
+      size: 184 * 1024,
+      mimeType: "image/png",
+      status: "done",
+      previewUrl:
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72'><rect width='72' height='72' fill='%23c9c6bd'/><circle cx='26' cy='26' r='9' fill='%238a877d'/></svg>",
+    },
+    // Server media whose thumbnail has not been generated yet: still an image, still marked as one.
+    { uid: "mixed-original", name: "photo-original.png", size: 4 * 1024 * 1024, status: "done" },
+    { uid: "mixed-result", name: "result.json", size: 12 * 1024, status: "done" },
+    { uid: "mixed-log", name: "run.txt", size: 3 * 1024, status: "done" },
+    { uid: "mixed-bundle", name: "evidence.zip", size: 2 * 1024 * 1024, status: "done" },
+    { uid: "mixed-spec", name: "spec.pdf", size: 640 * 1024, status: "done" },
+    { uid: "mixed-dump", name: "device-dump", size: 96 * 1024, status: "done" },
+  ];
   const failedItems: UploadFileItem[] = [
     {
       uid: "failed-invoice",
@@ -101,6 +120,25 @@ export default function Demo() {
               maxCount={5}
               maxSizeBytes={20 * 1024 * 1024}
               onUpload={demoUpload}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>List type · 添付ファイル一覧</CardTitle>
+            <CardDescription>
+              listType は variant と独立した軸です。dropzone のまま listType=&quot;picture&quot;
+              にすると、画像はサムネイル、それ以外はファイル種別のアイコンで並びます。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Upload
+              variant="dropzone"
+              listType="picture"
+              value={mixedItems}
+              onValueChange={() => {}}
+              onDownload={() => {}}
             />
           </CardContent>
         </Card>

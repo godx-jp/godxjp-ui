@@ -2040,6 +2040,11 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [],
   },
   UploadVariantProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  UploadListTypeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   TreeOptionProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

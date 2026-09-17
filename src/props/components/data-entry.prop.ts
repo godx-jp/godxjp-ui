@@ -1589,9 +1589,35 @@ export type UploadFileItemProp = UploadFileItem;
 export type UploadVariantProp =
   "dropzone" | "button" | "picture-card" | "picture" | "avatar" | "avatar-crop";
 
+/**
+ * Upload `listType` — HOW THE CHOSEN FILES ARE LISTED, ported from antd (gh#720).
+ *
+ * antd separates two axes and this component had only one: `variant` says how a file is PICKED
+ * (drag area, button, tile grid, avatar), `listType` says how the picked ones are DRAWN. Welding
+ * the second onto the first meant a `variant="dropzone"` could not show a thumbnail even for an
+ * item that already carried a `previewUrl`, and its rows carried no per-type mark at all — a
+ * drawer listing a `.png` beside a `.json` and a `.txt` could draw only three identical
+ * name-and-size rows.
+ *
+ * - `text` — name, size, actions. The row every dropzone/button list has always drawn.
+ * - `picture` — a leading box on every row: the thumbnail when the item has a `previewUrl`, and
+ *   otherwise the glyph for its file kind (image / pdf / archive / text / generic). Both boxes are
+ *   the same size, so a mixed list keeps one row height.
+ *
+ * antd's third value, `picture-card`, is `variant="picture-card"` here: in that variant the tile
+ * grid IS the picker (the add tile sits inside the grid), so it is not a listing that can be put
+ * under a different trigger. It is deliberately not offered as a `listType`.
+ */
+export type UploadListTypeProp = "text" | "picture";
+
 /** @see Upload — presentational; wire `onUpload` to media-service in app api.ts */
 export type UploadProp = FieldA11yProps & {
   variant?: UploadVariantProp;
+  /**
+   * @see UploadListTypeProp — an axis of its own, independent of `variant`. Defaults to the
+   * listing each variant already drew: `picture` for `variant="picture"`, `text` everywhere else.
+   */
+  listType?: UploadListTypeProp;
   value?: ValueProp<UploadFileItemProp[]>;
   defaultValue?: DefaultValueProp<UploadFileItemProp[]>;
   onValueChange?: OnValueChangeProp<UploadFileItemProp[]>;

@@ -14,10 +14,11 @@ import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
 import { cn } from "../../lib/utils";
 import { resolveFieldA11y } from "../../lib/field-a11y";
-import { controlIconClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
-import type { UploadProp } from "../../props/components/data-entry.prop";
+import { Icon } from "../general/icon";
+import type { UploadListTypeProp, UploadProp } from "../../props/components/data-entry.prop";
 import { UploadCropDialog } from "./upload-crop-dialog";
+import { UPLOAD_FILE_KIND_GLYPHS, uploadFileKind } from "./upload-file-kind";
 import {
   UPLOAD_LIST_IGNORE,
   createUploadItem,
@@ -36,6 +37,7 @@ export type {
   UploadProp as UploadProps,
   UploadFileItemProp,
   UploadVariantProp,
+  UploadListTypeProp,
 } from "../../props/components/data-entry.prop";
 export type { UploadFileItem, UploadVariant, UploadCommitAction } from "./upload-types";
 export { collectUploadCommitActions, createUploadItem, UPLOAD_LIST_IGNORE } from "./upload-types";
@@ -100,6 +102,7 @@ function useUploadList(
 
 export function Upload({
   variant = "dropzone",
+  listType,
   triggerSize,
   triggerVariant = "outline",
   value,
@@ -154,6 +157,11 @@ export function Upload({
     triggerOwnsAriaLabel ? { ...ariaProps, "aria-label": undefined } : ariaProps,
     t("dataEntry.upload.inputLabel"),
   );
+  // The listing is its own axis (gh#720), but its DEFAULT is whatever each variant already drew:
+  // `variant="picture"` listed thumbnails, everything else listed names. A call site that never
+  // heard of `listType` therefore renders exactly what it rendered before.
+  const resolvedListType: UploadListTypeProp =
+    listType ?? (variant === "picture" ? "picture" : "text");
   const accept = acceptProp ?? defaultAcceptForVariant(variant);
   const maxCount = maxCountProp ?? defaultMaxCount(variant);
   const multiple = multipleProp ?? (maxCount === 1 ? false : true);
@@ -468,7 +476,7 @@ export function Upload({
         hasCustomPreview={Boolean(onPreview)}
         onDownload={onDownload}
         itemRender={itemRender}
-        showThumbnails={variant === "picture"}
+        listType={resolvedListType}
       />
     ) : null;
 
@@ -719,7 +727,7 @@ export function Upload({
             onClick={openPicker}
             className="ui-upload-picture-empty"
           >
-            <ImagePlus className={controlIconClass} aria-hidden="true" />
+            <ImagePlus className="ui-upload-picture-empty-icon" aria-hidden="true" />
             <span className="ui-upload-picture-empty-label">{t("dataEntry.upload.addImage")}</span>
           </button>
         )}
@@ -772,7 +780,7 @@ export function Upload({
             <img src={item.previewUrl} alt="" className="ui-upload-avatar-image" />
           ) : (
             <span className="ui-upload-avatar-placeholder">
-              <Camera className={controlIconClass} aria-hidden="true" />
+              <Camera className="ui-upload-avatar-icon" aria-hidden="true" />
             </span>
           )}
           {!disabled && (
@@ -945,10 +953,10 @@ function UploadFileList({
   hasCustomPreview,
   onDownload,
   itemRender,
-  showThumbnails,
+  listType,
 }: {
   items: UploadFileItem[];
-  showThumbnails?: boolean;
+  listType: UploadListTypeProp;
   onRemove?: (uid: string) => void;
   onStart?: (item: UploadFileItem) => void;
   onCancel?: (uid: string) => void;
@@ -961,11 +969,21 @@ function UploadFileList({
   return (
     <ul className="ui-stack-xs">
       {items.map((item) => {
+        // A picture list gives EVERY row the same leading box — the thumbnail when there is one,
+        // and otherwise the mark for the file's kind. The glyph is decoration next to the file
+        // name that follows it, so it carries no accessible name of its own (WCAG 2.2 SC 1.1.1);
+        // the kind is exposed as `data-file-kind` for theming instead of as announced text.
+        const kind = uploadFileKind(item);
         const node = (
           <div className="ui-upload-row">
-            {showThumbnails && item.previewUrl && (
-              <img src={item.previewUrl} alt="" className="ui-upload-list-thumb" />
-            )}
+            {listType === "picture" &&
+              (item.previewUrl ? (
+                <img src={item.previewUrl} alt="" className="ui-upload-list-thumb" />
+              ) : (
+                <span className="ui-upload-list-glyph" data-file-kind={kind}>
+                  <Icon as={UPLOAD_FILE_KIND_GLYPHS[kind]} size="lg" />
+                </span>
+              ))}
             <div className="ui-upload-row-main">
               <div className="truncate font-medium">{item.name}</div>
               <div className="text-muted-foreground text-xs">

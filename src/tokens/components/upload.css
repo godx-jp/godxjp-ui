@@ -49,6 +49,10 @@
   --upload-picture-radius: var(--radius-md);
   --upload-picture-preview-max-height: 12rem;
   --upload-picture-empty-height: 8rem;
+  /* The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media
+   * placeholder, and 32 is not a step of the icon scale at all. The 128px-tall empty box sits
+   * between the 96px tile (24) and the 185px dropzone (40), so its mark does too. */
+  --upload-picture-icon-size: var(--icon-size-2xl);
   --upload-picture-empty-label-space-block-start: var(--space-2);
   --upload-picture-empty-label-font-size: var(--font-size-sm);
   --upload-picture-overlay-font-size: var(--font-size-sm);
@@ -63,6 +67,9 @@
 
   /* AVATAR — the round single-image variant. */
   --upload-avatar-size: 6rem;
+  /* The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the
+   * avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24. */
+  --upload-avatar-icon-size: var(--icon-size-xl);
   --upload-avatar-border-width: var(--stroke-md);
   --upload-avatar-change-space-block: var(--space-1);
   /* The "change" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather
