@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { contrast, hsl, hslToRgb } from "./wcag-contrast";
+import { channelsOf, contrast, hsl, hslToRgb, relative } from "./wcag-contrast";
 
 /**
  * A FILLED BUTTON KEEPS ITS LABEL LEGIBLE IN EVERY STATE IT CAN BE IN.
@@ -51,16 +51,28 @@ const FILLS = [
 describe.each(THEMES)("interactive fills keep their label at AA ($theme)", ({ selector }) => {
   const committed = block(foundation, selector);
   const derived = block(generated, selector);
+  const derivedRoot = block(generated, ":root {");
+
+  /**
+   * A state as it PAINTS. The destructive pair are literals; the primary pair are `initial` knobs
+   * whose default is a formula off the live `--primary` (gh#678), evaluated here on the package
+   * seed. Any other seed is derived-seed-sweep.test.ts's job.
+   */
+  const paint = (token: string) =>
+    token.startsWith("primary-")
+      ? relative(hsl(committed, "primary"), channelsOf(token, derived, derivedRoot))
+      : hsl(token === "destructive" ? committed : derived, token);
 
   describe.each(FILLS)("$role", ({ role, label }) => {
     const foreground = hslToRgb(hsl(committed, label));
 
     it.each([
-      { state: "rest", body: committed, token: role },
-      { state: "hover", body: derived, token: `${role}-hover` },
-      { state: "active", body: derived, token: `${role}-active` },
-    ])("$state", ({ body, token }) => {
-      expect(contrast(hslToRgb(hsl(body, token)), foreground)).toBeGreaterThanOrEqual(AA_TEXT);
+      { state: "rest", token: role },
+      { state: "hover", token: `${role}-hover` },
+      { state: "active", token: `${role}-active` },
+    ])("$state", ({ token }) => {
+      const fill = token === "primary" ? hsl(committed, token) : paint(token);
+      expect(contrast(hslToRgb(fill), foreground)).toBeGreaterThanOrEqual(AA_TEXT);
     });
   });
 });

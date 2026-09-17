@@ -4,6 +4,47 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **A re-themed `--primary` hovers, presses and focuses in its own hue again (gh#678).** A regression
+  from gh#648 in 25.0.0: `--primary-hover`, `--primary-active`, `--primary-border` and
+  `--control-outline` were literals on the violet seed, so a consumer overriding `--primary` (as
+  CUSTOMER-THEMING §Multi-tenant says to) kept violet on every hover, press and focus halo —
+  measured on 25.4.0 with `204 100% 37%`, `204 90% 60%` (dark) and `173 80% 28%`. The four are now
+  `initial` knobs whose default is derived from the `--primary` in scope AT THE ELEMENT THAT PAINTS,
+  with CSS relative colour: `hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))`.
+  That works for an override on `<html>` AND on a nested `[data-tenant]`, in both themes. On the
+  package seed it reproduces the kit values exactly (`#6500d4`/`#5400b0` light, `#ecdaff`/`#cd9fff`
+  dark). The field focus halo is now composed at the focused element too, so it follows a scoped
+  primary (and the `[aria-invalid]` / warning halo rebinds, which the `:root`-composed shadow had
+  been ignoring). Chrome/Edge 111–118, which lack relative colour, get the default-seed literals —
+  i.e. exactly 25.4.0.
+- **The open sidebar row's label clears AA on consumer seeds, not only ours (gh#678).** The gh#651
+  label was `--primary` on a 12% tint of itself: 4.25:1 for `204 100% 37%`, 4.00:1 for
+  `173 80% 28%`, 4.15:1 for dark `262 83% 70%`. The default label is now the derived
+  `--primary-active` (8.76:1, 10.71:1, 7.56:1 on the page ground respectively; 8.26:1 light / 5.89:1
+  dark on our seed). Over a dense grid of seeds it never lands under 4.5:1 for a seed that is legible
+  as text on the ground at all.
+- **`applyPrimaryColor()` no longer carries a second colour formula.** It set hover/active with its
+  own sRGB shade; it now resets the four knobs to the live default and picks the step pair
+  (`--primary-{hover,active}-{darken,lighten}-channels`) from the label polarity it chose.
+- **The gates sweep seeds.** `derived-hue-lock`, `sidebar-active-contrast`, `interactive-fill-contrast`
+  and `focus-ring-contrast` evaluated literals and so could only ever see the package seed; they now
+  evaluate the formula, and the new `derived-seed-sweep.test.ts` holds AA over named consumer seeds
+  plus a dense grid, with the cases where no default can work (label polarity inverted; a seed
+  illegible on its own ground) asserted as named exceptions.
+
+### Changed
+
+- **Reading `--primary-hover` / `--primary-active` / `--primary-border` / `--control-outline` bare no
+  longer paints.** They are `initial` now (the freeze rule, docs/TOKENS.md). Use `bg-primary-hover`
+  / `bg-primary-active`, or read with the fallback shown in CUSTOMER-THEMING §Multi-tenant.
+  Overriding them still works exactly as before. `--focus-ring-glow-color`, `--focus-field-shadow`,
+  `--text-action-color` and `--text-action-color-hover` are `initial` for the same reason, with
+  their defaults unchanged at the call site.
+
 ## [25.4.0] - 2026-09-17
 
 MINOR, stated rather than assumed, because two consumers will notice this on upgrade:

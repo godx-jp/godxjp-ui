@@ -120,9 +120,10 @@
 
   /* `--primary-hover` from the derived tier — not the primary at 90% opacity, which was an
    * eyeballed step whose result depends on whatever surface happens to be behind the button, and
-   * which no contrast gate could hold. See src/tokens/derived.css. */
+   * which no contrast gate could hold. See src/tokens/derived.css. The default derives from the
+   * `--primary` in scope HERE, so a re-themed or tenant-scoped primary hovers in its own hue (gh#678). */
   .ui-button--default:hover {
-    background: hsl(var(--primary-hover));
+    background: hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)));
   }
 
   .ui-button--destructive {

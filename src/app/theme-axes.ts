@@ -132,15 +132,22 @@ export function applyPrimaryColor(
               : (r - g) / delta + 4);
     return `${hue} ${saturation * 100}% ${lightness * 100}%`;
   };
-  const away = luminance(text) > 0.5 ? 0 : 1;
-  const shade = (amount: number) =>
-    hsl(rgb.map((channel) => channel * (1 - amount) + away * amount));
+  // The hover / pressed / focus states are NOT computed here any more (gh#678). They derive in CSS
+  // from the `--primary` in scope (src/tokens/derived.css), so this path and a stylesheet re-theme
+  // cannot disagree. What JS knows that CSS does not is the LABEL it just chose: the states must
+  // step AWAY from that label, so the step pair follows the label's polarity rather than the theme
+  // (a mid-luminance seed with WHITE text in a dark theme would otherwise lighten towards it). The
+  // four knobs are reset to `initial` so an ancestor theme's literal cannot outrank the new seed.
+  const polarity = luminance(text) > 0.5 ? "darken" : "lighten";
   const palette: Record<string, string> = {
     "--primary": hsl(rgb),
     "--primary-foreground": hsl(text),
-    "--primary-hover": shade(0.12),
-    "--primary-active": shade(0.24),
-    "--primary-border": hsl(rgb),
+    "--primary-hover": "initial",
+    "--primary-active": "initial",
+    "--primary-border": "initial",
+    "--control-outline": "initial",
+    "--primary-hover-channels": `var(--primary-hover-${polarity}-channels)`,
+    "--primary-active-channels": `var(--primary-active-${polarity}-channels)`,
     "--ring": hsl(rgb),
   };
   const previous = Object.keys(palette).map((key) => [

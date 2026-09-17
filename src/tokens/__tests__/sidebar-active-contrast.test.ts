@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
+import { channelsOf, contrast, hsl, hslToRgb, over, relative, triplet } from "./wcag-contrast";
 
 /**
  * THE OPEN NAV ROW IS A BRAND TINT NOW, AND A TINT HAS A CEILING.
@@ -18,8 +18,8 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
  * fill is that same label colour composited over the ground: raise the alpha and the two walk
  * towards each other, so the contrast that WCAG 2.2 SC 1.4.3 governs falls monotonically with the
  * one knob a service is most likely to reach for. There is nothing in "tint the row a bit more"
- * that warns you where 4.5:1 is. Measured on HEAD (GoDX violet #7a00ff / #dcbcff, identity v2.3,
- * derived tier as of gh#648), label against the composited fill:
+ * that warns you where 4.5:1 is. Measured at gh#651 (GoDX violet #7a00ff / #dcbcff, identity v2.3,
+ * derived tier as of gh#648, label `--primary`), label against the composited fill:
  *
  *   alpha   light            dark on --card   dark on --background
  *   0.12    5.07:1           7.51:1           8.30:1     ← shipped
@@ -37,6 +37,16 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
  * last decimal, which is admissible here for the reason `status-fill-contrast` records — the row
  * paints one `color-mix` flat with its label directly on top and nothing composites in between.
  *
+ * THE LABEL IS THE ACTIVE TIER NOW, NOT `--primary` (gh#678). Every number above was measured on
+ * OUR seed, and so was every assertion this file used to make. A consuming app's axe sweep on its
+ * own seeds found the label under SC 1.4.3: 4.25:1 for `204 100% 37%`, 4.00:1 for `173 80% 28%`,
+ * 4.15:1 for a dark `262 83% 70%` — `--primary` on a tint of itself is only as legible as the seed
+ * happens to be. The default label is now `--primary-active` derived from the live `--primary`: it
+ * steps AWAY from the ground in both themes, and over a dense grid of seeds it never lands under
+ * 4.5:1 for any seed that is legible as text on that ground to begin with. The ones that are not
+ * are a NAMED exception below, asserted rather than skipped. The table above is the history; the
+ * shipped numbers are in MEASURED.
+ *
  * SURFACES are checked the thorough way, the way `input-boundary-contrast` argues for: a value
  * that passes on the sidebar and fails on a page-level `NavList` is not a line anyone can defend.
  * `.app-sidebar` paints `hsl(var(--card))`; a bare `.ui-nav-list` sits on `hsl(var(--background))`.
@@ -45,10 +55,11 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
 const AA_TEXT = 4.5;
 
 /** The alpha ceiling the tier commits to. Raising `--sidebar-item-active-background-alpha` past
- *  this turns the last two describes red — which is the whole point of the number. */
+ *  this turns the ceiling describes red — which is the whole point of the number. */
 const CEILING = 0.16;
 
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
+const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 const shellTokens = readFileSync(join(process.cwd(), "src/tokens/components/shell.css"), "utf8");
 const shellLayout = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
 
@@ -96,23 +107,41 @@ function shippedAlpha(): number {
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+type Rgb = [number, number, number];
+type Hsl = [number, number, number];
+
 const THEMES = [
   { theme: "light", selector: ":root {" },
   { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
-] as const;
+].map((t) => ({
+  ...t,
+  body: block(foundation, t.selector),
+  /** The default label for a seed: `--primary-active`, derived as the call site derives it. */
+  label: (seed: Hsl): Rgb =>
+    hslToRgb(
+      relative(
+        seed,
+        channelsOf("primary-active", block(derived, t.selector), block(derived, ":root {")),
+      ),
+    ),
+}));
 
 /** The grounds the shipped shell puts an active nav row on. */
 const SURFACES = ["card", "background"] as const;
 
-/** Every ratio above, pinned — so a palette move lands HERE and not in a consumer's axe run. */
+/** Label on the composited tint, for one seed on one ground. */
+const onTint = (theme: (typeof THEMES)[number], seed: Hsl, ground: Rgb, alpha: number) =>
+  contrast(theme.label(seed), over(hslToRgb(seed), ground, alpha));
+
+/** Every ratio for the package seed, pinned — so a palette move lands HERE, not in an axe run. */
 const MEASURED: Record<string, Record<string, { shipped: number; atCeiling: number }>> = {
   light: {
-    card: { shipped: 5.07, atCeiling: 4.69 },
-    background: { shipped: 5.07, atCeiling: 4.69 },
+    card: { shipped: 8.26, atCeiling: 7.65 },
+    background: { shipped: 8.26, atCeiling: 7.65 },
   },
   dark: {
-    card: { shipped: 7.51, atCeiling: 6.78 },
-    background: { shipped: 8.3, atCeiling: 7.49 },
+    card: { shipped: 5.89, atCeiling: 5.32 },
+    background: { shipped: 6.51, atCeiling: 5.88 },
   },
 };
 
@@ -120,13 +149,12 @@ const MEASURED: Record<string, Record<string, { shipped: number; atCeiling: numb
  * 1. ONE NAME, ONE LOOK — and still a knob.
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("both nav levels signal `open` in one colour language", () => {
-  it("level 1 and level 2 read the SAME label knob", () => {
-    expect(rule('.sb-nav-item[data-active="true"]')).toContain(
-      "color: var(--sidebar-item-active-foreground, hsl(var(--primary)))",
-    );
-    expect(rule('.sb-nav-item--sub[data-active="true"]')).toContain(
-      "color: var(--sidebar-item-active-foreground, hsl(var(--primary)))",
-    );
+  const LABEL =
+    "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))))";
+
+  it("level 1 and level 2 read the SAME label knob, with the SAME live default", () => {
+    expect(rule('.sb-nav-item[data-active="true"]')).toContain(LABEL);
+    expect(rule('.sb-nav-item--sub[data-active="true"]')).toContain(LABEL);
   });
 
   it("the second name for that one thing is gone, tier and call site", () => {
@@ -173,42 +201,118 @@ describe("both nav levels signal `open` in one colour language", () => {
 });
 
 /* ────────────────────────────────────────────────────────────────────────────
- * 2. THE SHIPPED TINT, MEASURED.
+ * 2. THE SHIPPED TINT, MEASURED ON OUR SEED.
  * ──────────────────────────────────────────────────────────────────────────── */
-describe.each(THEMES)("the open row keeps its label at AA ($theme)", ({ theme, selector }) => {
-  const body = block(foundation, selector);
-  const label = hslToRgb(hsl(body, "primary"));
+describe.each(THEMES)("the open row keeps its label at AA ($theme)", (theme) => {
+  const seed = hsl(theme.body, "primary");
   const alpha = shippedAlpha();
 
   it.each(SURFACES)("on hsl(var(--%s))", (surface) => {
-    const ground = hslToRgb(hsl(body, surface));
-    const ratio = contrast(label, over(label, ground, alpha));
-
+    const ratio = onTint(theme, seed, hslToRgb(hsl(theme.body, surface)), alpha);
     expect(ratio).toBeGreaterThanOrEqual(AA_TEXT);
     expect(round2(ratio), `label on the tint at alpha ${alpha}`).toBe(
-      MEASURED[theme][surface].shipped,
+      MEASURED[theme.theme][surface].shipped,
     );
   });
 });
 
 /* ────────────────────────────────────────────────────────────────────────────
- * 3. THE CEILING, AND THE HEADROOM UNDER IT.
+ * 3. THE SAME ROW ON A CONSUMER'S SEED (gh#678).
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** The seeds a consuming app measured under AA with the old `--primary` label, and the extremes. */
+const SWEEP = [
+  { theme: "light", seed: "204 100% 37%" },
+  { theme: "light", seed: "173 80% 28%" },
+  { theme: "dark", seed: "262 83% 70%" },
+  { theme: "dark", seed: "204 90% 60%" },
+  { theme: "light", seed: "230 60% 12%" },
+  { theme: "dark", seed: "50 100% 92%" },
+  { theme: "light", seed: "50 100% 92%" },
+  { theme: "dark", seed: "230 60% 12%" },
+] as const;
+
+/**
+ * NAMED EXCEPTION — A SEED THAT IS NOT LEGIBLE AS TEXT ON THE GROUND AT ALL. A pale yellow on the
+ * light theme's near-white, a navy on the dark theme's near-black: the seed itself sits under 4.5:1
+ * on the page, and one ramp step does not carry a colour across the whole lightness range. No
+ * default is claimed for these; a service sets `--sidebar-item-active-foreground`. Asserted both
+ * ways, so a seed cannot drift in or out of this set silently.
+ */
+const ILLEGIBLE_SEED = new Set(["light 50 100% 92%", "dark 230 60% 12%"]);
+
+describe.each(SWEEP)("$theme $seed", ({ theme: themeName, seed: seedText }) => {
+  const theme = THEMES.find((t) => t.theme === themeName)!;
+  const seed = triplet(seedText);
+  const key = `${themeName} ${seedText}`;
+
+  it.each(SURFACES)("on hsl(var(--%s))", (surface) => {
+    const ground = hslToRgb(hsl(theme.body, surface));
+    const legible = contrast(hslToRgb(seed), ground) >= AA_TEXT;
+    expect(legible, "a seed's membership in ILLEGIBLE_SEED is a measurement").toBe(
+      !ILLEGIBLE_SEED.has(key),
+    );
+    if (legible) {
+      expect(onTint(theme, seed, ground, shippedAlpha())).toBeGreaterThanOrEqual(AA_TEXT);
+      // level 2 paints no tint — the label sits on the ground itself
+      expect(contrast(theme.label(seed), ground)).toBeGreaterThanOrEqual(AA_TEXT);
+    }
+  });
+});
+
+describe("every legible seed on a dense grid keeps the label at AA", () => {
+  /** 72 hues × 6 saturations × 99 lightnesses, per theme and surface. */
+  const grid = function* (): Generator<Hsl> {
+    for (let h = 0; h < 360; h += 5)
+      for (const s of [0, 10, 25, 50, 75, 100]) for (let l = 1; l < 100; l += 1) yield [h, s, l];
+  };
+
+  it.each(THEMES)("$theme, at the shipped alpha", (theme) => {
+    const failures: string[] = [];
+    let checked = 0;
+    for (const surface of SURFACES) {
+      const ground = hslToRgb(hsl(theme.body, surface));
+      for (const seed of grid()) {
+        if (contrast(hslToRgb(seed), ground) < AA_TEXT) continue;
+        checked += 1;
+        const ratio = onTint(theme, seed, ground, shippedAlpha());
+        if (ratio < AA_TEXT) failures.push(`${surface} ${seed.join(" ")} ${round2(ratio)}`);
+      }
+    }
+    expect(checked).toBeGreaterThan(30000);
+    expect(failures).toEqual([]);
+  });
+
+  it("NAMED EXCEPTION: the 16% ceiling is a guarantee for OUR seed only", () => {
+    // At the cap a handful of legible dark-theme seeds dip under 4.5:1 on `--card` (measured: 4 of
+    // ~21k, worst 4.27:1). The cap below is therefore asserted on the package seed; a service that
+    // raises the tint on its own seed owns that measurement. If this ever reads zero, the cap has
+    // become universal and this exception should be deleted rather than left to rot.
+    const dark = THEMES[1];
+    const ground = hslToRgb(hsl(dark.body, "card"));
+    let under = 0;
+    for (const seed of grid()) {
+      if (contrast(hslToRgb(seed), ground) < AA_TEXT) continue;
+      if (onTint(dark, seed, ground, CEILING) < AA_TEXT) under += 1;
+    }
+    expect(under).toBeGreaterThan(0);
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * 4. THE CEILING, AND THE HEADROOM UNDER IT — on our seed.
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("the tint strength has a ceiling and stays under it", () => {
   it("ships at or below the cap", () => {
     expect(shippedAlpha()).toBeLessThanOrEqual(CEILING);
   });
 
-  it.each(THEMES)("the cap itself is still AA in every surface ($theme)", ({ theme, selector }) => {
-    const body = block(foundation, selector);
-    const label = hslToRgb(hsl(body, "primary"));
-
+  it.each(THEMES)("the cap itself is still AA in every surface ($theme)", (theme) => {
+    const seed = hsl(theme.body, "primary");
     for (const surface of SURFACES) {
-      const ground = hslToRgb(hsl(body, surface));
-      const ratio = contrast(label, over(label, ground, CEILING));
-
+      const ratio = onTint(theme, seed, hslToRgb(hsl(theme.body, surface)), CEILING);
       expect(ratio, `${surface} at the ${CEILING} cap`).toBeGreaterThanOrEqual(AA_TEXT);
-      expect(round2(ratio)).toBe(MEASURED[theme][surface].atCeiling);
+      expect(round2(ratio)).toBe(MEASURED[theme.theme][surface].atCeiling);
     }
   });
 
@@ -217,21 +321,19 @@ describe("the tint strength has a ceiling and stays under it", () => {
     // future palette (or a raised cap) brings that step down to the cap, this is where it lands —
     // a cap that sits ON the cliff is a cap that fails the moment anyone rounds up.
     let cliff = Number.POSITIVE_INFINITY;
-    for (const { selector } of THEMES) {
-      const body = block(foundation, selector);
-      const label = hslToRgb(hsl(body, "primary"));
+    for (const theme of THEMES) {
+      const seed = hsl(theme.body, "primary");
       for (const surface of SURFACES) {
-        const ground = hslToRgb(hsl(body, surface));
+        const ground = hslToRgb(hsl(theme.body, surface));
         for (let a = 0.01; a <= 1.0001; a += 0.01) {
           const step = round2(a);
-          if (contrast(label, over(label, ground, step)) < AA_TEXT) {
+          if (onTint(theme, seed, ground, step) < AA_TEXT) {
             cliff = Math.min(cliff, step);
             break;
           }
         }
       }
     }
-    // Measured today: 0.19 (light, both shipped surfaces).
     expect(cliff, `first alpha under AA on a shipped surface: ${cliff}`).toBeGreaterThan(CEILING);
   });
 });

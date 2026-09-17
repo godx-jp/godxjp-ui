@@ -230,7 +230,43 @@ Scope the overrides under a tenant attribute instead of `:root`. The colour util
 }
 ```
 
-Set `data-tenant` on the app root. Two CSS-inheritance caveats for the **scoped** case (a single `:root` brand theme is unaffected — there, overriding just `--radius` / `--shadow-color` cascades):
+Set `data-tenant` on the app root.
+
+#### What follows `--primary`, and what you still set (gh#678)
+
+The interaction states are **derived from the `--primary` in scope, at the element that paints them** — on `<html>` or on any nested `[data-tenant]` / `[data-program]` element, in both themes. You do not declare them:
+
+| Token | Follows `--primary`? | Default (evaluated at the painting element) |
+| --- | --- | --- |
+| `--primary-hover` | **yes** — Button hover, `bg-primary-hover`, Typography action hover | `hsl(from hsl(var(--primary)) var(--primary-hover-channels))` — light `h s calc(l - 8.4)`, dark `h s calc(l + 5.8)` |
+| `--primary-active` | **yes** — `bg-primary-active`, the open sidebar row's label | light `h s calc(l - 15.5)`; dark one step further up, reflected to one step down past 83.4% L |
+| `--control-outline` | **yes** — the focused field's halo (`--control-outline-alpha` stays per theme) | light `h s calc(l - 5.3)`, dark `h calc(s * 0.99) calc(l - 25.1)` |
+| `--primary-border` | **yes** (painted by no package surface; kept for the measurement in DESIGN-AUTHORITY) | light `h calc(s * 0.68) calc(l + 16)`, dark `h calc(s * 0.467) calc(l * 0.27043)` |
+| `--sidebar-item-active-foreground` | **yes** — defaults to the live `--primary-active` | — |
+| `--primary-foreground` | **no — set it** | the label on a filled primary; you choose it for your seed |
+| `--ring` | **only on the element that declares `--primary`** — set it in a nested scope | `var(--primary)` on `:root` / `.dark`. `--ring` is a public role read as `hsl(var(--ring))` in consumer CSS, so it cannot become a live default; a scope below `<html>` inherits the root's |
+| `--destructive-*`, `--control-outline-error` | no — not brand | literals |
+
+On the package seed these produce exactly the identity kit values the tier used to hard-code (`#6500d4` / `#5400b0` light, `#ecdaff` / `#cd9fff` dark). Engines without CSS relative colour (Chrome/Edge 111–118) get those literals and do **not** follow a consumer seed.
+
+**Rules that come with it:**
+
+- **Override a state only by setting its knob** (`--primary-hover: 221 90% 72%`). A set knob wins over the derived default, in its own scope and below.
+- **Read a state through its fallback, not bare.** The four knobs are `initial` so that the default can resolve at the painting element (docs/TOKENS.md, the freeze rule). `hsl(var(--primary-hover))` on its own therefore paints nothing — use the utility (`bg-primary-hover`) or `hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))`.
+- **Label polarity.** The theme's pair steps AWAY from that theme's default label: `darken` under a light label, `lighten` under a dark one, which keeps a label that clears 4.5:1 at rest at 4.5:1 in hover and pressed for every seed (measured, `derived-seed-sweep.test.ts`). If your seed needs the OTHER polarity of label (a pale yellow with dark text in the light theme), point the pair at it too — `applyPrimaryColor()` does this automatically from the label it picks:
+
+```css
+[data-tenant="sunny"] {
+  --primary: 48 100% 60%;
+  --primary-foreground: 48 9% 9%;
+  --primary-hover-channels: var(--primary-hover-lighten-channels);
+  --primary-active-channels: var(--primary-active-lighten-channels);
+}
+```
+
+- **The open sidebar row** is legible (≥ 4.5:1 on the 12% tint) for any seed that is itself legible as text on the page. A seed that is not (a pale seed on the light page, a very dark one on the dark page) needs `--sidebar-item-active-foreground` set.
+
+Two more CSS-inheritance caveats for the **scoped** case (a single `:root` brand theme is unaffected — there, overriding just `--radius` / `--shadow-color` cascades):
 
 - **Radius & shadow-tint don't cascade from a scoped anchor.** `--radius-{xs…2xl}`, `--card-radius`, `--control-radius` and the `--shadow-{xs…2xl}` ramp are computed at their declaring element, so a scoped `--radius` / `--shadow-color` override won't reach them. For a scoped re-theme, re-declare the derived tokens you need (e.g. `--card-radius: var(--radius)`, or set `--card-shadow` to a literal value).
 ````

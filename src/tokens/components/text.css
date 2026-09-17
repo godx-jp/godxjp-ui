@@ -36,8 +36,10 @@
   --text-action-gap: var(--space-1);
   /* The operation reads as a link, because that is what it is — an affordance inside running text,
    * not a control box. Same reasoning as `Text`'s own `link` prop. */
-  --text-action-color: hsl(var(--primary));
-  --text-action-color-hover: hsl(var(--primary-hover));
+  --text-action-color: initial; /* default = hsl(var(--primary)), resolved at the call site */
+  /* default = the live primary hover, resolved at the call site — a `:root` binding would freeze on
+   * the root's primary and ignore a scoped re-theme (docs/TOKENS.md, the freeze rule; gh#678) */
+  --text-action-color-hover: initial;
   /* The icon box tracks the run it sits in: `em`, so a copy button beside `size="2xs"` shrinks
    * with it instead of towering over the text. */
   --text-action-size: 1em;
