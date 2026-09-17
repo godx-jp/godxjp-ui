@@ -34,7 +34,11 @@ const HELP = {
   Refresh the package-owned agent files for the installed @godxjp/ui version: the godx-ui entry in
   .mcp.json, the managed CLAUDE.md block, .claude/godxjp-ui-workflow.md and .ai/rules/godxjp-ui.md.
   It is the postinstall step, run by hand — use it when the app installs with ignore-scripts=true,
-  where postinstall never runs and the rules go stale. Silent no-op in CI and when opted out.`,
+  where postinstall never runs and the rules go stale. Silent no-op in CI and when opted out.
+
+  It also READS Claude Code's ~/.claude.json and reports any @godxjp/ui-mcp registered there (user
+  scope, or local scope for this project): key, pin, and the claude mcp command that updates it.
+  That file is outside the project and is never written; env values are never printed.`,
   audit: `godxjp-ui audit [dir …] [--changed] [--format json] [--quiet] [--rules]
 
   Static UI-standardization audit over source (regex, no browser, fast). Exits non-zero on errors.

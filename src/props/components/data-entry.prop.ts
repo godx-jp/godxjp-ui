@@ -829,8 +829,9 @@ export type CalendarProp = DayPickerProps &
      *
      * Default `true` — the owner's call, from a real screen: with no ruling the month read as a
      * cloud of numbers and was "very hard to read". Pass `bordered={false}` for the floating-button
-     * look. The line colour is `--calendar-grid-border-color` (default `--input`, the ≥3:1 tier;
-     * the decorative `--border` measured 1.15:1 and was invisible as a 1px ruling).
+     * look. The line colour is `--calendar-grid-border-color` (default `--input` at 0.5 alpha,
+     * 1.74:1 light / 1.95:1 dark on the popover; the full `--input` read too dark, and the
+     * decorative `--border` measured 1.15:1 and was invisible as a 1px ruling).
      */
     bordered?: boolean;
     /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */

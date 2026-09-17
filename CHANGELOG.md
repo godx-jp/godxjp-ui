@@ -4,6 +4,47 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.6.0] - 2026-09-17
+
+MINOR. Two owner-reported visual fixes to the Gantt and the date picker, and the MCP now states which
+version answered.
+
+### Fixed
+
+- **RangeTimeline / Calendar (DatePicker) — lighter grid lines.** Reported as too dark.
+  `--range-timeline-grid-color` and `--calendar-grid-border-color` now default to
+  `hsl(var(--input) / 0.5)` instead of the full `--input`. Measured in Chromium: 1.74:1 light /
+  1.95:1 dark on the card and the popover (was 3.47 / 3.88), 1.68 / 1.80 on the muted header —
+  still clearly above `--border` (1.15:1), which 25.3.0 found invisible. The Gantt and the date
+  picker share the same weight, and every RangeTimeline internal rule (rows, the band/tick seam, the
+  label divider, header and body columns) reads the one knob, so the header no longer looks heavier
+  than the grid. Set either knob to `hsl(var(--input))` to restore the previous weight.
+- **RangeTimeline — month bands land on the day columns.** Band, tick and body-grid cells were
+  sized with `flex: units` plus their own padding and rule, and those extras sit outside the
+  proportional share, so a band spanning N days was not the width of N day cells: the month
+  boundary drifted off the day-1 edge, growing with the number of bands. The columns now share one
+  grid of `units` equal tracks and every cell spans its units, so a track width can no longer move
+  with padding. Measured on a Sep 25 → Oct 7 axis (a partial 6-day band and a 7-day band): band edge
+  vs day edge max |Δ| 1.32px → 0, body grid line and bar start on the day edge (≤0.01px), at 1440
+  and 1024px, LTR and RTL.
+
+### Added
+
+- **MCP: every catalog answer states the version that produced it** (gh#722). Each
+  `@godxjp/ui-mcp` tool answer opens with `@godxjp/ui-mcp <version> (catalog for @godxjp/ui
+  <range>)`, read from the MCP's own package.json. When the launcher's `GODX_UI_VERSION` is on a
+  different major, a second line `⚠️ MAJOR MISMATCH: …` warns that the catalog may describe
+  components the installed package does not have, and says how to re-pin. An answer WITHOUT the line
+  comes from a server older than this release — treat it as stale. Measured need: a consumer with
+  two registrations under two keys queried the older one (≤ 21.0.0) and received a complete page for
+  `DateRangePicker`, removed in 22.0.0, with nothing to say which version answered.
+- **`sync-rules` / `init-agent` report an out-of-project MCP registration** (gh#722). They read
+  Claude Code's `~/.claude.json` (user-scope `mcpServers`, and this project's local-scope
+  `projects[<path>].mcpServers`) and, for each `@godxjp/ui-mcp` entry, print its key, its pin, that
+  it was left untouched, and the `claude mcp remove` / `add` command to fix it. Read-only: the file
+  is never written, env values are never printed, a missing or malformed file is ignored, and the
+  step is skipped in CI with the rest of postinstall.
+
 ## [27.5.0] - 2026-09-17
 
 MINOR. Every default is unchanged; the new steps and axes are opt-in, with one measured repair to

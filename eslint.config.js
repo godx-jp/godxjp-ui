@@ -24,6 +24,9 @@ export default tseslint.config(
       // 3936 phantom errors that have nothing to do with the code under review. Measured twice
       // while agents were running; it stopped a release gate both times.
       ".claude/worktrees/**",
+      // Gitignored scratch output of browser tooling (screenshots, one-off measurement scripts).
+      // Not source: a probe script left there failed the release gate on a lint rule.
+      ".playwright-mcp/**",
       "examples/**",
       "preview/**",
       "node_modules/**",
