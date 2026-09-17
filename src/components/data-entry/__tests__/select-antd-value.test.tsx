@@ -85,6 +85,7 @@ describe("antd `labelInValue` — single", () => {
         options={OPTIONS}
         labelInValue
         value={{ value: "jpy", label: "日本円" }}
+        allowClear
         onValueChange={onValueChange}
       />,
     );

@@ -4,6 +4,32 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.0.0] - 2026-09-17
+
+**MAJOR: one default changes.** `Select` and `TreeSelect` no longer show the clear ✕ unless asked
+(gh#691).
+
+### ⚠ BREAKING — `allowClear` follows antd's default on Select and TreeSelect (gh#691)
+
+`Select` (plain, searchable and `mode="multiple"`) and `TreeSelect` no longer show the clear ✕ by
+default. antd 6 defaults `allowClear` to `false` on both, and an antd-named prop takes antd's default
+along with its name (docs/DESIGN-AUTHORITY.md). The old default let a required select be emptied in
+one click, and the consumer only found out from a 422. `clearable` stays as an alias with the same
+`false` default.
+
+These defaults are unchanged because they already match antd 6: Cascader, DatePicker, RangePicker,
+TimePicker and TimeRangePicker stay ON; Input, PasswordInput, Textarea and TagInput stay OFF.
+`Rating` stays OFF although antd `Rate` is on: a second click silently clearing a required rating is
+the same accidental reset this change removes, and that deviation is recorded on the component.
+FilterBar's filter selects still show the ✕ because the bar now asks for it.
+
+**Migrate**
+
+- Wherever you want the ✕ on a `Select` or `TreeSelect`, usually an optional field or a filter,
+  pass `allowClear` (or `clearable`):
+  `<Select options={…} value={v} onValueChange={setV} allowClear />`
+- `clearable={false}` / `allowClear={false}` on required fields is now redundant and can be removed.
+
 ## [26.4.0] - 2026-09-17
 
 MINOR, compatible. Unset, every star paints exactly as before.

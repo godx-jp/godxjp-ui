@@ -296,6 +296,7 @@ describe("antd parity — loading", () => {
         onValueChange={() => {}}
         aria-label="通貨"
         data-testid="cur"
+        allowClear
         loading
       />,
     );

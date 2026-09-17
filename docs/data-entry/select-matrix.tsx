@@ -159,6 +159,7 @@ export default function Demo() {
                 onValueChange={setSearchable}
                 showSearch
                 searchPlaceholder="拠点を検索 / Tìm văn phòng"
+                allowClear
                 clearLabel="選択をクリア"
                 options={REGIONS}
               />

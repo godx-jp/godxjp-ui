@@ -6559,9 +6559,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "clearable",
         type: "boolean",
-        defaultValue: "true",
+        defaultValue: "false",
         description:
-          "Show a clear row when a value is selected (data-driven API). Set to false for required fields.",
+          "Show the clear ✕ when a value is selected (data-driven API). Off by default, as antd `allowClear` — a required select is never one click from empty. Pass it (or `allowClear`) on an optional field whose empty state is a valid answer.",
       },
       {
         name: "clearLabel",
@@ -6698,8 +6698,9 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "allowClear",
         type: "boolean | { clearIcon?: React.ReactNode; label?: string }",
+        defaultValue: "false",
         description:
-          "antd `allowClear`. The object form replaces the ✕ icon and/or its accessible label. Beats `clearable` when both are given.",
+          "antd `allowClear` — the clear ✕ on the trigger while a value is selected. Default false, as in antd. The object form replaces the ✕ icon and/or its accessible label. Beats `clearable` when both are given.",
       },
       {
         name: "onClear",
@@ -6838,7 +6839,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
       "COMPOUND API sub-parts (when NOT using options/loadOptions): Select → SelectTrigger (contains SelectValue) → SelectContent → SelectItem. Optionally wrap items in SelectGroup + SelectLabel for headings, or add SelectSeparator between sections.",
       "DO reach for open/onOpenChange (searchable mode) to drive the popover from outside — e.g. opening it programmatically after a validation error — and search/onSearchChange to seed or read the query text. Both fall back to internal state when omitted; onOpenChange/onSearchChange still fire either way so a controlled consumer stays in sync.",
-      "DO use readOnly (searchable mode) for a value that must stay visible and submittable but not editable in this view — it differs from disabled: the control stays focusable and its value still submits. clearable is ignored while readOnly.",
+      "DO use readOnly (searchable mode) for a value that must stay visible and submittable but not editable in this view — it differs from disabled: the control stays focusable and its value still submits. allowClear / clearable is ignored while readOnly.",
       "DO use filterOption (searchable mode, static options) when the default label/value substring match isn't right — e.g. filtering by a hidden code field. It is NOT consulted when loadOptions is set (that fetcher owns its own filtering).",
       "DO use renderError + renderLoadMore (searchable mode) to replace the default error row with a branded retry affordance, or to pair a manual 'load more' button with (not instead of) the built-in scroll-triggered pagination.",
       "DO set SelectTrigger showIndicator={false} (compound API) on a specialized trigger — icon-only, or one with its own affordance — instead of hiding [data-slot=select-chevron] with consumer CSS.",
@@ -6849,7 +6850,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "Account category picker backed by an API — pass loadOptions to stream pages of accounts as the user types; use renderOption to show account code + name side by side; pass selectedLabel so the trigger shows the name on first render.",
       "Grouped currency picker — set option.group='Asia' / 'Europe' on each option; the plain (non-search) data-driven mode renders SelectGroup headings automatically.",
       "Form field in an accounting entry — use the compound API when the trigger must show a currency flag icon alongside the SelectValue; wire SelectTrigger size='sm' for dense table rows.",
-      "Required department select in a HR form — pass clearable=false so the user cannot clear the field once set; pair with name='department_id' for Inertia useForm submission.",
+      "Required department select in a HR form — leave allowClear off (the default) so the user cannot clear the field once set; pair with name='department_id' for Inertia useForm submission. An OPTIONAL filter select passes allowClear so the user can return to 'no filter'.",
       "Async account picker whose API can fail — pass loadOptions plus errorMessage so a rejected fetch shows a clear error affordance in the panel (not a blank surface or a false 'no results'); the loading and empty states are handled automatically.",
     ],
     related: [
@@ -6908,7 +6909,6 @@ export function CurrencySelect({ value, onChange }) {
       ]}
       placeholder="Select currency"
       searchPlaceholder="Search currencies…"
-      clearable={false}
       name="currency"
     />
   );
@@ -9499,7 +9499,7 @@ export function CutoffTimeForm() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Shows an X icon on the trigger when a value is selected. Clicking it calls onChange([]) and resets to placeholder.",
+          "Shows an X icon on the trigger when a value is selected. Clicking it calls onChange([]) and resets to placeholder. On by default, as antd Cascader; pass `false` on a required field.",
       },
       {
         name: "className",
@@ -9802,9 +9802,9 @@ function MultiRegionPicker() {
       {
         name: "allowClear",
         type: "boolean",
-        defaultValue: "true",
+        defaultValue: "false",
         description:
-          "Show an `X` icon in the trigger to clear the selection. Set to `false` to make selection mandatory.",
+          "Show an `X` icon in the trigger to clear the selection. Off by default, as antd TreeSelect; pass `allowClear` on an optional field.",
       },
       {
         name: "className",

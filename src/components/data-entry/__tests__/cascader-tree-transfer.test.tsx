@@ -416,6 +416,7 @@ describe("TreeSelect", () => {
         treeData={ORG_TREE}
         treeDefaultExpandAll
         defaultValue="warehouse-osaka"
+        allowClear
         onValueChange={onChange}
       />,
     );

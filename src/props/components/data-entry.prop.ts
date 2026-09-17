@@ -1266,7 +1266,10 @@ export type SearchSelectBaseProp = {
    *  as-is unless `renderError` is provided. */
   errorMessage?: string;
   clearLabel?: string;
-  /** Show a "clear" row when a value is selected (default true). */
+  /**
+   * Show the clear ✕ when a value is selected (default false — antd `allowClear`). This library's
+   * own alias for `allowClear`; pass it on an OPTIONAL field whose empty state is a valid answer.
+   */
   clearable?: boolean;
   disabled?: DisabledProp;
   /**
@@ -1349,9 +1352,10 @@ export type SearchSelectBaseProp = {
    */
   popupMatchSelectWidth?: PopupMatchWidthProp;
   /**
-   * antd `allowClear`. `true`/`false` toggles the clear ✕ (same meaning as `clearable`, which
-   * stays as this library's own name); the OBJECT form additionally replaces the icon and/or the
-   * accessible label. When both are given, `allowClear` wins — it is the more specific statement.
+   * antd `allowClear` (default false, as in antd). `true`/`false` toggles the clear ✕ (same meaning
+   * as `clearable`, which stays as this library's own name); the OBJECT form additionally replaces
+   * the icon and/or the accessible label. When both are given, `allowClear` wins — it is the more
+   * specific statement.
    */
   allowClear?: AllowClearProp;
   /** Fired after the value is cleared through the ✕ (antd `onClear`). */
@@ -1705,6 +1709,10 @@ export type CascaderProp = FieldA11yProps & {
   id?: IdProp;
   expandTrigger?: "click" | "hover";
   fieldNames?: TreeFieldNamesProp;
+  /**
+   * antd `allowClear` — the ✕ that clears the selected path (default true, as in antd's Cascader).
+   * Pass `false` on a required field. The OBJECT form replaces the icon and/or the accessible label.
+   */
   allowClear?: AllowClearProp;
   /** Control height tier (antd `size`) — the shared `--control-height` ladder. */
   size?: SizeProp;
@@ -1782,6 +1790,10 @@ export type TreeSelectProp = FieldA11yProps & {
    * per checked value under the same name (the native `<select multiple>` contract).
    */
   name?: NameProp;
+  /**
+   * antd `allowClear` — the ✕ that clears the selection (default false, as in antd's TreeSelect).
+   * The OBJECT form additionally replaces the icon and/or the accessible label.
+   */
   allowClear?: AllowClearProp;
   className?: ClassNameProp;
   id?: IdProp;
