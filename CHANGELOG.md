@@ -29,6 +29,33 @@ infers its own types: `string` / `SelectOption | undefined` for single,
 parameters as a stopgap (`(value: string, option?: SelectOption) => …`) keep compiling and can drop
 the annotation. `SelectCompoundProp` itself is unchanged.
 
+### Fixed — with a page cap, the footer's content ends on the body's edge, not the band's (gh#682)
+
+gh#672 made the footer BAND span `.app-main` when a page is capped (`--app-shell-page-max-width`
+inside AppShell, or `measure="narrow" | "medium"`), but the band's content stayed end-aligned to the
+band. Measured at 1512px, sidebar collapsed, cap 800px: the body ended at x=864 and the footer's
+composer at x=1488 — **624px** between the body and the control that acts on it. With no cap the two
+coincide, which is why #672 looked complete. `measure` already prevents exactly this for the
+header's `extra` action.
+
+The band's inline-end inset now grows by the width the cap takes off the header and body
+(`max(0px, 100% - cap)`, carried by a registered internal property so the default `none` resolves to
+0). The band's content box is the content column; the element, its top rule, its sticky background
+and its width are unchanged. It composes as #672 does: the shell cap sits at `:where()` specificity,
+so a page's `measure` wins. After, same viewport and cap: action group ends at 840 = the body's content
+end (was 1488); a full-row composer spans 88→840 = the body's content column (was 88→1488);
+`measure="medium"` 88→808 (was →1488). RTL mirrors it. No cap, and every width at 390px: unchanged to
+the pixel. `check:app-shell-page-width` (nightly `ci-browser-full`) now measures the footer's content
+against the body for both shapes, with the shell cap and `measure="narrow" | "medium"`, LTR + RTL.
+
+**Compatible — no DOM change.** A wrapper element (the issue's suggested
+`.ui-page-footer-inner`) was rejected: it would move the footer's children one level down and break
+consumer selectors such as `.ui-page-footer > button`. The footer's children are still its direct
+children. A `footerPad` that sets the inline end inset now emits
+`padding-inline-end: calc(<step> + var(--page-footer-content-slack))`, so the instance inset keeps the
+cap alignment. A consumer stylesheet that overrides `.ui-page-footer`'s `padding-inline-end` directly
+replaces that slack and gets the old, band-aligned content under a cap; use `footerPad` instead.
+
 ## [26.0.0] - 2026-09-17
 
 **MAJOR — a public token read changes meaning.** `--primary-hover`, `--primary-active`,

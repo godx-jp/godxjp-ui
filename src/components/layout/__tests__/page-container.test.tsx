@@ -396,6 +396,70 @@ describe("PageContainer", () => {
       );
     });
 
+    it("lays the footer CONTENT out in the same measure, while the band stays full width (gh#682)", () => {
+      // Measured before the fix, 1512px, sidebar collapsed, cap 800px: body ended at x=864, the
+      // footer's composer at x=1488 — 624px apart. The band keeps spanning the page (gh#672); its
+      // END INSET grows by the slack the cap takes off the header/body, so its content box is the
+      // content column. jsdom has no layout: the geometry is `pnpm check:app-shell-page-width`.
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-measure="medium"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(--page-measure-medium\)\);/,
+      );
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(--page-measure-narrow\)\);/,
+      );
+      const footerRule =
+        layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
+      expect(footerRule).toMatch(
+        /padding-inline-end: calc\(var\(--space-page-active-x\) \+ var\(--page-footer-content-slack\)\);/,
+      );
+      // Registered, so an uncapped page (`none` makes the arithmetic invalid) resolves to 0 instead
+      // of dropping the band's end gutter.
+      expect(layoutCss).toMatch(
+        /@property --page-footer-content-slack \{\s*syntax: "<length-percentage>";\s*inherits: false;\s*initial-value: 0px;\s*\}/,
+      );
+      // The band itself is never capped.
+      expect(layoutCss).not.toMatch(
+        /\.ui-page-footer[^{]*\{[^}]*[\s;{]max-(width|inline-size)\s*:/s,
+      );
+    });
+
+    it("keeps the footer DOM as it was — the footer's children are still its direct children", () => {
+      renderWithUi(
+        <PageContainer title="Issue" measure="medium" stickyFooter footer={<Button>Save</Button>}>
+          <p>Body</p>
+        </PageContainer>,
+      );
+      const footer = screen.getByRole("button", { name: "Save" }).parentElement!;
+      expect(footer).toHaveClass("ui-page-footer");
+      expect(footer.getAttribute("style")).toBeNull();
+    });
+
+    it("keeps the cap's slack on top of an instance footerPad end inset", () => {
+      // An inline `padding-inline-end` replaces the stylesheet's, which would snap the content back
+      // to the band edge under a cap; the instance inset composes with the slack instead.
+      renderWithUi(
+        <PageContainer title="Issue" footer="All sides" footerPad={3}>
+          <p>Body</p>
+        </PageContainer>,
+      );
+      const all = screen.getByText("All sides");
+      expect(all.style.padding).toBe("var(--space-3)");
+      expect(all.style.paddingInlineEnd).toBe(
+        "calc(var(--space-3) + var(--page-footer-content-slack))",
+      );
+    });
+
+    it("leaves a block-only footerPad without an inline end override", () => {
+      renderWithUi(
+        <PageContainer title="Issue" footer="Block only" footerPad={{ block: 2 }}>
+          <p>Body</p>
+        </PageContainer>,
+      );
+      const block = screen.getByText("Block only");
+      expect(block.style.paddingBlockStart).toBe("var(--space-2)");
+      expect(block.style.paddingInlineEnd).toBe("");
+    });
+
     it("owns both measures as tokens — no raw pixel measure in the stylesheet", () => {
       expect(layoutTokens).toMatch(/--page-measure-narrow:\s*42rem/);
       expect(layoutTokens).toMatch(/--page-measure-medium:\s*48rem/);

@@ -75,8 +75,14 @@ describe("DXS hi-fi visual contract", () => {
     );
     // Never on the container (that caps the footer band with it) and never on the footer.
     expect(shell).not.toMatch(/\.ui-page-container\s*\{[^}]*max-(width|inline-size)/s);
-    expect(shell).not.toMatch(/\.ui-page-footer[^{]*\{[^}]*max-(width|inline-size)/s);
-    expect(shell.match(/var\(--app-shell-page-max-width\)/g)).toHaveLength(1);
+    expect(shell).not.toMatch(/\.ui-page-footer[^{]*\{[^}]*[\s;{]max-(width|inline-size)\s*:/s);
+    // gh#682 — the footer BAND stays uncapped, but its CONTENT follows the same cap: the slack the
+    // cap takes off the content bands is added to the band's end inset, at the same :where()
+    // specificity, so a page's `measure` still wins. Those are the only two readers of the knob.
+    expect(shell).toMatch(
+      /\.app-main :where\(\.ui-page-footer\)\s*\{\s*--page-footer-content-slack:\s*max\(0px, 100% - var\(--app-shell-page-max-width\)\);\s*\}/,
+    );
+    expect(shell.match(/var\(--app-shell-page-max-width\)/g)).toHaveLength(2);
   });
 
   it("uses the compact DXS sidebar rhythm and 900px drawer breakpoint", () => {

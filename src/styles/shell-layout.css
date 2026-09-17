@@ -437,6 +437,14 @@
     max-inline-size: var(--app-shell-page-max-width);
   }
 
+  /* The footer band still spans `.app-main`, but its CONTENT ends where the capped body ends
+   * (gh#682) — the slack the cap takes off the content bands is added to the band's end inset
+   * (layout.css). Same `:where()` specificity as the cap above, so a page's `measure` wins here too.
+   * `none` (the default) is invalid in the arithmetic and the registered property falls back to 0. */
+  .app-main :where(.ui-page-footer) {
+    --page-footer-content-slack: max(0px, 100% - var(--app-shell-page-max-width));
+  }
+
   /* AUTH SHELL — centred auth/login page shell (brand bar + centred card + footer). */
   .ui-auth-shell {
     --control-height: var(--auth-shell-control-height);
