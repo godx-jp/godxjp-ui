@@ -4,7 +4,14 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [26.1.0] - 2026-09-17
+
+MINOR, and both entries below are compatible: a type-only fix and a layout fix that leaves the
+default (uncapped) page pixel-identical and changes no DOM.
+
+**Reaching 25.x consumers:** a consumer pinned to `^25.x` does not resolve 26.x, so it does NOT
+receive the #679 typing fix. Keep an explicit `(value: string, option?: SelectOption) => …`
+annotation there until that app moves to 26 (whose own migration is in the 26.0.0 entry).
 
 ### Fixed — `Select` `onValueChange={(value, option) => …}` is typed again without a mode (gh#679)
 
