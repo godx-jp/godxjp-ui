@@ -45,6 +45,16 @@ export function firstBagMessage(entry: string | string[] | undefined): string | 
 }
 
 /**
+ * `true` when an error bag holds at least one non-empty message. A bag with no keys, or keys whose
+ * entries are empty (`{ code: [] }`), shows nothing anywhere — so it never counts as "displayed".
+ */
+export function errorBagHasMessage(errors: ErrorBagProp | undefined): boolean {
+  return Object.values(errors ?? {}).some((entry) =>
+    Array.isArray(entry) ? entry.some(Boolean) : Boolean(entry),
+  );
+}
+
+/**
  * FormErrorsProvider — one shared error registry (error bag + claim set) over a region. 兄弟 Form 群で
  * 1 つのエラーバッグを共有するための公開プロバイダ。Two ways to get one: 1. `Form errors={…}` renders this provider itself
  * (both `<form>` and `asChild` modes) — the single-form case needs nothing else. 2.

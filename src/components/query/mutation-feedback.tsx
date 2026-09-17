@@ -1,5 +1,5 @@
 import { AlertQueryError } from "../feedback/alert";
-import { useFormErrorsRegistry } from "../data-entry/form-errors";
+import { errorBagHasMessage, useFormErrorsRegistry } from "../data-entry/form-errors";
 import { classifyQueryError } from "../../lib/query-error";
 import type { AlertMutationFeedbackProp } from "../../props/components/query.prop";
 
@@ -25,11 +25,7 @@ export function AlertMutationFeedback({
   // The error registry exists only under a Form/FormRoot that received `errors`. The default skips
   // only when that bag holds a message — something on the page (a field or FormErrors) shows it.
   const registry = useFormErrorsRegistry();
-  const bagShowsErrors =
-    registry !== null &&
-    Object.values(registry.errors).some((entry) =>
-      Array.isArray(entry) ? entry.some(Boolean) : Boolean(entry),
-    );
+  const bagShowsErrors = registry !== null && errorBagHasMessage(registry.errors);
 
   if (mutation.isPending && pending) return <>{pending}</>;
 

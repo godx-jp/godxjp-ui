@@ -117,6 +117,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Handle rejected submission.",
       },
       {
+        name: "submitFailedMessage",
+        type: "ReactNode | false",
+        description:
+          "Banner shown when onSubmit rejects. Default: localized dataEntry.form.submitFailed text; a node replaces it; false never shows it. Skipped by default for a validation rejection (400/422) once the `errors` bag holds a message.",
+      },
+      {
         name: "onReset",
         type: "() => void",
         description: "Called after values reset.",
@@ -187,6 +193,9 @@ export const COMPONENTS: ComponentEntry[] = [
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
       "Use godx-ui controls and preserve field names, errors and disabled state.",
+      'SUBMIT-FAILED BANNER: when `onSubmit` rejects, FormRoot shows a destructive banner (`submitFailedMessage`, default the localized `dataEntry.form.submitFailed`). It is SKIPPED for a validation rejection (`classifyQueryError(error).category === "validation"`: 400/422) once the `errors` bag holds at least one message — the fields / `<FormErrors />` show it, as antd shows field errors instead of a form banner — and stays skipped for that failure if the app later clears the bag. A validation rejection with an empty or message-less bag, and every 5xx / network / unknown rejection, still shows it, so a failure is never silently swallowed. Errors mapped with react-hook-form `setError` instead of `errors` are not detected: pass `submitFailedMessage={false}` there. `submitFailedMessage={false}` never shows the banner; a node replaces its text.',
+      'CANONICAL SERVER-VALIDATION FORM (gh#698) \u2014 a 422 renders EXACTLY ONCE: `const m = useMutation({ mutationFn: save }); <FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} /><FormFieldControl name="code" label="Code">{(field) => <Input {...field} value={String(field.value ?? "")} />}</FormFieldControl></FormRoot>` (`serverErrors` = your API client\'s mapper from its error to the Laravel-style `{ key: string[] }` bag). Each message appears once: under its field (claimed key) or in `<FormErrors />` (unclaimed key); `AlertMutationFeedback` skips the validation error (gh#690) and FormRoot shows no `submitFailed` banner. A 5xx / network rejection still shows both the FormRoot banner and the AlertMutationFeedback alert \u2014 pass `submitFailedMessage={false}` to keep only the latter.',
+      "DON'T hand-guard the banner or wrap `mutateAsync` in try/catch just to hide a 422 — pass the bag to `errors` and the form renders it once.",
     ],
     useCases: ["Validated settings forms", "Nested repeating data entry"],
     related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
@@ -282,6 +291,8 @@ export const COMPONENTS: ComponentEntry[] = [
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
       "Use godx-ui controls and preserve field names, errors and disabled state.",
+      'RENDER-PROP BAG: `{ id, name, value, onChange, onValueChange, onBlur, ref, disabled? }`. `ref` is `RefCallback<HTMLElement>` (gh#698), so `{...field}` spreads onto Input, Textarea, Select, NumberInput and DatePicker with NO cast — never cast or drop the ref (react-hook-form focuses the first invalid field through it). `value` is `unknown`: narrow it per control (`String(field.value ?? "")`, `typeof field.value === "number" ? field.value : null`).',
+      "SERVER VALIDATION: a `FormField name` under `FormRoot errors={…}` claims its bag key, so the 422 message renders once under the field — see FormRoot's canonical server-validation composition (FormRoot + FormErrors + AlertMutationFeedback renders a 422 exactly once).",
     ],
     useCases: ["Validated settings forms", "Nested repeating data entry"],
     related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
@@ -6033,6 +6044,7 @@ import remarkGfm from "remark-gfm";
       "DO give every visible field its `name` when adopting `Form errors` on a screen. A field that keeps a manual `error={errors.x}` WITHOUT `name` does not claim its key, and FormErrors will show that message twice.",
       "DON'T hand-roll a destructive Alert bound to `errors.hidden_key` per page — that is exactly the per-page listing this component exists to remove, and it goes stale the moment the server adds a new derived-field rule.",
       "DON'T use FormErrors as a generic mutation-failure banner — that is `Alert.QueryError` / toast territory. FormErrors is scoped to the VALIDATION bag of the surrounding form.",
+      "INSIDE FormRoot: `<FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} />\u2026</FormRoot>` \u2014 FormRoot mounts the claim registry, so `<FormErrors />` needs no `errors` of its own and shows only unclaimed keys. A 422 renders exactly once: claimed keys under their fields, unclaimed keys here, no AlertMutationFeedback alert (gh#690) and no FormRoot submitFailed banner (gh#698).",
       "ARRAY ENTRIES: a `string[]` bag value lists every message in the banner; a claimed field shows only the FIRST message of its array (Laravel `$errors->first()` semantics).",
       "SIBLING FORMS: when the screen is split into several Card+Form sections, wrap the REGION in `<FormErrorsProvider errors={form.errors}>` and give NO `errors` to the section Forms — they join the shared registry and one `<FormErrors />` covers the whole screen. A nested Form WITH its own `errors` deliberately starts a separate (shadowed) registry.",
     ],
@@ -7722,7 +7734,7 @@ export function BillingFields() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Kept from the Radix era. react-aria's Modal always locks scroll and hides the background from assistive tech, so `false` no longer turns that off.",
+          "`false` renders a NON-MODAL dialog (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The dialog keeps role=dialog + its title as name, centred fixed placement, sizes and tokens; focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Ignored, with a dev warning, under `variant=\"destructive\"` — an alertdialog is always modal. gh#696.",
       },
     ],
     usage: [
@@ -7732,10 +7744,12 @@ export function BillingFields() {
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
+      "DO set `modal={false}` when the user must keep working on the page behind an open dialog (edit a list while a payment or detail dialog stays open). Control `open` yourself: an outside press no longer closes it, so give it a visible close action. Escape closes it only while focus is inside the dialog.",
     ],
     useCases: [
       "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
       "Read-only detail popup — show a full transaction audit trail, attachment preview, or approval history in a modal without leaving the list page. Use `Dialog` with no `DialogFooter` action buttons, just a close trigger.",
+      "Non-modal side task — `modal={false}` keeps a list or cart behind the dialog editable while the dialog stays open (take payment while the order lines can still change).",
       "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state.",
     ],
     related: [
@@ -7984,6 +7998,13 @@ function ConfirmSettlement() {
         description: "Open-state change handler.",
       },
       {
+        name: "modal",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "On Sheet (root). `false` renders a NON-MODAL sheet (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The panel keeps role=dialog + its title as name, and the same side placement, width, responsive presentation and tokens. Focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Same contract as Dialog `modal={false}`. gh#701.",
+      },
+      {
         name: "width",
         type: "number | string",
         description:
@@ -8014,12 +8035,14 @@ function ConfirmSettlement() {
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
+      "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
     useCases: [
       "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
       "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
       "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
+      "Non-modal side panel: `modal={false}` keeps a list behind the sheet editable while the panel stays open (change order lines while their running total stays visible in the panel).",
       "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
       "Step-by-step wizard side panel: multi-step form (Steps component inside SheetContent) for onboarding or import flows where full-page navigation would lose list context.",
     ],

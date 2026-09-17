@@ -87,6 +87,18 @@ export type FormRootProp<TFieldValues extends FieldValues> = {
    */
   onSubmitError?: (error: unknown) => void;
   /**
+   * The form-level banner shown when `onSubmit` rejects. Default: the localized
+   * `dataEntry.form.submitFailed` text. A node replaces that text; `false` never shows the banner.
+   *
+   * The banner is skipped by default for a validation rejection (`classifyQueryError` category
+   * `"validation"`: 400/422) once the `errors` bag holds at least one message — a field or
+   * `<FormErrors />` already shows it (antd shows field errors, not a form banner) — and stays
+   * skipped for that failure if the app later clears the bag. A validation rejection with an empty
+   * or message-less bag, and every other rejection (5xx, network, unknown), shows it. Errors mapped with react-hook-form `setError` instead of `errors` are not detected —
+   * pass `false` there.
+   */
+  submitFailedMessage?: React.ReactNode | false;
+  /**
    * A native `<Button type="reset">` inside the form restores `defaultValues` (adapter path:
    * `adapter.reset()`); this runs afterwards for any extra app state (a status banner, a step).
    */
@@ -191,7 +203,12 @@ export type FormFieldControlProp<TFieldValues extends FieldValues> = Pick<
     onChange: (...args: unknown[]) => void;
     onValueChange: (...args: unknown[]) => void;
     onBlur: () => void;
-    ref: React.Ref<HTMLInputElement>;
+    /**
+     * Callback ref typed on `HTMLElement`, so `{...field}` spreads onto every godx-ui control
+     * (Input, Textarea, Select, NumberInput, DatePicker) with no cast. react-hook-form only needs
+     * `focus()` on it to focus the first invalid field.
+     */
+    ref: React.RefCallback<HTMLElement>;
     /** Present (and `true`) only when the field is disabled, so `{...field}` never re-enables a control. */
     disabled?: DisabledProp;
   }) => React.ReactNode;

@@ -59,16 +59,17 @@ export function CreateCustomerForm({ onSubmit }: { onSubmit: (v: Values) => void
 
 `onSubmit` runs only after validation passes (antd `onFinish`). Everything else is optional:
 
-| Prop                                                              | antd                    | Notes                                                                                    |
-| ----------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
-| `onSubmitFailed(errors)`                                          | `onFinishFailed`        | RHF error tree; the first invalid field is focused regardless                            |
-| `onSubmitError(error)`                                            | —                       | Optional error callback; rejected submissions show localized feedback and retain values  |
-| `onReset`                                                         | —                       | A native `<Button type="reset">` restores `defaultValues`; this runs after               |
-| `scrollToFirstError`                                              | `scrollToFirstError`    | Default `true`; centres the field row, honours `prefers-reduced-motion`                  |
-| `disabled`                                                        | Form `disabled`         | Disables fields and submission; values remain in state. Buttons read `useFormDisabled()` |
-| `layout` `labelWidth` `controlWidth` `labelAlign` `collapseBelow` | `layout` `labelCol` …   | Renders the `Form` layout shell (see the spacing note below)                             |
-| `density` / `requiredMark`                                        | `size` / `requiredMark` | Forwarded to the same shell                                                              |
-| `errors`                                                          | —                       | Server error bag; fields claim their keys, `<FormErrors />` shows the rest               |
+| Prop                                                              | antd                    | Notes                                                                                              |
+| ----------------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------- |
+| `onSubmitFailed(errors)`                                          | `onFinishFailed`        | RHF error tree; the first invalid field is focused regardless                                      |
+| `onSubmitError(error)`                                            | —                       | Optional error callback; rejected submissions show localized feedback and retain values            |
+| `submitFailedMessage`                                             | —                       | Rejection banner text; `false` never shows it. Skipped for a 400/422 once `errors` holds a message |
+| `onReset`                                                         | —                       | A native `<Button type="reset">` restores `defaultValues`; this runs after                         |
+| `scrollToFirstError`                                              | `scrollToFirstError`    | Default `true`; centres the field row, honours `prefers-reduced-motion`                            |
+| `disabled`                                                        | Form `disabled`         | Disables fields and submission; values remain in state. Buttons read `useFormDisabled()`           |
+| `layout` `labelWidth` `controlWidth` `labelAlign` `collapseBelow` | `layout` `labelCol` …   | Renders the `Form` layout shell (see the spacing note below)                                       |
+| `density` / `requiredMark`                                        | `size` / `requiredMark` | Forwarded to the same shell                                                                        |
+| `errors`                                                          | —                       | Server error bag; fields claim their keys, `<FormErrors />` shows the rest                         |
 
 > **Spacing.** A bare `FormRoot` stacks its children with `ui-stack-md`. Passing ANY layout prop
 > switches it to the `Form` shell, whose `--form-block-gap` owns the spacing instead — the two are

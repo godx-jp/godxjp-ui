@@ -4,8 +4,10 @@ import { FormProvider, type FieldErrors, type FieldValues } from "react-hook-for
 import { Alert, AlertDescription } from "../components/feedback/alert";
 import { ResponsiveGrid } from "../components/layout/responsive-grid";
 import { useTranslation } from "../i18n/use-translation";
+import { classifyQueryError } from "../lib/query-error";
 import { cn } from "../lib/utils";
 import { Form } from "../components/data-entry/form";
+import { errorBagHasMessage } from "../components/data-entry/form-errors";
 import { FormAdapterContext, FormOptionsContext } from "./form-context";
 import type { FormRootProp } from "../props/components/form.prop";
 
@@ -67,6 +69,7 @@ export function FormRoot<TFieldValues extends FieldValues>({
   onSubmit,
   onSubmitFailed,
   onSubmitError,
+  submitFailedMessage,
   onReset,
   scrollToFirstError = true,
   disabled = false,
@@ -87,13 +90,42 @@ export function FormRoot<TFieldValues extends FieldValues>({
   const { t } = useTranslation();
   const pending = React.useRef(false);
   const [submitting, setSubmitting] = React.useState(false);
-  const [submitFailed, setSubmitFailed] = React.useState(false);
+  // gh#698 — a validation rejection (400/422) is the fields' to show (antd: field errors, no form
+  // banner), but ONLY once the `errors` bag holds a message (a field or `<FormErrors />` renders it;
+  // the gh#690 rule). With no message in the bag the banner stays, so a failure is never silently
+  // swallowed. Decided at RENDER time, because the bag reaches `errors` in a later render than the
+  // one that caught the rejection:
+  // - `settled` holds a validation banner back for one task so that bag can arrive first —
+  //   otherwise the banner flashes (and its `role="alert"` is announced) before the fields replace it.
+  // - `shownByFields` latches once the bag has shown a message for THIS failure, so an app that
+  //   clears the bag while the user corrects the field (`mutation.reset()`) does not pop the banner.
+  const [submitFailure, setSubmitFailure] = React.useState<{
+    error: unknown;
+    validation: boolean;
+    settled: boolean;
+    shownByFields: boolean;
+  } | null>(null);
   const options = React.useMemo(() => ({ disabled, submitting }), [disabled, submitting]);
+  const fieldsShowFailure = submitFailure?.validation === true && errorBagHasMessage(errors);
+  React.useEffect(() => {
+    if (!fieldsShowFailure) return;
+    setSubmitFailure((current) =>
+      current && !current.shownByFields ? { ...current, shownByFields: true } : current,
+    );
+  }, [fieldsShowFailure]);
+  const showSubmitFailed =
+    submitFailure !== null &&
+    submitFailure.settled &&
+    !submitFailure.shownByFields &&
+    !fieldsShowFailure &&
+    submitFailedMessage !== false;
   const content = (
     <>
-      {submitFailed && (
+      {showSubmitFailed && (
         <Alert tone="destructive">
-          <AlertDescription>{t("dataEntry.form.submitFailed")}</AlertDescription>
+          <AlertDescription>
+            {submitFailedMessage ?? t("dataEntry.form.submitFailed")}
+          </AlertDescription>
         </Alert>
       )}
       {columns ? <ResponsiveGrid columns={columns}>{children}</ResponsiveGrid> : children}
@@ -103,11 +135,19 @@ export function FormRoot<TFieldValues extends FieldValues>({
     if (disabled || pending.current || adapter?.isSubmitting) return;
     pending.current = true;
     setSubmitting(true);
-    setSubmitFailed(false);
+    setSubmitFailure(null);
     try {
       await work();
     } catch (error) {
-      setSubmitFailed(true);
+      const validation = classifyQueryError(error).category === "validation";
+      setSubmitFailure({ error, validation, settled: !validation, shownByFields: false });
+      if (validation) {
+        setTimeout(() =>
+          setSubmitFailure((current) =>
+            current && current.error === error ? { ...current, settled: true } : current,
+          ),
+        );
+      }
       onSubmitError?.(error);
     } finally {
       pending.current = false;
@@ -165,7 +205,7 @@ export function FormRoot<TFieldValues extends FieldValues>({
               onReset={(event) => {
                 event.preventDefault();
                 if (pending.current) return;
-                setSubmitFailed(false);
+                setSubmitFailure(null);
                 adapter.reset?.();
                 onReset?.();
               }}
@@ -205,7 +245,7 @@ export function FormRoot<TFieldValues extends FieldValues>({
             onReset={(event) => {
               event.preventDefault();
               if (pending.current) return;
-              setSubmitFailed(false);
+              setSubmitFailure(null);
               form.reset();
               onReset?.();
             }}

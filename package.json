@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "27.0.0",
-  "godxUiMcp": "27.0.0",
+  "version": "27.1.0",
+  "godxUiMcp": "27.1.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -460,6 +460,7 @@
     "input-otp": "^1.5.0",
     "lucide-react": "^1.37.0",
     "qrcode.react": "4.2.0",
+    "react-aria": "3.52.1",
     "react-aria-components": "^1.21.1",
     "react-day-picker": "^10.0.1",
     "react-resizable-panels": "^4.12.3",
