@@ -91,6 +91,10 @@ export default function Demo() {
     new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "UTC" }).format(
       Date.UTC(2026, 8, day),
     );
+  const monthLabel = (month: number) =>
+    new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", timeZone: "UTC" }).format(
+      Date.UTC(2026, month, 1),
+    );
   return (
     <PageContainer title="Timeline" subtitle="現在のステップを強調する縦型のイベント一覧">
       <Flex direction="col" gap="lg">
@@ -162,23 +166,83 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle level={2}>RangeTimeline</CardTitle>
+            <CardDescription>
+              日単位の軸。行ごとの区切り線と、列ごとの縦線が本体全体に引かれます（bordered は既定で
+              true）。土日は columns[].muted
+              で本体の高さいっぱいに塗り分け、表示範囲の外にある期間は、その方向の端に矢印付きで示します。
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <RangeTimeline
               label={t("rangeTimeline.schedule")}
-              bands={[
-                {
-                  label: new Intl.DateTimeFormat(locale, {
-                    year: "numeric",
-                    month: "long",
-                    timeZone: "UTC",
-                  }).format(Date.UTC(2026, 8, 1)),
-                  units: 7,
-                },
+              today={8}
+              bands={[{ label: monthLabel(8), units: 14 }]}
+              columns={Array.from({ length: 14 }, (_, index) => {
+                const weekday = new Date(Date.UTC(2026, 8, index + 1)).getUTCDay();
+                return {
+                  label: new Intl.NumberFormat(locale).format(index + 1),
+                  units: 1,
+                  muted: weekday === 0 || weekday === 6,
+                };
+              })}
+              rows={[
+                { id: "design", label: "要件定義", start: 0, end: 3 },
+                { id: "build", label: "実装", start: 3, end: 10 },
+                { id: "review", label: "レビュー", start: 9, end: 12 },
+                { id: "kickoff", label: "キックオフ（前月）", start: -12, end: -9 },
+                { id: "release", label: "リリース（来月）", start: 20, end: 22 },
+              ].map((row) => ({
+                ...row,
+                startLabel: dayLabel(row.start + 1),
+                endLabel: dayLabel(row.end + 1),
+              }))}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>月単位の軸（列ごとに units が異なる）</CardTitle>
+            <CardDescription>
+              units
+              は日数です。9月30・10月31・11月30と幅が異なっても、本体の縦線はヘッダーの列の境界に揃います。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              columns={[
+                { label: monthLabel(8), units: 30 },
+                { label: monthLabel(9), units: 31 },
+                { label: monthLabel(10), units: 30 },
               ]}
+              rows={[
+                { id: "phase-1", label: "第1期", start: 0, end: 44 },
+                { id: "phase-2", label: "第2期", start: 45, end: 90 },
+              ].map((row) => ({
+                ...row,
+                startLabel: dayLabel(row.start + 1),
+                endLabel: dayLabel(row.end + 1),
+              }))}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>罫線なし（bordered=false）</CardTitle>
+            <CardDescription>
+              ヘッダーの列線だけを残し、本体の罫線を外します。muted の列の塗りは残ります。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              bordered={false}
               columns={Array.from({ length: 7 }, (_, index) => ({
                 label: dayLabel(index + 1),
                 units: 1,
+                muted: index === 5,
               }))}
               rows={[
                 {

@@ -503,10 +503,10 @@ export const COMPONENTS: ComponentEntry[] = [
       },
       {
         name: "columns",
-        type: "{ label: string; units: number }[]",
+        type: "{ label: string; units: number; muted?: boolean }[]",
         required: true,
         description:
-          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out.",
+          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out. `muted: true` tints that column down the whole body (a weekend, a holiday, a closed period) with `--range-timeline-muted-column-background` (default `hsl(var(--muted))`, the header surface; body text keeps 14.25:1 / 12.4:1 and `--muted-foreground` 5.2:1 / 5.47:1 on it).",
       },
       {
         name: "bands",
@@ -528,6 +528,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Committed endpoint movement in units. Omit for read-only. Dates remain consumer data; do not replace true anchors with clipped positions.",
       },
+      {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input))`, 3.47:1 light / 3.88:1 dark on the card; the decorative `--border` measured 1.15:1), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
+      },
     ],
     example:
       '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
@@ -536,6 +543,8 @@ export const COMPONENTS: ComponentEntry[] = [
     rules: [],
     usage: [
       "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
+      'An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus "before" at the inline-start edge, "after" plus a chevron at the inline-end edge; the chevrons mirror under RTL.',
+      "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
       "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
     ],
   },

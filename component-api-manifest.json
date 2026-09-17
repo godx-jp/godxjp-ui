@@ -11763,10 +11763,18 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "columns",
           "origin": "owned",
           "required": true,
-          "type": "{ label: string; units: number; }[]",
+          "type": "{ label: string; units: number; muted?: boolean; }[]",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },

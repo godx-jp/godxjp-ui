@@ -2934,6 +2934,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--range-timeline-grid-color",
+    "value": "initial",
+    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--input)))` so it follows a scoped * theme; --input is the ≥3:1 tier the Calendar grid chose, --border measured 1.15:1 and a 1px * rule in it is not seen. Set any colour to retint, e.g. `hsl(var(--border))` for a quieter grid."
+  },
+  {
+    "name": "--range-timeline-grid-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Weight of every grid rule, header column rules included, so header and body stay aligned."
+  },
+  {
+    "name": "--range-timeline-muted-column-background",
+    "value": "initial",
+    "description": "Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var(--font-size-xs)",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."

@@ -1577,11 +1577,75 @@
     min-inline-size: 0;
     overflow: hidden;
     padding: var(--space-2);
-    border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
+    border-inline-end: var(--range-timeline-grid-width) solid
+      hsl(var(--range-timeline-border-color));
   }
   .ui-range-timeline-track {
     position: relative;
     min-inline-size: 0;
+  }
+  /* The body grid (gh#703). One decorative layer behind every row, built from the SAME grid
+   * template and the SAME flex/units + inline padding + inline-end rule as the header columns, so
+   * each vertical line lands exactly under its header column edge for unequal `units` too — a
+   * repeating gradient could only do that for equal columns. `isolation` + `z-index: -1` keep it
+   * under the row rules, the sticky labels, the today marker and the bars; it never takes a pointer. */
+  .ui-range-timeline-body {
+    position: relative;
+    isolation: isolate;
+  }
+  .ui-range-timeline-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    display: grid;
+    grid-template-columns: var(--range-timeline-label-width) minmax(0, 1fr);
+    pointer-events: none;
+  }
+  .ui-range-timeline-grid-column {
+    min-inline-size: 0;
+    padding-inline: var(--space-2);
+    border-inline-end: var(--range-timeline-grid-width) solid transparent;
+  }
+  .ui-range-timeline-grid-column[data-muted="true"] {
+    background: var(--range-timeline-muted-column-background, hsl(var(--muted)));
+  }
+  /* Ruled (`bordered`, the default): every internal line reads the grid knob. `initial` in the token
+   * tier, the --input role at the call site — the ≥3:1 boundary tier the Calendar grid chose,
+   * because --border measured 1.15:1 and a 1px rule in it is not seen. Pinned by
+   * range-timeline-grid.test.ts. */
+  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,
+  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,
+  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column {
+    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input)));
+  }
+  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,
+  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row {
+    border-block-start: var(--range-timeline-grid-width) solid
+      var(--range-timeline-grid-color, hsl(var(--input)));
+  }
+  .ui-range-timeline-outside {
+    position: absolute;
+    inset-block: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding-inline: var(--space-2);
+    color: hsl(var(--muted-foreground));
+  }
+  .ui-range-timeline-outside[data-direction="before"] {
+    inset-inline-start: 0;
+  }
+  .ui-range-timeline-outside[data-direction="after"] {
+    inset-inline-end: 0;
+  }
+  .ui-range-timeline-outside-icon {
+    inline-size: var(--icon-size-sm);
+    block-size: var(--icon-size-sm);
+    flex-shrink: 0;
+  }
+  /* The chevron names a direction on the time axis, which runs right-to-left under RTL. */
+  [dir="rtl"] .ui-range-timeline-outside-icon {
+    transform: scaleX(-1);
   }
   .ui-range-timeline-bar {
     position: absolute;

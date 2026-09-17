@@ -607,7 +607,8 @@
     "trendCurrent": "current"
   },
   "rangeTimeline": {
-    "outsideRange": "Outside the visible range",
+    "outsideAfter": "After the visible range",
+    "outsideBefore": "Before the visible range",
     "schedule": "Schedule"
   },
   "textExamples": {

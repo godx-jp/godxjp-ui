@@ -3529,7 +3529,14 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "columns",
         local: true,
-        reason: "Labels and positive numeric unit counts define a consumer-supplied axis.",
+        reason:
+          "Labels, positive numeric unit counts and an optional muted flag (non-working period) define a consumer-supplied axis.",
+      },
+      {
+        field: "bordered",
+        local: true,
+        reason:
+          "Rules the body as a grid (row rules, header rule, a vertical rule per column); default true, same name and default as Calendar bordered.",
       },
       {
         field: "bands",
