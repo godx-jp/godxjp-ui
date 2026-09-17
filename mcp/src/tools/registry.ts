@@ -397,7 +397,51 @@ export const TOOL_DEFINITIONS = [
   },
 ];
 
+const TOOL_NAME_SET: ReadonlySet<string> = new Set(TOOL_DEFINITIONS.map((t) => t.name));
+
+/**
+ * The first line of every catalog answer: which server produced it (gh#722).
+ *
+ * Measured: a project had two registrations of this server, the project's pinned one and a stale
+ * one from user-scoped config serving a catalog five majors old. An agent called the stale one
+ * and got a confident, complete page for a component removed in 22.0.0 — nothing in the answer
+ * said which version spoke. The line is fixed-format so it can be read at a glance and matched
+ * by `/^@godxjp\/ui-mcp (\d+\.\d+\.\d+)/`. The version comes from this package's package.json,
+ * the same source as `serverInfo.version`.
+ */
+export function catalogVersionLine(): string {
+  const range = (pkg as { godxUiCompatibility?: string }).godxUiCompatibility ?? pkg.version;
+  return `@godxjp/ui-mcp ${pkg.version} (catalog for @godxjp/ui ${range})`;
+}
+
+/**
+ * A one-line warning when the installed @godxjp/ui (from the launcher's `GODX_UI_VERSION`) is on a
+ * different MAJOR than this server — the gap in which whole components appear and disappear.
+ * `null` when the version is unknown, unparseable, or on the same major.
+ */
+export function catalogMajorMismatchWarning(): string | null {
+  const installed = installedUiFromLauncher();
+  const iv = installed ? parseUiVersion(installed) : null;
+  const serverMajor = parseUiVersion(pkg.version)?.major;
+  if (!iv || !serverMajor || iv.major === serverMajor) return null;
+  return (
+    `⚠️ MAJOR MISMATCH: this server is @godxjp/ui-mcp ${pkg.version}, the project has @godxjp/ui ` +
+    `${installed} installed — this catalog may describe components that do not exist in the ` +
+    `installed package. Pin the MCP to @godxjp/ui-mcp@${installed} (\`npx @godxjp/ui sync-rules\` ` +
+    `updates the project's .mcp.json; a registration outside the project needs ` +
+    `\`claude mcp remove <key>\`), then restart the agent.`
+  );
+}
+
+/** Every declared tool's answer, prefixed with the version line (and a major-mismatch warning). */
 export async function dispatchTool(name: string, args: Record<string, unknown>): Promise<string> {
+  const out = await answerTool(name, args);
+  if (!TOOL_NAME_SET.has(name)) return out; // "Unknown tool: …" is not a catalog answer
+  const warning = catalogMajorMismatchWarning();
+  return `${catalogVersionLine()}\n${warning ? `${warning}\n` : ""}\n${out}`;
+}
+
+async function answerTool(name: string, args: Record<string, unknown>): Promise<string> {
   switch (name) {
     // Discovery
     case "list_skills":

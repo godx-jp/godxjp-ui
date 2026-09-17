@@ -8,6 +8,7 @@ import {
   ensureClaudeMd,
   ensureMcpJson,
   ensureConsumerRules,
+  outOfProjectUiMcpReport,
   refreshGuineaPigSkill,
   shouldSkip,
   writeWorkflowMd,
@@ -25,6 +26,10 @@ try {
   if (r.startsWith("left untouched") || r.startsWith("present (custom godx-ui")) {
     console.log(`\n  @godxjp/ui → .mcp.json ${r}\n`);
   }
+  // A registration outside the project is reported whatever the project file says, before any of
+  // the quiet exits below: it is live beside ours and nothing here will ever change it (gh#722).
+  const outside = outOfProjectUiMcpReport(root);
+  if (outside) console.log(outside);
   // The mandate is plain text the agent reads every turn (CLAUDE.md block + workflow file). It
   // changes nothing in the dev loop, so it is installed by default: an agent that never saw the
   // but no mandate). Only the hooks — which DO change the loop — stay behind `init-agent`.

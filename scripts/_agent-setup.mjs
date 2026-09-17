@@ -16,12 +16,14 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   statSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join } from "node:path";
+import { homedir } from "node:os";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /** This package's own root — the source of the version we stamp with. */
@@ -423,6 +425,83 @@ export function ensureMcpJson(root) {
   json.mcpServers[MCP_KEY] = expected;
   writeFileAtomic(path, JSON.stringify(json, null, indent) + "\n");
   return created ? "created" : "added";
+}
+
+/**
+ * Registrations of the catalog server OUTSIDE the project — READ-ONLY (gh#722).
+ *
+ * `.mcp.json` is not the only place an agent's MCP servers come from. Claude Code keeps
+ * user-scoped servers in the top-level `mcpServers` of `~/.claude.json` (under
+ * `$CLAUDE_CONFIG_DIR` when that is set) and local-scoped ones — private to one checkout — under
+ * `projects[<absolute project path>].mcpServers` of the same file. Both are live beside the
+ * project's entry. Measured: a user-scoped `godxjp-ui` serving a ≤ 21.0.0 catalog answered next
+ * to the project's pinned `godx-ui`, and an agent took a removed component's page from it.
+ *
+ * That file belongs to the user, spans every project, and is not ours to edit: this only READS
+ * it. A missing, unreadable or malformed file yields nothing, silently. Returns
+ * `{ key, scope, pin }` per entry — never `env`, which is where secrets live.
+ */
+export function findOutOfProjectUiMcp(
+  root,
+  configDir = process.env.CLAUDE_CONFIG_DIR || homedir(),
+) {
+  try {
+    const read = readJsonFile(join(configDir, ".claude.json"));
+    if (read.state !== "ok") return [];
+    const found = [];
+    const collect = (servers, scope) => {
+      if (!servers || typeof servers !== "object" || Array.isArray(servers)) return;
+      for (const [key, entry] of Object.entries(servers)) {
+        if (!runsUiMcp(entry)) continue;
+        const parts = [entry.command, ...(Array.isArray(entry.args) ? entry.args : [])];
+        const pin = parts.find(
+          (part) => typeof part === "string" && /(^|\/)@godxjp\/ui-mcp(@|$)/.test(part),
+        );
+        found.push({ key, scope, pin });
+      }
+    };
+    collect(read.json.mcpServers, "user");
+    const projects = read.json.projects;
+    if (projects && typeof projects === "object" && !Array.isArray(projects)) {
+      const paths = new Set([resolve(root)]);
+      try {
+        paths.add(realpathSync(root));
+      } catch {
+        // A root that cannot be resolved is looked up by its given path only.
+      }
+      for (const path of paths) collect(projects[path]?.mcpServers, "local");
+    }
+    return found;
+  } catch {
+    return [];
+  }
+}
+
+const shellWord = (word) => (/^[\w.@/-]+$/.test(word) ? word : `'${word.replace(/'/g, "'\\''")}'`);
+
+/**
+ * What `sync-rules` and `init-agent` print about out-of-project registrations: key, pin, that it
+ * was left untouched, and the command that updates it. Empty string when there are none.
+ */
+export function outOfProjectUiMcpReport(root, configDir) {
+  const found = findOutOfProjectUiMcp(root, configDir);
+  if (found.length === 0) return "";
+  const expected = mcpServerFor(root).args[0];
+  let out =
+    `\n  @godxjp/ui → @godxjp/ui-mcp is ALSO registered outside this project, in Claude Code's ` +
+    `.claude.json.\n  It answers beside the project's .mcp.json entry (${expected}) and an agent ` +
+    `can call either — the tool names differ only by the key.\n`;
+  for (const { key, scope, pin } of found) {
+    const k = shellWord(key);
+    const runs = /@godxjp\/ui-mcp@\S+$/.test(pin ?? "")
+      ? pin
+      : `${pin ?? "@godxjp/ui-mcp"} (unpinned: resolves the latest release)`;
+    out +=
+      `    • "${key}" (${scope} scope) runs ${runs} — outside the project, left untouched.\n` +
+      `        remove it:  claude mcp remove ${k} -s ${scope}\n` +
+      `        or re-pin:  claude mcp remove ${k} -s ${scope} && claude mcp add ${k} -s ${scope} -- npx ${expected}\n`;
+  }
+  return out;
 }
 
 /** Ensure `.claude/settings.json` has the audit PostToolUse + workflow SessionStart hooks. */

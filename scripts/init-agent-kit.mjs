@@ -4,6 +4,7 @@ import {
   ensureClaudeHooks,
   ensureClaudeMd,
   ensureMcpJson,
+  outOfProjectUiMcpReport,
   shouldSkip,
   writeWorkflowMd,
 } from "./_agent-setup.mjs";
@@ -28,6 +29,8 @@ console.log(
 );
 console.log(`    • .claude/godxjp-ui-workflow.md — ${md ? "created" : "already present"}`);
 console.log(`    • CLAUDE.md — godxjp-ui mandate (${claudeMd})`);
+const outside = outOfProjectUiMcpReport(root);
+if (outside) console.log(outside);
 console.log(`
   The auto-audit hook now runs on every Write/Edit of a .tsx file and feeds findings
   back to the agent — it cannot skip the audit. Restart your agent to load the MCP + hooks.
