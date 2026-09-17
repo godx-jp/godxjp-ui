@@ -1838,4 +1838,22 @@ describe("registry verification waits long enough for npm to catch up", () => {
     expect(source).toMatch(/for \(let attempt = 1; attempt <= registryVerificationAttempts/);
     expect(source).toContain("wait(registryVerificationDelayMs)");
   });
+
+  /*
+   * A retry budget is worthless against a cache. `npm view` answers from `_cacache` when it holds
+   * a fresh-enough packument, so the loop above re-read one stale snapshot twenty times and threw:
+   * the 27.9.0 release (run 35282153407) published both tarballs, then aborted with
+   * `observed integrity=null, godx-staging=27.8.0` while the registry answered 27.9.0 minutes
+   * later. The release was complete and unpromoted, and `latest` stayed a version behind until a
+   * hand-run `npm dist-tag add` finished it (gh#736).
+   */
+  it("revalidates every registry read, so the budget is spent on the registry and not on a cache", () => {
+    const reads = source.match(/npmJson\(\s*\[\s*"view"[^\]]*\]/g) ?? [];
+    expect(reads.length, "expected the registryState reads to still be npm view calls").toBeGreaterThan(0);
+    for (const read of reads) {
+      expect(read, `a registry read without --prefer-online can be served from npm's cache: ${read}`).toContain(
+        '"--prefer-online"',
+      );
+    }
+  });
 });
