@@ -555,12 +555,16 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         opacity: cell.dim ? 0.5 : 1,
                       }}
                     >
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        shape="sharp"
+                        fullWidth
+                        wrap
+                        align="start"
                         onClick={() => onPick(cell)}
-                        className="hover:bg-accent focus-visible:ring-ring min-h-[96px] w-full text-start transition-colors focus:outline-none focus-visible:ring-2"
+                        className="min-h-[96px]"
                       >
-                        <Flex direction="col" gap="xs">
+                        <Flex direction="col" gap="xs" fill>
                           <Flex align="center" justify="between">
                             <Text
                               as="span"
@@ -604,7 +608,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                             ) : null}
                           </Flex>
                         </Flex>
-                      </button>
+                      </Button>
                     </TableCell>
                   );
                 })}

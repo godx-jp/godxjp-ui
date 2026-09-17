@@ -102,6 +102,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       }
       {...(scrollable ? { tabIndex: 0 } : {})}
     >
+      {/* ui-audit-disable-next-line no-raw-table — this IS the Table primitive; it renders the native element. */}
       <table
         ref={ref}
         data-slot="table"

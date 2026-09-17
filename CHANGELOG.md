@@ -4,6 +4,33 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed — `ui-audit` could not see a raw control whose opening tag ends its line (gh#673)
+
+`no-raw-button`, `no-raw-select`, `no-raw-textarea` and `no-raw-table` matched `/<button[\s>]/`
+ONE LINE at a time. When prettier wraps an element, `<button` sits alone on its line and the newline
+after it is not part of that line, so every wrapped element was invisible. Measured on a consumer
+(godx-tempo `backend/resources/js`): **`no-raw-button` 10 → 168**, `no-raw-select` 0 → 5,
+`no-raw-textarea` 0 → 3 with this fix, against 158 / 5 / 3 multi-line tags counted by grep. A
+consumer reading the old number concluded a migration was finished when it was not.
+
+- The four rules now match the whole file (`<tag` followed by whitespace, `/` or `>`), report the
+  line of the `<`, and still honour `ui-audit-disable-next-line <rule>` on the line above — `//` or
+  `{/* */}` form. `<Button`, `<ButtonGroup`, `<buttonish`, `</button` and comments are not matched.
+  (`no-raw-input` already matched across lines.)
+- Same line-bound defect, same fix: `manual-field-helper` (a wrapped `<p className=…>`),
+  `hand-rolled-close-glyph` (a `×` on its own line — 0 → 3 on the same consumer), and the consumer
+  rules `no-utility-layout` / `no-hand-rolled-surface` (a `className` template literal spread over
+  lines — surface 519 → 540).
+- Whole-file findings now carry `replacement` too, which `no-raw-input` had silently lost.
+- These rules now read `.tsx`/`.jsx` only, like every other element rule: in a `.ts` file a `<table`
+  or `className=` can only be inside a string, never markup.
+
+In this repository the wider scan found two real cases: the `Table` primitive's own `<table>`
+(suppressed in place — it IS the primitive) and a raw `<button>` day cell in the shift-calendar
+showcase, now a `Button`.
+
 ## [25.3.0] - 2026-09-17
 
 MINOR, and the same judgement 25.2.0 stated: every consumer with a calendar WILL see grid lines appear
