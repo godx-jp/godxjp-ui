@@ -4,6 +4,50 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [25.3.0] - 2026-09-17
+
+MINOR, and the same judgement 25.2.0 stated: every consumer with a calendar WILL see grid lines appear
+on the next build. It is a fix to a defect the owner reported — "no border between the days, very
+hard to read" — not a new design: the GoDX v2.3 guideline has no calendar rule, but it does say a
+line that must be SEEN uses `border.control`, held to 3:1, which is exactly the role chosen below.
+No API is removed, `bordered={false}` restores the old look, and no consumer has to change code.
+
+### Fixed — the calendar grid had no visible lines between days
+
+Three defects, and each one hid the next:
+
+- **The lines were off by default.** `Calendar` already had a `bordered` prop that rules the month
+  into cells; it defaulted to `false`, so nobody saw it. Now `true`.
+- **`DatePicker` could not turn them on at all.** It never passed `bordered` to the `Calendar` it
+  renders. It now does, for single, `multiple`, `range` and `week` selection. (`time-range-picker`
+  renders no calendar; the month/quarter/year pickers use a grid with no day cells.)
+- **Even when on, the lines were effectively invisible.** They were hardcoded to `--border`, the
+  decorative chrome tier, which measures 1.15:1 against the page. New knob
+  `--calendar-grid-border-color`, declared `initial` and defaulting at the call site to
+  `hsl(var(--input))` — chosen by measurement as the only border role that clears 3:1 on every
+  surface the grid sits on:
+
+  | role | page | popover | weekday header | range-middle fill |
+  |---|---|---|---|---|
+  | `--border` (was) | 1.15 / 1.38 | 1.15 / 1.27 | 1.05 / 1.04 | 1.04 / 1.13 |
+  | **`--input`** | **3.47 / 4.22** | **3.47 / 3.88** | **3.18 / 3.17** | 2.91 / 2.70 |
+
+  (light / dark.) The lines stay quieter than the selected-day fill (`--primary`, 5.50:1 / 7.76:1),
+  so the selected day is still the strongest shape.
+
+**A fourth defect surfaced only once the lines were on:** the day cells collapsed to 16.5px wide and
+the weeks went ragged under the weekday header. Each lined cell now takes its width from
+`--control-height`, like the header cell above it. Measured in Chromium: cells 32×33px (above the
+24px target), the month grid 225px against 224px unlined, nothing overflowing at 320px; selected,
+range, today, disabled and outside-month days all still read clearly, the focus ring is present on
+all four sides, and RTL flips the lines.
+
+### Changed — axe is local-only; it no longer runs in any CI workflow (#668)
+
+The owner's standing rule. The four merge-lane shards and the nightly full sweep are removed;
+`pnpm check:frame-axe` stays, run on a developer machine against the static preview. CI-only — it
+does not change the package.
+
 ## [25.2.0] - 2026-09-17
 
 MINOR — and it is a judgement call worth stating, because every consumer with a link WILL see links
