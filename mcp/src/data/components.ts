@@ -7495,6 +7495,13 @@ export function PrioritySelect({ value, onValueChange }) {
           "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
       },
       {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Rule the popup's DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker=\"date\"` / `\"week\"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input))`).",
+      },
+      {
         name: "disabledDate",
         type: "(date: Date) => boolean",
         description:
@@ -10895,9 +10902,9 @@ function PlanSlider() {
       {
         name: "bordered",
         type: "boolean",
-        defaultValue: "false",
+        defaultValue: "true",
         description:
-          "Kẻ ô: mỗi ngày một đường viền, kể cả hàng thứ (hàng thứ còn được tô nền muted). KHÔNG phải một khung quanh cả lịch — đó là việc của Card, và lồng Card trong Card cho hai mép bo cách nhau 16px với hai lớp padding. Mặc định false vì popover của picker cần điều ngược lại: ngày được chọn phải là hình duy nhất trong tấm.",
+          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job. Line colour is the `--calendar-grid-border-color` knob, default `hsl(var(--input))` (3.47:1 light / 3.88:1 dark on the popover; the decorative `--border` it used to draw in measured 1.15:1 and was invisible). Retint with `--calendar-grid-border-color: hsl(var(--border))` for the old quiet line. DatePicker forwards the same prop to its popup calendar.",
       },
       {
         name: "width",

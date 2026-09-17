@@ -57,6 +57,36 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>カレンダーの罫線 (bordered)</CardTitle>
+            <CardDescription>
+              ポップアップのカレンダーは既定で日ごとに罫線を引く (Calendar bordered を転送)。
+              bordered={"{false}"} で罫線なしに戻せる。range / multiple / week
+              でも同じ。月・四半期・年の グリッドには日のセルがないため対象外。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex gap="lg" wrap>
+              <FormField id="ruled-date" label="罫線あり (既定)">
+                <DatePicker
+                  id="ruled-date"
+                  name="ruled_date"
+                  defaultValue={new Date(2026, 0, 15)}
+                />
+              </FormField>
+              <FormField id="unruled-date" label="罫線なし (bordered={false})">
+                <DatePicker
+                  id="unruled-date"
+                  name="unruled_date"
+                  defaultValue={new Date(2026, 0, 15)}
+                  bordered={false}
+                />
+              </FormField>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>fromDate で過去日を無効化</CardTitle>
             <CardDescription>
               支払期限など、今日以降しか選べない場合に fromDate=&#123;new Date(2026, 0, 1)&#125;

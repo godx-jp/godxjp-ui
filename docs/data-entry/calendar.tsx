@@ -29,6 +29,10 @@ export default function Demo() {
     from: new Date(2026, 3, 1),
     to: new Date(2026, 3, 30),
   });
+  const [ruledRange, setRuledRange] = useState<DateRange | undefined>({
+    from: new Date(2026, 3, 13),
+    to: new Date(2026, 3, 22),
+  });
   const [shiftDays, setShiftDays] = useState<Date[] | undefined>([
     new Date(2026, 3, 6),
     new Date(2026, 3, 13),
@@ -64,6 +68,48 @@ export default function Demo() {
               }
               aria-label="発行日カレンダー"
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              罫線 (bordered) · 既定で表示 / bordered={"{false}"} で解除
+            </CardTitle>
+            <CardDescription>
+              日と日の間に罫線を引くのが既定。線色は --calendar-grid-border-color (既定
+              --input、背景に対し 3:1
+              以上)。選択日・今日・範囲の始点/中間/終点・無効日・前後月の日が
+              罫線の中でも判別できる。罫線なしの浮いたボタン表示にしたい場合のみ bordered=
+              {"{false}"} を渡す。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex gap="lg" wrap>
+              <Calendar
+                mode="range"
+                selected={ruledRange}
+                onSelect={setRuledRange}
+                defaultMonth={new Date(2026, 3, 1)}
+                today={new Date(2026, 3, 8)}
+                locale={ja}
+                disabled={[new Date(2026, 3, 5), new Date(2026, 3, 27)]}
+                aria-label="罫線あり (既定) の期間カレンダー"
+                data-testid="calendar-ruled"
+              />
+              <Calendar
+                mode="range"
+                selected={ruledRange}
+                onSelect={setRuledRange}
+                defaultMonth={new Date(2026, 3, 1)}
+                today={new Date(2026, 3, 8)}
+                locale={ja}
+                disabled={[new Date(2026, 3, 5), new Date(2026, 3, 27)]}
+                bordered={false}
+                aria-label="罫線なし (bordered=false) の期間カレンダー"
+                data-testid="calendar-unruled"
+              />
+            </Flex>
           </CardContent>
         </Card>
 

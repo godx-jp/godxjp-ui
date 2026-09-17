@@ -1884,6 +1884,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule — * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too."
   },
   {
+    "name": "--calendar-grid-border-color",
+    "value": "initial",
+    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--input)))` * so it follows a scoped theme. Default role --input, the ≥3:1 tier — the decorative --border * measured 1.15:1 and was invisible as a 1px line. Set any colour to retint, e.g. `hsl(var(--border))` for the old quiet line."
+  },
+  {
     "name": "--transfer-pane-min-height",
     "value": "14rem",
     "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."

@@ -808,8 +808,10 @@ export type CalendarProp = DayPickerProps &
      * What a month grid needs is the ruling BETWEEN days, so a week reads as a row of cells the
      * eye can track across.
      *
-     * Default `false`, because a picker popover wants the opposite: floating day buttons with no
-     * ruling, so the selected day is the only shape in the panel.
+     * Default `true` — the owner's call, from a real screen: with no ruling the month read as a
+     * cloud of numbers and was "very hard to read". Pass `bordered={false}` for the floating-button
+     * look. The line colour is `--calendar-grid-border-color` (default `--input`, the ≥3:1 tier;
+     * the decorative `--border` measured 1.15:1 and was invisible as a 1px ruling).
      */
     bordered?: boolean;
     /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
@@ -954,6 +956,12 @@ export type DatePickerBaseProp = FieldA11yProps &
     toDate?: Date;
     /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */
     cellRender?: CalendarCellRenderProp;
+    /**
+     * Rule the day grid in the panel — forwarded to `Calendar bordered`, and defaults to `true`
+     * like it. Applies to the DAY grid (`picker="date"` / `"week"`, single, `multiple` and `range`);
+     * the month / quarter / year period grid has no day cells to rule and ignores it.
+     */
+    bordered?: boolean;
     /**
      * Forbid individual dates by predicate — the rule `minDate`/`maxDate` cannot express, because a
      * business calendar is rarely one contiguous range: 土日, a closed accounting period, a 祝日, a
