@@ -1262,7 +1262,7 @@
     border: 0;
     padding: 0;
     cursor: pointer;
-    color: hsl(var(--muted-foreground) / 0.45);
+    color: hsl(var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha));
     line-height: 0;
   }
   .ui-rating-star:disabled {
@@ -1280,9 +1280,10 @@
    * antd ships `#fadb14` with the same ratio. Moving it to the text tier would make a rating look
    * like a row of error marks. If a service needs a darker star, it retunes `--warning` in
    * theme.css; do not repoint this rule at the text tier without saying what replaced it.
+   * A brand that paints its stars in its own hue sets `--rating-star-filled-color` (gh#694).
    */
   .ui-rating-star-filled {
-    color: hsl(var(--warning));
+    color: hsl(var(--rating-star-filled-color, var(--warning)));
   }
   .ui-rating-star-filled svg {
     fill: currentColor;
@@ -3641,7 +3642,7 @@
 
   /* Half star — same deliberate exception as `.ui-rating-star-filled` above. */
   .ui-rating-star-half-filled {
-    color: hsl(var(--warning));
+    color: hsl(var(--rating-star-filled-color, var(--warning)));
   }
 
   /* ── RADIO `optionType="button"` ─────────────────────────────────────────────────────────

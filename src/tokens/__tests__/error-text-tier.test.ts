@@ -119,7 +119,10 @@ describe("no component paints prose with the destructive FILL tier (gh#610)", ()
    * is listed in EXEMPT with a reason. That way forgetting is loud, and a deliberate exception is
    * a line of code someone had to write.
    */
-  const FILL_AS_INK = /^\s*color:\s*hsl\(var\(--(destructive|warning|success|info)\)\)/;
+  // Also catches a knob whose DEFAULT is a fill token (`hsl(var(--knob, var(--warning)))`, gh#694):
+  // routing the read through a knob does not change what paints when nobody sets it.
+  const FILL_AS_INK =
+    /^\s*color:\s*hsl\(var\(--(?:[a-z0-9-]+,\s*var\(--)?(destructive|warning|success|info)\)/;
 
   /**
    * Selectors allowed to read the FILL tier as `color`, each with the reason recorded next to the
