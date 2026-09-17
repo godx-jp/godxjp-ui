@@ -250,7 +250,11 @@ trong một Button vẫn ra 20px.
 Mặc định là \`aria-hidden\` — glyph cạnh nhãn nhìn thấy được thì không đọc
 thêm lần nữa. Chỉ truyền \`label\` khi glyph là thứ DUY NHẤT mang nghĩa
 (một ổ khoá đứng một mình trong cột trạng thái); khi đó nó thành
-\`role="img"\` với tên đó, và tên ấy phải đi qua \`t()\` của bạn.`,
+\`role="img"\` với tên đó, và tên ấy phải đi qua \`t()\` của bạn.
+
+cửa thoát: glyph nằm trong wrapper của CHÍNH BẠN đã chỉnh cỡ thì luật vẫn
+kêu — tắt đúng một dòng và nói lý do:
+    {/* ui-audit-disable-next-line lucide-icon-needs-size — wrapper tự chỉnh cỡ */}`,
       },
     ],
   },
