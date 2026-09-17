@@ -2509,6 +2509,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Inline pending ReactNode slot, not boolean PendingProp state.",
       },
+      {
+        field: "ignoreValidationErrors",
+        local: true,
+        reason:
+          "Query-error category filter; defaults on inside a Form whose error bag holds messages.",
+      },
       "ClassNameProp",
     ],
   },

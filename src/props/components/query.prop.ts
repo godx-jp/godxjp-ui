@@ -43,6 +43,13 @@ export type AlertMutationFeedbackProp = {
   showRetry?: boolean;
   /** Optional inline pending slot while `mutation.isPending`. */
   pending?: React.ReactNode;
+  /**
+   * Skip rendering when the error classifies as a validation error (`classifyQueryError` category
+   * `"validation"`: 400/422). `true` skips every such error. When omitted, the alert is skipped only
+   * inside a `FormRoot`/`Form` whose `errors` bag holds at least one message (the fields show it;
+   * `FormErrors` shows unclaimed keys); an empty/absent bag still renders the alert.
+   */
+  ignoreValidationErrors?: boolean;
   className?: ClassNameProp;
 };
 
