@@ -999,37 +999,43 @@ function UploadFileList({
                 <Progress value={item.percent ?? 0} aria-label={t("dataEntry.upload.uploading")} />
               )}
             </div>
-            {onPreview && (hasCustomPreview || item.previewUrl) && (
-              <Button type="button" size="sm" variant="ghost" onClick={() => onPreview(item)}>
-                {t("dataEntry.upload.preview")}
-              </Button>
-            )}
-            {onDownload && (
-              <Button type="button" size="sm" variant="ghost" onClick={() => onDownload(item)}>
-                {t("dataEntry.upload.download")}
-              </Button>
-            )}
-            {onStart && item.file && item.status !== "uploading" && item.status !== "done" && (
-              <Button type="button" size="sm" variant="ghost" onClick={() => onStart(item)}>
-                {t(item.status === "error" ? "dataEntry.upload.retry" : "dataEntry.upload.start")}
-              </Button>
-            )}
-            {onCancel && item.status === "uploading" && (
-              <Button type="button" size="sm" variant="ghost" onClick={() => onCancel(item.uid)}>
-                {t("dataEntry.upload.cancel")}
-              </Button>
-            )}
-            {onRemove && (
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
-                onClick={() => onRemove(item.uid)}
-              >
-                <X className="ui-upload-row-icon" aria-hidden="true" />
-              </Button>
-            )}
+            {/* The actions travel TOGETHER. Each is a labelled Button that cannot shrink below its
+             * own text, so as loose siblings they were pushed out of a narrow row one by one with
+             * nothing to scroll them back (gh#733). As one group they drop under the name instead,
+             * and the group is `:empty`-collapsed so a row without actions keeps its old box. */}
+            <div className="ui-upload-row-actions">
+              {onPreview && (hasCustomPreview || item.previewUrl) && (
+                <Button type="button" size="sm" variant="ghost" onClick={() => onPreview(item)}>
+                  {t("dataEntry.upload.preview")}
+                </Button>
+              )}
+              {onDownload && (
+                <Button type="button" size="sm" variant="ghost" onClick={() => onDownload(item)}>
+                  {t("dataEntry.upload.download")}
+                </Button>
+              )}
+              {onStart && item.file && item.status !== "uploading" && item.status !== "done" && (
+                <Button type="button" size="sm" variant="ghost" onClick={() => onStart(item)}>
+                  {t(item.status === "error" ? "dataEntry.upload.retry" : "dataEntry.upload.start")}
+                </Button>
+              )}
+              {onCancel && item.status === "uploading" && (
+                <Button type="button" size="sm" variant="ghost" onClick={() => onCancel(item.uid)}>
+                  {t("dataEntry.upload.cancel")}
+                </Button>
+              )}
+              {onRemove && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
+                  onClick={() => onRemove(item.uid)}
+                >
+                  <X className="ui-upload-row-icon" aria-hidden="true" />
+                </Button>
+              )}
+            </div>
           </div>
         );
         return (
