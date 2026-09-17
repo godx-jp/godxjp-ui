@@ -4,6 +4,30 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.8.0] - 2026-09-17
+
+MINOR. A TopbarItem that sets neither new prop renders byte-identical markup.
+
+### Fixed
+
+- **TopbarItem — `icon` is rendered under `asChild`** (gh#726). The slot was drawn only when
+  `!asChild`, so an item whose root is a link silently lost its icon. The sized
+  `.ui-topbar-item-icon` slot is now inserted inside the child element, ahead of its own children,
+  and the child (e.g. a router link) stays the rendered root with all merged props. Measured in
+  Chromium at 1440 and 390px: the icon is 16×16 in both an `asChild` link and a plain cell.
+  `.ui-topbar-item > svg` stays a direct-child rule, so a nested Badge glyph (12px) and a nested
+  `Button size="sm"` glyph (14px) are unchanged. A child that is not a single element throws the same
+  `Children.only` error as `Button asChild`.
+
+### Added
+
+- **TopbarItem `labelHideBelow` / `iconHideFrom`** (`BreakpointProp`, gh#726) — the `Flex
+  hideBelow` / `hideFrom` contract, scoped to the label and the icon. A bar cell collapses to
+  icon-only below a step, or label-only from a step up, without hand-wrapping
+  `<Flex hideFrom><Icon/></Flex>`. The hidden label is visually clipped rather than removed, so an
+  icon-only cell keeps its accessible name — measured at 390px: link 32px wide, icon 16×16, label
+  clipped to a hairline box, accessible name intact.
+
 ## [27.7.0] - 2026-09-17
 
 MINOR. A timeline with no `depth > 0` renders byte-identically.
