@@ -1625,10 +1625,23 @@
     display: grid;
     grid-template-columns: repeat(var(--range-timeline-units, 1), minmax(0, 1fr));
   }
+  /* The tick and band labels are CENTRED on their column, the convention of every Gantt (and of
+   * this repo's own Calendar weekday row); before gh#730 the day number sat at the inline start
+   * of a 65.07px cell, measured 21.07px from its centre, and a month band label hugged the left
+   * edge of a 420.46px band, 172px off centre.
+   *
+   * The `padding-inline-start` compensation is not decoration: the grid rule lives INSIDE the
+   * cell box on the END edge, so a symmetric padding centres the label in a content box that is
+   * one rule narrower than the track — measured exactly −0.500px on every column. Giving the
+   * start edge the rule's own width back makes the label centre the TRACK centre, 0.000px, in
+   * LTR and RTL alike. Track edges are unaffected either way: the tracks are sized by the grid
+   * (`minmax(0, 1fr)`), so padding can never move one. */
   .ui-range-timeline-column {
     min-inline-size: 0;
     overflow: hidden;
     padding: var(--space-2);
+    padding-inline-start: calc(var(--space-2) + var(--range-timeline-grid-width));
+    text-align: center;
     border-inline-end: var(--range-timeline-grid-width) solid
       hsl(var(--range-timeline-border-color));
   }
@@ -1663,19 +1676,36 @@
   }
   /* Ruled (`bordered`, the default): every internal line — row rules, the band/tick seam, the
    * label-column divider, header and body column rules — reads the grid knob, so the header is no
-   * heavier than the body. `initial` in the token tier, --input at half alpha at the call site:
-   * 1.74:1 light / 1.95:1 dark on the card, 1.68 / 1.80 on the --muted header. The full --input
-   * (3.47:1) was reported as too dark; --border measured 1.15:1 and a 1px rule in it is not seen.
-   * The same weight as the Calendar grid. Pinned by range-timeline-grid.test.tsx. */
+   * heavier than the body. `initial` in the token tier, the --border tier at the call site.
+   *
+   * THE OWNER HAS NOW ASKED THREE TIMES, and each answer is in the measurement: 25.3.0 turned the
+   * ruling on at all; 27.6.0 lightened the full --input (3.463:1, L* 56.87 on the card) to
+   * --input/0.5 (1.738:1, L* 78.67) because it read too dark; gh#730 measured that 78.67 against
+   * the --border every card, table row and this component's own outer frame draws in (L* 93.80,
+   * 1.149:1) and reported the grid as HEAVIER than the frame around it, so the eye tracked the
+   * grid instead of the bars. --border is the terminal answer to "lighter": the grid is now
+   * exactly a rule like every other rule, and can never out-weigh the box it sits in.
+   * The same tier as the Calendar grid. Pinned by range-timeline-grid.test.tsx. */
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column {
-    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
+    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--border)));
   }
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row {
     border-block-start: var(--range-timeline-grid-width) solid
-      var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
+      var(--range-timeline-grid-color, hsl(var(--border)));
+  }
+  /* `density` (gh#730) — the axis step, and ONLY the axis step: the row height, the bar height and
+   * the label column are the same at every density, so a compact Gantt is the same schedule with
+   * more days on screen, not a smaller one. Re-points the live knob rather than adding a second
+   * one, and only for a non-default step, so a theme's own --range-timeline-unit-width still owns
+   * the default timeline. */
+  .ui-range-timeline[data-density="compact"] {
+    --range-timeline-unit-width: var(--range-timeline-unit-width-compact);
+  }
+  .ui-range-timeline[data-density="comfortable"] {
+    --range-timeline-unit-width: var(--range-timeline-unit-width-comfortable);
   }
   .ui-range-timeline-outside {
     position: absolute;

@@ -554,7 +554,14 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input) / 0.5)`, 1.74:1 light / 1.95:1 dark on the card — lightened from the full --input (3.47 / 3.88) the owner found too dark, still well above the decorative `--border` at 1.15:1; the same weight as the Calendar grid), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
+          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. TWO TIERS, and they are different knobs: the INSIDE grid is `--range-timeline-grid-color`, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the card in light, L* 20.76 / 1.270:1 in dark) at `--range-timeline-grid-width` (hairline); the OUTER FRAME and the label-column divider are `--range-timeline-border-color`, default `var(--border)` — the same tier, so the grid can never read heavier than the box around it or than a DataTable row rule. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and was reported darker than every card and table in the system (gh#730); set `--range-timeline-grid-color: hsl(var(--input) / 0.5)` to get that weight back. `bordered={false}` restores header-only ruling; muted columns still paint.",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        defaultValue: '"default"',
+        description:
+          "Width of ONE axis unit — the canonical density vocabulary, the same three steps `DataTable density` takes. `default` is the shipped 56px/day, so no existing Gantt moves; `compact` is 42px/day (a 31-day axis needs 1558px instead of 1992px — measured, the widest two-digit day label across ja/en/ar/fa/hi/th/bn numbering systems is 19.86px in a 24px content box, so the tick still fits); `comfortable` is 70px/day. It moves the COLUMN WIDTH ONLY — row height, bar height and the label column are identical at every step, so a compact Gantt is the same schedule with more days on screen, not a smaller one. Re-points `--range-timeline-unit-width` on the element; retune a step with `--range-timeline-unit-width-{compact,default,comfortable}`. Unrelated to `PageContainer density` / `AppProvider density`, which rescale the whole page through `--scaling`.",
       },
       {
         name: "expandedValues",
@@ -584,6 +591,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
       'An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus "before" at the inline-start edge, "after" plus a chevron at the inline-end edge; the chevrons mirror under RTL.',
       "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
+      'Need more days on one screen? Pass `density="compact"` — do NOT declare `--range-timeline-unit-width` in an app stylesheet. Tick and band labels are CENTRED on their column by the component; a band clipped by the range (a month the axis starts inside) centres its label on the VISIBLE part, since that is the box the band owns.',
       "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
       "Nested Gantt (parent/child work items): pass the server's depth-first rows with `depth` on each (`{ id, label, start, end, startLabel, endLabel, depth }`), and fold with `expandedValues` / `onExpandedValuesChange` (or `defaultExpandedValues`). Never fake an indent inside `label` — the component owns the indent, the disclosure button (named from `rangeTimeline.childRows` + the row label, `aria-expanded`) and the `list` / `listitem` + `aria-level` / `aria-setsize` / `aria-posinset` structure.",
     ],
@@ -7716,7 +7724,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "true",
         description:
-          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input) / 0.5)`).',
+          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--border))`, the same tier as the popover edge and a table row rule — lightened from `hsl(var(--input) / 0.5)` in gh#730). The caption→weekday-row step is ONE token now, `--calendar-grid-space-block-start` (space-3, measured 32px → 12px): it used to stack with the month column gap.',
       },
       {
         name: "disabledDate",
@@ -11142,7 +11150,7 @@ function PlanSlider() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job. Line colour is the `--calendar-grid-border-color` knob, default `hsl(var(--input) / 0.5)` (1.74:1 light / 1.95:1 dark on the popover — lighter than the full --input at 3.47 / 3.88, which the owner found too dark, and still clearly above the decorative `--border` it first drew in, 1.15:1 and invisible; the same weight as the RangeTimeline grid). Retint with `--calendar-grid-border-color: hsl(var(--input))` for the heavier line. DatePicker forwards the same prop to its popup calendar.",
+          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job, and the Card/popover edge is the OUTER FRAME tier. The INSIDE grid is the `--calendar-grid-border-color` knob, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the popover in light, L* 20.76 / 1.270:1 in dark) — the same tier as the frame around it, as a DataTable row rule and as the RangeTimeline grid, so the ruling can never out-weigh the surface it is drawn on. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and gh#730 reported that still darker than the --border every card and table uses. Retint with `--calendar-grid-border-color: hsl(var(--input) / 0.5)` for the 27.6.0 weight or `hsl(var(--input))` for the heavy line. DatePicker forwards the same prop to its popup calendar.",
       },
       {
         name: "width",
@@ -11380,6 +11388,7 @@ function PlanSlider() {
       "DO use the disabled prop with Matcher objects ({ before: minDate }, { after: maxDate }, { dayOfWeek: [0, 6] }) to restrict selectable days — never render your own disabled overlay on top.",
       'DON\'T zero the panel padding or pin its width with utilities on className. Those are per-call-site constants no service theme can retune; `flush` and `width="auto"` set the same two tokens the panel already reads.',
       "DON'T hand-roll a calendar grid — Calendar wraps react-day-picker which is keyboard-navigable, ARIA-annotated, and screen-reader friendly out of the box. Provide a footer string for screen-reader status announcements when the selection changes.",
+      "The month frame is two knobs, not a stack of them (gh#730). `--calendar-space-inset` is the ONE inset the caption row, the `‹`/`›` nav buttons and the day grid all sit at — `--calendar-nav-space-inline` is declared as that same value, because the nav is absolutely positioned and would otherwise get its own (measured 4px against the grid's 12px, so the header read wider than the body). `--calendar-grid-space-block-start` is the ONE caption→weekday-row step (space-3, 12px; it used to stack with the month column gap for 32px). Retune those tokens rather than adding padding on the call site.",
     ],
     useCases: [
       "Inline date picker within a form section where the calendar grid must always be visible (e.g., a booking page or a date-of-issue field on an invoice creation form).",

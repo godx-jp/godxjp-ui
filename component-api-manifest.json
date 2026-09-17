@@ -11900,6 +11900,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "DensityProp | undefined",
+          "values": ["compact", "default", "comfortable"],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "expandedValues",
           "origin": "owned",
           "required": false,

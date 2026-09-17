@@ -328,16 +328,35 @@
 
 :root {
   --range-timeline-label-width: var(--app-shell-sidebar-width);
-  --range-timeline-unit-width: calc(var(--control-height-sm) * 2);
+  /* Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads.
+   * `density` re-points it per instance at the three steps below — set THIS one in a theme to
+   * move every step's baseline, set a step to retune one density. */
+  --range-timeline-unit-width: var(--range-timeline-unit-width-default);
+  /* Day-column steps on the `density` axis (gh#730). `default` is the shipped 56px, unchanged, so
+   * no existing Gantt moves; `compact` is 1.5 control-sm (42px), which leaves a 24px content box —
+   * measured, the widest two-digit day label across the ja/en/vi/ar/fa/hi/th/bn numbering systems
+   * is 19.86px (Thai ๒๗), so the tick still fits; `comfortable` is 2.5 (70px) for a wide screen.
+   * Multiples of --control-height-sm, never literals, so the axis follows the global
+   * density/scaling factor too. */
+  --range-timeline-unit-width-compact: calc(var(--control-height-sm) * 1.5);
+  --range-timeline-unit-width-default: calc(var(--control-height-sm) * 2);
+  --range-timeline-unit-width-comfortable: calc(var(--control-height-sm) * 2.5);
   --range-timeline-row-height: var(--control-height-lg);
   --range-timeline-bar-height: var(--control-height-sm);
+  /* The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same
+   * rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier
+   * (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be
+   * heavier than the frame around it, and at one tier it cannot become so under any theme. */
   --range-timeline-border-color: var(--border);
   /* Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical
    * rule per column down the whole body. Colour `initial` on purpose — the role default is read at
-   * the call site as `var(--range-timeline-grid-color, hsl(var(--input) / 0.5))` so it follows a
-   * scoped theme; --input at half alpha, 1.74:1 light / 1.95:1 dark on the card, the same weight
-   * as the Calendar grid — the full --input (3.47) read too dark, --border (1.15) is not seen.
-   * Set any colour to retint, e.g. `hsl(var(--input))` for a heavier grid. */
+   * the call site as `var(--range-timeline-grid-color, hsl(var(--border)))` so it follows a scoped
+   * theme. The --border tier: L* 93.80 / contrast 1.149 on the card in light, L* 20.76 / 1.270 in
+   * dark — identical to the outer frame and to a DataTable row rule, which is the whole point.
+   * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47)
+   * to --input/0.5 (1.74, L* 78.67), and gh#730 reported that still darker than the --border (L*
+   * 93.80) every card and table uses, so the eye followed the grid instead of the bars.
+   * Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight. */
   --range-timeline-grid-color: initial;
   /* Weight of every grid rule, header column rules included, so header and body stay aligned. */
   --range-timeline-grid-width: var(--stroke-hairline);

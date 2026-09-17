@@ -2707,25 +2707,32 @@
    * So each cell draws only its START and BLOCK-START edge, and the grid closes the far side. Two
    * neighbours therefore share exactly one line, with no collapse model involved.
    *
-   * THE LINE COLOUR IS `--input` AT HALF ALPHA, NOT `--border` — and the ruling is ON by default.
-   * Both were reported together ("no borders, very hard to read"): the grid shipped off, and
-   * turning it on drew it in `--border`, the decorative tier, measured 1.15:1 on
-   * --background/--card/--popover (dark 1.38 / 1.27) and 1.05:1 on the --muted header row — a 1px
-   * line nobody can see. The full `--input` (3.47:1 light / 3.88:1 dark) then read too dark
-   * ("màu border … đậm quá"), so the line sits between the two: `--input / 0.5` measures 1.74:1
-   * light / 1.95:1 dark on the popover and 1.68 / 1.80 on the header tint, far under the selected
-   * day's --primary fill (5.50 / 7.76), so the selection remains the loudest shape. The same
-   * weight as the RangeTimeline grid. Read at the call site (`initial` knob + fallback) so a
-   * scoped theme retints it live. Pinned by calendar-grid-line-contrast.test.ts. */
+   * THE LINE COLOUR IS THE `--border` TIER — and the ruling is ON by default. The weight has been
+   * reported three times and the history is the argument:
+   *
+   *   25.3.0  grid off entirely          → "no borders, very hard to read"; the ruling is turned on
+   *   25.3.0  --input   3.463 / 3.883    → "màu border … đậm quá" — too dark
+   *   27.6.0  --input/0.5  1.738 / 1.946 → gh#730: still DARKER (L* 78.67) than the --border
+   *                                        (L* 93.80) every card and table in the system draws
+   *   now     --border  1.149 / 1.270    ← a rule exactly as heavy as a Card edge / a table row
+   *
+   * That is the terminal answer to "lighter": at the --border tier the day grid cannot out-weigh
+   * the surface it is drawn on, and it stays far under the selected day's --primary fill (5.50 /
+   * 9.85), so the selection is still the loudest shape in the month. Known cost, measured: on the
+   * --muted weekday header the tier reads 1.054 / 1.041, i.e. the seven header rules are at the
+   * edge of visibility — the header's own tint, not its ruling, is what separates it. The same
+   * tier as the RangeTimeline grid. Read at the call site (`initial` knob + fallback) so a scoped
+   * theme retints it live; `--calendar-grid-border-color: hsl(var(--input) / 0.5)` restores the
+   * 27.6.0 weight. Pinned by calendar-grid-line-contrast.test.ts. */
   .ui-calendar[data-bordered="true"] .ui-calendar-day,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-week,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekdays {
-    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The header row gets a tint once the grid is ruled. Unruled it reads as a header by position
@@ -2743,7 +2750,7 @@
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {
-    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The day button fills its ruled cell instead of floating inside it — otherwise the selection
@@ -2780,8 +2787,8 @@
   /* Week numbers are cells of the same grid; without this the column sat outside the ruling. */
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number,
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number-header {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--input) / 0.5));
+    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The ruled day cell takes the column width ITSELF, like the weekday cell above it. The button
@@ -2835,11 +2842,15 @@
     max-inline-size: none;
   }
 
+  /* NO `gap` here (gh#730). A month has exactly two in-flow children — the caption and the grid —
+   * so this column's gap could only ever draw the caption→weekday step, which
+   * `.ui-calendar-grid`'s own `margin-block-start` already draws. The two stacked: 16px + 16px =
+   * a measured 32px void between 「2026年9月」 and 日月火水木金土, nearly a whole day row. The
+   * months-level gap keeps --calendar-month-space-gap; the caption→grid step is one token now. */
   .ui-calendar-month {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--calendar-month-space-gap);
   }
 
   .ui-calendar-caption {
@@ -2864,7 +2875,13 @@
    *
    * `absolute` itself stays, and the root's `relative` is load-bearing: without it the containing
    * block becomes the nearest transformed ancestor (the popover panel) and the chevrons fly to the
-   * popover corners. */
+   * popover corners.
+   *
+   * `inset-inline: 0` resolves against the root's PADDING box, so this padding — and nothing else —
+   * is the chevrons' inset from the panel edge. It therefore has to BE the grid's inset, which is
+   * why --calendar-nav-space-inline is declared as var(--calendar-space-inset) rather than as its
+   * own step: measured, the two were 4px and 12px and the header read wider than the body
+   * (gh#730). Pinned by calendar-inset-spacing-730.test.ts. */
   .ui-calendar-nav {
     position: absolute;
     inset-inline: 0;

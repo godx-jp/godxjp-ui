@@ -77,8 +77,9 @@ export default function Demo() {
               罫線 (bordered) · 既定で表示 / bordered={"{false}"} で解除
             </CardTitle>
             <CardDescription>
-              日と日の間に罫線を引くのが既定。線色は --calendar-grid-border-color (既定 --input の
-              50%、背景に対し約 1.7:1)。選択日・今日・範囲の始点/中間/終点・無効日・前後月の日が
+              日と日の間に罫線を引くのが既定。線色は --calendar-grid-border-color (既定 --border、
+              背景に対し約 1.15:1)。表の行やカードの枠と同じ段なので、罫線が枠より濃くなることは
+              ない。選択日・今日・範囲の始点/中間/終点・無効日・前後月の日が
               罫線の中でも判別できる。罫線なしの浮いたボタン表示にしたい場合のみ bordered=
               {"{false}"} を渡す。
             </CardDescription>
