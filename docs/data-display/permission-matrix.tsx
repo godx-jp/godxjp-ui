@@ -122,7 +122,6 @@ export default function Demo() {
                     value={compareA}
                     onValueChange={setCompareA}
                     options={roleOptions}
-                    clearable={false}
                     className="w-40"
                   />
                 </FormField>
@@ -131,7 +130,6 @@ export default function Demo() {
                     value={compareB}
                     onValueChange={setCompareB}
                     options={roleOptions}
-                    clearable={false}
                     className="w-40"
                   />
                 </FormField>

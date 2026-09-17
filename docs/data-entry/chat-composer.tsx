@@ -371,7 +371,6 @@ export default function Demo() {
                         aria-label="ステータス"
                         value={status}
                         onValueChange={setStatus}
-                        clearable={false}
                         options={STATUSES}
                       />
                       <Text size="xs" tone="muted">

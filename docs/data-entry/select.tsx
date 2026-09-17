@@ -127,7 +127,6 @@ export default function Demo() {
                 value={currency}
                 onValueChange={setCurrency}
                 showSearch
-                clearable={false}
                 searchPlaceholder="通貨を検索..."
                 options={[
                   { value: "JPY", label: "日本円", group: "アジア" },

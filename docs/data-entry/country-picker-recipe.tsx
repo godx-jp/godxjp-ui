@@ -106,7 +106,6 @@ export default function Demo() {
                 value={billing}
                 onValueChange={setBilling}
                 showSearch
-                clearable={false}
                 searchPlaceholder="国名 / ISO コードで検索..."
                 emptyMessage="該当する国がありません"
                 options={COUNTRIES}
