@@ -128,6 +128,7 @@ jobs:
               run() { echo "::group::$*"; if "$@"; then echo "PASS $*"; else echo "FAIL $*"; fail=1; fi; echo "::endgroup::"; }
               run pnpm check:data-entry-touch-aria
               run pnpm check:app-shell-narrow-grid
+              run pnpm check:app-shell-page-width
               run pnpm check:choice-hit-target
               run pnpm check:data-table-empty-inset
               run pnpm check:number-input-step-target

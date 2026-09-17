@@ -45,11 +45,16 @@ describe("DXS hi-fi visual contract", () => {
     expect(topbarRule).not.toMatch(/backdrop-filter/);
   });
 
-  it("keeps the warm main surface and 1280px left-aligned page boundary", () => {
+  it("keeps the warm main surface and a fluid page capped only on content bands", () => {
     const tokens = read("../../tokens/components/shell.css");
     const shell = read("../shell-layout.css");
 
-    expect(tokens).toMatch(/--app-shell-page-max-width:\s*80rem/);
+    // gh#672 — this used to pin an 80rem cap on the whole `.ui-page-container` and forbid
+    // `max-width: none`. Product owner's decision: the page is FLUID by default (the 80rem cap left
+    // a 168px dead strip at a 1512px viewport with the sidebar collapsed and cut a sticky footer
+    // short). The protection is kept, pointed at the NEW contract: the knob still exists as a
+    // service cap, it defaults to `none`, and it may only ever bound the content bands.
+    expect(tokens).toMatch(/--app-shell-page-max-width:\s*none;/);
     // Product override (direct instruction): the search trigger now fills its Topbar center slot
     // by default instead of floating as a fixed ~420px box with dead space on either side.
     expect(tokens).toMatch(/--topbar-search-max-width:\s*none/);
@@ -63,10 +68,15 @@ describe("DXS hi-fi visual contract", () => {
     expect(shell).toMatch(
       /background-color: var\(--app-shell-main-background, var\(--surface-recessed\)\)/,
     );
+    // The cap lands on header/toolbar/body — the bands `measure` caps — at :where() specificity so
+    // a page-level `measure` wins on that page.
     expect(shell).toMatch(
-      /\.app-main \.ui-page-container\s*\{[^}]*max-width:\s*var\(--app-shell-page-max-width\)/s,
+      /\.app-main :where\(\.ui-page-header, \.ui-page-toolbar, \.ui-page-body\)\s*\{\s*max-inline-size:\s*var\(--app-shell-page-max-width\);\s*\}/,
     );
-    expect(shell).not.toMatch(/\.app-main \.ui-page-container\s*\{[^}]*max-width:\s*none/s);
+    // Never on the container (that caps the footer band with it) and never on the footer.
+    expect(shell).not.toMatch(/\.ui-page-container\s*\{[^}]*max-(width|inline-size)/s);
+    expect(shell).not.toMatch(/\.ui-page-footer[^{]*\{[^}]*max-(width|inline-size)/s);
+    expect(shell.match(/var\(--app-shell-page-max-width\)/g)).toHaveLength(1);
   });
 
   it("uses the compact DXS sidebar rhythm and 900px drawer breakpoint", () => {
