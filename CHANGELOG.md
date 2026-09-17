@@ -6,30 +6,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed — `ui-audit` could not see a raw control whose opening tag ends its line (gh#673)
+### Fixed
 
-`no-raw-button`, `no-raw-select`, `no-raw-textarea` and `no-raw-table` matched `/<button[\s>]/`
-ONE LINE at a time. When prettier wraps an element, `<button` sits alone on its line and the newline
-after it is not part of that line, so every wrapped element was invisible. Measured on a consumer
-(godx-tempo `backend/resources/js`): **`no-raw-button` 10 → 168**, `no-raw-select` 0 → 5,
-`no-raw-textarea` 0 → 3 with this fix, against 158 / 5 / 3 multi-line tags counted by grep. A
-consumer reading the old number concluded a migration was finished when it was not.
+- **AppShell no longer caps every page at 80rem, and a cap never lands on the footer (gh#672).**
+  Two defects. (1) `--app-shell-page-max-width` defaulted to `80rem` on `.ui-page-container`, so with
+  the sidebar COLLAPSED the page stopped at 1280px: measured at a 1512px viewport, `.app-main`
+  1448px, page 1280px, a 168px dead strip (576px at 1920px). The token now defaults to `none` — the
+  page is fluid in the main column at every sidebar state, like antd Pro Layout's
+  `contentWidth: "Fluid"`. (2) The cap bounded the whole container, so a sticky footer (a comment
+  composer) ended mid-screen. A service that still sets the token now caps the page HEADER, TOOLBAR
+  and BODY — the same bands `measure` caps — and never `.ui-page-footer`, which spans `.app-main`.
+  **Composition:** the shell cap is applied at `:where()` specificity, so a page's own `measure` /
+  `variant="narrow"` overrides it on that page (cap 80rem + `measure="narrow"` → body 672px).
+  After, sidebar collapsed at 1512px: default page/footer 1448px (strip 0); cap 80rem → header/body
+  1280px, footer 1448px; `measure="narrow"` → header/body 672px, footer 1448px. **Visible change:**
+  a consumer relying on the implicit 80rem bound gets full-width pages; restore it with one theme
+  line, `:root { --app-shell-page-max-width: 80rem; }`. New browser gate
+  `check:app-shell-page-width` (nightly `ci-browser-full`) measures it LTR + RTL at 1512/1920/390px.
 
-- The four rules now match the whole file (`<tag` followed by whitespace, `/` or `>`), report the
-  line of the `<`, and still honour `ui-audit-disable-next-line <rule>` on the line above — `//` or
-  `{/* */}` form. `<Button`, `<ButtonGroup`, `<buttonish`, `</button` and comments are not matched.
-  (`no-raw-input` already matched across lines.)
-- Same line-bound defect, same fix: `manual-field-helper` (a wrapped `<p className=…>`),
-  `hand-rolled-close-glyph` (a `×` on its own line — 0 → 3 on the same consumer), and the consumer
-  rules `no-utility-layout` / `no-hand-rolled-surface` (a `className` template literal spread over
-  lines — surface 519 → 540).
-- Whole-file findings now carry `replacement` too, which `no-raw-input` had silently lost.
-- These rules now read `.tsx`/`.jsx` only, like every other element rule: in a `.ts` file a `<table`
-  or `className=` can only be inside a string, never markup.
-
-In this repository the wider scan found two real cases: the `Table` primitive's own `<table>`
-(suppressed in place — it IS the primitive) and a raw `<button>` day cell in the shift-calendar
-showcase, now a `Button`.
+- **`ui-audit` could not see a raw control whose opening tag ends its line (gh#673).**
+  `no-raw-button`, `no-raw-select`, `no-raw-textarea` and `no-raw-table` matched `/<button[\s>]/`
+  ONE LINE at a time. When prettier wraps an element, `<button` sits alone on its line and the
+  newline after it is not part of that line, so every wrapped element was invisible. Measured on a
+  consumer (godx-tempo `backend/resources/js`): **`no-raw-button` 10 → 168**, `no-raw-select` 0 → 5,
+  `no-raw-textarea` 0 → 3 with this fix, against 158 / 5 / 3 multi-line tags counted by grep. A
+  consumer reading the old number concluded a migration was finished when it was not.
+  - The four rules now match the whole file (`<tag` followed by whitespace, `/` or `>`), report the
+    line of the `<`, and still honour `ui-audit-disable-next-line <rule>` on the line above — `//`
+    or `{/* */}` form. `<Button`, `<ButtonGroup`, `<buttonish`, `</button` and comments are not
+    matched. (`no-raw-input` already matched across lines.)
+  - Same line-bound defect, same fix: `manual-field-helper` (a wrapped `<p className=…>`),
+    `hand-rolled-close-glyph` (a `×` on its own line — 0 → 3 on the same consumer), and the consumer
+    rules `no-utility-layout` / `no-hand-rolled-surface` (a `className` template literal spread over
+    lines — surface 519 → 540).
+  - Whole-file findings now carry `replacement` too, which `no-raw-input` had silently lost.
+  - These rules now read `.tsx`/`.jsx` only, like every other element rule: in a `.ts` file a
+    `<table` or `className=` can only be inside a string, never markup.
+  - In this repository the wider scan found two real cases: the `Table` primitive's own `<table>`
+    (suppressed in place — it IS the primitive) and a raw `<button>` day cell in the shift-calendar
+    showcase, now a `Button`.
 
 ## [25.3.0] - 2026-09-17
 

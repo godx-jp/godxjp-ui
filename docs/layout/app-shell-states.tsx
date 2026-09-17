@@ -24,7 +24,11 @@ import {
  * single page:
  *
  *   ?topbarSpan=content|full   ?navRail=start|end|top|bottom   ?collapsed=1   ?sidebar=none
- *   ?responsive=docked
+ *   ?responsive=docked   ?measure=narrow|medium   ?footer=1
+ *
+ * `measure` and `footer` feed `scripts/check-app-shell-page-width.mjs` (gh#672): the page is fluid
+ * in the main column at every sidebar state, and a sticky footer band always spans `.app-main`,
+ * even when a service caps content with `--app-shell-page-max-width` or the page sets `measure`.
  *
  * With no query it is `topbarSpan="full"` without a rail — the state gh#474 found collapsing
  * `main` into a 170px implicit track below 900px, with the page actions laid out past the edge.
@@ -61,11 +65,13 @@ function readState() {
     hasSidebar: params.get("sidebar") !== "none",
     responsiveNavigation:
       params.get("responsive") === "docked" ? ("docked" as const) : ("drawer" as const),
+    measure: (["narrow", "medium"] as const).find((m) => m === params.get("measure")),
+    hasFooter: params.get("footer") === "1",
   };
 }
 
 export default function Demo() {
-  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation }] =
+  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation, measure, hasFooter }] =
     useState(readState);
   const [activeId, setActiveId] = useState("dashboard");
   const strip = navRail === "top" || navRail === "bottom";
@@ -113,6 +119,18 @@ export default function Demo() {
       <PageContainer
         title="請求書"
         subtitle="株式会社アクメ · 2026年5月"
+        measure={measure}
+        footer={
+          hasFooter ? (
+            <Flex gap="sm" align="center" justify="end">
+              <Button size="sm" variant="outline">
+                下書き保存
+              </Button>
+              <Button size="sm">コメントを送信する</Button>
+            </Flex>
+          ) : undefined
+        }
+        stickyFooter={hasFooter}
         extra={
           <Flex gap="sm" wrap>
             <Button size="sm" variant="outline">

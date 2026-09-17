@@ -424,9 +424,17 @@
     background: hsl(var(--background));
   }
 
+  /* The page fills the main column; `.ui-page-container` itself is never capped (gh#672), so a
+   * sticky `.ui-page-footer` band always spans `.app-main`. The optional shell cap bounds CONTENT
+   * only — the same header/toolbar/body bands `measure` caps in layout.css. `:where()` keeps it at
+   * (0,1,0) so a page's own `measure` / `variant="narrow"` wins on that page, independent of
+   * stylesheet order: the page-level width decision overrides the shell-wide default. */
   .app-main .ui-page-container {
     width: 100%;
-    max-width: var(--app-shell-page-max-width);
+  }
+
+  .app-main :where(.ui-page-header, .ui-page-toolbar, .ui-page-body) {
+    max-inline-size: var(--app-shell-page-max-width);
   }
 
   /* AUTH SHELL — centred auth/login page shell (brand bar + centred card + footer). */
