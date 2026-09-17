@@ -594,7 +594,8 @@
     "trendCurrent": "現在"
   },
   "rangeTimeline": {
-    "outsideRange": "表示範囲外",
+    "outsideAfter": "表示範囲より後",
+    "outsideBefore": "表示範囲より前",
     "schedule": "スケジュール"
   },
   "textExamples": {

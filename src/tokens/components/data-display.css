@@ -275,4 +275,15 @@
   --range-timeline-row-height: var(--control-height-lg);
   --range-timeline-bar-height: var(--control-height-sm);
   --range-timeline-border-color: var(--border);
+  /* Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical
+   * rule per column down the whole body. Colour `initial` on purpose — the role default is read at
+   * the call site as `var(--range-timeline-grid-color, hsl(var(--input)))` so it follows a scoped
+   * theme; --input is the ≥3:1 tier the Calendar grid chose, --border measured 1.15:1 and a 1px
+   * rule in it is not seen. Set any colour to retint, e.g. `hsl(var(--border))` for a quieter grid. */
+  --range-timeline-grid-color: initial;
+  /* Weight of every grid rule, header column rules included, so header and body stay aligned. */
+  --range-timeline-grid-width: var(--stroke-hairline);
+  /* Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default
+   * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis. */
+  --range-timeline-muted-column-background: initial;
 }
