@@ -926,6 +926,12 @@ import { Button } from "@godxjp/ui/general";
           'Rows adapt to container width. Columns keep a horizontal collection in order with token-owned column width; compose inside ScrollArea orientation="horizontal". Column flow ignores columns and preset geometry.',
       },
       {
+        name: "align",
+        type: '"start" | "stretch"',
+        description:
+          'antd `Row align`, spelled with Flex\'s FlexAlignProp values (antd `top` → "start"). "stretch" makes every cell as tall as the tallest one. Omitted, flow="columns" keeps "start" and flow="rows" keeps the grid\'s natural stretch.',
+      },
+      {
         name: "columns",
         type: "number | { base?: number; sm?: number; md?: number; lg?: number }",
         defaultValue: "4",
@@ -948,6 +954,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     usage: [
       "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+      'KANBAN LANES: <ScrollArea orientation="horizontal"><ResponsiveGrid flow="columns" align="stretch">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align="stretch" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.',
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
@@ -6729,7 +6736,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "defaultOpen",
         type: "boolean",
-        description: "antd `defaultOpen` — uncontrolled initial popup state.",
+        description:
+          "antd `defaultOpen` — uncontrolled initial popup state. The popup opens once every running ancestor animation has finished (a Popover sliding in), so inside a Popover the listbox is placed below its settled trigger exactly like a click-open (gh#708); with nothing animating it is open on the first render. onOpenChange is not called for this initial open.",
       },
       {
         name: "allowClear",
@@ -6869,6 +6877,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
       "READING THE SELECTED CODE FROM THE DOM: the trigger publishes `data-value` = the selected VALUE, alongside the `data-field` key it inherits from FormField. Use that in e2e tests and screen automation \u2014 the trigger's visible text is the option LABEL (\u6771\u4eac\u672c\u793e), and the only other place the code lives is the aria-hidden, 1px-clipped native <select> react-aria renders so a native submit (and browser autofill) carries the value. `data-value` is absent while nothing is selected, and it tracks uncontrolled picks too.",
       "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
+      "A Select is safe inside a draggable element (a Kanban card with draggable=true) and inside a `contain: paint` / `transform` app region: the aria-hidden native <select> fallback is held at its static position beside the trigger (position: absolute, 1px clipped), so the browser's drag image stays the card's own box instead of reaching to the region's corner (gh#708). No wrapper or consumer CSS is needed.",
       "DO name the control with FormField, aria-label, or a <label htmlFor> pointing at the trigger id — all three work. (An earlier version of this entry said htmlFor does NOT name the trigger. That was wrong: the trigger is a <button>, which is a labelable element, so <label for> does name it — src/components/data-entry/__tests__/select-rac.test.tsx pins it on both the old Radix base and the react-aria one, because 17 godx-task files name their Selects exactly that way.) What role=combobox does NOT do is take a name from its own content, so the visible value is the VALUE, never the name — a Select with no label of any kind is anonymous. Wrapping in <FormField label=…> stays the route that also wires helper, error and required. This holds for BOTH APIs; anything set directly on SelectTrigger wins.",
       "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",

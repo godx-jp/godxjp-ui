@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { render } from "@testing-library/react";
 
 import { ResponsiveGrid } from "../responsive-grid";
@@ -177,5 +179,35 @@ describe("ResponsiveGrid flow", () => {
     );
     expect(container.querySelector('[data-flow="columns"]')).toBeNull();
     expect(container.querySelectorAll("article")).toHaveLength(2);
+  });
+});
+
+// gh#708: Kanban lanes. Column flow hard-coded `align-items: start`, so an empty lane was only as
+// tall as its header (62px) — too short to drop onto. jsdom does no layout; the equal-height
+// measurement lives in scripts/kanban-select-visual.mjs, run in Chromium.
+describe("ResponsiveGrid align", () => {
+  it("stamps data-align only when set, so the default alignment of each flow is unchanged", () => {
+    const { container, rerender } = render(
+      <ResponsiveGrid flow="columns">
+        <article>A</article>
+      </ResponsiveGrid>,
+    );
+    expect(container.querySelector(".ui-responsive-grid")).not.toHaveAttribute("data-align");
+    rerender(
+      <ResponsiveGrid flow="columns" align="stretch">
+        <article>A</article>
+      </ResponsiveGrid>,
+    );
+    expect(container.querySelector(".ui-responsive-grid")).toHaveAttribute("data-align", "stretch");
+  });
+
+  it("the stylesheet lets an explicit align outrank the column flow's start", () => {
+    const css = readFileSync(join(process.cwd(), "src/styles/layout.css"), "utf8");
+    const flowAt = css.indexOf('.ui-responsive-grid[data-flow="columns"]');
+    const stretch = css.match(/\.ui-responsive-grid\[data-align="stretch"\]\s*\{[^}]*\}/);
+    expect(stretch?.[0]).toMatch(/align-items:\s*stretch/);
+    // Same specificity as the flow rule, so it must come AFTER it to win.
+    expect(stretch?.index ?? -1).toBeGreaterThan(flowAt);
+    expect(css).toMatch(/\.ui-responsive-grid\[data-align="start"\]\s*\{[^}]*align-items:\s*start/);
   });
 });

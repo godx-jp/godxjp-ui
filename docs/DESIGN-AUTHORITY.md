@@ -290,6 +290,14 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   (`Popover` + `Command`) opts in with `split`. It also zeroes the list padding and bleeds rows to
   the panel edge, which antd's `split` does not need to say because a `List` has no inset rows.
 
+- **`ResponsiveGrid.align` is antd `Row align`, with Flex's values (gh#708).** antd spells the
+  cross-axis `top | middle | bottom | stretch`; this library already names that axis
+  `FlexAlignProp` (`start | center | end | stretch | baseline`), so `ResponsiveGridAlignProp` is
+  `Extract<FlexAlignProp, "start" | "stretch">` — antd `top` → `start`, `stretch` unchanged.
+  `middle` / `bottom` are not offered until a screen needs them. The default differs by flow on
+  purpose: omitted, `flow="columns"` keeps `start` and `flow="rows"` keeps the grid's stretch, so
+  no existing grid moves; antd's `Row` default is `top` in every case.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

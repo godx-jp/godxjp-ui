@@ -380,6 +380,14 @@
     align-items: start;
   }
 
+  /* `align` prop (antd `Row align`) — after the flow rule so an explicit value wins in either flow. */
+  .ui-responsive-grid[data-align="start"] {
+    align-items: start;
+  }
+  .ui-responsive-grid[data-align="stretch"] {
+    align-items: stretch;
+  }
+
   /* `gap` prop: the same steps as Flex. */
   .ui-responsive-grid[data-gap="none"] {
     gap: 0;

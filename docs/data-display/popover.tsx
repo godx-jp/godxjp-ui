@@ -14,7 +14,17 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@godxjp/ui/data-display";
-import { Checkbox, FormField, Input, Label } from "@godxjp/ui/data-entry";
+import {
+  Checkbox,
+  FormField,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Info, SlidersHorizontal } from "lucide-react";
@@ -45,6 +55,38 @@ export default function Demo() {
               </PopoverAnchor>
               <PopoverContent side="right" aria-label="請求額の補足">
                 <PopoverDescription>税額と支払条件の補足情報です。</PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Picker in a popover · Select defaultOpen</CardTitle>
+            <CardDescription>
+              Opening the popover opens the workspace list with it. The Select waits for the popover
+              to finish sliding in, so the list sits below its trigger exactly as a click-open does
+              and the first option is never covered.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" data-picker-popover="">
+                  ワークスペースを切り替え
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent aria-label="ワークスペース">
+                <Select aria-label="ワークスペース" defaultOpen defaultValue="tokyo">
+                  <SelectTrigger aria-label="ワークスペース" data-picker-trigger="">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="tokyo">東京本社</SelectItem>
+                    <SelectItem value="osaka">大阪支社</SelectItem>
+                    <SelectItem value="fukuoka">福岡拠点</SelectItem>
+                  </SelectContent>
+                </Select>
               </PopoverContent>
             </Popover>
           </CardContent>

@@ -861,6 +861,7 @@ export const COMPONENT_PROP_REGISTRY = {
   ResponsiveGridFlowProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridPresetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  ResponsiveGridAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   MasterDetailRailWidthProp: {
     group: "layout",
     file: "components/layout.prop.ts",

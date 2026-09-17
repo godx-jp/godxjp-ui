@@ -11996,6 +11996,14 @@
       "group": "layout",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "ResponsiveGridAlignProp | undefined",
+          "values": ["start", "stretch"],
+          "declaredIn": ["src/components/layout/responsive-grid.tsx"]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": true,

@@ -2096,6 +2096,28 @@
     display: contents;
   }
 
+  /* SELECT — react-aria's hidden native `<select>` (the form-submit + autofill fallback) inside
+   * its 1px clipped, aria-hidden container. react-aria pins that container to the viewport origin
+   * (`position: fixed`, zero insets) as an INLINE style, which puts it at the origin of the
+   * nearest box that contains fixed descendants — under a `contain: paint` / `transform` app region that is the
+   * REGION's corner, far outside the Select. Chromium builds a drag image from the dragged
+   * element's box plus every descendant's, so a draggable card holding a Select dragged a ghost
+   * reaching up to that corner (gh#708: card 286x74, ghost 328x181).
+   *
+   * `absolute` with auto insets keeps the box at its STATIC position — right after the trigger,
+   * inside the Select's own parent — so it never leaves the component's box. What `fixed` was
+   * guarding stays true, measured in Chromium and Firefox: no document scroll growth from a
+   * Select deep inside a non-positioned scroller (gh#105; the clipped 1px box with its -1px
+   * margin contributes no scrollable overflow), and no shift of flex/grid siblings (an
+   * absolutely positioned box is out of flow). Focus is unchanged — the container keeps
+   * `aria-hidden`, `data-react-aria-prevent-focus` and the `<select tabindex="-1">`.
+   * `!important` is the only way a stylesheet outranks react-aria's inline style; there is no
+   * render prop for this node. */
+  .ui-select-root > [data-react-aria-prevent-focus][aria-hidden="true"] {
+    position: absolute !important;
+    inset: auto !important;
+  }
+
   /* SELECT — the listbox popup (a react-aria Popover). It is a column so the listbox inside can
    * shrink into whatever height react-aria measured as available (it writes that as an inline
    * `max-height`, which is why the token cap lives on the listbox below, not here). */
