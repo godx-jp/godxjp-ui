@@ -1627,8 +1627,11 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
-          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/segmented-xs-719.test.tsx"
+          ]
         }
       }
     },

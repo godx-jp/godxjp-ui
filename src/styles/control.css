@@ -3844,6 +3844,19 @@
     justify-content: flex-start;
   }
 
+  /* The 24px step (gh#719) — the fourth rung of the ladder Toggle/ToggleGroup joined in gh#716.
+   * The track measures exactly `--control-height`, so moving the tier is the whole of the box: an
+   * `xs` bar is 24px and sits level with a `<Button size="xs">` and an `xs` ToggleGroup on the same
+   * dense row. Two lengths cannot stay at the md value once the band is 24px — the label's type
+   * step drops to Button xs's own step, and the item's inline padding drops one rung of the control
+   * padding scale (still minus the one border width the md step subtracts). Both are knobs, so a
+   * service can retune them without forking the rule. */
+  .ui-segmented[data-size="xs"] {
+    --control-height: var(--control-height-xs);
+    --segmented-item-padding-inline: var(--segmented-xs-item-padding-inline);
+    font-size: var(--segmented-xs-font-size);
+  }
+
   .ui-segmented[data-size="sm"] {
     --control-height: var(--control-height-sm);
   }

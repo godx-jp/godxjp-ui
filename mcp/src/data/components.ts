@@ -13839,9 +13839,10 @@ export default function PasswordBlock() {
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Control height tier — reads the shared `--control-height` ladder.",
+        description:
+          "Control height tier — reads the shared `--control-height` ladder: xs 24px · sm 28px · md 32px · lg 36px. The TRACK measures exactly one control height, so the bar sits level with an Input, a Button or a ToggleGroup of the same step on the same row. Pick the step the ROW already has: xs (gh#719) is the one that fits a 24px-dense toolbar or audit-log row — before it, that row could only get a hand-rolled set of Buttons, which loses the radiogroup semantics and the arrow keys. xs is the DENSE step, not a smaller default: the track spends its 2px inset at every step, so the individual SEGMENT measures 20px and clears WCAG 2.2 SC 2.5.8 through the Spacing exception (adjacent segments 26.47px apart for a one-glyph label) rather than the 24px minimum. Keep labels at a glyph or more, and stay on sm or md wherever the row height is yours to choose.",
       },
       {
         name: "options",
@@ -13874,6 +13875,7 @@ export default function PasswordBlock() {
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
       "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
       "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
+      'DO set `size="xs"` for a 24px-dense row — an audit-log toolbar, a table header strip, a row that already carries `<Button size="xs">` or an `xs` ToggleGroup. All three measure 24px off the same `--control-height-xs` step, so the row stays level, and the label type and the item inline padding step down with the band (gh#719). DON\'T hand-roll that row out of Buttons to get the height: a segmented control is a radiogroup, and a row of buttons loses the arrow keys and the "1 of 3, selected" announcement.',
     ],
     useCases: [
       "Theme switch (light / dark / system)",

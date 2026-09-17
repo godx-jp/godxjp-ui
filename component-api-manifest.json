@@ -12455,8 +12455,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["xs", "sm", "md", "lg"],
           "declaredIn": ["src/components/ui/segmented.tsx"]
         },
         {

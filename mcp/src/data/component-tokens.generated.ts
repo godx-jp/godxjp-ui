@@ -5389,6 +5389,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "item padding-inline = control padding-x − one border width."
   },
   {
+    "name": "--segmented-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row * carry the same label size. One step of the existing scale, not a new constant."
+  },
+  {
+    "name": "--segmented-xs-item-padding-inline",
+    "value": "calc(var(--control-padding-x-compact) - 1px)",
+    "description": "xs item padding-inline = the SAME derivation as the md step (control padding-x − one border * width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px * around a 12.47px label a three-option bar no longer reads as dense."
+  },
+  {
     "name": "--segmented-item-gap",
     "value": "calc(var(--space-3) / 2)",
     "description": "icon gap = the small margin step / 2."

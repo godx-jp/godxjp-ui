@@ -65,6 +65,19 @@
    * the INPUTS live here, the sum is composed on the element that owns the scope. */
   /* item padding-inline = control padding-x − one border width. */
   --segmented-item-padding-inline: calc(var(--control-padding-x) - 1px);
+
+  /* THE 24px STEP (gh#719) — `size="xs"`, the fourth rung of the shared control ladder that
+   * Toggle/ToggleGroup took in gh#716. The BOX needs nothing here: the track measures exactly
+   * --control-height, so `.ui-segmented[data-size="xs"]` moving the tier is the whole of it. The
+   * two knobs below are the only lengths that cannot stay at the md value once the band is 24px,
+   * and they are knobs rather than literals in the rule so a service can retune them (rule #45). */
+  /* xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row
+   * carry the same label size. One step of the existing scale, not a new constant. */
+  --segmented-xs-font-size: var(--font-size-xs);
+  /* xs item padding-inline = the SAME derivation as the md step (control padding-x − one border
+   * width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px
+   * around a 12.47px label a three-option bar no longer reads as dense. */
+  --segmented-xs-item-padding-inline: calc(var(--control-padding-x-compact) - 1px);
   /* icon gap = the small margin step / 2. */
   --segmented-item-gap: calc(var(--space-3) / 2);
 
