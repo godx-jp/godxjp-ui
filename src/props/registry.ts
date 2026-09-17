@@ -948,7 +948,22 @@ export const COMPONENT_PROP_REGISTRY = {
   AppShellProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp"],
+    vocabulary: [
+      "ChildrenProp",
+      "BreakpointProp",
+      {
+        field: "logoCompact",
+        local: true,
+        reason:
+          "The brand node a narrow bar gets instead of `logo` — the consumer's own mark/viewBox, which a stylesheet cannot produce (gh#728).",
+      },
+      {
+        field: "logoCompactBelow",
+        local: true,
+        reason:
+          "Flex `hideBelow` scoped to the brand cell — the step at which `logoCompact` takes over (gh#728).",
+      },
+    ],
   },
   AuthShellProp: {
     group: "layout",
@@ -1365,7 +1380,15 @@ export const COMPONENT_PROP_REGISTRY = {
   TopbarProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp"],
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "The bar's overflow contract — `scroll` (default) keeps every cell reachable, `clip` is the pre-gh#728 slicing.",
+      },
+    ],
   },
   TopbarItemProp: {
     group: "layout",

@@ -1393,6 +1393,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "logoCompact",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "logoCompactBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "mobileNav",
           "origin": "owned",
           "required": false,
@@ -17856,6 +17872,14 @@
           "required": false,
           "type": "\"auto\" | \"bar\" | undefined",
           "values": ["auto", "bar"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "\"scroll\" | \"clip\" | undefined",
+          "values": ["scroll", "clip"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

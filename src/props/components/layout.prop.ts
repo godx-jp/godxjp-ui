@@ -399,6 +399,28 @@ export type AppShellProp = {
   topbarLeft?: ReactNode;
   topbarRight?: ReactNode;
   logo?: ReactNode;
+  /**
+   * The brand node a NARROW bar gets instead of `logo` — a mark without the wordmark, a shorter
+   * lockup, a different `viewBox` (gh#728).
+   *
+   * The brand cell shrinks without this prop: below the `sm` step it is capped at
+   * `--app-shell-brand-compact-max-inline-size` and anything past the cap is cropped from the
+   * inline-end. A CROP is all a stylesheet can do to artwork it did not author — `viewBox` is an
+   * attribute, which is why consumers were re-cropping their own SVG through a media-query hook.
+   * Passing a node here is how you CHOOSE what the narrow bar shows instead.
+   *
+   * Both nodes are rendered; the breakpoint drops one with `display: none`, so exactly one brand
+   * is ever in the accessibility tree. Applies to the brand IN THE BAR only: under the default
+   * `topbarSpan="content"` with a sidebar the brand sits at the head of the rail, which the
+   * responsive shell has already replaced with the drawer at that width.
+   */
+  logoCompact?: ReactNode;
+  /**
+   * The step at which `logoCompact` takes over — `Flex hideBelow`'s own vocabulary and the same
+   * canonical scale (sm 40rem · md 48rem · lg 64rem · xl 80rem). Defaults to `"sm"`, the step the
+   * brand cap uses. Ignored without `logoCompact`.
+   */
+  logoCompactBelow?: BreakpointProp;
   breadcrumb?: ReactNode;
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
@@ -1393,6 +1415,24 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
   center?: ReactNode;
   /** Inline-end cluster — settings pickers, notifications, the user menu. */
   end?: ReactNode;
+  /**
+   * What a bar that does not fit does with the cells that do not fit (gh#728).
+   *
+   * - `"scroll"` (default) — the BAR scrolls on the inline axis while the `start` and `end`
+   *   clusters keep their cells whole (`start` floors at one cell, `end` at its content), so what
+   *   does not fit is off-port rather than half-painted. Every cell stays in the DOM and in the
+   *   accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell
+   *   fully into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row
+   *   would eat the height that caused the deficit) so the pointer affordance is drag/wheel.
+   * - `"clip"` — the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted.
+   *   Still focusable, still announced, invisible and unreachable by pointer. Choose it only for a
+   *   bar you have measured as never overflowing.
+   *
+   * Independent of `TopbarItem hideBelow`, which REMOVES a cell at a step: dropping a cell is the
+   * consumer saying it does not belong on a phone, and that remains the way to spend the budget
+   * deliberately. This prop is only about what happens once there is no budget left.
+   */
+  overflow?: "scroll" | "clip";
   /** Escape hatch — render fully custom bar content instead of the three slots. */
   children?: ReactNode;
 };
