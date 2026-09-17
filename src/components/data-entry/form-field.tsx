@@ -70,6 +70,10 @@ export function FormField({
   const autoId = React.useId();
   const resolvedId = id ?? autoId;
   const labelId = `${resolvedId}-label`;
+  // antd `Form.Item` with no `label` (gh#709): no label row, no reserved space, and no
+  // `aria-labelledby` pointing at an empty node — the control names itself (a
+  // `<Checkbox>label</Checkbox>` from its own `<label for>`).
+  const hasLabel = !(label === undefined || label === null || label === false || label === "");
   const helperId = helper ? `${resolvedId}-helper` : undefined;
   /*
    * ONE helper node, rendered at one of two positions. It is built here rather than inline twice
@@ -127,8 +131,8 @@ export function FormField({
   // every control inside it would be nameless. Controls read this context as a last-resort
   // accessible name via useFieldNameFallback — a control that already has a name keeps it.
   const fieldNameContext = React.useMemo(
-    () => ({ labelId, label: typeof label === "string" ? label : undefined }),
-    [labelId, label],
+    () => (hasLabel ? { labelId, label: typeof label === "string" ? label : undefined } : null),
+    [hasLabel, labelId, label],
   );
 
   // `cloneElement` below reaches the direct
@@ -174,14 +178,15 @@ export function FormField({
       ...(emitFieldNames
         ? { name: (childProps?.name as string | undefined) ?? fieldKey }
         : undefined),
-      "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
+      "aria-labelledby":
+        (childProps?.["aria-labelledby"] as string | undefined) ?? (hasLabel ? labelId : undefined),
       // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
       // SAME string as the visible label, just reachable even if an aria-labelledby lookup
       // ever comes back empty (id-ref timing, AT quirks). Only when `label` is plain text and
       // the child hasn't already set its own aria-label.
       "aria-label":
         (childProps?.["aria-label"] as string | undefined) ??
-        (typeof label === "string" ? label : undefined),
+        (hasLabel && typeof label === "string" ? label : undefined),
       // Helper and error can coexist: helper stays on aria-describedby, the error on
       // aria-errormessage (surfaced when aria-invalid is true).
       "aria-describedby": mergeIds(
@@ -226,47 +231,53 @@ export function FormField({
       style={Object.keys(style).length ? style : undefined}
       className={cn("ui-form-field", className)}
     >
-      <div data-slot="form-field-label" className="ui-form-field-label">
-        {/* asChild renders a <span>: the control is named via aria-labelledby, and a
+      {hasLabel || labelAddon != null ? (
+        <div data-slot="form-field-label" className="ui-form-field-label">
+          {/* asChild renders a <span>: the control is named via aria-labelledby, and a
             real <label> whose `for` can dangle (composite children) is a Chrome a11y
             issue. Click-to-focus is preserved by hand. */}
-        {/* The size goes through Label's own className, not the wrapper: `.ui-label` sets font-size on the element itself (--control-label-font-size), so an inherited font-size never reaches the text. `ui-inline-xs` is passed for its flex-wrap, NOT its gap: `.ui-label` is imported after `.ui-inline-xs` at equal specificity in the same layer, so the label gap stays --control-label-space-gap (8px). */}
-        <Label
-          asChild
-          id={labelId}
-          className="ui-inline-xs text-[length:var(--form-label-font-size)]"
-        >
-          <span
-            onClick={() => {
-              const el = document.getElementById(controlId);
-              if (!(el instanceof HTMLElement)) return;
-              // Composite children put the field id on a plain wrapper —
-              // focus the first real control inside it instead.
-              const focusable = el.matches(FOCUSABLE_SELECTOR)
-                ? el
-                : el.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-              (focusable ?? el).focus();
-            }}
-          >
-            {/* Dấu sao nằm TRONG cùng một span với nhãn, không phải bên cạnh nó. Là hai flex
+          {/* The size goes through Label's own className, not the wrapper: `.ui-label` sets font-size on the element itself (--control-label-font-size), so an inherited font-size never reaches the text. `ui-inline-xs` is passed for its flex-wrap, NOT its gap: `.ui-label` is imported after `.ui-inline-xs` at equal specificity in the same layer, so the label gap stays --control-label-space-gap (8px). */}
+          {hasLabel ? (
+            <Label
+              asChild
+              id={labelId}
+              className="ui-inline-xs text-[length:var(--form-label-font-size)]"
+            >
+              <span
+                onClick={() => {
+                  const el = document.getElementById(controlId);
+                  if (!(el instanceof HTMLElement)) return;
+                  // Composite children put the field id on a plain wrapper —
+                  // focus the first real control inside it instead.
+                  const focusable = el.matches(FOCUSABLE_SELECTOR)
+                    ? el
+                    : el.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+                  (focusable ?? el).focus();
+                }}
+              >
+                {/* Dấu sao nằm TRONG cùng một span với nhãn, không phải bên cạnh nó. Là hai flex
                 item anh em trong một container có flex-wrap, nhãn dài vừa đủ chiếm hết cột là
                 dấu sao bị đẩy thành một dòng riêng, treo lơ lửng dưới nhãn. Nằm trong dòng chữ
                 thì nó ngắt dòng theo chữ như mọi nội dung inline khác. */}
-            <span>
-              {label}
-              {!required && form?.requiredMark === "optional" && (
-                <span className="text-muted-foreground"> {t("dataEntry.form.optional")}</span>
-              )}
-              {required && form?.requiredMark !== false && form?.requiredMark !== "optional" && (
-                <span aria-hidden="true" className="ui-form-field-required">
-                  *
+                <span>
+                  {label}
+                  {!required && form?.requiredMark === "optional" && (
+                    <span className="text-muted-foreground"> {t("dataEntry.form.optional")}</span>
+                  )}
+                  {required &&
+                    form?.requiredMark !== false &&
+                    form?.requiredMark !== "optional" && (
+                      <span aria-hidden="true" className="ui-form-field-required">
+                        *
+                      </span>
+                    )}
                 </span>
-              )}
-            </span>
-          </span>
-        </Label>
-        {labelAddon}
-      </div>
+              </span>
+            </Label>
+          ) : null}
+          {labelAddon}
+        </div>
+      ) : null}
       <div data-slot="form-field-control" className="ui-form-field-control">
         {helperPlacement === "before" ? helperNode : null}
         {isStatic ? (
