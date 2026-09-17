@@ -829,9 +829,12 @@ export type CalendarProp = DayPickerProps &
      *
      * Default `true` — the owner's call, from a real screen: with no ruling the month read as a
      * cloud of numbers and was "very hard to read". Pass `bordered={false}` for the floating-button
-     * look. The line colour is `--calendar-grid-border-color` (default `--input` at 0.5 alpha,
-     * 1.74:1 light / 1.95:1 dark on the popover; the full `--input` read too dark, and the
-     * decorative `--border` measured 1.15:1 and was invisible as a 1px ruling).
+     * look. The line colour is `--calendar-grid-border-color`, default `hsl(var(--border))` — the
+     * same tier as the popover edge, a Card edge and a DataTable row rule, so the ruling can never
+     * out-weigh the surface it is drawn on (L* 93.80 / 1.149:1 light, L* 20.76 / 1.270:1 dark).
+     * It was `--input` at 0.5 alpha (L* 78.67 / 1.738:1) through 27.6.0 and was reported darker
+     * than every card and table in the system (gh#730); the full `--input` (3.463:1) was reported
+     * too dark before that. Set `--calendar-grid-border-color` to retint.
      */
     bordered?: boolean;
     /** Decorate a day cell — 祝日, a booked day, a deadline. @see CalendarCellRenderProp */

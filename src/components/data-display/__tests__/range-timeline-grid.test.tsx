@@ -145,7 +145,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     return match[1];
   };
   const LINE =
-    "var(--range-timeline-grid-width) solid\n      var(--range-timeline-grid-color, hsl(var(--input) / 0.5))";
+    "var(--range-timeline-grid-width) solid\n      var(--range-timeline-grid-color, hsl(var(--border)))";
 
   it("rules every row and the header/body seam, across label and track", () => {
     const body = rule(
@@ -189,15 +189,29 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
       rule(
         '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
       ),
-    ).toContain(
-      "border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input) / 0.5));",
-    );
+    ).toContain("border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--border)));");
   });
 
   it("tints muted columns from the knob with a surface-role fallback", () => {
     expect(rule('.ui-range-timeline-grid-column[data-muted="true"]')).toContain(
       "background: var(--range-timeline-muted-column-background, hsl(var(--muted)));",
     );
+  });
+
+  it("puts the inside grid and the outer frame on the SAME tier, so neither can dominate", () => {
+    // The two are different knobs and the catalog documents them as such: the frame (and the
+    // label-column divider) is --range-timeline-border-color, the ruling inside is
+    // --range-timeline-grid-color. Both resolve to --border, which is what makes "the grid is
+    // never heavier than the box around it" true rather than a coincidence of two numbers.
+    expect(tokens).toMatch(/--range-timeline-border-color:\s*var\(--border\);/);
+    expect(rule(".ui-range-timeline")).toContain(
+      "border: 1px solid hsl(var(--range-timeline-border-color));",
+    );
+    expect(
+      rule(
+        '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
+      ),
+    ).toContain("var(--range-timeline-grid-color, hsl(var(--border)))");
   });
 
   it("declares the knobs: colour knobs `initial` (freeze rule), a hairline width", () => {
@@ -229,18 +243,29 @@ describe.each([
   const body = foundation.slice(open + 1, foundation.indexOf("\n}", open));
   const rgb = (name: string) => hslToRgb(hsl(body, name));
 
-  // The owner found the full --input grid (3.47:1 on the card) too dark on a real Gantt: "màu
-  // border của gantt và date picker đang bị đậm quá cho mờ đi". Decorative lines have no WCAG
-  // floor, so the band is legibility: measured in Chromium, --input / 0.5 paints 1.74 light /
-  // 1.95 dark on the card and 1.68 / 1.80 on the --muted header and muted columns — the same
-  // weight as the Calendar grid.
-  it("the grid line reads on the body and on a muted column without dominating (1.5–2.0:1)", () => {
+  // THE OWNER HAS ASKED TWICE FOR A LIGHTER GRID, and these numbers are the third answer.
+  //
+  //   25.3.0  --input        3.463 / 3.883 on the card  — "màu border … đậm quá", too dark
+  //   27.6.0  --input / 0.5  1.738 / 1.946, L* 78.67    — gh#730: STILL darker than --border
+  //   gh#730  --border       1.149 / 1.270, L* 93.80    ← the tier every card and table uses
+  //
+  // Decorative rules have no WCAG floor, so what is pinned is not a contrast band but a RELATION:
+  // the grid inside the timeline may never out-weigh the frame around it
+  // (--range-timeline-border-color, which IS --border) nor a DataTable row rule (--border too).
+  // Measured in Chromium, light: the line paints rgb(238,237,236), L* 93.80 on the card, where
+  // --input/0.5 painted rgb(198.5,194,189.5), L* 78.67.
+  it("is strictly lighter than BOTH weights the owner reported as too dark", () => {
     for (const surface of ["card", "muted"]) {
-      const ratio = contrast(over(rgb("input"), rgb(surface), 0.5), rgb(surface));
-      expect(ratio).toBeGreaterThanOrEqual(1.5);
-      expect(ratio).toBeLessThanOrEqual(2);
-      expect(ratio).toBeGreaterThan(contrast(rgb("border"), rgb(surface)));
+      const grid = contrast(rgb("border"), rgb(surface));
+      expect(grid).toBeLessThan(contrast(over(rgb("input"), rgb(surface), 0.5), rgb(surface)));
+      expect(grid).toBeLessThan(contrast(rgb("input"), rgb(surface)));
     }
+  });
+
+  it("stays far under the bar fill, so the eye follows the bars and not the grid", () => {
+    expect(contrast(rgb("border"), rgb("card"))).toBeLessThan(
+      contrast(rgb("primary"), rgb("card")),
+    );
   });
 
   it("a muted column keeps row text at AA and bars at 3:1", () => {

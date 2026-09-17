@@ -3606,6 +3606,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/range-timeline.tsx",
     vocabulary: [
       "LabelProp",
+      // The CANONICAL three-step axis, the same type DataTable takes — not a local subset. It
+      // moves `--range-timeline-unit-width` only (42 / 56 / 70px per day), never the row or bar
+      // height, so a compact Gantt is the same schedule with more days on screen (gh#730).
+      "DensityProp",
       {
         field: "columns",
         local: true,

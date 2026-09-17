@@ -3,6 +3,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { ChevronDown, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { Button } from "../general/button";
 import { Text } from "../general/typography";
+import type { DensityProp } from "../../props/vocabulary";
 import { cn } from "../../lib/utils";
 
 export type RangeTimelineRow = {
@@ -35,6 +36,15 @@ export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
    */
   bordered?: boolean;
   /**
+   * How wide ONE axis unit is — the canonical density vocabulary, the same three steps
+   * `DataTable density` uses. `default` (56px/day) is the shipped width, so an existing Gantt
+   * does not move; `compact` (42px/day) fits a third more days on the same screen; `comfortable`
+   * (70px/day) spreads them out. It moves the column width ONLY — row height, bar height and the
+   * label column are identical at every step. Retune a step with
+   * `--range-timeline-unit-width-{compact,default,comfortable}`.
+   */
+  density?: DensityProp;
+  /**
    * Controlled ids of the EXPANDED parent rows (same spelling as `Tree expandedValues`). A folded
    * parent hides every descendant row — label and bar.
    */
@@ -56,6 +66,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
       today,
       onRangeChange,
       bordered = true,
+      density = "default",
       expandedValues,
       defaultExpandedValues,
       onExpandedValuesChange,
@@ -159,6 +170,9 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
         ref={ref}
         className={cn("ui-range-timeline", className)}
         data-bordered={bordered ? "true" : undefined}
+        // Only a NON-default step scopes the unit-width knob, so a theme that narrows
+        // --range-timeline-unit-width globally still owns the default timeline (gh#730).
+        data-density={density === "default" ? undefined : density}
         aria-label={label}
         tabIndex={0}
       >

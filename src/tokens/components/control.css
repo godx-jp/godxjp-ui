@@ -469,14 +469,31 @@
    * grid rhythm — was literal on the component (#319), so a service could not tighten the
    * calendar to its own density without forking the classNames map. */
   --calendar-space-inset: var(--space-3);
+  /* Gap BETWEEN side-by-side months (a range picker's two panels) — not the caption→grid step.
+   * Until gh#730 `.ui-calendar-month` carried it too, and a month has exactly two children, so it
+   * stacked with --calendar-grid-space-block-start into one 32px void under 「2026年9月」 that a
+   * screenshot read as a missing week row. One gap, one token: the month column no longer sets a
+   * gap and --calendar-grid-space-block-start is the whole caption→weekday step. */
   --calendar-month-space-gap: var(--space-4);
   --calendar-caption-space-inline: var(--space-8);
   --calendar-caption-font-size: var(--font-size-sm);
   --calendar-nav-space-block-start: var(--space-3);
-  --calendar-nav-space-inline: var(--space-1);
+  /* THE SAME INSET AS THE GRID, by construction rather than by coincidence (gh#730 item 5).
+   * `.ui-calendar-nav` is `position: absolute; inset-inline: 0`, and an absolutely positioned box
+   * resolves its insets against the PADDING box — so the nav escapes the calendar's own
+   * --calendar-space-inset and its padding is the whole inset the chevrons get. At space-1 the `‹`
+   * button's outer edge measured 4px from the popover content edge while the weekday row and every
+   * day column started at 12px: an 8px split, reported as 「lề của button và calendar ko bằng
+   * nhau」. Pointing this at --calendar-space-inset makes the two ONE value — retuning the
+   * calendar's inset moves the chevrons with the grid, in LTR and RTL alike. */
+  --calendar-nav-space-inline: var(--calendar-space-inset);
   /* Nav chevrons read as secondary until hovered — they frame the month, they are not the point. */
   --calendar-nav-rest-alpha: 0.7;
-  --calendar-grid-space-block-start: var(--space-4);
+  /* THE caption→weekday-row step, the only one now (gh#730): measured 32px before, 12px after.
+   * space-3 rather than space-2 because the unruled grid's own row rhythm is
+   * --calendar-week-space-block-start (space-2, 8px) — at 8px the caption would read as one more
+   * week row, at 12px it still reads as the boundary of a group. */
+  --calendar-grid-space-block-start: var(--space-3);
   --calendar-week-space-block-start: var(--space-2);
   --calendar-weekday-font-size: var(--font-size-xs);
   --calendar-weekday-radius: var(--radius-md);
@@ -495,10 +512,14 @@
    * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too. */
   --calendar-bordered-weekday-padding-block: var(--space-1);
   /* Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the
-   * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--input) / 0.5))`
-   * so it follows a scoped theme. Default --input at half alpha, 1.74:1 light / 1.95:1 dark on the
-   * popover: the full --input (3.47 / 3.88) read too dark, the decorative --border (1.15) was
-   * invisible. Same weight as the RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input))` for the heavier line. */
+   * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--border)))`
+   * so it follows a scoped theme. The --border tier: L* 93.80 / 1.149:1 on the popover in light,
+   * L* 20.76 / 1.270:1 in dark — a rule exactly as heavy as a Card edge or a DataTable row rule.
+   * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47 /
+   * 3.88) to --input/0.5 (1.74 / 1.95, L* 78.67), and gh#730 measured that still darker than the
+   * --border every card and table uses and asked for the --border tier itself. Same tier as the
+   * RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0
+   * weight or `hsl(var(--input))` for the heavy line. */
   --calendar-grid-border-color: initial;
 
   /* TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal
