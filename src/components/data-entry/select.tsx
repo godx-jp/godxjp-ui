@@ -98,7 +98,16 @@ export type SelectCompoundProp = FieldA11yProps & {
   children?: React.ReactNode;
 };
 
-export type SelectProp = SelectDataProp | SelectCompoundProp;
+/*
+ * The compound member carries `mode` / `labelInValue` as `undefined` (gh#679). A bare
+ * `onValueChange={(value, option) => …}` is typed only when TypeScript narrows this union to members
+ * whose callback signatures are identical. An ABSENT prop narrows only if EVERY member declares it,
+ * and the compound API declared neither, so `<Select options onValueChange>` with no `mode` kept all
+ * four data branches, found four different signatures, and fell to an implicit `any` (TS7006).
+ * A present `options` / `loadOptions` already rules the compound member out.
+ */
+export type SelectProp =
+  SelectDataProp | (SelectCompoundProp & { mode?: undefined; labelInValue?: undefined });
 
 function isDataSelect(props: SelectProp): props is SelectDataProp {
   return "options" in props || "loadOptions" in props;

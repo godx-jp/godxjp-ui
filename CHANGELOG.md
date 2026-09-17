@@ -4,6 +4,31 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed — `Select` `onValueChange={(value, option) => …}` is typed again without a mode (gh#679)
+
+Since the antd-6 `Select` (23.0.0, #489), a data `Select` with `options` or `loadOptions` and no
+`mode` / `labelInValue` gave a bare `onValueChange={(value, option) => …}` an implicit `any` under
+`strict` (TS7006 on both parameters). `mode="multiple"` / `"tags"` and `labelInValue` single failed
+the same way. Only `labelInValue` + `mode` still worked.
+
+TypeScript types a bare callback only when the prop union narrows to members with IDENTICAL
+signatures. An absent prop narrows the union only when every member declares that prop. The four
+data branches declare `mode` and `labelInValue`. The compound member of `SelectProp` declared
+neither, so no branch was ever ruled out. The compound member now declares both as `undefined`.
+A present `options` / `loadOptions` already rules the compound member out.
+
+Measured: the new type test (`select-on-value-change-inference-679.test.tsx`, run by
+`pnpm typecheck`) goes from 24 errors to 0 on TypeScript 7.0.2, 6.0.3 and 5.9.3. Each branch now
+infers its own types: `string` / `SelectOption | undefined` for single,
+`string[]` / `SelectOption[] | undefined` for multiple and tags, and the `{value,label}` shapes for
+`labelInValue`.
+
+**Compatible.** This is a type-only change with no runtime effect. Callers that annotated the
+parameters as a stopgap (`(value: string, option?: SelectOption) => …`) keep compiling and can drop
+the annotation. `SelectCompoundProp` itself is unchanged.
+
 ## [26.0.0] - 2026-09-17
 
 **MAJOR — a public token read changes meaning.** `--primary-hover`, `--primary-active`,
