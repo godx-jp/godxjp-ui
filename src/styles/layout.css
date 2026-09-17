@@ -1677,6 +1677,7 @@
    * query cannot read a `var()`, so the step values are the tokenized scale written out. */
   @media (width < 40rem) {
     .ui-flex[data-hide-below="sm"],
+    .app-topbar-brand[data-hide-below="sm"],
     .ui-topbar-item[data-hide-below="sm"],
     [data-slot="table-head"][data-hide-below="sm"],
     [data-slot="table-cell"][data-hide-below="sm"] {
@@ -1686,6 +1687,7 @@
 
   @media (width < 48rem) {
     .ui-flex[data-hide-below="md"],
+    .app-topbar-brand[data-hide-below="md"],
     .ui-topbar-item[data-hide-below="md"],
     [data-slot="table-head"][data-hide-below="md"],
     [data-slot="table-cell"][data-hide-below="md"] {
@@ -1695,6 +1697,7 @@
 
   @media (width < 64rem) {
     .ui-flex[data-hide-below="lg"],
+    .app-topbar-brand[data-hide-below="lg"],
     .ui-topbar-item[data-hide-below="lg"],
     [data-slot="table-head"][data-hide-below="lg"],
     [data-slot="table-cell"][data-hide-below="lg"] {
@@ -1704,6 +1707,7 @@
 
   @media (width < 80rem) {
     .ui-flex[data-hide-below="xl"],
+    .app-topbar-brand[data-hide-below="xl"],
     .ui-topbar-item[data-hide-below="xl"],
     [data-slot="table-head"][data-hide-below="xl"],
     [data-slot="table-cell"][data-hide-below="xl"] {
@@ -1713,6 +1717,7 @@
 
   @media (width >= 40rem) {
     .ui-flex[data-hide-from="sm"],
+    .app-topbar-brand[data-hide-from="sm"],
     .ui-topbar-item-icon[data-hide-from="sm"] {
       display: none;
     }
@@ -1720,6 +1725,7 @@
 
   @media (width >= 48rem) {
     .ui-flex[data-hide-from="md"],
+    .app-topbar-brand[data-hide-from="md"],
     .ui-topbar-item-icon[data-hide-from="md"] {
       display: none;
     }
@@ -1727,6 +1733,7 @@
 
   @media (width >= 64rem) {
     .ui-flex[data-hide-from="lg"],
+    .app-topbar-brand[data-hide-from="lg"],
     .ui-topbar-item-icon[data-hide-from="lg"] {
       display: none;
     }
@@ -1734,6 +1741,7 @@
 
   @media (width >= 80rem) {
     .ui-flex[data-hide-from="xl"],
+    .app-topbar-brand[data-hide-from="xl"],
     .ui-topbar-item-icon[data-hide-from="xl"] {
       display: none;
     }

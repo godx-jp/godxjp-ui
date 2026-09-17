@@ -297,6 +297,16 @@ export default function Demo() {
                 で代用しないこと ― それは 4 スロットが埋まった状態と同じで、バーの行は残る。
               </CardDescription>
               <CardDescription>
+                ブランドの席も幅で動く（gh#728）。<code>.app-topbar-logo</code> は <code>sm</code>{" "}
+                の段より下で <code>--app-shell-brand-compact-max-inline-size</code>
+                （＝バーの高さ）まで切り詰められ、はみ出した分は inline-end 側から落ちる ―
+                どのロックアップもマークが先頭にあるからで、これは package
+                が「自分で描いていない絵」にできる唯一のこと。 何を出すかまで選びたいときは{" "}
+                <code>logoCompact</code> に別ノードを渡す：
+                <code>viewBox</code> は属性なので、どんな stylesheet でも書き換えられない。 実寸は{" "}
+                <code>layout/app-shell-narrow-bar</code> のページで確認できる。
+              </CardDescription>
+              <CardDescription>
                 横方向のページ余白軸の持ち主は <code>--space-page-x</code> ひとつ。 トップバーは{" "}
                 <code>.app-main</code> と同じグリッド列に載っている ―
                 つまりバー先頭のコントロールとページタイトルは同じ縦線に並ぶべきもので、

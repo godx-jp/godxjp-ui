@@ -270,11 +270,45 @@ describe("responsive shell geometry", () => {
     // start absorbs the overflow; center yields its whole box first (flex-basis 0)…
     expect(declarationsFor(shellStyles, ".ui-topbar-start")).toMatch(/flex:\s*0 1 auto;/);
     expect(declarationsFor(shellStyles, ".ui-topbar-center")).toMatch(/flex:\s*1 1 0%;/);
-    // …and `end` NEVER shrinks, so the user menu / settings stay visible, anchored inline-end.
+    // …and `end` SHARES what is left, anchored inline-end.
+    //
+    // This asserted `flex: 0 0 auto` — "end never shrinks" — until gh#728 measured what that costs
+    // the other side: an unshrinkable end cluster hands 100% of any deficit to `.ui-topbar-start`,
+    // which carries `min-width: 0` and therefore collapses. At 320x568 on a bar 10px short, the
+    // start slot paid all 10 and its only cell read clientWidth 22 of scrollWidth 32 — a control
+    // sliced by its own slot, which is the `partiallyObscured` shape gh#639 exists to catch.
+    // Shrink-weighted by base size, the deficit is now shared; what is left over after that is
+    // SCROLLED by the bar (`Topbar overflow="scroll"`, the default), so neither cluster slices a
+    // cell to pay for it — the floors that guarantee that are asserted below.
     const end = declarationsFor(shellStyles, ".ui-topbar-end");
-    expect(end).toMatch(/flex:\s*0 0 auto;/);
+    expect(end).toMatch(/flex:\s*0 1 auto;/);
     expect(end).toMatch(/max-width:\s*100%;/);
     expect(end).toMatch(/margin-inline-start:\s*auto;/);
+  });
+
+  it("scrolls the bar rather than slicing a cell once the shrink contract runs out (gh#728)", () => {
+    // The BAR is the scroll port, not the clusters: a cluster keeps `min-width: 0`, so a cluster
+    // that scrolled would still shrink below its own cell and slice it (measured: 26px of a 32px
+    // cell at 320px, which no scroll position can repair). So the two CELL clusters get a floor
+    // and the bar takes the overflow.
+    const bar = declarationsFor(shellStyles, '.ui-topbar[data-overflow="scroll"]');
+    expect(bar).toMatch(/overflow-x:\s*auto;/);
+    expect(bar).toMatch(/scrollbar-width:\s*none;/);
+    // The block axis stays `clip` with its margin (inherited from the base rule) — an `overflow:
+    // auto` on both axes would shave every flush-edge focus ring.
+    expect(bar).not.toMatch(/overflow-y|overflow:\s*auto/);
+
+    const end = declarationsFor(shellStyles, '.ui-topbar[data-overflow="scroll"] > .ui-topbar-end');
+    expect(end).toMatch(/min-inline-size:\s*auto;/);
+    expect(end).toMatch(/max-inline-size:\s*none;/);
+    // The start cluster's floor is ONE CELL, not its content: its last child is a title with
+    // `white-space: nowrap`, whose min-content size is the whole string — a content floor there
+    // demanded 631px of a 720px bar at 1024px in `en` and pushed the end cluster out of the bar.
+    const start = declarationsFor(
+      shellStyles,
+      '.ui-topbar[data-overflow="scroll"] > .ui-topbar-start',
+    );
+    expect(start).toMatch(/min-inline-size:\s*var\(--topbar-item-min-width\);/);
   });
 
   it("removes the optional Topbar center before it collides with long start/end content (gh#244)", () => {

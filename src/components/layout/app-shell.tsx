@@ -25,6 +25,8 @@ export function AppShell({
   topbarLeft,
   topbarRight,
   logo,
+  logoCompact,
+  logoCompactBelow = "sm",
   breadcrumb,
   footer,
   children,
@@ -181,15 +183,42 @@ export function AppShell({
    */
   const logoInRail = hasSidebar && logo !== undefined && topbarSpan !== "full";
 
+  /*
+   * THE BRAND IN THE BAR, and what it does when the bar runs out of room (gh#728).
+   *
+   * The cell shrinks on its own now (shell-layout.css caps it below the `sm` step), but a cap can
+   * only ever CROP a node the package did not author. `logoCompact` is the other half: a node the
+   * consumer picks for the narrow bar — a mark-only `<svg>` with its own `viewBox`, which is the
+   * thing no stylesheet can produce, since `viewBox` is an attribute.
+   *
+   * Both nodes are rendered and ONE is dropped by the breakpoint, rather than swapped in JS: a
+   * media-query hook would disagree with itself between SSR and the first client paint, and the
+   * dropped node is `display: none`, so exactly one brand is in the accessibility tree at a time.
+   * `data-hide-below` / `data-hide-from` are `Flex`'s own vocabulary on the package's own steps.
+   */
+  const brand =
+    logoCompact === undefined ? (
+      logo
+    ) : (
+      <>
+        <span className="app-topbar-brand" data-hide-below={logoCompactBelow}>
+          {logo}
+        </span>
+        <span className="app-topbar-brand" data-hide-from={logoCompactBelow}>
+          {logoCompact}
+        </span>
+      </>
+    );
+
   const resolvedTopbar =
     topbar !== undefined ? (
       <div className="app-topbar-rail">
-        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
+        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{brand}</div>}
         <div className="app-topbar-custom">{topbar}</div>
       </div>
     ) : (
       <div className="app-topbar-rail">
-        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{logo}</div>}
+        {!logoInRail && logo !== undefined && <div className="app-topbar-logo">{brand}</div>}
         {topbarLeft !== undefined && <div className="app-topbar-left">{topbarLeft}</div>}
         <div className="app-topbar-spacer" />
         {topbarRight !== undefined && <div className="app-topbar-right">{topbarRight}</div>}

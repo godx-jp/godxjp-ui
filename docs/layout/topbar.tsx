@@ -289,6 +289,10 @@ export default function Demo() {
                   },
                   { prop: "center", desc: "検索トリガー（Button）。コマンドパレットを開く" },
                   { prop: "end", desc: "通知ボタン + ユーザーメニュー（DropdownMenu）" },
+                  {
+                    prop: "overflow",
+                    desc: '"scroll"（既定）| "clip" · 収まらないときバーが横スクロールするか、切り落とすか',
+                  },
                   { prop: "children", desc: "3 slot を使わず完全カスタムにする場合の逃げ道" },
                 ].map(({ prop, desc }) => (
                   <Flex key={prop} align="start" gap="sm">
@@ -328,7 +332,13 @@ export default function Demo() {
               <CardTitle level={2}>320px stress · 長いローカライズ内容</CardTitle>
               <CardDescription>
                 1100px 以下では package-owned contract が center slot を隠し、start の最後の
-                ラベルを ellipsis で切り詰めて end utilities を保護する。
+                ラベルを ellipsis で切り詰めて end utilities を保護する。 それでも足りなくなったら
+                バーは<b>切り落とさず横スクロールする</b>（<code>overflow=&quot;scroll&quot;</code>
+                が既定 · gh#728）： start はセル 1 つ分の下限を、end
+                はセルの実寸を保つので、収まらない分は「半分だけ描かれる」のではなく
+                視界の外に出るだけになる。セルは DOM に残るため Tab
+                で到達でき、フォーカスが当たるとブラウザが可視域へスクロールする。
+                <code>overflow=&quot;clip&quot;</code> で以前の切り落としに戻せる。
               </CardDescription>
             </CardHeader>
             <CardContent>
