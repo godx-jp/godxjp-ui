@@ -4,7 +4,35 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [26.0.0] - 2026-09-17
+
+**MAJOR — a public token read changes meaning.** `--primary-hover`, `--primary-active`,
+`--primary-border` and `--control-outline` are now `initial` knobs. Their colour is derived from
+`--primary` at the element that paints it, so a consumer's brand finally carries through hover,
+press and focus. The cost: **reading one of the four with no fallback now paints nothing.**
+
+**Migrate** any bare read in your own CSS:
+
+```css
+/* before — now paints nothing */
+color: hsl(var(--primary-hover));
+/* after */
+color: hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)));
+```
+
+or use the utility (`bg-primary-hover`, `text-primary-hover`, …). OVERRIDING the four tokens with
+your own `H S% L%` triplet still works exactly as before.
+
+This is a regression fix as well as a break. 25.0.0 (gh#648) pinned the four to literals on the
+violet seed, so any consumer that re-themed `--primary` hovered violet — a blue Button turning
+violet on hover. On 23.4.12 those literals were blue, so a blue consumer matched by coincidence and
+the defect was invisible until the v2.3 repaint exposed it.
+
+**Also: nested scopes must set `--ring`.** It is a public token read directly by consumer CSS, so
+it could not become an empty knob without breaking those readers. Overriding only `--primary` on a
+nested tenant scope leaves the Input focus BORDER violet while the halo follows — set `--ring`
+alongside `--primary` there. `docs/CUSTOMER-THEMING.md` §Multi-tenant has the table of which tokens
+follow `--primary` and which you still set.
 
 ### Fixed
 

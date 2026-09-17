@@ -437,11 +437,15 @@ anywhere in `src/`, or leaves a trace in `dist/`. Deleting that gate re-opens th
 spacer. This library takes a different, two-form convention instead — widely used in enterprise
 component libraries, and surveyed across several before it was adopted here:
 
-- **Field** — the boundary RECOLOURS to the primary at its unchanged hairline width, plus
-  `box-shadow: 0 0 0 var(--control-outline-width) var(--control-outline)`. A Select emits the same
+- **Field** — the boundary RECOLOURS to the primary at its unchanged hairline width, plus a
+  `--control-outline-width` halo in the `--control-outline` colour. A Select emits the same
   declarations as an Input, which is why the two focus identically.
-- **Non-field** — an outline outside the box model:
-  `outline: var(--focus-outline-weight) solid var(--primary-border); outline-offset: 1px`.
+- **Non-field** — an outline outside the box model, `--focus-outline-weight` thick in the
+  `--primary-border` colour, `outline-offset: 1px`.
+
+Since 26.0.0 (gh#678) `--control-outline` and `--primary-border` are `initial` knobs whose default
+derives from `--primary` at the painting element, so a bare `var(--control-outline)` paints
+**nothing**. Read them through their fallback — see `docs/CUSTOMER-THEMING.md` §Multi-tenant.
 
 **Why this shape wins.** The library previously shipped an opaque brand ring drawn immediately
 outside an untouched grey border — two outlines of different colours claiming the same edge — and a
