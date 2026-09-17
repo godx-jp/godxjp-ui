@@ -4585,8 +4585,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--pagination-control-height-sm",
-    "value": "var(--band-height-sm)",
-    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each * carrying its own tier — exactly how a service would retune the whole footer."
+    "value": "initial",
+    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each * carrying its own tier — exactly how a service would retune the whole footer. * Declared `initial` (gh#705): the documented default is `var(--control-height-sm)`, resolved at * the bar, so a small pager inside a density scope (a compact DataTable, whose toolbar Buttons * are 25.76px) sits on the same step as its neighbours instead of a frozen 28px band."
   },
   {
     "name": "--pagination-jumper-gap",

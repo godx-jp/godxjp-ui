@@ -88,6 +88,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../navigation/dropdown-menu";
+import { Pagination } from "../navigation/pagination";
 import { RadioGroupRoot, RadioItem } from "../data-entry/radio";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import {
@@ -119,6 +120,7 @@ import type {
   SortStateProp,
   TableExpandableProp,
   TablePaginationProp,
+  TablePaginationPositionProp,
   TablePresetProp,
   TableRowSelectionProp,
   TableScrollProp,
@@ -431,8 +433,11 @@ interface DataTableProps<T> {
    * Numbered-pagination state, surfaced by DataTable.Pagination. THREE shapes, all accepted:
    * the TanStack `{ pageIndex, pageSize }` this prop has always taken; antd's
    * `TablePaginationConfig` object (`{ current, pageSize, total, pageSizeOptions,
-   * showSizeChanger, onChange }`, 1-based like antd); and `false`, which hides the pager
-   * entirely (antd `pagination={false}`).
+   * showSizeChanger, showTotal, position, onChange }`, 1-based like antd); and `false`, which
+   * hides the pager entirely (antd `pagination={false}`). The config object with NO composed
+   * `<DataTable.Pagination>` renders the table's own antd footer — the real `Pagination` with
+   * total + page numbers at `position` (default `bottomEnd`), `size="sm"` on a compact table.
+   * Server paging: `pagination={{ total, current, pageSize, onChange }}` with `data` = that page.
    */
   pagination?: PaginationState | TablePaginationProp | false;
   onPaginationChange?: OnChangeFn<PaginationState>;
@@ -818,6 +823,25 @@ export function DataTable<T>({
       paginationConfig !== undefined ||
       onPaginationChange !== undefined ||
       hasNumberedPager);
+  // antd's own rule for a `total` the rows cannot account for: more rows expected than given, and
+  // no more than one page of them, means `data` IS the current page — show it unsliced.
+  const serverPaged =
+    paginationConfig?.total !== undefined &&
+    data.length < paginationConfig.total &&
+    data.length <= pageSize;
+  // antd renders the footer from the config object alone. A composed <DataTable.Pagination> (either
+  // mode) keeps rendering its own footer instead, so an existing composition never gets a second.
+  const hasComposedPager = React.Children.toArray(children).some(
+    (c) =>
+      React.isValidElement(c) &&
+      (c.type as { displayName?: string }).displayName === "DataTable.Pagination",
+  );
+  const footerPositions =
+    paginationConfig && !hasComposedPager && !pagerHidden
+      ? (paginationConfig.position ?? ["bottomEnd"]).filter((p) => p !== "none")
+      : [];
+  const topFooter = footerPositions.find((p) => p.startsWith("top"));
+  const bottomFooter = footerPositions.find((p) => p.startsWith("bottom"));
 
   // One feature set per table instance. The object is the same for every T, but the table is
   // built from it, so it must stay referentially stable across renders.
@@ -834,7 +858,7 @@ export function DataTable<T>({
     manualFiltering,
     // "no pager on this table" is expressed the same way as "the server paginates" — leave the
     // rows unsliced. Page count still derives from `rowCount`/the pre-paginated model either way.
-    manualPagination: manualPagination || !paginationEngaged,
+    manualPagination: manualPagination || serverPaged || !paginationEngaged,
     rowCount: paginationConfig?.total ?? rowCount,
     enableRowSelection: selectionEnabled,
     state: {
@@ -913,8 +937,10 @@ export function DataTable<T>({
   return (
     <DataTableContext.Provider value={ctx as DataTableContextValue}>
       <div className={cn("ui-data-table-root", densityClass[density], className)}>
+        {topFooter ? <PaginationFooter position={topFooter} /> : null}
         {children}
         {!hasContent && <DataTable.Content />}
+        {bottomFooter ? <PaginationFooter position={bottomFooter} /> : null}
       </div>
     </DataTableContext.Provider>
   );
@@ -2170,6 +2196,48 @@ function NumberedPagination({ pageSizeOptions, className }: NumberedPaginationPr
         </Button>
       </Flex>
     </Flex>
+  );
+}
+
+// ── antd pagination footer (gh#705) ────────────────────────────────────
+// Rendered by the DataTable root from the `pagination` config object alone, as antd's Table does.
+// It IS the real `Pagination` — total beside the page numbers — so it never re-implements paging.
+// `density` is this library's spelling of antd's Table `size`, and antd's `size="small"` table
+// pairs with a small pager: compact → `sm`, which resolves to the same --control-height-sm step as
+// the toolbar's `size="sm"` controls inside the table's density scope.
+
+const footerAlign = {
+  Start: "start",
+  Center: "center",
+  End: "end",
+} as const;
+
+function PaginationFooter({
+  position,
+}: {
+  position: Exclude<TablePaginationPositionProp, "none">;
+}) {
+  const { table, paginationConfig, density } = useDataTableContext();
+  if (!paginationConfig) return null;
+  const { pageIndex, pageSize } = table.state.pagination;
+  const edge = position.replace(/^(top|bottom)/, "") as keyof typeof footerAlign;
+  return (
+    <div
+      className="ui-data-table-pagination ui-data-table-pagination--footer"
+      data-position={position}
+    >
+      <Pagination
+        value={pageIndex + 1}
+        total={table.getRowCount()}
+        pageSize={pageSize}
+        pageSizeOptions={paginationConfig.pageSizeOptions}
+        showSizeChanger={paginationConfig.showSizeChanger ?? true}
+        showTotal={paginationConfig.showTotal}
+        size={density === "compact" ? "sm" : "md"}
+        align={footerAlign[edge]}
+        onValueChange={(page, size) => table.setPagination({ pageIndex: page - 1, pageSize: size })}
+      />
+    </div>
   );
 }
 

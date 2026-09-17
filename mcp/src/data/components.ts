@@ -3694,9 +3694,9 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
       {
         name: "pagination / onPaginationChange / rowCount",
-        type: "{ pageIndex: number; pageSize: number } / OnChangeFn / number",
+        type: "{ pageIndex: number; pageSize: number } | TablePaginationProp | false / OnChangeFn / number",
         description:
-          "Numbered-pagination state surfaced by DataTable.Pagination (page-size form). For server pagination pass all three (rowCount = total) with manualPagination; omit for client pagination.",
+          "Pagination state. THREE shapes: the TanStack `{ pageIndex, pageSize }` (surfaced by a composed DataTable.Pagination); antd's TablePaginationConfig `{ total, current (1-based), pageSize, pageSizeOptions, showSizeChanger, showTotal, position, onChange(page, pageSize) }`; or `false` (no pager, rows unsliced). The antd object WITHOUT a composed DataTable.Pagination renders the table's own footer — the real Pagination (total beside the page numbers) at `position` (TablePaginationPositionProp[], logical: topStart|topCenter|topEnd|bottomStart|bottomCenter|bottomEnd|none; default ['bottomEnd'] = antd bottomRight), `size=\"sm\"` on a compact table so it matches the toolbar's sm controls. Server-paged: `pagination={{ total, current, pageSize, onChange }}` with `data` = the current page — a total larger than data.length with ≤ pageSize rows reads as server paging (antd's rule), giving ceil(total / pageSize) pages. A composed DataTable.Pagination keeps its own footer (never two pagers).",
       },
       {
         name: "columnVisibility / onColumnVisibilityChange",
@@ -3838,6 +3838,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Bulk-action workflows (e.g. mark invoices paid, export selected rows) — use selectable + DataTable.BulkActions to show contextual action buttons only when something is selected.",
       "Server-side sorted tables: pass sort + onSortChange and update the data prop after the API call; DataTable renders asc/desc/neutral icons on the header automatically.",
       "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic. For page-size + numbered prev/next instead, use DataTable.Pagination with pageSizeOptions (no cursor/onChange) driven by the internal TanStack pagination.",
+      "Server-paged table (antd `Table pagination`): `pagination={{ total, current, pageSize, onChange }}` with `data` = the rows of the current page — the table renders its own footer with the real Pagination (total + page numbers, bottom-end, sized from density). Add `showTotal: true` or `(total, [from, to]) => …` for the total label; `position: ['topEnd']` to move it.",
       "Full grid screens (global search + column 'set view' + numbered pagination): compose DataTable.Search, DataTable.ViewOptions, DataTable.DensityToggle in the toolbar and DataTable.Pagination pageSizeOptions={[…]} — client-side by default, or server-side by passing globalFilter/pagination/sort state with the matching manual* flag.",
       'Responsive admin tables where columns should drop at specific viewport steps — set hideBelow on each ColumnDef (sm/md/lg/xl, same ladder as Flex hideBelow); hiddenOnMobile: true remains an alias for hideBelow:"md". ColumnDef.priority is ONLY for preset="action-collection" width allocation, not for hiding. When every column must stay DISCOVERABLE at 390 (an approval/action queue), use preset="action-collection" + priority rather than hideBelow.',
       "Access-approval / action queues at 390px (SCR-105): preset=\"action-collection\" + a priority on each ColumnDef keeps requester · target · reason · requested date · row actions inside the initial narrow frame with no page-local CSS, no consumer width, no hidden column and no horizontal scroll — see the DataTable 'Approval queue' example page.",
@@ -8574,14 +8575,14 @@ toast.error("保存に失敗しました");`,
         type: '"sm" | "md"',
         defaultValue: '"md"',
         description:
-          "Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart.",
+          'Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart. `sm` reads `--control-height-sm` of the surrounding density scope (knob `--pagination-control-height-sm`, default `initial`), so a small pager in a compact DataTable matches its size="sm" toolbar controls.',
       },
       {
         name: "align",
         type: '"start" | "center" | "end"',
         defaultValue: '"end"',
         description:
-          "Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position.",
+          'Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position. With `align="end"` the `showTotal` label sits BESIDE the page buttons (antd); `start` / `center` keep the total pushed to the inline start.',
       },
       {
         name: "responsive",
@@ -8614,6 +8615,7 @@ toast.error("保存に失敗しました");`,
       "NOTE the page strip scrolls horizontally rather than wrapping, and its page buttons are normally the keyboard route to that overflow. Disable the whole bar (`disabled`) and there is no such route, so the strip takes `tabindex=0` itself to stay keyboard-scrollable (WCAG 2.1.1). Nothing to configure — just don't strip the attribute in consumer CSS/JS.",
     ],
     useCases: [
+      "Server-paged DataTable: do NOT place a Pagination below the card — pass `pagination={{ total, current, pageSize, onChange }}` to DataTable and it renders this component in its own footer (total + page numbers, density-sized).",
       "Standalone offset-paginated admin list pages (e.g. invoice list, customer list, transaction history) rendered outside DataTable — place Pagination below the table card, outside the card border, with `showTotal` and optionally `showSizeChanger`.",
       "Search results pages where the backend accepts `page` + `per_page` query parameters and returns a total count — wire `value` and `pageSize` to URL search params so the URL is shareable and browser-back works.",
       "Reports and filtered data grids where the user needs to export 'all selected pages': `showTotal` with a custom function lets you show '1–50 of 1 200 rows' so the user understands the scope before exporting.",
