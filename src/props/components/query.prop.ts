@@ -45,8 +45,9 @@ export type AlertMutationFeedbackProp = {
   pending?: React.ReactNode;
   /**
    * Skip rendering when the error classifies as a validation error (`classifyQueryError` category
-   * `"validation"`: 400/422). Defaults to `true` inside a `FormRoot`/`Form` that received `errors`
-   * (the fields show the bag; `FormErrors` shows unclaimed keys), otherwise `false`.
+   * `"validation"`: 400/422). `true` skips every such error. When omitted, the alert is skipped only
+   * inside a `FormRoot`/`Form` whose `errors` bag holds at least one message (the fields show it;
+   * `FormErrors` shows unclaimed keys); an empty/absent bag still renders the alert.
    */
   ignoreValidationErrors?: boolean;
   className?: ClassNameProp;

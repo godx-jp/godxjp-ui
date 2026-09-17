@@ -2513,7 +2513,7 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "ignoreValidationErrors",
         local: true,
         reason:
-          "Query-error category filter; defaults on inside a Form that received an error bag.",
+          "Query-error category filter; defaults on inside a Form whose error bag holds messages.",
       },
       "ClassNameProp",
     ],

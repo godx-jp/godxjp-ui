@@ -48,6 +48,21 @@ describe("AlertMutationFeedback — validation errors (gh#690)", () => {
     expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 
+  it("renders the alert for a 400 with no field messages inside a FormRoot with empty errors", () => {
+    renderWithUi(<InForm mutation={failed(httpError(400, "Bad request"))} errors={{}} />);
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+  });
+
+  it("renders the alert for a 422 when the bag has keys but no messages", () => {
+    renderWithUi(<InForm mutation={failed(invalid)} errors={{ code: [] }} />);
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+  });
+
+  it("skips a validation error in the form with an empty bag when set explicitly", () => {
+    renderWithUi(<InForm mutation={failed(invalid)} errors={{}} ignoreValidationErrors />);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
   it("renders the alert for a 500 inside a FormRoot that received errors", () => {
     renderWithUi(<InForm mutation={failed(httpError(500, "Server exploded"))} errors={bag} />);
     expect(screen.getByRole("alert")).toBeInTheDocument();

@@ -22,15 +22,21 @@ export function AlertMutationFeedback({
   ignoreValidationErrors,
   className,
 }: AlertMutationFeedbackProp) {
-  // The error registry exists only under a Form/FormRoot that received `errors`.
-  const inErrorBagForm = useFormErrorsRegistry() !== null;
+  // The error registry exists only under a Form/FormRoot that received `errors`. The default skips
+  // only when that bag holds a message — something on the page (a field or FormErrors) shows it.
+  const registry = useFormErrorsRegistry();
+  const bagShowsErrors =
+    registry !== null &&
+    Object.values(registry.errors).some((entry) =>
+      Array.isArray(entry) ? entry.some(Boolean) : Boolean(entry),
+    );
 
   if (mutation.isPending && pending) return <>{pending}</>;
 
   if (!mutation.isError || mutation.error == null) return null;
 
   if (
-    (ignoreValidationErrors ?? inErrorBagForm) &&
+    (ignoreValidationErrors ?? bagShowsErrors) &&
     classifyQueryError(mutation.error).category === "validation"
   ) {
     return null;
