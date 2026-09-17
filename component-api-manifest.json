@@ -18253,6 +18253,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "divided",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "expandedValues",
           "origin": "owned",
           "required": false,

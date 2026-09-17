@@ -12486,6 +12486,13 @@ export function FilterSection() {
           "Draw the connector rails between a parent and its children (antd `showLine`). Off by default — a rail is chrome, and chrome defaults quiet.",
       },
       {
+        name: "divided",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Rule between the rows: a hairline on every node's block-start except the outline's first, so a tree used as navigation inside a Card reads as a list instead of one block (gh#732). The rule runs the FULL width of the row at every depth — never indented per level, which would make the children read as a nested table. Colour is `--tree-divider-color` (default `hsl(var(--border))`). Off by default, like `showLine` — chrome defaults quiet. Not antd's name: antd's Tree has no such capability, and `bordered` means a grid's frame plus column rules elsewhere in this library.",
+      },
+      {
         name: "showIcon",
         type: "boolean",
         defaultValue: "false",
@@ -12532,6 +12539,7 @@ export function FilterSection() {
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
       'DON\'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role="tree"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.',
+      "DO pass `divided` when the tree IS the navigation of a page — a wiki/document outline or a section index sitting in a `Card` (`Card` > `CardContent flush` > `Tree divided`). Without a rule the rows run together and the outline reads as one block; with it, it reads as the ruled list ListRow and Table already give a flat list. Retint it per theme with `--tree-divider-color`, never with a per-page utility class.",
       "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
       "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
     ],
@@ -12541,6 +12549,7 @@ export function FilterSection() {
       "An organisation chart / department picker on a settings page, where a branch's children are fetched on demand with `loadData`.",
       'A file explorer (`variant="directory"`, `showIcon`, `showLine`) where folders and files read differently and the selected row spans the width.',
       "A chart-of-accounts outline that must expand and collapse — the case a flat indented list only ever looked like it handled.",
+      "A wiki / document page index used as the navigation of a screen, inside a Card: `divided` rules the rows so the outline reads as a list, and selection drives the reading pane.",
     ],
     related: [
       'TreeList — REMOVED in 21.0.0, replaced by Tree. It was a flat `<ul>` whose `depth` only drove `margin-inline-start`: it LOOKED like a tree and had no expand/collapse, no `role="tree"`, no keyboard and no selection contract. Migration: nest the flat `items` into `treeData` (`id`→`value`, `title`→`label`, `depth`→nesting) and pass `aria-label`. A genuinely static indented outline that never opens is a `Descriptions` or a `ListRow` stack, not a tree.',

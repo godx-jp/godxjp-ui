@@ -782,6 +782,17 @@ export type TreeProp = {
   titleRender?: (node: TreeNodeProp) => React.ReactNode;
   /** Draw the connector rails between a parent and its children (antd `showLine`). */
   showLine?: boolean;
+  /**
+   * Rule between the rows: a hairline on every node's block-start except the outline's first, so a
+   * tree used as navigation inside a Card reads as a list instead of one block (gh#732). The rule
+   * runs the FULL width of the row at every depth — it is never indented per level, which would
+   * make the children read as a nested table. Colour is `--tree-divider-color`.
+   *
+   * Off by default: a rule is chrome, and this component's chrome defaults quiet (cardinal rule
+   * #44 — the same reason `showLine` ships off). Not antd's name — antd's `Tree` has no such
+   * capability; see docs/DESIGN-AUTHORITY.md.
+   */
+  divided?: boolean;
   /** Draw each node's `icon` (antd `showIcon`). `variant="directory"` supplies folder/file glyphs. */
   showIcon?: boolean;
   /** `directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band. */

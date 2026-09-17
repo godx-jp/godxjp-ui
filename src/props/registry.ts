@@ -3476,6 +3476,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "SizeProp",
       "ClassNameProp",
       "IdProp",
+      {
+        field: "divided",
+        local: true,
+        reason:
+          "Rules between the rows — a hairline on every node's block-start but the outline's first, full row width at every depth (gh#732). Default false, because chrome defaults quiet here (#44). Not antd's spelling: antd's Tree has no such capability, and `bordered` already means a grid's frame plus column rules on Table / Calendar / RangeTimeline; see docs/DESIGN-AUTHORITY.md.",
+      },
     ],
   },
   CardProp: {
