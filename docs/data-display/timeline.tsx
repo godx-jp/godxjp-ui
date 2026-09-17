@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { useTranslation } from "@godxjp/ui/i18n";
 import {
   Card,
@@ -142,7 +144,10 @@ export default function Demo() {
             <CardTitle level={2}>承認・消費税トラッカー</CardTitle>
             <CardDescription>
               variant="status" は status ごとにグリフを切り替えます（done → チェック、current →
-              塗りつぶしドット、pending → 連番）。
+              塗りつぶしドット、pending → 連番）。進捗レールの色は1つだけ：
+              done・current・通過済みの線 はすべて --primary で塗られ、current
+              はリング（--timeline-dot-current-ring-width）と グリフで区別します。Steps の finish /
+              process と同じ約束です。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -160,6 +165,31 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Timeline variant="status" items={richItems} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>進捗レールの色をテーマで戻す</CardTitle>
+            <CardDescription>
+              done の緑と current の紫という 27.8 までの配色に戻したい場合は、塗りとインクを
+              対にしてテーマで指定します。塗りだけを戻すと、若竹の緑にほぼ白のグリフが乗って 2.18:1
+              になり AA を満たしません（gh#643）。同じ要領で --timeline-dot-current-background と
+              --timeline-line-completed-background も再着色できます。
+            </CardDescription>
+          </CardHeader>
+          {/* The knobs are declared on the CARD BODY, not on the Timeline: custom properties
+              inherit, so one scope retints every Timeline inside it — which is how a service
+              theme sets them (once, globally, or under `[data-tenant]`), not per call site. */}
+          <CardContent
+            style={
+              {
+                "--timeline-dot-done-background": "hsl(var(--success))",
+                "--timeline-dot-done-foreground": "hsl(var(--success-foreground))",
+              } as CSSProperties
+            }
+          >
+            <Timeline variant="status" items={approvalItems} />
           </CardContent>
         </Card>
 

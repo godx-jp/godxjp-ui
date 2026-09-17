@@ -2846,7 +2846,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--timeline-dot-done-background",
     "value": "initial",
-    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
+    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. ONE HUE down the whole progress column (gh#731): done, current and the travelled line all default to hsl(var(--primary)), the way Steps paints `finish` and `process`; current is told apart by its ring, not by a second role. To restore the pre-27.9 green/violet pairing, set the done dot's FILL and its INK together — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.19:1 (gh#643): --timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));"
+  },
+  {
+    "name": "--timeline-dot-done-foreground",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--timeline-dot-current-background",
@@ -2857,6 +2862,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--timeline-line-completed-background",
     "value": "initial",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--timeline-dot-current-ring-width",
+    "value": "var(--stroke-xl)",
+    "description": "The current dot's ring is the ONLY chromatic difference from a done dot, so it is `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing."
   },
   {
     "name": "--qr-code-foreground",

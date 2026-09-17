@@ -262,10 +262,20 @@
   --thumbnail-radius: var(--radius);
 
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
-     Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line. */
+     ONE HUE down the whole progress column (gh#731): done, current and the travelled line all
+     default to hsl(var(--primary)), the way Steps paints `finish` and `process`; current is told
+     apart by its ring, not by a second role. To restore the pre-27.9 green/violet pairing, set the
+     done dot's FILL and its INK together — the two roles have opposite ink polarity, so the fill
+     alone leaves a near-white glyph on 若竹 green at 2.19:1 (gh#643):
+       --timeline-dot-done-background: hsl(var(--success));
+       --timeline-dot-done-foreground: hsl(var(--success-foreground)); */
   --timeline-dot-done-background: initial;
+  --timeline-dot-done-foreground: initial;
   --timeline-dot-current-background: initial;
   --timeline-line-completed-background: initial;
+  /* The current dot's ring is the ONLY chromatic difference from a done dot, so it is
+     `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing. */
+  --timeline-dot-current-ring-width: var(--stroke-xl);
 
   /* QR codes stay scanner-safe in light and dark application themes. Consumers may override these
      component tokens only when the resulting pair retains strong contrast. */

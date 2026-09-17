@@ -594,25 +594,62 @@
     place-items: center;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--timeline-dot-done-background, hsl(var(--success)));
-    color: hsl(var(--success-foreground));
+    background: var(--timeline-dot-done-background, hsl(var(--primary)));
+    color: var(--timeline-dot-done-foreground, hsl(var(--primary-foreground)));
     font-size: var(--timeline-note-font-size);
     font-weight: var(--font-weight-medium);
     line-height: 1;
   }
 
-  /* done → success fill. */
+  /*
+   * ONE HUE DOWN THE WHOLE PROGRESS COLUMN (gh#731).
+   *
+   * `done` used to paint `hsl(var(--success))` while `current` and the travelled line painted
+   * `hsl(var(--primary))`, so a single rail carried two unrelated roles: the STATUS green for the
+   * steps behind you and the ACTION hue for where you are. Measured on /isolate/data-display-timeline
+   * in Chromium, light theme: done #69bf8e, current #7a00ff, line #7a00ff — and the green dot sat at
+   * 2.18:1 against the card, under the 3:1 SC 1.4.11 asks of a mark, while the violet one cleared
+   * 6.31:1. Re-theming `--primary` moved half the column and left the other half green.
+   *
+   * `Steps` — the same "progress through a sequence" idea, one group over — already answers this:
+   * `.ui-steps-dot[data-status="finish"]` and `[data-status="process"]` BOTH take
+   * `hsl(var(--primary))`, and process is told apart by a ring, not by a second role (antd's
+   * contract too: only `error` leaves the primary hue). So the done dot moves onto the same role and
+   * the ring becomes the whole distinction, exactly as it is in `.ui-steps-dot`.
+   *
+   * `--success` is NOT dropped from the library — it stays the STATUS green everywhere a surface
+   * really carries a status (Badge/Alert/Progress/ThoughtChain). Timeline's three-state axis is
+   * `done | current | pending`, which is POSITION IN A SEQUENCE, not status; it has no tone axis, so
+   * nothing here was a status mark in the first place. A consumer who wants the old pairing back
+   * sets the two `--timeline-dot-done-*` knobs (see src/tokens/components/data-display.css).
+   */
   .ui-timeline-dot[data-status="done"] {
-    background: var(--timeline-dot-done-background, hsl(var(--success)));
-    color: hsl(var(--success-foreground));
+    background: var(--timeline-dot-done-background, hsl(var(--primary)));
+    color: var(--timeline-dot-done-foreground, hsl(var(--primary-foreground)));
   }
 
-  /* current → primary fill + ring (also the legacy data-current shorthand). */
+  /*
+   * current → the SAME fill, distinguished by the ring (also the legacy data-current shorthand).
+   *
+   * Width and alpha are `.ui-steps-dot[data-status="process"]`'s, token-for-token
+   * (`--steps-dot-process-ring-width` is `--stroke-xl`, alpha 0.2), because the two rings now mean
+   * the same thing. Measured light / dark: the halo paints #e3cafd / #463f49 — 1.46:1 / 1.61:1
+   * against the card but 4.33:1 / 6.11:1 against the dot it surrounds, and it grows the dot's
+   * footprint 24px → 32px. A tint can never reach 3:1 on the card AND stay separate from the fill
+   * (at α 0.5 it is 2.73:1 on the card and only 2.31:1 on the fill — a bigger dot, not a ring), so
+   * the ring is deliberately a secondary cue: `aria-current="step"`, the localized sr-only prefix
+   * and a different glyph (Plane / pip vs CheckCircle2 / check) carry the state non-chromatically.
+   * That makes Timeline strictly MORE distinguishable than Steps, whose dot has no glyph at all.
+   *
+   * Fill-vs-outline (`.ui-steps-marker`'s answer) was measured and rejected: Timeline's `pending`
+   * is ALREADY an outline on the surface, so an outlined current would collide with it and would
+   * make the focal step the lightest mark on the rail, ending the travelled line in a hole.
+   */
   .ui-timeline-dot[data-status="current"],
   .ui-timeline-dot[data-current="true"] {
     background: var(--timeline-dot-current-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
+    box-shadow: 0 0 0 var(--timeline-dot-current-ring-width) hsl(var(--primary) / 0.2);
   }
 
   /* pending → muted outline on the surface (no fill). */
