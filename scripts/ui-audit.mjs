@@ -146,6 +146,19 @@ const EMOJI_FLAG = /\p{Regional_Indicator}/u;
 const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 
 /**
+ * A raw lowercase HTML opening tag, wherever its line ends (gh#673).
+ *
+ * The control rules were `/<button[\s>]/` run ONE LINE at a time. Prettier leaves `<button` alone on
+ * its line when it wraps an element, and the newline after the tag name is not part of that line, so
+ * every wrapped element was invisible: a consumer's audit reported 0 `no-raw-button` while ~166
+ * multi-line `<button` remained, and "0" read as "migration finished". Matched over the whole file
+ * (`spansElement`), the lookahead `[\s/>]` accepts that newline while `<buttonish`, `<Button` and
+ * `</button` stay unmatched. `[^\n]*` only carries the rest of the line into the snippet — and keeps
+ * one finding per line, which is what the per-line rule reported for a single-line element.
+ */
+const rawTag = (tag) => new RegExp(`<${tag}(?=[\\s/>])[^\\n]*`, "g");
+
+/**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string,
  *         exempt?:RegExp, classOnly?:boolean}[]}
  *
@@ -185,7 +198,9 @@ const RULES = [
     severity: "error",
     // A hand-rolled flex/grid container. The primitives exist precisely so a row is <Flex>, a
     // stack is <Flex direction="col">, a grid is <ResponsiveGrid> — token gaps, RTL, density.
-    test: /className=(?:"[^"]*|'[^']*|\{`[^`]*)(?<![\w-])(?:flex|inline-flex|grid|inline-grid)(?![\w-])/,
+    // Whole-file: a className template literal can hold `flex` several lines below `className=` (gh#673).
+    spansElement: true,
+    test: /className=(?:"[^"]*|'[^']*|\{`[^`]*)(?<![\w-])(?:flex|inline-flex|grid|inline-grid)(?![\w-])/g,
     message:
       'No hand-rolled flex/grid — use <Flex> (row), <Flex direction="col"> (stack) or <ResponsiveGrid> (docs/CONSUMER-RULES.md §3).',
   },
@@ -203,17 +218,23 @@ const RULES = [
     // rounded-full` dot was clean, `prettier --write` reordered it to `rounded-full bg-current`,
     // and the warning appeared with no source change. A rule a formatter can flip is a rule
     // nobody can trust.
-    test: (line) => {
-      const m = line.match(/className=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`)/);
-      if (!m) return false;
-      const cls = m[1] ?? m[2] ?? m[3] ?? "";
-      // A MARKER is not a surface. `size-1` is 4px — a dot, a pip, a status bead. The primitives
-      // this rule points at (Card, Badge, Avatar, ListRow, Descriptions, EmptyState) all start at
-      // control height, so none of them can express one, and flagging it sends the reader looking
-      // for a component that does not exist. The cut-off is `size-2` / 8px: below that there is no
-      // room for the padding and type that make something a surface.
-      if (/\b(?:size|[wh])-(?:0\.5|1|1\.5|2)\b/.test(cls)) return false;
-      return /\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b/.test(cls) && /\b(?:border|bg-)/.test(cls);
+    //
+    // Whole-file, one verdict per className: a template literal spread over lines puts `rounded`
+    // and `border` on lines of their own, where a per-line read saw neither (gh#673).
+    spansElement: true,
+    matches: function* (source) {
+      for (const m of source.matchAll(/className=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`)/g)) {
+        const cls = m[1] ?? m[2] ?? m[3] ?? "";
+        // A MARKER is not a surface. `size-1` is 4px — a dot, a pip, a status bead. The primitives
+        // this rule points at (Card, Badge, Avatar, ListRow, Descriptions, EmptyState) all start at
+        // control height, so none of them can express one, and flagging it sends the reader looking
+        // for a component that does not exist. The cut-off is `size-2` / 8px: below that there is no
+        // room for the padding and type that make something a surface.
+        if (/\b(?:size|[wh])-(?:0\.5|1|1\.5|2)\b/.test(cls)) continue;
+        if (/\brounded(?:-(?:full|sm|md|lg|xl|2xl))?\b/.test(cls) && /\b(?:border|bg-)/.test(cls)) {
+          yield m;
+        }
+      }
     },
     message:
       "Hand-rolled surface (rounded + border/bg) — use Card, Badge, Avatar, ListRow, Descriptions or EmptyState so height, padding and radius come from the tokens (docs/CONSUMER-RULES.md §4). A read-only sample of a colour a USER chose is Swatch, which takes that value as a prop.",
@@ -360,14 +381,16 @@ const RULES = [
     replacement: "Select",
     scope: "consumer-control",
     severity: "error",
-    test: /<select[\s>]/,
+    spansElement: true,
+    test: rawTag("select"),
     message: "Use <Select> from @godxjp/ui, not a raw <select> (rules §3).",
   },
   {
     id: "no-raw-table",
     replacement: "DataTable / Table",
     severity: "error",
-    test: /<table[\s>]/,
+    spansElement: true,
+    test: rawTag("table"),
     message: "Use the <Table> family from @godxjp/ui, not a raw <table> (rules §3).",
   },
   {
@@ -375,7 +398,8 @@ const RULES = [
     replacement: "Textarea",
     scope: "consumer-control",
     severity: "warn",
-    test: /<textarea[\s>]/,
+    spansElement: true,
+    test: rawTag("textarea"),
     message: "Use <Textarea> from @godxjp/ui, not a raw <textarea> (rules §3).",
   },
   {
@@ -392,7 +416,8 @@ const RULES = [
     replacement: "Button",
     scope: "consumer-control",
     severity: "error",
-    test: /<button[\s>]/,
+    spansElement: true,
+    test: rawTag("button"),
     message: "Use <Button> from @godxjp/ui, not a raw <button> (rules §3).",
   },
   {
@@ -423,7 +448,9 @@ const RULES = [
   {
     id: "manual-field-helper",
     severity: "warn",
-    test: /<p[^>]*className="text-xs text-muted-foreground"/,
+    // Whole-file: prettier wraps `<p` and its className onto separate lines (gh#673).
+    spansElement: true,
+    test: new RegExp(`<p${ATTRS}className="text-xs text-muted-foreground"`, "g"),
     message:
       "Field helper text should use <FormField helper=…>, not a hand-rolled <p> (rules §1). OK only for checkbox/radio groups.",
   },
@@ -541,7 +568,9 @@ const RULES = [
      * — one of ten standing warnings here. Flagging it would push every consumer doing the right
      * thing toward either a suppression comment or a worse glyph.
      */
-    test: />\s*[✕✖×╳]\s*</,
+    // Whole-file: prettier puts a wrapped element's text on its own line, `>` and `<` elsewhere (gh#673).
+    spansElement: true,
+    test: />\s*[✕✖×╳]\s*</g,
     exempt: /<VisuallyHidden\b|sr-only/,
     standard: "WAI-ARIA 1.2 (dialog) · WCAG 2.2 SC 4.1.2 · @godxjp/ui Alert/Dialog anatomy",
     message:
@@ -1190,7 +1219,11 @@ for (const dir of SCAN_DIRS) {
           continue;
         const lineNo = scanContent.slice(0, match.index).split("\n").length;
         if (suppressed(rule.id, lineNo - 1)) continue;
-        if (isExempt(rule, origLines[lineNo - 1], origLines[lineNo - 2])) continue;
+        // "The line after" is the one after the match ENDS: a wrapped glyph's name follows its `</span>`.
+        const endLineNo = lineNo + (match[0].match(/\n/g)?.length ?? 0);
+        if (isExempt(rule, origLines[lineNo - 1], origLines[lineNo - 2], origLines[endLineNo])) {
+          continue;
+        }
         findings.push({
           file: rel,
           line: lineNo,
@@ -1198,6 +1231,7 @@ for (const dir of SCAN_DIRS) {
           severity: rule.severity,
           standard: rule.standard,
           message: rule.message,
+          replacement: rule.replacement,
           snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
         });
       }

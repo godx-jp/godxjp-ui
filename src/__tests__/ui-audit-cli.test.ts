@@ -235,9 +235,7 @@ describe("consumer audit CLI regressions", () => {
     for (const source of quiet) {
       expect(audit(source).output, source).not.toContain('"hardcoded-currency"');
     }
-    expect(
-      audit('<span>${price}円</span>').output,
-    ).toContain('"hardcoded-currency"');
+    expect(audit("<span>${price}円</span>").output).toContain('"hardcoded-currency"');
     expect(audit("<Text>¥{amount}</Text>").output).toContain('"hardcoded-currency"');
   });
 
@@ -358,5 +356,138 @@ describe("owned rule file drift (godx-jp/id#513)", () => {
 
   it("says nothing when the file matches the installed package", () => {
     expect(consumerWithStamp("23.0.0")).not.toContain('"owned-rules-stale"');
+  });
+});
+
+describe("an opening tag that ends its line is still an opening tag (gh#673)", () => {
+  /** The line numbers one rule reports for a fixture. */
+  function lines(source: string, rule: string, framework = false, path?: string) {
+    const report = JSON.parse(audit(source, framework, path).output) as {
+      findings: { rule: string; line: number }[];
+    };
+    return report.findings.filter((f) => f.rule === rule).map((f) => f.line);
+  }
+
+  /*
+   * Prettier wraps any element wider than printWidth, which leaves `<button` alone on its line. The
+   * control rules matched `/<button[\s>]/` ONE LINE at a time, and the newline that follows the tag
+   * name is not part of that line, so every wrapped element was invisible. Measured in a consumer
+   * (godx-tempo): 0 `no-raw-button` reported while ~166 multi-line `<button` remained.
+   */
+  it.each([
+    [
+      "no-raw-button",
+      '<Flex>\n  <button\n    type="button"\n    onClick={() => go()}\n  >\n    Go\n  </button>\n</Flex>',
+    ],
+    [
+      "no-raw-select",
+      "<Flex>\n  <select\n    value={value}\n    onChange={(e) => set(e.target.value)}\n  >\n    <option />\n  </select>\n</Flex>",
+    ],
+    [
+      "no-raw-input",
+      '<Flex>\n  <input\n    type="checkbox"\n    checked={on}\n    onChange={(e) => set(e.target.checked)}\n  />\n</Flex>',
+    ],
+    ["no-raw-textarea", "<Flex>\n  <textarea\n    rows={3}\n    value={value}\n  />\n</Flex>"],
+    [
+      "no-raw-table",
+      '<Flex>\n  <table\n    aria-label="rows"\n  >\n    <tbody />\n  </table>\n</Flex>',
+    ],
+  ])("%s reports a multi-line element on the line of its `<`", (rule, source) => {
+    expect(lines(source, rule)).toEqual([2]);
+  });
+
+  it("still reports the single-line form, once per element", () => {
+    expect(lines('<button type="button">Go</button>', "no-raw-button")).toEqual([1]);
+    expect(lines("<select><option /></select>", "no-raw-select")).toEqual([1]);
+    expect(lines("<table><tbody /></table>", "no-raw-table")).toEqual([1]);
+    expect(lines("<textarea />", "no-raw-textarea")).toEqual([1]);
+    expect(lines("<button/>", "no-raw-button")).toEqual([1]);
+  });
+
+  it("honours ui-audit-disable-next-line above a multi-line element, in both comment forms", () => {
+    const element =
+      '  <button\n    type="button"\n    onClick={() => go()}\n  >\n    Go\n  </button>';
+    expect(
+      lines(
+        `<Flex>\n  {/* ui-audit-disable-next-line no-raw-button */}\n${element}\n</Flex>`,
+        "no-raw-button",
+      ),
+    ).toEqual([]);
+    expect(
+      lines(
+        `const x = (\n  // ui-audit-disable-next-line no-raw-button\n${element}\n);`,
+        "no-raw-button",
+      ),
+    ).toEqual([]);
+    // The directive names ONE rule and covers ONE line: another id, or a blank line between, does not.
+    expect(
+      lines(
+        `<Flex>\n  {/* ui-audit-disable-next-line no-raw-select */}\n${element}\n</Flex>`,
+        "no-raw-button",
+      ),
+    ).toEqual([3]);
+    expect(
+      lines(
+        `<Flex>\n  {/* ui-audit-disable-next-line no-raw-button */}\n\n${element}\n</Flex>`,
+        "no-raw-button",
+      ),
+    ).toEqual([4]);
+  });
+
+  it("does not match components, longer tag names, closing tags or comments", () => {
+    const quiet = [
+      '<ButtonGroup\n  size="sm"\n>\n  <Button\n    onClick={go}\n  >\n    Go\n  </Button>\n</ButtonGroup>',
+      "<Input\n  value={v}\n/>",
+      "<Select\n  value={v}\n  onValueChange={set}\n/>",
+      "<buttonish\n  a={1}\n/>",
+      "<inputs\n  a={1}\n/>",
+      "<selection\n  a={1}\n/>",
+      "<Flex>\n  {label}\n</button\n>",
+      '/*\n * <button\n *   type="button"\n */\nconst a = 1;',
+      "// <select\nconst b = 2;",
+    ];
+    for (const source of quiet) {
+      for (const rule of ["no-raw-button", "no-raw-input", "no-raw-select"]) {
+        expect(lines(source, rule), `${rule}: ${source}`).toEqual([]);
+      }
+    }
+  });
+
+  it("keeps the framework's own primitives exempt, and nothing else", () => {
+    const wrapped = '<button\n  type="button"\n/>';
+    expect(lines(wrapped, "no-raw-button", true, "src/components/general")).toEqual([]);
+    expect(lines(wrapped, "no-raw-button", true, "docs/general")).toEqual([1]);
+  });
+
+  /* The same line-bound defect, in the other rules anchored on something that can span lines. */
+  it("manual-field-helper sees a wrapped <p>", () => {
+    expect(
+      lines(
+        '<Flex>\n  <p\n    className="text-xs text-muted-foreground"\n  >\n    Hint\n  </p>\n</Flex>',
+        "manual-field-helper",
+      ),
+    ).toEqual([2]);
+  });
+
+  it("hand-rolled-close-glyph sees a glyph on its own line, and still accepts a named one", () => {
+    expect(
+      lines(
+        '<Flex>\n  <span className="close">\n    ×\n  </span>\n</Flex>',
+        "hand-rolled-close-glyph",
+      ),
+    ).toEqual([2]);
+    expect(
+      lines(
+        '<Flex>\n  <span aria-hidden="true">\n    ×\n  </span>\n  <VisuallyHidden>未実施</VisuallyHidden>\n</Flex>',
+        "hand-rolled-close-glyph",
+      ),
+    ).toEqual([]);
+  });
+
+  it("no-utility-layout and no-hand-rolled-surface read a className template spread over lines", () => {
+    const wrapped =
+      "<Flex>\n  <div\n    className={`\n      ${base}\n      rounded-md border\n      flex\n    `}\n  />\n</Flex>";
+    expect(lines(wrapped, "no-utility-layout")).toEqual([3]);
+    expect(lines(wrapped, "no-hand-rolled-surface")).toEqual([3]);
   });
 });
