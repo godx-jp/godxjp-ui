@@ -619,6 +619,39 @@ const RULES = [
     message:
       'A lucide glyph with nothing to size it renders at its intrinsic 24px — 1.7× a 14px label. Put it on the scale with the primitive: <Icon as={Lock} size="sm" tone="muted" />, which is aria-hidden by default. A size-4 / w-[16px] utility is what docs/CONSUMER-RULES.md §3/§8 forbid, and size={16} hard-codes a number the theme owns.',
   },
+  {
+    id: "no-hand-rolled-list",
+    replacement: 'Flex as="ul" marker="none" + ListRow as="li"',
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    /*
+     * A list built by hand instead of by the primitives, in the three shapes a consumer reaches for:
+     *
+     *   1. a raw `<ul>`/`<ol>` — it cannot carry the gap token, so the spacing goes back into
+     *      utilities, and until `marker="none"` (gh#714) it was the only way to get a list without
+     *      a bullet and a --space-5 indent. It no longer is.
+     *   2. `role="list"` / `role="listitem"` on a div — ARIA re-describing markup that HTML already
+     *      has a element for (WAI-ARIA 1.2 §Using ARIA in HTML: prefer the native element).
+     *   3. a `<li>` (or any wrapper) around a library ROW instead of BEING it. This is the one that
+     *      cost real money: `[data-slot="list-row"]:not(:last-child)` draws the divider, so a row
+     *      alone in a wrapper of its own is always `:last-child` and the rule never matches — a
+     *      consumer's settings menu and dashboard lost EVERY divider, silently, and code review saw
+     *      nothing. `ListRow` has `as="li"` (and `as` + `asChild` for a row of links) precisely so
+     *      the rows stay siblings.
+     *
+     * WARN, not error, and the measurement says why: of 15 `role="list"` wrappers one consumer
+     * audited, 3 survived as deliberate exceptions (a drag-and-drop Kanban column of Cards, two
+     * evidence lists inside a TableCell). A rule wrong one time in five is a rule that gets
+     * silenced wholesale at `error`; at `warn` the three exceptions take an
+     * `ui-audit-disable-line` that states the reason and the other twelve still get fixed.
+     */
+    test: /<(?:ul|ol)(?=[\s/>])[^\n]*|\brole=["'](?:list|listitem)["']|<li(?=[\s>])(?:(?!<\/li>)[\s\S]){0,400}?<(?:ListRow|Card)(?=[\s/>])/g,
+    standard:
+      "WAI-ARIA 1.2 (list / listitem) · HTML Living Standard (ul/ol/li) · WCAG 2.2 SC 1.3.1",
+    message:
+      'Hand-rolled list — a raw <ul>/<ol>, an ARIA role="list"/"listitem", or a <li> wrapped around a library row. Build it from <Flex as="ul" marker="none"> (keeps the element, the <li> semantics and the gap token; no bullet, no indent) with <ListRow as="li"> as the rows. A row inside a wrapper of its own is an only child, so its :not(:last-child) divider never matches and every divider disappears silently (docs/CONSUMER-RULES.md §4, gh#714).',
+  },
 ];
 
 /**

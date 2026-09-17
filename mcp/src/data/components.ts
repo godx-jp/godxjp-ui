@@ -795,7 +795,15 @@ export default function OrdersPage() {
       {
         name: "as",
         type: '"div" | "span" | "ul" | "ol" | "li"',
-        description: "Semantic element. Lists preserve markers and indentation.",
+        description:
+          'Semantic element. A list keeps its marker and indentation unless marker="none" says otherwise.',
+      },
+      {
+        name: "marker",
+        type: '"disc" | "decimal" | "none"',
+        defaultValue: 'as="ul" → "disc", as="ol" → "decimal"',
+        description:
+          'Marker for a LIST element; ignored by every other tag. marker="none" emits NO data-list, so the list keeps its <ul>/<ol>, its <li> semantics and its gap token, and loses the bullet AND the --space-5 indent — that is the container a short entity list needs: <Flex as="ul" marker="none" direction="col" gap="none"> with <ListRow as="li"> rows. Before it, the bullet was unconditional and .ui-flex[data-list] > li { display: list-item } outranked [data-slot="list-row"] { display: flex }, so rows fell out of flex layout (94.58px tall instead of 69.98px) and the only move left was a raw <ul>, which carries no gap token (gh#714). disc/decimal stay available so an <ol> can be bulleted, or a <ul> numbered, without a list-style-type in a className.',
       },
       {
         name: "direction",
@@ -888,6 +896,7 @@ export default function OrdersPage() {
       'DO use `direction="col"` for vertical groupings that need explicit `align` or `justify` behavior. For pure vertical stacking without alignment control, `direction="col"` is sufficient.',
       "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
       'Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper. When the parent only accepts phrasing content — a TabsTrigger, PopoverTrigger or Button, all of which render a <button> — pass `as="span"` rather than reaching for a raw `<span className="flex …">`.',
+      'SEMANTIC LIST: a list of rows is `<Flex as="ul" marker="none" direction="col" gap="none">` with `<ListRow as="li">` children — never a raw `<ul>` (no gap token), never `<div role="list">` + `<div role="listitem">` (ARIA re-describing markup HTML already has), and never a wrapper around each row: the divider is `:not(:last-child)` among SIBLINGS, so a row alone in its own wrapper loses it silently. `ui-audit` flags all three as `no-hand-rolled-list`.',
       "NAMED FLEX = GROUP: a role-less div may not carry a naming attribute (axe aria-allowed-attr), so a Flex given `aria-label`/`aria-labelledby` — e.g. by FormField wrapping a composite range/年月 field — automatically renders `role='group'`, folds `aria-errormessage` into `aria-describedby`, and drops the widget-only `aria-required`/`aria-invalid`. Passing an explicit `role` opts out of all of this and the caller owns the attribute set.",
     ],
     useCases: [
@@ -1244,7 +1253,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       'DO use `variant="canonical" preset="login"` for SCR-001 and pass <AuthIdentity>, <Card>, <AuthFooter> as direct children in that order (an anchor may wrap AuthIdentity). The preset owns the identity slot, card anchor, 20px section rhythm and compact card block inset for standalone and real requester states. Do not wrap the three sections in a consumer Flex/Stack or the semantic grid cannot anchor them.',
       'DO select a `preset` instead of overriding geometry: `preset="login"` for the stable SCR-001 identity/card/footer anchor, `preset="registration"` for the sign-up form and its pending-email state, `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker, `preset="account-recovery"` for the 432px SCR-008 recovery/MFA panel. Page-local width/inset/vertical-offset variables are the exact anti-pattern these presets replace.',
       'DO build the SOCIAL / PROVIDER ACTION row as a COMPOSITION — there is NO SocialLinks component: `<AuthDivider label="or" />` followed by a `Flex direction="col" gap="sm"` of real `Button variant="outline"` with the provider glyph as an aria-hidden icon. The package deliberately does not own it: which providers a product offers, in what order, and what consent they imply are product decisions, and a component would have to invent them. `disabled` / `loading` are the Button\'s own props — do not add a provider-specific API.',
-      'DO build the ORGANIZATION CHOICE LIST as a COMPOSITION — there is NO OrganizationChoiceList component: `Card` > `CardContent flush` > a `<ul>` of `ListRow as="li"` (leading Avatar, title, description, trailing Button). `CardContent flush` is what gives shared row dividers instead of a card outline per row. Its states are existing exports, never bespoke markup: Skeleton rows for loading, `EmptyState` for no invitations, `Alert tone="destructive"` for a failed fetch and `Alert tone="warning"` for permission-denied. See the auth-shell-context and auth-shell-registration frames.',
+      'DO build the ORGANIZATION CHOICE LIST as a COMPOSITION — there is NO OrganizationChoiceList component: `Card` > `CardContent flush` > a `<Flex as="ul" marker="none">` of `ListRow as="li"` (leading Avatar, title, description, trailing Button). `CardContent flush` is what gives shared row dividers instead of a card outline per row. Its states are existing exports, never bespoke markup: Skeleton rows for loading, `EmptyState` for no invitations, `Alert tone="destructive"` for a failed fetch and `Alert tone="warning"` for permission-denied. See the auth-shell-context and auth-shell-registration frames.',
       'DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset="account-recovery"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component: Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify="between" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.',
       'DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="canonical" preset="device-authorization"` is the canonical device screen.',
       'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
@@ -1275,7 +1284,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       "Card — the canonical container for the auth form; place the form inside <CardContent>. AuthShell centres and width-constrains it.",
       'EmptyState — with `tone="success"` for a confirmation card inside the shell (e.g. device approved).',
       'AuthIdentity / AuthFooter / AuthStack / AuthDivider — the auth composites that fill the shell: the GoDX identity mark + heading + requesting-client line, the mono legal footer (its `locale` slot takes an <AppSettingPicker kind="locale" appearance="labeled" compact />), the 12px section rhythm, and the labelled "or" rule.',
-      'ListRow — compose the organisation choice list for `preset="context-selection"` as <Card><CardContent flush><ul> of <ListRow as="li">: shared row dividers, no per-row card outline. There is no separate OrganizationChoiceList component — that is a composition pattern (rule #46), not a framework component.',
+      'ListRow — compose the organisation choice list for `preset="context-selection"` as <Card><CardContent flush><Flex as="ul" marker="none"> of <ListRow as="li">: shared row dividers, no per-row card outline. There is no separate OrganizationChoiceList component — that is a composition pattern (rule #46), not a framework component.',
     ],
     example: `import { AuthShell, AuthIdentity, AuthFooter } from "@godxjp/ui/layout";
 import { Reveal, Logo, Button } from "@godxjp/ui/general";
@@ -4816,7 +4825,7 @@ import { Flex } from "@godxjp/ui/layout";
         type: "boolean",
         defaultValue: "false",
         description:
-          'Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls. Combine with `as="li"` inside a `<ul>`/`<ol>` — the row stays the link and `as` supplies the list item around it.',
+          'Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls. Combine with `as="li"` inside a `<Flex as="ul" marker="none">` — the row stays the link and `as` supplies the list item around it.',
       },
       {
         name: "title",
@@ -4827,7 +4836,8 @@ import { Flex } from "@godxjp/ui/layout";
       {
         name: "description",
         type: "ReactNode",
-        description: "Secondary line under the title (muted, xs); truncates to one line.",
+        description:
+          "Secondary line under the title (muted, xs); truncates to one line. ONE line, deliberately: a row that wants two (an endpoint, then its events) is asking for a different surface — antd `List.Item.Meta` has the same single `description`, so this is NOT an antd parity gap. Put the second line in `trailing` (a Badge, a count) or move the row to `Descriptions` / a detail panel (gh#714 §3).",
       },
       {
         name: "leading",
@@ -4852,7 +4862,7 @@ import { Flex } from "@godxjp/ui/layout";
         type: '"div" | "li"',
         defaultValue: '"div"',
         description:
-          'Render element — `li` when the parent is a semantic `<ul>`/`<ol>`. WITH `asChild` the child owns the row element, so `as` becomes the list ITEM around it: `<li data-slot="list-row-item"><a data-slot="list-row">`. Use both for a list of links — do not wrap the row in an `<li>` (or a `role="listitem"` div) yourself, because that makes every row an only child and the row-to-row divider, keyed on `:not(:last-child)` among siblings, stops matching on every row.',
+          'Render element — `li` when the parent is a semantic list (`<Flex as="ul" marker="none">` — a raw `<ul>` carries no gap token and, without `marker="none"`, the bullet rule `.ui-flex[data-list] > li { display: list-item }` outranks `display: flex` on the row itself). WITH `asChild` the child owns the row element, so `as` becomes the list ITEM around it: `<li data-slot="list-row-item"><a data-slot="list-row">`. Use both for a list of links — do not wrap the row in an `<li>` (or a `role="listitem"` div) yourself, because that makes every row an only child and the row-to-row divider, keyed on `:not(:last-child)` among siblings, stops matching on every row.',
       },
       {
         name: "overflow",
@@ -4878,9 +4888,9 @@ import { Flex } from "@godxjp/ui/layout";
     usage: [
       "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
       "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
-      'DO write a list of LINKS as `<ul>` + `<ListRow as="li" asChild><Link/></ListRow>` — one call gives the list item, the whole-row link and the divider. DON\'T wrap the row in your own `<li>` or `role="listitem"` element to get list semantics back: the divider rule reads `:not(:last-child)` among the rows themselves, so a wrapper per row makes each one an only child and EVERY divider disappears — silently, with the audit still green.',
+      'DO write a list of LINKS as `<Flex as="ul" marker="none" direction="col" gap="none">` + `<ListRow as="li" asChild><Link/></ListRow>` — one call gives the list item, the whole-row link and the divider. DON\'T wrap the row in your own `<li>` or `role="listitem"` element to get list semantics back: the divider rule reads `:not(:last-child)` among the rows themselves, so a wrapper per row makes each one an only child and EVERY divider disappears — silently, which is why `ui-audit` now flags it as `no-hand-rolled-list`.',
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
-      'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic `<ul>`.',
+      'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic list, and build that list as `<Flex as="ul" marker="none">` — `ui-audit` flags a raw `<ul>`/`role="list"` as `no-hand-rolled-list`.',
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
       'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
@@ -4946,16 +4956,17 @@ import { Flex } from "@godxjp/ui/layout";
 </Card>
 
 // A list of LINKS — \`as="li"\` gives the list item, \`asChild\` gives the whole-row link,
-// and the item carries the divider. Never wrap the row in your own <li>.
+// and the item carries the divider. Never wrap the row in your own <li>, and never reach for a
+// raw <ul>: \`marker="none"\` is the semantic list container (no bullet, no indent, gap token).
 <Card>
   <CardContent flush>
-    <ul>
+    <Flex as="ul" marker="none" direction="col" gap="none">
       {projects.map((project) => (
         <ListRow key={project.key} as="li" asChild title={project.name} description={project.key}>
           <Link href={\`/projects/\${project.key}\`} />
         </ListRow>
       ))}
-    </ul>
+    </Flex>
   </CardContent>
 </Card>
 </Flex>`,

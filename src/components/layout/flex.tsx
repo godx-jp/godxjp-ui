@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { mergeAriaIds } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { flexGapClass, padStyle, padStepToken } from "../../lib/variants";
-import type { FlexProp } from "../../props/components/layout.prop";
+import type { FlexMarkerProp, FlexProp } from "../../props/components/layout.prop";
 import type { WidthProp } from "../../props/vocabulary";
 
 const toCssLength = (value: WidthProp): string =>
@@ -35,10 +35,23 @@ const rawBreakpoint = (value: number | undefined): number | undefined =>
 const rawBreakpointRule = (axis: "below" | "from", px: number): string =>
   `@media (width ${axis === "below" ? "<" : ">="} ${px}px){.ui-flex[data-hide-${axis}-raw="${px}"]{display:none}}`;
 
+/**
+ * The marker a LIST element carries, as the `data-list` attribute the layer answers — `undefined`
+ * for every other tag, and for `marker="none"`, which is the point of that value: the attribute is
+ * ABSENT, so neither `list-style-type`, nor the `--space-5` indent, nor the `> li { display:
+ * list-item }` rule that outranks `[data-slot="list-row"]` can match (gh#714).
+ */
+const listMarker = (element: string, marker: FlexMarkerProp | undefined) => {
+  if (element !== "ul" && element !== "ol") return undefined;
+  const resolved = marker ?? (element === "ul" ? "disc" : "decimal");
+  return resolved === "none" ? undefined : resolved;
+};
+
 export type {
   FlexAlignProp,
   FlexDirectionProp,
   FlexJustifyProp,
+  FlexMarkerProp,
   FlexProp,
   FlexProp as FlexProps,
 } from "../../props/components/layout.prop";
@@ -46,6 +59,7 @@ export type {
 export function Flex({
   as: Element = "div",
   direction = "row",
+  marker,
   grow,
   shrink,
   surface,
@@ -112,7 +126,7 @@ export function Flex({
       data-shrink={shrink === false ? "false" : undefined}
       data-surface={surface}
       data-reveal={reveal}
-      data-list={Element === "ul" ? "disc" : Element === "ol" ? "decimal" : undefined}
+      data-list={listMarker(Element, marker)}
       data-align={align}
       data-justify={justify}
       data-wrap={wrap ? "true" : undefined}

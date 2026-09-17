@@ -833,6 +833,7 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   FlexDirectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexMarkerProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexJustifyProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexProp: {
@@ -846,6 +847,12 @@ export const COMPONENT_PROP_REGISTRY = {
           "Closed tag seam (div | span) so a Flex stays valid HTML inside a phrasing-only parent such as the <button> a TabsTrigger renders — same shape as ListRow's `as` (gh#354).",
       },
       { field: "direction", local: true, reason: "Flex-specific axis control." },
+      {
+        field: "marker",
+        local: true,
+        reason:
+          'List-marker seam for as="ul"/"ol" (disc | decimal | none). marker="none" emits no data-list, so a list keeps its element, its <li> semantics and its gap token while losing the bullet and the --space-5 indent — the home <ListRow as="li"> had none of, which forced a raw <ul> (gh#714).',
+      },
       "GapProp",
       { field: "align", local: true, reason: "Flex-specific align-items keyword subset." },
       { field: "justify", local: true, reason: "Flex-specific justify-content keyword subset." },
