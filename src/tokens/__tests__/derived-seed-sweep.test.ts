@@ -259,7 +259,13 @@ describe.each(SWEEP)("$theme $seed ($why)", ({ theme: themeName, seed: seedText 
   }
 });
 
-describe("AA by construction — every seed on a dense grid", () => {
+/*
+ * An explicit timeout, and why it hides nothing: this block sweeps a FINITE grid (72 hues × 6
+ * saturations × 99 lightnesses, per surface) — pure arithmetic, so it cannot hang, only take time.
+ * Measured ~1.2s locally and 8.3–12.8s on a loaded CI runner, against vitest's 8s default, which
+ * failed the 26.1.0 release commit on runner load alone.
+ */
+describe("AA by construction — every seed on a dense grid", { timeout: 60_000 }, () => {
   /** Label polarity → the pair that steps away from it, and the label the package ships for it. */
   const PAIRS = [
     { pair: "darken", label: hslToRgb(hsl(THEMES[0].foundation, "primary-foreground")) },
