@@ -972,6 +972,14 @@
           "declaredIn": ["src/props/components/query.prop.ts"]
         },
         {
+          "name": "ignoreValidationErrors",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/query.prop.ts"]
+        },
+        {
           "name": "mutation",
           "origin": "owned",
           "required": true,
