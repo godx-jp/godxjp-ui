@@ -4,6 +4,51 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.0] - 2026-09-17
+
+MINOR. Every change is opt-in or a fix; a screen that sets none of the new props behaves as before,
+with one intended exception: a 422 inside a form that already shows it on its fields is no longer
+drawn a second time (#690).
+
+### Added
+
+- **ChatComposer `submitType="modEnter"`** (gh#693). ⌘+Enter sends on Apple platforms (`metaKey`),
+  Ctrl+Enter everywhere else (`ctrlKey`). Enter and Shift+Enter insert a newline, and the IME guard is
+  the same as `enter` / `shiftEnter`. This extends Ant Design X `Sender.submitType`; the deviation is
+  recorded in `docs/DESIGN-AUTHORITY.md`. New hint key `dataEntry.chatComposer.hintModEnter`
+  (en/ja/vi) takes `{modifier}`; fill it with the new `isApplePlatform()` from
+  `@godxjp/ui/lib/utils`: `t("dataEntry.chatComposer.hintModEnter", { modifier: isApplePlatform() ? "⌘" : "Ctrl" })`.
+- **ChatComposer `allowEmptySubmit`** (gh#693, default `false`). For a composer whose `header` /
+  `footer` carries its own payload, such as a record status change. The send button stays enabled,
+  and the button and keyboard call `onSubmit("")` for an empty or whitespace-only draft. It is still
+  blocked while `loading` / `disabled` / `readOnly`.
+- **`AlertMutationFeedback` `ignoreValidationErrors`** (gh#690). With `true`, the alert is skipped
+  for every error `classifyQueryError` puts in the `"validation"` category (400/422). **When the prop
+  is left out,** a validation error is skipped only inside a `FormRoot` / `Form` whose `errors` bag
+  holds at least one message, which those fields (and `<FormErrors />`) already show. So a 422 is
+  no longer drawn twice, and the hand-written `serverErrors(error) === undefined && …` guard can go.
+  A validation error with an empty or absent bag still renders the alert, so an error is never
+  hidden. Outside such a form nothing changes, and a 5xx or network error always renders. Pass
+  `ignoreValidationErrors={false}` to always show it.
+
+### Fixed
+
+- **FormField / FormFieldControl `labelAddon` no longer overflows into the control column in
+  horizontal and inline layouts** (gh#689). The label row sits in a fixed `--form-label-width`
+  column but never wrapped, so a text addon squeezed the label and ran into the control. The label
+  row now wraps in every horizontal/inline state (`collapseBelow` false, sm, md, lg, xl). An addon
+  that does not fit beside the label moves to its own line under it, capped at the column width.
+  Measured in Chromium with a 128px label column: row scrollWidth 179 → 128 (clientWidth 128); the
+  addon went from 51px past the column edge to its own line inside the column. With
+  `labelAlign="end"` the label no longer starts 51px before the column. An icon-only addon still
+  sits beside the label. Vertical layout is unchanged (identical computed styles and positions).
+- **`sync-rules` no longer adds a duplicate MCP server, and keeps `.mcp.json`'s indentation**
+  (gh#692). It looked only at `mcpServers["godx-ui"]`, so a consumer that registered
+  `@godxjp/ui-mcp` under another key (e.g. `godxjp-ui`) got a second copy at another version. The
+  entry that runs `@godxjp/ui-mcp`, under any key, is now the entry: a package-written one is
+  refreshed in place, a custom one is left untouched, and no duplicate is added. Every rewrite now
+  keeps the file's own indentation (tab or N spaces) instead of re-serialising at 2.
+
 ## [26.2.0] - 2026-09-17
 
 MINOR. A nested tenant scope now re-tints keyboard focus and the remaining brand and accent surfaces,
