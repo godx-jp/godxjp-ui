@@ -372,7 +372,7 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
    * Prettier wraps any element wider than printWidth, which leaves `<button` alone on its line. The
    * control rules matched `/<button[\s>]/` ONE LINE at a time, and the newline that follows the tag
    * name is not part of that line, so every wrapped element was invisible. Measured in a consumer
-   * (godx-tempo): 0 `no-raw-button` reported while ~166 multi-line `<button` remained.
+   * app: 0 `no-raw-button` reported while ~166 multi-line `<button` remained.
    */
   it.each([
     [
