@@ -258,6 +258,10 @@
         "shape": {
           "cases": ["circle", "square"],
           "evidence": ["docs/data-display/avatar.tsx"]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/data-display/avatar.tsx"]
         }
       }
     },
@@ -1623,8 +1627,11 @@
           "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
-          "evidence": ["src/components/data-entry/__tests__/antd-parity-choice.test.tsx"]
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": [
+            "src/components/data-entry/__tests__/antd-parity-choice.test.tsx",
+            "src/components/data-entry/__tests__/segmented-xs-719.test.tsx"
+          ]
         }
       }
     },
@@ -2343,7 +2350,7 @@
           "evidence": ["docs/data-entry/toggle.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle.tsx"]
         }
       }
@@ -2355,7 +2362,7 @@
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }
@@ -2367,7 +2374,7 @@
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }

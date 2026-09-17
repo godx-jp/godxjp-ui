@@ -5473,11 +5473,14 @@ import { Flex } from "@godxjp/ui/layout";
       "DO wrap the OUTPUT of your Markdown pipeline (react-markdown + remark-gfm + rehype-sanitize), a sanitised CMS string via `dangerouslySetInnerHTML`, or plain JSX. Prose styles descendants: h1..h4, p, ul/ol/li, blockquote, code, pre, table/th/td, a, img, hr.",
       "DO keep soft line breaks the pipeline's job (remark-breaks or the renderer's `breaks` option). Prose does not turn single newlines into `<br>`; it is typography, not parsing.",
       "DON'T restate the heading scale, table cell measures or list rhythm with `[&_h1]:text-lg [&_td]:border …` utilities: they copy token values and never follow a retune. Prose reads --heading-h1..h4, --table-cell-padding-* and --prose-* directly.",
+      "DO tune the link through --prose-link-color and --prose-link-decoration-line (gh#717). The ink defaults to hsl(var(--primary)) resolved at the anchor, so a scoped [data-tenant] re-tint reaches it; the resting underline defaults to `underline` and is a SEPARATE knob from --text-link-decoration-line, because Prose is running text and there the underline is a WCAG 1.4.1 requirement, not a taste.",
+      "DO style a state your own renderer knows about by marking the anchor and selecting it: `a[data-unresolved]` (a wiki link whose target does not exist yet), then re-declare --prose-link-color inside that selector. Prose writes data-* on its ROOT ONLY — never on a descendant — so every data-* on an `a` inside it is yours and stays selectable. That is a promise held by a test (prose-link-717.test.tsx), not a coincidence; there is no prop for it, the same way `TableRow data-expanded-row` is an attribute rather than an API.",
       "DON'T sanitise inside Prose: it renders whatever HTML it is given. Sanitise before (rehype-sanitize, or the server).",
       "DON'T use Prose for UI text (labels, descriptions, empty states): those are Text / Heading. Prose is for a document.",
     ],
     useCases: [
       "A wiki page rendered from Markdown, at the page body size.",
+      'A wiki page whose renderer marks links it knows something extra about: `<a data-unresolved="true">` for a target nobody has written yet, re-declaring --prose-link-color as --text-error inside `a[data-unresolved]` so it reads differently from a link that resolves.',
       'An issue description or a comment in a tracker, `size="sm"`.',
       "A bug-report intake inbox that renders the report body (description, steps, environment table) sent by a browser extension.",
       "A CMS article body delivered as sanitised HTML.",
@@ -10363,6 +10366,13 @@ export function AccountMapping() {
           "Controls the visual rendering mode. dropzone = large dashed drop area + file list; button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
       },
       {
+        name: "listType",
+        type: '"text" | "picture"',
+        defaultValue: '"picture" for variant="picture", otherwise "text"',
+        description:
+          "HOW THE CHOSEN FILES ARE LISTED — antd's listType, and an axis of its own: variant decides how files are PICKED, listType decides how the picked ones are DRAWN. text = name, size and actions (the classic dropzone/button row). picture = a leading box on every row: the thumbnail when the item has a previewUrl, otherwise the glyph for its file kind (image / pdf / archive / text / generic), both boxes the same size so a mixed list keeps one row height. The glyph is decorative (aria-hidden) and carries its kind as data-file-kind for theming. antd's picture-card is variant='picture-card' here — the tile grid IS the picker there, so it is not offered as a listType.",
+      },
+      {
         name: "value",
         type: "UploadFileItem[]",
         description:
@@ -10553,6 +10563,7 @@ export function AccountMapping() {
       "For native multipart or Inertia Form submissions, set name: staged local files are appended during the formdata event. Completed media uploads use collectUploadCommitActions instead.",
       "Avatar/picture variants (maxCount=1) use internal soft-delete draft logic: removing an item marks it pendingDelete so the user can undo before committing. On form submit, collectUploadCommitActions converts pendingDelete → deleteMediaIds and done mediaIds → promoteMediaIds.",
       "For avatar-crop: a crop dialog opens after pick. The cropped Blob is staged as a new UploadFileItem. The original file never enters the list — only the cropped version is passed to onUpload.",
+      "For a drawer or panel listing MIXED attachments (.png beside .json and .txt), keep variant='dropzone' and set listType='picture': the image rows draw their previewUrl as a thumbnail and every other row draws the glyph for its kind, on one row height. Do NOT switch to variant='picture' to get thumbnails — that variant also changes the picker, the default accept to image/* and maxCount to 1.",
     ],
     useCases: [
       "Profile / user avatar editor: use variant='avatar-crop' so users can crop the image before upload; wire onUpload to your media-service; call collectUploadCommitActions on profile form submit to promote or delete.",
@@ -12762,6 +12773,13 @@ import { fetchInvoice } from "@/api/invoices";
           'Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark: a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className="rounded-md bg-primary".',
       },
       {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row.',
+      },
+      {
         name: "appearance",
         type: '"default" | "tinted"',
         defaultValue: '"default"',
@@ -12808,6 +12826,8 @@ import { fetchInvoice } from "@/api/invoices";
       'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
       "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
       "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
+      'DO set `size` from the ROW, not from the mark: a row whose height is already fixed (an icon-sm trigger, a 24/28px dense table row, a toolbar of sm controls) takes the matching avatar step, and the mark then measures exactly what a Button of the same step measures. `<Button size="icon-sm"><Avatar size="sm">…</Avatar></Button>` fits; the default md mark in that same trigger overflows it.',
+      "DON'T raise a whole row's control height just to fit a person's mark, and DON'T reach for a className size utility for a step that is ON the ladder (size-6 / size-7 re-derive 24/28px outside the density axis, so they stop tracking --control-height and drift from the controls beside them). className stays the escape hatch for sizes OFF the ladder — a 96px profile mark.",
     ],
     useCases: [
       "User profile chips",
@@ -13255,9 +13275,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Control size.",
+        description:
+          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716).",
       },
       {
         name: "count",
@@ -13347,10 +13368,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
         description:
-          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (sm 28px · md 32px · lg 36px).",
+          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716).",
       },
       {
         name: "disabled",
@@ -13369,7 +13390,7 @@ import { Separator } from "@godxjp/ui/layout";
       "DO choose type='multiple' for independent formatting toggles.",
       "DO set `variant`/`size` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
       "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
-      "DON'T pass size='default' — it is not a member of the `sm | md | lg` union. Omit `size` for the md default.",
+      "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
@@ -13826,9 +13847,10 @@ export default function PasswordBlock() {
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Control height tier — reads the shared `--control-height` ladder.",
+        description:
+          "Control height tier — reads the shared `--control-height` ladder: xs 24px · sm 28px · md 32px · lg 36px. The TRACK measures exactly one control height, so the bar sits level with an Input, a Button or a ToggleGroup of the same step on the same row. Pick the step the ROW already has: xs (gh#719) is the one that fits a 24px-dense toolbar or audit-log row — before it, that row could only get a hand-rolled set of Buttons, which loses the radiogroup semantics and the arrow keys. xs is the DENSE step, not a smaller default: the track spends its 2px inset at every step, so the individual SEGMENT measures 20px and clears WCAG 2.2 SC 2.5.8 through the Spacing exception (adjacent segments 26.47px apart for a one-glyph label) rather than the 24px minimum. Keep labels at a glyph or more, and stay on sm or md wherever the row height is yours to choose.",
       },
       {
         name: "options",
@@ -13861,6 +13883,7 @@ export default function PasswordBlock() {
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
       "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
       "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
+      'DO set `size="xs"` for a 24px-dense row — an audit-log toolbar, a table header strip, a row that already carries `<Button size="xs">` or an `xs` ToggleGroup. All three measure 24px off the same `--control-height-xs` step, so the row stays level, and the label type and the item inline padding step down with the band (gh#719). DON\'T hand-roll that row out of Buttons to get the height: a segmented control is a radiogroup, and a row of buttons loses the arrow keys and the "1 of 3, selected" announcement.',
     ],
     useCases: [
       "Theme switch (light / dark / system)",

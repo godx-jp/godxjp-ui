@@ -84,6 +84,12 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--auth-requester-glyph-size": ["0.625rem", "0.625rem", "0.625rem"],
   "--auth-requester-icon-size": ["1rem", "1rem", "1rem"],
   "--avatar-tinted-glyph-size": ["1rem", "0.92rem", "1.08rem"],
+  // The Avatar size ladder's glyph steps (gh#716) — a mark that enters a 24/28px control row has
+  // to bring its glyph down with it, or a 24px lucide default fills the whole 24px box. Three
+  // steps of --icon-size-*, --scaling-multiplied like every other control glyph.
+  "--avatar-glyph-size-xs": ["0.75rem", "0.69rem", "0.81rem"],
+  "--avatar-glyph-size-sm": ["0.875rem", "0.805rem", "0.945rem"],
+  "--avatar-glyph-size-lg": ["1.25rem", "1.15rem", "1.35rem"],
   "--button-xs-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--card-service-launcher-icon-glyph-size": ["1.25rem", "1.15rem", "1.35rem"],
   "--card-service-launcher-icon-size": ["2.25rem", "2.07rem", "2.43rem"],
@@ -124,6 +130,12 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--table-toolbar-icon-size": ["1rem", "1rem", "1rem"],
   "--toast-icon-size": ["1rem", "1rem", "1rem"],
   "--transfer-action-icon-size": ["1rem", "1rem", "1rem"],
+  // The two placeholder marks minted in gh#720. They were `controlIconClass` — 32px of CONTROL
+  // height inside a media placeholder, off this scale entirely — and the avatar and the
+  // picture-card tile are the same 96px box drawing two different sizes. Both now read a step:
+  // the avatar takes the tile's (24), the taller 128px picture empty state takes 36.
+  "--upload-avatar-icon-size": ["1.5rem", "1.5rem", "1.5rem"],
+  "--upload-picture-icon-size": ["2.25rem", "2.25rem", "2.25rem"],
   "--upload-draft-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--upload-dropzone-icon-size": ["2.5rem", "2.5rem", "2.5rem"],
   "--upload-remove-icon-size": ["0.875rem", "0.875rem", "0.875rem"],

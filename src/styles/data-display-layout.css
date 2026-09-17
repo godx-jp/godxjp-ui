@@ -2,8 +2,8 @@
   .ui-avatar {
     position: relative;
     display: inline-flex;
-    width: var(--control-height);
-    height: var(--control-height);
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
@@ -13,7 +13,7 @@
       linear-gradient(var(--avatar-tint), var(--avatar-tint)),
       var(--avatar-background, hsl(var(--muted)));
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-base);
+    font-size: var(--avatar-font-size);
     font-weight: var(--font-weight-medium);
   }
 
@@ -36,6 +36,44 @@
   .ui-avatar[data-appearance="tinted"] svg {
     inline-size: var(--avatar-tinted-glyph-size);
     block-size: var(--avatar-tinted-glyph-size);
+    flex: none;
+  }
+
+  /* SIZE LADDER — opt-in ONLY (gh#716): `md` emits no attribute, so every avatar shipped before
+   * this keeps the exact DOM and the exact 32px box it had. Each step re-declares the THREE inputs
+   * on the element itself — the person box, the entity (`square`) box and the type step — so the
+   * two shapes never drift apart and the initials step with the box. */
+  .ui-avatar[data-size="xs"] {
+    --avatar-size: var(--avatar-size-xs);
+    --avatar-square-size: var(--avatar-size-xs);
+    --avatar-font-size: var(--avatar-font-size-xs);
+    --avatar-glyph-size: var(--avatar-glyph-size-xs);
+    --avatar-tinted-glyph-size: var(--avatar-glyph-size-xs);
+  }
+
+  .ui-avatar[data-size="sm"] {
+    --avatar-size: var(--avatar-size-sm);
+    --avatar-square-size: var(--avatar-size-sm);
+    --avatar-font-size: var(--avatar-font-size-sm);
+    --avatar-glyph-size: var(--avatar-glyph-size-sm);
+    --avatar-tinted-glyph-size: var(--avatar-glyph-size-sm);
+  }
+
+  .ui-avatar[data-size="lg"] {
+    --avatar-size: var(--avatar-size-lg);
+    --avatar-square-size: var(--avatar-size-lg);
+    --avatar-font-size: var(--avatar-font-size-lg);
+    --avatar-glyph-size: var(--avatar-glyph-size-lg);
+    --avatar-tinted-glyph-size: var(--avatar-glyph-size-lg);
+  }
+
+  /* A lucide glyph ships width="24", which is the whole 24px of an `xs` mark. Scoped to a SIZED
+   * avatar on purpose: a bare `.ui-avatar svg` would out-rank the per-call-site icon classes
+   * existing avatars carry, and `<Icon>` (0,3,1) still wins over this (0,2,1) so a call site that
+   * states its own step keeps it. */
+  .ui-avatar[data-size] svg {
+    inline-size: var(--avatar-glyph-size);
+    block-size: var(--avatar-glyph-size);
     flex: none;
   }
 
@@ -1292,9 +1330,16 @@
     border-radius: var(--prose-code-radius);
   }
 
+  /* The link, and the ONE element in here a consumer is invited to select (gh#717).
+   *
+   * Prose writes no `data-*` attribute on any descendant — only on its own root — so `a[data-…]` is
+   * the consumer's, permanently: mark the anchors your renderer knows something extra about
+   * (a wiki target that does not exist yet) and re-declare the knobs below inside that selector.
+   * Setting a custom property on the anchor is enough; the `var()` here reads the value computed on
+   * the element, whichever rule declared it. Documented in docs/CUSTOMER-THEMING.md. */
   .ui-prose a {
-    color: hsl(var(--primary));
-    text-decoration: underline;
+    color: hsl(var(--prose-link-color, var(--primary)));
+    text-decoration-line: var(--prose-link-decoration-line);
   }
 
   .ui-prose table {

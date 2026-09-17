@@ -57,9 +57,9 @@ export const FRAME_COVERAGE_POLICY = {
   totals: {
     exports: 288,
     dimensionCells: 4032,
-    covered: 86,
+    covered: 87,
     untested: 2211,
-    notApplicable: 1735,
+    notApplicable: 1734,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -134,7 +134,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"AuthIdentity","group":"layout","frame":"docs/layout/auth-identity.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AuthShell","group":"layout","frame":"docs/layout/auth-shell.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},
   {"name":"AuthStack","group":"layout","frame":"docs/layout/auth-stack.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
-  {"name":"Avatar","group":"data-display","frame":"docs/data-display/avatar.tsx","covered":["shapes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","sizes","states","tones","variants"]},
+  {"name":"Avatar","group":"data-display","frame":"docs/data-display/avatar.tsx","covered":["shapes","sizes"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","states","tones","variants"]},
   {"name":"AvatarFallback","group":"data-display","frame":"docs/data-display/avatar.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AvatarImage","group":"data-display","frame":"docs/data-display/avatar.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Badge","group":"data-display","frame":"docs/data-display/badge.tsx","covered":["shapes","tones","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","sizes","states"]},

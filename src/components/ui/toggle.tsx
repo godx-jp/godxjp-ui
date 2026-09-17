@@ -13,6 +13,10 @@ const toggleVariants = cva("ui-toggle", {
       outline: "ui-toggle-outline",
     },
     size: {
+      // The fourth step of the shared control ladder (gh#716): 24px, `--control-height-xs`, the
+      // same tier `Button size="xs"` reads — so a 24px-dense row can carry a segmented control
+      // instead of someone hand-rolling one out of Buttons.
+      xs: "ui-toggle-xs",
       sm: "ui-toggle-sm",
       md: "ui-toggle-default-size",
       lg: "ui-toggle-lg",

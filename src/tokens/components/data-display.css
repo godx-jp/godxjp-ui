@@ -37,6 +37,21 @@
   --prose-code-font-size: calc(1em / var(--font-size-ratio));
   --prose-code-space-inline: var(--space-1);
   --prose-code-radius: var(--radius-sm);
+  /* The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role:
+   * a `:root` binding computes against the root's --primary and inherits that frozen value down, so
+   * a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The
+   * default lives at the call site in styles/data-display-layout.css and re-resolves there. Until
+   * gh#717 `a` was the ONE styled descendant family in Prose with no knob at all — headings, lists,
+   * quote, code and image each had one — which left the most common element in a wiki body
+   * un-theme-able (#45). */
+  --prose-link-color: initial; /* default = hsl(var(--primary)) */
+  /* Underlined at rest, same vocabulary as `--text-link-decoration-line`, and deliberately a
+   * SEPARATE knob rather than a mirror of it: `none` is legal for a link in a nav row or a card
+   * title, which is what that token governs, but Prose is running text — at the shipped inks the
+   * link differs from body copy by hue alone (1.87:1 light, 1.54:1 dark), and WCAG 1.4.1 · G183
+   * needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome
+   * must not drop it here by accident. */
+  --prose-link-decoration-line: underline;
   --prose-image-radius: var(--radius-md);
   --timeline-note-font-size: var(--font-size-xs);
 
@@ -48,6 +63,48 @@
   /* Optional role wash over the avatar (default transparent = invisible, rule #44).
      Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08). */
   --avatar-tint: transparent;
+
+  /* Avatar SIZE LADDER — `<Avatar size="xs|sm|md|lg">` (gh#716). The mark is a control-row
+     citizen: it sits inside an `icon-sm` trigger, in a 24px dense table row, beside a Button on
+     the same line. Before this ladder the box was welded to `--control-height`, so a 32px mark
+     inside a 28px trigger OVERFLOWED it and the only legal move left to a consumer was to raise
+     the whole row. Each step therefore reads the SAME `--control-height-*` tier every other
+     control reads (never a px, never a calc offset), which is what makes `size="sm"` measure
+     exactly as tall as `<Button size="sm">` on the same row.
+     `md` is the default and is byte-identical to what shipped before, so nothing moves.
+     `shape="square"` rides the same ladder: each step re-declares --avatar-square-size ON THE
+     ELEMENT (not at :root — a calc/var over two custom properties is substituted where it is
+     DECLARED, the trap written up in tokens/components/segmented.css), so the entity mark and the
+     person mark are the same height at every step. */
+  --avatar-size: var(--control-height);
+  /* The 24px step — the mark that fits an `icon-xs` trigger and a 24px dense row. */
+  --avatar-size-xs: var(--control-height-xs);
+  /* The 28px step — the mark that fits an `icon-sm` trigger and a `size="sm"` control row. */
+  --avatar-size-sm: var(--control-height-sm);
+  /* The 36px step — the mark for a `size="lg"` row (a list row's leading identity). */
+  --avatar-size-lg: var(--control-height-lg);
+
+  /* Initials TYPE per step — one step of the type scale per step of the box, so the two letters
+     in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at
+     every step), which is what keeps initials centred and legible rather than clipped. */
+  --avatar-font-size: var(--font-size-base);
+  /* Initials in the 24px mark — one step below sm on the type scale. */
+  --avatar-font-size-xs: var(--font-size-2xs);
+  /* Initials in the 28px mark — the same step a `size="sm"` control's label reads. */
+  --avatar-font-size-sm: var(--font-size-xs);
+  /* Initials in the 36px mark — one step above the body step. */
+  --avatar-font-size-lg: var(--font-size-lg);
+
+  /* Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712),
+     multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark
+     tracks density like every other control glyph. Only a SIZED avatar sizes its glyph: there is
+     deliberately no global `.ui-avatar svg` rule, because it would out-rank the per-call-site icon
+     classes existing avatars already carry. */
+  --avatar-glyph-size-xs: calc(var(--icon-size-xs) * var(--scaling));
+  /* Glyph in the 28px mark — --icon-size-sm, the step --control-icon-size-sm also reads. */
+  --avatar-glyph-size-sm: calc(var(--icon-size-sm) * var(--scaling));
+  /* Glyph in the 36px mark — --icon-size-lg. */
+  --avatar-glyph-size-lg: calc(var(--icon-size-lg) * var(--scaling));
 
   /* Entity-header mark — `<Avatar shape="square">` (gh#249): the compact rounded SQUARE an
      organization/service header uses, as opposed to the round person avatar. Every value is a knob

@@ -1434,6 +1434,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--toggle-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -2499,6 +2504,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--prose-link-color",
+    "value": "initial",
+    "description": "The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role: * a `:root` binding computes against the root's --primary and inherits that frozen value down, so * a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The * default lives at the call site in styles/data-display-layout.css and re-resolves there. Until * gh#717 `a` was the ONE styled descendant family in Prose with no knob at all — headings, lists, * quote, code and image each had one — which left the most common element in a wiki body * un-theme-able (#45). default = hsl(var(--primary))"
+  },
+  {
+    "name": "--prose-link-decoration-line",
+    "value": "underline",
+    "description": "Underlined at rest, same vocabulary as `--text-link-decoration-line`, and deliberately a * SEPARATE knob rather than a mirror of it: `none` is legal for a link in a nav row or a card * title, which is what that token governs, but Prose is running text — at the shipped inks the * link differs from body copy by hue alone (1.87:1 light, 1.54:1 dark), and WCAG 1.4.1 · G183 * needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome * must not drop it here by accident."
+  },
+  {
     "name": "--prose-image-radius",
     "value": "var(--radius-md)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
@@ -2517,6 +2532,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-tint",
     "value": "transparent",
     "description": "Optional role wash over the avatar (default transparent = invisible, rule #44). Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08)."
+  },
+  {
+    "name": "--avatar-size",
+    "value": "var(--control-height)",
+    "description": "Avatar SIZE LADDER — `<Avatar size=\"xs|sm|md|lg\">` (gh#716). The mark is a control-row citizen: it sits inside an `icon-sm` trigger, in a 24px dense table row, beside a Button on the same line. Before this ladder the box was welded to `--control-height`, so a 32px mark inside a 28px trigger OVERFLOWED it and the only legal move left to a consumer was to raise the whole row. Each step therefore reads the SAME `--control-height-*` tier every other control reads (never a px, never a calc offset), which is what makes `size=\"sm\"` measure exactly as tall as `<Button size=\"sm\">` on the same row. `md` is the default and is byte-identical to what shipped before, so nothing moves. `shape=\"square\"` rides the same ladder: each step re-declares --avatar-square-size ON THE ELEMENT (not at :root — a calc/var over two custom properties is substituted where it is DECLARED, the trap written up in tokens/components/segmented.css), so the entity mark and the person mark are the same height at every step."
+  },
+  {
+    "name": "--avatar-size-xs",
+    "value": "var(--control-height-xs)",
+    "description": "The 24px step — the mark that fits an `icon-xs` trigger and a 24px dense row."
+  },
+  {
+    "name": "--avatar-size-sm",
+    "value": "var(--control-height-sm)",
+    "description": "The 28px step — the mark that fits an `icon-sm` trigger and a `size=\"sm\"` control row."
+  },
+  {
+    "name": "--avatar-size-lg",
+    "value": "var(--control-height-lg)",
+    "description": "The 36px step — the mark for a `size=\"lg\"` row (a list row's leading identity)."
+  },
+  {
+    "name": "--avatar-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Initials TYPE per step — one step of the type scale per step of the box, so the two letters in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at every step), which is what keeps initials centred and legible rather than clipped."
+  },
+  {
+    "name": "--avatar-font-size-xs",
+    "value": "var(--font-size-2xs)",
+    "description": "Initials in the 24px mark — one step below sm on the type scale."
+  },
+  {
+    "name": "--avatar-font-size-sm",
+    "value": "var(--font-size-xs)",
+    "description": "Initials in the 28px mark — the same step a `size=\"sm\"` control's label reads."
+  },
+  {
+    "name": "--avatar-font-size-lg",
+    "value": "var(--font-size-lg)",
+    "description": "Initials in the 36px mark — one step above the body step."
+  },
+  {
+    "name": "--avatar-glyph-size-xs",
+    "value": "calc(var(--icon-size-xs) * var(--scaling))",
+    "description": "Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712), multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark tracks density like every other control glyph. Only a SIZED avatar sizes its glyph: there is deliberately no global `.ui-avatar svg` rule, because it would out-rank the per-call-site icon classes existing avatars already carry."
+  },
+  {
+    "name": "--avatar-glyph-size-sm",
+    "value": "calc(var(--icon-size-sm) * var(--scaling))",
+    "description": "Glyph in the 28px mark — --icon-size-sm, the step --control-icon-size-sm also reads."
+  },
+  {
+    "name": "--avatar-glyph-size-lg",
+    "value": "calc(var(--icon-size-lg) * var(--scaling))",
+    "description": "Glyph in the 36px mark — --icon-size-lg."
   },
   {
     "name": "--avatar-square-radius",
@@ -5319,6 +5389,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "item padding-inline = control padding-x − one border width."
   },
   {
+    "name": "--segmented-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row * carry the same label size. One step of the existing scale, not a new constant."
+  },
+  {
+    "name": "--segmented-xs-item-padding-inline",
+    "value": "calc(var(--control-padding-x-compact) - 1px)",
+    "description": "xs item padding-inline = the SAME derivation as the md step (control padding-x − one border * width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px * around a 12.47px label a three-option bar no longer reads as dense."
+  },
+  {
     "name": "--segmented-item-gap",
     "value": "calc(var(--space-3) / 2)",
     "description": "icon gap = the small margin step / 2."
@@ -7559,6 +7639,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
+    "name": "--upload-picture-icon-size",
+    "value": "var(--icon-size-2xl)",
+    "description": "The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media * placeholder, and 32 is not a step of the icon scale at all. The 128px-tall empty box sits * between the 96px tile (24) and the 185px dropzone (40), so its mark does too."
+  },
+  {
     "name": "--upload-picture-empty-label-space-block-start",
     "value": "var(--space-2)",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
@@ -7602,6 +7687,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--upload-avatar-size",
     "value": "6rem",
     "description": "AVATAR — the round single-image variant."
+  },
+  {
+    "name": "--upload-avatar-icon-size",
+    "value": "var(--icon-size-xl)",
+    "description": "The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the * avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24."
   },
   {
     "name": "--upload-avatar-border-width",

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Segmented } from "@godxjp/ui/data-entry";
-import { Text, VisuallyHidden } from "@godxjp/ui/general";
+import { FormField, Segmented, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
+import { Button, Text, VisuallyHidden } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { CalendarDays, Columns3, LayoutList, Monitor, Moon, Sun } from "lucide-react";
 
@@ -110,14 +110,25 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>size · vertical · block</CardTitle>
             <CardDescription>
-              size は 3 段（sm / md / lg）。トラックの高さは --control-height そのもので、
-              MobileShell のようにその変数をスコープする領域では自動的にタッチ段（44px）になります。
-              vertical では 1 行ぶんが 1 コントロールの高さになります。横 1 行のときだけトラック
+              size は 4 段（xs 24px / sm 28px / md 32px / lg 36px）。トラックの高さは
+              --control-height そのもので、MobileShell のようにその変数をスコープする領域では
+              自動的にタッチ段（44px）になります。vertical では 1 行ぶんが 1
+              コントロールの高さになります。横 1 行のときだけトラック
               内側の余白を引くので、積んだときは引きません。block は幅いっぱいに広げます。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md" align="start">
+              <Segmented
+                aria-label="サイズ xs"
+                size="xs"
+                defaultValue="a"
+                options={[
+                  { value: "a", label: "小" },
+                  { value: "b", label: "中" },
+                  { value: "c", label: "大" },
+                ]}
+              />
               <Segmented
                 aria-label="サイズ sm"
                 size="sm"
@@ -158,6 +169,45 @@ export default function Demo() {
                   { value: "none", label: "未実施" },
                 ]}
               />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>24px の密な行 · size=&quot;xs&quot;</CardTitle>
+            <CardDescription>
+              行の高さが 24px に決まっている監査ログや明細ツールバーでは、xs
+              のトラックがそのまま収まる。同じ段の ToggleGroup size=&quot;xs&quot; と Button
+              size=&quot;xs&quot; と高さが一致するので、行が段差にならない。ここで xs
+              が無かったころは Button を並べて自作するしかなく、radiogroup
+              の読み上げも矢印キーも失われていた。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Flex direction="row" gap="sm" align="center">
+                <Segmented
+                  aria-label="表示期間"
+                  size="xs"
+                  defaultValue="week"
+                  options={[
+                    { value: "day", label: "日" },
+                    { value: "week", label: "週" },
+                    { value: "month", label: "月" },
+                  ]}
+                />
+                <ToggleGroup type="single" size="xs" defaultValue="list" aria-label="表示形式">
+                  <ToggleGroupItem value="list">一覧</ToggleGroupItem>
+                  <ToggleGroupItem value="board">ボード</ToggleGroupItem>
+                </ToggleGroup>
+                <Button size="xs" variant="outline">
+                  絞り込み
+                </Button>
+              </Flex>
+              <Text as="p" size="xs" tone="muted">
+                いずれも --control-height-xs（24px）。
+              </Text>
             </Flex>
           </CardContent>
         </Card>

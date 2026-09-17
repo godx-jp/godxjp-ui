@@ -2040,6 +2040,11 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [],
   },
   UploadVariantProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  UploadListTypeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   TreeOptionProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2147,7 +2152,7 @@ export const COMPONENT_PROP_REGISTRY = {
   AvatarProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["AvatarShapeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: ["AvatarShapeProp", "SizeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
   },
   AvatarAppearanceProp: {
     group: "data-display",

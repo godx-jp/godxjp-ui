@@ -272,6 +272,20 @@ export type DescriptionsItemProp = {
  */
 export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
   shape?: AvatarShapeProp;
+  /**
+   * Box size on the shared control ladder — `md` (default) is `--control-height`, and `xs`/`sm`/
+   * `lg` are `--control-height-xs/-sm/-lg`, the SAME tier Button and Input read. State it when the
+   * mark has to sit in a row the row's height already decided: inside an `icon-sm` trigger, in a
+   * 24px dense table row, beside a `size="sm"` Button. Before gh#716 the box was welded to
+   * `--control-height`, so a 32px mark inside a 28px trigger overflowed it and the only legal move
+   * left was raising the whole row.
+   *
+   * The initials' type step and a glyph's box move with the box — one step of the type scale and
+   * one step of the `--icon-size-*` scale per step — so a small mark is small, not clipped.
+   * `shape="square"` rides the identical ladder. Beyond the ladder (a 96px profile mark) is a
+   * `className` size utility, exactly as before; the ladder is for the control row.
+   */
+  size?: SizeProp;
   appearance?: AvatarAppearanceProp;
   /**
    * Presence — WHO is reachable right now, drawn as an indicator at the block-end/inline-end

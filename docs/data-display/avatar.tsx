@@ -9,7 +9,7 @@ import {
   CardTitle,
   ListRow,
 } from "@godxjp/ui/data-display";
-import { Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Building2, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 
@@ -34,7 +34,9 @@ import portraitSlate from "../assets/portrait-slate.svg";
 /**
  * Avatar — identity image with a readable fallback (users, teams, entities).
  * Always compose AvatarImage + AvatarFallback so broken/missing images degrade
- * gracefully. Size via className. Composed only from real @godxjp/ui components.
+ * gracefully. Size on the control ladder with `size` (xs/sm/md/lg, the same
+ * --control-height tier Button reads); className only for sizes off that ladder.
+ * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
   return (
@@ -322,24 +324,139 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* size — the control ladder (gh#716) */}
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Sizes</CardTitle>
+            <CardTitle level={2}>サイズ · size</CardTitle>
             <CardDescription>
-              Default is var(--control-height); override with a size-* utility (size-8 / size-10 /
-              size-12).
+              xs 24px / sm 28px / md 32px（既定） / lg 36px。すべて Button や Input と同じ
+              --control-height の段なので、同じ段の Button
+              と並べたときに高さがそろう。イニシャルの級数もグリフの箱も同じ段で動くため、小さい
+              マークは「小さい」であって「切れている」ではない。shape=&quot;square&quot;
+              も同じ段に乗る。 ラダーの外側のサイズ（プロフィール用の 96px マークなど）は従来どおり
+              className。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar size="xs">
+                  <AvatarFallback>XS</AvatarFallback>
+                </Avatar>
+                <Avatar size="sm">
+                  <AvatarFallback>SM</AvatarFallback>
+                </Avatar>
+                <Avatar>
+                  <AvatarFallback>MD</AvatarFallback>
+                </Avatar>
+                <Avatar size="lg">
+                  <AvatarFallback>LG</AvatarFallback>
+                </Avatar>
+              </Flex>
+              {/* square rides the identical ladder */}
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar size="xs" shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+                <Avatar size="sm" shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+                <Avatar shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+                <Avatar size="lg" shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+              </Flex>
+              {/* the glyph steps with the box, so a medallion is never clipped */}
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar size="xs" shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <ShieldCheck aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Avatar size="sm" shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <ShieldCheck aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Avatar shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <ShieldCheck aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Avatar size="lg" shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <ShieldCheck aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* The row that could not be built before #716 */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>行に入るマーク · size=&quot;sm&quot; と icon-sm</CardTitle>
+            <CardDescription>
+              行の高さが先に決まっている場所（28px の icon-sm トリガ、24/28px
+              の密なテーブル行）では、マークの側が行に合わせる。#716 以前は箱が --control-height
+              に固定されていたため、28px のトリガに 32px
+              のマークが入って外へはみ出し、消費側に残された手は「行全体を 32px
+              に上げる」だけだった。 下の 1 段目は同じ段の Button と並べたもの、2 段目は icon-sm
+              トリガの中に入れたもの。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" wrap align="center" gap="sm">
+                <Avatar size="sm">
+                  <AvatarImage src={portraitSlate} alt="" />
+                  <AvatarFallback>田</AvatarFallback>
+                </Avatar>
+                <Button size="sm" variant="outline">
+                  担当者を変更
+                </Button>
+                <Avatar size="xs">
+                  <AvatarFallback>佐</AvatarFallback>
+                </Avatar>
+                <Button size="xs" variant="outline">
+                  履歴
+                </Button>
+              </Flex>
+              <Flex direction="row" wrap align="center" gap="sm">
+                <Button size="icon-sm" variant="ghost" aria-label="担当者 田中 未来">
+                  <Avatar size="sm">
+                    <AvatarImage src={portraitMoss} alt="" />
+                    <AvatarFallback>田</AvatarFallback>
+                  </Avatar>
+                </Button>
+                <Button size="icon-xs" variant="ghost" aria-label="担当者 佐藤 玲">
+                  <Avatar size="xs">
+                    <AvatarFallback>佐</AvatarFallback>
+                  </Avatar>
+                </Button>
+                <Text as="p" size="xs" tone="muted">
+                  マークはトリガの内寸に収まる（28px の中に 28px、24px の中に 24px）。
+                </Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ラダーの外 · className</CardTitle>
+            <CardDescription>
+              コントロール行の段に無いサイズ（プロフィールヘッダの大きなマークなど）は、従来どおり
+              size-* ユーティリティで指定する。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">
-              <Avatar className="size-8">
-                <AvatarFallback>S</AvatarFallback>
-              </Avatar>
               <Avatar className="size-10">
                 <AvatarFallback>M</AvatarFallback>
-              </Avatar>
-              <Avatar>
-                <AvatarFallback>D</AvatarFallback>
               </Avatar>
               <Avatar className="size-12">
                 <AvatarFallback>L</AvatarFallback>

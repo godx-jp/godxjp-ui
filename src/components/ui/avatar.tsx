@@ -98,13 +98,14 @@ export const Avatar = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<"span"> & { asChild?: boolean } & Pick<
       AvatarProp,
-      "shape" | "appearance" | "presence" | "presenceLabel"
+      "shape" | "appearance" | "presence" | "presenceLabel" | "size"
     >
 >(
   (
     {
       className,
       shape = "circle",
+      size = "md",
       appearance = "default",
       presence,
       presenceLabel,
@@ -132,6 +133,13 @@ export const Avatar = React.forwardRef<
           // the entity-header organization/service mark, whose radius, box size, brand fill and glyph
           // retunes the entity mark once in its theme instead of overriding className per call site.
           data-shape={shape === "square" ? "square" : undefined}
+          // INERT DEFAULT, same reasoning as `shape`: `md` emits nothing, so every avatar written
+          // before gh#716 keeps the DOM and the --control-height box it had. The other three steps
+          // ride the --control-height-{xs,sm,lg} tier, which is what lets a person's mark sit in a
+          // 28px `icon-sm` trigger or a 24px dense row instead of overflowing it and forcing the
+          // consumer to raise the whole row. The box, the initials type step and the glyph box all
+          // move together — see styles/data-display-layout.css.
+          data-size={size === "md" ? undefined : size}
           // Also inert by default.
           // behind a role-coloured glyph, sized by --avatar-tinted-* — the plate a feature/capability
           // icon sits on. Orthogonal to `shape`, so `shape="square" appearance="tinted"` is the

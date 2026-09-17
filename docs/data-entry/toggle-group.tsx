@@ -129,14 +129,26 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>size · sm / md / lg</CardTitle>
+            <CardTitle level={2}>size · xs / sm / md / lg</CardTitle>
             <CardDescription>
-              size も ToggleGroup にだけ指定すれば全アイテムへ伝播する。md
-              が既定。周囲のコントロール密度に合わせて sm または lg を選ぶ。
+              size も ToggleGroup にだけ指定すれば全アイテムへ伝播する。md が既定。xs 24px / sm 28px
+              / md 32px / lg 36px はすべて --control-height
+              の同じ段なので、行の高さが先に決まっている場所ではその段を選ぶ。xs は 24px
+              の密な行にセグメントを載せるための段。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  size=&quot;xs&quot; · 24px の密な行
+                </Text>
+                <ToggleGroup type="single" size="xs" defaultValue="day">
+                  <ToggleGroupItem value="day">日次</ToggleGroupItem>
+                  <ToggleGroupItem value="month">月次</ToggleGroupItem>
+                  <ToggleGroupItem value="year">年次</ToggleGroupItem>
+                </ToggleGroup>
+              </Flex>
               <Flex direction="col" gap="sm">
                 <Text as="p" size="sm" tone="muted">
                   size=&quot;sm&quot;
