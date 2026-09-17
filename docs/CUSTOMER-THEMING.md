@@ -213,6 +213,32 @@ Density (`<PageContainer density>`) scales component sizes, not the grid. - **Pi
 
 ---
 
+## Selectors the package promises are YOURS
+
+A `data-*` attribute the package never writes is a selector you can hold a stylesheet against — the one place where CSS of your own is the documented route rather than a workaround. Each of these is a promise held by a test, not an accident of the current markup:
+
+| You write | The package promises | Why it exists |
+| --- | --- | --- |
+| `.ui-prose a[data-…]` | Prose writes `data-*` on its **own root only** — never on a descendant. Every `data-*` on an `a` inside it is yours, survives the render, and stays selectable (gh#717) | A renderer knows things about a link that the package cannot: in a wiki, a link whose target **does not exist yet** must read differently from one that resolves |
+| `<TableRow data-expanded-row="">` | The striping counts records, not DOM rows — a row you mark is skipped in the count and wears its record's stripe | A detail row under a record is your composition, not a row of data |
+| `[data-tenant]`, `[data-program]` | Every anchor token re-resolves at the scope (below) | One app, many brands |
+
+**Style a marked link through the knob, not around it.** `--prose-link-color` is read as `hsl(var(--prose-link-color, var(--primary)))` **at the anchor**, so declaring the custom property inside your own higher-specificity selector is enough — you never have to restate the `color` declaration, and a later package change to how the ink is painted still reaches you:
+
+```css
+/* your app's stylesheet */
+.ui-prose a[data-unresolved="true"] {
+  --prose-link-color: var(--text-error); /* the TEXT tier — 7.25:1 light, 5.51:1 dark on a card */
+  text-decoration-style: dashed;
+}
+```
+
+Use `--text-error`, not `--destructive`: the fill tier is tuned for a white label on top of it and measures 2.95:1 as ink on the dark card (gh#610). The whole family is `--prose-link-color` (default `hsl(var(--primary))`, resolved at the anchor so a scoped re-tint reaches it) and `--prose-link-decoration-line` (default `underline`). Set the first on `[data-tenant]` to re-tint every wiki link at once.
+
+There is **no prop** naming the attribute, deliberately: the attribute IS the API, the same way `data-expanded-row` and `data-axe-open` are. A prop would make the package own a name only your renderer knows, and would let exactly one state be marked.
+
+---
+
 ## Multi-tenant (one app, many brands)
 
 Scope the overrides under a tenant attribute instead of `:root`. The colour utilities are declared with `@theme inline`, so a scoped `--primary` (and the other anchors) **re-resolve at the element** — `bg-primary`, `text-success`, every component surface, the focus ring, the brand glow, gradients and the modal scrim all retint inside the scope:

@@ -2499,6 +2499,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--prose-link-color",
+    "value": "initial",
+    "description": "The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role: * a `:root` binding computes against the root's --primary and inherits that frozen value down, so * a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The * default lives at the call site in styles/data-display-layout.css and re-resolves there. Until * gh#717 `a` was the ONE styled descendant family in Prose with no knob at all — headings, lists, * quote, code and image each had one — which left the most common element in a wiki body * un-theme-able (#45). default = hsl(var(--primary))"
+  },
+  {
+    "name": "--prose-link-decoration-line",
+    "value": "underline",
+    "description": "Underlined at rest, same vocabulary as `--text-link-decoration-line`, and deliberately a * SEPARATE knob rather than a mirror of it: `none` is legal for a link in a nav row or a card * title, which is what that token governs, but Prose is running text — at the shipped inks the * link differs from body copy by hue alone (1.87:1 light, 1.54:1 dark), and WCAG 1.4.1 · G183 * needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome * must not drop it here by accident."
+  },
+  {
     "name": "--prose-image-radius",
     "value": "var(--radius-md)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
