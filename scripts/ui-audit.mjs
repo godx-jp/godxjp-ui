@@ -590,6 +590,68 @@ const RULES = [
     message:
       "No em-dash (—) in product copy. Use a middot `·` for JP/EN label pairs, or restructure into two calm sentences. Keep copy factual and quiet.",
   },
+  {
+    id: "lucide-icon-needs-size",
+    replacement: '<Icon as={Glyph} size="sm" />',
+    // CONSUMER scope, like the other rules about what an app may write: inside this package a bare
+    // glyph is normal — Tree, Pagination, Attachments and a dozen others size their own svg from
+    // their own stylesheet, which is exactly the capability a consumer does not have. Measured:
+    // 90 findings here with the scope off, every one of them a component sizing its own glyph.
+    scope: "consumer",
+    matches: lucideGlyphMatches,
+    spansElement: true,
+    severity: "warn",
+    /*
+     * A lucide element rendered where NOTHING will size it.
+     *
+     * A lucide component ships `width="24" height="24"`, and exactly four rules in this library
+     * override that: `.ui-button svg`, `.ui-dropdown-menu-item > svg`, `.ui-topbar-item svg` and
+     * `[data-slot="list-row-leading"] > svg`. Outside them — in a `Text`, a table cell, an `<a>`,
+     * a `Flex` — the glyph draws at 24px beside 14px type. It is the one defect class that is
+     * INVISIBLE in review: the JSX is correct, the import is correct, and only the screen is
+     * wrong. A consumer swept one app and found 38 (gh#712).
+     *
+     * `warn`, not `error`, and deliberately so: the exemptions below are lexical, so a glyph
+     * inside a consumer's own wrapper component that happens to size it would be reported. The
+     * fix is cheap (`<Icon as={Lock} size="sm" />`) and the finding is worth reading even then.
+     */
+    standard: "WCAG 2.2 SC 1.4.4 · @godxjp/ui icon scale (docs/TOKENS.md, --icon-size-*)",
+    message:
+      'A lucide glyph with nothing to size it renders at its intrinsic 24px — 1.7× a 14px label. Put it on the scale with the primitive: <Icon as={Lock} size="sm" tone="muted" />, which is aria-hidden by default. A size-4 / w-[16px] utility is what docs/CONSUMER-RULES.md §3/§8 forbid, and size={16} hard-codes a number the theme owns.',
+  },
+  {
+    id: "no-hand-rolled-list",
+    replacement: 'Flex as="ul" marker="none" + ListRow as="li"',
+    scope: "consumer",
+    severity: "warn",
+    spansElement: true,
+    /*
+     * A list built by hand instead of by the primitives, in the three shapes a consumer reaches for:
+     *
+     *   1. a raw `<ul>`/`<ol>` — it cannot carry the gap token, so the spacing goes back into
+     *      utilities, and until `marker="none"` (gh#714) it was the only way to get a list without
+     *      a bullet and a --space-5 indent. It no longer is.
+     *   2. `role="list"` / `role="listitem"` on a div — ARIA re-describing markup that HTML already
+     *      has a element for (WAI-ARIA 1.2 §Using ARIA in HTML: prefer the native element).
+     *   3. a `<li>` (or any wrapper) around a library ROW instead of BEING it. This is the one that
+     *      cost real money: `[data-slot="list-row"]:not(:last-child)` draws the divider, so a row
+     *      alone in a wrapper of its own is always `:last-child` and the rule never matches — a
+     *      consumer's settings menu and dashboard lost EVERY divider, silently, and code review saw
+     *      nothing. `ListRow` has `as="li"` (and `as` + `asChild` for a row of links) precisely so
+     *      the rows stay siblings.
+     *
+     * WARN, not error, and the measurement says why: of 15 `role="list"` wrappers one consumer
+     * audited, 3 survived as deliberate exceptions (a drag-and-drop Kanban column of Cards, two
+     * evidence lists inside a TableCell). A rule wrong one time in five is a rule that gets
+     * silenced wholesale at `error`; at `warn` the three exceptions take an
+     * `ui-audit-disable-line` that states the reason and the other twelve still get fixed.
+     */
+    test: /<(?:ul|ol)(?=[\s/>])[^\n]*|\brole=["'](?:list|listitem)["']|<li(?=[\s>])(?:(?!<\/li>)[\s\S]){0,400}?<(?:ListRow|Card)(?=[\s/>])/g,
+    standard:
+      "WAI-ARIA 1.2 (list / listitem) · HTML Living Standard (ul/ol/li) · WCAG 2.2 SC 1.3.1",
+    message:
+      'Hand-rolled list — a raw <ul>/<ol>, an ARIA role="list"/"listitem", or a <li> wrapped around a library row. Build it from <Flex as="ul" marker="none"> (keeps the element, the <li> semantics and the gap token; no bullet, no indent) with <ListRow as="li"> as the rows. A row inside a wrapper of its own is an only child, so its :not(:last-child) divider never matches and every divider disappears silently (docs/CONSUMER-RULES.md §4, gh#714).',
+  },
 ];
 
 /**
@@ -944,6 +1006,72 @@ function insideStringLiteral(source, index) {
     }
   }
   return quote !== "";
+}
+
+/**
+ * The LOCAL names bound to `lucide-react` icons in this file — `import { Lock, Pencil as Edit }`
+ * gives `Lock` and `Edit`. Reading the import rather than matching "any PascalCase tag" is what
+ * keeps the rule from reporting every component in the file.
+ */
+function lucideLocalNames(source) {
+  const names = new Set();
+  for (const imp of source.matchAll(
+    /import\s+(?:type\s+)?\{([^}]*)\}\s*from\s*["']lucide-react["']/g,
+  )) {
+    for (const spec of imp[1].split(",")) {
+      const local =
+        spec
+          .trim()
+          .split(/\s+as\s+/)
+          .pop()
+          ?.trim() ?? "";
+      if (/^[A-Z][A-Za-z0-9]*$/.test(local)) names.add(local);
+    }
+  }
+  return names;
+}
+
+/**
+ * Character ranges in which a glyph is SOMEBODY ELSE'S to size, so a glyph inside one is quiet:
+ *
+ *  1. the body of a component whose CSS sizes its own `svg` — the four rules named on the rule
+ *     below, which are the only four that exist;
+ *  2. the value of a slot PROP (`icon={<Lock />}`, `leading={<Lock />}`). A component handed a
+ *     glyph through a named slot owns the metric for that slot — that is what a slot IS — and
+ *     reporting the call site would push consumers away from the slot and toward a bare glyph.
+ */
+function iconSizingRanges(source) {
+  const ranges = [];
+  for (const m of source.matchAll(
+    /<(Button|DropdownMenuItem|DropdownMenuCheckboxItem|DropdownMenuRadioItem|TopbarItem)\b[\s\S]*?<\/\1>/g,
+  )) {
+    ranges.push([m.index, m.index + m[0].length]);
+  }
+  for (const m of source.matchAll(
+    /\b(?:icon|leading|trailing|mark|indicator|avatar|prefix|suffix|addonBefore|addonAfter)\s*=\s*\{/g,
+  )) {
+    const open = m.index + m[0].length - 1;
+    const close = matchBracket(source, open);
+    ranges.push([open, close < 0 ? source.length : close + 1]);
+  }
+  return ranges;
+}
+
+/** A lucide element that no rule, no slot and no author-supplied size will ever measure. */
+function* lucideGlyphMatches(source) {
+  const names = lucideLocalNames(source);
+  if (names.size === 0) return;
+  const ranges = iconSizingRanges(source);
+  for (const m of source.matchAll(new RegExp(`<(?:${[...names].join("|")})(?=[\\s/>])`, "g"))) {
+    if (insideStringLiteral(source, m.index)) continue;
+    if (ranges.some(([from, to]) => m.index > from && m.index < to)) continue;
+    const end = jsxOpeningEnd(source, m.index);
+    if (end >= source.length) continue;
+    // An explicit size, or ANY className — a class list is the author saying something about this
+    // element's box, and second-guessing which utility sizes it is how a warning becomes noise.
+    if (/\s(?:size|width|height|className|style)\s*=/.test(source.slice(m.index, end))) continue;
+    yield { 0: source.slice(m.index, end + 1), index: m.index };
+  }
 }
 
 /** Match real JSX text after a balanced opening tag, including props with comparisons. */

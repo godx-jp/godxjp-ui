@@ -471,6 +471,12 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Text size — golden-ratio type-scale steps (2xs…2xl), never an arbitrary px",
   },
+  IconSizeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Icon size — the nine --icon-size-* scale steps (2xs…4xl), never an arbitrary px or a size- utility",
+  },
   TextToneProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -827,6 +833,7 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   FlexDirectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexMarkerProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexJustifyProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexProp: {
@@ -840,6 +847,12 @@ export const COMPONENT_PROP_REGISTRY = {
           "Closed tag seam (div | span) so a Flex stays valid HTML inside a phrasing-only parent such as the <button> a TabsTrigger renders — same shape as ListRow's `as` (gh#354).",
       },
       { field: "direction", local: true, reason: "Flex-specific axis control." },
+      {
+        field: "marker",
+        local: true,
+        reason:
+          'List-marker seam for as="ul"/"ol" (disc | decimal | none). marker="none" emits no data-list, so a list keeps its element, its <li> semantics and its gap token while losing the bullet and the --space-5 indent — the home <ListRow as="li"> had none of, which forced a raw <ul> (gh#714).',
+      },
       "GapProp",
       { field: "align", local: true, reason: "Flex-specific align-items keyword subset." },
       { field: "justify", local: true, reason: "Flex-specific justify-content keyword subset." },
@@ -1413,6 +1426,35 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Ambient live-region opt-in — ActivityAnnounceProp vocabulary; deliberately NOT a boolean so the value names the politeness level.",
+      },
+    ],
+  },
+  IconGlyphProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "IconProp",
+      "IconSizeProp",
+      "TextToneProp",
+      "LabelProp",
+      "ClassNameProp",
+      {
+        field: "label",
+        local: true,
+        reason:
+          "LabelProp narrowed to string: this becomes the glyph's aria-label, and an accessible name is TEXT — a ReactNode cannot be one.",
+      },
+      {
+        field: "as",
+        local: true,
+        reason:
+          "The glyph COMPONENT to render — the IconProp concept, widened to a component that also forwards SVG props and a ref, because Icon renders ONTO the glyph (the sized element is the <svg> itself) rather than wrapping it.",
+      },
+      {
+        field: "size",
+        local: true,
+        reason:
+          "IconSizeProp, the nine-step icon scale — deliberately NOT the four-step control SizeProp: a glyph beside 2xs caption text and a 48px empty-state mark are the same primitive.",
       },
     ],
   },

@@ -322,6 +322,21 @@ export const AUDIT_RULES: AuditRule[] = [
     standard: "@godxjp/ui reference-design typography",
     fix: "No em-dash (—) in copy; use a middot · or two calm sentences.",
   },
+  {
+    id: "lucide-icon-needs-size",
+    severity: "warn",
+    category: "composition",
+    standard: "WCAG 2.2 SC 1.4.4 · @godxjp/ui icon scale (--icon-size-*)",
+    fix: 'A lucide glyph outside a sizing context draws at its intrinsic 24px. Render it as <Icon as={Lock} size="sm" tone="muted" /> — the primitive puts it on the --icon-size-* scale and is aria-hidden unless you pass a label.',
+  },
+  {
+    id: "no-hand-rolled-list",
+    severity: "warn",
+    category: "composition",
+    standard:
+      "WAI-ARIA 1.2 (list / listitem) · HTML Living Standard (ul/ol/li) · WCAG 2.2 SC 1.3.1",
+    fix: 'Build the list as <Flex as="ul" marker="none" direction="col" gap="none"> with <ListRow as="li"> rows — not a raw <ul>/<ol> (no gap token), not <div role="list">/<div role="listitem">, and never a wrapper around each row: the divider is :not(:last-child) among SIBLINGS, so a row alone in its own wrapper loses it silently (a consumer lost every divider in a settings menu and a dashboard this way). marker="none" keeps the element, the <li> semantics and the gap, and drops the bullet and the --space-5 indent (gh#714). A deliberate exception — a drag-and-drop Kanban column, an evidence list inside a TableCell — takes an ui-audit-disable-line that says so.',
+  },
 ];
 
 export function auditRulesByCategory(category?: AuditRuleCategory): AuditRule[] {

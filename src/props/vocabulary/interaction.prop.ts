@@ -37,6 +37,18 @@ export type AvatarShapeProp = "circle" | "square";
 /** Text size — steps of the golden-ratio type scale (NEVER an arbitrary px). `sm` = base. */
 export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 
+/**
+ * Icon size — the NINE steps of the `--icon-size-*` scale (docs/TOKENS.md · gh#326), not the four
+ * of the control `SizeProp`.
+ *
+ * The icon axis already had a vocabulary before it had a name, and it is a FIXED LIST rather than
+ * a ratio: 14/16 = 0.875 but 20/16 = 1.25, because a 1px-stroke glyph cannot sit on half a pixel.
+ * Naming the whole list here — as `TextSizeProp` does for type — is what lets a consumer put a
+ * standalone glyph on the scale (`<Icon as={Lock} size="sm" />`) instead of reaching for a
+ * `className="size-4"` the consumer rules forbid.
+ */
+export type IconSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+
 /** Text colour intent — maps to semantic foreground tokens (no raw palette). */
 /**
  * `inherit` is the one that is NOT a colour: it takes whatever the surface already set (gh#643).

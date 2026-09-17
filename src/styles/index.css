@@ -75,3 +75,6 @@
 @import "./navigation-layout.css";
 @import "./chart-layout.css";
 @import "./float-button-layout.css";
+/* LAST, deliberately: Icon's (0,3,1) size rule TIES with the ListRow leading-slot rule, and a
+ * tie is broken by order. See the header of icon-layout.css. */
+@import "./icon-layout.css";

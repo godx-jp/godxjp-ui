@@ -141,6 +141,11 @@ export type PageContainerProp = {
 };
 
 export type FlexDirectionProp = "row" | "col";
+/**
+ * List marker for `as="ul"`/`as="ol"` — the CSS `list-style-type` keywords the layer implements,
+ * plus `none` for a list that is SEMANTIC ONLY (gh#714).
+ */
+export type FlexMarkerProp = "disc" | "decimal" | "none";
 export type FlexAlignProp = "start" | "center" | "end" | "stretch" | "baseline";
 export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" | "evenly";
 
@@ -154,6 +159,26 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    * `.ui-flex` rules carry `display: flex`, so the box is identical either way.
    */
   as?: "div" | "span" | "ul" | "ol" | "li";
+  /**
+   * Marker for a LIST element (`as="ul"` → `disc`, `as="ol"` → `decimal` by default); ignored by
+   * every other tag.
+   *
+   * `marker="none"` emits no `data-list` at all, so the list keeps its element, its `<li>`
+   * semantics and its `gap`, and loses the bullet AND the `--space-5` indent that come with it.
+   *
+   * ## Why the axis exists
+   *
+   * The bullet was unconditional, and the catalog's own idiom — `<ListRow as="li">` inside a list
+   * — could not live with it: `.ui-flex[data-list] > li { display: list-item }` outranks
+   * `[data-slot="list-row"] { display: flex }`, so every row fell out of flex layout (measured on
+   * this page: row height 94.58px → 41.2px once the attribute is gone). The only move left was a
+   * RAW `<ul>`, which carries no gap token and which the consumer rules forbid in spirit — one
+   * consumer kept three `Flex role="list"` divs for exactly that reason (gh#714).
+   *
+   * `disc`/`decimal` stay available so an `<ol>` can be bulleted (or a `<ul>` numbered) without a
+   * `list-style-type` in a className.
+   */
+  marker?: FlexMarkerProp;
   /** Lightweight surfaces for rows and notices; no Card elevation by default. */
   surface?: "muted" | "popover" | "warning";
   /** Negative inline inset, using the same spacing scale as pad. */
@@ -1390,6 +1415,23 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    */
   /** Hide below a shared responsive breakpoint, without changing cell height. */
   hideBelow?: BreakpointProp;
+  /**
+   * The cell's leading glyph, placed in a slot the CELL sizes (`--topbar-icon-size`).
+   *
+   * Passing the glyph as a child works too — but only while it stays a DIRECT child, because
+   * `.ui-topbar-item > svg` is the rule that sizes it. The moment a cell wraps its glyph (a
+   * `<Flex hideBelow>` so the icon drops at narrow widths) the rule can no longer reach it and the
+   * glyph renders at lucide's intrinsic 24px: measured at 390px on an org-switcher cell, 1.5x the
+   * cell's own step (gh#712). This slot survives that, because the wrapper is the one the cell
+   * placed. The alternative — widening the rule to a descendant — was measured to shrink or grow
+   * OTHER components' glyphs inside the cell (a Badge's 12px glyph became 16px), so it is not one.
+   *
+   * Decorative by convention: the cell's accessible name comes from its own `aria-label` or its
+   * visible label, not from the glyph. For a glyph that must carry a name, or one that needs a
+   * step other than the bar's, pass `<Icon as={…} size=… label=… />` — as this prop's value or as
+   * a child — and it keeps its own metric and its own semantics.
+   */
+  icon?: ReactNode;
   /**
    * Unread count OVERLAID on the cell's glyph — the notification-bell affordance the cell's own use
    * cases name (gh#398). Pass the CONTENT ONLY, exactly like `SidebarItemProp.badge`: a number, a

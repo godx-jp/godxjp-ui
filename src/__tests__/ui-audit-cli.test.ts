@@ -359,6 +359,94 @@ describe("owned rule file drift (godx-jp/id#513)", () => {
   });
 });
 
+/**
+ * gh#712 — a lucide glyph rendered where nothing will size it.
+ *
+ * A lucide component ships `width="24" height="24"` and four rules in this library override that,
+ * three of them direct-child rules. Outside those four a glyph draws at 24px beside 14px text: the
+ * one defect class that is invisible in review, because the JSX is correct and only the screen is
+ * wrong. A consumer swept one app and found 38.
+ */
+describe("lucide-icon-needs-size (gh#712)", () => {
+  /** Every finding of one rule, by line. ONE CLI run per source — see the gh#711 note above. */
+  function report(source: string) {
+    return (
+      JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }
+    ).findings
+      .filter((f) => f.rule === "lucide-icon-needs-size")
+      .map((f) => f.line);
+  }
+
+  const IMPORT = 'import { Lock, Pencil as Edit } from "lucide-react";\n';
+
+  it("fires on a bare glyph in a Text, a cell, a link and a Flex", () => {
+    expect(report(`${IMPORT}<Text><Lock /> encrypted</Text>`)).toEqual([2]);
+    expect(report(`${IMPORT}<Flex>\n  <Edit />\n</Flex>`)).toEqual([3]);
+    expect(report(`${IMPORT}<a href="/x">\n  <Lock />\n</a>`)).toEqual([3]);
+    // Prettier wraps a wide element, and the tag name then ends its own line (gh#673).
+    expect(report(`${IMPORT}<Flex>\n  <Lock\n    strokeWidth={1.5}\n  />\n</Flex>`)).toEqual([3]);
+  });
+
+  it("stays quiet inside the four contexts that DO size a glyph", () => {
+    const quiet = [
+      `${IMPORT}<Button size="sm">\n  <Lock />\n  Export\n</Button>`,
+      `${IMPORT}<DropdownMenuItem>\n  <Lock />\n  Lock\n</DropdownMenuItem>`,
+      `${IMPORT}<TopbarItem aria-label="lock">\n  <Lock />\n</TopbarItem>`,
+      // a glyph handed to a component through a named SLOT is that component's to size
+      `${IMPORT}<ListRow leading={<Lock />} title="Vault" />`,
+      `${IMPORT}<Alert icon={<Lock />} title="Locked" />`,
+    ];
+    for (const source of quiet) expect(report(source), source).toEqual([]);
+  });
+
+  it("stays quiet when the author has already said something about the box", () => {
+    const quiet = [
+      `${IMPORT}<Text><Lock size={16} /> encrypted</Text>`,
+      `${IMPORT}<Text><Lock className="text-muted-foreground size-4" /> encrypted</Text>`,
+      `${IMPORT}<Text><Lock width={16} height={16} /> encrypted</Text>`,
+      // the primitive itself: `as={Lock}` is a reference, never an element
+      `${IMPORT}<Text><Icon as={Lock} size="sm" /> encrypted</Text>`,
+    ];
+    for (const source of quiet) expect(report(source), source).toEqual([]);
+  });
+
+  it("only knows the names this file imported from lucide-react", () => {
+    const quiet = [
+      // a component of the consumer's own, PascalCase, never imported from lucide
+      "<Flex>\n  <Lock />\n</Flex>",
+      // the same name imported from somewhere else entirely
+      'import { Lock } from "./icons";\n<Flex>\n  <Lock />\n</Flex>',
+      // prose about markup is not markup
+      `${IMPORT}const note = "render <Lock /> inside a Text";`,
+    ];
+    for (const source of quiet) expect(report(source), source).toEqual([]);
+    // the rename is followed
+    expect(report(`${IMPORT}<Text><Edit /> edit</Text>`)).toEqual([2]);
+  });
+
+  it("is a WARNING, so a false positive cannot block a review", () => {
+    const findings = (
+      JSON.parse(audit(`${IMPORT}<Text><Lock /> encrypted</Text>`).output) as {
+        findings: { rule: string; severity: string }[];
+      }
+    ).findings.filter((f) => f.rule === "lucide-icon-needs-size");
+    expect(findings).toHaveLength(1);
+    expect(findings[0].severity).toBe("warn");
+  });
+
+  it("does not run inside this package, where a component sizes its own glyph", () => {
+    // 90 findings measured here with the scope off, every one of them a component whose own
+    // stylesheet carries the metric — the capability a consumer does not have.
+    expect(report(`${IMPORT}<Flex>\n  <Lock />\n</Flex>`)).toEqual([3]);
+    const framework = (
+      JSON.parse(
+        audit(`${IMPORT}<Flex>\n  <Lock />\n</Flex>`, true, "src/components/data-display").output,
+      ) as { findings: { rule: string }[] }
+    ).findings.filter((f) => f.rule === "lucide-icon-needs-size");
+    expect(framework).toEqual([]);
+  });
+});
+
 describe("an opening tag that ends its line is still an opening tag (gh#673)", () => {
   /** The line numbers one rule reports for a fixture. */
   function lines(source: string, rule: string, framework = false, path?: string) {
@@ -450,7 +538,9 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
     // (source, rule) pair — 27 processes, measured past vitest's 8s default on a loaded CI runner,
     // which failed the 27.1.0 merge commit on load alone. The findings are the same either way.
     for (const source of quiet) {
-      const report = JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] };
+      const report = JSON.parse(audit(source).output) as {
+        findings: { rule: string; line: number }[];
+      };
       for (const rule of ["no-raw-button", "no-raw-input", "no-raw-select"]) {
         const found = report.findings.filter((f) => f.rule === rule).map((f) => f.line);
         expect(found, `${rule}: ${source}`).toEqual([]);
@@ -487,6 +577,44 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
         "hand-rolled-close-glyph",
       ),
     ).toEqual([]);
+  });
+
+  /**
+   * `no-hand-rolled-list` (gh#714). A consumer's settings menu and dashboard lost EVERY divider
+   * because each row sat in a wrapper of its own, so `[data-slot="list-row"]:not(:last-child)`
+   * never matched — silently, and review saw nothing.
+   *
+   * ONE CLI process per source, every case read off the same report (see the note above about 27
+   * processes failing a merge on load alone).
+   */
+  it("flags a hand-rolled list, and stays quiet on the supported idiom", () => {
+    const handRolled = [
+      '<ul className="menu">',
+      "  <li>prose bullet</li>",
+      "</ul>",
+      '<div role="list">',
+      '  <div role="listitem">',
+      '    <ListRow title="Two-factor" />',
+      "  </div>",
+      "</div>",
+      "<li>",
+      "  <Card />",
+      "</li>",
+    ].join("\n");
+    // The raw container, both ARIA roles, and the wrapper around a library row — but NOT the
+    // prose `<li>` on line 2, which is what a bulleted <Flex as="ul"> is FOR.
+    expect(lines(handRolled, "no-hand-rolled-list")).toEqual([1, 4, 5, 9]);
+
+    const supported = [
+      '<Flex as="ul" marker="none" direction="col" gap="none">',
+      '  <ListRow as="li" title="Two-factor" />',
+      '  <ListRow as="li" title="Passkeys" />',
+      "</Flex>",
+      '<Flex as="ul" gap="xs">',
+      "  <li>prose bullet</li>",
+      "</Flex>",
+    ].join("\n");
+    expect(lines(supported, "no-hand-rolled-list")).toEqual([]);
   });
 
   it("no-utility-layout and no-hand-rolled-surface read a className template spread over lines", () => {
