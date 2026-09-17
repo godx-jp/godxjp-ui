@@ -4,6 +4,54 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.4.0] - 2026-09-17
+
+MINOR. Two new supported shapes and two new audit rules; nothing existing moves.
+
+### Added
+
+- **`Icon` — a glyph on the `--icon-size-*` scale** (gh#712). `<Icon as={Lock} size="sm" tone="muted" />`
+  is the supported way to render a standalone lucide glyph. A lucide component ships
+  `width="24" height="24"`, and only four rules in this library override that (`Button`, a
+  `DropdownMenuItem`, a `TopbarItem`, a `ListRow` leading slot), so everywhere else — in a `Text`, a
+  table cell, an `<a>` — it drew at 24px beside 14px type; a consumer swept one app and measured 38
+  such glyphs, with `size-4` / `w-[16px]` closed to them by CONSUMER-RULES §3/§8. `size` is the nine
+  scale steps (`2xs…4xl` = 10/12/14/16/20/24/36/40/48px) and an explicit step out-ranks every context
+  rule (`size="lg"` inside a Button measures 20px, not 16px); `tone` reuses Text's vocabulary, so a
+  status glyph reads the AA-safe ink; the glyph is `aria-hidden` unless you pass `label`, which makes
+  it `role="img"` with that name. Measured: no change to a bare glyph in Button / menu item / ListRow
+  leading (14 / 16 / 16px).
+- **`TopbarItem icon`** (gh#712). The cell's leading glyph gets a slot the cell sizes, so it keeps
+  `--topbar-icon-size` when the glyph is wrapped (a bar cell hiding its glyph by breakpoint measured
+  24px before, 16px through the slot, at 390px too). `.ui-topbar-item > svg` stays a DIRECT-child
+  rule deliberately: widening it moved a nested Badge glyph 12px → 16px and a nested
+  `Button size="sm"` glyph 14px → 16px.
+- **A semantic list with no decoration — `Flex marker`** (gh#714). `as="ul"` / `as="ol"` emitted
+  `data-list` unconditionally, so a list always came with a bullet, a `--space-5` indent, and
+  `.ui-flex[data-list] > li { display: list-item }`, which out-ranks `[data-slot="list-row"]`'s
+  `display: flex` — the catalog's own idiom, `<ListRow as="li">` inside a list, fell out of flex
+  layout (94.58px per row instead of 69.98px). The only alternative was a raw `<ul>`, which carries
+  no gap token. `marker="none"` emits no `data-list`: the `<ul>`, the `<li>` semantics and the `gap`
+  stay, the bullet and the indent go (`padding-inline-start` 20px → 0, LTR and RTL), and the rows
+  keep their `:not(:last-child)` dividers. `marker="disc"` / `"decimal"` pick the other markers. The
+  bulleted default is unchanged.
+- **`ui-audit` rule `lucide-icon-needs-size`** (warning, consumer scope, gh#712): a lucide element
+  rendered outside a sizing context with no author-supplied size — the defect class that is
+  invisible in code review. Consumer-scoped because inside this package it reported 90 components
+  correctly sizing their own glyph.
+- **`ui-audit` rule `no-hand-rolled-list`** (warning, consumer scope, gh#714): a raw `<ul>` / `<ol>`,
+  an ARIA `role="list"` / `role="listitem"`, or an `<li>` wrapped around a library row. The last one
+  removed EVERY divider from a consumer's settings menu and dashboard — a row alone in its wrapper is
+  always `:last-child`, so the divider rule never matched, silently. `warn` rather than `error`
+  because 3 of 15 such wrappers in that sweep were deliberate; each takes an `ui-audit-disable-line`
+  with its reason.
+
+### Changed
+
+- `docs/CONSUMER-RULES.md` names `Icon` as the supported way to render a standalone glyph, and
+  `Flex as="ul" marker="none"` + `ListRow as="li"` as the supported list. The MCP catalog records
+  that `ListRow`'s single `description` line matches antd `List.Item.Meta` and is not a parity gap.
+
 ## [27.3.1] - 2026-09-17
 
 PATCH. **27.3.0 was tagged but never published** — its release verification failed on a test of this
