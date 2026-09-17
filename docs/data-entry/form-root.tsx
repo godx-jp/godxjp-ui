@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Alert, AlertDescription } from "@godxjp/ui/feedback";
-import { Input } from "@godxjp/ui/data-entry";
+import { Checkbox, Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -10,12 +10,13 @@ import { FormFieldControl, FormRoot, useZodForm } from "@godxjp/ui/form";
 const schema = z.object({
   name: z.string().min(1, "組織名を入力してください"),
   email: z.string().email("有効なメールアドレスを入力してください"),
+  is_shared: z.boolean(),
 });
 
 export default function Demo() {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "server-error">("idle");
   const form = useZodForm(schema, {
-    defaultValues: { name: "株式会社アクメ", email: "billing@example.jp" },
+    defaultValues: { name: "株式会社アクメ", email: "billing@example.jp", is_shared: false },
   });
 
   async function submit() {
@@ -68,6 +69,15 @@ export default function Demo() {
                   disabled={status === "pending"}
                   value={String(field.value ?? "")}
                 />
+              )}
+            </FormFieldControl>
+            {/* Boolean field (antd `valuePropName="checked"`): the label is the Checkbox's children,
+                on the same line as the box — no label row above it. */}
+            <FormFieldControl name="is_shared" valuePropName="checked">
+              {(field) => (
+                <Checkbox {...field} disabled={status === "pending"}>
+                  請求書をプロジェクトメンバーに共有する
+                </Checkbox>
               )}
             </FormFieldControl>
             <Flex gap="sm" wrap>

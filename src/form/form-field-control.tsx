@@ -78,6 +78,7 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
   feedback,
   preserve,
   className,
+  valuePropName,
   children,
 }: FormFieldControlProp<TFieldValues>) {
   const autoId = React.useId();
@@ -98,8 +99,35 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
 
   /** antd `getValueFromEvent` + `normalize`, applied in that order. */
   const readValue = (args: unknown[], previousValue: unknown): unknown => {
-    const raw = getValueFromEvent ? getValueFromEvent(...args) : extractControlValue(args[0]);
+    const extracted = getValueFromEvent ? getValueFromEvent(...args) : extractControlValue(args[0]);
+    // antd `valuePropName="checked"` stores a boolean: `"indeterminate"` is paint, not a value.
+    const raw = valuePropName === "checked" ? extracted === true : extracted;
     return normalize ? normalize(raw, previousValue) : raw;
+  };
+
+  /**
+   * Hand the bag to the render prop in the shape `valuePropName` names: `value` / `onChange` /
+   * `onValueChange` by default, `checked` / `onCheckedChange` for `"checked"` (gh#709).
+   */
+  const renderControl = (bag: {
+    id: string;
+    name: string;
+    value: unknown;
+    onChange: (...args: unknown[]) => void;
+    onBlur: () => void;
+    ref: RefCallback<HTMLElement>;
+  }) => {
+    const render = children as (field: unknown) => React.ReactNode;
+    if (valuePropName === "checked") {
+      const { value, onChange, ...rest } = bag;
+      return render({
+        ...rest,
+        checked: value === true,
+        onCheckedChange: (checked: boolean | "indeterminate") => onChange(checked),
+        ...disabledProp,
+      });
+    }
+    return render(bindField({ ...bag, ...disabledProp }));
   };
 
   // Adapter path (server-driven): bind value/onChange/error straight from the adapter by `name`.
@@ -120,18 +148,15 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
         feedback={feedback}
         className={className}
       >
-        {children(
-          bindField({
-            id: resolvedId,
-            name: fieldName,
-            value: adapter.getValue(fieldName),
-            onChange: (...args: unknown[]) =>
-              adapter.setValue(fieldName, readValue(args, adapter.getValue(fieldName))),
-            onBlur: () => adapter.onBlur?.(fieldName),
-            ref: noopRef,
-            ...disabledProp,
-          }),
-        )}
+        {renderControl({
+          id: resolvedId,
+          name: fieldName,
+          value: adapter.getValue(fieldName),
+          onChange: (...args: unknown[]) =>
+            adapter.setValue(fieldName, readValue(args, adapter.getValue(fieldName))),
+          onBlur: () => adapter.onBlur?.(fieldName),
+          ref: noopRef,
+        })}
       </FormField>
     );
   }
@@ -165,17 +190,14 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
             feedback={feedback}
             className={className}
           >
-            {children(
-              bindField({
-                id: resolvedId,
-                name: field.name,
-                value: field.value,
-                onChange: (...args: unknown[]) => field.onChange(readValue(args, field.value)),
-                onBlur: field.onBlur,
-                ref: field.ref,
-                ...disabledProp,
-              }),
-            )}
+            {renderControl({
+              id: resolvedId,
+              name: field.name,
+              value: field.value,
+              onChange: (...args: unknown[]) => field.onChange(readValue(args, field.value)),
+              onBlur: field.onBlur,
+              ref: field.ref,
+            })}
           </FormField>
         )}
       />

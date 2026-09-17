@@ -169,6 +169,58 @@ type SelectRootProp = Omit<SelectCompoundProp, keyof FieldA11yProps> & {
   allowsEmptyCollection?: boolean;
 };
 
+/**
+ * `defaultOpen`, held back until the trigger has stopped moving (gh#708).
+ *
+ * react-aria positions the listbox once, when it opens, and afterwards only on a resize or a
+ * viewport scroll — never because the TRIGGER moved. A Select mounted with `defaultOpen` inside a
+ * Popover opens in the same commit as that Popover, while its enter animation is still sliding it
+ * into place, so the listbox was measured against where the trigger started, not where it came to
+ * rest: measured at the top of a page, listbox top 78px against a trigger that settled at
+ * 53–85px — drawn over its own trigger — where a click-open puts it at 89px.
+ *
+ * So when `defaultOpen` is uncontrolled, the open state is held here, and set once every running,
+ * finite animation on the Select's ancestors has finished. With nothing animating (or no
+ * `getAnimations`, as in jsdom) it opens in the same layout pass, before paint — which is what
+ * `defaultOpen` did before. `onOpenChange` is not called for that initial open, as before.
+ */
+function useSettledDefaultOpen(
+  rootRef: React.RefObject<HTMLDivElement | null>,
+  defaultOpen: boolean | undefined,
+  open: boolean | undefined,
+) {
+  // Decided once, like every `default*` prop: flipping `defaultOpen` later changes nothing.
+  const [deferred] = React.useState(() => defaultOpen === true && open === undefined);
+  const [settledOpen, setSettledOpen] = React.useState(false);
+  React.useLayoutEffect(() => {
+    if (!deferred) return;
+    let cancelled = false;
+    const moving: Promise<unknown>[] = [];
+    for (let node = rootRef.current?.parentElement; node; node = node.parentElement) {
+      if (typeof node.getAnimations !== "function") break;
+      for (const animation of node.getAnimations()) {
+        // An infinite animation (a pulse, a spinner) never finishes — waiting on it would never open.
+        const end = animation.effect?.getComputedTiming().endTime;
+        if (animation.playState === "running" && Number.isFinite(Number(end))) {
+          moving.push(animation.finished);
+        }
+      }
+    }
+    if (moving.length === 0) {
+      setSettledOpen(true);
+      return;
+    }
+    // `finished` rejects when an animation is cancelled; the trigger has stopped either way.
+    void Promise.allSettled(moving).then(() => {
+      if (!cancelled) setSettledOpen(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [deferred, rootRef]);
+  return deferred ? { open: settledOpen, setOpen: setSettledOpen } : null;
+}
+
 /** The react-aria root with this library's value spelling. No DOM box of its own (`display: contents`). */
 function SelectRoot({
   id,
@@ -191,8 +243,11 @@ function SelectRoot({
   children,
 }: SelectRootProp) {
   void dir;
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const settled = useSettledDefaultOpen(rootRef, defaultOpen, open);
   return (
     <AriaSelect
+      ref={rootRef}
       data-slot="select"
       className="ui-select-root"
       id={id}
@@ -201,9 +256,12 @@ function SelectRoot({
       onChange={(key) => {
         if (key != null) onValueChange?.(String(key));
       }}
-      isOpen={open}
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
+      isOpen={open ?? settled?.open}
+      defaultOpen={settled ? undefined : defaultOpen}
+      onOpenChange={(next) => {
+        settled?.setOpen(next);
+        onOpenChange?.(next);
+      }}
       isDisabled={disabled || isDisabled}
       isRequired={required}
       name={name}

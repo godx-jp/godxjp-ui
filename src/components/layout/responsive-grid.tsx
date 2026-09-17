@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type {
+  ResponsiveGridAlignProp,
   ResponsiveGridColumnsProp,
   ResponsiveGridFlowProp,
   ResponsiveGridPresetProp,
@@ -19,6 +20,12 @@ export type ResponsiveGridProps = {
   columns?: ResponsiveGridColumnsProp;
   /** Keep collections in a horizontal sequence; pair with ScrollArea orientation="horizontal". */
   flow?: ResponsiveGridFlowProp;
+  /**
+   * Block-axis alignment of the cells (antd `Row align`). `stretch` makes every cell as tall as
+   * the tallest — Kanban lanes, where an empty lane must stay a full-height drop zone. Omitted,
+   * `flow="columns"` aligns to `start` and `flow="rows"` stretches, as before.
+   */
+  align?: ResponsiveGridAlignProp;
   /**
    * Named column geometry for a recognised collection shape — see `ResponsiveGridPresetProp`.
    * Wins over `columns` when both are set, so a caller migrating to a preset does not also need
@@ -86,6 +93,7 @@ function toStyle(resolved: {
 export function ResponsiveGrid({
   columns = 4,
   flow = "rows",
+  align,
   gap,
   pad,
   padRaw,
@@ -103,6 +111,7 @@ export function ResponsiveGrid({
         className={cn("ui-responsive-grid", className)}
         data-gap={gap}
         data-flow={flow === "columns" ? "columns" : undefined}
+        data-align={align}
         style={{ ...toStyle(resolved), ...padStyle(pad, padRaw) }}
         data-pad-raw={padRaw === undefined ? undefined : ""}
       >

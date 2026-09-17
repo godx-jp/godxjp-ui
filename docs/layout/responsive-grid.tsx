@@ -1,11 +1,20 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  ScrollArea,
   StatCard,
 } from "@godxjp/ui/data-display";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layout";
 
@@ -20,7 +29,25 @@ import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layou
  * recognised collection shape instead of hand-rolling the breakpoint map. Composed only from
  * real @godxjp/ui components.
  */
+const KANBAN_LANES = [
+  { key: "todo", title: "未着手" },
+  { key: "doing", title: "進行中" },
+  { key: "done", title: "完了" },
+] as const;
+
+type KanbanLane = (typeof KANBAN_LANES)[number]["key"];
+
+const KANBAN_TASKS: { id: string; title: string; lane: KanbanLane; priority: string }[] = [
+  { id: "T-101", title: "請求書テンプレートの改訂", lane: "todo", priority: "high" },
+  { id: "T-102", title: "取引先マスタの重複整理", lane: "todo", priority: "medium" },
+  { id: "T-103", title: "月次締めチェックリスト", lane: "doing", priority: "low" },
+];
+
 export default function Demo() {
+  // Kanban: which lane each card is in, moved by native drag and drop.
+  const [tasks, setTasks] = useState(KANBAN_TASKS);
+  const moveTask = (id: string, lane: KanbanLane) =>
+    setTasks((current) => current.map((task) => (task.id === id ? { ...task, lane } : task)));
   return (
     <PageContainer
       title="ResponsiveGrid"
@@ -252,6 +279,79 @@ export default function Demo() {
                 </CardContent>
               </Card>
             </ResponsiveGrid>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              flow=&quot;columns&quot; align=&quot;stretch&quot; · カンバンのレーン
+            </CardTitle>
+            <CardDescription>
+              align=&quot;stretch&quot;（antd Row
+              align）で全レーンが最も高いレーンと同じ高さになり、空の
+              「完了」レーンも全高のドロップ先になる。省略時は columns フローが start、rows フローが
+              stretch のまま。カードはドラッグでき、中の Select
+              はドラッグ画像をカードの外へ広げない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea orientation="horizontal">
+              <ResponsiveGrid flow="columns" align="stretch">
+                {KANBAN_LANES.map((lane) => (
+                  <Card
+                    key={lane.key}
+                    data-lane={lane.key}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      moveTask(event.dataTransfer.getData("text/plain"), lane.key);
+                    }}
+                  >
+                    <CardHeader>
+                      <CardTitle>{lane.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Flex direction="col" gap="sm">
+                        {tasks
+                          .filter((task) => task.lane === lane.key)
+                          .map((task) => (
+                            <Card
+                              key={task.id}
+                              draggable
+                              data-task={task.id}
+                              onDragStart={(event) =>
+                                event.dataTransfer.setData("text/plain", task.id)
+                              }
+                            >
+                              <CardContent>
+                                <Flex direction="col" gap="xs">
+                                  <Text tone="muted">{task.id}</Text>
+                                  <Text>{task.title}</Text>
+                                  <Select
+                                    aria-label={`${task.id} 優先度`}
+                                    name={`priority-${task.id}`}
+                                    defaultValue={task.priority}
+                                  >
+                                    <SelectTrigger aria-label={`${task.id} 優先度`} size="sm">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="high">高</SelectItem>
+                                      <SelectItem value="medium">中</SelectItem>
+                                      <SelectItem value="low">低</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </Flex>
+                              </CardContent>
+                            </Card>
+                          ))}
+                      </Flex>
+                    </CardContent>
+                  </Card>
+                ))}
+              </ResponsiveGrid>
+            </ScrollArea>
           </CardContent>
         </Card>
 

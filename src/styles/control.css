@@ -447,6 +447,19 @@
     line-height: 0;
   }
 
+  /* gh#709: centre the box on the label's FIRST line. With `align-items: flex-start` a 16px box
+   * sat 2.5px above the centre of the 21px label line (measured in Chromium on
+   * data-entry-form-root). The cell takes one line box of the label's own type — same font-size
+   * and line-height as `.ui-choice-label` — and centres the control inside it, so a wrapped label
+   * or a description below still keeps the box on line one. */
+  .ui-choice-field > .ui-choice-control {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-base);
+    line-height: var(--control-label-line-height);
+    min-block-size: 1lh;
+  }
+
   /* ── THE HIT TARGET OF A CHOICE CONTROL (gh#476) ───────────────────────────────────────────
    * react-aria paints the control on the `<label>` and hides the real `<input>` inside a 1px
    * clipped span at that label's top-left, so a pointer aimed at the box lands on the LABEL and
@@ -1303,7 +1316,9 @@
     border: 0;
     padding: 0;
     cursor: pointer;
-    color: hsl(var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha));
+    color: hsl(
+      var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha)
+    );
     line-height: 0;
   }
   .ui-rating-star:disabled {
@@ -2094,6 +2109,28 @@
    * layout child a flex row or a grid cell sees, exactly as before. */
   .ui-select-root {
     display: contents;
+  }
+
+  /* SELECT — react-aria's hidden native `<select>` (the form-submit + autofill fallback) inside
+   * its 1px clipped, aria-hidden container. react-aria pins that container to the viewport origin
+   * (`position: fixed`, zero insets) as an INLINE style, which puts it at the origin of the
+   * nearest box that contains fixed descendants — under a `contain: paint` / `transform` app region that is the
+   * REGION's corner, far outside the Select. Chromium builds a drag image from the dragged
+   * element's box plus every descendant's, so a draggable card holding a Select dragged a ghost
+   * reaching up to that corner (gh#708: card 286x74, ghost 328x181).
+   *
+   * `absolute` with auto insets keeps the box at its STATIC position — right after the trigger,
+   * inside the Select's own parent — so it never leaves the component's box. What `fixed` was
+   * guarding stays true, measured in Chromium and Firefox: no document scroll growth from a
+   * Select deep inside a non-positioned scroller (gh#105; the clipped 1px box with its -1px
+   * margin contributes no scrollable overflow), and no shift of flex/grid siblings (an
+   * absolutely positioned box is out of flow). Focus is unchanged — the container keeps
+   * `aria-hidden`, `data-react-aria-prevent-focus` and the `<select tabindex="-1">`.
+   * `!important` is the only way a stylesheet outranks react-aria's inline style; there is no
+   * render prop for this node. */
+  .ui-select-root > [data-react-aria-prevent-focus][aria-hidden="true"] {
+    position: absolute !important;
+    inset: auto !important;
   }
 
   /* SELECT — the listbox popup (a react-aria Popover). It is a column so the listbox inside can

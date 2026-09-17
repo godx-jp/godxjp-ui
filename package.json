@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "27.2.0",
-  "godxUiMcp": "27.2.0",
+  "version": "27.3.0",
+  "godxUiMcp": "27.3.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -317,6 +317,7 @@
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
     "test:visual:table-collection-cjk": "node scripts/table-collection-cjk-visual.mjs",
     "test:visual:chart-cjk-axis": "node scripts/chart-cjk-axis-visual.mjs",
+    "test:visual:kanban-select": "node scripts/kanban-select-visual.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",

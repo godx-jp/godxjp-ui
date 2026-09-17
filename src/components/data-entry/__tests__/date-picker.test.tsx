@@ -9,7 +9,13 @@ const iso = (d: Date | undefined) =>
     ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
     : "";
 
-describe("DatePicker — typing", () => {
+/*
+ * An explicit timeout, and what it does NOT hide: these cases type a whole date one keystroke at a
+ * time through user-event, which is real React work per character, not a wait on anything. Measured
+ * ~1.5s locally and 10.1s on a loaded CI runner against vitest's 8s default — that failed the
+ * 27.2.0 release verification on runner load alone, with nothing wrong in the code.
+ */
+describe("DatePicker — typing", { timeout: 60_000 }, () => {
   it("commits only a complete yyyy-MM-dd value", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

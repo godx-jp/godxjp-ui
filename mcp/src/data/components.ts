@@ -213,7 +213,15 @@ export const COMPONENTS: ComponentEntry[] = [
       {
         name: "label",
         type: "React.ReactNode",
-        description: "Visible field label.",
+        description:
+          "Visible field label. Optional (antd): omitted, the field renders NO label row and reserves no space for one — the boolean-field shape, where the control carries its own inline label.",
+      },
+      {
+        name: "valuePropName",
+        type: '"value" | "checked"',
+        defaultValue: '"value"',
+        description:
+          'antd `valuePropName`. `"checked"` hands the render prop `checked` / `onCheckedChange` instead of `value` / `onChange` (the render-prop type narrows) and stores a boolean, so `<Checkbox {...field}>label</Checkbox>` / `<Switch {...field} />` need no wiring.',
       },
       {
         name: "dependencies",
@@ -293,6 +301,8 @@ export const COMPONENTS: ComponentEntry[] = [
       "Use godx-ui controls and preserve field names, errors and disabled state.",
       'RENDER-PROP BAG: `{ id, name, value, onChange, onValueChange, onBlur, ref, disabled? }`. `ref` is `RefCallback<HTMLElement>` (gh#698), so `{...field}` spreads onto Input, Textarea, Select, NumberInput and DatePicker with NO cast — never cast or drop the ref (react-hook-form focuses the first invalid field through it). `value` is `unknown`: narrow it per control (`String(field.value ?? "")`, `typeof field.value === "number" ? field.value : null`).',
       "SERVER VALIDATION: a `FormField name` under `FormRoot errors={…}` claims its bag key, so the 422 message renders once under the field — see FormRoot's canonical server-validation composition (FormRoot + FormErrors + AlertMutationFeedback renders a 422 exactly once).",
+      'CANONICAL BOOLEAN FIELD (gh#709, antd `Form.Item valuePropName="checked"`): `<FormFieldControl name="is_shared" valuePropName="checked">{(field) => <Checkbox {...field}>プロジェクトに共有する</Checkbox>}</FormFieldControl>` — box and label on ONE line, the label text toggles the box and names it, no label row above it, and a validation / 422 error still lands on the checkbox (`aria-invalid` + `aria-describedby`). The bag is `{ id, name, checked, onCheckedChange, onBlur, ref, disabled? }`; the stored value is always a boolean.',
+      'DON\'T put a boolean field\'s label ABOVE its checkbox — `<FormFieldControl name="is_shared" label="プロジェクトに共有する">{(field) => <Checkbox checked={field.value} onCheckedChange={(c) => field.onChange(c === true)} />}</FormFieldControl>` renders the label on one row and the box far below it. Use `valuePropName="checked"` with the label as the Checkbox\'s children.',
     ],
     useCases: ["Validated settings forms", "Nested repeating data entry"],
     related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
@@ -926,6 +936,12 @@ import { Button } from "@godxjp/ui/general";
           'Rows adapt to container width. Columns keep a horizontal collection in order with token-owned column width; compose inside ScrollArea orientation="horizontal". Column flow ignores columns and preset geometry.',
       },
       {
+        name: "align",
+        type: '"start" | "stretch"',
+        description:
+          'antd `Row align`, spelled with Flex\'s FlexAlignProp values (antd `top` → "start"). "stretch" makes every cell as tall as the tallest one. Omitted, flow="columns" keeps "start" and flow="rows" keeps the grid\'s natural stretch.',
+      },
+      {
         name: "columns",
         type: "number | { base?: number; sm?: number; md?: number; lg?: number }",
         defaultValue: "4",
@@ -948,6 +964,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     usage: [
       "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+      'KANBAN LANES: <ScrollArea orientation="horizontal"><ResponsiveGrid flow="columns" align="stretch">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align="stretch" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.',
       "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
@@ -6729,7 +6746,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "defaultOpen",
         type: "boolean",
-        description: "antd `defaultOpen` — uncontrolled initial popup state.",
+        description:
+          "antd `defaultOpen` — uncontrolled initial popup state. The popup opens once every running ancestor animation has finished (a Popover sliding in), so inside a Popover the listbox is placed below its settled trigger exactly like a click-open (gh#708); with nothing animating it is open on the first render. onOpenChange is not called for this initial open.",
       },
       {
         name: "allowClear",
@@ -6869,6 +6887,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
       "READING THE SELECTED CODE FROM THE DOM: the trigger publishes `data-value` = the selected VALUE, alongside the `data-field` key it inherits from FormField. Use that in e2e tests and screen automation \u2014 the trigger's visible text is the option LABEL (\u6771\u4eac\u672c\u793e), and the only other place the code lives is the aria-hidden, 1px-clipped native <select> react-aria renders so a native submit (and browser autofill) carries the value. `data-value` is absent while nothing is selected, and it tracks uncontrolled picks too.",
       "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
+      "A Select is safe inside a draggable element (a Kanban card with draggable=true) and inside a `contain: paint` / `transform` app region: the aria-hidden native <select> fallback is held at its static position beside the trigger (position: absolute, 1px clipped), so the browser's drag image stays the card's own box instead of reaching to the region's corner (gh#708). No wrapper or consumer CSS is needed.",
       "DO name the control with FormField, aria-label, or a <label htmlFor> pointing at the trigger id — all three work. (An earlier version of this entry said htmlFor does NOT name the trigger. That was wrong: the trigger is a <button>, which is a labelable element, so <label for> does name it — src/components/data-entry/__tests__/select-rac.test.tsx pins it on both the old Radix base and the react-aria one, because 17 godx-task files name their Selects exactly that way.) What role=combobox does NOT do is take a name from its own content, so the visible value is the VALUE, never the name — a Select with no label of any kind is anonymous. Wrapping in <FormField label=…> stays the route that also wires helper, error and required. This holds for BOTH APIs; anything set directly on SelectTrigger wins.",
       "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
@@ -7274,14 +7293,22 @@ export function PrioritySelect({ value, onValueChange }) {
         description: "Fires when checked state changes.",
       },
       { name: "id", type: "string", description: "Links to a <Label htmlFor>." },
+      {
+        name: "children",
+        type: "React.ReactNode",
+        description:
+          "antd `<Checkbox>label</Checkbox>` — the INLINE label: box first, label at inline-end on the same line, the same markup as a `Checkbox.Group` option. A real `<label for>`: clicking the text toggles the box and the text is its accessible name. `className` then styles the labelled row.",
+      },
     ],
     usage: [
-      "DO pair every standalone Checkbox with a `<Label htmlFor={id}>` — the id prop on Checkbox must match the htmlFor on Label so screen readers announce the label on focus. Without this pairing the control is inaccessible.",
+      'DO give a single boolean its label as children (antd `<Checkbox>label</Checkbox>`, gh#709): `<Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v === true)}>利用規約に同意する</Checkbox>` — box first, label on the same line, the text toggles the box and is its accessible name. In a form: `<FormFieldControl name="agree" valuePropName="checked">{(field) => <Checkbox {...field}>利用規約に同意する</Checkbox>}</FormFieldControl>`.',
+      'DON\'T render a boolean field\'s label ABOVE its checkbox — `<FormFieldControl label="…">{(field) => <Checkbox checked={field.value} … />}</FormFieldControl>` puts the label on one row and the box far below it. Put the label in the Checkbox\'s children and use `valuePropName="checked"` on the field.',
+      "DO pair every standalone Checkbox WITHOUT children with a `<Label htmlFor={id}>` (or an `aria-label`) — the id prop on Checkbox must match the htmlFor on Label so screen readers announce the label on focus. Without this pairing the control is inaccessible.",
       "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
       "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
       "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
-      "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, use `<Field id='x' label='…'><Checkbox id='x' … /></Field>` as shown in the catalog example — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
+      "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, pass the label as children (`<Checkbox …>label</Checkbox>`, the catalog example) — it renders the same row. Use `<Field id='x' label='…' description='…'><Checkbox id='x' … /></Field>` only when the row needs a description line — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
     ],
     useCases: [
       "A 'Select all' / bulk-action row above a DataTable — standalone Checkbox with `checked='indeterminate'` when some (not all) rows are selected, toggling between all-selected and none-selected.",
@@ -7297,14 +7324,13 @@ export function PrioritySelect({ value, onValueChange }) {
       "RadioGroup — use when only one option in a group may be selected at a time (mutually exclusive). CheckboxGroup = multiple selections allowed; RadioGroup = single selection only.",
       "Field — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead.",
     ],
-    example: `import { Checkbox, Field } from "@godxjp/ui/data-entry";
+    example: `import { Checkbox } from "@godxjp/ui/data-entry";
 
-// Field, not a hand-rolled row. It owns the label-to-control id wiring, the optional description
-// and the row rhythm; a <div className="flex items-center gap-2"> around a bare <Label> owns none
-// of those and the audit blocks the utilities twice over.
-<Field id="agree" label="利用規約に同意する">
-  <Checkbox id="agree" checked={agreed} onCheckedChange={(v) => setAgreed(!!v)} />
-</Field>`,
+// children is the inline label (antd): box first, label on the same line, the text toggles the box.
+// Never a hand-rolled <div className="flex items-center gap-2"> around a bare <Label>.
+<Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v === true)}>
+  利用規約に同意する
+</Checkbox>`,
     storyPath: "data-entry/Checkbox.stories.tsx",
     rules: [],
   },
@@ -7758,7 +7784,7 @@ export function BillingFields() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "`false` renders a NON-MODAL dialog (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The dialog keeps role=dialog + its title as name, centred fixed placement, sizes and tokens; focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Ignored, with a dev warning, under `variant=\"destructive\"` — an alertdialog is always modal. gh#696.",
+          '`false` renders a NON-MODAL dialog (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The dialog keeps role=dialog + its title as name, centred fixed placement, sizes and tokens; focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Ignored, with a dev warning, under `variant="destructive"` — an alertdialog is always modal. gh#696.',
       },
     ],
     usage: [
