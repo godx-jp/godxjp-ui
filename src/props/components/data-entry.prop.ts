@@ -338,9 +338,9 @@ export type FormFieldProp =
        *
        * `before` is for a helper the reader needs BEFORE they answer rather than after: the
        * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
-       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
-       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
-       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * preamble. `labelAddon` cannot carry that — it belongs to the label row, sized for a chip, a
+       * help button or a short text action; in a horizontal/inline field it wraps under the label
+       * inside the label column, so a full sentence stacks there instead of above the input. Putting the second line inside `label` does work, but costs the
        * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
        * a plain string.
        *
@@ -352,7 +352,11 @@ export type FormFieldProp =
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
       feedback?: React.ReactNode;
-      /** Optional control rendered inline after the label (e.g. a help button). */
+      /**
+       * Optional control rendered after the label (e.g. a help button, a short text action). In a
+       * horizontal/inline field the label row wraps: an addon that does not fit beside the label
+       * drops to its own line under it, capped to the label column, never into the control column.
+       */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
@@ -386,9 +390,9 @@ export type FormFieldProp =
        *
        * `before` is for a helper the reader needs BEFORE they answer rather than after: the
        * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
-       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
-       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
-       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * preamble. `labelAddon` cannot carry that — it belongs to the label row, sized for a chip, a
+       * help button or a short text action; in a horizontal/inline field it wraps under the label
+       * inside the label column, so a full sentence stacks there instead of above the input. Putting the second line inside `label` does work, but costs the
        * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
        * a plain string.
        *
@@ -400,7 +404,11 @@ export type FormFieldProp =
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
       feedback?: React.ReactNode;
-      /** Optional control rendered inline after the label (e.g. a help button). */
+      /**
+       * Optional control rendered after the label (e.g. a help button, a short text action). In a
+       * horizontal/inline field the label row wraps: an addon that does not fit beside the label
+       * drops to its own line under it, capped to the label column, never into the control column.
+       */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
@@ -1939,10 +1947,13 @@ export type BranchScopePickerProp = FieldA11yProps & {
  *
  * `enter` (default) is the chat convention: `Enter` sends, `Shift+Enter` inserts a newline.
  * `shiftEnter` is the inverse, for composers that hold long, deliberately multi-line drafts.
- * Neither ever fires while an IME conversion is in flight.
+ * `modEnter` is this library's extension (antd X has only the first two; see
+ * docs/DESIGN-AUTHORITY.md): `⌘+Enter` on Apple platforms, `Ctrl+Enter` elsewhere sends, while
+ * `Enter` and `Shift+Enter` both insert a newline — the record-comment convention.
+ * None of them ever fires while an IME conversion is in flight.
  * @see ChatComposer
  */
-export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter";
+export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter" | "modEnter";
 
 /**
  * @see ChatComposer — the message input of a conversation (Ant Design X `Sender`; the industry
@@ -1967,7 +1978,8 @@ export type ChatComposerProp = Omit<
     onValueChange?: OnValueChangeProp<string>;
     /**
      * Send the draft. Receives the text as typed; never fires for an empty or whitespace-only
-     * draft, and never while `loading`, `disabled` or `readOnly`.
+     * draft (unless `allowEmptySubmit`, which then passes `""`), and never while `loading`,
+     * `disabled` or `readOnly`.
      */
     onSubmit?: (value: string) => void;
     /** Stop the in-flight response. Only reachable while `loading`. */
@@ -1979,6 +1991,13 @@ export type ChatComposerProp = Omit<
     loading?: PendingProp;
     /** Which keystroke sends and which breaks the line. Default `enter`. */
     submitType?: ChatComposerSubmitTypeProp;
+    /**
+     * Let an empty or whitespace-only draft be sent — for a composer whose `header`/`footer` carry
+     * payload of their own (a status change on a record). The send button stays enabled and both
+     * the button and the keyboard submit call `onSubmit("")`. Still blocked while `loading`,
+     * `disabled` or `readOnly`. Default `false`.
+     */
+    allowEmptySubmit?: boolean;
     /** Empty-state text of the draft box; pass it through `t()` at the call site. */
     placeholder?: PlaceholderProp;
     /** Disable the whole composer (draft box and every action). */

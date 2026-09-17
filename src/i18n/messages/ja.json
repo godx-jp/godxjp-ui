@@ -166,7 +166,8 @@
       "send": "メッセージを送信",
       "cancel": "生成を停止",
       "hintEnter": "Enter で送信 · Shift + Enter で改行",
-      "hintShiftEnter": "Shift + Enter で送信 · Enter で改行"
+      "hintShiftEnter": "Shift + Enter で送信 · Enter で改行",
+      "hintModEnter": "{modifier} + Enter で送信 · Enter で改行"
     },
     "chatSuggestion": {
       "label": "候補",

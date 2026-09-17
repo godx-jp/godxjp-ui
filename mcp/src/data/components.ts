@@ -264,7 +264,12 @@ export const COMPONENTS: ComponentEntry[] = [
       { name: "layout", type: "FormLayoutProp", description: "Per-field layout override." },
       { name: "labelWidth", type: "WidthProp", description: "Per-field label width." },
       { name: "controlWidth", type: "WidthProp", description: "Per-field control width." },
-      { name: "labelAddon", type: "React.ReactNode", description: "Inline label help or action." },
+      {
+        name: "labelAddon",
+        type: "React.ReactNode",
+        description:
+          "Label help or action. In a horizontal/inline layout it wraps under the label inside the label column when it does not fit beside it.",
+      },
       { name: "colSpan", type: "number", description: "Grid column span." },
     ],
     example:
@@ -5876,7 +5881,7 @@ import remarkGfm from "remark-gfm";
         name: "labelAddon",
         type: "ReactNode",
         description:
-          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp. Nằm TRONG hàng nhãn nên không phá nhịp trường.",
+          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp, action chữ ngắn. Nằm TRONG hàng nhãn nên không phá nhịp trường. Ở layout horizontal/inline hàng nhãn xuống dòng: addon không vừa cạnh nhãn thì rơi xuống dòng riêng dưới nhãn, trong cột nhãn, không tràn sang cột control.",
       },
       {
         name: "id",
@@ -5908,7 +5913,7 @@ import remarkGfm from "remark-gfm";
         type: '"before" | "after"',
         defaultValue: '"after"',
         description:
-          "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (inline, no wrap) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
+          "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (a label-row slot for a chip, help button or short action) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
       },
       {
         name: "error",
@@ -5971,7 +5976,7 @@ import remarkGfm from "remark-gfm";
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
       "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
-      "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
+      "DO use `labelAddon` (a ReactNode rendered after the label text, in the label row) for supplementary controls such as a tooltip trigger, a 'copy' icon button or a short text action ('Assign to myself'); in a horizontal/inline layout the label row wraps, so an addon that does not fit beside the label drops under it inside the label column rather than overlapping the control — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
       "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
       "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
@@ -8079,6 +8084,7 @@ import { Button } from "@godxjp/ui/general";
       "ANATOMY (positions are fixed — never re-lay-them-out): Alert is ONE horizontal row — a SINGLE leading tone icon at the inline-start (top-aligned to the first text line, auto-selected by `tone`, never two icons), then the text body (Title/Description), then `<Alert.Actions>` in a trailing-RIGHT column (≥sm), and the dismiss × pinned to the TOP-RIGHT corner (rendered by `onDismiss`). DON'T stack these vertically, DON'T make the action a full-width bar under the text, DON'T center the × at the bottom, DON'T add a second icon — that hand-rolled vertical banner is the #1 Alert mistake.",
       'DO compose text as `<Alert.Title>` + `<Alert.Description>` — they stack vertically inside the body (the Example below is canonical). When you add `<Alert.Actions>`, the body becomes a two-column grid (text | actions) at ≥sm; group multi-part text in `<Alert.Content>` so it occupies the text column as one block: `<Alert tone="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
       "DO use `Alert.QueryError` (alias `AlertQueryError`) for TanStack Query / API failure surfaces — it already renders humanError(error), an i18n title, and an optional Retry button. Never hand-roll that pattern.",
+      '`AlertMutationFeedback` props: `mutation`, `onRetry?`, `showRetry?` (default `true`), `pending?`, `ignoreValidationErrors?: boolean`, `className?`. `ignoreValidationErrors={true}` skips the alert for every error where `classifyQueryError(mutation.error).category === "validation"` (400/422). DEFAULT (omitted): skip a validation error only when rendered inside a `FormRoot`/`Form` whose `errors` bag holds at least one message (the fields show it, `<FormErrors />` shows unclaimed keys); outside such a form, or with an empty/absent bag, the alert renders. So DON\'T hand-guard `{!isValidation && <AlertMutationFeedback …/>}` inside `FormRoot errors={…}` — a 422 is not drawn twice, and a 5xx still renders. Pass `ignoreValidationErrors={false}` to force the alert in such a form.',
       'DON\'T pass raw action elements directly as top-level children of `<Alert>` without wrapping them in `<Alert.Actions>` — the layout slot only activates correctly via the `data-slot="alert-actions"` wrapper.',
       'DON\'T hand-roll a dismiss ✕ button — pass `onDismiss` to `<Alert>` and the component renders its own accessible dismiss button with `aria-label="Dismiss"`. The `onDismiss` handler may return a Promise.',
       'DON\'T suppress the icon with `icon={false}` unless there is a deliberate design reason; the icon is the primary a11y cue for sighted users since the root already carries `role="alert"` for screen readers.',
@@ -15959,7 +15965,7 @@ const messages: ChatMessageProp[] = [
     name: "ChatComposer",
     group: "data-entry",
     tagline:
-      "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter/Shift+Enter is configurable and never fires during an IME conversion.",
+      "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion.",
     props: [
       {
         name: "value",
@@ -15977,7 +15983,7 @@ const messages: ChatMessageProp[] = [
         name: "onSubmit",
         type: "(value: string) => void",
         description:
-          "Send the draft. Never fires for empty or whitespace-only text, nor while loading/disabled/readOnly.",
+          'Send the draft. Never fires for empty or whitespace-only text (unless allowEmptySubmit, which passes ""), nor while loading/disabled/readOnly.',
       },
       {
         name: "onCancel",
@@ -15993,10 +15999,17 @@ const messages: ChatMessageProp[] = [
       },
       {
         name: "submitType",
-        type: '"enter" | "shiftEnter"',
+        type: '"enter" | "shiftEnter" | "modEnter"',
         defaultValue: '"enter"',
         description:
-          '"enter": Enter sends, Shift+Enter breaks the line. "shiftEnter": the inverse, for long deliberate drafts.',
+          '"enter": Enter sends, Shift+Enter breaks the line. "shiftEnter": the inverse, for long deliberate drafts. "modEnter" (library extension; antd X Sender has only the first two): ⌘+Enter on Apple platforms, Ctrl+Enter elsewhere sends, while Enter and Shift+Enter both break the line — the record-comment convention (GitHub, Jira, Linear).',
+      },
+      {
+        name: "allowEmptySubmit",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Let an empty or whitespace-only draft be sent when header/footer carry payload of their own (a status change on a record). The send button stays enabled and the button and keyboard submit call onSubmit(""). Still blocked while loading/disabled/readOnly.',
       },
       {
         name: "placeholder",
@@ -16086,13 +16099,15 @@ const messages: ChatMessageProp[] = [
       "DO wrap it in FormField when the composer is a labelled field; the label/helper/error contract lands on the <textarea>, which is the semantic focus target (ref goes there too).",
       "DON'T hand-roll Enter-to-send. An IME conversion (ja/vi) fires a real Enter to ACCEPT a candidate; ChatComposer already guards compositionstart/compositionend, and skipping that guard makes Japanese and Vietnamese input impossible.",
       "DON'T render your own stop button beside the send button — set `loading` and the trailing action becomes cancel. Exactly one trailing action exists at a time (the picker trailing-action discipline).",
-      "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter')) when you flip `submitType` — the keystroke contract is invisible otherwise.",
+      "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter') / 'hintShiftEnter') when you flip `submitType` — the keystroke contract is invisible otherwise. For submitType=\"modEnter\" use t('dataEntry.chatComposer.hintModEnter', { modifier: isApplePlatform() ? '⌘' : 'Ctrl' }) with isApplePlatform from @godxjp/ui/lib/utils — the same platform test the composer uses to pick metaKey vs ctrlKey.",
+      'DO set `allowEmptySubmit` (not a hidden fake draft) when the composer also submits field changes from `header`/`footer`; your onSubmit receives "" and decides whether anything changed.',
       "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme.",
     ],
     useCases: [
       "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
       "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
       'A long-form reply box where Enter must break the line: submitType="shiftEnter".',
+      'A comment bar on an issue/record where Enter breaks the line and ⌘/Ctrl+Enter posts, and a status change may be posted without text: submitType="modEnter" + allowEmptySubmit.',
       "A streaming answer the user can stop: loading + onCancel.",
     ],
     related: [

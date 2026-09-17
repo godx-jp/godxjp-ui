@@ -58,12 +58,19 @@ function isPackageWrittenMcpEntry(entry) {
   return Object.keys(entry.env ?? {}).every((key) => key === "GODX_UI_VERSION");
 }
 
-function mcpConfigMismatchMessage(root, existing, expected) {
+/** True when an `mcpServers` entry launches the catalog server, under any key or launcher flags. */
+function runsUiMcp(entry) {
+  const parts = [entry?.command, ...(Array.isArray(entry?.args) ? entry.args : [])];
+  return parts.some((part) => typeof part === "string" && /(^|\/)@godxjp\/ui-mcp(@|$)/.test(part));
+}
+
+function mcpConfigMismatchMessage(root, existing, expected, key = MCP_KEY) {
   const ui = readConsumerUiMetadata(root);
   const pin = expected.args?.[0] ?? "@godxjp/ui-mcp";
   const ver = ui?.version ?? "(unknown)";
   return (
-    `present (custom godx-ui MCP entry — not overwritten; expected ${pin} with ` +
+    `present (custom godx-ui MCP entry${key === MCP_KEY ? "" : ` under key "${key}"`} — not overwritten, ` +
+    `no duplicate added; expected ${pin} with ` +
     `env.GODX_UI_VERSION=${ver} from node_modules/@godxjp/ui)`
   );
 }
@@ -265,7 +272,18 @@ function readJsonFile(path) {
   // writing the result back is the same data loss by a different door, so it is a refusal too.
   if (json === null || typeof json !== "object" || Array.isArray(json))
     return { state: "wrong-shape" };
-  return { state: "ok", json };
+  return { state: "ok", json, indent: indentOf(raw) };
+}
+
+/**
+ * The indentation the file already uses — a tab, or the width of the first indented line — so a
+ * rewrite changes only the keys it touches. Re-serialising at a fixed 2 turned a one-entry edit
+ * into a whole-file diff in a repo formatted at 4 (gh#692).
+ */
+function indentOf(raw) {
+  const first = raw.match(/\n([ \t]+)\S/);
+  if (!first) return 2;
+  return first[1].startsWith("\t") ? "\t" : first[1].length;
 }
 
 /** The sentence that goes in the refusal, so a consumer knows which of the three it hit. */
@@ -385,18 +403,25 @@ export function ensureMcpJson(root) {
     return refuseAndSuggest(path, suggested, "`mcpServers` is not an object");
   }
   json.mcpServers = json.mcpServers ?? {};
-  if (json.mcpServers[MCP_KEY]) {
-    if (mcpEntryMatches(json.mcpServers[MCP_KEY], expected)) return "present";
-    if (!isPackageWrittenMcpEntry(json.mcpServers[MCP_KEY])) {
-      return mcpConfigMismatchMessage(root, json.mcpServers[MCP_KEY], expected);
+  const indent = read.state === "ok" ? read.indent : 2;
+  // The catalog server may already be registered under ANOTHER key — `godxjp-ui`, `ui`, whatever
+  // the repo chose. Looking only at MCP_KEY added a second copy of the same server beside it, at
+  // a different version (gh#692). Whatever key runs @godxjp/ui-mcp is the entry.
+  const key = json.mcpServers[MCP_KEY]
+    ? MCP_KEY
+    : Object.keys(json.mcpServers).find((name) => runsUiMcp(json.mcpServers[name]));
+  if (key) {
+    if (mcpEntryMatches(json.mcpServers[key], expected)) return "present";
+    if (!isPackageWrittenMcpEntry(json.mcpServers[key])) {
+      return mcpConfigMismatchMessage(root, json.mcpServers[key], expected, key);
     }
-    json.mcpServers[MCP_KEY] = expected;
-    writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
+    json.mcpServers[key] = expected;
+    writeFileAtomic(path, JSON.stringify(json, null, indent) + "\n");
     return "refreshed";
   }
   const created = read.state === "missing";
   json.mcpServers[MCP_KEY] = expected;
-  writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
+  writeFileAtomic(path, JSON.stringify(json, null, indent) + "\n");
   return created ? "created" : "added";
 }
 
@@ -450,7 +475,7 @@ export function ensureClaudeHooks(root) {
     added.push("SessionStart:workflow-primer");
   }
 
-  writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
+  writeFileAtomic(path, JSON.stringify(json, null, read.state === "ok" ? read.indent : 2) + "\n");
   return added;
 }
 

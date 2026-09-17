@@ -3,6 +3,7 @@ import { SendHorizontal, Square } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { isApplePlatform } from "../../lib/platform";
 import { omitFieldA11y, pickFieldA11y, useFieldIdentity } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { Textarea } from "./textarea";
@@ -57,6 +58,7 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
       onCancel,
       loading = false,
       submitType = "enter",
+      allowEmptySubmit = false,
       placeholder,
       disabled = false,
       readOnly = false,
@@ -108,13 +110,17 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
     const identity = useFieldIdentity({ id, name, "data-field": props["data-field"] });
     const surface = controlSurfaceAttrs({ status, size });
 
-    const canSubmit = isSendable(draft) && !disabled && !readOnly && !loading;
+    const canSubmit = (allowEmptySubmit || isSendable(draft)) && !disabled && !readOnly && !loading;
 
     const submit = React.useCallback(() => {
+      if (disabled || readOnly || loading) return;
       const text = innerRef.current?.value ?? draft;
-      if (!isSendable(text) || disabled || readOnly || loading) return;
-      onSubmit?.(text);
-    }, [draft, disabled, readOnly, loading, onSubmit]);
+      if (isSendable(text)) onSubmit?.(text);
+      // The draft carries nothing, but the consumer said the composer's OTHER payload (a status
+      // change in `footer`, an attachment in `header`) is worth sending on its own. Whitespace is
+      // still not a message, so the text half of that submit is "".
+      else if (allowEmptySubmit) onSubmit?.("");
+    }, [draft, disabled, readOnly, loading, allowEmptySubmit, onSubmit]);
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       onKeyDown?.(event);
@@ -131,7 +137,16 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
       ) {
         return;
       }
-      const wantsSend = submitType === "enter" ? !event.shiftKey : event.shiftKey;
+      const wantsSend =
+        submitType === "modEnter"
+          ? // ⌘ on Apple platforms, Ctrl everywhere else — the other one is left alone, because
+            // Ctrl+Enter on a Mac is not the convention a Mac user reaches for.
+            isApplePlatform()
+            ? event.metaKey
+            : event.ctrlKey
+          : submitType === "enter"
+            ? !event.shiftKey
+            : event.shiftKey;
       if (!wantsSend) return;
       // A newline is what the OTHER modifier does; sending must not also leave one behind.
       event.preventDefault();
