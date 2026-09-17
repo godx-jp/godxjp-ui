@@ -29,6 +29,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
+  Target,
   Users,
 } from "lucide-react";
 
@@ -171,6 +172,42 @@ export default function Demo() {
                       <Flex hideBelow="sm">
                         <Icon as={Building2} size="md" />
                       </Flex>
+                      東京本社
+                    </TopbarItem>
+                  </>
+                }
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>リンクのセルと、幅で畳むセル</CardTitle>
+              <CardDescription>
+                `asChild` でもセルは `icon`
+                スロットを子要素の中に差し込み、リンクそのものがセルです。 `labelHideBelow`
+                はその幅未満でラベルを視覚的にだけ隠すので、アイコンだけになっても
+                ラベルがアクセシブルネームとして残ります。`iconHideFrom`
+                はその幅以上でアイコンを外します。 ビューポートを 640px
+                の前後に動かして確認してください。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Topbar
+                start={
+                  <>
+                    <TopbarItem asChild icon={<Target aria-hidden="true" />}>
+                      <a href="#topbar-item-goals">目標</a>
+                    </TopbarItem>
+                    <TopbarItem
+                      asChild
+                      icon={<Target aria-hidden="true" />}
+                      labelHideBelow="sm"
+                      iconHideFrom="sm"
+                    >
+                      <a href="#topbar-item-goals-responsive">今期の目標</a>
+                    </TopbarItem>
+                    <TopbarItem icon={<Building2 aria-hidden="true" />} labelHideBelow="md">
                       東京本社
                     </TopbarItem>
                   </>
