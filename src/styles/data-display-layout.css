@@ -2267,6 +2267,22 @@
     content: "";
   }
 
+  /* Row dividers (`divided`, gh#732) — chrome, therefore OFF unless asked for (cardinal rule #44),
+   * the same default as the rails above. The rule is drawn on each row's BLOCK-START, so it sits
+   * BETWEEN two rows and never under the last one, and the only row that skips it is the FIRST of
+   * the whole outline — the first row of a child group still follows its parent row, so it keeps
+   * its rule. Indentation lives in the row's own `padding-inline-start`, never in a margin, so the
+   * rule already runs the FULL width of the row at every depth; an indented rule would make the
+   * children read as a nested table. The first row zeroes the COLOUR rather than the border, so
+   * every row keeps the same border box and the outline's geometry does not shift by a hairline. */
+  .ui-tree[data-divided="true"] .ui-tree-node {
+    border-block-start: var(--stroke-hairline) solid var(--tree-divider-color, hsl(var(--border)));
+  }
+
+  .ui-tree[data-divided="true"] > .ui-tree-node:first-child {
+    border-block-start-color: transparent;
+  }
+
   .ui-tree-loading {
     display: flex;
     align-items: center;

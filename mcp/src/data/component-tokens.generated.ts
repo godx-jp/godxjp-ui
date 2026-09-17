@@ -7504,6 +7504,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Documented default: --tree-line-color = hsl(var(--border))."
   },
   {
+    "name": "--tree-divider-color",
+    "value": "initial",
+    "description": "Documented default: --tree-divider-color = hsl(var(--border))."
+  },
+  {
     "name": "--tree-node-hover-background",
     "value": "initial",
     "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. * Documented defaults: --tree-node-hover-background = hsl(var(--accent)); * --tree-node-selected-background = hsl(var(--accent)); * --tree-node-selected-foreground = hsl(var(--accent-foreground))."
