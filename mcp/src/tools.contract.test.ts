@@ -38,7 +38,7 @@ describe("tool registry — dispatch is total and never throws", () => {
       const out = await dispatchTool(t.name, {});
       expect(typeof out).toBe("string");
       expect(out.length).toBeGreaterThan(0);
-      expect(out).not.toMatch(/^Unknown tool:/);
+      expect(out).not.toMatch(/^Unknown tool:/m);
     }
   });
 

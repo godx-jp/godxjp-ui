@@ -89,7 +89,7 @@ describe("sub-part names resolve to the entry that documents them", () => {
   it("search_components finds the parent by a sub-part name", async () => {
     const out = await dispatchTool("search_components", { query: "StatusBadge" });
     expect(out).toContain("Badge");
-    expect(out).not.toMatch(/^No matches/);
+    expect(out).not.toMatch(/^No matches/m);
   });
 
   it("a parent lists what it documents, so the fold is visible while reading it", async () => {
@@ -168,7 +168,7 @@ describe("gh#605 — consumer-used exports are discoverable", () => {
   it('search_components "filter" surfaces Segmented for status-filter use cases', async () => {
     const out = await dispatchTool("search_components", { query: "filter" });
     expect(out).toContain("Segmented");
-    expect(out).not.toMatch(/^No matches/);
+    expect(out).not.toMatch(/^No matches/m);
   });
 
   it.each(GH605)("get_component(%s) returns a full guide, not a sub-part steer-away", async (name) => {

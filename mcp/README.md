@@ -64,6 +64,25 @@ npx @godxjp/ui-mcp
 
 Restart Claude Code. The 25 tools appear under `mcp__godx_ui__*`.
 
+**Which server answered.** Every tool answer opens with one line naming the server that produced
+it, read from this package's `package.json`:
+
+```text
+@godxjp/ui-mcp 27.5.0 (catalog for @godxjp/ui 27.5.x)
+```
+
+When the launcher passes `env.GODX_UI_VERSION` (the `.mcp.json` entry `sync-rules` writes does) and
+that installed `@godxjp/ui` is on a different **major**, a second line starts with
+`⚠️ MAJOR MISMATCH:` — the catalog may describe components that do not exist in the installed
+package. Compare the first line with `npm ls @godxjp/ui` before trusting a page; an answer with no
+such line comes from a release that predates it (gh#722) and is stale.
+
+**One registration, not two.** Register the server once, in the project's `.mcp.json`. A second
+registration in `~/.claude.json` (user scope, or local scope under `projects[<path>]`) answers beside
+it under a different key, and an agent cannot tell them apart by tool name. `npx @godxjp/ui
+sync-rules` (and `init-agent`) read that file and report any such entry — key, pin, and the
+`claude mcp remove <key> -s <scope>` command — but never edit it: it is outside the project.
+
 ### Codex CLI
 
 `~/.codex/config.toml`:

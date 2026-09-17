@@ -69,7 +69,7 @@ describe("design tokens", () => {
   it.each(CATEGORIES)("get_tokens(category=%s) returns its tokens", async (category) => {
     const out = await dispatchTool("get_tokens", { category });
     expect(out).toContain(category);
-    expect(out).not.toMatch(/^No tokens/);
+    expect(out).not.toMatch(/^No tokens/m);
   });
 
   it("get_tokens with no category returns all", async () => {
