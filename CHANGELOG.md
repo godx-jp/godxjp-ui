@@ -4,6 +4,62 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.3.0] - 2026-09-17
+
+MINOR. Nothing is removed and no consumer has to change code.
+
+**27.2.0 was tagged but never published:** its release verification failed on an unrelated 8s test
+timeout on a loaded runner (fixed below), and npm went straight from 27.1.0 to this version. Every
+27.2.0 change is in this release — read the 27.2.0 section below as part of it.
+
+### Fixed
+
+- **Select · the hidden native `<select>` stays inside the component** (gh#708). react-aria pins its
+  form-submit/autofill fallback with an inline `position: fixed`, so inside a `contain: paint` or
+  transformed app region it sat at that region's corner — and Chromium's drag image of a draggable
+  card holding a Select grew to reach it (card 286×74, ghost 328×181). It is now held at its static
+  position beside the trigger, so the drag image is the card itself (286×74). Re-measured: no
+  document scroll growth (Chromium and Firefox), no layout shift, same `aria-hidden` /
+  `tabindex="-1"`, same native submit value and autofill. WebKit could not be launched on the
+  measuring machine and is unverified.
+- **Select · `defaultOpen` inside a Popover no longer covers its own trigger** (gh#708). react-aria
+  positions a listbox when it opens, so a Select opening together with the Popover was measured
+  against a trigger still sliding in (listbox top 78px over a trigger at 53–85px). An uncontrolled
+  `defaultOpen` now waits for the ancestors' running finite animations and lands at 89px, identical
+  to a click-open. `onOpenChange` is still not called for the initial open.
+- **A choice row's box is centred on its label's first line** (gh#709). A 16px box sat 2.5px above
+  the centre of the 21px label line in Checkbox / Checkbox.Group / Radio / Switch rows; now 0.0px,
+  LTR and RTL.
+- **An invalid Checkbox lists its error in `aria-describedby`** as well as `aria-errormessage`
+  (gh#709), so a boolean field's validation or 422 message is announced by screen readers that
+  ignore `aria-errormessage`.
+- **`date-picker` typing tests carry a timeout that matches their cost** — one keystroke at a time
+  through user-event measured ~1.5s locally and 10.1s on a loaded runner against vitest's 8s
+  default, which failed the 27.2.0 release verification with nothing wrong in the code.
+
+### Added
+
+- **Checkbox `children` as the inline label** (antd `<Checkbox>label</Checkbox>`, gh#709): box
+  first, label at inline-end on the same line, in the same markup `Checkbox.Group` renders per
+  option. A real `<label for>`, so clicking the text toggles the box and the text is its accessible
+  name.
+- **`FormFieldControl valuePropName="checked"`** (antd `Form.Item valuePropName`, gh#709): the
+  render prop receives `checked` / `onCheckedChange` instead of `value` / `onChange` and stores a
+  boolean, so `<FormFieldControl name="is_shared" valuePropName="checked">{(field) => <Checkbox
+  {...field}>プロジェクトに共有する</Checkbox>}</FormFieldControl>` needs no manual wiring. The
+  render-prop bag type narrows on the literal.
+- **`ResponsiveGrid align`** (antd `Row align`, gh#708): `"start" | "stretch"`, spelled with Flex's
+  `FlexAlignProp` values. `align="stretch"` makes every cell as tall as the tallest, so an empty
+  Kanban lane stays a full-height drop target (68px → 215px beside a 215px lane). Omitted, each
+  flow keeps its current alignment, so no existing grid moves.
+
+### Changed
+
+- **`FormField` / `FormFieldControl` `label` is optional** (gh#709). With no label, no label row is
+  rendered and no space is reserved for one — a boolean field measured 63.8px → 32px — and no
+  `aria-labelledby` / `aria-label` points at a label that is not there. In a horizontal layout the
+  label-less control still sits in the control column.
+
 ## [27.2.0] - 2026-09-17
 
 MINOR. No API is removed, and no consumer has to change code. Some screens will look different on
