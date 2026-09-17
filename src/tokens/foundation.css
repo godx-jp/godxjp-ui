@@ -389,7 +389,10 @@
    * recoloured 1px border, and that only once `data-focus-outline="on"` is set — see the switch
    * above and docs/DESIGN-AUTHORITY.md. */
   --focus-ring-glow-width: var(--control-outline-width);
-  --focus-ring-glow-color: var(--control-outline);
+  /* `initial`, NOT `var(--control-outline)`: the halo colour derives from `--primary` (gh#678), and a
+   * `:root` binding would freeze on the root's primary — a tenant scope below `<html>` would keep
+   * the package violet halo. Default = the live `--control-outline`, resolved in styles/focus-ring.css. */
+  --focus-ring-glow-color: initial;
   --focus-ring-glow-alpha: var(--control-outline-alpha);
   /* THE WHOLE FIELD HALO AS ONE TOKEN — the field's focus shadow, and the single seam the switch
    * moves. Composing the shadow LIST here rather than in the rule is what keeps the two positions
@@ -398,9 +401,15 @@
    *
    * `none` is the OFF value, and it is `none` rather than a zero-spread shadow on purpose: a
    * literal `0 0 0 0 transparent` would still REPLACE the control's resting `--control-shadow`,
-   * so a switched-off focus would quietly flatten every input on the page. */
-  --focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)
-    hsl(var(--focus-ring-glow-color) / var(--focus-ring-glow-alpha));
+   * so a switched-off focus would quietly flatten every input on the page.
+   *
+   * The PAINTING value is `initial` here and composed in styles/focus-ring.css, at the focused
+   * element: the list carries a colour, and a colour composed on `:root` is the root's colour
+   * forever — a scoped `--primary` never reached the halo, and neither did the `[aria-invalid]`
+   * rebind of `--focus-ring-glow-color` (gh#678; docs/TOKENS.md, the freeze rule). Default =
+   * `0 0 0 var(--focus-ring-glow-width) hsl(var(--focus-ring-glow-color, <live --control-outline>)
+   * / var(--focus-ring-glow-alpha))`. `none` (the OFF position) still wins over it. */
+  --focus-field-shadow: initial;
   /* Gap between element and ring, for the OUTLINE form only (a star, a dot, a
    * heading anchor — marks where a radius-hugging shadow would touch the
    * glyph). The shadow form ignores it by construction. */

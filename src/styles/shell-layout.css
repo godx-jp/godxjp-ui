@@ -2285,7 +2285,7 @@
         transparent
       )
     );
-    color: var(--sidebar-item-active-foreground, hsl(var(--primary)));
+    color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))));
     font-weight: var(--font-weight-medium);
   }
 
@@ -2424,7 +2424,7 @@
    * `--font-weight-medium` moved its parent rows and left its child rows behind. */
   .sb-nav-item--sub[data-active="true"] {
     background: transparent;
-    color: var(--sidebar-item-active-foreground, hsl(var(--primary)));
+    color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))));
     font-weight: var(--font-weight-medium);
   }
 

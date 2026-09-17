@@ -182,8 +182,31 @@
   :root[data-focus-outline="on"] .ui-otp-slot[data-active="true"],
   :root[data-focus-outline="on"]
     .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-    --tw-ring-shadow: var(--focus-field-shadow);
-    box-shadow: var(--focus-field-shadow);
+    /* Composed HERE, not on `:root`: the halo's colour must resolve against this element's own
+     * `--primary` / `--focus-ring-glow-color`, or a scoped re-theme and the invalid-field rebind
+     * below never reach it (gh#678). `--focus-field-shadow` stays the one seam: set, it wins. */
+    --tw-ring-shadow: var(
+      --focus-field-shadow,
+      0 0 0 var(--focus-ring-glow-width)
+        hsl(
+          var(
+              --focus-ring-glow-color,
+              var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))
+            ) /
+            var(--focus-ring-glow-alpha)
+        )
+    );
+    box-shadow: var(
+      --focus-field-shadow,
+      0 0 0 var(--focus-ring-glow-width)
+        hsl(
+          var(
+              --focus-ring-glow-color,
+              var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))
+            ) /
+            var(--focus-ring-glow-alpha)
+        )
+    );
   }
 
   /* ── THE FIELD BOUNDARY ───────────────────────────────────────────────────

@@ -1,6 +1,28 @@
 /* DERIVED COLOUR — the interaction states that hang off the five authored seeds.
  *
- * These twenty values are AUTHORED, not generated. They used to fall out of a colour algorithm
+ * THE PRIMARY FAMILY FOLLOWS `--primary` AT RUNTIME (gh#678). `--primary-hover`, `--primary-active`,
+ * `--primary-border` and `--control-outline` are KNOBS declared `initial`; their default is
+ * computed at the element that PAINTS them, from that element's own `--primary`, with CSS relative
+ * colour syntax:
+ *
+ *     hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))
+ *
+ * WHY THIS SHAPE AND NOT A VALUE ON :root. 25.0.0 (gh#648) wrote these four as literals on the
+ * violet seed, so a consumer that re-themed `--primary` — as CUSTOMER-THEMING §Multi-tenant tells it
+ * to — kept a violet hover, press and focus halo on a blue or teal button. A `:root` declaration
+ * that READ `var(--primary)` would not have fixed it either: a custom property substitutes its
+ * var() where it is DECLARED, so a `[data-tenant]` below `<html>` would inherit the root's answer
+ * (docs/TOKENS.md, the freeze rule). The knob is therefore `initial` and the formula lives at the
+ * call site, where `--primary` is whatever the nearest scope says it is. An explicit override of a
+ * knob — a service theme, `applyPrimaryColor` — still wins, because a set knob short-circuits the
+ * fallback.
+ *
+ * The `-channels` tokens below hold the only numbers. They reference no colour, so they cannot
+ * freeze, and the SAME strings produce the identity kit's values on the default seed exactly
+ * (#6500d4 / #5400b0 light, #ecdaff / #cd9fff dark — the literals this file used to carry, which
+ * the `@supports not` block at the bottom still carries for engines without relative colour).
+ *
+ * The remaining values are AUTHORED, not generated. They used to fall out of a colour algorithm
  * run at build time; that generator is gone, so nothing re-derives them and nothing re-checks
  * them against a formula. What holds them correct now is MEASUREMENT: five suites read THIS FILE
  * directly — four hold every value to a WCAG threshold, and the fifth holds it to the seed's hue.
@@ -9,7 +31,9 @@
  *   src/tokens/__tests__/destructive-contrast.test.ts    --destructive-hover / --destructive-active
  *   src/tokens/__tests__/interactive-fill-contrast.test.ts  a fill must clear 4.5:1 on its label
  *   src/lib/__tests__/theme-tokens-css.test.ts           the tier is loaded and complete
- *   src/tokens/__tests__/derived-hue-lock.test.ts        every --primary-* carries the seed's hue
+ *   src/tokens/__tests__/derived-hue-lock.test.ts        every --primary-* carries the seed's hue,
+ *                                                        for a SWEEP of consumer seeds
+ *   src/tokens/__tests__/derived-seed-sweep.test.ts      AA holds for any seed, not just ours
  *
  * TO CHANGE A VALUE HERE: change it, then run `pnpm test`. If a threshold breaks, the value is
  * wrong — the tests are the authority, not this comment. See docs/DESIGN-AUTHORITY.md.
@@ -45,17 +69,40 @@
  */
 
 :root {
-  /* the kit's own step below the action bg, snapped to the seed hue */
-  --primary-hover: 268.7 100% 41.6%; /* identity v2.3 #6400D4 = #6500d4, 8.23:1 */
-  /* the kit's action.primary.pressed, snapped to the seed hue */
-  --primary-active: 268.7 100% 34.5%; /* identity v2.3 #5200B0 = #5400b0, 10.31:1 */
-  /* the hue a focus outline paints on a control that has no boundary of its own */
-  --primary-border: 268.7 68% 66%; /* #a66de3 */
+  /* ── THE PRIMARY FAMILY — knobs, `initial`; defaults resolve at the call site (see above). ── */
+  --primary-hover: initial;
+  --primary-active: initial;
+  --primary-border: initial;
+  --control-outline: initial;
+
+  /* THE STEPS, BY LABEL POLARITY. A state steps the fill AWAY from the label that rides on it, so
+   * its contrast can only rise: lightness is monotonic in every sRGB channel at fixed H and S.
+   *   darken  — for a LIGHT label (the light theme's default): the kit's two steps below the bg,
+   *             identity v2.3 #6400D4 (hover) and #5200B0 (action.primary.pressed), hue-snapped.
+   *   lighten — for a DARK label (the dark theme's default): the kit's dark hover #E8DAFF one step
+   *             up, and pressed one step further up — UNLESS that runs off the top of the ramp.
+   *             Past 83.4% L the second step would land at 98.5%+ (#fbf7ff for our seed, 1.056:1
+   *             from white — the brand is simply gone), so pressed reflects to one step BELOW the
+   *             seed instead. `clamp(0, (l - 83.4) * 1000, 1)` is that switch, 0 or 1. A reflected
+   *             fill is still ≥77.6% L, which clears 4.5:1 on any label darker than luminance 0.032.
+   * A theme picks the pair for its conventional label below; a service whose label polarity is
+   * the other way round (a light seed with dark text in the light theme) points the two knobs at
+   * the other pair — `applyPrimaryColor` does exactly that from the label it chooses. */
+  --primary-hover-darken-channels: h s calc(l - 8.4);
+  --primary-active-darken-channels: h s calc(l - 15.5);
+  --primary-hover-lighten-channels: h s calc(l + 5.8);
+  --primary-active-lighten-channels: h s calc(l + 11.6 - 17.4 * clamp(0, (l - 83.4) * 1000, 1));
+
+  --primary-hover-channels: var(--primary-hover-darken-channels);
+  --primary-active-channels: var(--primary-active-darken-channels);
+  /* the hue a focus outline paints on a control that has no boundary of its own (#a66de3 on our seed) */
+  --primary-border-channels: h calc(s * 0.68) calc(l + 16);
+  /* the focus halo on a field (rgb(109,0,228) on our seed) */
+  --control-outline-channels: h s calc(l - 5.3);
+  --control-outline-alpha: 0.11; /* the alpha half of that halo */
+
   --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
   --destructive-active: 355 70.6% 33.3%; /* #911923 */
-  /* the focus halo on a field */
-  --control-outline: 268.7 100% 44.7%; /* rgba(109,0,228,0.11) */
-  --control-outline-alpha: 0.11; /* the alpha half of that halo */
   /* the same halo on an invalid field */
   --control-outline-error: 4.3 87.6% 34.7%; /* rgba(166,22,11,0.09) */
   --control-outline-error-alpha: 0.09; /* the alpha half of that halo */
@@ -65,32 +112,51 @@
    * focus mark with it — which is the entire point of a derived tier. Declared in
    * BOTH blocks, not inherited from `:root`: a var() binding made once at `:root`
    * would freeze on the light `--primary` if `.dark` ever lands on an element below
-   * `<html>` (docs/TOKENS.md, the freeze rule). */
+   * `<html>` (docs/TOKENS.md, the freeze rule). The same rule means a `--primary` scoped BELOW
+   * `<html>` does not reach `--ring`: `--ring` is a public role read as `hsl(var(--ring))` all over
+   * consumer CSS, so it cannot become an `initial` knob — a nested scope sets `--ring` itself
+   * (docs/CUSTOMER-THEMING.md §Multi-tenant). */
   --ring: var(--primary);
 }
 
 .dark,
 :root[data-theme="dark"] {
-  /* the kit's dark action.primary.hover, snapped to the seed hue */
-  --primary-hover: 268.7 100% 92.7%; /* identity v2.3 #E8DAFF = #ecdaff, 13.51:1 */
-  /* the conventional step lands at 98.5% L = #fbf7ff, 1.056:1 from white — the ramp runs out of lightness, so the sign flips; same ramp, same step size */
-  --primary-active: 268.7 100% 81.1%; /* ramp 1 step the other way = #cd9fff, 8.41:1 */
-  /* the hue a focus outline paints on a control that has no boundary of its own */
-  --primary-border: 268.7 46.7% 23.5%; /* #3b2058 */
+  --primary-hover-channels: var(--primary-hover-lighten-channels);
+  --primary-active-channels: var(--primary-active-lighten-channels);
+  /* #3b2058 on our seed */
+  --primary-border-channels: h calc(s * 0.467) calc(l * 0.27043);
+  /* rgba(153,61,254,0.29) on our seed */
+  --control-outline-channels: h calc(s * 0.99) calc(l - 25.1);
+  --control-outline-alpha: 0.29; /* the alpha half of that halo */
+
   --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
   --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
-  /* the focus halo on a field */
-  --control-outline: 268.7 99% 61.8%; /* rgba(153,61,254,0.29) */
-  --control-outline-alpha: 0.29; /* the alpha half of that halo */
   /* the same halo on an invalid field */
   --control-outline-error: 351.5 98.3% 53.5%; /* rgba(253,20,53,0.06) */
   --control-outline-error-alpha: 0.06; /* the alpha half of that halo */
 
-  /* There is no separate focus COLOUR: a focused field's border simply becomes the primary.
-   * Declared as a REFERENCE rather than a copied triple, so retinting the seed retints the
-   * focus mark with it — which is the entire point of a derived tier. Declared in
-   * BOTH blocks, not inherited from `:root`: a var() binding made once at `:root`
-   * would freeze on the light `--primary` if `.dark` ever lands on an element below
-   * `<html>` (docs/TOKENS.md, the freeze rule). */
+  /* See the light block: a reference, declared in both blocks for the freeze rule. */
   --ring: var(--primary);
+}
+
+/* ENGINES WITHOUT RELATIVE COLOUR (Chrome/Edge 111–118; Safari 16.4+ and Firefox 128+ have it —
+ * the partial support caniuse lists there is `currentcolor` only, which nothing here uses). The
+ * call-site formula would be invalid at computed-value time and paint nothing, so these engines get
+ * the default seed's values as literal knobs: exactly what 25.4.0 shipped to every browser. A
+ * consumer seed does not follow there. derived-seed-sweep.test.ts holds these equal to the formula. */
+@supports not (color: hsl(from red h s l)) {
+  :root {
+    --primary-hover: 268.7 100% 41.6%;
+    --primary-active: 268.7 100% 34.5%;
+    --primary-border: 268.7 68% 66%;
+    --control-outline: 268.7 100% 44.7%;
+  }
+
+  .dark,
+  :root[data-theme="dark"] {
+    --primary-hover: 268.7 100% 92.7%;
+    --primary-active: 268.7 100% 81.1%;
+    --primary-border: 268.7 46.7% 23.5%;
+    --control-outline: 268.7 99% 61.8%;
+  }
 }

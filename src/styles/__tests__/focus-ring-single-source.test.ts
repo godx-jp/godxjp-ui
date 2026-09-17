@@ -70,7 +70,8 @@ describe("focus ring — single source", () => {
   it("both forms read their geometry and hue from tokens and hardcode none of it", () => {
     // The FIELD form: the whole shadow arrives as one token, and the boundary is rebound to the
     // focus hue rather than declared as a colour.
-    expect(FOCUS_RING_CSS).toContain("var(--focus-field-shadow)");
+    // (the seam is read with a live default composed at the element since gh#678)
+    expect(FOCUS_RING_CSS).toMatch(/var\(\s*--focus-field-shadow,/);
     expect(FOCUS_RING_CSS).toContain("var(--focus-ring-color, var(--ring))");
     // The MARK: width, hue and offset, each as a token. The width is `weight × switch`, so a
     // rule reading it can never paint while `--focus-outline` is 0.
@@ -122,7 +123,7 @@ describe("focus ring — single source", () => {
   // utility's composite paint our ring; drop it and those controls silently
   // lose their focus affordance again.
   it("feeds --tw-ring-shadow so controls with Tailwind shadow utilities still ring", () => {
-    expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*var\(--focus-field-shadow\)/);
+    expect(FOCUS_RING_CSS).toMatch(/--tw-ring-shadow:\s*var\(\s*--focus-field-shadow,/);
   });
 });
 

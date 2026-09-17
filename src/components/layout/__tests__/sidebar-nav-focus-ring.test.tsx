@@ -57,7 +57,7 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // focus-ring.css: leaving it in this rule with an `none` off-value stripped a focused
     // button's resting elevation, measured in Chromium.
     expect(focusRing).toMatch(
-      /\[data-focus-outline="on"\][\s\S]*?box-shadow:\s*var\(--focus-field-shadow\)/,
+      /\[data-focus-outline="on"\][\s\S]*?box-shadow:\s*var\(\s*--focus-field-shadow,/,
     );
   });
 

@@ -127,8 +127,8 @@
  * See --focus-outline-weight in foundation.css for the measurements. */
 :root[data-focus-outline="on"] {
   --focus-outline: 1;
-  --focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)
-    hsl(var(--focus-ring-glow-color) / var(--focus-ring-glow-alpha));
+  /* the painting halo — composed at the focused element (styles/focus-ring.css), see foundation.css */
+  --focus-field-shadow: initial;
 }
 
 /* The OFF position. Both non-length values are set here for the same reason the ON block sets

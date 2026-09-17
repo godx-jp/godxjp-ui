@@ -178,8 +178,14 @@
   --color-link: hsl(var(--text-link));
   --color-brand: hsl(var(--text-brand));
   /* Interaction ramp (hover / active) → bg-primary-hover etc. */
-  --color-primary-hover: hsl(var(--primary-hover));
-  --color-primary-active: hsl(var(--primary-active));
+  /* The primary pair are `initial` knobs whose default derives from the live --primary (gh#678,
+   * src/tokens/derived.css); `@theme inline` puts this fallback at the element that paints. */
+  --color-primary-hover: hsl(
+    var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels))
+  );
+  --color-primary-active: hsl(
+    var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))
+  );
   --color-secondary-hover: hsl(var(--secondary-hover));
   --color-secondary-active: hsl(var(--secondary-active));
   --color-destructive-hover: hsl(var(--destructive-hover));

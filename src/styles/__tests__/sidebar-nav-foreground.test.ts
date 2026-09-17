@@ -92,7 +92,10 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
     // measured floor lives in src/tokens/__tests__/sidebar-active-contrast.test.ts.
     const active = rule('.sb-nav-item[data-active="true"]');
     expect(active).toContain("background: var( --sidebar-item-active-background,");
-    expect(active).toContain("color: var(--sidebar-item-active-foreground, hsl(var(--primary)))");
+    // The label's DEFAULT moved again in gh#678 — to the derived active tier — and the knob did not.
+    expect(active).toContain(
+      "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))))",
+    );
     expect(sidebarTokens).not.toContain("--sidebar-nav-item-active-foreground");
   });
 

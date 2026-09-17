@@ -516,10 +516,14 @@
    * ROLE-MIRROR KNOBS — `initial` here with the role default at the CALL SITE, so a scoped
    * `[data-tenant]` / `.dark` re-tint of `--primary` reaches them (a `:root` binding to a role var
    * freezes at `:root` — docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
-   * Defaults = a `--primary` tint fill · `hsl(var(--primary))` label · `hsl(var(--primary))` dot. */
+   * Defaults = a `--primary` tint fill · the primary ACTIVE tier as label · `hsl(var(--primary))` dot. */
   --sidebar-item-active-background: initial;
   /* The open row's LABEL, at BOTH nav depths — one name since gh#651 (level 2 used to spell it
-   * `--sidebar-item-active-color`). Default = hsl(var(--primary)). */
+   * `--sidebar-item-active-color`). Default = the primary ACTIVE tier, derived at the call site from
+   * the live `--primary` (gh#678). It was `--primary` itself, which clears AA on the tint only for our
+   * own seed: 4.25:1 for `204 100% 37%`, 4.00:1 for `173 80% 28%`, 4.15:1 for a dark `262 83% 70%`.
+   * The active tier steps AWAY from the ground, and measured over every seed that is legible as text
+   * on the ground at all it never lands under 4.5:1 (sidebar-active-contrast.test.ts). */
   --sidebar-item-active-foreground: initial;
   /* The level-2 dot marker (`.sb-nav-item--sub[data-active="true"]::before`) — its own knob because
    * it is a different PART, not a second name for the label. Default = hsl(var(--primary)). */
@@ -527,21 +531,21 @@
   /* THE TINT STRENGTH, AND IT HAS A CEILING — rule #45, and the reason this is a knob at all.
    *
    * The fill is the brand at this alpha over whatever the nav sits on, so raising it walks the
-   * fill TOWARDS the label that rides on it and contrast falls monotonically. Measured on HEAD
-   * (GoDX violet #7a00ff light / #dcbcff dark, identity v2.3, derived tier as of gh#648), label
-   * against the composited fill:
+   * fill TOWARDS the label that rides on it and contrast falls monotonically. Measured on the
+   * package seed (GoDX violet #7a00ff light / #dcbcff dark, identity v2.3), with the label as the
+   * primary ACTIVE tier since gh#678 (#5400b0 light / #cd9fff dark), against the composited fill:
    *
    *   alpha   light on --card   dark on --card   dark on --background
-   *   0.12      5.07:1            7.51:1           8.30:1     ← shipped
-   *   0.16      4.69:1            6.78:1           7.49:1     ← the cap below
-   *   0.18      4.51:1            6.44:1           7.11:1     ← last step still AA
-   *   0.19      4.42:1                                        ← under SC 1.4.3
+   *   0.12      8.26:1            5.89:1           6.51:1     ← shipped
+   *   0.16      7.65:1            5.32:1           5.88:1     ← the cap below
+   *   0.22                        4.55:1                      ← last step still AA, dark card
+   *   0.23                        4.43:1                      ← under SC 1.4.3
    *
-   * 16% is a CAP WITH HEADROOM, not the cliff edge: the cliff is 19%, and a service that also moves
-   * the nav onto `hsl(var(--muted))` gets only 13% before the label fails — so the cap is set where
-   * a re-tune stays safe on every shell surface rather than at the last passing step on the best
-   * one. Rejected: publishing 18%, which is correct only for the two surfaces we ship.
-   * `sidebar-active-contrast.test.ts` fails if this rises past it. */
+   * 16% is a CAP WITH HEADROOM on our seed, not the cliff edge — and it is a cap on OUR seed only:
+   * over a dense grid of consumer seeds a handful of legible dark-theme seeds dip under 4.5:1 on
+   * `--card` at 16% (worst 4.27:1), while at the shipped 12% none does. A service raising the tint
+   * on its own seed owns that measurement. `sidebar-active-contrast.test.ts` fails if this rises
+   * past the cap, and names the consumer-seed exception rather than hiding it. */
   --sidebar-item-active-background-alpha: 12%;
 
   /* AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor)

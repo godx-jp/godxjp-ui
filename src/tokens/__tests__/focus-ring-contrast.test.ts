@@ -2,7 +2,7 @@ import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
+import { channelsOf, contrast, hsl, hslToRgb, NON_TEXT, over, relative } from "./wcag-contrast";
 
 /**
  * THE FOCUS MARK HAS TWO APPEARANCES, AND THIS FILE HOLDS BOTH TO A DIFFERENT BAR.
@@ -44,6 +44,20 @@ const controlTokens = readFileSync(
 );
 const shellTokens = readFileSync(join(process.cwd(), "src/tokens/components/shell.css"), "utf8");
 const focusRing = readFileSync(join(process.cwd(), "src/styles/focus-ring.css"), "utf8");
+/** focus-ring.css as the browser reads it: comments gone, whitespace collapsed. */
+const flatFocusRing = focusRing
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/\s+/g, " ")
+  .replace(/\( /g, "(")
+  .replace(/ \)/g, ")");
+/**
+ * The field halo's default, composed at the focused element (gh#678): the seam wins when set, and
+ * otherwise the colour resolves against THIS element's glow colour or live `--primary`.
+ */
+const HALO_DEFAULT =
+  "var(--focus-field-shadow, 0 0 0 var(--focus-ring-glow-width) hsl(var(--focus-ring-glow-color, " +
+  "var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))) / " +
+  "var(--focus-ring-glow-alpha)))";
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(source: string, selector: string): string {
@@ -116,6 +130,19 @@ const DARK_PRIMARY_REJECTED = "#3794d3";
 /** The geometry the focus system declares, and which the named stroke scale must agree with. */
 const GEOMETRY = { lineWidth: 1, controlOutlineWidth: 2, lineWidthFocus: 3 } as const;
 
+/**
+ * A member of the derived primary family as it PAINTS on the package seed. Since gh#678 the four are
+ * `initial` knobs whose default is `hsl(from hsl(var(--primary)) var(--<token>-channels))` at the
+ * call site; derived-seed-sweep.test.ts holds the formula for every other seed.
+ */
+function paint(theme: "light" | "dark", token: string): [number, number, number] {
+  const selector = THEMES.find((t) => t.theme === theme)!.selector;
+  return relative(
+    hsl(block(css, selector), "primary"),
+    channelsOf(token, block(generated, selector), block(generated, ":root {")),
+  );
+}
+
 /** `--ring` is generated as `var(--primary)`, so the focus hue IS the seed. */
 function ringOf(theme: "light" | "dark"): [number, number, number] {
   expect(generated, "--ring must be a reference to the seed, not a copied triple").toContain(
@@ -162,10 +189,10 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
   });
 
   it("the field halo is `--control-outline`, colour AND alpha", () => {
-    const outline = hexOf(hslToRgb(hsl(body, "control-outline")));
+    const outline = hexOf(hslToRgb(paint(theme, "control-outline")));
     const alpha = num(body, "control-outline-alpha");
     expect(
-      `rgba(${hslToRgb(hsl(body, "control-outline")).map(Math.round).join(",")},${alpha})`,
+      `rgba(${hslToRgb(paint(theme, "control-outline")).map(Math.round).join(",")},${alpha})`,
     ).toBe(token.controlOutline);
     expect(outline).not.toBe(hexOf(ringOf(theme))); // the halo hue is NOT the primary itself
   });
@@ -182,7 +209,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
     // The hue the OUTLINE form of the focus mark would take. It stays in the tier because the
     // reason this library does not use it is a MEASUREMENT (see the SC 1.4.11 block below)
     // rather than a preference — and the measurement needs the value to exist.
-    expect(hexOf(hslToRgb(hsl(body, "primary-border")))).toBe(token.primaryBorder);
+    expect(hexOf(hslToRgb(paint(theme, "primary-border")))).toBe(token.primaryBorder);
   });
 
   it("the focus geometry is the geometry the stroke scale already carries", () => {
@@ -211,10 +238,6 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
 describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, selector }) => {
   const body = block(css, selector);
   const background = hslToRgb(hsl(body, "background"));
-  const generatedBody = block(
-    generated,
-    theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
-  );
 
   it("the FIELD boundary clears SC 1.4.11 (AA) — the default is compliant here", () => {
     expect(contrast(ringOf(theme), background)).toBeGreaterThanOrEqual(NON_TEXT);
@@ -227,7 +250,7 @@ describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, s
     // therefore measured on the WORST surface a control sits on rather than on the page alone —
     // an accent panel, where it is 2.92:1 light and 1.03:1 dark. A mark that clears the criterion
     // on a card and fails it inside a filter bar is not an indicator, so the axis stands.
-    const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
+    const primaryBorder = hslToRgb(paint(theme, "primary-border"));
     expect(contrast(primaryBorder, hslToRgb(hsl(body, "accent")))).toBeLessThan(NON_TEXT);
   });
 
@@ -283,14 +306,17 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
 
   it("the default halo actually paints — the flip is not cosmetic", () => {
     // Turning the multiplier to 1 while leaving the halo at `none` would give a default that
-    // passes every structural assertion above and still paints half the indicator.
-    expect(root).toMatch(/--focus-field-shadow:\s*0 0 0 var\(--focus-ring-glow-width\)/);
+    // passes every structural assertion above and still paints half the indicator. Since gh#678
+    // the painting value is composed AT THE FOCUSED ELEMENT (so its colour follows a scoped
+    // `--primary`); `:root` leaves the seam `initial` rather than `none`.
+    expect(root).toMatch(/--focus-field-shadow:\s*initial;/);
+    expect(flatFocusRing).toContain(HALO_DEFAULT);
   });
 
   it("EVERY painted path multiplies by the switch — no rule paints a raw length", () => {
     // The mark itself.
     expect(focusRing).toMatch(/outline:\s*var\(--focus-ring-width\) solid/);
-    expect(focusRing).toContain("box-shadow: var(--focus-field-shadow);");
+    expect(flatFocusRing).toContain(`box-shadow: ${HALO_DEFAULT};`);
     // The region ring, which has its own opt-in token and would otherwise bypass the switch.
     const shell = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
     const regionRings = [...shell.matchAll(/--region-focus-ring-width[^;]*/g)];
@@ -414,7 +440,8 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
 
   it("one attribute turns everything back on", () => {
     expect(on).toMatch(/--focus-outline:\s*1;/);
-    expect(on).toContain("--focus-field-shadow: 0 0 0 var(--focus-ring-glow-width)");
+    // `initial` = the painting default composed at the element (see HALO_DEFAULT), not `none`.
+    expect(on).toMatch(/--focus-field-shadow:\s*initial;/);
     expect(focusRing).toContain('[data-focus-outline="on"]');
   });
 
@@ -459,10 +486,6 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
   const muted = hslToRgb(hsl(body, "muted"));
   const secondary = hslToRgb(hsl(body, "secondary"));
   const accent = hslToRgb(hsl(body, "accent"));
-  const generatedBody = block(
-    generated,
-    theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
-  );
 
   const SURFACES: ReadonlyArray<readonly [string, () => [number, number, number]]> = [
     ["the page background", () => background],
@@ -491,7 +514,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     // The same measurement as the one above, against the same surface list the ring is held to:
     // since gh#648 re-hued the tier, `--primary-border` clears 3:1 on the page and still fails on
     // an accent panel, so the ring remains the only hue that carries the criterion everywhere.
-    const primaryBorder = hslToRgb(hsl(generatedBody, "primary-border"));
+    const primaryBorder = hslToRgb(paint(theme, "primary-border"));
     const worst = Math.min(...SURFACES.map(([, surface]) => contrast(primaryBorder, surface())));
     expect(worst).toBeLessThan(NON_TEXT);
   });
@@ -548,7 +571,7 @@ describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ t
     theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
   );
   const alpha = num(generatedBody, "control-outline-alpha");
-  const halo = hslToRgb(hsl(generatedBody, "control-outline"));
+  const halo = hslToRgb(paint(theme, "control-outline"));
   const themeBackground = hslToRgb(
     hsl(block(css, THEMES.find((t) => t.theme === theme)!.selector), "background"),
   );
@@ -587,8 +610,10 @@ describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ t
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("one focus language, applied consistently", () => {
   it("the whole halo is ONE token, so the switch has exactly one seam to move", () => {
-    // One consumer, one declaration: whichever position is active, exactly this token is read.
-    expect(focusRing).toContain("box-shadow: var(--focus-field-shadow);");
+    // One consumer, one declaration: whichever position is active, exactly this token is read —
+    // and when nobody set it, the default it falls back to is composed from tokens only.
+    expect(flatFocusRing).toContain(`box-shadow: ${HALO_DEFAULT};`);
+    expect(HALO_DEFAULT).not.toMatch(/#[0-9a-f]{3,8}|rgba?\(|\b[1-9]\d*px\b/i);
     expect(block(axes, ':root[data-focus-outline="off"] {')).toMatch(
       /--focus-field-shadow:\s*none;/,
     );
