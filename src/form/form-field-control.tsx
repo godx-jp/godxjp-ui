@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { Ref } from "react";
+import type { RefCallback } from "react";
 import {
   Controller,
   useFormContext,
@@ -16,7 +16,7 @@ import type { FormFieldControlProp } from "../props/components/form.prop";
 
 export type { FormFieldControlProp } from "../props/components/form.prop";
 
-const noopRef: Ref<HTMLInputElement> = () => {};
+const noopRef: RefCallback<HTMLElement> = () => {};
 
 function bindField<T extends { onChange: (...args: unknown[]) => void }>(
   field: T,
@@ -172,7 +172,7 @@ export function FormFieldControl<TFieldValues extends FieldValues>({
                 value: field.value,
                 onChange: (...args: unknown[]) => field.onChange(readValue(args, field.value)),
                 onBlur: field.onBlur,
-                ref: field.ref as Ref<HTMLInputElement>,
+                ref: field.ref,
                 ...disabledProp,
               }),
             )}
