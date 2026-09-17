@@ -264,7 +264,12 @@ export const COMPONENTS: ComponentEntry[] = [
       { name: "layout", type: "FormLayoutProp", description: "Per-field layout override." },
       { name: "labelWidth", type: "WidthProp", description: "Per-field label width." },
       { name: "controlWidth", type: "WidthProp", description: "Per-field control width." },
-      { name: "labelAddon", type: "React.ReactNode", description: "Inline label help or action." },
+      {
+        name: "labelAddon",
+        type: "React.ReactNode",
+        description:
+          "Label help or action. In a horizontal/inline layout it wraps under the label inside the label column when it does not fit beside it.",
+      },
       { name: "colSpan", type: "number", description: "Grid column span." },
     ],
     example:
@@ -5876,7 +5881,7 @@ import remarkGfm from "remark-gfm";
         name: "labelAddon",
         type: "ReactNode",
         description:
-          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp. Nằm TRONG hàng nhãn nên không phá nhịp trường.",
+          "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp, action chữ ngắn. Nằm TRONG hàng nhãn nên không phá nhịp trường. Ở layout horizontal/inline hàng nhãn xuống dòng: addon không vừa cạnh nhãn thì rơi xuống dòng riêng dưới nhãn, trong cột nhãn, không tràn sang cột control.",
       },
       {
         name: "id",
@@ -5908,7 +5913,7 @@ import remarkGfm from "remark-gfm";
         type: '"before" | "after"',
         defaultValue: '"after"',
         description:
-          "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (inline, no wrap) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
+          "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (a label-row slot for a chip, help button or short action) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
       },
       {
         name: "error",
@@ -5971,7 +5976,7 @@ import remarkGfm from "remark-gfm";
       "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
       "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
-      "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
+      "DO use `labelAddon` (a ReactNode rendered after the label text, in the label row) for supplementary controls such as a tooltip trigger, a 'copy' icon button or a short text action ('Assign to myself'); in a horizontal/inline layout the label row wraps, so an addon that does not fit beside the label drops under it inside the label column rather than overlapping the control — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
       "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
       "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",

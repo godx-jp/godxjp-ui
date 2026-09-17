@@ -338,9 +338,9 @@ export type FormFieldProp =
        *
        * `before` is for a helper the reader needs BEFORE they answer rather than after: the
        * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
-       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
-       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
-       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * preamble. `labelAddon` cannot carry that — it belongs to the label row, sized for a chip, a
+       * help button or a short text action; in a horizontal/inline field it wraps under the label
+       * inside the label column, so a full sentence stacks there instead of above the input. Putting the second line inside `label` does work, but costs the
        * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
        * a plain string.
        *
@@ -352,7 +352,11 @@ export type FormFieldProp =
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
       feedback?: React.ReactNode;
-      /** Optional control rendered inline after the label (e.g. a help button). */
+      /**
+       * Optional control rendered after the label (e.g. a help button, a short text action). In a
+       * horizontal/inline field the label row wraps: an addon that does not fit beside the label
+       * drops to its own line under it, capped to the label column, never into the control column.
+       */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;
@@ -386,9 +390,9 @@ export type FormFieldProp =
        *
        * `before` is for a helper the reader needs BEFORE they answer rather than after: the
        * secondary language of a bilingual form, a unit or format note, a pick-one-of-these
-       * preamble. `labelAddon` cannot carry that — it is an inline row beside the label with no
-       * wrap, sized for a chip or a help button, so a full sentence squeezes the label instead of
-       * taking its own line. Putting the second line inside `label` does work, but costs the
+       * preamble. `labelAddon` cannot carry that — it belongs to the label row, sized for a chip, a
+       * help button or a short text action; in a horizontal/inline field it wraps under the label
+       * inside the label column, so a full sentence stacks there instead of above the input. Putting the second line inside `label` does work, but costs the
        * string-label fallbacks (`aria-label`, `FieldNameContext`), which fire only when `label` is
        * a plain string.
        *
@@ -400,7 +404,11 @@ export type FormFieldProp =
       validateStatus?: "success" | "warning" | "error" | "validating";
       hasFeedback?: boolean;
       feedback?: React.ReactNode;
-      /** Optional control rendered inline after the label (e.g. a help button). */
+      /**
+       * Optional control rendered after the label (e.g. a help button, a short text action). In a
+       * horizontal/inline field the label row wraps: an addon that does not fit beside the label
+       * drops to its own line under it, capped to the label column, never into the control column.
+       */
       labelAddon?: React.ReactNode;
       /** Override the Form's layout for this field only. */
       layout?: FormLayoutProp;

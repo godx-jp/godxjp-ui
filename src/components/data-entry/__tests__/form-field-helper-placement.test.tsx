@@ -6,8 +6,8 @@ import { renderWithUi, screen } from "@/test/render";
 
 /**
  * A bilingual form puts its secondary line ABOVE the input — the reader needs it before they
- * answer, not after. `labelAddon` cannot carry that (an inline, no-wrap row beside the label,
- * sized for a chip), and a ReactNode `label` costs the string-label fallbacks. So the helper
+ * answer, not after. `labelAddon` cannot carry that (a label-row slot sized for a chip or a short
+ * action, wrapping under the label in a horizontal field since gh#689), and a ReactNode `label` costs the string-label fallbacks. So the helper
  * itself moves.
  *
  * These assert DOM ORDER against the control found by role, never a class.
