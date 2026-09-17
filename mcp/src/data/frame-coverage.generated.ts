@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 287,
-    dimensionCells: 4018,
+    exports: 288,
+    dimensionCells: 4032,
     covered: 86,
-    untested: 2202,
-    notApplicable: 1730,
+    untested: 2211,
+    notApplicable: 1735,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -232,6 +232,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"HoverCard","group":"data-display","frame":"docs/data-display/hover-card.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"HoverCardContent","group":"data-display","frame":"docs/data-display/hover-card.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"HoverCardTrigger","group":"data-display","frame":"docs/data-display/hover-card.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"Icon","group":"general","frame":"docs/general/icon.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes","tones"],"notApplicable":["density","ownership","shapes","states","variants"]},
   {"name":"InfiniteQueryState","group":"query","frame":"docs/query/infinite-query-state.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"Input","group":"data-entry","frame":"docs/data-entry/input.tsx","covered":["sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones"]},
   {"name":"InputOTP","group":"data-entry","frame":"docs/data-entry/input-otp.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","variants"],"notApplicable":["density","shapes","states","tones"]},

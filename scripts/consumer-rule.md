@@ -98,23 +98,24 @@ Slack thì đặt lại **một dòng**, không fork `.app-nav-rail`.
 Hỏi MCP `godxjp-ui` (`search_components`, `get_component`). Đo được trong một
 ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ khác —
 
-| Cần                                             | Đã có                                                                              |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------- |
-| đường kẻ chạm mép Card                          | `<CardContent flush>`                                                              |
-| header có kẻ khi thân là danh sách flush        | `<CardHeader banded>`                                                              |
-| một hàng LÀ liên kết (thay cho nút rời)         | `<ListRow asChild>`                                                                |
-| kẻ ô từng ngày trong lịch                       | `<Calendar bordered>`                                                              |
-| dải giữa hai vùng, tự kẻ theo VỊ TRÍ            | `<CardBar>` (`border` để ép khi xếp chồng)                                         |
-| chip "điều kiện đang bật" có dấu × để bỏ        | `<Badge onRemove>` — KHÔNG phải `TagInput`                                         |
-| dải tab nằm TRONG đầu Card                      | `<Card tabList activeTabKey onTabChange>`                                          |
-| tiêu đề / đoạn văn / liên kết trong văn bản     | `<Title>` · `<Paragraph>` · `<Link>` (`Text` 33 prop)                              |
-| nút nổi góc màn (quay lên đầu, hành động nhanh) | `<FloatButton>`                                                                    |
-| khung xương của một FORM khi đang tải           | `<SkeletonForm>`                                                                   |
-| ô màu chỉ để xem, màu do NGƯỜI DÙNG chọn        | `<Swatch>`                                                                         |
-| ảnh đại diện của một tệp / bản xem trước        | `<Thumbnail>`                                                                      |
-| danh sách "có gì trong gói này"                 | `<FeatureList>`                                                                    |
-| panel kéo giãn được (chia đôi màn)              | `<DraggablePanel>`                                                                 |
-| màn hội thoại AI                                | `<Welcome>` · `<Conversations>` · `<Attachments>` · `<ThoughtChain>` · `<Actions>` |
+| Cần                                                              | Đã có                                                                              |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| đường kẻ chạm mép Card                                           | `<CardContent flush>`                                                              |
+| header có kẻ khi thân là danh sách flush                         | `<CardHeader banded>`                                                              |
+| một hàng LÀ liên kết (thay cho nút rời)                          | `<ListRow asChild>`                                                                |
+| kẻ ô từng ngày trong lịch                                        | `<Calendar bordered>`                                                              |
+| dải giữa hai vùng, tự kẻ theo VỊ TRÍ                             | `<CardBar>` (`border` để ép khi xếp chồng)                                         |
+| chip "điều kiện đang bật" có dấu × để bỏ                         | `<Badge onRemove>` — KHÔNG phải `TagInput`                                         |
+| dải tab nằm TRONG đầu Card                                       | `<Card tabList activeTabKey onTabChange>`                                          |
+| tiêu đề / đoạn văn / liên kết trong văn bản                      | `<Title>` · `<Paragraph>` · `<Link>` (`Text` 33 prop)                              |
+| nút nổi góc màn (quay lên đầu, hành động nhanh)                  | `<FloatButton>`                                                                    |
+| khung xương của một FORM khi đang tải                            | `<SkeletonForm>`                                                                   |
+| ô màu chỉ để xem, màu do NGƯỜI DÙNG chọn                         | `<Swatch>`                                                                         |
+| ảnh đại diện của một tệp / bản xem trước                         | `<Thumbnail>`                                                                      |
+| danh sách "có gì trong gói này"                                  | `<FeatureList>`                                                                    |
+| panel kéo giãn được (chia đôi màn)                               | `<DraggablePanel>`                                                                 |
+| màn hội thoại AI                                                 | `<Welcome>` · `<Conversations>` · `<Attachments>` · `<ThoughtChain>` · `<Actions>` |
+| một glyph lucide đứng một mình (trong `Text`, ô bảng, thẻ `<a>`) | `<Icon as={Lock} size="sm">` — KHÔNG phải `size-4` hay `size={16}`                 |
 
 Lỗi không phải "đoán sai tên prop" mà là **cho rằng nó không tồn tại nên không
 hỏi**.

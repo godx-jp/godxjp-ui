@@ -62,6 +62,10 @@ const TYPE_OVERRIDES = {
   // Typography.Title carries its prop type under a non-colliding name. Without this line the
   // gate resolves nothing for `Title` and SKIPS it — a gate that skips is a gate that drifts.
   Title: ["TypographyTitleProp"],
+  // Same collision, same reason: `IconProp` is the vocabulary name for an icon COMPONENT
+  // (`React.ComponentType<{ className?: string }>`), so the `Icon` primitive's own prop object
+  // is `IconGlyphProp`. Without this line the gate resolves a non-literal and SKIPS the component.
+  Icon: ["IconGlyphProp"],
 };
 /** Fields never required in the catalog (framework plumbing / native pass-through). */
 const IGNORED_FIELDS = new Set([

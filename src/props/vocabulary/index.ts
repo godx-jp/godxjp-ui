@@ -105,6 +105,7 @@ export type {
   RevealDelayProp,
   ActivityVariantProp,
   ActivityAnnounceProp,
+  IconSizeProp,
 } from "./interaction.prop";
 
 export type {

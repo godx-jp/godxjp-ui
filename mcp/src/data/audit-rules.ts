@@ -322,6 +322,13 @@ export const AUDIT_RULES: AuditRule[] = [
     standard: "@godxjp/ui reference-design typography",
     fix: "No em-dash (—) in copy; use a middot · or two calm sentences.",
   },
+  {
+    id: "lucide-icon-needs-size",
+    severity: "warn",
+    category: "composition",
+    standard: "WCAG 2.2 SC 1.4.4 · @godxjp/ui icon scale (--icon-size-*)",
+    fix: 'A lucide glyph outside a sizing context draws at its intrinsic 24px. Render it as <Icon as={Lock} size="sm" tone="muted" /> — the primitive puts it on the --icon-size-* scale and is aria-hidden unless you pass a label.',
+  },
 ];
 
 export function auditRulesByCategory(category?: AuditRuleCategory): AuditRule[] {

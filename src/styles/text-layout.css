@@ -53,13 +53,20 @@
     font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
   }
 
-  /* Tone + Heading tone — semantic foreground tokens. */
+  /* Tone — semantic foreground tokens, shared by Text, Heading AND Icon.
+   *
+   * `Icon` is listed here rather than in icon-layout.css so the tone→token mapping has ONE home:
+   * a status glyph beside a `tone="warning"` label must read the same `--text-warning` the label
+   * does, and two copies of that table are two chances for a glyph to paint the FILL role (`hsl(var(--warning))`,
+   * measured at 1.74:1 as ink) while the text beside it paints the AA-safe one. */
   [data-slot="text"][data-tone="default"],
-  [data-slot="heading"][data-tone="default"] {
+  [data-slot="heading"][data-tone="default"],
+  [data-slot="icon"][data-tone="default"] {
     color: hsl(var(--foreground));
   }
   [data-slot="text"][data-tone="muted"],
-  [data-slot="heading"][data-tone="muted"] {
+  [data-slot="heading"][data-tone="muted"],
+  [data-slot="icon"][data-tone="muted"] {
     color: hsl(var(--muted-foreground));
   }
   /* THE TONE FOR TEXT THAT IS NOT ON A PAGE SURFACE (gh#643).
@@ -70,11 +77,13 @@
    * page. `inherit` hands the decision back to the surface, which is the only thing that knows its
    * own paired `*-foreground`. */
   [data-slot="text"][data-tone="inherit"],
-  [data-slot="heading"][data-tone="inherit"] {
+  [data-slot="heading"][data-tone="inherit"],
+  [data-slot="icon"][data-tone="inherit"] {
     color: inherit;
   }
   [data-slot="text"][data-tone="primary"],
-  [data-slot="heading"][data-tone="primary"] {
+  [data-slot="heading"][data-tone="primary"],
+  [data-slot="icon"][data-tone="primary"] {
     color: hsl(var(--primary));
   }
   /* STATUS TONES READ THE TEXT TIER, NOT THE FILL TIER.
@@ -91,19 +100,23 @@
    * and unreadable as Text, in the same product, on the same screen. Nothing caught it because
    * `check:contrast` never had a route with status-toned body text on a card. */
   [data-slot="text"][data-tone="success"],
-  [data-slot="heading"][data-tone="success"] {
+  [data-slot="heading"][data-tone="success"],
+  [data-slot="icon"][data-tone="success"] {
     color: hsl(var(--text-success));
   }
   [data-slot="text"][data-tone="warning"],
-  [data-slot="heading"][data-tone="warning"] {
+  [data-slot="heading"][data-tone="warning"],
+  [data-slot="icon"][data-tone="warning"] {
     color: hsl(var(--text-warning));
   }
   [data-slot="text"][data-tone="destructive"],
-  [data-slot="heading"][data-tone="destructive"] {
+  [data-slot="heading"][data-tone="destructive"],
+  [data-slot="icon"][data-tone="destructive"] {
     color: hsl(var(--text-error));
   }
   [data-slot="text"][data-tone="info"],
-  [data-slot="heading"][data-tone="info"] {
+  [data-slot="heading"][data-tone="info"],
+  [data-slot="icon"][data-tone="info"] {
     color: hsl(var(--text-info));
   }
 

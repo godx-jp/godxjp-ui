@@ -1391,6 +1391,23 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
   /** Hide below a shared responsive breakpoint, without changing cell height. */
   hideBelow?: BreakpointProp;
   /**
+   * The cell's leading glyph, placed in a slot the CELL sizes (`--topbar-icon-size`).
+   *
+   * Passing the glyph as a child works too — but only while it stays a DIRECT child, because
+   * `.ui-topbar-item > svg` is the rule that sizes it. The moment a cell wraps its glyph (a
+   * `<Flex hideBelow>` so the icon drops at narrow widths) the rule can no longer reach it and the
+   * glyph renders at lucide's intrinsic 24px: measured at 390px on an org-switcher cell, 1.5x the
+   * cell's own step (gh#712). This slot survives that, because the wrapper is the one the cell
+   * placed. The alternative — widening the rule to a descendant — was measured to shrink or grow
+   * OTHER components' glyphs inside the cell (a Badge's 12px glyph became 16px), so it is not one.
+   *
+   * Decorative by convention: the cell's accessible name comes from its own `aria-label` or its
+   * visible label, not from the glyph. For a glyph that must carry a name, or one that needs a
+   * step other than the bar's, pass `<Icon as={…} size=… label=… />` — as this prop's value or as
+   * a child — and it keeps its own metric and its own semantics.
+   */
+  icon?: ReactNode;
+  /**
    * Unread count OVERLAID on the cell's glyph — the notification-bell affordance the cell's own use
    * cases name (gh#398). Pass the CONTENT ONLY, exactly like `SidebarItemProp.badge`: a number, a
    * string, `"99+"`. Position, size and colour come from `--topbar-item-badge-*`, so the count does

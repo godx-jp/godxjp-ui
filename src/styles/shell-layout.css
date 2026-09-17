@@ -2744,11 +2744,34 @@
   }
 
   /* Same glyph size as the shell's own bar chrome (`.tb-icon-btn svg`), so a consumer-supplied
-   * cell and a built-in one are the same control at a glance. */
+   * cell and a built-in one are the same control at a glance.
+   *
+   * DIRECT CHILD, and it STAYS a direct child (gh#712). Widening it to `.ui-topbar-item svg` was
+   * tried and measured in Chromium: a Badge's own glyph inside a bar cell went 12px -> 16px,
+   * because `[data-slot="badge-icon"]` is (0,1,0) and a descendant rule here is (0,1,1). Raising
+   * the specificity enough to reach through a wrapper makes it worse, not better — at (0,2,1) it
+   * also out-ranks `.ui-button svg` and a nested `Button size="sm"` glyph moves 14px -> 16px. A
+   * rule that sizes OTHER components' glyphs is not a fix for a cell that cannot size its own.
+   * The cell owns a slot instead — `TopbarItem icon` below — and a glyph the consumer wraps
+   * themselves is `<Icon>`, which carries its own step at (0,3,1). */
   .ui-topbar-item > svg {
     width: var(--topbar-icon-size);
     height: var(--topbar-icon-size);
     flex: 0 0 auto;
+  }
+
+  /* The `icon` SLOT: the cell's own glyph box, which survives being wrapped because the wrapper is
+   * the thing the cell placed. `svg` (not `> svg`) so a glyph the consumer hands in through
+   * another primitive still lands on the bar's step; an `<Icon>` inside it wins at (0,3,1) and
+   * keeps whatever step it declared, which is the documented way to ask for a different size. */
+  .ui-topbar-item-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+  }
+  .ui-topbar-item-icon svg {
+    inline-size: var(--topbar-icon-size);
+    block-size: var(--topbar-icon-size);
   }
 
   /* The center slot is optional by definition, so remove it before it can cover either owned edge.

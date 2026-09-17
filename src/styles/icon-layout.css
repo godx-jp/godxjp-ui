@@ -1,0 +1,56 @@
+/*
+ * Icon — the glyph metric (gh#712).
+ *
+ * THE THREE QUALIFIERS ARE LOAD-BEARING. `svg.ui-icon[data-slot="icon"]` is (0,3,1), which is the
+ * point: an Icon states its step explicitly, so it must out-rank every context rule that sizes a
+ * glyph implicitly — `.ui-button svg` (0,1,1), `.ui-dropdown-menu-item > svg` (0,1,1),
+ * `.ui-topbar-item svg` (0,1,1), and `[data-slot="list-row-leading"] > svg:not([class*="size-"])`,
+ * which the `:not()` argument lifts to (0,3,1). That last one is a TIE, broken by this file being
+ * imported LAST in styles/index.css and styles/core.css — keep it there. Without the win, a
+ * `<Icon size="lg">` in a ListRow's leading slot would silently render at the slot's 16px.
+ *
+ * The box is set ONCE, from a local `--icon-glyph-size` the step rules below fill in. Nine
+ * width/height pairs at (0,3,1) would work equally well and be nine times as much cascade to keep
+ * straight; a custom property does not compete with anything, so only one rule ever paints.
+ *
+ * Every value reads the scale through `var()` with no literal fallback — the rule
+ * `src/tokens/__tests__/icon-size-scale.test.ts` pins for every icon rule in this package, and what
+ * keeps the tier-2 escape hatch (an inline `--icon-glyph-size` at the call site) open.
+ */
+@layer components {
+  svg.ui-icon[data-slot="icon"] {
+    inline-size: var(--icon-glyph-size);
+    block-size: var(--icon-glyph-size);
+    /* A glyph never absorbs a flex row's shrink — that is how an icon ends up 11px wide beside a
+     * long label, which reads as a rendering bug rather than as a layout decision. */
+    flex: 0 0 auto;
+  }
+
+  .ui-icon[data-size="2xs"] {
+    --icon-glyph-size: var(--icon-size-2xs);
+  }
+  .ui-icon[data-size="xs"] {
+    --icon-glyph-size: var(--icon-size-xs);
+  }
+  .ui-icon[data-size="sm"] {
+    --icon-glyph-size: var(--icon-size-sm);
+  }
+  .ui-icon[data-size="md"] {
+    --icon-glyph-size: var(--icon-size-md);
+  }
+  .ui-icon[data-size="lg"] {
+    --icon-glyph-size: var(--icon-size-lg);
+  }
+  .ui-icon[data-size="xl"] {
+    --icon-glyph-size: var(--icon-size-xl);
+  }
+  .ui-icon[data-size="2xl"] {
+    --icon-glyph-size: var(--icon-size-2xl);
+  }
+  .ui-icon[data-size="3xl"] {
+    --icon-glyph-size: var(--icon-size-3xl);
+  }
+  .ui-icon[data-size="4xl"] {
+    --icon-glyph-size: var(--icon-size-4xl);
+  }
+}

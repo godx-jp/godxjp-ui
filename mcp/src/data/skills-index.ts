@@ -223,6 +223,35 @@ Màu đi qua tone ngữ nghĩa vì chúng tự đúng ở cả chế độ sáng
 mã hex gõ tay là một màu KHÔNG đổi theo chế độ tối — và nó chỉ lộ ra
 khi có người bật chế độ tối, tức là muộn.`,
       },
+      {
+        id: "icons",
+        title: "Icon đứng một mình",
+        tagline: "Glyph lucide tự mang 24px. Chỉ bốn chỗ chỉnh cỡ hộ bạn.",
+        body: `Cổng vàng nếu sai: lucide-icon-needs-size
+
+Một component lucide phát ra width="24" height="24". Trong kho này chỉ
+có BỐN luật CSS đè lên nó: \`.ui-button svg\`, hàng menu, ô topbar, và khe
+leading của ListRow. Ngoài bốn chỗ đó — trong \`Text\`, trong ô bảng, trong
+thẻ \`<a>\`, trong \`Flex\` — glyph vẽ ở 24px cạnh chữ 14px, gấp 1,7 lần.
+Một consumer quét cả app: 38 chỗ như vậy.
+
+SAI (và \`size-4\` / \`w-[16px]\` đã bị luật 3 và 8 chặn từ trước):
+    <Text size="sm"><Lock /> đã mã hoá</Text>
+    <Text size="sm"><Lock size={16} /> đã mã hoá</Text>
+
+ĐÚNG:
+    import { Icon } from "@godxjp/ui/general";
+    <Text size="sm"><Icon as={Lock} size="sm" tone="muted" /> đã mã hoá</Text>
+
+\`size\` là 9 bậc của thang \`--icon-size-*\` (2xs…4xl = 10/12/14/16/20/24/
+36/40/48px). Bậc bạn khai báo THẮNG cả luật của Button, nên \`size="lg"\`
+trong một Button vẫn ra 20px.
+
+Mặc định là \`aria-hidden\` — glyph cạnh nhãn nhìn thấy được thì không đọc
+thêm lần nữa. Chỉ truyền \`label\` khi glyph là thứ DUY NHẤT mang nghĩa
+(một ổ khoá đứng một mình trong cột trạng thái); khi đó nó thành
+\`role="img"\` với tên đó, và tên ấy phải đi qua \`t()\` của bạn.`,
+      },
     ],
   },
   // ── taste (foundational) ───────────────────────────────────────

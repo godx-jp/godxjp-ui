@@ -16,6 +16,8 @@ export type {
   LinkProp,
   LinkProps,
 } from "./typography";
+export { Icon } from "./icon";
+export type { IconGlyphProp, IconProps } from "./icon";
 export { Logo } from "./logo";
 export type { LogoMark, LogoProps, LogoSize, LogoTone } from "./logo";
 export { Reveal } from "./reveal";
