@@ -1000,8 +1000,56 @@
     align-items: center;
   }
 
+  /* THE BRAND CELL GIVES ROOM BACK ON A NARROW BAR (gh#728).
+   *
+   * It shipped with no `flex` and the initial `min-width: auto`, so a consumer lockup kept its
+   * INTRINSIC width at every viewport: measured at 390px with a 6:1 lockup at --logo-size-sm,
+   * brand 144px at 320 / 390 / 768 / 1440 alike, leaving the whole bar 150px — `.ui-topbar-start`
+   * resolved to width 0 and the end cluster's last cell painted at x=392 on a 390px viewport.
+   * `.app-topbar-custom` beside it already carried `min-width: 0` under a comment claiming "the
+   * logo is the fixed part here"; that sentence is what this rule retires.
+   *
+   * `flex: 0 1 auto` + `min-inline-size: 0` alone would change NOTHING and it is worth saying why:
+   * the sibling is `flex: 1` (basis 0), so the rail's free space is never negative and no item is
+   * ever asked to shrink — the bar just gets less growth while the brand keeps its 144px. The cap
+   * below is therefore the mechanism, not the decoration.
+   *
+   * `--app-shell-brand-max-inline-size` is `none` by default (a wide bar is not the problem), and
+   * below the `sm` step the cap becomes `--app-shell-brand-compact-max-inline-size` — the bar's own
+   * height, i.e. the brand may keep at most a square of the row it sits in. A lockup wider than
+   * that is cropped from the INLINE-END, which keeps the mark (every lockup leads with it, in both
+   * directions). The package cannot reshape artwork it did not author — `viewBox` is an attribute
+   * and no stylesheet can set it — so a consumer who wants to CHOOSE what the narrow bar shows
+   * passes `AppShell logoCompact`, a node of their own. */
+  .app-topbar-logo {
+    max-inline-size: var(--app-shell-brand-max-inline-size);
+    min-inline-size: 0;
+    flex: 0 1 auto;
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-clip-margin);
+  }
+
+  /* The two brand nodes are BOXES ONLY FOR THE BREAKPOINT that hides one of them; out of that
+   * moment they must not exist, or a brand that was one flex child becomes two. */
+  .app-topbar-brand {
+    display: contents;
+  }
+
+  @media (width < 40rem) {
+    .app-topbar-logo {
+      max-inline-size: var(--app-shell-brand-compact-max-inline-size);
+    }
+
+    /* The library's own lockup can do better than a crop: it KNOWS which half is the wordmark, so
+     * the wordmark steps aside and the mark stays whole — the same trade the collapsed rail makes
+     * two rules above, keyed here to the VIEWPORT instead of to the sidebar's collapse. */
+    .app-topbar-logo [data-slot="logo-wordmark"] {
+      display: none;
+    }
+  }
+
   /* A custom `topbar` fills whatever the logo leaves. `min-width: 0` so its own content can
-   * truncate instead of pushing the brand out of the row — the logo is the fixed part here. */
+   * truncate instead of pushing the brand out of the row — the brand cell shrinks too (gh#728). */
   .app-topbar-custom {
     display: flex;
     min-width: 0;
@@ -2639,10 +2687,81 @@
     flex: 1 1 0%;
     justify-content: center;
   }
+  /* `0 1 auto`, NOT `0 0 auto` (gh#728). An unshrinkable end cluster hands 100% of any deficit to
+   * `.ui-topbar-start`, which carries `min-width: 0` and therefore collapses to nothing: measured
+   * at 320x568 after a consumer had already conceded everything it owned (brand 26.1 · four cells
+   * 32 · user cell 48 · trigger 36), the bar was 10px short and the START slot paid all 10 — its
+   * only cell reading clientWidth 22 of scrollWidth 32, the `partiallyObscured` shape gh#639 was
+   * written to catch. Shrink-weighted by base size, the same deficit is now shared between the two
+   * clusters, and whatever is left over after that is SCROLLED, not sliced (below). */
   .ui-topbar-end {
     max-width: 100%;
-    flex: 0 0 auto;
+    flex: 0 1 auto;
     margin-inline-start: auto;
+  }
+
+  /* ── THE OVERFLOW CONTRACT (gh#728) ───────────────────────────────────────────────────────
+   * A bar that does not fit has to do SOMETHING, and until this rule the something was "clip":
+   * every cluster carries `overflow: clip`, so a cell past the edge was simply not painted —
+   * still focusable, still announced, invisible and unreachable by pointer. `Topbar overflow`
+   * names the two answers and `"scroll"` is the DEFAULT, so a consumer who does nothing stops
+   * clipping.
+   *
+   * THE BAR SCROLLS, NOT THE CLUSTERS, and that distinction was measured. Scrolling the clusters
+   * was tried first: each keeps `min-width: 0`, so under pressure the cluster BOX shrinks below
+   * its cell and the cell is sliced by its own scrollport — 26px of a 32px cell at 320px, which
+   * no amount of scrolling can repair, because a port narrower than the cell can never show all
+   * of it. That is the `partiallyObscured` shape gh#639 exists to catch, and the same run failed
+   * `scripts/topbar-collision-visual.mjs` on the end cluster (account cell: 7.1 visible of 28).
+   * So the two CELL clusters get a floor instead — their own content for `end`, one cell for
+   * `start` (each rule says why below) — and the deficit lands on the bar, which scrolls as one
+   * row. Every cell stays whole; what does not fit is off-port, not sliced.
+   *
+   * `.ui-topbar-center` is deliberately NOT in that list: it is `flex: 1 1 0%`, it is display:none
+   * below 1100px by the package's own compact contract, and its content is a stretchy control
+   * (a search trigger) rather than bar cells — giving it a content floor would make a long label
+   * push the bar into scroll at a width where truncation is the right answer.
+   *
+   * Scrolling keeps every cell REACHABLE: nothing is `display: none`, so the screen reader reads
+   * the same bar it always did, and Tab moves through the cells in DOM order while the browser
+   * scrolls each focused cell into view — no extra tab stop, no roving index, no menu to mirror.
+   * The scrollbar is suppressed the same way `.ui-pagination-list` suppresses its own: a horizontal
+   * bar inside a 48px chrome row would eat the height that caused the deficit.
+   *
+   * ONLY THE INLINE AXIS SCROLLS. The block axis stays `clip` with its margin, so the focus ring
+   * still has its room (an `overflow: auto` on both axes would shave the ring flush, which is the
+   * whole reason `clip` + `overflow-clip-margin` is there). */
+  .ui-topbar[data-overflow="scroll"] {
+    overflow-x: auto; /* rtl-ignore — an axis, not a side: `x` does not flip under RTL */
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .ui-topbar[data-overflow="scroll"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* THE END CLUSTER KEEPS ITS CELLS, WHOLE. It is cells by contract — settings, notifications, the
+   * account — so its content floor is simply its content.
+   *
+   * `max-width: 100%` is a CLIP under a scrolling bar, and it was measured as one: at 320px the
+   * cluster was clamped to the bar's 200px while its cells needed 204, so the bar had nothing to
+   * scroll and the account cell still peaked at 40 visible of 44 — the defect moved 4px, it did not
+   * go. Off-port is the answer here, not clamped-then-clipped. */
+  .ui-topbar[data-overflow="scroll"] > .ui-topbar-end {
+    max-inline-size: none;
+    min-inline-size: auto;
+  }
+
+  /* THE START CLUSTER GETS ONE CELL, NOT ITS CONTENT — because its content is not only cells.
+   * The slot's last child is a TITLE that truncates, and `white-space: nowrap` means its
+   * min-content size is the WHOLE string: measured on the topbar frame in `en`, a content floor
+   * here demanded 631px of a 720px bar for a 418px title and pushed the end cluster out of the bar
+   * at 1024px — trading the 320px defect for a desktop one. A floor of one cell is the part that
+   * is really indivisible: a bar cell cannot be read at half width (`partiallyObscured`, gh#639),
+   * a title can, which is what truncation IS. */
+  .ui-topbar[data-overflow="scroll"] > .ui-topbar-start {
+    min-inline-size: var(--topbar-item-min-width);
   }
 
   /* ── TOPBAR BAR ITEM ──────────────────────────────────────────────────────────────────────

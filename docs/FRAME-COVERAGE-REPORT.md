@@ -45,7 +45,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | CardBar | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | TimeRangePicker | ✓ | · | · | · | · | · | · | · | · | · |
 | VisuallyHidden | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
-| RangeTimeline | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
+| RangeTimeline | **✗** | · | N/A | N/A | · | · | · | · | · | · |
 | PageContainer | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Flex | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | ResponsiveGrid | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |

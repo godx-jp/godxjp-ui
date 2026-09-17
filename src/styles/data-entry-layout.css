@@ -474,8 +474,17 @@
     block-size: var(--upload-draft-icon-size);
   }
 
+  /* WRAPS, because the actions cannot shrink. A row is [leading box] [name/size] [preview]
+   * [download] [start/cancel] [remove], and every action is a labelled Button whose min-content
+   * width is its text: only `.ui-upload-row-main` can give ground, and once it is at zero the
+   * trailing actions are pushed straight out of the row — off-frame, with no scroll container to
+   * bring them back (gh#733: at a 210px row they sat 24px and 70px past the frame's end edge).
+   * `flex-wrap` costs nothing at the widths where the row already fits — the main block keeps
+   * `flex-basis: 0`, so the line only breaks when the content genuinely cannot fit — and at a
+   * narrow width it moves the actions under the name instead of out of reach. */
   .ui-upload-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--upload-row-space-gap);
     padding-inline: var(--upload-row-space-inline);
@@ -488,6 +497,23 @@
   .ui-upload-row-main {
     min-inline-size: 0;
     flex: 1 1 0%;
+  }
+
+  /* The trailing action group. `margin-inline-start: auto` keeps it on the row's end edge while it
+   * shares the line, and its own `flex-wrap` means even the group can break rather than clip when
+   * the row is narrower than the labels it carries. */
+  .ui-upload-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--upload-row-space-gap);
+    margin-inline-start: auto;
+  }
+
+  /* A row with no actions at all must keep the box it had before the group existed — an empty flex
+   * item would still take a gap at the row's end edge. */
+  .ui-upload-row-actions:empty {
+    display: none;
   }
 
   .ui-upload-row-icon {

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { useTranslation } from "@godxjp/ui/i18n";
 import {
   Card,
@@ -142,7 +144,10 @@ export default function Demo() {
             <CardTitle level={2}>承認・消費税トラッカー</CardTitle>
             <CardDescription>
               variant="status" は status ごとにグリフを切り替えます（done → チェック、current →
-              塗りつぶしドット、pending → 連番）。
+              塗りつぶしドット、pending → 連番）。進捗レールの色は1つだけ：
+              done・current・通過済みの線 はすべて --primary で塗られ、current
+              はリング（--timeline-dot-current-ring-width）と グリフで区別します。Steps の finish /
+              process と同じ約束です。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -160,6 +165,31 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Timeline variant="status" items={richItems} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>進捗レールの色をテーマで戻す</CardTitle>
+            <CardDescription>
+              done の緑と current の紫という 27.8 までの配色に戻したい場合は、塗りとインクを
+              対にしてテーマで指定します。塗りだけを戻すと、若竹の緑にほぼ白のグリフが乗って 2.18:1
+              になり AA を満たしません（gh#643）。同じ要領で --timeline-dot-current-background と
+              --timeline-line-completed-background も再着色できます。
+            </CardDescription>
+          </CardHeader>
+          {/* The knobs are declared on the CARD BODY, not on the Timeline: custom properties
+              inherit, so one scope retints every Timeline inside it — which is how a service
+              theme sets them (once, globally, or under `[data-tenant]`), not per call site. */}
+          <CardContent
+            style={
+              {
+                "--timeline-dot-done-background": "hsl(var(--success))",
+                "--timeline-dot-done-foreground": "hsl(var(--success-foreground))",
+              } as CSSProperties
+            }
+          >
+            <Timeline variant="status" items={approvalItems} />
           </CardContent>
         </Card>
 
@@ -233,6 +263,52 @@ export default function Demo() {
                 endLabel: dayLabel(25 + row.end),
               }))}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>密度（density）— 1日の列幅</CardTitle>
+            <CardDescription>
+              同じ31日分の軸を density で三段。compact は1日42px、default
+              は従来どおり56px、comfortable は70px です。動くのは列幅だけで、行の高さもバーの高さも
+              ラベル列の幅も変わりません。画面に入る日数を増やしたいときは compact
+              を選びます（app.css でトークンを書く必要はありません）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {(["compact", "default", "comfortable"] as const).map((density) => (
+                <div key={density}>
+                  <Text size="xs" tone="muted">
+                    density=&quot;{density}&quot;
+                  </Text>
+                  <RangeTimeline
+                    label={t("rangeTimeline.schedule")}
+                    density={density}
+                    today={8}
+                    bands={[{ label: monthLabel(8), units: 31 }]}
+                    columns={Array.from({ length: 31 }, (_, index) => {
+                      const weekday = new Date(Date.UTC(2026, 8, index + 1)).getUTCDay();
+                      return {
+                        label: new Intl.NumberFormat(locale).format(index + 1),
+                        units: 1,
+                        muted: weekday === 0 || weekday === 6,
+                      };
+                    })}
+                    rows={[
+                      { id: "design", label: "要件定義", start: 0, end: 6 },
+                      { id: "build", label: "実装", start: 7, end: 22 },
+                      { id: "review", label: "レビュー", start: 20, end: 29 },
+                    ].map((row) => ({
+                      ...row,
+                      startLabel: dayLabel(row.start + 1),
+                      endLabel: dayLabel(row.end + 1),
+                    }))}
+                  />
+                </div>
+              ))}
+            </Flex>
           </CardContent>
         </Card>
 

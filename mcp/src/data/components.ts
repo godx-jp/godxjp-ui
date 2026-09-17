@@ -554,7 +554,14 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input) / 0.5)`, 1.74:1 light / 1.95:1 dark on the card — lightened from the full --input (3.47 / 3.88) the owner found too dark, still well above the decorative `--border` at 1.15:1; the same weight as the Calendar grid), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
+          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. TWO TIERS, and they are different knobs: the INSIDE grid is `--range-timeline-grid-color`, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the card in light, L* 20.76 / 1.270:1 in dark) at `--range-timeline-grid-width` (hairline); the OUTER FRAME and the label-column divider are `--range-timeline-border-color`, default `var(--border)` — the same tier, so the grid can never read heavier than the box around it or than a DataTable row rule. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and was reported darker than every card and table in the system (gh#730); set `--range-timeline-grid-color: hsl(var(--input) / 0.5)` to get that weight back. `bordered={false}` restores header-only ruling; muted columns still paint.",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        defaultValue: '"default"',
+        description:
+          "Width of ONE axis unit — the canonical density vocabulary, the same three steps `DataTable density` takes. `default` is the shipped 56px/day, so no existing Gantt moves; `compact` is 42px/day (a 31-day axis needs 1558px instead of 1992px — measured, the widest two-digit day label across ja/en/ar/fa/hi/th/bn numbering systems is 19.86px in a 24px content box, so the tick still fits); `comfortable` is 70px/day. It moves the COLUMN WIDTH ONLY — row height, bar height and the label column are identical at every step, so a compact Gantt is the same schedule with more days on screen, not a smaller one. Re-points `--range-timeline-unit-width` on the element; retune a step with `--range-timeline-unit-width-{compact,default,comfortable}`. Unrelated to `PageContainer density` / `AppProvider density`, which rescale the whole page through `--scaling`.",
       },
       {
         name: "expandedValues",
@@ -584,6 +591,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
       'An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus "before" at the inline-start edge, "after" plus a chevron at the inline-end edge; the chevrons mirror under RTL.',
       "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
+      'Need more days on one screen? Pass `density="compact"` — do NOT declare `--range-timeline-unit-width` in an app stylesheet. Tick and band labels are CENTRED on their column by the component; a band clipped by the range (a month the axis starts inside) centres its label on the VISIBLE part, since that is the box the band owns.',
       "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
       "Nested Gantt (parent/child work items): pass the server's depth-first rows with `depth` on each (`{ id, label, start, end, startLabel, endLabel, depth }`), and fold with `expandedValues` / `onExpandedValuesChange` (or `defaultExpandedValues`). Never fake an indent inside `label` — the component owns the indent, the disclosure button (named from `rangeTimeline.childRows` + the row label, `aria-expanded`) and the `list` / `listitem` + `aria-level` / `aria-setsize` / `aria-posinset` structure.",
     ],
@@ -1067,6 +1075,19 @@ import { StatCard } from "@godxjp/ui/data-display";
           "The shell's brand lockup. ALWAYS rendered — unlike topbarLeft/topbarRight it survives a custom `topbar`, because identity belongs to the frame, not to the bar's contents. WHERE it lands follows `topbarSpan`, the axis that already says who owns the top-left corner: `content` puts it at the sidebar's head, aligned to that track; `full` puts it in the bar beside the space-level chrome. Do not place it yourself in `Sidebar.brand` or a `Topbar` slot — that pins it to one arrangement while the axis moves the rest of the shell.",
       },
       {
+        name: "logoCompact",
+        type: "ReactNode",
+        description:
+          "The brand node a NARROW bar gets instead of `logo` — a mark without the wordmark, a shorter lockup, a different viewBox (gh#728). The brand cell already shrinks without it: below the sm step it is capped at --app-shell-brand-compact-max-inline-size (the bar's own height) and anything past the cap is cropped from the inline-end, which is all a stylesheet can do to artwork it did not author — viewBox is an ATTRIBUTE, which is why consumers were re-cropping their own SVG through a media-query hook. Pass a node here to CHOOSE what the narrow bar shows. Both nodes are rendered and the breakpoint drops one with display:none, so exactly one brand is ever in the accessibility tree. Applies to the brand IN THE BAR (topbarSpan=\"full\", or a shell with no sidebar); under the default content span the brand sits at the rail's head, which the drawer has already replaced at that width.",
+      },
+      {
+        name: "logoCompactBelow",
+        type: "BreakpointProp",
+        defaultValue: '"sm"',
+        description:
+          "The step at which `logoCompact` takes over — Flex hideBelow's vocabulary on the same canonical scale (sm 40rem · md 48rem · lg 64rem · xl 80rem). Ignored without `logoCompact` (gh#728).",
+      },
+      {
         name: "sidebarCollapsed",
         type: "boolean",
         defaultValue: "false",
@@ -1152,6 +1173,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — `topbarLeft`/`topbarRight` are then ignored (they are slots of the DEFAULT bar layout, and a custom `topbar` IS replacing that layout; a dev-mode warning names them). `logo` is NOT one of them: it is always rendered, because brand identity belongs to the frame rather than to the bar's contents. Two repos passed both for months and got no logo at all — no error, no warning, and a bar that still looked right because it had other content.",
       "DO pass `logo` and let the shell place it — do NOT put the lockup in `Sidebar`'s `brand` slot or hand-position it in a `Topbar` slot. THE TOP-LEFT CORNER BELONGS TO WHOEVER `topbarSpan` SAYS: under `content` the rail runs the full window height and the brand sits at the sidebar's head, aligned to that track; under `full` the bar runs edge to edge and the brand goes in the bar with the rest of the space-level chrome. Placing it yourself pins it to one of those answers, and the axis then moves the rest of the shell out from under it (measured on a shipped consumer: the logo floating in the content column at x=280, indented 24px past the rail it should have sat above).",
+      'DO give a wide brand lockup a narrow-bar answer with `logoCompact` instead of cropping your own artwork in the app: `<AppShell topbarSpan="full" logo={<FullLockup />} logoCompact={<MarkOnly />} />` swaps the NODE below the `sm` step, which is the only way to change a `viewBox` (no stylesheet can set an attribute). Without it the brand cell still gives room back — it is capped at --app-shell-brand-compact-max-inline-size below that step and cropped from the inline-end — where before it kept its intrinsic width at every viewport: measured with a 6:1 lockup at 390px, brand 143.7px, `.ui-topbar` 150.3px, `.ui-topbar-start` width 0 and the end cluster\'s last cell painting at x=384.8 on a 390px viewport (gh#728).',
       "DO build a chat / mail / IDE shell by omitting ALL FOUR bar slots (`topbar`, `topbarLeft`, `topbarRight`, `logo`) — a shell whose PAGE owns the top row. AppShell then renders no `<header class='app-topbar'>` and marks its root `data-topbar='none'`, so the bar's grid row collapses to zero and the page header IS the first row of chrome. Keeping an empty bar instead costs a fixed `--app-shell-bar-height` band plus its border and card background, stacking a second row of chrome (~48px + the page header) over exactly the region a transcript or an editor needs most. The mobile drawer survives: at or below 900px the header returns carrying the hamburger alone.",
       "DO NOT fake the bar-less shell with `topbar={<></>}` (or `topbarLeft={<div />}`, `logo={null}`) — any defined slot counts as bar content, so the `<header>` is still rendered, still paints its border and background, and still eats the grid row. The trigger is the slot being UNDEFINED; pass nothing at all (a conditional slot must resolve to `undefined`, not to an empty node).",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
@@ -1806,6 +1828,13 @@ export default function Shell() {
           'Inline-end cluster — settings pickers (`AppSettingPicker kind="locale"|"theme"`), a notifications `Button`, the user-menu `DropdownMenu`.',
       },
       {
+        name: "overflow",
+        type: '"scroll" | "clip"',
+        defaultValue: '"scroll"',
+        description:
+          "What a bar that does not fit does with the cells that do not fit (gh#728). scroll (default) lets the BAR scroll on the inline axis while the start and end clusters keep their cells whole — every cell stays in the DOM and in the accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row would eat the height that caused the deficit), so the pointer affordance is drag/wheel. clip is the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted — still focusable, still announced, invisible and unreachable by pointer. Independent of TopbarItem hideBelow, which REMOVES a cell at a step; this is only about what happens once there is no budget left.",
+      },
+      {
         name: "children",
         type: "ReactNode",
         defaultValue: "undefined",
@@ -1825,8 +1854,9 @@ export default function Shell() {
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
       "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
-      "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, each cluster CLIPS its own overflow (so a long tenant/brand string can never spill over a sibling or leak a horizontal document scroll), and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
-      'KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `fill` so it takes the leftover room and lets its label ellipse, and wrap that label in `<Text truncate>` — NOT `className="min-w-0 flex-1"` plus a `truncate` span, which is the utility pair ui-audit blocks and which this guidance used to recommend. Budget the `end` cluster too — it is `flex: 0 0 auto`, so an ambient status chip there is subtracted from `start` before `start` gets a say (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`.',
+      "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, a long tenant/brand string truncates rather than spilling over a sibling or leaking a horizontal document scroll, and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
+      'KNOW what happens when the shrink contract runs out: the BAR scrolls (`overflow="scroll"`, the default), it does not slice. The start cluster keeps a floor of one bar cell and the end cluster keeps its cells whole, so what does not fit is off-port rather than half-painted — Tab still reaches every cell and the browser scrolls the focused one fully into view. Measured at 320x568 on a bar 44px over budget: start cluster 0 -> 32px, end cluster clientWidth 150.3/scrollWidth 285 -> 204/204, last end cell x=384.8 (outside a 390px viewport) -> fully inside it, 7/7 cells reachable by keyboard. `overflow="clip"` restores the pre-gh#728 slicing for a bar you have measured as never overflowing (gh#728).',
+      'KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `fill` so it takes the leftover room and lets its label ellipse, and wrap that label in `<Text truncate>` — NOT `className="min-w-0 flex-1"` plus a `truncate` span, which is the utility pair ui-audit blocks and which this guidance used to recommend. Budget the `end` cluster too — it is `flex: 0 1 auto` and shrink-weighted, but a cell in it is still a cell you chose to put on a phone: an ambient status chip there is space the start cluster does not get (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`.',
     ],
     useCases: [
       "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
@@ -5538,7 +5568,7 @@ import remarkGfm from "remark-gfm";
     name: "Timeline",
     group: "data-display",
     tagline:
-      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`.",
+      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
     props: [
       {
         name: "items",
@@ -5561,6 +5591,9 @@ import remarkGfm from "remark-gfm";
       "DO NOT hand-roll a vertical event list with divs, icons, and connector lines — that is exactly what Timeline ships. Do not apply extra padding or wrapping outside the component; it manages its own rail and spacing internally.",
       "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
       "DO wrap Timeline in `<CardContent>` when placing it inside a `Card` — bare `Card` has no inner padding, so the rail will render flush against the card edge without `CardContent`.",
+      "THE PROGRESS COLUMN IS ONE HUE (gh#731). The done dot, the current dot and the travelled line all default to `hsl(var(--primary))` — the same contract `Steps` uses for `finish` + `process`, and antd's (only `error` leaves the primary hue). The current item is told apart by a ring (`--timeline-dot-current-ring-width`, `--steps-dot-process-ring-width`'s value), by `aria-current=\"step\"` + a localized sr-only prefix, and by a different glyph — never by a second colour role. Re-theme `--primary` and the whole rail follows. Measured light: done 2.18:1 → 6.31:1 against the card, glyph 6.31:1 on the fill; dark 7.22:1 → 9.84:1, glyph 10.72:1.",
+      "DON'T expect `--success` on a `status: 'done'` item — `done | current | pending` is POSITION IN A SEQUENCE, not status, and Timeline has no `tone` axis. Put a real status on the item's `title` or `note` with a `<Badge tone=\"success\">`, which is the surface that owns the status green.",
+      "TO RESTORE the pre-27.9 green/violet pairing, set the done dot's fill AND its ink together in your theme (global or `[data-tenant]`) — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.18:1 (gh#643): `--timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));`. `--timeline-dot-current-background` and `--timeline-line-completed-background` retint the other two surfaces the same way.",
     ],
     useCases: [
       "Shipment / delivery tracking — showing a parcel's journey through 'Order placed → Packed → In transit → Delivered' with timestamps and a current-stop indicator.",
@@ -7694,7 +7727,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "true",
         description:
-          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input) / 0.5)`).',
+          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--border))`, the same tier as the popover edge and a table row rule — lightened from `hsl(var(--input) / 0.5)` in gh#730). The caption→weekday-row step is ONE token now, `--calendar-grid-space-block-start` (space-3, measured 32px → 12px): it used to stack with the month column gap.',
       },
       {
         name: "disabledDate",
@@ -11120,7 +11153,7 @@ function PlanSlider() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job. Line colour is the `--calendar-grid-border-color` knob, default `hsl(var(--input) / 0.5)` (1.74:1 light / 1.95:1 dark on the popover — lighter than the full --input at 3.47 / 3.88, which the owner found too dark, and still clearly above the decorative `--border` it first drew in, 1.15:1 and invisible; the same weight as the RangeTimeline grid). Retint with `--calendar-grid-border-color: hsl(var(--input))` for the heavier line. DatePicker forwards the same prop to its popup calendar.",
+          "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job, and the Card/popover edge is the OUTER FRAME tier. The INSIDE grid is the `--calendar-grid-border-color` knob, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the popover in light, L* 20.76 / 1.270:1 in dark) — the same tier as the frame around it, as a DataTable row rule and as the RangeTimeline grid, so the ruling can never out-weigh the surface it is drawn on. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and gh#730 reported that still darker than the --border every card and table uses. Retint with `--calendar-grid-border-color: hsl(var(--input) / 0.5)` for the 27.6.0 weight or `hsl(var(--input))` for the heavy line. DatePicker forwards the same prop to its popup calendar.",
       },
       {
         name: "width",
@@ -11358,6 +11391,7 @@ function PlanSlider() {
       "DO use the disabled prop with Matcher objects ({ before: minDate }, { after: maxDate }, { dayOfWeek: [0, 6] }) to restrict selectable days — never render your own disabled overlay on top.",
       'DON\'T zero the panel padding or pin its width with utilities on className. Those are per-call-site constants no service theme can retune; `flush` and `width="auto"` set the same two tokens the panel already reads.',
       "DON'T hand-roll a calendar grid — Calendar wraps react-day-picker which is keyboard-navigable, ARIA-annotated, and screen-reader friendly out of the box. Provide a footer string for screen-reader status announcements when the selection changes.",
+      "The month frame is two knobs, not a stack of them (gh#730). `--calendar-space-inset` is the ONE inset the caption row, the `‹`/`›` nav buttons and the day grid all sit at — `--calendar-nav-space-inline` is declared as that same value, because the nav is absolutely positioned and would otherwise get its own (measured 4px against the grid's 12px, so the header read wider than the body). `--calendar-grid-space-block-start` is the ONE caption→weekday-row step (space-3, 12px; it used to stack with the month column gap for 32px). Retune those tokens rather than adding padding on the call site.",
     ],
     useCases: [
       "Inline date picker within a form section where the calendar grid must always be visible (e.g., a booking page or a date-of-issue field on an invoice creation form).",
@@ -12452,6 +12486,13 @@ export function FilterSection() {
           "Draw the connector rails between a parent and its children (antd `showLine`). Off by default — a rail is chrome, and chrome defaults quiet.",
       },
       {
+        name: "divided",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Rule between the rows: a hairline on every node's block-start except the outline's first, so a tree used as navigation inside a Card reads as a list instead of one block (gh#732). The rule runs the FULL width of the row at every depth — never indented per level, which would make the children read as a nested table. Colour is `--tree-divider-color` (default `hsl(var(--border))`). Off by default, like `showLine` — chrome defaults quiet. Not antd's name: antd's Tree has no such capability, and `bordered` means a grid's frame plus column rules elsewhere in this library.",
+      },
+      {
         name: "showIcon",
         type: "boolean",
         defaultValue: "false",
@@ -12498,6 +12539,7 @@ export function FilterSection() {
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",
       'DON\'T hand-roll an indented `<ul>` (or a NavList / ListRow stack with a per-depth margin) for a hierarchy. A flat indented list only LOOKS like a tree: no expand/collapse, no `role="tree"`, no keyboard model, no selection contract. `TreeList` was exactly that list and was REMOVED in 21.0.0 — Tree is what replaced it, and it is the one to reach for whenever nodes expand, collapse or are keyboard-navigated.',
+      "DO pass `divided` when the tree IS the navigation of a page — a wiki/document outline or a section index sitting in a `Card` (`Card` > `CardContent flush` > `Tree divided`). Without a rule the rows run together and the outline reads as one block; with it, it reads as the ruled list ListRow and Table already give a flat list. Retint it per theme with `--tree-divider-color`, never with a per-page utility class.",
       "DO cap a long tree with `ScrollArea` — virtualisation is not in v1, so a 5,000-node tree renders 5,000 rows.",
       "DO push fetched children into `treeData` from `loadData`; the tree calls it once per node and shows a Skeleton row until the data lands.",
     ],
@@ -12507,6 +12549,7 @@ export function FilterSection() {
       "An organisation chart / department picker on a settings page, where a branch's children are fetched on demand with `loadData`.",
       'A file explorer (`variant="directory"`, `showIcon`, `showLine`) where folders and files read differently and the selected row spans the width.',
       "A chart-of-accounts outline that must expand and collapse — the case a flat indented list only ever looked like it handled.",
+      "A wiki / document page index used as the navigation of a screen, inside a Card: `divided` rules the rows so the outline reads as a list, and selection drives the reading pane.",
     ],
     related: [
       'TreeList — REMOVED in 21.0.0, replaced by Tree. It was a flat `<ul>` whose `depth` only drove `margin-inline-start`: it LOOKED like a tree and had no expand/collapse, no `role="tree"`, no keyboard and no selection contract. Migration: nest the flat `items` into `treeData` (`id`→`value`, `title`→`label`, `depth`→nesting) and pass `aria-label`. A genuinely static indented outline that never opens is a `Descriptions` or a `ListRow` stack, not a tree.',

@@ -4,6 +4,103 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.9.0] - 2026-09-18
+
+MINOR. Every new axis is opt-in and every default that moved is listed below with its measurement.
+
+### Fixed
+
+- **AppShell / Topbar — a narrow bar no longer clips what it cannot fit** (gh#728). `.app-topbar-logo`
+  had no `flex` and the initial `min-width: auto`, so a consumer lockup kept its intrinsic width at
+  every viewport: measured at 390px with a 6:1 lockup, brand 144px, `.ui-topbar` 150px,
+  `.ui-topbar-start` width 0, and the end cluster's last cell painting outside the viewport. The
+  brand cell is now capped below the `sm` step (`--app-shell-brand-compact-max-inline-size`, the
+  bar's own height), cropping from the inline-end so the mark survives. At 390px: brand 144 → 48,
+  `.ui-topbar` 150 → 246, start cluster 0 → 32/32, end cluster 150/204 → 204/204, nothing outside
+  the viewport, 7/7 cells reachable by keyboard.
+- **RangeTimeline / Calendar / DatePicker — the day grid is the `--border` tier** (gh#730). The
+  knobs default to `hsl(var(--border))` instead of 27.6.0's `hsl(var(--input) / 0.5)`: L* 78.67 →
+  93.80 light (1.738 → 1.149 on the card/popover), 32.99 → 20.76 dark (1.946 → 1.270) — the same
+  weight as the component's own outer frame, a Card edge and a DataTable row, so the grid can no
+  longer read heavier than the box around it. `--input / 0.25` was measured (L* 89.10) and rejected
+  as still darker than `--border`. On the `--muted` weekday header the rule reads 1.054 — the tint,
+  not the ruling, separates those cells; that cost is recorded in the stylesheet. Restore the
+  previous weight with `--calendar-grid-border-color: hsl(var(--input) / 0.5)`.
+- **Calendar / DatePicker — the month caption no longer floats above a 32px void** (gh#730).
+  `.ui-calendar-month` no longer sets a gap that stacked with the grid's own margin;
+  `--calendar-grid-space-block-start` is the single caption→weekday step, now `space-3`:
+  32px → 12px, popover 286.2 → 266.2px tall.
+- **Calendar / DatePicker — the nav chevrons share the grid's inset** (gh#730).
+  `.ui-calendar-nav` is absolutely positioned against the padding box, so it escaped
+  `--calendar-space-inset` entirely: the `‹` / `›` buttons sat 4px from the popover content edge
+  while the grid started at 12px. `--calendar-nav-space-inline` now reads that one token — both
+  12px, 0.00px apart, LTR and RTL, bordered and unbordered.
+- **RangeTimeline — tick and band labels are centred on their column** (gh#730). A day number was
+  21.074px from its column centre and a month band label 172.000px from its band centre; both are
+  within 0.004px now, and 27.6.0's band/tick/grid edge alignment stays 0px. A band clipped by the
+  range centres on its visible part, as MS Project and Jira Timeline do.
+- **Timeline paints its whole progress column from ONE hue** (gh#731). The done dot read `--success`
+  (the status green) while the current dot and the travelled line read `--primary`, so one rail
+  carried two unrelated roles and re-theming the action colour moved only half of it. All three now
+  default to `hsl(var(--primary))` — the contract `Steps` already uses for `finish` + `process`, and
+  antd's — and the current item is told apart by its ring (`--timeline-dot-current-ring-width`),
+  together with `aria-current="step"`, the sr-only prefix and a distinct glyph. Measured: the done
+  dot goes 2.18:1 → 6.31:1 against the card in light and 7.22:1 → 9.84:1 in dark, its glyph 6.31 /
+  10.72:1, and the ring reads 4.33 / 6.11:1 against the dot it surrounds. Timeline has no `tone`
+  axis, so `--success` is unchanged everywhere it marks a real status.
+- **Upload — a file row wraps its actions instead of pushing them off the frame** (gh#733). Every
+  action is a labelled `Button` whose min-content width is its own text, so only the name block
+  could shrink; once it was at zero the row was still one un-wrapping line and the trailing actions
+  laid out PAST its end edge, off the frame with no scroll container. Measured on the Upload frame
+  (row clientWidth vs scrollWidth): 210/315 at 320px with the download button 24px and remove 70px
+  outside the frame, 239/315 at 375, 254/315 at 390, 700/700 at 768. The actions now sit in one
+  group that wraps under the name. `listType="picture"` (gh#720) widened the deficit but did not
+  create it — a `text` row carrying preview + download + remove clips at the same widths. The
+  gh#720 boxes are unchanged (36×36 leading box, 20×20 mark, 58.41px rows). The nightly viewport
+  matrix (188 frames × 8 widths) is back to 0 frames with overflow or clipped controls.
+- **MCP: the server reads the installed `@godxjp/ui` from disk at answer time, not from its launch
+  env** (gh#729). `GODX_UI_VERSION` is written when the server STARTS, so a process left running
+  from an older pin carried an older env and could not notice the package had moved past it —
+  measured: a project pinned 27.8.0 while the process serving that session had launched at 27.3.1,
+  answered from the 27.3.1 catalog, and printed no version line at all. Every answer now resolves
+  the nearest `node_modules/@godxjp/ui/package.json` and names its source; when the installed
+  package is newer in ANY semver component a `⚠️ SERVER OLDER THAN INSTALLED PACKAGE` line says the
+  catalog may be MISSING props that exist and that the fix is to restart the session. Cached until
+  the file's mtime moves (~2.4µs per answer), silent fallback when unreadable.
+- `docs/general/icon` — the two-Button row wraps at 320px (gh#733, docs only; the `Icon` component
+  was never at fault, and its nine steps still measure 10/12/14/16/20/24/36/40/48px).
+
+### Added
+
+- **`AppShell logoCompact` / `logoCompactBelow`** (gh#728) — the brand node a narrow bar gets
+  instead of `logo` (default step `sm`). A stylesheet can only crop artwork it did not author,
+  because `viewBox` is an attribute; passing a mark-only node here is how a consumer chooses what
+  the narrow bar shows. Both nodes render and the breakpoint drops one, so exactly one brand is in
+  the accessibility tree.
+- **`Topbar overflow`** (`"scroll" | "clip"`, default `"scroll"`, gh#728) — the bar's overflow
+  contract. The BAR scrolls on the inline axis while the start cluster keeps a floor of one cell and
+  the end cluster keeps its cells whole, so a cell that does not fit is off-port rather than
+  half-painted; nothing is `display: none`, Tab reaches every cell and the browser scrolls the
+  focused one fully into view. `.ui-topbar-end` is now `flex: 0 1 auto`, so a deficit is shared
+  instead of landing entirely on the start cluster. `overflow="clip"` restores the previous slicing.
+- **`RangeTimeline density`** (gh#730) — `compact | default | comfortable`, the canonical
+  `DensityProp` DataTable already takes. Day-column width only: 42 / 56 / 70px, `default`
+  unchanged, so no existing Gantt moves; a 31-day axis needs 1558px instead of 1992px. Row height,
+  bar height and the label column are identical at every step. Retune with
+  `--range-timeline-unit-width-{compact,default,comfortable}`.
+- **`Tree divided`** (gh#732) — rules between rows for a page-index tree used as navigation inside a
+  Card. `border-block-start` on every node except the first of the outline, at the FULL width of the
+  row on every level (the indent is the row's own padding, never a margin, so a child row cannot
+  read as a nested table): measured 9 rules for 10 nodes, each spanning 0 → 286 at depth 0, 1 and 2.
+  **Defaults to `false`**, so no existing Tree changes: unlike `RangeTimeline bordered`, a rule is
+  chrome and Tree's chrome defaults quiet. Row height and hit target unchanged at 32px.
+- **`--tree-divider-color`** (gh#732) — `initial` with `hsl(var(--border))` at the call site: the
+  light divider tier `ListRow`, `Command` and `Table` already read, not the heavier tier reported as
+  too dark in gh#730.
+- **`--timeline-dot-done-foreground`** and **`--timeline-dot-current-ring-width`** (gh#731). To
+  restore the previous green/violet pairing, set the done dot's fill AND its ink together — the two
+  roles have opposite ink polarity, so the fill alone leaves a near-white glyph at 2.18:1.
+
 ## [27.8.0] - 2026-09-17
 
 MINOR. A TopbarItem that sets neither new prop renders byte-identical markup.

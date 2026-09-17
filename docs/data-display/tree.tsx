@@ -100,6 +100,48 @@ const fileDetails: Record<string, { size: string; changed: string }> = {
   "docs/tree.mdx": { size: "4.1 KB", changed: "2026-09-10" },
 };
 
+// ── the page index used as NAVIGATION inside a Card (`divided`, gh#732) ──────────────────────
+const wikiPages: TreeNodeProp[] = [
+  {
+    value: "handbook",
+    label: "社内ハンドブック",
+    children: [
+      { value: "handbook/onboarding", label: "入社手続き", isLeaf: true },
+      { value: "handbook/expenses", label: "経費精算", isLeaf: true },
+      {
+        value: "handbook/security",
+        label: "情報セキュリティ",
+        children: [
+          { value: "handbook/security/passwords", label: "パスワード規程", isLeaf: true },
+          { value: "handbook/security/incidents", label: "インシデント報告", isLeaf: true },
+        ],
+      },
+    ],
+  },
+  {
+    value: "product",
+    label: "プロダクト仕様",
+    children: [
+      { value: "product/release", label: "リリース手順", isLeaf: true },
+      { value: "product/support", label: "サポート窓口", isLeaf: true },
+    ],
+  },
+  { value: "minutes", label: "議事録", isLeaf: true },
+];
+
+const wikiPageDetails: Record<string, { updated: string; author: string }> = {
+  handbook: { updated: "2026-09-01", author: "総務部" },
+  "handbook/onboarding": { updated: "2026-08-18", author: "人事部" },
+  "handbook/expenses": { updated: "2026-07-30", author: "経理部" },
+  "handbook/security": { updated: "2026-09-11", author: "情報システム部" },
+  "handbook/security/passwords": { updated: "2026-09-11", author: "情報システム部" },
+  "handbook/security/incidents": { updated: "2026-06-02", author: "情報システム部" },
+  product: { updated: "2026-09-14", author: "プロダクト部" },
+  "product/release": { updated: "2026-09-14", author: "プロダクト部" },
+  "product/support": { updated: "2026-05-20", author: "CS部" },
+  minutes: { updated: "2026-09-16", author: "総務部" },
+};
+
 // ── card 3 · async branches (fieldNames + loadData + titleRender) ────────────────────────────
 type Department = { id: string; name: string; leaf?: boolean; units?: Department[] };
 
@@ -130,6 +172,8 @@ export default function Demo() {
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
   // Card 2 — selection is controlled and drives the detail pane.
   const [openFile, setOpenFile] = React.useState<string | undefined>("src/components/tree.tsx");
+  // The page index — the tree IS the navigation, so selection is what the reading pane follows.
+  const [openPage, setOpenPage] = React.useState<string | undefined>("handbook/security/passwords");
   // Card 3 — async children land in state, exactly as a real fetch would.
   const [departments, setDepartments] = React.useState<Department[]>(initialDepartments);
   // Card 5 — independent (strict) checks, and a multi-select tree.
@@ -232,6 +276,56 @@ export default function Demo() {
                     icon={FolderTree}
                     title="ファイルが選択されていません"
                     description="ツリーからファイルを選ぶと詳細が出ます。"
+                  />
+                )}
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ページ一覧をナビゲーションに使う（divided）</CardTitle>
+            <CardDescription>
+              ドキュメント／wiki のページ一覧のように、ツリーそのものが画面のナビゲーションになる
+              ときは divided で行間に罫を引きます。罫は各行の block-start に 1
+              本ずつ、外側の最初の行にだけ引かれません。 深さに関係なく行の幅いっぱいに走るので
+              （インデントは行の padding であって margin ではありません）、 子行が「表の中の表」に
+              見えることはありません。色は --tree-divider-color（既定 hsl(var(--border))）。 divided
+              は既定オフで、このページの他のカードがその既定の姿です。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex gap="lg" wrap>
+              <Card className="w-72">
+                <CardHeader>
+                  <CardTitle level={3}>ページ一覧</CardTitle>
+                </CardHeader>
+                <CardContent flush>
+                  <Tree
+                    aria-label="ページ一覧"
+                    divided
+                    treeData={wikiPages}
+                    defaultExpandAll
+                    value={openPage}
+                    onValueChange={(next) => setOpenPage(next as string | undefined)}
+                  />
+                </CardContent>
+              </Card>
+              <Flex direction="col" gap="sm">
+                {openPage && wikiPageDetails[openPage] ? (
+                  <Descriptions
+                    items={[
+                      { label: "パス", children: openPage },
+                      { label: "最終更新", children: wikiPageDetails[openPage].updated },
+                      { label: "更新者", children: wikiPageDetails[openPage].author },
+                    ]}
+                  />
+                ) : (
+                  <EmptyState
+                    icon={FolderTree}
+                    title="ページが選択されていません"
+                    description="左の一覧からページを選んでください。"
                   />
                 )}
               </Flex>

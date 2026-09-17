@@ -948,7 +948,22 @@ export const COMPONENT_PROP_REGISTRY = {
   AppShellProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp"],
+    vocabulary: [
+      "ChildrenProp",
+      "BreakpointProp",
+      {
+        field: "logoCompact",
+        local: true,
+        reason:
+          "The brand node a narrow bar gets instead of `logo` — the consumer's own mark/viewBox, which a stylesheet cannot produce (gh#728).",
+      },
+      {
+        field: "logoCompactBelow",
+        local: true,
+        reason:
+          "Flex `hideBelow` scoped to the brand cell — the step at which `logoCompact` takes over (gh#728).",
+      },
+    ],
   },
   AuthShellProp: {
     group: "layout",
@@ -1365,7 +1380,15 @@ export const COMPONENT_PROP_REGISTRY = {
   TopbarProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp"],
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "The bar's overflow contract — `scroll` (default) keeps every cell reachable, `clip` is the pre-gh#728 slicing.",
+      },
+    ],
   },
   TopbarItemProp: {
     group: "layout",
@@ -3453,6 +3476,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "SizeProp",
       "ClassNameProp",
       "IdProp",
+      {
+        field: "divided",
+        local: true,
+        reason:
+          "Rules between the rows — a hairline on every node's block-start but the outline's first, full row width at every depth (gh#732). Default false, because chrome defaults quiet here (#44). Not antd's spelling: antd's Tree has no such capability, and `bordered` already means a grid's frame plus column rules on Table / Calendar / RangeTimeline; see docs/DESIGN-AUTHORITY.md.",
+      },
     ],
   },
   CardProp: {
@@ -3606,6 +3635,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/range-timeline.tsx",
     vocabulary: [
       "LabelProp",
+      // The CANONICAL three-step axis, the same type DataTable takes — not a local subset. It
+      // moves `--range-timeline-unit-width` only (42 / 56 / 70px per day), never the row or bar
+      // height, so a compact Gantt is the same schedule with more days on screen (gh#730).
+      "DensityProp",
       {
         field: "columns",
         local: true,

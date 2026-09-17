@@ -1841,7 +1841,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-month-space-gap",
     "value": "var(--space-4)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "description": "Gap BETWEEN side-by-side months (a range picker's two panels) — not the caption→grid step. * Until gh#730 `.ui-calendar-month` carried it too, and a month has exactly two children, so it * stacked with --calendar-grid-space-block-start into one 32px void under 「2026年9月」 that a * screenshot read as a missing week row. One gap, one token: the month column no longer sets a * gap and --calendar-grid-space-block-start is the whole caption→weekday step."
   },
   {
     "name": "--calendar-caption-space-inline",
@@ -1860,8 +1860,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-nav-space-inline",
-    "value": "var(--space-1)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "var(--calendar-space-inset)",
+    "description": "THE SAME INSET AS THE GRID, by construction rather than by coincidence (gh#730 item 5). * `.ui-calendar-nav` is `position: absolute; inset-inline: 0`, and an absolutely positioned box * resolves its insets against the PADDING box — so the nav escapes the calendar's own * --calendar-space-inset and its padding is the whole inset the chevrons get. At space-1 the `‹` * button's outer edge measured 4px from the popover content edge while the weekday row and every * day column started at 12px: an 8px split, reported as 「lề của button và calendar ko bằng * nhau」. Pointing this at --calendar-space-inset makes the two ONE value — retuning the * calendar's inset moves the chevrons with the grid, in LTR and RTL alike."
   },
   {
     "name": "--calendar-nav-rest-alpha",
@@ -1870,8 +1870,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-grid-space-block-start",
-    "value": "var(--space-4)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "var(--space-3)",
+    "description": "THE caption→weekday-row step, the only one now (gh#730): measured 32px before, 12px after. * space-3 rather than space-2 because the unruled grid's own row rhythm is * --calendar-week-space-block-start (space-2, 8px) — at 8px the caption would read as one more * week row, at 12px it still reads as the boundary of a group."
   },
   {
     "name": "--calendar-week-space-block-start",
@@ -1926,7 +1926,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-grid-border-color",
     "value": "initial",
-    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--input) / 0.5))` * so it follows a scoped theme. Default --input at half alpha, 1.74:1 light / 1.95:1 dark on the * popover: the full --input (3.47 / 3.88) read too dark, the decorative --border (1.15) was * invisible. Same weight as the RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input))` for the heavier line."
+    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--border)))` * so it follows a scoped theme. The --border tier: L* 93.80 / 1.149:1 on the popover in light, * L* 20.76 / 1.270:1 in dark — a rule exactly as heavy as a Card edge or a DataTable row rule. * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47 / * 3.88) to --input/0.5 (1.74 / 1.95, L* 78.67), and gh#730 measured that still darker than the * --border every card and table uses and asked for the --border tier itself. Same tier as the * RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 * weight or `hsl(var(--input))` for the heavy line."
   },
   {
     "name": "--transfer-pane-min-height",
@@ -2846,7 +2846,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--timeline-dot-done-background",
     "value": "initial",
-    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
+    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. ONE HUE down the whole progress column (gh#731): done, current and the travelled line all default to hsl(var(--primary)), the way Steps paints `finish` and `process`; current is told apart by its ring, not by a second role. To restore the pre-27.9 green/violet pairing, set the done dot's FILL and its INK together — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.19:1 (gh#643): --timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));"
+  },
+  {
+    "name": "--timeline-dot-done-foreground",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--timeline-dot-current-background",
@@ -2857,6 +2862,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--timeline-line-completed-background",
     "value": "initial",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--timeline-dot-current-ring-width",
+    "value": "var(--stroke-xl)",
+    "description": "The current dot's ring is the ONLY chromatic difference from a done dot, so it is `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing."
   },
   {
     "name": "--qr-code-foreground",
@@ -3005,7 +3015,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--range-timeline-unit-width",
+    "value": "var(--range-timeline-unit-width-default)",
+    "description": "Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads. * `density` re-points it per instance at the three steps below — set THIS one in a theme to * move every step's baseline, set a step to retune one density."
+  },
+  {
+    "name": "--range-timeline-unit-width-compact",
+    "value": "calc(var(--control-height-sm) * 1.5)",
+    "description": "Day-column steps on the `density` axis (gh#730). `default` is the shipped 56px, unchanged, so * no existing Gantt moves; `compact` is 1.5 control-sm (42px), which leaves a 24px content box — * measured, the widest two-digit day label across the ja/en/vi/ar/fa/hi/th/bn numbering systems * is 19.86px (Thai ๒๗), so the tick still fits; `comfortable` is 2.5 (70px) for a wide screen. * Multiples of --control-height-sm, never literals, so the axis follows the global * density/scaling factor too."
+  },
+  {
+    "name": "--range-timeline-unit-width-default",
     "value": "calc(var(--control-height-sm) * 2)",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-unit-width-comfortable",
+    "value": "calc(var(--control-height-sm) * 2.5)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -3021,12 +3046,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--range-timeline-border-color",
     "value": "var(--border)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "description": "The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same * rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier * (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be * heavier than the frame around it, and at one tier it cannot become so under any theme."
   },
   {
     "name": "--range-timeline-grid-color",
     "value": "initial",
-    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--input) / 0.5))` so it follows a * scoped theme; --input at half alpha, 1.74:1 light / 1.95:1 dark on the card, the same weight * as the Calendar grid — the full --input (3.47) read too dark, --border (1.15) is not seen. * Set any colour to retint, e.g. `hsl(var(--input))` for a heavier grid."
+    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--border)))` so it follows a scoped * theme. The --border tier: L* 93.80 / contrast 1.149 on the card in light, L* 20.76 / 1.270 in * dark — identical to the outer frame and to a DataTable row rule, which is the whole point. * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47) * to --input/0.5 (1.74, L* 78.67), and gh#730 reported that still darker than the --border (L* * 93.80) every card and table uses, so the eye followed the grid instead of the bars. * Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight."
   },
   {
     "name": "--range-timeline-grid-width",
@@ -5739,6 +5764,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--app-shell-brand-max-inline-size",
+    "value": "none",
+    "description": "HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is * `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and * everything past that is cropped from the inline-end — which is the half a lockup can lose, * because a lockup leads with its mark in both directions. A theme that wants the wordmark to * survive on a phone raises the compact cap; a theme with a very wide lockup lowers the other. * Choosing WHAT the narrow bar shows, rather than how much of it, is `AppShell logoCompact`: * `viewBox` is an attribute and no stylesheet can set one."
+  },
+  {
+    "name": "--app-shell-brand-compact-max-inline-size",
+    "value": "var(--app-shell-bar-height)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+  },
+  {
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
     "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. * * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": * * - `--app-shell-sidebar-width` the sidebar track, expanded. * - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. * - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the * `navRail` slot is filled (the Slack/Teams shape). * * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of * the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both * 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias * would resolve to a plausible width in either reading and break silently, which is precisely the * failure class this package gates against everywhere else."
@@ -7502,6 +7537,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tree-line-color",
     "value": "initial",
     "description": "Documented default: --tree-line-color = hsl(var(--border))."
+  },
+  {
+    "name": "--tree-divider-color",
+    "value": "initial",
+    "description": "Documented default: --tree-divider-color = hsl(var(--border))."
   },
   {
     "name": "--tree-node-hover-background",

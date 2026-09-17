@@ -110,6 +110,7 @@ function TreeRoot({
   titleRender,
   showLine = false,
   showIcon = false,
+  divided = false,
   variant = "default",
   size = "md",
   disabled = false,
@@ -544,6 +545,7 @@ function TreeRoot({
         data-size={size}
         data-variant={variant}
         data-show-line={showLine ? "true" : undefined}
+        data-divided={divided ? "true" : undefined}
         data-empty={isEmpty ? "true" : undefined}
         className={cn("ui-tree", className)}
       >

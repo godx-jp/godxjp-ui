@@ -46,6 +46,14 @@
   /* Documented default: --tree-line-color = hsl(var(--border)). */
   --tree-line-color: initial;
 
+  /* Row divider (`divided`, gh#732) — the HORIZONTAL hairline between two rows, which is a
+   * different thing from `--tree-line-color`'s vertical parent/child rail. It is the LIGHT
+   * divider tier every other row list here reads (`--list-row-border`, `--command-item-divider-
+   * color`, `--table-row-border-color`): `--border`, never the heavier `--input`, which the same
+   * owner reports as too dark on a ruled body (gh#730). */
+  /* Documented default: --tree-divider-color = hsl(var(--border)). */
+  --tree-divider-color: initial;
+
   /* Row states. Both mirror roles, so both are `initial` with the role read at the call site.
    * Documented defaults: --tree-node-hover-background = hsl(var(--accent));
    * --tree-node-selected-background = hsl(var(--accent));

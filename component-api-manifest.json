@@ -1393,6 +1393,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "logoCompact",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "logoCompactBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "mobileNav",
           "origin": "owned",
           "required": false,
@@ -11884,6 +11900,14 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "DensityProp | undefined",
+          "values": ["compact", "default", "comfortable"],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "expandedValues",
           "origin": "owned",
           "required": false,
@@ -17859,6 +17883,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "\"scroll\" | \"clip\" | undefined",
+          "values": ["scroll", "clip"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "pad",
           "origin": "owned",
           "required": false,
@@ -18214,6 +18246,14 @@
         },
         {
           "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "divided",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",

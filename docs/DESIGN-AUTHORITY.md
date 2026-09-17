@@ -298,6 +298,26 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   purpose: omitted, `flow="columns"` keeps `start` and `flow="rows"` keeps the grid's stretch, so
   no existing grid moves; antd's `Row` default is `top` in every case.
 
+- **`Tree.divided` — a new capability, named from this library, not from antd (gh#732).** antd's
+  `Tree` has no horizontal rule between nodes at all (only `showLine`, the VERTICAL parent/child
+  rail), so there is no antd spelling to port and nothing to be out of parity with. The name was
+  picked from the two the library already uses for the idea, and they are not interchangeable here:
+  **`bordered` means a GRID** — `Table` / `DataTable` "outer frame + vertical rules between
+  columns", `Descriptions` "bordered table with shaded label cells", `Calendar` "rule the day
+  grid", `RangeTimeline` "row rules, header rule, a vertical rule per column" — while the
+  horizontal hairline BETWEEN rows of a vertical list is called a **divider** everywhere it exists
+  (`--list-row-border` on `ListRow`, `--command-item-divider-color`, `--table-flush-divider-*`,
+  `--card-*-divider`). A `Tree` has no columns and no frame, so `bordered` would promise chrome the
+  prop does not draw and would collide with a real Tree frame later. `Command.split` is the same
+  hairline, but that name is antd `List.split` adopted verbatim (gh#699) and carries a second
+  meaning there — zero list padding, rows bled to the panel edge — which `Tree` must not inherit.
+  So: `divided`, matching the token `--tree-divider-color`, a positive boolean adjective like
+  `striped` (gh#700). It **defaults to `false`**, unlike `RangeTimeline bordered`: a Gantt body is
+  unreadable without a grid, whereas `Tree`'s documented chrome default is quiet (cardinal rule
+  #44 — `showLine` ships off for the same reason, and the token file states it), and default-on
+  would rule every existing tree, including the picker-sized and `size="xs"` outlines where a rule
+  every 24px is noise rather than structure. A tree used as page navigation opts in.
+
 - **`RangeTimeline` nested rows take `Tree`'s spelling, not antd's (gh#724).** antd has no Gantt;
   the nearest names are `Tree expandedKeys` / `defaultExpandedKeys` / `onExpand` and `Table
 expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mapped the Tree ones

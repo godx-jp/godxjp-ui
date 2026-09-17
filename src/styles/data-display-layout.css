@@ -594,25 +594,62 @@
     place-items: center;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--timeline-dot-done-background, hsl(var(--success)));
-    color: hsl(var(--success-foreground));
+    background: var(--timeline-dot-done-background, hsl(var(--primary)));
+    color: var(--timeline-dot-done-foreground, hsl(var(--primary-foreground)));
     font-size: var(--timeline-note-font-size);
     font-weight: var(--font-weight-medium);
     line-height: 1;
   }
 
-  /* done → success fill. */
+  /*
+   * ONE HUE DOWN THE WHOLE PROGRESS COLUMN (gh#731).
+   *
+   * `done` used to paint `hsl(var(--success))` while `current` and the travelled line painted
+   * `hsl(var(--primary))`, so a single rail carried two unrelated roles: the STATUS green for the
+   * steps behind you and the ACTION hue for where you are. Measured on /isolate/data-display-timeline
+   * in Chromium, light theme: done #69bf8e, current #7a00ff, line #7a00ff — and the green dot sat at
+   * 2.18:1 against the card, under the 3:1 SC 1.4.11 asks of a mark, while the violet one cleared
+   * 6.31:1. Re-theming `--primary` moved half the column and left the other half green.
+   *
+   * `Steps` — the same "progress through a sequence" idea, one group over — already answers this:
+   * `.ui-steps-dot[data-status="finish"]` and `[data-status="process"]` BOTH take
+   * `hsl(var(--primary))`, and process is told apart by a ring, not by a second role (antd's
+   * contract too: only `error` leaves the primary hue). So the done dot moves onto the same role and
+   * the ring becomes the whole distinction, exactly as it is in `.ui-steps-dot`.
+   *
+   * `--success` is NOT dropped from the library — it stays the STATUS green everywhere a surface
+   * really carries a status (Badge/Alert/Progress/ThoughtChain). Timeline's three-state axis is
+   * `done | current | pending`, which is POSITION IN A SEQUENCE, not status; it has no tone axis, so
+   * nothing here was a status mark in the first place. A consumer who wants the old pairing back
+   * sets the two `--timeline-dot-done-*` knobs (see src/tokens/components/data-display.css).
+   */
   .ui-timeline-dot[data-status="done"] {
-    background: var(--timeline-dot-done-background, hsl(var(--success)));
-    color: hsl(var(--success-foreground));
+    background: var(--timeline-dot-done-background, hsl(var(--primary)));
+    color: var(--timeline-dot-done-foreground, hsl(var(--primary-foreground)));
   }
 
-  /* current → primary fill + ring (also the legacy data-current shorthand). */
+  /*
+   * current → the SAME fill, distinguished by the ring (also the legacy data-current shorthand).
+   *
+   * Width and alpha are `.ui-steps-dot[data-status="process"]`'s, token-for-token
+   * (`--steps-dot-process-ring-width` is `--stroke-xl`, alpha 0.2), because the two rings now mean
+   * the same thing. Measured light / dark: the halo paints #e3cafd / #463f49 — 1.46:1 / 1.61:1
+   * against the card but 4.33:1 / 6.11:1 against the dot it surrounds, and it grows the dot's
+   * footprint 24px → 32px. A tint can never reach 3:1 on the card AND stay separate from the fill
+   * (at α 0.5 it is 2.73:1 on the card and only 2.31:1 on the fill — a bigger dot, not a ring), so
+   * the ring is deliberately a secondary cue: `aria-current="step"`, the localized sr-only prefix
+   * and a different glyph (Plane / pip vs CheckCircle2 / check) carry the state non-chromatically.
+   * That makes Timeline strictly MORE distinguishable than Steps, whose dot has no glyph at all.
+   *
+   * Fill-vs-outline (`.ui-steps-marker`'s answer) was measured and rejected: Timeline's `pending`
+   * is ALREADY an outline on the surface, so an outlined current would collide with it and would
+   * make the focal step the lightest mark on the rail, ending the travelled line in a hole.
+   */
   .ui-timeline-dot[data-status="current"],
   .ui-timeline-dot[data-current="true"] {
     background: var(--timeline-dot-current-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
+    box-shadow: 0 0 0 var(--timeline-dot-current-ring-width) hsl(var(--primary) / 0.2);
   }
 
   /* pending → muted outline on the surface (no fill). */
@@ -677,7 +714,8 @@
      * `auto` crushed the time slot to 50.6px over THREE lines while the title kept 210.4px, while
      * `0%` leaves it at its natural 119.7px on one line and hands the title the remainder.
      *
-     * check:timeline-title-fill measures all three claims against docs/data-display/timeline.tsx.
+     * Recorded here only: the gate that once measured these three claims (check:timeline-title-fill)
+     * no longer exists in package.json or scripts/.
      */
     min-inline-size: 0;
     flex: 1 1 0%;
@@ -1625,10 +1663,23 @@
     display: grid;
     grid-template-columns: repeat(var(--range-timeline-units, 1), minmax(0, 1fr));
   }
+  /* The tick and band labels are CENTRED on their column, the convention of every Gantt (and of
+   * this repo's own Calendar weekday row); before gh#730 the day number sat at the inline start
+   * of a 65.07px cell, measured 21.07px from its centre, and a month band label hugged the left
+   * edge of a 420.46px band, 172px off centre.
+   *
+   * The `padding-inline-start` compensation is not decoration: the grid rule lives INSIDE the
+   * cell box on the END edge, so a symmetric padding centres the label in a content box that is
+   * one rule narrower than the track — measured exactly −0.500px on every column. Giving the
+   * start edge the rule's own width back makes the label centre the TRACK centre, 0.000px, in
+   * LTR and RTL alike. Track edges are unaffected either way: the tracks are sized by the grid
+   * (`minmax(0, 1fr)`), so padding can never move one. */
   .ui-range-timeline-column {
     min-inline-size: 0;
     overflow: hidden;
     padding: var(--space-2);
+    padding-inline-start: calc(var(--space-2) + var(--range-timeline-grid-width));
+    text-align: center;
     border-inline-end: var(--range-timeline-grid-width) solid
       hsl(var(--range-timeline-border-color));
   }
@@ -1663,19 +1714,36 @@
   }
   /* Ruled (`bordered`, the default): every internal line — row rules, the band/tick seam, the
    * label-column divider, header and body column rules — reads the grid knob, so the header is no
-   * heavier than the body. `initial` in the token tier, --input at half alpha at the call site:
-   * 1.74:1 light / 1.95:1 dark on the card, 1.68 / 1.80 on the --muted header. The full --input
-   * (3.47:1) was reported as too dark; --border measured 1.15:1 and a 1px rule in it is not seen.
-   * The same weight as the Calendar grid. Pinned by range-timeline-grid.test.tsx. */
+   * heavier than the body. `initial` in the token tier, the --border tier at the call site.
+   *
+   * THE OWNER HAS NOW ASKED THREE TIMES, and each answer is in the measurement: 25.3.0 turned the
+   * ruling on at all; 27.6.0 lightened the full --input (3.463:1, L* 56.87 on the card) to
+   * --input/0.5 (1.738:1, L* 78.67) because it read too dark; gh#730 measured that 78.67 against
+   * the --border every card, table row and this component's own outer frame draws in (L* 93.80,
+   * 1.149:1) and reported the grid as HEAVIER than the frame around it, so the eye tracked the
+   * grid instead of the bars. --border is the terminal answer to "lighter": the grid is now
+   * exactly a rule like every other rule, and can never out-weigh the box it sits in.
+   * The same tier as the Calendar grid. Pinned by range-timeline-grid.test.tsx. */
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column {
-    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
+    border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--border)));
   }
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row {
     border-block-start: var(--range-timeline-grid-width) solid
-      var(--range-timeline-grid-color, hsl(var(--input) / 0.5));
+      var(--range-timeline-grid-color, hsl(var(--border)));
+  }
+  /* `density` (gh#730) — the axis step, and ONLY the axis step: the row height, the bar height and
+   * the label column are the same at every density, so a compact Gantt is the same schedule with
+   * more days on screen, not a smaller one. Re-points the live knob rather than adding a second
+   * one, and only for a non-default step, so a theme's own --range-timeline-unit-width still owns
+   * the default timeline. */
+  .ui-range-timeline[data-density="compact"] {
+    --range-timeline-unit-width: var(--range-timeline-unit-width-compact);
+  }
+  .ui-range-timeline[data-density="comfortable"] {
+    --range-timeline-unit-width: var(--range-timeline-unit-width-comfortable);
   }
   .ui-range-timeline-outside {
     position: absolute;
@@ -2265,6 +2333,22 @@
     );
     border-inline-start: 1px solid var(--tree-line-color, hsl(var(--border)));
     content: "";
+  }
+
+  /* Row dividers (`divided`, gh#732) — chrome, therefore OFF unless asked for (cardinal rule #44),
+   * the same default as the rails above. The rule is drawn on each row's BLOCK-START, so it sits
+   * BETWEEN two rows and never under the last one, and the only row that skips it is the FIRST of
+   * the whole outline — the first row of a child group still follows its parent row, so it keeps
+   * its rule. Indentation lives in the row's own `padding-inline-start`, never in a margin, so the
+   * rule already runs the FULL width of the row at every depth; an indented rule would make the
+   * children read as a nested table. The first row zeroes the COLOUR rather than the border, so
+   * every row keeps the same border box and the outline's geometry does not shift by a hairline. */
+  .ui-tree[data-divided="true"] .ui-tree-node {
+    border-block-start: var(--stroke-hairline) solid var(--tree-divider-color, hsl(var(--border)));
+  }
+
+  .ui-tree[data-divided="true"] > .ui-tree-node:first-child {
+    border-block-start-color: transparent;
   }
 
   .ui-tree-loading {

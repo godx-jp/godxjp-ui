@@ -183,7 +183,9 @@ export default function Demo() {
 
               <Flex direction="col" gap="xs">
                 <Heading level={3}>Button の中 · 明示した段が Button の既定に勝つ</Heading>
-                <Flex direction="row" gap="sm" align="center">
+                {/* 320px では 2 つのラベル付き Button が 1 行に収まらない。Button はラベル幅より
+                    縮まないので、行を折り返させるのは並べた側の責任（`wrap`）。 */}
+                <Flex direction="row" gap="sm" align="center" wrap>
                   <Button size="sm">
                     <Icon as={Download} size="sm" />
                     書き出す

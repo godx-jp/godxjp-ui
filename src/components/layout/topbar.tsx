@@ -15,6 +15,7 @@ export function Topbar({
   className,
   children,
   height,
+  overflow = "scroll",
   pad,
   style,
   ...props
@@ -22,6 +23,10 @@ export function Topbar({
   return (
     <div
       data-height={height}
+      // The overflow contract, published on the bar (gh#728). Always emitted, including for the
+      // default, because "scroll" is what the shipped bar DOES and a consumer reading the DOM —
+      // or a gate measuring it — must not have to know which value is the default one.
+      data-overflow={overflow}
       style={{ ...style, ...padStyle(pad, undefined) }}
       data-slot="topbar"
       className={cn("ui-topbar", className)}

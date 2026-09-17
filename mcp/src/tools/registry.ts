@@ -10,6 +10,9 @@
  * dumping 50KB blobs.
  */
 
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+
 import {
   COMPONENTS,
   componentsByGroup,
@@ -400,45 +403,76 @@ export const TOOL_DEFINITIONS = [
 const TOOL_NAME_SET: ReadonlySet<string> = new Set(TOOL_DEFINITIONS.map((t) => t.name));
 
 /**
- * The first line of every catalog answer: which server produced it (gh#722).
+ * The first line of every catalog answer: which server produced it (gh#722), and which
+ * @godxjp/ui it is actually looking at (gh#729).
  *
- * Measured: a project had two registrations of this server, the project's pinned one and a stale
- * one from user-scoped config serving a catalog five majors old. An agent called the stale one
- * and got a confident, complete page for a component removed in 22.0.0 — nothing in the answer
+ * Measured (gh#722): a project had two registrations of this server, the project's pinned one and
+ * a stale one from user-scoped config serving a catalog five majors old. An agent called the stale
+ * one and got a confident, complete page for a component removed in 22.0.0 — nothing in the answer
  * said which version spoke. The line is fixed-format so it can be read at a glance and matched
  * by `/^@godxjp\/ui-mcp (\d+\.\d+\.\d+)/`. The version comes from this package's package.json,
  * the same source as `serverInfo.version`.
+ *
+ * Measured (gh#729): the installed version and the SOURCE it came from now go on the same line,
+ * because the two sources disagree exactly when it matters. `GODX_UI_VERSION` is written by the
+ * launcher when the server STARTS, so a process left running from an older pin carries an older
+ * env and cannot notice that the package on disk moved past it; the package on disk can. The
+ * suffix is omitted when neither source answers, leaving the line exactly as gh#722 froze it.
  */
-export function catalogVersionLine(): string {
+export function catalogVersionLine(installed = resolveInstalledUi()): string {
   const range = (pkg as { godxUiCompatibility?: string }).godxUiCompatibility ?? pkg.version;
-  return `@godxjp/ui-mcp ${pkg.version} (catalog for @godxjp/ui ${range})`;
+  const line = `@godxjp/ui-mcp ${pkg.version} (catalog for @godxjp/ui ${range})`;
+  if (!installed) return line;
+  const source =
+    installed.source === "node_modules"
+      ? "read from node_modules at answer time"
+      : "from GODX_UI_VERSION at launch — node_modules/@godxjp/ui not resolved";
+  return `${line} — installed @godxjp/ui ${installed.version} (${source})`;
 }
 
 /**
- * A one-line warning when the installed @godxjp/ui (from the launcher's `GODX_UI_VERSION`) is on a
- * different MAJOR than this server — the gap in which whole components appear and disappear.
- * `null` when the version is unknown, unparseable, or on the same major.
+ * The one line that says this server and the installed @godxjp/ui are out of step — `null` when
+ * they agree, when the installed version is unknown, or when it is not a plain x.y.z.
+ *
+ * Two directions, opposite fixes, so exactly one line is printed:
+ *
+ *  - catalog NEWER than the package (gh#722, a MAJOR apart): the catalog may describe components
+ *    that do not exist here, and the fix is to align the pin.
+ *  - package NEWER than the catalog (gh#729, ANY semver component): the catalog is MISSING props
+ *    and components that DO exist — the failure that cost a consumer agent the very prop its fix
+ *    needed. The fix is to restart the session, because the running process is the stale part.
  */
-export function catalogMajorMismatchWarning(): string | null {
-  const installed = installedUiFromLauncher();
-  const iv = installed ? parseUiVersion(installed) : null;
-  const serverMajor = parseUiVersion(pkg.version)?.major;
-  if (!iv || !serverMajor || iv.major === serverMajor) return null;
+export function catalogVersionWarning(installed = resolveInstalledUi()): string | null {
+  const iv = installed ? parseUiVersion(installed.version) : null;
+  const sv = parseUiVersion(pkg.version);
+  if (!installed || !iv || !sv) return null;
+  if (compareUiVersions(iv, sv) > 0) {
+    return (
+      `⚠️ SERVER OLDER THAN INSTALLED PACKAGE: this server is @godxjp/ui-mcp ${pkg.version}, the ` +
+      `project has @godxjp/ui ${installed.version} installed — this catalog is BEHIND the package ` +
+      `and may be missing props and components that exist. Do not conclude from this answer that ` +
+      `a prop is unavailable. Restart the session so the server relaunches on the installed ` +
+      `version (run \`npx @godxjp/ui sync-rules\` first if the project's .mcp.json still pins an ` +
+      `older @godxjp/ui-mcp).`
+    );
+  }
+  if (iv.major === sv.major) return null;
   return (
     `⚠️ MAJOR MISMATCH: this server is @godxjp/ui-mcp ${pkg.version}, the project has @godxjp/ui ` +
-    `${installed} installed — this catalog may describe components that do not exist in the ` +
-    `installed package. Pin the MCP to @godxjp/ui-mcp@${installed} (\`npx @godxjp/ui sync-rules\` ` +
-    `updates the project's .mcp.json; a registration outside the project needs ` +
-    `\`claude mcp remove <key>\`), then restart the agent.`
+    `${installed.version} installed — this catalog may describe components that do not exist in ` +
+    `the installed package. Pin the MCP to @godxjp/ui-mcp@${installed.version} ` +
+    `(\`npx @godxjp/ui sync-rules\` updates the project's .mcp.json; a registration outside the ` +
+    `project needs \`claude mcp remove <key>\`), then restart the agent.`
   );
 }
 
-/** Every declared tool's answer, prefixed with the version line (and a major-mismatch warning). */
+/** Every declared tool's answer, prefixed with the version line (and an out-of-step warning). */
 export async function dispatchTool(name: string, args: Record<string, unknown>): Promise<string> {
   const out = await answerTool(name, args);
   if (!TOOL_NAME_SET.has(name)) return out; // "Unknown tool: …" is not a catalog answer
-  const warning = catalogMajorMismatchWarning();
-  return `${catalogVersionLine()}\n${warning ? `${warning}\n` : ""}\n${out}`;
+  const installed = resolveInstalledUi(); // resolved at most once per answer, cached on mtime
+  const warning = catalogVersionWarning(installed);
+  return `${catalogVersionLine(installed)}\n${warning ? `${warning}\n` : ""}\n${out}`;
 }
 
 async function answerTool(name: string, args: Record<string, unknown>): Promise<string> {
@@ -612,7 +646,18 @@ function draftBugReport(args: Record<string, unknown>): string {
  */
 function parseUiVersion(s: string) {
   const m = /^(\d+)\.(\d+)\.(\d+)/.exec(s.trim());
-  return m ? { major: m[1], minor: m[2] } : null;
+  return m ? { major: m[1], minor: m[2], patch: m[3] } : null;
+}
+
+type UiVersion = NonNullable<ReturnType<typeof parseUiVersion>>;
+
+/** −1 / 0 / 1 on the numeric x.y.z triple. Any component counts, not just the major (gh#729). */
+function compareUiVersions(a: UiVersion, b: UiVersion): number {
+  for (const part of ["major", "minor", "patch"] as const) {
+    const delta = Number(a[part]) - Number(b[part]);
+    if (delta !== 0) return delta < 0 ? -1 : 1;
+  }
+  return 0;
 }
 
 function catalogRangeMinor() {
@@ -633,6 +678,83 @@ export function uiVersionMatchesCatalog(installed: string): boolean {
 function installedUiFromLauncher(): string | undefined {
   const v = process.env.GODX_UI_VERSION?.trim();
   return v || undefined;
+}
+
+/** Where the installed version came from — the two disagree when the server is stale (gh#729). */
+export type InstalledUi = { version: string; source: "node_modules" | "GODX_UI_VERSION" };
+
+const UI_PACKAGE_JSON = join("node_modules", "@godxjp", "ui", "package.json");
+
+/** One resolution, remembered until the file it read changes. `null` path = "looked, not found". */
+let uiPackageCache: {
+  cwd: string;
+  path: string | null;
+  mtimeMs: number | null;
+  version: string | null;
+} | null = null;
+
+function mtimeOf(path: string): number | null {
+  try {
+    return statSync(path).mtimeMs;
+  } catch {
+    return null;
+  }
+}
+
+/** The nearest `node_modules/@godxjp/ui/package.json` at or above `from`, or null. */
+function findUiPackageJson(from: string): string | null {
+  let dir = resolve(from);
+  for (;;) {
+    const candidate = join(dir, UI_PACKAGE_JSON);
+    if (existsSync(candidate)) return candidate;
+    const parent = dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+/**
+ * The installed version read from disk, mirroring `readConsumerUiMetadata` in
+ * `scripts/_agent-setup.mjs` — the launcher runs with the consumer project as cwd, so the package
+ * sits in a `node_modules` at or above it. Missing, unreadable, or malformed is not an error here:
+ * the caller falls back to the launch env, and a warning line must never break an answer.
+ */
+function installedUiOnDisk(): string | null {
+  const cwd = process.cwd();
+  const hit = uiPackageCache;
+  if (hit?.cwd === cwd && hit.path !== null && mtimeOf(hit.path) === hit.mtimeMs) {
+    return hit.version;
+  }
+
+  const path = findUiPackageJson(cwd);
+  let version: string | null = null;
+  if (path) {
+    try {
+      const raw = JSON.parse(readFileSync(path, "utf8")) as { version?: unknown };
+      if (typeof raw.version === "string" && raw.version.trim()) version = raw.version.trim();
+    } catch {
+      version = null; // malformed or unreadable — silently fall back
+    }
+  }
+  uiPackageCache = { cwd, path, mtimeMs: path ? mtimeOf(path) : null, version };
+  return version;
+}
+
+/**
+ * The installed @godxjp/ui, preferring the package ON DISK over the launch env (gh#729): a server
+ * left running from an older pin carries an older `GODX_UI_VERSION`, so the env alone can never
+ * report that the package moved past this catalog.
+ */
+export function resolveInstalledUi(): InstalledUi | null {
+  const onDisk = installedUiOnDisk();
+  if (onDisk) return { version: onDisk, source: "node_modules" };
+  const fromEnv = installedUiFromLauncher();
+  return fromEnv ? { version: fromEnv, source: "GODX_UI_VERSION" } : null;
+}
+
+/** Test seam: forget the cached resolution. Production never needs it — mtime does the work. */
+export function resetInstalledUiCache(): void {
+  uiPackageCache = null;
 }
 
 function catalogWithheldDiagnostic(
