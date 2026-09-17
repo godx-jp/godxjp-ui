@@ -149,7 +149,12 @@ export type FormFieldControlProp<TFieldValues extends FieldValues> = Pick<
   "id" | "field" | "labelAddon" | "layout" | "labelWidth" | "controlWidth" | "colSpan"
 > & {
   name: FieldPath<TFieldValues>;
-  label: LabelProp;
+  /**
+   * Field label. Optional (antd `Form.Item`): omitted, the field renders NO label row and reserves
+   * no space for one — the boolean-field shape, where the control carries its own inline label
+   * (`valuePropName="checked"` + `<Checkbox {...field}>label</Checkbox>`).
+   */
+  label?: LabelProp;
   required?: RequiredProp;
   helper?: HelperProp;
   /**
@@ -196,23 +201,53 @@ export type FormFieldControlProp<TFieldValues extends FieldValues> = Pick<
    */
   preserve?: boolean;
   className?: string;
-  children: (field: {
-    id: string;
-    name: string;
-    value: unknown;
-    onChange: (...args: unknown[]) => void;
-    onValueChange: (...args: unknown[]) => void;
-    onBlur: () => void;
-    /**
-     * Callback ref typed on `HTMLElement`, so `{...field}` spreads onto every godx-ui control
-     * (Input, Textarea, Select, NumberInput, DatePicker) with no cast. react-hook-form only needs
-     * `focus()` on it to focus the first invalid field.
-     */
-    ref: React.RefCallback<HTMLElement>;
-    /** Present (and `true`) only when the field is disabled, so `{...field}` never re-enables a control. */
-    disabled?: DisabledProp;
-  }) => React.ReactNode;
-};
+} & (
+    | {
+        /**
+         * Which prop of the control carries the value (antd `valuePropName`). Default `"value"`: the
+         * render prop receives `value` / `onChange` / `onValueChange`.
+         */
+        valuePropName?: "value";
+        children: (field: {
+          id: string;
+          name: string;
+          value: unknown;
+          onChange: (...args: unknown[]) => void;
+          onValueChange: (...args: unknown[]) => void;
+          onBlur: () => void;
+          /**
+           * Callback ref typed on `HTMLElement`, so `{...field}` spreads onto every godx-ui control
+           * (Input, Textarea, Select, NumberInput, DatePicker) with no cast. react-hook-form only needs
+           * `focus()` on it to focus the first invalid field.
+           */
+          ref: React.RefCallback<HTMLElement>;
+          /** Present (and `true`) only when the field is disabled, so `{...field}` never re-enables a control. */
+          disabled?: DisabledProp;
+        }) => React.ReactNode;
+      }
+    | {
+        /**
+         * `"checked"` (antd `valuePropName="checked"`) — a boolean field. The render prop receives
+         * `checked` / `onCheckedChange` instead of `value` / `onChange`, so
+         * `{(field) => <Checkbox {...field}>label</Checkbox>}` (or `<Switch {...field} />`) needs no
+         * wiring. The stored value is always a boolean: `"indeterminate"` and any non-`true` payload
+         * store `false`.
+         */
+        valuePropName: "checked";
+        children: (field: {
+          id: string;
+          name: string;
+          /** `true` only when the stored value is exactly `true`. */
+          checked: boolean;
+          onCheckedChange: (checked: boolean | "indeterminate") => void;
+          onBlur: () => void;
+          /** Same callback ref as the `"value"` bag — spreads onto `Checkbox` / `Switch` with no cast. */
+          ref: React.RefCallback<HTMLElement>;
+          /** Present (and `true`) only when the field is disabled, so `{...field}` never re-enables a control. */
+          disabled?: DisabledProp;
+        }) => React.ReactNode;
+      }
+  );
 
 /**
  * @see FormFieldArray — dynamic repeating fields (antd `Form.List`) on react-hook-form's

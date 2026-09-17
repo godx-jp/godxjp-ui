@@ -166,6 +166,12 @@
     > * {
     max-inline-size: 100%;
   }
+  /* gh#709: a field with no `label` renders no label cell, so its control would auto-place into
+   * the LABEL track. Pin it to the control track so it lines up with its labelled siblings. */
+  .ui-form-field[data-collapse-below="false"][data-layout="horizontal"]
+    > .ui-form-field-control:first-child {
+    grid-column-start: 2;
+  }
   .ui-form-field[data-collapse-below="false"][data-label-align="end"]:is(
       [data-layout="horizontal"],
       [data-layout="inline"]
@@ -194,6 +200,10 @@
       > .ui-form-field-label
       > * {
       max-inline-size: 100%;
+    }
+    .ui-form-field[data-collapse-below="sm"][data-layout="horizontal"]
+      > .ui-form-field-control:first-child {
+      grid-column-start: 2;
     }
     .ui-form-field[data-collapse-below="sm"][data-label-align="end"]:is(
         [data-layout="horizontal"],
@@ -225,6 +235,10 @@
       > * {
       max-inline-size: 100%;
     }
+    .ui-form-field[data-collapse-below="md"][data-layout="horizontal"]
+      > .ui-form-field-control:first-child {
+      grid-column-start: 2;
+    }
     .ui-form-field[data-collapse-below="md"][data-label-align="end"]:is(
         [data-layout="horizontal"],
         [data-layout="inline"]
@@ -255,6 +269,10 @@
       > * {
       max-inline-size: 100%;
     }
+    .ui-form-field[data-collapse-below="lg"][data-layout="horizontal"]
+      > .ui-form-field-control:first-child {
+      grid-column-start: 2;
+    }
     .ui-form-field[data-collapse-below="lg"][data-label-align="end"]:is(
         [data-layout="horizontal"],
         [data-layout="inline"]
@@ -284,6 +302,10 @@
       > .ui-form-field-label
       > * {
       max-inline-size: 100%;
+    }
+    .ui-form-field[data-collapse-below="xl"][data-layout="horizontal"]
+      > .ui-form-field-control:first-child {
+      grid-column-start: 2;
     }
     .ui-form-field[data-collapse-below="xl"][data-label-align="end"]:is(
         [data-layout="horizontal"],

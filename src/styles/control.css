@@ -447,6 +447,19 @@
     line-height: 0;
   }
 
+  /* gh#709: centre the box on the label's FIRST line. With `align-items: flex-start` a 16px box
+   * sat 2.5px above the centre of the 21px label line (measured in Chromium on
+   * data-entry-form-root). The cell takes one line box of the label's own type — same font-size
+   * and line-height as `.ui-choice-label` — and centres the control inside it, so a wrapped label
+   * or a description below still keeps the box on line one. */
+  .ui-choice-field > .ui-choice-control {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-base);
+    line-height: var(--control-label-line-height);
+    min-block-size: 1lh;
+  }
+
   /* ── THE HIT TARGET OF A CHOICE CONTROL (gh#476) ───────────────────────────────────────────
    * react-aria paints the control on the `<label>` and hides the real `<input>` inside a 1px
    * clipped span at that label's top-left, so a pointer aimed at the box lands on the LABEL and
@@ -1303,7 +1316,9 @@
     border: 0;
     padding: 0;
     cursor: pointer;
-    color: hsl(var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha));
+    color: hsl(
+      var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha)
+    );
     line-height: 0;
   }
   .ui-rating-star:disabled {

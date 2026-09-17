@@ -2,7 +2,8 @@ import * as React from "react";
 import { Checkbox as AriaCheckbox } from "react-aria-components";
 import { Check, Minus } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { useFieldIdentity } from "../../lib/field-a11y";
+import { mergeAriaIds, useFieldIdentity } from "../../lib/field-a11y";
+import { Label } from "./label";
 import { CheckboxGroup } from "./checkbox-group";
 import { withOwnHitTarget } from "./choice-hit-target";
 
@@ -80,9 +81,24 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
     required,
     value,
     tabIndex,
+    children,
     "data-field": ownField,
     ...rest
   } = props as CheckboxRootProps & { "data-field"?: string };
+  // antd `<Checkbox>label</Checkbox>` (gh#709): `children` is the INLINE label, so the box is
+  // wrapped in the row `Checkbox.Group` renders for an option and the label is a real
+  // `<label for>` on the input — clicking the text toggles, and the text is the accessible name.
+  // The label needs an id to point at, and a box with no `id` of its own gets a generated one that
+  // is NEVER handed to `useFieldIdentity` (a generated `«r3»` must not become a `data-field`).
+  const autoId = React.useId();
+  const hasInlineLabel = !(
+    children === undefined ||
+    children === null ||
+    children === false ||
+    children === ""
+  );
+  const inputId = props.id ?? (hasInlineLabel ? autoId : undefined);
+  const inlineLabelId = `${inputId}-inline-label`;
   // The machine key for a Checkbox NESTED under a layout wrapper (the 「不明」 box beside
   // a value input is the shape this was measured on). `{}` in every other case, and the resolved
   // `name` reaches the native `<input>` react-aria renders, so the box still submits natively.
@@ -117,7 +133,21 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
   );
   const state = checked ?? uncontrolled;
   const invalid = props["aria-invalid"];
-  return (
+  const isInvalid = invalid !== undefined && invalid !== false && invalid !== "false";
+  // gh#709: an invalid box ALSO lists its error in `aria-describedby`, the way react-aria's own
+  // field wiring does. `aria-errormessage` stays (the FormField contract), but screen readers
+  // announce it unevenly, and a boolean field has no other text that tells the user what is wrong.
+  const describedBy = isInvalid
+    ? mergeAriaIds(props["aria-describedby"], props["aria-errormessage"])
+    : props["aria-describedby"];
+  // Under a `FormField` WITH a label the clone hands over `aria-labelledby` (the field label),
+  // which would REPLACE the `<label for>` name; the inline label's id is appended so the name
+  // reads "field label, box label" instead of silently losing the box text.
+  const labelledBy =
+    hasInlineLabel && props["aria-labelledby"] !== undefined
+      ? mergeAriaIds(props["aria-labelledby"], inlineLabelId)
+      : props["aria-labelledby"];
+  const box = (
     <AriaCheckbox
       // `aria-label` / `aria-labelledby` / `aria-describedby` / `aria-errormessage` are forwarded
       // by react-aria onto the real `<input>` — the semantic focus target, which is also where
@@ -138,7 +168,10 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
       isRequired={required}
       // react-aria drops a raw `aria-invalid`; `isInvalid` is the knob that puts it back on the
       // input (and `data-invalid` on this root, which the class below now keys off).
-      isInvalid={invalid !== undefined && invalid !== false && invalid !== "false"}
+      isInvalid={isInvalid}
+      id={inputId}
+      aria-describedby={describedBy}
+      aria-labelledby={labelledBy}
       // `tabIndex={-1}` is how a caller takes the box out of the tab ring when the ROW is the tab
       // stop (TreeSelect). react-aria filters raw DOM props off the root, so it is translated.
       excludeFromTabOrder={tabIndex !== undefined && tabIndex < 0}
@@ -158,7 +191,8 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
         // 16px box collapses to nothing. CheckboxVisual already carries the same three for the
         // same reason.
         "peer ui-checkbox data-[invalid]:border-destructive data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground inline-flex shrink-0 items-center justify-center shadow-xs transition-shadow",
-        className,
+        // With an inline label the row is what a caller styles; the box keeps its own classes.
+        hasInlineLabel ? undefined : className,
       )}
       // gh#476: react-aria hides the real input in a 1px clipped span at the label's top-left,
       // so the box a user aims at belongs to the LABEL and the input cannot be clicked — by a
@@ -180,6 +214,20 @@ const CheckboxRoot = React.forwardRef<HTMLLabelElement, CheckboxRootProps>((prop
         {state ? <CheckboxGlyph state={state} /> : null}
       </span>
     </AriaCheckbox>
+  );
+  if (!hasInlineLabel) return box;
+  // The SAME markup `Checkbox.Group` renders for an option (`.ui-choice-field` ›
+  // `.ui-choice-control` + `.ui-choice-content` › `.ui-choice-label`), so a single labelled box and
+  // a group option cannot drift apart.
+  return (
+    <div data-slot="checkbox-field" className={cn("ui-choice-field", className)}>
+      <div className="ui-choice-control">{box}</div>
+      <div className="ui-choice-content">
+        <Label id={inlineLabelId} htmlFor={inputId} className="ui-choice-label">
+          {children}
+        </Label>
+      </div>
+    </div>
   );
 });
 CheckboxRoot.displayName = "Checkbox";
