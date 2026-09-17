@@ -5568,7 +5568,7 @@ import remarkGfm from "remark-gfm";
     name: "Timeline",
     group: "data-display",
     tagline:
-      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`.",
+      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
     props: [
       {
         name: "items",
@@ -5591,6 +5591,9 @@ import remarkGfm from "remark-gfm";
       "DO NOT hand-roll a vertical event list with divs, icons, and connector lines — that is exactly what Timeline ships. Do not apply extra padding or wrapping outside the component; it manages its own rail and spacing internally.",
       "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
       "DO wrap Timeline in `<CardContent>` when placing it inside a `Card` — bare `Card` has no inner padding, so the rail will render flush against the card edge without `CardContent`.",
+      "THE PROGRESS COLUMN IS ONE HUE (gh#731). The done dot, the current dot and the travelled line all default to `hsl(var(--primary))` — the same contract `Steps` uses for `finish` + `process`, and antd's (only `error` leaves the primary hue). The current item is told apart by a ring (`--timeline-dot-current-ring-width`, `--steps-dot-process-ring-width`'s value), by `aria-current=\"step\"` + a localized sr-only prefix, and by a different glyph — never by a second colour role. Re-theme `--primary` and the whole rail follows. Measured light: done 2.18:1 → 6.31:1 against the card, glyph 6.31:1 on the fill; dark 7.22:1 → 9.84:1, glyph 10.72:1.",
+      "DON'T expect `--success` on a `status: 'done'` item — `done | current | pending` is POSITION IN A SEQUENCE, not status, and Timeline has no `tone` axis. Put a real status on the item's `title` or `note` with a `<Badge tone=\"success\">`, which is the surface that owns the status green.",
+      "TO RESTORE the pre-27.9 green/violet pairing, set the done dot's fill AND its ink together in your theme (global or `[data-tenant]`) — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.18:1 (gh#643): `--timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));`. `--timeline-dot-current-background` and `--timeline-line-completed-background` retint the other two surfaces the same way.",
     ],
     useCases: [
       "Shipment / delivery tracking — showing a parcel's journey through 'Order placed → Packed → In transit → Delivered' with timestamps and a current-stop indicator.",
