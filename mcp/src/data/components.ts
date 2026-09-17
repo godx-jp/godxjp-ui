@@ -117,6 +117,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Handle rejected submission.",
       },
       {
+        name: "submitFailedMessage",
+        type: "ReactNode | false",
+        description:
+          "Banner shown when onSubmit rejects. Default: localized dataEntry.form.submitFailed text; a node replaces it; false never shows it. Skipped by default for a validation rejection (400/422) once the `errors` bag holds a message.",
+      },
+      {
         name: "onReset",
         type: "() => void",
         description: "Called after values reset.",
@@ -187,6 +193,9 @@ export const COMPONENTS: ComponentEntry[] = [
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
       "Use godx-ui controls and preserve field names, errors and disabled state.",
+      'SUBMIT-FAILED BANNER: when `onSubmit` rejects, FormRoot shows a destructive banner (`submitFailedMessage`, default the localized `dataEntry.form.submitFailed`). It is SKIPPED for a validation rejection (`classifyQueryError(error).category === "validation"`: 400/422) once the `errors` bag holds at least one message — the fields / `<FormErrors />` show it, as antd shows field errors instead of a form banner — and stays skipped for that failure if the app later clears the bag. A validation rejection with an empty or message-less bag, and every 5xx / network / unknown rejection, still shows it, so a failure is never silently swallowed. Errors mapped with react-hook-form `setError` instead of `errors` are not detected: pass `submitFailedMessage={false}` there. `submitFailedMessage={false}` never shows the banner; a node replaces its text.',
+      'CANONICAL SERVER-VALIDATION FORM (gh#698) \u2014 a 422 renders EXACTLY ONCE: `const m = useMutation({ mutationFn: save }); <FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} /><FormFieldControl name="code" label="Code">{(field) => <Input {...field} value={String(field.value ?? "")} />}</FormFieldControl></FormRoot>` (`serverErrors` = your API client\'s mapper from its error to the Laravel-style `{ key: string[] }` bag). Each message appears once: under its field (claimed key) or in `<FormErrors />` (unclaimed key); `AlertMutationFeedback` skips the validation error (gh#690) and FormRoot shows no `submitFailed` banner. A 5xx / network rejection still shows both the FormRoot banner and the AlertMutationFeedback alert \u2014 pass `submitFailedMessage={false}` to keep only the latter.',
+      "DON'T hand-guard the banner or wrap `mutateAsync` in try/catch just to hide a 422 — pass the bag to `errors` and the form renders it once.",
     ],
     useCases: ["Validated settings forms", "Nested repeating data entry"],
     related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
@@ -282,6 +291,8 @@ export const COMPONENTS: ComponentEntry[] = [
     usage: [
       "Use inside the documented form composition; do not nest native form elements.",
       "Use godx-ui controls and preserve field names, errors and disabled state.",
+      'RENDER-PROP BAG: `{ id, name, value, onChange, onValueChange, onBlur, ref, disabled? }`. `ref` is `RefCallback<HTMLElement>` (gh#698), so `{...field}` spreads onto Input, Textarea, Select, NumberInput and DatePicker with NO cast — never cast or drop the ref (react-hook-form focuses the first invalid field through it). `value` is `unknown`: narrow it per control (`String(field.value ?? "")`, `typeof field.value === "number" ? field.value : null`).',
+      "SERVER VALIDATION: a `FormField name` under `FormRoot errors={…}` claims its bag key, so the 422 message renders once under the field — see FormRoot's canonical server-validation composition (FormRoot + FormErrors + AlertMutationFeedback renders a 422 exactly once).",
     ],
     useCases: ["Validated settings forms", "Nested repeating data entry"],
     related: ["Form", "FormField", "FormRoot", "FormFieldControl"],
@@ -6033,6 +6044,7 @@ import remarkGfm from "remark-gfm";
       "DO give every visible field its `name` when adopting `Form errors` on a screen. A field that keeps a manual `error={errors.x}` WITHOUT `name` does not claim its key, and FormErrors will show that message twice.",
       "DON'T hand-roll a destructive Alert bound to `errors.hidden_key` per page — that is exactly the per-page listing this component exists to remove, and it goes stale the moment the server adds a new derived-field rule.",
       "DON'T use FormErrors as a generic mutation-failure banner — that is `Alert.QueryError` / toast territory. FormErrors is scoped to the VALIDATION bag of the surrounding form.",
+      "INSIDE FormRoot: `<FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} />\u2026</FormRoot>` \u2014 FormRoot mounts the claim registry, so `<FormErrors />` needs no `errors` of its own and shows only unclaimed keys. A 422 renders exactly once: claimed keys under their fields, unclaimed keys here, no AlertMutationFeedback alert (gh#690) and no FormRoot submitFailed banner (gh#698).",
       "ARRAY ENTRIES: a `string[]` bag value lists every message in the banner; a claimed field shows only the FIRST message of its array (Laravel `$errors->first()` semantics).",
       "SIBLING FORMS: when the screen is split into several Card+Form sections, wrap the REGION in `<FormErrorsProvider errors={form.errors}>` and give NO `errors` to the section Forms — they join the shared registry and one `<FormErrors />` covers the whole screen. A nested Form WITH its own `errors` deliberately starts a separate (shadowed) registry.",
     ],
