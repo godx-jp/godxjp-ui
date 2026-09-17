@@ -7722,7 +7722,7 @@ export function BillingFields() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Kept from the Radix era. react-aria's Modal always locks scroll and hides the background from assistive tech, so `false` no longer turns that off.",
+          "`false` renders a NON-MODAL dialog (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The dialog keeps role=dialog + its title as name, centred fixed placement, sizes and tokens; focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Ignored, with a dev warning, under `variant=\"destructive\"` — an alertdialog is always modal. gh#696.",
       },
     ],
     usage: [
@@ -7732,10 +7732,12 @@ export function BillingFields() {
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
+      "DO set `modal={false}` when the user must keep working on the page behind an open dialog (edit a list while a payment or detail dialog stays open). Control `open` yourself: an outside press no longer closes it, so give it a visible close action. Escape closes it only while focus is inside the dialog.",
     ],
     useCases: [
       "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
       "Read-only detail popup — show a full transaction audit trail, attachment preview, or approval history in a modal without leaving the list page. Use `Dialog` with no `DialogFooter` action buttons, just a close trigger.",
+      "Non-modal side task — `modal={false}` keeps a list or cart behind the dialog editable while the dialog stays open (take payment while the order lines can still change).",
       "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state.",
     ],
     related: [

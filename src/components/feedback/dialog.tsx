@@ -1,10 +1,13 @@
 import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
-import { chain, mergeRefs } from "@react-aria/utils";
+import { createPortal } from "react-dom";
+import { chain, mergeRefs, useExitAnimation } from "@react-aria/utils";
+import { FocusScope } from "react-aria";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
 import { AlertCircle, X } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import { isDevelopment } from "../../lib/dev";
 import { Slot } from "../../lib/slot";
 import type { ConfirmVariantProp, ToneProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
@@ -138,6 +141,34 @@ export type {
  * 12 export `AlertDialog*` Ở LẠI và chạy y như cũ — gỡ chúng là breaking change
  * và cần một bản major. Chúng là LỐI CŨ; `variant` là lối chuẩn. Quy tắc chọn
  * cho consumer nằm trong `docs/DESIGN-AUTHORITY.md`.
+ *
+ * ## `modal={false}` — hộp thoại KHÔNG-modal (gh#696)
+ *
+ * WAI-ARIA APG cho phép hộp thoại không-modal: "Dialog (Modal) Pattern" ghi rõ một
+ * dialog non-modal là cửa sổ mà người dùng vẫn tương tác được với phần còn lại của
+ * trang (https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/ — mục "non-modal
+ * dialogs" trong phần giới thiệu). RAC không có kiểu overlay đó: `ModalOverlay` /
+ * `Modal` LUÔN khoá cuộn, `ariaHideOutside`, bẫy tiêu điểm và đóng khi bấm ra
+ * ngoài. Nên nhánh `modal={false}` KHÔNG đi qua `ModalOverlay`:
+ *
+ *     modal (mặc định) → ModalOverlay > Modal > Dialog     (y như trước)
+ *     modal={false}    → portal > FocusScope autoFocus restoreFocus > Dialog
+ *
+ *   • không `ariaHideOutside`, không `inert`, không khoá cuộn, không màn nền
+ *     (`DialogContent` vốn đã tự `position: fixed` + `--overlay-z-index`, nên vị
+ *     trí giữa màn hình giữ nguyên);
+ *   • bấm ra ngoài KHÔNG đóng, và không có gì chặn con trỏ ngoài hộp thoại;
+ *   • `FocusScope` KHÔNG có `contain`: mở thì tiêu điểm vào trong, Tab ra ngoài
+ *     được, đóng thì trả tiêu điểm về trigger (chỉ khi tiêu điểm còn ở trong hộp
+ *     thoại — đã Tab sang ô khác thì để yên);
+ *   • Esc đóng khi tiêu điểm Ở TRONG hộp thoại (phím bắt trên chính thẻ dialog —
+ *     Esc gõ ở trang phía sau thuộc về trang phía sau);
+ *   • `role="dialog"`, tên từ tiêu đề, và KHÔNG có `aria-modal`.
+ *
+ * `role="alertdialog"` (`variant="destructive"`, họ `AlertDialog*`) LUÔN modal:
+ * APG định nghĩa alertdialog là hộp thoại modal. `AlertDialogRoot` / `AlertDialog`
+ * không nhận `modal` ở kiểu; `<Dialog modal={false}>` + nội dung destructive thì
+ * vẫn modal và log một cảnh báo dev.
  */
 
 /** Gói prop khe `render` của RAC trao lại — nó có thêm `data-rac`, thứ kiểu JSX không khai báo. */
@@ -205,6 +236,9 @@ const DialogLabelContext = React.createContext<{
  */
 const DialogVariantContext = React.createContext<ConfirmVariantProp>("default");
 
+/** `modal` của `DialogRoot` — xem đầu tệp, mục gh#696. Mặc định modal, nên họ `AlertDialog*` giữ nguyên. */
+const DialogModalContext = React.createContext(true);
+
 const OVERLAY_CLASS =
   "ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0";
 const CONTENT_CLASS =
@@ -237,10 +271,71 @@ function DialogShell({
   const descriptionId = React.useId();
   const labels = React.useMemo(() => ({ titleId, descriptionId }), [titleId, descriptionId]);
   const dataState = state.isOpen ? "open" : "closed";
+  const requestedModal = React.useContext(DialogModalContext);
+  // alertdialog LUÔN modal (APG) — xem đầu tệp, mục gh#696.
+  const modal = requestedModal || role === "alertdialog";
+  const contentRef = React.useRef<HTMLElement>(null);
 
-  useOverlayCloseFocus(state.isOpen, onCloseAutoFocus);
+  const ignoresNonModal = !requestedModal && role === "alertdialog";
+  React.useEffect(() => {
+    if (ignoresNonModal && isDevelopment()) {
+      console.warn(
+        "[godxjp-ui] Dialog: `modal={false}` is ignored for `variant=\"destructive\"` — an " +
+          "alertdialog is always modal (WAI-ARIA APG).",
+      );
+    }
+  }, [ignoresNonModal]);
+
+  // Non-modal: tiêu điểm đã Tab sang trang phía sau thì đóng KHÔNG được kéo nó về trigger.
+  useOverlayCloseFocus(state.isOpen, onCloseAutoFocus, modal ? undefined : contentRef);
 
   const overlayPortalContainer = useOverlayPortalContainer();
+  // Chỉ nhánh non-modal gắn `contentRef`; nhánh modal để `ModalOverlay` tự lo hoạt ảnh thoát.
+  const isExiting = useExitAnimation(contentRef, !modal && state.isOpen);
+
+  if (!modal) {
+    if ((!state.isOpen && !isExiting) || typeof document === "undefined") {
+      return null;
+    }
+    return createPortal(
+      <FocusScope autoFocus restoreFocus>
+        <RacDialog
+          role={role}
+          aria-labelledby={props["aria-labelledby"] ?? titleId}
+          aria-describedby={props["aria-describedby"] ?? descriptionId}
+          data-slot="dialog-content"
+          data-state={dataState}
+          className={cn(CONTENT_CLASS, className)}
+          render={(racProps) => {
+            const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
+            return (
+              <section
+                {...rest}
+                {...props}
+                style={style}
+                ref={mergeRefs(ref, racRef, contentRef)}
+                onKeyDown={chain(props.onKeyDown, (event: React.KeyboardEvent<HTMLElement>) => {
+                  // Popover / menu lồng bên trong tự `stopPropagation` Esc của chúng.
+                  if (
+                    event.key === "Escape" &&
+                    !event.defaultPrevented &&
+                    !event.nativeEvent.isComposing
+                  ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    state.setOpen(false);
+                  }
+                })}
+              />
+            );
+          }}
+        >
+          <DialogLabelContext.Provider value={labels}>{children}</DialogLabelContext.Provider>
+        </RacDialog>
+      </FocusScope>,
+      overlayPortalContainer ?? document.body,
+    );
+  }
 
   return (
     <ModalOverlay
@@ -276,8 +371,9 @@ function DialogShell({
 
 interface DialogRootProps extends OverlayOpenProps, Pick<DialogProp, "variant"> {
   /**
-   * Giữ tên prop của Radix. RAC không có kiểu overlay không-modal: `Modal` LUÔN khoá cuộn và ẩn
-   * nền khỏi trình đọc màn hình, nên `modal={false}` không còn tắt được điều đó.
+   * `false` = hộp thoại không-modal (WAI-ARIA APG cho phép): trang phía sau vẫn tương tác được và
+   * vẫn trong cây trợ năng, không khoá cuộn, không màn nền, bấm ra ngoài không đóng; tiêu điểm vào
+   * hộp thoại khi mở, Tab ra được, Esc (tiêu điểm ở trong) đóng. Xem đầu tệp, mục gh#696.
    */
   modal?: boolean;
   children?: React.ReactNode;
@@ -286,14 +382,16 @@ interface DialogRootProps extends OverlayOpenProps, Pick<DialogProp, "variant"> 
 /** `data-slot="dialog"` cũ nằm trên Root của Radix, thứ không dựng thẻ nào — nó chưa từng ra DOM. */
 function DialogRoot({
   children,
-  modal: _modal,
+  modal = true,
   variant = "default",
   ...openProps
 }: DialogRootProps) {
   const state = useOverlayOpenState(openProps);
   return (
     <DialogOpenContext.Provider value={state}>
-      <DialogVariantContext.Provider value={variant}>{children}</DialogVariantContext.Provider>
+      <DialogModalContext.Provider value={modal}>
+        <DialogVariantContext.Provider value={variant}>{children}</DialogVariantContext.Provider>
+      </DialogModalContext.Provider>
     </DialogOpenContext.Provider>
   );
 }

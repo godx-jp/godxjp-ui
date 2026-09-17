@@ -34,6 +34,15 @@ const headerTones = [
   "neutral",
 ] as const;
 
+/** Order lines behind the non-modal payment dialog — they stay editable while it is open. */
+const initialLines = [
+  { id: "coffee", name: "ブレンドコーヒー", unitPrice: 480, quantity: 2 },
+  { id: "sandwich", name: "ミックスサンド", unitPrice: 650, quantity: 1 },
+  { id: "cake", name: "チーズケーキ", unitPrice: 520, quantity: 1 },
+];
+
+const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
+
 /**
  * Dialog · compound controlled modal for form-style flows. Always control via
  * open + onOpenChange. Include DialogHeader > DialogTitle (required for a11y).
@@ -46,6 +55,16 @@ export default function Demo() {
   const [headerTone, setHeaderTone] = useState<(typeof headerTones)[number]>("default");
   const [terminateOpen, setTerminateOpen] = useState(false);
   const [reason, setReason] = useState("");
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [lines, setLines] = useState(initialLines);
+  const total = lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const changeQuantity = (id: string, delta: number) => {
+    setLines((current) =>
+      current.map((line) =>
+        line.id === id ? { ...line, quantity: Math.max(0, line.quantity + delta) } : line,
+      ),
+    );
+  };
 
   return (
     <PageContainer
@@ -247,6 +266,69 @@ export default function Demo() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Non-modal dialog: the list behind stays editable</CardTitle>
+            <CardDescription>
+              modal=&#123;false&#125; renders a non-modal dialog, a pattern WAI-ARIA APG allows. The
+              page behind keeps working: no scrim, no scroll lock, nothing hidden from assistive
+              tech, and a press outside does not close the dialog. Open the payment dialog, then
+              change a quantity below. The total inside the dialog follows. Focus moves into the
+              dialog on open, Tab can leave it, Escape closes it while focus is inside, and focus
+              returns to the trigger.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {lines.map((line) => (
+                <Flex key={line.id} direction="row" align="center" justify="between" gap="sm">
+                  <Text>{line.name}</Text>
+                  <Flex direction="row" align="center" gap="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      aria-label={`${line.name}を減らす`}
+                      disabled={line.quantity === 0}
+                      onClick={() => changeQuantity(line.id, -1)}
+                    >
+                      −
+                    </Button>
+                    <Text aria-live="polite">{line.quantity}</Text>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      aria-label={`${line.name}を増やす`}
+                      onClick={() => changeQuantity(line.id, 1)}
+                    >
+                      ＋
+                    </Button>
+                  </Flex>
+                </Flex>
+              ))}
+              <Dialog modal={false} open={paymentOpen} onOpenChange={setPaymentOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm">お会計へ</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-sm">
+                  <DialogHeader title="お会計" subtitle="注文明細は背面で編集を続けられます。" />
+                  <DialogBody>
+                    <Flex direction="row" justify="between">
+                      <Text tone="muted">合計</Text>
+                      <Text>{yen.format(total)}</Text>
+                    </Flex>
+                  </DialogBody>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setPaymentOpen(false)}>
+                      キャンセル
+                    </Button>
+                    <Button onClick={() => setPaymentOpen(false)}>支払いを確定</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>
