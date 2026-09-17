@@ -36,6 +36,9 @@ const HELP = {
   It is the postinstall step, run by hand — use it when the app installs with ignore-scripts=true,
   where postinstall never runs and the rules go stale. Silent no-op in CI and when opted out.
 
+  Restart the session afterwards: rewriting the .mcp.json pin does not relaunch an MCP server that
+  is already running, and that process keeps answering from the catalog it started with.
+
   It also READS Claude Code's ~/.claude.json and reports any @godxjp/ui-mcp registered there (user
   scope, or local scope for this project): key, pin, and the claude mcp command that updates it.
   That file is outside the project and is never written; env values are never printed.`,

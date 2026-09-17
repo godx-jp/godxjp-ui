@@ -64,18 +64,33 @@ npx @godxjp/ui-mcp
 
 Restart Claude Code. The 25 tools appear under `mcp__godx_ui__*`.
 
-**Which server answered.** Every tool answer opens with one line naming the server that produced
-it, read from this package's `package.json`:
+**Which server answered, and which package it is looking at.** Every tool answer opens with one
+line naming the server that produced it — read from this package's `package.json` — followed by the
+installed `@godxjp/ui` it resolved and the source it came from:
 
 ```text
-@godxjp/ui-mcp 27.5.0 (catalog for @godxjp/ui 27.5.x)
+@godxjp/ui-mcp 27.8.0 (catalog for @godxjp/ui 27.8.x) — installed @godxjp/ui 27.9.0 (read from node_modules at answer time)
 ```
 
-When the launcher passes `env.GODX_UI_VERSION` (the `.mcp.json` entry `sync-rules` writes does) and
-that installed `@godxjp/ui` is on a different **major**, a second line starts with
-`⚠️ MAJOR MISMATCH:` — the catalog may describe components that do not exist in the installed
-package. Compare the first line with `npm ls @godxjp/ui` before trusting a page; an answer with no
-such line comes from a release that predates it (gh#722) and is stale.
+The installed version is read from the nearest `node_modules/@godxjp/ui/package.json` at or above
+the server's working directory, **at answer time**, and falls back to the launcher's
+`env.GODX_UI_VERSION` (`from GODX_UI_VERSION at launch — node_modules/@godxjp/ui not resolved`)
+when no package is found. The suffix is dropped when neither source answers. That distinction is
+the point of gh#729: the env is written when the server STARTS, so a process left running from an
+older pin carries an older env and cannot notice the package on disk moved past it.
+
+A second line appears when the two are out of step — one line, whichever direction applies:
+
+- `⚠️ SERVER OLDER THAN INSTALLED PACKAGE:` — the installed package is newer than this catalog in
+  **any** semver component, so the catalog may be missing props and components that exist. Do not
+  read a missing prop here as "unavailable". Restart the session (run `npx @godxjp/ui sync-rules`
+  first if the project's `.mcp.json` still pins an older `@godxjp/ui-mcp`) — rewriting the pin
+  alone does not relaunch a server that is already running.
+- `⚠️ MAJOR MISMATCH:` — the catalog is a major ahead of the installed package and may describe
+  components that do not exist in it. Align the pin, then restart.
+
+Compare the first line with `npm ls @godxjp/ui` before trusting a page; an answer with no version
+line at all comes from a release that predates it (gh#722) and is stale.
 
 **One registration, not two.** Register the server once, in the project's `.mcp.json`. A second
 registration in `~/.claude.json` (user scope, or local scope under `projects[<path>]`) answers beside
