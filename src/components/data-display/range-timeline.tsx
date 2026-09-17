@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
-import { ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
 import { Button } from "../general/button";
 import { Text } from "../general/typography";
 import { cn } from "../../lib/utils";
@@ -12,6 +12,12 @@ export type RangeTimelineRow = {
   end: number;
   startLabel: string;
   endLabel: string;
+  /**
+   * Nesting level, 0 for a top-level row. Rows arrive flat and depth-first (a parent, then its
+   * descendants); a row is a parent when the row after it is deeper. The component draws the
+   * indent (`--range-timeline-indent-width` per level) and the disclosure.
+   */
+  depth?: number;
 };
 
 export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
@@ -28,15 +34,87 @@ export type RangeTimelineProps = React.HTMLAttributes<HTMLElement> & {
    * the header-only ruling. Colour `--range-timeline-grid-color`, weight `--range-timeline-grid-width`.
    */
   bordered?: boolean;
+  /**
+   * Controlled ids of the EXPANDED parent rows (same spelling as `Tree expandedValues`). A folded
+   * parent hides every descendant row — label and bar.
+   */
+  expandedValues?: readonly string[];
+  /** Uncontrolled initial expanded parents. Omitted: every parent starts expanded. */
+  defaultExpandedValues?: readonly string[];
+  /** Fires with the next expanded parent ids, for controlled and uncontrolled timelines alike. */
+  onExpandedValuesChange?: (values: string[]) => void;
 };
 
 /** A horizontal range axis. Units and labels are data; the design system owns all geometry. */
 export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
   function RangeTimeline(
-    { label, columns, bands, rows, today, onRangeChange, bordered = true, className, ...props },
+    {
+      label,
+      columns,
+      bands,
+      rows,
+      today,
+      onRangeChange,
+      bordered = true,
+      expandedValues,
+      defaultExpandedValues,
+      onExpandedValuesChange,
+      className,
+      ...props
+    },
     ref,
   ) {
     const { t } = useTranslation();
+    const reactId = React.useId();
+    const depthOf = (row: RangeTimelineRow) => Math.max(0, Math.floor(row.depth ?? 0));
+    // Without any depth the timeline is flat and renders exactly as it did before nesting existed.
+    const nested = rows.some((row) => depthOf(row) > 0);
+    const parents = rows
+      .filter((row, index) => index + 1 < rows.length && depthOf(rows[index + 1]) > depthOf(row))
+      .map((row) => row.id);
+    // Uncontrolled state is the COLLAPSED set, so a parent that arrives later starts expanded.
+    const [collapsed, setCollapsed] = React.useState<ReadonlySet<string>>(
+      () =>
+        new Set(
+          defaultExpandedValues ? parents.filter((id) => !defaultExpandedValues.includes(id)) : [],
+        ),
+    );
+    const isExpanded = (id: string) =>
+      expandedValues ? expandedValues.includes(id) : !collapsed.has(id);
+    const toggleRow = (id: string) => {
+      const open = !isExpanded(id);
+      if (!expandedValues) {
+        const next = new Set(collapsed);
+        if (open) next.delete(id);
+        else next.add(id);
+        setCollapsed(next);
+      }
+      onExpandedValuesChange?.(
+        parents.filter((parent) => (parent === id ? open : isExpanded(parent))),
+      );
+    };
+    // Depth-first walk: a folded parent hides every following deeper row — label AND bar.
+    let foldedAt: number | null = null;
+    const visibleRows = rows.filter((row) => {
+      const depth = depthOf(row);
+      if (foldedAt !== null && depth > foldedAt) return false;
+      foldedAt = parents.includes(row.id) && !isExpanded(row.id) ? depth : null;
+      return true;
+    });
+    // Position among siblings (same parent), for aria-setsize / aria-posinset on a flat list.
+    const siblingsOf = (index: number) => {
+      const depth = depthOf(visibleRows[index]);
+      let first = index;
+      while (first > 0 && depthOf(visibleRows[first - 1]) >= depth) first -= 1;
+      let size = 0,
+        position = 0;
+      for (let i = first; i < visibleRows.length && depthOf(visibleRows[i]) >= depth; i += 1) {
+        if (depthOf(visibleRows[i]) !== depth) continue;
+        size += 1;
+        if (i === index) position = size;
+      }
+      return { size, position };
+    };
     const units = Math.max(
       1,
       columns.reduce((sum, column) => sum + column.units, 0),
@@ -127,7 +205,7 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
               ))}
             </div>
           </div>
-          <div className="ui-range-timeline-body">
+          <div className="ui-range-timeline-body" role={nested ? "list" : undefined}>
             {(bordered || columns.some((column) => column.muted)) && (
               // Decorative: the same unit tracks as the header columns, laid once behind every row so
               // each vertical rule runs the full body height exactly under its header column.
@@ -145,15 +223,62 @@ export const RangeTimeline = React.forwardRef<HTMLElement, RangeTimelineProps>(
                 </div>
               </div>
             )}
-            {rows.map((row) => {
+            {visibleRows.map((row, index) => {
+              // Ids from the row's position, never from `row.id` (which may hold spaces).
+              const idBase = `${reactId}-row-${rows.indexOf(row)}`;
               const delta = preview?.id === row.id ? preview.delta : 0;
               const start = Math.min(row.end, row.start + (preview?.edge === "start" ? delta : 0));
               const end = Math.max(row.start, row.end + (preview?.edge === "end" ? delta : 0));
               const left = Math.max(0, start),
                 right = Math.min(units, end + 1);
               return (
-                <div className="ui-range-timeline-row" key={row.id}>
-                  <div className="ui-range-timeline-label">{row.label}</div>
+                <div
+                  className="ui-range-timeline-row"
+                  key={row.id}
+                  {...(nested && {
+                    role: "listitem",
+                    "aria-level": depthOf(row) + 1,
+                    "aria-setsize": siblingsOf(index).size,
+                    "aria-posinset": siblingsOf(index).position,
+                  })}
+                >
+                  {nested ? (
+                    <div
+                      className="ui-range-timeline-label"
+                      data-nested="true"
+                      style={{ "--range-timeline-depth": depthOf(row) } as React.CSSProperties}
+                    >
+                      {parents.includes(row.id) ? (
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          className="ui-range-timeline-disclosure"
+                          aria-expanded={isExpanded(row.id)}
+                          aria-labelledby={`${idBase}-toggle ${idBase}-label`}
+                          onClick={() => toggleRow(row.id)}
+                        >
+                          <span id={`${idBase}-toggle`} hidden>
+                            {t("rangeTimeline.childRows")}
+                          </span>
+                          {isExpanded(row.id) ? (
+                            <ChevronDown aria-hidden="true" />
+                          ) : (
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="ui-range-timeline-disclosure-collapsed"
+                            />
+                          )}
+                        </Button>
+                      ) : (
+                        <span aria-hidden="true" className="ui-range-timeline-disclosure-spacer" />
+                      )}
+                      <div id={`${idBase}-label`} className="ui-range-timeline-label-content">
+                        {row.label}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="ui-range-timeline-label">{row.label}</div>
+                  )}
                   <div className="ui-range-timeline-track">
                     {today != null && today >= 0 && today < units && (
                       <span

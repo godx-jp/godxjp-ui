@@ -298,6 +298,23 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   purpose: omitted, `flow="columns"` keeps `start` and `flow="rows"` keeps the grid's stretch, so
   no existing grid moves; antd's `Row` default is `top` in every case.
 
+- **`RangeTimeline` nested rows take `Tree`'s spelling, not antd's (gh#724).** antd has no Gantt;
+  the nearest names are `Tree expandedKeys` / `defaultExpandedKeys` / `onExpand` and `Table
+expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mapped the Tree ones
+  onto its controlled vocabulary as `expandedValues` / `defaultExpandedValues` /
+  `onExpandedValuesChange`, and a second spelling of the same axis is what
+  `check:prop-vocabulary` exists to prevent — so `RangeTimeline` reuses those three names exactly
+  (the values are row `id`s). The shape is also `Tree`'s: flat rows plus `depth`, the component
+  owns the indent (`--range-timeline-indent-width`) and the disclosure. Two deliberate differences
+  from `Tree`: (1) a row is a parent when the NEXT row is deeper — derived from the depth-first list,
+  never from a `hasChildren` flag, so a disclosure can never promise children that are not there;
+  (2) omitted `defaultExpandedValues` starts every parent EXPANDED (a `Tree` starts closed), so
+  adding `depth` to an existing schedule never hides a row. The disclosure is a real `Button`
+  (the row is not a focusable tree item, so APG's one-tab-stop rule does not apply), and the rows
+  are a `list` of `listitem`s with `aria-level` / `aria-setsize` / `aria-posinset` — the lightest
+  role that carries a level without promising the `tree` / `treegrid` arrow-key model. A timeline
+  with no `depth > 0` keeps its pre-#724 markup byte for byte.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

@@ -540,7 +540,7 @@ export const COMPONENTS: ComponentEntry[] = [
         type: "RangeTimelineRow[]",
         required: true,
         description:
-          "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values.",
+          "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.",
       },
       { name: "today", type: "number | null", description: "Optional current unit marker." },
       {
@@ -556,6 +556,24 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input) / 0.5)`, 1.74:1 light / 1.95:1 dark on the card — lightened from the full --input (3.47 / 3.88) the owner found too dark, still well above the decorative `--border` at 1.15:1; the same weight as the Calendar grid), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
       },
+      {
+        name: "expandedValues",
+        type: "readonly string[]",
+        description:
+          "Controlled ids of the EXPANDED parent rows (same spelling as `Tree expandedValues`). A folded parent removes every descendant row — label AND bar — from the DOM and the accessibility tree; the body grid, row rules and today marker stay aligned.",
+      },
+      {
+        name: "defaultExpandedValues",
+        type: "readonly string[]",
+        description:
+          "Uncontrolled initial expanded parents. Omitted: every parent starts expanded (unlike `Tree`, whose branches start closed), so adding `depth` never hides a row.",
+      },
+      {
+        name: "onExpandedValuesChange",
+        type: "(values: string[]) => void",
+        description:
+          "Fires with the next expanded parent ids when a disclosure is toggled, for controlled and uncontrolled timelines alike.",
+      },
     ],
     example:
       '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
@@ -567,6 +585,7 @@ export const COMPONENTS: ComponentEntry[] = [
       'An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus "before" at the inline-start edge, "after" plus a chevron at the inline-end edge; the chevrons mirror under RTL.',
       "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
       "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
+      "Nested Gantt (parent/child work items): pass the server's depth-first rows with `depth` on each (`{ id, label, start, end, startLabel, endLabel, depth }`), and fold with `expandedValues` / `onExpandedValuesChange` (or `defaultExpandedValues`). Never fake an indent inside `label` — the component owns the indent, the disclosure button (named from `rangeTimeline.childRows` + the row label, `aria-expanded`) and the `list` / `listitem` + `aria-level` / `aria-setsize` / `aria-posinset` structure.",
     ],
   },
 

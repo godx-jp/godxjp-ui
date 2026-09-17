@@ -344,4 +344,6 @@
   /* Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default
    * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis. */
   --range-timeline-muted-column-background: initial;
+  /* Label-column indent per `rows[].depth` level (gh#724). The label column keeps its width. */
+  --range-timeline-indent-width: var(--space-4);
 }

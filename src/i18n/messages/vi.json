@@ -595,6 +595,7 @@
     "trendCurrent": "hiện tại"
   },
   "rangeTimeline": {
+    "childRows": "Hàng con",
     "outsideAfter": "Sau khoảng đang xem",
     "outsideBefore": "Trước khoảng đang xem",
     "schedule": "Lịch công việc"
