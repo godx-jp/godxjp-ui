@@ -54,7 +54,7 @@
      drawn from it with `conic-gradient` — no per-frame geometry ever reaches the call site. */
   --float-button-progress-offset: 0turn;
   --float-button-progress-width: var(--space-1);
-  --float-button-progress-color: hsl(var(--primary));
+  --float-button-progress-color: initial; /* default = hsl(var(--primary)), resolved at the call site */
   --float-button-progress-track-color: hsl(var(--border));
 
   /* How far a group's list travels on the way in. TIMING IS NOT HERE — `--duration-fast` and

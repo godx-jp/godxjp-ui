@@ -198,7 +198,7 @@
     content: "";
     inset: 0;
     background: conic-gradient(
-      var(--float-button-progress-color) var(--float-button-progress-offset),
+      var(--float-button-progress-color, hsl(var(--primary))) var(--float-button-progress-offset),
       var(--float-button-progress-track-color) var(--float-button-progress-offset)
     );
     mask: radial-gradient(

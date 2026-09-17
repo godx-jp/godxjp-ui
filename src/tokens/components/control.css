@@ -73,7 +73,7 @@
    * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as
    * knobs so a service theme can retune the dense-form treatment once, globally. */
   --control-variant-filled-background: var(--muted);
-  --control-variant-filled-hover-background: var(--accent);
+  --control-variant-filled-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
 
   /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
   --control-count-font-size: var(--font-size-sm);
@@ -100,7 +100,7 @@
   --slider-dot-size: var(--slider-track-height);
   --slider-dot-background: var(--background);
   --slider-dot-border-color: var(--border);
-  --slider-dot-active-border-color: var(--primary);
+  --slider-dot-active-border-color: initial; /* default = var(--primary), resolved at the call site */
   --slider-tooltip-background: var(--popover);
   --slider-tooltip-color: var(--popover-foreground);
   --slider-tooltip-font-size: var(--font-size-xs);
@@ -112,10 +112,12 @@
   --choice-button-background: var(--background);
   --choice-button-color: var(--foreground);
   --choice-button-border-color: var(--input);
-  --choice-button-selected-color: var(--primary);
-  --choice-button-selected-border-color: var(--primary);
-  --choice-button-solid-background: var(--primary);
-  --choice-button-solid-color: var(--primary-foreground);
+  /* The four brand-coloured knobs default at the call site — a `:root` binding would freeze on the
+   * root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). */
+  --choice-button-selected-color: initial; /* default = var(--primary) */
+  --choice-button-selected-border-color: initial; /* default = var(--primary) */
+  --choice-button-solid-background: initial; /* default = var(--primary) */
+  --choice-button-solid-color: initial; /* default = var(--primary-foreground) */
 
   /* Ring knobs for the two controls that historically wanted a softer mark than the global
    * default — both are filled surfaces where the ring was felt to read as a second border.

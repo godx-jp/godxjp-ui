@@ -197,7 +197,24 @@ export const TOKENS: TokenEntry[] = [
     tier: "primitive",
     role: "Opt-in decorative gradient fills, default `none`. --gradient-hero paints the PageContainer header (hero banner); --gradient-glow paints the AppShell .app-main (ambient brand wash); --gradient-brand is a spare. A service sets the full gradient, e.g. `--gradient-glow: radial-gradient(60% 80% at 50% 0%, hsl(var(--primary) / .25), transparent)`.",
   },
-  { name: "--primary", category: "semantic", tier: "semantic", role: "Action color role." },
+  {
+    name: "--primary",
+    category: "semantic",
+    tier: "semantic",
+    role: "Action color role (HSL components, no hsl() wrapper). Re-theme it on :root OR a nested [data-tenant] scope: hover, press, the primary border and the field focus halo derive from it at the element that paints (see --primary-hover / --primary-active / --primary-border / --control-outline). In a NESTED scope also set --ring, which does not follow.",
+  },
+  {
+    name: "--primary-hover / --primary-active / --primary-border / --control-outline",
+    category: "semantic",
+    tier: "semantic",
+    role: "The derived primary family (26.0.0, gh#678). Each is an `initial` knob: its colour is derived from the in-scope --primary at the painting element via `hsl(from hsl(var(--primary)) var(--<name>-channels))`, so a re-themed brand carries through hover, press, border and focus in both themes. OVERRIDE with your own `H S% L%` triplet as before. NEVER read one bare — `hsl(var(--primary-hover))` paints NOTHING; use the utility (`bg-primary-hover`, `text-primary-hover`, …) or read with the fallback `hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))`. Retune the derivation by overriding `--<name>-channels` (e.g. `h s calc(l - 8.4)`). docs/CUSTOMER-THEMING.md §Multi-tenant.",
+  },
+  {
+    name: "--ring",
+    category: "semantic",
+    tier: "semantic",
+    role: "Focus colour role, default `var(--primary)` on :root / .dark. A public role read directly as `hsl(var(--ring))`, so it resolves where it is declared: a nested scope that overrides only --primary inherits the ROOT ring (the Input focus border stays the root hue while the halo follows). Set --ring alongside --primary in every nested tenant scope. Every focus ring and focus outline reads it through --focus-ring-color at the focused element (--focus-outline-color is an `initial` knob since 26.2.0, gh#687), so setting --ring in the scope retints keyboard focus there.",
+  },
   {
     name: "--brand / --brand-foreground",
     category: "semantic",

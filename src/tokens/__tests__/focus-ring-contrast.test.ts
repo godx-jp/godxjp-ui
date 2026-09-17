@@ -259,7 +259,8 @@ describe.each(THEMES)("the cost of the default appearance ($theme)", ({ theme, s
     // keeps working; "off" is the new escape hatch. Losing either is a silent break for somebody.
     expect(axes).toContain(':root[data-focus-outline="on"]');
     expect(axes).toContain(':root[data-focus-outline="off"]');
-    expect(css).toMatch(/--focus-outline-color:\s*var\(--focus-ring-color, var\(--ring\)\)/);
+    // An `initial` knob whose default resolves at the focused element (gh#687).
+    expect(css).toMatch(/--focus-outline-color:\s*initial;/);
   });
 });
 
@@ -473,7 +474,7 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
   });
 
   it("the hue is the focus hue, because `--primary-border` cannot clear 3:1", () => {
-    expect(root).toMatch(/--focus-outline-color:\s*var\(--focus-ring-color, var\(--ring\)\)/);
+    expect(root).toMatch(/--focus-outline-color:\s*initial;/);
   });
 });
 

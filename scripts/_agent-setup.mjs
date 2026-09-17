@@ -45,6 +45,19 @@ function mcpEntryMatches(a, b) {
   return keysA.every((k) => envA[k] === envB[k]);
 }
 
+/**
+ * True when `entry` is the shape THIS package writes (`npx @godxjp/ui-mcp@<pin>`, env at most
+ * GODX_UI_VERSION), whatever pin and version it carries. Such an entry is ours to move forward on
+ * upgrade: treating it as custom left consumers on the MCP of the release they first installed
+ * (a `@godxjp/ui-mcp@25.4.0` pin survived the upgrade to 26.x).
+ */
+function isPackageWrittenMcpEntry(entry) {
+  if (entry?.command !== "npx") return false;
+  const args = entry.args ?? [];
+  if (args.length !== 1 || !/^@godxjp\/ui-mcp@[^\s]+$/.test(args[0])) return false;
+  return Object.keys(entry.env ?? {}).every((key) => key === "GODX_UI_VERSION");
+}
+
 function mcpConfigMismatchMessage(root, existing, expected) {
   const ui = readConsumerUiMetadata(root);
   const pin = expected.args?.[0] ?? "@godxjp/ui-mcp";
@@ -347,7 +360,11 @@ export function refreshBlock(current, next, startMarker, endMarker) {
   if (!endMarker) return null;
   const j = current.indexOf(endMarker, first);
   if (j < 0) return null;
-  return current.slice(0, first) + next + current.slice(j + endMarker.length);
+  // `next` ends in its own newline, and the old block's newline is still the first character after
+  // the end marker — keeping both grew the file by one blank line on every refresh.
+  let tail = current.slice(j + endMarker.length);
+  if (next.endsWith("\n") && tail.startsWith("\n")) tail = tail.slice(1);
+  return current.slice(0, first) + next + tail;
 }
 
 export function ensureMcpJson(root) {
@@ -369,10 +386,13 @@ export function ensureMcpJson(root) {
   }
   json.mcpServers = json.mcpServers ?? {};
   if (json.mcpServers[MCP_KEY]) {
-    if (!mcpEntryMatches(json.mcpServers[MCP_KEY], expected)) {
+    if (mcpEntryMatches(json.mcpServers[MCP_KEY], expected)) return "present";
+    if (!isPackageWrittenMcpEntry(json.mcpServers[MCP_KEY])) {
       return mcpConfigMismatchMessage(root, json.mcpServers[MCP_KEY], expected);
     }
-    return "present";
+    json.mcpServers[MCP_KEY] = expected;
+    writeFileAtomic(path, JSON.stringify(json, null, 2) + "\n");
+    return "refreshed";
   }
   const created = read.state === "missing";
   json.mcpServers[MCP_KEY] = expected;

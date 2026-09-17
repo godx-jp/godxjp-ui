@@ -70,4 +70,27 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
     expect(after.mcpServers["godx-ui"]).toEqual(custom);
     expect(after.mcpServers.other).toEqual({ command: "x" });
   });
+
+  it("a package-written entry with an OLD pin is moved to the installed pin", () => {
+    const root = consumerRepo({ version: "26.2.0" });
+    const stale = {
+      command: "npx",
+      args: ["@godxjp/ui-mcp@25.4.0"],
+      env: { GODX_UI_VERSION: "25.4.0" },
+    };
+    writeFileSync(
+      join(root, ".mcp.json"),
+      JSON.stringify({ mcpServers: { "godx-ui": stale, other: { command: "x" } } }, null, 2),
+    );
+
+    expect(ensureMcpJson(root)).toBe("refreshed");
+    const after = JSON.parse(readFileSync(join(root, ".mcp.json"), "utf8"));
+    expect(after.mcpServers["godx-ui"]).toEqual({
+      command: "npx",
+      args: ["@godxjp/ui-mcp@26.2.0"],
+      env: { GODX_UI_VERSION: "26.2.0" },
+    });
+    expect(after.mcpServers.other).toEqual({ command: "x" });
+    expect(ensureMcpJson(root)).toBe("present");
+  });
 });

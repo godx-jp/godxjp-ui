@@ -49,7 +49,7 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
   it("draws the mark from the global focus tokens", () => {
     const rule = shadowFormRule();
     expect(rule).toMatch(/outline:\s*var\(--focus-ring-width\) solid/);
-    expect(rule).toMatch(/var\(--focus-outline-color\)/);
+    expect(rule).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
     // The knob the private copy used to drop. A service that softens every mark must soften
     // this one too.
     expect(rule).toMatch(/var\(--focus-ring-opacity, 1\)/);

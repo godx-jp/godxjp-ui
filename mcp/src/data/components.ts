@@ -6499,7 +6499,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "onValueChange",
         type: "(value: string, option?: SearchSelectOptionProp) => void",
         description:
-          "Change handler for the data-driven API. Receives the new value string and the matching option object.",
+          'Change handler for the data-driven API. Receives the new value string and the matching option object. The signature follows `mode` / `labelInValue`, and a bare `(value, option) => …` is inferred for each (no annotation needed under `strict`, gh#679): single `string` / `SelectOption | undefined`; `mode="multiple" | "tags"` `string[]` / `SelectOption[] | undefined`; `labelInValue` the `{ value, label }` shapes.',
       },
       {
         name: "renderOption",
