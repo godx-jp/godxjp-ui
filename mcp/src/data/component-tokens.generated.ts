@@ -5764,6 +5764,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--app-shell-brand-max-inline-size",
+    "value": "none",
+    "description": "HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is * `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and * everything past that is cropped from the inline-end — which is the half a lockup can lose, * because a lockup leads with its mark in both directions. A theme that wants the wordmark to * survive on a phone raises the compact cap; a theme with a very wide lockup lowers the other. * Choosing WHAT the narrow bar shows, rather than how much of it, is `AppShell logoCompact`: * `viewBox` is an attribute and no stylesheet can set one."
+  },
+  {
+    "name": "--app-shell-brand-compact-max-inline-size",
+    "value": "var(--app-shell-bar-height)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+  },
+  {
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
     "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. * * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": * * - `--app-shell-sidebar-width` the sidebar track, expanded. * - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. * - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the * `navRail` slot is filled (the Slack/Teams shape). * * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of * the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both * 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias * would resolve to a plausible width in either reading and break silently, which is precisely the * failure class this package gates against everywhere else."

@@ -714,7 +714,8 @@
      * `auto` crushed the time slot to 50.6px over THREE lines while the title kept 210.4px, while
      * `0%` leaves it at its natural 119.7px on one line and hands the title the remainder.
      *
-     * check:timeline-title-fill measures all three claims against docs/data-display/timeline.tsx.
+     * Recorded here only: the gate that once measured these three claims (check:timeline-title-fill)
+     * no longer exists in package.json or scripts/.
      */
     min-inline-size: 0;
     flex: 1 1 0%;
