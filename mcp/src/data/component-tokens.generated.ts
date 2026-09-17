@@ -1114,6 +1114,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Outline-form gaps — marks where a radius-hugging ring would touch the glyph."
   },
   {
+    "name": "--rating-star-filled-color",
+    "value": "initial",
+    "description": "Star paint (gh#694). HSL components, `initial` so the default resolves at the star — a `:root` * binding would freeze on the root's role and ignore a scoped [data-tenant] theme (the freeze * rule). Filled default = var(--warning); empty default = var(--muted-foreground) at the alpha."
+  },
+  {
+    "name": "--rating-star-empty-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--rating-star-empty-alpha",
+    "value": "0.45",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--checkbox-border-width",
     "value": "var(--stroke-hairline)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."

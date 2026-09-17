@@ -13612,6 +13612,7 @@ export default function PasswordBlock() {
       },
     ],
     usage: [
+      "DO theme the stars with `--rating-star-filled-color` (default `var(--warning)`) and `--rating-star-empty-color` (default `var(--muted-foreground)`, at `--rating-star-empty-alpha` 0.45) — HSL components, set on :root or a scoped [data-tenant] (gh#694). NEVER override `.ui-rating-star-filled`: it is an internal class. Unset, the stars paint exactly as before.",
       "DO use readOnly to DISPLAY a score (e.g. product average); interactive (default) for collecting a rating.",
       "DO pass `name` to submit the value in a plain form.",
       "DON'T render raw star icons for input — this handles keyboard (radiogroup), hover preview, and a11y.",

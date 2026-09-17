@@ -156,6 +156,12 @@
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;
+  /* Star paint (gh#694). HSL components, `initial` so the default resolves at the star — a `:root`
+   * binding would freeze on the root's role and ignore a scoped [data-tenant] theme (the freeze
+   * rule). Filled default = var(--warning); empty default = var(--muted-foreground) at the alpha. */
+  --rating-star-filled-color: initial;
+  --rating-star-empty-color: initial;
+  --rating-star-empty-alpha: 0.45;
 
   --checkbox-border-width: var(--stroke-hairline);
   --checkbox-size: calc(1rem * var(--scaling));
