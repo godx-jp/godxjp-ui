@@ -343,6 +343,18 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
    * `true` (a `0` pill shows); pass `false` to hide the pill at zero.
    */
   showZero?: boolean;
+  /**
+   * Localized description of what the count MEANS, folded into the accessible name so the control
+   * never announces as a bare digit run. The SAME prop and the same contract `Toggle` has carried
+   * since gh#312 — without it a counted button measured `"Git3"` in the accessibility tree, not
+   * "Git, 3 pages" (gh#734).
+   *
+   * The pill itself is `aria-hidden` and the spoken form is an `sr-only` sibling, so the name
+   * reads `"<label>, <count> <countLabel>"` from the contents; with an explicit `aria-label`
+   * (an icon-only counted button) the same clause is folded into that instead. Pass a
+   * `t()`-resolved string — the library does not own this wording.
+   */
+  countLabel?: string;
 };
 
 /**

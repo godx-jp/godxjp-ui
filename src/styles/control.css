@@ -26,6 +26,16 @@
     background: hsl(var(--background));
   }
 
+  /* `soft` — the REST fill a chip needs (gh#734). `default` paints nothing and `outline` paints a
+   * hairline on the page surface, so a filter chip was invisible until it was pressed. The fill is
+   * `--secondary`, byte-identical to `Badge variant="secondary"` and `.ui-button--secondary`, and
+   * the border stays transparent so the box is the same size as `default`'s. */
+  .ui-toggle-soft {
+    border: 1px solid transparent;
+    background: var(--toggle-soft-background, hsl(var(--secondary)));
+    color: var(--toggle-soft-color, hsl(var(--secondary-foreground)));
+  }
+
   .ui-toggle-default-size {
     min-height: var(--control-height);
     padding-inline: var(--space-3);
@@ -54,6 +64,18 @@
   .ui-toggle:hover {
     background: hsl(var(--accent));
     color: hsl(var(--accent-foreground));
+  }
+
+  /* AFTER the generic hover (same specificity, later wins) and BEFORE the pressed rule, so a
+   * pressed soft chip keeps its pressed fill while the pointer is over it.
+   *
+   * `--secondary-hover` rather than Button's `hsl(var(--secondary) / 0.8)`: a chip row sits on the
+   * page AND inside a Card, and a translucent hover takes its value from whichever surface is
+   * under it, so the same chip would shift between the two. `--secondary-hover` is the opaque
+   * derived step foundation.css already ships for exactly this. */
+  .ui-toggle-soft:hover {
+    background: var(--toggle-soft-hover-background, hsl(var(--secondary-hover)));
+    color: var(--toggle-soft-color, hsl(var(--secondary-foreground)));
   }
 
   .ui-toggle[data-state="on"] {

@@ -1,5 +1,5 @@
 /** PageContainer — mandatory shell for every admin page (the PageHeader equivalent). */
-import { useEffect, useRef, useState } from "react";
+import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
@@ -46,6 +46,7 @@ function useFooterReveal(enabled: boolean) {
 export type {
   PageContainerProp,
   PageContainerProp as PageContainerProps,
+  PageContainerExtraProp,
 } from "../../props/components/layout.prop";
 export type {
   BreadcrumbItemProp,
@@ -58,6 +59,33 @@ export function PageContainerInset({ className, children, ...props }: PageInsetP
       {children}
     </div>
   );
+}
+
+/**
+ * `extra` as one node, or as the two named sub-slots — the resolution `Tabs` already does for
+ * `TabsExtraProp` (`src/components/navigation/tabs.tsx`), because it is the same union: a valid
+ * element and an array are NODES even though `typeof` says "object", so a plain object is the
+ * slot map.
+ *
+ * Two deliberate differences from Tabs, each for a stated reason:
+ *
+ *  · A bare node lands in `start`, not `end`. Tabs' bare `extra` is its TRAILING content, but
+ *    PageContainer's is the action cluster every page already passes, and the whole point of the
+ *    new slot is to sit AFTER it. Mapping it to `end` would silently move every existing page's
+ *    actions behind an empty slot.
+ *  · An object with NEITHER key is still a slot map, where Tabs would fall through and try to
+ *    render it as a child (React then throws "Objects are not valid as a React child"). It is a
+ *    real call: `extra={{ ...(canPage && { end: pager }) }}` evaluates to `{}` on the page that
+ *    cannot be paged, and that page must render, not crash.
+ */
+function resolvePageExtra(extra: PageContainerProp["extra"]): {
+  start?: ReactNode;
+  end?: ReactNode;
+} {
+  if (extra === undefined || extra === null || extra === false) return {};
+  const isSlotMap = typeof extra === "object" && !isValidElement(extra) && !Array.isArray(extra);
+  if (isSlotMap) return extra as { start?: ReactNode; end?: ReactNode };
+  return { start: extra as ReactNode };
 }
 
 /**
@@ -101,6 +129,7 @@ function PageContainerRoot({
   const reveal = stickyFooter && footer != null && footerReveal === "onScroll";
   const { headerRef, revealed } = useFooterReveal(reveal);
   const { t } = useTranslation();
+  const { start: extraStart, end: extraEnd } = resolvePageExtra(extra);
 
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
   // `default` matches no rule in the
@@ -201,7 +230,18 @@ function PageContainerRoot({
               subtitle && <p className="ui-page-subtitle">{subtitle}</p>
             )}
           </div>
-          {extra && <div className="ui-page-header-extra">{extra}</div>}
+          {/* Both sub-slots are direct children of the ONE `.ui-page-header-extra` box, in source
+              order, so the DOM order IS the reading order and the box's existing wrap + gap apply
+              to the pair with no second container. Neither side is wrapped: `.ui-page-header-extra
+              > .ui-flex[data-direction="row"]` is the tested overflow fix that keeps an action
+              group from running over the `<h1>`, and it matches DIRECT children only, so a wrapper
+              would silently disarm it. Unused ⇒ nothing is rendered at all. */}
+          {(extraStart != null || extraEnd != null) && (
+            <div className="ui-page-header-extra">
+              {extraStart}
+              {extraEnd}
+            </div>
+          )}
         </div>
       </header>
 

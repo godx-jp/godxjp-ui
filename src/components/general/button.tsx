@@ -78,6 +78,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       count,
       overflowCount = 99,
       showZero = true,
+      countLabel,
       disabled,
       type,
       children,
@@ -103,16 +104,32 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     // (Slot needs a single child). `showZero` controls the 0 case; values over `overflowCount`
     // render as `{overflowCount}+`. Localized via Intl.NumberFormat (grouping per locale).
     const showCount = !asChild && count != null && (count !== 0 || showZero);
-    const countLabel =
+    const countText =
       showCount && count != null && count > overflowCount
         ? `${numberFormat(locale).format(overflowCount)}+`
         : count != null
           ? numberFormat(locale).format(count)
           : "";
+    // ACCESSIBLE NAME — the same construction `Toggle`'s counter pill uses, so a counted button
+    // and a counted chip announce identically (gh#734). The digits concatenate straight onto the
+    // label when they are plain content ("Git" + "3" = "Git3"), so the pill is `aria-hidden` and
+    // the spoken form is an `sr-only` sibling: "Git, 3 pages". With an explicit `aria-label` the
+    // contents are outside the name altogether, so the clause is folded into the label instead.
+    const spokenCount = countLabel ? `${countText} ${countLabel}` : countText;
+    // `aria-label` stays INSIDE `props` and is only overridden when the clause actually has to go
+    // somewhere else, so an uncounted button emits the identical attribute list it always has —
+    // `src/components/data-display/__tests__/range-timeline-nested.test.tsx` compares Button's
+    // serialized markup byte for byte, and merely re-ordering the attributes would fail it.
+    const ariaLabel = props["aria-label"];
+    const foldedAriaLabel =
+      showCount && ariaLabel != null ? { "aria-label": `${ariaLabel}, ${spokenCount}` } : null;
     const countNode = showCount ? (
-      <span data-slot="button-count" className="ui-button-count">
-        {countLabel}
-      </span>
+      <>
+        <span data-slot="button-count" className="ui-button-count" aria-hidden="true">
+          {countText}
+        </span>
+        <span className="sr-only">{`, ${spokenCount}`}</span>
+      </>
     ) : null;
     return (
       <Comp
@@ -136,6 +153,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         )}
         ref={ref}
         {...props}
+        {...foldedAriaLabel}
       >
         {asChild ? (
           children

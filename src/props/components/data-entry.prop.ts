@@ -1700,6 +1700,24 @@ export type UploadProp = FieldA11yProps & {
    */
   triggerVariant?:
     "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
+  /**
+   * `variant="button"` only — the glyph COMPONENT the trigger draws, `triggerIcon={Plus}` rather
+   * than `<Plus />`. Defaults to the upload arrow.
+   *
+   * It exists because the glyph was hard-coded and `triggerVariant` only moves emphasis, so a
+   * "create new" action that HAPPENS to be an upload could not carry a plus and had to announce
+   * itself as an upload (gh#734). The component is rendered onto the `<svg>` itself, at the same
+   * `--upload-row-icon-size` the built-in glyph uses, so a swapped icon cannot change the
+   * trigger's metrics.
+   *
+   * Typed as the widened glyph component (SVG props + ref) rather than the narrower `IconProp`,
+   * for the reason `IconGlyphProp.as` already records: the library hands the glyph its class, its
+   * `aria-hidden` and its label-spacing attribute, none of which `IconProp` can accept. Every
+   * `lucide-react` icon and every `Icon`-compatible component qualifies.
+   */
+  triggerIcon?: React.ComponentType<
+    React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>
+  >;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };

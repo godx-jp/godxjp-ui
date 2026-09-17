@@ -1984,6 +1984,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "triggerIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>> | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "triggerSize",
           "origin": "owned",
           "required": false,
@@ -2872,6 +2880,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "countLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -3016,6 +3032,14 @@
           "origin": "owned",
           "required": false,
           "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "countLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
@@ -10196,7 +10220,7 @@
           "name": "extra",
           "origin": "owned",
           "required": false,
-          "type": "React.ReactNode",
+          "type": "PageContainerExtraProp",
           "values": [],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
@@ -17342,6 +17366,14 @@
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
+          "values": ["default", "pill", "sharp"],
+          "declaredIn": ["src/components/ui/toggle.tsx"]
+        },
+        {
           "name": "showZero",
           "origin": "owned",
           "required": false,
@@ -17361,8 +17393,8 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"outline\" | null | undefined",
-          "values": ["default", "outline"],
+          "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
+          "values": ["default", "outline", "soft"],
           "declaredIn": ["src/components/ui/toggle.tsx"]
         }
       ]
@@ -17419,6 +17451,14 @@
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
+          "values": ["default", "pill", "sharp"],
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+        },
+        {
           "name": "size",
           "origin": "owned",
           "required": false,
@@ -17446,8 +17486,8 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"outline\" | null | undefined",
-          "values": ["default", "outline"],
+          "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
+          "values": ["default", "outline", "soft"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         }
       ]
@@ -17488,6 +17528,14 @@
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"pill\" | \"sharp\" | null | undefined",
+          "values": ["default", "pill", "sharp"],
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+        },
+        {
           "name": "showZero",
           "origin": "owned",
           "required": false,
@@ -17515,8 +17563,8 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"outline\" | null | undefined",
-          "values": ["default", "outline"],
+          "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
+          "values": ["default", "outline", "soft"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         }
       ]
@@ -19062,6 +19110,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "triggerIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>> | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

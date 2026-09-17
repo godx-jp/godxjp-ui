@@ -61,6 +61,25 @@
   --toggle-count-background: initial;
   --toggle-count-color: initial;
 
+  /* ── `soft` · the REST surface (gh#734). Defaults = hsl(var(--secondary)) fill with
+   * hsl(var(--secondary-foreground)) text — the pair `Badge variant="secondary"` and
+   * `.ui-button--secondary` already paint, so a chip, a badge and a button on one row are one
+   * family and a service that re-themes `--secondary` moves all three at once. The hover step is
+   * the OPAQUE `--secondary-hover`, not a translucent tint, because a chip row sits on the page
+   * and inside a Card and a translucent hover would read differently on each.
+   *
+   * Role-mirror knobs — `initial` here with the role at the call site (docs/TOKENS.md). */
+  --toggle-soft-background: initial;
+  --toggle-soft-color: initial;
+  --toggle-soft-hover-background: initial;
+
+  /* The `soft` chip's own counter pill. Defaults = hsl(var(--background)) fill,
+   * hsl(var(--foreground)) text. It cannot inherit the generic `--muted` fill above: `--muted`
+   * and `--secondary` are the same value in the shipped theme, so that pill would measure 1.00:1
+   * on a soft chip and vanish. */
+  --toggle-soft-count-background: initial;
+  --toggle-soft-count-color: initial;
+
   /* ── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill,
    * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on
    * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be

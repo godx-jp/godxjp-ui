@@ -42,7 +42,10 @@ describe("DXS shell public contract", () => {
     expectTypeOf<TopbarActions>().toMatchTypeOf<React.ReactNode>();
     expectTypeOf<Organizations>().toMatchTypeOf<readonly unknown[]>();
     expectTypeOf<Master>().toMatchTypeOf<React.ReactNode>();
-    expectTypeOf<HeaderExtra>().toMatchTypeOf<React.ReactNode>();
+    // `extra` still accepts the bare node it always did — the direction of the assertion flipped
+    // in gh#734, when it also gained the `{ start, end }` slot map `Tabs.extra` already uses.
+    expectTypeOf<React.ReactNode>().toMatchTypeOf<HeaderExtra>();
+    expectTypeOf<{ start: React.ReactNode; end: React.ReactNode }>().toMatchTypeOf<HeaderExtra>();
     expectTypeOf<RenderItem["className"]>().toEqualTypeOf<string>();
     expectTypeOf<RenderItem["aria-current"]>().toEqualTypeOf<"page" | undefined>();
   });

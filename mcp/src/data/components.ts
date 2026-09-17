@@ -635,8 +635,9 @@ export const COMPONENTS: ComponentEntry[] = [
       },
       {
         name: "extra",
-        type: "ReactNode",
-        description: "Action buttons / controls rendered right of the title row.",
+        type: "ReactNode | { start?: ReactNode; end?: ReactNode }",
+        description:
+          'Action buttons / controls rendered at the END of the title row. A bare node is the whole slot and stays the shape every page already passes — it lands in `start`. `{ start, end }` splits it in two so a page can put something AFTER the actions: the record-screen convention is identity → actions → PAGER LAST, and with one slot the pager had to live in a second header band inside the body, so an app carried two header shapes (gh#734). Both sub-slots are direct children of the one header-extra box in source order, so DOM order IS reading order and the accessibility tree follows; unused, nothing renders at all. The union is `TabsExtraProp`\'s on purpose — `Tabs.extra` already accepts exactly this for exactly this reason, and the names are logical (`start`/`end`, never left/right), so they swap sides under dir="rtl".',
       },
       {
         name: "toolbar",
@@ -758,6 +759,8 @@ export const COMPONENTS: ComponentEntry[] = [
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
       "DO: Use `subtitle` (not `description`) and `extra` (not `actions`) — those are the canonical page-header names. If you see `description` / `actions` in old code, migrate them.",
+      "DO: Pass `extra={{ start: <actions/>, end: <pager/> }}` when the header convention is identity → action cluster → PAGER LAST. The two sub-slots render in that order inside the one header-extra box, so the record-pager band that used to live inside the body moves up and the app stops carrying two header shapes (gh#734). The shape is `Tabs.extra`'s, logical (`start`/`end`), and a bare node still means exactly what it always did.",
+      'DON\'T: Fake "after the actions" by putting the pager in a second header strip inside `children`, or by appending it to the same node you pass to `extra` and spacing it with a utility — the first gives the page two header bands to keep in sync, the second hand-lays the gap the header-extra box already owns.',
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`; or a page whose ENTIRE body is a `variant='page'` EmptyState, which then takes that height and centres in it (a zero-state that is the whole page is the one short page that must NOT top-pack — see EmptyState). DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title. `variant='ghost'` does NOT overrule the token: it blocks a divider from INHERITING in (so an unset token stays silent) but an explicit `--page-header-divider` still draws on a ghost page — the same shape as `--page-toolbar-divider` on the band. Ghost's real quiet half is the header's bottom pad, which it drops.",
@@ -2962,6 +2965,12 @@ import { MessageCircle, Share2 } from "lucide-react";
         description:
           "Whether the pill renders when `count` is 0 (Ant Badge parity). Pass `false` to hide the pill at zero.",
       },
+      {
+        name: "countLabel",
+        type: "string",
+        description:
+          'Localized description of what `count` MEANS, folded into the accessible name — the SAME prop and the same contract Toggle has carried since gh#312, added here in gh#734 because a counted Button measured `"Git3"` in the accessibility tree, not "Git, 3 pages". The pill is aria-hidden and the spoken clause is an sr-only sibling, so a text button announces as `"<label>, <count> <countLabel>"`; with an explicit `aria-label` (an icon-only counted button) the clause is folded into that instead. Pass a t()-resolved string — the library does not own this wording. Even without it the name is now `"Git, 3"` rather than `"Git3"`; `countLabel` is what turns the digits into a unit.',
+      },
     ],
     usage: [
       "DO pick the right variant for intent: `default` (primary CTA, one per section), `destructive` (irreversible actions like delete/revoke), `outline` (secondary actions alongside a primary), `secondary` (less prominent actions), `ghost` (toolbar icon-only actions), `link` (inline text-style navigation without an underline by default).",
@@ -2971,6 +2980,8 @@ import { MessageCircle, Share2 } from "lucide-react";
       'DO set `type="submit"` explicitly on form submit buttons (the default HTML button type inside `<form>` is already `submit`, but being explicit prevents accidental double-submissions when a `type="button"` sibling exists). For cancel/reset actions set `type="button"` to avoid accidental form submission.',
       "DON'T apply raw padding, height, or `rounded-*` overrides to `Button` via `className` — the size variants encode the full box model. If a custom size is truly needed, use `buttonVariants` from `@godxjp/ui/general` to compose a new cva class rather than fighting the existing ones.",
       "DO use the `loading` prop for async/pending actions instead of hand-rolling `<Loader2 className=\"animate-spin\">` inside the button — `loading` renders the spinner, sets `aria-busy`, and blocks activation for you; pair with `loadingText={t('saving')}` to swap the label. For a TanStack Query refetch use `ButtonRefetch` (it owns its own loading lifecycle) rather than wiring `loading` manually.",
+      "DO pass `countLabel` with every `count` — without it the number is read as a bare digit run glued to the label. `<Button count={3} countLabel={t('common.pages')}>Git</Button>` announces \"Git, 3 pages\".",
+      'DON\'T reach for `<Button count aria-pressed>` to build a FILTER CHIP — Button paints no pressed state, so the chip looks identical selected and unselected. That is `<Toggle variant="soft" shape="pill" count countLabel>` (gh#734).',
     ],
     useCases: [
       'Primary form submission in a Dialog or Sheet (e.g. `<Button type="submit" disabled={form.processing}>保存</Button>`) — the `disabled` prop greys it out and blocks pointer events, preventing double-submit during async operations.',
@@ -10522,6 +10533,13 @@ export function AccountMapping() {
           '`variant="button"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.',
       },
       {
+        name: "triggerIcon",
+        type: "React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>>",
+        defaultValue: "the lucide upload arrow",
+        description:
+          '`variant="button"` only — the glyph the trigger draws. Pass the COMPONENT (`triggerIcon={Plus}`), not an element, exactly as `Icon`\'s `as` takes it; every lucide icon qualifies. It exists because the glyph was hard-coded and `triggerVariant` only moves emphasis, so a "create new" action that HAPPENS to upload could not carry a plus and had to announce itself as an upload (gh#734). The library still owns the class, the label spacing and the `aria-hidden`, so a swapped glyph renders at the same `--upload-row-icon-size` and never reaches the accessible name — the trigger\'s metrics cannot drift with the icon.',
+      },
+      {
         name: "readOnly",
         type: "boolean",
         description: "Displays existing files, blocks changes, preserves staged form data.",
@@ -13344,16 +13362,24 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "variant",
-        type: '"default" | "outline"',
+        type: '"default" | "outline" | "soft"',
         defaultValue: '"default"',
-        description: "Visual style.",
+        description:
+          'Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant="secondary"` and `Button variant="secondary"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag\'s resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both.',
       },
       {
         name: "size",
         type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
         description:
-          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716).",
+          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description:
+          'Corner shape, the SAME three values and the same two radius tokens `Button` and `Badge` use, so `shape="pill"` means one thing across the library (gh#734). `pill` + `variant="soft"` is the antd-Tag filter chip. On a ToggleGroup it propagates to every item through context, because a chip row is a row of pills, not one pill among squares.',
       },
       {
         name: "count",
@@ -13390,22 +13416,38 @@ import { Separator } from "@godxjp/ui/layout";
       "DON'T nest a Badge (or a hand-written span) inside a Toggle to show a count — use `count`.",
       "DO pass `countLabel` whenever the label is an icon or an emoji, so the chip does not announce as a bare number.",
       "DON'T wrap the chip in a live region to announce count changes — Toggle deliberately does not, because a count driven by other people is not this control's status.",
+      'DO build a FILTER CHIP (antd `Tag.CheckableTag`) as `<Toggle variant="soft" shape="pill" count countLabel>` — that IS the chip: a resting --secondary fill, a pill corner, a real pressed state and the counter pill, in one control with one tab stop. There is no separate `Tag` / `CheckableTag` export and there will not be one (gh#734).',
+      'DON\'T substitute `<Button variant="secondary" shape="pill" aria-pressed>` for it: Button has no pressed branch, so the chip paints identically selected and unselected (WCAG 1.4.1).',
+      "DO reach for `Badge onRemove` instead when the chip is REMOVABLE rather than selectable — an applied-filter chip that draws its own × is antd `Tag closable`, and this library put that on Badge, not on Toggle.",
     ],
     useCases: [
       "Bold/italic toolbar buttons",
       "Pinned filter toggles",
       "Compact view mode buttons",
       "Faceted filter chips with facet sizes (Open 42 / Closed 118)",
+      'A tag-filter panel — `variant="soft" shape="pill"` chips carrying tag counts (antd Tag.CheckableTag)',
       "Reaction chips (emoji + how many reacted + whether YOU did)",
     ],
-    related: ["ToggleGroup", "Button", "Badge"],
+    related: [
+      "ToggleGroup",
+      "Button",
+      "Badge — the REMOVABLE chip (`onRemove` = antd Tag `closable`). Toggle is the SELECTABLE chip. Between them they cover antd's Tag family, which is why no `Tag` component exists here.",
+    ],
     example: `import { Toggle } from "@godxjp/ui/data-entry";
 
 <Toggle aria-label="Bold">B</Toggle>
 
 // A counted filter chip — one control, one accessible name ("Unread, 12 items").
 // Drive the state with the usual Radix pair: pressed / defaultPressed / onPressedChange.
-<Toggle onPressedChange={setUnreadOnly} count={12} countLabel={t("common.items")}>
+// variant="soft" + shape="pill" is the antd Tag.CheckableTag shape: it has a RESTING fill, so
+// the chip is legible before it is pressed.
+<Toggle
+  variant="soft"
+  shape="pill"
+  onPressedChange={setUnreadOnly}
+  count={12}
+  countLabel={t("common.items")}
+>
   {t("inbox.unread")}
 </Toggle>`,
     storyPath: "data-entry/Toggle.stories.tsx",
@@ -13436,10 +13478,17 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "variant",
-        type: '"default" | "outline"',
+        type: '"default" | "outline" | "soft"',
         defaultValue: '"default"',
         description:
-          "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all.",
+          "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all. `soft` (gh#734) is the chip fill: use it for a tag-filter panel, where `default`/`outline` leave the unselected chips reading as transparent.",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description:
+          "Corner shape, PROVIDED TO EVERY ITEM via context exactly as `variant`/`size` are — a chip row is a row of pills, so the decision belongs to the row (gh#734). An explicit `shape` on an item still wins. Same three values and same radius tokens as Button and Badge.",
       },
       {
         name: "size",
@@ -13463,7 +13512,8 @@ import { Separator } from "@godxjp/ui/layout";
     usage: [
       "DO choose type='single' for mutually exclusive toolbar modes.",
       "DO choose type='multiple' for independent formatting toggles.",
-      "DO set `variant`/`size` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
+      "DO set `variant`/`size`/`shape` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
+      'DO build a tag-filter panel as `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).',
       "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
       "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",

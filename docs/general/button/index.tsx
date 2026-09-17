@@ -8,7 +8,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Bell, Pencil, Plus, Trash2 } from "lucide-react";
 
 /**
  * Button — the core action primitive. Composed only from real @godxjp/ui
@@ -26,22 +26,34 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Count</CardTitle>
             <CardDescription>
-              Trailing totals, overflow cap, and explicit zero visibility.
+              Trailing totals, overflow cap, and explicit zero visibility. countLabel
+              は数字が何を数えているかを読み上げに渡す（Toggle と同じ語彙）。ピルは aria-hidden
+              で、単位つきの一文が sr-only で並ぶので、名前は「保留中, 18 件」。countLabel
+              を渡さなくても「保留中, 18」までは分かれる。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">
-              <Button variant="outline" count={18}>
+              <Button variant="outline" count={18} countLabel="件">
                 保留中
               </Button>
-              <Button variant="outline" count={128} overflowCount={99}>
+              <Button variant="outline" count={128} overflowCount={99} countLabel="件">
                 受信トレイ
               </Button>
-              <Button variant="ghost" count={0} showZero>
+              <Button variant="ghost" count={0} showZero countLabel="件">
                 完了
               </Button>
-              <Button variant="ghost" count={0} showZero={false}>
+              <Button variant="ghost" count={0} showZero={false} countLabel="件">
                 非表示のゼロ
+              </Button>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                aria-label="通知"
+                count={3}
+                countLabel="件の未読"
+              >
+                <Bell aria-hidden="true" />
               </Button>
             </Flex>
           </CardContent>

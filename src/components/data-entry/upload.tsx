@@ -105,6 +105,7 @@ export function Upload({
   listType,
   triggerSize,
   triggerVariant = "outline",
+  triggerIcon: TriggerIcon = UploadIcon,
   value,
   defaultValue,
   onValueChange,
@@ -628,7 +629,10 @@ export function Upload({
           onClick={openPicker}
           aria-label={triggerAriaLabel}
         >
-          <UploadIcon
+          {/* `triggerIcon` swaps the GLYPH only: the class, the label spacing and the
+              `aria-hidden` stay the library's, so a plus on a "create new" action measures the
+              same as the default upload arrow and never reaches the accessible name (gh#734). */}
+          <TriggerIcon
             className="ui-upload-trigger-icon"
             data-with-label={iconOnly ? undefined : ""}
             aria-hidden="true"
