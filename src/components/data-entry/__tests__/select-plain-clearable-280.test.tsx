@@ -13,7 +13,7 @@ const options = [
 ];
 
 describe("plain Select clearable (gh#280)", () => {
-  it("shows the X clear affordance while a controlled value is selected (default on)", async () => {
+  it("shows the X clear affordance while a controlled value is selected (clearable)", async () => {
     const onValueChange = vi.fn();
     renderWithUi(
       <Select
@@ -21,6 +21,7 @@ describe("plain Select clearable (gh#280)", () => {
         aria-label="所属"
         data-testid="dept"
         value="10"
+        clearable
         onValueChange={onValueChange}
         options={options}
       />,
@@ -38,6 +39,7 @@ describe("plain Select clearable (gh#280)", () => {
         aria-label="所属"
         data-testid="dept"
         value=""
+        clearable
         onValueChange={() => {}}
         options={options}
       />,
@@ -65,6 +67,7 @@ describe("plain Select clearable (gh#280)", () => {
         aria-label="所属"
         data-testid="dept"
         value="10"
+        clearable
         disabled
         onValueChange={() => {}}
         options={options}
@@ -73,7 +76,14 @@ describe("plain Select clearable (gh#280)", () => {
     expect(screen.queryByTestId("dept-clear")).not.toBeInTheDocument();
 
     rerender(
-      <Select id="dept" aria-label="所属" data-testid="dept" defaultValue="10" options={options} />,
+      <Select
+        id="dept"
+        aria-label="所属"
+        data-testid="dept"
+        defaultValue="10"
+        clearable
+        options={options}
+      />,
     );
     expect(screen.queryByTestId("dept-clear")).not.toBeInTheDocument();
   });

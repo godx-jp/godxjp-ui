@@ -133,6 +133,7 @@ describe("TreeSelect — readOnly", () => {
         treeData={TREE_DATA}
         aria-label="部署"
         value="fe"
+        allowClear
         readOnly
         onValueChange={onValueChange}
       />,

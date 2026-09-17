@@ -1166,7 +1166,8 @@ function DataSelect(props: PlainDataSelectProp) {
   // back on first pick (React's controlled↔uncontrolled warning). An unmatched value (incl. "")
   // simply shows the placeholder.
   const isControlled = value !== undefined;
-  // Same contract as SearchSelect: default ON, shown only while a controlled value is selected;
+  // Same contract as SearchSelect: default OFF (antd `allowClear`), shown only while a controlled
+  // value is selected when `allowClear` / `clearable` asks for it;
   // clearing emits `onValueChange("", undefined)` and the trigger shows the placeholder.
   const clearControl = resolveAllowClear(
     allowClear,

@@ -144,8 +144,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Searchable + clearable</CardTitle>
             <CardDescription>
-              With a value set and clearable (default), an inline ✕ on the trigger resets the
-              selection without opening the list.
+              With a value set and allowClear (off by default, as in antd), an inline ✕ on the
+              trigger resets the selection without opening the list.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -156,6 +156,7 @@ export default function Demo() {
                 value={assignee}
                 onValueChange={setAssignee}
                 showSearch
+                allowClear
                 searchPlaceholder="担当者を検索..."
                 placeholder="担当者を選択"
                 options={people}

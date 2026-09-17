@@ -71,7 +71,7 @@ export function SearchSelect(props: SearchSelectProp) {
     loadingMessage,
     errorMessage,
     clearLabel,
-    clearable = true,
+    clearable,
     disabled = false,
     readOnly = false,
     size,

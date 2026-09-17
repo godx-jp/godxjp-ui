@@ -95,7 +95,7 @@ export default function Demo() {
               value は ISO 3166-1 alpha-2 コード、ラベルは
               Intl.DisplayNames（CLDR）で生成する（国名を
               ハードコードしない・絵文字フラグも使わない）。 showSearch で絞り込み、name
-              でフォーム送信。 必須項目なので clearable=false でクリア行を出さない。
+              でフォーム送信。 必須項目なのでクリア ✕ は出さない（allowClear はデフォルト false）。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -119,8 +119,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>取引先の国（任意・クリア可）</CardTitle>
             <CardDescription>
-              clearable（デフォルト true）で「指定なし」に戻せる。placeholder で空状態を案内する。
-              任意項目なので未選択（プレースホルダー表示）を初期値にしている。
+              allowClear を付けて「指定なし」に戻せるようにする（デフォルトは false）。placeholder
+              で空状態を案内する。 任意項目なので未選択（プレースホルダー表示）を初期値にしている。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -131,6 +131,7 @@ export default function Demo() {
                 value={partner}
                 onValueChange={setPartner}
                 showSearch
+                allowClear
                 placeholder="国を選択..."
                 searchPlaceholder="国名 / ISO コードで検索..."
                 emptyMessage="該当する国がありません"
