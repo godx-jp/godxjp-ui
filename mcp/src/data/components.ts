@@ -585,7 +585,8 @@ export const COMPONENTS: ComponentEntry[] = [
       {
         name: "footer",
         type: "ReactNode",
-        description: "Content area pinned below the page body.",
+        description:
+          'Content area pinned below the page body. The BAND (its top rule and, with `stickyFooter`, its background) always spans the page; its CONTENT is laid out in the same column as the header and body (gh#682). With a cap — `measure="narrow" | "medium"` or a service-wide `--app-shell-page-max-width` inside AppShell — an end-aligned Save/Cancel bar ends on the body\'s end edge and a full-row composer (`<Flex grow>`) spans exactly the body\'s content column; with no cap it is unchanged. The footer\'s children stay its direct children (no wrapper element), and an instance `footerPad` end inset composes with the cap. Never add a call-site `max-w-*` to line it up.',
       },
       {
         name: "children",
@@ -642,7 +643,7 @@ export const COMPONENTS: ComponentEntry[] = [
         type: '"default" | "narrow" | "medium"',
         defaultValue: '"default"',
         description:
-          'Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). "narrow" (--page-measure-narrow, 42rem outer → 624px visible surface) and "medium" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant="narrow", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it). Inside AppShell the page is fluid by default; a service-wide `--app-shell-page-max-width` caps the same header/toolbar/body bands (never the footer), and `measure` overrides it on the page that sets it.',
+          'Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). "narrow" (--page-measure-narrow, 42rem outer → 624px visible surface) and "medium" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant="narrow", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer BAND is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it), but its CONTENT follows the same measure (gh#682): an end-aligned footer action ends flush with the body too, instead of stranded at the band edge. Inside AppShell the page is fluid by default; a service-wide `--app-shell-page-max-width` caps the same header/toolbar/body bands and the footer CONTENT (never the footer band), and `measure` overrides it on the page that sets it.',
       },
       {
         name: "stickyFooter",
@@ -1090,7 +1091,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO NOT pass `mobileNav` just to re-add the rail on mobile — when `navRail` is present the drawer already defaults to the rail followed by the sidebar, because BOTH docked columns are hidden below 900px and a `sidebar`-only default would silently delete every app-level destination the rail carries.",
       "DO NOT nest a second AppShell or AppShell inside AppShell's children — AppShell renders the root `app-root` div; nesting shells breaks the CSS grid layout.",
       "DO NOT add padding directly to children expecting it to reach the viewport edge — AppShell's `<main>` is a scroll container; use <PageContainer> (or <PageContainer.Inset> inside a flush PageContainer) inside children to get standard page padding.",
-      'DO let the page be FLUID: inside AppShell a <PageContainer> spans the whole main column at every sidebar state (gh#672 — the old default 80rem cap left a 168px dead strip at a 1512px viewport once the sidebar collapsed, and cut a sticky footer short). A service that wants ONE bounded column sets `--app-shell-page-max-width` once in its theme (default `none`); it caps the page header, toolbar and body — never the `.ui-page-footer` band, which keeps spanning `.app-main` — and a page-level `measure` overrides it on that page. Bound a single readable page with `measure="narrow" | "medium"`, never a page-local max-width or a wrapper div.',
+      'DO let the page be FLUID: inside AppShell a <PageContainer> spans the whole main column at every sidebar state (gh#672 — the old default 80rem cap left a 168px dead strip at a 1512px viewport once the sidebar collapsed, and cut a sticky footer short). A service that wants ONE bounded column sets `--app-shell-page-max-width` once in its theme (default `none`); it caps the page header, toolbar and body — never the `.ui-page-footer` band, which keeps spanning `.app-main` while its CONTENT ends on the end edge of the body (gh#682) — and a page-level `measure` overrides it on that page. Bound a single readable page with `measure="narrow" | "medium"`, never a page-local max-width or a wrapper div.',
     ],
     useCases: [
       "Full admin SPA shell: AppShell wraps a <Sidebar> nav rail and a <Topbar> (with productMenu entity-switcher, onSearchOpen, onNotificationsOpen, user avatar) and every Inertia page renders as children inside a <PageContainer>.",
@@ -7500,7 +7501,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Rule the popup's DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker=\"date\"` / `\"week\"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input))`).",
+          'Rule the popup\'s DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker="date"` / `"week"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--input))`).',
       },
       {
         name: "disabledDate",
@@ -15015,7 +15016,7 @@ export function NotifyRow() {
     usage: [
       "Only show `requester` when the consumer has authoritative client context.",
       'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
-      "To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN'S PURPOSE (\"Sign in\") rather than repeating the brand.",
+      'To show YOUR OWN lockup instead, pass it as `brand` — never wrap or rebuild the block. `brand` replaces the mark only, so the h1 stays; if your lockup already spells the product name, make `title` the SCREEN\'S PURPOSE ("Sign in") rather than repeating the brand.',
       'DO keep `brand` non-interactive. The slot is DECORATIVE at every fill: the mark it replaces was always aria-hidden, and a real lockup is not a mark — `Logo mark="godx-lockup" productSuffix="ID"` exposes "GoDX ID" as real text, so left in the tree beside the h1 the block announces the product twice (measured: "GoDXIDGoDX ID"). aria-hidden is merged onto your element, and aria-hidden over a focusable child is a WCAG failure.',
       "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
       "Public type: `AuthIdentityProp` (alias `AuthIdentityProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",

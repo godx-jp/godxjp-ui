@@ -3,6 +3,7 @@ import { AppShell, Flex, PageContainer, Sidebar, Topbar } from "@godxjp/ui/layou
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { Input } from "@godxjp/ui/data-entry";
 import {
   Bell,
   Building2,
@@ -24,11 +25,13 @@ import {
  * single page:
  *
  *   ?topbarSpan=content|full   ?navRail=start|end|top|bottom   ?collapsed=1   ?sidebar=none
- *   ?responsive=docked   ?measure=narrow|medium   ?footer=1
+ *   ?responsive=docked   ?measure=narrow|medium   ?footer=1|row
  *
  * `measure` and `footer` feed `scripts/check-app-shell-page-width.mjs` (gh#672): the page is fluid
  * in the main column at every sidebar state, and a sticky footer band always spans `.app-main`,
  * even when a service caps content with `--app-shell-page-max-width` or the page sets `measure`.
+ * The footer's CONTENT sits in the same column as the body (gh#682), so the two shapes a footer
+ * takes are both rendered: `footer=1` an end-aligned action group, `footer=row` a full-row composer.
  *
  * With no query it is `topbarSpan="full"` without a rail — the state gh#474 found collapsing
  * `main` into a 170px implicit track below 900px, with the page actions laid out past the edge.
@@ -66,12 +69,12 @@ function readState() {
     responsiveNavigation:
       params.get("responsive") === "docked" ? ("docked" as const) : ("drawer" as const),
     measure: (["narrow", "medium"] as const).find((m) => m === params.get("measure")),
-    hasFooter: params.get("footer") === "1",
+    footer: (["1", "row"] as const).find((f) => f === params.get("footer")),
   };
 }
 
 export default function Demo() {
-  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation, measure, hasFooter }] =
+  const [{ topbarSpan, navRail, collapsed, hasSidebar, responsiveNavigation, measure, footer }] =
     useState(readState);
   const [activeId, setActiveId] = useState("dashboard");
   const strip = navRail === "top" || navRail === "bottom";
@@ -121,16 +124,23 @@ export default function Demo() {
         subtitle="株式会社アクメ · 2026年5月"
         measure={measure}
         footer={
-          hasFooter ? (
+          footer === "1" ? (
             <Flex gap="sm" align="center" justify="end">
               <Button size="sm" variant="outline">
                 下書き保存
               </Button>
               <Button size="sm">コメントを送信する</Button>
             </Flex>
+          ) : footer === "row" ? (
+            <Flex grow gap="sm" align="center">
+              <Flex grow>
+                <Input aria-label="コメント" placeholder="コメントを入力" />
+              </Flex>
+              <Button size="sm">送信</Button>
+            </Flex>
           ) : undefined
         }
-        stickyFooter={hasFooter}
+        stickyFooter={footer !== undefined}
         extra={
           <Flex gap="sm" wrap>
             <Button size="sm" variant="outline">

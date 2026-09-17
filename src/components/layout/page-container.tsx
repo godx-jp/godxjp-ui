@@ -60,6 +60,18 @@ export function PageContainerInset({ className, children, ...props }: PageInsetP
   );
 }
 
+/**
+ * `footerPad` re-insets the band inline, and an inline `padding-inline-end` would replace the
+ * stylesheet's — dropping the width a page cap adds to the band's end inset, so the footer content
+ * would snap back to the band's edge (gh#682). The instance end inset keeps that slack on top.
+ */
+function footerPadStyle(footerPad: PageContainerProp["footerPad"]) {
+  const style = padStyle(footerPad, undefined);
+  const end = style?.paddingInlineEnd ?? style?.padding;
+  if (end === undefined) return style;
+  return { ...style, paddingInlineEnd: `calc(${end} + var(--page-footer-content-slack))` };
+}
+
 function PageContainerRoot({
   title,
   subtitle,
@@ -203,7 +215,7 @@ function PageContainerRoot({
       {children != null && <div className="ui-page-body">{children}</div>}
 
       {footer && (
-        <footer className="ui-page-footer" style={padStyle(footerPad, undefined)}>
+        <footer className="ui-page-footer" style={footerPadStyle(footerPad)}>
           {footer}
         </footer>
       )}

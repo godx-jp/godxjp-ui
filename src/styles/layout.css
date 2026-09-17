@@ -1,5 +1,18 @@
 /* LAYOUT — Flex / Page shell / EmptyState. */
 
+/* INTERNAL plumbing for the footer's content column (gh#682), not a theming knob. REGISTERED so an
+ * uncapped page resolves to 0: the shell cap defaults to the keyword `none`, and `100% - none` is
+ * invalid at computed-value time — an unregistered property would then take `padding-inline-end`
+ * down with it (the band would lose its end gutter), a registered one falls back to this initial
+ * value, so a page with no cap is byte-identical to before. `<length-percentage>` keeps the `100%`
+ * unresolved until it is substituted into the band's padding, where it resolves against the
+ * container — the same full-width box the band spans. */
+@property --page-footer-content-slack {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
 @layer components {
   /* Two shapes share one class. */
   .ui-separator {
@@ -715,6 +728,21 @@
     max-inline-size: var(--page-measure-medium);
   }
 
+  /* The footer BAND is never capped — its border/background is page chrome and spans the page
+   * (gh#672) — but its CONTENT belongs to the same column as the header and body (gh#682): with a
+   * cap, a Save/Cancel bar ended 624px past the body at a 1512px viewport. The band's end inset
+   * grows by exactly the width the cap takes off the header/body (`100%` = the band's width), so
+   * the content box coincides with the content column while the element, its border and its sticky
+   * background keep spanning the page. No wrapper element: `.ui-page-footer > *` still selects the
+   * footer's own children. */
+  .ui-page-container[data-measure="narrow"] .ui-page-footer {
+    --page-footer-content-slack: max(0px, 100% - var(--page-measure-narrow));
+  }
+
+  .ui-page-container[data-measure="medium"] .ui-page-footer {
+    --page-footer-content-slack: max(0px, 100% - var(--page-measure-medium));
+  }
+
   /* flush = full-bleed body AND toolbar band (DataTable, a full-width filter strip); header/footer
    * keep their inset. */
   .ui-page-container--flush .ui-page-toolbar,
@@ -1026,6 +1054,7 @@
     align-items: stretch;
     gap: var(--space-inline-sm);
     padding-top: var(--space-stack-md);
+    padding-inline-end: calc(var(--space-page-active-x) + var(--page-footer-content-slack));
     border-top: var(--page-footer-divider, 1px solid hsl(var(--border)));
   }
 
