@@ -4,6 +4,14 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.4.1] - 2026-09-17
+
+PATCH. **27.4.0 was tagged but never published** — the agent contract in the MCP skills index gained
+the new icon rule as a "yellow gate" line, and `mcp/src/contract.test.ts` requires every rule entry
+to name a red gate or an escape hatch. The entry now documents the escape hatch
+(`ui-audit-disable-next-line lucide-icon-needs-size` for a glyph inside a wrapper that already sizes
+it), which is both true and what the contract asks for. Everything listed under 27.4.0 ships here.
+
 ## [27.4.0] - 2026-09-17
 
 MINOR. Two new supported shapes and two new audit rules; nothing existing moves.
