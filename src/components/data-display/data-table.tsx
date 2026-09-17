@@ -1872,8 +1872,10 @@ DataTable.Content = function DataTableContent() {
                       }
                       className={cn(
                         rowPadding,
-                        // Hover highlight when rows are clickable OR explicitly hoverable…
-                        (onRowClick || hoverable) && "hover:bg-muted/50",
+                        // Hover highlight when rows are clickable OR explicitly hoverable… The
+                        // --accent step TableRow itself uses, not --muted/50: that sat BELOW the
+                        // zebra stripe (--muted/0.8, gh#700), so hovering a striped row lightened it.
+                        (onRowClick || hoverable) && "hover:bg-accent/70",
                         // …but the affordance (cursor + focus mark) only when clickable.
                         //
                         // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It

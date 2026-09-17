@@ -6931,7 +6931,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-striped-background",
     "value": "initial",
-    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.8) striped · hsl(var(--accent) / 0.7) hover · * hsl(var(--muted) / 0.3) selected. * The stripe was --muted / 0.4 until gh#700 measured it: 1.02:1 against the plain row in light, * i.e. not a stripe. 0.8 is the strongest --muted step that keeps every text role on it at AA * with the control boundary still at 3:1 (muted-foreground 5.29 light / 5.71 dark, --input 3.24 / * 3.31) and leaves the --accent hover a visible step beyond it in both themes — * src/tokens/__tests__/table-stripe-contrast.test.ts recomputes all of it."
   },
   {
     "name": "--table-row-striped-alpha",

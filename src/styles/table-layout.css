@@ -83,7 +83,7 @@
   :where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row]))) {
     background-color: color-mix(
       in srgb,
-      var(--table-row-striped-background, hsl(var(--muted) / 0.4)) var(--table-row-striped-alpha),
+      var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
       transparent
     );
   }
@@ -102,12 +102,12 @@
     background-image: linear-gradient(
       color-mix(
         in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.4)) var(--table-row-striped-alpha),
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
         transparent
       ),
       color-mix(
         in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.4)) var(--table-row-striped-alpha),
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
         transparent
       )
     );
@@ -527,12 +527,12 @@
     background-image: linear-gradient(
       color-mix(
         in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.4)) var(--table-row-striped-alpha),
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
         transparent
       ),
       color-mix(
         in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.4)) var(--table-row-striped-alpha),
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
         transparent
       )
     );
@@ -543,8 +543,8 @@
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-start {
     background-image: linear-gradient(
-      var(--table-row-hover-background, hsl(var(--muted) / 0.5)),
-      var(--table-row-hover-background, hsl(var(--muted) / 0.5))
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7)),
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7))
     );
   }
 

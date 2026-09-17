@@ -3633,7 +3633,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         name: "striped",
         type: "boolean",
         description:
-          "Zebra rows: every EVEN LOGICAL record paints --table-row-striped-background (default --muted at 0.4 alpha, computed at the row so dark mode and scoped themes follow). Parity is by record, not DOM row — an expanded detail row is skipped when counting and wears its own record's stripe; on a paged table the count restarts per rendered page. Frozen (`fixed`) cells wear the stripe over their opaque base; hover, selection, `rowClassName` and `rowTone` all still read on a striped row. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` / `false` override it for this table. Element Plus `stripe` / Bootstrap `.table-striped`; antd has no prop.",
+          "Zebra rows: every EVEN LOGICAL record paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA, computed at the row so dark mode and scoped themes follow). Parity is by record, not DOM row — an expanded detail row is skipped when counting and wears its own record's stripe; on a paged table the count restarts per rendered page. Frozen (`fixed`) cells wear the stripe over their opaque base; hover, selection, `rowClassName` and `rowTone` all still read on a striped row. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` / `false` override it for this table. Element Plus `stripe` / Bootstrap `.table-striped`; antd has no prop.",
       },
       {
         name: "hoverable",
@@ -5591,7 +5591,7 @@ import remarkGfm from "remark-gfm";
         name: "striped",
         type: "boolean",
         description:
-          'Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.4 alpha). Mark a hand-composed detail row `<TableRow data-expanded-row="">` and it is skipped when counting and wears its record\'s stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped="" (100%), `false` emits data-striped="false" (0%) for this table only.',
+          'Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA). Mark a hand-composed detail row `<TableRow data-expanded-row="">` and it is skipped when counting and wears its record\'s stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped="" (100%), `false` emits data-striped="false" (0%) for this table only.',
       },
       {
         name: "preset",

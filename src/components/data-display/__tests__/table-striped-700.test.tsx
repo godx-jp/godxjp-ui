@@ -99,7 +99,7 @@ describe("gh#700 striped — the prop is tri-state", () => {
     const paint = block(ROW_RULE);
     expect(paint).toContain("var(--table-row-striped-alpha)");
     // Role default at the CALL SITE, never frozen at :root (docs/TOKENS.md).
-    expect(paint).toContain("var(--table-row-striped-background, hsl(var(--muted) / 0.4))");
+    expect(paint).toContain("var(--table-row-striped-background, hsl(var(--muted) / 0.8))");
     expect(tokens).toMatch(/^\s*--table-row-striped-background:\s*initial;/m);
   });
 });
