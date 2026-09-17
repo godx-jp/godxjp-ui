@@ -3,11 +3,14 @@ import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlIconLeadingClass } from "../../lib/control-styles";
+import type { CommandProp } from "../../props/components/data-entry.prop";
+
+export type { CommandProp, CommandProp as CommandProps };
 
 export const Command = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive>
->(({ className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive> & CommandProp
+>(({ className, split = false, ...props }, ref) => {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const setRefs = (node: HTMLDivElement | null) => {
     rootRef.current = node;
@@ -31,7 +34,17 @@ export const Command = React.forwardRef<
     else if (!input || input.id !== expectedId) label.removeAttribute("for");
   });
 
-  return <CommandPrimitive ref={setRefs} className={cn("ui-command", className)} {...props} />;
+  // `split` is presentation only, so it travels as ONE attribute on the root and the group and
+  // item rules key off it in CSS — no part needs to be told, and rows a composite renders itself
+  // with `.ui-command-item` (SearchSelect's listbox) pick it up too.
+  return (
+    <CommandPrimitive
+      ref={setRefs}
+      className={cn("ui-command", className)}
+      data-split={split ? "" : undefined}
+      {...props}
+    />
+  );
 });
 Command.displayName = CommandPrimitive.displayName;
 

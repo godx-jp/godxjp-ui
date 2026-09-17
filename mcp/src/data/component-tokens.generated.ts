@@ -1339,6 +1339,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The gap between a row's leading mark and its label. `.ui-command-item` is a flex row and had * NO gap at all, so every command/palette/picker row with an icon rendered its glyph flush * against the text — measured at 0px between an organization mark and its name. It reads * --control-gap because a command row is a control row: the same distance the trigger it opened * from already puts between its own icon and label."
   },
   {
+    "name": "--command-list-split-padding",
+    "value": "0",
+    "description": "`Command split` (antd List `split`, gh#699) — a list drawn as ONE ruled box. * --command-list-split-padding the group/list padding under split: 0, so no inner frame * separates the rows from the panel edge. * --command-list-split-inset the inline inset the SURFACE puts between the panel edge and * the list, which a split row cancels (negative margin) and pays * back as padding so its fill and rule still meet both edges. * 0 for a bare Command; OrgSwitcher sets its column inset. * --command-item-divider-width the hairline between rows. * --command-item-divider-color ROLE-MIRROR KNOB — `initial` here, default resolved at the * call site = var(--border) (HSL channels; docs/TOKENS.md)."
+  },
+  {
+    "name": "--command-list-split-inset",
+    "value": "0px",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--command-item-divider-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--command-item-divider-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--command-palette-width",
     "value": "35rem",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."

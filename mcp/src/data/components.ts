@@ -6472,7 +6472,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "mode",
         type: '"multiple" | "tags"',
         description:
-          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two.",
+          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.",
       },
       {
         name: "maxCount",
@@ -11302,6 +11302,13 @@ export function ReportRangeFilter() {
         description: "Set to false to disable ctrl+n/j/p/k vim-style navigation shortcuts.",
       },
       {
+        name: "split",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select mode=multiple / mode=tags renders its popup split by default.",
+      },
+      {
         name: "className",
         type: "string",
         description: "Additional CSS classes merged onto the root div via cn().",
@@ -11378,6 +11385,7 @@ export function ReportRangeFilter() {
       "DO set shouldFilter={false} and manage filtering yourself when the options list comes from a server/async source (e.g. SearchSelect pattern). With shouldFilter=true the default client-side scoring runs over all rendered items automatically.",
       "DO always provide a stable explicit value prop on CommandItem when the item's text content can change between renders — relying on inferred textContent with dynamic labels causes selection bugs.",
       "DO include CommandEmpty inside CommandList to show a no-results message. It renders automatically only when the filtered count is zero; do not conditionally render it yourself.",
+      "DO use split for checkbox/option lists (a filter facet, a picker: Popover + PopoverContent flush + Command split) — rows get a divider between them and 0 list padding, so they read as one box. Keep the default (unsplit) for a command palette. Never re-create the look with page CSS (border on items, padding 0 on the group): retune --command-item-divider-color / --command-item-divider-width instead.",
       "DON'T use CommandInput as a standalone search input — it is only meaningful inside a Command root (the root manages shared filter state). For a standalone search field use SearchInput instead.",
       "DON'T hand-roll keyboard navigation on a list of items; Command handles arrow keys, Enter, Escape, Home/End, and vim bindings. Adding your own keyDown handlers on top creates conflicts — use onSelect on CommandItem for selection logic.",
     ],

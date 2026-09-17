@@ -701,33 +701,33 @@ describe("responsive shell geometry", () => {
      * This list is "choose one of N": a closed set, where what a reader needs is to see where one
      * row ends and the next begins.
      *
-     * Scoped to this panel and deliberately NOT pushed into `.ui-command-item`, which eight
-     * components use as a palette and would be wrong to re-shape.
+     * That look used to be private CSS in this file. It is now `<Command split>` (gh#699): the panel
+     * renders the prop and keeps only its own geometry, and no private copy remains to drift.
      */
-    const row = declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item");
-    expect(row).toMatch(/border-radius:\s*0;/);
+    const orgSwitcher = readFileSync(
+      resolve(process.cwd(), "src/components/layout/org-switcher.tsx"),
+      "utf8",
+    );
+    expect(orgSwitcher).toMatch(/<Command[^>]*className="ui-org-switcher-command"[^>]*\bsplit\b/);
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item")).toBe("");
+    expect(declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-group")).toBe("");
+    expect(
+      declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item + .ui-command-item"),
+    ).toBe("");
     /*
      * THE ROW REACHES BOTH EDGES; ONLY ITS CONTENT IS INSET.
      *
-     * This used to assert `margin-inline: 0` — "the command owns the outer column once; rows do not
-     * cancel it" — which kept the row's fill and its rule inside the column and left a strip of
-     * panel showing on either side. A row that stops short of the border reads as a card in a frame,
-     * and the panel is already the frame; every command surface worth copying lets the row meet both
-     * edges.
-     *
-     * The guarantee that mattered is unchanged, and it is the one asserted here: the row's mark and
-     * the search field's magnifier sit on ONE start line. The row cancels exactly what stands
-     * between it and the panel edge — `--org-switcher-list-inset`, which is the surface's own body
-     * inset plus the list's remainder however the surface splits them — and pays it back as padding
-     * along with the field's own glyph padding. Sum from the panel edge: `inset + input padding`,
-     * which is where the magnifier is. Measured in a browser at 1440px: mark 537, magnifier 538,
-     * one pixel of dialog border between them.
+     * The guarantee that mattered is unchanged: the row's mark and the search field's magnifier sit
+     * on ONE start line. A split row cancels `--command-list-split-inset` and pays it back as
+     * padding along with the field's own glyph padding; this panel sets that inset to
+     * `--org-switcher-list-inset` — the surface's own body inset plus the column's remainder,
+     * however the surface splits them. Sum from the panel edge: `inset + input padding`, which is
+     * where the magnifier is. Measured before/after the move (1440px popover, 390px sheet): every
+     * row mark, the magnifier, the field and the list at identical coordinates.
      */
-    expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(--org-switcher-list-inset\)\);/);
-    expect(row).toMatch(
-      /padding-inline:\s*calc\(\s*var\(--org-switcher-list-inset\) \+ var\(--command-input-padding-x\)\s*\);/,
-    );
-    expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
+    const column = declarationsFor(shellStyles, ".ui-org-switcher-command");
+    expect(column).toMatch(/--command-list-split-inset:\s*var\(--org-switcher-list-inset\);/);
+    expect(column).toMatch(
       /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
     );
     expect(shellTokens).toMatch(/--org-switcher-list-offset:\s*0px;/);
@@ -735,18 +735,7 @@ describe("responsive shell geometry", () => {
       declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet'),
     ).toMatch(/--org-switcher-list-offset:\s*var\(--org-switcher-sheet-inset\);/);
 
-    // The group's padding goes on BOTH axes: inline it was a second inset, block it was a 4px band
-    // above the first row and below the last (measured: list 82-179 against rows 86-175).
-    expect(declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-group")).toMatch(
-      /padding:\s*0;/,
-    );
-
-    // `+` and not a border on every row, so nothing hangs above the first item.
-    expect(
-      declarationsFor(shellStyles, ".ui-org-switcher-command .ui-command-item + .ui-command-item"),
-    ).toMatch(/border-block-start:\s*1px solid hsl\(var\(--border\)\);/);
-
-    // The palette itself keeps its pill — this must stay a local re-shape.
+    // The palette itself keeps its pill — split is opt-in, never the resting row.
     const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
     expect(declarationsFor(controlStyles, ".ui-command-item")).toMatch(/border-radius:\s*calc\(/);
   });

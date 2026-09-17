@@ -169,7 +169,7 @@ function OrgSwitcherPanel({
   }
 
   return (
-    <Command label={labels.title} className="ui-org-switcher-command">
+    <Command label={labels.title} className="ui-org-switcher-command" split>
       <CommandInput placeholder={labels.search} aria-label={labels.search} />
       <CommandList>
         <CommandEmpty>{labels.empty}</CommandEmpty>
