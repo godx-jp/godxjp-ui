@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@godxjp/ui/data-display";
+import {
+  Checkbox,
   Command,
   CommandEmpty,
   CommandGroup,
@@ -10,7 +20,9 @@ import {
   CommandList,
 } from "@godxjp/ui/data-entry";
 import { Skeleton } from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { ChevronDown } from "lucide-react";
 
 /**
  * Command — キーボードナビゲーション対応のコマンドパレット。
@@ -30,6 +42,14 @@ const VENDOR_DIRECTORY: Suggestion[] = [
   { value: "v-005", label: "田中物産" },
 ];
 
+const MEMBERS: Suggestion[] = [
+  { value: "m-001", label: "山田 太郎" },
+  { value: "m-002", label: "佐藤 花子" },
+  { value: "m-003", label: "鈴木 一郎" },
+  { value: "m-004", label: "高橋 美咲" },
+  { value: "m-005", label: "PHAM THAI DUONG（プロジェクト外）" },
+];
+
 export default function Demo() {
   // Card 1: grouped quick-select. Controlled `value` pre-highlights an item so the
   // [aria-selected=true] accent is visible at rest, without keyboard interaction.
@@ -43,6 +63,13 @@ export default function Demo() {
   const [query, setQuery] = useState<string>("やま");
   const [loading, setLoading] = useState<boolean>(true);
   const [results, setResults] = useState<Suggestion[]>([]);
+
+  // Card 4: filter facet — a checklist, so the list is `split` (ruled rows, 0 list padding).
+  const [assignees, setAssignees] = useState<string[]>(["m-002"]);
+  const toggleAssignee = (member: string) =>
+    setAssignees((current) =>
+      current.includes(member) ? current.filter((m) => m !== member) : [...current, member],
+    );
 
   useEffect(() => {
     let active = true;
@@ -128,6 +155,58 @@ export default function Demo() {
                 </CommandGroup>
               </CommandList>
             </Command>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>担当者フィルター（split）</CardTitle>
+            <CardDescription>
+              Popover + Command に split を付けると、行間に区切り線・リスト余白 0・行は popover
+              の端まで届く一つの箱として描画されます。チェックボックスで複数選択（選択中:{" "}
+              {assignees.length} 名）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  担当者{assignees.length > 0 ? ` (${assignees.length})` : ""}
+                  <ChevronDown aria-hidden="true" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent flush align="start">
+                <Command label="担当者を絞り込む" split>
+                  <CommandInput placeholder="担当者 を絞り込む" />
+                  <CommandList>
+                    <CommandEmpty>該当する担当者がいません。</CommandEmpty>
+                    <CommandGroup>
+                      {MEMBERS.map((member) => {
+                        const checked = assignees.includes(member.value);
+                        return (
+                          <CommandItem
+                            key={member.value}
+                            value={member.label}
+                            aria-checked={checked}
+                            onSelect={() => toggleAssignee(member.value)}
+                          >
+                            {/* The ROW is the option and owns the click; the box only mirrors it,
+                                so it leaves the tab ring (TreeSelect does the same). */}
+                            <Checkbox
+                              checked={checked}
+                              tabIndex={-1}
+                              onCheckedChange={() => toggleAssignee(member.value)}
+                              aria-labelledby={`assignee-${member.value}`}
+                            />
+                            <span id={`assignee-${member.value}`}>{member.label}</span>
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </CardContent>
         </Card>
 

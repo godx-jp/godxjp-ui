@@ -25,6 +25,7 @@ export type {
 } from "./layout.prop";
 export type { ButtonProp } from "./general.prop";
 export type {
+  CommandProp,
   InputProp,
   TextareaProp,
   FormFieldProp,

@@ -931,6 +931,47 @@
     opacity: 0.5;
   }
 
+  /* SPLIT — a list drawn as ONE ruled box, not a stack of floating pills (antd `List split`, gh#699).
+   *
+   * The resting `.ui-command-item` is a palette row: inset, rounded, no rule, because its home is a
+   * search-anything surface where a floating highlight tracks a cursor. An option / checkbox list is
+   * "choose from N", and there the inset and the rounded fill made the rows read as not belonging
+   * to the same box. Under `[data-split]`: no inner frame, rows meet both panel edges, the highlight
+   * is square, and a hairline separates each row from the next.
+   *
+   * `:has(+ .ui-command-item)` rather than `:not(:last-child)`: cmdk UNMOUNTS a filtered-out item,
+   * so the rows on screen are always contiguous siblings, and "followed by a row" is exactly "not
+   * the last visible row" — even when a status line (SearchSelect's loading row) follows the last
+   * one. `+`, not `~`, so matching stays constant-time on a long list. */
+  .ui-command[data-split] .ui-command-group {
+    padding: var(--command-list-split-padding);
+  }
+
+  /* The row cancels whatever the surface insets the list by and pays it back as padding, so its
+   * fill and rule reach the panel edge while its content starts where CommandInput starts its
+   * leading glyph (`--command-input-padding-x` from the edge). The heading keeps that start line. */
+  .ui-command[data-split] .ui-command-item {
+    border-radius: 0;
+    margin-inline: calc(-1 * var(--command-list-split-inset));
+    padding-inline: calc(var(--command-list-split-inset) + var(--command-input-padding-x));
+  }
+
+  .ui-command[data-split] .ui-command-group [cmdk-group-heading] {
+    padding-inline: calc(var(--command-list-split-inset) + var(--command-input-padding-x));
+  }
+
+  .ui-command[data-split] .ui-command-item:has(+ .ui-command-item) {
+    border-block-end: var(--command-item-divider-width) solid
+      hsl(var(--command-item-divider-color, var(--border)));
+  }
+
+  /* A group boundary keeps the rule, so a list split into groups is still one ruled box. `[hidden]`
+   * is how cmdk hides a group with no matching rows. */
+  .ui-command[data-split] .ui-command-group:not([hidden]) ~ .ui-command-group:not([hidden]) {
+    border-block-start: var(--command-item-divider-width) solid
+      hsl(var(--command-item-divider-color, var(--border)));
+  }
+
   [data-slot="dialog-content"].ui-command-palette {
     top: var(--command-palette-inset-top);
     width: min(
@@ -1842,6 +1883,11 @@
     flex: 1 1 0%;
     overflow-y: auto;
     padding: var(--search-select-list-space-inset);
+  }
+
+  /* The listbox is SearchSelect's own element, not CommandList, so split has to reach it by name. */
+  .ui-command[data-split] .ui-search-select-list {
+    padding: var(--command-list-split-padding);
   }
 
   /* The consumer's renderOption output — it must be able to truncate inside the row, which is what

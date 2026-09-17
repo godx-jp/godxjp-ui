@@ -267,6 +267,14 @@ in page CSS.
   (`@godxjp/ui/lib/utils`). `allowEmptySubmit` (default `false`, antd's behaviour) sends `""`,
   still never while `loading` / `disabled` / `readOnly`.
 
+- **`Command.split` is antd `List.split`, with this library's default.** Same name, same meaning:
+  a divider between rows and none after the last (gh#699). antd's `List` defaults it to `true`;
+  `Command` defaults it to `false`, because its resting home is a command palette, where inset
+  pill rows are right. The option lists the library renders itself as a checklist
+  (`Select mode="multiple" | "tags"`) set it to `true`, and a consumer composing a filter facet
+  (`Popover` + `Command`) opts in with `split`. It also zeroes the list padding and bleeds rows to
+  the panel edge, which antd's `split` does not need to say because a `List` has no inset rows.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

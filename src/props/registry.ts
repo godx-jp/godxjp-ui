@@ -1596,6 +1596,18 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["PlaceholderProp", "ValueProp", "DisabledProp"],
   },
+  CommandProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "split",
+        local: true,
+        reason:
+          "antd List `split` — ruled-list presentation (row dividers, 0 list padding) for option/checkbox lists; the rest of the root API is cmdk's (gh#699).",
+      },
+    ],
+  },
   TextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

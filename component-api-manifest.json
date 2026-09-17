@@ -4671,6 +4671,14 @@
           "declaredIn": ["node_modules/cmdk/dist/index.d.ts"]
         },
         {
+          "name": "split",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "value",
           "origin": "inherited-behavioral",
           "required": false,

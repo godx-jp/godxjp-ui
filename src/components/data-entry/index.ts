@@ -93,6 +93,7 @@ export {
   CommandItem,
   CommandList,
 } from "./command";
+export type { CommandProps } from "./command";
 export { CommandPalette } from "./command-palette";
 export type {
   CommandPaletteGroup,

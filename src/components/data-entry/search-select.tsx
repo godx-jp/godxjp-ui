@@ -751,7 +751,15 @@ export function SearchSelect(props: SearchSelectProp) {
           }
         >
           <PopupRender render={popupRender}>
-            <Command value={value} shouldFilter={false} className="ui-search-select-command">
+            {/* A multi-value panel is a checklist the user works down, so its rows are ruled
+                (`split`, gh#699); a single-value pick closes on the first click and keeps the
+                palette rows. */}
+            <Command
+              value={value}
+              shouldFilter={false}
+              className="ui-search-select-command"
+              split={multiple}
+            >
               {/* The search field is FLUSH inside the panel — borderless with a single bottom
                 separator (the panel frames it). A boxed/padded input here double-borders. */}
               <div className="ui-search-select-search">
