@@ -249,7 +249,12 @@ describe("theme axes — control-styles import contracts", () => {
     { file: "data-entry/command.tsx", exportName: "controlIconLeadingClass" },
     { file: "data-entry/calendar.tsx", exportName: "controlIconSmClass" },
     { file: "data-entry/color-picker.tsx", exportName: "controlIconClass" },
-    { file: "data-entry/upload.tsx", exportName: "controlIconClass" },
+    // `data-entry/upload.tsx` was here until gh#720. Its two placeholder marks — the avatar camera
+    // and the picture empty state — were sized by `controlIconClass`, i.e. a CONTROL height
+    // (32px) inside a media placeholder, which is not one of the nine `--icon-size-*` steps and
+    // left two identical 96×96 boxes drawing 32px and 24px marks. They read
+    // `--upload-avatar-icon-size` / `--upload-picture-icon-size` now, so the import is gone by
+    // design; upload.tsx's remaining control chrome is unaffected.
     { file: "data-display/badge.tsx", exportName: "toneSuccessClass" },
     { file: "data-display/table.tsx", exportName: "tableHeadHeightClass" },
     { file: "data-display/data-table.tsx", exportName: "tableRowHeightClass" },
