@@ -93,4 +93,52 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
     expect(after.mcpServers.other).toEqual({ command: "x" });
     expect(ensureMcpJson(root)).toBe("present");
   });
+
+  // gh#692: the catalog server registered under a different key, in a file indented at 4.
+  const fourSpaces = (value: unknown) => JSON.stringify(value, null, 4) + "\n";
+
+  it("an @godxjp/ui-mcp entry under another key is not duplicated, and the file is untouched", () => {
+    const root = consumerRepo({ version: "26.2.0" });
+    const original = fourSpaces({
+      mcpServers: {
+        omnify: { command: "npx", args: ["omnify", "mcp"] },
+        "godxjp-ui": { command: "npx", args: ["-y", "@godxjp/ui-mcp@latest"] },
+      },
+    });
+    writeFileSync(join(root, ".mcp.json"), original);
+
+    expect(ensureMcpJson(root)).toMatch(/^present \(custom godx-ui MCP entry under key "godxjp-ui"/);
+    expect(readFileSync(join(root, ".mcp.json"), "utf8")).toBe(original);
+  });
+
+  it("a package-written entry under another key is refreshed IN PLACE, keeping the indentation", () => {
+    const root = consumerRepo({ version: "26.2.0" });
+    writeFileSync(
+      join(root, ".mcp.json"),
+      fourSpaces({
+        mcpServers: {
+          ui: { command: "npx", args: ["@godxjp/ui-mcp@25.4.0"], env: { GODX_UI_VERSION: "25.4.0" } },
+        },
+      }),
+    );
+
+    expect(ensureMcpJson(root)).toBe("refreshed");
+    expect(readFileSync(join(root, ".mcp.json"), "utf8")).toBe(
+      fourSpaces({
+        mcpServers: {
+          ui: { command: "npx", args: ["@godxjp/ui-mcp@26.2.0"], env: { GODX_UI_VERSION: "26.2.0" } },
+        },
+      }),
+    );
+  });
+
+  it("adding the entry to an existing file keeps that file's indentation", () => {
+    const root = consumerRepo({ version: "26.2.0" });
+    writeFileSync(join(root, ".mcp.json"), fourSpaces({ mcpServers: { omnify: { command: "npx" } } }));
+
+    expect(ensureMcpJson(root)).toBe("added");
+    const raw = readFileSync(join(root, ".mcp.json"), "utf8");
+    expect(raw).toBe(fourSpaces(JSON.parse(raw)));
+    expect(Object.keys(JSON.parse(raw).mcpServers)).toEqual(["omnify", "godx-ui"]);
+  });
 });
