@@ -4,6 +4,46 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.1.0] - 2026-09-17
+
+MINOR, compatible. The modal default of Dialog and Sheet is unchanged.
+
+### Fixed
+
+- **Dialog: `modal={false}` is honoured again** (gh#696). It had been silently ignored since the
+  move to react-aria, so a non-modal dialog was always modal: the page behind was inert and a press
+  on it dismissed the dialog. It now renders a non-modal dialog, which the WAI-ARIA APG allows:
+  - The page behind stays interactive and in the accessibility tree, with no scroll lock and no
+    scrim, and an outside press does not close the dialog.
+  - The dialog keeps `role="dialog"` with its title as name, has no `aria-modal`, and keeps the
+    same centred placement, sizes and tokens.
+  - Focus moves in on open, and Tab can leave. Escape closes it while focus is inside, and focus
+    returns to the trigger.
+
+  Measured in Chromium on the docs page: a click on ＋ in the list behind the open dialog changed
+  the total ¥2,130 → ¥2,610, and the dialog stayed open. `variant="destructive"` (alertdialog)
+  stays modal and logs a dev warning. `react-aria` 3.52.1, the version react-aria-components
+  already pins, is now a direct dependency.
+- **Sheet: `modal={false}` is honoured** (gh#701), with the same non-modal contract. The sheet keeps
+  its side, width, responsive presentation and tokens. Measured in Chromium the same way: ¥2,130 →
+  ¥2,610 with the sheet open, and Escape restores focus.
+- **FormRoot no longer shows the generic "could not submit" banner for a server validation
+  rejection whose messages are already on the page** (gh#698). When `onSubmit` rejects with a
+  validation-category error (400/422) and the `errors` bag holds at least one message, the fields
+  and `<FormErrors />` show it once. A validation rejection with an empty bag, and every
+  5xx / network / unknown rejection, still show the banner. The canonical
+  `FormRoot onSubmit={(v) => m.mutateAsync(v)} errors={…}` + `FormErrors` + `AlertMutationFeedback`
+  composition now renders a 422 exactly once. If you map server errors with react-hook-form
+  `setError` instead of `errors`, pass `submitFailedMessage={false}`.
+- **FormFieldControl's render-prop `ref` is `RefCallback<HTMLElement>`** (was
+  `Ref<HTMLInputElement>`, gh#698), so `{...field}` spreads onto `Textarea`, `Select`,
+  `NumberInput`, `DatePicker` and `Input` without a cast.
+
+### Added
+
+- `FormRoot` `submitFailedMessage?: ReactNode | false` (gh#698): replaces the rejection banner text,
+  or `false` to never show it.
+
 ## [27.0.0] - 2026-09-17
 
 **MAJOR: one default changes.** `Select` and `TreeSelect` no longer show the clear ✕ unless asked
