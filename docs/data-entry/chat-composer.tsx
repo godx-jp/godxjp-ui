@@ -14,9 +14,12 @@ import {
   ChatComposer,
   ChatSuggestion,
   FormField,
+  Select,
   type ChatSuggestionItemProp,
 } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
+import { isApplePlatform } from "@godxjp/ui/lib/utils";
 import {
   AppShell,
   Flex,
@@ -34,7 +37,8 @@ import { Bot, MessageSquare, Paperclip, Settings, Smile, Sparkles, Users } from 
  *
  * The first card is the real screen: a live assistant transcript whose composer sends, streams and
  * cancels, with `/` slash commands and `@` mentions wired to the same draft. Every card after it
- * exists so the whole API is visible AT REST — both `submitType` values, all four `size` steps,
+ * exists so the whole API is visible AT REST — every `submitType` value (including the record-
+ * comment bar: `modEnter` + `allowEmptySubmit`), all four `size` steps,
  * every slot, and each non-default state — without having to click anything.
  *
  * Composed only from real @godxjp/ui components.
@@ -91,6 +95,20 @@ const OPENING: Message[] = [
   },
 ];
 
+/** Record statuses for the comment bar — a status change is postable without any text. */
+const STATUSES = [
+  { value: "open", label: "未対応" },
+  { value: "inProgress", label: "処理中" },
+  { value: "resolved", label: "処理済み" },
+  { value: "closed", label: "完了" },
+];
+
+interface Comment {
+  id: number;
+  body: string;
+  status: string | null;
+}
+
 /** One transcript line. The message FEED is ChatBubbleList's job; here it only sets the scene. */
 function Line({ message }: { message: Message }) {
   const mine = message.author === "you";
@@ -110,6 +128,8 @@ function Line({ message }: { message: Message }) {
 }
 
 export default function Demo() {
+  const { t } = useTranslation();
+
   // ── Card 1: the live screen ───────────────────────────────────────────────────────────────
   const [messages, setMessages] = useState<Message[]>(OPENING);
   const [draft, setDraft] = useState("");
@@ -141,6 +161,24 @@ export default function Demo() {
   const [enterDraft, setEnterDraft] = useState("Enter を押すと送信されます");
   const [shiftDraft, setShiftDraft] = useState("Enter は改行、Shift + Enter で送信");
   const [lastSent, setLastSent] = useState<string>("—");
+
+  // ── Card 2b: the record-comment bar (modEnter + allowEmptySubmit) ──────────────────────────
+  const [commentDraft, setCommentDraft] = useState("");
+  const [status, setStatus] = useState("open");
+  const [savedStatus, setSavedStatus] = useState("open");
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  function postComment(text: string) {
+    const changed = status !== savedStatus;
+    // An empty draft with no status change carries nothing — the consumer decides, not the box.
+    if (!text && !changed) return;
+    setComments((current) => [
+      ...current,
+      { id: current.length + 1, body: text, status: changed ? status : null },
+    ]);
+    setSavedStatus(status);
+    setCommentDraft("");
+  }
 
   // ── Card 3: the four size steps ───────────────────────────────────────────────────────────
   const [sizeDrafts, setSizeDrafts] = useState<Record<string, string>>({
@@ -283,6 +321,68 @@ export default function Demo() {
                   }
                 />
               </ResponsiveGrid>
+            </CardContent>
+          </Card>
+
+          {/* ── 2b. Record comment bar ───────────────────────────────────────────────────── */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>
+                submitType=&quot;modEnter&quot; · allowEmptySubmit · 課題へのコメント
+              </CardTitle>
+              <CardDescription>
+                Enter と Shift + Enter は改行、⌘ + Enter（Mac）/ Ctrl + Enter（Windows・Linux）で
+                投稿します。allowEmptySubmit により本文が空でも送信でき、ステータスだけを
+                変更できます（onSubmit には空文字が渡ります）。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex direction="col" gap="md">
+                {comments.length === 0 ? (
+                  <Text size="sm" tone="muted">
+                    まだコメントはありません
+                  </Text>
+                ) : (
+                  comments.map((comment) => (
+                    <Flex key={comment.id} direction="col" gap="xs">
+                      {comment.status ? (
+                        <Badge tone="info">
+                          ステータス：
+                          {STATUSES.find((option) => option.value === comment.status)?.label}
+                        </Badge>
+                      ) : null}
+                      {comment.body ? <Text>{comment.body}</Text> : null}
+                    </Flex>
+                  ))
+                )}
+                <ChatComposer
+                  aria-label="課題へのコメント"
+                  submitType="modEnter"
+                  allowEmptySubmit
+                  value={commentDraft}
+                  onValueChange={setCommentDraft}
+                  onSubmit={postComment}
+                  placeholder="コメントを入力"
+                  submitLabel="コメントを投稿"
+                  footer={
+                    <Flex direction="row" gap="sm" align="center" justify="between" wrap>
+                      <Select
+                        size="sm"
+                        aria-label="ステータス"
+                        value={status}
+                        onValueChange={setStatus}
+                        clearable={false}
+                        options={STATUSES}
+                      />
+                      <Text size="xs" tone="muted">
+                        {t("dataEntry.chatComposer.hintModEnter", {
+                          modifier: isApplePlatform() ? "⌘" : "Ctrl",
+                        })}
+                      </Text>
+                    </Flex>
+                  }
+                />
+              </Flex>
             </CardContent>
           </Card>
 

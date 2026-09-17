@@ -257,6 +257,15 @@ in page CSS.
   `onClose`, because `onClose` already means overlay dismiss across Dialog/Drawer and would read
   as closing a surface, not removing one applied filter chip. Implemented on `Badge` — the DS chip
   primitive — rather than adding a separate `Tag` export beside `Badge`.
+- **`ChatComposer.submitType="modEnter"` and `ChatComposer.allowEmptySubmit`.** Ant Design X
+  `Sender.submitType` is only `"enter" | "shiftEnter"`, and `Sender` never submits an empty draft.
+  A comment composer on a record needs the convention GitHub, Jira, Linear and GitLab share —
+  `Enter` breaks the line, `⌘+Enter` (Apple platforms, `metaKey`) / `Ctrl+Enter` (elsewhere,
+  `ctrlKey`) sends — and needs to post a status change with no text (gh#693). `"modEnter"` extends
+  antd's union rather than renaming it, so both antd values keep their meaning; its hint is
+  `dataEntry.chatComposer.hintModEnter` with `{modifier}` from `isApplePlatform()`
+  (`@godxjp/ui/lib/utils`). `allowEmptySubmit` (default `false`, antd's behaviour) sends `""`,
+  still never while `loading` / `disabled` / `readOnly`.
 
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer

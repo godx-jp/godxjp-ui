@@ -1,5 +1,5 @@
 import * as React from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, renderWithUi, screen, userEvent } from "@/test/render";
 
 import { ChatComposer } from "../chat-composer";
@@ -124,6 +124,181 @@ describe("ChatComposer — submitType", () => {
 
     expect(onSubmit).toHaveBeenCalledWith("ok");
     expect(field().value).toBe("ok");
+  });
+});
+
+/**
+ * `modEnter` reads the platform through `navigator`, so each test pins it. `userAgentData` is
+ * cleared too: Chromium reports the platform there first, and jsdom may grow it one day.
+ */
+function mockPlatform(platform: string) {
+  vi.spyOn(window.navigator, "platform", "get").mockReturnValue(platform);
+  Object.defineProperty(window.navigator, "userAgentData", {
+    value: undefined,
+    configurable: true,
+  });
+}
+
+describe('ChatComposer — submitType="modEnter"', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("off Apple platforms Ctrl+Enter sends; Enter and Shift+Enter break the line; ⌘+Enter does not send", async () => {
+    mockPlatform("Win32");
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(<Controlled onSubmit={onSubmit} submitType="modEnter" />);
+
+    await user.type(field(), "hello");
+    await user.keyboard("{Enter}");
+    await user.keyboard("{Shift>}{Enter}{/Shift}");
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(field().value).toBe("hello\n\n");
+
+    await user.keyboard("{Meta>}{Enter}{/Meta}");
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    const beforeSend = field().value;
+    await user.keyboard("{Control>}{Enter}{/Control}");
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith(beforeSend);
+    // Sending leaves no newline behind.
+    expect(field().value).toBe(beforeSend);
+  });
+
+  it("on Apple platforms ⌘+Enter sends and Ctrl+Enter does not", async () => {
+    mockPlatform("MacIntel");
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(<Controlled onSubmit={onSubmit} submitType="modEnter" initial="done" />);
+
+    await user.click(field());
+    await user.keyboard("{Control>}{Enter}{/Control}");
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    await user.keyboard("{Meta>}{Enter}{/Meta}");
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("done");
+  });
+
+  it("`userAgentData.platform` wins over `navigator.platform` when the browser reports it", async () => {
+    mockPlatform("Win32");
+    Object.defineProperty(window.navigator, "userAgentData", {
+      value: { platform: "macOS" },
+      configurable: true,
+    });
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(<Controlled onSubmit={onSubmit} submitType="modEnter" initial="x" />);
+
+    await user.click(field());
+    await user.keyboard("{Meta>}{Enter}{/Meta}");
+    expect(onSubmit).toHaveBeenCalledWith("x");
+  });
+
+  it("an IME conversion swallows Enter and Ctrl+Enter alike", () => {
+    mockPlatform("Win32");
+    const onSubmit = vi.fn();
+    renderWithUi(
+      <ChatComposer aria-label="メッセージ" submitType="modEnter" onSubmit={onSubmit} />,
+    );
+    const node = field();
+
+    fireEvent.compositionStart(node);
+    fireEvent.change(node, { target: { value: "にほんご" } });
+    fireEvent.keyDown(node, { key: "Enter" });
+    fireEvent.keyDown(node, { key: "Enter", ctrlKey: true });
+    fireEvent.keyDown(node, { key: "Enter", ctrlKey: true, isComposing: true });
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    fireEvent.change(node, { target: { value: "日本語" } });
+    fireEvent.compositionEnd(node, { data: "日本語" });
+    fireEvent.keyDown(node, { key: "Enter", ctrlKey: true, isComposing: true });
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(node, { key: "Enter", ctrlKey: true });
+    expect(onSubmit).toHaveBeenCalledWith("日本語");
+  });
+});
+
+describe("ChatComposer — allowEmptySubmit", () => {
+  it('an empty draft is sendable: the button and Enter both call onSubmit("")', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(<ChatComposer aria-label="メッセージ" allowEmptySubmit onSubmit={onSubmit} />);
+
+    const send = screen.getByRole("button", { name: "Gửi tin nhắn" });
+    expect(send).toBeEnabled();
+    await user.click(send);
+    expect(onSubmit).toHaveBeenLastCalledWith("");
+
+    await user.click(field());
+    await user.keyboard("{Enter}");
+    expect(onSubmit).toHaveBeenCalledTimes(2);
+    expect(onSubmit).toHaveBeenLastCalledWith("");
+  });
+
+  it('a whitespace-only draft is sent as "" — whitespace is still not a message', async () => {
+    mockPlatform("Win32");
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(
+      <ChatComposer
+        aria-label="メッセージ"
+        defaultValue="   "
+        submitType="modEnter"
+        allowEmptySubmit
+        onSubmit={onSubmit}
+      />,
+    );
+
+    await user.click(field());
+    await user.keyboard("{Control>}{Enter}{/Control}");
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("");
+    vi.restoreAllMocks();
+  });
+
+  it("text is still sent as typed", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(
+      <ChatComposer
+        aria-label="メッセージ"
+        allowEmptySubmit
+        defaultValue="memo"
+        onSubmit={onSubmit}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Gửi tin nhắn" }));
+    expect(onSubmit).toHaveBeenCalledWith("memo");
+  });
+
+  it("still blocked while `loading`, `disabled` or `readOnly`", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    const { rerender } = renderWithUi(
+      <ChatComposer aria-label="メッセージ" allowEmptySubmit loading onSubmit={onSubmit} />,
+    );
+    expect(screen.queryByRole("button", { name: "Gửi tin nhắn" })).toBeNull();
+    await user.type(field(), "{Enter}");
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    rerender(
+      <ChatComposer aria-label="メッセージ" allowEmptySubmit disabled onSubmit={onSubmit} />,
+    );
+    expect(screen.getByRole("button", { name: "Gửi tin nhắn" })).toBeDisabled();
+    fireEvent.keyDown(field(), { key: "Enter" });
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    rerender(
+      <ChatComposer aria-label="メッセージ" allowEmptySubmit readOnly onSubmit={onSubmit} />,
+    );
+    expect(screen.getByRole("button", { name: "Gửi tin nhắn" })).toBeDisabled();
+    await user.type(field(), "{Enter}");
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 });
 

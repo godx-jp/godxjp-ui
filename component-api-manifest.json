@@ -4017,6 +4017,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "allowEmptySubmit",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "cancelLabel",
           "origin": "owned",
           "required": false,
@@ -4187,7 +4195,7 @@
           "origin": "owned",
           "required": false,
           "type": "ChatComposerSubmitTypeProp | undefined",
-          "values": ["enter", "shiftEnter"],
+          "values": ["enter", "shiftEnter", "modEnter"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {

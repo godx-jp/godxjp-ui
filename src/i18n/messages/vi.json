@@ -166,7 +166,8 @@
       "send": "Gửi tin nhắn",
       "cancel": "Dừng tạo câu trả lời",
       "hintEnter": "Enter để gửi · Shift + Enter để xuống dòng",
-      "hintShiftEnter": "Shift + Enter để gửi · Enter để xuống dòng"
+      "hintShiftEnter": "Shift + Enter để gửi · Enter để xuống dòng",
+      "hintModEnter": "{modifier} + Enter để gửi · Enter để xuống dòng"
     },
     "chatSuggestion": {
       "label": "Gợi ý",

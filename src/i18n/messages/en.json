@@ -169,7 +169,8 @@
       "send": "Send message",
       "cancel": "Stop generating",
       "hintEnter": "Enter to send · Shift + Enter for a new line",
-      "hintShiftEnter": "Shift + Enter to send · Enter for a new line"
+      "hintShiftEnter": "Shift + Enter to send · Enter for a new line",
+      "hintModEnter": "{modifier} + Enter to send · Enter for a new line"
     },
     "chatSuggestion": {
       "label": "Suggestions",
