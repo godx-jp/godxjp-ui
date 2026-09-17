@@ -17,6 +17,13 @@ export default tseslint.config(
       // moment anyone ran `cd mcp && pnpm build`, which made `pnpm lint` depend on whether a
       // gitignored build happened to be present.
       "**/dist/**",
+      // A git worktree checked out INSIDE the repo — `.claude/worktrees/<agent>` is where a
+      // background agent works — is a second copy of this tree, tsconfig and all. ESLint's
+      // type-aware parser then sees several candidate roots and fails every file with
+      // "No tsconfigRootDir was set, and multiple candidate TSConfigRootDirs are present",
+      // 3936 phantom errors that have nothing to do with the code under review. Measured twice
+      // while agents were running; it stopped a release gate both times.
+      ".claude/worktrees/**",
       "examples/**",
       "preview/**",
       "node_modules/**",
