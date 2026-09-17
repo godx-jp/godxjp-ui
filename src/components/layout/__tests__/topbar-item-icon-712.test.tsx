@@ -41,14 +41,15 @@ describe("TopbarItem icon slot (gh#712)", () => {
     expect(cell.firstElementChild).toBe(slot);
   });
 
-  it("ignores the slot under asChild — Slot has nowhere to put a sibling", () => {
+  it("keeps the slot under asChild, inside the borrowed element (gh#726)", () => {
     const { container } = renderWithUi(
       <TopbarItem asChild icon={<Building2 />}>
         <a href="/org">東京本社</a>
       </TopbarItem>,
     );
-    expect(slotOf(container)).toBeNull();
-    expect(container.querySelector("a")).toHaveClass("ui-topbar-item");
+    const link = container.querySelector("a");
+    expect(link).toHaveClass("ui-topbar-item");
+    expect(link?.firstElementChild).toBe(slotOf(container));
   });
 
   it("sizes the slot's glyph from the bar's own token, not a literal", () => {

@@ -1712,26 +1712,86 @@
   }
 
   @media (width >= 40rem) {
-    .ui-flex[data-hide-from="sm"] {
+    .ui-flex[data-hide-from="sm"],
+    .ui-topbar-item-icon[data-hide-from="sm"] {
       display: none;
     }
   }
 
   @media (width >= 48rem) {
-    .ui-flex[data-hide-from="md"] {
+    .ui-flex[data-hide-from="md"],
+    .ui-topbar-item-icon[data-hide-from="md"] {
       display: none;
     }
   }
 
   @media (width >= 64rem) {
-    .ui-flex[data-hide-from="lg"] {
+    .ui-flex[data-hide-from="lg"],
+    .ui-topbar-item-icon[data-hide-from="lg"] {
       display: none;
     }
   }
 
   @media (width >= 80rem) {
-    .ui-flex[data-hide-from="xl"] {
+    .ui-flex[data-hide-from="xl"],
+    .ui-topbar-item-icon[data-hide-from="xl"] {
       display: none;
+    }
+  }
+
+  /* `TopbarItem labelHideBelow` (gh#726) — the same steps as `hideBelow`, but the label is VISUALLY
+   * hidden rather than removed: it is the cell's accessible name, and `display: none` would take
+   * the name of an icon-only cell with it. Out of flow, so the cell's `gap` does not keep a slot
+   * open for it; pinned to the block/inline start like `.sr-only` so it never adds scroll extent. */
+  @media (width < 40rem) {
+    .ui-topbar-item-label[data-hide-below="sm"] {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: var(--stroke-hairline);
+      block-size: var(--stroke-hairline);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (width < 48rem) {
+    .ui-topbar-item-label[data-hide-below="md"] {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: var(--stroke-hairline);
+      block-size: var(--stroke-hairline);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (width < 64rem) {
+    .ui-topbar-item-label[data-hide-below="lg"] {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: var(--stroke-hairline);
+      block-size: var(--stroke-hairline);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (width < 80rem) {
+    .ui-topbar-item-label[data-hide-below="xl"] {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: var(--stroke-hairline);
+      block-size: var(--stroke-hairline);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 }

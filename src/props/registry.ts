@@ -1374,6 +1374,19 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
       "ClassNameProp",
       { field: "asChild", local: true, reason: "Radix Slot passthrough — merges onto the child" },
+      "BreakpointProp",
+      {
+        field: "iconHideFrom",
+        local: true,
+        reason:
+          "Flex `hideFrom` scoped to the cell's icon slot — label-only from a breakpoint up without hand-wrapping the glyph (gh#726).",
+      },
+      {
+        field: "labelHideBelow",
+        local: true,
+        reason:
+          "Flex `hideBelow` scoped to the cell's label — icon-only below a breakpoint; visually hidden so the accessible name survives (gh#726).",
+      },
     ],
   },
   NavListProp: {

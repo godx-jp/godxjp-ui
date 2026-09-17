@@ -1430,8 +1430,24 @@ export type TopbarItemProp = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
    * visible label, not from the glyph. For a glyph that must carry a name, or one that needs a
    * step other than the bar's, pass `<Icon as={…} size=… label=… />` — as this prop's value or as
    * a child — and it keeps its own metric and its own semantics.
+   *
+   * Rendered under `asChild` too: the slot is inserted ahead of the child element's own children,
+   * and the child element stays the cell (gh#726).
    */
   icon?: ReactNode;
+  /**
+   * Drop the `icon` slot FROM a breakpoint step upwards — `Flex hideFrom`'s contract, scoped to
+   * the cell's glyph, so a cell reads label-only on a wide bar without the consumer wrapping the
+   * glyph (gh#726). Purely decorative: the accessible name is unaffected.
+   */
+  iconHideFrom?: BreakpointProp;
+  /**
+   * Visually hide the cell's label BELOW a breakpoint step — `Flex hideBelow`'s contract, scoped to
+   * the label — so the cell collapses to icon-only on a narrow bar (gh#726). The label stays in the
+   * accessibility tree (visually hidden, not `display: none`), so the collapsed cell keeps its
+   * accessible name. Under `asChild` the child element's own children are the label.
+   */
+  labelHideBelow?: BreakpointProp;
   /**
    * Unread count OVERLAID on the cell's glyph — the notification-bell affordance the cell's own use
    * cases name (gh#398). Pass the CONTENT ONLY, exactly like `SidebarItemProp.badge`: a number, a

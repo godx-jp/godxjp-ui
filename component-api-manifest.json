@@ -17939,6 +17939,22 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "iconHideFrom",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "labelHideBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "BreakpointProp | undefined",
+          "values": ["sm", "md", "lg", "xl"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,

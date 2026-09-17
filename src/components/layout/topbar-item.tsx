@@ -20,7 +20,19 @@ export type {
  * file resolves, including nothing at all while the `--focus-outline` switch ships off.
  */
 export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(function TopbarItem(
-  { asChild = false, className, type, hideBelow, icon, badge, badgeTone, children, ...props },
+  {
+    asChild = false,
+    className,
+    type,
+    hideBelow,
+    icon,
+    iconHideFrom,
+    labelHideBelow,
+    badge,
+    badgeTone,
+    children,
+    ...props
+  },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -31,14 +43,45 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   // sibling — the same rule `Button`'s `count` follows.
   const showBadge = !asChild && badge !== undefined && badge !== "";
   // The glyph goes in a box the CELL owns, so it keeps the bar's step however the consumer wraps
-  // it (gh#712). Ignored under `asChild` for the same reason `badge` is: Slot borrows the child's
-  // single element and has nowhere to put a sibling.
+  // it (gh#712). Under `asChild` the box goes INSIDE the borrowed element, ahead of that element's
+  // own children (gh#726): the element is still the cell, so `.ui-topbar-item-icon svg` sizes the
+  // glyph the same way and `.ui-topbar-item > svg` never has to reach past a direct child.
   const iconNode =
-    !asChild && icon !== undefined && icon !== null && icon !== false ? (
-      <span data-slot="topbar-item-icon" className="ui-topbar-item-icon">
+    icon !== undefined && icon !== null && icon !== false ? (
+      <span
+        data-slot="topbar-item-icon"
+        className="ui-topbar-item-icon"
+        // Decorative, so dropping it at a breakpoint takes no accessible name with it.
+        data-hide-from={iconHideFrom}
+      >
         {icon}
       </span>
     ) : null;
+  // The label box exists ONLY when a breakpoint asks for one, so a cell without `labelHideBelow`
+  // renders the node it always has. Below the step the label is VISUALLY hidden, never
+  // `display: none`: it is the cell's accessible name, and an icon-only cell still needs one.
+  const labelOf = (label: React.ReactNode) =>
+    labelHideBelow === undefined || label === undefined || label === null || label === false ? (
+      label
+    ) : (
+      <span
+        data-slot="topbar-item-label"
+        className="ui-topbar-item-label"
+        data-hide-below={labelHideBelow}
+      >
+        {label}
+      </span>
+    );
+  // Under `asChild` the slot and the label box are injected into the ONE child element, which
+  // stays the rendered root and still receives every prop Slot merges onto it. Anything that is
+  // not a single valid element goes to Slot untouched, so it fails exactly the way every other
+  // `asChild` in this library does — Button's included — rather than in a way of its own.
+  const slotted =
+    asChild &&
+    (iconNode !== null || labelHideBelow !== undefined) &&
+    React.isValidElement<{ children?: React.ReactNode }>(children)
+      ? React.cloneElement(children, undefined, iconNode, labelOf(children.props.children))
+      : children;
   const badgeNode = showBadge ? (
     <span
       data-slot="topbar-item-badge"
@@ -61,11 +104,11 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
       {...props}
     >
       {asChild ? (
-        children
+        slotted
       ) : (
         <>
           {iconNode}
-          {children}
+          {labelOf(children)}
           {badgeNode}
         </>
       )}
