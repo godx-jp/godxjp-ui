@@ -13,6 +13,34 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * semantic HTML inside it from the tokens; the HTML can come from react-markdown, a sanitised
  * string or JSX. Composed only from real @godxjp/ui components.
  */
+
+/**
+ * A CONSUMER'S OWN STYLESHEET — the file their app already has, not part of the package. It is
+ * inlined here so the third card below is the real thing rather than a description of it.
+ *
+ * Both halves of the gh#717 contract are exercised:
+ *   · `--prose-link-*` — the service tunes every link in its wiki once, through the knob;
+ *   · `a[data-unresolved]` — Prose writes `data-*` on its own ROOT only, so every `data-*` on a
+ *     descendant `a` is the consumer's and stays selectable. That is a promise, held by
+ *     src/components/data-display/__tests__/prose-link-717.test.tsx.
+ *
+ * Measured on the card surface (#fdfdfc light / #21201c dark):
+ *   resolved   --text-link  #6400d4 → 8.29:1 light · #dcbcff → 9.85:1 dark
+ *   unresolved --text-error #aa181f → 7.25:1 light · #eb7076 → 5.51:1 dark
+ * The TEXT tier, never `--destructive`: that is the FILL tier, tuned for a white label on top of
+ * it, and it measures 2.95:1 as ink on the dark card (gh#610).
+ */
+const WIKI_STYLESHEET = `
+[data-wiki] {
+  --prose-link-color: var(--text-link);
+}
+
+[data-wiki] a[data-unresolved="true"] {
+  --prose-link-color: var(--text-error);
+  text-decoration-style: dashed;
+}
+`;
+
 export default function Demo() {
   return (
     <PageContainer title="Prose" subtitle="レンダリングされた本文のタイポグラフィ">
@@ -96,6 +124,42 @@ export default function Demo() {
                 <li>明細を 1 行追加する</li>
                 <li>合計欄を見る</li>
               </ol>
+            </Prose>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Wiki body · リンクの状態 (--prose-link-*)</CardTitle>
+            <CardDescription>
+              リンクの色と下線は --prose-link-color / --prose-link-decoration-line で調整する。Prose
+              は自身のルート以外に data-* を書かないため、a[data-…]
+              は利用側が所有するセレクタとして保証される。ここではまだ存在しないページへのリンクを
+              --text-error ＋破線で示した。カード面でのコントラストは、解決済み 8.29:1 (ライト) /
+              9.85:1 (ダーク)、未解決 7.25:1 / 5.51:1。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <style>{WIKI_STYLESHEET}</style>
+            <Prose size="md" data-wiki="">
+              <h2>出張費の精算</h2>
+              <p>
+                原則は <a href="#rules">精算規程</a> に従う。宿泊費の上限は地域区分で変わるため、
+                <a href="#lodging" data-unresolved="true">
+                  宿泊費区分表
+                </a>{" "}
+                を参照すること（このページはまだ書かれていない）。
+              </p>
+              <ul>
+                <li>
+                  <a href="#receipt">領収書の要件</a>
+                </li>
+                <li>
+                  <a href="#foreign" data-unresolved="true">
+                    海外出張の為替レート
+                  </a>
+                </li>
+              </ul>
             </Prose>
           </CardContent>
         </Card>

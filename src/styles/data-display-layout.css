@@ -1330,9 +1330,16 @@
     border-radius: var(--prose-code-radius);
   }
 
+  /* The link, and the ONE element in here a consumer is invited to select (gh#717).
+   *
+   * Prose writes no `data-*` attribute on any descendant — only on its own root — so `a[data-…]` is
+   * the consumer's, permanently: mark the anchors your renderer knows something extra about
+   * (a wiki target that does not exist yet) and re-declare the knobs below inside that selector.
+   * Setting a custom property on the anchor is enough; the `var()` here reads the value computed on
+   * the element, whichever rule declared it. Documented in docs/CUSTOMER-THEMING.md. */
   .ui-prose a {
-    color: hsl(var(--primary));
-    text-decoration: underline;
+    color: hsl(var(--prose-link-color, var(--primary)));
+    text-decoration-line: var(--prose-link-decoration-line);
   }
 
   .ui-prose table {
