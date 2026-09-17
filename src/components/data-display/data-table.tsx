@@ -361,7 +361,7 @@ interface DataTableContextValue<T = unknown> {
   error?: React.ReactNode;
   denied?: React.ReactNode;
   onRetry?: () => void;
-  striped: boolean;
+  striped?: boolean;
   hoverable: boolean;
   stickyHeader: boolean;
   preset: TablePresetProp;
@@ -465,7 +465,11 @@ interface DataTableProps<T> {
   denied?: React.ReactNode;
   /** Retry handler for the built-in `error` state; omit to hide the retry action. */
   onRetry?: () => void;
-  /** Zebra-stripe the body rows (even rows get a subtle fill). */
+  /**
+   * Zebra-stripe the body rows by LOGICAL record (an expanded detail row takes its record's stripe;
+   * frozen columns wear it too). Omit to inherit the theme default `--table-row-striped-alpha`;
+   * `true` / `false` override it for this table.
+   */
   striped?: boolean;
   /** Highlight a row on hover even when it is not clickable (no `onRowClick`). */
   hoverable?: boolean;
@@ -578,7 +582,7 @@ export function DataTable<T>({
   error,
   denied,
   onRetry,
-  striped = false,
+  striped,
   hoverable = false,
   stickyHeader = true,
   preset = "default",
@@ -1566,6 +1570,7 @@ DataTable.Content = function DataTableContent() {
           preset={preset}
           collapseBelow={collapseBelow}
           bordered={bordered}
+          striped={striped}
         >
           <TableHeader
             className={cn("bg-secondary", stickyHeader && "ui-data-table-sticky-header")}
@@ -1867,8 +1872,10 @@ DataTable.Content = function DataTableContent() {
                       }
                       className={cn(
                         rowPadding,
-                        // Hover highlight when rows are clickable OR explicitly hoverable…
-                        (onRowClick || hoverable) && "hover:bg-muted/50",
+                        // Hover highlight when rows are clickable OR explicitly hoverable… The
+                        // --accent step TableRow itself uses, not --muted/50: that sat BELOW the
+                        // zebra stripe (--muted/0.8, gh#700), so hovering a striped row lightened it.
+                        (onRowClick || hoverable) && "hover:bg-accent/70",
                         // …but the affordance (cursor + focus mark) only when clickable.
                         //
                         // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It

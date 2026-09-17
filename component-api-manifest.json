@@ -15093,6 +15093,14 @@
           "type": "boolean | undefined",
           "values": [false, true],
           "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "striped",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
         }
       ]
     },

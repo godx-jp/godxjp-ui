@@ -85,8 +85,8 @@ const hexToRgbTuple = (value: string): [number, number, number] => {
 };
 
 /** The alphas table-layout.css lays over a row. */
-const STRIPE_ALPHA = 0.4;
-const HOVER_ALPHA = 0.5;
+const STRIPE_ALPHA = 0.8; // gh#700 — was 0.4, measured invisible in light
+const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 const THEMES = [
   { theme: "light", selector: ":root {", dark: false },
@@ -496,7 +496,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     ["a secondary panel", () => secondary],
     ["an accent panel", () => accent],
     ["a striped table row", () => over(muted, background, STRIPE_ALPHA)],
-    ["a hovered table row", () => over(muted, background, HOVER_ALPHA)],
+    ["a hovered table row", () => over(accent, background, HOVER_ALPHA)],
   ];
 
   it.each(SURFACES)("clears 3:1 on %s", (_label, surface) => {

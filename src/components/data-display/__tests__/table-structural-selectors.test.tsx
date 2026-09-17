@@ -25,8 +25,11 @@ const rows = [
 ];
 
 describe("table-layout.css structural selectors select the rendered DOM", () => {
-  it("zebra stripe hits even body rows and spares a selected one", () => {
-    const selector = ruleSelector(css, "[data-striped] tbody tr:nth-child(even)");
+  it("zebra stripe hits even body rows (gh#700 — selection wins by LAYER, see table-striped-700)", () => {
+    const selector = ruleSelector(
+      css,
+      ':where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row]))) {',
+    );
     const { container } = renderWithUi(
       <DataTable
         data={rows}
@@ -41,12 +44,6 @@ describe("table-layout.css structural selectors select the rendered DOM", () => 
     expect(bodyRows[0].matches(selector)).toBe(false);
     expect(bodyRows[1].matches(selector)).toBe(true);
     expect(bodyRows[2].matches(selector)).toBe(false);
-
-    // Selection wins over the stripe. The attribute is what DataTable's row
-    // emits for a selected row — simulated here at the DOM level, which is
-    // the level this selector reads.
-    bodyRows[1].setAttribute("data-state", "selected");
-    expect(bodyRows[1].matches(selector)).toBe(false);
   });
 
   it("bordered column rules stop before the last column", () => {

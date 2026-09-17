@@ -24,6 +24,14 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
    */
   bordered?: boolean;
   /**
+   * Zebra rows — every even LOGICAL body row wears `--table-row-striped-background`, so a wide list
+   * row is easy to follow across its columns. An expanded detail row (a `<tr data-expanded-row>`
+   * under its record) is skipped when counting and takes its record's stripe. Leave it out to
+   * inherit the theme default (`--table-row-striped-alpha`, `0%` unless a service turns striping on
+   * for every table); `true` / `false` override that default for this table only.
+   */
+  striped?: boolean;
+  /**
    * Named collection contract. `"default"` (the default) emits no attribute and keeps the plain
    * table exactly as it is.
    */
@@ -68,6 +76,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       className,
       scrollable = true,
       bordered = false,
+      striped,
       preset = "default",
       collapseBelow = "sm",
       columnWidths,
@@ -106,6 +115,8 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       <table
         ref={ref}
         data-slot="table"
+        // Tri-state on purpose: no attribute inherits the theme's `--table-row-striped-alpha`.
+        data-striped={striped === undefined ? undefined : striped ? "" : "false"}
         // Type metrics live on `[data-slot="table"]` in table-layout.css
         className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
         {...props}
