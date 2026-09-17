@@ -166,10 +166,17 @@ export interface BadgeProps
    * `closable={false}`: no × is rendered.
    *
    * The × accessible name is built from the visible label (`children`, or the resolved `status`
-   * label) via `navigation.filterBar.removeFilter` — pass a string `children` (or plain text
-   * label) so the name quotes the chip, e.g. `getByRole('button', { name: /期限: 今週/ })`.
+   * label) via `navigation.filterBar.removeFilter`, e.g. `getByRole('button', { name: /期限: 今週/ })`.
+   * When `children` is not a string (a link, a formatted node) the name is read from the label's
+   * rendered text instead, so several removable chips never share one bare "Delete" (gh#706).
    */
   onRemove?: () => void;
+  /**
+   * The × button's full accessible name, verbatim — antd 5.15+ `closable={{ 'aria-label' }}`.
+   * Wins over the name derived from the label. Use it when the chip's text alone does not say what
+   * removing it does.
+   */
+  removeLabel?: string;
   /** Disables only the × when `onRemove` is set (FilterBar bar/chip disabled). Label stays visible. */
   removeDisabled?: boolean;
 }
@@ -198,6 +205,7 @@ export function Badge({
   style,
   children,
   onRemove,
+  removeLabel: removeLabelProp,
   removeDisabled,
   ...props
 }: BadgeProps) {
@@ -210,12 +218,28 @@ export function Badge({
   const resolvedChildren =
     children ?? (status ? (status in STATUS_MAP ? t(`status.${status}`) : status) : undefined);
   const tinted = color != null && color !== "";
-  const removeLabel =
+  const stringLabel =
     typeof children === "string"
       ? children
       : typeof resolvedChildren === "string"
         ? resolvedChildren
         : undefined;
+  /*
+   * A NODE LABEL STILL NAMES ITS × (gh#706). A chip whose `children` is a link or any element has
+   * no string to quote, and every × on the row used to announce the same bare "Delete" — a screen
+   * reader user could not tell which chip a button removes (WCAG 2.4.6 / 4.1.2). The label's
+   * rendered text is the same words a sighted user reads, so it is read back after mount. Before
+   * the effect runs (server render, first paint) the name is the generic fallback, as it was.
+   */
+  const labelRef = React.useRef<HTMLSpanElement>(null);
+  const [renderedLabel, setRenderedLabel] = React.useState<string | undefined>(undefined);
+  const deriveFromDom = Boolean(onRemove) && removeLabelProp == null && stringLabel == null;
+  React.useEffect(() => {
+    if (!deriveFromDom) return;
+    const text = labelRef.current?.textContent?.replace(/\s+/g, " ").trim();
+    setRenderedLabel(text ? text : undefined);
+  }, [deriveFromDom, resolvedChildren]);
+  const removeLabel = stringLabel ?? (deriveFromDom ? renderedLabel : undefined);
 
   /*
    * AN ACCESSIBLE NAME NEEDS A ROLE THAT ACCEPTS ONE (gh#643, found by check:frame-axe).
@@ -261,16 +285,21 @@ export function Badge({
           M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
           node rides the label visibly low inside the chip. Trim needs a real box: it does not
           reach an anonymous flex item. */}
-      {resolvedChildren != null ? <span data-slot="badge-label">{resolvedChildren}</span> : null}
+      {resolvedChildren != null ? (
+        <span ref={labelRef} data-slot="badge-label">
+          {resolvedChildren}
+        </span>
+      ) : null}
       {onRemove ? (
         <button
           type="button"
           data-slot="badge-remove"
           className="ui-control-inline-affix-action ui-badge-remove"
           aria-label={
-            removeLabel != null
+            removeLabelProp ??
+            (removeLabel != null
               ? t("navigation.filterBar.removeFilter", { label: removeLabel })
-              : t("common.delete")
+              : t("common.delete"))
           }
           onClick={(event) => {
             event.stopPropagation();

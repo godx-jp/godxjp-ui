@@ -359,6 +359,12 @@ export type BadgeProp = {
    * Port name `onRemove` (not `onClose`) — see {@link Badge} JSDoc and `docs/DESIGN-AUTHORITY.md`.
    */
   onRemove?: () => void;
+  /**
+   * The × button's full accessible name, verbatim (antd 5.15+ `closable={{ 'aria-label' }}`, gh#706).
+   * Without it the name quotes the chip's label — a string `children`, or the label's rendered text
+   * when `children` is a link or other node.
+   */
+  removeLabel?: string;
 };
 
 /** @see CredentialReveal */

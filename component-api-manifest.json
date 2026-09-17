@@ -2384,6 +2384,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "removeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "shape",
           "origin": "owned",
           "required": false,
@@ -14793,6 +14801,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
+          "name": "removeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {

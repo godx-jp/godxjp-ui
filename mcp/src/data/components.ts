@@ -4434,6 +4434,12 @@ import { Button } from "@godxjp/ui/general";
         description:
           "antd Tag `closable` + `onClose` — draws a × on the chip and calls this when the user activates it. Omit for a plain badge (no ×). Accessible name quotes the string label via `navigation.filterBar.removeFilter`.",
       },
+      {
+        name: "removeLabel",
+        type: "string",
+        description:
+          "The × button's full accessible name, verbatim — antd 5.15+ `closable={{ 'aria-label' }}` (gh#706). Without it the name quotes the chip's label: a string `children`, or the label's RENDERED TEXT when `children` is a link or other node (so a row of saved-filter link chips never shares one bare \"Delete\"). Use it when the chip text alone doesn't say what removing does.",
+      },
     ],
     usage: [
       "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
