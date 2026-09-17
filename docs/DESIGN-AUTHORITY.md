@@ -234,7 +234,12 @@ in page CSS.
 **Three things override antd's spelling, each for a stated reason:**
 
 - **Logical over physical.** antd's `fixed: 'left' | 'right'` cannot mirror for an RTL locale, so
-  only `start` / `end` are published. Same rule that makes `check:rtl` a gate.
+  only `start` / `end` are published. Same rule that makes `check:rtl` a gate. Table
+  `pagination.position` follows it (gh#705): antd `topLeft | topCenter | topRight | bottomLeft |
+bottomCenter | bottomRight | none` is `topStart | topCenter | topEnd | bottomStart | bottomCenter |
+bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the camelCase shape
+  `DropdownMenuPlacementProp` already uses. antd's `size="small"` Table → small pager is
+  `density="compact"` → `Pagination size="sm"`.
 - **This library's controlled vocabulary wins on values.** antd's `SortOrder` is
   `'ascend' | 'descend'`; here it stays `SortDirectionProp` (`asc` / `desc`), because that type
   already exists and a second spelling of the same axis is exactly what `check:prop-vocabulary`
@@ -266,6 +271,24 @@ in page CSS.
   `dataEntry.chatComposer.hintModEnter` with `{modifier}` from `isApplePlatform()`
   (`@godxjp/ui/lib/utils`). `allowEmptySubmit` (default `false`, antd's behaviour) sends `""`,
   still never while `loading` / `disabled` / `readOnly`.
+- **`Table.striped` / `DataTable.striped` (gh#700).** antd names no zebra capability — its docs
+  stripe through `rowClassName` — so there is no antd spelling to port. Element Plus calls it
+  `stripe`, Bootstrap `.table-striped`, MUI documents `:nth-of-type(odd)`. This library takes
+  `striped`: a positive boolean adjective, the shape `bordered` and `hoverable` already have on the
+  same component, and the spelling `DataTable` had shipped since 17f4a067. It is TRI-STATE on
+  purpose: omitted inherits the service default `--table-row-striped-alpha` (`0%` at `:root`, so
+  one theme line — `:root { --table-row-striped-alpha: 100%; }` — stripes every list table),
+  `true` / `false` override it per table. `rowClassName` is not the answer here: it counts DOM
+  rows, so an expanded detail row shifts every stripe after it, and `ui-audit` blocks the
+  utilities it would need.
+
+- **`Command.split` is antd `List.split`, with this library's default.** Same name, same meaning:
+  a divider between rows and none after the last (gh#699). antd's `List` defaults it to `true`;
+  `Command` defaults it to `false`, because its resting home is a command palette, where inset
+  pill rows are right. The option lists the library renders itself as a checklist
+  (`Select mode="multiple" | "tags"`) set it to `true`, and a consumer composing a filter facet
+  (`Popover` + `Command`) opts in with `split`. It also zeroes the list padding and bleeds rows to
+  the panel edge, which antd's `split` does not need to say because a `List` has no inset rows.
 
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer

@@ -32,7 +32,7 @@ describe("DataTable display props", () => {
     );
     expect(surface(container)).toHaveAttribute("data-hoverable");
     const row = container.querySelector("tbody tr")!;
-    expect(row.className).toContain("hover:bg-muted/50");
+    expect(row.className).toContain("hover:bg-accent/70");
     expect(row.className).not.toContain("cursor-pointer");
   });
 

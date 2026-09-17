@@ -1339,6 +1339,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The gap between a row's leading mark and its label. `.ui-command-item` is a flex row and had * NO gap at all, so every command/palette/picker row with an icon rendered its glyph flush * against the text — measured at 0px between an organization mark and its name. It reads * --control-gap because a command row is a control row: the same distance the trigger it opened * from already puts between its own icon and label."
   },
   {
+    "name": "--command-list-split-padding",
+    "value": "0",
+    "description": "`Command split` (antd List `split`, gh#699) — a list drawn as ONE ruled box. * --command-list-split-padding the group/list padding under split: 0, so no inner frame * separates the rows from the panel edge. * --command-list-split-inset the inline inset the SURFACE puts between the panel edge and * the list, which a split row cancels (negative margin) and pays * back as padding so its fill and rule still meet both edges. * 0 for a bare Command; OrgSwitcher sets its column inset. * --command-item-divider-width the hairline between rows. * --command-item-divider-color ROLE-MIRROR KNOB — `initial` here, default resolved at the * call site = var(--border) (HSL channels; docs/TOKENS.md)."
+  },
+  {
+    "name": "--command-list-split-inset",
+    "value": "0px",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--command-item-divider-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--command-item-divider-color",
+    "value": "initial",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--command-palette-width",
     "value": "35rem",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -2932,6 +2952,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--range-timeline-border-color",
     "value": "var(--border)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--range-timeline-grid-color",
+    "value": "initial",
+    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--input)))` so it follows a scoped * theme; --input is the ≥3:1 tier the Calendar grid chose, --border measured 1.15:1 and a 1px * rule in it is not seen. Set any colour to retint, e.g. `hsl(var(--border))` for a quieter grid."
+  },
+  {
+    "name": "--range-timeline-grid-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Weight of every grid rule, header column rules included, so header and body stay aligned."
+  },
+  {
+    "name": "--range-timeline-muted-column-background",
+    "value": "initial",
+    "description": "Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis."
   },
   {
     "name": "--password-strength-score-font-size",
@@ -4585,8 +4620,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--pagination-control-height-sm",
-    "value": "var(--band-height-sm)",
-    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each * carrying its own tier — exactly how a service would retune the whole footer."
+    "value": "initial",
+    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each * carrying its own tier — exactly how a service would retune the whole footer. * Declared `initial` (gh#705): the documented default is `var(--control-height-sm)`, resolved at * the bar, so a small pager inside a density scope (a compact DataTable, whose toolbar Buttons * are 25.76px) sits on the same step as its neighbours instead of a frozen 28px band."
   },
   {
     "name": "--pagination-jumper-gap",
@@ -6921,7 +6956,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-expanded-background",
     "value": "initial",
-    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint."
+    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as * --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row."
   },
   {
     "name": "--table-selection-menu-gap",
@@ -6931,7 +6966,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-striped-background",
     "value": "initial",
-    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.8) striped · hsl(var(--accent) / 0.7) hover · * hsl(var(--muted) / 0.3) selected. * The stripe was --muted / 0.4 until gh#700 measured it: 1.02:1 against the plain row in light, * i.e. not a stripe. 0.8 is the strongest --muted step that keeps every text role on it at AA * with the control boundary still at 3:1 (muted-foreground 5.29 light / 5.71 dark, --input 3.24 / * 3.31) and leaves the --accent hover a visible step beyond it in both themes — * src/tokens/__tests__/table-stripe-contrast.test.ts recomputes all of it."
+  },
+  {
+    "name": "--table-row-striped-alpha",
+    "value": "0%",
+    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row * paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full * stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real * alpha, not a flag: a theme may also dial a lighter stripe (`60%`). * * THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes * every Table and DataTable. The `striped` prop is the per-instance override on top of it — * `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out * inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root * without the freeze rule (docs/TOKENS.md)."
   },
   {
     "name": "--table-row-hover-background",

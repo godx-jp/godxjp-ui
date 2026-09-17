@@ -1552,34 +1552,20 @@
    * broke out of the column everything else respected, and the selected row's band ran to the
    * panel's border. `inset - offset` because the sheet and the dialog already inset their bodies
    * by `offset`; the popover insets nothing and needs the whole thing. */
+  /* A PICKER LIST IS RULED, NOT PILLED — so the panel renders `<Command split>` (gh#699), which owns
+   * the group's zero padding, the square full-bleed rows and the hairline between them. What stays
+   * here is this panel's own geometry: the column inset, and telling the split rows how far that
+   * column sits from the panel edge.
+   *
+   * THE ROW CANCELS ONE VALUE ON EVERY SURFACE. The distance from the panel's edge to a row is the
+   * surface's own body inset (`--org-switcher-list-offset`) plus the column's remainder (the
+   * `padding-inline` below) — and those sum to `--org-switcher-list-inset` whatever the surface. So
+   * that is the split inset: the row cancels it and pays it back as padding, its fill and rule meet
+   * both edges, and its mark lands on `inset + --command-input-padding-x`, the magnifier's start. */
   .ui-org-switcher-command {
+    --command-list-split-inset: var(--org-switcher-list-inset);
     width: 100%;
     padding-inline: calc(var(--org-switcher-list-inset) - var(--org-switcher-list-offset));
-  }
-
-  /* A PICKER LIST IS RULED, NOT PILLED — and the two are different affordances, not two styles.
-   *
-   * `.ui-command-item` rounds its corners and fills on selection because its home is a command
-   * PALETTE: a search-anything surface where the highlight tracks a cursor moving through results,
-   * and a floating pill is exactly right (Raycast, cmdk, Spotlight). This list is not that. It is
-   * "choose one of N", the rows are a closed set, and what a reader needs is to see where one row
-   * ends and the next begins — the same hairline every other list in this library draws.
-   *
-   * Scoped to this panel and NOT pushed down into `.ui-command-item`, which eight components use
-   * as a palette and would be wrong to re-shape.
-   *
-   * The rule runs FULL BLEED: negative inline margin cancels the list's inset so it meets both
-   * edges of the panel, and the padding is added back so the text stays on the same start line as
-   * the heading above it. `+` rather than a border on every row, so the list has no rule hanging
-   * under its last item. */
-  /* The group's padding goes on BOTH axes. Inline, it was a second inset between the row and the
-   * panel edge, and with two of them no single value could reach the edge and still keep the label
-   * on the heading's start line. Block, it was a 4px band above the first row and below the last —
-   * measured on the desktop popover as list 82-179 against rows 86-175, and reported as "empty
-   * space at the top and the bottom". A ruled list draws its own boundaries; it needs no inner
-   * frame. */
-  .ui-org-switcher-command .ui-command-group {
-    padding: 0;
   }
 
   /* THE SEARCH IS A FIELD, SO IT IS DRAWN AS ONE.
@@ -1603,54 +1589,6 @@
     margin-block: var(--org-switcher-search-space-block);
     margin-inline: 0;
     background: hsl(var(--background));
-  }
-
-  /* TWO DIFFERENT QUANTITIES, and collapsing them into one is what broke the popover.
-   *
-   *   --org-switcher-list-offset  what the SURFACE insets the list by, which the row cancels so
-   *                               its fill and its rule reach both edges. The sheet has one; the
-   *                               popover sets --popover-space-inset: 0 and therefore has none.
-   *   --org-switcher-list-inset   where the LABEL starts, which is the same on every surface.
-   *
-   * The first attempt used one value for both. On the sheet that was right by coincidence — its
-   * body inset happens to equal the label inset — and on the popover the row was pulled 12px
-   * OUTSIDE a panel that had nothing to cancel, putting the text flush against the border. */
-  /* TWO LEADING GLYPHS SIT ON TOP OF EACH OTHER HERE — the search magnifier and the row's mark —
-   * and they have to share a start. They did not: the magnifier at 458 (inside the field's own
-   * padding) and the mark at 445, thirteen pixels apart, which reads as the lower one being shoved
-   * against the edge. Every number measured against the PANEL looked right; the wrong one was the
-   * relationship between the two icons, which is what a reader actually sees.
-   *
-   * So a row takes the same inner padding the field gives its glyph, and no negative margin: its
-   * fill and its rule stay inside the column with everything else. */
-  /*
-   * THE RULE RUNS EDGE TO EDGE; ONLY THE TEXT IS INSET.
-   *
-   * A row that stops short of the panel's border reads as a card floating in a frame, and the frame
-   * is a second boundary nobody asked for — the panel already has one. Every command surface worth
-   * copying (VS Code, Raycast, Linear, GitHub) lets the row's fill and its rule meet both edges and
-   * insets only the content. This list is that shape.
-   *
-   * ONE VALUE CANCELS IT ON EVERY SURFACE. The distance from the panel's edge to a row is the
-   * surface's own body inset (`--org-switcher-list-offset`) plus the list's remainder
-   * (`--org-switcher-list-inset` minus that offset, which `.ui-org-switcher-command` applies) — and
-   * those sum to `--org-switcher-list-inset` whatever the surface. So the row cancels exactly that
-   * and pays it back as padding, and the popover, the sheet and the dialog need no separate
-   * arithmetic.
-   *
-   * The text lands on `inset + --command-input-padding-x`, which is where the search field puts its
-   * magnifier. That relationship is the one a reader actually sees: the two leading glyphs of this
-   * panel — the magnifier and the row's mark — sit on one start line, and they were 13px apart the
-   * last time this was tuned by measuring against the panel instead of against each other.
-   */
-  .ui-org-switcher-command .ui-command-item {
-    border-radius: 0;
-    margin-inline: calc(-1 * var(--org-switcher-list-inset));
-    padding-inline: calc(var(--org-switcher-list-inset) + var(--command-input-padding-x));
-  }
-
-  .ui-org-switcher-command .ui-command-item + .ui-command-item {
-    border-block-start: 1px solid hsl(var(--border));
   }
 
   /*

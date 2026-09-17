@@ -595,7 +595,8 @@
     "trendCurrent": "hiện tại"
   },
   "rangeTimeline": {
-    "outsideRange": "Ngoài khoảng đang xem",
+    "outsideAfter": "Sau khoảng đang xem",
+    "outsideBefore": "Trước khoảng đang xem",
     "schedule": "Lịch công việc"
   },
   "textExamples": {

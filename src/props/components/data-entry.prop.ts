@@ -156,6 +156,17 @@ export type ControlCountProp = {
 };
 
 /** @see Input */
+/** `Command` — the library's own knob; cmdk's root props pass through untouched beside it. */
+export type CommandProp = {
+  /**
+   * antd `List` `split`: draw the list as ONE ruled box — group padding 0, rows full-bleed to the
+   * panel edge with a square highlight, a hairline `border-block-end` between rows and none after
+   * the last visible one. For option / checkbox lists (filter facets, pickers). Default `false`:
+   * a command palette keeps its airy, inset rows.
+   */
+  split?: boolean;
+};
+
 export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
   onValueChange?: (value: string) => void;
   /** Control height tier: `md` (default), `sm` or `lg` — the same tiers as SelectTrigger. */

@@ -378,7 +378,13 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      "DataTable pagination object surface — 1-based current | pageSize | total | pageSizeOptions | showSizeChanger | onChange (antd TablePaginationConfig); `false` hides the pager",
+      "DataTable pagination object surface — 1-based current | pageSize | total | pageSizeOptions | showSizeChanger | showTotal | position | onChange (antd TablePaginationConfig); `false` hides the pager. Without a composed DataTable.Pagination the table renders its own Pagination footer (total + page numbers, density-sized); total > data.length ≤ pageSize reads as server paging",
+  },
+  TablePaginationPositionProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable pagination footer position (antd TablePaginationPosition, logical) — topStart | topCenter | topEnd | bottomStart | bottomCenter | bottomEnd (default) | none",
   },
   TableCellIndentProp: {
     file: "vocabulary/data.prop.ts",
@@ -1596,6 +1602,18 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["PlaceholderProp", "ValueProp", "DisabledProp"],
   },
+  CommandProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      {
+        field: "split",
+        local: true,
+        reason:
+          "antd List `split` — ruled-list presentation (row dividers, 0 list padding) for option/checkbox lists; the rest of the root API is cmdk's (gh#699).",
+      },
+    ],
+  },
   TextareaProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -2145,6 +2163,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "TableStickyProp",
       "OnRowProp",
       "TablePaginationProp",
+      "TablePaginationPositionProp",
       "SortDirectionProp",
       "OnColumnFilterChangeProp",
     ],
@@ -3529,7 +3548,14 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "columns",
         local: true,
-        reason: "Labels and positive numeric unit counts define a consumer-supplied axis.",
+        reason:
+          "Labels, positive numeric unit counts and an optional muted flag (non-working period) define a consumer-supplied axis.",
+      },
+      {
+        field: "bordered",
+        local: true,
+        reason:
+          "Rules the body as a grid (row rules, header rule, a vertical rule per column); default true, same name and default as Calendar bordered.",
       },
       {
         field: "bands",

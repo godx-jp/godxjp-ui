@@ -68,8 +68,8 @@ function over(
 }
 
 /** The alphas table-layout.css lays over a row. */
-const STRIPE_ALPHA = 0.4;
-const HOVER_ALPHA = 0.5;
+const STRIPE_ALPHA = 0.8; // gh#700 — was 0.4, measured invisible in light
+const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 describe.each([
   { theme: "light", selector: ":root {" },
@@ -79,6 +79,7 @@ describe.each([
   const primary = hslToRgb(hsl(body, "primary"));
   const background = hslToRgb(hsl(body, "background"));
   const muted = hslToRgb(hsl(body, "muted"));
+  const accent = hslToRgb(hsl(body, "accent"));
 
   it("clears AA on the plain background", () => {
     expect(contrast(primary, background)).toBeGreaterThanOrEqual(4.5);
@@ -91,7 +92,7 @@ describe.each([
   it("clears AA on a hovered row", () => {
     // The darkest state a reader is commonly in — you hover the row you are
     // about to click, which is the row whose link you are reading.
-    expect(contrast(primary, over(muted, background, HOVER_ALPHA))).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(primary, over(accent, background, HOVER_ALPHA))).toBeGreaterThanOrEqual(4.5);
   });
 
   it("still carries its own foreground as a fill", () => {

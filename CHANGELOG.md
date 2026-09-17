@@ -4,6 +4,91 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.2.0] - 2026-09-17
+
+MINOR. No API is removed, and no consumer has to change code. Some screens will look different on
+the next build; each change is called out below: RangeTimeline gains grid lines; `Select`
+multiple/tags popups gain dividers; an end-aligned `Pagination` total moves beside the buttons;
+a DataTable given an antd `pagination` object now renders its own pager.
+
+### Added
+
+- **`Command split`** (antd `List split`, gh#699). Draws an option/checkbox list as one ruled box:
+  group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline
+  `border-block-end` between rows and none after the last visible row (cmdk filtering included),
+  row content on `CommandInput`'s leading-glyph line. RTL-safe. Tokens `--command-list-split-padding`,
+  `--command-list-split-inset`, `--command-item-divider-width`, `--command-item-divider-color`
+  (default `var(--border)` at the call site). Measured in Chromium: 5 rows → 4 dividers, first row
+  starts at the list start, padding 0.
+- **Table / DataTable `striped`: zebra rows by logical record** (gh#700). Every even body record
+  paints `--table-row-striped-background` (default `hsl(var(--muted) / 0.8)`: 1.07:1 against the
+  plain row in light and 1.17:1 in dark on a card, with body, muted, link and primary text all
+  ≥ 5.2:1 on it). New token `--table-row-striped-alpha` (default `0%`) is the switch: one theme
+  line, `:root { --table-row-striped-alpha: 100%; }`, stripes every Table and DataTable. `striped` /
+  `striped={false}` override it per table, and omitting the prop inherits the theme. Expanded
+  detail rows are skipped when counting and wear their record's stripe; frozen columns paint the
+  stripe too; hover, selection and `rowClassName` still win. A hand-composed `Table` marks a detail
+  row with `data-expanded-row=""`.
+- **RangeTimeline `bordered`, on by default: a Gantt grid** (gh#703). A rule under every row
+  across the label column and the track, a rule between header and body, and a vertical rule per
+  column down the whole body. The verticals are one decorative layer (`aria-hidden`,
+  `pointer-events: none`, behind the bars) built from the header's own units layout. Measured in
+  Chromium: 0px offset at every column edge on the top and bottom rows, LTR/RTL, light/dark.
+  `bordered={false}` restores header-only ruling. Line colour `--range-timeline-grid-color`
+  (`initial`, default `hsl(var(--input))`: 3.47:1 light / 3.88:1 dark on the card, where the
+  previous `--border` measured 1.15:1); weight `--range-timeline-grid-width`.
+- **RangeTimeline `columns[].muted`** (gh#703) tints a non-working column down the full body with
+  `--range-timeline-muted-column-background` (default `hsl(var(--muted))`; body text 14.25:1 /
+  12.4:1, bars 5.8:1 / 8.06:1 on it). Out-of-range rows now point their way, with a chevron and
+  "before" at the inline-start edge or "after" at the inline-end edge, mirrored under RTL. The i18n
+  key `rangeTimeline.outsideRange` is replaced by `rangeTimeline.outsideBefore` /
+  `rangeTimeline.outsideAfter` (en/ja/vi).
+- **DataTable `pagination` renders its own antd footer** (gh#705). The antd config object without
+  a composed `DataTable.Pagination` now renders the real `Pagination`, total beside the page
+  numbers, at `position`: `topStart | topCenter | topEnd | bottomStart | bottomCenter | bottomEnd |
+  none`, default `["bottomEnd"]` (antd `bottomRight`). New config fields `showTotal` (`true` |
+  `(total, range) => ReactNode`) and `position`.
+  - **Server paging:** pass `pagination={{ total, current, pageSize, onChange }}` with `data` set to
+    the current page. A `total` above `data.length` with ≤ `pageSize` rows is read as server paging
+    (antd's rule): rows are not sliced, and the footer offers `ceil(total / pageSize)` pages.
+  - **Density:** the pager follows the table density (`compact` → `size="sm"`).
+  - **Unchanged:** a composed `DataTable.Pagination`, the `{ pageIndex, pageSize }` shape and
+    `pagination={false}`.
+  - **⚠ Check your screens:** a table that passed the config object AND rendered its own separate
+    `Pagination` outside the table will now show two pagers. Remove the outside one, or pass
+    `position: ["none"]`.
+- **Badge `removeLabel`** (gh#706): the × button's full accessible name, verbatim (antd 5.15+
+  `closable={{ 'aria-label' }}`).
+
+### Changed
+
+- `Select mode="multiple" | "tags"` renders its popup list `split` by default (gh#699); measured
+  4 rows → 3 dividers, list padding 4px → 0. Single-value `Select`, `Command` and `CommandPalette`
+  are unchanged. `OrgSwitcher` now uses `Command split`, and its private list CSS is removed
+  (geometry identical; its second divider now paints at the same full hairline strength as the
+  first).
+- DataTable clickable / `hoverable` rows hover with `--accent` / 0.7, the step every other table
+  row already used, instead of `--muted` / 0.5, which sat below the new zebra stripe (gh#700).
+
+### Fixed
+
+- **A Badge whose label is a node names its × from the label's rendered text** (gh#706). A chip
+  whose `children` was a link (a saved filter) announced a bare "Delete", so a row of such chips
+  had identical remove buttons.
+- **Pagination `showTotal` sits beside the page buttons when `align="end"`, the default** (gh#705).
+  Measured at 1440px, LTR and RTL: 628.7–1187.8px → 8px from the first control. `start` / `center`
+  keep the previous layout.
+- **Pagination `size="sm"` follows its density scope** (gh#705). `--pagination-control-height-sm`
+  is now `initial` with a call-site default of `--control-height-sm`. At default density it is
+  still 28px; inside a compact DataTable the pager is 25.75px, matching the toolbar's `size="sm"`
+  controls (was 28px).
+- DataTable frozen (`fixed`) body cells inside a Card are painted with the card surface instead of
+  `--background` (gh#700; dark mode showed a darker slab).
+- The `rowTone` wash is an image layer, so it no longer erases the row's background colour
+  (stripe, hover or selected fill) underneath it (gh#700).
+- `ui-audit-cli.test.ts` runs the CLI once per source in its multi-line negative test (was 27
+  processes, which timed out on a loaded CI runner and delayed 27.1.0).
+
 ## [27.1.0] - 2026-09-17
 
 MINOR, compatible. The modal default of Dialog and Sheet is unchanged.

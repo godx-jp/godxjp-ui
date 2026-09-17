@@ -40,7 +40,7 @@ const AA_TEXT = 4.5;
 /** WCAG 1.4.1 · G183 — the contrast at which colour ALONE may distinguish a link from its text. */
 const COLOUR_ONLY_LINK = 3;
 const HUE_TOLERANCE_DEGREES = 0.5;
-const STRIPE_ALPHA = 0.4;
+const STRIPE_ALPHA = 0.8; // gh#700 — was 0.4, measured invisible in light
 
 describe.each(THEMES)("the link ink ($theme)", ({ selector }) => {
   const body = block(foundation, selector);

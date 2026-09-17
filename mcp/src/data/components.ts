@@ -514,10 +514,10 @@ export const COMPONENTS: ComponentEntry[] = [
       },
       {
         name: "columns",
-        type: "{ label: string; units: number }[]",
+        type: "{ label: string; units: number; muted?: boolean }[]",
         required: true,
         description:
-          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out.",
+          "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out. `muted: true` tints that column down the whole body (a weekend, a holiday, a closed period) with `--range-timeline-muted-column-background` (default `hsl(var(--muted))`, the header surface; body text keeps 14.25:1 / 12.4:1 and `--muted-foreground` 5.2:1 / 5.47:1 on it).",
       },
       {
         name: "bands",
@@ -539,6 +539,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Committed endpoint movement in units. Omit for read-only. Dates remain consumer data; do not replace true anchors with clipped positions.",
       },
+      {
+        name: "bordered",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. Colour `--range-timeline-grid-color` (default `hsl(var(--input))`, 3.47:1 light / 3.88:1 dark on the card; the decorative `--border` measured 1.15:1), weight `--range-timeline-grid-width` (hairline). `bordered={false}` restores header-only ruling; muted columns still paint.",
+      },
     ],
     example:
       '<RangeTimeline label="Schedule" columns={[{ label: "Week", units: 7 }]} rows={[{ id: "task", label: "Task", start: 0, end: 6, startLabel: "Start: day 1", endLabel: "End: day 7" }]} />',
@@ -547,6 +554,8 @@ export const COMPONENTS: ComponentEntry[] = [
     rules: [],
     usage: [
       "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
+      'An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus "before" at the inline-start edge, "after" plus a chevron at the inline-end edge; the chevrons mirror under RTL.',
+      "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
       "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
     ],
   },
@@ -3643,8 +3652,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       {
         name: "striped",
         type: "boolean",
-        defaultValue: "false",
-        description: "Zebra-stripe the body rows (even rows get a subtle muted fill).",
+        description:
+          "Zebra rows: every EVEN LOGICAL record paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA, computed at the row so dark mode and scoped themes follow). Parity is by record, not DOM row — an expanded detail row is skipped when counting and wears its own record's stripe; on a paged table the count restarts per rendered page. Frozen (`fixed`) cells wear the stripe over their opaque base; hover, selection, `rowClassName` and `rowTone` all still read on a striped row. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` / `false` override it for this table. Element Plus `stripe` / Bootstrap `.table-striped`; antd has no prop.",
       },
       {
         name: "hoverable",
@@ -3694,9 +3703,9 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
       {
         name: "pagination / onPaginationChange / rowCount",
-        type: "{ pageIndex: number; pageSize: number } / OnChangeFn / number",
+        type: "{ pageIndex: number; pageSize: number } | TablePaginationProp | false / OnChangeFn / number",
         description:
-          "Numbered-pagination state surfaced by DataTable.Pagination (page-size form). For server pagination pass all three (rowCount = total) with manualPagination; omit for client pagination.",
+          "Pagination state. THREE shapes: the TanStack `{ pageIndex, pageSize }` (surfaced by a composed DataTable.Pagination); antd's TablePaginationConfig `{ total, current (1-based), pageSize, pageSizeOptions, showSizeChanger, showTotal, position, onChange(page, pageSize) }`; or `false` (no pager, rows unsliced). The antd object WITHOUT a composed DataTable.Pagination renders the table's own footer — the real Pagination (total beside the page numbers) at `position` (TablePaginationPositionProp[], logical: topStart|topCenter|topEnd|bottomStart|bottomCenter|bottomEnd|none; default ['bottomEnd'] = antd bottomRight), `size=\"sm\"` on a compact table so it matches the toolbar's sm controls. Server-paged: `pagination={{ total, current, pageSize, onChange }}` with `data` = the current page — a total larger than data.length with ≤ pageSize rows reads as server paging (antd's rule), giving ceil(total / pageSize) pages. A composed DataTable.Pagination keeps its own footer (never two pagers).",
       },
       {
         name: "columnVisibility / onColumnVisibilityChange",
@@ -3818,6 +3827,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
       "SIX STATES, ZERO HAND-ROLLING: loading (`loading`), empty (automatic / `empty`), error (`error` + optional `onRetry`), denied (`denied`), pagination (`DataTable.Pagination`), row actions (`DataTable.RowActions`). Wire them straight off the query — `<DataTable loading={isPending} error={isError} denied={status === 403} onRetry={refetch} …/>` — and never branch the page around the table to render your own alert/empty/forbidden block. Precedence is loading > denied > error > empty > rows, so exactly one state ever shows.",
@@ -3838,6 +3848,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Bulk-action workflows (e.g. mark invoices paid, export selected rows) — use selectable + DataTable.BulkActions to show contextual action buttons only when something is selected.",
       "Server-side sorted tables: pass sort + onSortChange and update the data prop after the API call; DataTable renders asc/desc/neutral icons on the header automatically.",
       "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic. For page-size + numbered prev/next instead, use DataTable.Pagination with pageSizeOptions (no cursor/onChange) driven by the internal TanStack pagination.",
+      "Server-paged table (antd `Table pagination`): `pagination={{ total, current, pageSize, onChange }}` with `data` = the rows of the current page — the table renders its own footer with the real Pagination (total + page numbers, bottom-end, sized from density). Add `showTotal: true` or `(total, [from, to]) => …` for the total label; `position: ['topEnd']` to move it.",
       "Full grid screens (global search + column 'set view' + numbered pagination): compose DataTable.Search, DataTable.ViewOptions, DataTable.DensityToggle in the toolbar and DataTable.Pagination pageSizeOptions={[…]} — client-side by default, or server-side by passing globalFilter/pagination/sort state with the matching manual* flag.",
       'Responsive admin tables where columns should drop at specific viewport steps — set hideBelow on each ColumnDef (sm/md/lg/xl, same ladder as Flex hideBelow); hiddenOnMobile: true remains an alias for hideBelow:"md". ColumnDef.priority is ONLY for preset="action-collection" width allocation, not for hiding. When every column must stay DISCOVERABLE at 390 (an approval/action queue), use preset="action-collection" + priority rather than hideBelow.',
       "Access-approval / action queues at 390px (SCR-105): preset=\"action-collection\" + a priority on each ColumnDef keeps requester · target · reason · requested date · row actions inside the initial narrow frame with no page-local CSS, no consumer width, no hidden column and no horizontal scroll — see the DataTable 'Approval queue' example page.",
@@ -4423,6 +4434,12 @@ import { Button } from "@godxjp/ui/general";
         type: "() => void",
         description:
           "antd Tag `closable` + `onClose` — draws a × on the chip and calls this when the user activates it. Omit for a plain badge (no ×). Accessible name quotes the string label via `navigation.filterBar.removeFilter`.",
+      },
+      {
+        name: "removeLabel",
+        type: "string",
+        description:
+          "The × button's full accessible name, verbatim — antd 5.15+ `closable={{ 'aria-label' }}` (gh#706). Without it the name quotes the chip's label: a string `children`, or the label's RENDERED TEXT when `children` is a link or other node (so a row of saved-filter link chips never shares one bare \"Delete\"). Use it when the chip text alone doesn't say what removing does.",
       },
     ],
     usage: [
@@ -5598,6 +5615,12 @@ import remarkGfm from "remark-gfm";
           "Draw the full cell GRID: an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing.",
       },
       {
+        name: "striped",
+        type: "boolean",
+        description:
+          'Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA). Mark a hand-composed detail row `<TableRow data-expanded-row="">` and it is skipped when counting and wears its record\'s stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped="" (100%), `false` emits data-striped="false" (0%) for this table only.',
+      },
+      {
         name: "preset",
         type: '"default" | "action-collection"',
         defaultValue: '"default"',
@@ -5616,6 +5639,7 @@ import remarkGfm from "remark-gfm";
       "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
       'DO use `TableHead` (not `TableCell`) for header cells — it renders `<th>` with `data-slot="table-head"` and the `--table-row-height` CSS variable for consistent header sizing across the design system. `TableCell` renders `<td>` with `data-slot="table-cell"` and is for body rows only.',
       'DO use `numeric` on TableHead/TableCell for tabular end-aligned numbers; `align="start|center|end"` overrides alignment, `wrap` allows multi-line text, and `width` sets a CSS column measure. These props replace alignment and width classes.',
+      'DO use `striped` on dense list tables so a row is easy to follow across its columns; to turn it on for EVERY Table and DataTable at once, set `:root { --table-row-striped-alpha: 100%; }` in the theme rather than passing the prop everywhere (`striped={false}` opts one table out). A detail row under a record is `<TableRow data-expanded-row="">` so the stripe counts records, not DOM rows — never stripe with `:nth-child` page CSS or row utilities.',
       "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
       "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
       'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. For text actions such as 対応する, set ColumnDef.width (or TableHead width) to reserve the label measure; leave a content column fluid. The default actions token is sized for icon actions. Do not add a hidden column or page-local breakpoint to make a table fit. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
@@ -6472,7 +6496,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "mode",
         type: '"multiple" | "tags"',
         description:
-          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two.",
+          "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.",
       },
       {
         name: "maxCount",
@@ -8574,14 +8598,14 @@ toast.error("保存に失敗しました");`,
         type: '"sm" | "md"',
         defaultValue: '"md"',
         description:
-          "Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart.",
+          'Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart. `sm` reads `--control-height-sm` of the surrounding density scope (knob `--pagination-control-height-sm`, default `initial`), so a small pager in a compact DataTable matches its size="sm" toolbar controls.',
       },
       {
         name: "align",
         type: '"start" | "center" | "end"',
         defaultValue: '"end"',
         description:
-          "Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position.",
+          'Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position. With `align="end"` the `showTotal` label sits BESIDE the page buttons (antd); `start` / `center` keep the total pushed to the inline start.',
       },
       {
         name: "responsive",
@@ -8614,6 +8638,7 @@ toast.error("保存に失敗しました");`,
       "NOTE the page strip scrolls horizontally rather than wrapping, and its page buttons are normally the keyboard route to that overflow. Disable the whole bar (`disabled`) and there is no such route, so the strip takes `tabindex=0` itself to stay keyboard-scrollable (WCAG 2.1.1). Nothing to configure — just don't strip the attribute in consumer CSS/JS.",
     ],
     useCases: [
+      "Server-paged DataTable: do NOT place a Pagination below the card — pass `pagination={{ total, current, pageSize, onChange }}` to DataTable and it renders this component in its own footer (total + page numbers, density-sized).",
       "Standalone offset-paginated admin list pages (e.g. invoice list, customer list, transaction history) rendered outside DataTable — place Pagination below the table card, outside the card border, with `showTotal` and optionally `showSizeChanger`.",
       "Search results pages where the backend accepts `page` + `per_page` query parameters and returns a total count — wire `value` and `pageSize` to URL search params so the URL is shareable and browser-back works.",
       "Reports and filtered data grids where the user needs to export 'all selected pages': `showTotal` with a custom function lets you show '1–50 of 1 200 rows' so the user understands the scope before exporting.",
@@ -11302,6 +11327,13 @@ export function ReportRangeFilter() {
         description: "Set to false to disable ctrl+n/j/p/k vim-style navigation shortcuts.",
       },
       {
+        name: "split",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd List `split`. Draws the list as ONE ruled box: group/list padding 0, rows full-bleed to the panel edge with a square highlight, a hairline border-block-end between rows and none after the last visible row, row content aligned with CommandInput's leading glyph. Sets `data-split` on the root; the parts need no prop. Tokens: --command-list-split-padding, --command-list-split-inset, --command-item-divider-width, --command-item-divider-color. Select mode=multiple / mode=tags renders its popup split by default.",
+      },
+      {
         name: "className",
         type: "string",
         description: "Additional CSS classes merged onto the root div via cn().",
@@ -11378,6 +11410,7 @@ export function ReportRangeFilter() {
       "DO set shouldFilter={false} and manage filtering yourself when the options list comes from a server/async source (e.g. SearchSelect pattern). With shouldFilter=true the default client-side scoring runs over all rendered items automatically.",
       "DO always provide a stable explicit value prop on CommandItem when the item's text content can change between renders — relying on inferred textContent with dynamic labels causes selection bugs.",
       "DO include CommandEmpty inside CommandList to show a no-results message. It renders automatically only when the filtered count is zero; do not conditionally render it yourself.",
+      "DO use split for checkbox/option lists (a filter facet, a picker: Popover + PopoverContent flush + Command split) — rows get a divider between them and 0 list padding, so they read as one box. Keep the default (unsplit) for a command palette. Never re-create the look with page CSS (border on items, padding 0 on the group): retune --command-item-divider-color / --command-item-divider-width instead.",
       "DON'T use CommandInput as a standalone search input — it is only meaningful inside a Command root (the root manages shared filter state). For a standalone search field use SearchInput instead.",
       "DON'T hand-roll keyboard navigation on a list of items; Command handles arrow keys, Enter, Escape, Home/End, and vim bindings. Adding your own keyDown handlers on top creates conflicts — use onSelect on CommandItem for selection logic.",
     ],

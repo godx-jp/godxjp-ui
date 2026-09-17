@@ -53,8 +53,74 @@
     --table-row-tone-color: var(--mark-destructive);
   }
 
+  /* An IMAGE layer, not the `background` shorthand: the shorthand reset `background-color`, which
+   * is where the zebra stripe below paints, so a toned even row lost its stripe and the parity
+   * broke at every marked row. As a gradient layer the wash sits ON the row's colour — the stripe,
+   * or the hover / selected fill — at the same weak weight, and the rail still carries the mark. */
   .ui-table-row[data-tone] {
-    background: hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha));
+    background-image: linear-gradient(
+      hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha)),
+      hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+    );
+  }
+
+  /* ── Zebra striping (`striped`, gh#700) ─────────────────────────────────────────────────────
+   * ONE paint rule for Table and DataTable, applied to every table and gated by a VALUE, not by a
+   * selector: the row paints `--table-row-striped-background` at `--table-row-striped-alpha` percent
+   * over transparent. The alpha is `0%` at :root, so an unstriped table paints nothing; the `striped`
+   * prop sets it on its own `<table>`, and a theme sets it once on :root to stripe every table in a
+   * service (tokens/components/table.css). A selector-gated rule could not do the second half —
+   * CSS cannot select on a custom property's value.
+   *
+   * Parity is by LOGICAL record, not DOM row: `of :not([data-expanded-row])` skips expanded detail
+   * rows when counting, and the detail row takes its parent's stripe on its CELLS (below). On a
+   * paged table the count restarts on each rendered page, which is the visual index a reader sees.
+   *
+   * `:where()` keeps the whole selector at zero specificity, and the rule sits in `components`, so
+   * everything that is a stronger statement about the row still wins without a fight: the hover and
+   * selected fills are utilities (a later layer), a consumer's `rowClassName` utility likewise, and
+   * any class rule in this layer outranks it. The tone wash above layers on top of it. */
+  :where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row]))) {
+    background-color: color-mix(
+      in srgb,
+      var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
+      transparent
+    );
+  }
+
+  /* The detail row belongs to the record above it, so it wears that record's stripe. Painted on
+   * the CELLS as an image layer: the row itself carries `hover:bg-transparent`, which would drop a
+   * row-level stripe the moment the pointer crossed the panel, and the cells already own the
+   * expanded wash (`--table-row-expanded-background`), which stays underneath. */
+  :where(
+    [data-slot="table"]
+      > tbody
+      > tr:nth-child(even of :not([data-expanded-row]))
+      + tr[data-expanded-row]
+      > td
+  ) {
+    background-image: linear-gradient(
+      color-mix(
+        in srgb,
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
+        transparent
+      )
+    );
+  }
+
+  /* The per-instance switch. `striped` emits `data-striped=""`, `striped={false}` emits
+   * `data-striped="false"`, and no prop emits nothing — so the theme's :root value is inherited. */
+  [data-slot="table"][data-striped=""] {
+    --table-row-striped-alpha: 100%;
+  }
+
+  [data-slot="table"][data-striped="false"] {
+    --table-row-striped-alpha: 0%;
   }
 
   .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
@@ -229,6 +295,17 @@
     min-width: 0;
   }
 
+  /* The `pagination` config footer (gh#705): the inset above, the real Pagination inside. The bar
+   * takes the whole row so ITS `align` (from `position`) places it; a single-page result renders no
+   * bar, and the empty wrapper must not keep its padding and the root's gap. */
+  .ui-data-table-pagination--footer > .ui-pagination {
+    flex: 1 1 auto;
+  }
+
+  .ui-data-table-pagination--footer:empty {
+    display: none;
+  }
+
   .ui-data-table-page-size {
     flex: 0 0 auto;
     flex-wrap: nowrap;
@@ -282,11 +359,6 @@
    * win — and does, by source order. */
   .ui-data-table-surface:not([data-preset]) > * > [data-slot="table"] {
     min-inline-size: var(--table-surface-min-inline-size);
-  }
-
-  /* Zebra striping (opt-in via the `striped` prop). */
-  .ui-data-table-surface[data-striped] tbody tr:nth-child(even):not([data-state="selected"]) {
-    background-color: var(--table-row-striped-background, hsl(var(--muted) / 0.4));
   }
 
   /* THE LIFECYCLE CELL OWNS ITS INSET — `empty`, `denied` and `error` alike.
@@ -431,6 +503,17 @@
     box-shadow: var(--table-fixed-shadow-start);
   }
 
+  /* Inside a Card the rows sit on the CARD surface, not the page: a frozen body cell painted with
+   * --background showed as a darker slab in dark mode (measured #191815 against a #21201c row), and
+   * the stripe and hover layered over that slab could never match their row. Same surface
+   * expression card-layout.css paints the card with. */
+  [data-slot="card"]
+    .ui-data-table-surface
+    tbody
+    :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {
+    background-color: hsl(var(--card-background, var(--card)));
+  }
+
   th.ui-data-table-pin-end,
   th.ui-data-table-pin-start {
     background-color: hsl(var(--secondary));
@@ -446,13 +529,33 @@
     box-shadow: 6px 0 6px -5px hsl(var(--foreground) / 0.12);
   }
 
+  /* A frozen cell is OPAQUE (it has to hide the columns scrolling under it), so it would punch a
+   * plain hole through a striped row. It wears the row's stripe as an image layer over that opaque
+   * base, exactly the way it wears hover and selection below — and at zero specificity plus one
+   * class, so those two rules still replace it on a hovered or selected row. */
+  :where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row])))
+    > :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {
+    background-image: linear-gradient(
+      color-mix(
+        in srgb,
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
+        transparent
+      )
+    );
+  }
+
   /* Mirror the row's hover / selected tint — a translucent muted wash layered over the opaque
    * base, so the pinned cell matches the rest of its row. */
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-start {
     background-image: linear-gradient(
-      var(--table-row-hover-background, hsl(var(--muted) / 0.5)),
-      var(--table-row-hover-background, hsl(var(--muted) / 0.5))
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7)),
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7))
     );
   }
 
@@ -507,8 +610,17 @@
     inline-size: var(--table-expand-column-width);
   }
 
+  /* The wash gives way to the zebra stripe as the stripe comes in (gh#700): at the default 0% it is
+   * the full wash, byte-for-byte; on a striped table it is gone, because there the stripe already
+   * ties the panel to its record — the detail row wears exactly its record's background, and a
+   * second tint on top would make it read as a different row. */
   .ui-data-table-expanded-row > [data-slot="table-cell"] {
-    background-color: var(--table-row-expanded-background, hsl(var(--muted) / 0.3));
+    background-color: color-mix(
+      in srgb,
+      var(--table-row-expanded-background, hsl(var(--muted) / 0.3))
+        calc(100% - var(--table-row-striped-alpha)),
+      transparent
+    );
   }
 
   /* ── antd `summary` — the footer totals row ───────────────────────────── */

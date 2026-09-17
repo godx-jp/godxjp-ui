@@ -39,8 +39,8 @@ function block(selector: string): string {
 }
 
 /** The alphas table-layout.css lays over a row. */
-const STRIPE_ALPHA = 0.4;
-const HOVER_ALPHA = 0.5;
+const STRIPE_ALPHA = 0.8; // gh#700 — was 0.4, measured invisible in light
+const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 const THEMES = [
   { theme: "light", selector: ":root {" },
@@ -55,6 +55,7 @@ describe.each(THEMES)("--input as a control boundary ($theme)", ({ selector }) =
   const popover = hslToRgb(hsl(body, "popover"));
   const muted = hslToRgb(hsl(body, "muted"));
   const secondary = hslToRgb(hsl(body, "secondary"));
+  const accent = hslToRgb(hsl(body, "accent"));
 
   it.each([
     ["the page background", () => background],
@@ -67,7 +68,7 @@ describe.each(THEMES)("--input as a control boundary ($theme)", ({ selector }) =
     ["a muted panel", () => muted],
     ["a secondary panel", () => secondary],
     ["a striped table row", () => over(muted, background, STRIPE_ALPHA)],
-    ["a hovered table row", () => over(muted, background, HOVER_ALPHA)],
+    ["a hovered table row", () => over(accent, background, HOVER_ALPHA)],
   ])("clears 3:1 on %s", (_label, surface) => {
     expect(contrast(input, surface())).toBeGreaterThanOrEqual(NON_TEXT);
   });

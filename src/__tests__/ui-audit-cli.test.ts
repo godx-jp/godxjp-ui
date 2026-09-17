@@ -446,9 +446,14 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
       '/*\n * <button\n *   type="button"\n */\nconst a = 1;',
       "// <select\nconst b = 2;",
     ];
+    // ONE audit per source, read for all three rules. This loop used to spawn the CLI once per
+    // (source, rule) pair — 27 processes, measured past vitest's 8s default on a loaded CI runner,
+    // which failed the 27.1.0 merge commit on load alone. The findings are the same either way.
     for (const source of quiet) {
+      const report = JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] };
       for (const rule of ["no-raw-button", "no-raw-input", "no-raw-select"]) {
-        expect(lines(source, rule), `${rule}: ${source}`).toEqual([]);
+        const found = report.findings.filter((f) => f.rule === rule).map((f) => f.line);
+        expect(found, `${rule}: ${source}`).toEqual([]);
       }
     }
   });

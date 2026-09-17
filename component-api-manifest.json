@@ -2384,6 +2384,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "removeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "shape",
           "origin": "owned",
           "required": false,
@@ -4669,6 +4677,14 @@
           "type": "((value: string) => void) | undefined",
           "values": [],
           "declaredIn": ["node_modules/cmdk/dist/index.d.ts"]
+        },
+        {
+          "name": "split",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
           "name": "value",
@@ -11763,10 +11779,18 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "bordered",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "columns",
           "origin": "owned",
           "required": true,
-          "type": "{ label: string; units: number; }[]",
+          "type": "{ label: string; units: number; muted?: boolean; }[]",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
@@ -14780,6 +14804,14 @@
           "declaredIn": ["src/components/data-display/badge.tsx"]
         },
         {
+          "name": "removeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/badge.tsx"]
+        },
+        {
           "name": "shape",
           "origin": "owned",
           "required": false,
@@ -15080,6 +15112,14 @@
         },
         {
           "name": "scrollable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
+          "name": "striped",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
