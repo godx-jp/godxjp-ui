@@ -221,4 +221,30 @@ describe("DataTable `pagination` config footer (gh#705)", () => {
     expect(container.querySelector(".ui-data-table-pagination--numbered")).not.toBeNull();
     expect(screen.queryByRole("navigation")).toBeNull();
   });
+
+  /*
+   * gh#711 — the footer inherited the standalone Pagination's `hideOnSinglePage: true`, so a list
+   * that filtered down to one page lost its pager AND its total. antd's table default is false.
+   */
+  it("keeps the footer on a single page, and hides it when asked", async () => {
+    const rows = rowsFor(1, 20, 2);
+
+    const { rerender } = renderWithUi(
+      <DataTable
+        data={rows}
+        columns={columns}
+        pagination={{ current: 1, pageSize: 20, total: 2, showTotal: true }}
+      />,
+    );
+    expect(await screen.findByRole("navigation")).toBeInTheDocument();
+
+    rerender(
+      <DataTable
+        data={rows}
+        columns={columns}
+        pagination={{ current: 1, pageSize: 20, total: 2, showTotal: true, hideOnSinglePage: true }}
+      />,
+    );
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+  });
 });

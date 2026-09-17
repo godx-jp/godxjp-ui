@@ -2240,6 +2240,7 @@ function PaginationFooter({
         pageSizeOptions={paginationConfig.pageSizeOptions}
         showSizeChanger={paginationConfig.showSizeChanger ?? true}
         showTotal={paginationConfig.showTotal}
+        hideOnSinglePage={paginationConfig.hideOnSinglePage ?? false}
         size={density === "compact" ? "sm" : "md"}
         align={footerAlign[edge]}
         onValueChange={(page, size) => table.setPagination({ pageIndex: page - 1, pageSize: size })}
