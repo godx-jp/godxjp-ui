@@ -7986,6 +7986,13 @@ function ConfirmSettlement() {
         description: "Open-state change handler.",
       },
       {
+        name: "modal",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "On Sheet (root). `false` renders a NON-MODAL sheet (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The panel keeps role=dialog + its title as name, and the same side placement, width, responsive presentation and tokens. Focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Same contract as Dialog `modal={false}`. gh#701.",
+      },
+      {
         name: "width",
         type: "number | string",
         description:
@@ -8016,12 +8023,14 @@ function ConfirmSettlement() {
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
+      "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
     useCases: [
       "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
       "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
       "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
+      "Non-modal side panel: `modal={false}` keeps a list behind the sheet editable while the panel stays open (change order lines while their running total stays visible in the panel).",
       "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
       "Step-by-step wizard side panel: multi-step form (Steps component inside SheetContent) for onboarding or import flows where full-page navigation would lose list context.",
     ],

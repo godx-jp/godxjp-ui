@@ -1,8 +1,6 @@
 import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 import * as React from "react";
-import { createPortal } from "react-dom";
-import { chain, mergeRefs, useExitAnimation } from "@react-aria/utils";
-import { FocusScope } from "react-aria";
+import { chain, mergeRefs } from "@react-aria/utils";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
 import { AlertCircle, X } from "lucide-react";
 
@@ -12,6 +10,7 @@ import { Slot } from "../../lib/slot";
 import type { ConfirmVariantProp, ToneProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useOverlayCloseFocus } from "./overlay-close-focus";
+import { closeOnEscape, NonModalPortal, useNonModalPortal } from "./non-modal-layer";
 import { buttonVariants } from "../general/button";
 import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
@@ -154,6 +153,8 @@ export type {
  *     modal (mặc định) → ModalOverlay > Modal > Dialog     (y như trước)
  *     modal={false}    → portal > FocusScope autoFocus restoreFocus > Dialog
  *
+ * Lớp non-modal nằm ở `non-modal-layer.tsx`, dùng chung với `Sheet modal={false}` (gh#701).
+ *
  *   • không `ariaHideOutside`, không `inert`, không khoá cuộn, không màn nền
  *     (`DialogContent` vốn đã tự `position: fixed` + `--overlay-z-index`, nên vị
  *     trí giữa màn hình giữ nguyên);
@@ -274,8 +275,6 @@ function DialogShell({
   const requestedModal = React.useContext(DialogModalContext);
   // alertdialog LUÔN modal (APG) — xem đầu tệp, mục gh#696.
   const modal = requestedModal || role === "alertdialog";
-  const contentRef = React.useRef<HTMLElement>(null);
-
   const ignoresNonModal = !requestedModal && role === "alertdialog";
   React.useEffect(() => {
     if (ignoresNonModal && isDevelopment()) {
@@ -286,55 +285,43 @@ function DialogShell({
     }
   }, [ignoresNonModal]);
 
+  const { contentRef, isMounted } = useNonModalPortal(state.isOpen, !modal);
   // Non-modal: tiêu điểm đã Tab sang trang phía sau thì đóng KHÔNG được kéo nó về trigger.
   useOverlayCloseFocus(state.isOpen, onCloseAutoFocus, modal ? undefined : contentRef);
 
   const overlayPortalContainer = useOverlayPortalContainer();
-  // Chỉ nhánh non-modal gắn `contentRef`; nhánh modal để `ModalOverlay` tự lo hoạt ảnh thoát.
-  const isExiting = useExitAnimation(contentRef, !modal && state.isOpen);
+
+  const dialog = (
+    <RacDialog
+      role={role}
+      aria-labelledby={props["aria-labelledby"] ?? titleId}
+      aria-describedby={props["aria-describedby"] ?? descriptionId}
+      data-slot="dialog-content"
+      data-state={dataState}
+      className={cn(CONTENT_CLASS, className)}
+      render={(racProps) => {
+        const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
+        return modal ? (
+          <section {...rest} {...props} style={style} ref={mergeRefs(ref, racRef)} />
+        ) : (
+          <section
+            {...rest}
+            {...props}
+            style={style}
+            ref={mergeRefs(ref, racRef, contentRef)}
+            onKeyDown={chain(props.onKeyDown, closeOnEscape(() => state.setOpen(false)))}
+          />
+        );
+      }}
+    >
+      <DialogLabelContext.Provider value={labels}>{children}</DialogLabelContext.Provider>
+    </RacDialog>
+  );
 
   if (!modal) {
-    if ((!state.isOpen && !isExiting) || typeof document === "undefined") {
-      return null;
-    }
-    return createPortal(
-      <FocusScope autoFocus restoreFocus>
-        <RacDialog
-          role={role}
-          aria-labelledby={props["aria-labelledby"] ?? titleId}
-          aria-describedby={props["aria-describedby"] ?? descriptionId}
-          data-slot="dialog-content"
-          data-state={dataState}
-          className={cn(CONTENT_CLASS, className)}
-          render={(racProps) => {
-            const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
-            return (
-              <section
-                {...rest}
-                {...props}
-                style={style}
-                ref={mergeRefs(ref, racRef, contentRef)}
-                onKeyDown={chain(props.onKeyDown, (event: React.KeyboardEvent<HTMLElement>) => {
-                  // Popover / menu lồng bên trong tự `stopPropagation` Esc của chúng.
-                  if (
-                    event.key === "Escape" &&
-                    !event.defaultPrevented &&
-                    !event.nativeEvent.isComposing
-                  ) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    state.setOpen(false);
-                  }
-                })}
-              />
-            );
-          }}
-        >
-          <DialogLabelContext.Provider value={labels}>{children}</DialogLabelContext.Provider>
-        </RacDialog>
-      </FocusScope>,
-      overlayPortalContainer ?? document.body,
-    );
+    return isMounted ? (
+      <NonModalPortal container={overlayPortalContainer}>{dialog}</NonModalPortal>
+    ) : null;
   }
 
   return (
@@ -349,22 +336,7 @@ function DialogShell({
     >
       {/* `display: contents` — thẻ `Modal` là chỗ RAC treo khoá cuộn / bẫy tiêu điểm, không phải
           một hộp bố cục. Bỏ nó đi thì `useInteractOutside` mất mốc để so. */}
-      <Modal className="contents">
-        <RacDialog
-          role={role}
-          aria-labelledby={props["aria-labelledby"] ?? titleId}
-          aria-describedby={props["aria-describedby"] ?? descriptionId}
-          data-slot="dialog-content"
-          data-state={dataState}
-          className={cn(CONTENT_CLASS, className)}
-          render={(racProps) => {
-            const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
-            return <section {...rest} {...props} style={style} ref={mergeRefs(ref, racRef)} />;
-          }}
-        >
-          <DialogLabelContext.Provider value={labels}>{children}</DialogLabelContext.Provider>
-        </RacDialog>
-      </Modal>
+      <Modal className="contents">{dialog}</Modal>
     </ModalOverlay>
   );
 }
