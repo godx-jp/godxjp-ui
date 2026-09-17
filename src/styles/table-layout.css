@@ -295,6 +295,17 @@
     min-width: 0;
   }
 
+  /* The `pagination` config footer (gh#705): the inset above, the real Pagination inside. The bar
+   * takes the whole row so ITS `align` (from `position`) places it; a single-page result renders no
+   * bar, and the empty wrapper must not keep its padding and the root's gap. */
+  .ui-data-table-pagination--footer > .ui-pagination {
+    flex: 1 1 auto;
+  }
+
+  .ui-data-table-pagination--footer:empty {
+    display: none;
+  }
+
   .ui-data-table-page-size {
     flex: 0 0 auto;
     flex-wrap: nowrap;

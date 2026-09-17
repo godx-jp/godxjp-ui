@@ -234,7 +234,12 @@ in page CSS.
 **Three things override antd's spelling, each for a stated reason:**
 
 - **Logical over physical.** antd's `fixed: 'left' | 'right'` cannot mirror for an RTL locale, so
-  only `start` / `end` are published. Same rule that makes `check:rtl` a gate.
+  only `start` / `end` are published. Same rule that makes `check:rtl` a gate. Table
+  `pagination.position` follows it (gh#705): antd `topLeft | topCenter | topRight | bottomLeft |
+bottomCenter | bottomRight | none` is `topStart | topCenter | topEnd | bottomStart | bottomCenter |
+bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the camelCase shape
+  `DropdownMenuPlacementProp` already uses. antd's `size="small"` Table → small pager is
+  `density="compact"` → `Pagination size="sm"`.
 - **This library's controlled vocabulary wins on values.** antd's `SortOrder` is
   `'ascend' | 'descend'`; here it stays `SortDirectionProp` (`asc` / `desc`), because that type
   already exists and a second spelling of the same axis is exactly what `check:prop-vocabulary`

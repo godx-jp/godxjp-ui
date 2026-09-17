@@ -149,6 +149,7 @@ export type {
   TableStickyProp,
   OnRowProp,
   TablePaginationProp,
+  TablePaginationPositionProp,
   DescriptionsColumnProp,
   DescriptionsSpanProp,
   DescriptionsItemsProp,

@@ -378,7 +378,13 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/data.prop.ts",
     category: "data",
     description:
-      "DataTable pagination object surface — 1-based current | pageSize | total | pageSizeOptions | showSizeChanger | onChange (antd TablePaginationConfig); `false` hides the pager",
+      "DataTable pagination object surface — 1-based current | pageSize | total | pageSizeOptions | showSizeChanger | showTotal | position | onChange (antd TablePaginationConfig); `false` hides the pager. Without a composed DataTable.Pagination the table renders its own Pagination footer (total + page numbers, density-sized); total > data.length ≤ pageSize reads as server paging",
+  },
+  TablePaginationPositionProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "DataTable pagination footer position (antd TablePaginationPosition, logical) — topStart | topCenter | topEnd | bottomStart | bottomCenter | bottomEnd (default) | none",
   },
   TableCellIndentProp: {
     file: "vocabulary/data.prop.ts",
@@ -2157,6 +2163,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "TableStickyProp",
       "OnRowProp",
       "TablePaginationProp",
+      "TablePaginationPositionProp",
       "SortDirectionProp",
       "OnColumnFilterChangeProp",
     ],

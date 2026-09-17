@@ -500,11 +500,18 @@
     justify-content: safe flex-end;
   }
 
+  /* An end-aligned bar keeps its total BESIDE the page buttons, as antd's `showTotal` does (gh#705).
+   * The base rule's `margin-inline-end: auto` parks the total at the inline-start edge — measured at
+   * 1440px, 628–1188px away from the first control it counts. `start` / `center` keep that layout. */
+  .ui-pagination[data-align="end"] > .ui-pagination-total {
+    margin-inline-end: 0;
+  }
+
   /* SIZE: one local control band for the whole bar. Every control inside already sizes from
    * --control-height (page button, size-changer trigger, quick-jumper field), so re-binding it
    * here is the entire `size="sm"` implementation — no per-control override, nothing to drift. */
   .ui-pagination[data-size="sm"] {
-    --control-height: var(--pagination-control-height-sm);
+    --control-height: var(--pagination-control-height-sm, var(--control-height-sm));
   }
 
   .ui-pagination-jumper {

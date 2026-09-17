@@ -305,18 +305,39 @@ export type OnRowProp<T> = (
  * Pagination object surface (antd `TablePaginationConfig`). 1-BASED `current`, like antd — the
  * TanStack-shaped `{ pageIndex, pageSize }` form the prop already accepted is still accepted and
  * is told apart by its `pageIndex` field. `false` hides the pager entirely.
+ *
+ * Given WITHOUT a composed `<DataTable.Pagination>`, the table renders its own antd footer: the
+ * real `Pagination` (total + page numbers) at `position`, sized from the table's `density`.
+ * A composed `<DataTable.Pagination>` keeps its own footer and wins — never two pagers.
  */
 export type TablePaginationProp = {
   /** 1-based current page. */
   current?: number;
   pageSize?: number;
-  /** Total row count on the server — drives the page count under manual pagination. */
+  /**
+   * Total row count on the server — drives the page count. As in antd, a `total` larger than
+   * `data.length` with no more than `pageSize` rows is read as SERVER paging: `data` is the current
+   * page, shown as is, and the footer offers `ceil(total / pageSize)` pages.
+   */
   total?: number;
   pageSizeOptions?: number[];
   /** Default `true`. `false` drops the rows-per-page select. */
   showSizeChanger?: boolean;
+  /** antd `showTotal` — `true` for the localized total label, or a `(total, range)` render. */
+  showTotal?: boolean | ((total: number, range: [number, number]) => React.ReactNode);
+  /** antd `position`, logical spelling. Default `["bottomEnd"]` (antd `bottomRight`). */
+  position?: TablePaginationPositionProp[];
   onChange?: (page: number, pageSize: number) => void;
 };
+
+/**
+ * Where DataTable's own pagination footer sits (antd `TablePaginationPosition`). antd's physical
+ * `topLeft` / `bottomRight` become `topStart` / `bottomEnd` here — the same logical respelling as
+ * `DropdownMenuPlacementProp` — so an RTL table puts the pager on its reading end with no second
+ * value. `none` renders no footer while the pagination state stays live.
+ */
+export type TablePaginationPositionProp =
+  "topStart" | "topCenter" | "topEnd" | "bottomStart" | "bottomCenter" | "bottomEnd" | "none";
 
 /**
  * Descriptions column count (antd `column`). A plain number keeps this library's own mobile-first
