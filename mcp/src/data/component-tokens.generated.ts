@@ -3039,6 +3039,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis."
   },
   {
+    "name": "--range-timeline-indent-width",
+    "value": "var(--space-4)",
+    "description": "Label-column indent per `rows[].depth` level (gh#724). The label column keeps its width."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var(--font-size-xs)",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."

@@ -1732,6 +1732,39 @@
     inset-block: 0;
     border-inline-start: 1px solid hsl(var(--primary));
   }
+  /* Nested rows (gh#724). Only a timeline with some `depth > 0` sets `data-nested`, so a flat one
+   * matches nothing here. The indent is padding INSIDE the label cell: the label column keeps its
+   * width and every body line stays where it was. Leaves get a spacer the width of the disclosure
+   * button, so labels at the same depth align whether or not the row has children. */
+  .ui-range-timeline-label[data-nested="true"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding-inline-start: calc(
+      var(--space-2) + var(--range-timeline-depth, 0) * var(--range-timeline-indent-width)
+    );
+  }
+  .ui-range-timeline-label-content {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .ui-range-timeline-disclosure,
+  .ui-range-timeline-disclosure-spacer {
+    flex-shrink: 0;
+  }
+  .ui-range-timeline-disclosure-spacer {
+    inline-size: var(--control-height-xs);
+  }
+  /* Tracks `.ui-button--icon-xs`, which widens to the default control height on a coarse pointer. */
+  @media (pointer: coarse) {
+    .ui-range-timeline-disclosure-spacer {
+      inline-size: var(--control-height-default);
+    }
+  }
+  /* A folded row's chevron points along the reading direction. */
+  [dir="rtl"] .ui-range-timeline-disclosure-collapsed {
+    transform: scaleX(-1);
+  }
 }
 
 /* ── Descriptions · antd 6.6.2 parity ────────────────────────────────────────

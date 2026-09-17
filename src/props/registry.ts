@@ -3614,7 +3614,7 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "rows",
         local: true,
         reason:
-          "Consumer-supplied interval records preserve true inclusive endpoints independently of clipping.",
+          "Consumer-supplied interval records preserve true inclusive endpoints independently of clipping; optional `depth` nests them (flat, depth-first; a row is a parent when the next row is deeper).",
       },
       {
         field: "today",
@@ -3626,6 +3626,24 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "An endpoint movement command, not an internally owned value; the consumer commits its row data.",
+      },
+      {
+        field: "expandedValues",
+        local: true,
+        reason:
+          "Controlled expanded parent row ids (gh#724) — the same spelling as `Tree expandedValues` (antd `expandedKeys` / Table `expandedRowKeys`), per docs/DESIGN-AUTHORITY.md.",
+      },
+      {
+        field: "defaultExpandedValues",
+        local: true,
+        reason:
+          "Uncontrolled initial expanded parents, same spelling as `Tree`; omitted, every parent starts expanded so adding `depth` never hides a row.",
+      },
+      {
+        field: "onExpandedValuesChange",
+        local: true,
+        reason:
+          "Next expanded parent ids, fired for controlled and uncontrolled timelines alike — the `Tree onExpandedValuesChange` callback.",
       },
     ],
   },

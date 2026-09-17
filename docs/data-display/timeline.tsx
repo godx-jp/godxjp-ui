@@ -293,6 +293,47 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>親子のある作業（depth と折りたたみ）</CardTitle>
+            <CardDescription>
+              行を深さ優先の順に並べ、depth
+              を渡すと、ラベルの列の中で段ごとに字下げされます。次の行が
+              より深い行は親になり、開閉ボタンが付きます。「実装」は defaultExpandedValues
+              に含まれていないため折りたたまれており、子の行もそのバーも表示されません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RangeTimeline
+              label={t("rangeTimeline.schedule")}
+              today={4}
+              columns={Array.from({ length: 14 }, (_, index) => {
+                const weekday = new Date(Date.UTC(2026, 8, index + 1)).getUTCDay();
+                return {
+                  label: new Intl.NumberFormat(locale).format(index + 1),
+                  units: 1,
+                  muted: weekday === 0 || weekday === 6,
+                };
+              })}
+              defaultExpandedValues={["design", "api"]}
+              rows={[
+                { id: "design", label: "設計", depth: 0, start: 0, end: 5 },
+                { id: "screens", label: "画面設計", depth: 1, start: 0, end: 2 },
+                { id: "api", label: "API設計", depth: 1, start: 2, end: 5 },
+                { id: "endpoints", label: "エンドポイント定義", depth: 2, start: 2, end: 3 },
+                { id: "build", label: "実装", depth: 0, start: 6, end: 12 },
+                { id: "frontend", label: "フロントエンド", depth: 1, start: 6, end: 10 },
+                { id: "backend", label: "バックエンド", depth: 1, start: 6, end: 12 },
+                { id: "release", label: "リリース", depth: 0, start: 13, end: 13 },
+              ].map((row) => ({
+                ...row,
+                startLabel: dayLabel(row.start + 1),
+                endLabel: dayLabel(row.end + 1),
+              }))}
+            />
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

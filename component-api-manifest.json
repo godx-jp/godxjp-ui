@@ -11876,10 +11876,34 @@
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },
         {
+          "name": "defaultExpandedValues",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "expandedValues",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly string[] | undefined",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
           "name": "label",
           "origin": "owned",
           "required": true,
           "type": "string",
+          "values": [],
+          "declaredIn": ["src/components/data-display/range-timeline.tsx"]
+        },
+        {
+          "name": "onExpandedValuesChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((values: string[]) => void) | undefined",
           "values": [],
           "declaredIn": ["src/components/data-display/range-timeline.tsx"]
         },

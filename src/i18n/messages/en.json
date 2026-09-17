@@ -607,6 +607,7 @@
     "trendCurrent": "current"
   },
   "rangeTimeline": {
+    "childRows": "Child rows",
     "outsideAfter": "After the visible range",
     "outsideBefore": "Before the visible range",
     "schedule": "Schedule"

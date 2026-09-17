@@ -4,6 +4,35 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.7.0] - 2026-09-17
+
+MINOR. A timeline with no `depth > 0` renders byte-identically.
+
+### Added
+
+- **RangeTimeline — nested rows** (gh#724). A parent/child Gantt could not be expressed: the row
+  type had no depth, no parent and no disclosure, and faking an indent inside `label` is the
+  hand-rolled move the consumer rules forbid.
+  - `RangeTimelineRow.depth?: number` indents a row's label by `--range-timeline-indent-width` (new
+    token, `--space-4`) per level, as logical padding inside the label cell — RTL indents from the
+    right, and the label column keeps its width. Measured in Chromium: label offset 36 / 52 / 68px
+    at depth 0 / 1 / 2 (16px per level), LTR and RTL; label column 256px on every row in every state.
+  - Pass rows flat and depth-first. A row whose next row is deeper is a parent (derived from the
+    list, so a disclosure can never appear on a row with nothing under it) and gets a real button
+    with `aria-expanded`, named "Child rows" + its label (i18n en/ja/vi), operable with Enter and
+    Space.
+  - Fold with `expandedValues` / `defaultExpandedValues` / `onExpandedValuesChange` — the same names
+    as `Tree`, over antd's `expandedRowKeys` / `onExpand`, recorded in docs/DESIGN-AUTHORITY.md.
+    Omitted, every parent starts EXPANDED, so adding `depth` to an existing schedule never hides a row.
+  - A folded parent removes its descendants' rows, labels AND bars from the DOM and the
+    accessibility tree — no orphan bar is left in the body. Measured: bars always equal visible rows
+    (6 → 8 → 5 across folds); the body grid, row rules and header/body column edges stay aligned
+    (0px after every fold, LTR and RTL).
+  - A nested timeline exposes `list` / `listitem` with `aria-level` / `aria-setsize` /
+    `aria-posinset` — not `tree`/`treegrid`, which would promise arrow-key navigation the component
+    does not have. A timeline with no `depth > 0` keeps its previous markup (snapshotted before the
+    change).
+
 ## [27.6.0] - 2026-09-17
 
 MINOR. Two owner-reported visual fixes to the Gantt and the date picker, and the MCP now states which
