@@ -7722,7 +7722,7 @@ export function BillingFields() {
         type: "boolean",
         defaultValue: "true",
         description:
-          "Kept from the Radix era. react-aria's Modal always locks scroll and hides the background from assistive tech, so `false` no longer turns that off.",
+          "`false` renders a NON-MODAL dialog (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The dialog keeps role=dialog + its title as name, centred fixed placement, sizes and tokens; focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Ignored, with a dev warning, under `variant=\"destructive\"` — an alertdialog is always modal. gh#696.",
       },
     ],
     usage: [
@@ -7732,10 +7732,12 @@ export function BillingFields() {
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
       "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
+      "DO set `modal={false}` when the user must keep working on the page behind an open dialog (edit a list while a payment or detail dialog stays open). Control `open` yourself: an outside press no longer closes it, so give it a visible close action. Escape closes it only while focus is inside the dialog.",
     ],
     useCases: [
       "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
       "Read-only detail popup — show a full transaction audit trail, attachment preview, or approval history in a modal without leaving the list page. Use `Dialog` with no `DialogFooter` action buttons, just a close trigger.",
+      "Non-modal side task — `modal={false}` keeps a list or cart behind the dialog editable while the dialog stays open (take payment while the order lines can still change).",
       "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state.",
     ],
     related: [
@@ -7984,6 +7986,13 @@ function ConfirmSettlement() {
         description: "Open-state change handler.",
       },
       {
+        name: "modal",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "On Sheet (root). `false` renders a NON-MODAL sheet (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The panel keeps role=dialog + its title as name, and the same side placement, width, responsive presentation and tokens. Focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Same contract as Dialog `modal={false}`. gh#701.",
+      },
+      {
         name: "width",
         type: "number | string",
         description:
@@ -8014,12 +8023,14 @@ function ConfirmSettlement() {
       "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
       "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
+      "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
       "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
     useCases: [
       "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
       "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
       "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
+      "Non-modal side panel: `modal={false}` keeps a list behind the sheet editable while the panel stays open (change order lines while their running total stays visible in the panel).",
       "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
       "Step-by-step wizard side panel: multi-step form (Steps component inside SheetContent) for onboarding or import flows where full-page navigation would lose list context.",
     ],

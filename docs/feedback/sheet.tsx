@@ -42,6 +42,15 @@ const headerTones = [
   "neutral",
 ] as const;
 
+/** Order lines behind the non-modal sheet — they stay editable while it is open. */
+const initialLines = [
+  { id: "coffee", name: "ブレンドコーヒー", unitPrice: 480, quantity: 2 },
+  { id: "sandwich", name: "ミックスサンド", unitPrice: 650, quantity: 1 },
+  { id: "cake", name: "チーズケーキ", unitPrice: 520, quantity: 1 },
+];
+
+const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
+
 /**
  * Sheet · side-panel drawer (Radix Dialog). Slides in from an edge. Compose
  * Sheet > SheetTrigger (asChild) > SheetContent(side) > SheetHeader >
@@ -83,6 +92,18 @@ export default function Demo() {
   // mounted and the focus trap stays honest.
   const [toneOpen, setToneOpen] = useState(false);
   const [headerTone, setHeaderTone] = useState<(typeof headerTones)[number]>("default");
+
+  // Card 6 · non-modal sheet: the order lines behind it stay editable while it is open.
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [lines, setLines] = useState(initialLines);
+  const total = lines.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0);
+  const changeQuantity = (id: string, delta: number) => {
+    setLines((current) =>
+      current.map((line) =>
+        line.id === id ? { ...line, quantity: Math.max(0, line.quantity + delta) } : line,
+      ),
+    );
+  };
 
   return (
     <PageContainer
@@ -409,6 +430,69 @@ export default function Demo() {
                     <Button variant="outline" onClick={() => setToneOpen(false)}>
                       閉じる
                     </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Non-modal sheet: the list behind stays editable</CardTitle>
+            <CardDescription>
+              modal=&#123;false&#125; on Sheet renders a non-modal panel, a pattern WAI-ARIA APG
+              allows. The page behind keeps working: no scrim, no scroll lock, nothing hidden from
+              assistive tech, and a press outside does not close the panel. Open the order summary
+              (side=&quot;left&quot;, so the quantity controls stay uncovered), then change a quantity
+              below. The total inside the panel follows. Focus moves into the
+              panel on open, Tab can leave it, Escape closes it while focus is inside, and focus
+              returns to the trigger.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {lines.map((line) => (
+                <Flex key={line.id} direction="row" align="center" justify="between" gap="sm">
+                  <Text>{line.name}</Text>
+                  <Flex direction="row" align="center" gap="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      aria-label={`${line.name}を減らす`}
+                      disabled={line.quantity === 0}
+                      onClick={() => changeQuantity(line.id, -1)}
+                    >
+                      −
+                    </Button>
+                    <Text aria-live="polite">{line.quantity}</Text>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      aria-label={`${line.name}を増やす`}
+                      onClick={() => changeQuantity(line.id, 1)}
+                    >
+                      ＋
+                    </Button>
+                  </Flex>
+                </Flex>
+              ))}
+              <Sheet modal={false} open={summaryOpen} onOpenChange={setSummaryOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    注文サマリー
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" width={360}>
+                  <SheetHeader title="注文サマリー" subtitle="明細は背面で編集を続けられます。" />
+                  <SheetBody>
+                    <Flex direction="row" justify="between">
+                      <Text tone="muted">合計</Text>
+                      <Text>{yen.format(total)}</Text>
+                    </Flex>
+                  </SheetBody>
+                  <SheetFooter>
+                    <Button onClick={() => setSummaryOpen(false)}>完了</Button>
                   </SheetFooter>
                 </SheetContent>
               </Sheet>

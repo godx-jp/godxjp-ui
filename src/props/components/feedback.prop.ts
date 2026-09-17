@@ -36,7 +36,13 @@ export type DialogProp = {
   defaultOpen?: DefaultOpenProp;
   onOpenChange?: OnOpenChangeProp;
   variant?: ConfirmVariantProp;
-  /** Kept from Radix. RAC's `Modal` always locks scroll, so `false` no longer turns that off. */
+  /**
+   * `false` renders a NON-MODAL dialog (allowed by WAI-ARIA APG, Dialog (Modal) pattern): the page
+   * behind stays interactive and in the accessibility tree, no scroll lock, no scrim, an outside
+   * press does not close it, no `aria-modal`. Focus moves in on open, Tab can leave, Escape closes
+   * while focus is inside, focus returns to the trigger. Ignored (dev warning) for
+   * `variant="destructive"` — an alertdialog is always modal. Default `true`.
+   */
   modal?: boolean;
   children?: ChildrenProp;
 };

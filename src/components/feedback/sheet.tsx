@@ -11,6 +11,7 @@ import type { SheetResponsiveProp } from "../../props/components/feedback.prop";
 import type { ToneProp, WidthProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useOverlayCloseFocus } from "./overlay-close-focus";
+import { closeOnEscape, NonModalPortal, useNonModalPortal } from "./non-modal-layer";
 import { useTranslation } from "../../i18n/use-translation";
 
 export type { SheetResponsiveProp } from "../../props/components/feedback.prop";
@@ -35,6 +36,12 @@ export type { SheetResponsiveProp } from "../../props/components/feedback.prop";
  *     `data-[state=…]` dưới đây (trượt vào / trượt ra theo từng cạnh) đọc nó.
  *   • Tấm nội dung là `<section>` chứ không còn `<div>` — thẻ mà RAC chờ đợi ở
  *     khe `render`; `role="dialog"` phủ lên vai ngầm của nó.
+ *
+ * `modal={false}` (gh#701) đi đúng đường non-modal của `Dialog` (gh#696), dùng chung
+ * `non-modal-layer.tsx`: không `ModalOverlay`, nên không màn nền / khoá cuộn / `inert`,
+ * bấm ra ngoài không đóng; `FocusScope autoFocus restoreFocus` không `contain`; Esc đóng
+ * khi tiêu điểm ở trong. WAI-ARIA APG cho phép hộp thoại không-modal. Hình học giữ nguyên:
+ * `.ui-sheet-panel` vốn đã `position: fixed` + `--overlay-z-index`.
  */
 
 /** number → px; string → any CSS length. */
@@ -82,6 +89,9 @@ function useSheetOpenState(component: string): SheetOpenState {
 }
 
 /** Cặp id `SheetContent` sinh ra và `SheetTitle` / `SheetDescription` đọc lại — hợp đồng của Radix. */
+/** `modal` của `Sheet` — xem đầu tệp, gh#701. */
+const SheetModalContext = React.createContext(true);
+
 const SheetLabelContext = React.createContext<{
   titleId: string;
   descriptionId: string;
@@ -95,14 +105,23 @@ export interface SheetProps {
   /** Gọi khi trạng thái mở đổi. */
   onOpenChange?: (open: boolean) => void;
   /**
-   * Giữ tên prop của Radix. RAC không có kiểu overlay không-modal: `Modal` LUÔN khoá cuộn và ẩn
-   * nền khỏi trình đọc màn hình, nên `modal={false}` không còn tắt được điều đó.
+   * `false` renders a NON-MODAL sheet (WAI-ARIA APG allows non-modal dialogs): the page behind
+   * stays interactive and in the accessibility tree, no scroll lock, no scrim, an outside press
+   * does not close it, no `aria-modal`. Focus moves in on open, Tab can leave, Escape closes while
+   * focus is inside, focus returns to the trigger. Side, size and tokens are unchanged. Default
+   * `true`. gh#701.
    */
   modal?: boolean;
   children?: React.ReactNode;
 }
 
-export function Sheet({ open, defaultOpen, onOpenChange, modal: _modal, children }: SheetProps) {
+export function Sheet({
+  open,
+  defaultOpen,
+  onOpenChange,
+  modal = true,
+  children,
+}: SheetProps) {
   const [uncontrolled, setUncontrolled] = React.useState(defaultOpen ?? false);
   const isOpen = open ?? uncontrolled;
 
@@ -123,7 +142,11 @@ export function Sheet({ open, defaultOpen, onOpenChange, modal: _modal, children
 
   const state = React.useMemo<SheetOpenState>(() => ({ isOpen, setOpen }), [isOpen, setOpen]);
 
-  return <SheetOpenContext.Provider value={state}>{children}</SheetOpenContext.Provider>;
+  return (
+    <SheetOpenContext.Provider value={state}>
+      <SheetModalContext.Provider value={modal}>{children}</SheetModalContext.Provider>
+    </SheetOpenContext.Provider>
+  );
 }
 
 export interface SheetTriggerProps extends React.ComponentPropsWithRef<"button"> {
@@ -270,9 +293,68 @@ export function SheetContent({
     : style;
   const dataState = state.isOpen ? "open" : "closed";
 
-  useOverlayCloseFocus(state.isOpen);
+  const modal = React.useContext(SheetModalContext);
+  const { contentRef, isMounted } = useNonModalPortal(state.isOpen, !modal);
+  // Non-modal: tiêu điểm đã Tab sang trang phía sau thì đóng KHÔNG được kéo nó về trigger.
+  useOverlayCloseFocus(state.isOpen, undefined, modal ? undefined : contentRef);
 
   const overlayPortalContainer = useOverlayPortalContainer();
+
+  const dialog = (
+    <RacDialog
+      aria-labelledby={props["aria-labelledby"] ?? titleId}
+      aria-describedby={props["aria-describedby"] ?? descriptionId}
+      data-slot="sheet-content"
+      data-state={dataState}
+      data-responsive={responsive}
+      data-side={resolvedSide}
+      className={cn(
+        sheetVariants({ side: resolvedSide }),
+        // `width` caps at the viewport: full-width panel on a small screen, capped on a large one.
+        widthSet && "w-[min(var(--sheet-width),100%)] max-w-none sm:max-w-none",
+        // Only the RESPONSIVE bottom presentation is capped — a plain `side="bottom"` sheet keeps
+        // its content-sized height so existing usage is untouched.
+        bottomSheet && "max-h-[var(--sheet-bottom-max-height)]",
+        className,
+      )}
+      render={(racProps) => {
+        const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
+        return modal ? (
+          <section {...rest} {...props} style={mergedStyle} ref={mergeRefs(ref, racRef)} />
+        ) : (
+          <section
+            {...rest}
+            {...props}
+            style={mergedStyle}
+            ref={mergeRefs(ref, racRef, contentRef)}
+            onKeyDown={chain(props.onKeyDown, closeOnEscape(() => state.setOpen(false)))}
+          />
+        );
+      }}
+    >
+      <SheetLabelContext.Provider value={labels}>
+        {children}
+        {showCloseButton ? (
+          <SheetClose
+            // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
+            // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
+            // rather than `:focus-visible`, and with a 2px offset nothing else in the system
+            // used. Matches DialogClose, which already carries the marker class.
+            className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
+          >
+            <X className="ui-sheet-close-icon" aria-hidden="true" />
+            <span className="sr-only">{t("feedback.alert.dismiss")}</span>
+          </SheetClose>
+        ) : null}
+      </SheetLabelContext.Provider>
+    </RacDialog>
+  );
+
+  if (!modal) {
+    return isMounted ? (
+      <NonModalPortal container={overlayPortalContainer}>{dialog}</NonModalPortal>
+    ) : null;
+  }
 
   return (
     <ModalOverlay
@@ -286,47 +368,7 @@ export function SheetContent({
     >
       {/* `display: contents` — thẻ `Modal` là chỗ RAC treo khoá cuộn / bẫy tiêu điểm, không phải
           một hộp bố cục. Bỏ nó đi thì `useInteractOutside` mất mốc để so. */}
-      <Modal className="contents">
-        <RacDialog
-          aria-labelledby={props["aria-labelledby"] ?? titleId}
-          aria-describedby={props["aria-describedby"] ?? descriptionId}
-          data-slot="sheet-content"
-          data-state={dataState}
-          data-responsive={responsive}
-          data-side={resolvedSide}
-          className={cn(
-            sheetVariants({ side: resolvedSide }),
-            // `width` caps at the viewport: full-width panel on a small screen, capped on a large one.
-            widthSet && "w-[min(var(--sheet-width),100%)] max-w-none sm:max-w-none",
-            // Only the RESPONSIVE bottom presentation is capped — a plain `side="bottom"` sheet keeps
-            // its content-sized height so existing usage is untouched.
-            bottomSheet && "max-h-[var(--sheet-bottom-max-height)]",
-            className,
-          )}
-          render={(racProps) => {
-            const { "data-rac": _rac, ref: racRef, ...rest } = racProps as RacSectionProps;
-            return (
-              <section {...rest} {...props} style={mergedStyle} ref={mergeRefs(ref, racRef)} />
-            );
-          }}
-        >
-          <SheetLabelContext.Provider value={labels}>
-            {children}
-            {showCloseButton ? (
-              <SheetClose
-                // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
-                // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
-                // rather than `:focus-visible`, and with a 2px offset nothing else in the system
-                // used. Matches DialogClose, which already carries the marker class.
-                className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
-              >
-                <X className="ui-sheet-close-icon" aria-hidden="true" />
-                <span className="sr-only">{t("feedback.alert.dismiss")}</span>
-              </SheetClose>
-            ) : null}
-          </SheetLabelContext.Provider>
-        </RacDialog>
-      </Modal>
+      <Modal className="contents">{dialog}</Modal>
     </ModalOverlay>
   );
 }
