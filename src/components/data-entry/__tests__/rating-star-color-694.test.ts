@@ -12,8 +12,11 @@ import { describe, expect, it } from "vitest";
 const read = (rel: string) => readFileSync(join(process.cwd(), rel), "utf8");
 const tokens = read("src/tokens/components/control.css");
 const control = read("src/styles/control.css");
+/** A rule's body with runs of whitespace collapsed — Prettier may wrap a long declaration. */
 const rule = (selector: string) =>
-  control.match(new RegExp(`\\n\\s*${selector.replace(/\./g, "\\.")}\\s*\\{([^}]*)\\}`))?.[1] ?? "";
+  (control.match(new RegExp(`\\n\\s*${selector.replace(/\./g, "\\.")}\\s*\\{([^}]*)\\}`))?.[1] ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 describe("Rating star colour knobs (gh#694)", () => {
   it("declares both colour knobs `initial`, so neither freezes a role at :root", () => {
@@ -30,7 +33,10 @@ describe("Rating star colour knobs (gh#694)", () => {
 
   it("paints an empty star from the knob, defaulting to the old muted ink at the old alpha", () => {
     expect(rule(".ui-rating-star")).toContain(
-      "color: hsl(var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha))",
+      "color: hsl( var(--rating-star-empty-color, var(--muted-foreground)) / var(--rating-star-empty-alpha) )".replace(
+        /\s+/g,
+        " ",
+      ),
     );
   });
 });
