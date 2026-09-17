@@ -12762,6 +12762,13 @@ import { fetchInvoice } from "@/api/invoices";
           'Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark: a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className="rounded-md bg-primary".',
       },
       {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          'Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW\'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size="icon-sm">` trigger, a mark in a 24/28px dense table row, a mark beside a `size="sm"` Button. A `size="sm"` avatar measures exactly as tall as a `size="sm"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials\' type step and a glyph\'s box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape="square" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row.',
+      },
+      {
         name: "appearance",
         type: '"default" | "tinted"',
         defaultValue: '"default"',
@@ -12808,6 +12815,8 @@ import { fetchInvoice } from "@/api/invoices";
       'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
       "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
       "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
+      'DO set `size` from the ROW, not from the mark: a row whose height is already fixed (an icon-sm trigger, a 24/28px dense table row, a toolbar of sm controls) takes the matching avatar step, and the mark then measures exactly what a Button of the same step measures. `<Button size="icon-sm"><Avatar size="sm">…</Avatar></Button>` fits; the default md mark in that same trigger overflows it.',
+      "DON'T raise a whole row's control height just to fit a person's mark, and DON'T reach for a className size utility for a step that is ON the ladder (size-6 / size-7 re-derive 24/28px outside the density axis, so they stop tracking --control-height and drift from the controls beside them). className stays the escape hatch for sizes OFF the ladder — a 96px profile mark.",
     ],
     useCases: [
       "User profile chips",
@@ -13255,9 +13264,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Control size.",
+        description:
+          "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716).",
       },
       {
         name: "count",
@@ -13347,10 +13357,10 @@ import { Separator } from "@godxjp/ui/layout";
       },
       {
         name: "size",
-        type: '"sm" | "md" | "lg"',
+        type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
         description:
-          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (sm 28px · md 32px · lg 36px).",
+          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716).",
       },
       {
         name: "disabled",
@@ -13369,7 +13379,7 @@ import { Separator } from "@godxjp/ui/layout";
       "DO choose type='multiple' for independent formatting toggles.",
       "DO set `variant`/`size` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
       "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
-      "DON'T pass size='default' — it is not a member of the `sm | md | lg` union. Omit `size` for the md default.",
+      "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],

@@ -2147,7 +2147,7 @@ export const COMPONENT_PROP_REGISTRY = {
   AvatarProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["AvatarShapeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: ["AvatarShapeProp", "SizeProp", "LabelProp", "ChildrenProp", "ClassNameProp"],
   },
   AvatarAppearanceProp: {
     group: "data-display",

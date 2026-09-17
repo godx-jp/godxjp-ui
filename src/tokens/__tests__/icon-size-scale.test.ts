@@ -84,6 +84,12 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--auth-requester-glyph-size": ["0.625rem", "0.625rem", "0.625rem"],
   "--auth-requester-icon-size": ["1rem", "1rem", "1rem"],
   "--avatar-tinted-glyph-size": ["1rem", "0.92rem", "1.08rem"],
+  // The Avatar size ladder's glyph steps (gh#716) — a mark that enters a 24/28px control row has
+  // to bring its glyph down with it, or a 24px lucide default fills the whole 24px box. Three
+  // steps of --icon-size-*, --scaling-multiplied like every other control glyph.
+  "--avatar-glyph-size-xs": ["0.75rem", "0.69rem", "0.81rem"],
+  "--avatar-glyph-size-sm": ["0.875rem", "0.805rem", "0.945rem"],
+  "--avatar-glyph-size-lg": ["1.25rem", "1.15rem", "1.35rem"],
   "--button-xs-icon-size": ["0.75rem", "0.75rem", "0.75rem"],
   "--card-service-launcher-icon-glyph-size": ["1.25rem", "1.15rem", "1.35rem"],
   "--card-service-launcher-icon-size": ["2.25rem", "2.07rem", "2.43rem"],

@@ -31,6 +31,15 @@
     padding-inline: var(--space-3);
   }
 
+  /* The 24px step (gh#716). Inline padding continues the component's own 4px ladder
+   * (xs 4 · sm 8 · md 12 · lg 16), and the type step is Button xs's, so an xs chip sits level with
+   * an xs Button on the same dense row. */
+  .ui-toggle-xs {
+    min-height: var(--control-height-xs);
+    padding-inline: var(--space-1);
+    font-size: var(--toggle-xs-font-size);
+  }
+
   .ui-toggle-sm {
     min-height: var(--control-height-sm);
     padding-inline: var(--space-2);

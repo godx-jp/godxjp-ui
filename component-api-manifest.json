@@ -2287,6 +2287,14 @@
           "type": "AvatarShapeProp | undefined",
           "values": ["circle", "square"],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },
@@ -17289,8 +17297,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg"],
           "declaredIn": ["src/components/ui/toggle.tsx"]
         },
         {
@@ -17358,8 +17366,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
@@ -17435,8 +17443,8 @@
           "name": "size",
           "origin": "owned",
           "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\" | null | undefined",
-          "values": ["sm", "md", "lg"],
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | null | undefined",
+          "values": ["xs", "sm", "md", "lg"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {

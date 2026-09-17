@@ -292,6 +292,7 @@
   --search-input-label-font-size: var(--font-size-xs);
   --tag-input-chip-font-size: var(--font-size-xs);
   --toggle-sm-font-size: var(--font-size-xs);
+  --toggle-xs-font-size: var(--font-size-xs);
   --button-sm-font-size: var(--font-size-xs);
 }
 

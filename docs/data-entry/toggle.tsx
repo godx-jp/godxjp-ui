@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Toggle } from "@godxjp/ui/data-entry";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -73,10 +74,18 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle level={2}>Sizes</CardTitle>
-            <CardDescription>sm / md / lg · match surrounding density.</CardDescription>
+            <CardDescription>
+              xs 24px / sm 28px / md 32px / lg 36px · すべて --control-height
+              の同じ段。行の高さが先に決まっている場所では、その段を選ぶ。xs は 24px
+              の密な行にセグメント状のチップを載せるための段で、Button
+              を並べて自作する代わりになる。
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="md" align="center">
+              <Toggle size="xs" aria-label="極小サイズ">
+                極小
+              </Toggle>
               <Toggle size="sm" aria-label="小サイズ">
                 小
               </Toggle>
@@ -86,6 +95,35 @@ export default function Demo() {
               <Toggle size="lg" aria-label="大サイズ">
                 大
               </Toggle>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>24px の密な行 · size=&quot;xs&quot;</CardTitle>
+            <CardDescription>
+              行の高さが 24px に決まっている監査ログや明細ツールバーでは、xs
+              のチップがそのまま収まる。同じ段の Button size=&quot;xs&quot;
+              と高さが一致するので、行が段差にならない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Flex direction="row" gap="sm" align="center">
+                <Toggle size="xs" defaultPressed aria-label="未読のみ">
+                  未読のみ
+                </Toggle>
+                <Toggle size="xs" aria-label="添付あり">
+                  添付あり
+                </Toggle>
+                <Button size="xs" variant="outline">
+                  絞り込み
+                </Button>
+              </Flex>
+              <Text as="p" size="xs" tone="muted">
+                いずれも --control-height-xs（24px）。
+              </Text>
             </Flex>
           </CardContent>
         </Card>

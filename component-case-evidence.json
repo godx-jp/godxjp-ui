@@ -258,6 +258,10 @@
         "shape": {
           "cases": ["circle", "square"],
           "evidence": ["docs/data-display/avatar.tsx"]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/data-display/avatar.tsx"]
         }
       }
     },
@@ -2343,7 +2347,7 @@
           "evidence": ["docs/data-entry/toggle.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle.tsx"]
         }
       }
@@ -2355,7 +2359,7 @@
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }
@@ -2367,7 +2371,7 @@
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         },
         "size": {
-          "cases": ["sm", "md", "lg"],
+          "cases": ["xs", "sm", "md", "lg"],
           "evidence": ["docs/data-entry/toggle-group.tsx"]
         }
       }

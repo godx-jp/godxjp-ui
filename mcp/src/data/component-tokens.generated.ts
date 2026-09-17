@@ -1434,6 +1434,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
+    "name": "--toggle-xs-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -2517,6 +2522,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-tint",
     "value": "transparent",
     "description": "Optional role wash over the avatar (default transparent = invisible, rule #44). Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08)."
+  },
+  {
+    "name": "--avatar-size",
+    "value": "var(--control-height)",
+    "description": "Avatar SIZE LADDER — `<Avatar size=\"xs|sm|md|lg\">` (gh#716). The mark is a control-row citizen: it sits inside an `icon-sm` trigger, in a 24px dense table row, beside a Button on the same line. Before this ladder the box was welded to `--control-height`, so a 32px mark inside a 28px trigger OVERFLOWED it and the only legal move left to a consumer was to raise the whole row. Each step therefore reads the SAME `--control-height-*` tier every other control reads (never a px, never a calc offset), which is what makes `size=\"sm\"` measure exactly as tall as `<Button size=\"sm\">` on the same row. `md` is the default and is byte-identical to what shipped before, so nothing moves. `shape=\"square\"` rides the same ladder: each step re-declares --avatar-square-size ON THE ELEMENT (not at :root — a calc/var over two custom properties is substituted where it is DECLARED, the trap written up in tokens/components/segmented.css), so the entity mark and the person mark are the same height at every step."
+  },
+  {
+    "name": "--avatar-size-xs",
+    "value": "var(--control-height-xs)",
+    "description": "The 24px step — the mark that fits an `icon-xs` trigger and a 24px dense row."
+  },
+  {
+    "name": "--avatar-size-sm",
+    "value": "var(--control-height-sm)",
+    "description": "The 28px step — the mark that fits an `icon-sm` trigger and a `size=\"sm\"` control row."
+  },
+  {
+    "name": "--avatar-size-lg",
+    "value": "var(--control-height-lg)",
+    "description": "The 36px step — the mark for a `size=\"lg\"` row (a list row's leading identity)."
+  },
+  {
+    "name": "--avatar-font-size",
+    "value": "var(--font-size-base)",
+    "description": "Initials TYPE per step — one step of the type scale per step of the box, so the two letters in a 24px mark are not the 14px set for a 32px one. The ratio holds (~0.44 of the box at every step), which is what keeps initials centred and legible rather than clipped."
+  },
+  {
+    "name": "--avatar-font-size-xs",
+    "value": "var(--font-size-2xs)",
+    "description": "Initials in the 24px mark — one step below sm on the type scale."
+  },
+  {
+    "name": "--avatar-font-size-sm",
+    "value": "var(--font-size-xs)",
+    "description": "Initials in the 28px mark — the same step a `size=\"sm\"` control's label reads."
+  },
+  {
+    "name": "--avatar-font-size-lg",
+    "value": "var(--font-size-lg)",
+    "description": "Initials in the 36px mark — one step above the body step."
+  },
+  {
+    "name": "--avatar-glyph-size-xs",
+    "value": "calc(var(--icon-size-xs) * var(--scaling))",
+    "description": "Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712), multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark tracks density like every other control glyph. Only a SIZED avatar sizes its glyph: there is deliberately no global `.ui-avatar svg` rule, because it would out-rank the per-call-site icon classes existing avatars already carry."
+  },
+  {
+    "name": "--avatar-glyph-size-sm",
+    "value": "calc(var(--icon-size-sm) * var(--scaling))",
+    "description": "Glyph in the 28px mark — --icon-size-sm, the step --control-icon-size-sm also reads."
+  },
+  {
+    "name": "--avatar-glyph-size-lg",
+    "value": "calc(var(--icon-size-lg) * var(--scaling))",
+    "description": "Glyph in the 36px mark — --icon-size-lg."
   },
   {
     "name": "--avatar-square-radius",
