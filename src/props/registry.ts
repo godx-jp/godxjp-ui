@@ -471,6 +471,12 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Text size — golden-ratio type-scale steps (2xs…2xl), never an arbitrary px",
   },
+  IconSizeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Icon size — the nine --icon-size-* scale steps (2xs…4xl), never an arbitrary px or a size- utility",
+  },
   TextToneProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -1413,6 +1419,35 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Ambient live-region opt-in — ActivityAnnounceProp vocabulary; deliberately NOT a boolean so the value names the politeness level.",
+      },
+    ],
+  },
+  IconGlyphProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "IconProp",
+      "IconSizeProp",
+      "TextToneProp",
+      "LabelProp",
+      "ClassNameProp",
+      {
+        field: "label",
+        local: true,
+        reason:
+          "LabelProp narrowed to string: this becomes the glyph's aria-label, and an accessible name is TEXT — a ReactNode cannot be one.",
+      },
+      {
+        field: "as",
+        local: true,
+        reason:
+          "The glyph COMPONENT to render — the IconProp concept, widened to a component that also forwards SVG props and a ref, because Icon renders ONTO the glyph (the sized element is the <svg> itself) rather than wrapping it.",
+      },
+      {
+        field: "size",
+        local: true,
+        reason:
+          "IconSizeProp, the nine-step icon scale — deliberately NOT the four-step control SizeProp: a glyph beside 2xs caption text and a 48px empty-state mark are the same primitive.",
       },
     ],
   },

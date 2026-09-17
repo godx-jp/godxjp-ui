@@ -20,7 +20,7 @@ export type {
  * file resolves, including nothing at all while the `--focus-outline` switch ships off.
  */
 export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(function TopbarItem(
-  { asChild = false, className, type, hideBelow, badge, badgeTone, children, ...props },
+  { asChild = false, className, type, hideBelow, icon, badge, badgeTone, children, ...props },
   ref,
 ) {
   const Comp = asChild ? Slot : "button";
@@ -30,6 +30,15 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
   // Ignored under `asChild`: Slot borrows the child's single element and has nowhere to put a
   // sibling — the same rule `Button`'s `count` follows.
   const showBadge = !asChild && badge !== undefined && badge !== "";
+  // The glyph goes in a box the CELL owns, so it keeps the bar's step however the consumer wraps
+  // it (gh#712). Ignored under `asChild` for the same reason `badge` is: Slot borrows the child's
+  // single element and has nowhere to put a sibling.
+  const iconNode =
+    !asChild && icon !== undefined && icon !== null && icon !== false ? (
+      <span data-slot="topbar-item-icon" className="ui-topbar-item-icon">
+        {icon}
+      </span>
+    ) : null;
   const badgeNode = showBadge ? (
     <span
       data-slot="topbar-item-badge"
@@ -55,6 +64,7 @@ export const TopbarItem = React.forwardRef<HTMLButtonElement, TopbarItemProp>(fu
         children
       ) : (
         <>
+          {iconNode}
           {children}
           {badgeNode}
         </>

@@ -12,6 +12,7 @@ import type {
   DisabledProp,
   FontWeightProp,
   HeadingLevelProp,
+  IconSizeProp,
   IdProp,
   LabelProp,
   OnClickProp,
@@ -409,6 +410,48 @@ export type ActivityProp = Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> 
    * an ambient indicator that fires a live region on every socket event is a screen-reader flood.
    */
   announce?: ActivityAnnounceProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see Icon — the ONE supported way to put a standalone glyph on the `--icon-size-*` scale.
+ *
+ * A lucide component carries `width="24" height="24"` of its own, and only four rules in this
+ * library ever re-size a glyph (`.ui-button svg`, the menu row, the topbar cell, the ListRow
+ * leading slot) — three of them direct-child rules. Outside those four a glyph renders at 24px
+ * beside 14px text, and a consumer has no supported way to fix it: `docs/CONSUMER-RULES.md` §8
+ * forbids `size-4`/`w-[16px]`, and `size={16}` re-derives a scale the theme owns. Measured in a
+ * consumer at 38 such glyphs (gh#712).
+ *
+ * Icon renders ONTO the glyph rather than wrapping it — the sized element IS the `<svg>` — so it
+ * composes anywhere a bare glyph does (inside `Text`, in a `Button`, in a table cell, in an `<a>`)
+ * and adds no box to the layout.
+ */
+export type IconGlyphProp = Omit<React.SVGProps<SVGSVGElement>, "ref" | "children"> & {
+  /**
+   * The glyph COMPONENT — `as={Lock}`, not `<Lock />`. Any component that forwards SVG props and a
+   * ref qualifies (every `lucide-react` icon does); Icon hands it the class, the size attributes
+   * and the a11y wiring.
+   */
+  as: React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>>;
+  /**
+   * Step of the nine-step icon scale. Default `md` (16px — "the default icon step" in
+   * docs/TOKENS.md). A glyph beside `Text size="sm"` wants `sm`; an empty-state mark wants `4xl`.
+   */
+  size?: IconSizeProp;
+  /**
+   * Semantic colour intent, the same vocabulary `Text` uses. Omitted by default, and that default
+   * is load-bearing: a glyph inherits `currentColor`, so an Icon inside a Button, a Badge or a
+   * toned `Text` paints in that surface's own ink without being told.
+   */
+  tone?: TextToneProp;
+  /**
+   * Accessible NAME, when the glyph carries meaning nothing else on screen says (a lock in a
+   * status cell with no text beside it). Localized by the consumer — the library ships no copy.
+   * Supplying it switches the glyph from `aria-hidden` to `role="img"` + that name; leave it off
+   * (the default) for a decorative glyph beside a visible label, which is the common case.
+   */
+  label?: string;
   className?: ClassNameProp;
 };
 

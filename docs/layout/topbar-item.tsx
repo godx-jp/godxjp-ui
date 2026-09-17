@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Icon, Text } from "@godxjp/ui/general";
 import { AppShell, Flex, PageContainer, Sidebar, Topbar, TopbarItem } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import {
@@ -22,6 +22,7 @@ import {
 } from "@godxjp/ui/navigation";
 import {
   Bell,
+  Building2,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -145,6 +146,33 @@ export default function Demo() {
                         <AvatarFallback>SD</AvatarFallback>
                       </Avatar>
                     </Button>
+                  </>
+                }
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>包んだグリフ（icon スロットと Icon）</CardTitle>
+              <CardDescription>
+                `.ui-topbar-item &gt; svg` は直接の子だけを見ます。ブレークポイントで隠すために
+                グリフを包むと、その規則は届かず lucide 既定の 24px で描かれます（390px
+                のセルで実測）。 セル自身が持つ `icon` スロットに渡すか、包むなら `Icon`
+                を使えば、どちらもバーの段 （--topbar-icon-size）に載ります。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Topbar
+                start={
+                  <>
+                    <TopbarItem icon={<Building2 aria-hidden="true" />}>経理部</TopbarItem>
+                    <TopbarItem aria-label="拠点を切り替える">
+                      <Flex hideBelow="sm">
+                        <Icon as={Building2} size="md" />
+                      </Flex>
+                      東京本社
+                    </TopbarItem>
                   </>
                 }
               />
