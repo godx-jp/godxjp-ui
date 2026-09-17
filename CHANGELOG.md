@@ -4,6 +4,23 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.4.0] - 2026-09-17
+
+MINOR, compatible. Unset, every star paints exactly as before.
+
+### Added
+
+- **Rating star colour knobs** (gh#694): `--rating-star-filled-color` (default `var(--warning)`),
+  `--rating-star-empty-color` (default `var(--muted-foreground)`) and `--rating-star-empty-alpha`
+  (0.45). The first two take HSL components and are `initial`, so the default resolves at the star
+  and a scoped `[data-tenant]` override re-tints only that scope. Before, the star read
+  `hsl(var(--warning))` with no knob, so a brand keeping its own gold had to override the internal
+  `.ui-rating-star-filled` class. Measured in Chromium with a scoped
+  `--rating-star-filled-color: 44 54% 54%`: the filled star went from `rgb(250, 183, 0)` to
+  `rgb(201, 167, 74)`, and the root is unchanged.
+- The `error-text-tier` gate now also sees a `color` read through a knob whose default is a fill
+  token, so moving a paint behind a knob cannot hide it from the gh#612 check.
+
 ## [26.3.0] - 2026-09-17
 
 MINOR. Every change is opt-in or a fix; a screen that sets none of the new props behaves as before,
