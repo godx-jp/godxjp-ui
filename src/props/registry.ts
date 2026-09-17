@@ -778,6 +778,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  PageContainerExtraProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ExtraProp"],
+  },
   PageContainerMeasureProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -2966,6 +2971,9 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/ui/toggle.tsx",
     vocabulary: [
       "SizeProp",
+      // The control `ShapeProp` verbatim — same three values, same two radius tokens as Button and
+      // Badge, so `shape="pill"` means one thing library-wide (gh#734).
+      "ShapeProp",
       "ClassNameProp",
       {
         field: "count",
@@ -2986,6 +2994,8 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/ui/toggle-group.tsx",
     vocabulary: [
       "SizeProp",
+      // Reaches the item through the group's context, exactly as `variant`/`size` do (gh#734).
+      "ShapeProp",
       "ClassNameProp",
       {
         field: "count",

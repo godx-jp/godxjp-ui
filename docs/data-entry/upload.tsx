@@ -9,6 +9,7 @@ import {
 } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { FilePlus2, Plus } from "lucide-react";
 
 /**
  * Upload — drag-and-drop / button / avatar / picture file uploader (6 variants).
@@ -32,6 +33,7 @@ export default function Demo() {
   const [submittedFiles, setSubmittedFiles] = useState<string[]>([]);
   const [dropzoneItems, setDropzoneItems] = useState<UploadFileItem[]>([]);
   const [buttonItems, setButtonItems] = useState<UploadFileItem[]>([]);
+  const [triggerIconItems, setTriggerIconItems] = useState<UploadFileItem[]>([]);
   const [pictureCardItems, setPictureCardItems] = useState<UploadFileItem[]>([]);
   const [pictureItem, setPictureItem] = useState<UploadFileItem[]>([]);
   const [avatarItem, setAvatarItem] = useState<UploadFileItem[]>([]);
@@ -184,6 +186,48 @@ export default function Demo() {
             >
               CSVをインポート
             </Upload>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>triggerIcon · 「新規作成」がアップロードのとき</CardTitle>
+            <CardDescription>
+              variant=&quot;button&quot;
+              のトリガーが描くグリフを差し替える。コンポーネントを渡す（triggerIcon=&#123;Plus&#125;、
+              要素ではない）。triggerVariant
+              は強弱しか変えられないので、実体はアップロードでも「新規作成」として並ぶボタンは
+              これまで矢印を背負うしかなかった。クラスと余白と aria-hidden
+              はライブラリ側が持ったままなので、差し替えても大きさは --upload-row-icon-size
+              のまま、読み上げにも出ない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="md" wrap align="center">
+              <Upload
+                variant="button"
+                triggerIcon={Plus}
+                triggerVariant="default"
+                value={triggerIconItems}
+                onValueChange={setTriggerIconItems}
+                accept=".pdf"
+                onUpload={demoUpload}
+              >
+                資料を追加
+              </Upload>
+              <Upload
+                variant="button"
+                triggerIcon={FilePlus2}
+                triggerSize="icon-sm"
+                triggerVariant="ghost"
+                value={[]}
+                onValueChange={() => {}}
+                aria-label="請求書を添付"
+              />
+              <Upload variant="button" value={[]} onValueChange={() => {}}>
+                既定のグリフ
+              </Upload>
+            </Flex>
           </CardContent>
         </Card>
 

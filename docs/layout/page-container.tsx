@@ -17,7 +17,7 @@ import type { ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { SearchInput } from "@godxjp/ui/data-entry";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
-import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
+import { Pagination, Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
 import { Plus, Download, Filter, Search } from "lucide-react";
 
 /**
@@ -129,6 +129,9 @@ export default function Demo() {
     { key: "ghost", label: "ghost" },
   ] as const;
 
+  /** The record pager that must sit AFTER the header's action cluster (`extra.end`). */
+  const [recordPage, setRecordPage] = useState(12);
+
   const densities = [
     { key: "compact", label: "compact" },
     { key: "default", label: "default" },
@@ -163,6 +166,69 @@ export default function Demo() {
           <StatCard label="売掛金残高" value="¥1,284,500" hint="未回収 18件" />
           <StatCard label="回収率" value="96.8%" delta="+1.2%" />
         </ResponsiveGrid>
+      </PageContainer>
+
+      {/* ── 1a. `extra` as { start, end } · 本人確認 → 操作 → ページャが最後 ── */}
+      {/* `extra` はノード 1 つでも、start / end の 2 スロットでも受ける（Tabs.extra と同じ形）。
+          レコード画面の並びは「誰の何か → 操作の束 → ページャ」で、ページャは操作の“あと”に
+          来る。1 スロットしかなかったころは、この最後の一つを本文の中に第二のヘッダ帯として
+          置くしかなく、アプリがヘッダを 2 種類抱えることになっていた。両方とも同じ
+          .ui-page-header-extra の直下に並ぶので、DOM 順がそのまま読み上げ順になる。 */}
+      <PageContainer
+        title="不具合 #1042 · 請求書の消費税区分が誤っている"
+        subtitle="Issue detail · 担当 佐藤 · 更新 2026-09-14"
+        breadcrumb={[
+          { label: "ホーム", to: "/" },
+          { label: "不具合", to: "/issues" },
+          { label: "#1042" },
+        ]}
+        breadcrumbLabel="不具合詳細のパンくず"
+        extra={{
+          start: (
+            <Flex gap="sm">
+              <Button variant="outline" size="sm">
+                <Download />
+                エクスポート
+              </Button>
+              <Button size="sm">
+                <Plus />
+                コメント
+              </Button>
+            </Flex>
+          ),
+          end: (
+            <Pagination
+              size="sm"
+              value={recordPage}
+              onValueChange={setRecordPage}
+              total={48}
+              pageSize={1}
+              simple
+              ariaLabel="不具合の前後移動"
+            />
+          ),
+        }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ページャはヘッダの最後に置く</CardTitle>
+            <CardDescription>
+              extra にノードを 1 つ渡したときは start に入るので、既存のページは 1
+              文字も変わらない。end を足したときだけ、その後ろにもう 1
+              スロットが増える。名前は論理方向（start / end）なので dir=&quot;rtl&quot;
+              でそのまま入れ替わる。本文の中にもう一段ヘッダ帯を作る必要はない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Descriptions
+              items={[
+                { label: "状態", value: "未対応" },
+                { label: "優先度", value: "高" },
+                { label: "報告者", value: "鈴木" },
+              ]}
+            />
+          </CardContent>
+        </Card>
       </PageContainer>
 
       {/* ── 1b. Canonical page-header contract · status/meta band ── */}

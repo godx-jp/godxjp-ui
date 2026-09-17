@@ -46,11 +46,14 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Variants</CardTitle>
             <CardDescription>
-              default (filled background when pressed) vs outline (border style).
+              default（押下時だけ面が出る・休止時は透明な 1px 枠）· outline（--background
+              の上の細い枠）· soft（休止時から --secondary で塗られる）。
+              最初の二つはツールバー向けで、休止しているチップは「何もない」ように見える。
+              チップとして並べるときは soft。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md">
+            <Flex direction="row" gap="md" wrap>
               <Toggle
                 variant="default"
                 pressed={pinned}
@@ -67,6 +70,55 @@ export default function Demo() {
               >
                 消費税対象のみ
               </Toggle>
+              <Toggle variant="soft" aria-label="草案のみ">
+                草案のみ
+              </Toggle>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              soft + shape=&quot;pill&quot; · チェック可能なタグチップ
+            </CardTitle>
+            <CardDescription>
+              antd の Tag.CheckableTag にあたる形。soft が休止時の面を、shape が角を担う。shape は
+              Button / Badge と同じ default / pill / sharp の三値で、同じ radius
+              トークンを読む。押下すると面が --primary に反転するので、状態は色だけに依存しない。
+              取り消せる（×つきの）タグは選択ではなく削除なので Badge の onRemove
+              側、つまり別のコンポーネントになる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" gap="sm" wrap align="center">
+                <Toggle variant="soft" shape="pill" size="xs" defaultPressed>
+                  設計
+                </Toggle>
+                <Toggle variant="soft" shape="pill" size="xs">
+                  実装
+                </Toggle>
+                <Toggle variant="soft" shape="pill" size="xs">
+                  検証
+                </Toggle>
+              </Flex>
+              <Flex direction="row" gap="sm" wrap align="center">
+                <Toggle variant="soft" shape="default">
+                  default（--radius-md）
+                </Toggle>
+                <Toggle variant="soft" shape="pill">
+                  pill
+                </Toggle>
+                <Toggle variant="soft" shape="sharp">
+                  sharp
+                </Toggle>
+              </Flex>
+              <Text as="p" size="xs" tone="muted">
+                soft の面は Badge variant=&quot;secondary&quot; / Button
+                variant=&quot;secondary&quot; と同じ --secondary。ホバーは不透明な --secondary-hover
+                なので、ページの上でもカードの上でも同じ色になる。
+              </Text>
             </Flex>
           </CardContent>
         </Card>

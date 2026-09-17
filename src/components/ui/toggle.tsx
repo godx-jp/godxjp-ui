@@ -11,6 +11,14 @@ const toggleVariants = cva("ui-toggle", {
     variant: {
       default: "ui-toggle-default",
       outline: "ui-toggle-outline",
+      // The REST FILL (gh#734). `default` is a 1px TRANSPARENT border and `outline` a hairline on
+      // `--background`, so neither draws a chip that reads as filled before it is pressed — which
+      // is why a consumer building a tag-filter panel reported its tags "look transparent" and
+      // fell back to `Button variant="secondary" shape="pill" aria-pressed`, a control that paints
+      // no pressed state at all. `soft` is antd `Tag`'s resting surface, on the SAME
+      // `hsl(var(--secondary))` fill `Badge variant="secondary"` and `Button variant="secondary"`
+      // already paint, so a chip, a badge and a button on one row are one family.
+      soft: "ui-toggle-soft",
     },
     size: {
       // The fourth step of the shared control ladder (gh#716): 24px, `--control-height-xs`, the
@@ -21,10 +29,20 @@ const toggleVariants = cva("ui-toggle", {
       md: "ui-toggle-default-size",
       lg: "ui-toggle-lg",
     },
+    // Corner shape at parity with `Button` and `Badge` — the same three values mapped to the same
+    // two radius tokens, so `shape="pill"` means one thing across the library. `default` is empty
+    // on purpose: it leaves `.ui-toggle`'s own `--radius-md` in place instead of restating it,
+    // exactly as `badgeVariants` does.
+    shape: {
+      default: "",
+      pill: "rounded-[var(--radius-pill)]",
+      sharp: "rounded-[var(--radius-sharp)]",
+    },
   },
   defaultVariants: {
     variant: "default",
     size: "md",
+    shape: "default",
   },
 });
 
@@ -160,6 +178,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProp>(
       className,
       variant,
       size,
+      shape,
       count,
       overflowCount,
       showZero,
@@ -192,7 +211,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProp>(
         data-slot="toggle"
         data-state={isPressed ? "on" : "off"}
         aria-label={resolvedAriaLabel}
-        className={cn(toggleVariants({ variant, size }), className)}
+        className={cn(toggleVariants({ variant, size, shape }), className)}
         {...(props as Omit<ToggleButtonProps, "children" | "className">)}
         isSelected={isPressed}
         onChange={onSelectionChange}

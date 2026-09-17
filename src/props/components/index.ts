@@ -15,6 +15,7 @@ export type {
   DraggablePanelPlacementProp,
   DraggablePanelPositionProp,
   DraggablePanelProp,
+  PageContainerExtraProp,
   PageContainerProp,
   PageInsetProp,
   SidebarItemProp,

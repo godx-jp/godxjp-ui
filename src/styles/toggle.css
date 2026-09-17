@@ -17,6 +17,17 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* The resting pill's default fill is `--muted`, and in the shipped theme `--muted` and
+   * `--secondary` are the SAME value (`45 15% 95%`), so on a `soft` chip that pill measures 1.00:1
+   * against the chip and disappears — the gh#602 failure, on a different control. It takes the
+   * page surface instead, which is as quiet against the chip as the default pill is against its
+   * own (measured 1.10:1) and still carries `--foreground` at full strength. Opaque, like every
+   * other pill colour here, so the ratio does not move with the chip's hover surface. */
+  .ui-toggle-soft .ui-toggle-count {
+    background: var(--toggle-soft-count-background, hsl(var(--background)));
+    color: var(--toggle-soft-count-color, hsl(var(--foreground)));
+  }
+
   /* PRESSED — the state is never carried by hue alone (WCAG 1.4.1). */
   .ui-toggle[data-state="on"] {
     border-color: var(--toggle-pressed-border-color, hsl(var(--primary)));

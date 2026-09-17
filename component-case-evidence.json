@@ -2346,7 +2346,11 @@
     "Toggle": {
       "props": {
         "variant": {
-          "cases": ["default", "outline"],
+          "cases": ["default", "outline", "soft"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
           "evidence": ["docs/data-entry/toggle.tsx"]
         },
         "size": {
@@ -2358,8 +2362,12 @@
     "ToggleGroup": {
       "props": {
         "variant": {
-          "cases": ["default", "outline"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
+          "cases": ["default", "outline", "soft"],
+          "evidence": ["docs/data-entry/toggle-group.tsx", "docs/data-entry/toggle-count.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-entry/toggle-group.tsx", "docs/data-entry/toggle-count.tsx"]
         },
         "size": {
           "cases": ["xs", "sm", "md", "lg"],
@@ -2370,8 +2378,12 @@
     "ToggleGroupItem": {
       "props": {
         "variant": {
-          "cases": ["default", "outline"],
-          "evidence": ["docs/data-entry/toggle-group.tsx"]
+          "cases": ["default", "outline", "soft"],
+          "evidence": ["docs/data-entry/toggle-group.tsx", "docs/data-entry/toggle-count.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-entry/toggle-group.tsx", "docs/data-entry/toggle-count.tsx"]
         },
         "size": {
           "cases": ["xs", "sm", "md", "lg"],

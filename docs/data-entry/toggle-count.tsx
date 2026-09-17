@@ -72,6 +72,14 @@ const TICKETS: Ticket[] = [
   },
 ];
 
+const TAGS = [
+  { value: "design", label: "設計", count: 12 },
+  { value: "runbook", label: "運用手順", count: 148 },
+  { value: "onboarding", label: "入社手続き", count: 7 },
+  { value: "security", label: "セキュリティ", count: 31 },
+  { value: "archive", label: "アーカイブ", count: 1240 },
+];
+
 const STATUS_LABEL: Record<Ticket["status"], string> = {
   open: "未対応",
   waiting: "保留中",
@@ -93,6 +101,8 @@ const COLUMNS = [
 ];
 
 export default function Demo() {
+  // The tag panel of a Wiki/document screen — the chip this vocabulary exists for.
+  const [tags, setTags] = useState<string[]>(["design"]);
   // Faceted filter chips — pressed = the facet is applied. Counts are the facet sizes.
   const [facets, setFacets] = useState<string[]>(["open"]);
   // A reaction row: the count is how many people reacted, the pressed state is whether YOU did.
@@ -112,6 +122,47 @@ export default function Demo() {
       subtitle="カウント付きの押下チップ · faceted filter · リアクション"
     >
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>タグで絞り込む · soft + pill のチップ</CardTitle>
+            <CardDescription>
+              Wiki / ドキュメントのタグパネル。variant=&quot;soft&quot; が休止時の面（--secondary、
+              Badge variant=&quot;secondary&quot; と同じ塗り）、shape=&quot;pill&quot; が角、count
+              が件数、押下が選択。variant / size / shape はグループに一度だけ書けば context
+              で全アイテムに届く。default や outline
+              だとチップは押されるまで透明に見えるので、チップ列にはこの組み合わせを使う。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <ToggleGroup
+                type="multiple"
+                variant="soft"
+                shape="pill"
+                size="xs"
+                value={tags}
+                onValueChange={setTags}
+                aria-label="タグで絞り込み"
+              >
+                {TAGS.map((tag) => (
+                  <ToggleGroupItem
+                    key={tag.value}
+                    value={tag.value}
+                    count={tag.count}
+                    countLabel="ページ"
+                  >
+                    {tag.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+              <Text tone="muted" size="sm">
+                読み上げは「設計, 12 ページ」。数字はピル側が aria-hidden で、単位つきの一文が
+                sr-only で並ぶので、ラベルと数字がくっついて「設計12」になることはない。
+              </Text>
+            </Flex>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>問い合わせ受信箱</CardTitle>

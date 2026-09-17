@@ -62,6 +62,22 @@ export type PageContainerMeasureProp = "default" | "narrow" | "medium";
  */
 export type PageContainerHeaderScaleProp = "document" | "chrome";
 
+/**
+ * @see PageContainer — the header's trailing slot, one node or two named sub-slots.
+ *
+ * The bare node is the shape every page already passes and stays the whole API for a single
+ * action cluster. `{ start, end }` splits that cluster in two so a page can put something AFTER
+ * the actions: the convention a consumer's four record screens share is identity → actions →
+ * pager LAST, and with one slot the pager had to live in a second header band inside the body,
+ * so the app carried two header shapes (gh#734).
+ *
+ * The shape is `TabsExtraProp`'s, deliberately — `Tabs.extra` already accepts exactly this union
+ * for exactly this reason, and a second spelling of one axis is what `check:prop-vocabulary`
+ * exists to prevent. Logical inline names (`start`/`end`, never `left`/`right`), so the slots
+ * swap sides under `dir="rtl"` with no second code path.
+ */
+export type PageContainerExtraProp = ExtraProp | { start?: ReactNode; end?: ReactNode };
+
 /** @see PageContainer */
 export type PageContainerProp = {
   toolbarPad?: PadProp;
@@ -80,7 +96,8 @@ export type PageContainerProp = {
    * violation) so the page's heading outline never disappears mid-load.
    */
   headerLoading?: boolean;
-  extra?: ExtraProp;
+  /** @see PageContainerExtraProp */
+  extra?: PageContainerExtraProp;
   /**
    * FIXED chrome band between the page header and the scrolling body — a filter strip, a status
    * bar, a "channel workflow" rail. It is a first-class page-chrome slot precisely because the
