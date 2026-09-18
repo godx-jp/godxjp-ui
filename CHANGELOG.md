@@ -27,7 +27,10 @@ MINOR. Every new axis is opt-in; existing Toggles, Buttons, Uploads and PageCont
   on a soft chip and vanish. Measured in Chromium at 1440 on `--card`: rest `rgb(244,243,240)`
   1.09:1 with a 14.19:1 label (`default` measured `rgba(0,0,0,0)`, no fill at all); hover 1.18:1,
   label 13.07:1; pressed 6.31:1. Dark: rest 1.22:1, label 12.44:1; pressed 9.85:1, label 10.72:1.
-  Hit target xs 24.00 / sm 28.00 / md 32.00 / lg 36.00, and 44.39 at 390px (WCAG 2.2 SC 2.5.8).
+  Hit target xs 24.00 / sm 28.00 / md 32.00 / lg 36.00 under `pointer: fine`, each clearing WCAG
+  2.2 SC 2.5.8's 24×24 outright. Under `pointer: coarse` the control lifts to the 44px tap floor
+  (re-measured: the md chip's `min-height` is 32px fine, 44px coarse) — that is the POINTER tier,
+  not a viewport width, so emulating touch without flipping `(pointer: coarse)` will not show it.
 - **`Button countLabel`** (gh#734) — the prop `Toggle` has carried since gh#312, so a counted button
   and a counted chip announce identically. The digits were plain content that concatenated onto the
   label: `<Button count={3}>Git</Button>` measured `"Git3"` in the accessibility tree. The pill is
