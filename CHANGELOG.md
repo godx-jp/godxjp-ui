@@ -4,6 +4,61 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.10.0] - 2026-09-18
+
+MINOR. Every new axis is opt-in; existing Toggles, Buttons, Uploads and PageContainers render as before.
+
+### Added
+
+- **`Toggle` / `ToggleGroup` / `ToggleGroupItem` — `variant="soft"` and a `shape` axis** (gh#734):
+  the interactive chip, without a new component. `default` is a 1px TRANSPARENT border and
+  `outline` a hairline on `--background`, so an unpressed filter chip painted nothing — a consumer
+  building a tag panel reported its tags "look transparent" and fell back to
+  `Button variant="secondary" shape="pill" aria-pressed`, which has the fill but no pressed branch.
+  `soft` fills with `hsl(var(--secondary))`, byte-identical to `Badge variant="secondary"` and
+  `.ui-button--secondary`, so a chip, a badge and a button on one row are one family. `shape` is
+  Button's and Badge's `default | pill | sharp` on the same radius tokens and propagates through
+  `ToggleGroup` context like `variant` / `size`. `<Toggle variant="soft" shape="pill" count
+  countLabel>` is antd `Tag.CheckableTag`; the removable half stays `Badge onRemove`, so no `Tag`
+  export is added — the deviation docs/DESIGN-AUTHORITY.md already records.
+  New role-mirror knobs `--toggle-soft-{background,color,hover-background,count-background,count-color}`.
+  The count pair is separate because the generic resting pill is `--muted`, and `--muted` and
+  `--secondary` are the same value in the shipped theme — inherited, the pill would measure 1.00:1
+  on a soft chip and vanish. Measured in Chromium at 1440 on `--card`: rest `rgb(244,243,240)`
+  1.09:1 with a 14.19:1 label (`default` measured `rgba(0,0,0,0)`, no fill at all); hover 1.18:1,
+  label 13.07:1; pressed 6.31:1. Dark: rest 1.22:1, label 12.44:1; pressed 9.85:1, label 10.72:1.
+  Hit target xs 24.00 / sm 28.00 / md 32.00 / lg 36.00, and 44.39 at 390px (WCAG 2.2 SC 2.5.8).
+- **`Button countLabel`** (gh#734) — the prop `Toggle` has carried since gh#312, so a counted button
+  and a counted chip announce identically. The digits were plain content that concatenated onto the
+  label: `<Button count={3}>Git</Button>` measured `"Git3"` in the accessibility tree. The pill is
+  now `aria-hidden` with the spoken clause as an `sr-only` sibling: `"Git, 3 pages"`, and `"Git, 3"`
+  even without `countLabel`. With an explicit `aria-label` the clause folds into it
+  (`"通知, 3 件の未読"`).
+- **`Upload triggerIcon`** (gh#734) — the glyph `variant="button"` draws, as a component
+  (`triggerIcon={Plus}`, the shape `Icon`'s `as` takes). It was hard-coded to the upload arrow and
+  `triggerVariant` only moves emphasis, so a "create new" action that happens to upload could not
+  carry a plus. The class, label spacing and `aria-hidden` are the library's, so a swapped glyph
+  still measures 16.00×16.00 and never reaches the accessible name.
+- **`PageContainer extra` accepts `{ start, end }`** (gh#734) — the slot map `Tabs.extra` already
+  uses, so a page can put something AFTER the action cluster. The record-screen convention is
+  identity → actions → pager LAST, and with one slot the pager had to live in a second header band
+  inside the body, leaving an app with two header shapes. A bare node still lands in `start`, so no
+  existing page reorders. Measured at 1440: h1 x=24 → actions x=1054.9 → pager x=1281.1; at 390 the
+  same order stacked, no horizontal overflow; DOM order = focus order = reading order. The names are
+  logical, so they swap under `dir="rtl"`.
+
+### Fixed
+
+- **Release: registry reads revalidate, so the retry budget polls the registry and not npm's cache**
+  (gh#736). `VerifyPublishedVersions` already retried 20 × 3s, but `npm view` answers from
+  `_cacache` when it holds a fresh-enough packument, so the loop re-read ONE stale snapshot twenty
+  times and threw. Measured on the 27.9.0 release (run 35282153407): both tarballs published, npm
+  printed "Your package is being processed and may take a few minutes to become available", and the
+  verification aborted with `observed integrity=null, godx-staging=27.8.0` while the registry
+  answered `godx-staging=27.9.0` minutes later — a complete release left unpromoted, `latest` a
+  version behind, finished by a hand-run `npm dist-tag add`. Every registry read now carries
+  `--prefer-online`, and a test asserts it so the budget cannot silently go back to polling a cache.
+
 ## [27.9.0] - 2026-09-18
 
 MINOR. Every new axis is opt-in and every default that moved is listed below with its measurement.
