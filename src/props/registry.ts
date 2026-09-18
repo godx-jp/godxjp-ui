@@ -2989,6 +2989,25 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ToggleGroupProp: {
+    group: "data-entry",
+    file: "components/ui/toggle-group.tsx",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "SizeProp",
+      "ShapeProp",
+      "ClassNameProp",
+      {
+        field: "wrap",
+        local: true,
+        reason:
+          "The SAME boolean shorthand for flex-wrap that FlexProp carries, on the row that owns a chip set — one spelling for 'what does this row do when it does not fit' (gh#741). Opt-in, and the same default for every variant: paint must not decide geometry.",
+      },
+    ],
+  },
   ToggleGroupItemProp: {
     group: "data-entry",
     file: "components/ui/toggle-group.tsx",
