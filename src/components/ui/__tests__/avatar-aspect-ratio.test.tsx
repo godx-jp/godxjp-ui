@@ -78,6 +78,12 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  // Two `delayMs` tests below call `vi.useFakeTimers()` and nothing put them back. Fake timers
+  // are installed on the shared global, so every test declared AFTER those two — seven of them,
+  // including the whole `AspectRatio` describe — was running on a clock that never advances
+  // unless someone calls `vi.advanceTimersByTime`. They passed, which is the problem: a test
+  // that passes under a frozen clock has not shown it would pass under a real one.
+  vi.useRealTimers();
 });
 
 type Outcome = "loaded" | "error" | "pending";
