@@ -4,6 +4,20 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.12.1] - 2026-09-19
+
+PATCH. Development-only diagnostic; nothing changes at runtime.
+
+### Fixed
+
+- **Card warns when a `CardHeader` meets a `CardContent solo`** (gh#745). `solo` says there is no
+  header above the body, so the body takes the card's own block padding — with a header present
+  the two cannot both hold, and the cascade settles it quietly in favour of the padding. A
+  consumer shipped that pairing, saw an empty strip above and below an edge-to-edge row list, and
+  could only find the cause by reading this package's CSS. The warning names both halves and
+  leaves the fix to the caller: dropping `solo` and dropping the header are equally plausible from
+  here, so nothing is changed at runtime. Same shape as the `asChild` + `tabList` warning.
+
 ## [27.12.0] - 2026-09-19
 
 MINOR. `Card asChild` is opt-in; an existing Card renders exactly as before.

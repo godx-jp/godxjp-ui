@@ -210,6 +210,38 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
           "HTML. Drop `asChild` and put a `Link`/`Button` inside the card instead.",
       );
     }
+    /*
+     * `CardHeader` + `CardContent solo` is a CONTRADICTION, not a taste (gh#745).
+     *
+     * `solo` means "there is no header above me, so I own the card's block padding" — the CSS
+     * reads it as `padding-block` on the body precisely because nothing else carries those edges.
+     * With a header present the two statements cannot both be true, and the cascade settles it
+     * silently in favour of the padding: the consumer sees an empty strip above and below their
+     * edge-to-edge rows and has nothing on screen to explain it. A consumer shipped exactly that
+     * and could only find it by reading the package's CSS.
+     *
+     * Said out loud in development, for the reason the `asChild` + `tabList` warning above exists:
+     * a contradiction the cascade resolves quietly is a bug report. Nothing is changed at runtime
+     * — dropping `solo` is the consumer's call, because the alternative reading (they meant to
+     * drop the header) is equally plausible from here.
+     */
+    if (isDevelopment()) {
+      const slots = React.Children.toArray(children).filter(React.isValidElement);
+      const hasHeader = slots.some((child) => child.type === CardHeader);
+      const soloBody = slots.some(
+        (child) =>
+          child.type === CardContent &&
+          (child.props as CardContentProps | undefined)?.solo === true,
+      );
+      if (hasHeader && soloBody) {
+        console.warn(
+          "Card: `CardContent solo` says there is NO header above it, so it takes the card's own " +
+            "block padding — but this card also renders a `CardHeader`. The two cannot both hold, " +
+            "and the padding wins, which is the empty strip above your content. Drop `solo` to " +
+            "keep the header, or drop the header if the body really is alone.",
+        );
+      }
+    }
     const tabs = slotted ? undefined : tabList;
     const Comp = asChild ? Slot : "div";
     // The selection MIRROR, for the uncontrolled (`defaultActiveTabKey`) half. `activeTabKey`
