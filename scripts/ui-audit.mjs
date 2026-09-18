@@ -498,15 +498,12 @@ const RULES = [
     id: "icon-button-needs-name",
     severity: "warn",
     spansElement: true,
-    // An icon-only Button (size="icon") with no author-supplied accessible name. A combobox/icon
-    // button's name is computed from author (aria-label / aria-labelledby / title), not glyph content.
-    test: new RegExp(
-      `<Button\\b(?=${ATTRS}\\bsize=["']icon["'])(?!${ATTRS}\\b(?:aria-label|aria-labelledby|title)=)${ATTRS}>`,
-      "g",
-    ),
-    standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2",
+    // A `<Button size="icon">` with no accessible name AT ALL — neither from the author
+    // (aria-label / aria-labelledby / title) nor from its CONTENT. See `iconButtonMatches`.
+    matches: iconButtonMatches,
+    standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2 · Accessible Name Computation 1.2",
     message:
-      "Icon-only <Button size=\"icon\"> needs an accessible name — add aria-label={t('…')}. The icon is decorative (aria-hidden); the name comes from the author, not the glyph.",
+      "Icon-only <Button size=\"icon\"> has no accessible name — neither aria-label={t('…')} nor any content that names it. A visually-hidden child names it too: <VisuallyHidden>{t('…')}</VisuallyHidden> (or className=\"sr-only\") beside the aria-hidden glyph. A glyph alone, or text inside an aria-hidden subtree, names nothing.",
   },
   {
     id: "img-needs-alt",
@@ -1071,6 +1068,135 @@ function* lucideGlyphMatches(source) {
     // element's box, and second-guessing which utility sizes it is how a warning becomes noise.
     if (/\s(?:size|width|height|className|style)\s*=/.test(source.slice(m.index, end))) continue;
     yield { 0: source.slice(m.index, end + 1), index: m.index };
+  }
+}
+
+/**
+ * Is this subtree hidden from the accessibility tree? `aria-hidden` with anything but a literal
+ * `false` — an author who writes `aria-hidden={busy}` is saying the subtree MAY be hidden, and a
+ * name that may not be there is not a name.
+ */
+const ariaHiddenTag = (openTag) =>
+  !/\baria-hidden\s*=\s*(?:\{\s*false\s*\}|["']false["'])/.test(openTag) &&
+  /\baria-hidden(?=[\s=/>])/.test(openTag);
+
+/** The three attributes accname takes from the AUTHOR, on one opening tag. */
+const authoredNameTag = (openTag) => /\b(?:aria-label|aria-labelledby|title)\s*=/.test(openTag);
+
+/** Where the element whose opening tag ended at `from` closes, counting nesting of the same tag. */
+function closingTagRange(source, tagName, from) {
+  const tag = new RegExp(`<(/?)${tagName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=[\\s/>])`, "g");
+  tag.lastIndex = from;
+  let depth = 0;
+  for (let m; (m = tag.exec(source));) {
+    if (m[1]) {
+      if (depth === 0) {
+        const gt = source.indexOf(">", m.index);
+        return { start: m.index, end: gt < 0 ? source.length : gt + 1 };
+      }
+      depth -= 1;
+      continue;
+    }
+    const end = jsxOpeningEnd(source, m.index);
+    if (!/\/\s*$/.test(source.slice(m.index, end))) depth += 1;
+    tag.lastIndex = end + 1;
+  }
+  return null;
+}
+
+/**
+ * "Name from content" (Accessible Name and Description Computation §2F) over JSX SOURCE: does
+ * anything in these children reach the accessibility tree as text?
+ *
+ *   - an `aria-hidden` subtree contributes NOTHING, however much text it holds;
+ *   - a visually-hidden child does — `sr-only` (and `VisuallyHidden`, which renders `span.sr-only`)
+ *     clips the box, it does not `display:none` the node, so the text is still named;
+ *   - a non-hidden child carrying its own `aria-label`/`title` contributes that name (`asChild`);
+ *   - an `{expression}` renders text, EXCEPT when it holds JSX — then what renders is those
+ *     elements, and `open ? <ChevronUp /> : <ChevronDown />` is still two unnamed glyphs.
+ *
+ * Limits, both deliberate: a bare `{icon}` identifier is read as text (source alone cannot say
+ * what it holds, and guessing "glyph" would re-create the false positive this replaces), and
+ * visual hiding is only recognised as `aria-hidden` — a `hidden`/`display:none` class is not read.
+ */
+function contributesName(source, textCounts = true) {
+  let i = 0;
+  while (i < source.length) {
+    const char = source[i];
+    if (char === "<") {
+      if (source[i + 1] === "/") {
+        const gt = source.indexOf(">", i);
+        i = gt < 0 ? source.length : gt + 1;
+        continue;
+      }
+      const tagName = /^<([A-Za-z][\w.:-]*)/.exec(source.slice(i))?.[1];
+      if (!tagName) {
+        i += 1;
+        continue;
+      }
+      const end = jsxOpeningEnd(source, i);
+      const openTag = source.slice(i, end + 1);
+      const hidden = ariaHiddenTag(openTag);
+      if (!hidden && authoredNameTag(openTag)) return true;
+      if (/\/\s*>$/.test(openTag)) {
+        i = end + 1;
+        continue;
+      }
+      const close = closingTagRange(source, tagName, end + 1);
+      const childrenEnd = close ? close.start : source.length;
+      if (!hidden && contributesName(source.slice(end + 1, childrenEnd))) return true;
+      i = close ? close.end : source.length;
+      continue;
+    }
+    if (char === "{") {
+      const close = matchBracket(source, i);
+      const expr = source.slice(i + 1, close < 0 ? source.length : close);
+      if (/<[A-Za-z]/.test(expr)) {
+        if (contributesName(expr, false)) return true;
+      } else if (
+        /\S/.test(expr.replace(/(["'`])(?:\\.|(?!\1)[\s\S])*?\1/g, (s) => s.slice(1, -1)))
+      ) {
+        // `{t("…")}` / `{label}` name it; prettier's `{" "}` does not.
+        return true;
+      }
+      i = close < 0 ? source.length : close + 1;
+      continue;
+    }
+    // Inside an expression the scaffolding (`cond ? … : …`, `.map(…)`) is not rendered text, but a
+    // string literal in it is.
+    if (!textCounts && (char === '"' || char === "'" || char === "`")) {
+      const end = endOfString(source, i);
+      if (/\S/.test(source.slice(i + 1, end))) return true;
+      i = end + 1;
+      continue;
+    }
+    if (textCounts && char.trim()) return true;
+    i += 1;
+  }
+  return false;
+}
+
+/**
+ * An icon-only `<Button size="icon">` that NOTHING names (gh#739).
+ *
+ * The rule was a single regex over the OPENING TAG, so the most standard naming of an icon button
+ * — an `aria-hidden` glyph beside visually-hidden text — was reported as unnamed: 5/5 findings in
+ * one consumer repo were that shape. Following the message literally adds an `aria-label` on TOP
+ * of a name, and two name sources drift apart the first time one i18n key is edited. So read the
+ * children the way accname does, via `contributesName`.
+ */
+function* iconButtonMatches(source) {
+  for (const m of source.matchAll(/<Button(?=[\s/>])/g)) {
+    const end = jsxOpeningEnd(source, m.index);
+    if (end >= source.length) continue;
+    const openTag = source.slice(m.index, end + 1);
+    if (!/\bsize\s*=\s*["']icon["']/.test(openTag)) continue;
+    if (authoredNameTag(openTag)) continue;
+    if (!/\/\s*>$/.test(openTag)) {
+      const close = closingTagRange(source, "Button", end + 1);
+      if (contributesName(source.slice(end + 1, close ? close.start : source.length))) continue;
+    }
+    yield { 0: openTag, index: m.index };
   }
 }
 

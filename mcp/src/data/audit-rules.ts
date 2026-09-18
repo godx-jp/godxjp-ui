@@ -250,8 +250,8 @@ export const AUDIT_RULES: AuditRule[] = [
     id: "icon-button-needs-name",
     severity: "warn",
     category: "a11y",
-    standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2",
-    fix: "Add aria-label={t('…')} to <Button size='icon'>; the glyph is aria-hidden.",
+    standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2 · Accessible Name Computation 1.2",
+    fix: "Name <Button size='icon'> with aria-label={t('…')} OR from content — a <VisuallyHidden>/sr-only child beside the aria-hidden glyph. Text inside an aria-hidden subtree names nothing.",
   },
   {
     id: "img-needs-alt",
