@@ -3497,7 +3497,7 @@ export const COMPONENT_PROP_REGISTRY = {
   CardProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",
-    vocabulary: ["ToneProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: ["ToneProp", "ClassNameProp", "ChildrenProp", "AsChildProp"],
   },
   CardTabItemProp: {
     group: "data-display",

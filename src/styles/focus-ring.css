@@ -83,6 +83,14 @@
     .ui-carousel-dot,
     .ui-rating-star,
     a.ui-list-row,
+    /* `Card asChild` (gh#740): the card box IS the control, so the mark belongs on the card box
+     * and not on anything inside it. Keyed on the ELEMENT, so only a card that borrowed an `<a>`
+     * or a `<button>` is on the list and a plain `div` card stays a container. Measured before
+     * the entry existed: a focused card-as-link on /isolate/data-display-card-index reported
+     * Chrome's own `outline: auto 1px rgb(0,95,204)` — the fallback this file's opening note
+     * calls a mark the switch cannot turn off and no theme can retune. */
+    a[data-slot="card"],
+    button[data-slot="card"],
     .ui-text[data-link],
     .sb-nav-item,
     .sb-user,
@@ -163,6 +171,8 @@
       .ui-carousel-dot,
       .ui-rating-star,
       a.ui-list-row,
+      a[data-slot="card"],
+      button[data-slot="card"],
       .ui-text[data-link],
       .sb-nav-item,
       .sb-user,
