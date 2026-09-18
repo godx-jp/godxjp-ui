@@ -162,6 +162,47 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
+            asChild · カード全体をひとつのコントロールにする
+          </Text>
+          <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+            {/*
+             * `hoverable` が約束する「カード全体をひとつのコントロールとして描く」側。
+             * `asChild` はカードの箱を子の要素に譲るので、リンクそのものがカードになり、
+             * Tab は一度しか止まらず、スクリーンリーダーはリンクひとつとして読み上げます。
+             * 入れ子の禁則：これはもうコントロールなので、中に <a>/<Button> は置けません
+             * （HTML として不正）。中にボタンが要るカードは asChild を外し、hoverable +
+             * CardFooter のボタン（上の例）にします。
+             */}
+            <Card asChild hoverable>
+              <a href="#card-as-child">
+                <CardHeader>
+                  <CardTitle level={2}>カード全体がリンク</CardTitle>
+                  <CardDescription>
+                    タブ 1 回で届き、フォーカスリングはカードの箱に出ます
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  詳細画面へ遷移します。onClick しか無い場合もこの形（router の Link
+                  コンポーネントを子に渡す）にします。
+                </CardContent>
+              </a>
+            </Card>
+            <Card hoverable>
+              <CardHeader>
+                <CardTitle level={2}>中にコントロールがある場合</CardTitle>
+                <CardDescription>
+                  asChild は使わず、本物のコントロールを内側に置きます
+                </CardDescription>
+              </CardHeader>
+              <CardFooter separated>
+                <Button variant="outline">詳細</Button>
+              </CardFooter>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
             Accent · accentPlacement=&quot;edge&quot; (既定 · 先頭エッジのレール)
           </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 6 }}>

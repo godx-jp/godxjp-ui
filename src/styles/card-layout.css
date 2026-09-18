@@ -54,6 +54,17 @@
     overflow: hidden;
   }
 
+  /* `asChild` (gh#740) — the card box is the CONSUMER's element, so it may be an `<a>` or a
+   * `<button>` instead of the `div`. Measured on /isolate/data-display-card-index at 1440 with
+   * the same inner markup on all three: Tailwind's preflight already levels the font, the fill,
+   * the edge and the box (688×140.09 on each), and every axis above matches to the byte. The one
+   * property it leaves is a button's UA `text-align: center`, which centres every line in the
+   * card — `inherit` rather than `start`, so a card inside a centred region still follows its
+   * region exactly as the `div` would. */
+  button[data-slot="card"] {
+    text-align: inherit;
+  }
+
   /* ── Surface variants — fill only; retain the shared DXS surface elevation ──── */
   [data-slot="card"][data-variant="muted"] {
     background: hsl(var(--secondary));

@@ -468,6 +468,13 @@
         "hoverable": {
           "cases": [true, false],
           "evidence": ["docs/data-display/card/index.tsx"]
+        },
+        "asChild": {
+          "cases": [true, false],
+          "evidence": [
+            "docs/data-display/card/index.tsx",
+            "src/components/data-display/__tests__/card-as-child.test.tsx"
+          ]
         }
       }
     },
