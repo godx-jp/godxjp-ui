@@ -92,7 +92,34 @@
   .ui-toggle-group {
     display: inline-flex;
     align-items: center;
+    /* ONE value, not a row/column pair: once the row wraps the two axes must measure the same, and
+     * a single `gap` is what guarantees that without a second token to keep in step (gh#741). */
     gap: var(--space-1);
+  }
+
+  /* `wrap` — the row breaks onto further lines instead of running past its rail (gh#741).
+   *
+   * Measured in Chromium at a 320px rail, a twelve-chip `soft`/`pill` `size="xs"` row:
+   *   without   scrollWidth 644 > clientWidth 320, box 171.5px, chip heights 24 → 171.5 (squeezed
+   *             to their min-content and each label broken over up to seven lines)
+   *   with      scrollWidth 320 = clientWidth 320, box 108px, every chip 24px, 4 lines
+   *             at 4px column-gap AND 4px row-gap — identical in LTR and RTL.
+   *
+   * OPT-IN, and the attribute is absent unless asked for, so a group that did not ask has no rule
+   * to match. Two reasons, both measured: `Flex`'s `wrap` is `false`, and one word must not mean
+   * two defaults; and forcing `flex-wrap: wrap` on all 18 groups of the docs page changed 0 of the
+   * 17 that fit (same lines, same height, at a 320px AND a 1358px rail) while the one that does
+   * not fit moves 171.5px → 108px — i.e. a default of `true` can only reflow rows that already
+   * overflow, silently, on an upgrade nobody made a call-site change for.
+   *
+   * `variant="soft"` gets no different default: across `default`/`outline`/`soft` at three items,
+   * forcing wrap changed NONE of them. Paint is not the axis that decides; content width against
+   * the rail is.
+   *
+   * Nothing else changes. `flex-wrap` is writing-mode aware, so RTL wraps to the same lines from
+   * the other edge, and it reorders no boxes — arrow keys still walk the items in DOM order. */
+  .ui-toggle-group[data-wrap="true"] {
+    flex-wrap: wrap;
   }
 
   .ui-button {

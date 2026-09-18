@@ -17489,6 +17489,14 @@
           "type": "\"default\" | \"outline\" | \"soft\" | null | undefined",
           "values": ["default", "outline", "soft"],
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
+        },
+        {
+          "name": "wrap",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
         }
       ]
     },

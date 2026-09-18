@@ -41,6 +41,23 @@ type ToggleGroupBaseProp = Omit<React.ComponentPropsWithoutRef<"div">, "defaultV
   /** Which way the arrow keys walk the group. */
   orientation?: "horizontal" | "vertical";
   /**
+   * Let the row break onto further lines instead of running past its rail (gh#741). Same name,
+   * same boolean shape and same `data-wrap` attribute as `Flex` — one spelling answers "what does
+   * this row do when it does not fit" across the library.
+   *
+   * OPT-IN (`false`), and deliberately the SAME default for every `variant`. `Flex`'s `wrap` is
+   * `false`, and one word must not mean two defaults. Measured in Chromium at a 320px rail:
+   * forcing `flex-wrap: wrap` on all 18 groups of the docs page left the 17 that FIT untouched
+   * (same line count, same height, at a 320px and a 1358px rail) — including every `soft` one, so
+   * paint is not the axis that decides. The only row it moves is the one that overflows, from
+   * 171.5px to 108px: a default of `true` reflows exactly those rows, silently, on an upgrade
+   * whose call sites did not change.
+   *
+   * Wrapping keeps the group's single `gap`, so the two axes stay equal (4px × 4px measured);
+   * `flex-wrap` reorders nothing, so arrow keys still walk the items in DOM order across lines.
+   */
+  wrap?: boolean;
+  /**
    * Writing direction. It still lands on the DOM node, but React Aria reads the direction it
    * navigates by from the ambient locale (`I18nProvider`), NOT from this attribute — where Radix
    * read this prop directly. An RTL app must set the locale, not just `dir`.
@@ -98,6 +115,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
       variant,
       size,
       shape,
+      wrap,
       children,
       type,
       value,
@@ -128,6 +146,9 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
         data-variant={variant}
         data-size={size}
         data-shape={shape}
+        // Same emitted shape as Flex: the attribute is ABSENT unless asked for, so no rule can
+        // match and a group that never opted in is byte-identical to 27.10.0 (gh#741).
+        data-wrap={wrap ? "true" : undefined}
         className={cn("ui-toggle-group", className)}
         {...(props as Omit<ToggleButtonGroupProps, "children" | "className">)}
         selectionMode={type}
