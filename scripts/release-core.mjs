@@ -1096,12 +1096,27 @@ export function createReleaseRuntime({
     throw new Error(`npm ${args.join(" ")} failed: ${output.trim()}`);
   };
 
+  /*
+   * `--prefer-online`, and it is the whole reason the retry budget above is worth anything.
+   *
+   * `npm view` answers from npm's own metadata cache (`_cacache`) when it has a fresh-enough
+   * packument, so the VerifyPublishedVersions loop re-read the SAME stale snapshot twenty times
+   * and then threw — the loop cannot outwait a cache it never revalidates. Measured on the 27.9.0
+   * release (run 35282153407): both tarballs published successfully, npm printed "Your package is
+   * being processed and may take a few minutes to become available", and the verification aborted
+   * with `observed integrity=null, godx-staging=27.8.0` while minutes later the registry answered
+   * `godx-staging=27.9.0` for both packages. The release was complete and unpromoted, `latest` a
+   * version behind, and it took a hand-run `npm dist-tag add` to finish (gh#736).
+   *
+   * `--prefer-online` forces revalidation on every read, which is what a poll against a registry
+   * that is still propagating has to do to mean anything.
+   */
   const registryState = (packageName, version) => {
     const integrity = npmJson(
-      ["view", `${packageName}@${version}`, "dist.integrity", "--json"],
+      ["view", `${packageName}@${version}`, "dist.integrity", "--json", "--prefer-online"],
       true,
     );
-    const tags = npmJson(["view", packageName, "dist-tags", "--json"], true) ?? {};
+    const tags = npmJson(["view", packageName, "dist-tags", "--json", "--prefer-online"], true) ?? {};
     return { exists: typeof integrity === "string", integrity, tags };
   };
 

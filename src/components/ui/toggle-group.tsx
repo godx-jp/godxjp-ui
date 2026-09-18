@@ -18,19 +18,24 @@ import {
 
 type ToggleGroupVariant = ToggleProp["variant"];
 type ToggleGroupSize = ToggleProp["size"];
+type ToggleGroupShape = ToggleProp["shape"];
 
 /**
- * Group-level `variant`/`size`, provided to every item (upstream shadcn pattern). An item's OWN
- * prop still wins: the item reads context only where its own value is `undefined`.
+ * Group-level `variant`/`size`/`shape`, provided to every item (upstream shadcn pattern). An
+ * item's OWN prop still wins: the item reads context only where its own value is `undefined`.
+ * `shape` joins the other two because the row is where the decision is made — a tag-filter panel
+ * is a row of pill chips, not one pill among squares (gh#734).
  */
 const ToggleGroupContext = React.createContext<{
   variant?: ToggleGroupVariant;
   size?: ToggleGroupSize;
+  shape?: ToggleGroupShape;
 }>({});
 
 type ToggleGroupBaseProp = Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue" | "dir"> & {
   variant?: ToggleGroupVariant;
   size?: ToggleGroupSize;
+  shape?: ToggleGroupShape;
   /** Disable every item at once — RAC `isDisabled`. */
   disabled?: boolean;
   /** Which way the arrow keys walk the group. */
@@ -92,6 +97,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
       className,
       variant,
       size,
+      shape,
       children,
       type,
       value,
@@ -104,7 +110,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
     ref,
   ) => {
     // Stable identity — a fresh object each render would re-render every item on any parent render.
-    const context = React.useMemo(() => ({ variant, size }), [variant, size]);
+    const context = React.useMemo(() => ({ variant, size, shape }), [variant, size, shape]);
     const selectedKeys = React.useMemo(() => toSelectedKeys(value), [value]);
     const defaultSelectedKeys = React.useMemo(() => toSelectedKeys(defaultValue), [defaultValue]);
     const handleSelectionChange = (keys: Set<React.Key>) => {
@@ -121,6 +127,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
         data-slot="toggle-group"
         data-variant={variant}
         data-size={size}
+        data-shape={shape}
         className={cn("ui-toggle-group", className)}
         {...(props as Omit<ToggleButtonGroupProps, "children" | "className">)}
         selectionMode={type}
@@ -149,6 +156,7 @@ export type ToggleGroupItemProp = Omit<React.ComponentPropsWithoutRef<"button">,
     value: string;
     variant?: ToggleGroupVariant;
     size?: ToggleGroupSize;
+    shape?: ToggleGroupShape;
   };
 
 export type ToggleGroupItemProps = ToggleGroupItemProp;
@@ -159,6 +167,7 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
       className,
       variant,
       size,
+      shape,
       count,
       overflowCount,
       showZero,
@@ -175,6 +184,7 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     // An explicit item prop ALWAYS wins; context fills in only where the item said nothing.
     const resolvedVariant = variant ?? context.variant;
     const resolvedSize = size ?? context.size;
+    const resolvedShape = shape ?? context.shape;
     const { pill, resolvedAriaLabel } = useCounterPill({
       count,
       overflowCount,
@@ -193,8 +203,12 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
         data-state={isPressed ? "on" : "off"}
         data-variant={resolvedVariant}
         data-size={resolvedSize}
+        data-shape={resolvedShape}
         aria-label={resolvedAriaLabel}
-        className={cn(toggleVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
+        className={cn(
+          toggleVariants({ variant: resolvedVariant, size: resolvedSize, shape: resolvedShape }),
+          className,
+        )}
         {...(props as Omit<ToggleButtonProps, "children" | "className">)}
         id={value}
         isDisabled={disabled}

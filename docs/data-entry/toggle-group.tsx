@@ -95,10 +95,11 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>variant · default / outline</CardTitle>
+            <CardTitle level={2}>variant · default / outline / soft</CardTitle>
             <CardDescription>
               variant は ToggleGroup にだけ指定すれば全アイテムへ伝播する（各 ToggleGroupItem
-              への繰り返し指定は不要）。default は選択時に背景が塗られ、outline は枠線で示す。
+              への繰り返し指定は不要）。default は選択時に背景が塗られ、outline は枠線で示す。soft
+              は休止時から --secondary で塗られるので、チップの列に使う。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -123,6 +124,43 @@ export default function Demo() {
                   <ToggleGroupItem value="xlsx">Excel</ToggleGroupItem>
                 </ToggleGroup>
               </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  variant=&quot;soft&quot;
+                </Text>
+                <ToggleGroup type="single" variant="soft" defaultValue="pdf">
+                  <ToggleGroupItem value="pdf">PDF</ToggleGroupItem>
+                  <ToggleGroupItem value="csv">CSV</ToggleGroupItem>
+                  <ToggleGroupItem value="xlsx">Excel</ToggleGroupItem>
+                </ToggleGroup>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>shape · default / pill / sharp</CardTitle>
+            <CardDescription>
+              shape も variant / size と同じく行の決定なので、ToggleGroup
+              に一度書けば全アイテムへ伝播する。値は Button / Badge と同じ三つで、読む radius
+              トークンも同じ。チップの列は soft + pill。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {(["default", "pill", "sharp"] as const).map((shape) => (
+                <Flex key={shape} direction="col" gap="sm">
+                  <Text as="p" size="sm" tone="muted">
+                    shape=&quot;{shape}&quot;
+                  </Text>
+                  <ToggleGroup type="single" variant="soft" shape={shape} defaultValue="pdf">
+                    <ToggleGroupItem value="pdf">PDF</ToggleGroupItem>
+                    <ToggleGroupItem value="csv">CSV</ToggleGroupItem>
+                    <ToggleGroupItem value="xlsx">Excel</ToggleGroupItem>
+                  </ToggleGroup>
+                </Flex>
+              ))}
             </Flex>
           </CardContent>
         </Card>
