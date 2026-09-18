@@ -851,7 +851,19 @@ export function assertRegistryArtifact(registry, artifact, targetVersion, stageT
     throw new Error(
       `${packageName} registry artifact integrity or staging tag does not match verified tarball: ` +
         `expected integrity=${artifact.integrity}, ${stageTag}=${targetVersion}; ` +
-        `observed integrity=${registry.integrity ?? null}, ${stageTag}=${observedStageTag}.`,
+        `observed integrity=${registry.integrity ?? null}, ${stageTag}=${observedStageTag}.\n` +
+        // The two shapes are different failures and want different hands. Say which, because the
+        // first one cost two releases (gh#736/#737) before anyone read the difference: a null
+        // integrity with a STALE staging tag is a registry that has not caught up, and the
+        // tarballs are already published; a MISMATCHED integrity is a genuinely different artifact.
+        (registry.integrity == null
+          ? `The tarballs published (npm printed them above). A null integrity with ` +
+            `${stageTag}=${observedStageTag} is the registry not yet serving them, so this release ` +
+            `is COMPLETE but unpromoted: verify with 'npm view ${packageName}@${targetVersion} ` +
+            `dist.integrity --prefer-online', then finish it with 'npm dist-tag add ` +
+            `${packageName}@${targetVersion} latest'. Do NOT re-publish.`
+          : `A DIFFERENT artifact is on the registry under this version. Do not promote it; ` +
+            `inspect it before anything else.`),
     );
   }
 }
@@ -1078,12 +1090,26 @@ export function createReleaseRuntime({
    * right guard, reached from a state no path could leave. A release stuck half-done, with a
    * fully green board.
    *
-   * 20 x 3s = 60s. The happy path is unaffected: it returns on the first attempt and pays
-   * nothing. This budget is only ever spent when the registry is actually behind, and it is
-   * cheaper to wait a minute than to strand a version.
+   * 60 x 5s = 300s, and the number comes from two measured releases, not from taste. 60s was NOT
+   * enough: 27.9.0 (run 35282153407) and then 27.10.0 (run 35352248890) BOTH published their two
+   * tarballs and aborted here with `observed integrity=null` and the staging tag still on the
+   * previous version, while the registry answered correctly minutes later — each one a complete
+   * release left unpromoted, `latest` a version behind, finished by a hand-run `npm dist-tag add`
+   * (gh#736, gh#737). npm says so itself on the line above the abort: "Your package is being
+   * processed and may take a few minutes to become available." A few minutes is the number to
+   * budget for; a minute is not.
+   *
+   * `--prefer-online` on every registry read (see `registryState`) is the other half: without it
+   * the loop re-reads npm's `_cacache` and cannot see the registry change at all, so the budget
+   * is spent on a cache. Both halves are required — the first fix shipped only the revalidation
+   * and 27.10.0 still aborted at 60s.
+   *
+   * The happy path is unaffected: it returns on the first attempt and pays nothing. This budget is
+   * only ever spent when the registry is actually behind, and five minutes of waiting is cheaper
+   * than a release that publishes and never promotes.
    */
-  registryVerificationAttempts = 20,
-  registryVerificationDelayMs = 3_000,
+  registryVerificationAttempts = 60,
+  registryVerificationDelayMs = 5_000,
 }) {
   const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
   const execute = (descriptor) => run(descriptor.binary, descriptor.args, cwdFor(descriptor.cwd));
