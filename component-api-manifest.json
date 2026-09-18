@@ -17435,6 +17435,14 @@
           "declaredIn": ["src/components/ui/toggle-group.tsx"]
         },
         {
+          "name": "disallowEmptySelection",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/ui/toggle-group.tsx"]
+        },
+        {
           "name": "loop",
           "origin": "owned",
           "required": false,

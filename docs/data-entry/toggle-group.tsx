@@ -21,6 +21,16 @@ const folderTags = [
   { value: "archive", label: "アーカイブ", count: 311 },
 ];
 
+/** A one-of-N setting: a list always has A sort order, so this row may never be empty (gh#744). */
+const sortOrders = [
+  { value: "updated", label: "更新日" },
+  { value: "created", label: "作成日" },
+  { value: "name", label: "名前" },
+  { value: "size", label: "サイズ" },
+  { value: "owner", label: "所有者" },
+  { value: "relevance", label: "関連度" },
+];
+
 /**
  * ToggleGroup — single or multi-select toggle set. type='single' for mutually
  * exclusive modes; type='multiple' for independent selections. Never raw radio
@@ -31,6 +41,8 @@ export default function Demo() {
   const [formats, setFormats] = useState<string[]>(["pdf"]);
   const [view, setView] = useState<string>("list");
   const [tags, setTags] = useState<string[]>(["design", "runbook"]);
+  const [facet, setFacet] = useState<string>("design");
+  const [sort, setSort] = useState<string>("updated");
 
   return (
     <PageContainer
@@ -50,10 +62,9 @@ export default function Demo() {
             <FormField id="period" label="集計期間">
               <ToggleGroup
                 type="single"
+                disallowEmptySelection
                 value={period}
-                onValueChange={(v) => {
-                  if (v) setPeriod(v);
-                }}
+                onValueChange={setPeriod}
               >
                 <ToggleGroupItem value="daily">日次</ToggleGroupItem>
                 <ToggleGroupItem value="monthly">月次</ToggleGroupItem>
@@ -61,6 +72,76 @@ export default function Demo() {
                 <ToggleGroupItem value="yearly">年次</ToggleGroupItem>
               </ToggleGroup>
             </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>disallowEmptySelection · 空を許すかどうかが role を決める</CardTitle>
+            <CardDescription>
+              ARIA には「もう一度押して選択を外す」という radio
+              がない。選択のある radiogroup には必ずちょうど一つ checked
+              な項目があるので、ユーザーが今押したばかりの radiogroup
+              が空になった状態はスクリーンリーダーが読み上げられない。だから空を許すかどうかが
+              role を決める（gh#744）。既定（空を許す）は role=&quot;group&quot; ＋ 各項目
+              aria-pressed で、同じチップをもう一度押せば選択が外れ onValueChange(&quot;&quot;)
+              が飛ぶ。disallowEmptySelection を付けると role=&quot;radiogroup&quot; ＋
+              role=&quot;radio&quot; / aria-checked になり、選択中の項目をもう一度押しても外れず、矢印キーが
+              APG の radio group どおり選択ごと動く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  既定（空を許す）· タグ絞り込み · role=&quot;group&quot; ＋
+                  aria-pressed。矢印キーはフォーカスだけを動かす
+                </Text>
+                <ToggleGroup
+                  type="single"
+                  variant="soft"
+                  shape="pill"
+                  wrap
+                  value={facet}
+                  onValueChange={(v) => setFacet(v as string)}
+                  aria-label="ファセット絞り込み"
+                >
+                  {folderTags.slice(0, 6).map((tag) => (
+                    <ToggleGroupItem key={tag.value} value={tag.value}>
+                      {tag.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <Text as="p" size="sm" tone="muted">
+                  選択中: {facet === "" ? "なし" : facet}
+                </Text>
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  disallowEmptySelection · 並び替え · role=&quot;radiogroup&quot; ＋
+                  aria-checked。タブ位置は選択中の項目ひとつ、矢印キーが選択ごと動く
+                </Text>
+                <ToggleGroup
+                  type="single"
+                  variant="soft"
+                  shape="pill"
+                  wrap
+                  disallowEmptySelection
+                  value={sort}
+                  onValueChange={(v) => setSort(v as string)}
+                  aria-label="並び替え"
+                >
+                  {sortOrders.map((order) => (
+                    <ToggleGroupItem key={order.value} value={order.value}>
+                      {order.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <Text as="p" size="sm" tone="muted">
+                  選択中: {sort === "" ? "なし" : sort}
+                </Text>
+              </Flex>
+            </Flex>
           </CardContent>
         </Card>
 
@@ -98,10 +179,9 @@ export default function Demo() {
           <CardContent>
             <ToggleGroup
               type="single"
+              disallowEmptySelection
               value={view}
-              onValueChange={(v) => {
-                if (v) setView(v);
-              }}
+              onValueChange={setView}
             >
               <ToggleGroupItem value="list">一覧</ToggleGroupItem>
               <ToggleGroupItem value="card">カード</ToggleGroupItem>

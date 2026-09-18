@@ -30,7 +30,20 @@ const ToggleGroupContext = React.createContext<{
   variant?: ToggleGroupVariant;
   size?: ToggleGroupSize;
   shape?: ToggleGroupShape;
+  /**
+   * `true` only for a `type="single"` group that may NOT be emptied — the one case where
+   * `role="radio"` / `aria-checked` is expressible (gh#744). The item reads it to decide its own
+   * ARIA and its tab stop.
+   */
+  radioSemantics?: boolean;
+  /**
+   * `true` only while an arrow key is walking the group. In `radioSemantics` mode the item reads
+   * it to decide whether the focus it just received should carry the selection with it.
+   */
+  arrowNav?: React.RefObject<boolean>;
 }>({});
+
+const ARROW_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]);
 
 type ToggleGroupBaseProp = Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue" | "dir"> & {
   variant?: ToggleGroupVariant;
@@ -40,6 +53,28 @@ type ToggleGroupBaseProp = Omit<React.ComponentPropsWithoutRef<"div">, "defaultV
   disabled?: boolean;
   /** Which way the arrow keys walk the group. */
   orientation?: "horizontal" | "vertical";
+  /**
+   * May the group end up with NOTHING selected? Omitted (`false`) it may, which is what a tag
+   * filter wants — pressing the selected chip again clears it and reports `""`. Set it and the
+   * selected item stays selected when it is pressed again.
+   *
+   * **It also decides the ARIA role of a `type="single"` group (gh#744)**, because emptiness is
+   * exactly what the two roles disagree about. ARIA has no "press again to deselect" for a radio:
+   * a radiogroup that has a selection always has exactly one checked item, so a radiogroup that
+   * the user just emptied is a state a screen reader cannot read out. Therefore:
+   *
+   * - omitted → `role="group"` + `aria-pressed` per item (a row of toggle buttons, which MAY be
+   *   all-off) — this is the default, so no existing single group changes behaviour;
+   * - set → `role="radiogroup"` + `role="radio"` / `aria-checked` per item, and the arrow keys
+   *   move the SELECTION as APG's radio-group pattern requires, not just the focus.
+   *
+   * The name is React Aria's own (`useToggleGroupState`, which this component is built on) —
+   * neither antd nor Radix names the capability. See `docs/DESIGN-AUTHORITY.md`.
+   *
+   * On `type="multiple"` it only keeps the last remaining item selected; the roles do not move
+   * (a row of `aria-pressed` buttons is already the right reading there).
+   */
+  disallowEmptySelection?: boolean;
   /**
    * Let the row break onto further lines instead of running past its rail (gh#741). Same name,
    * same boolean shape and same `data-wrap` attribute as `Flex` — one spelling answers "what does
@@ -122,13 +157,21 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
       defaultValue,
       onValueChange,
       disabled,
+      disallowEmptySelection,
       loop: _loop,
       ...props
     },
     ref,
   ) => {
+    // The emptiness rule DECIDES the role (gh#744): only a single group that cannot be emptied
+    // can honestly claim the radio pattern.
+    const radioSemantics = type === "single" && disallowEmptySelection === true;
+    const arrowNav = React.useRef(false);
     // Stable identity — a fresh object each render would re-render every item on any parent render.
-    const context = React.useMemo(() => ({ variant, size, shape }), [variant, size, shape]);
+    const context = React.useMemo(
+      () => ({ variant, size, shape, radioSemantics, arrowNav }),
+      [variant, size, shape, radioSemantics],
+    );
     const selectedKeys = React.useMemo(() => toSelectedKeys(value), [value]);
     const defaultSelectedKeys = React.useMemo(() => toSelectedKeys(defaultValue), [defaultValue]);
     const handleSelectionChange = (keys: Set<React.Key>) => {
@@ -156,8 +199,37 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
         defaultSelectedKeys={defaultSelectedKeys}
         onSelectionChange={handleSelectionChange}
         isDisabled={disabled}
+        disallowEmptySelection={disallowEmptySelection}
+        // React Aria hands EVERY single group `role="radiogroup"`, whether or not it can be
+        // emptied. `render` is RAC's own escape hatch, and this is the one place the role can be
+        // corrected without forking the hook: a group that may be emptied is a plain `group` of
+        // `aria-pressed` buttons. `aria-orientation` goes with it — `group` does not take it
+        // (WAI-ARIA 1.2 allows only `aria-activedescendant` / `aria-expanded` there), while
+        // `radiogroup` and `toolbar` both do, so it survives untouched in those two modes.
         render={(domProps) => (
-          <div {...props} {...domProps} tabIndex={props.tabIndex ?? domProps.tabIndex} />
+          <div
+            {...props}
+            {...domProps}
+            {...(type === "single" && !radioSemantics
+              ? { role: "group", "aria-orientation": undefined }
+              : null)}
+            // Runs BEFORE React Aria's own capture handler, which is what moves the focus. It
+            // only records WHY the focus is about to move, so the item can tell an arrow key
+            // (selection travels with it) from RAC's Tab handler, which focuses the last item on
+            // the way out of the group and must leave the selection alone.
+            onKeyDownCapture={(event) => {
+              if (radioSemantics) {
+                arrowNav.current = ARROW_KEYS.has(event.key);
+                if (arrowNav.current) {
+                  queueMicrotask(() => {
+                    arrowNav.current = false;
+                  });
+                }
+              }
+              domProps.onKeyDownCapture?.(event);
+            }}
+            tabIndex={props.tabIndex ?? domProps.tabIndex}
+          />
         )}
       >
         <ToggleGroupContext.Provider value={context}>{children}</ToggleGroupContext.Provider>
@@ -217,6 +289,18 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     // from it rather than from a second copy kept here.
     const groupState = React.useContext(ToggleGroupStateContext);
     const isPressed = groupState?.selectedKeys.has(value) ?? false;
+    const isSingle = groupState?.selectionMode === "single";
+    const radioSemantics = context.radioSemantics === true;
+    // APG's radio-group pattern is ONE tab stop, on the checked item. React Aria's toolbar
+    // navigation leaves every item tabbable, which is right for `aria-pressed` buttons and wrong
+    // for radios — so the roving tab stop is applied here, in the mode that claims the role. With
+    // nothing selected there is no checked item to put it on, so the toolbar tab order stands.
+    const rovingTabIndex =
+      radioSemantics && groupState && groupState.selectedKeys.size > 0
+        ? isPressed
+          ? 0
+          : -1
+        : undefined;
     return (
       <ToggleButton
         ref={ref}
@@ -233,7 +317,37 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
         {...(props as Omit<ToggleButtonProps, "children" | "className">)}
         id={value}
         isDisabled={disabled}
-        render={(domProps) => restoreDomProps(props, domProps)}
+        // React Aria stamps `role="radio"` + `aria-checked` on every item of a single group and
+        // deletes `aria-pressed`. That reading is only true when the group cannot be emptied
+        // (gh#744); otherwise the item goes back to being what it is — a toggle button whose
+        // pressed state MAY be off for all of them.
+        render={(domProps) =>
+          restoreDomProps(props, {
+            ...domProps,
+            ...(isSingle && !radioSemantics
+              ? { role: undefined, "aria-checked": undefined, "aria-pressed": isPressed }
+              : null),
+            ...(rovingTabIndex == null ? null : { tabIndex: rovingTabIndex }),
+            // Selection follows focus, as APG requires of a radio group — but only when an arrow
+            // key is what moved it. Measured otherwise: RAC's toolbar Tab handler focuses the
+            // LAST item on the way out, which silently moved the selection to it.
+            ...(radioSemantics
+              ? {
+                  onFocus: (event: React.FocusEvent<HTMLButtonElement>) => {
+                    if (
+                      context.arrowNav?.current &&
+                      groupState &&
+                      groupState.selectedKeys.size > 0 &&
+                      !isPressed
+                    ) {
+                      groupState.setSelected(value, true);
+                    }
+                    domProps.onFocus?.(event);
+                  },
+                }
+              : null),
+          })
+        }
       >
         {children}
         {pill}

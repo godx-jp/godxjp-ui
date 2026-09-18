@@ -15,19 +15,21 @@ function SingleGroup(props: { onValueChange?: (v: string) => void; defaultValue?
 }
 
 describe("ToggleGroup", () => {
+  // A single group that may be emptied is a row of `aria-pressed` buttons, not radios — the role
+  // follows the emptiness rule (gh#744); `disallowEmptySelection` is what buys radio/aria-checked.
   it("single mode: selecting an item fires onValueChange + sets pressed state", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { getByRole } = render(<SingleGroup onValueChange={onValueChange} />);
-    const week = getByRole("radio", { name: "週" });
+    const week = getByRole("button", { name: "週" });
     await user.click(week);
     expect(onValueChange).toHaveBeenCalledWith("week");
-    expect(week).toHaveAttribute("aria-checked", "true");
+    expect(week).toHaveAttribute("aria-pressed", "true");
   });
 
   it("single mode honours defaultValue", () => {
     const { getByRole } = render(<SingleGroup defaultValue="month" />);
-    expect(getByRole("radio", { name: "月" })).toHaveAttribute("aria-checked", "true");
+    expect(getByRole("button", { name: "月" })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("multiple mode: items toggle independently (array value)", async () => {
@@ -57,7 +59,7 @@ describe("ToggleGroup", () => {
         </ToggleGroupItem>
       </ToggleGroup>,
     );
-    await user.click(getByRole("radio", { name: "A" }));
+    await user.click(getByRole("button", { name: "A" }));
     expect(onValueChange).not.toHaveBeenCalled();
   });
 

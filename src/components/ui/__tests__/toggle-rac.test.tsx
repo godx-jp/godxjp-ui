@@ -291,10 +291,19 @@ describe("Toggle — hành vi (khẳng định trực tiếp, nơi markup không
   });
 });
 
+/*
+ * MỘT CHỖ CỐ Ý LỆCH RADIX (gh#744). Radix `ToggleGroup type="single"` phát
+ * `role="radiogroup"` / `role="radio"` + `aria-checked` NHƯNG vẫn cho bấm lại để bỏ chọn — ARIA
+ * không có khái niệm ấy cho radio, nên sau cú bấm thứ hai trình đọc màn hình nhận một radiogroup
+ * rỗng. Ở kho này quy tắc "có được rỗng không" QUYẾT ĐỊNH role: mặc định (rỗng được) là
+ * `role="group"` + `aria-pressed`, và chỉ khi `disallowEmptySelection` mới là radiogroup/radio.
+ * Nên phép so markup dưới đây chạy ở chế độ `disallowEmptySelection` — chế độ DUY NHẤT hai bên
+ * nói cùng một điều — còn mặc định được kiểm là đã lệch, có chủ đích.
+ */
 describe("ToggleGroup — type=single khớp với Radix", () => {
   function single(Group: typeof ToggleGroup, Item: typeof ToggleGroupItem) {
     return (
-      <Group type="single" defaultValue="week" aria-label="表示">
+      <Group type="single" disallowEmptySelection defaultValue="week" aria-label="表示">
         <Item value="day">日</Item>
         <Item value="week">週</Item>
       </Group>
@@ -332,6 +341,21 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
     expect(markup(mine.container)).toContain("role=radiogroup");
   });
 
+  it("KHÔNG có disallowEmptySelection thì cố ý lệch Radix: group + aria-pressed (gh#744)", () => {
+    const { getByRole, queryByRole } = render(
+      <ToggleGroup type="single" defaultValue="week" aria-label="表示">
+        <ToggleGroupItem value="day">日</ToggleGroupItem>
+        <ToggleGroupItem value="week">週</ToggleGroupItem>
+      </ToggleGroup>,
+    );
+
+    expect(getByRole("group", { name: "表示" })).toBeInTheDocument();
+    expect(queryByRole("radiogroup")).toBeNull();
+    expect(getByRole("button", { name: "週" })).toHaveAttribute("aria-pressed", "true");
+    expect(getByRole("button", { name: "週" })).not.toHaveAttribute("aria-checked");
+    expect(getByRole("button", { name: "週" })).toHaveAttribute("data-state", "on");
+  });
+
   it("onValueChange nhận CHUỖI, và chuỗi rỗng khi bỏ chọn — cùng payload với Radix", async () => {
     const user = userEvent.setup();
     const mineSeen: string[] = [];
@@ -353,9 +377,10 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
       </RadixToggleGroupPrimitive.Root>,
     );
 
-    await user.click(mine.getByRole("radio", { name: "週" }));
-    await user.click(mine.getByRole("radio", { name: "日" }));
-    await user.click(mine.getByRole("radio", { name: "日" }));
+    // Payload y như Radix; chỉ role của item là khác (gh#744) — nhóm này rỗng được.
+    await user.click(mine.getByRole("button", { name: "週" }));
+    await user.click(mine.getByRole("button", { name: "日" }));
+    await user.click(mine.getByRole("button", { name: "日" }));
 
     await user.click(radix.getByRole("radio", { name: "週2" }));
     await user.click(radix.getByRole("radio", { name: "日2" }));
@@ -363,7 +388,7 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
 
     expect(mineSeen).toEqual(["week", "day", ""]);
     expect(mineSeen).toEqual(radixSeen);
-    expect(mine.getByRole("radio", { name: "日" })).toHaveAttribute("data-state", "off");
+    expect(mine.getByRole("button", { name: "日" })).toHaveAttribute("data-state", "off");
   });
 
   it("controlled: value ngoài quyết định, data-state theo nó", () => {
@@ -373,7 +398,7 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
         <ToggleGroupItem value="week">週</ToggleGroupItem>
       </ToggleGroup>,
     );
-    expect(getByRole("radio", { name: "日" })).toHaveAttribute("aria-checked", "true");
+    expect(getByRole("button", { name: "日" })).toHaveAttribute("aria-pressed", "true");
 
     rerender(
       <ToggleGroup type="single" value="" aria-label="表示">
@@ -381,8 +406,8 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
         <ToggleGroupItem value="week">週</ToggleGroupItem>
       </ToggleGroup>,
     );
-    expect(getByRole("radio", { name: "日" })).toHaveAttribute("aria-checked", "false");
-    expect(getByRole("radio", { name: "日" })).toHaveAttribute("data-state", "off");
+    expect(getByRole("button", { name: "日" })).toHaveAttribute("aria-pressed", "false");
+    expect(getByRole("button", { name: "日" })).toHaveAttribute("data-state", "off");
   });
 
   it("disabled ở nhóm khoá mọi item; disabled ở item chỉ khoá item đó", async () => {
@@ -393,8 +418,8 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
         <ToggleGroupItem value="a">A</ToggleGroupItem>
       </ToggleGroup>,
     );
-    await user.click(wholeGroup.getByRole("radio", { name: "A" }));
-    expect(wholeGroup.getByRole("radio", { name: "A" })).toBeDisabled();
+    await user.click(wholeGroup.getByRole("button", { name: "A" }));
+    expect(wholeGroup.getByRole("button", { name: "A" })).toBeDisabled();
     expect(onValueChange).not.toHaveBeenCalled();
 
     const oneItem = render(
@@ -405,9 +430,9 @@ describe("ToggleGroup — type=single khớp với Radix", () => {
         <ToggleGroupItem value="b">B2</ToggleGroupItem>
       </ToggleGroup>,
     );
-    await user.click(oneItem.getByRole("radio", { name: "A2" }));
+    await user.click(oneItem.getByRole("button", { name: "A2" }));
     expect(onValueChange).not.toHaveBeenCalled();
-    await user.click(oneItem.getByRole("radio", { name: "B2" }));
+    await user.click(oneItem.getByRole("button", { name: "B2" }));
     expect(onValueChange).toHaveBeenCalledWith("b");
   });
 });

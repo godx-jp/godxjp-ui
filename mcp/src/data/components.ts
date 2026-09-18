@@ -11830,7 +11830,7 @@ export function ControlledExample() {
         type: '"default" | "button"',
         defaultValue: '"default"',
         description:
-          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds them into one segmented bar. It is paint, never semantics: the roles stay radiogroup/radio, so arrow-key traversal and native submission keep working (which is why this is not a ToggleGroup — a row of aria-pressed buttons permits 'none chosen').",
+          "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds them into one segmented bar. It is paint, never semantics: the roles stay radiogroup/radio, so arrow-key traversal and native submission keep working. That is also why this is not a ToggleGroup: a ToggleGroup's single mode is a row of aria-pressed buttons that permits 'none chosen' unless it is given `disallowEmptySelection` (gh#744), and Radio is a form control with a `name` that submits.",
       },
       {
         name: "buttonStyle",
@@ -13465,7 +13465,8 @@ import { Separator } from "@godxjp/ui/layout";
     name: "ToggleGroup",
     subParts: ["ToggleGroupItem"],
     group: "data-entry",
-    tagline: "Radix ToggleGroup wrapper for single or multiple toggle selection.",
+    tagline:
+      "Single or multiple toggle selection on react-aria-components. On type=single the ARIA role follows `disallowEmptySelection`: omitted it is a `group` of `aria-pressed` buttons that MAY be all-off, set it is a `radiogroup` of `radio`s (gh#744).",
     props: [
       {
         name: "type",
@@ -13511,6 +13512,13 @@ import { Separator } from "@godxjp/ui/layout";
         description: "Disables the whole group; individual items also accept `disabled`.",
       },
       {
+        name: "disallowEmptySelection",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "May the group end up with NOTHING selected? Omitted it may — pressing the selected item again clears it and reports `\"\"`, which is what a tag-filter row wants. THIS PROP DECIDES THE ARIA ROLE of a type=single group (gh#744), because emptiness is the one thing the two candidate roles disagree about: ARIA has no press-again-to-deselect for a radio, so a radiogroup the user just emptied is a state a screen reader cannot read out. Omitted → `role=\"group\"` + `aria-pressed` per item (no `aria-orientation`, which `group` does not take), arrow keys move FOCUS and Space/Enter presses. Set → `role=\"radiogroup\"` + `role=\"radio\"` / `aria-checked`, the selected item is the single tab stop, arrow keys move the SELECTION as APG requires, and pressing the selected item again keeps it. The name is React Aria's own (`useToggleGroupState`); neither antd nor Radix names the capability, and Radix's own single group emits radio roles while still allowing empty — the divergence is recorded in docs/DESIGN-AUTHORITY.md. On type=multiple it only keeps the last item selected; the roles do not move.",
+      },
+      {
         name: "wrap",
         type: "boolean",
         defaultValue: "false",
@@ -13526,6 +13534,8 @@ import { Separator } from "@godxjp/ui/layout";
     ],
     usage: [
       "DO choose type='single' for mutually exclusive toolbar modes.",
+      "DO add `disallowEmptySelection` to a type='single' group that is a SETTING — a view density, a sort order, a fiscal period. It is what makes the group a real radiogroup (role, aria-checked, one tab stop, arrow keys that move the selection) and it stops the second press from clearing the value, so you no longer need the `onValueChange={(v) => { if (v) setX(v) }}` guard that used to paper over it (gh#744).",
+      "DON'T add `disallowEmptySelection` to a FILTER row. Clearing a chip by pressing it again is what the user expects there, and without the prop the group says so honestly: `role=\"group\"` + `aria-pressed`, a set of buttons that may all be off.",
       "DO choose type='multiple' for independent formatting toggles.",
       "DO set `variant`/`size`/`shape` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
       'DO build a tag-filter panel as `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).',
@@ -13533,7 +13543,7 @@ import { Separator } from "@godxjp/ui/layout";
       'DO add `wrap` to a TAG FILTER ROW — `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs" wrap>` is the whole folder-tag panel however many tags the folder has. This is what replaces the hand-built `<ul>` of individual `<Toggle>`s a row wider than its rail used to force (gh#741): that list loses exactly what the group owns — the shared `variant`/`size`/`shape` context, ONE `value`/`onValueChange`, and the group\'s arrow-key traversal, which keeps walking the chips in DOM order across the wrapped lines.',
       "DON'T set `wrap` on a 3–4 item segmented group. Measured at a 320px rail it is one 32px line either way, so the prop buys nothing and only adds a way for a toolbar to reflow.",
       "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
-      "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
+      "DO give the group an accessible name (`aria-label`) — it renders a `group` of toggle buttons (single, the default), a `radiogroup` (single + `disallowEmptySelection`) or a `toolbar` of toggle buttons (multiple), and all three need a name.",
     ],
     useCases: [
       "Text alignment selector",
@@ -14024,7 +14034,7 @@ export default function PasswordBlock() {
     usage: [
       "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",
       "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
-      "DON'T use ToggleGroup for a one-of-N choice: its items are aria-pressed toggle buttons and even at type=single the group can end up with nothing selected, which a setting can never be.",
+      "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
       "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
       "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
       "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
