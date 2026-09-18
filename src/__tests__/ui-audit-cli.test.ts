@@ -624,3 +624,79 @@ describe("an opening tag that ends its line is still an opening tag (gh#673)", (
     expect(lines(wrapped, "no-hand-rolled-surface")).toEqual([3]);
   });
 });
+
+/**
+ * gh#739 — `icon-button-needs-name` read only the OPENING tag, so the most standard way to name an
+ * icon button was reported as unnamed:
+ *
+ *     <Button size="icon"><Trash2Icon aria-hidden="true" /><span className="sr-only">…</span></Button>
+ *
+ * That button HAS a name, computed per the Accessible Name and Description Computation §2F,
+ * "name from content": the `aria-hidden` glyph contributes nothing, the visually-hidden text
+ * (clipped, not `display:none`, not `aria-hidden`) contributes everything. A consumer measured 5/5
+ * false positives in one repo, and the literal fix the message asked for — adding `aria-label` on
+ * top — leaves TWO name sources free to drift apart.
+ */
+describe("icon-button-needs-name reads the children too (gh#739)", () => {
+  /** Every line this one rule reports for a fixture. ONE CLI process per source (gh#711). */
+  function iconButtonLines(source: string) {
+    return (
+      JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }
+    ).findings
+      .filter((f) => f.rule === "icon-button-needs-name")
+      .map((f) => f.line);
+  }
+
+  it("stays quiet on every shape that already carries a name", () => {
+    const named = [
+      // the shape from the issue: aria-hidden glyph + visually-hidden text
+      '<Button variant="ghost" size="icon" onClick={() => remove(id)}>',
+      '  <Trash2Icon aria-hidden="true" />',
+      '  <span className="text-xs sr-only">{t("branches.delete")}</span>',
+      "</Button>",
+      // the library's own primitive for the same thing (VisuallyHidden renders span.sr-only)
+      '<Button size="icon">',
+      '  <Trash2Icon aria-hidden="true" />',
+      '  <VisuallyHidden>{t("branches.delete")}</VisuallyHidden>',
+      "</Button>",
+      // a bare i18n expression, and plain text
+      '<Button size="icon">{t("branches.delete")}</Button>',
+      '<Button size="icon">Delete</Button>',
+      // author-supplied name on the opening tag — what the rule accepted before
+      '<Button size="icon" aria-label={t("branches.delete")}>',
+      '  <Trash2Icon aria-hidden="true" />',
+      "</Button>",
+      // asChild: the name is on the element the button renders as
+      '<Button asChild size="icon">',
+      '  <a href="/x" aria-label={t("branches.open")}>',
+      '    <ExternalLinkIcon aria-hidden="true" />',
+      "  </a>",
+      "</Button>",
+    ].join("\n");
+    expect(iconButtonLines(named)).toEqual([]);
+  });
+
+  it("still reports a button whose content contributes no name at all", () => {
+    const unnamed = [
+      // only an aria-hidden glyph
+      '<Button size="icon">',
+      '  <Trash2Icon aria-hidden="true" />',
+      "</Button>",
+      // the text itself is hidden from the accessibility tree
+      '<Button size="icon">',
+      '  <span aria-hidden="true">{t("branches.delete")}</span>',
+      "</Button>",
+      // a glyph with no name of its own contributes nothing either
+      '<Button size="icon">',
+      "  <Trash2Icon />",
+      "</Button>",
+      // an expression renders the elements it holds, not its own scaffolding
+      '<Button size="icon">{open ? <ChevronUpIcon /> : <ChevronDownIcon />}</Button>',
+      // prettier's whitespace is not a name
+      '<Button size="icon">{" "}</Button>',
+      // no children at all
+      '<Button size="icon" onClick={() => toggle()} />',
+    ].join("\n");
+    expect(iconButtonLines(unnamed)).toEqual([1, 4, 7, 10, 11, 12]);
+  });
+});

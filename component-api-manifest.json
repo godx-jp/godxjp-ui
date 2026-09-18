@@ -3266,6 +3266,14 @@
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/card.tsx"]
+        },
+        {
           "name": "defaultActiveTabKey",
           "origin": "owned",
           "required": false,

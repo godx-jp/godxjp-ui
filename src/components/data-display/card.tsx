@@ -3,6 +3,8 @@ import type { GapProp, PadProp, PadRawProp } from "../../props/vocabulary";
 import * as React from "react";
 import type { LucideIcon } from "lucide-react";
 
+import { isDevelopment } from "../../lib/dev";
+import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 import type { HeadingLevelProp } from "../../props/vocabulary";
 import type { CardTabItemProp } from "../../props/components/data-display.prop";
@@ -58,10 +60,31 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> & {
    *
    * This is a PRESENTATION flag, not an interaction: it announces nothing and binds no handler.
    * A card that looks clickable has to BE clickable for everyone, so pair it with a real control
-   * — a `Link`/`Button` in the header or footer, or the whole card rendered as one — never with a
-   * bare `onClick` on this div, which a keyboard or screen-reader user cannot reach.
+   * — a `Link`/`Button` in the header or footer, or the whole card rendered as one via
+   * {@link CardProps.asChild} — never with a bare `onClick` on this div, which a keyboard or
+   * screen-reader user cannot reach.
    */
   hoverable?: boolean;
+  /**
+   * Borrow the child's element for the card box instead of rendering a `div` — the package's
+   * standard Slot passthrough (`Button`, `AspectRatio`, `ListRow`). The card's chrome and every
+   * `data-*` flag move onto that element, so a card rendered as an `<a>` or a `<button>` measures
+   * byte for byte like the `div` it replaces and stays a SINGLE tab stop.
+   *
+   * This is the other half of `hoverable`: `<Card asChild hoverable><a href="…">` is "the whole
+   * card rendered as one control", reachable by keyboard and announced as one link.
+   *
+   * NESTING CAVEAT — the card is now ONE control, so it may not contain another. An
+   * `<a>`/`<button>` (a `Link`, a `Button`, a menu trigger) inside a card-as-link or
+   * card-as-button is invalid HTML: the inner control is unreachable or mis-announced, and
+   * `tabList` — a strip of `button` triggers — is for the same reason not drawn under `asChild`.
+   * A card that needs interactive children is not one control: drop `asChild` and put the
+   * `Link`/`Button` inside it instead, as `hoverable` also allows.
+   *
+   * Exactly one child, as everywhere else in this package: two children have no element to
+   * borrow, so `Slot`'s `React.Children.only` throws — the same error `Button asChild` throws.
+   */
+  asChild?: boolean;
   /**
    * Ant Design `tabList` — the tab strip that lives IN THE CARD'S HEAD, under the title, inside
    * the same border and on the same surface, so the card and its tabs read as one object. The
@@ -169,19 +192,34 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       onTabChange,
       extra,
       tabProps,
+      asChild = false,
       children,
       ...props
     },
     ref,
   ) => {
+    // `asChild` hands the card BOX to the child, and a card head tab strip is a row of `button`
+    // triggers — inside a link or a button that is invalid HTML, so the strip is dropped rather
+    // than nested. Said out loud in development for the same reason AppShell says it about its
+    // own ignored slots: a silently missing tab strip is a bug report.
+    const slotted = asChild && Boolean(tabList?.length);
+    if (isDevelopment() && slotted) {
+      console.warn(
+        "Card: `asChild` renders the whole card as ONE control, so `tabList` is ignored and the " +
+          "tab strip is NOT drawn — a strip of `button` triggers inside a link/button is invalid " +
+          "HTML. Drop `asChild` and put a `Link`/`Button` inside the card instead.",
+      );
+    }
+    const tabs = slotted ? undefined : tabList;
+    const Comp = asChild ? Slot : "div";
     // The selection MIRROR, for the uncontrolled (`defaultActiveTabKey`) half. `activeTabKey`
     // always wins when it is passed, so a controlled card never has two sources of truth. It is
     // resolved on every render rather than seeded once, because `tabList` can arrive after the
     // first paint (a fetched set of views) and a key seeded from an empty list would strand the
     // body behind a selection that never becomes real.
     const [mirroredKey, setMirroredKey] = React.useState<string | undefined>(undefined);
-    const activeKey = tabList?.length
-      ? resolveActiveCardTabKey(tabList, activeTabKey ?? mirroredKey ?? defaultActiveTabKey)
+    const activeKey = tabs?.length
+      ? resolveActiveCardTabKey(tabs, activeTabKey ?? mirroredKey ?? defaultActiveTabKey)
       : undefined;
     const handleTabChange = React.useCallback(
       (key: string) => {
@@ -191,12 +229,12 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       [onTabChange],
     );
 
-    const { head, body, foot } = tabList?.length
+    const { head, body, foot } = tabs?.length
       ? splitCardBands(children)
       : { head: undefined, body: undefined, foot: undefined };
 
     return (
-      <div
+      <Comp
         ref={ref}
         className={cn("group/card", className)}
         data-slot="card"
@@ -209,10 +247,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         data-density={density}
         // The hook card-layout.css keys the head band on. A card WITHOUT `tabList` emits nothing
         // and keeps the exact DOM it had.
-        data-tab-list={tabList?.length ? "" : undefined}
+        data-tab-list={tabs?.length ? "" : undefined}
         {...props}
       >
-        {tabList?.length ? (
+        {tabs?.length ? (
           <>
             {head}
             <Tabs
@@ -222,7 +260,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
               {...tabProps}
               // Card-owned, so they are written AFTER the spread — the same precedence antd's own
               // Card uses when it writes its `items`/`activeKey`/`onChange` over `tabProps`.
-              items={tabList.map((item) => ({
+              items={tabs.map((item) => ({
                 value: item.key,
                 label: item.tab,
                 disabled: item.disabled,
@@ -246,7 +284,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         ) : (
           children
         )}
-      </div>
+      </Comp>
     );
   },
 );

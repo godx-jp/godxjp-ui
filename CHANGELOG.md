@@ -4,6 +4,56 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.12.0] - 2026-09-19
+
+MINOR. `Card asChild` is opt-in; an existing Card renders exactly as before.
+
+### Added
+
+- **`Card asChild` — the whole card as one control, which `hoverable`'s own docblock had been
+  promising with nowhere to go** (gh#740). That prose named two ways to give the hover lift a real
+  owner: "a Link/Button inside, **or the whole card rendered as one**". A consumer measured that
+  the second had no spelling — no `asChild` in the installed `card.d.ts`, while `Button`,
+  `Accordion`, `AspectRatio`, `Avatar` and `Breadcrumb` all have it — and that each remaining move
+  breaks one of this package's own rules: `<button><Card/></button>` is a `no-raw-button` ERROR, a
+  bare `onClick` on the Card div is what the same docblock forbids, and dropping to a small Button
+  inside is a different design. `<Card asChild hoverable><a href={href}>…</a></Card>` is the third
+  option, on the house Slot passthrough — one child, and a non-element child throws the same error
+  `Button asChild` throws.
+  - **The chrome is the same box, measured.** In Chromium at 1440 and 390, a `div`, an `a` and a
+    `button` carrying the card's attributes are identical on every axis: 688×140.09 / 358×184.89,
+    border `1px rgb(238,237,236)`, radius `9.708px`, fill `rgb(253,253,252)`, the `CardContent`
+    inset, shadow and cursor. One property was not levelled by preflight, so
+    `button[data-slot="card"]` takes `text-align: inherit` (inherit, not `start`, so a card in a
+    centred region follows it as the div would).
+  - **The focus mark lands on the card box.** Before, a focused card-as-link fell back to Chrome's
+    `outline: auto 1px rgb(0,95,204)` — the fallback `focus-ring.css` calls a mark the switch
+    cannot turn off and no theme can retune. `a[data-slot="card"]` / `button[data-slot="card"]`
+    now join the mark and halo lists, keyed on the ELEMENT so a plain div card stays a container:
+    `rgb(122,0,255) solid 1px` at offset 0, ring 690×142.09 around the card's 688×140.09. One tab
+    stop, announced as one link.
+  - **Nesting caveat.** The card is now ONE control and may not contain another — an `a`, a
+    `Button` or a menu trigger inside a card-as-link is invalid HTML. `tabList` is a strip of
+    button triggers, so it is not drawn under `asChild` and warns in development. A card that needs
+    interactive children is not one control: drop `asChild` and use the other branch `hoverable`
+    names.
+
+### Fixed
+
+- **`ui-audit` `icon-button-needs-name` reads the button's children, not just its opening tag**
+  (gh#739). The rule was a single regex over `<Button size="icon" …>` looking for `aria-label` /
+  `aria-labelledby` / `title`, so the most standard naming of an icon button — an `aria-hidden`
+  glyph beside visually-hidden text — was reported as unnamed. Measured against the four files the
+  issue cites in a consumer repo (read-only, over the API): **5 findings → 0**, all five that
+  shape, every other rule unchanged. It now computes a name from content the way the Accessible
+  Name and Description Computation does: an `aria-hidden` subtree contributes nothing, a `sr-only`
+  or `<VisuallyHidden>` child does, a `{t('…')}` expression or plain text does, and a non-hidden
+  child's own `aria-label` does (so `<Button asChild>` around a labelled `<Link>` is quiet). Real
+  defects still fire: a lone glyph, text inside an `aria-hidden` wrapper,
+  `{open ? <ChevronUp /> : <ChevronDown />}`, and a childless `<Button size="icon" />`. Following
+  the old message literally added an `aria-label` on top of an existing name, leaving two name
+  sources to drift apart at the next i18n edit.
+
 ## [27.11.0] - 2026-09-19
 
 MINOR. `ToggleGroup wrap` is opt-in; no existing group moves.
