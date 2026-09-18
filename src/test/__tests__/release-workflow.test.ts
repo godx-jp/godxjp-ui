@@ -1830,8 +1830,9 @@ describe("registry verification waits long enough for npm to catch up", () => {
     expect(Number.isFinite(attempts) && Number.isFinite(delay)).toBe(true);
     expect(
       attempts * delay,
-      `10s exhausted on a real release (run 34700604086); got ${attempts} x ${delay}ms`,
-    ).toBeGreaterThanOrEqual(30_000);
+      `10s exhausted on run 34700604086, then 60s exhausted on BOTH 27.9.0 (run 35282153407) and ` +
+        `27.10.0 (run 35352248890) — each published and left unpromoted; got ${attempts} x ${delay}ms`,
+    ).toBeGreaterThanOrEqual(300_000);
   });
 
   it("still retries rather than asserting once", () => {

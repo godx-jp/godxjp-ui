@@ -13503,6 +13503,13 @@ import { Separator } from "@godxjp/ui/layout";
         description: "Disables the whole group; individual items also accept `disabled`.",
       },
       {
+        name: "wrap",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Let the row break onto further lines instead of running past its rail (gh#741) — the SAME name, boolean shape and `data-wrap` attribute `Flex` carries. OPT-IN, and the same default for every `variant`, both decided by measurement: a twelve-chip soft/pill xs row in a 320px rail is scrollWidth 644 > clientWidth 320 and 171.5px tall without it (chips squeezed to min-content, labels broken over up to seven lines) and scrollWidth 320 = clientWidth 320, 108px, 4 lines with it — while forcing wrap on all 18 groups of the docs page changed NONE of the 17 that already fit, at a 320px and a 1358px rail. So a default of true could only reflow rows that overflow today, silently, on an upgrade; and `variant="soft"` gets no different default because forcing wrap changed nothing across default/outline/soft either — paint is not the axis that decides, content width against the rail is. The wrapped lines keep the group\'s single `gap`, so both axes measure the same 4px, and `flex-wrap` reorders nothing: arrow keys still walk the items in DOM order across lines, in LTR and in RTL.',
+      },
+      {
         name: "ToggleGroupItem count / overflowCount / showZero / countLabel",
         type: "number | number | boolean | string",
         description:
@@ -13515,10 +13522,17 @@ import { Separator } from "@godxjp/ui/layout";
       "DO set `variant`/`size`/`shape` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
       'DO build a tag-filter panel as `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).',
       "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
+      'DO add `wrap` to a TAG FILTER ROW — `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs" wrap>` is the whole folder-tag panel however many tags the folder has. This is what replaces the hand-built `<ul>` of individual `<Toggle>`s a row wider than its rail used to force (gh#741): that list loses exactly what the group owns — the shared `variant`/`size`/`shape` context, ONE `value`/`onValueChange`, and the group\'s arrow-key traversal, which keeps walking the chips in DOM order across the wrapped lines.',
+      "DON'T set `wrap` on a 3–4 item segmented group. Measured at a 320px rail it is one 32px line either way, so the prop buys nothing and only adds a way for a toolbar to reflow.",
       "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
       "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
-    useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
+    useCases: [
+      "Text alignment selector",
+      "Formatting toolbar",
+      "View density switcher",
+      "Tag filter row (wrap)",
+    ],
     related: [
       "Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.",
       "Toggle",

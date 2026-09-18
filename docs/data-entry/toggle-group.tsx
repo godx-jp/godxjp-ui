@@ -5,6 +5,22 @@ import { FormField, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
+/** A folder's tag facets — more chips than any rail is wide, which is the `wrap` case (gh#741). */
+const folderTags = [
+  { value: "design", label: "設計", count: 12 },
+  { value: "runbook", label: "運用手順", count: 148 },
+  { value: "security", label: "セキュリティ", count: 37 },
+  { value: "onboarding", label: "オンボーディング", count: 9 },
+  { value: "incident", label: "障害報告", count: 64 },
+  { value: "contract", label: "契約", count: 21 },
+  { value: "billing", label: "請求", count: 83 },
+  { value: "release", label: "リリース", count: 156 },
+  { value: "meeting", label: "議事録", count: 402 },
+  { value: "hr", label: "人事", count: 18 },
+  { value: "legal", label: "法務", count: 6 },
+  { value: "archive", label: "アーカイブ", count: 311 },
+];
+
 /**
  * ToggleGroup — single or multi-select toggle set. type='single' for mutually
  * exclusive modes; type='multiple' for independent selections. Never raw radio
@@ -14,6 +30,7 @@ export default function Demo() {
   const [period, setPeriod] = useState<string>("monthly");
   const [formats, setFormats] = useState<string[]>(["pdf"]);
   const [view, setView] = useState<string>("list");
+  const [tags, setTags] = useState<string[]>(["design", "runbook"]);
 
   return (
     <PageContainer
@@ -161,6 +178,72 @@ export default function Demo() {
                   </ToggleGroup>
                 </Flex>
               ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>wrap · 折り返すタグ絞り込みの行</CardTitle>
+            <CardDescription>
+              wrap
+              を付けた行は、レールに収まらなくなった時点で次の行へ折り返す（gh#741）。名前も真偽値も
+              data-wrap 属性も Flex と同じ。既定は false で、variant
+              によって既定を変えることはしない。320px のレールで測ると 4 項目のセグメントは wrap
+              の有無に関わらず 1 行 32px
+              のままで、変わるのは元から溢れていた行だけだからである。折り返しても gap は 1
+              つなので、行間と列間は同じ 4px になる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  wrap · variant=&quot;soft&quot; shape=&quot;pill&quot; size=&quot;xs&quot; ·
+                  タグが 12 個あっても ToggleGroup は 1 つのまま（value / onValueChange も 1
+                  つ、矢印キーは折り返した行をまたいで DOM 順に進む）
+                </Text>
+                <ToggleGroup
+                  type="multiple"
+                  variant="soft"
+                  shape="pill"
+                  size="xs"
+                  wrap
+                  value={tags}
+                  onValueChange={(v) => setTags(v as string[])}
+                  aria-label="タグで絞り込み"
+                >
+                  {folderTags.map((tag) => (
+                    <ToggleGroupItem
+                      key={tag.value}
+                      value={tag.value}
+                      count={tag.count}
+                      countLabel="ページ"
+                    >
+                      {tag.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <Text as="p" size="sm" tone="muted">
+                  選択中: {tags.length === 0 ? "なし" : tags.join(" / ")}
+                </Text>
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  wrap なし（既定）· セグメントは 1 行 32px のまま、何も変わらない
+                </Text>
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  defaultValue="daily"
+                  aria-label="集計単位"
+                >
+                  <ToggleGroupItem value="daily">日次</ToggleGroupItem>
+                  <ToggleGroupItem value="monthly">月次</ToggleGroupItem>
+                  <ToggleGroupItem value="quarterly">四半期</ToggleGroupItem>
+                  <ToggleGroupItem value="yearly">年次</ToggleGroupItem>
+                </ToggleGroup>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

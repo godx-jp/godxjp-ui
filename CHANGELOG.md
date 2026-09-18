@@ -4,6 +4,54 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.11.0] - 2026-09-19
+
+MINOR. `ToggleGroup wrap` is opt-in; no existing group moves.
+
+### Added
+
+- **`ToggleGroup wrap`** (gh#741) — the row breaks onto further lines instead of running past its
+  rail. `.ui-toggle-group` was `inline-flex` with a gap and no `flex-wrap`, so the one component a
+  tag filter belongs in was the one it could not use: a consumer who adopted 27.10.0's
+  `Toggle variant="soft" shape="pill"` hand-built a `<ul>` of individual `<Toggle>`s and lost the
+  group's shared `variant` / `size` / `shape` context, its single `value` / `onValueChange`, and
+  its arrow-key traversal. Same name, boolean and `data-wrap="true"` attribute `Flex` carries, plus
+  one rule. The group's single `gap` is untouched, which is what keeps the two axes equal once it
+  wraps. Measured in Chromium on a 320px rail with a twelve-chip soft/pill xs row: without it
+  `scrollWidth 644 > clientWidth 320` and 171.50px tall (chips squeezed to min-content, labels
+  broken over up to seven lines); with it `scrollWidth 320 = clientWidth 320`, 108.00px, 4 lines,
+  4px on BOTH axes, identical LTR and RTL. **Opt-in, and the same default for every `variant`,
+  both decided by measurement:** forcing wrap on all 18 groups of the docs page changed 0 of the 17
+  that already fit, at a 320px AND a 1358px rail, including every `soft` one — so paint is not the
+  axis that decides — and a default of `true` could only reflow the rows that overflow today,
+  silently, on an upgrade whose call sites did not change. Unchanged when it does not wrap: the
+  four-item segmented group is 1 line / 32.00px / 4px gap, 44.00px on a coarse pointer, and the SC
+  2.5.8 floor is where it was (xs 24→36 · sm 28→40 · md 32→44 · lg 36→48). Arrow keys still walk
+  the items in DOM order across wrapped lines.
+
+### Fixed
+
+- **Release: five minutes of registry propagation, and an abort that names the recovery**
+  (gh#736, gh#737). 60s was not enough: 27.9.0 (run 35282153407) and then 27.10.0 (run 35352248890)
+  BOTH published their two tarballs and aborted at `verify-published-versions` with
+  `observed integrity=null` and a stale staging tag, while the registry answered correctly minutes
+  later — each a complete release left unpromoted, `latest` a version behind, finished by a
+  hand-run `npm dist-tag add`. npm says it on the line above the abort: "Your package is being
+  processed and may take a few minutes to become available." The budget is now 60 × 5s = 300s, and
+  every registry read carries `--prefer-online` — without that the loop re-reads npm's `_cacache`
+  and spends the whole budget on a cache, which is why the first fix (revalidation alone, shipped
+  in 27.10.0) did not stop 27.10.0 itself from aborting. The abort now separates the two shapes: a
+  null integrity with a stale staging tag means the tarballs ARE published and the release only
+  needs promoting (never a re-publish), while a MISMATCHED integrity means a different artifact and
+  must not be promoted at all.
+
+### Docs
+
+- The 27.10.0 chip entry said "44.39 at 390px", which reads as a control height and could not be
+  reproduced as one. Re-measured: the md chip's `min-height` is 32px under `pointer: fine` and 44px
+  under `pointer: coarse` — the tap floor comes from the POINTER tier, not a viewport width, so
+  emulating touch without flipping `(pointer: coarse)` never shows it.
+
 ## [27.10.0] - 2026-09-18
 
 MINOR. Every new axis is opt-in; existing Toggles, Buttons, Uploads and PageContainers render as before.
@@ -27,7 +75,10 @@ MINOR. Every new axis is opt-in; existing Toggles, Buttons, Uploads and PageCont
   on a soft chip and vanish. Measured in Chromium at 1440 on `--card`: rest `rgb(244,243,240)`
   1.09:1 with a 14.19:1 label (`default` measured `rgba(0,0,0,0)`, no fill at all); hover 1.18:1,
   label 13.07:1; pressed 6.31:1. Dark: rest 1.22:1, label 12.44:1; pressed 9.85:1, label 10.72:1.
-  Hit target xs 24.00 / sm 28.00 / md 32.00 / lg 36.00, and 44.39 at 390px (WCAG 2.2 SC 2.5.8).
+  Hit target xs 24.00 / sm 28.00 / md 32.00 / lg 36.00 under `pointer: fine`, each clearing WCAG
+  2.2 SC 2.5.8's 24×24 outright. Under `pointer: coarse` the control lifts to the 44px tap floor
+  (re-measured: the md chip's `min-height` is 32px fine, 44px coarse) — that is the POINTER tier,
+  not a viewport width, so emulating touch without flipping `(pointer: coarse)` will not show it.
 - **`Button countLabel`** (gh#734) — the prop `Toggle` has carried since gh#312, so a counted button
   and a counted chip announce identically. The digits were plain content that concatenated onto the
   label: `<Button count={3}>Git</Button>` measured `"Git3"` in the accessibility tree. The pill is
