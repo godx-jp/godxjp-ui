@@ -783,3 +783,58 @@ describe("a raw element borrowed by an `asChild` primitive is the prescribed sha
     expect(rawButtonLines(source)).toEqual([2, 7, 9]);
   });
 });
+
+/*
+ * gh#755 — a glyph handed to a component's icon SLOT is sized by that component, so reporting the
+ * call site pushes the consumer to override a box the design system owns, which CONSUMER-RULES
+ * forbids. `iconSizingRanges` already knew the JSX-prop spelling; it did not know the object
+ * -property spelling that an `items` array uses:
+ *
+ *     <Tabs items={saved.map((s) => ({ icon: s.shared ? <Users /> : undefined }))} />
+ *
+ * `Tabs` wraps that in `.ui-tabs-trigger-icon`, and `navigation-layout.css` sizes
+ * `.ui-tabs-trigger-icon svg`. The reporter measured it in a real browser against the consumer's
+ * built CSS before filing, so this is a confirmed false positive, not a difference of opinion.
+ */
+describe("a glyph in a component-owned icon slot is not unsized", function () {
+  const lucideLines = (source: string): number[] =>
+    (JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }).findings
+      .filter((finding) => finding.rule === "lucide-icon-needs-size")
+      .map((finding) => finding.line);
+
+  it("does not flag `icon:` inside an items array, and still flags a bare glyph", () => {
+    const source = [
+      'import { Users, Lock } from "lucide-react";', //              1
+      "<>", //                                                       2
+      "  <Tabs", //                                                  3
+      "    items={saved.map((s) => ({", //                           4
+      "      label: s.name,", //                                     5
+      "      icon: s.shared ? <Users /> : undefined,", //            6  slot — not a finding
+      "      closable: true,", //                                    7
+      "    }))}", //                                                 8
+      "  />", //                                                     9
+      "  <span>", //                                                10
+      "    <Lock />", //                                            11  bare — still a finding
+      "  </span>", //                                               12
+      "</>", //                                                     13
+    ].join("\n");
+
+    expect(lucideLines(source)).toEqual([11]);
+  });
+
+  it("does not let a slot range swallow the rest of the object", () => {
+    // The property value ends at its own comma. A glyph on a LATER property is not in the slot,
+    // so an over-greedy range would silently stop reporting real findings.
+    const source = [
+      'import { Users, Lock } from "lucide-react";', //              1
+      "<Foo", //                                                     2
+      "  items={[{", //                                              3
+      "    icon: <Users />,", //                                     4  slot
+      "    footer: <Lock />,", //                                    5  NOT a slot — must report
+      "  }]}", //                                                    6
+      "/>", //                                                       7
+    ].join("\n");
+
+    expect(lucideLines(source)).toEqual([5]);
+  });
+});
