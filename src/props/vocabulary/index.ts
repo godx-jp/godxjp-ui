@@ -99,6 +99,7 @@ export type {
   ConfirmVariantProp,
   ToneProp,
   AlertVariantProp,
+  CalloutKindProp,
   SortDirectionProp,
   ColumnAlignProp,
   SortStateProp,

@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
+import { anchorIndex } from "../../../test/css-selector";
+
 /**
  * TOAST COLOUR CONTRACT — measured, not snapshotted.
  *
@@ -44,7 +46,7 @@ const feedbackTokens = readFileSync(
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   const close = css.indexOf("\n}", open);
@@ -126,7 +128,7 @@ function contrast(a: Rgb, b: Rgb): number {
 
 const THEMES = {
   light: block(foundation, ":root {"),
-  dark: block(foundation, '.dark,\n:root[data-theme="dark"] {'),
+  dark: block(foundation, '.dark, :root[data-theme="dark"] {'),
 } as const;
 
 const AA = 4.5;

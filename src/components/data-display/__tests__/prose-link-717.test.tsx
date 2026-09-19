@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+
+import { anchorIndex } from "../../../test/css-selector";
 import { render } from "@testing-library/react";
 
 import { Prose } from "../prose";
@@ -39,7 +41,7 @@ const foundation = readFileSync(join(ROOT, "src/tokens/foundation.css"), "utf8")
 
 /** The body of a flat `selector { … }` block (these blocks have no nested braces). */
 function block(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   return css.slice(open + 1, css.indexOf("\n}", open));
@@ -88,7 +90,7 @@ describe("the Prose link knobs (gh#717)", () => {
 const AA_TEXT = 4.5;
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ] as const;
 
 /**

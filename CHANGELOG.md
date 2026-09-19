@@ -4,6 +4,54 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+MINOR. One new export (`Callout`), one new value on an existing union (`AlertVariantProp`), and a
+test-only change to 26 files. No existing markup moves: `Alert` and `Banner` emit byte-identical
+DOM.
+
+### Added
+
+- **`Callout` — the static aside in prose** (gh#765). There was no primitive for a callout inside a
+  document body: a docs admonition, a CMS "note" block, a GitHub `> [!NOTE]`. `Alert` was the
+  nearest thing and it is a live region by design — `role` comes from the tone, so **a wiki page
+  with three callouts announced all three on load**. Consumers reached for `Alert` and then passed
+  `role="note"` to switch the announcement back off, which worked only because `{...props}` happens
+  to be spread after the computed `role`; the package never promised that order, and one refactor
+  would have silently restored the live region. A consumer neutralising a component's own semantics
+  is the tell that it is the wrong primitive, not a missing prop.
+  `Callout` is `Alert` with the structural axis fixed to `variant="callout"`, exactly as `Banner`
+  fixes `"banner"` — one implementation, one tone system, one set of slots, three presentations —
+  and it is the one variant that is **not** a live region. `role="note"` now comes from what the
+  component IS. `kind` carries GitHub's five documented admonitions (`note`/`tip`/`important`/
+  `warning`/`caution`, the set Obsidian's lower-case spelling maps onto) and resolves a tone plus
+  its own glyph, so the five are told apart without colour (WCAG 1.4.1); `tone` and `icon` still
+  override per instance. `important` takes the NEUTRAL tone deliberately: this system has no purple
+  role, and borrowing `info` would make it indistinguishable from `note`, so its glyph carries the
+  difference. Geometry — a leading rail rather than a frame, prose insets, a block margin — is owned
+  by the new `--callout-*` tokens. `onDismiss` is excluded from the type: prose does not get
+  dismissed.
+- **`AlertVariantProp` gains `"callout"`**, and `CalloutKindProp` joins the vocabulary.
+
+### Changed
+
+- **A test may no longer bake Prettier's line breaks into a CSS selector** (gh#769). #770/#771/#772
+  fixed the six probes the issue enumerated; this adds the guard it asked for last, and the guard
+  found 27 more of the same class — 26 copies of `'.dark,\n:root[data-theme="dark"] {'` plus one
+  baked declaration wrap. All are now anchored with `anchorIndex`, which matches any run of
+  whitespace where the caller wrote one, so a selector is written on ONE line whatever the
+  stylesheet does. Measured: reformatting `foundation.css` to put that selector on a single line
+  turned all 26 red before, and is green after.
+- **The gh#748 recovery case no longer waits out its debounce on the wall clock**. #763 enumerated
+  every reject/reload interleaving and found no race; the only reproducible cause was the reload
+  `setTimeout` not firing inside `findBy`'s 1000 ms budget on a slow host (the same four CI shards
+  ran 161s and 298s on consecutive runs of `main`). The test now ADVANCES the debounce instead of
+  waiting for it, which is the fix #763 named — widening the budget would only move the threshold
+  and bury the signal. Measured: with the component's debounce raised so the reload cannot arrive in
+  time, the old test fails with the exact CI signature (`loadOptions was called 1×`) and the new one
+  passes; it is the only case whose result changes. A guard pins the advanced interval to the
+  component's own constant, and #754's diagnostic is kept.
+
 ## [28.1.1] - 2026-09-19
 
 PATCH. One CSS rule, gated on `bodied`; a strip without it emits byte-identical DOM.

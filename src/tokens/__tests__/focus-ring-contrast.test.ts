@@ -2,6 +2,8 @@ import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { channelsOf, contrast, hsl, hslToRgb, NON_TEXT, over, relative } from "./wcag-contrast";
 
 /**
@@ -61,7 +63,7 @@ const HALO_DEFAULT =
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(source: string, selector: string): string {
-  const start = source.indexOf(selector);
+  const start = anchorIndex(source, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = source.indexOf("{", start);
   const close = source.indexOf("\n}", open);
@@ -90,7 +92,7 @@ const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 const THEMES = [
   { theme: "light", selector: ":root {", dark: false },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {', dark: true },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {', dark: true },
 ] as const;
 
 /**
@@ -158,7 +160,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
   const token = DERIVED[theme];
   const body = block(
     generated,
-    theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
+    theme === "light" ? ":root {" : '.dark, :root[data-theme="dark"] {',
   );
 
   it("the field boundary on focus is the primary itself", () => {
@@ -580,7 +582,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
 describe.each(THEMES)("the halo is decoration, not the indicator ($theme)", ({ theme }) => {
   const generatedBody = block(
     generated,
-    theme === "light" ? ":root {" : '.dark,\n:root[data-theme="dark"] {',
+    theme === "light" ? ":root {" : '.dark, :root[data-theme="dark"] {',
   );
   const alpha = num(generatedBody, "control-outline-alpha");
   const halo = hslToRgb(paint(theme, "control-outline"));

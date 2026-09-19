@@ -64,6 +64,42 @@
     padding-inline-end: calc(var(--banner-space-inset-inline) + var(--space-8));
   }
 
+  /* variant="callout" (the <Callout> export) — the aside that sits INSIDE a document body.
+   *
+   * A leading RAIL rather than a frame: the reader is in a text column, and four borders turn an
+   * annotation of that column into a card that interrupts it. The tone rules above still paint the
+   * fill and the border colour, so a callout and an alert of the same tone agree; only the geometry
+   * differs. Logical properties throughout, so the rail sits on the start edge in both directions. */
+  [data-slot="alert"][data-variant="callout"] {
+    border-radius: var(--callout-radius);
+    border-block-width: 0;
+    border-inline-end-width: 0;
+    border-inline-start-width: var(--callout-rail-width);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    padding-block: var(--callout-space-inset-block);
+    padding-inline: var(--callout-space-inset-inline);
+    margin-block: var(--callout-space-stack);
+  }
+
+  /* The rail IS the tone, so it carries the tone's full weight rather than the border alpha the
+   * framed card uses — at 0.3 a 4px rail reads as a smudge beside the text it annotates. */
+  [data-slot="alert"][data-variant="callout"][data-tone="destructive"] {
+    border-color: hsl(var(--destructive));
+  }
+
+  [data-slot="alert"][data-variant="callout"][data-tone="warning"] {
+    border-color: hsl(var(--warning));
+  }
+
+  [data-slot="alert"][data-variant="callout"][data-tone="success"] {
+    border-color: hsl(var(--success));
+  }
+
+  [data-slot="alert"][data-variant="callout"][data-tone="info"] {
+    border-color: hsl(var(--info));
+  }
+
   [data-slot="alert-icon"] {
     width: var(--alert-icon-size);
     height: var(--alert-icon-size);

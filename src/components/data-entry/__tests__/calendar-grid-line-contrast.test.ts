@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../../test/css-selector";
+
 import { contrast, hsl, hslToRgb, luminance, over } from "../../../tokens/__tests__/wcag-contrast";
 
 /**
@@ -43,7 +45,7 @@ const control = readFileSync(join(process.cwd(), "src/styles/control.css"), "utf
 const tokens = readFileSync(join(process.cwd(), "src/tokens/components/control.css"), "utf8");
 
 function block(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
@@ -51,7 +53,7 @@ function block(selector: string): string {
 
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ] as const;
 
 describe.each(THEMES)("calendar grid line ($theme)", ({ selector }) => {

@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 /**
  * The boxed `<Logo mark="glyph">` sets real TEXT on a filled box, so WCAG 2.2 SC 1.4.3 applies at
  * **4.5:1** — 14px bold is NOT "large text" (that needs 18.66px bold or 24px regular).
@@ -23,7 +25,7 @@ const logoLayout = read("src/styles/logo-layout.css");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function blockOf(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   const close = css.indexOf("\n}", open);
@@ -37,7 +39,7 @@ function declarations(body: string): Record<string, string> {
   return scope;
 }
 
-const DARK_SELECTOR = '.dark,\n:root[data-theme="dark"] {';
+const DARK_SELECTOR = '.dark, :root[data-theme="dark"] {';
 const COMPONENT_SCOPE = declarations(blockOf(logoTokens, ":root {"));
 
 /*

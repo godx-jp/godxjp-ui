@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../../test/css-selector";
+
 import { contrast, hsl, hslToRgb, NON_TEXT, over } from "../../../tokens/__tests__/wcag-contrast";
 import { RangeTimeline } from "../range-timeline";
 
@@ -241,10 +243,10 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
 
 describe.each([
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ])("RangeTimeline grid colours ($theme)", ({ selector }) => {
   const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   const open = foundation.indexOf("{", start);
   const body = foundation.slice(open + 1, foundation.indexOf("\n}", open));
   const rgb = (name: string) => hslToRgb(hsl(body, name));

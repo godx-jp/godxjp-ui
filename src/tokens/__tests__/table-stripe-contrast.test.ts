@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+
+import { anchorIndex } from "../../test/css-selector";
 import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
 
 /**
@@ -20,7 +22,7 @@ const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css")
 const layout = readFileSync(join(process.cwd(), "src/styles/table-layout.css"), "utf8");
 
 function block(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
@@ -51,7 +53,7 @@ describe("gh#700 — striped table rows", () => {
 
   describe.each([
     { theme: "light", selector: ":root {" },
-    { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+    { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
   ])("$theme", ({ selector }) => {
     const body = block(selector);
     const role = (name: string) => hslToRgb(hsl(body, name));

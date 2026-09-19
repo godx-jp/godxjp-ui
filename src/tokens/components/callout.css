@@ -1,0 +1,18 @@
+/* Callout — the in-prose aside (<Callout> = Alert variant="callout").
+ * Colour stays with the alert tone rules; these tokens own ONLY the aside geometry,
+ * so a service retunes every callout once here instead of forking alert-layout.css
+ * (rule #45 — every service-tunable constant gets a knob). */
+
+:root {
+  /* A leading RAIL, not a frame: an aside inside prose reads as an annotation of the
+   * column it sits in, and four borders make it a card that interrupts the column. */
+  --callout-rail-width: var(--space-1);
+  /* Squared off against the rail; the trailing corners still follow the alert radius. */
+  --callout-radius: var(--alert-radius);
+  /* Prose insets. Block matches the paragraph rhythm around it rather than the
+   * denser banner strip; inline leaves room for the rail without shifting the text. */
+  --callout-space-inset-block: var(--space-3);
+  --callout-space-inset-inline: var(--space-4);
+  /* Block margin — a callout separates from the paragraphs it sits between. */
+  --callout-space-stack: var(--space-4);
+}

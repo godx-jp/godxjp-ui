@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { channelsOf, contrast, hsl, hslToRgb, over, relative, triplet } from "./wcag-contrast";
 
 /**
@@ -83,7 +85,7 @@ const shellLayoutCode = flat(shellLayout);
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(source: string, selector: string): string {
-  const start = source.indexOf(selector);
+  const start = anchorIndex(source, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = source.indexOf("{", start);
   return source.slice(open + 1, source.indexOf("\n}", open));
@@ -112,7 +114,7 @@ type Hsl = [number, number, number];
 
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ].map((t) => ({
   ...t,
   body: block(foundation, t.selector),
