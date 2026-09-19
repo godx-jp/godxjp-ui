@@ -700,3 +700,61 @@ describe("icon-button-needs-name reads the children too (gh#739)", () => {
     expect(iconButtonLines(unnamed)).toEqual([1, 4, 7, 10, 11, 12]);
   });
 });
+
+/*
+ * gh#740 shipped `Card asChild` so a consumer could render "the whole card as one control" — the
+ * shape `hoverable`'s own docblock had been prescribing with no way to spell it. The audit was
+ * never told, so the documented answer still came back as an error and the consumer that filed
+ * the gap (godx-jp/shoots-gemba#8) had no legal move: `<button><Card/></button>` is `no-raw-button`,
+ * an `onClick` on the Card div is what the docblock forbids, and `ListRow asChild` wants an `href`
+ * this call site does not have (it navigates through a navigator).
+ *
+ * `Card.asChild`'s docblock names the child shape in as many words — "a card rendered as an `<a>`
+ * or a `<button>`" — so a raw tag borrowed by an `asChild` primitive is the prescription, not the
+ * violation. The tests below pin BOTH directions, because an exemption that swallows real raw
+ * controls would be worse than the contradiction it fixes.
+ */
+describe("a raw element borrowed by an `asChild` primitive is the prescribed shape", () => {
+  const rawButtonLines = (source: string): number[] =>
+    (JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }).findings
+      .filter((finding) => finding.rule === "no-raw-button")
+      .map((finding) => finding.line);
+
+  it("does not flag the child of `<Card asChild>`, on one line or with prettier-wrapped attributes", () => {
+    const source = [
+      "<Card asChild hoverable>", //                                     1
+      '  <button type="button" onClick={() => nav.push({})}>', //        2  prescribed
+      "    <CardContent>one line</CardContent>", //                      3
+      "  </button>", //                                                 4
+      "</Card>", //                                                     5
+      "<Card", //                                                       6
+      "  asChild", //                                                   7
+      "  hoverable", //                                                 8
+      ">", //                                                           9
+      '  <button type="button" onClick={() => nav.push({})}>', //       10  prescribed, wrapped
+      "    <CardContent>wrapped</CardContent>", //                      11
+      "  </button>", //                                                 12
+      "</Card>", //                                                     13
+    ].join("\n");
+
+    expect(rawButtonLines(source)).toEqual([]);
+  });
+
+  it("still flags a raw button that is NOT a borrowed element", () => {
+    const source = [
+      "<div>", //                                                        1
+      '  <button type="button">a real raw control</button>', //          2  violation
+      "</div>", //                                                       3
+      "<Card asChild>", //                                               4
+      '  <a href="/x">fine</a>', //                                      5
+      "</Card>", //                                                      6
+      // The card has CLOSED — `</Card>` starts no component, so nothing is borrowed here.
+      '<button type="button">after the card closed</button>', //         7  violation
+      "<Card hoverable>", //                                             8  no asChild at all
+      '  <button type="button">not borrowed</button>', //                9  violation
+      "</Card>", //                                                     10
+    ].join("\n");
+
+    expect(rawButtonLines(source)).toEqual([2, 7, 9]);
+  });
+});

@@ -159,6 +159,42 @@ const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 const rawTag = (tag) => new RegExp(`<${tag}(?=[\\s/>])[^\\n]*`, "g");
 
 /**
+ * Is the raw tag at `index` the SLOT CHILD of an `asChild` primitive?
+ *
+ * `<Card asChild hoverable><button onClick={…}>` is not a violation — it is the shape this
+ * package PRESCRIBES. `Card.asChild`'s own docblock says so in as many words:
+ *
+ *     "a card rendered as an `<a>` or a `<button>` measures byte for byte like the `div` it
+ *      replaces and stays a SINGLE tab stop"
+ *
+ * and `hoverable`'s docblock sends the reader there: "the whole card rendered as one via
+ * {@link CardProps.asChild}".
+ *
+ * Reported as gh#740 and closed by shipping `Card asChild` — but the audit was never taught about
+ * it, so a consumer following the fix still got `no-raw-button: error` on the documented answer
+ * (godx-jp/shoots-gemba#8). A package that forbids its own prescription leaves the consumer no
+ * legal move at all, which is exactly what #740 was opened about.
+ *
+ * Walks BACKWARDS to the nearest preceding `>` and asks whether the tag it closes is a
+ * capitalised component carrying `asChild`. That covers both spellings prettier produces —
+ * `<Card asChild><button` on one line, and the attribute wrapped onto its own line — while
+ * `</Card>` or `<div>` before the tag exempts nothing, because neither starts a component.
+ */
+const isAsChildSlot = (content, index) => {
+  const before = content.slice(0, index).replace(/\s+$/, "");
+  if (!before.endsWith(">")) return false;
+  const openStart = before.lastIndexOf("<", before.length - 1);
+  if (openStart === -1) return false;
+  const openTag = before.slice(openStart);
+  // A component, not `</Card>` and not a lowercase host element.
+  return /^<[A-Z][\w.]*\b/.test(openTag) && /\basChild\b/.test(openTag);
+};
+
+/** `rawTag`, minus the matches that are an `asChild` primitive's borrowed element. */
+const rawTagOutsideAsChildSlot = (tag) => (content) =>
+  [...content.matchAll(rawTag(tag))].filter((match) => !isAsChildSlot(content, match.index));
+
+/**
  * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string,
  *         exempt?:RegExp, classOnly?:boolean}[]}
  *
@@ -409,6 +445,12 @@ const RULES = [
     severity: "error",
     spansElement: true,
     test: new RegExp(`<input\\b(?!${ATTRS}\\btype=["']hidden["'])${ATTRS}>`, "g"),
+    matches: (content) =>
+      [
+        ...content.matchAll(
+          new RegExp(`<input\\b(?!${ATTRS}\\btype=["']hidden["'])${ATTRS}>`, "g"),
+        ),
+      ].filter((match) => !isAsChildSlot(content, match.index)),
     message: "Use <Input> from @godxjp/ui, not a raw <input> (rules §3).",
   },
   {
@@ -418,6 +460,7 @@ const RULES = [
     severity: "error",
     spansElement: true,
     test: rawTag("button"),
+    matches: rawTagOutsideAsChildSlot("button"),
     message: "Use <Button> from @godxjp/ui, not a raw <button> (rules §3).",
   },
   {
