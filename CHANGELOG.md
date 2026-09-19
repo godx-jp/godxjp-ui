@@ -4,6 +4,38 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.12.2] - 2026-09-19
+
+PATCH. The audit stops reporting a false positive; no runtime behaviour changes.
+
+### Fixed
+
+- **`ui-audit` no longer flags the shape this package prescribes** (gh#740, follow-up). 27.12.0
+  shipped `Card asChild` so a consumer could finally spell "the whole card rendered as one
+  control". The audit was never told about it, so the documented answer still came back as
+  `no-raw-button: error` — and the consumer who filed the gap was left with no legal move at all,
+  which is what gh#740 was opened about in the first place:
+
+  | what they could write       | what the package said                                       |
+  | --------------------------- | ----------------------------------------------------------- |
+  | `<button><Card/></button>`  | `no-raw-button` — error                                     |
+  | `onClick` on the `Card` div | `hoverable`'s docblock forbids it: unreachable by keyboard  |
+  | `<Card asChild><button>`    | **the prescribed answer**, and also `no-raw-button` — error |
+
+  `Card.asChild`'s own docblock names the child shape in as many words — "a card rendered as an
+  `<a>` or a **`<button>`**" — so a raw tag borrowed by an `asChild` primitive is the
+  prescription, not the violation. `no-raw-button` and `no-raw-input` now skip a raw element that
+  is the borrowed child of a capitalised component carrying `asChild`, on one line or with the
+  attribute wrapped onto its own line by prettier.
+
+  The exemption is deliberately narrow: it reads backwards to the nearest `>` and requires that it
+  closes a COMPONENT opening tag with `asChild`. `</Card>` starts no component and `<div>` is not
+  capitalised, so a raw control that merely follows a card is still an error — pinned in both
+  directions in `ui-audit-cli.test.ts`, because an exemption that swallowed real raw controls
+  would be worse than the contradiction it fixes.
+
+  Measured on this package's own source: 0 errors / 0 warnings before and after.
+
 ## [27.12.1] - 2026-09-19
 
 PATCH. Development-only diagnostic; nothing changes at runtime.
@@ -131,7 +163,7 @@ MINOR. Every new axis is opt-in; existing Toggles, Buttons, Uploads and PageCont
   `.ui-button--secondary`, so a chip, a badge and a button on one row are one family. `shape` is
   Button's and Badge's `default | pill | sharp` on the same radius tokens and propagates through
   `ToggleGroup` context like `variant` / `size`. `<Toggle variant="soft" shape="pill" count
-  countLabel>` is antd `Tag.CheckableTag`; the removable half stays `Badge onRemove`, so no `Tag`
+countLabel>` is antd `Tag.CheckableTag`; the removable half stays `Badge onRemove`, so no `Tag`
   export is added — the deviation docs/DESIGN-AUTHORITY.md already records.
   New role-mirror knobs `--toggle-soft-{background,color,hover-background,count-background,count-color}`.
   The count pair is separate because the generic resting pill is `--muted`, and `--muted` and
@@ -289,7 +321,7 @@ MINOR. A TopbarItem that sets neither new prop renders byte-identical markup.
 ### Added
 
 - **TopbarItem `labelHideBelow` / `iconHideFrom`** (`BreakpointProp`, gh#726) — the `Flex
-  hideBelow` / `hideFrom` contract, scoped to the label and the icon. A bar cell collapses to
+hideBelow` / `hideFrom` contract, scoped to the label and the icon. A bar cell collapses to
   icon-only below a step, or label-only from a step up, without hand-wrapping
   `<Flex hideFrom><Icon/></Flex>`. The hidden label is visually clipped rather than removed, so an
   icon-only cell keeps its accessible name — measured at 390px: link 32px wide, icon 16×16, label
@@ -352,7 +384,7 @@ version answered.
 
 - **MCP: every catalog answer states the version that produced it** (gh#722). Each
   `@godxjp/ui-mcp` tool answer opens with `@godxjp/ui-mcp <version> (catalog for @godxjp/ui
-  <range>)`, read from the MCP's own package.json. When the launcher's `GODX_UI_VERSION` is on a
+<range>)`, read from the MCP's own package.json. When the launcher's `GODX_UI_VERSION` is on a
   different major, a second line `⚠️ MAJOR MISMATCH: …` warns that the catalog may describe
   components the installed package does not have, and says how to re-pin. An answer WITHOUT the line
   comes from a server older than this release — treat it as stale. Measured need: a consumer with
@@ -540,7 +572,7 @@ timeout on a loaded runner (fixed below), and npm went straight from 27.1.0 to t
 - **`FormFieldControl valuePropName="checked"`** (antd `Form.Item valuePropName`, gh#709): the
   render prop receives `checked` / `onCheckedChange` instead of `value` / `onChange` and stores a
   boolean, so `<FormFieldControl name="is_shared" valuePropName="checked">{(field) => <Checkbox
-  {...field}>プロジェクトに共有する</Checkbox>}</FormFieldControl>` needs no manual wiring. The
+{...field}>プロジェクトに共有する</Checkbox>}</FormFieldControl>` needs no manual wiring. The
   render-prop bag type narrows on the literal.
 - **`ResponsiveGrid align`** (antd `Row align`, gh#708): `"start" | "stretch"`, spelled with Flex's
   `FlexAlignProp` values. `align="stretch"` makes every cell as tall as the tallest, so an empty
@@ -596,7 +628,7 @@ a DataTable given an antd `pagination` object now renders its own pager.
 - **DataTable `pagination` renders its own antd footer** (gh#705). The antd config object without
   a composed `DataTable.Pagination` now renders the real `Pagination`, total beside the page
   numbers, at `position`: `topStart | topCenter | topEnd | bottomStart | bottomCenter | bottomEnd |
-  none`, default `["bottomEnd"]` (antd `bottomRight`). New config fields `showTotal` (`true` |
+none`, default `["bottomEnd"]` (antd `bottomRight`). New config fields `showTotal` (`true` |
   `(total, range) => ReactNode`) and `position`.
   - **Server paging:** pass `pagination={{ total, current, pageSize, onChange }}` with `data` set to
     the current page. A `total` above `data.length` with ≤ `pageSize` rows is read as server paging
@@ -659,6 +691,7 @@ MINOR, compatible. The modal default of Dialog and Sheet is unchanged.
   the total ¥2,130 → ¥2,610, and the dialog stayed open. `variant="destructive"` (alertdialog)
   stays modal and logs a dev warning. `react-aria` 3.52.1, the version react-aria-components
   already pins, is now a direct dependency.
+
 - **Sheet: `modal={false}` is honoured** (gh#701), with the same non-modal contract. The sheet keeps
   its side, width, responsive presentation and tokens. Measured in Chromium the same way: ¥2,130 →
   ¥2,610 with the sheet open, and Escape restores focus.
@@ -1024,10 +1057,10 @@ Three defects, and each one hid the next:
   `hsl(var(--input))` — chosen by measurement as the only border role that clears 3:1 on every
   surface the grid sits on:
 
-  | role | page | popover | weekday header | range-middle fill |
-  |---|---|---|---|---|
-  | `--border` (was) | 1.15 / 1.38 | 1.15 / 1.27 | 1.05 / 1.04 | 1.04 / 1.13 |
-  | **`--input`** | **3.47 / 4.22** | **3.47 / 3.88** | **3.18 / 3.17** | 2.91 / 2.70 |
+  | role             | page            | popover         | weekday header  | range-middle fill |
+  | ---------------- | --------------- | --------------- | --------------- | ----------------- |
+  | `--border` (was) | 1.15 / 1.38     | 1.15 / 1.27     | 1.05 / 1.04     | 1.04 / 1.13       |
+  | **`--input`**    | **3.47 / 4.22** | **3.47 / 3.88** | **3.18 / 3.17** | 2.91 / 2.70       |
 
   (light / dark.) The lines stay quieter than the selected-day fill (`--primary`, 5.50:1 / 7.76:1),
   so the selected day is still the strongest shape.
@@ -1119,7 +1152,7 @@ fails the gate — a broken declaration is a broken gate.
 - **The 2026-09 teeth-proof no longer reproduces, and that is the finding.** It disabled
   `inert-background.ts` and watched `aria-hidden-focus` go red. Those overlays are
   react-aria-components now, not Radix: react-aria inerts the background itself, and stripping
-  every `inert` before the scan still leaves that rule in axe's *passes* bucket, because it needs
+  every `inert` before the scan still leaves that rule in axe's _passes_ bucket, because it needs
   an `aria-hidden` ancestor to fire at all. `src/components/general/inert-background.ts` now has no
   importer in `src/` — left in place, flagged rather than deleted.
 
@@ -1347,7 +1380,7 @@ system. Sáu mươi luật còn lại (tên, vai trò, `aria-*`, tương phản,
 - `pnpm check:frame-axe` — tag `wcag2a wcag2aa wcag21aa wcag22aa` (đúng bộ của consumer) trên mọi
   `/isolate/<id>` và `/showcase/<id>`, ở 1440 · 375 · **320**.
 - Lượt quét đầu tiên: **159 node vi phạm** trên mã đã qua mọi cổng khác — trong đó 18 `button-name`
-  (nút mà trình đọc màn hình đọc thành *không gì cả*) và 28 `target-size` trên `Carousel`,
+  (nút mà trình đọc màn hình đọc thành _không gì cả_) và 28 `target-size` trên `Carousel`,
   `Attachments`, `FilterBar`, `Toolbar` ở **mọi** bề rộng, tức chính những khung mà luật
   `target-size-min` của ta đang chạy và báo sạch — vì nó đo **hộp vẽ**, không đo target.
 - `frame-axe-baseline.json` là **sổ nợ**: cổng đỏ khi có dòng MỚI hoặc dòng cũ tăng số. Xoá dòng khi
@@ -1372,9 +1405,9 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
   `--warning`, `--info`, `--destructive` **không đổi** — trạng thái không phải nhận diện.
 - **`<Logo mark="godx">` giờ vẽ mark GoDX thật**, thay hình capsule bo góc vốn chỉ là chỗ giữ chỗ.
 - **`mark="godx-lockup"` mới**: mark + logotype thật (chữ G, D, X có hình riêng), thay cho việc
-  *đánh máy* tên sản phẩm bằng font của design system.
-- **Master không còn bị nhuộm**. Guideline cấm: *"Logo master không bị nhuộm lại theo màu của một
-  module"*. Hai biến thể sáng/tối cùng ship và CSS chọn một — không filter, không đổi màu.
+  _đánh máy_ tên sản phẩm bằng font của design system.
+- **Master không còn bị nhuộm**. Guideline cấm: _"Logo master không bị nhuộm lại theo màu của một
+  module"_. Hai biến thể sáng/tối cùng ship và CSS chọn một — không filter, không đổi màu.
 - **`--logo-godx-ink-color`** mới cho mực logotype, đảo theo theme (#0B0F3B đo được 18.00:1 trên
   nền sáng và 1.03:1 trên nền tối, nên một giá trị không phục vụ được cả hai).
 - **Mực glyph trong ô giờ đảo theo theme.** Trước đây bất biến, đúng khi `--brand` là màu lục sáng
@@ -1389,7 +1422,7 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
 ### Fixed — `DropdownMenuItem` nuốt `data-*` / `id` (gh#631)
 
 - Trigger của **chính cụm component này** đã nhận cách xử lý ấy ở 20.0.0, với đúng lý do CHANGELOG
-  ghi: *"trước đó bị nuốt, nên selector e2e của consumer rời ra trong im lặng"*. Phần **item** thì
+  ghi: _"trước đó bị nuốt, nên selector e2e của consumer rời ra trong im lặng"_. Phần **item** thì
   chưa — nên hai nửa của một component hành xử ngược nhau.
 - **TypeScript không bắt được**, và đó là phần tệ nhất: JSX luôn cho qua mọi thuộc tính có gạch nối,
   nên `data-testid` biên dịch sạch, `tsc` xanh, build xanh, và chỉ hỏng lúc chạy ở chỗ không ai nhìn.
@@ -1401,7 +1434,7 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
 
 ### Fixed — nhãn trong `DropdownMenuRadioGroup` đặt tên cho cả nhóm (gh#632)
 
-- Chẩn đoán ra **khác** báo cáo, và nặng hơn. Người báo nói tiêu đề *"bị loại khỏi a11y tree"*. Đo:
+- Chẩn đoán ra **khác** báo cáo, và nặng hơn. Người báo nói tiêu đề _"bị loại khỏi a11y tree"_. Đo:
 
   ```
   section [role=group aria-labelledby=_r_5_]
@@ -1427,11 +1460,10 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
 - Guard release từ chối publish vì `deploy` (preview GitHub Pages) đỏ do **502 của GitHub**, trong
   khi **mọi gate thật trên commit đều xanh**. Một preview docs không dựng được **không nói gì** về
   tarball. Chạy lại Pages → publish qua trong **26 giây**.
-- **Không phải nới guard.** Luật *"một gate ta không kê tên vẫn là một gate"* vẫn đúng, và
-  `RELEASE_BLOCK_EXEMPT` vẫn để rỗng. Chỗ này là **phân loại sai**: gate *khẳng định về commit*,
-  deployment *thực hiện việc ở nơi khác*. Khớp bằng mẫu neo chính xác — `deploy-and-verify` vẫn chặn.
+- **Không phải nới guard.** Luật _"một gate ta không kê tên vẫn là một gate"_ vẫn đúng, và
+  `RELEASE_BLOCK_EXEMPT` vẫn để rỗng. Chỗ này là **phân loại sai**: gate _khẳng định về commit_,
+  deployment _thực hiện việc ở nơi khác_. Khớp bằng mẫu neo chính xác — `deploy-and-verify` vẫn chặn.
 - 7 test chốt **cả hai phía** ranh giới, vì nới nhầm là cách một guard thôi canh.
-
 
 ## [23.4.11] - 2026-09-13
 
@@ -1473,7 +1505,6 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
   Nay render **cùng một component dưới ba locale** và khẳng định thêm: không còn tiền tố tiếng Anh nào
   sót trên màn tiếng Nhật.
 
-
 ### Added — `check:state-legible`: hai trạng thái phải NHÌN thấy khác nhau (gh#622)
 
 - **Phép đo của gh#615 nay phủ 14 frame thay vì 4.** Assertion ấy sinh ra trong
@@ -1506,7 +1537,6 @@ sẽ thấy giao diện đổi ngay trong lần build kế tiếp, và một s�
 
 - Một cặp còn phải **cùng kích thước vẽ**, để một biến thể size không bao giờ bị nhầm là một trạng
   thái. Và một frame không sinh nổi cặp nào sẽ **đỏ** — đó là mất độ phủ, không phải một lần xanh.
-
 
 ## [23.4.10] - 2026-09-13
 
@@ -1554,7 +1584,6 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   `--full-verify` của v23.4.9 đi hết verify xanh (1310 test, lockstep, npm auth) rồi abort ở bước
   cuối vì đúng chuyện này. Nay có `--check`, đã wire vào `verify:ci:static`.
 
-
 ## [23.4.9] - 2026-09-13
 
 ### Fixed — `RadioGroup`: chấm tròn vẽ VÔ ĐIỀU KIỆN (gh#615)
@@ -1589,7 +1618,6 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   sẵn — bản nháp đầu dùng `querySelector` với danh sách phẩy, mà danh sách phẩy trả về **thứ tự
   document**, nên trên Radio nó trả về `.ui-choice-indicator` WRAPPER và báo một control đang hỏng
   là bình thường). Đã mutation-test: gỡ bản vá ra thì gate đỏ, lắp vào thì xanh.
-
 
 ### Fixed — hai lỗi hình học đo được, và một cổng khoá đúng cái nó phải bắt
 
@@ -1648,7 +1676,6 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 - `DialogHeader tone` VẪN là trục công khai bảy giá trị; preset chỉ thôi tự ép nó. Ai muốn dải màu
   vẫn đặt `tone` trực tiếp — và nay nó thật sự có hình dải.
 
-
 ## [23.4.8] - 2026-09-13
 
 ### Added — hợp đồng đo được (gh#503, gh#506, gh#507)
@@ -1658,17 +1685,17 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   lần mở lại đều mang một phép đo ĐÚNG, và mỗi lần đóng đều mang một bản sửa ĐÚNG — hai bên chỉ
   đang đo hai cái hộp khác nhau:
 
-  | issue | gate của consumer đọc | thứ thư viện thật sự ship |
-  | --- | --- | --- |
-  | #507 | `20×20` | target **24×24** |
-  | #506 | `24×13` | target **24×26** |
-  | #503 | chữ cách mép `5.1px` | 5.1px **dẫn xuất** từ dải control |
+  | issue | gate của consumer đọc | thứ thư viện thật sự ship         |
+  | ----- | --------------------- | --------------------------------- |
+  | #507  | `20×20`               | target **24×24**                  |
+  | #506  | `24×13`               | target **24×26**                  |
+  | #503  | chữ cách mép `5.1px`  | 5.1px **dẫn xuất** từ dải control |
 
   `getBoundingClientRect()` trả **border box**, và border box không bao gồm pseudo-element định vị
   tuyệt đối. WCAG 2.2 SC 2.5.8 đo **target** — vùng nhận thao tác con trỏ — và nới bằng
   pseudo-element là kỹ thuật mà Understanding 2.5.8 nêu tên. Nên một cổng dựng trên
   `getBoundingClientRect` sẽ báo cùng một con số mãi mãi bất kể thư viện ship gì, tức nó không thể
-  phân biệt *đã sửa* với *đã bỏ qua* — và mở lại issue là việc ĐÚNG cho nó làm.
+  phân biệt _đã sửa_ với _đã bỏ qua_ — và mở lại issue là việc ĐÚNG cho nó làm.
 
   Văn xuôi không lấp được khoảng đó: `docs/SPACING.md` đã mang dẫn xuất của #503 từ 23.4.0, và issue
   vẫn bị mở lại hai lần sau đó, vì **một cái cổng không đọc được văn xuôi**. Nên sự thật nay ship
@@ -1692,7 +1719,6 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 
 - `docs/MEASUREMENT-CONTRACT.md` mang bản cài đặt tham chiếu của `hitRegion()` và cách đấu nó vào
   một cổng sẵn có. Skill `report-bug` của MCP nay bắt đọc hợp đồng TRƯỚC khi mở một issue hình học.
-
 
 ## [23.4.7] - 2026-09-13
 
@@ -1729,7 +1755,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 
 - **`process` không phải global của browser, mà gói đã publish đọc nó THÔ.** Tìm ra khi truy vì sao
   một route preview không render được gì. App preview của chính kho này (Vite 8, dev) render
-  `/isolate/data-entry-password-strength` thành *"Preview render failed — process is not defined"*:
+  `/isolate/data-entry-password-strength` thành _"Preview render failed — process is not defined"_:
   6 DOM node, không có trang.
 
   **Tám** module được ship đọc `process.env.NODE_ENV` để bật cảnh báo dev. **Ba** cái có guard
@@ -1750,7 +1776,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   ```
 
   `?.` **bị xoá** — `define` của bundler khớp chuỗi `process.env` rồi thay thế xuyên qua, bỏ luôn
-  optional chain. Nên ba module *trông như* đã guard cũng chỉ guard một nửa: `typeof process` sống
+  optional chain. Nên ba module _trông như_ đã guard cũng chỉ guard một nửa: `typeof process` sống
   sót, optional chain thì không. **Optional chaining trên `process.env` đọc như một guard và không
   phải một guard.**
 
@@ -1777,7 +1803,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   chính helper.
 
 - **Rail của mặt card `Tabs` hướng về panel trên cả trục dọc.** Placement cuối cùng trong bốn cái.
-  `card` + `start`/`end` vẫn vẽ rail trục **block** — một đường kẻ dưới một *cột* tab, không hướng
+  `card` + `start`/`end` vẫn vẽ rail trục **block** — một đường kẻ dưới một _cột_ tab, không hướng
   về đâu. Sai **trục**, không phải sai dấu.
 
   `box-shadow` không có offset logic, nên hai placement dọc được viết tay một lần cho mỗi chiều,
@@ -1786,12 +1812,12 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 
   Đo trong Chromium trên `/isolate/navigation-tabs`, cả hai chiều:
 
-  | placement | dir | rail | cạnh hoà | radius |
-  | --- | --- | --- | --- | --- |
-  | `start` | LTR | `-1px` (mép phải) | PHẢI | `R 0 0 R` |
-  | `start` | RTL | `1px` (mép trái) | TRÁI | tự lật |
-  | `end` | LTR | `1px` (mép trái) | TRÁI | `0 R R 0` |
-  | `end` | RTL | `-1px` (mép phải) | PHẢI | tự lật |
+  | placement | dir | rail              | cạnh hoà | radius    |
+  | --------- | --- | ----------------- | -------- | --------- |
+  | `start`   | LTR | `-1px` (mép phải) | PHẢI     | `R 0 0 R` |
+  | `start`   | RTL | `1px` (mép trái)  | TRÁI     | tự lật    |
+  | `end`     | LTR | `1px` (mép trái)  | TRÁI     | `0 R R 0` |
+  | `end`     | RTL | `-1px` (mép phải) | PHẢI     | tự lật    |
 
   Trong RTL panel **thật sự** đổi sang phía bên kia strip (`panelIsLeftOfStrip` lật theo), nên
   "hướng về panel" là một khẳng định chứ không phải nói lại cái dấu. Trang docs nay render `card`
@@ -1806,17 +1832,17 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 
   Nửa trục của **cùng selector đó** thì lại chạy: `.recharts-text` là SVG và recharts đặt `fill`
   như một **presentation attribute**, thứ mà CSS thắng. Một selector, hai cơ chế của upstream, và
-  chỉ một trong hai từng với tới được — đó là vì sao luật *đọc thì đúng* mà *đo thì sai*.
+  chỉ một trong hai từng với tới được — đó là vì sao luật _đọc thì đúng_ mà _đo thì sai_.
 
   Đo trong Chromium trên một màn consumer thật (godx-task `/projects/PKG`, donut trạng thái ở
   project home), chữ 12,47px:
 
-  | trạng thái | màu | tỉ số |
-  | --- | --- | --- |
-  | 未対応 | `#ed8077` | **2,59:1** |
-  | 処理中 | `#4488c5` | **3,70:1** |
-  | 処理済み | `#5eb5a6` | **2,39:1** |
-  | 完了 | `#a1af2f` | **2,37:1** |
+  | trạng thái | màu       | tỉ số      |
+  | ---------- | --------- | ---------- |
+  | 未対応     | `#ed8077` | **2,59:1** |
+  | 処理中     | `#4488c5` | **3,70:1** |
+  | 処理済み   | `#5eb5a6` | **2,39:1** |
+  | 完了       | `#a1af2f` | **2,37:1** |
 
   Cả bốn dưới sàn AA 4,5:1, trên **mọi** legend của donut, pie và cartesian mà thư viện này render.
   Màu series là một màu **TÔ** — nó được chỉnh để làm một lát bánh không có chữ nào trên đó — nên
@@ -1840,7 +1866,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   Dưới 24px trên **mọi cột sắp xếp được của mọi `DataTable`** gói này ship.
 
   Paint **không được** to ra: chiều cao của một ô header CHÍNH LÀ nhịp hàng của bảng, và `font:
-  inherit` cùng `padding: 0` là thứ giữ cho một header sắp-xếp-được giống hệt một header thường về
+inherit` cùng `padding: 0` là thứ giữ cho một header sắp-xếp-được giống hệt một header thường về
   mặt chữ. Nên hit area do một pseudo-element căn giữa gánh — đúng câu trả lời mà
   `.ui-control-inline-affix-action` đã ship cho affix lịch trong một field 32px.
 
@@ -1905,10 +1931,10 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
 
   Giá trị mới là tỉ lệ của chính antd, không phải một con số chọn bằng mắt:
 
-  | | công thức antd | mới | đo được | antd |
-  | --- | --- | --- | --- | --- |
-  | light | 40% khoảng cách tầng control (6/15) | `30 7% 93%` = `#eeedec` | **1,15:1** | 1,14:1 |
-  | dark | 73% (`lighten 19` so với `lighten 26`) | `45 6% 19%` | **1,38:1** | 1,40:1 |
+  |       | công thức antd                         | mới                     | đo được    | antd   |
+  | ----- | -------------------------------------- | ----------------------- | ---------- | ------ |
+  | light | 40% khoảng cách tầng control (6/15)    | `30 7% 93%` = `#eeedec` | **1,15:1** | 1,14:1 |
+  | dark  | 73% (`lighten 19` so với `lighten 26`) | `45 6% 19%`             | **1,38:1** | 1,40:1 |
 
   Con số dark là con số đáng nói: suy theo tỉ lệ rồi đo, nó rơi **đúng vào** giá trị thật của antd
   (`#303030` trên `#141414` = 1,40:1), không phải "gần gần".
@@ -1919,7 +1945,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   nên hairline 1px chưa bao giờ nằm trong mẫu của nó.
 
   Phép kiểm pin **khoảng cách tới nền**, không pin độ sáng tuyệt đối — đó mới là thứ làm nó thành một
-  *tầng*: đổi tông nền của theme thì cả hai dịch theo, chỉ tỉ lệ giữa chúng mang ý nghĩa.
+  _tầng_: đổi tông nền của theme thì cả hai dịch theo, chỉ tỉ lệ giữa chúng mang ý nghĩa.
   `src/email/tokens.generated.ts` được **regenerate**, không sửa tay.
 
 - **Mười chín chỗ còn lại sơn chữ bằng token TÔ thay vì token CHỮ (#612) — nửa đầu.** #610 chuyển
@@ -1958,7 +1984,7 @@ nay có thêm đường kẻ 1px, vì **body mới là thứ làm header thành 
   `check:contrast` đỏ ngay trên route mà bản này vừa thêm, và đỏ **đúng chỗ**:
   `/isolate/data-entry-password-strength` kéo vào đúng bề mặt mà `check-contrast.mjs` đã giữ ngoài
   danh sách **kèm số đo**, và 19 phát hiện trùng khít từng con với ghi chú đó — `4 × 1,09 + 10 ×
-  2,18` sáng, `2,95 + 4 × 1,22` tối.
+2,18` sáng, `2,95 + 4 × 1,22` tối.
 
   **Không phải do thay đổi `--border`**, dù đó là nghi phạm hiển nhiên: segment chưa sáng là
   `--muted` (`244,243,240` sáng / `49,47,43` tối), không phải `--border` (`238,237,236` /
