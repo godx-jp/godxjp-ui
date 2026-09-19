@@ -7,7 +7,18 @@ import { expect } from "vitest";
  * only elements, so the negation excluded the one node it was written for.
  */
 export function ruleSelectors(css: string, anchor: string | RegExp): string[] {
-  const idx = typeof anchor === "string" ? css.indexOf(anchor) : (anchor.exec(css)?.index ?? -1);
+  /*
+   * gh#767 / gh#769 — a STRING anchor must not pin the FORMATTING. Prettier re-wraps a selector
+   * the moment it crosses the print width, so the same rule reads as one line or four depending
+   * only on how long it is; a plain `indexOf` of a hand-wrapped literal then asserts the layout
+   * rather than the rule, and fails with a message blaming the CSS. Match any run of whitespace
+   * where the caller wrote one. A RegExp anchor is the caller's own business and passes through.
+   */
+  const pattern =
+    typeof anchor === "string"
+      ? new RegExp(anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"))
+      : anchor;
+  const idx = pattern.exec(css)?.index ?? -1;
   expect(idx, `rule not found for anchor: ${anchor}`).toBeGreaterThan(-1);
   const open = css.indexOf("{", idx);
   expect(open, `no "{" after anchor: ${anchor}`).toBeGreaterThan(-1);

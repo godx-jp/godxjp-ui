@@ -138,18 +138,24 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
   const tokens = strip(
     readFileSync(join(process.cwd(), "src/tokens/components/data-display.css"), "utf8"),
   );
+  /*
+   * gh#767 / gh#769 — Prettier re-wraps both a selector list and a long declaration value once
+   * they cross the print width, so the SAME rule reads differently depending only on length.
+   * Match any whitespace run where the caller wrote one, and hand back a body whose whitespace is
+   * collapsed, so these assertions are about WHAT the rule says, not how it was laid out.
+   */
   const rule = (selector: string) => {
-    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
     const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
     if (!match) throw new Error(`rule not found: ${selector}`);
-    return match[1];
+    return match[1].replace(/\s+/g, " ");
   };
   const LINE =
-    "var(--range-timeline-grid-width) solid\n      var(--range-timeline-grid-color, hsl(var(--border)))";
+    "var(--range-timeline-grid-width) solid var(--range-timeline-grid-color, hsl(var(--border)))";
 
   it("rules every row and the header/body seam, across label and track", () => {
     const body = rule(
-      '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row',
+      '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header, .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row',
     );
     // On the row (the label+track grid), so the rule spans both; the first row's rule is the
     // header/body seam, the header+header rule separates bands from ticks.
@@ -187,7 +193,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     );
     expect(
       rule(
-        '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
+        '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column, .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label, .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
       ),
     ).toContain("border-inline-end-color: var(--range-timeline-grid-color, hsl(var(--border)));");
   });
@@ -209,7 +215,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     );
     expect(
       rule(
-        '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label,\n  .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
+        '.ui-range-timeline[data-bordered="true"] .ui-range-timeline-column, .ui-range-timeline[data-bordered="true"] .ui-range-timeline-label, .ui-range-timeline[data-bordered="true"] .ui-range-timeline-grid-column',
       ),
     ).toContain("var(--range-timeline-grid-color, hsl(var(--border)))");
   });
