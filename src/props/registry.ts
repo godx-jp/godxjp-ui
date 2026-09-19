@@ -2858,6 +2858,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "SizeProp",
       "ExtraProp",
+      {
+        field: "bodied",
+        local: true,
+        reason:
+          "A positive boolean for the card strip's PANEL BODY (gh#762) — an axis on Tabs rather than a `CardTabs` export, because the thing missing was a surface the existing card face already repaints its edge into, not a second component. No vocabulary type: no other component draws a body for its own panel.",
+      },
     ],
   },
   TabsVariantProp: {
@@ -2926,7 +2932,25 @@ export const COMPONENT_PROP_REGISTRY = {
   TabItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp", "IconProp"],
+    vocabulary: [
+      "ValueProp",
+      "LabelProp",
+      "ChildrenProp",
+      "DisabledProp",
+      "IconProp",
+      {
+        field: "count",
+        local: true,
+        reason:
+          "Counter-pill vocabulary shared VERBATIM with ButtonProp and ToggleProp (count/overflowCount/showZero) and drawn by the same `useCounterPill`, so a counted tab, a counted chip and a counted button are one thing — gh#312 / gh#734 / gh#762.",
+      },
+      {
+        field: "countLabel",
+        local: true,
+        reason:
+          "Localized unit folded into the tab's accessible name («未対応, 12 件の課題»), so the digits never concatenate onto the label — gh#734's measured defect, same field name as Button/Toggle.",
+      },
+    ],
   },
   FormFieldArrayProp: {
     group: "form",

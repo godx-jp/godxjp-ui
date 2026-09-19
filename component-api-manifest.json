@@ -15454,6 +15454,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "bodied",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "centered",
           "origin": "owned",
           "required": false,

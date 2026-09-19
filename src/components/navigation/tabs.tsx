@@ -6,6 +6,7 @@ import {
   Tabs as AriaTabs,
 } from "react-aria-components";
 import { MoreHorizontal, Plus, X } from "lucide-react";
+import { useCounterPill } from "../ui/toggle";
 import { useTranslation } from "../../i18n/use-translation";
 import { useMaxWidthBreakpoint } from "../../lib/breakpoint-token";
 import { cn } from "../../lib/utils";
@@ -136,6 +137,33 @@ function triggerSizeClassName(size: TabsProp["size"]) {
     size === "lg" &&
       "min-h-[var(--tabs-trigger-height-lg)] px-[var(--tabs-trigger-padding-x-lg)] text-[length:var(--tabs-trigger-font-size-lg)]",
   );
+}
+
+/**
+ * The count beside a tab's label (`TabItemProp.count`, gh#762).
+ *
+ * A COMPONENT rather than a call inside `items.map`, because `useCounterPill` is a hook and a
+ * hook in a loop is a hook-order bug the moment the list changes length — which for a saved-view
+ * strip is every add and every remove.
+ *
+ * It borrows `Toggle`'s helper WHOLE rather than formatting a number here: that helper owns the
+ * `Intl.NumberFormat` locale pass, the `overflowCount` cap and — the part worth protecting — the
+ * `aria-hidden` pill plus `sr-only` clause that keeps the digits from concatenating onto the
+ * label in the accessibility tree («未対応12» was gh#734's measured defect). One counting API,
+ * three components.
+ *
+ * NO `ariaLabel` IS PASSED. A tab's accessible name comes from its CONTENTS — there is no
+ * `aria-label` on a `TabsTrigger` to fold the clause into — so the `sr-only` sibling IS the
+ * mechanism, and the name reads 「未対応, 12 未対応の課題」.
+ */
+function TabCount({
+  count,
+  overflowCount,
+  showZero,
+  countLabel,
+}: Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel">) {
+  const { pill } = useCounterPill({ count, overflowCount, showZero, countLabel, slot: "tabs" });
+  return pill;
 }
 
 const TabsFrameContext = React.createContext<TabsFrame>({
@@ -319,6 +347,7 @@ export function Tabs({
   tabPlacement,
   size = "md",
   centered,
+  bodied,
   extra,
   destroyOnHidden = true,
   onEdit,
@@ -429,6 +458,17 @@ export function Tabs({
   // both its scroll offset and the observers watching it.
   const needsBar = Boolean(extraStart || extraEnd || showAdd || collapsible);
   const card = variant === "card" || variant === "editable-card";
+  /*
+   * THE JOINED BODY (gh#762). Only the two card variants draw one — see `TabsProp.bodied` for why
+   * that is the whole statement and not a gap: the pill strip floats by design, and the `line`
+   * strip's body is the `Card` it lives in (`<Card tabList>`), which is already one object.
+   *
+   * It is a DATA FLAG and nothing more; every pixel of it lives in src/styles/navigation-layout.css
+   * so a service can retune the surface, the radius and the inset from `--tabs-panel-*`. Writing
+   * it as a class here would have put the panel's border in the utilities layer, where the panel
+   * has no class of its own to merge against and a consumer `contentClassName` could not win.
+   */
+  const bodiedCard = card && Boolean(bodied);
 
   // EVERY knob below is written as an arbitrary-value UTILITY reading a token, never as a rule in
   // `@layer components`. That is not a style preference: Tailwind's `utilities` layer wins over
@@ -452,14 +492,23 @@ export function Tabs({
    * `start`/`end` here are logical already, so they are written with logical utilities and need no
    * mirror. Only `top` was ever implemented: `bottom` shipped with the radius and the merged edge
    * both still on the top/bottom pair they have for `top`, i.e. upside down.
+   *
+   * THE MERGED EDGE READS `--tabs-panel-background`, not the bare `border-*-background` utility
+   * it used to (gh#762). That colour has exactly one job — to BE the colour of the thing on the
+   * other side of the seam — so it must be the same declaration the joined body paints with, or
+   * a service that retints the body leaves a hairline of the old surface across the join. The
+   * documented default is `var(--background)`, byte for byte what `border-b-background` resolved
+   * to, so nothing that existed before this commit moves. Written out in full at each of the
+   * four call sites rather than interpolated from a constant: Tailwind scans the SOURCE TEXT for
+   * class names, and a class assembled from a template literal is a class it never generates.
    */
   const CARD_FACE: Record<TabsPlacementProp, string> = {
-    top: "rounded-[var(--tabs-card-radius)_var(--tabs-card-radius)_0_0] data-[state=active]:border-b-background",
+    top: "rounded-[var(--tabs-card-radius)_var(--tabs-card-radius)_0_0] data-[state=active]:border-b-[hsl(var(--tabs-panel-background,var(--background)))]",
     bottom:
-      "rounded-[0_0_var(--tabs-card-radius)_var(--tabs-card-radius)] data-[state=active]:border-t-background",
+      "rounded-[0_0_var(--tabs-card-radius)_var(--tabs-card-radius)] data-[state=active]:border-t-[hsl(var(--tabs-panel-background,var(--background)))]",
     start:
-      "rounded-s-[var(--tabs-card-radius)] rounded-e-none data-[state=active]:border-e-background",
-    end: "rounded-e-[var(--tabs-card-radius)] rounded-s-none data-[state=active]:border-s-background",
+      "rounded-s-[var(--tabs-card-radius)] rounded-e-none data-[state=active]:border-e-[hsl(var(--tabs-panel-background,var(--background)))]",
+    end: "rounded-e-[var(--tabs-card-radius)] rounded-s-none data-[state=active]:border-s-[hsl(var(--tabs-panel-background,var(--background)))]",
   };
 
   const list = items ? (
@@ -582,8 +631,15 @@ export function Tabs({
               // the × ended up 90px from the tab's own trailing edge (179px on a two-tab
               // strip). antd's is 8px away. This is also why the face read as a free-standing
               // bordered box rather than a tab.
+              //
+              // THE ACTIVE FACE IS THE BODY'S SURFACE, from the same knob the body reads
+              // (gh#762). The base trigger's `data-[state=active]:bg-background` was right only
+              // while the two could not disagree; once a service can retint the body, an active
+              // tab still painting `--background` reads as a DIFFERENT box sitting on the panel
+              // — which is the "two stacked boxes" complaint in one property. Same utilities
+              // group, so tailwind-merge drops the base step instead of stacking two fills.
               card &&
-                "flex-none border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))]",
+                "flex-none border-[color:hsl(var(--border))] bg-[hsl(var(--tabs-card-background,var(--muted)))] data-[state=active]:bg-[hsl(var(--tabs-panel-background,var(--background)))]",
               card && CARD_FACE[placement],
             )}
           >
@@ -597,6 +653,14 @@ export function Tabs({
               </span>
             ) : null}
             {item.label}
+            {/* The count, AFTER the label and BEFORE the × — the reading order the pattern is
+                named for (「未対応 12」), and the order the accessible name is built in. */}
+            <TabCount
+              count={item.count}
+              overflowCount={item.overflowCount}
+              showZero={item.showZero}
+              countLabel={item.countLabel}
+            />
             {removable ? (
               // A POINTER SHORTCUT, not a control — and that is measured, not stylistic. antd's own
               // TabNode puts a real <button> beside the role="tab" element; rendered through
@@ -652,6 +716,10 @@ export function Tabs({
           data-placement={placement}
           data-size={size}
           data-centered={centered ? "true" : undefined}
+          // The joined body (gh#762). An ATTRIBUTE, not a class, because the rule it selects has
+          // to reach the PANEL — a descendant this component does not style from here — and
+          // because a consumer `contentClassName` must still be able to beat it.
+          data-bodied={bodiedCard ? "true" : undefined}
           // antd `animated` / `indicator`: both are pure PAINT, so they travel to CSS as state on
           // the root rather than as a measured inline style the way rc-tabs' ink bar does.
           data-animated-ink-bar={motion.inkBar ? "true" : "false"}
@@ -691,6 +759,7 @@ export function Tabs({
               "data-placement": placement,
               "data-size": size,
               "data-centered": centered ? "true" : undefined,
+              "data-bodied": bodiedCard ? "true" : undefined,
               "data-animated-ink-bar": motion.inkBar ? "true" : "false",
               "data-animated-tab-pane": motion.tabPane ? "true" : "false",
               "data-indicator-size": indicatorSize,
@@ -910,7 +979,15 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // The line indicator lives in src/styles/navigation-layout.css so it reads --tabs-indicator-*.
           // Selected and focused stay visually distinct (WCAG 2.4.7): selected is a 1px hairline in the
           // border, focused is the 2px ring plus its halo outside it.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          // `group-data-[variant=line]/tabs-list:flex-none` is the COMPOUND half of gh#757's
+          // width fix (gh#762). That fix landed on the `items` renderer only, which is the path
+          // the reporter measured; a hand-composed `<TabsList variant="line" className="w-full">`
+          // — what a saved-view strip that has to reach its own triggers writes — still ran on
+          // the base `flex-1`. Measured on a 1200px strip: three triggers at 394.66px each for
+          // labels needing 107 / 95 / 53px, i.e. the SAME defect one API away. antd puts no
+          // `flex-grow` on a tab of any `type`, so the rule belongs to the line STRIP rather than
+          // to one construction path; the pill strip keeps `flex-1`, which is what fills its box.
+          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
           // The tier the root was given. Without this the compound form ignored `size` outright.
           triggerSizeClassName(size),
           className,

@@ -4979,6 +4979,81 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = var(--muted) at the call site"
   },
   {
+    "name": "--tabs-panel-background",
+    "value": "initial",
+    "description": "TABS JOINED BODY (`bodied`, gh#762). The card strip alone is half an object: antd's active * face repaints the edge FACING the panel in the surface colour, which only reads as \"opened * into\" when there IS a surface under it — and the package shipped no such body, so every * consumer picked a box and every box was wrong (measured on 28.0.0: `<Card>` 8px gap + a second * 1px border at a 9.7px radius, `<Card variant=\"borderless\">` 8px gap, no box 8px gap). * * `--tabs-panel-background` is a role-mirror knob (docs/TOKENS.md): `initial` so the * --background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. * It is read BOTH by the body and by the active card face's merged edge, so the two can never * disagree — a theme that retints the body retints the tab that opens into it. * * The radius mirrors the tab's own (`--tabs-card-radius`), because the body and the faces are * two halves of one outline; the border width mirrors the rail's, for the same reason. default = var(--background) at the call site"
+  },
+  {
+    "name": "--tabs-panel-border-width",
+    "value": "var(--tabs-card-rail-border-width)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-panel-radius",
+    "value": "var(--tabs-card-radius)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-panel-space-inset",
+    "value": "var(--space-4)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-min-width",
+    "value": "var(--space-4)",
+    "description": "TAB COUNTER PILL (`TabItemProp.count`, gh#762) — the SAME counter Button and Toggle already * draw, so 「未対応 12」 on a tab and on a filter chip are one thing at one size. Values mirror * `--toggle-count-*` verbatim; the two tints are role-mirror knobs (`initial` + a call-site * fallback) so a scoped theme re-resolves them."
+  },
+  {
+    "name": "--tabs-count-space-inline",
+    "value": "var(--space-1)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-gap",
+    "value": "var(--space-1)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-radius",
+    "value": "var(--radius-pill)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-count-background",
+    "value": "initial",
+    "description": "default = hsl(var(--muted)) at the call site"
+  },
+  {
+    "name": "--tabs-count-card-background",
+    "value": "initial",
+    "description": "…and on a CARD tab, whose own resting fill is already `--muted`, the pill would land on its * own colour (measured 1.00:1 — invisible; the gh#602 failure on a third control). It takes the * page surface there, exactly as `.ui-toggle-soft .ui-toggle-count` does. default = hsl(var(--background)) at the call site"
+  },
+  {
+    "name": "--tabs-count-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground)) at the call site"
+  },
+  {
+    "name": "--tabs-count-active-background",
+    "value": "initial",
+    "description": "default = hsl(var(--primary)) at the call site"
+  },
+  {
+    "name": "--tabs-count-active-color",
+    "value": "initial",
+    "description": "default = hsl(var(--primary-foreground)) at the call site"
+  },
+  {
+    "name": "--tabs-count-forced-outline-width",
+    "value": "var(--stroke-hairline)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--tabs-bar-gap",
     "value": "var(--space-2)",
     "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."

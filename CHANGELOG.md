@@ -4,11 +4,44 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [28.1.0] - 2026-09-19
 
-Ba bản vá đã vào `main` **không kèm nâng phiên bản** — chúng đi cùng bản phát hành kế tiếp. Ghi
-ở đây để lần cắt bản sau không phải dựng lại từ `git log`, và vì một trong ba **đổi hình nhìn thấy
-được**.
+MINOR. `bodied` and `count` are opt-in; without either prop a strip emits byte-identical DOM. This
+release also carries the three patches that had merged to `main` without a version bump (gh#755,
+gh#756, gh#757), listed below as they were written.
+
+### Added
+
+- **Tabs `bodied` — the card strip draws the body it opens into, so strip and panel are ONE
+  object** (gh#762). The package already repainted the active tab's joined edge in the surface
+  colour but shipped no surface, so every consumer box was wrong: measured at 1440px, `<Card>` left
+  an 8px gap AND a second 1px border at a 9.708px radius — two stacked boxes, which is what the
+  owner saw ("nó ko liền khối trông rất ngu") — while `<Card variant="borderless">` and no box at
+  all left the same 8px gap. With `bodied`: gap 8px → 0 (one shared border row), one continuous
+  1px outline around the whole object, NONE across the active tab, square corners under the strip
+  (the bottom pair keeps its radius), and one surface shared by the body and the active face.
+  Verified per pixel from a DPR-2 screenshot: down a column through the active tab every row is
+  `253,253,252` with no line at all, while a column through an inactive tab shows exactly two
+  device rows of `238,237,236` (1 CSS px) before the body surface. Holds at 1440 and 390, LTR and
+  RTL, light and dark, and for all four `tabPlacement` values (the merged edge is logical, so it
+  mirrors). Honoured only by the two card variants — a `line` strip's body is the `Card` around it.
+  Retune with `--tabs-panel-{background,border-width,radius,space-inset}`.
+- **`TabItemProp.count`** (+ `overflowCount`, `showZero`, `countLabel`, gh#762) — 「未対応 12」 on a
+  tab, in the counter vocabulary `Button` (gh#312) and `Toggle` (gh#734) already publish and through
+  the same helper: `Intl.NumberFormat` in the active locale (12345 renders `12.345` under `vi`), a
+  99+ cap, and an `aria-hidden` pill with an `sr-only` clause, so the tab announces
+  "未対応, 12 件の課題" and never the concatenated "未対応12".
+
+### Fixed
+
+- **A hand-composed `Tabs variant="line"` strip no longer stretches its triggers** (gh#762).
+  gh#757's width fix landed on the `items` renderer only; measured on a 1200px full-width compound
+  strip, three triggers came out 394.66px each for labels needing 107 / 95 / 53px. The rule now
+  belongs to the line strip, so both construction paths give content-width tabs.
+- **The counter pill was invisible on a card tab** (gh#762). A card tab rests on `--muted`, which
+  was also the pill's default fill: measured 1.00:1 against its own tab. On a card strip the pill
+  takes the page surface instead — 1.09:1 against the tab, 5.65:1 for the digits, 6.31:1 selected.
+
 
 ### Fixed
 
