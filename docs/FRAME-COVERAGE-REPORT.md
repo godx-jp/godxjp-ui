@@ -118,7 +118,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Sheet | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Alert | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Banner | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| Callout | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Callout | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | SkeletonTable | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | SkeletonRows | **✗** | N/A | N/A | N/A | · | · | · | · | · | · |
 | Toaster | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
