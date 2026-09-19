@@ -284,6 +284,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Banner — the full-bleed attention strip (<Banner> = Alert variant=\"banner\"). * Colour stays with the alert tone rules; these tokens own ONLY the strip geometry, * so a service retunes the banner once here instead of forking alert-layout.css * (rule #45 — every service-tunable constant gets a knob)."
   },
   {
+    "name": "--callout-rail-width",
+    "value": "var(--space-1)",
+    "description": "A leading RAIL, not a frame: an aside inside prose reads as an annotation of the * column it sits in, and four borders make it a card that interrupts the column."
+  },
+  {
+    "name": "--callout-radius",
+    "value": "var(--alert-radius)",
+    "description": "Squared off against the rail; the trailing corners still follow the alert radius."
+  },
+  {
+    "name": "--callout-space-inset-block",
+    "value": "var(--space-3)",
+    "description": "Prose insets. Block matches the paragraph rhythm around it rather than the * denser banner strip; inline leaves room for the rail without shifting the text."
+  },
+  {
+    "name": "--callout-space-inset-inline",
+    "value": "var(--space-4)",
+    "description": "Callout — the in-prose aside (<Callout> = Alert variant=\"callout\"). * Colour stays with the alert tone rules; these tokens own ONLY the aside geometry, * so a service retunes every callout once here instead of forking alert-layout.css * (rule #45 — every service-tunable constant gets a knob)."
+  },
+  {
+    "name": "--callout-space-stack",
+    "value": "var(--space-4)",
+    "description": "Block margin — a callout separates from the paragraphs it sits between."
+  },
+  {
     "name": "--card-space-inset",
     "value": "var(--space-section-active)",
     "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom * shell padding. This is the column the title, body and footer all align to."
