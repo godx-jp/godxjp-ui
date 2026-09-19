@@ -569,7 +569,7 @@
           "origin": "owned",
           "required": false,
           "type": "AlertVariantProp | undefined",
-          "values": ["default", "banner"],
+          "values": ["default", "banner", "callout"],
           "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
@@ -3235,6 +3235,57 @@
           "type": "\"auto\" | \"full\" | undefined",
           "values": ["auto", "full"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "Callout": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "false | IconProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "kind",
+          "origin": "owned",
+          "required": false,
+          "type": "CalloutKindProp | undefined",
+          "values": ["warning", "note", "tip", "important", "caution"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "ToneProp | undefined",
+          "values": ["default", "muted", "warning", "success", "destructive", "info", "neutral"],
+          "declaredIn": ["src/props/components/feedback.prop.ts"]
         }
       ]
     },
