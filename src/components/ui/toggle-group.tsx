@@ -31,6 +31,20 @@ const ToggleGroupContext = React.createContext<{
   size?: ToggleGroupSize;
   shape?: ToggleGroupShape;
   /**
+   * Is this group nested inside a `role="toolbar"`? (gh#756)
+   *
+   * React Aria's `useToolbar` disables its own arrow-key handler whenever it finds a toolbar
+   * ancestor, on the assumption that the toolbar owns navigation:
+   *
+   *     onKeyDownCapture: !isInToolbar ? onKeyDown : undefined
+   *
+   * This library's `Toolbar` is a plain `div role="toolbar"` that handles no keys, so in that
+   * nesting NOBODY owns the arrows — and a roving tab stop with no arrows to rove it makes every
+   * unselected option unreachable by keyboard (WCAG 2.1.1 A). Measured on a 3-item group: 1 of 3
+   * tab stops, arrows inert.
+   */
+  inToolbar?: boolean;
+  /**
    * `true` only for a `type="single"` group that may NOT be emptied — the one case where
    * `role="radio"` / `aria-checked` is expressible (gh#744). The item reads it to decide its own
    * ARIA and its tab stop.
@@ -167,10 +181,17 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
     // can honestly claim the radio pattern.
     const radioSemantics = type === "single" && disallowEmptySelection === true;
     const arrowNav = React.useRef(false);
+    // Same probe React Aria runs, for the same reason — see `inToolbar` on the context. Read
+    // after mount because it asks about an ANCESTOR, which does not exist during render.
+    const groupElement = React.useRef<HTMLDivElement | null>(null);
+    const [inToolbar, setInToolbar] = React.useState(false);
+    React.useLayoutEffect(() => {
+      setInToolbar(!!groupElement.current?.parentElement?.closest('[role="toolbar"]'));
+    }, []);
     // Stable identity — a fresh object each render would re-render every item on any parent render.
     const context = React.useMemo(
-      () => ({ variant, size, shape, radioSemantics, arrowNav }),
-      [variant, size, shape, radioSemantics],
+      () => ({ variant, size, shape, radioSemantics, arrowNav, inToolbar }),
+      [variant, size, shape, radioSemantics, inToolbar],
     );
     const selectedKeys = React.useMemo(() => toSelectedKeys(value), [value]);
     const defaultSelectedKeys = React.useMemo(() => toSelectedKeys(defaultValue), [defaultValue]);
@@ -210,6 +231,15 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProp>(
           <div
             {...props}
             {...domProps}
+            // MERGE, never replace: `domProps` carries React Aria's own ref, and overwriting it
+            // leaves `useToolbar` with a null element — which silently kills the arrow keys this
+            // very fix is about. Caught by four existing arrow-key tests going red.
+            ref={(node: HTMLDivElement | null) => {
+              groupElement.current = node;
+              const aria = (domProps as { ref?: React.Ref<HTMLDivElement> }).ref;
+              if (typeof aria === "function") aria(node);
+              else if (aria) (aria as React.MutableRefObject<HTMLDivElement | null>).current = node;
+            }}
             {...(type === "single" && !radioSemantics
               ? { role: "group", "aria-orientation": undefined }
               : null)}
@@ -295,8 +325,13 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     // navigation leaves every item tabbable, which is right for `aria-pressed` buttons and wrong
     // for radios — so the roving tab stop is applied here, in the mode that claims the role. With
     // nothing selected there is no checked item to put it on, so the toolbar tab order stands.
+    // …and NOT when the arrow keys are dead. Inside a `role="toolbar"` React Aria hands its
+    // navigation to the toolbar, which this library's `Toolbar` never implements, so roving here
+    // would strand every unselected option (gh#756). Falling back to a tab stop per item keeps
+    // the `radiogroup`/`radio` roles honest and every option reachable; it costs N tab stops
+    // instead of one, which is the lesser of the two failures.
     const rovingTabIndex =
-      radioSemantics && groupState && groupState.selectedKeys.size > 0
+      radioSemantics && !context.inToolbar && groupState && groupState.selectedKeys.size > 0
         ? isPressed
           ? 0
           : -1
