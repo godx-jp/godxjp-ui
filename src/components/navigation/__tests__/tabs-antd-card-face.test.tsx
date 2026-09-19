@@ -46,6 +46,26 @@ import { Tabs } from "../tabs";
 const ROOT = process.cwd();
 const tabsSource = readFileSync(join(ROOT, "src/components/navigation/tabs.tsx"), "utf8");
 const navigationCss = readFileSync(join(ROOT, "src/styles/navigation-layout.css"), "utf8");
+
+/*
+ * Prettier wraps a selector list as soon as it crosses the print width, so the SAME rule reads as
+ * one line or as three depending only on how long its selector happens to be. That is a layout
+ * choice, not a fact about the stylesheet — but every lookup below matched a single-line literal,
+ * so it was a fact about whether these tests passed.
+ *
+ * It bit on main (CI · code, 19/09): `[data-placement="start"]` is two characters longer than
+ * `end`, that alone pushed the RTL selector over the width, and the rail read as MISSING —
+ * "no RTL rail rule for placement=start" — while `end`, still on one line, matched fine. The rule
+ * was present and correct the whole time. One lookup had already been patched by baking the exact
+ * `\n    ` wrap into the literal, which only moves the breakage to the next reformat.
+ *
+ * So: collapse whitespace once and search THAT. These tests assert which rules exist and what they
+ * contain, never how the formatter chose to lay them out.
+ */
+const css = navigationCss.replace(/\s+/g, " ");
+
+/** End of the rule body that starts at `at` — in `css`, braces are the only structure left. */
+const ruleEnd = (at: number): number => css.indexOf("}", at);
 const tabsDocs = readFileSync(join(ROOT, "docs/navigation/tabs.tsx"), "utf8");
 
 /** The `CARD_FACE` table body, as authored. */
@@ -94,15 +114,19 @@ describe("card face — antd genCardStyle, all four placements", () => {
   it("every placement in the union has a row — a new one cannot silently inherit `top`", () => {
     // `bottom` shipped wrong precisely because the face was one hardcoded line written for `top`.
     const union = tabsSource.match(/CARD_FACE:\s*Record<\s*TabsPlacementProp\s*,\s*string\s*>/);
-    expect(union, "CARD_FACE must be keyed by the placement union, so TS demands every case")
-      .not.toBeNull();
+    expect(
+      union,
+      "CARD_FACE must be keyed by the placement union, so TS demands every case",
+    ).not.toBeNull();
     for (const { placement } of ANTD_CARD_MATRIX) {
       expect(table).toContain(`${placement}:`);
     }
   });
 
   it("the radius rounds the corners AWAY from the panel", () => {
-    expect(table).toMatch(/top:\s*"rounded-\[var\(--tabs-card-radius\)_var\(--tabs-card-radius\)_0_0\]/);
+    expect(table).toMatch(
+      /top:\s*"rounded-\[var\(--tabs-card-radius\)_var\(--tabs-card-radius\)_0_0\]/,
+    );
     expect(table).toMatch(/rounded-\[0_0_var\(--tabs-card-radius\)_var\(--tabs-card-radius\)\]/);
     expect(table).toContain("rounded-s-[var(--tabs-card-radius)] rounded-e-none");
     expect(table).toContain("rounded-e-[var(--tabs-card-radius)] rounded-s-none");
@@ -137,12 +161,12 @@ describe("card face — antd genCardStyle, all four placements", () => {
   it("the rail runs along the edge facing the panel, and flips for `bottom`", () => {
     // Inset shadow, not a border — the reason is recorded beside the rule. Negative block offset
     // draws the band at the bottom (placement=top); positive draws it at the top (placement=bottom).
-    expect(navigationCss).toContain(
+    expect(css).toContain(
       "box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width)) 0 hsl(var(--border));",
     );
-    const bottomRail = navigationCss.indexOf('[data-variant="card"][data-placement="bottom"]');
+    const bottomRail = css.indexOf('[data-variant="card"][data-placement="bottom"]');
     expect(bottomRail, "no placement=bottom rail rule").toBeGreaterThan(-1);
-    const rule = navigationCss.slice(bottomRail, navigationCss.indexOf("\n  }", bottomRail));
+    const rule = css.slice(bottomRail, ruleEnd(bottomRail));
     expect(rule).toContain("box-shadow: inset 0 var(--tabs-card-rail-border-width) 0");
     expect(rule, "the bottom rail must not reuse the negative (downward) offset").not.toContain(
       "calc(-1 * var(--tabs-card-rail-border-width))",
@@ -178,20 +202,20 @@ describe("the card rail faces the panel on every axis, in both directions", () =
 
   for (const { placement, ltr, rtl } of RAILS) {
     it(`${placement}: the rail is on the edge facing the panel, and flips under dir=rtl`, () => {
-      const ltrAt = navigationCss.indexOf(
+      const ltrAt = css.indexOf(
         `[data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
       );
       expect(ltrAt, `no LTR rail rule for placement=${placement}`).toBeGreaterThan(-1);
-      expect(navigationCss.slice(ltrAt, navigationCss.indexOf("\n  }", ltrAt))).toContain(ltr);
+      expect(css.slice(ltrAt, ruleEnd(ltrAt))).toContain(ltr);
 
-      const rtlAt = navigationCss.indexOf(
+      const rtlAt = css.indexOf(
         `[dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
       );
       expect(
         rtlAt,
         `no RTL rail rule for placement=${placement} — box-shadow has no logical offset, so it needs one`,
       ).toBeGreaterThan(-1);
-      expect(navigationCss.slice(rtlAt, navigationCss.indexOf("\n  }", rtlAt))).toContain(rtl);
+      expect(css.slice(rtlAt, ruleEnd(rtlAt))).toContain(rtl);
     });
   }
 
@@ -199,10 +223,10 @@ describe("the card rail faces the panel on every axis, in both directions", () =
     // What shipped: `start` and `end` drew the block-axis rail — a line under a COLUMN of tabs,
     // facing nothing. The bug was not a wrong sign, it was the wrong axis.
     for (const placement of ["start", "end"] as const) {
-      const at = navigationCss.indexOf(
+      const at = css.indexOf(
         `[data-slot="tabs"][data-variant="card"][data-placement="${placement}"]`,
       );
-      const rule = navigationCss.slice(at, navigationCss.indexOf("\n  }", at));
+      const rule = css.slice(at, ruleEnd(at));
       expect(rule, `${placement} must not draw a block-axis rail`).not.toMatch(
         /box-shadow:\s*inset 0 /,
       );
@@ -219,12 +243,12 @@ describe("the card rail faces the panel on every axis, in both directions", () =
 
 describe("the remove glyph obeys one size contract, whoever supplies it", () => {
   it("the size rule selects the WRAPPER'S CHILD, so `closeIcon` cannot escape it", () => {
-    const start = navigationCss.indexOf(".ui-tabs-tab-remove-icon,");
+    const start = css.indexOf(".ui-tabs-tab-remove-icon,");
     expect(
       start,
       "the size rule must not key on .ui-tabs-tab-remove-icon alone — that class only lands on the default ×",
     ).toBeGreaterThan(-1);
-    const rule = navigationCss.slice(start, navigationCss.indexOf("\n  }", start));
+    const rule = css.slice(start, ruleEnd(start));
     expect(rule).toContain(".ui-tabs-tab-remove > :is(svg, img)");
     expect(rule).toContain("inline-size: var(--tabs-tab-remove-icon-size)");
     expect(rule).toContain("block-size: var(--tabs-tab-remove-icon-size)");
@@ -253,11 +277,11 @@ describe("the remove glyph obeys one size contract, whoever supplies it", () => 
 
 describe("the line bar sits ON the hairline (one line, not two)", () => {
   it("the horizontal inset adds back the block padding the strip took for the focus ring", () => {
-    const start = navigationCss.indexOf(
-      '[data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]\n    [data-slot="tabs-trigger"]::after',
+    const start = css.indexOf(
+      '[data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"] [data-slot="tabs-trigger"]::after',
     );
     expect(start, "no horizontal line indicator rule").toBeGreaterThan(-1);
-    const rule = navigationCss.slice(start, navigationCss.indexOf("\n  }", start));
+    const rule = css.slice(start, ruleEnd(start));
 
     // The gap was 3px of block padding + the 1px hairline = 4px, measured on all 13 line strips
     // of the tabs page. The bar stops at the padding-box edge: one pixel further and it is outside
