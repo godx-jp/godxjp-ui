@@ -136,8 +136,14 @@ describe("installed OLDER than this catalog keeps the gh#722 line", () => {
     expect(lines[1]).not.toMatch(/SERVER OLDER/);
   });
 
+  /*
+   * Derived from this catalog's OWN major, never a literal. A hard-coded "27.0.0" silently became
+   * a MAJOR-mismatch case the day the package went to 28.0.0, and the test then failed for the
+   * version bump rather than for the behaviour it guards.
+   */
   it("says nothing for an older patch/minor on the same major", async () => {
-    project(withVersion("27.0.0"));
+    const [major] = pkg.version.split(".");
+    project(withVersion(`${major}.0.0`));
     expect(catalogVersionWarning()).toBeNull();
   });
 });

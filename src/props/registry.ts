@@ -3006,6 +3006,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "The SAME boolean shorthand for flex-wrap that FlexProp carries, on the row that owns a chip set — one spelling for 'what does this row do when it does not fit' (gh#741). Opt-in, and the same default for every variant: paint must not decide geometry.",
       },
+      {
+        field: "disallowEmptySelection",
+        local: true,
+        reason:
+          "React Aria's own name for the capability (useToggleGroupState), which this component is built on; neither antd nor Radix names it (docs/DESIGN-AUTHORITY.md). It is not just a state guard: on type=single it DECIDES the ARIA role, because emptiness is the one thing role=group + aria-pressed and role=radiogroup + aria-checked disagree about (gh#744).",
+      },
     ],
   },
   ToggleGroupItemProp: {

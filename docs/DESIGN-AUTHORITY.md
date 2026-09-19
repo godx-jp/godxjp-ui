@@ -335,6 +335,39 @@ expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mappe
   role that carries a level without promising the `tree` / `treegrid` arrow-key model. A timeline
   with no `depth > 0` keeps its pre-#724 markup byte for byte.
 
+- **`ToggleGroup.disallowEmptySelection` — React Aria's name, and a deliberate divergence from
+  Radix's MARKUP (gh#744).** antd has no ToggleGroup at all (its nearest controls are `Segmented`
+  and `Radio.Group`, both of which are always-one-selected by construction and name nothing here),
+  and Radix's `ToggleGroup` has no such prop — so there is no antd spelling to port and no Radix
+  spelling to keep. The name is taken from the library this component is actually built on:
+  `react-stately`'s `useToggleGroupState` and `react-aria`'s `AriaToggleButtonGroupProps` both
+  call it `disallowEmptySelection`, and it is already the state hook's own switch, so a second
+  spelling would be a rename of a prop we pass straight through. It is a negative boolean, which
+  the vocabulary otherwise avoids (`allowClear`, `allowEmpty`, `allowEmptySubmit`) — `allowEmpty`
+  was rejected because `RangePicker.allowEmpty` already means `[boolean, boolean]` on the same
+  prop surface, and one word must not carry two shapes.
+
+  The divergence is not the name, it is the markup. Radix's single group emits
+  `role="radiogroup"` / `role="radio"` + `aria-checked` **and still lets the user clear the
+  selection by pressing the checked item again** — React Aria inherited exactly the same shape
+  (`useToggleButtonGroupItem` hardcodes the radio role on `selectionMode === "single"` without
+  ever reading `disallowEmptySelection`). ARIA has no press-again-to-deselect for a radio: a
+  radiogroup that has a selection always has exactly one checked item, so the state a user reaches
+  by pressing the checked chip once more — a radiogroup with nothing checked — is not expressible,
+  and a screen reader reads an empty radio group immediately after the user activated one of its
+  radios. This library's own catalog said as much in two places (`Radio.optionType` and
+  `Segmented`, both of which justify themselves by calling ToggleGroup "a row of aria-pressed
+  buttons" that "permits 'none chosen'"), so the two entries contradicted the ToggleGroup entry
+  about the same case.
+
+  So here the emptiness rule DECIDES the role. Default (`false`, today's behaviour — no existing
+  group changes): `role="group"` + `aria-pressed` per item, and no `aria-orientation`, which
+  `group` does not take. With the prop: `role="radiogroup"` + `role="radio"` / `aria-checked`,
+  the checked item is the single tab stop, and the arrow keys move the SELECTION as APG's
+  radio-group pattern requires rather than only the focus. `type="multiple"` is untouched
+  (`role="toolbar"`, `aria-pressed`); the prop there only keeps the last item selected.
+  Divergence from Radix's markup is the point of the change, not a side effect of it.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

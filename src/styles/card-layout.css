@@ -142,19 +142,38 @@
     border-inline-start-color: var(--card-accent-color);
   }
 
+  /* The rail eats into the shell inset, so the three bands step their leading padding back by
+   * exactly its width and their text stays on the card's own line.
+   *
+   * THE HEADER AND THE CONTENT SPENT TWO RELEASES IN THE WRONG RULE (gh#750). `ddf6cd14` wrapped
+   * this file in `@layer` and left this selector list with no declaration; `b110214e` then
+   * appended the FOOTER's `margin-block-start: auto` to the orphan — its comment is still the one
+   * sitting between the selectors in that commit. So every accented card taller than its content
+   * bottom-aligned its header AND its body: measured on a 1652px lane, header top 252.19 →
+   * 799.97 and content 300.19 → 1395.75, twice the offset because two equal auto margins split
+   * the free space. Quieter and in the same wound: the padding this rule owes them went with it,
+   * so their text sat the rail's width off the shell line. */
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
-  /* The footer takes the slack — this is the half that bottom-aligns; the column only makes the
-   * room for it to move into. */
-  [data-slot="card"] > [data-slot="card-footer"] {
-    margin-block-start: auto;
-  }
-
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
     padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
   }
 
-  /* Same optical weight as `featured` (border + 1px ring), tone-owned. */
+  /* The footer takes the slack — this is the half that bottom-aligns; the column only makes the
+   * room for it to move into. It is the FOOTER's alone: a header or a body that claims the slack
+   * pushes the card's own content off the bottom of it. */
+  [data-slot="card"] > [data-slot="card-footer"] {
+    margin-block-start: auto;
+  }
+
+  /* Same optical weight as `featured` (border + 1px ring), tone-owned.
+   *
+   * THE RING IS PAINTED OUTSIDE THE BORDER BOX, and a scroll container clips it (gh#750): a
+   * horizontal `ScrollArea` is `overflow: auto hidden`, `auto` makes a scroll container, and
+   * `overflow-clip-margin` — the property that would let the ring bleed — is honoured only by
+   * `clip`. So a perimeter-accented card flush against the edge of a scroller loses 1px of its
+   * ring on that side. Inside a scroller use the default `edge` placement (the rail is inside the
+   * box) or a tone fill; this is a documented limit, not a bug in the scroller. */
   [data-slot="card"][data-accent][data-accent-placement="perimeter"] {
     border-width: var(--card-accent-perimeter-width);
     border-color: var(--card-accent-color);

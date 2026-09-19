@@ -4,6 +4,62 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.0.0] - 2026-09-19
+
+**MAJOR — one ARIA reading changes.** `ToggleGroup type="single"` stops claiming a radio role it
+could not honour. Value, `onValueChange`, `data-state`, styling and focus order are byte-identical;
+only what assistive technology is told moves, so the break is real for tests and for anyone who
+depended on the radio semantics.
+
+**Migrate:** a single group that is a SETTING (one of these is always chosen) gains
+`disallowEmptySelection` — and can delete the `onValueChange={(v) => { if (v) setX(v) }}` guard it
+needed to fake that. A single group that is a FILTER (clicking again clears it) needs no change and
+simply stops lying to screen readers. A test asserting `getByRole("radio")` on a single group must
+either add the prop or query `role="button"` with `aria-pressed`.
+
+### Fixed
+
+- **Card: the vertical slack is the footer's, and the accent rail's padding comes back** (gh#750).
+  `ddf6cd14` wrapped `card-layout.css` in `@layer` and left the accented header/content selectors
+  with NO declaration; `b110214e` then appended the footer's `margin-block-start: auto` to that
+  orphaned list — the footer's own comment is still sitting between the selectors. So every
+  accented card taller than its content bottom-aligned its header AND its body. Measured on a
+  600px lane: header top 190.33 → 9, content 389.67 → 27, with the footer still bottom-aligned;
+  a consumer measured the same shape on a 1652px lane (header +547.78, content +1095.56, exactly
+  twice, because two equal auto margins split the free space) and read it as "the lane goes empty
+  and the status pill slides to the bottom". Quieter and in the same wound: the padding that steps
+  each band back by the rail width went with it, so an accented header and body sat the rail's
+  width off the shell line — all three bands are back to `calc(inset − rail)`, measured 10px on a
+  6px rail. A test now asserts that exactly one rule claims the slack and that it is the footer's.
+- **Documented: a `perimeter` accent ring is clipped by a scroll container** (gh#750). The ring is
+  painted OUTSIDE the border box; a horizontal `ScrollArea` is `overflow: auto hidden`, and
+  `overflow-clip-margin` — the property that would let it bleed — is honoured only by `clip`, not
+  by `auto`. A perimeter card flush against a scroller edge loses 1px of ring on that side. Inside
+  a scroller use the default `edge` placement, whose rail is inside the box, or a tone fill.
+- **`ToggleGroup type="single"` no longer claims a radio role it cannot honour** (gh#744). The
+  group emitted `role="radiogroup"` / `role="radio"` + `aria-checked` while still clearing on a
+  second press of the selected item — a state ARIA cannot express, so a screen reader read an
+  EMPTY radio group immediately after the user activated one of its radios. Measured on a 6-chip
+  filter row at 1440: before, `radiogroup` + 6 `radio`, and a second click on the checked chip left
+  `radiogroup` with 0 of 6 checked; after, `group` + 6 `aria-pressed` buttons, and the same click
+  gives an honest "nothing selected". The role now follows the new `disallowEmptySelection` switch,
+  the name `react-stately`'s `useToggleGroupState` already uses (it is forwarded verbatim):
+  omitted, the group is `role="group"` with `aria-pressed` items that may all be off; set, it is a
+  real `radiogroup` whose selection cannot be cleared.
+- **A second contradiction, found while fixing the first: the single group navigated as a
+  toolbar** (gh#744). React Aria moves focus only and leaves every item tabbable, so the group
+  claimed `radiogroup` while arrows did not move the selection and there were six tab stops. With
+  `disallowEmptySelection` it now has APG's roving tab stop and selection-follows-focus —
+  `tabIndex [0,0,0,0,0,0] → [0,-1,-1,-1,-1,-1]`, and ArrowRight moves focus and `aria-checked`
+  together. Two limits are recorded rather than hidden: arrows do not WRAP at the ends (React
+  Aria's focus manager does not wrap; APG's radio group does), and pressing the already-checked
+  item re-fires `onValueChange` with the same string.
+- `role="group"` cannot carry `aria-orientation` (WAI-ARIA 1.2 allows only `aria-activedescendant`
+  and `aria-expanded` on it), so it is dropped in that mode only; `radiogroup` and the
+  `type="multiple"` `toolbar` keep it. `type="multiple"` is otherwise unchanged.
+- The `ToggleGroup`, `Radio` and `Segmented` catalog entries now agree. The `RadioGroup` entry had
+  justified itself with "a row of `aria-pressed` buttons allows nothing selected" while
+  `ToggleGroup` shipped radios that allowed exactly that.
 ## [27.12.2] - 2026-09-19
 
 PATCH. The audit stops reporting a false positive; no runtime behaviour changes.
