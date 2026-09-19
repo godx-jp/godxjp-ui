@@ -159,7 +159,25 @@ const ATTRS = String.raw`(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|=>|[^>"'])*`;
 const rawTag = (tag) => new RegExp(`<${tag}(?=[\\s/>])[^\\n]*`, "g");
 
 /**
- * Is the raw tag at `index` the SLOT CHILD of an `asChild` primitive?
+ * Primitives whose `asChild` hands over THE VISUAL BOX, so the borrowed element cannot be a
+ * `<Button>` — wrapping it would paint a button where a card belongs.
+ *
+ * This set is deliberately tiny and deliberately NOT "anything with asChild". The first cut of
+ * this exemption was the broad version, and measuring it against a real consumer showed what that
+ * costs: of 39 `no-raw-button` findings across its three SPAs, it silenced 11 — and
+ * every single one was a BEHAVIOUR trigger, not a box:
+ *
+ *     DropdownMenuTrigger · SheetTrigger · CollapsibleTrigger · PopoverTrigger · TooltipTrigger
+ *
+ * A Radix trigger supplies behaviour and no styling, so `<DropdownMenuTrigger asChild><Button>`
+ * is not only legal, it is the better answer — the package's button, correctly styled, keyboard
+ * and screen-reader shaped. Exempting those threw away 11 legitimate nudges to fix 0 real
+ * findings. Adding a name here means asserting that primitive paints the box itself.
+ */
+const ASCHILD_BOX_PRIMITIVES = new Set(["Card"]);
+
+/**
+ * Is the raw tag at `index` the slot child of a primitive that hands over its BOX?
  *
  * `<Card asChild hoverable><button onClick={…}>` is not a violation — it is the shape this
  * package PRESCRIBES. `Card.asChild`'s own docblock says so in as many words:
@@ -175,10 +193,11 @@ const rawTag = (tag) => new RegExp(`<${tag}(?=[\\s/>])[^\\n]*`, "g");
  * (godx-jp/shoots-gemba#8). A package that forbids its own prescription leaves the consumer no
  * legal move at all, which is exactly what #740 was opened about.
  *
- * Walks BACKWARDS to the nearest preceding `>` and asks whether the tag it closes is a
- * capitalised component carrying `asChild`. That covers both spellings prettier produces —
+ * Walks BACKWARDS to the nearest preceding `>` and asks whether the tag it closes is one of
+ * ASCHILD_BOX_PRIMITIVES carrying `asChild`. That covers both spellings prettier produces —
  * `<Card asChild><button` on one line, and the attribute wrapped onto its own line — while
- * `</Card>` or `<div>` before the tag exempts nothing, because neither starts a component.
+ * `</Card>` or `<div>` before the tag exempts nothing, because neither starts a component, and
+ * `<DropdownMenuTrigger asChild>` exempts nothing either, because a trigger paints no box.
  */
 const isAsChildSlot = (content, index) => {
   const before = content.slice(0, index).replace(/\s+$/, "");
@@ -186,8 +205,10 @@ const isAsChildSlot = (content, index) => {
   const openStart = before.lastIndexOf("<", before.length - 1);
   if (openStart === -1) return false;
   const openTag = before.slice(openStart);
-  // A component, not `</Card>` and not a lowercase host element.
-  return /^<[A-Z][\w.]*\b/.test(openTag) && /\basChild\b/.test(openTag);
+  // A component, not `</Card>` and not a lowercase host element…
+  const name = /^<([A-Z][\w.]*)\b/.exec(openTag)?.[1];
+  // …and one that hands over its BOX, not merely its behaviour. See ASCHILD_BOX_PRIMITIVES.
+  return name !== undefined && ASCHILD_BOX_PRIMITIVES.has(name) && /\basChild\b/.test(openTag);
 };
 
 /** `rawTag`, minus the matches that are an `asChild` primitive's borrowed element. */
