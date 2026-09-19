@@ -4,6 +4,28 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.2.1] - 2026-09-20
+
+PATCH. One CSS rule, gated on `bodied`; a strip without it emits byte-identical DOM.
+
+### Fixed
+
+- **A control in `extra` no longer sits ON the bodied strip's outline** (gh#766). `bodied` gave the
+  strip an outer edge, and `extra` was lining up with the wrong thing: measured in Chromium at
+  1440px on an `editable-card` strip with three buttons in the end slot, the body's own content
+  started 17px inside the object (1px border + a 16px `--tabs-panel-space-inset`) while the last
+  button's right border landed at exactly 0px from it — two 1px borders on the same x, which reads
+  as a button with its edge sliced off rather than as flush. The consumer reported it as clipping
+  ("bên phải nút đang bị cắt"). The end and start slots now inset by
+  `--tabs-panel-space-inset + --tabs-panel-border-width`, so a control on the bar lands on the same
+  inline column as the content in the body beneath it (measured after: both at 1399px).
+  **The tabs themselves stay flush, and that asymmetry is the fix, not an oversight** — a tab is
+  part of the object's PERIMETER and its inline border merges into the body's, which is what makes
+  strip and body one outline; a control in `extra` is CONTENT sitting on the bar. The border width
+  is in the sum because the bar has none and the body does: insetting by the padding alone stops
+  1px short and leaves a hairline stagger, the same defect one step smaller. Horizontal placements
+  only — on `start`/`end` the bar is a column beside the panel, so its outer edge is the block one.
+
 ## [28.2.0] - 2026-09-20
 
 MINOR. One new export (`Callout`), one new value on an existing union (`AlertVariantProp`), and a
@@ -51,28 +73,6 @@ DOM.
   time, the old test fails with the exact CI signature (`loadOptions was called 1×`) and the new one
   passes; it is the only case whose result changes. A guard pins the advanced interval to the
   component's own constant, and #754's diagnostic is kept.
-
-## [28.1.1] - 2026-09-19
-
-PATCH. One CSS rule, gated on `bodied`; a strip without it emits byte-identical DOM.
-
-### Fixed
-
-- **A control in `extra` no longer sits ON the bodied strip's outline** (gh#766). `bodied` gave the
-  strip an outer edge, and `extra` was lining up with the wrong thing: measured in Chromium at
-  1440px on an `editable-card` strip with three buttons in the end slot, the body's own content
-  started 17px inside the object (1px border + a 16px `--tabs-panel-space-inset`) while the last
-  button's right border landed at exactly 0px from it — two 1px borders on the same x, which reads
-  as a button with its edge sliced off rather than as flush. The consumer reported it as clipping
-  ("bên phải nút đang bị cắt"). The end and start slots now inset by
-  `--tabs-panel-space-inset + --tabs-panel-border-width`, so a control on the bar lands on the same
-  inline column as the content in the body beneath it (measured after: both at 1399px).
-  **The tabs themselves stay flush, and that asymmetry is the fix, not an oversight** — a tab is
-  part of the object's PERIMETER and its inline border merges into the body's, which is what makes
-  strip and body one outline; a control in `extra` is CONTENT sitting on the bar. The border width
-  is in the sum because the bar has none and the body does: insetting by the padding alone stops
-  1px short and leaves a hairline stagger, the same defect one step smaller. Horizontal placements
-  only — on `start`/`end` the bar is a column beside the panel, so its outer edge is the block one.
 
 ## [28.1.0] - 2026-09-19
 
