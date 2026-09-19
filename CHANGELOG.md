@@ -19,6 +19,23 @@ either add the prop or query `role="button"` with `aria-pressed`.
 
 ### Fixed
 
+- **Card: the vertical slack is the footer's, and the accent rail's padding comes back** (gh#750).
+  `ddf6cd14` wrapped `card-layout.css` in `@layer` and left the accented header/content selectors
+  with NO declaration; `b110214e` then appended the footer's `margin-block-start: auto` to that
+  orphaned list — the footer's own comment is still sitting between the selectors. So every
+  accented card taller than its content bottom-aligned its header AND its body. Measured on a
+  600px lane: header top 190.33 → 9, content 389.67 → 27, with the footer still bottom-aligned;
+  a consumer measured the same shape on a 1652px lane (header +547.78, content +1095.56, exactly
+  twice, because two equal auto margins split the free space) and read it as "the lane goes empty
+  and the status pill slides to the bottom". Quieter and in the same wound: the padding that steps
+  each band back by the rail width went with it, so an accented header and body sat the rail's
+  width off the shell line — all three bands are back to `calc(inset − rail)`, measured 10px on a
+  6px rail. A test now asserts that exactly one rule claims the slack and that it is the footer's.
+- **Documented: a `perimeter` accent ring is clipped by a scroll container** (gh#750). The ring is
+  painted OUTSIDE the border box; a horizontal `ScrollArea` is `overflow: auto hidden`, and
+  `overflow-clip-margin` — the property that would let it bleed — is honoured only by `clip`, not
+  by `auto`. A perimeter card flush against a scroller edge loses 1px of ring on that side. Inside
+  a scroller use the default `edge` placement, whose rail is inside the box, or a tone fill.
 - **`ToggleGroup type="single"` no longer claims a radio role it cannot honour** (gh#744). The
   group emitted `role="radiogroup"` / `role="radio"` + `aria-checked` while still clearing on a
   second press of the selected item — a state ARIA cannot express, so a screen reader read an
