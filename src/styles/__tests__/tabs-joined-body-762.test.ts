@@ -35,6 +35,57 @@ function ruleContaining(css: string, needle: string): string {
  * seam rows read 253,253,252 throughout (no line at all); down an inactive tab's column and past
  * the last tab they read 238,237,236 for exactly two device rows (one CSS px).
  */
+describe("Tabs bodied — the trailing control's edge (gh#766)", () => {
+  /**
+   * Measured in Chromium at 1440px on a bodied `editable-card` strip with three buttons in the
+   * end slot, against the consumer's own built css:
+   *
+   *   body content starts            17px inside the object (1px border + 16px inset)
+   *   last bar button ended at        0px  → two 1px borders on the same x, read as "sliced off"
+   *   last bar button ends at (now)  17px  → 1399px, the same column as the body's content
+   *
+   * The tabs are deliberately NOT moved: a tab's inline border merges into the body's, which is
+   * what makes strip and body one outline. Only `extra` is content rather than perimeter.
+   */
+  it("insets the end slot to the body's content column, not to its border", () => {
+    const rule = ruleContaining(
+      navStyles,
+      '[data-placement="top"] .ui-tabs-extra[data-side="end"]',
+    );
+    expect(rule).toMatch(
+      /margin-inline-end:\s*calc\(\s*var\(--tabs-panel-space-inset\)\s*\+\s*var\(--tabs-panel-border-width\)\s*\)/,
+    );
+  });
+
+  it("insets a start slot on the same terms", () => {
+    const rule = ruleContaining(
+      navStyles,
+      '[data-placement="top"] .ui-tabs-extra[data-side="start"]',
+    );
+    expect(rule).toMatch(/margin-inline-start:\s*calc\(/);
+  });
+
+  it("leaves the tabs flush, so the perimeter stays one outline", () => {
+    // A rule that moved the LIST would break the merge the whole `bodied` shape is built on.
+    const bodied = navStyles.slice(navStyles.indexOf('[data-slot="tabs"][data-bodied="true"] {'));
+    expect(bodied).not.toMatch(/\.ui-tabs-extra[^{]*\{[^}]*margin-inline:(?!-)/);
+    expect(bodied).not.toMatch(
+      /\[data-bodied="true"\][^{]*\[data-slot="tabs-list"\][^{]*\{[^}]*margin-inline-start/,
+    );
+  });
+
+  it("does not move a strip that has no body", () => {
+    // Every rule here is gated on `[data-bodied="true"]`; an ungated `.ui-tabs-extra` margin
+    // would shift every existing strip in every consumer at once.
+    const extraRules = navStyles.matchAll(/([^\n}]*\.ui-tabs-extra[^{]*)\{([^}]*)\}/g);
+    for (const [, selector, body] of extraRules) {
+      if (/margin-inline/.test(body)) {
+        expect(selector).toContain('[data-bodied="true"]');
+      }
+    }
+  });
+});
+
 describe("Tabs bodied — the joined body (gh#762)", () => {
   it("closes the strip↔panel gap instead of tweaking it per consumer", () => {
     // `--tabs-root-gap` is right for every other variant; a body is not a gap tweak, so the

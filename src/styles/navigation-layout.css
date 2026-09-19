@@ -352,27 +352,27 @@
    * The card face itself needs no mirror — `CARD_FACE` uses `rounded-s/-e` and `border-s/-e`,
    * which are logical already. */
   [data-slot="tabs"][data-variant="card"][data-placement="start"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
-    [data-slot="tabs-list"] {
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"] [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
 
   [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"] [data-slot="tabs-list"] {
+    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
+  }
+
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="card"][data-placement="start"]
+    [data-slot="tabs-list"],
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
     [data-slot="tabs-list"] {
     box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
   }
 
-  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="start"]
-    [data-slot="tabs-list"],
-  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
-    [data-slot="tabs-list"] {
-    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
-  }
-
-  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"]
-    [data-slot="tabs-list"],
-  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
+  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
     [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
@@ -438,6 +438,41 @@
 
   [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] .ui-tabs-bar {
     align-items: flex-start;
+  }
+
+  /* ── THE TRAILING CONTROL'S EDGE (gh#766) ─────────────────────────────────────────────────
+   * A bodied strip has an outer edge, so everything on the bar now has something to line up
+   * WITH — and `extra` was lining up with the wrong thing. Measured in Chromium at 1440px on a
+   * bodied `editable-card` strip whose end slot held three buttons: the body's own content
+   * started 17px inside the object (1px border + a 16px `--tabs-panel-space-inset`), while the
+   * last button's right border landed at exactly 0px from it. Two 1px borders at the same x,
+   * which does not read as "flush" — it reads as a button with its edge sliced off, and that is
+   * what the consumer reported.
+   *
+   * THE TABS THEMSELVES STAY FLUSH, and that asymmetry is the whole point. A tab is part of the
+   * object's PERIMETER: its inline border merges into the body's, which is what makes the strip
+   * and the body one outline. A control in `extra` is CONTENT sitting on the bar, so it belongs
+   * on the same inline rhythm as the content in the body directly beneath it — not on the
+   * perimeter. Measured after: the last button's right edge and the body's content edge both
+   * land on 1399px.
+   *
+   * WHY THE BORDER WIDTH IS IN THE SUM. The bar has no border; the body does. Insetting by the
+   * padding alone would stop 1px short of the content below it — visible as a hairline stagger
+   * between the bar's trailing control and the body's, which is the same class of defect one
+   * step smaller.
+   *
+   * HORIZONTAL PLACEMENTS ONLY. On `start`/`end` the bar is a column beside the panel, so its
+   * outer edge is the BLOCK one and the inline inset would push the strip off its own axis; the
+   * two rules below are written per placement rather than on the bar for that reason. */
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] .ui-tabs-extra[data-side="end"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] .ui-tabs-extra[data-side="end"] {
+    margin-inline-end: calc(var(--tabs-panel-space-inset) + var(--tabs-panel-border-width));
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] .ui-tabs-extra[data-side="start"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"]
+    .ui-tabs-extra[data-side="start"] {
+    margin-inline-start: calc(var(--tabs-panel-space-inset) + var(--tabs-panel-border-width));
   }
 
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
