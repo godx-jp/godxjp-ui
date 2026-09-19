@@ -665,10 +665,19 @@ const RULES = [
     /*
      * A lucide element rendered where NOTHING will size it.
      *
-     * A lucide component ships `width="24" height="24"`, and exactly four rules in this library
-     * override that: `.ui-button svg`, `.ui-dropdown-menu-item > svg`, `.ui-topbar-item svg` and
-     * `[data-slot="list-row-leading"] > svg`. Outside them — in a `Text`, a table cell, an `<a>`,
-     * a `Flex` — the glyph draws at 24px beside 14px type. It is the one defect class that is
+     * A lucide component ships `width="24" height="24"`, and this library overrides that in
+     * **31** selectors (counted 2026-09-19 across `src/styles/*.css`; this comment used to say
+     * "exactly four" and name them, which had drifted far enough to cause gh#755). Most are
+     * component-internal — a consumer cannot put a glyph inside `.ui-rating-star` — so the number
+     * is not the exemption list and never was.
+     *
+     * What a consumer CAN reach is a SLOT, and that is what `iconSizingRanges` keys on: the slot's
+     * NAME at the call site, not the selector that ends up sizing it. That is why the list there
+     * is prop names rather than CSS, and why it must cover both spellings a slot takes —
+     * `icon={<Users />}` and `icon: <Users />` inside an items array (gh#755).
+     *
+     * Outside a slot — in a `Text`, a table cell, an `<a>`, a `Flex` — the glyph draws at 24px
+     * beside 14px type. It is the one defect class that is
      * INVISIBLE in review: the JSX is correct, the import is correct, and only the screen is
      * wrong. A consumer swept one app and found 38 (gh#712).
      *
@@ -1115,7 +1124,50 @@ function iconSizingRanges(source) {
     const close = matchBracket(source, open);
     ranges.push([open, close < 0 ? source.length : close + 1]);
   }
+  /*
+   * The SAME slots, written as an object property instead of a JSX prop (gh#755).
+   *
+   *     <Tabs items={saved.map((s) => ({ icon: s.shared ? <Users /> : undefined }))} />
+   *
+   * `Tabs` wraps `items[].icon` in `<span class="ui-tabs-trigger-icon">`, and
+   * `navigation-layout.css` sizes `.ui-tabs-trigger-icon svg` — so the glyph IS measured, by the
+   * same component that owns the slot. But the prop form above requires `=`, so `icon:` matched
+   * nothing and the call site was told to size a box the design system owns — the opposite of
+   * what CONSUMER-RULES asks for.
+   *
+   * A property value is not bracketed like `={...}`, so the range runs to the `,` or `}` that
+   * closes it at depth zero. Strings and nested brackets are skipped so a comma inside
+   * `style={{a: 1, b: 2}}` or inside a string does not end it early.
+   */
+  for (const m of source.matchAll(
+    /\b(?:icon|leading|trailing|mark|indicator|avatar|prefix|suffix|addonBefore|addonAfter)\s*:/g,
+  )) {
+    const from = m.index + m[0].length;
+    ranges.push([from, objectPropertyValueEnd(source, from)]);
+  }
   return ranges;
+}
+
+/** Where an object property's value ends: the `,` or `}` closing it at depth zero. */
+function objectPropertyValueEnd(source, from) {
+  let depth = 0;
+  for (let i = from; i < source.length; i += 1) {
+    const c = source[i];
+    if (c === '"' || c === "'" || c === "`") {
+      // Skip to the closing quote of the same kind, honouring backslash escapes.
+      const quote = c;
+      i += 1;
+      while (i < source.length && source[i] !== quote) i += source[i] === "\\" ? 2 : 1;
+      continue;
+    }
+    if (c === "(" || c === "[" || c === "{") depth += 1;
+    else if (c === ")" || c === "]") depth -= 1;
+    else if (c === "}") {
+      if (depth === 0) return i;
+      depth -= 1;
+    } else if (c === "," && depth === 0) return i;
+  }
+  return source.length;
 }
 
 /** A lucide element that no rule, no slot and no author-supplied size will ever measure. */
