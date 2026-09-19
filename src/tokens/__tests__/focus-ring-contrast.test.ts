@@ -424,7 +424,18 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
     // of prose that is `tabIndex={-1}` so a contents link can jump to it, i.e. never in the tab
     // order. The scrollable regions (`.app-main`, `.ui-code-block`, `.ui-timeline-grid`) keep both
     // their focusability and their mark, because a reachable region with no mark is worse.
-    const start = focusRing.indexOf(":is(\n    .ui-focus-ring,");
+    /*
+     * gh#769 — the mark rule used to be found by the literal `":is(\\n    .ui-focus-ring,"`, i.e. by
+     * Prettier's INDENT. Two rules in focus-ring.css open an `:is()` list with `.ui-focus-ring`: the
+     * bare mark rule, and the one scoped under `:root[data-focus-outline="on"]`. Only their indent
+     * told them apart, so simply collapsing the whitespace would match BOTH and silently pick the
+     * wrong one (measured: 2 matches instead of 1).
+     *
+     * Anchor on the rule BOUNDARY instead — the `:is(` must begin a rule, not sit after a parent
+     * selector. Measured on the committed CSS: 1 match, the same rule the literal found.
+     */
+    const MARK_RULE = /(?:^|[{}]|\*\/)\s*:is\(\s*\.ui-focus-ring,/;
+    const start = MARK_RULE.exec(focusRing)?.index ?? -1;
     const markSelector = focusRing.slice(start, focusRing.indexOf("{", start));
     expect(markSelector, "the mark rule must exist").not.toBe("");
     for (const container of [".ui-legal-document-section", "body", "html", ".app-main"]) {

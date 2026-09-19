@@ -36,7 +36,18 @@ const FOCUS_RING_CSS = readFileSync(join(STYLES_DIR, "focus-ring.css"), "utf8");
 
 /** Every class the focus mark rule names, read OUT of the shipped CSS rather than retyped. */
 function ringClasses(): string[] {
-  const start = FOCUS_RING_CSS.indexOf(":is(\n    .ui-focus-ring,");
+  /*
+   * gh#769 — the mark rule used to be found by the literal `":is(\\n    .ui-focus-ring,"`, i.e. by
+   * Prettier's INDENT. Two rules in focus-ring.css open an `:is()` list with `.ui-focus-ring`: the
+   * bare mark rule, and the one scoped under `:root[data-focus-outline="on"]`. Only their indent
+   * told them apart, so simply collapsing the whitespace would match BOTH and silently pick the
+   * wrong one (measured: 2 matches instead of 1).
+   *
+   * Anchor on the rule BOUNDARY instead — the `:is(` must begin a rule, not sit after a parent
+   * selector. Measured on the committed CSS: 1 match, the same rule the literal found.
+   */
+  const MARK_RULE = /(?:^|[{}]|\*\/)\s*:is\(\s*\.ui-focus-ring,/;
+  const start = MARK_RULE.exec(FOCUS_RING_CSS)?.index ?? -1;
   expect(start, "the mark rule must exist").toBeGreaterThan(-1);
   const markRule = FOCUS_RING_CSS.slice(start, FOCUS_RING_CSS.indexOf("{", start));
   const names = new Set<string>();
