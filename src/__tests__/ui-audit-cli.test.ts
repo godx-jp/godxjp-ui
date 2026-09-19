@@ -740,6 +740,31 @@ describe("a raw element borrowed by an `asChild` primitive is the prescribed sha
     expect(rawButtonLines(source)).toEqual([]);
   });
 
+  it("still flags a behaviour trigger's child — a trigger paints no box", () => {
+    /*
+     * The first cut of this exemption was "any component with `asChild`", and measuring it
+     * against a real consumer showed the cost: of 39 `no-raw-button` findings across its three
+     * SPAs it silenced 11, and every one was a Radix TRIGGER, not a card. A trigger supplies
+     * behaviour and no styling, so `<DropdownMenuTrigger asChild><Button>` is not merely legal
+     * — it is the better answer. Exempting those threw away 11 real nudges to fix 0 real
+     * findings. Narrowing it back restored 39.
+     */
+    const source = [
+      "<DropdownMenu>", //                                                1
+      "  <DropdownMenuTrigger asChild>", //                               2
+      '    <button type="button">menu</button>', //                       3  still an error
+      "  </DropdownMenuTrigger>", //                                      4
+      "</DropdownMenu>", //                                               5
+      "<Sheet>", //                                                       6
+      "  <SheetTrigger asChild>", //                                      7
+      '    <button type="button">open</button>', //                       8  still an error
+      "  </SheetTrigger>", //                                             9
+      "</Sheet>", //                                                     10
+    ].join("\n");
+
+    expect(rawButtonLines(source)).toEqual([3, 8]);
+  });
+
   it("still flags a raw button that is NOT a borrowed element", () => {
     const source = [
       "<div>", //                                                        1
