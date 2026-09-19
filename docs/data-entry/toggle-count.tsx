@@ -130,7 +130,10 @@ export default function Demo() {
               Badge variant=&quot;secondary&quot; と同じ塗り）、shape=&quot;pill&quot; が角、count
               が件数、押下が選択。variant / size / shape はグループに一度だけ書けば context
               で全アイテムに届く。default や outline
-              だとチップは押されるまで透明に見えるので、チップ列にはこの組み合わせを使う。
+              だとチップは押されるまで透明に見えるので、チップ列にはこの組み合わせを使う。タグ列は
+              件数ぶん伸びて桁を越えるので wrap を付ける（320px
+              の桁で計測：無しだと最後のチップが枠の外に 21.41px はみ出し、各ラベルが min-content
+              まで潰れて 129.13px · 有りで 3 行 80.00px、scrollWidth 267→212）。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -140,6 +143,7 @@ export default function Demo() {
                 variant="soft"
                 shape="pill"
                 size="xs"
+                wrap
                 value={tags}
                 onValueChange={setTags}
                 aria-label="タグで絞り込み"
