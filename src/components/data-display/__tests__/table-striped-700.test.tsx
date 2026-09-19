@@ -25,9 +25,19 @@ const PIN_RULE = "> :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {";
 
 /** The declaration block that follows `anchor`. */
 function block(anchor: string): string {
-  const at = css.indexOf(anchor);
-  expect(at, `rule not found: ${anchor}`).toBeGreaterThan(-1);
-  const open = css.indexOf("{", at + anchor.length - 1);
+  /*
+   * gh#767 / gh#769 — Prettier re-wraps a selector as soon as it crosses the print width, so the
+   * SAME rule reads as one line or four depending only on how long it is. A plain `indexOf` of a
+   * hand-wrapped literal therefore asserts the FORMATTING, not the rule. Match any whitespace run
+   * where the caller wrote one instead.
+   */
+  const pattern = new RegExp(
+    anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"),
+  );
+  const match = pattern.exec(css);
+  expect(match, `rule not found: ${anchor}`).not.toBeNull();
+  const at = match!.index;
+  const open = css.indexOf("{", at + match![0].length - 1);
   return css.slice(open + 1, css.indexOf("\n  }", open));
 }
 
@@ -214,7 +224,7 @@ describe("gh#700 striped — frozen columns and precedence", () => {
 
   it("inside a Card a frozen body cell's opaque base is the CARD surface, not the page", () => {
     const anchor =
-      '[data-slot="card"]\n    .ui-data-table-surface\n    tbody\n    :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {';
+      '[data-slot="card"] .ui-data-table-surface tbody :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {';
     expect(block(anchor)).toContain("hsl(var(--card-background, var(--card)))");
     const { container } = renderWithUi(
       <div data-slot="card">

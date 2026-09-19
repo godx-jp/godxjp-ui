@@ -31,7 +31,13 @@ function shadowFormRule(): string {
 }
 
 function ruleBody(css: string, selector: string): string {
-  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  /*
+   * gh#767 / gh#769 — Prettier re-wraps a selector list the moment it crosses the print width, so
+   * the SAME rule reads as one line or three depending only on how long the selector happens to
+   * be. Match any run of whitespace where the caller wrote one: this asserts WHICH rule exists
+   * and what it contains, never how the formatter chose to lay it out.
+   */
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
   const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
   expect(match, `must keep a ${selector} rule`).not.toBeNull();
   return match![1].replace(/\/\*[\s\S]*?\*\//g, "");
@@ -66,7 +72,7 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // treatments on one element, which is the complaint that produced the lighter design. A
     // negative offset equal to the mark's width puts the line inside the row's rounded box, so it
     // follows the radius exactly as the old box-shadow form did.
-    const rule = ruleBody(focusRing, "a.ui-list-row,\n  tr.ui-focus-ring,\n  .sb-nav-item");
+    const rule = ruleBody(focusRing, "a.ui-list-row, tr.ui-focus-ring, .sb-nav-item");
     expect(rule).toContain("--focus-ring-offset: calc(-1 * var(--focus-ring-width))");
   });
 
