@@ -1,7 +1,8 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { renderWithUi, screen, userEvent } from "@/test/render";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, renderWithUi, screen, userEvent } from "@/test/render";
 
 import { Select } from "../select";
+import type { SearchSelectLoadResultProp } from "../search-select";
 
 /**
  * A data-driven Select must never open a blank popover when it has zero options,
@@ -135,5 +136,192 @@ describe("Select empty / async states (#138)", () => {
     }
 
     expect(screen.queryByText("could-not-load")).not.toBeInTheDocument();
+  });
+});
+
+describe("Select async reload — every reject/reload interleaving (#748)", () => {
+  type Deferred = {
+    resolve: (result: SearchSelectLoadResultProp) => void;
+    reject: (reason: unknown) => void;
+  };
+
+  function makeLoader() {
+    const pending: Deferred[] = [];
+    const loadOptions = vi.fn(
+      (_params: { query: string; page: number }) =>
+        new Promise<SearchSelectLoadResultProp>((resolve, reject) => {
+          pending.push({ resolve, reject });
+        }),
+    );
+    return { pending, loadOptions };
+  }
+
+  const panel = (
+    loadOptions: ReturnType<typeof makeLoader>["loadOptions"],
+    open: boolean,
+    search: string,
+  ) => (
+    <Select
+      open={open}
+      search={search}
+      loadOptions={loadOptions}
+      errorMessage="could-not-load"
+      emptyMessage="no-options-here"
+      loadingMessage="loading-now"
+      placeholder="選択"
+      data-testid="s"
+    />
+  );
+
+  async function flush() {
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+  }
+
+  /** Step past the 250 ms debounce so a changed query issues its load. */
+  async function settleDebounce() {
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
+    await flush();
+  }
+
+  function panelText() {
+    return document.querySelector('[role="listbox"]')?.textContent ?? "<no listbox>";
+  }
+
+  /** Mount CLOSED, then open — exactly what a click does, and one request per open. */
+  async function openPanel() {
+    const { pending, loadOptions } = makeLoader();
+    const view = renderWithUi(panel(loadOptions, false, ""));
+    await flush();
+    view.rerender(panel(loadOptions, true, ""));
+    await flush();
+    return { pending, loadOptions, view };
+  }
+
+  const recovered = { options: [{ value: "a", label: "選択肢A" }], hasMore: false };
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    // This file's own afterEach awaits a real `setTimeout(0)`; leave the clock real for it.
+    vi.useRealTimers();
+  });
+
+  it("opening issues exactly ONE request (a duplicate would race with itself)", async () => {
+    const { pending, loadOptions } = await openPanel();
+    expect(loadOptions).toHaveBeenCalledTimes(1);
+    expect(pending).toHaveLength(1);
+  });
+
+  it("the rejection settles FIRST, then the reload starts and resolves", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    pending[0]!.reject(new Error("transient"));
+    await flush();
+    expect(panelText()).toContain("could-not-load");
+
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+    expect(pending).toHaveLength(2);
+    pending[1]!.resolve(recovered);
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+    expect(panelText()).not.toContain("could-not-load");
+  });
+
+  it("the reload STARTS first, the stale rejection lands next, the reload resolves last", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+    expect(pending).toHaveLength(2);
+
+    pending[0]!.reject(new Error("transient")); // superseded — must not show the error
+    await flush();
+    expect(panelText()).not.toContain("could-not-load");
+
+    pending[1]!.resolve(recovered);
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+    expect(panelText()).not.toContain("could-not-load");
+  });
+
+  it("the reload RESOLVES first and the stale rejection lands LAST (must not blank the options)", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+
+    pending[1]!.resolve(recovered);
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+
+    pending[0]!.reject(new Error("transient"));
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+    expect(panelText()).not.toContain("could-not-load");
+  });
+
+  it("two reloads in flight, results arriving OUT OF ORDER — the newest query wins", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    pending[0]!.reject(new Error("transient"));
+    await flush();
+
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+    view.rerender(panel(loadOptions, true, "AB"));
+    await settleDebounce();
+    expect(pending).toHaveLength(3);
+
+    pending[2]!.resolve({ options: [{ value: "ab", label: "AB-row" }], hasMore: false });
+    await flush();
+    pending[1]!.resolve({ options: [{ value: "a", label: "A-row" }], hasMore: false });
+    await flush();
+    expect(panelText()).toContain("AB-row");
+    expect(panelText()).not.toContain("A-row");
+  });
+
+  it("reject → reload → reject again → reload: the error tracks the NEWEST outcome", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    pending[0]!.reject(new Error("t1"));
+    await flush();
+    expect(panelText()).toContain("could-not-load");
+
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+    pending[1]!.reject(new Error("t2"));
+    await flush();
+    expect(panelText()).toContain("could-not-load");
+
+    view.rerender(panel(loadOptions, true, "AB"));
+    await settleDebounce();
+    pending[2]!.resolve(recovered);
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+    expect(panelText()).not.toContain("could-not-load");
+  });
+
+  it("closing mid-reload then reopening reloads cleanly", async () => {
+    const { pending, loadOptions, view } = await openPanel();
+    pending[0]!.reject(new Error("t1"));
+    await flush();
+
+    view.rerender(panel(loadOptions, true, "A"));
+    await settleDebounce();
+    view.rerender(panel(loadOptions, false, "A")); // closed while in flight
+    await flush();
+    pending[1]!.resolve(recovered);
+    await flush();
+
+    view.rerender(panel(loadOptions, true, "A")); // reopened
+    await flush();
+    expect(pending).toHaveLength(3);
+    pending[2]!.resolve(recovered);
+    await flush();
+    expect(panelText()).toContain("選択肢A");
+    expect(panelText()).not.toContain("could-not-load");
   });
 });
