@@ -4,7 +4,7 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [28.2.0] - 2026-09-20
 
 MINOR. One new export (`Callout`), one new value on an existing union (`AlertVariantProp`), and a
 test-only change to 26 files. No existing markup moves: `Alert` and `Banner` emit byte-identical
