@@ -57,7 +57,27 @@ runs:
         [ "$avail_gb" -ge 4 ] \
           || { echo "::error::${avail_gb} GB free on this runner; a job writes 1.3–3 GB. Prune the node's stopped containers and lower the swarm task-history-limit — see .github/actions/setup/action.yml"; exit 1; }
 
+    # ci-platform-exception: L8 — `Run pnpm/action-setup@v6.0.9` đo **13.221 ms** (log lượt
+    # 35475285208). L8 sinh ra từ `setup-go` 539s và `setup-node` 123–124s, nên khoản này
+    # nhỏ hơn một bậc; và nó KHÔNG tải toolchain — nó cài pnpm bằng chính Node đã bake.
+    #
+    # VÌ SAO 13s CHỨ KHÔNG PHẢI 1–4s NHƯ CÁC KHO KHÁC: image mang pnpm **v11.7.0**, còn
+    # `package.json` ghim **v10.29.1**, nên mỗi lượt action phải HẠ CẤP — log nói thẳng
+    # `Switching pnpm from v11.7.0 to v10.29.1`. Gỡ được bằng một trong hai, không phải
+    # bằng cách bỏ bước này: nâng `packageManager` lên bản image mang, hoặc bake đúng bản
+    # đang ghim vào image. Lúc ấy thay bằng một bước khẳng định `pnpm --version` đỏ-được.
+    #
+    # `dest` PHẢI là thư mục riêng của job (#3032, godx-tempo). Mặc định của action là
+    # `~/setup-pnpm` — DÙNG CHUNG cho mọi job trên cùng một máy tự dựng. Kho này chạy
+    # nhiều job song song (4 shard test + guards + browser) trên đàn `swarm-pool`, nên hai
+    # job rơi vào cùng host sẽ ghi/đọc cùng một thư mục: job A dọn trong khi job B đang
+    # đọc. Triệu chứng đã đo ở godx-tempo là `self-installer exits with code 1` hoặc
+    # `ENOENT: … /setup-pnpm/package.json`, đỏ ở BƯỚC SETUP sau 10–20s, không chạy test
+    # nào — tức nó đọc y hệt một lượt test đỏ. `runner.temp` riêng theo từng job nên nó
+    # cắt đứt tranh chấp.
     - uses: pnpm/action-setup@v6.0.9
+      with:
+        dest: ${{ runner.temp }}/pnpm
 
     - name: Install dependencies
       shell: bash
