@@ -4,6 +4,51 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Ba bản vá đã vào `main` **không kèm nâng phiên bản** — chúng đi cùng bản phát hành kế tiếp. Ghi
+ở đây để lần cắt bản sau không phải dựng lại từ `git log`, và vì một trong ba **đổi hình nhìn thấy
+được**.
+
+### Fixed
+
+- **`ui-audit` thôi phạt glyph nằm trong khe icon do component sở hữu** (gh#755, PR #758).
+  `iconSizingRanges` nhận khe khi nó là prop JSX (`icon={<Users />}`) nhưng không nhận khi nó là
+  thuộc tính đối tượng trong mảng `items` — dạng mà `Card tabList` và `Tabs items` dùng. `Tabs`
+  bọc giá trị ấy vào `.ui-tabs-trigger-icon` và CSS đặt cỡ nó, nên lời khuyên của luật lại là bảo
+  consumer giành lấy hộp của design system. Người báo đo trong Chromium với CSS đã build trước khi
+  mở issue.
+
+  Kèm theo: chú thích của chính luật viết _"exactly four rules in this library override that"_ —
+  đếm lại trên `src/styles/*.css` được **31**. Con số ấy chưa bao giờ là danh sách miễn trừ; thứ
+  consumer chạm tới được là **khe**, và đó mới là thứ luật khoá theo.
+
+- **`ToggleGroup disallowEmptySelection` không còn khoá bàn phím bên trong `Toolbar`** (gh#756,
+  PR #759). React Aria tắt handler mũi tên của nó khi thấy tổ tiên `role="toolbar"`, giả định
+  toolbar sở hữu điều hướng; `Toolbar` của gói là một `div` trần không xử lý phím nào. Tab stop
+  xoay do đó không còn gì xoay nó: **1/3 tab stop, mũi tên bất động**, hai trong ba lựa chọn không
+  tới được bằng bàn phím — WCAG 2.1.1 mức A. Nay chỉ đặt tab stop xoay ở nơi mũi tên còn sống;
+  trong toolbar quay về một tab stop mỗi mục, vai trò `radiogroup`/`radio` giữ nguyên.
+
+- **`Card tabList` chuyển tiếp `closable`/`closeIcon` của antd** (gh#757 phần 1, PR #760). Thiếu
+  chúng thì `editable-card` đặt dấu × lên **mọi** tab kể cả tab không xoá được, và consumer không
+  vá được từ ngoài vì `Card` dựng `items` **sau** khi trải `...tabProps`. Thuần bổ sung: không
+  truyền vẫn xoá được, đúng mặc định antd.
+
+### Changed
+
+- **`Tabs variant="line"`: trigger rộng theo nhãn, không kéo giãn** (gh#757 phần 2, PR #760).
+  **ĐÂY LÀ THAY ĐỔI NHÌN THẤY ĐƯỢC** với mọi consumer dùng `line` — dải tab chuyển từ chia đều
+  sang rộng theo nội dung, canh đầu dòng.
+
+  antd không đặt `flex-grow` lên tab của bất kỳ `type` nào; gói này đã sửa đúng như vậy cho mặt
+  `card` và để `line` trên `flex-1` của lớp nền. Đo trên dải 1200px: ba tab đều **321px** cho nhãn
+  cần 83 / 84 / 56px, nên gạch chân của tab đang chọn dài 321px dưới một nhãn 56px. `centered`
+  không phải lối thoát — nó canh giữa, tức đổi một hình sai lấy hình sai khác.
+
+  Người cắt bản phát hành cần quyết đây là MINOR hay MAJOR: hành vi và API không đổi, chỉ hình
+  đổi. Nó nằm ở commit riêng trong PR #760 nên hoàn tác được một mình nếu muốn để lại bản sau.
+
 ## [28.0.0] - 2026-09-19
 
 **MAJOR — one ARIA reading changes.** `ToggleGroup type="single"` stops claiming a radio role it
@@ -60,6 +105,7 @@ either add the prop or query `role="button"` with `aria-pressed`.
 - The `ToggleGroup`, `Radio` and `Segmented` catalog entries now agree. The `RadioGroup` entry had
   justified itself with "a row of `aria-pressed` buttons allows nothing selected" while
   `ToggleGroup` shipped radios that allowed exactly that.
+
 ## [27.12.2] - 2026-09-19
 
 PATCH. The audit stops reporting a false positive; no runtime behaviour changes.
