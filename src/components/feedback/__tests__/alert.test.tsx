@@ -111,6 +111,54 @@ describe("Alert", () => {
     expect(alert).toHaveAttribute("data-tone", "default");
     expect(alert).not.toHaveAttribute("data-tone", "destructive");
   });
+
+  /*
+   * #765. `Alert` computes its own role from the tone — assertive for
+   * destructive/warning, polite otherwise — so EVERY Alert is a live region. That
+   * is right for an alert and wrong for a static aside in prose: a wiki page with
+   * three callouts announces all three on load.
+   *
+   * Until there is a separate non-live primitive, the escape hatch consumers use is
+   * `<Alert role="note">`. It works because `{...props}` is spread AFTER the computed
+   * `role` in `alert.tsx` — which was an accident of ordering, promised nowhere. A
+   * refactor that spread props before the role would silently restore the live region
+   * with nothing failing, and godx-task had pinned the ordering in a CONSUMER test to
+   * notice — a consumer guarding a package internal.
+   *
+   * These two cases move that guarantee into the package, where it belongs. They do
+   * NOT close #765: the API question (a `Callout` primitive, or an explicit non-live
+   * axis on `Alert`) is still open. They only stop the current escape hatch from
+   * breaking silently while it is decided.
+   */
+  it.each([
+    ["warning", "alert"],
+    ["info", "status"],
+  ] as const)("tone=%s computes role=%s when the consumer passes none", (tone, expected) => {
+    renderWithUi(
+      <Alert tone={tone}>
+        <AlertContent>
+          <AlertTitle>Computed</AlertTitle>
+        </AlertContent>
+      </Alert>,
+    );
+    expect(screen.getByRole(expected)).toHaveAttribute("data-tone", tone);
+  });
+
+  it.each(["warning", "info"] as const)(
+    "an explicit role wins over the tone-computed one (tone=%s), so a prose callout is not a live region",
+    (tone) => {
+      renderWithUi(
+        <Alert tone={tone} role="note">
+          <AlertContent>
+            <AlertTitle>Static aside</AlertTitle>
+          </AlertContent>
+        </Alert>,
+      );
+      expect(screen.getByRole("note")).toHaveAttribute("data-tone", tone);
+      expect(screen.queryByRole("alert")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
+    },
+  );
 });
 
 describe("Alert.QueryError — legacy (no category) mode", () => {
