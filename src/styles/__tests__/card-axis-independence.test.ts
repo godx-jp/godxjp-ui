@@ -28,11 +28,30 @@ const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 const squash = (value: string) => value.replace(/\s+/g, " ").trim();
 
 /** Every `--token: value` pair inside the first CSS block opened by `opener`. */
+/*
+ * gh#767 / gh#769 — these openers used to carry a leading `\n  `, which anchored on Prettier's
+ * INDENT to tell a TOP-LEVEL rule from a nested one. That pins the formatting: a selector two
+ * characters longer wraps differently and the anchor stops matching, with a failure message that
+ * blames the CSS. Collapsing the whitespace instead would be worse — `card-layout.css` carries 23
+ * `card-content` selectors at mixed indents, so a flattened anchor could match a DIFFERENT rule
+ * and keep passing.
+ *
+ * Anchor on the rule BOUNDARY instead: the selector must begin right after a `{`/`}` (or the file
+ * start) and be followed by its own `{`. That is what "top-level and unqualified" actually means,
+ * and it says so structurally. Measured on the committed CSS: one match per selector, identical
+ * to what the indent anchor found.
+ */
+function openerEnd(clean: string, selector: string): number {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  const match = new RegExp(`(?:^|[{}])\\s*${escaped}\\s*\\{`).exec(clean);
+  return match === null ? -1 : match.index + match[0].length;
+}
+
 function blockDeclarations(css: string, opener: string): Record<string, string> {
   const clean = stripComments(css);
-  const at = clean.indexOf(opener);
+  const at = openerEnd(clean, opener);
   expect(at, `missing CSS block: ${squash(opener)}`).toBeGreaterThan(-1);
-  const body = clean.slice(at + opener.length, clean.indexOf("}", at));
+  const body = clean.slice(at, clean.indexOf("}", at));
   const out: Record<string, string> = {};
   for (const [, name, value] of body.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)) {
     out[name] = squash(value);
@@ -43,9 +62,9 @@ function blockDeclarations(css: string, opener: string): Record<string, string> 
 /** One property declaration (e.g. `padding-inline`) out of the first block opened by `opener`. */
 function property(css: string, opener: string, prop: string): string {
   const clean = stripComments(css);
-  const at = clean.indexOf(opener);
+  const at = openerEnd(clean, opener);
   expect(at, `missing CSS block: ${squash(opener)}`).toBeGreaterThan(-1);
-  const body = clean.slice(at + opener.length, clean.indexOf("}", at));
+  const body = clean.slice(at, clean.indexOf("}", at));
   const match = body.match(new RegExp(`(?:^|;)\\s*${prop}\\s*:\\s*([^;]+);`));
   expect(match, `missing ${prop} in ${squash(opener)}`).not.toBeNull();
   return squash(match![1]);
@@ -118,10 +137,10 @@ function substitute(value: string, vars: Record<string, string>, depth = 0): str
   return substitute(value.slice(0, at) + replacement + value.slice(end + 1), vars, depth + 1);
 }
 
-const AUTH_CARD_SCOPE = '.ui-auth-shell[data-density="compact"] .ui-auth-shell-card {';
-const CARD_CONTENT = '\n  [data-slot="card-content"] {';
-const CARD_CONTENT_SOLO = '\n  [data-slot="card-content"][data-solo] {';
-const CARD_HEADER_PLAIN = '\n  [data-slot="card-header"]:not([data-banded]) {';
+const AUTH_CARD_SCOPE = '.ui-auth-shell[data-density="compact"] .ui-auth-shell-card';
+const CARD_CONTENT = '[data-slot="card-content"]';
+const CARD_CONTENT_SOLO = '[data-slot="card-content"][data-solo]';
+const CARD_HEADER_PLAIN = '[data-slot="card-header"]:not([data-banded])';
 
 const ROOT = rootTokens();
 const AUTH_CARD = blockDeclarations(shellStyles, AUTH_CARD_SCOPE);
@@ -179,7 +198,7 @@ describe("Card content padding is wired on two independent axes (gh#232)", () =>
 
   it("lets the density prop re-arm the block axis to its own card inset", () => {
     for (const density of ["tight", "cozy"] as const) {
-      const rule = blockDeclarations(cardStyles, `[data-slot="card"][data-density="${density}"] {`);
+      const rule = blockDeclarations(cardStyles, `[data-slot="card"][data-density="${density}"]`);
       // Re-declared `initial` → falls back to THIS card's inset, so an explicit per-instance
       // density still beats an ambient shell-level block override, exactly as before.
       expect(rule["--card-space-shell-y"]).toBe("initial");
