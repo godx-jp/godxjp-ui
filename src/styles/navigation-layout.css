@@ -377,6 +377,177 @@
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
 
+  /* ── THE JOINED BODY (`Tabs bodied`, gh#762) ───────────────────────────────────────────────
+   * The card face already repaints the edge FACING the panel in the surface colour (antd's
+   * `genCardStyle`), but until now there was no panel for it to open INTO: the package shipped a
+   * strip and left the consumer to supply the body. Measured on 28.0.0 at 1440px against a
+   * `variant="card"` strip — `<Card>`: 8px gap + a SECOND 1px border at a 9.708px radius;
+   * `<Card variant="borderless">`: 8px gap, no line; no box: 8px gap, transparent. Three wrong
+   * answers to a question the component should never have asked.
+   *
+   * The five things that make it ONE object, and where each is stated:
+   *   1. no gap                 → `--tabs-root-gap: 0px` on the bodied root (below)
+   *   2. no double line         → the LIST's rail is dropped; the body's own border IS the rail
+   *   3. square under the strip → the radius sits only on the two corners AWAY from the strip
+   *   4. one surface            → body and active face both read `--tabs-panel-background`
+   *   5. one outline            → the body is pulled back by exactly one border width, so its
+   *                               edge and the tabs' joined edges occupy the SAME device row
+   *
+   * WHY THE BODY OWNS THE RAIL AND THE LIST GIVES IT UP. The list's rail is an inset shadow at
+   * the list's padding box, so it is exactly as wide as the LIST — and with an `extra` slot or an
+   * `editable-card` add button the list is narrower than the panel (measured: 1352px of list
+   * under a 1392px panel). A rail that stops 40px short of the body's corner is the seam
+   * reappearing at the other end. The body's border spans the whole object, so the body draws it.
+   *
+   * WHY THE PULL IS ON THE BODY AND NOT ON THE ACTIVE TAB. antd pulls the NAV down by 1px.
+   * Tried here, that is the gh#376 failure again: the strip is a scroll container with
+   * `overflow-y: hidden`, a negative block margin inside it puts a tab's border box outside the
+   * scrollport, and Chromium shaves the border (measured then at -0.5px of headroom). The body
+   * is OUTSIDE the scrollport, so it can be pulled with nothing to clip it. The active face
+   * still covers the body's border because `[data-slot="tabs-trigger"]` is `position: relative`
+   * — a positioned box paints above an in-flow one regardless of DOM order (CSS 2.2 Appendix E,
+   * steps 4/5 vs 8) — so no z-index is invented here to arrange it. */
+  [data-slot="tabs"][data-bodied="true"] {
+    --tabs-root-gap: 0px;
+  }
+
+  /* `[data-variant]` is repeated here for SPECIFICITY, not for selection — `bodied` already
+   * implies one of the two card variants. The four rail rules above are `[data-slot][data-variant]
+   * [data-placement] [data-slot]` = (0,4,0), so a (0,3,0) override lost to the three placements
+   * that carry one: measured before this, `tabPlacement="bottom"` and `"start"` kept
+   * `inset 0 1px 0` / `inset -1px 0 0` under a body that was already drawing the same line. The
+   * `[dir="rtl"]` pair is the same arithmetic one step further: the mirrored rail rules are
+   * (0,5,0), so an unprefixed override lost to them and measured `inset 1px 0 0` on an Arabic
+   * `tabPlacement="start"` while the LTR one was already clean. */
+  [data-slot="tabs"][data-bodied="true"][data-variant="card"] [data-slot="tabs-list"],
+  [data-slot="tabs"][data-bodied="true"][data-variant="editable-card"] [data-slot="tabs-list"],
+  [dir="rtl"] [data-slot="tabs"][data-bodied="true"][data-variant="card"] [data-slot="tabs-list"],
+  [dir="rtl"]
+    [data-slot="tabs"][data-bodied="true"][data-variant="editable-card"]
+    [data-slot="tabs-list"] {
+    box-shadow: none;
+  }
+
+  /* The bar row aligns to the JOINED edge when there is a body: `align-items: center` centres the
+   * add button and the `extra` slot against the strip, so anything taller than a tab hangs past
+   * the tabs' joined edge — across the very line the body is joined to. Aligning them to that
+   * edge puts every affordance on the rail, which is where antd's `+` sits too. */
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] .ui-tabs-bar {
+    align-items: flex-end;
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] .ui-tabs-bar {
+    align-items: flex-start;
+  }
+
+  [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
+    border: var(--tabs-panel-border-width) solid hsl(var(--border));
+    border-radius: var(--tabs-panel-radius);
+    background: hsl(var(--tabs-panel-background, var(--background)));
+    padding: var(--tabs-panel-space-inset);
+  }
+
+  /* Per placement: the joined edge loses its radius and carries the pull. Written on the LOGICAL
+   * corner properties, so `start`/`end` mirror themselves under `dir="rtl"` with no second rule
+   * — unlike the rail above, which is a `box-shadow` and has no logical offset to write. */
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="top"] > [data-slot="tabs-content"] {
+    margin-block-start: calc(-1 * var(--tabs-panel-border-width));
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="bottom"] > [data-slot="tabs-content"] {
+    margin-block-end: calc(-1 * var(--tabs-panel-border-width));
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="start"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="start"] > [data-slot="tabs-content"] {
+    margin-inline-start: calc(-1 * var(--tabs-panel-border-width));
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  [data-slot="tabs"][data-bodied="true"][data-placement="end"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"][data-placement="end"] > [data-slot="tabs-content"] {
+    margin-inline-end: calc(-1 * var(--tabs-panel-border-width));
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  /* Forced colors drops every background, so the merged edge — which IS a background colour
+   * wearing a border's clothes — stops merging and the active tab closes itself off again. The
+   * seam is re-stated structurally there: the active face simply has no edge on the joined side.
+   * `CanvasText` keeps the rest of the outline visible. */
+  @media (forced-colors: active) {
+    [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
+    [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
+      border-color: CanvasText;
+    }
+
+    [data-slot="tabs"][data-bodied="true"][data-placement="top"]
+      [data-slot="tabs-trigger"][data-state="active"] {
+      border-block-end-style: none;
+    }
+
+    [data-slot="tabs"][data-bodied="true"][data-placement="bottom"]
+      [data-slot="tabs-trigger"][data-state="active"] {
+      border-block-start-style: none;
+    }
+  }
+
+  /* ── THE TAB COUNTER PILL (`TabItemProp.count`, gh#762) ─────────────────────────────────────
+   * 「未対応 12」. The geometry mirrors `.ui-toggle-count` rather than sharing one class: a tab
+   * and a chip are different controls with different insets. What MUST be shared is the counting
+   * API and the accessible-name construction, and that is — both go through `useCounterPill`.
+   * The tints are role-mirror knobs (`initial` + a call-site fallback, docs/TOKENS.md). */
+  .ui-tabs-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--tabs-count-min-width);
+    margin-inline-start: var(--tabs-count-gap);
+    border-radius: var(--tabs-count-radius);
+    padding-inline: var(--tabs-count-space-inline);
+    background: var(--tabs-count-background, hsl(var(--muted)));
+    color: var(--tabs-count-color, hsl(var(--muted-foreground)));
+    font-size: var(--tabs-count-font-size);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A CARD tab's resting fill IS `--muted`, which is also the pill's default, so on a card strip
+   * the pill measured 1.00:1 against the tab it sits in — present in the DOM and invisible on
+   * screen. Same failure `.ui-toggle-soft .ui-toggle-count` already carries a rule for (gh#602),
+   * and the same answer: the page surface, which is as quiet against the tab as the default pill
+   * is against its own. Only the RESTING tab — the selected one repaints both anyway. */
+  [data-slot="tabs"][data-variant="card"]
+    [data-slot="tabs-trigger"]:not([data-state="active"])
+    .ui-tabs-count,
+  [data-slot="tabs"][data-variant="editable-card"]
+    [data-slot="tabs-trigger"]:not([data-state="active"])
+    .ui-tabs-count {
+    background: var(--tabs-count-card-background, hsl(var(--background)));
+  }
+
+  /* SELECTED — the count follows the tab, which is the whole reason it is a slot instead of a
+   * `<Badge>` the consumer drops into `label`. It is a SECOND cue, never the only one: the tab's
+   * selected state is already carried by the indicator bar / card face (WCAG 1.4.1). */
+  [data-slot="tabs-trigger"][data-state="active"] .ui-tabs-count {
+    background: var(--tabs-count-active-background, hsl(var(--primary)));
+    color: var(--tabs-count-active-color, hsl(var(--primary-foreground)));
+  }
+
+  @media (forced-colors: active) {
+    [data-slot="tabs-trigger"][data-state="active"] .ui-tabs-count {
+      outline: var(--tabs-count-forced-outline-width) solid currentColor;
+    }
+  }
+
   /* EDITABLE-CARD. The × is a pointer shortcut inside the tab, not a focusable control — see the
    * note in tabs.tsx for the axe measurement that decided that. It still needs a real hit box. */
   .ui-tabs-tab-remove {

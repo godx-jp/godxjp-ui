@@ -301,6 +301,32 @@ export type TabItemProp = {
   /** Ant Design `Tab.closeIcon` — replaces the default × on this item's remove button. */
   closeIcon?: React.ReactNode;
   /**
+   * The count beside the label — 「未対応 **12**」, the list-screen pattern (gh#762).
+   *
+   * It is the SAME counter vocabulary `Button` (gh#312) and `Toggle`/`ToggleGroupItem` (gh#734)
+   * already publish, drawn by the same helper, so a counted tab and the counted chip under it
+   * are one thing at one size and one accessible shape. Formatted with `Intl.NumberFormat` in
+   * the active locale — never `String(n)`, never a hand-rolled thousands separator.
+   *
+   * WHY IT IS A SLOT AND NOT `label: <span>未対応 <Badge count={12} /></span>` (antd's answer):
+   * with the number inside the label the PACKAGE owns none of it — not the size, not the gap,
+   * not the tone as the tab moves between selected / unselected / disabled — so every consumer
+   * lands somewhere different. The slot is what lets the tab state drive the pill.
+   */
+  count?: number;
+  /** Cap for `count` — beyond it the pill shows `{overflowCount}+` (e.g. `99+`). Default `99`. */
+  overflowCount?: number;
+  /** Render the pill when `count` is 0. Default `true`, matching Button and Toggle. */
+  showZero?: boolean;
+  /**
+   * Localized description of what the count MEANS, folded into the tab's accessible name so it
+   * never announces as label-then-bare-digits. The digits concatenate straight onto the label in
+   * the accessibility tree («未対応12», gh#734's defect), so the pill is `aria-hidden` and the
+   * spoken clause is an `sr-only` sibling: `countLabel="未対応の課題"` reads
+   * 「未対応, 12 未対応の課題」. Already localized when it arrives — pass a `t()` string.
+   */
+  countLabel?: string;
+  /**
    * Ant Design `Tab.forceRender`. Mounts THIS panel up front and keeps it mounted while another
    * tab is selected, without turning that on for the whole strip the way `destroyOnHidden={false}`
    * does — so the one panel holding a live chart, a scroll position or an unsent draft survives a
@@ -450,6 +476,30 @@ export type TabsProp = {
   size?: "sm" | "md" | "lg";
   /** Ant Design `centered` — centre the trigger strip on its own inline axis. */
   centered?: boolean;
+  /**
+   * Draw the PANEL BODY the card strip opens into, so the strip and the panel are ONE object
+   * (gh#762): a surface, a border continuous with the rail, and the radius on the two corners
+   * away from the strip. The active tab's block-end edge is repainted in that body's own colour,
+   * which is what makes it read as opened into the body rather than closed off above it.
+   *
+   * WHY IT EXISTS. `variant="card"` already repaints the active face's merged edge — antd's
+   * `genCardStyle` — but the package shipped no body for it to merge INTO, so the consumer had to
+   * supply one and every choice was wrong. Measured on 28.0.0 against a `variant="card"` strip at
+   * 1440px: `<Card>` left an 8px gap AND added a second 1px border at a 9.708px radius (two
+   * stacked boxes), `<Card variant="borderless">` left the same 8px gap with no line at all, and
+   * no box at all left the 8px gap over a transparent panel. The gap is `--tabs-root-gap`, which
+   * is correct for every OTHER variant — a body is not a gap tweak, it is the missing half of the
+   * card face.
+   *
+   * HONOURED ONLY BY `card` / `editable-card`, and that is a statement, not a limitation. The
+   * pill strip is a free-floating control and the `line` strip's own body is the CARD around it —
+   * `<Card tabList>` is that pairing, already built and already joined. Passing `bodied` to any
+   * other variant emits no attribute and changes no pixel.
+   *
+   * OPT-IN, so no strip on 28.0.0 moves. A service that wants every card strip bodied has the
+   * `card`-variant defaults as a theme decision, not a prop it must repeat.
+   */
+  bodied?: boolean;
   /** Ant Design `tabBarExtraContent`, renamed and made logical. @see TabsExtraProp */
   extra?: TabsExtraProp;
   /**
