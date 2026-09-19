@@ -4137,7 +4137,7 @@ export default function InvoiceList({
         type: '"edge" | "perimeter"',
         defaultValue: '"edge"',
         description:
-          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`.',
+          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`. LIMIT (gh#750): the perimeter ring is painted OUTSIDE the border box, and a scroll container clips it — a horizontal ScrollArea is `overflow: auto hidden`, and `overflow-clip-margin` is honoured only by `clip`, not by `auto`. A perimeter card flush against a scroller edge loses 1px of ring on that side; inside a scroller use the default "edge" placement (its rail is inside the box) or a tone fill.',
       },
       {
         name: "variant",
