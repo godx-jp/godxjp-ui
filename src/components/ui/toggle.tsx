@@ -85,14 +85,23 @@ type TogglePressedFields = {
   onPressedChange?: (pressed: boolean) => void;
 };
 
-/** Counter pill shared by `Toggle` and `ToggleGroupItem`. ACCESSIBLE NAME. */
+/**
+ * Counter pill shared by `Toggle`, `ToggleGroupItem` and `Tabs` items. ACCESSIBLE NAME.
+ *
+ * `slot` names the hooks the pill emits (`data-slot="<slot>-count"` / `.ui-<slot>-count`) so a
+ * third component can reuse the whole construction — the Intl formatting, the `overflowCount`
+ * cap, and above all the `aria-hidden` + `sr-only` split that keeps «未対応12» out of the
+ * accessible name (gh#734) — without a second counting API growing beside this one (gh#762).
+ * It defaults to `toggle`, so every existing call emits the identical markup it always has.
+ */
 function useCounterPill({
   count,
   overflowCount = 99,
   showZero = true,
   countLabel,
   ariaLabel,
-}: ToggleCountFields & { ariaLabel?: string }) {
+  slot = "toggle",
+}: ToggleCountFields & { ariaLabel?: string; slot?: string }) {
   const { locale } = useTranslation();
   const visible = count != null && (count !== 0 || showZero);
   const formatted = React.useMemo(() => {
@@ -109,7 +118,7 @@ function useCounterPill({
   return {
     pill: (
       <>
-        <span data-slot="toggle-count" className="ui-toggle-count" aria-hidden="true">
+        <span data-slot={`${slot}-count`} className={`ui-${slot}-count`} aria-hidden="true">
           {formatted}
         </span>
         <span className="sr-only">{`, ${spoken}`}</span>
