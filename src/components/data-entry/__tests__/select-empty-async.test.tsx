@@ -107,7 +107,33 @@ describe("Select empty / async states (#138)", () => {
 
     // Typing re-queries — the debounced reload succeeds and the error clears.
     await user.keyboard("A");
-    expect(await screen.findByText("選択肢A")).toBeInTheDocument();
+
+    /*
+     * gh#748: this assertion failed ONCE on CI, between two green runs, and has never
+     * reproduced — 0/15 in isolation, 0/8 under CPU contention, 166/166 across three full runs
+     * of CI's own shard command. Two causes produce the identical "Unable to find an element
+     * with the text" message, and they need opposite fixes:
+     *
+     *   loadOptions called 1× — the 250 ms debounce (`DEBOUNCE_MS`, search-select.tsx) never
+     *                           elapsed, so the reload was never even requested
+     *   loadOptions called 2× — the reload ran and its result did not reach the DOM in time
+     *
+     * The bare failure cannot tell them apart, which is why gh#748 is open with no fix: a
+     * guessed remedy (raising the timeout) would bury whichever one it is. So the call count
+     * travels WITH the failure. Nothing here changes what the test asserts.
+     */
+    try {
+      expect(await screen.findByText("選択肢A")).toBeInTheDocument();
+    } catch (error) {
+      throw new Error(
+        `gh#748 diagnostic — loadOptions was called ${loadOptions.mock.calls.length}×. ` +
+          "1× means the debounced reload never fired; 2× means it fired and did not render. " +
+          `Rendered text: ${JSON.stringify(document.body.textContent?.slice(0, 200))}`,
+        // Keep the original — its stack points at the matcher, which this message does not.
+        { cause: error },
+      );
+    }
+
     expect(screen.queryByText("could-not-load")).not.toBeInTheDocument();
   });
 });
