@@ -8,11 +8,13 @@
           "evidence": ["docs/feedback/alert.tsx"]
         },
         "variant": {
-          "cases": ["default", "banner"],
+          "cases": ["default", "banner", "callout"],
           "evidence": [
             "docs/feedback/alert.tsx",
             "docs/feedback/banner.tsx",
-            "src/components/feedback/__tests__/banner.test.tsx"
+            "docs/feedback/callout.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx",
+            "src/components/feedback/__tests__/callout.test.tsx"
           ]
         }
       }
