@@ -1070,4 +1070,19 @@ export type CardTabItemProp = {
   tab: React.ReactNode;
   /** Ant Design `disabled` — the tab stays in the strip and in the roving focus, unselectable. */
   disabled?: boolean;
+  /**
+   * Ant Design `closable` — honoured by `tabProps={{ variant: "editable-card" }}`, where it
+   * decides whether THIS tab gets a remove button (gh#757).
+   *
+   * Without it the strip is all-or-nothing: `editable-card` puts a × on every tab, including the
+   * one that is not deletable — a consumer measured 3 of 3 removable where 2 was right. It could
+   * not be patched from outside either, because `Card` builds `items` AFTER spreading
+   * `...tabProps`, so a hand-written `items` never survived.
+   *
+   * Default (undefined) stays removable, which is antd's own default and `Tabs`' (`closable !==
+   * false`) — this only adds the way to say no.
+   */
+  closable?: boolean;
+  /** Ant Design `closeIcon` — replaces the default × on this tab's remove button. */
+  closeIcon?: React.ReactNode;
 };

@@ -296,6 +296,11 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
                 value: item.key,
                 label: item.tab,
                 disabled: item.disabled,
+                // antd's per-tab remove control. Forwarded rather than dropped: `items` is built
+                // AFTER `...tabProps` above, so a consumer cannot supply these from outside —
+                // this mapping is the only place they can arrive (gh#757).
+                closable: item.closable,
+                closeIcon: item.closeIcon,
                 // The body belongs to the SELECTED tab and to no other: the card has exactly one
                 // set of children, so handing them to every panel would render them N times the
                 // moment `destroyOnHidden={false}` kept the hidden panels mounted.
