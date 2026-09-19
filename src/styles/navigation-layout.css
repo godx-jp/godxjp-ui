@@ -352,27 +352,27 @@
    * The card face itself needs no mirror — `CARD_FACE` uses `rounded-s/-e` and `border-s/-e`,
    * which are logical already. */
   [data-slot="tabs"][data-variant="card"][data-placement="start"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"] [data-slot="tabs-list"] {
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
+    [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
 
   [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"] [data-slot="tabs-list"] {
-    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
-  }
-
-  [dir="rtl"]
-    [data-slot="tabs"][data-variant="card"][data-placement="start"]
-    [data-slot="tabs-list"],
-  [dir="rtl"]
-    [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
     [data-slot="tabs-list"] {
     box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
   }
 
-  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
-  [dir="rtl"]
-    [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
+  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="start"]
+    [data-slot="tabs-list"],
+  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
+    [data-slot="tabs-list"] {
+    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
+  }
+
+  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"]
+    [data-slot="tabs-list"],
+  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
     [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
@@ -475,7 +475,7 @@
     margin-inline-start: calc(var(--tabs-panel-space-inset) + var(--tabs-panel-border-width));
   }
 
-  [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
+    [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
     border: var(--tabs-panel-border-width) solid hsl(var(--border));
     border-radius: var(--tabs-panel-radius);
