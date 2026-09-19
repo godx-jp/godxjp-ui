@@ -111,13 +111,13 @@ describe("Callout", () => {
   it("forwards ref and className, and spreads the rest onto the surface", () => {
     const ref = createRef<HTMLDivElement>();
     renderWithUi(
-      <Callout ref={ref} className="my-aside" id="release-note" data-testid="callout">
+      <Callout ref={ref} className="consumer-aside" id="release-note" data-testid="callout">
         <Callout.Title>Note</Callout.Title>
       </Callout>,
     );
     const callout = screen.getByTestId("callout");
     expect(ref.current).toBe(callout);
-    expect(callout).toHaveClass("my-aside");
+    expect(callout).toHaveClass("consumer-aside");
     expect(callout).toHaveAttribute("id", "release-note");
   });
 
