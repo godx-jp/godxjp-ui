@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 288,
-    dimensionCells: 4032,
+    exports: 289,
+    dimensionCells: 4046,
     covered: 90,
-    untested: 2212,
-    notApplicable: 1730,
+    untested: 2219,
+    notApplicable: 1737,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -145,6 +145,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Button","group":"general","frame":"docs/general/button/index.tsx","covered":["shapes","sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","tones"]},
   {"name":"ButtonRefetch","group":"query","frame":"docs/query/button-refetch.tsx","covered":["shapes","sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","tones"]},
   {"name":"Calendar","group":"data-entry","frame":"docs/data-entry/calendar.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
+  {"name":"Callout","group":"feedback","frame":"docs/feedback/callout.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Card","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},
   {"name":"CardAction","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"CardBar","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
