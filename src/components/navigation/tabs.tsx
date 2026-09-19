@@ -559,6 +559,16 @@ export function Tabs({
               // pixel and `justify-content` has nothing left to centre — measured, the leading and
               // trailing gaps were both 0px with `centered` on and off.
               centered && "flex-none",
+              // LINE face: same argument as the card face below, and from the same source — antd
+              // puts no `flex-grow` on a tab of ANY `type`, so a line tab is content-width too.
+              // `card` was fixed on that reasoning (gh#736); `line` was left on the base `flex-1`
+              // and kept stretching. Measured by a consumer on a 1200px strip: three tabs at
+              // 321px each for labels needing 83 / 84 / 56px, so the active underline ran 321px
+              // under a 56px label.
+              //
+              // `centered` is NOT the escape hatch for this: it centres, which trades one wrong
+              // geometry for another, and it is antd's prop for centring rather than for width.
+              variant === "line" && "flex-none",
               // The merged edge is the SURFACE colour, never `transparent`: the rail is an inset
               // shadow at the strip's padding-box edge, so a see-through border would let that 1px
               // of rail run straight across the tab it is joined to.
