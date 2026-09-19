@@ -15,7 +15,7 @@ import { humanError } from "../../lib/format";
 import { type QueryErrorCategory } from "../../lib/query-error";
 import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
-import type { ToneProp } from "../../props/vocabulary";
+import type { AlertVariantProp, ToneProp } from "../../props/vocabulary";
 import type {
   AlertActionsProp,
   AlertContentProp,
@@ -45,6 +45,20 @@ const AlertContext = React.createContext<ToneProp>("default");
 /** Tones that warrant an assertive `role="alert"`; all others use the polite `role="status"`. */
 const ASSERTIVE_TONES: ReadonlySet<ToneProp> = new Set<ToneProp>(["destructive", "warning"]);
 
+/**
+ * The role the surface carries when the consumer does not name one.
+ *
+ * `callout` is the one variant that is NOT a live region, and that is the whole reason it exists
+ * (gh#765): an aside inside a document body is part of what the reader is reading, not an update
+ * to it, so a page with three of them must not announce three times on load. Every other variant
+ * keeps the tone-derived politeness — assertive for the two tones that interrupt, polite
+ * otherwise.
+ */
+const roleFor = (variant: AlertVariantProp, tone: ToneProp): string => {
+  if (variant === "callout") return "note";
+  return ASSERTIVE_TONES.has(tone) ? "alert" : "status";
+};
+
 const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
   default: Info,
   destructive: AlertCircle,
@@ -67,7 +81,7 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
       <AlertContext.Provider value={tone}>
         <div
           ref={ref}
-          role={ASSERTIVE_TONES.has(tone) ? "alert" : "status"}
+          role={roleFor(variant, tone)}
           data-slot="alert"
           data-variant={variant}
           data-tone={tone}

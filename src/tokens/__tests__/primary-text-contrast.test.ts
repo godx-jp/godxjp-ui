@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 /**
  * `--primary` is used as TEXT, not only as a fill: every link, every
  * issue key, every "Save as Filter" in a consuming app is `text-primary`. It
@@ -22,7 +24,7 @@ const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   const close = css.indexOf("\n}", open);
@@ -73,7 +75,7 @@ const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 describe.each([
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ])("--primary as text ($theme)", ({ selector }) => {
   const body = block(selector);
   const primary = hslToRgb(hsl(body, "primary"));

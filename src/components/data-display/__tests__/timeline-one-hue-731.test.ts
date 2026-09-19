@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../../test/css-selector";
+
 import { contrast, hsl, hslToRgb, NON_TEXT, over } from "../../../tokens/__tests__/wcag-contrast";
 
 /**
@@ -39,7 +41,7 @@ function rule(css: string, selector: string): string {
 }
 
 function themeBlock(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
@@ -47,7 +49,7 @@ function themeBlock(selector: string): string {
 
 const THEMES = {
   light: themeBlock(":root {"),
-  dark: themeBlock('.dark,\n:root[data-theme="dark"] {'),
+  dark: themeBlock('.dark, :root[data-theme="dark"] {'),
 } as const;
 
 const role = (body: string, name: string) => hslToRgb(hsl(body, name));

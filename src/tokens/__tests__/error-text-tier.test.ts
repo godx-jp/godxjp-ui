@@ -2,6 +2,8 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { contrast, hsl, hslToRgb } from "./wcag-contrast";
 
 /**
@@ -38,7 +40,7 @@ const foundation = readFileSync(join(ROOT, "src/tokens/foundation.css"), "utf8")
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
@@ -46,7 +48,7 @@ function block(selector: string): string {
 
 const THEMES = {
   light: block(":root {"),
-  dark: block('.dark,\n:root[data-theme="dark"] {'),
+  dark: block('.dark, :root[data-theme="dark"] {'),
 } as const;
 
 /**
@@ -143,7 +145,10 @@ describe("no component paints prose with the destructive FILL tier (gh#610)", ()
         offenders.push(`${file}:${index + 1}  ${selector}`);
       });
     }
-    expect(offenders, "move these to the --text-* tier, or add the selector to EXEMPT with a reason in the CSS").toEqual([]);
+    expect(
+      offenders,
+      "move these to the --text-* tier, or add the selector to EXEMPT with a reason in the CSS",
+    ).toEqual([]);
   });
 });
 
@@ -178,7 +183,7 @@ describe("the contrast sweep's new routes still paint what they were added for (
       docs: "docs/navigation/steps.tsx",
       // The demo's toggle must START from the error state, not reach it by click.
       renders: /useState\(true\)/,
-      why: "status=\"error\" was behind a button click",
+      why: 'status="error" was behind a button click',
     },
     {
       route: "/isolate/navigation-dropdown-menu",
@@ -192,8 +197,10 @@ describe("the contrast sweep's new routes still paint what they were added for (
   for (const { route, docs, renders, why } of SURFACES) {
     it(`${route} is swept AND ${docs} still paints it (${why})`, () => {
       expect(sweep, `${route} is missing from check:contrast ROUTES`).toContain(`"${route}"`);
-      expect(sweep, `${route} must be swept in BOTH themes — the tiers are retuned per theme`)
-        .toContain(`"${route}?theme=dark"`);
+      expect(
+        sweep,
+        `${route} must be swept in BOTH themes — the tiers are retuned per theme`,
+      ).toContain(`"${route}?theme=dark"`);
       expect(
         readFileSync(join(ROOT, docs), "utf8"),
         `${docs} no longer paints the state ${route} was added to measure`,

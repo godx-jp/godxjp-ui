@@ -4,6 +4,7 @@ import type { QueryErrorCategory } from "../../lib/query-error";
 import type {
   AlertVariantProp,
   AvatarShapeProp,
+  CalloutKindProp,
   CancelLabelProp,
   ChildrenProp,
   ClassNameProp,
@@ -112,6 +113,18 @@ export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
  * `icon`/`icon={false}` owns the leading glyph, `onDismiss` renders the built-in dismiss button.
  */
 export type BannerProp = Omit<AlertProp, "variant">;
+
+/**
+ * @see Callout — the in-prose aside (`<Alert variant="callout">` with the variant fixed).
+ *
+ * Same contract as {@link AlertProp} minus `variant` and `onDismiss`: a callout is part of the
+ * document the reader is reading, so it is never a live region and never dismissible. `kind` is
+ * the GitHub/Obsidian admonition preset and resolves `tone` + the leading glyph; pass `tone` or
+ * `icon` to override either per instance (gh#765).
+ */
+export type CalloutProp = Omit<AlertProp, "variant" | "onDismiss"> & {
+  kind?: CalloutKindProp;
+};
 
 /** @see AlertTitle */
 export type AlertTitleProp = React.HTMLAttributes<HTMLParagraphElement> & {

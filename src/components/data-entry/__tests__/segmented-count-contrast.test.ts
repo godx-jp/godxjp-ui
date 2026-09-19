@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+
+import { anchorIndex } from "../../../test/css-selector";
 import { chromium } from "playwright";
 
 import { contrast, hsl, hslToRgb, NON_TEXT } from "@/tokens/__tests__/wcag-contrast";
@@ -24,7 +26,7 @@ const segmentedTokens = readFileSync(
 const controlStyles = readFileSync(join(process.cwd(), "src/styles/control.css"), "utf8");
 
 function themeBlock(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
@@ -32,7 +34,7 @@ function themeBlock(selector: string): string {
 
 const THEMES = [
   { name: "light", selector: ":root {" },
-  { name: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { name: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ] as const;
 
 function ratio(a: [number, number, number], b: [number, number, number]): number {
@@ -156,8 +158,12 @@ describe("Segmented count — getComputedStyle (Chromium)", () => {
 
       const track = document.querySelector('[data-slot="segmented"]')!;
       const trackBg = parse(getComputedStyle(track).backgroundColor)!.rgb;
-      const unchecked = document.querySelector('[data-state="unchecked"] [data-slot="segmented-count"]')!;
-      const checked = document.querySelector('[data-state="checked"] [data-slot="segmented-count"]')!;
+      const unchecked = document.querySelector(
+        '[data-state="unchecked"] [data-slot="segmented-count"]',
+      )!;
+      const checked = document.querySelector(
+        '[data-state="checked"] [data-slot="segmented-count"]',
+      )!;
       const uncheckedItem = unchecked.closest(".ui-segmented-item")!;
       const checkedItem = checked.closest(".ui-segmented-item")!;
       const uncheckedPill = parse(getComputedStyle(unchecked).backgroundColor)!.rgb;

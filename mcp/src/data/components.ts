@@ -8426,6 +8426,61 @@ import { Button } from "@godxjp/ui/general";
     rules: [],
   },
   {
+    name: "Callout",
+    group: "feedback",
+    tagline:
+      "Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role=\"note\", never a live region. Parts: Callout.Title/Description/Content/Actions.",
+    props: [
+      {
+        name: "kind",
+        type: '"note" | "tip" | "important" | "warning" | "caution"',
+        defaultValue: '"note"',
+        description:
+          "GitHub/Obsidian admonition preset; resolves the tone AND the leading glyph. A preset, not a second colour axis — `tone` and `icon` still override per instance.",
+      },
+      {
+        name: "tone",
+        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
+        description:
+          "Overrides the tone the `kind` resolves to. Drives surface colour and the leading rail ONLY — unlike Alert, tone never changes live-region politeness here, because a Callout has none.",
+      },
+      {
+        name: "icon",
+        type: "LucideIcon | false",
+        description: "Override or hide (false) the kind's default leading glyph.",
+      },
+    ],
+    usage: [
+      'CANONICAL CALLOUT CONTRACT: `Callout` is `Alert` with the structural axis fixed to `variant="callout"` — same tone system, same slots, but ASIDE geometry owned by the `--callout-*` tokens (leading rail, prose insets, block margin) and, uniquely, NO live region. Never fake a callout with `className` on an `Alert`, and never hand-roll a coloured div with a left border.',
+      "DO: Use Callout for content that is part of the document the reader is reading — a docs admonition, a note in a CMS article, a caveat inside a policy page. It is rendered with the page, so it must not announce.",
+      'DON\'T: Use `<Alert role="note">` for this. That worked only because `{...props}` is spread after the computed `role`, which the package never promised; one refactor would have silently restored the live region. A consumer neutralising a component\'s own semantics is the tell that it is the wrong primitive (gh#765).',
+      "DON'T: Reach for Callout to report something that just HAPPENED (a save failed, a session expired). That is an update to the page, not part of it — use `Alert` (inline), `Banner` (page/shell strip) or `toast()`, all of which announce.",
+      "DON'T: Pass `onDismiss` — the type excludes it. Prose does not get dismissed; if the reader can remove it, it is an Alert.",
+      'MARKDOWN RENDERERS: map the five GitHub types straight onto `kind` — `[!NOTE]`→note, `[!TIP]`→tip, `[!IMPORTANT]`→important, `[!WARNING]`→warning, `[!CAUTION]`→caution. Obsidian\'s lower-case spelling is the same set. `important` takes the NEUTRAL tone (this system has no purple role); its glyph, not its colour, is what tells it from `note`.',
+    ],
+    useCases: [
+      'Docs/handbook admonition inside a prose column — `kind="note"` for an aside, `kind="tip"` for a shortcut worth knowing.',
+      'A caveat inside a rendered CMS article (react-markdown + rehype-sanitize), drawn from `> [!WARNING]` in the source.',
+      'A legal or policy page clause that needs emphasis without interrupting a screen-reader user reading the page top to bottom — `kind="important"`.',
+      'A destructive-consequence note beside a runbook step — `kind="caution"`, still silent on load.',
+    ],
+    related: [
+      "Alert — the SAME primitive in its inline-card presentation, and a LIVE REGION. Use it for an update to the page; Callout is for part of the page.",
+      "Banner — the same primitive as the full-bleed page/shell strip, also a live region.",
+      "Prose — the typographic column a Callout normally sits inside; the callout's block margin is tuned to that rhythm.",
+    ],
+    example: `import { Callout } from "@godxjp/ui/feedback";
+
+<Callout kind="warning">
+  <Callout.Title>この操作は取り消せません</Callout.Title>
+  <Callout.Description>
+    リポジトリを削除すると、Issue と Pull Request も一緒に削除されます。
+  </Callout.Description>
+</Callout>`,
+    storyPath: "feedback/Callout.stories.tsx",
+    rules: [],
+  },
+  {
     name: "SkeletonTable",
     group: "feedback",
     tagline:

@@ -297,9 +297,20 @@ export type ToneProp =
  * Alert STRUCTURAL axis (orthogonal to `tone`, which owns colour/semantics):
  * `default` — the inline card (rounded, framed on all sides);
  * `banner` — the full-bleed page/shell attention strip the `Banner` export renders
- * (square corners, hairline block-end rule only, `--banner-*` token geometry).
+ * (square corners, hairline block-end rule only, `--banner-*` token geometry);
+ * `callout` — the in-prose aside the `Callout` export renders (leading rail, `--callout-*`
+ * geometry) and, uniquely, the one value that is NOT a live region: it carries `role="note"`
+ * because it is part of the document being read, not an update to it (gh#765).
  */
-export type AlertVariantProp = "default" | "banner";
+export type AlertVariantProp = "default" | "banner" | "callout";
+
+/**
+ * Callout kind — the five admonitions GitHub documents (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`,
+ * `[!WARNING]`, `[!CAUTION]`), which Obsidian's lower-case spelling maps onto one-for-one. It is a
+ * PRESET, not a second colour axis: each kind resolves to a `tone` and a leading glyph that
+ * `tone`/`icon` still override per instance.
+ */
+export type CalloutKindProp = "note" | "tip" | "important" | "warning" | "caution";
 
 /** Sort direction for table columns. */
 export type SortDirectionProp = "asc" | "desc";

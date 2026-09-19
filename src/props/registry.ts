@@ -582,7 +582,13 @@ export const VOCABULARY_REGISTRY = {
   AlertVariantProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Alert structural axis: default inline card | banner full-bleed strip",
+    description:
+      "Alert structural axis: default inline card | banner full-bleed strip | callout in-prose aside",
+  },
+  CalloutKindProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Callout admonition preset: note | tip | important | warning | caution",
   },
   SortDirectionProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -2665,6 +2671,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "feedback",
     file: "components/feedback.prop.ts",
     vocabulary: ["ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
+  },
+  CalloutProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: ["CalloutKindProp", "ToneProp", "IconProp", "ClassNameProp", "ChildrenProp"],
   },
   AlertTitleProp: {
     group: "feedback",

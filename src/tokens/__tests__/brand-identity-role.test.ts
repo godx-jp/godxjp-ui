@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 /**
  * The IDENTITY role `--brand` must be a real, separate semantic role.
  *
@@ -25,7 +27,7 @@ const logoLayout = read("src/styles/logo-layout.css");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string): string {
-  const start = foundation.indexOf(selector);
+  const start = anchorIndex(foundation, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = foundation.indexOf("{", start);
   const close = foundation.indexOf("\n}", open);
@@ -86,7 +88,7 @@ const deltaE76 = (a: [number, number, number], b: [number, number, number]) => {
 
 const THEMES = {
   light: block(":root {"),
-  dark: block('.dark,\n:root[data-theme="dark"] {'),
+  dark: block('.dark, :root[data-theme="dark"] {'),
 } as const;
 
 describe("--brand: the GoDX identity role (gh#250)", () => {

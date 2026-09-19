@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
 
 /**
@@ -31,7 +33,7 @@ const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   const close = css.indexOf("\n}", open);
@@ -44,7 +46,7 @@ const HOVER_ALPHA = 0.7; // over --accent since gh#700 (was --muted / 0.5)
 
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ] as const;
 
 describe.each(THEMES)("--input as a control boundary ($theme)", ({ selector }) => {
@@ -112,7 +114,7 @@ describe("--border tracks antd's colorBorderSecondary, not colorBorder", () => {
   const GAP = {
     // ground lightness − border lightness, in points, and what antd's own pair gives.
     light: { body: block(":root {"), maxGap: 8, antdControlGap: 15 },
-    dark: { body: block('.dark,\n:root[data-theme="dark"] {'), maxGap: 11, antdControlGap: 17 },
+    dark: { body: block('.dark, :root[data-theme="dark"] {'), maxGap: 11, antdControlGap: 17 },
   } as const;
 
   for (const [theme, { body: themeBody, maxGap, antdControlGap }] of Object.entries(GAP)) {
@@ -120,8 +122,10 @@ describe("--border tracks antd's colorBorderSecondary, not colorBorder", () => {
       const groundL = hsl(themeBody, "background")[2];
       const borderL = hsl(themeBody, "border")[2];
       const gap = Math.abs(groundL - borderL);
-      expect(gap, `--border is ${gap} points off the ground; the split tier is <= ${maxGap}`)
-        .toBeLessThanOrEqual(maxGap);
+      expect(
+        gap,
+        `--border is ${gap} points off the ground; the split tier is <= ${maxGap}`,
+      ).toBeLessThanOrEqual(maxGap);
       expect(
         gap,
         `${gap} points is antd's CONTROL tier (~${antdControlGap}); that value belongs to --input`,

@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { channelsOf, hsl, relative, triplet } from "./wcag-contrast";
 
 /**
@@ -37,7 +39,7 @@ const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   return css.slice(open + 1, css.indexOf("\n}", open));
@@ -45,7 +47,7 @@ function block(css: string, selector: string): string {
 
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark,\n:root[data-theme="dark"] {' },
+  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
 ] as const;
 
 /**

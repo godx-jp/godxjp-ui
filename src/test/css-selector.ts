@@ -6,19 +6,26 @@ import { expect } from "vitest";
  * in the file, and matched nothing — a string header renders as a text node, `:first-child` counts
  * only elements, so the negation excluded the one node it was written for.
  */
-export function ruleSelectors(css: string, anchor: string | RegExp): string[] {
-  /*
-   * gh#767 / gh#769 — a STRING anchor must not pin the FORMATTING. Prettier re-wraps a selector
-   * the moment it crosses the print width, so the same rule reads as one line or four depending
-   * only on how long it is; a plain `indexOf` of a hand-wrapped literal then asserts the layout
-   * rather than the rule, and fails with a message blaming the CSS. Match any run of whitespace
-   * where the caller wrote one. A RegExp anchor is the caller's own business and passes through.
-   */
+/**
+ * Where `anchor` starts in `css`, or `-1`.
+ *
+ * gh#767 / gh#769 — a STRING anchor must not pin the FORMATTING. Prettier re-wraps a selector the
+ * moment it crosses the print width, so the same rule reads as one line or four depending only on
+ * how long it is; a plain `indexOf` of a hand-wrapped literal then asserts the layout rather than
+ * the rule, and fails with a message blaming the CSS. Match any run of whitespace where the caller
+ * wrote one, so a selector can be written on ONE line here whatever the stylesheet does. A RegExp
+ * anchor is the caller's own business and passes through untouched.
+ */
+export function anchorIndex(css: string, anchor: string | RegExp): number {
   const pattern =
     typeof anchor === "string"
       ? new RegExp(anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"))
       : anchor;
-  const idx = pattern.exec(css)?.index ?? -1;
+  return pattern.exec(css)?.index ?? -1;
+}
+
+export function ruleSelectors(css: string, anchor: string | RegExp): string[] {
+  const idx = anchorIndex(css, anchor);
   expect(idx, `rule not found for anchor: ${anchor}`).toBeGreaterThan(-1);
   const open = css.indexOf("{", idx);
   expect(open, `no "{" after anchor: ${anchor}`).toBeGreaterThan(-1);

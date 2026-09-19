@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 /**
  * Filled destructive surfaces (Button/Badge/error Step) must clear WCAG 2.x AA (4.5:1) for
  * normal text against `--destructive-foreground`, in BOTH themes, for DEFAULT + HOVER + ACTIVE. The
@@ -23,7 +25,7 @@ const SOURCES = ["src/tokens/foundation.css", "src/tokens/derived.css"].map((fil
 /** Extract a flat `selector { ... }` block body from each tier, concatenated. */
 function block(selector: string): string {
   const bodies = SOURCES.map((css) => {
-    const start = css.indexOf(selector);
+    const start = anchorIndex(css, selector);
     if (start === -1) return "";
     const open = css.indexOf("{", start);
     return css.slice(open + 1, css.indexOf("\n}", open));
@@ -63,7 +65,7 @@ function contrast(a: [number, number, number], b: [number, number, number]): num
 
 const THEMES = {
   light: block(":root {"),
-  dark: block('.dark,\n:root[data-theme="dark"] {'),
+  dark: block('.dark, :root[data-theme="dark"] {'),
 } as const;
 
 const AA = 4.5;

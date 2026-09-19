@@ -210,9 +210,12 @@ describe("Logo productSuffix tokens", () => {
   });
 
   it("sets the suffix in the wordmark's ramp at every tier, in UI ink at its own weight", () => {
+    // Whitespace-collapsed: the tier rule and its first declaration are one FACT, and where
+    // Prettier put the line break between them is not part of it (gh#769).
+    const flat = layout.replace(/\s+/g, " ");
     for (const tier of ["xs", "sm", "lg"]) {
-      expect(layout).toContain(
-        `.ui-logo-lockup[data-size="${tier}"] .ui-logo-product-suffix {\n    font-size: var(--logo-wordmark-font-size-${tier});`,
+      expect(flat).toContain(
+        `.ui-logo-lockup[data-size="${tier}"] .ui-logo-product-suffix { font-size: var(--logo-wordmark-font-size-${tier});`,
       );
     }
     expect(layout).toContain("font-size: var(--logo-wordmark-font-size-md);");

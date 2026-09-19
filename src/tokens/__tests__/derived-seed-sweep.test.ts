@@ -2,6 +2,8 @@ import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { applyPrimaryColor } from "../../app/theme-axes";
 import {
   channelsOf,
@@ -40,14 +42,14 @@ const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   return css.slice(open + 1, css.indexOf("\n}", open));
 }
 
 const LIGHT = ":root {";
-const DARK = '.dark,\n:root[data-theme="dark"] {';
+const DARK = '.dark, :root[data-theme="dark"] {';
 const derivedLight = block(derived, LIGHT);
 const THEMES = [
   { theme: "light", foundation: block(foundation, LIGHT), derived: derivedLight },

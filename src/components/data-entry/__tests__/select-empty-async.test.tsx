@@ -1,8 +1,18 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderWithUi, screen, userEvent } from "@/test/render";
 
 import { Select } from "../select";
 import type { SearchSelectLoadResultProp } from "../search-select";
+
+/**
+ * The search debounce in `search-select.tsx`. The recovery case below ADVANCES this rather than
+ * waiting it out, so a wrong number here would quietly stop firing the reload — the guard in the
+ * first case keeps the two in step (gh#748).
+ */
+const DEBOUNCE_MS = 250;
 
 /**
  * A data-driven Select must never open a blank popover when it has zero options,
@@ -22,6 +32,19 @@ afterEach(async () => {
 });
 
 describe("Select empty / async states (#138)", () => {
+  it("the debounce this file advances is the one the component schedules", () => {
+    // DEBOUNCE_MS is private to search-select.tsx. Read it rather than trust a copy: the recovery
+    // case advances exactly this many ms, so a drift would leave the reload timer unfired and the
+    // failure would look like gh#748 all over again.
+    const source = readFileSync(
+      join(process.cwd(), "src/components/data-entry/search-select.tsx"),
+      "utf8",
+    );
+    const declared = source.match(/const DEBOUNCE_MS = (\d+);/)?.[1];
+    expect(declared, "search-select.tsx must keep a literal DEBOUNCE_MS").toBeDefined();
+    expect(Number(declared)).toBe(DEBOUNCE_MS);
+  });
+
   it("disables the trigger for a static empty options list (never opens a blank popover)", () => {
     renderWithUi(<Select options={[]} placeholder="選択" data-testid="s" />);
     expect(screen.getByRole("combobox")).toBeDisabled();
@@ -87,6 +110,31 @@ describe("Select empty / async states (#138)", () => {
     process.off("unhandledRejection", onUnhandled);
   });
 
+  /*
+   * gh#748. This case went red ONCE on CI, between two green runs, and never reproduced: 0/15 in
+   * isolation, 0/8 under CPU contention, 166/166 across three full runs of CI's own shard command.
+   * Two causes produce the identical "Unable to find an element with the text" message:
+   *
+   *   loadOptions called 1× — the 250 ms debounce (`DEBOUNCE_MS`, search-select.tsx) never
+   *                           elapsed, so the reload was never even requested
+   *   loadOptions called 2× — the reload ran and its result did not reach the DOM in time
+   *
+   * #754 made the failure say which. #763 then enumerated every reject/reload interleaving against
+   * hand-settled promises and found NO race: `calls=2` could not be produced by any means, while
+   * `calls=1` reproduced exactly by blocking the event loop for 1200 ms inside the window — i.e.
+   * the reload `setTimeout` simply never fired inside `findBy`'s 1000 ms budget. The measured
+   * cause is the HOST: the same four shards ran 161s and 298s on consecutive runs of `main`, an
+   * 85% spread on identical work, and a test that waits out a debounce and a render sits close
+   * enough to `testTimeout` to lose on the slow half.
+   *
+   * So the fix is the one #763 named: take the clock away, NOT widen the budget. Widening moves
+   * the threshold and buries the signal, which is the thing gh#748 was opened to avoid. Under a
+   * controlled clock the debounce fires because we advance it, not because 250 ms of wall time
+   * happened to elapse, and there is no polling budget left to lose — a host twice as slow now
+   * runs the identical sequence of steps.
+   *
+   * What it asserts is unchanged: reject → type → reload → options visible, error gone.
+   */
   it("recovers: a rejected load followed by a successful reload shows options, clearing the error", async () => {
     const user = userEvent.setup();
     let attempt = 0;
@@ -105,36 +153,40 @@ describe("Select empty / async states (#138)", () => {
     );
     await user.click(screen.getByRole("combobox"));
     expect(await screen.findByText("could-not-load")).toBeInTheDocument();
+    expect(loadOptions).toHaveBeenCalledTimes(1);
 
-    // Typing re-queries — the debounced reload succeeds and the error clears.
-    await user.keyboard("A");
+    // Only the debounce window runs on a controlled clock. Radix's pointer sequence and the
+    // popover's own scheduling stay on the real one, which is where taking the whole test off the
+    // wall clock deadlocked.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      await user.keyboard("A");
+      // FIRE the reload rather than wait for it. This is the step CI lost.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(DEBOUNCE_MS);
+      });
+      expect(loadOptions).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
 
     /*
-     * gh#748: this assertion failed ONCE on CI, between two green runs, and has never
-     * reproduced — 0/15 in isolation, 0/8 under CPU contention, 166/166 across three full runs
-     * of CI's own shard command. Two causes produce the identical "Unable to find an element
-     * with the text" message, and they need opposite fixes:
-     *
-     *   loadOptions called 1× — the 250 ms debounce (`DEBOUNCE_MS`, search-select.tsx) never
-     *                           elapsed, so the reload was never even requested
-     *   loadOptions called 2× — the reload ran and its result did not reach the DOM in time
-     *
-     * The bare failure cannot tell them apart, which is why gh#748 is open with no fix: a
-     * guessed remedy (raising the timeout) would bury whichever one it is. So the call count
-     * travels WITH the failure. Nothing here changes what the test asserts.
+     * #754's diagnostic, kept. The reload has already been fired and settled above, so this waits
+     * only on React committing — but if it ever does go red, the count is the thing worth having,
+     * and it can now only read 2×, the branch nothing has ever produced.
      */
     try {
       expect(await screen.findByText("選択肢A")).toBeInTheDocument();
     } catch (error) {
       throw new Error(
         `gh#748 diagnostic — loadOptions was called ${loadOptions.mock.calls.length}×. ` +
-          "1× means the debounced reload never fired; 2× means it fired and did not render. " +
+          "The reload is now fired on a controlled clock, so 1× would mean the debounce moved; " +
+          "2× means it fired and did not render. " +
           `Rendered text: ${JSON.stringify(document.body.textContent?.slice(0, 200))}`,
         // Keep the original — its stack points at the matcher, which this message does not.
         { cause: error },
       );
     }
-
     expect(screen.queryByText("could-not-load")).not.toBeInTheDocument();
   });
 });

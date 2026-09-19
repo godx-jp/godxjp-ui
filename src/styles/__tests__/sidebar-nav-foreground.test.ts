@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 /**
  * The Sidebar painted ONE `--muted-foreground` on `.sb-nav-item`, so the Lucide SVG and
  * the label inherited the same low-contrast colour: a service could not match the canonical shell's
@@ -25,7 +27,7 @@ const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css")
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(css: string, selector: string): string {
-  const start = css.indexOf(selector);
+  const start = anchorIndex(css, selector);
   if (start === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", start);
   const close = css.indexOf("\n}", open);
@@ -207,7 +209,7 @@ function contrast(a: [number, number, number], b: [number, number, number]): num
 
 const THEMES = {
   light: block(foundation, ":root {"),
-  dark: block(foundation, '.dark,\n:root[data-theme="dark"] {'),
+  dark: block(foundation, '.dark, :root[data-theme="dark"] {'),
 } as const;
 
 const AA_TEXT = 4.5;
