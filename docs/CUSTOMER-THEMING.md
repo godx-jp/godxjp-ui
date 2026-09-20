@@ -6,6 +6,56 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 
 ---
 
+## Start from one hex — `pnpm gen:brand`
+
+Everything below this section is the manual route, and it is worth reading because it says what each
+role means. But the colour half of a brand file is mechanical, and two of its decisions are ones CSS
+cannot make at all, so there is a generator:
+
+```sh
+pnpm gen:brand '#2563EB' --name acme --out src/theme
+```
+
+It writes `acme.service.css` and `acme.email.ts`, and prints what it measured:
+
+```
+  light seed #2563eb  ·  dark seed #5586ef (lifted 10.4%)
+
+  ✓ primary label on fill (light)    5.17:1  (needs 4.5:1)
+  ✓ primary label on fill (dark)     6.03:1  (needs 4.5:1)
+  ✓ primary fill on canvas (light)   5.09:1  (needs 3:1)
+  ✓ primary fill on canvas (dark)    5.10:1  (needs 3:1)
+  ✓ link ink on canvas (light)       6.73:1  (needs 4.5:1)
+  ✓ link ink on canvas (dark)        6.36:1  (needs 4.5:1)
+```
+
+It exits non-zero when a ratio misses, so a brand that cannot meet AA says so at the point you
+choose the colour rather than at the point a user cannot read a link.
+
+**The two things it does that hand-authoring keeps getting wrong:**
+
+- **A dark seed.** Nothing in CSS lifts a light seed onto the dark spine, so a brand file that sets
+  `--primary` only in `:root` keeps the GoDX violet in dark mode and nothing says so. The generator
+  holds your hue and saturation and moves lightness until the dark seed reads against the dark
+  canvas the way the light seed reads against the light one.
+- **Email.** `src/email/tokens.generated.ts` bakes literal hex at build time, because Gmail strips
+  `<style>` and Outlook ignores custom properties. Those literals are _this package's_ seed, so a
+  re-themed product still sends GoDX-violet mail — the one surface no amount of CSS reaches. The
+  emitted `acme.email.ts` is the override that corrects it.
+
+**What it deliberately leaves out**, because writing them would be a regression:
+
+- `--primary-hover`, `--primary-active`, `--primary-border`, `--control-outline` — these DERIVE from
+  the `--primary` in scope at the element that paints them (gh#678). A literal pins them to one seed
+  and stops them following the next change.
+- `--brand` / `--brand-foreground` — the identity role is independent of the action colour on
+  purpose (gh#250), so the logo does not retint when a tenant changes its button colour.
+
+The output is a starting point, not a ceiling: every role in the tables below can still be set by
+hand in the generated file, and an explicit value always beats a derived default.
+
+---
+
 ## Internal apps — zero config
 
 ```ts
@@ -165,17 +215,20 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 
 ### Focus ring — THE SWITCH FIRST, then three levels of override
 
-**The indicator ships OFF.** `--focus-outline` is `0`, and every painted focus length multiplies by it, so by default nothing paints a focus mark. That is a product decision with a stated cost — it forfeits WCAG 2.2 SC 2.4.7 (AA) and a JIS X 8341-3 AA claim — recorded in `docs/DESIGN-AUTHORITY.md`. Turning it on is ONE attribute on the root element, no CSS:
+**The indicator ships ON.** `--focus-outline` is `1` (`src/tokens/foundation.css`), and every painted focus length multiplies by it, so a focus mark paints by default and the package meets WCAG 2.2 SC 2.4.7. It did ship `0` once, and that earlier default — with its stated cost, a forfeited SC 2.4.7 and JIS X 8341-3 AA claim — is recorded in `docs/DESIGN-AUTHORITY.md`; gh#544 flipped it. Nothing has to be opted into.
+
+Switching the paint is ONE attribute on the root element, no CSS:
 
 ```html
 <html data-focus-outline="on"></html>
+<html data-focus-outline="off"></html>
 ```
 
 (`AppProvider` has the equivalent.) Every `:focus-visible` selector is present either way; only the paint is switched.
 
 Every ring is then drawn by a single rule (`src/styles/focus-ring.css`) reading the tokens above. Nothing else paints one; a test fails the build if a stylesheet tries.
 
-**Thickness is `--focus-ring-weight`, never `--focus-ring-width`.** The width is DERIVED — `calc(var(--focus-ring-weight) * var(--focus-outline))` — so assigning it directly paints a ring even while the indicator is switched off, and that is exactly what the build-failing test forbids a stylesheet to do.
+**Thickness is `--focus-ring-weight`, never `--focus-ring-width`.** The width is DERIVED — `calc(var(--focus-ring-weight) * var(--focus-outline))` — so assigning it directly paints a ring even where the indicator is switched off, and that is exactly what the build-failing test forbids a stylesheet to do.
 
 ```css
 :root {
@@ -203,7 +256,7 @@ Every ring is then drawn by a single rule (`src/styles/focus-ring.css`) reading 
 <div style={{ "--focus-ring-color": "0 84% 60%" } as React.CSSProperties}>…</div>
 ```
 
-**Turning it back off** — drop the `data-focus-outline` attribute (or set `--focus-outline: 0`), which is the shipped state. Do NOT reach for `--focus-ring-width`: it is derived from the weight and the switch, and pinning it to any value is the same mistake in the other direction. Note the cost either way — with no visible focus indicator the package does not meet WCAG 2.2 SC 2.4.7.
+**Turning it off** — set `--focus-outline: 0` (or `data-focus-outline="off"`). Do NOT reach for `--focus-ring-width`: it is derived from the weight and the switch, and pinning it to any value is the same mistake in the other direction. Note the cost: with no visible focus indicator the package no longer meets WCAG 2.2 SC 2.4.7, so this is a claim you are giving up, not a style preference.
 
 **Adding your own component to the system**: put `ui-focus-ring` (or `ui-focus-ring-outline` when the mark needs a gap) on the focusable element.
 
