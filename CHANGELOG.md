@@ -4,6 +4,47 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.4.0] - 2026-09-21
+
+MINOR. Two new props, one new export surface, two new tokens. Nothing existing changes shape:
+every default is the previous behaviour.
+
+### Added
+
+- **`ScrollArea` takes `scrollbar="always"`** (gh#798). `scrollbar-width`/`-color` style whatever
+  bar the PLATFORM decides to draw, and on macOS/iPadOS with the system default "Show scroll bars:
+  when scrolling" that is an OVERLAY bar — present only while the reader is already scrolling. A
+  consumer measured clientWidth 727 of scrollWidth 3476 with `offsetHeight − clientHeight` of
+  **2px** (the border, twice): no bar occupied layout, and a manager reading a 31-column roster
+  said it showed "only five days". `always` draws it through `::-webkit-scrollbar`, which Chrome
+  and Safari honour even in overlay mode, from the same colour knobs. Default `auto` is unchanged.
+- **`width` on `DatePicker`, `TimePicker` and `TimeRangePicker`** (gh#799). CONSUMER-RULES §5 says
+  a control outside a form takes `width="auto"` and `Select` has carried it since gh#375 — the
+  pickers had none, so the one control in a toolbar with a KNOWN content width was the one that
+  could not be sized (measured: 275px for `2026/09` against the 144px box it replaced). Mapped as
+  `Select` maps it, except `bounded`: `Input` bakes `w-full`, and a utility beats a
+  `@layer components` rule, so the `[data-width="bounded"]` rule could never have reached it and
+  the token would have been dead in the way gh#366 describes. The utility is emitted FROM the
+  token instead.
+- **The calendar seam is exported from `@godxjp/ui/data-entry`** (gh#797): `DayButton`,
+  `dateMatchModifiers`, and the types `DateRange`, `Modifiers`, `DayPickerProps`, `DayButtonProps`,
+  `Matcher`, `CalendarDay`, `DateLib`. `CalendarProp` extends `DayPickerProps`, so typing the
+  documented `components={{ DayButton }}` seam meant importing react-day-picker directly and
+  resolving a SECOND copy — a consumer on 9.14.0 against this package's 10.0.1 got
+  `TS2322: Property Date is missing in type DateLib`. Imported from here, the type is this
+  package's copy by construction. (Moving the dependency to a peer is a MAJOR and stays open.)
+
+### Fixed
+
+- **`Calendar width="full"` releases the BLOCK axis too** (gh#796). The value is documented for
+  "an EMBEDDED calendar — a shift board, a booking month", and released the inline axis only. A
+  shift board needs a day number plus badges per cell; neither fits in one control height, so a
+  consumer took the height back with a stylesheet outside every `@layer` — the rule-3/rule-8 shape
+  the consumer rules forbid, moved where the audit cannot see it. Measured at 1440px: an empty
+  full-width month is **unchanged** (button 32px, month 305px, both before and after, because
+  `min-block-size` is the floor); a cell given a shift label now grows to 50px instead of clipping.
+  The popover never sets `width="full"` and is untouched.
+
 ## [28.3.1] - 2026-09-21
 
 PATCH. One CSS rule and its token, on a surface 28.3.0 introduced a day earlier.
