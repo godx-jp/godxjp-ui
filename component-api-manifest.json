@@ -6162,8 +6162,20 @@
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full", "bounded"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
+    },
+    "DayButton": {
+      "group": "data-entry",
+      "props": []
     },
     "Descriptions": {
       "group": "data-display",
@@ -12360,6 +12372,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "scrollbar",
+          "origin": "owned",
+          "required": false,
+          "type": "ScrollAreaScrollbarProp | undefined",
+          "values": ["always", "auto"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "viewportRef",
           "origin": "owned",
           "required": false,
@@ -16922,6 +16942,14 @@
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full", "bounded"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]
     },
@@ -17190,6 +17218,14 @@
           "required": false,
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "ControlWidthProp | undefined",
+          "values": ["auto", "full", "bounded"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         }
       ]

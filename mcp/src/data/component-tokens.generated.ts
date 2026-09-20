@@ -5554,9 +5554,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "`scrollbar-gutter`: `auto` (reflow when a bar appears) | `stable` | `stable both-edges`. * Reach for `stable` where content starting to overflow must not shift the layout under the * reader."
   },
   {
+    "name": "--scroll-area-always-bar-size",
+    "value": "0.625rem",
+    "description": "`scrollbar=\"always\"` geometry (gh#798). Only these two, and only for that value: the * always-on bar is DRAWN by this package via `::-webkit-scrollbar`, so unlike the platform bar * it has a size this package must name. The colours are NOT duplicated — the always-on rules * read the same `--scroll-area-thumb-color` / `-track-color` role-mirrors as the standard ones."
+  },
+  {
+    "name": "--scroll-area-always-thumb-radius",
+    "value": "var(--radius-pill)",
+    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). * * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a * service can retune about it is the three standard scrollbar properties below. They live here, * beside the anchoring constant, so every ScrollArea knob is in one file."
+  },
+  {
     "name": "--scroll-area-anchor-offset",
     "value": "3rem",
-    "description": "How close to the bottom edge the reader still counts as \"following the stream\" for * `<ScrollArea anchor=\"bottom\">`. Inside this band new content keeps the viewport pinned to the * newest item; one pixel beyond it the reader is reading history and anchoring NEVER moves them * again until they come back (WCAG 3.2.5 — no change of context on request of the machine). * * It is a rule #45 knob because the right distance is a function of the row height a service * renders: one line of a dense audit log is ~20px, a chat bubble with an avatar is ~64px, and * \"one row from the bottom\" is what the reader actually means. Expressed in rem on purpose — it * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4) * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance; * px/rem/em are all accepted."
+    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). * * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a * service can retune about it is the three standard scrollbar properties below. They live here, * beside the anchoring constant, so every ScrollArea knob is in one file."
   },
   {
     "name": "--segmented-track-padding",

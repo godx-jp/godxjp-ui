@@ -856,6 +856,20 @@ export type CalendarFooterProp = {
 
 /** Shared picker chrome. Placement uses logical start/end so RTL follows the locale. */
 export type PickerChromeProp = {
+  /**
+   * How the field takes its inline space, exactly as `Select` means it (gh#799).
+   *
+   * CONSUMER-RULES §5 says a control outside a form takes `width="auto"`, and `Select` has carried
+   * `width` since gh#375 — the pickers did not, so the one control in a toolbar with a KNOWN
+   * content width was the one that could not be sized. Measured in a consumer toolbar at 1440px:
+   * a month picker showing `2026/09` took 275px, against the 144px box it had before the migration,
+   * because with no prop it falls to the flex default and stretches.
+   *
+   * `auto` shrink-wraps to the display format; `full` fills the line; `bounded` holds one width
+   * while the value's length varies (its width is owned by the `[data-width="bounded"]` rule in
+   * control.css, NOT by a utility — see the note there).
+   */
+  width?: ControlWidthProp;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;

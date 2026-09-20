@@ -2319,6 +2319,18 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  ScrollAreaScrollbarProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "scrollbar",
+        local: true,
+        reason:
+          'Whether the scrollbar is always drawn or left to the platform ("auto" | "always"). Not a width or a colour — those are the --scroll-area-* tokens; this names WHO decides the bar exists, because on macOS/iPadOS the platform decides "only while scrolling" and a wide area then never looks scrollable (gh#798).',
+      },
+    ],
+  },
   ScrollAreaOrientationProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

@@ -616,6 +616,12 @@ export type PermissionMatrixProp = {
  */
 export type ScrollAreaAnchorProp = "none" | "bottom";
 
+/**
+ * Whether the scrollbar is always drawn, or left to the platform (gh#798). `auto` is the platform
+ * decision and the default; `always` forces a classic, space-occupying bar.
+ */
+export type ScrollAreaScrollbarProp = "auto" | "always";
+
 /** @see ScrollArea */
 /**
  * @see ScrollArea — which AXES scroll. This is not decoration: it IS the `overflow` the element
@@ -647,6 +653,23 @@ export type ScrollAreaProp = {
    */
   viewportRef?: React.Ref<HTMLDivElement>;
   /** Edge the viewport sticks to as content grows. Default `none` (inert). */
+  /**
+   * Whether the scrollbar is drawn ALWAYS or only when the platform feels like it (gh#798).
+   *
+   * Default `auto` — today's behaviour, unchanged: the browser decides, styled from the
+   * `--scroll-area-*` tokens. On macOS/iPadOS with the system default "Show scroll bars: when
+   * scrolling", that decision is an OVERLAY bar, which exists only while the reader is already
+   * scrolling — so the tokens style a bar nobody sees, and a wide area does not LOOK scrollable.
+   * Measured by a consumer: clientWidth 727, scrollWidth 3476, and `offsetHeight - clientHeight`
+   * of 2px (the border, twice) — no bar occupies layout at all. A manager reading a 31-column
+   * roster said it showed "only five days".
+   *
+   * `always` forces a classic, space-occupying bar via `::-webkit-scrollbar`, which Chrome and
+   * Safari honour even in overlay mode, painted from the same tokens. Reach for it where the
+   * affordance IS the information — a wide table, a roster, a board. Leave it `auto` for a chat
+   * stream, where a permanent bar is noise (gh#311).
+   */
+  scrollbar?: ScrollAreaScrollbarProp;
   anchor?: ScrollAreaAnchorProp;
   /**
    * Distance in px from the bottom edge inside which the reader still counts as "at the bottom"

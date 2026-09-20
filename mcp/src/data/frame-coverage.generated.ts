@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 289,
-    dimensionCells: 4046,
+    exports: 290,
+    dimensionCells: 4060,
     covered: 90,
-    untested: 2220,
-    notApplicable: 1736,
+    untested: 2227,
+    notApplicable: 1743,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -187,6 +187,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"DataState","group":"query","frame":"docs/query/data-state.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"DataTable","group":"data-display","frame":"docs/data-display/data-table/index.tsx","covered":["density"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["shapes","sizes","tones","variants"]},
   {"name":"DatePicker","group":"data-entry","frame":"docs/data-entry/date-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states","variants"],"notApplicable":["density","shapes","tones"]},
+  {"name":"DayButton","group":"data-entry","frame":"docs/data-entry/calendar.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Descriptions","group":"data-display","frame":"docs/data-display/descriptions.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Dialog","group":"feedback","frame":"docs/feedback/dialog.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones"]},
   {"name":"DialogAction","group":"feedback","frame":"docs/feedback/dialog.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},

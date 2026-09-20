@@ -1220,6 +1220,38 @@
     overflow: auto;
   }
 
+  /* `scrollbar="always"` — A BAR THAT OCCUPIES LAYOUT (gh#798).
+   *
+   * `scrollbar-width`/`scrollbar-color` above style whatever bar the platform decides to draw, and
+   * on macOS/iPadOS with the system default "Show scroll bars: when scrolling" that decision is an
+   * OVERLAY bar: it exists only while the reader is already scrolling. Measured by a consumer on a
+   * 31-column roster — clientWidth 727, scrollWidth 3476, `offsetHeight - clientHeight` = 2px (the
+   * border, twice) — so nothing occupied layout and the area did not read as scrollable at rest.
+   *
+   * `::-webkit-scrollbar` is honoured by Chrome and Safari EVEN in overlay mode, so it is what
+   * makes the bar unconditional. Declaring it switches those engines off the standard properties
+   * for this element, so the same tokens are restated here rather than a second palette being
+   * invented. `scrollbar-width: auto` (not the `thin` token) is deliberate: a `thin` overlay bar
+   * that is always present is harder to grab than the platform one, and this value is chosen
+   * precisely where the affordance matters. */
+  .ui-scroll-area[data-scrollbar="always"] {
+    scrollbar-width: auto;
+  }
+
+  .ui-scroll-area[data-scrollbar="always"]::-webkit-scrollbar {
+    inline-size: var(--scroll-area-always-bar-size);
+    block-size: var(--scroll-area-always-bar-size);
+  }
+
+  .ui-scroll-area[data-scrollbar="always"]::-webkit-scrollbar-track {
+    background: var(--scroll-area-track-color, transparent);
+  }
+
+  .ui-scroll-area[data-scrollbar="always"]::-webkit-scrollbar-thumb {
+    background: var(--scroll-area-thumb-color, hsl(var(--border)));
+    border-radius: var(--scroll-area-always-thumb-radius);
+  }
+
   /* The content wrapper only has a job on an axis that SCROLLS: it must be allowed to grow past
    * the viewport, or a grid/flex row inside it would take the viewport's width and squash its
    * columns instead of overflowing them. `min-inline-size: 100%` keeps a short strip full-bleed.

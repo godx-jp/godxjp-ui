@@ -2,6 +2,32 @@ import * as React from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { DayButton, DayPicker, dateMatchModifiers } from "react-day-picker";
 import type { DateRange, Modifiers } from "react-day-picker";
+
+/*
+ * THE CALENDAR SEAM IS TYPED BY react-day-picker, SO THIS PACKAGE HANDS THOSE TYPES OUT (gh#797).
+ *
+ * `CalendarProp` extends `DayPickerProps` and `DatePickerProp` carries `DateRange`, so a consumer
+ * typing a custom `DayButton` — the seam gh#390 documents as the way to mark a day — had to depend
+ * on `react-day-picker` itself and resolve ITS OWN copy. Measured on a consumer holding 9.14.0
+ * against this package's 10.0.1:
+ *
+ *   TS2322: Property `Date` is missing in type DateLib (10.0.1) but required in DateLib (9.14.0)
+ *
+ * Two copies, two nominally-identical `DateLib`s, and a seam the docs call supported. Re-exporting
+ * is the half that costs a consumer nothing: import these from `@godxjp/ui/data-entry` and the
+ * types are THIS package's copy by construction, so the version question never arises. Moving the
+ * dependency to a peer is the other half and is a MAJOR — it makes a consumer install something
+ * they do not install today — so it is proposed on the issue rather than taken here.
+ */
+export { DayButton, dateMatchModifiers };
+export type { DateRange, Modifiers };
+export type {
+  DayPickerProps,
+  DayButtonProps,
+  Matcher,
+  CalendarDay,
+  DateLib,
+} from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { controlIconSmClass } from "../../lib/control-styles";
@@ -257,7 +283,11 @@ export function Calendar({
         ...(cellRender
           ? {
               DayButton: (dayButtonProps: React.ComponentProps<typeof DayButton>) => (
-                <>{cellRender(dayButtonProps.day.date, { originNode: <DayButton {...dayButtonProps} /> })}</>
+                <>
+                  {cellRender(dayButtonProps.day.date, {
+                    originNode: <DayButton {...dayButtonProps} />,
+                  })}
+                </>
               ),
             }
           : {}),

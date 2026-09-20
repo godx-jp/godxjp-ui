@@ -1648,7 +1648,11 @@
    * `w-full` killed `.ui-app-setting-picker-icon`'s `inline-size` (gh#366).
    * `max-inline-size` keeps it honest on a narrow viewport, where a fixed rem width would push the
    * bar wider than the screen. */
-  .ui-control-trigger[data-width="bounded"] {
+  .ui-control-trigger[data-width="bounded"],
+  /* The pickers' box is `.ui-control` (the Input) or `.ui-control.ui-control-composite-field` (a
+   * range), not a trigger — but `bounded` means the same thing on all of them, so it is the same
+   * rule rather than a second one that could drift (gh#799). */
+  .ui-control[data-width="bounded"] {
     inline-size: var(--control-bounded-width);
     max-inline-size: 100%;
   }
@@ -2884,11 +2888,32 @@
     flex: 1 1 0;
   }
 
+  /* `width="full"` RELEASES BOTH AXES (gh#796). It used to release the inline one only, with the
+   * note "a day that also grew taller would turn a month into a page-height block" — true of a
+   * POPOVER, and this value is documented for the opposite thing: "an EMBEDDED calendar — a shift
+   * board, a booking month — where the calendar is the content of a card". A shift board needs a
+   * day number plus one to three badges per cell; a booking month needs a price under the number.
+   * Neither fits in one control height, so a consumer took the height back with a stylesheet
+   * OUTSIDE every `@layer` — the only place a consumer rule can beat a `@layer components` one —
+   * which is the rule-3/rule-8 shape the consumer rules forbid, moved somewhere the audit cannot
+   * see it.
+   *
+   * `min-block-size` is the floor, so a full calendar with NOTHING extra in its cells renders
+   * exactly as before: the content is one day number, shorter than `--control-height`, so the
+   * floor decides. Measured on /isolate/data-entry-calendar at 1440px, before and after: the
+   * content-less full month is unchanged. The popover never sets `width="full"` and is untouched. */
   .ui-calendar[data-width="full"] .ui-calendar-day-button {
     inline-size: 100%;
-    /* The cell grows on the inline axis only — a day that also grew taller would turn a month into
-     * a page-height block. `--control-height` stays the row rhythm. */
     max-inline-size: none;
+    block-size: auto;
+    min-block-size: var(--control-height);
+    /* A cell that holds a number ABOVE content is a column, and its text reads from the start
+     * edge — centred, nowrap content would clip the moment it is more than a numeral. */
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: start;
+    white-space: normal;
   }
 
   /* NO `gap` here (gh#730). A month has exactly two in-flow children — the caption and the grid —
