@@ -1,5 +1,9 @@
 /* Famgia service theme — ファムジア株式会社 Re-themes @godxjp/ui via SEMANTIC TOKENS only (no component
- * CSS). */
+ * CSS).
+ *
+ * A copy-me template. `pnpm gen:brand '#2563EB' --name famgia` writes the colour half of this file
+ * from one seed, measured against WCAG AA in both themes; the font stack and the gradient below are
+ * the parts a generator cannot choose for you. */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap");
 @import "@godxjp/ui/styles";
@@ -9,8 +13,10 @@
   /* Brand primary ramp — electric blue */
   --primary: 221 83% 53%; /* #2563EB */
   --primary-foreground: 0 0% 100%;
-  --primary-hover: 224 71% 48%; /* #1D4ED8 */
-  --primary-active: 226 71% 40%; /* #1E40AF */
+  /* No --primary-hover / --primary-active here: they DERIVE from the --primary in scope at the
+   * element that paints them (gh#678, src/tokens/derived.css). Pinning them was this file's one
+   * piece of drift — the literals sat on hue 224/226 while the seed is 221, so a state stepped off
+   * the brand's own hue, which is the gh#648 defect one tier up. */
   --ring: 221 83% 53%;
 
   /* Brand-colored text (AA on tint/white) */
@@ -31,8 +37,7 @@
 .dark {
   --primary: 221 90% 66%;
   --primary-foreground: 222 47% 11%;
-  --primary-hover: 221 90% 72%;
-  --primary-active: 221 90% 60%;
+  /* Derived — see the light block. */
   --ring: 221 90% 66%;
   --text-link: 221 90% 72%;
   --text-brand: 221 90% 70%;
