@@ -45,6 +45,33 @@ npx @godxjp/ui-mcp
 
 ---
 
+## Upgrading is TWO steps, and the second one is not optional
+
+```sh
+npm install @godxjp/ui@<version> @godxjp/ui-mcp@<version>
+npx @godxjp/ui sync-rules          # ← the half that is easy to skip
+```
+
+`node_modules` is not where this server is launched from. `.mcp.json` launches it by
+`npx @godxjp/ui-mcp@<pin>`, so **a package upgrade alone leaves the pin where it was** and the agent
+keeps reading the catalog of whatever release the project first installed. Measured in gh#794: a
+project upgraded to 28.3.0 and every answer that session came from a **27.6.0** catalog — two minors
+behind the pin itself, seven behind the package on disk.
+
+`sync-rules` moves the pin for you. It recognises an entry this package wrote, under any pin, and
+rewrites it; a registration you wrote by hand is left alone and reported instead of overwritten.
+
+**Two things will tell you when the pin is stale**, and neither is the version line — that line
+prints on every answer and reads as boilerplate:
+
+- **`npx @godxjp/ui audit`** raises `owned-rules-stale`. This is the reliable one: it runs from the
+  **installed** package, so it is never the stale party, however old the pinned server is.
+- **The server's own `⚠️ SERVER OLDER THAN INSTALLED PACKAGE` line**, from **v27.9.0** onward. Note
+  the ordering: a server old enough to predate that release cannot warn you about itself, so the
+  pinned lane can fail silently exactly once — on the upgrade that crosses 27.9.0.
+
+---
+
 ## Configure your agent
 
 ### Claude Code
