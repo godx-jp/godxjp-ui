@@ -67,6 +67,21 @@ export type CommandPaletteProps = {
   shouldFilter?: boolean;
   loading?: boolean;
   error?: React.ReactNode;
+  /**
+   * The control that opens the palette.
+   *
+   * `undefined` (omitted) — the default outline Button with the ⌘K hint.
+   * `null` — **NO trigger at all**, for a palette driven purely by `shortcut`.
+   *
+   * The two are deliberately NOT the same, and that is the whole point of gh#778: the previous
+   * `trigger ?? <default/>` collapsed them, so `null` — the spelling every consumer reaches for —
+   * silently rendered the very Button it was asked to remove. The only working spelling was
+   * `trigger={<></>}`, which is a hack that renders an empty fragment into the trigger slot.
+   *
+   * A keyboard-only palette is a NORMAL shape: `shortcut` already binds ⌘K/Ctrl+K and handles
+   * `event.isComposing` (i.e. every keystroke of a Japanese IME) and focus restore, so it is a
+   * better handler than a consumer's own. A topbar with no width to spare should be able to say so.
+   */
   trigger?: React.ReactNode;
   shortcut?: boolean;
 };
@@ -155,19 +170,28 @@ export function CommandPalette({
 
   const hasItems = React.useMemo(() => groups.some((group) => group.items.length > 0), [groups]);
 
-  const triggerNode = trigger ?? (
-    <Button variant="outline" size="sm" className="ui-command-palette-trigger">
-      <Search aria-hidden="true" />
-      <span>{labels.open}</span>
-      <span className="kbd" aria-hidden="true">
-        ⌘K
-      </span>
-    </Button>
-  );
+  // gh#778 — `=== undefined`, NOT `??`. `??` falls back on `null` too, which is what made
+  // `trigger={null}` render the default. An explicit `null` now reaches the JSX below and
+  // removes the trigger slot entirely.
+  const triggerNode =
+    trigger === undefined ? (
+      <Button variant="outline" size="sm" className="ui-command-palette-trigger">
+        <Search aria-hidden="true" />
+        <span>{labels.open}</span>
+        <span className="kbd" aria-hidden="true">
+          ⌘K
+        </span>
+      </Button>
+    ) : (
+      trigger
+    );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>{triggerNode}</Dialog.Trigger>
+      {/* No `Dialog.Trigger` at all when `trigger` is null — an empty one would still occupy the
+          slot, which is the `trigger={<></>}` workaround this replaces. Radix opens fine from the
+          controlled `open` prop alone, which is how `shortcut` already drives it. */}
+      {triggerNode === null ? null : <Dialog.Trigger asChild>{triggerNode}</Dialog.Trigger>}
       <DialogContent
         className="ui-command-palette"
         showCloseButton={false}

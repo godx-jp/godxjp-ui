@@ -84,6 +84,74 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Syntax colour · the package owns the palette (gh#784)</CardTitle>
+            <CardDescription>
+              CodeBlock bundles no highlighter. Bring your own, then tag each span with
+              data-code-token and the package colours it. The twelve names are Shiki
+              createCssVariablesTheme&apos;s verbatim, so mapping is a rename rather than a
+              translation. Note what the consumer never writes: no style attribute, no palette
+              class. Every knob is a role-mirror, so this follows the theme into dark with no second
+              palette.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock language="ts" aria-label="Highlighted TypeScript">
+              <span data-code-token="comment">{"// resolve the active tenant\n"}</span>
+              <span data-code-token="keyword">export</span>{" "}
+              <span data-code-token="keyword">async</span>{" "}
+              <span data-code-token="keyword">function</span>{" "}
+              <span data-code-token="function">loadTenant</span>
+              <span data-code-token="punctuation">(</span>
+              <span data-code-token="parameter">slug</span>
+              <span data-code-token="punctuation">:</span>{" "}
+              <span data-code-token="constant">string</span>
+              <span data-code-token="punctuation">)</span>{" "}
+              <span data-code-token="punctuation">{"{"}</span>
+              {"\n  "}
+              <span data-code-token="keyword">const</span> res{" "}
+              <span data-code-token="punctuation">=</span>{" "}
+              <span data-code-token="keyword">await</span>{" "}
+              <span data-code-token="function">fetch</span>
+              <span data-code-token="punctuation">(</span>
+              <span data-code-token="string">{"`/api/tenants/"}</span>
+              <span data-code-token="string-expression">{"${slug}"}</span>
+              <span data-code-token="string">{"`"}</span>
+              <span data-code-token="punctuation">)</span>
+              <span data-code-token="punctuation">;</span>
+              {"\n  "}
+              <span data-code-token="keyword">return</span> res
+              <span data-code-token="punctuation">.</span>
+              <span data-code-token="function">json</span>
+              <span data-code-token="punctuation">()</span>
+              <span data-code-token="punctuation">;</span>
+              {"\n"}
+              <span data-code-token="punctuation">{"}"}</span>
+            </CodeBlock>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Diff tokens · inserted and deleted</CardTitle>
+            <CardDescription>
+              The same vocabulary carries a diff. inserted and deleted default to the success and
+              destructive roles, so they agree with every other affirmative and destructive mark in
+              the system rather than inventing a second green and red.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CodeBlock language="diff" aria-label="Patch">
+              <span data-code-token="comment">{"--- a/tokens.css\n+++ b/tokens.css\n"}</span>
+              <span data-code-token="deleted">{"-  --code-block-foreground: #111;\n"}</span>
+              <span data-code-token="inserted">{"+  --code-block-foreground: initial;\n"}</span>
+              <span data-code-token="punctuation">
+                {"   /* role-mirror: the default moved to the call site */"}
+              </span>
+            </CodeBlock>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );
