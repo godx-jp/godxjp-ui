@@ -22,7 +22,15 @@ import { CodeBlock } from "../code-block";
 const tokens = readFileSync(join(process.cwd(), "src/tokens/components/data-display.css"), "utf8");
 const layout = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
 
-/** Shiki's `createCssVariablesTheme` vocabulary, verbatim. */
+/**
+ * Shiki's `createCssVariablesTheme` vocabulary, verbatim — TWELVE `token-*` names.
+ *
+ * Read off `packages/core/src/theme-css-variables.ts`, not off gh#784's summary of it. The first
+ * pass styled ELEVEN because the issue's own list omitted `changed`, and I copied the list rather
+ * than the source. `changed` is reachable only through a CONTEXT diff (`diff -c`), so a unified
+ * diff never produces it and the gap stayed invisible until a consumer tokenised all 17 of their
+ * grammars (gh#793).
+ */
 const SHIKI = [
   "comment",
   "keyword",
@@ -35,9 +43,17 @@ const SHIKI = [
   "link",
   "inserted",
   "deleted",
+  "changed",
 ] as const;
 
 describe("CodeBlock syntax tokens (gh#784)", () => {
+  it("styles TWELVE token names, the count Shiki's theme actually emits", () => {
+    // The count is the assertion. A thirteenth name added upstream, or a twelfth quietly dropped,
+    // is the failure this catches — the eleven-of-twelve gap shipped precisely because nothing
+    // counted.
+    expect(SHIKI).toHaveLength(12);
+  });
+
   it("declares a knob for every name Shiki emits, plus the foreground", () => {
     // Eleven `token-*` plus `foreground` is the whole of createCssVariablesTheme's output. A
     // shorter list would force a consumer to write a translation layer, which is the thing a

@@ -1350,10 +1350,19 @@
   .ui-prose pre [data-code-token="link"] {
     color: var(--code-block-token-link-color, hsl(var(--text-link)));
     text-decoration-line: underline;
-    /* The house link treatment, not a bare underline: the GoDX v2.3 offset keeps the rule clear of
-     * descenders (`--text-link-underline-offset`, tokens/components/text.css) and `skip-ink` breaks
-     * it around them. A mono face at `--code-block-font-size` sets a URL full of `g`/`p`/`/`, which
-     * is where an unoffset underline turns into a strikethrough. */
+    /* The house link treatment, not a bare underline (`--text-link-underline-offset`,
+     * tokens/components/text.css).
+     *
+     * `skip-ink` IS LOAD-BEARING HERE — DO NOT "SIMPLIFY" IT AWAY. Measured in Chromium on a mono
+     * URL with five descenders (`https://x.test/pjq_gy`), reported with the numbers in gh#793:
+     *
+     *     14px  offset 2.52px  vs descent 3.01px  ->  margin -0.49px
+     *     12px  offset 2.16px  vs descent 2.58px  ->  margin -0.42px
+     *
+     * So at BOTH code-block sizes the rule runs THROUGH the descender band, and the only reason a
+     * `p`/`j`/`q`/`g`/`y` is not struck through is that the browser breaks the line around each
+     * glyph. The offset alone would need ~.22em to clear them on its own geometry; .18em is the
+     * shared link value and is not ours to move for this one surface. */
     text-underline-offset: var(--text-link-underline-offset);
     text-decoration-skip-ink: auto;
   }
@@ -1366,6 +1375,29 @@
   .ui-code-block [data-code-token="deleted"],
   .ui-prose pre [data-code-token="deleted"] {
     color: var(--code-block-token-deleted-color, hsl(var(--text-error)));
+  }
+
+  /* `changed` shares the amber with `constant`, and the reason is NOT the one first written here.
+   *
+   * The claim was "a language grammar and a diff grammar never meet in one block". That is FALSE,
+   * and disproved with a repro (gh#793): markdown EMBEDS other grammars, so one `<pre lang=
+   * "markdown">` holding a JSON fence above a context-diff fence emits `changed, constant,
+   * deleted, keyword, punctuation, string` — both, together, rendering identically. A diff fence
+   * ALONE really cannot emit `constant` (all 27 scopes of `@shikijs/langs/diff` were cross-checked
+   * against the theme's `constant` scopes: zero hits), which is why the wrong claim survived: it
+   * is true of the case anyone would test and false of the case a wiki actually renders.
+   *
+   * The real reason the sharing is acceptable is that A DIFF LINE CARRIES ITS OWN MARKER. `+`, `-`
+   * and `!` are in the TEXT, so the reader is never relying on hue to tell a changed line from a
+   * JSON number — colour is reinforcement here, not the cue (WCAG 1.4.1 is satisfied by the
+   * marker, not by the palette). The same answer covers `inserted`/`string` sharing their green,
+   * which is the MORE common collision of the two since unified diffs are ordinary.
+   *
+   * And amber-on-amber in a mixed markdown block is strictly better than what 28.3.0 does, which
+   * is render a changed line in the block foreground — invisible against unchanged context. */
+  .ui-code-block [data-code-token="changed"],
+  .ui-prose pre [data-code-token="changed"] {
+    color: var(--code-block-token-changed-color, hsl(var(--text-warning)));
   }
 
   /* PROSE — rendered content. Every measure is a token; nothing here is a copied value. */
