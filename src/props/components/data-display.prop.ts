@@ -3,7 +3,15 @@ import type * as React from "react";
 
 /** @see CodeBlock — a block of preformatted text (request bodies, logs, snippets). */
 export type CodeBlockProp = {
-  /** The text. Pass a string; a highlighter's spans also work. */
+  /**
+   * The text. Pass a string, or a highlighter's spans.
+   *
+   * Tag each span `data-code-token="keyword" | "string" | "comment" | …` — the twelve names Shiki's
+   * `createCssVariablesTheme` emits — and the package colours it from the `--code-block-token-*`
+   * knobs. Do NOT put `style={{ color }}` or a palette `className` on the spans: both are visual
+   * overrides, and this used to be the only spelling available, which made the documented path
+   * unbuildable for a rule-following consumer (gh#784).
+   */
   children?: ChildrenProp;
   /** Soft-wrap long lines (default true). `false` scrolls horizontally instead. */
   wrap?: boolean;
@@ -11,7 +19,7 @@ export type CodeBlockProp = {
   maxHeight?: "sm" | "md" | "lg" | "none" | { value: string };
   /** Type size. Default `sm`. */
   size?: Extract<SizeProp, "xs" | "sm">;
-  /** Cosmetic: lands on `data-language`; no highlighter is bundled. */
+  /** Lands on `data-language`; no highlighter is bundled — see `children` for colouring its output. */
   language?: string;
   className?: ClassNameProp;
 };

@@ -1245,7 +1245,7 @@
     border-radius: var(--code-block-radius);
     background: hsl(var(--muted));
     padding: var(--code-block-space-inset);
-    color: hsl(var(--foreground));
+    color: var(--code-block-foreground, hsl(var(--foreground)));
     font-family: var(--font-mono);
     font-size: var(--code-block-font-size);
     line-height: var(--code-block-line-height);
@@ -1279,6 +1279,93 @@
 
   .ui-code-block[data-max-height="lg"] {
     max-block-size: var(--code-block-max-height-lg);
+  }
+
+  /* SYNTAX COLOURS (gh#784) — keyed on `data-code-token`, which is what makes this usable.
+   *
+   * Declaring the knobs alone would NOT have unblocked anyone: a consumer still has to get the
+   * colour onto the span, and `style` and `className` are both visual overrides their rules
+   * forbid. `data-code-token` is a SEMANTIC attribute naming what the token IS, not how it looks,
+   * so the consumer says `<span data-code-token="keyword">` and the package decides the colour —
+   * which is the same division of labour as every other slot in this library.
+   *
+   * The twelve names are Shiki's `createCssVariablesTheme` vocabulary verbatim, so mapping is a
+   * rename and never a translation. Role defaults live HERE, at the call site, because a knob that
+   * defaults to a role at `:root` freezes that role's light value (docs/TOKENS.md).
+   *
+   * THE DEFAULTS ARE TEXT-TIER ROLES, NOT FILL ROLES, and that distinction is load-bearing.
+   * `--success`/`--info`/`--destructive`/`--attention` are FILL colours, meant to sit under
+   * `*-foreground`, and as ink on the block's `--muted` ground they are unreadable: measured
+   * against that surface, `--success` gives 2.01:1 in light and `--destructive` 2.41:1 in dark,
+   * where code at 14px owes 4.5:1 (WCAG 1.4.3). String literals at 2.01:1 would have shipped.
+   * The `--text-*` tier exists for exactly this, and every one of the twelve clears AA in both
+   * themes on it — pinned in code-block-syntax-contrast.test.ts so it cannot drift back. */
+  .ui-code-block [data-code-token="comment"],
+  .ui-prose pre [data-code-token="comment"] {
+    color: var(--code-block-token-comment-color, hsl(var(--muted-foreground)));
+  }
+
+  .ui-code-block [data-code-token="keyword"],
+  .ui-prose pre [data-code-token="keyword"] {
+    color: var(--code-block-token-keyword-color, hsl(var(--primary)));
+  }
+
+  .ui-code-block [data-code-token="string"],
+  .ui-prose pre [data-code-token="string"] {
+    color: var(--code-block-token-string-color, hsl(var(--text-success)));
+  }
+
+  .ui-code-block [data-code-token="string-expression"],
+  .ui-prose pre [data-code-token="string-expression"] {
+    color: var(--code-block-token-string-expression-color, hsl(var(--text-success)));
+  }
+
+  .ui-code-block [data-code-token="function"],
+  .ui-prose pre [data-code-token="function"] {
+    color: var(--code-block-token-function-color, hsl(var(--text-info)));
+  }
+
+  .ui-code-block [data-code-token="constant"],
+  .ui-prose pre [data-code-token="constant"] {
+    color: var(--code-block-token-constant-color, hsl(var(--text-warning)));
+  }
+
+  .ui-code-block [data-code-token="parameter"],
+  .ui-prose pre [data-code-token="parameter"] {
+    color: var(--code-block-token-parameter-color, hsl(var(--foreground)));
+  }
+
+  .ui-code-block [data-code-token="punctuation"],
+  .ui-prose pre [data-code-token="punctuation"] {
+    color: var(--code-block-token-punctuation-color, hsl(var(--muted-foreground)));
+  }
+
+  /* A link is UNDERLINED, not merely tinted — the one token whose default hue collides outright.
+   * Measured: in dark, `--text-link` and `--primary` are the same colour (dE 0.0, both hue-snapped
+   * to the identity violet), so a link and a KEYWORD were indistinguishable — and a keyword is the
+   * most frequent token in any file, so the rare one was hiding inside the common one. Rather than
+   * spend another hue the system does not have, the mark carries it: distinguishable without
+   * colour is the rule here anyway (WCAG 1.4.1), and underlining a link in code is conventional. */
+  .ui-code-block [data-code-token="link"],
+  .ui-prose pre [data-code-token="link"] {
+    color: var(--code-block-token-link-color, hsl(var(--text-link)));
+    text-decoration-line: underline;
+    /* The house link treatment, not a bare underline: the GoDX v2.3 offset keeps the rule clear of
+     * descenders (`--text-link-underline-offset`, tokens/components/text.css) and `skip-ink` breaks
+     * it around them. A mono face at `--code-block-font-size` sets a URL full of `g`/`p`/`/`, which
+     * is where an unoffset underline turns into a strikethrough. */
+    text-underline-offset: var(--text-link-underline-offset);
+    text-decoration-skip-ink: auto;
+  }
+
+  .ui-code-block [data-code-token="inserted"],
+  .ui-prose pre [data-code-token="inserted"] {
+    color: var(--code-block-token-inserted-color, hsl(var(--text-success)));
+  }
+
+  .ui-code-block [data-code-token="deleted"],
+  .ui-prose pre [data-code-token="deleted"] {
+    color: var(--code-block-token-deleted-color, hsl(var(--text-error)));
   }
 
   /* PROSE — rendered content. Every measure is a token; nothing here is a copied value. */

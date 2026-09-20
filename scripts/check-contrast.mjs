@@ -25,6 +25,14 @@ const ROUTES = routeArgs.length
       "/isolate/feedback-alert",
       "/isolate/data-display-badge",
       "/isolate/data-display-stat-card",
+      // CodeBlock's syntax inks (gh#784): twelve colours on the block's `--muted` ground, in BOTH
+      // themes because the two are mapped independently. The first cut of these defaults borrowed
+      // the FILL roles and put string literals at 2.01:1 — caught by arithmetic over the token
+      // values, which is the deterministic half (code-block-syntax-contrast.test.ts). This is the
+      // other half: what a browser actually paints, including the `hsl(var(…))` call-site
+      // fallbacks, which the arithmetic assumes resolve and does not verify.
+      "/isolate/data-display-code-block",
+      "/isolate/data-display-code-block?theme=dark",
       // AlertDialog actions) must stay AA on their fill,
       // which only covered default-theme text). Deterministic token coverage: destructive-contrast.test.
       "/isolate/feedback-alert-dialog",

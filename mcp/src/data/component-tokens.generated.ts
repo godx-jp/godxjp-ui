@@ -2469,6 +2469,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--code-block-foreground",
+    "value": "initial",
+    "description": "SYNTAX COLOURS (gh#784). Twelve knobs, named for Shiki's `createCssVariablesTheme` output so a * highlighter's own vocabulary maps onto them one-for-one with no translation layer. * * WHY THE PACKAGE OWNS THESE AT ALL. `CodeBlock` is a surface and does not highlight — its own * prop docs tell a consumer to bring a highlighter and pass its spans. But the consumer rules * then close every route those spans could take colour from: `style` and `className` are both * visual overrides, and an app stylesheet may declare no custom properties. So the documented * path was unbuildable, which is a contradiction in this package's docs rather than a missing * feature on the consumer's side. * * Every one is `initial` with its role default at the CALL SITE (docs/TOKENS.md — the `:root` * freeze rule), so light and dark come from the roles rather than from a second palette here, * and a service that wants its own scheme overrides the knob without touching the roles."
+  },
+  {
+    "name": "--code-block-token-comment-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-keyword-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-string-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-string-expression-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-function-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-constant-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-parameter-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-punctuation-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-link-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-inserted-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--code-block-token-deleted-color",
+    "value": "initial",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--prose-font-size",
     "value": "var(--font-size-base)",
     "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
