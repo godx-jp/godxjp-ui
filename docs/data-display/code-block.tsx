@@ -136,9 +136,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Diff tokens · inserted and deleted</CardTitle>
             <CardDescription>
-              The same vocabulary carries a diff. inserted and deleted default to the success and
-              destructive roles, so they agree with every other affirmative and destructive mark in
-              the system rather than inventing a second green and red.
+              The same vocabulary carries a diff. inserted, deleted and changed default to the
+              success, destructive and warning roles, so they agree with every other affirmative and
+              destructive mark in the system rather than inventing a second green and red.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -146,6 +146,9 @@ export default function Demo() {
               <span data-code-token="comment">{"--- a/tokens.css\n+++ b/tokens.css\n"}</span>
               <span data-code-token="deleted">{"-  --code-block-foreground: #111;\n"}</span>
               <span data-code-token="inserted">{"+  --code-block-foreground: initial;\n"}</span>
+              <span data-code-token="changed">
+                {"!  --code-block-token-changed-color: initial;\n"}
+              </span>
               <span data-code-token="punctuation">
                 {"   /* role-mirror: the default moved to the call site */"}
               </span>

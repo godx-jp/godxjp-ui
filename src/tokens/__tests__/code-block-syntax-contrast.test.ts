@@ -55,6 +55,7 @@ const TOKENS = [
   "link",
   "inserted",
   "deleted",
+  "changed",
 ] as const;
 
 describe.each(themes)("CodeBlock syntax colours ($theme)", ({ selector }) => {
@@ -88,6 +89,53 @@ describe.each(themes)("CodeBlock syntax colours ($theme)", ({ selector }) => {
       "text-underline-offset: var(--text-link-underline-offset)",
     );
     expect(rule).toMatch(/text-decoration-skip-ink:\s*auto/);
+  });
+
+  it("every shared colour is a NAMED family, never an accident (gh#793)", () => {
+    // Twelve names, six inks: sharing is unavoidable and must therefore be deliberate. The first
+    // justification written for the amber pair was "a language grammar and a diff grammar never
+    // meet in one block", and it is FALSE — markdown EMBEDS other grammars, so one block with a
+    // JSON fence above a context-diff fence emits `changed, constant, deleted, keyword,
+    // punctuation, string`. A diff fence ALONE cannot emit `constant`, which is exactly why the
+    // wrong claim survived: true of the case anyone would test, false of the case a wiki renders.
+    //
+    // So each shared ink is enumerated here with the reason it is readable anyway. A pair that is
+    // not on this list is an accident, and that is what this case catches.
+    const FAMILIES: Record<string, { tokens: string[]; why: string }> = {
+      "muted-foreground": {
+        tokens: ["comment", "punctuation"],
+        why: "both are NOT-the-code; the reader's task is to skip them, and two greys would invite telling them apart for no gain",
+      },
+      "text-success": {
+        tokens: ["string", "string-expression", "inserted"],
+        why: "string-expression is nested INSIDE a string; `inserted` is a diff line and carries its own `+` in the text",
+      },
+      "text-warning": {
+        tokens: ["constant", "changed"],
+        why: "`changed` is a diff line and carries its own `!` in the text, so hue is reinforcement rather than the cue",
+      },
+      foreground: {
+        tokens: ["parameter"],
+        why: "ordinary ink; the block's own foreground is the same by design",
+      },
+    };
+    const byRole = new Map<string, string[]>();
+    for (const token of TOKENS) {
+      const role = fallbackRole(token);
+      byRole.set(role, [...(byRole.get(role) ?? []), token]);
+    }
+    for (const [role, tokens] of byRole) {
+      if (tokens.length < 2) continue;
+      const family = FAMILIES[role];
+      expect(
+        family,
+        `--${role} is shared by ${tokens.join(" + ")} with no recorded reason`,
+      ).toBeDefined();
+      expect(
+        [...tokens].sort(),
+        `--${role} is shared by ${tokens.join(" + ")}, but the recorded family is ${family!.tokens.join(" + ")} (${family!.why})`,
+      ).toEqual([...family!.tokens].sort());
+    }
   });
 
   it("no token falls back to a FILL role, whatever its ratio happens to be today", () => {

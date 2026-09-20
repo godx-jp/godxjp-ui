@@ -5472,7 +5472,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "children",
         type: "ReactNode",
         description:
-          "The text. Pass a string, or a highlighter's spans tagged `data-code-token` (the twelve Shiki createCssVariablesTheme names) — the package colours them from the `--code-block-token-*` knobs, so the consumer never writes a colour.",
+          "The text. Pass a string, or a highlighter's spans tagged `data-code-token` (the twelve Shiki createCssVariablesTheme token names) — the package colours them from the `--code-block-token-*` knobs, so the consumer never writes a colour.",
       },
       {
         name: "wrap",
@@ -5508,7 +5508,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DON\'T hand-roll `<pre className="max-h-64 overflow-auto rounded bg-muted p-2 whitespace-pre-wrap">`: every one of those values is a copy of a token this component reads.',
       'DON\'T reach for `Text as="code"` for a block: that is inline monospace with no wrapping axis. Use `Text as="code"` for an identifier inside a sentence, CodeBlock for a block.',
       "DON'T use CodeBlock for a single value in a Descriptions row: `Descriptions.Item mono` owns that (it breaks the value, not the row).",
-      "SYNTAX COLOUR (gh#784): CodeBlock does not highlight, but it DOES own the palette. Tag each span from your highlighter with `data-code-token` — the twelve names are Shiki createCssVariablesTheme's verbatim (comment, keyword, string, string-expression, function, constant, parameter, punctuation, link, inserted, deleted, plus the block foreground) — and the package colours them. DON'T put `style={{ color }}` or a palette `className` on the spans: both are visual overrides, and the colour is not the consumer's to choose. Retheme with the `--code-block-token-*-color` knobs, which are role-mirrors, so light and dark follow the theme with no second palette.",
+      "SYNTAX COLOUR (gh#784): CodeBlock does not highlight, but it DOES own the palette. Tag each span from your highlighter with `data-code-token` — the twelve names are Shiki createCssVariablesTheme's verbatim (comment, keyword, string, string-expression, function, constant, parameter, punctuation, link, inserted, deleted, changed, plus the block foreground) — and the package colours them. DON'T put `style={{ color }}` or a palette `className` on the spans: both are visual overrides, and the colour is not the consumer's to choose. Retheme with the `--code-block-token-*-color` knobs, which are role-mirrors, so light and dark follow the theme with no second palette.",
     ],
     useCases: [
       'Request and response bodies of an HTTP trace (HAR) in a bug-report inbox: JSON up to 64 KB, lines up to 240 characters, wrapped and capped at `maxHeight="sm"`.',

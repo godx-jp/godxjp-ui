@@ -2529,6 +2529,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--code-block-token-changed-color",
+    "value": "initial",
+    "description": "`changed` is the TWELFTH name and it was missed on the first pass: gh#784's own list had * eleven, I copied the list instead of the source, and shiki's theme-css-variables.ts emits * twelve. It is reachable only through a CONTEXT diff (`diff -c`, `markup.changed.diff` = * `^(!).*$`), which is why a unified-diff sample never produced it — a silent wrong answer * rather than a missing nicety: a changed line rendered as ordinary foreground, losing the * distinction the `!` marker exists to make. Reported by the consumer that tokenised all 17 * grammars (gh#793)."
+  },
+  {
     "name": "--prose-font-size",
     "value": "var(--font-size-base)",
     "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
