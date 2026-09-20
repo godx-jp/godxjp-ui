@@ -44,20 +44,26 @@ describe("DropdownMenuContent width (gh#396)", () => {
   });
 
   it("re-points the surface's own min-width knob rather than fixing an inline size", () => {
+    // Whitespace-collapsed: every literal space below is a place Prettier may put a line break,
+    // and where it chooses to is not part of what these rules say (gh#769). Measured before this
+    // change: reflowing navigation-layout.css at printWidth 60 turned this case red while the
+    // declarations were present and unchanged.
     const css = read("../../../styles/navigation-layout.css");
+    /** `\s*` at every joint: Prettier may break after `{`, or inside `var(` (gh#769). */
+    const knob = (width: string, value: string) =>
+      new RegExp(
+        `\\.ui-dropdown-menu-content\\[data-width="${width}"\\]\\s*\\{\\s*--menu-content-min-width:\\s*${value};`,
+      );
     // A floor, not a width: a long label still grows the panel instead of clipping.
+    expect(css).toMatch(knob("auto", "0"));
     expect(css).toMatch(
-      /\.ui-dropdown-menu-content\[data-width="auto"\] \{\s*--menu-content-min-width: 0;/,
-    );
-    expect(css).toMatch(
-      /\.ui-dropdown-menu-content\[data-width="trigger"\] \{\s*--menu-content-min-width: var\(--trigger-width, var\(--dropdown-content-min-width\)\);/,
+      knob(
+        "trigger",
+        "var\\(\\s*--trigger-width,\\s*var\\(\\s*--dropdown-content-min-width\\s*\\)\\s*\\)",
+      ),
     );
     for (const step of ["sm", "md", "lg"]) {
-      expect(css).toMatch(
-        new RegExp(
-          `\\.ui-dropdown-menu-content\\[data-width="${step}"\\] \\{\\s*--menu-content-min-width: var\\(--menu-content-width-${step}\\);`,
-        ),
-      );
+      expect(css).toMatch(knob(step, `var\\(\\s*--menu-content-width-${step}\\s*\\)`));
     }
   });
 

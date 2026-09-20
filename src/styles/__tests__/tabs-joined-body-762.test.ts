@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 const root = join(import.meta.dirname, "../..");
 
 const navStyles = readFileSync(join(root, "styles/navigation-layout.css"), "utf8");
@@ -13,12 +15,26 @@ function tokenValue(css: string, token: string): string | undefined {
   return css.match(new RegExp(`^\\s*${token}:\\s*([^;]+);`, "m"))?.[1].trim();
 }
 
-/** The declaration block of the first rule whose selector list contains `needle`. */
+/**
+ * The declaration block of the first rule whose selector list contains `needle`.
+ *
+ * `needle` is written on ONE line and matched across any whitespace run (gh#769). Measured before
+ * this change: reflowing navigation-layout.css at printWidth 60 turned 11 of this file's 24 cases
+ * red, all of them reporting missing rules that were present and unchanged — the exact failure
+ * #767 opened with, still live here.
+ */
 function ruleContaining(css: string, needle: string): string {
-  const at = css.indexOf(needle);
+  const at = anchorIndex(css, needle);
   if (at === -1) return "";
   const open = css.indexOf("{", at);
   return css.slice(open + 1, css.indexOf("}", open));
+}
+
+/** A slice starting at `needle`, found however the formatter wrapped it. */
+function sliceFrom(css: string, needle: string): string {
+  const at = anchorIndex(css, needle);
+  expect(at, `rule not found: ${needle}`).toBeGreaterThan(-1);
+  return css.slice(at);
 }
 
 /**
@@ -67,7 +83,7 @@ describe("Tabs bodied — the trailing control's edge (gh#766)", () => {
 
   it("leaves the tabs flush, so the perimeter stays one outline", () => {
     // A rule that moved the LIST would break the merge the whole `bodied` shape is built on.
-    const bodied = navStyles.slice(navStyles.indexOf('[data-slot="tabs"][data-bodied="true"] {'));
+    const bodied = sliceFrom(navStyles, '[data-slot="tabs"][data-bodied="true"] {');
     expect(bodied).not.toMatch(/\.ui-tabs-extra[^{]*\{[^}]*margin-inline:(?!-)/);
     expect(bodied).not.toMatch(
       /\[data-bodied="true"\][^{]*\[data-slot="tabs-list"\][^{]*\{[^}]*margin-inline-start/,
@@ -102,7 +118,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     );
     expect(body).toMatch(/border-radius:\s*var\(--tabs-panel-radius\)/);
     expect(body).toMatch(
-      /background:\s*hsl\(var\(--tabs-panel-background,\s*var\(--background\)\)\)/,
+      /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(--background\)\s*\)\s*\)/,
     );
     expect(body).toMatch(/padding:\s*var\(--tabs-panel-space-inset\)/);
   });
@@ -111,7 +127,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     // The body's own border is the rail now. It has to beat the four placement rail rules, which
     // are (0,4,0) — and their `[dir="rtl"]` mirrors, which are (0,5,0).
     const suppressed = navStyles.match(
-      /\[data-slot="tabs"\]\[data-bodied="true"\]\[data-variant="card"\] \[data-slot="tabs-list"\][\s\S]*?\{([^}]*)\}/,
+      /\[data-slot="tabs"\]\[data-bodied="true"\]\[data-variant="card"\]\s+\[data-slot="tabs-list"\][\s\S]*?\{([^}]*)\}/,
     );
     expect(suppressed?.[1]).toMatch(/box-shadow:\s*none/);
     for (const variant of ["card", "editable-card"]) {
@@ -139,14 +155,16 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
       // Exactly one border width of pull — the tabs' joined edge and the body's edge then
       // occupy the SAME device row, which is what makes it one outline instead of two.
       expect(rule).toMatch(
-        new RegExp(`${margin}:\\s*calc\\(-1 \\* var\\(--tabs-panel-border-width\\)\\)`),
+        new RegExp(
+          `${margin}:\\s*calc\\(\\s*-1\\s*\\*\\s*var\\(--tabs-panel-border-width\\)\\s*\\)`,
+        ),
       );
       for (const corner of corners) expect(rule).toMatch(new RegExp(`${corner}:\\s*0;`));
     },
   );
 
   it("uses LOGICAL corner properties, so start/end mirror under dir=rtl with no second rule", () => {
-    const bodiedBlock = navStyles.slice(navStyles.indexOf('[data-bodied="true"][data-placement='));
+    const bodiedBlock = sliceFrom(navStyles, '[data-bodied="true"][data-placement=');
     expect(bodiedBlock.slice(0, 2000)).not.toMatch(
       /border-(top|bottom)-(left|right)-radius|margin-(top|bottom|left|right):/,
     );
@@ -176,9 +194,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
   });
 
   it("re-states the seam structurally under forced colors, where a merged edge cannot merge", () => {
-    const forced = navStyles.slice(
-      navStyles.indexOf('[data-bodied="true"] > [data-slot="tabs-panel"],'),
-    );
+    const forced = sliceFrom(navStyles, '[data-bodied="true"] > [data-slot="tabs-panel"],');
     expect(forced).toMatch(/@media \(forced-colors: active\)/);
     expect(forced).toMatch(/border-block-end-style:\s*none/);
     expect(forced).toMatch(/border-block-start-style:\s*none/);
@@ -217,8 +233,10 @@ describe("Tabs counter pill ↔ Toggle counter pill (gh#762)", () => {
       "--tabs-count-active-color",
     ]) {
       expect(tokenValue(navTokens, token), `${token} must be declared initial`).toBe("initial");
-      expect(navStyles, `${token} needs its role default at the call site`).toContain(
-        `var(${token}, hsl(var(--`,
+      // Tolerant at every joint, not merely collapsed: Prettier may break INSIDE `hsl(`/`var(`,
+      // and a collapse turns that break into a space the expected substring does not have.
+      expect(navStyles, `${token} needs its role default at the call site`).toMatch(
+        new RegExp(`var\\(\\s*${token},\\s*hsl\\(\\s*var\\(\\s*--`),
       );
     }
   });
