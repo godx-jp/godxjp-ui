@@ -1,0 +1,147 @@
+{
+  "example": "import { Flex } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<Flex direction=\"row\" gap=\"sm\" align=\"center\" justify=\"between\" wrap>\n  <SearchSummary />\n  <Flex direction=\"row\" gap=\"xs\" align=\"center\" wrap>\n    <Button variant=\"outline\">リセット</Button>\n    <Button>適用</Button>\n  </Flex>\n</Flex>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Flex",
+  "props": [
+    {
+      "description": "Floating child actions shown on parent hover/focus-within; always visible on touch.",
+      "name": "reveal",
+      "type": "\"hover\""
+    },
+    {
+      "description": "Negative inline inset on the token scale.",
+      "name": "bleed",
+      "type": "GapProp"
+    },
+    {
+      "description": "Lightweight surface, without Card structure.",
+      "name": "surface",
+      "type": "\"muted\" | \"popover\" | \"warning\""
+    },
+    {
+      "description": "false prevents shrinking.",
+      "name": "shrink",
+      "type": "boolean"
+    },
+    {
+      "description": "Grow into remaining flex space.",
+      "name": "grow",
+      "type": "boolean"
+    },
+    {
+      "description": "Semantic element. A list keeps its marker and indentation unless marker=\"none\" says otherwise.",
+      "name": "as",
+      "type": "\"div\" | \"span\" | \"ul\" | \"ol\" | \"li\""
+    },
+    {
+      "defaultValue": "as=\"ul\" → \"disc\", as=\"ol\" → \"decimal\"",
+      "description": "Marker for a LIST element; ignored by every other tag. marker=\"none\" emits NO data-list, so the list keeps its <ul>/<ol>, its <li> semantics and its gap token, and loses the bullet AND the --space-5 indent — that is the container a short entity list needs: <Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\"> with <ListRow as=\"li\"> rows. Before it, the bullet was unconditional and .ui-flex[data-list] > li { display: list-item } outranked [data-slot=\"list-row\"] { display: flex }, so rows fell out of flex layout (94.58px tall instead of 69.98px) and the only move left was a raw <ul>, which carries no gap token (gh#714). disc/decimal stay available so an <ol> can be bulleted, or a <ul> numbered, without a list-style-type in a className.",
+      "name": "marker",
+      "type": "\"disc\" | \"decimal\" | \"none\""
+    },
+    {
+      "description": "Responsive axis; omitted steps inherit.",
+      "name": "direction",
+      "type": "\"row\" | \"col\" | {base?: \"row\" | \"col\"; sm?: \"row\" | \"col\"; md?: \"row\" | \"col\"; lg?: \"row\" | \"col\"; xl?: \"row\" | \"col\"}"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Token gap between children, shared with other layout primitives. \"none\" is a DELIBERATE zero for two lines that read as one block — a name over its role, a weekday over its date, a tab bar with no seam — not a way to opt out of the token scale.",
+      "name": "gap",
+      "type": "\"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\""
+    },
+    {
+      "description": "ESCAPE HATCH: a gap in pixels, off every step of the scale. Real designs land on 2px, 5px, 6px, 10px, 14px — rounding to the nearest named step drifts the layout, and writing the literal in a className is blocked by ui-audit. Spend the ten named steps FIRST: `gap={3}` is 12px and follows the user's --scaling, gapRaw does not. It wins over `gap` (which then emits no class, so the two cannot fight over specificity) and leaves data-gap-raw on the DOM, so every escape stays countable.",
+      "name": "gapRaw",
+      "type": "number"
+    },
+    {
+      "description": "Inner padding on the token scale — one step for all four sides, or an object keyed by LOGICAL side. Exists because a missing padding prop produced 42 of 51 ui-audit errors in one real consumer (gh#408): `<Flex className=\"p-3\">` was the only move left.",
+      "name": "pad",
+      "type": "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }"
+    },
+    {
+      "description": "Raw-pixel padding for values off the scale, same contract and same price as gapRaw: it leaves data-pad-raw on the DOM so each escape is countable. Overrides `pad` PER SIDE, not as a whole.",
+      "name": "padRaw",
+      "type": "number | { inline?, block?, inlineStart?, inlineEnd?, blockStart?, blockEnd? }"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Take the space the siblings leave — the ELASTIC column of a `fixed | elastic | fixed` row (name · meter · figures). Also sets min-inline-size: 0, which is what lets a truncating child ellipse instead of pushing the row wider. Without this axis the only move was className=\"flex-1 min-w-0\", which ui-audit blocks (gh#405 §2).",
+      "name": "fill",
+      "type": "boolean"
+    },
+    {
+      "description": "A FIXED column: number = px, string = any CSS length. Comes with flex: none — a width a sibling can still squeeze is a suggestion, and stacked rows would start at different x offsets. Leaves data-width-raw on the DOM so the measurement stays countable, like gapRaw/padRaw.",
+      "name": "width",
+      "type": "number | string"
+    },
+    {
+      "description": "Cross-axis alignment, emitted as a data attribute for the layout CSS.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\""
+    },
+    {
+      "description": "Main-axis distribution, emitted as a data attribute for the layout CSS.",
+      "name": "justify",
+      "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Allows children to wrap onto additional flex lines.",
+      "name": "wrap",
+      "type": "boolean"
+    },
+    {
+      "description": "Drop this region below a canonical breakpoint step (sm 40rem, md 48rem, lg 64rem, xl 80rem). THE public way to make a region responsive without a page-local media query — a public header hides its anchor navigation with hideBelow=\"md\". Omitted by default, so no attribute is emitted and no rule matches. display:none also removes it from the a11y tree, so keep its destinations reachable elsewhere (a footer nav) at that width.",
+      "name": "hideBelow",
+      "type": "\"sm\" | \"md\" | \"lg\" | \"xl\""
+    },
+    {
+      "description": "Inverse of hideBelow — drop the region FROM that step upwards, i.e. keep it only on the narrow side (a compact-only affordance).",
+      "name": "hideFrom",
+      "type": "\"sm\" | \"md\" | \"lg\" | \"xl\""
+    },
+    {
+      "description": "ESCAPE HATCH: the same drop, at a width in PIXELS off every step of the scale — the gapRaw/padRaw contract on the breakpoint axis (gh#528). An off-scale breakpoint is a LOCAL EXCEPTION, not a new tier: sm/md/lg/xl are shared with collapseBelow and --master-detail-collapse-below, so two regions asked to fold at the same step really do fold together, while a raw width folds one region only. Spend the four steps first; reach here when the canonical design specifies a width the scale has not got (a nav that becomes a hamburger at 900px). It leaves data-hide-below-raw on the DOM so every escape stays countable, and prints one deduped media rule per distinct width (a media query cannot read a var()). It wins over hideBelow, which then emits nothing.",
+      "name": "hideBelowRaw",
+      "type": "number"
+    },
+    {
+      "description": "Inverse of hideBelowRaw, same contract and same price (data-hide-from-raw). THE SEAM: hideBelowRaw hides while width < N and hideFromRaw hides while width >= N — the same comparisons as the token steps, so the pair is exact complements and at exactly N the hideBelowRaw region is the visible one. Never hand-roll this with an inclusive max-width: `<= N` paired with `>= N` hides BOTH at exactly N, the 1px hole a consumer measured on a hand-rolled max-[900px]: pair.",
+      "name": "hideFromRaw",
+      "type": "number"
+    }
+  ],
+  "related": [
+    "Flex `direction='col'` — the standard pattern for ordinary vertical block spacing; use explicit `align`, `justify`, or `wrap` props when you need more control.",
+    "Flex `direction='row'` — the standard pattern for simple horizontal groups; add `wrap` and `align='center'` for the typical row with wrapped centered items.",
+    "ResponsiveGrid — use for equal-width, multi-column tile layouts. Flex arranges children on one flex axis and does not provide column-count behavior.",
+    "PageContainer — page scaffold and padding context. Flex is an inner layout primitive used inside page sections, cards, dialogs, and toolbars."
+  ],
+  "rules": [
+    2,
+    40
+  ],
+  "storyPath": "layout/Flex.stories.tsx",
+  "tagline": "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls.",
+  "usage": [
+    "DO import from `@godxjp/ui/layout` and reach for Flex when the axis, alignment, justification, or wrap behavior is part of the component contract: `import { Flex } from \"@godxjp/ui/layout\"`.",
+    "DO keep spacing on the `gap` prop instead of raw `gap-*`, `space-*`, or padding utilities. Flex uses the same token scale as other layout primitives, so spacing remains tied to the design system.",
+    "DO use `direction=\"row\"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than simple row composition.",
+    "DO use `direction=\"col\"` for vertical groupings that need explicit `align` or `justify` behavior. For pure vertical stacking without alignment control, `direction=\"col\"` is sufficient.",
+    "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
+    "Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper. When the parent only accepts phrasing content — a TabsTrigger, PopoverTrigger or Button, all of which render a <button> — pass `as=\"span\"` rather than reaching for a raw `<span className=\"flex …\">`.",
+    "SEMANTIC LIST: a list of rows is `<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">` with `<ListRow as=\"li\">` children — never a raw `<ul>` (no gap token), never `<div role=\"list\">` + `<div role=\"listitem\">` (ARIA re-describing markup HTML already has), and never a wrapper around each row: the divider is `:not(:last-child)` among SIBLINGS, so a row alone in its own wrapper loses it silently. `ui-audit` flags all three as `no-hand-rolled-list`.",
+    "NAMED FLEX = GROUP: a role-less div may not carry a naming attribute (axe aria-allowed-attr), so a Flex given `aria-label`/`aria-labelledby` — e.g. by FormField wrapping a composite range/年月 field — automatically renders `role='group'`, folds `aria-errormessage` into `aria-describedby`, and drops the widget-only `aria-required`/`aria-invalid`. Passing an explicit `role` opts out of all of this and the caller owns the attribute set."
+  ],
+  "useCases": [
+    "Toolbar internals where controls should sit in a row, wrap on narrow widths, and stay vertically centered.",
+    "Card headers that need title content on the left and actions on the right via `justify='between'` without hand-rolling flex utility classes.",
+    "Empty-state or loading blocks that center content on both axes using `align='center'` and `justify='center'`.",
+    "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what a plain column Flex provides.",
+    "Badge, chip, or tag clusters where wrapping is required but the caller also needs explicit gap control.",
+    "Low-level layout composition inside custom components where raw flex classes would duplicate the primitive."
+  ]
+}

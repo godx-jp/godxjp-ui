@@ -1,0 +1,52 @@
+{
+  "example": "import {\n  AlertDialogRoot, AlertDialogTrigger, AlertDialogPortal, AlertDialogOverlay,\n  AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription,\n  AlertDialogFooter, AlertDialogAction, AlertDialogCancel,\n} from \"@godxjp/ui/feedback\";\nimport { Button } from \"@godxjp/ui/general\";\n\nfunction ConfirmSettlement() {\n  return (\n    <AlertDialogRoot>\n      <AlertDialogTrigger asChild><Button variant=\"outline\" size=\"sm\">支払を確定</Button></AlertDialogTrigger>\n      <AlertDialogPortal>\n        <AlertDialogOverlay />\n        <AlertDialogContent className=\"max-w-md\">\n          <AlertDialogHeader>\n            <AlertDialogTitle>2026年7月分の支払を確定しますか？</AlertDialogTitle>\n            <AlertDialogDescription>確定すると振込データが生成されます。</AlertDialogDescription>\n          </AlertDialogHeader>\n          {/* freeform impact summary goes here */}\n          <AlertDialogFooter>\n            <AlertDialogCancel>戻る</AlertDialogCancel>\n            <AlertDialogAction>確定する</AlertDialogAction>\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialogRoot>\n  );\n}",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "AlertDialogRoot",
+  "props": [
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Uncontrolled initial open state (use with AlertDialogTrigger).",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state change handler.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "The trigger and the portalled alertdialog parts.",
+      "name": "children",
+      "type": "React.ReactNode"
+    }
+  ],
+  "related": [
+    "AlertDialog — the flat preset. Prefer it; it is the canonical destructive-confirm recipe and needs no compound markup.",
+    "Dialog — compound modal for form-style, non-destructive flows. `role=dialog`, dismissible on outside click.",
+    "AlertDialogHeader — the header band; `tone` tints only the background (default | success | warning | destructive | info | muted | neutral)."
+  ],
+  "rules": [
+    23,
+    3
+  ],
+  "storyPath": "feedback/AlertDialog.stories.tsx",
+  "tagline": "Compound alertdialog Root — the role=\"alertdialog\" mirror of Dialog's root. Wraps Radix AlertDialog.Root and supplies the context AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel read. Parts: AlertDialogTrigger/AlertDialogPortal/AlertDialogOverlay/AlertDialogContent/AlertDialogHeader/AlertDialogFooter/AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel.",
+  "usage": [
+    "Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
+    "DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
+    "DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — Radix requires an accessible title for `role=alertdialog`; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
+    "DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
+    "DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the Radix close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
+    "DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`."
+  ],
+  "useCases": [
+    "Confirm-with-impact-summary — a destructive confirmation that must show what will be affected (a list of 3 downstream jobs, a table of invoices) before the user commits. The flat preset only takes a string `description`.",
+    "Batch-close confirmation whose body renders a rich breakdown (counts, totals, per-tenant rows) alongside the standard confirm/cancel pair.",
+    "Any confirmation that must keep `role=alertdialog` semantics (focus trap, no dismiss-on-outside-click) but needs freeform children — use Dialog only when the flow is non-destructive."
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "docPath": "data-display/thought-chain.tsx",
+  "example": "import { ThoughtChain } from \"@godxjp/ui/data-display\";\n\n<ThoughtChain\n  label=\"思考の手順\"\n  defaultExpandedKeys={[\"search\"]}\n  items={[\n    { key: \"read\", title: \"資料を読む\", description: \"3件\", status: \"success\" },\n    {\n      key: \"search\",\n      title: \"社内規程を検索\",\n      status: \"loading\",\n      collapsible: true,\n      blink: true,\n      content: <pre>{hits}</pre>,\n    },\n    { key: \"write\", title: \"下書きを書く\", status: \"abort\" },\n  ]}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ThoughtChain",
+  "props": [
+    {
+      "description": "The steps: { key?, icon?, title?, description?, content?, footer?, status?, collapsible?, blink?, destroyOnHidden? }. `icon: false` drops the glyph column; omitted, the step shows its 1-based ordinal (Ant Design X's own default).",
+      "name": "items",
+      "type": "ThoughtChainItemsProp[]"
+    },
+    {
+      "description": "Uncontrolled initially-open steps.",
+      "name": "defaultExpandedKeys",
+      "type": "string[]"
+    },
+    {
+      "description": "Controlled open steps.",
+      "name": "expandedKeys",
+      "type": "string[]"
+    },
+    {
+      "description": "Fires with the NEXT open set.",
+      "name": "onExpand",
+      "type": "(keys: string[]) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "The connector drawn between steps. false draws none. (Ant Design X's own type spells the third with a stray U+200C, so `line=\"dotted\"` does not type-check there; the clean spelling is used here.)",
+      "name": "line",
+      "type": "boolean | \"solid\" | \"dashed\" | \"dotted\""
+    },
+    {
+      "description": "Accessible name of the chain (a plain string). Localized default otherwise.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "DOM id of the chain root.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Timeline — the same vertical rail for events that ALREADY happened. Use it when nothing is in flight.",
+    "Steps — a wizard's progress across a form. ThoughtChain is the assistant's own reasoning, not the user's path.",
+    "Accordion — a general disclosure list with no rail, no ordinal and no status.",
+    "ChatBubble — the answer the chain explains."
+  ],
+  "rules": [
+    2,
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "data-display/ThoughtChain.stories.tsx",
+  "subParts": [
+    "ThoughtChainItem"
+  ],
+  "tagline": "The assistant's reasoning, step by step (Ant Design X ThoughtChain): an ORDERED list of steps, each with an ordinal or a glyph, a status, and a body it can collapse — where Ant X's own step is a <div onClick> with no role and no aria-expanded.",
+  "usage": [
+    "DO give every step a stable `key` — it is what expandedKeys addresses and what onExpand reports.",
+    "DO set `collapsible` on a step whose `content` is long (a tool's raw output, a retrieved passage). The title then becomes a real disclosure button with aria-expanded, keyboard-reachable; without `collapsible` the body is simply always shown.",
+    "DO use `status` for how a step ENDED — loading / success / error / abort. The word rides along in a visually hidden span, so the state is never carried by the tint alone.",
+    "DO use `blink` while a step is still streaming; it pulses the title and body and collapses to nothing under prefers-reduced-motion.",
+    "DON'T reach for it for events that already happened — that is Timeline. A thought chain is a run IN PROGRESS, which is why it has loading and abort states and a body that opens.",
+    "DON'T expect `styles`/`classNames` from Ant Design X — retune through the --thought-chain-* tokens."
+  ],
+  "useCases": [
+    "An agent's tool calls under its answer: read the documents, search the policy, draft the reply — each with its output collapsed.",
+    "A long-running job's progress inside a chat: the current step blinking, the finished ones ticked, an aborted one greyed.",
+    "ThoughtChainItem alone: the chip an assistant drops inline to name the tool it just reached for."
+  ]
+}

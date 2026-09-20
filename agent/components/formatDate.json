@@ -1,0 +1,46 @@
+{
+  "example": "import { formatDate } from \"@godxjp/ui/datetime\";\n\nformatDate(coupon.validFrom);                       // \"2026-05-01\"\nformatDate(order.createdAt, { kind: \"relative\" });  // \"3日前\"",
+  "group": "providers",
+  "importPath": "@godxjp/ui/app",
+  "name": "formatDate",
+  "props": [
+    {
+      "description": "ISO date, ISO datetime, HH:mm, or Date.",
+      "name": "value",
+      "required": true,
+      "type": "string | Date | null | undefined"
+    },
+    {
+      "defaultValue": "\"auto\"",
+      "description": "Output preset; auto infers from the value.",
+      "name": "options.kind",
+      "type": "\"auto\" | \"date\" | \"datetime\" | \"time\" | \"long\" | \"relative\""
+    }
+  ],
+  "related": [
+    "AppProvider — required peer that seeds locale, timezone, dateFormat, and timeFormat into the module-level context that `formatDate` reads. Must be mounted once at app root; omitting it means `formatDate` silently falls back to Vietnamese/Ho Chi Minh City defaults.",
+    "DatePicker — the corresponding input control for calendar dates. Use `DatePicker` to capture a date from the user; use `formatDate(value, { calendar: true })` to display the picked `Date` object back as a string.",
+    "DateFormatPicker / TimeFormatPicker / TimezonePicker — preference pickers that update AppProvider context; their selections are automatically picked up by subsequent `formatDate` calls with no extra wiring needed.",
+    "TimePicker — the corresponding input control for HH:mm time values. Use `TimePicker` to capture time; use `formatDate(hhmm)` (auto-detects `'time'` kind) to display the stored `HH:mm` string respecting the user's 12h/24h preference."
+  ],
+  "rules": [
+    5
+  ],
+  "storyPath": "app/formatDate.stories.tsx",
+  "tagline": "MANDATORY for all date/time display. Auto-detects ISO date / HH:mm / instant; reads AppProvider context. Import from @godxjp/ui/datetime.",
+  "usage": [
+    "DO import from `@godxjp/ui/datetime` — NOT from `date-fns` or any other datetime utility. `formatDate` is the single mandatory display entry point; calling `date-fns/format` directly bypasses AppProvider locale/timezone/dateFormat/timeFormat context and produces inconsistent output across the app.",
+    "DO ensure `AppProvider` is mounted at the app root before the first `formatDate` call. The function reads a module-level context synced by `AppProvider` via `syncDatetimeContext`. Without it the fallback locale is `'vi'` / timezone `'Asia/Ho_Chi_Minh'` / `'24h'`, which will silently produce wrong output in Japanese or English apps.",
+    "DO pass `null` or `undefined` safely — `formatDate` returns an em-dash `'—'` for null/undefined/empty string values. Never guard with a ternary before calling it.",
+    "DO use `options.kind` when auto-detection is wrong: pass `kind: 'date'` for an ISO datetime string you want displayed as date-only, `kind: 'relative'` for age display (e.g. `'3日前'`), `kind: 'long'` for full PPP format in modals/detail panels. Auto-detection maps plain `yyyy-MM-dd` → `'date'`, `HH:mm` → `'time'`, everything else → `'datetime'`.",
+    "DO pass `{ calendar: true }` when the `Date` object came from a react-day-picker calendar pick — this prevents timezone shift that would occur if the Date were treated as a UTC instant.",
+    "DON'T hand-roll per-call locale/timezone resolution with `Intl.DateTimeFormat` or raw `date-fns/format`. The `options.locale` / `options.timezone` overrides exist for one-off per-cell display differences (e.g. showing a partner's local time), not as a substitute for AppProvider context."
+  ],
+  "useCases": [
+    "Rendering all date/time columns in a DataTable — invoice due dates (`kind: 'date'`), transaction timestamps (`kind: 'datetime'`), and elapsed time since last sync (`kind: 'relative'`) all go through `formatDate` so the locale/timezone/12h-24h setting from AppProvider is respected everywhere.",
+    "Displaying a single date/time field in a Descriptions or Card detail panel, e.g. `formatDate(invoice.issuedAt)` for the issued-at row — no extra formatting logic needed, null is handled as `'—'` automatically.",
+    "Formatting a stored `HH:mm` string (24h canonical storage) for display according to the user's timeFormat preference — pass the raw `'14:30'` string and auto-detection routes it through `formatTimeOfDay`, outputting `'2:30 PM'` or `'14:30'` based on context.",
+    "Rendering a 'last modified' timestamp with relative wording in an activity feed or audit log row — `formatDate(entry.updatedAt, { kind: 'relative' })` produces locale-correct relative strings like `'3日前'` / `'3 days ago'`.",
+    "Converting a `Date` selected from `DatePicker` (react-day-picker) back to a display string — pass `{ calendar: true }` to avoid the UTC midnight shift that the default instant path would apply."
+  ]
+}

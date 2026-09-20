@@ -1,0 +1,51 @@
+{
+  "example": "import { Card, CardContent, DataTable } from \"@godxjp/ui/data-display\";\n\n<Card>\n  <CardContent flush>\n    <DataTable data={rows} columns={columns} />\n  </CardContent>\n</Card>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "CardContent",
+  "props": [
+    {
+      "description": "Remove horizontal padding for edge-to-edge tables / tabs lists.",
+      "name": "flush",
+      "type": "boolean"
+    },
+    {
+      "description": "No top gap after header — pair with flush toolbars/tabs.",
+      "name": "tight",
+      "type": "boolean"
+    },
+    {
+      "description": "No header above: top padding matches the card shell.",
+      "name": "solo",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Card — the parent container; CardContent is always a direct child of Card. Card itself has zero internal padding; every visible body padding comes from CardContent (or CardHeader/CardFooter). Never put content directly inside Card.",
+    "StatCard — a self-contained KPI tile that IS already a Card; do not wrap it in <Card><CardContent>. Use StatCard directly inside a ResponsiveGrid.",
+    "ScrollArea — place ScrollArea inside CardContent (non-flush) when the card body needs to scroll; do not put ScrollArea outside CardContent or you lose the card's internal padding.",
+    "SkeletonStat — the loading placeholder for a StatCard tile; swap in SkeletonStat while KPI data is loading. For general Card loading shapes, use SkeletonTable or Skeleton primitives."
+  ],
+  "rules": [
+    37,
+    38
+  ],
+  "storyPath": "data-display/Card.stories.tsx",
+  "tagline": "Card body. flush = edge-to-edge (for DataTable/tabs); tight = no top gap; solo = no header above. NEVER put a Toolbar inside flush (it loses padding).",
+  "usage": [
+    "DO: Always wrap body content in <CardContent> — a bare <Card> has no internal padding, so any child placed directly inside it renders flush against the card edges.",
+    "DO: Use <CardContent flush> for DataTable, Table, or Tabs — the flush prop removes horizontal padding so the content spans edge-to-edge inside the card border. Never add manual p-0 on the Card itself instead.",
+    "DO: Use <CardContent tight> when placing a flush toolbar or a Tabs list directly below a CardHeader — tight removes the top gap so the header and the body connect without an awkward spacing gap.",
+    "DO: Use <CardContent solo> when the card has no CardHeader above it — solo gives the top padding that matches the card shell, ensuring visual balance.",
+    "DON'T: Nest a Toolbar inside <CardContent flush> — flush strips horizontal padding and Toolbar will lose its own padding. Put Toolbar outside the flush CardContent or in a separate non-flush CardContent above it.",
+    "DON'T: Wrap a StatCard inside <Card><CardContent> — StatCard already renders its own Card border; double-wrapping produces a double border. Render StatCard directly in a ResponsiveGrid."
+  ],
+  "useCases": [
+    "Wrapping a form body (Input, Select, Textarea fields) inside a Card that has a CardHeader title — ensures the form fields have correct internal padding.",
+    "Hosting a DataTable inside a Card edge-to-edge: <CardContent flush><DataTable .../></CardContent> — the table occupies the full card width with the card's border acting as the table container.",
+    "Dashboard detail panels where the card has no title — <CardContent solo> gives top padding equivalent to the card shell so the content doesn't sit too close to the top border.",
+    "Placing a Descriptions or Timeline inside a card to display invoice/accounting details — <CardContent> provides the standard 16px (or density-adjusted) padding without needing manual className.",
+    "Pairing with <CardHeader banded> and <CardFooter separated> in a multi-section layout such as a payment summary card — each section slot (header, content, footer) carries its own semantic spacing tokens.",
+    "Putting a ScrollArea inside <CardContent> (not flush) to create a scrollable card body with consistent padding, e.g. a chat or log viewer panel."
+  ]
+}

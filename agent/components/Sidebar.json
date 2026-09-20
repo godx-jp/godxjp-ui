@@ -1,0 +1,118 @@
+{
+  "example": "\n{`import { useState } from \"react\";\nimport { LayoutDashboard, FileText, Users, Shield, CreditCard, BookOpen } from \"lucide-react\";\nimport { Link } from \"react-router-dom\";\nimport { AppShell, createSidebarLink } from \"@godxjp/ui/layout\";\nimport { Sidebar, type SidebarSection } from \"@godxjp/ui/layout\";\nimport { Topbar, TopbarItem } from \"@godxjp/ui/layout\";\n\n// The WHOLE router integration: pass the element type, the library composes every row\n// (icon · label · badge · active · collapsed rail). Inertia: inertiaSidebarLink(Link) from\n// \"@godxjp/ui/inertia\". Next.js: createSidebarLink(Link).\nconst NavLink = createSidebarLink(Link, \"to\");\n\nconst sections: SidebarSection[] = [\n  {\n    label: \"Accounting\",\n    items: [\n      { id: \"dashboard\", label: \"Dashboard\", icon: LayoutDashboard, href: \"/dashboard\" },\n      {\n        id: \"ledger\",\n        label: \"Ledger\",\n        icon: BookOpen,\n        children: [\n          { id: \"journal\", label: \"Journal\", icon: FileText, href: \"/ledger/journal\" },\n          { id: \"chart-of-accounts\", label: \"Chart of Accounts\", icon: CreditCard, href: \"/ledger/coa\" },\n        ],\n      },\n    ],\n  },\n  {\n    label: \"Administration\",\n    items: [\n      { id: \"users\", label: \"Users\", icon: Users, href: \"/users\" },\n      { id: \"roles\", label: \"Roles\", icon: Shield, href: \"/roles\", disabled: true },\n    ],\n  },\n];\n\nexport default function Shell() {\n  const [activeId, setActiveId] = useState(\"dashboard\");\n  const [collapsed, setCollapsed] = useState(false);\n\n  return (\n    <AppShell\n      sidebarCollapsed={collapsed}\n      sidebar={\n        <Sidebar\n          activeId={activeId}\n          collapsed={collapsed}\n          onSelect={setActiveId}\n          sections={sections}\n          linkComponent={NavLink}\n          product={{ name: \"CoreBooks\", role: \"Admin Console\", color: \"hsl(var(--primary))\" }}\n          onProductClick={() => {/* open entity switcher */}}\n          footer={\n            <div className=\"text-muted-foreground text-xs\">\n              <div className=\"text-foreground font-medium\">Satoshi Yamamoto</div>\n              <div>Online · Tokyo branch</div>\n            </div>\n          }\n        />\n      }\n      topbar={\n        <Topbar\n          start={\n            <>\n              {/* A bar cell is a TopbarItem, never a Button: a Button in a bar is a\n                  --control-height pill floating in a taller strip, with its own hover\n                  fill and its own focus ring. */}\n              <TopbarItem aria-label=\"メニュー\" onClick={() => setCollapsed((c) => !c)}>\n                <PanelLeft />\n              </TopbarItem>\n              <Logo mark=\"godx\" label=\"CoreBooks\" />\n            </>\n          }\n          end={<TopbarItem aria-label=\"検索\" onClick={() => {}}><Search /></TopbarItem>}\n        />\n      }\n    >\n      {/* page content */}\n    </AppShell>\n  );\n}`}\n",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Sidebar",
+  "props": [
+    {
+      "description": "Tên khả truy cập của landmark điều hướng. Bắt buộc khi một tài liệu có nhiều hơn một `<nav>`.",
+      "name": "ariaLabel",
+      "type": "string"
+    },
+    {
+      "description": "The id of the currently active nav item. For group items, the parent is automatically highlighted when any descendant id matches.",
+      "name": "activeId",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Ordered list of nav sections. Each section has an optional string label and a required items array of SidebarItemProp. A row's count pill is `item.badge` (CONTENT ONLY — a number, a string, \"9+\"; never a <Badge> element, which would nest a pill inside the pill the row already draws) and its emphasis is `item.badgeTone`: \"neutral\" (default, the quiet unread pill) or \"destructive\" (the count is addressed to the user — an @mention, a DM, a failure waiting on them). A row's TRAILING GLYPH is a different slot: `item.trailingIcon` takes the COMPONENT (like `item.icon`, not an element) and renders a bare 16px mark at the row's inline end — the ⌃⌄ of a workspace switcher, a → on a row that leaves the app — with no pill, no background and no radius, hidden on the collapsed rail exactly like the badge.",
+      "name": "sections",
+      "required": true,
+      "type": "SidebarSectionProp[]"
+    },
+    {
+      "description": "Called with the item id when a leaf nav item is clicked. Not called for group triggers or disabled items.",
+      "name": "onSelect",
+      "type": "(id: string) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, renders the icon-only collapsed rail. Labels become Tooltips on hover; group items open a portaled flyout popover on click. Section labels are hidden.",
+      "name": "collapsed",
+      "type": "boolean"
+    },
+    {
+      "description": "Renders a product/app chip at the top of the sidebar (name, optional role subtitle, optional color swatch). Mutually exclusive with brand — brand takes precedence.",
+      "name": "product",
+      "type": "SidebarProductProp"
+    },
+    {
+      "description": "Click handler for the product chip button. Use to open an entity/workspace switcher sheet or dropdown.",
+      "name": "onProductClick",
+      "type": "() => void"
+    },
+    {
+      "description": "Custom brand slot rendered above the nav scroll area. When provided, the product chip is not rendered. PASS A FUNCTION and it is called with the EFFECTIVE collapsed value, which is what a plain node cannot see: AppShell reuses this same Sidebar for the mobile drawer and the drawer un-collapses the rows, so a lockup built from the consumer's own `collapsed` boolean renders glyph-only inside a full-width drawer. The workaround consumers reach for — a second hand-built Sidebar passed as AppShell's `mobileNav` — is exactly the override that switches off `railInDrawer`, silently dropping the `navRail` from mobile. This slot is APP scope (the product lockup); a PLATFORM switch does not go here.",
+      "name": "brand",
+      "type": "ReactNode | ((collapsed: boolean) => ReactNode)"
+    },
+    {
+      "description": "Slot pinned to the bottom of the sidebar below the scrollable nav area. Commonly used for user identity, online status, or a mode switch. PASS A FUNCTION for the same reason brand takes one, and it is the same reason twice: both slots sit INSIDE the collapsible rail, so both need the EFFECTIVE collapsed value, which a node built outside the component cannot see. Reading your own `collapsed` boolean renders a glyph-only footer inside AppShell's full-width drawer (the drawer un-collapses the rail); building a second Sidebar for AppShell's `mobileNav` is exactly the override that switches railInDrawer off; doing neither leaves the expanded footer to reflow inside a 64px rail (measured: a two-line identity block went 255x66 docked to 63x111 collapsed, wrapping the name over three lines). A plain ReactNode still works unchanged.",
+      "name": "footer",
+      "type": "ReactNode | ((collapsed: boolean) => ReactNode)"
+    },
+    {
+      "description": "THE framework-router contract. Supply only the link ELEMENT TYPE; the library keeps composing every row — icon slot, label, badge, data-active/aria-current, the icon-only collapsed rail and its tooltip name — and passes it to the link as SidebarLinkProp children. Applied to every row that carries an href: top-level leaves, submenu children, collapsed-rail leaves and collapsed flyout entries. Build it with createSidebarLink(Link, 'to') for React Router / TanStack, createSidebarLink(Link) or inertiaSidebarLink(Link) from @godxjp/ui/inertia for Inertia / Next.js.",
+      "name": "linkComponent",
+      "type": "SidebarLinkComponentProp"
+    },
+    {
+      "description": "DEPRECATED — use linkComponent, or asChild on SidebarItem. Legacy escape hatch that left row CONTENT to the caller, which is how a <Link>{item.label}</Link> silently dropped every icon and badge in production. Still supported and still wins over linkComponent; rowProps now also carries the library-composed children, so spreading rowProps (or rendering rowProps.children) restores the canonical row.",
+      "name": "renderItem",
+      "type": "(item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode"
+    },
+    {
+      "description": "Override the nav landmark's accessible name (defaults to a localized \"Main navigation\"). Required when more than one Sidebar renders at once (e.g. a docked sidebar + its mobile-drawer twin) — two nav landmarks sharing one name/role fail landmark-unique.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AppShell — the shell that hosts Sidebar in its sidebar slot and owns the sidebarCollapsed layout grid; always compose Sidebar inside AppShell, not standalone in a page.",
+    "Topbar — the horizontal bar that renders the collapse toggle (onToggleCollapsed) and its collapsed prop must mirror the sidebar's collapsed state.",
+    "PageContainer — used for page-level title/subtitle/extra/breadcrumb inside AppShell's children slot, not inside Sidebar."
+  ],
+  "rules": [
+    3,
+    6,
+    23,
+    31
+  ],
+  "storyPath": "layout/Sidebar.preview.tsx",
+  "subParts": [
+    "SidebarHeader",
+    "SidebarItem",
+    "SidebarSection"
+  ],
+  "tagline": "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons.",
+  "usage": [
+    "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
+    "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
+    "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
+    "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away. Pass a FUNCTION `(collapsed) => node` whenever that content has to shrink on the rail: it is called with the EFFECTIVE collapsed value, so ONE Sidebar serves both the docked rail and AppShell's drawer. Returning null for a surface draws no footer chrome at all (no top border, no padding).",
+    "DO: Put a row's trailing disclosure mark in `item.trailingIcon`, never in `item.badge`. `badge` wraps whatever it is given in the `.sb-badge` count capsule — a chevron passed there measures 36x24 with a 24x24 SVG inside, beside a 16x16 leading icon in the same 32px row. `trailingIcon` takes the component (`trailingIcon: ChevronsUpDown`) and the rail pins it to the leading icon's 16px box with no surface of its own.",
+    "DO: Give every navigable item an `item.href` and let the library render it. A plain `href` becomes a real <a> (context-menu open-in-new-tab, middle-click); with `linkComponent` that same href drives your framework router's <Link>. Either way the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+    "DO: Wire a framework router with `linkComponent` — `createSidebarLink(Link, 'to')` (React Router / TanStack), `createSidebarLink(Link)` (Next.js), or `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia`. That is the WHOLE integration: you pass the element type, the library composes the row. It threads through leaves, submenu children, the collapsed rail and the collapsed flyout. When you compose rows by hand, the same contract is `<SidebarItem item={item} asChild><RouterLink to=… /></SidebarItem>` — write NO children; the library injects the icon, label and badge. (`RouterLink` here is YOUR router's link component; this library now exports a `Link` of its own — antd's Typography.Link — which takes `href`, not `to`.)",
+    "DON'T: Use `renderItem` in new code — it is DEPRECATED. It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <RouterLink href={…}>{item.label}</RouterLink>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
+    "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
+    "DO: Theme the nav ICON and the row/label SEPARATELY with tokens — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Resting defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover = `hsl(var(--foreground))`; the ACTIVE row is its own group, see below), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
+    "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
+    "DO: Distinguish an UNREAD count from one ADDRESSED TO THE USER with `item.badgeTone` — 'neutral' (the default, the pill unchanged) versus 'destructive' for an @mention, a direct message or a failure awaiting them. It emits `data-tone=\"destructive\"` on the existing `.sb-badge` and swaps two colour tokens (`--sidebar-badge-destructive-background` / `-foreground`); the pill's min-width, radius, inline pad and font size are shared by both tones, so mention rows and unread rows stay aligned in the same column. Retune all four `--sidebar-badge-*` knobs in your theme rather than styling the pill.",
+    "DON'T: Reach for `item.badge` to place a GLYPH (a chevron, an arrow, a status dot). That slot is a COUNT capsule — 9999px radius, `hsl(var(--secondary))` fill, sized for digits — and it does not pin the SVG, so a lucide glyph renders at its 24px default inside a 36x24 grey pill. The row's trailing glyph slot is `item.trailingIcon`.",
+    "DON'T: Put a `<Badge>` (or anything else that draws its own pill) inside `item.badge` to colour a count — the row ALREADY wraps whatever you pass in a `.sb-badge` pill, so you get two nested pills with two borders (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>`). Pass the CONTENT only (`badge: 3`, `badge: '9+'`) and say what it MEANS with `badgeTone`.",
+    "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground` — and since gh#651 BOTH nav depths default to the brand, not to neutral grey: the level-1 fill is `--primary` composited at `--sidebar-item-active-background-alpha` (12%, capped at 16% — above that the label drops under WCAG 2.2 SC 1.4.3) and the label is `hsl(var(--primary))` at level 1 and level 2 alike. If your theme was setting `--sidebar-item-active-background: hsl(var(--primary) / 0.12)` and `--sidebar-item-active-foreground: hsl(var(--primary))` to get that look, DELETE the block — it is the default now. The level-2 label knob used to be spelled `--sidebar-item-active-color`; that name is gone with no alias.",
+    "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
+    "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
+    "DON'T: Put a PLATFORM switch in the sidebar — not an `OrgSwitcher`, not an app switcher, neither as a row nor stacked into `brand` under the product lockup. The sidebar is APP scope (this app's own sections); which organization or which app you are in survives changing app and belongs to `AppShell`'s `navRail` or to the topbar. Stacking a second lockup under the first also gives the sidebar header a different height from the topbar, which is the visible symptom people report as \"the two sides do not line up\".",
+    "DON'T: Build a second Sidebar by hand for `AppShell.mobileNav` just to un-collapse it — the drawer already un-collapses the rows on its own (`NavSurface`), and `brand` takes a function so the lockup follows too. An explicit `mobileNav` also turns off the drawer's rail strip, so a `navRail` you passed stops appearing on mobile."
+  ],
+  "useCases": [
+    "Admin application shell nav with grouped sections (e.g. Operations / Fulfillment / Administration) where the sidebar can be collapsed to an icon rail for more content space.",
+    "Accounting app with a collapsible 'Ledger' group containing Journal, Chart of Accounts, and Period Close sub-pages — activeId reflects the current sub-page and the group stays open automatically.",
+    "Multi-tenant SaaS where onProductClick opens an entity/legal-entity switcher sheet and product.role shows the active tenant name beneath the product logo.",
+    "Any app using AppShell where navigation must degrade gracefully to an icon-only rail on narrow viewports or via a user toggle in the Topbar.",
+    "Apps with infrequent-access admin pages (Users, Roles, Password) grouped in a dedicated section that appears below primary operations sections.",
+    "A chat / messaging rail listing channels, where most rows carry a neutral unread count and only the channels that @mentioned the user carry `badgeTone: 'destructive'` — the rail answers \"does anything need me personally?\" at a glance, without a second pill or a hand-styled dot."
+  ]
+}

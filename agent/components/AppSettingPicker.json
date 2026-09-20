@@ -1,0 +1,79 @@
+{
+  "example": "{`// Uncontrolled — AppProvider manages and persists every setting\nimport { AppProvider } from \"@godxjp/ui/app\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function SettingsPanel() {\n  return (\n    <AppProvider defaultLocale=\"ja\" defaultTimezone=\"Asia/Tokyo\">\n      <AppSettingPicker kind=\"locale\" />\n      <AppSettingPicker kind=\"timezone\" />\n      <AppSettingPicker kind=\"dateFormat\" />\n      <AppSettingPicker kind=\"timeFormat\" />\n    </AppProvider>\n  );\n}\n\n// Controlled — no AppProvider required\nimport { useState } from \"react\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function LocaleField() {\n  const [locale, setLocale] = useState(\"en\");\n  return <AppSettingPicker kind=\"locale\" value={locale} onValueChange={setLocale} />;\n}\n\n// Topbar locale switcher (globe) — a cell OF the bar, no CSS overrides\nimport { Topbar } from \"@godxjp/ui/layout\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function TopbarLocale() {\n  // \"bar\" inside a Topbar slot; \"icon\" everywhere else.\n  return <Topbar end={<AppSettingPicker kind=\"locale\" appearance=\"bar\" />} />;\n}`}",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "AppSettingPicker",
+  "props": [
+    {
+      "description": "Which AppProvider setting this picker reads and writes. Determines the option list, icon, trigger width, and the context value/setter used. The theme-axis kinds (theme/brand/density/fontSize) write <html data-*>; brand's first option opts out (null → app token).",
+      "name": "kind",
+      "type": "\"locale\" | \"timezone\" | \"dateFormat\" | \"timeFormat\" | \"theme\" | \"brand\" | \"density\" | \"fontSize\""
+    },
+    {
+      "description": "Controlled value for the chosen kind. When omitted, reads the current value from AppProvider context for that kind.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Controlled change handler. When omitted, calls the matching AppProvider setter (setLocale/setTimezone/setDateFormat/setTimeFormat). Required together with value when no AppProvider is present.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Trigger presentation. \"icon\" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker's owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. \"bar\" is the SAME structural drops re-shaped as a cell OF the bar rather than a control in it — it fills the bar height and squares its corners (--topbar-item-radius, the knob TopbarItem uses), so the hover surface paints the whole strip. Reach for \"bar\" inside a Topbar slot or AppShell's bar and \"icon\" everywhere else: \"icon\" in a taller bar leaves a --control-height pill floating mid-strip, which reads as a different control family from the bar's own chrome. \"inline\" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind=\"locale\" defaults to \"icon\" (its product contract is the compact language switcher); every other kind defaults to \"labeled\".",
+      "name": "appearance",
+      "type": "\"labeled\" | \"icon\" | \"bar\" | \"inline\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Compact trigger density: re-tiers the box to the official --control-height-sm tier and DROPS the picker's owned per-kind width, so a labelled trigger hugs its value. This is the supported auth/legal-footer locale switch — `<AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact />` — when the square icon-only default reads as a stray button but the full labelled trigger is too tall. All geometry is tokenized (--app-setting-picker-compact-{control-height,padding-x,gap,font-size}); the accessible name and the visible value are both preserved. No effect on appearance=\"inline\", which is already chrome-less.",
+      "name": "compact",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra CSS classes merged onto the SelectTrigger.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Disables the Select control.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "HTML id forwarded to the SelectTrigger for label association.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AppProvider — required peer unless fully controlled. Supplies locale/timezone/dateFormat/timeFormat plus their setters and the i18n context.",
+    "Select — the data-entry primitive AppSettingPicker is built on; reach for Select directly for any non-AppProvider dropdown.",
+    "formatDate — reads the same AppProvider date/time context that kind='dateFormat'/'timeFormat' write to."
+  ],
+  "rules": [
+    3,
+    5,
+    6,
+    23
+  ],
+  "storyPath": "navigation/AppSettingPicker.stories.tsx",
+  "tagline": "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange.",
+  "usage": [
+    "DO: Mount inside <AppProvider> for zero-config use — the picker reads and writes the context value named by kind, no value/onValueChange needed.",
+    "DO: Use controlled mode (value + onValueChange) when managing state outside AppProvider, e.g. a standalone settings form or a Storybook story. Both are required together in this mode.",
+    "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
+    "DO: Render four instances with different kind values to build a full preferences panel; they all share the same AppProvider context and stay in sync.",
+    "DO: For an icon-only topbar utility (a globe language switcher), pass appearance=\"icon\" — the supported compact trigger. NEVER hand-roll it by hiding the value/width with descendant-selector CSS.",
+    "DO: For an AUTH/LEGAL FOOTER locale switch, pass appearance=\"labeled\" compact — a small, content-hugging labelled trigger (readable language name, --control-height-sm box). Use appearance=\"inline\" instead when the footer wants no control chrome at all. NEVER re-size the trigger with a page-local height/width class.",
+    "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind."
+  ],
+  "useCases": [
+    "App-shell top-nav language switcher: <AppSettingPicker kind=\"locale\" /> under AppProvider, persisting to localStorage with no extra state.",
+    "Topbar locale switcher (globe): <AppSettingPicker kind=\"locale\" appearance=\"bar\" /> in a Topbar `end` slot — a CELL of the bar: full bar height, squared to --topbar-item-radius, so its hover surface matches the TopbarItem beside it. appearance=\"icon\" is the same structural drops shaped as a CONTROL, for a toolbar or card header; in a taller bar it leaves a --control-height pill floating mid-strip and reads as a foreign control family. This line said \"icon\" while the prop doc said \"bar\", and a consumer duly shipped the pill.",
+    "Auth-footer locale switch: <AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.",
+    "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
+    "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
+    "Storybook/test harness without AppProvider — fully controlled: <AppSettingPicker kind=\"timeFormat\" value=\"24h\" onValueChange={fn} />."
+  ]
+}

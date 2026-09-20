@@ -1,0 +1,66 @@
+{
+  "example": "import { SplitPane } from \"@godxjp/ui/layout\";\n\n<SplitPane aside={<DetailPanel />} asideWidth=\"sm\">\n  <MainContent />\n</SplitPane>\n\n// Collapsible rail — closing with `null` does NOT remount <MessageList />.\n<SplitPane asideLabel=\"Thread\" aside={threadOpen ? <Thread /> : null}>\n  <MessageList />\n</SplitPane>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "SplitPane",
+  "props": [
+    {
+      "description": "Main (left) content.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Aside (trailing) panel content. `null` means CLOSED: no `<aside>` element is rendered, the grid drops to one full-width column and the gap goes with it. Closing through this prop — instead of dropping SplitPane at the call site — keeps `children` mounted, because the wrappers stay in place and the main column keeps its position in the React tree.",
+      "name": "aside",
+      "required": true,
+      "type": "ReactNode | null"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Width preset for the aside rail: sm 20rem, md 22rem, lg 30rem. `lg` is for a rail that carries a panel rather than a list, and it holds off splitting until the pane is 64rem wide so the main column stays the wider of the two.",
+      "name": "asideWidth",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Accessible name for the `<aside>` complementary landmark. Required when more than one complementary landmark shares the document, so a screen-reader landmark list says which rail is which.",
+      "name": "asideLabel",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Take the remaining height of the parent instead of growing with the content. Default false keeps the pane content-height, which is right inside a scrolling page. Set it for an app-shell surface whose columns own their own scrolling — a chat transcript with a pinned composer, a full-height table beside a detail rail: the pane and both columns get a DEFINITE height, so overflow inside a column scrolls that column instead of pushing the page taller. The parent still decides how much height there is to fill: inside a flex column, give the wrapper `flex: 1; min-height: 0`.",
+      "name": "fill",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "ResponsiveGrid — use when you need more than two columns, or when both columns must have equal or percentage-based widths rather than a fixed-rem aside. SplitPane always gives main a `1fr` and aside a fixed rem width.",
+    "PageContainer — use as the outer scaffold that provides page padding and vertical rhythm; nest SplitPane inside PageContainer, not the other way around.",
+    "Sheet — use when the detail/context panel should slide in as an overlay (drawer) rather than sitting permanently beside the main content. Prefer Sheet on mobile or when the aside content is secondary and on-demand.",
+    "Flex direction='col' — use when content is purely vertical (single column, sequential sections). SplitPane is the right pick only when a persistent side panel is needed at the same hierarchy level as the main content."
+  ],
+  "rules": [
+    24
+  ],
+  "storyPath": "layout/SplitPane.stories.tsx",
+  "tagline": "Two-column layout with a main content area and a fixed-width aside panel.",
+  "usage": [
+    "DO: pass all right-panel content via the `aside` prop — it renders inside a semantic `<aside>` element at a fixed rem width (sm=20rem, md=22rem). The `children` prop fills the main `1fr` column. Both accept any ReactNode.",
+    "DO: reach for `fill` when the pane is an app-shell surface rather than a block in a scrolling page — a chat transcript whose composer stays pinned to the bottom, a full-height table beside a detail rail. It is the supported way to say \"be as tall as what is left\"; a consumer that instead styles the pane's wrapper divs from outside (`[&>*]`, `[&>*>*]`) is targeting this component's internal DOM by position and will break the day another wrapper appears.",
+    "DO: choose `asideWidth=\"sm\"` for compact detail panels (filters, quick stats, key-value summaries) and the default `asideWidth=\"md\"` for richer panels (forms, timelines, long metadata lists).",
+    "DO: wrap SplitPane inside `PageContainer` or `PageContainer.Inset` — SplitPane provides no page padding of its own. It is a grid primitive, not a page scaffold.",
+    "DO: close a collapsible rail with `aside={null}` — a Slack-style thread, a Linear-style detail panel — rather than swapping `<SplitPane aside={<Thread />}>{page}</SplitPane>` for a bare `{page}`. Both look the same on screen; only the prop keeps `children` mounted. The conditional swap changes the DEPTH of `{page}` in the React tree, so React remounts it: measured in a consumer as a message list jumping from scrollTop 400 to the bottom the instant a thread opened, losing the reader's place and any component state below it.",
+    "DON'T: leave `SplitPane` mounted with an empty `aside={<div />}` to avoid that remount — an empty aside still reserves its rail, leaving a blank 20-30rem column. `aside={null}` removes the element AND the column (the pane sets `data-aside=\"closed\"` on itself, so the collapse is one CSS rule, not a call-site width override).",
+    "DON'T: expect two columns below 48rem OF THE PANE'S OWN WIDTH (64rem for `asideWidth=\"lg\"`). The split is a CSS container query on the pane, not a viewport media query, so a narrow embedded pane on a large screen correctly stays single-column and a wide pane on a small screen still splits. Below the threshold it stacks (main on top, aside below); for layouts that must stay side-by-side at any width use CSS Grid or `ResponsiveGrid`.",
+    "DON'T: add a CSS `overflow: hidden` or fixed height on the SplitPane wrapper; both columns carry `min-width: 0` to handle overflow correctly, and the grid uses `minmax(0, 1fr)` — adding external constraints will break the overflow contract.",
+    "DON'T: hand-roll a two-column div layout with flexbox or CSS Grid when SplitPane already ships — that duplicates the responsive breakpoint logic and the semantic `<aside>` element."
+  ],
+  "useCases": [
+    "Invoice / transaction detail page: list of records in `children` (DataTable), selected-record detail panel in `aside` (Descriptions + Timeline).",
+    "Accounting ledger drill-down: account list on the left, chart-of-accounts metadata or running balance breakdown on the right using `asideWidth=\"sm\"`.",
+    "Document review workflow: PDF or rich-text viewer in `children`, approval form or annotation panel in `aside`.",
+    "Settings page with a category list or Steps navigator in `children` and a live preview or summary card in `aside`.",
+    "Kanban or task board where the main area holds the board columns and the aside shows the focused task detail without navigating away."
+  ]
+}

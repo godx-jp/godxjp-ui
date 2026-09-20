@@ -1,0 +1,66 @@
+{
+  "example": "import { CenteredShell, Topbar, Flex } from \"@godxjp/ui/layout\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\nimport { Avatar, AvatarFallback, Card, CardContent, CardHeader, CardTitle } from \"@godxjp/ui/data-display\";\nimport { Button, Text } from \"@godxjp/ui/general\";\n\nexport function MyPage() {\n  return (\n    <CenteredShell\n      width=\"md\"\n      topbar={\n        <Topbar\n          start={\n            <Avatar className=\"rounded-md\">\n              <AvatarFallback className=\"bg-primary text-primary-foreground font-bold\">G</AvatarFallback>\n            </Avatar>\n          }\n          end={\n            <>\n              <AppSettingPicker kind=\"locale\" />\n              <Button variant=\"ghost\" size=\"sm\">田中 太郎</Button>\n            </>\n          }\n        />\n      }\n      footer={<Text size=\"xs\" tone=\"muted\">© 2026 GodX</Text>}\n    >\n      <Flex direction=\"col\" gap=\"lg\">\n        <Card>\n          <CardHeader><CardTitle level={1}>マイページ</CardTitle></CardHeader>\n          <CardContent>アカウントの概要。</CardContent>\n        </Card>\n      </Flex>\n    </CenteredShell>\n  );\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "CenteredShell",
+  "props": [
+    {
+      "description": "Centred column content — page sections (identity hero, org picker, service grid, team list). Top-aligned and scrolls; NOT vertically centred like AuthShell's card.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Top bar slot (banner) — a <Topbar> with brand + real actions (AppSettingPicker, user menu, sign-out). Wrapped in the SAME padded chrome as AppShell's topbar (inline padding, border, backdrop) WITHOUT a sidebar; omit → no banner. Never hand-roll a bar (the bare Topbar ships no padding — the .ui-topbar zero-inset footgun).",
+      "name": "topbar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → no footer.",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Max-width of the centred column: sm ~32rem, md (default) ~46rem, lg ~64rem — all wider than AuthShell's 24rem auth card. A service retunes each tier via --centered-shell-width-*.",
+      "name": "width",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Block alignment of the centred column inside the 100dvh shell. \"start\" (default) keeps the top-aligned flowing/scrolling page shape. Overflowing content still scrolls from the top, so a long localized message is never clipped.",
+      "name": "align",
+      "type": "\"start\" | \"center\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Whole-page shell contract. \"default\" emits no attribute and keeps the exact box. \"public-landing\" owns the PUBLIC landing geometry: ONE content measure shared by the header bar, the centred column and the footer (--centered-shell-landing-max-width, 67.5rem), the section rhythm between page sections, the flat elevation-free card chrome (--centered-shell-landing-card-shadow: none) and the hero h1 tier — plus the compact step at 40rem. A landing composition therefore needs no page-local CSS, no max-width wrapper and no descendant selector against shell internals.",
+      "name": "preset",
+      "type": "\"default\" | \"public-landing\""
+    }
+  ],
+  "related": [
+    "AppShell — the shell for authenticated app pages WITH a sidebar nav rail. CenteredShell is its no-sidebar sibling (same padded topbar chrome, a centred column instead of a full-bleed main).",
+    "AuthShell — the UNAUTHENTICATED root shell (login/mfa/reset): a ~24rem card centred vertically, with its own banner `actions` slot and a `measure=\"wide\"` split-login measure. CenteredShell is the AUTHENTICATED centred-page counterpart. Never nest the two.",
+    "Topbar — compose it into `topbar`; CenteredShell supplies the padded chrome the bare Topbar lacks.",
+    "PageContainer — for a titled section INSIDE the column; or compose <Card>/<ResponsiveGrid> sections directly."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "layout/CenteredShell.stories.tsx",
+  "tagline": "Authenticated, no-sidebar, centred-column page shell (hosted-ID My Page / account / standalone settings) — padded topbar with real actions + a width-tiered centred column, zero custom CSS.",
+  "usage": [
+    "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · AuthShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
+    "DO put a <Topbar start={<brand/>} end={<actions/>}/> in `topbar` — CenteredShell wraps it in the padded `.app-topbar` chrome, so you get inline padding + border + backdrop with zero custom CSS. Do NOT hand-roll a bar with raw `padding-inline` — the bare Topbar primitive ships no inset (the .ui-topbar zero-padding footgun) and content sits flush to the edge.",
+    "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than AuthShell's 24rem card.",
+    "DO wrap an individual section in <Reveal> for entrance motion — CenteredShell stays layout-only and delegates prefers-reduced-motion handling to Reveal (same as AuthShell).",
+    "DO NOT use AuthShell for an authenticated page (it is the UNAUTHENTICATED root and imposes auth-card geometry), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Conversely, do NOT reach for CenteredShell to build a login page: AuthShell has its own `actions` slot for the locale/theme controls and a `measure=\"wide\"` for the split brand-panel login. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.",
+    "DO use `align=\"center\"` (+ `width=\"sm\"`) for a SYSTEM-level standalone page — a 500/503 error surface, a maintenance notice. It centres the column in the 100dvh shell at 1440/1024/390 with no consumer `min-h-dvh` / flex CSS and no className; the knob is --centered-shell-column-offset-block. For an actual 403/404/500/503 page do NOT wire this by hand — use `ErrorSurface`, which renders this shell itself in `mode=\"system\"`."
+  ],
+  "useCases": [
+    "Hosted GoDX ID 'My Page': <CenteredShell topbar={<Topbar start={<Brand/>} end={<><AppSettingPicker kind=\"locale\"/><UserMenu/></>}/>} footer={<Footer/>} width=\"md\"> with an identity hero, an org picker, a service-launcher grid and a team list.",
+    "Account / self-service settings surface (no admin sidebar): stacked <Card> sections (profile, security, sessions) in a centred `md` column under a topbar with a user menu.",
+    "Standalone single settings page: `width=\"sm\"` with one <Card> of <Field>s and a save action.",
+    "System error / maintenance page (500 · 503): `<CenteredShell align=\"center\" width=\"sm\">` around the canonical error body (status code <Text mono tabular> + <EmptyState icon tone title description action> + optional request-ID / maintenance line). See the `error-pages` pattern.",
+    "Service launcher / app picker after sign-in: `width=\"lg\"` with a <ResponsiveGrid> of app cards under the brand topbar."
+  ]
+}

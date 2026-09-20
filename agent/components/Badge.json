@@ -1,0 +1,96 @@
+{
+  "example": "import { Badge } from \"@godxjp/ui/data-display\";\n\n<Badge variant=\"secondary\">A/B</Badge>\n<Badge status=\"active\">公開中</Badge>\n<Badge status=\"プレミアム\" tone=\"success\" icon={null}>プレミアム</Badge>\n<Badge shape=\"pill\" color=\"#4488c5\">処理中</Badge>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Badge",
+  "props": [
+    {
+      "defaultValue": "\"div\"",
+      "description": "Render element. Swaps the TAG only — the chip keeps its own inline-flex box, icon and label. Pass \"span\" when the chip sits in a PHRASING context where a <div> is invalid HTML: inside a TabsTrigger, a PopoverTrigger or a Button (each renders a <button>, whose content model is phrasing content only), inside a <label>, or inside a <p>.",
+      "name": "as",
+      "type": "\"div\" | \"span\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+      "name": "variant",
+      "type": "\"default\" | \"secondary\" | \"outline\" | \"dashed\""
+    },
+    {
+      "description": "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",
+      "name": "tone",
+      "type": "\"default\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"muted\" | \"neutral\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Corner radius from the tokens — `default` (badge radius), `pill` (fully rounded), `sharp` (square). Use the prop instead of a `rounded-*` className.",
+      "name": "shape",
+      "type": "\"default\" | \"pill\" | \"sharp\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Lining, fixed-width figures — for a chip whose content is a COUNT sitting in a column with other counts (a queue length per row, an unread tally per tab). Proportional figures make a `1` narrower than a `0`, so the digits do not line up and the chips jitter. The same axis Text, TableCell and StatCard already carry. Off by default: tabular figures are wider, and a chip carrying WORDS should not pay for them. Prefer it over `<Badge><Text size=\"xs\" tabular>` — that composition works, but it asks the call site to know the chip's own type step.",
+      "name": "tabular",
+      "type": "boolean"
+    },
+    {
+      "description": "The entity's OWN colour as a CSS colour — DATA, not a semantic tone: a status colour, an issue type, a tag, whatever a person picked in a settings screen. A third axis beside `variant` (structure) and `tone` (meaning), and it wins over both. The chip is WASHED rather than filled (`--badge-tint-fill` into `--badge-tint-surface`, label from `--badge-tint-foreground`) because no foreground clears WCAG AA against every colour a picker can produce — near-black and white measure equal at luminance 0.2029, both 4.15:1. Washed, the ratio is a function of the tokens instead: 8.52:1 worst case across the sRGB cube, both themes.",
+      "name": "color",
+      "type": "string"
+    },
+    {
+      "description": "Lifecycle key. Known keys auto-map to tone + icon + i18n label; unknown keys fall back to neutral.",
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "description": "Leading icon override. Pass null to suppress the auto status icon.",
+      "name": "icon",
+      "type": "React.ComponentType<{ className?: string }> | null"
+    },
+    {
+      "description": "Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "antd Tag `closable` + `onClose` — draws a × on the chip and calls this when the user activates it. Omit for a plain badge (no ×). Accessible name quotes the string label via `navigation.filterBar.removeFilter`.",
+      "name": "onRemove",
+      "type": "() => void"
+    },
+    {
+      "description": "The × button's full accessible name, verbatim — antd 5.15+ `closable={{ 'aria-label' }}` (gh#706). Without it the name quotes the chip's label: a string `children`, or the label's RENDERED TEXT when `children` is a link or other node (so a row of saved-filter link chips never shares one bare \"Delete\"). Use it when the chip text alone doesn't say what removing does.",
+      "name": "removeLabel",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Button — use instead of Badge when the chip must be interactive (clickable, toggleable). Badge carries no button role or keyboard handler; a naked `onClick` on Badge is inaccessible."
+  ],
+  "rules": [
+    35
+  ],
+  "storyPath": "data-display/Badge.stories.tsx",
+  "subParts": [
+    "StatusBadge"
+  ],
+  "tagline": "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap.",
+  "usage": [
+    "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
+    "DO use `status` for entity lifecycle statuses (active, draft, pending, cancelled, failed, scheduled, etc.) so the component resolves the correct tone, icon, and i18n label.",
+    "DO pass `variant` explicitly for localized labels or categorical tiers, and pass `icon={null}` when a lifecycle glyph would be misleading.",
+    "Badge renders as a `<div>` by default (HTMLAttributes<HTMLDivElement>) — pass `as=\"span\"` when it sits inside a <button>, <label> or <p>, where a <div> is invalid HTML. With `onRemove`, the chip draws its own × (antd Tag closable); without it the chip is non-interactive. Do not add a naked `onClick` without an accessible role.",
+    "With `onRemove`, the × is part of the chip (antd Tag closable) — do not bolt a separate Button beside the label. Pass a string `children` label so the remover's accessible name quotes the chip.",
+    "Without `onRemove`, Badge is a leaf — pass plain text or a short ReactNode as children. Do NOT nest another Badge or interactive controls inside it.",
+    "Use semantic tokens for any className overrides (`text-muted-foreground`, `bg-destructive`) — never raw Tailwind palette classes like `bg-green-500`.",
+    "DO pass `color` — never an inline `backgroundColor` — when the colour belongs to the RECORD rather than to its meaning (a status an administrator coloured, an issue type, a tag). A hand-filled chip has to choose a foreground, and no choice is readable for every colour a picker can produce; `color` moves the ground instead and keeps the label on the surface's own foreground."
+  ],
+  "useCases": [
+    "Category or tier labels on table rows — e.g. plan tier (`<Badge variant=\"secondary\">Pro</Badge>`), document type (`<Badge variant=\"outline\">Invoice</Badge>`), or locale tag (`<Badge variant=\"secondary\">EN</Badge>`).",
+    "Approval or review state in an accounting list where the value is not a lifecycle key in Badge's STATUS_MAP — e.g. a custom approval tier like `<Badge tone=\"success\">承認済</Badge>` or `<Badge tone=\"warning\">要確認</Badge>`.",
+    "Inline count or highlight next to a heading or nav item — e.g. `<Badge variant=\"destructive\">3</Badge>` beside 'Overdue invoices' to draw attention to a non-zero count.",
+    "Feature flags or experiment variant labels on admin records — e.g. `<Badge variant=\"outline\">A/B</Badge>` alongside a campaign row to indicate it is in a split test.",
+    "Read-only metadata chips inside a Descriptions.Item or Card header where a lifecycle icon would be visually heavy — e.g. currency code, payment method, or region tag.",
+    "A status or category an administrator coloured themselves, in an issue tracker or a CRM — `<Badge shape=\"pill\" color={status.color}>{status.name}</Badge>`. The colour comes out of a picker and is stored on the row, so it cannot be mapped to a tone."
+  ]
+}

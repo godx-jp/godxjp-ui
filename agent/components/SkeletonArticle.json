@@ -1,0 +1,71 @@
+{
+  "example": "import { SkeletonArticle } from \"@godxjp/ui/feedback\";\n\n<SkeletonArticle avatar active paragraph={{ rows: 3 }} />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonArticle",
+  "props": [
+    {
+      "defaultValue": "false",
+      "description": "Leading avatar placeholder. `true` takes the antd default matrix: a large circle, or a large SQUARE when there is a title but no paragraph (an entity header rather than a person).",
+      "name": "avatar",
+      "type": "boolean | { size?: 'xs' | 'sm' | 'md' | 'lg'; shape?: 'circle' | 'square' }"
+    },
+    {
+      "defaultValue": "true",
+      "description": "The heading LINE — not a string. `false` drops it; `{ width }` re-measures it. The default measure follows antd: 38% with a paragraph and no avatar, 50% with both, full width otherwise.",
+      "name": "title",
+      "type": "boolean | { width?: number | string }"
+    },
+    {
+      "defaultValue": "true",
+      "description": "The body lines. Default rows follow antd: 3 with a title and no avatar, else 2. A single `width` measures the LAST row; an array measures row by row. A number is read as pixels.",
+      "name": "paragraph",
+      "type": "boolean | { rows?: number; width?: number | string | (number | string)[] }"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Pill corners on every line.",
+      "name": "round",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Travelling sheen instead of the resting pulse; descends to every line.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Pass `false` to render `children` in place of the placeholder.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes on the article root.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SkeletonDetail — the house record-page shape (title + metadata pairs); SkeletonArticle is the avatar + prose shape.",
+    "SkeletonRows — repeated flat rows with no avatar or prose rhythm.",
+    "Skeleton — the bare block SkeletonArticle is built from."
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item.",
+  "usage": [
+    "DO use SkeletonArticle where the loaded content is 'a person/entity beside a block of prose' — a comment, an activity item, a profile header, a notification row.",
+    "DO match `paragraph.rows` to the copy you expect so the layout does not jump on hydration.",
+    "DON'T use it for a table (SkeletonTable), a KPI tile (SkeletonStat) or a record page (SkeletonDetail) — those house shapes already match their targets.",
+    "DON'T nest it in a Card just to get a border; it draws no surface of its own."
+  ],
+  "useCases": [
+    "Comment thread loading state",
+    "Notification / activity feed placeholder",
+    "Profile header while the account record resolves",
+    "Chat or review list pre-mount placeholder"
+  ]
+}

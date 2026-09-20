@@ -1,0 +1,87 @@
+{
+  "example": "import { Form, FormField, Input } from \"@godxjp/ui/data-entry\";\n\n<Form layout=\"horizontal\" labelWidth={120} columns={2} onSubmit={onSubmit}>\n  <FormField id=\"first\" label=\"姓\"><Input id=\"first\" /></FormField>\n  <FormField id=\"last\" label=\"名\"><Input id=\"last\" /></FormField>\n  <FormField id=\"address\" label=\"住所\" colSpan={2}><Input id=\"address\" /></FormField>\n</Form>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Form",
+  "props": [
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Label position relative to control; applied to all FormFields.",
+      "name": "layout",
+      "type": "\"vertical\" | \"horizontal\" | \"inline\""
+    },
+    {
+      "description": "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
+      "name": "labelWidth",
+      "type": "number | string"
+    },
+    {
+      "description": "Cap the control width (number→px). Omit to fill the column.",
+      "name": "controlWidth",
+      "type": "number | string"
+    },
+    {
+      "defaultValue": "\"end\"",
+      "description": "Horizontal alignment of the label within its column.",
+      "name": "labelAlign",
+      "type": "\"start\" | \"end\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Breakpoint below which horizontal collapses to vertical (mobile-first). false = always horizontal.",
+      "name": "collapseBelow",
+      "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | false"
+    },
+    {
+      "description": "Lay fields out in a responsive grid (reuses ResponsiveGrid; 1 col on small).",
+      "name": "columns",
+      "type": "number | { sm?: number; md?: number; lg?: number }"
+    },
+    {
+      "description": "Server validation error bag (e.g. Inertia's form.errors). Each FormField name='…' inside resolves its own message from the bag and CLAIMS its key; <FormErrors /> renders the unclaimed remainder (errors on hidden/derived fields). Works in both <form> and asChild modes.",
+      "name": "errors",
+      "type": "Partial<Record<string, string | string[]>>"
+    },
+    {
+      "description": "Apply a density to controls inside the form.",
+      "name": "density",
+      "type": "\"compact\" | \"default\" | \"comfortable\""
+    },
+    {
+      "description": "Disable controls inside FormField, including nested native controls.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Show required marks, hide them, or mark optional fields.",
+      "name": "requiredMark",
+      "type": "boolean | \"optional\""
+    }
+  ],
+  "related": [
+    "FormField — the per-field wrapper (label + control + helper/error) that reads Form's layout context; use one per control inside a Form.",
+    "FormErrors — renders the error-bag entries no mounted FormField claims (validation errors on hidden/derived fields); place inside a `Form errors={…}`.",
+    "ResponsiveGrid — Form `columns` reuses it; use ResponsiveGrid directly for non-form card grids."
+  ],
+  "rules": [
+    23,
+    24
+  ],
+  "storyPath": "data-entry/Form.stories.tsx",
+  "tagline": "Ant-style layout container — renders <form> and pushes layout (vertical/horizontal), labelWidth/controlWidth, label alignment, responsive collapse, and multi-column grid down to every FormField (overridable per field).",
+  "usage": [
+    "DO set `layout`, `labelWidth`, `controlWidth` ONCE on `<Form>` — every `<FormField>` inside inherits them. Override a single field by passing the same prop on that `<FormField>` (Form → FormField priority).",
+    "DO rely on mobile-first collapse: `layout='horizontal'` automatically stacks to vertical below `collapseBelow` (default `md`). Pass `collapseBelow={false}` only when a field MUST stay label-beside-control even on phones.",
+    "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
+    "ROW RHYTHM IS THE SAME ON EVERY PATH: a grid of FormFields hands its row spacing to the grid's own `row-gap` (--form-grid-row-gap, defaulting to --form-field-row-gap) instead of the per-field margin a stacked Form uses. So `columns={1}` — and any `columns={n}` form once a narrow container collapses it to one column — is pixel-identical to a Form with no `columns`, and a hand-written `<ResponsiveGrid columns={2}>` of FormFields inside a `CardContent` (what a form with several titled Card sections has to write) matches `columns={2}` exactly. Retune --form-field-row-gap to move every path together; --form-grid-row-gap / --form-grid-column-gap to retune the grid rows / gutter alone. Never add margin to a FormField to space a grid row: a per-item margin inside a grid misaligns row 1 and double-counts the track gap.",
+    "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
+    "SERVER ERROR BAG: pass `errors={form.errors}` (Inertia) ONCE on `<Form>`, give each field a `name`, and put `<FormErrors />` at the top of the form. A named field resolves its message from the bag automatically (no per-field `error={errors.x}`), and FormErrors catches validation errors on hidden/derived keys (`action_mode`, `page`, a source-record id) that no visible field could display — without it those submits fail SILENTLY.",
+    "SIBLING FORMS: an edit screen split into several Card+Form sections shares ONE bag by wrapping the region in `<FormErrorsProvider errors={form.errors}>` instead of passing `errors` to each Form — the section Forms (without their own `errors`) join the shared registry, and one `<FormErrors />` anywhere in the region renders the unclaimed remainder."
+  ],
+  "useCases": [
+    "A settings page form where every label sits in a fixed 120px column to the left of its control (horizontal), collapsing to stacked labels on mobile.",
+    "A two-column entity-edit form (`columns={2}`) where the address field spans both columns (`colSpan={2}`).",
+    "A compact filter form (`layout='horizontal' density='compact'`) above a DataTable.",
+    "An Inertia edit screen passing `errors={form.errors}` so every `FormField name='…'` self-binds its server validation message and `<FormErrors />` surfaces the hidden-field remainder."
+  ]
+}

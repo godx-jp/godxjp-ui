@@ -1,0 +1,70 @@
+{
+  "docPath": "data-display/thumbnail.tsx",
+  "example": "import { Thumbnail } from \"@godxjp/ui/data-display\";\n\n<Flex gap=\"sm\" wrap align=\"start\">\n  <Thumbnail src=\"/shot-portrait.png\" width={360} height={640} alt=\"モバイル版の一覧画面\" size=\"lg\" />\n  <Thumbnail src=\"/shot-desktop.png\" width={960} height={540} alt=\"デスクトップ版のダッシュボード\" size=\"lg\" />\n</Flex>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Thumbnail",
+  "props": [
+    {
+      "description": "Image URL.",
+      "name": "src",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Required by the type. Pass \"\" for a picture that carries no information the page does not already say — the empty string is a decision, a missing attribute is an omission (WCAG 1.1.1).",
+      "name": "alt",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Frame height — sm 64px (an attachment strip), md 96px (a gallery row), lg 160px (a review screen). The width follows the picture's own ratio.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "The file's real pixel width. Pass it with `height` and the browser knows the ratio before the bytes land, so the frame takes its final width on the first paint instead of reflowing the row.",
+      "name": "width",
+      "type": "number"
+    },
+    {
+      "description": "The file's real pixel height. See `width`.",
+      "name": "height",
+      "type": "number"
+    },
+    {
+      "description": "Native img attribute, passed through. Every other img attribute passes through too.",
+      "name": "loading",
+      "type": "\"lazy\" | \"eager\""
+    },
+    {
+      "description": "Root class. The three heights, the hairline and the radius live in the --thumbnail-* tokens.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AspectRatio — a ratio-constrained slot at full width; use it when YOU choose the ratio, not when the picture does.",
+    "Avatar — an identity mark for a person, team or entity, with an initials fallback.",
+    "CardCover — the full-bleed media slot at the top of a Card.",
+    "Carousel — for a set too large to lay out at once; a wrap row of 2–5 thumbnails is not a carousel."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Thumbnail.stories.tsx",
+  "tagline": "A framed picture at a FIXED height with its own INTRINSIC width — the shape a wrapping row of screenshots with different aspect ratios needs.",
+  "usage": [
+    "DO import from `@godxjp/ui/data-display`: `import { Thumbnail } from \"@godxjp/ui/data-display\";`",
+    "DO wrap a row of them in `<Flex gap=\"sm\" wrap align=\"start\">` — equal heights make the strip read as one row while each width stays natural.",
+    "DO pass the file's real `width` and `height` so the row does not reflow while the pictures load.",
+    "DON'T use AspectRatio for this: it spans `width: 100%` and pins ONE ratio, so a row of mixed-ratio screenshots comes out letterboxed or cropped. AspectRatio is for a slot whose ratio you choose.",
+    "DON'T use Avatar (an identity mark with an initials fallback) or Card (it pads the frame away from the picture). CardCover is the full-bleed media slot inside a Card, not a standalone thumbnail.",
+    "DON'T hand-roll `<img className=\"h-40 w-auto rounded-md border\" />` — `no-hand-rolled-surface` flags it, correctly: border + radius is a surface."
+  ],
+  "useCases": [
+    "A review screen showing a submission's screenshots, portrait and landscape in the same wrapping row.",
+    "An attachment strip beside a message or a ticket, at `size=\"sm\"`.",
+    "A gallery row of uploaded images where each picture must stay uncropped.",
+    "Any picture that needs a hairline so a light image is distinguishable from the card behind it."
+  ]
+}

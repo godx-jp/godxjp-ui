@@ -1,0 +1,77 @@
+{
+  "example": "import { ResponsiveGrid } from \"@godxjp/ui/layout\";\nimport { StatCard } from \"@godxjp/ui/data-display\";\n\n<ResponsiveGrid columns={4}>\n  <StatCard label=\"総会員数\" value=\"12,400\" />\n  <StatCard label=\"公開中クーポン\" value=\"8\" />\n  <StatCard label=\"月間利用数\" value=\"3,210\" />\n  <StatCard label=\"割引総額\" value=\"¥480,000\" />\n</ResponsiveGrid>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "ResponsiveGrid",
+  "props": [
+    {
+      "description": "Measured inset escape; stamped data-pad-raw.",
+      "name": "padRaw",
+      "type": "PadRawProp"
+    },
+    {
+      "description": "Token inset, scalar or logical sides.",
+      "name": "pad",
+      "type": "PadProp"
+    },
+    {
+      "defaultValue": "\"rows\"",
+      "description": "Rows adapt to container width. Columns keep a horizontal collection in order with token-owned column width; compose inside ScrollArea orientation=\"horizontal\". Column flow ignores columns and preset geometry.",
+      "name": "flow",
+      "type": "\"rows\" | \"columns\""
+    },
+    {
+      "description": "antd `Row align`, spelled with Flex's FlexAlignProp values (antd `top` → \"start\"). \"stretch\" makes every cell as tall as the tallest one. Omitted, flow=\"columns\" keeps \"start\" and flow=\"rows\" keeps the grid's natural stretch.",
+      "name": "align",
+      "type": "\"start\" | \"stretch\""
+    },
+    {
+      "defaultValue": "4",
+      "description": "Numeric desktop target, or container column counts. Base defaults to 1; omitted object steps inherit upward. Use { base: 2, sm: 4 } for compact metric tiles.",
+      "name": "columns",
+      "type": "number | { base?: number; sm?: number; md?: number; lg?: number }"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Token gap between cells, the same steps as Flex. \"none\" is a DELIBERATE zero for tiles that must read as one continuous surface (a segmented bar, a seamless tile strip) — not a way to opt out of the token scale.",
+      "name": "gap",
+      "type": "\"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\""
+    },
+    {
+      "description": "Grid items — typically Card or StatCard.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "Flex — use Flex (direction col or row) for sequential blocks of mixed-width content (forms, description lists, button rows). Use ResponsiveGrid only when you want equal-width, auto-reflowing tile columns.",
+    "SplitPane — use SplitPane for a fixed two-panel side-by-side layout with a defined primary/secondary ratio that does NOT collapse to stacked tiles. Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
+    "StatCard — the canonical direct child of ResponsiveGrid for KPI tiles. StatCard is self-contained (draws its own bordered card); never wrap it in Card/CardContent when placing it inside ResponsiveGrid.",
+    "SkeletonStat — the loading-state sibling of StatCard, used as a drop-in placeholder child of ResponsiveGrid with the same columns count while KPI data is in flight."
+  ],
+  "rules": [
+    24,
+    40
+  ],
+  "storyPath": "layout/ResponsiveGrid.stories.tsx",
+  "tagline": "Container-responsive card grid with configurable base, sm, md and lg columns.",
+  "usage": [
+    "ResponsiveGrid.Item span={2} owns a responsive column span; an object {base:1,lg:2} sets explicit steps, clamped to the parent columns.",
+    "KANBAN LANES: <ScrollArea orientation=\"horizontal\"><ResponsiveGrid flow=\"columns\" align=\"stretch\">{lanes.map(lane => <Card onDragOver onDrop>…<Card draggable>…</Card></Card>)}</ResponsiveGrid></ScrollArea>. align=\"stretch\" keeps an empty lane as tall as the fullest one, so it stays a full-height drop target; a Select inside a draggable card does not enlarge the drag image.",
+    "DO place StatCard tiles directly as immediate children — StatCard IS already a bordered card; never wrap it in an extra <Card><CardContent>. The canonical pattern is <ResponsiveGrid columns={4}><StatCard .../><StatCard .../></ResponsiveGrid>.",
+    "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. Use columns={{ base: 2, sm: 4 }} for two mobile columns and four wider-container columns; no consumer CSS is needed.",
+    "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
+    "DO use ResponsiveGrid for page-level spacing — it applies the correct gap token (--space-stack-md) automatically. Never add raw gap-* / p-* / space-* utilities to the page layout around tiles; compose spacing through this component instead (rule 40).",
+    "DO render SkeletonStat children in place of StatCard tiles while KPIs are loading — same columns prop, same count as the real tiles. Switch to real StatCard once data resolves.",
+    "The grid uses CSS container queries, not viewport media queries — it responds to its containing block width, not the window. Ensure the container is not artificially constrained (e.g. inside a narrow SplitPane column) or column expansion will never trigger."
+  ],
+  "useCases": [
+    "Dashboard KPI row: rendering 3–4 StatCard tiles (revenue, member count, active invoices, overdue amount) that reflow to a 2-column stacked grid on tablet and a single column on mobile.",
+    "Summary header above a list page: a 2-column grid of two StatCard totals (e.g. total payable vs total paid) sitting above a Toolbar and DataTable.",
+    "Accounting period overview: 4 StatCard tiles (opening balance, total debits, total credits, closing balance) that collapse gracefully on narrow viewports without any custom CSS.",
+    "Loading state for a KPI row: identical <ResponsiveGrid columns={4}> wrapping four <SkeletonStat /> placeholders rendered while async data is in flight, swapped for real StatCard tiles once resolved.",
+    "Settings or profile summary cards: 2- or 3-column grid of Card+CardContent blocks (not StatCard) showing categorized read-only data groups before a detail form below.",
+    "Entity comparison panel: a columns={3} grid comparing three legal entities side-by-side with a Card+CardContent per entity, which collapses to 2-up on tablet and stacks on mobile."
+  ]
+}

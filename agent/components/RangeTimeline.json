@@ -1,0 +1,80 @@
+{
+  "docPath": "docs/data-display/timeline.tsx",
+  "example": "<RangeTimeline label=\"Schedule\" columns={[{ label: \"Week\", units: 7 }]} rows={[{ id: \"task\", label: \"Task\", start: 0, end: 6, startLabel: \"Start: day 1\", endLabel: \"End: day 7\" }]} />",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "RangeTimeline",
+  "props": [
+    {
+      "description": "Localized accessible name for the scrollable schedule.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Positive unit counts determine proportional column widths. Column count determines the minimum canvas width, so coarse grouping zooms out. `muted: true` tints that column down the whole body (a weekend, a holiday, a closed period) with `--range-timeline-muted-column-background` (default `hsl(var(--muted))`, the header surface; body text keeps 14.25:1 / 12.4:1 and `--muted-foreground` 5.2:1 / 5.47:1 on it).",
+      "name": "columns",
+      "required": true,
+      "type": "{ label: string; units: number; muted?: boolean }[]"
+    },
+    {
+      "description": "Optional grouped axis labels above the ticks, for example months above days. Counts use the same units as columns and cover the same range.",
+      "name": "bands",
+      "type": "{ label: string; units: number }[]"
+    },
+    {
+      "description": "Each row has id, label, inclusive start/end unit offsets, and localized startLabel/endLabel including current values. Optional `depth` (0 = top level) nests rows: pass them flat and depth-first (a parent, then its descendants); a row is a parent when the row after it is deeper. The component indents the label cell by `--range-timeline-indent-width` per level (logical padding, so RTL indents from the right; the label column keeps its width) and gives each parent a disclosure button. With no `depth > 0` anywhere the markup is unchanged.",
+      "name": "rows",
+      "required": true,
+      "type": "RangeTimelineRow[]"
+    },
+    {
+      "description": "Optional current unit marker.",
+      "name": "today",
+      "type": "number | null"
+    },
+    {
+      "description": "Committed endpoint movement in units. Omit for read-only. Dates remain consumer data; do not replace true anchors with clipped positions.",
+      "name": "onRangeChange",
+      "type": "(id: string, edge: \"start\" | \"end\", delta: number) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Rule the body as a Gantt grid: a line between every row (label column and track), a line under the header and between band and tick rows, and a vertical line per column down the whole body, exactly under its header column edge for unequal `units` too. ON BY DEFAULT, like `Calendar bordered`. The lines are one decorative layer (aria-hidden, pointer-events none) behind the bars. TWO TIERS, and they are different knobs: the INSIDE grid is `--range-timeline-grid-color`, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the card in light, L* 20.76 / 1.270:1 in dark) at `--range-timeline-grid-width` (hairline); the OUTER FRAME and the label-column divider are `--range-timeline-border-color`, default `var(--border)` — the same tier, so the grid can never read heavier than the box around it or than a DataTable row rule. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and was reported darker than every card and table in the system (gh#730); set `--range-timeline-grid-color: hsl(var(--input) / 0.5)` to get that weight back. `bordered={false}` restores header-only ruling; muted columns still paint.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Width of ONE axis unit — the canonical density vocabulary, the same three steps `DataTable density` takes. `default` is the shipped 56px/day, so no existing Gantt moves; `compact` is 42px/day (a 31-day axis needs 1558px instead of 1992px — measured, the widest two-digit day label across ja/en/ar/fa/hi/th/bn numbering systems is 19.86px in a 24px content box, so the tick still fits); `comfortable` is 70px/day. It moves the COLUMN WIDTH ONLY — row height, bar height and the label column are identical at every step, so a compact Gantt is the same schedule with more days on screen, not a smaller one. Re-points `--range-timeline-unit-width` on the element; retune a step with `--range-timeline-unit-width-{compact,default,comfortable}`. Unrelated to `PageContainer density` / `AppProvider density`, which rescale the whole page through `--scaling`.",
+      "name": "density",
+      "type": "\"compact\" | \"default\" | \"comfortable\""
+    },
+    {
+      "description": "Controlled ids of the EXPANDED parent rows (same spelling as `Tree expandedValues`). A folded parent removes every descendant row — label AND bar — from the DOM and the accessibility tree; the body grid, row rules and today marker stay aligned.",
+      "name": "expandedValues",
+      "type": "readonly string[]"
+    },
+    {
+      "description": "Uncontrolled initial expanded parents. Omitted: every parent starts expanded (unlike `Tree`, whose branches start closed), so adding `depth` never hides a row.",
+      "name": "defaultExpandedValues",
+      "type": "readonly string[]"
+    },
+    {
+      "description": "Fires with the next expanded parent ids when a disclosure is toggled, for controlled and uncontrolled timelines alike.",
+      "name": "onExpandedValuesChange",
+      "type": "(values: string[]) => void"
+    }
+  ],
+  "rules": [],
+  "storyPath": "data-display/timeline.tsx",
+  "tagline": "Horizontal intervals with token-owned geometry and optional endpoint editing.",
+  "usage": [
+    "Provide a precise non-drag editor in each row label when enabling changes. Clipped endpoints and short intervals omit grips; labels and their editors remain available.",
+    "An interval wholly outside the columns shows a localized direction indicator at that edge of its row: a chevron plus \"before\" at the inline-start edge, \"after\" plus a chevron at the inline-end edge; the chevrons mirror under RTL.",
+    "Mark non-working columns with `columns[].muted` rather than tinting cells yourself; retint the grid through `--range-timeline-grid-color` / `--range-timeline-muted-column-background`, never page CSS.",
+    "Need more days on one screen? Pass `density=\"compact\"` — do NOT declare `--range-timeline-unit-width` in an app stylesheet. Tick and band labels are CENTRED on their column by the component; a band clipped by the range (a month the axis starts inside) centres its label on the VISIBLE part, since that is the box the band owns.",
+    "Use TimelineGrid for time-of-day columns; RangeTimeline is a horizontal range axis.",
+    "Nested Gantt (parent/child work items): pass the server's depth-first rows with `depth` on each (`{ id, label, start, end, startLabel, endLabel, depth }`), and fold with `expandedValues` / `onExpandedValuesChange` (or `defaultExpandedValues`). Never fake an indent inside `label` — the component owns the indent, the disclosure button (named from `rangeTimeline.childRows` + the row label, `aria-expanded`) and the `list` / `listitem` + `aria-level` / `aria-setsize` / `aria-posinset` structure."
+  ]
+}

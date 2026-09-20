@@ -1,0 +1,79 @@
+{
+  "example": "import { DataState } from \"@godxjp/ui/query\";\n\n<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title=\"会員なし\" />}>\n  {(d) => <MemberTable items={d.items} />}\n</DataState>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/query",
+  "name": "DataState",
+  "props": [
+    {
+      "description": "The useQuery result.",
+      "name": "query",
+      "required": true,
+      "type": "UseQueryResult<T>"
+    },
+    {
+      "description": "Shown while loading.",
+      "name": "skeleton",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Shown when the query is disabled/unstarted (pending + fetchStatus idle).",
+      "name": "prerequisite",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Force Retry even for non-transient causes. Retry is offered automatically for transient/network/5xx errors regardless of this flag.",
+      "name": "showRetry",
+      "type": "boolean"
+    },
+    {
+      "description": "Recovery for 401 / expired-token errors: renew the session or sign in again. A 401 renders this action instead of Retry.",
+      "name": "onAuthError",
+      "type": "() => void"
+    },
+    {
+      "description": "Render function with resolved data.",
+      "name": "children",
+      "required": true,
+      "type": "(data) => ReactNode"
+    },
+    {
+      "description": "Shown when isEmpty(data) is true.",
+      "name": "empty",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Custom empty check.",
+      "name": "isEmpty",
+      "type": "(data) => boolean"
+    }
+  ],
+  "related": [
+    "InfiniteQueryState — use instead of DataState when the query is `useInfiniteQuery`; it accepts a `flatten` function to reduce pages and adds a load-more footer. DataState cannot accept `UseInfiniteQueryResult`.",
+    "SkeletonTable / SkeletonStat — pass as the `skeleton` prop of DataState; they are not standalone replacements for DataState, only the loading slot inside it.",
+    "EmptyState — pass as the `empty` prop of DataState alongside a matching `isEmpty` predicate; do not hand-roll an empty-check outside DataState by inspecting `query.data` yourself.",
+    "AlertMutationFeedback — sibling widget for mutation (not query) lifecycle; use it below a form submit button to surface `useMutation` errors, not DataState which only handles `useQuery`."
+  ],
+  "rules": [],
+  "storyPath": "query/DataState.stories.tsx",
+  "tagline": "TanStack Query lifecycle widget — skeleton / error / empty / success for one useQuery block. Import from @godxjp/ui/query.",
+  "usage": [
+    "DO: pass a `UseQueryResult<T>` directly from `useQuery` — DataState reads `isPending`, `isError`, `isFetching`, `data`, and `error` off it; never destructure those fields manually and branch yourself.",
+    "DO: always provide a `skeleton` — it renders during both the initial pending phase and during a re-fetch after an error; pass `<SkeletonTable />` for tabular data or `<SkeletonStat />` for stat card lists — never `null` or a spinner div.",
+    "DO: provide `empty` + `isEmpty` together when the data can legitimately return 0 items — e.g. `isEmpty={(d) => d.items.length === 0}` paired with `empty={<EmptyState title=\"…\" />}`. Omitting `empty` means an empty array still falls through to `children`, silently rendering a blank table.",
+    "DON'T: wrap DataState in your own conditional — e.g. `{query.isSuccess && <DataState …>}`. DataState IS the conditional; the outer guard is redundant and breaks the retry/refetch skeleton.",
+    "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
+    "DO: classify errors by cause. Use session renewal/sign-in for 401, access guidance for 403, contextual correction for domain errors, and opt into showRetry only for transient network/5xx errors.",
+    "DO: pass prerequisite for enabled:false queries. Pending + fetchStatus idle is unstarted, not loading, and never renders a skeleton.",
+    "DO: rely on the localized, cause-specific error message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",
+    "DO: expect a background refetch over existing data to keep the content on screen with a polite sr-only busy status — it does not flash the skeleton. Only the initial fetch (isPending) shows the skeleton."
+  ],
+  "useCases": [
+    "A detail page that loads a single invoice/journal entry via `useQuery` — DataState renders the skeleton row while fetching, an error alert with retry if the API fails, and the `<InvoiceCard>` only when data is confirmed non-null.",
+    "A list page that shows a `DataTable` of members/partners — wrap the table in DataState so the skeleton matches the column count while loading and `EmptyState` appears when the filtered result set is empty.",
+    "A sidebar panel that lazily loads related transactions for the selected entity — DataState keeps the panel in skeleton state during the background fetch without any manual `isPending` branching in the parent.",
+    "A dashboard stat card that calls a summary API — DataState handles the loading/error/empty lifecycle so `<StatCard>` is only rendered with fully resolved numbers, preventing NaN or undefined rendering.",
+    "Any page using `useQuery` where the empty state and loading state are visually different — DataState enforces the correct visual for each phase without scattered `if` statements across the component tree."
+  ]
+}

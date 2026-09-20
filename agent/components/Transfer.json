@@ -1,0 +1,141 @@
+{
+  "example": "import { useState } from \"react\";\nimport { Transfer } from \"@godxjp/ui/data-entry\";\n\nconst ALL_ACCOUNTS = [\n  { value: \"1010\", title: \"Cash\", description: \"Asset\" },\n  { value: \"1020\", title: \"Accounts Receivable\", description: \"Asset\" },\n  { value: \"2010\", title: \"Accounts Payable\", description: \"Liability\" },\n  { value: \"3010\", title: \"Revenue\", description: \"Income\" },\n  { value: \"4010\", title: \"Cost of Goods Sold\", description: \"Expense\", disabled: true },\n];\n\nexport function AccountMapping() {\n  const [targetKeys, setTargetKeys] = useState<string[]>([\"1010\"]);\n\n  return (\n    <Transfer\n      dataSource={ALL_ACCOUNTS}\n      targetKeys={targetKeys}\n      onValueChange={(nextKeys) => setTargetKeys(nextKeys)}\n      titles={[\"Available Accounts\", \"Mapped Accounts\"]}\n      showSearch\n    />\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Transfer",
+  "props": [
+    {
+      "description": "Canonical controlled target keys; takes precedence over targetKeys.",
+      "name": "value",
+      "type": "string[]"
+    },
+    {
+      "description": "Initial uncontrolled target keys.",
+      "name": "defaultValue",
+      "type": "string[]"
+    },
+    {
+      "description": "Compatibility name for uncontrolled initial target keys.",
+      "name": "defaultTargetKeys",
+      "type": "string[]"
+    },
+    {
+      "description": "Native form name; repeats once per target key.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Preserve assignment while preventing edits.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Independent pane pages; select-all affects visible enabled rows.",
+      "name": "pagination",
+      "type": "boolean | { pageSize?: number }"
+    },
+    {
+      "description": "Show each pane select-all control; defaults true.",
+      "name": "showSelectAll",
+      "type": "boolean"
+    },
+    {
+      "description": "Custom search predicate.",
+      "name": "filterOption",
+      "type": "(query: string, item: TransferItemProp) => boolean"
+    },
+    {
+      "description": "Custom non-interactive row content; checkbox labels remain associated.",
+      "name": "render",
+      "type": "(item: TransferItemProp) => ReactNode"
+    },
+    {
+      "description": "Full flat list of all items (both source and target). Each item needs a unique `key` string, a `title` (ReactNode rendered in the list row), an optional `description` (shown as a secondary line), and an optional `disabled` boolean to lock individual items.",
+      "name": "dataSource",
+      "required": true,
+      "type": "TransferItemProp[]"
+    },
+    {
+      "description": "Keys of items currently in the right (target) panel. Items whose key is NOT in this array appear in the left (source) panel. This is the primary controlled state — you must update it inside `onChange`.",
+      "name": "targetKeys",
+      "required": true,
+      "type": "string[]"
+    },
+    {
+      "description": "Called after the user clicks a move button. Receives the new full targetKeys array, the direction of movement ('right' = source→target, 'left' = target→source), and the keys that were actually moved. Update your targetKeys state here.",
+      "name": "onChange",
+      "type": "(targetKeys: string[], direction: 'left' | 'right', moveKeys: string[]) => void"
+    },
+    {
+      "description": "Panel header labels. Index 0 = left/source panel, index 1 = right/target panel. Defaults to i18n strings (dataEntry.transfer.source / dataEntry.transfer.target).",
+      "name": "titles",
+      "type": "[React.ReactNode, React.ReactNode]"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, renders a SearchInput inside each panel that filters items by title and description text (debounce=0). Does not affect the underlying data; purely a client-side filter.",
+      "name": "showSearch",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, hides the left-pointing move button so items can only flow source → target. Useful for append-only assignment flows.",
+      "name": "oneWay",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables the entire component: all checkboxes, the search input (pointer-events-none), and both move buttons.",
+      "name": "disabled",
+      "type": "DisabledProp (boolean)"
+    },
+    {
+      "description": "Extra Tailwind classes applied to the outer flex wrapper. Use to constrain width or add margin.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Controlled selection state as a tuple: index 0 = keys checked in the source panel, index 1 = keys checked in the target panel. Omit to use internal (uncontrolled) selection state. Must be paired with `onSelectChange` when provided.",
+      "name": "selectedKeys",
+      "type": "[string[], string[]]"
+    },
+    {
+      "description": "Called whenever the checked selection in either panel changes. Provides updated arrays for source and target selections. Required when `selectedKeys` is controlled.",
+      "name": "onSelectChange",
+      "type": "(sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void"
+    },
+    {
+      "description": "Fires when items move between panels; you own `targetKeys` state.",
+      "name": "onValueChange",
+      "type": "(targetKeys: string[], direction: \"left\" | \"right\", moveKeys: string[]) => void"
+    }
+  ],
+  "related": [
+    "MultiSelect — picks multiple values from a dropdown; prefer when the option set is large and a panel layout is not needed.",
+    "Checkbox (list) — use for a simple flat multi-select without a shuttle/move metaphor.",
+    "Select (compound) — single or multi-value dropdown; not a dual-panel component.",
+    "Tree — hierarchical item display; combine with Transfer's dataSource if items have a tree structure but the shuttle UX is still needed."
+  ],
+  "rules": [
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Transfer.stories.tsx",
+  "tagline": "Dual-list shuttle that moves items between source and target via Checkbox selection — you own targetKeys state; never hand-roll a two-panel picker.",
+  "usage": [
+    "DO own `targetKeys` in state and update it inside `onChange`: `const [targetKeys, setTargetKeys] = useState<string[]>([]); onValueChange={(next) => setTargetKeys(next)}`.",
+    "DO NOT hand-roll a two-panel checkbox picker — Transfer ships the full shuttle UX (select-all header, indeterminate state, search, move buttons, empty state) out of the box.",
+    "DO enable `showSearch` for lists longer than ~10 items; the built-in SearchInput filters by both `title` and `description` text content, including ReactNode content via `reactNodeText`.",
+    "DO use `oneWay={true}` for append-only flows (e.g. adding permissions to a role) where items must never be moved back.",
+    "DO control `selectedKeys` / `onSelectChange` only when you need to read which items are currently checked (e.g. for a bulk-action toolbar outside the component). For most cases, leave both props out and let Transfer manage selection internally.",
+    "AVOID using Transfer for simple single-select or toggle scenarios — use a Checkbox list or Select multiple instead. Transfer is specifically for shuttle/dual-panel assignment flows."
+  ],
+  "useCases": [
+    "Assigning roles or permissions to a user: source panel shows available roles, target panel shows assigned roles; `oneWay={false}` allows removal.",
+    "Building a report column picker: source = all available columns, target = columns included in the report, user orders and moves them across.",
+    "Account mapping in an accounting app: map external chart-of-accounts entries (source) to canonical internal accounts (target) in a bulk import wizard.",
+    "Tag / label assignment in a CMS: move content tags from an available pool into a 'selected' set for a document.",
+    "Feature-flag targeting: move user segments from an 'all segments' list into the 'targeted segments' panel for a flag.",
+    "Permission set builder in an admin UI: shuttle individual API scopes from 'available' to 'granted' for an API key or OAuth client."
+  ]
+}

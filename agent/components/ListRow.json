@@ -1,0 +1,92 @@
+{
+  "example": "import { Card, CardContent, CardHeader, CardTitle, ListRow, Badge } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Smartphone } from \"lucide-react\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// The three scenarios below are three CARDS on one page, so they are wrapped in a Flex — the gap\n// between sibling cards belongs to the stack, never to the cards (audit: sibling-cards-need-flex).\n<Flex direction=\"col\" gap=\"lg\">\n<Card>\n  <CardHeader>\n    <CardTitle>アクティブなセッション</CardTitle>\n  </CardHeader>\n  <CardContent flush>\n    <ListRow\n      leading={<Smartphone aria-hidden=\"true\" className=\"size-4\" />}\n      title=\"iPhone 15 · Tokyo\"\n      description=\"最終アクセス 2分前\"\n      trailing={<Badge status=\"active\" />}\n    />\n    <ListRow\n      leading={<Smartphone aria-hidden=\"true\" className=\"size-4\" />}\n      title=\"MacBook Pro · Osaka\"\n      description=\"最終アクセス 3日前\"\n      trailing={<Button size=\"xs\" variant=\"outline\">ログアウト</Button>}\n    />\n  </CardContent>\n</Card>\n\n// Notifications — unread dot + emphasized surface, wrapping title, two inline actions\n<Card>\n  <CardContent flush>\n    <ListRow\n      unread\n      align=\"start\"\n      overflow=\"wrap\"\n      title=\"組織「グローバル・トランスフォーメーション推進本部」への招待が届いています\"\n      description=\"2026-07-30 09:12 JST\"\n      trailing={\n        <>\n          <Button size=\"xs\" variant=\"ghost\">既読にする</Button>\n          <Button size=\"xs\" variant=\"outline\">開く</Button>\n        </>\n      }\n    />\n    <ListRow unread={false} align=\"start\" overflow=\"wrap\" title=\"請求書が発行されました\" description=\"2026-07-28 18:40 JST\" />\n  </CardContent>\n</Card>\n\n// A list of LINKS — `as=\"li\"` gives the list item, `asChild` gives the whole-row link,\n// and the item carries the divider. Never wrap the row in your own <li>, and never reach for a\n// raw <ul>: `marker=\"none\"` is the semantic list container (no bullet, no indent, gap token).\n<Card>\n  <CardContent flush>\n    <Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">\n      {projects.map((project) => (\n        <ListRow key={project.key} as=\"li\" asChild title={project.name} description={project.key}>\n          <Link href={`/projects/${project.key}`} />\n        </ListRow>\n      ))}\n    </Flex>\n  </CardContent>\n</Card>\n</Flex>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ListRow",
+  "props": [
+    {
+      "defaultValue": "false",
+      "description": "Supply a link child to make the entire row a native link. Use aria-current=page for the current destination; never nest interactive trailing controls. Combine with `as=\"li\"` inside a `<Flex as=\"ul\" marker=\"none\">` — the row stays the link and `as` supplies the list item around it.",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "description": "Primary line — rendered in medium weight; truncates to one line.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Secondary line under the title (muted, xs); truncates to one line. ONE line, deliberately: a row that wants two (an endpoint, then its events) is asking for a different surface — antd `List.Item.Meta` has the same single `description`, so this is NOT an antd parity gap. Put the second line in `trailing` (a Badge, a count) or move the row to `Descriptions` / a detail panel (gh#714 §3).",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Leading slot — a decorative icon or an Avatar. Mark a purely decorative icon `aria-hidden`.",
+      "name": "leading",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Trailing slot — the row action(s): a Button / DropdownMenu trigger, a Badge, or a Switch.",
+      "name": "trailing",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "Cross-axis alignment of the columns; `start` for multi-line content.",
+      "name": "align",
+      "type": "\"center\" | \"start\""
+    },
+    {
+      "defaultValue": "\"div\"",
+      "description": "Render element — `li` when the parent is a semantic list (`<Flex as=\"ul\" marker=\"none\">` — a raw `<ul>` carries no gap token and, without `marker=\"none\"`, the bullet rule `.ui-flex[data-list] > li { display: list-item }` outranks `display: flex` on the row itself). WITH `asChild` the child owns the row element, so `as` becomes the list ITEM around it: `<li data-slot=\"list-row-item\"><a data-slot=\"list-row\">`. Use both for a list of links — do not wrap the row in an `<li>` (or a `role=\"listitem\"` div) yourself, because that makes every row an only child and the row-to-row divider, keyed on `:not(:last-child)` among siblings, stops matching on every row.",
+      "name": "as",
+      "type": "\"div\" | \"li\""
+    },
+    {
+      "defaultValue": "\"truncate\"",
+      "description": "How title/description resolve content longer than the row — `truncate` (one line + ellipsis) or `wrap` (multi-line; long unbroken tokens break via `overflow-wrap: anywhere`). Either way the content column may shrink below its intrinsic width, so the row never widens the page root.",
+      "name": "overflow",
+      "type": "\"truncate\" | \"wrap\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Row geometry. It only lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root.",
+      "name": "density",
+      "type": "\"default\" | \"compact\""
+    },
+    {
+      "description": "Read/unread state for notification rows — renders the indicator dot (with localized `sr-only` text, never colour alone) plus the tokenized `--list-row-unread-background`. OMIT the prop for rows with no read state; pass `false` for a read row so its title keeps the same optical axis as the unread ones.",
+      "name": "unread",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "DataTable — use instead when the list is long or needs sorting/selection/pagination; ListRow is for short, chrome-light lists.",
+    "Card — ListRow is designed to live inside `<CardContent flush>`; the Card supplies the outer surface and the closing border.",
+    "Descriptions — for a key/value metadata grid on a detail page (no per-row action); ListRow is for actionable entity rows."
+  ],
+  "rules": [
+    42,
+    44
+  ],
+  "storyPath": "data-display/ListRow.stories.tsx",
+  "tagline": "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations.",
+  "usage": [
+    "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
+    "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
+    "DO write a list of LINKS as `<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">` + `<ListRow as=\"li\" asChild><Link/></ListRow>` — one call gives the list item, the whole-row link and the divider. DON'T wrap the row in your own `<li>` or `role=\"listitem\"` element to get list semantics back: the divider rule reads `:not(:last-child)` among the rows themselves, so a wrapper per row makes each one an only child and EVERY divider disappears — silently, which is why `ui-audit` now flags it as `no-hand-rolled-list`.",
+    "DON'T hand-roll `<div className=\"flex items-center justify-between border-b py-3\">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).",
+    "DO put the row's action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as=\"li\"` when the rows live inside a semantic list, and build that list as `<Flex as=\"ul\" marker=\"none\">` — `ui-audit` flags a raw `<ul>`/`role=\"list\"` as `no-hand-rolled-list`.",
+    "DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text (\"Unread\"/\"Read\"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.",
+    "DO pass `density=\"compact\"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON'T reach for it just to \"make things tighter\" on a roomy page — the default density is the entity-row measure.",
+    "DON'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow=\"wrap\"` (usually with `align=\"start\"`) when the title must stay fully readable at 390px instead of truncating."
+  ],
+  "useCases": [
+    "Account security page — a list of active sessions (device + last-seen as title/description, a destructive 'Revoke' Button in trailing).",
+    "Developer settings — API tokens or passkeys, each row showing the name + created date and a DropdownMenu of actions.",
+    "Linked accounts / SSO — an IdP icon in leading, the provider name + connected email, and a Switch or 'Disconnect' Button trailing.",
+    "Notifications inbox — `unread` rows carry the dot + emphasized surface, `overflow=\"wrap\"` keeps a long JA/EN/VI title and its ISO-8601 timestamp readable, and two inline trailing Buttons (Mark as read / Open) wrap under the text at 390px.",
+    "Pending invitations — Avatar in leading, the organization/invitation name as title, and Accept + Decline Buttons in trailing that stack at narrow widths without a horizontal page scrollbar."
+  ]
+}

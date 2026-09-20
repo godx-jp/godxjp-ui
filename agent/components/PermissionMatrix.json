@@ -1,0 +1,81 @@
+{
+  "docPath": "data-display/permission-matrix.tsx",
+  "example": "import { Card, CardContent, PermissionMatrix } from \"@godxjp/ui/data-display\";\nimport { grantKey } from \"@godxjp/ui/lib/permission-grid\";\n\nconst grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));\n\n<Card>\n  <CardContent flush>\n    <PermissionMatrix\n      roles={roles}\n      permissions={permissions}\n      grants={grants}\n      onGrantChange={(roleId, permissionId, granted) => mutate({ roleId, permissionId, granted })}\n    />\n  </CardContent>\n</Card>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "PermissionMatrix",
+  "props": [
+    {
+      "description": "Role COLUMNS in render order. `locked` keeps that role's cells read-only (with a localized lock badge) even in an editable matrix.",
+      "name": "roles",
+      "required": true,
+      "type": "{ id: string; name: string; description?: string; locked?: boolean }[]"
+    },
+    {
+      "description": "Permission ROWS in render order, with an optional category caption.",
+      "name": "permissions",
+      "required": true,
+      "type": "{ id: string; name: string; description?: string; group?: string }[]"
+    },
+    {
+      "description": "The grant relation: the grantKey(roleId, permissionId) Set from @godxjp/ui/lib/permission-grid (canonical, O(1)), or a plain pair array normalized through the same encoding.",
+      "name": "grants",
+      "required": true,
+      "type": "ReadonlySet<string> | { roleId: string; permissionId: string }[]"
+    },
+    {
+      "description": "Its PRESENCE makes the matrix editable (real Checkbox cells, Space toggles). Omitted, the matrix is the canonical read-only ✓/— grid.",
+      "name": "onGrantChange",
+      "type": "(roleId: string, permissionId: string, granted: boolean) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Force the read-only grid even when onGrantChange is present (viewer permission).",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Two role ids compared side by side: their columns tint, and rows where they disagree carry a localized difference badge.",
+      "name": "compare",
+      "type": "[string, string] | null"
+    },
+    {
+      "defaultValue": "false",
+      "description": "With `compare`, keep only the rows the two roles disagree on (差分のみ).",
+      "name": "diffOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "`true` renders the built-in localized surface; a node replaces it; onRetry adds Retry to the built-in error only.",
+      "name": "loading / denied / error / empty / onRetry",
+      "type": "boolean | ReactNode / handler"
+    },
+    {
+      "description": "Accessible table name (localized default).",
+      "name": "label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "lib/permission-grid — the pure grant/diff data helpers the matrix (and any custom RBAC UI) shares.",
+    "DataTable — general tabular data with sorting/selection/pagination; PermissionMatrix is the fixed role-grid specialization with a sticky FIRST column (which DataTable cannot pin).",
+    "ServiceRolePanel — the master-detail roles surface a matrix typically renders inside."
+  ],
+  "rules": [
+    24
+  ],
+  "storyPath": "data-display/PermissionMatrix.stories.tsx",
+  "tagline": "Domain data is 100% consumer-supplied.",
+  "usage": [
+    "DO import it — it is a real export from @godxjp/ui/data-display (the lesson: a docs page is not importable). Never hand-compose the sticky-column grid per app.",
+    "DO keep grants in the lib/permission-grid grantKey Set form when you already hold role:permission tuples — the pair-array form exists for convenience and is normalized through the same encoding.",
+    "DO put it in a Card with CardContent flush: <Card><CardContent flush><PermissionMatrix …/></CardContent></Card>. Below its natural measure the grid scrolls horizontally INSIDE its own container (390px keeps the sticky permission column).",
+    "DO NOT encode platform roles/permissions in the library — roles, permissions and grants are consumer data by contract.",
+    "DO NOT pass compare pickers/toggles into the matrix — compose Select + Switch beside it and drive `compare`/`diffOnly` (see the showcase)."
+  ],
+  "useCases": [
+    "RBAC role tab on a service detail screen: read-only matrix + role compare.",
+    "Org role editor: editable matrix (onGrantChange) with the system role locked.",
+    "Permission-denied / failed read states without hand-rolling: denied / error / onRetry."
+  ]
+}

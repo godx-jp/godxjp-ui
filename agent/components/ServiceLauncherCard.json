@@ -1,0 +1,86 @@
+{
+  "example": "import { Clock } from \"lucide-react\";\nimport {\n  ServiceCatalogCta,\n  ServiceLauncherCard,\n  ServiceLauncherCardSkeleton,\n} from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n// ResponsiveGrid owns the canonical 3 → 2 → 1 ladder; the page writes no tracks.\n<ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>\n  {loading\n    ? services.map((s) => <ServiceLauncherCardSkeleton key={s.id} label={t(\"loadingService\")} />)\n    : services.map((s) => (\n        <ServiceLauncherCard\n          key={s.id}\n          icon={Clock}\n          title={s.name}\n          statusLabel={s.accessLabel}\n          statusTone={s.accessTone}\n          description={s.description}\n          metadata={s.hostnameAndPlan}\n          disabledReason={s.blockedReason}\n          action={\n            <Button asChild={s.canLaunch} disabled={!s.canLaunch}>\n              {s.canLaunch ? <a href={s.launchUrl}>{t(\"launch\")}</a> : t(\"launch\")}\n            </Button>\n          }\n        />\n      ))}\n  <ServiceCatalogCta\n    title={t(\"addFromCatalog\")}\n    action={<Button variant=\"outline\">{t(\"viewCatalog\")}</Button>}\n  />\n</ResponsiveGrid>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ServiceLauncherCard",
+  "props": [
+    {
+      "description": "Decorative service glyph rendered in the canonical semantic icon surface.",
+      "name": "icon",
+      "required": true,
+      "type": "LucideIcon"
+    },
+    {
+      "description": "Real downstream service display name.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "2",
+      "description": "Semantic heading level; visual styling remains token-owned.",
+      "name": "titleLevel",
+      "type": "1 | 2 | 3 | 4"
+    },
+    {
+      "description": "Consumer-provided access/readiness label. The component never infers status.",
+      "name": "statusLabel",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"neutral\"",
+      "description": "Semantic tone corresponding to the real statusLabel.",
+      "name": "statusTone",
+      "type": "\"success\" | \"warning\" | \"destructive\" | \"info\" | \"neutral\" | \"muted\""
+    },
+    {
+      "description": "Localized service summary.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Compact mono metadata such as real hostname and subscribed plan.",
+      "name": "metadata",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Real launch/detail action, normally a Button or Button asChild link.",
+      "name": "action",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Localized prose reason accompanying a disabled/unavailable action. Rendered ABOVE the action (so assistive tech meets the explanation before the disabled control) and marks the tile data-unavailable, which mutes the medallion via --card-service-launcher-unavailable-icon-*. It never disables the action itself — that stays the consumer's Button prop.",
+      "name": "disabledReason",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "ServiceLauncherCardSkeleton — shape-matched initial loading placeholder (required `label`, aria-busy, no live region).",
+    "ServiceCatalogCta — dashed companion tile for an existing catalog/add route.",
+    "ResponsiveGrid — OWNS the 3→2→1 layout around launcher tiles; the launcher never ships grid tracks of its own.",
+    "Card — general-purpose surface; use ServiceLauncherCard instead for this established composite."
+  ],
+  "rules": [
+    40
+  ],
+  "storyPath": "data-display/ServiceLauncherCard.stories.tsx",
+  "subParts": [
+    "ServiceLauncherCardSkeleton"
+  ],
+  "tagline": "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA.",
+  "usage": [
+    "DO provide status, hostname, plan, access state and action from the product's real API contract. ServiceLauncherCard deliberately performs no entitlement or URL inference — it has no href/entitlement/available prop at all.",
+    "DO own the layout with ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }} — the canonical 3→2→1 launcher grid. ResponsiveGrid queries its OWN container (40/48/64rem), so never hand-write grid-template-columns or a media query in the page. The shorthand columns={3} also works but widens to 2 columns earlier (40rem).",
+    "DO render ServiceLauncherCard directly as a grid child; it already owns its Card shell, its 36px medallion (--control-height-lg tier) and the canonical internal rhythm.",
+    "DO replace it with ServiceLauncherCardSkeleton while loading (it carries a required `label` and aria-busy, and deliberately opens no live region). Use ServiceCatalogCta as the peer tile only when a real catalog/add route exists.",
+    "DO keep `metadata` to machine identifiers (hostname · plan) — it is the only mono line. Sentences belong in `description` / `disabledReason`.",
+    "DON'T recreate launcher geometry with page-local CSS, utility padding, grid tracks, or a hand-built Card hierarchy. Retune it with the --card-service-launcher-* tokens instead.",
+    "DON'T show LIVE, a hostname, subscribed plan, or launch action merely because a service is active in the global catalog."
+  ],
+  "useCases": [
+    "Organization console launcher showing subscribed downstream applications with a real SSO launch action.",
+    "Service picker where unavailable apps remain visible with a disabled action and permission/subscription reason.",
+    "Responsive 3→2→1 launcher grid with a final ServiceCatalogCta tile linked to an existing catalog route."
+  ]
+}

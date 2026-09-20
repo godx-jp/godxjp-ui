@@ -1,0 +1,89 @@
+{
+  "example": "import { Avatar, AvatarFallback, AvatarImage } from \"@godxjp/ui/data-display\";\n\n<Avatar>\n  <AvatarImage src=\"/user.png\" alt=\"User\" />\n  <AvatarFallback>UI</AvatarFallback>\n</Avatar>\n\n// Organization entity header mark\n<Avatar shape=\"square\">\n  <AvatarFallback>山</AvatarFallback>\n</Avatar>\n\n// A chat member with realtime presence — dot + localized sr-only text, never colour alone\n<Avatar presence=\"busy\">\n  <AvatarImage src=\"/rei.png\" alt=\"佐藤 玲\" />\n  <AvatarFallback>佐</AvatarFallback>\n</Avatar>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Avatar",
+  "props": [
+    {
+      "defaultValue": "\"circle\"",
+      "description": "Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark: a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className=\"rounded-md bg-primary\".",
+      "name": "shape",
+      "type": "\"circle\" | \"square\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Box size on the SHARED CONTROL LADDER — md 32px (--control-height, the inert default), sm 28px, xs 24px, lg 36px, the same --control-height-* tier Button and Input read. STATE IT WHENEVER THE ROW'S HEIGHT IS ALREADY DECIDED: a mark inside a `<Button size=\"icon-sm\">` trigger, a mark in a 24/28px dense table row, a mark beside a `size=\"sm\"` Button. A `size=\"sm\"` avatar measures exactly as tall as a `size=\"sm\"` Button, so the row stays level. Before gh#716 the box was welded to --control-height: a 32px mark inside a 28px icon-sm trigger OVERFLOWED it, and a consumer sweeping control heights across 38 routes had no legal move but to raise the whole row to 32px. The initials' type step and a glyph's box move WITH the box (one step of the type scale, one step of the --icon-size-* scale), and shape=\"square\" rides the identical ladder — so a small mark is small, never clipped. A size BEYOND the control ladder (a 96px profile mark) is still a className size utility; the prop is for the control row.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape=\"square\"`. `tinted` is the CAPABILITY MEDALLION: a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape=\"square\" appearance=\"tinted\"` is the canonical rounded-square medallion a feature/capability icon sits on.",
+      "name": "appearance",
+      "type": "\"default\" | \"tinted\""
+    },
+    {
+      "description": "Which side of the trigger the panel opens on. Defaults from `appearance` — a bar drops the grid below, anything else opens to the inline-end. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is not in a bar but cannot say which way is out, and a rail pinned to the top edge still opens downward. Ignored by responsive=\"fullscreen\" and by the Sheet surface, which are not anchored to the trigger.",
+      "name": "side",
+      "type": "\"top\" | \"right\" | \"bottom\" | \"left\""
+    },
+    {
+      "description": "How the panel aligns to the trigger. Defaults from `appearance` — end in a bar, start otherwise. Same rule as `side`: state it only for chrome that knows its own orientation.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "description": "Realtime reachability, drawn as an indicator at the block-end/inline-end corner of the mark. Ships the dot, its geometry tokens and a localized sr-only label TOGETHER, so presence is never colour-only (WCAG 1.4.1): each value also has its own silhouette — online = filled disc (--success), away = half-filled (--warning), busy = filled + a horizontal do-not-disturb bar (--destructive), offline = hollow ring (--muted-foreground). OMIT the prop for an entity with no presence concept (an organization mark, a capability medallion): no node and no attribute are emitted. `presence=\"offline\"` is the DIFFERENT, positive statement \"known to be unreachable\" — the same distinction ListRow draws between an omitted and a `false` `unread`.",
+      "name": "presence",
+      "type": "\"online\" | \"away\" | \"busy\" | \"offline\""
+    },
+    {
+      "description": "Override the localized presence text (t(\"dataDisplay.avatar.presence.online\") …) when the product has a more precise phrasing (\"In a meeting until 15:00\"). Visually hidden either way — a presence dot never carries visible text; that is Badge status.",
+      "name": "presenceLabel",
+      "type": "string"
+    },
+    {
+      "description": "Compose AvatarImage and AvatarFallback.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Extra classes on the avatar root.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Badge — use beside Avatar for role/status metadata. Badge `status` is the LIFECYCLE chip (a record's state, with a visible label); Avatar `presence` is the realtime person dot. Different vocabularies on purpose — do not swap them.",
+    "ListRow — its `unread` prop is the same bargain one level up (a dot + localized sr-only text + tokens). Use ListRow `unread` for a row's read state, Avatar `presence` for the person on it."
+  ],
+  "rules": [
+    3,
+    35
+  ],
+  "storyPath": "data-display/Avatar.stories.tsx",
+  "subParts": [
+    "AvatarFallback",
+    "AvatarImage"
+  ],
+  "tagline": "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
+  "usage": [
+    "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+    "DO use `presence` for who is reachable RIGHT NOW — a chat member list, a DM row, a message-stream author, the topbar account mark. It is the only supported way to put a status dot on an avatar: the dot's inset is a function of the mark's own --avatar-* radius/size and of the root's clip, neither of which a page can read, which is why the hand-rolled `<span className=\"relative\"><Avatar/><span className=\"absolute -end-0.5 -bottom-0.5 size-2.5 rounded-full bg-green-500 ring-2 ring-background\"/></span>` wrapper can never be got right from outside (and fails the DS audit on the raw palette).",
+    "DON'T announce a presence CHANGE from the avatar — it carries no aria-live on purpose. A roster of 40 marks resyncing over a socket would flood a screen reader; announce the change in the consumer's own live region if the product wants it.",
+    "DON'T reach for `Badge status` for presence, or `presence` for lifecycle. Presence is volatile, per-person and realtime and renders as a dot; a lifecycle status is a record's state and renders as a labelled chip.",
+    "DO render a capability / feature icon as `<Avatar shape=\"square\" appearance=\"tinted\"><AvatarFallback><Sparkles aria-hidden /></AvatarFallback></Avatar>` — the medallion is a COMPOSITION (Avatar + a Lucide glyph, per docs/COMPOSITION-VS-COMPONENT.md), and `appearance=\"tinted\"` is the token-owned tint that composition needs. A BARE glyph beside a card title, or a hand-derived `hsl(var(--primary) / 0.1)` plate in page CSS, are both the anti-pattern this replaces. Left-aligned capability card: `<Card><CardHeader><Flex align=\"center\" gap={3}><Avatar shape=\"square\" appearance=\"tinted\">…</Avatar><CardTitle>…</CardTitle></Flex></CardHeader>…`. The row is a `Flex`, NOT `className=\"flex flex-row items-center gap-3\"` on the CardHeader — that spelling shipped here for a while and it is two ui-audit errors in a consumer (`no-utility-layout` + `no-utility-spacing`), i.e. this catalog was prescribing what the audit forbids. `CardTitle` has no `icon` prop and does not need one: the medallion is its SIBLING, not its content, and inside CardTitle it would get neither the gap nor the glyph sizing.",
+    "DO use `shape=\"square\"` for an organization / service / tenant mark in an entity header, and keep the default `shape=\"circle\"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).",
+    "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
+    "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
+    "DO set `size` from the ROW, not from the mark: a row whose height is already fixed (an icon-sm trigger, a 24/28px dense table row, a toolbar of sm controls) takes the matching avatar step, and the mark then measures exactly what a Button of the same step measures. `<Button size=\"icon-sm\"><Avatar size=\"sm\">…</Avatar></Button>` fits; the default md mark in that same trigger overflows it.",
+    "DON'T raise a whole row's control height just to fit a person's mark, and DON'T reach for a className size utility for a step that is ON the ladder (size-6 / size-7 re-derive 24/28px outside the density axis, so they stop tracking --control-height and drift from the controls beside them). className stays the escape hatch for sizes OFF the ladder — a 96px profile mark."
+  ],
+  "useCases": [
+    "User profile chips",
+    "Team member lists",
+    "Account owner cells in a DataTable",
+    "Organization / service entity headers (shape=\"square\" beside the entity name and code)",
+    "Chat / collaboration people surfaces (presence=\"online|away|busy|offline\" on DM rows, channel member lists, message-stream authors)"
+  ]
+}

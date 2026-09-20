@@ -1,0 +1,30 @@
+# @godxjp/ui
+
+> A Japanese-enterprise React design system: {{components}} components, {{tokens}} design tokens,
+> {{rules}} cardinal rules. This file is the entry point for AI agents. Catalog version {{version}}.
+
+If your client can run a process, do not read these files — run the MCP server instead
+(`npx @godxjp/ui-mcp@{{version}}`). It is searchable and version-locked. These files exist for agents
+that can only fetch URLs.
+
+## Start
+
+- [START-HERE.md]({{raw}}/START-HERE.md): the whole contract — the four rules, the token override model, a page that passes review. Read this first; it is self-contained.
+- [index.json]({{raw}}/index.json): version, counts, and the URL of every file.
+
+## Catalog
+
+- [components-index.json]({{raw}}/components-index.json): {{indexSize}} — all {{components}} components as name, group, tagline. Fetch this first.
+- [components/&lt;Name&gt;.json]({{raw}}/components/Select.json): one file per component ({{perComponentSize}}). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
+- [components.json]({{raw}}/components.json): {{componentsSize}} — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
+- [tokens.json]({{raw}}/tokens.json): every design token with its value and the reason it exists.
+- [vocabulary.json]({{raw}}/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
+- [rules.json]({{raw}}/rules.json): {{rules}} cardinal rules.
+
+## Pinning
+
+Every URL above tracks `main`. To pin to the release a project actually installed, swap `main` for
+the tag: `.../godx-jp/godxjp-ui/v{{version}}/agent/...`. A catalog that does not match the installed
+package describes props that are absent, or hides props that are present, and says nothing either way.
+
+{{pinnedCaveat}}

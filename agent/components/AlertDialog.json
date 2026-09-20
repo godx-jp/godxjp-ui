@@ -1,0 +1,109 @@
+{
+  "example": "import { AlertDialog } from \"@godxjp/ui/feedback\";\n\n<AlertDialog\n  open={open}\n  onOpenChange={setOpen}\n  title=\"Delete project\"\n  description=\"This action cannot be undone.\"\n  confirmLabel=\"Delete\"\n  cancelLabel=\"Cancel\"\n  onConfirm={async () => {\n    await deleteProject();\n    setOpen(false);\n  }}\n  variant=\"destructive\"\n/>",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "AlertDialog",
+  "props": [
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state change handler.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Accessible title/announcement for the alertdialog.",
+      "name": "title",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Optional supporting explanatory text.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "description": "Primary action label (defaults to translated continue).",
+      "name": "confirmLabel",
+      "type": "string"
+    },
+    {
+      "description": "Dismiss action label (defaults to translated cancel).",
+      "name": "cancelLabel",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Variant passed through to the confirm button.",
+      "name": "variant",
+      "type": "\"default\" | \"destructive\""
+    },
+    {
+      "description": "Optional type-to-confirm phrase to prevent accidental confirm.",
+      "name": "confirmPhrase",
+      "type": "string"
+    },
+    {
+      "description": "Semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug) before confirm arms.",
+      "name": "challenge",
+      "type": "string"
+    },
+    {
+      "description": "Primary action handler.",
+      "name": "onConfirm",
+      "type": "() => Promise<void> | void"
+    },
+    {
+      "description": "Optional step-up re-auth (passkey/2FA) gate; must resolve truthy before `onConfirm` fires. Returning false keeps the dialog open and announces failure.",
+      "name": "stepUp",
+      "type": "() => Promise<boolean> | boolean"
+    },
+    {
+      "description": "Keep modal open after confirm when true.",
+      "name": "keepOpenOnConfirm",
+      "type": "boolean"
+    },
+    {
+      "description": "Disable actions while async work is running.",
+      "name": "pending",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Dialog — use for form-style and non-destructive modal flows, no confirm preset behavior.",
+    "AlertDialogRoot — the compound counterpart, and the OLDER way in. It still works and is not going away in this major, but a confirmation body the preset does not cover (a summary table, a diff, a required reason field) is now better written as `Dialog` with `variant=\"destructive\"`: same `role=\"alertdialog\"`, same non-dismissable scrim, freeform body, and `DialogBody` / `DialogClose` available — the two parts the `AlertDialog*` family never had (gh#567)."
+  ],
+  "rules": [
+    23,
+    3
+  ],
+  "storyPath": "feedback/AlertDialog.stories.tsx",
+  "subParts": [
+    "AlertDialogAction",
+    "AlertDialogCancel",
+    "AlertDialogContent",
+    "AlertDialogDescription",
+    "AlertDialogFooter",
+    "AlertDialogHeader",
+    "AlertDialogOverlay",
+    "AlertDialogPortal",
+    "AlertDialogTitle",
+    "AlertDialogTrigger"
+  ],
+  "tagline": "Canonical modal confirmation flow (destructive / high-stakes decisions). Preserves confirm semantics with `role=\"alertdialog\"` and built-in cancel/confirm handling.",
+  "usage": [
+    "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
+    "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive shape: the destructive confirm button plus a leading status glyph beside the title, which is Ant Design `Modal.confirm` parity. The header surface stays UNTINTED — antd signals danger with the glyph and never tints a modal header (its soft `colorErrorBg` belongs to Alert/Tag/message). To tint the band anyway, set `DialogHeader tone` yourself; it is a separate seven-value axis the preset no longer imposes.",
+    "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",
+    "Pass `keepOpenOnConfirm` when the confirm handler advances a multi-step flow and should not close immediately."
+  ],
+  "useCases": [
+    "Dangerous delete or irreversible workflow confirmation that should block the background UI.",
+    "Organization/resource deletion gated behind typing the exact slug (`challenge`).",
+    "Refunds or privileged actions requiring step-up re-authentication before they run.",
+    "Destructive batch operations that should remain modal and explicit until action is intentionally confirmed."
+  ]
+}

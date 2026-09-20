@@ -1,0 +1,95 @@
+{
+  "example": "import { MasterDetail } from \"@godxjp/ui/layout\";\n\n// Canonical: fluid list + fixed 320px detail rail (stacks below 40rem).\n<MasterDetail\n  masterLabel=\"Teams\"\n  detailLabel=\"Selected team\"\n  detailId=\"team-detail\"\n  master={<TeamTable onRowClick={select} detailId=\"team-detail\" />}\n>\n  <TeamDetail team={selected} />\n</MasterDetail>\n\n// Leading navigator rail instead.\n<MasterDetail rail=\"master\" railWidth=\"compact\" masterLabel=\"Categories\">\n  <SettingsForm />\n</MasterDetail>\n\n// A long real collection: bound the master so it scrolls in place and the detail\n// stays near the top of a stacked mobile page.\n<MasterDetail masterViewport=\"compact\" masterLabel=\"Members\" detailLabel=\"Selected member\">\n  <MemberDetail member={selected} />\n</MasterDetail>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "MasterDetail",
+  "props": [
+    {
+      "description": "One-pane navigation below the token-owned collapse threshold; omit to retain stacking. The consumer owns URL/history selection.",
+      "name": "mobilePane",
+      "type": "\"master\" | \"detail\""
+    },
+    {
+      "description": "Back link shown above detail in mobile navigation mode.",
+      "name": "detailBack",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Selectable collection. Always FIRST in DOM order, so the stacked (mobile) order is list-then-detail whichever region owns the rail.",
+      "name": "master",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Detail surface for the current master selection.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"detail\"",
+      "description": "`master` = leading category/navigator rail beside a fluid detail surface.",
+      "name": "rail",
+      "type": "\"master\" | \"detail\""
+    },
+    {
+      "description": "Token rail steps: 12rem, 18.75rem, 20rem, 24rem.",
+      "name": "railWidth",
+      "type": "\"narrow\" | \"compact\" | \"standard\" | \"wide\""
+    },
+    {
+      "defaultValue": "\"auto\"",
+      "description": "Bound the master collection to a scrollable viewport. `auto` (default) never bounds it — the region grows with its content. `compact` (--master-detail-master-viewport-compact, 20rem) / `standard` (28rem) cap its block size and scroll the collection INSIDE the region, and make that region a keyboard-reachable scroll container (tabIndex 0, --master-detail-master-viewport-inset reserves focus-ring room). No raw pixel prop exists — retune the tokens in a service theme.",
+      "name": "masterViewport",
+      "type": "\"auto\" | \"compact\" | \"standard\""
+    },
+    {
+      "description": "Per-instance stacking threshold (sm=40rem, md=48rem, lg=64rem, xl=80rem; false never stacks). OMIT it to inherit the themeable --master-detail-collapse-below token (default 40rem) — that is the global knob a service theme retunes once.",
+      "name": "collapseBelow",
+      "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | false"
+    },
+    {
+      "description": "Accessible name for the master region landmark.",
+      "name": "masterLabel",
+      "type": "string"
+    },
+    {
+      "description": "Accessible name for the detail region landmark.",
+      "name": "detailLabel",
+      "type": "string"
+    },
+    {
+      "description": "Id of the detail region so the selection controls inside `master` can point at it with aria-controls, and the app can move focus to it after a selection (the region carries tabIndex={-1} for exactly this).",
+      "name": "detailId",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SplitPane — a main surface plus a COMPLEMENTARY aside (its own content), not a selection-driven detail; use MasterDetail when the trailing pane is the detail OF the selection.",
+    "ResponsiveGrid — use for equal-width independent cards, never for a master-detail relationship.",
+    "PageContainer — outer page scaffold that supplies page insets and title hierarchy around MasterDetail."
+  ],
+  "rules": [
+    24,
+    40
+  ],
+  "storyPath": "layout/MasterDetail.stories.tsx",
+  "tagline": "Responsive master-detail composition: a fluid list beside a token-owned 300px/320px fixed rail, with a themeable collapse threshold. `rail` picks which region is fixed — default `detail` (the canonical 1fr/320px list + detail rail); `master` for a leading navigator rail.",
+  "usage": [
+    "DO use MasterDetail for team, member, service or settings screens where a selectable collection drives a detail surface. Default `rail=\"detail\"` gives the canonical fluid list + 320px detail rail; pass `rail=\"master\"` for a leading navigator rail.",
+    "DO keep selection and keyboard semantics on the controls inside `master` (`aria-pressed`, roving focus, or listbox semantics as appropriate) — only the caller knows which APG pattern applies; MasterDetail preserves whatever you render.",
+    "DO wire the two together: give the master controls `aria-controls={detailId}`, and move focus to `document.getElementById(detailId)` when a selection replaces the detail (the region is `tabIndex={-1}` so that focus call works).",
+    "DO choose `compact` for the 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
+    "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
+    "Use ResponsiveGrid.Item span for proportional tracks, or MasterDetail when the rail needs a bounded width.",
+    "DO set `masterViewport=\"compact\"` (or `\"standard\"`) whenever the collection is a REAL, unbounded list. Left at `auto` a 200-row list renders ~3,700px tall, and once the layout stacks the detail lands thousands of pixels below the fold; bounded, the collection scrolls inside the rail and the detail stays near the top of the screen. Pass `masterLabel` too, so the scroll region is announced.",
+    "DON'T reproduce that bound with a consumer `max-height`/`overflow` rule or a pixel prop — there is none by design. Retune `--master-detail-master-viewport-compact` / `-standard` in the service theme, and `--master-detail-master-viewport-inset` if the collection's focus ring needs more room.",
+    "The collapse threshold is a real token: below `--master-detail-collapse-below` (default 40rem, measured against the COMPOSITION's own inline size, never the viewport) master stacks above detail. A theme retunes it globally, `collapseBelow` overrides it per instance. It is implemented as a flex-basis threshold rather than a media query precisely because a query CONDITION cannot read a var().",
+    "Measured geometry with the defaults: 1440 → fluid master + 320px rail; 1024 → fluid master + 320px rail; 390 → stacked full-width master then detail. Same JSX at every width — no consumer-local CSS, grid tracks or per-screen spacing."
+  ],
+  "useCases": [
+    "Teams screen: the team DataTable stays fluid while the selected team's detail keeps the 320px rail.",
+    "Organization service access: services in the compact leading rail (`rail=\"master\"`) and selected service roles in the fluid detail surface.",
+    "Settings navigator: categories in the leading rail and the selected configuration form in the detail surface."
+  ]
+}

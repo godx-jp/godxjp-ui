@@ -1,0 +1,50 @@
+{
+  "example": "import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from \"@godxjp/ui/data-display\";\n\n// CarouselDots reads the Embla api from context — no setApi wiring needed.\n<Carousel opts={{ loop: true }}>\n  <CarouselContent>\n    <CarouselItem>1</CarouselItem>\n    <CarouselItem>2</CarouselItem>\n  </CarouselContent>\n  <CarouselPrevious />\n  <CarouselNext />\n  <CarouselDots />\n</Carousel>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Carousel",
+  "props": [
+    {
+      "description": "Embla options.",
+      "name": "opts",
+      "type": "Parameters<typeof useEmblaCarousel>[0]"
+    },
+    {
+      "description": "Embla plugins.",
+      "name": "plugins",
+      "type": "Parameters<typeof useEmblaCarousel>[1]"
+    },
+    {
+      "description": "Receive the Embla api for custom logic (autoplay, external prev/next). NOT needed for dots — CarouselDots reads the api from context itself.",
+      "name": "setApi",
+      "type": "(api: CarouselApi) => void"
+    }
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "data-display/Carousel.stories.tsx",
+  "subParts": [
+    "CarouselContent",
+    "CarouselDots",
+    "CarouselItem",
+    "CarouselNext",
+    "CarouselPrevious"
+  ],
+  "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API.",
+  "usage": [
+    "DO compose the full set: `<Carousel>` › `<CarouselContent>` › many `<CarouselItem>`, with `<CarouselPrevious>`/`<CarouselNext>` for arrows and `<CarouselDots>` for the indicator row. Don't render items outside `<CarouselContent>` — the track is the scroll container.",
+    "DO use `<CarouselDots>` for the active-slide indicator instead of wiring `setApi` by hand — it reads `selectedIndex`/`scrollSnaps` from the Carousel context, renders one `aria-current` dot per snap, and auto-hides when there is ≤1 slide.",
+    "DON'T use a Carousel where ALL items must be seen/compared at once or be keyboard-reachable in reading order (e.g. a list of selectable options, a data table, primary navigation) — hiding content behind a swipe is an anti-pattern there; use a Grid/`ResponsiveGrid`, `ScrollArea`, or `Tabs`.",
+    "DON'T autoplay without a pause-on-hover/focus control and reduced-motion respect — pass the Embla autoplay plugin via `plugins` only for non-essential decorative content, never for content the user must read.",
+    "DO set `opts={{ loop: true }}` for galleries that wrap, and rely on the built-in disabling: `CarouselPrevious`/`CarouselNext` auto-disable at the ends (via `canScrollPrev`/`canScrollNext`) — don't hide them, let them grey out.",
+    "DO give each `<CarouselItem>` real, meaningful content; the component already injects an 'N of M' slide label for screen readers, so don't add a redundant one (a consumer `aria-label` on the item overrides the default)."
+  ],
+  "useCases": [
+    "Feature / onboarding highlight cards on a dashboard or landing surface, with CarouselDots showing position.",
+    "Image or document thumbnail gallery (e.g. uploaded receipts / 物件写真) with looping and prev/next arrows.",
+    "Horizontal stepping list of compact KPI or announcement cards that overflow the viewport width.",
+    "Product/plan comparison cards on a marketing page where swiping between a few options is acceptable (not the primary action)."
+  ]
+}

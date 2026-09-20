@@ -1,0 +1,65 @@
+{
+  "example": "import { PrefetchLink } from \"@godxjp/ui/query\";\nimport { fetchInvoice } from \"@/api/invoices\";\n\n// Inside a table row or list item:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  staleTime={60_000}\n  className=\"font-medium hover:underline\"\n>\n  {invoice.number}\n</PrefetchLink>\n\n// Disable prefetch for rows where data is not yet stable:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  prefetchOn=\"none\"\n>\n  {invoice.number}\n</PrefetchLink>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/query",
+  "name": "PrefetchLink",
+  "props": [
+    {
+      "description": "TanStack Query cache key for the data to prefetch. Must match the key used by the destination page's useQuery call.",
+      "name": "queryKey",
+      "required": true,
+      "type": "QueryKey"
+    },
+    {
+      "description": "Fetch function passed to queryClient.prefetchQuery. Same function (or equivalent) as the one used in the destination page's useQuery.",
+      "name": "queryFn",
+      "required": true,
+      "type": "() => Promise<unknown>"
+    },
+    {
+      "defaultValue": "\"both\"",
+      "description": "Which interaction triggers prefetching. 'both' fires on either mouseenter or focus. 'none' disables prefetching entirely (useful for conditional opt-out without unmounting the component).",
+      "name": "prefetchOn",
+      "type": "\"hover\" | \"focus\" | \"both\" | \"none\""
+    },
+    {
+      "defaultValue": "30000",
+      "description": "Milliseconds before the prefetched cache entry is considered stale. Matches queryClient.prefetchQuery staleTime. Defaults to 30 s — set higher for rarely-changing data (e.g. reference tables), lower for live feeds.",
+      "name": "staleTime",
+      "type": "number"
+    },
+    {
+      "description": "All standard React Router v6 Link props are spread through: to, replace, state, relative, reloadDocument, preventScrollReset, viewTransition, className, children, etc. onMouseEnter and onFocus are merged (your handler still fires).",
+      "name": "...linkProps",
+      "type": "LinkProps (react-router-dom)"
+    }
+  ],
+  "related": [
+    "Link (react-router-dom) — use bare Link when no prefetching is needed or when the destination has no TanStack Query data (e.g. a static page or a form page that fetches nothing on load).",
+    "DataState — the companion lifecycle widget for the destination page; ensures PrefetchLink's prefetch is consumed correctly via useQuery.",
+    "InfiniteQueryState — use instead of PrefetchLink when the list itself is infinitely paginated and items are loaded lazily rather than navigated to.",
+    "ButtonRefetch — for triggering a manual cache refresh on an already-loaded page, not for navigation prefetching."
+  ],
+  "rules": [
+    2,
+    3,
+    31
+  ],
+  "storyPath": "data-display/PrefetchLink.stories.tsx",
+  "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context.",
+  "usage": [
+    "DO: provide a queryKey that exactly matches the destination page's useQuery key — a mismatch means the prefetch populates a different cache slot and the page still loads cold.",
+    "DO: keep queryFn lightweight and side-effect-free; it runs speculatively on hover. Avoid mutations or write operations inside queryFn.",
+    "DO: tune staleTime to your data's freshness requirement. The default 30 s is fine for most detail views; set it lower (e.g. 5000) for real-time data or higher (e.g. 300_000) for static reference data.",
+    "DON'T: use PrefetchLink when the destination page's data is user-specific per request (e.g. contains a nonce or CSRF token embedded in the payload) — the prefetched response may be stale or unusable.",
+    "DON'T: hand-roll a Link + useQueryClient prefetch pattern when PrefetchLink already ships it. Using raw Link loses the hover/focus prefetch behaviour and duplicates logic.",
+    "REQUIRES: a TanStack Query QueryClient provider (QueryClientProvider) above this component in the tree. It calls useQueryClient internally — rendering without a provider throws."
+  ],
+  "useCases": [
+    "List-to-detail navigation in an accounting app: hovering an invoice row in a DataTable triggers prefetch of that invoice's detail data so the detail page renders immediately on click.",
+    "Sidebar navigation links where the destination is a dashboard or summary page — prefetch on focus covers keyboard-only users tabbing through the nav.",
+    "Paginated table rows where each row links to a resource detail page (partner, journal entry, account). prefetchOn='hover' avoids wasted prefetches from keyboard navigation.",
+    "Admin list pages with 'Edit' action links: the edit form data is prefetched on hover so the form appears populated without a loading spinner.",
+    "Breadcrumb links on deep-nested pages where clicking 'back' should feel instant — prefetch the parent page's query on mount/focus of the breadcrumb link."
+  ]
+}

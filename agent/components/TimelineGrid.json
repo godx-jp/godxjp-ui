@@ -1,0 +1,92 @@
+{
+  "example": "import { TimelineGrid } from \"@godxjp/ui/data-display\";\n\n<TimelineGrid\n  label=\"週シフト 5月11日〜17日\"\n  start=\"06:00\"\n  end=\"24:00\"\n  interval={2}\n  now=\"14:35\"\n  columns={[\n    { id: \"05-13\", label: \"水 13\" },\n    { id: \"05-14\", label: \"木 14\", current: true },\n  ]}\n  events={[\n    { id: \"a\", columnId: \"05-14\", start: \"09:00\", end: \"17:30\", title: \"早番\", description: \"田中\" },\n    { id: \"b\", columnId: \"05-14\", start: \"13:00\", end: \"22:00\", title: \"遅番\", description: \"高橋\" },\n    { id: \"c\", columnId: \"05-14\", start: \"22:00\", end: \"06:00\", title: \"夜勤\", description: \"伊藤\" },\n  ]}\n  onEventSelect={(event) => openShift(event.id)}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "TimelineGrid",
+  "props": [
+    {
+      "description": "Accessible name of the grid. Required, and a plain string: the grid is a focusable scrolling region, so its name has to survive as an `aria-label`.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "`{ id, label, description?, current? }` in render order. `label` is the column head AND the accessible name of that column's event list, so keep it text. `current: true` marks today's column: it takes the tint and hosts the `now` marker.",
+      "name": "columns",
+      "required": true,
+      "type": "TimelineGridColumnProp[]"
+    },
+    {
+      "description": "`{ id, columnId, start, end, title, description?, color? }` in any order. `start`/`end` are clock times in the column's own day, `\"HH:MM\"` 24-hour (`\"24:00\"` = end of day). An `end` at or before `start` continues into the next day (22:00–06:00 夜勤). `color` is the record's own colour, washed like `Badge color`.",
+      "name": "events",
+      "required": true,
+      "type": "TimelineGridEventProp[]"
+    },
+    {
+      "defaultValue": "the earliest event, on the hour",
+      "description": "First clock time on the axis, `\"HH:MM\"`. Left off, the axis is derived from the events, so a block can only fall outside an axis you PINNED.",
+      "name": "start",
+      "type": "string"
+    },
+    {
+      "defaultValue": "the latest event, on the hour",
+      "description": "Last clock time on the axis, `\"HH:MM\"`. A block the pinned axis cuts is drawn to the edge and carries `data-clipped`, and still prints its real range as text.",
+      "name": "end",
+      "type": "string"
+    },
+    {
+      "defaultValue": "1",
+      "description": "Hours between hour rules and axis labels. Use 2 or 3 when a long axis has to fit one screen.",
+      "name": "interval",
+      "type": "number"
+    },
+    {
+      "description": "Current clock time, `\"HH:MM\"`. Draws the now marker in every column marked `current`. The marker is decorative (`aria-hidden`): the hours it points at are already text on every block.",
+      "name": "now",
+      "type": "string"
+    },
+    {
+      "description": "Block click handler. Its PRESENCE turns every block into a real `button`, which is what makes the blocks keyboard-reachable; without it the grid is a read-only board.",
+      "name": "onEventSelect",
+      "type": "(event: TimelineGridEventProp) => void"
+    },
+    {
+      "description": "Extra classes on the scroll region.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "DOM id on the scroll region.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Timeline — one lane of ordered events with no scale (an audit trail, a shipment history). TimelineGrid is the same family with a measured time axis and one lane per column.",
+    "Table — the MONTH calendar is a real table (`bordered`, one row per week, one cell per day), not a TimelineGrid.",
+    "Calendar — the single-date PICKER in data-entry. Use it to jump to a month; it does not show events.",
+    "Sheet — the usual destination of `onEventSelect`: the block is the affordance, the drawer is the detail.",
+    "Badge — the same `color` wash for a record's own colour, on a chip instead of a block."
+  ],
+  "rules": [
+    42,
+    45
+  ],
+  "storyPath": "data-display/TimelineGrid.stories.tsx",
+  "tagline": "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar — no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion.",
+  "usage": [
+    "DO import from `@godxjp/ui/data-display`: `import { TimelineGrid } from \"@godxjp/ui/data-display\";`",
+    "DO give a shift/booking board one column per day and let the grid place the blocks. DON'T hand-roll a `relative` container with absolutely-positioned divs and percentage offsets — that is the exact shape this primitive replaces (#354 item 7), and it hides one of two overlapping shifts.",
+    "DO re-tune the rhythm with the tokens instead of a className: `--timeline-grid-hour-height` is the height of one hour (the knob that fits a 24-hour axis on one screen), `--timeline-grid-column-min-width` is the floor below which the grid scrolls instead of collapsing, `--timeline-grid-axis-width` is the hour rail, and `--timeline-grid-event-color` / `--timeline-grid-now-color` / `--timeline-grid-current-tint` are role-mirror colour knobs.",
+    "DO express a shift that crosses midnight as `start: \"22:00\", end: \"06:00\"` — an `end` at or before `start` means the next day. The block is drawn to the end of the window and marked `data-clipped`, and the text still reads 22:00–06:00.",
+    "DON'T reach for TimelineGrid for a MONTH calendar: a month grid is a real `Table`, one `TableRow` per week and one `TableCell` per day. TimelineGrid owns the continuous time axis, not the day matrix.",
+    "DON'T expect navigation, drag-to-create, recurrence or timezone conversion — none of it ships. `start`/`end` are clock times in the column's own day; which day a column stands for is yours to decide.",
+    "DON'T pass an event whose `columnId` matches no column, or one that falls entirely outside a pinned `start`/`end`: it is not drawn. Leave the axis unpinned and it is derived from the events instead."
+  ],
+  "useCases": [
+    "A weekly shift board (シフトカレンダー): seven day columns on a 06:00–24:00 axis, 早番 / 遅番 / 夜勤 blocks in the decorative wa-iro palette, `now` drawing the current-time line on today's column.",
+    "A day view of one team: one column per staff member, `interval={1}`, `onEventSelect` opening the shift detail in a Sheet.",
+    "Meeting-room booking for a single day: one column per room, the axis derived from the bookings themselves, overlapping holds side by side so a double-booking is visible instead of hidden.",
+    "Machine / bay utilisation on a shop floor: one column per machine, blocks coloured by job, the clipped marker showing a run that continues past the shift window."
+  ]
+}

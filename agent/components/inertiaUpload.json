@@ -1,0 +1,32 @@
+{
+  "docPath": "FORMS.md",
+  "example": "import { inertiaUpload } from \"@godxjp/ui/inertia\";\nconst upload = inertiaUpload((file, callbacks) => router.post(endpoint, { file }, callbacks), t(\"Upload failed\"));\n<Upload onUpload={upload} />;",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/inertia",
+  "name": "inertiaUpload",
+  "props": [
+    {
+      "description": "Start a router.post visit with the supplied callbacks and file.",
+      "name": "send",
+      "type": "(file: File, callbacks: InertiaUploadCallbacks) => void"
+    },
+    {
+      "description": "Localized fallback for network or HTTP failures.",
+      "name": "errorMessage",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Upload",
+    "FormRoot"
+  ],
+  "rules": [
+    1
+  ],
+  "storyPath": "data-entry/Upload.stories.tsx",
+  "tagline": "Bridge Inertia multipart visits to Upload progress, cancellation, retry and error recovery.",
+  "usage": [
+    "Pass the returned callback to Upload.onUpload. Spread callbacks into router.post options; they enable multipart and independent async requests.",
+    "Keep failed items in controlled value so the user can retry; remove only done items when server props provide the saved list."
+  ]
+}

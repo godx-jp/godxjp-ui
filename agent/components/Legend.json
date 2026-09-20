@@ -1,0 +1,42 @@
+{
+  "example": "import { Legend } from \"@godxjp/ui/data-display\";\n\n<CardAction>\n  <Legend\n    items={[\n      { tone: \"destructive\", label: \"期限超過\" },\n      { tone: \"warning\", label: \"期限間近\" },\n      { tone: \"success\", label: \"対応済\" },\n    ]}\n  />\n</CardAction>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Legend",
+  "props": [
+    {
+      "description": "The keys, in the order the marks they explain appear. `label` is required and cannot be omitted: colour alone never carries meaning (WCAG 1.4.1), so a wordless key would be the exact failure the component prevents.",
+      "name": "items",
+      "required": true,
+      "type": "{ tone: \"default\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"muted\" | \"neutral\"; label: ReactNode }[]"
+    },
+    {
+      "description": "Root class. The swatch geometry lives in the --legend-* tokens, not here.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Progress — `segments` draws the breakdown this key explains; the two take the same tones.",
+    "Badge — a Badge labels ONE thing in place; a Legend explains a colour used across many marks.",
+    "Swatch — one read-only sample of an ARBITRARY colour (a brand's primary_color). Legend is a key over the closed semantic tones and always shows words; Swatch shows a value and takes its name from aria-label.",
+    "CardAction — the header slot a Legend usually sits in, so the key lands opposite the CardTitle."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Legend.stories.tsx",
+  "tagline": "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label.",
+  "usage": [
+    "DO import from `@godxjp/ui/data-display`: `import { Legend } from \"@godxjp/ui/data-display\";`",
+    "DO put it in the `CardAction` slot of the card whose bars or chart it explains, so the key sits on the same line as the card title and reads before the data.",
+    "DO feed it the same tone order as the marks it explains — a key whose order differs from the bars forces the reader to map three colours by hand.",
+    "DON'T build a key out of Badges. A Badge is a chip that reads as clickable and carries a tinted fill + border; a legend swatch is a SAMPLE of the exact colour the mark uses.",
+    "DON'T hand-roll a coloured square: `<span className=\"w-[10px] h-[10px] rounded-[2px] bg-[#c0392f]\" />` is blocked by ui-audit three ways at once (no-arbitrary-size, no-arbitrary-radius, no-arbitrary-hex). For a colour the USER chose — a brand colour, a tag tint — reach for `Swatch`, which takes that value as a prop.",
+    "DON'T give the swatch its own text or aria — it is aria-hidden on purpose, because it repeats the label beside it."
+  ],
+  "useCases": [
+    "The key above a set of `Progress` breakdown bars — 期限超過 / 期限間近 / 対応済 — so the three tones are named once for the whole card instead of on every row.",
+    "A chart card where the series colours need naming outside the chart's own runtime legend.",
+    "A status column in a dense table: name the tones once in the card header rather than repeating a Badge in every cell.",
+    "A calendar or heatmap whose cell tints encode a state (booked / held / free)."
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "docPath": "docs/FORMS.md",
+  "example": "import { useZodForm } from \"@godxjp/ui/form\";\nimport { z } from \"zod\";\nconst form = useZodForm(z.object({email: z.string().email()}), {defaultValues: {email: \"\"}, mode: \"onBlur\"});",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/form",
+  "name": "useZodForm",
+  "props": [
+    {
+      "description": "Zod schema, including async refinements.",
+      "name": "schema",
+      "type": "z.ZodType<T>"
+    },
+    {
+      "description": "RHF options such as defaultValues, mode, reValidateMode, criteriaMode and shouldUnregister.",
+      "name": "options",
+      "type": "UseZodFormOptionsProp<T>"
+    }
+  ],
+  "related": [
+    "Form",
+    "FormField",
+    "FormRoot",
+    "FormFieldControl"
+  ],
+  "rules": [
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Form.stories.tsx",
+  "tagline": "Create a typed React Hook Form instance with Zod validation; reuse reset, setValue, trigger, formState and field errors.",
+  "usage": [
+    "Use inside the documented form composition; do not nest native form elements.",
+    "Use godx-ui controls and preserve field names, errors and disabled state."
+  ],
+  "useCases": [
+    "Validated settings forms",
+    "Nested repeating data entry"
+  ]
+}

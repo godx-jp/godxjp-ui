@@ -1,0 +1,137 @@
+{
+  "example": "import { FormField, Input } from \"@godxjp/ui/data-entry\";\n\n<FormField id=\"coupon-name\" label=\"クーポン名\" required error={errors.name} helper=\"最大50文字\">\n  <Input id=\"coupon-name\" placeholder=\"春の花粉症対策15%OFF\" value={name} onValueChange={(e) => setName(e.target.value)} />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "FormField",
+  "props": [
+    {
+      "description": "Tên trường của form — dùng khi `id` không đủ để nối control với error/aria.",
+      "name": "field",
+      "type": "string"
+    },
+    {
+      "description": "Nội dung phụ cạnh nhãn: gợi ý, badge bắt buộc, nút trợ giúp, action chữ ngắn. Nằm TRONG hàng nhãn nên không phá nhịp trường. Ở layout horizontal/inline hàng nhãn xuống dòng: addon không vừa cạnh nhãn thì rơi xuống dòng riêng dưới nhãn, trong cột nhãn, không tràn sang cột control.",
+      "name": "labelAddon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Forwarded to Label htmlFor + builds helper/error ids.",
+      "name": "id",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Error-bag key of this field. When the surrounding Form carries `errors`, the field resolves its message from `errors[name]` automatically (an explicit `error` prop wins) and CLAIMS the key so <FormErrors /> does not repeat it. NOT injected into the child — pass `name` on the control itself for native form submission.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Field label above the control.",
+      "name": "label",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Red asterisk + aria-required on the child.",
+      "name": "required",
+      "type": "boolean"
+    },
+    {
+      "description": "Muted hint shown when there is no error.",
+      "name": "helper",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"after\"",
+      "description": "Which side of the control the helper sits on. `before` puts it between the label and the input, for a hint the reader needs before answering (a bilingual form's second line, a unit or format note). Paint only — the helper keeps its id and stays on aria-describedby. Prefer it over stuffing a second line into `labelAddon` (a label-row slot for a chip, help button or short action) or into a ReactNode `label` (which loses the string-label aria fallbacks).",
+      "name": "helperPlacement",
+      "type": "\"before\" | \"after\""
+    },
+    {
+      "description": "Destructive error message (role=alert); overrides helper.",
+      "name": "error",
+      "type": "string"
+    },
+    {
+      "description": "Override the parent Form's layout for this field only.",
+      "name": "layout",
+      "type": "\"vertical\" | \"horizontal\" | \"inline\""
+    },
+    {
+      "description": "Override the Form's label width for this field.",
+      "name": "labelWidth",
+      "type": "number | string"
+    },
+    {
+      "description": "Override the Form's control width for this field.",
+      "name": "controlWidth",
+      "type": "number | string"
+    },
+    {
+      "description": "Span N columns when inside a `columns` Form grid.",
+      "name": "colSpan",
+      "type": "number"
+    },
+    {
+      "description": "The single interactive control to render. Mutually exclusive with `staticText` — pass exactly one of the two.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Read-only VALUE instead of an interactive control — renders as plain text styled to match `Descriptions.Item`'s value typography byte-for-byte (`text-sm break-all`), skipping all of FormField's id/aria-* control wiring (there is nothing to label). Mutually exclusive with `children`. Use this to put a read-only field (name, email — anything immutable) on the SAME `<Form>` as editable fields, so it inherits the exact same layout/labelAlign/row-gap automatically instead of reaching for a separate `Descriptions` block that needs its own props reconciled to match.",
+      "name": "staticText",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Validation state; an actual error takes priority. Warnings do not mark values invalid.",
+      "name": "validateStatus",
+      "type": "\"success\" | \"warning\" | \"error\" | \"validating\""
+    },
+    {
+      "description": "Show a localized accessible validation status beside its feedback icon.",
+      "name": "hasFeedback",
+      "type": "boolean"
+    },
+    {
+      "description": "Custom feedback content; the localized status remains available.",
+      "name": "feedback",
+      "type": "React.ReactNode"
+    }
+  ],
+  "related": [
+    "Label — the bare Radix label component. Use directly only when you are building a fully custom layout that cannot accept FormField's stack wrapper, and you will manage aria-describedby/aria-invalid yourself. FormField is always preferred for standard form controls.",
+    "Field — a self-contained field for boolean toggles: it already includes its own label, hidden `<input name>` for HTML form submission, helper, and error. Never wrap a bare `Switch` in FormField.",
+    "Field — pairs a single checkbox or radio with a label and optional description in a horizontal layout (control beside text). Use Field instead of FormField when the control and its label sit side-by-side rather than stacked.",
+    "CheckboxGroup / RadioGroup — for groups of options where FormField is not needed per-item; the group component handles its own legend/label and option layout."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "data-entry/FormField.stories.tsx",
+  "tagline": "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
+  "usage": [
+    "DO pass the same string to both `id` on `<FormField>` and `id` on the child control — the component wires `<Label htmlFor={id}>`, and builds `{id}-helper` / `{id}-error` ids for `aria-describedby`. If the ids diverge the label click and screen-reader announcements break.",
+    "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
+    "COMPOSITE CHILD: when the single child is a layout wrapper — a `Flex` holding a range from/to pair or a 年/月 input+select combo — the label still reaches every control inside. FormField publishes its label through FieldNameContext and each control's semantic focus target (Input's `<input>`, Select/SearchSelect's `role=combobox` trigger, and everything composed on them) adopts it as a LAST-RESORT accessible name; a control's own `aria-label`/`aria-labelledby` always wins, so set a per-control `aria-label` (e.g. 開始日/終了日) when the two halves should announce distinct names. The wrapper itself renders as a named `role='group'` (see Flex).",
+    "DO reach for `staticText` (not `children` with a bare string/span) for a read-only field mixed into an otherwise-editable Form — e.g. an immutable name/email row above an editable role Select on the same Members-edit card. It renders with the exact typography `Descriptions.Item`'s value uses, and — because it IS a FormField reading the same Form context — it lines up with every other field's label column, `labelAlign`, and row-to-row gap automatically. A bare string as `children` instead triggers the dev-mode 'expected a single React element child' warning and has no typography contract at all.",
+    "WIDTH: a FormField FILLS its container in vertical/horizontal layout — like the conventional Form.Item (vertical → width:100%). It works full-width inside `<Form>`, a `ResponsiveGrid` cell, a bare `<Flex direction='col'>`, or a plain block; you do NOT need to wrap it in a grid to get full width. `layout='inline'` is the only content-width exception (compact, side-by-side). To narrow just the control (keeping the label row full-width), set `controlWidth` — never constrain the FormField itself.",
+    "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
+    "DO use `labelAddon` (a ReactNode rendered after the label text, in the label row) for supplementary controls such as a tooltip trigger, a 'copy' icon button or a short text action ('Assign to myself'); in a horizontal/inline layout the label row wraps, so an addon that does not fit beside the label drops under it inside the label column rather than overlapping the control — never insert such controls as siblings outside FormField, which breaks layout.",
+    "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
+    "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
+    "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, `DatePicker range` (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
+    "FIELD IDENTITY / AUTOMATION: FormField also injects a `data-field` — the field's stable MACHINE key, resolved as `field` → `name` → `id` — onto the same semantic focus target the ARIA relationships land on, and onto every option of a RadioGroup/CheckboxGroup. Use it (not a generated id, and never the visible Japanese label) as the selector in e2e tests and screen automation. It reaches NESTED controls too: when the direct child is a layout wrapper (a Flex holding a from/to pair, a 年/月 combo, a value beside a 「不明」 checkbox) cloneElement stops on that wrapper, so FormField also publishes the field through context and each control inside resolves its own key from its OWN `id` — which is what keeps `search_billing_date_from` and `..._to` distinct instead of collapsing onto one shared key. A nested control with NO id of its own deliberately gets nothing: a fabricated key is worse than a missing one, because automation binds to it and breaks silently. Two companion pieces: a `Select`'s trigger also carries `data-value` = the selected CODE (the trigger shows the option LABEL, and Radix keeps the value in an aria-hidden 1x1px native `<select>`), and each RadioGroup/CheckboxGroup option gets a deterministic `{groupId}-{optionValue}` id instead of a per-mount `React.useId()` token. Nothing here is opt-in and no DOM structure changed. A `data-field` written on the control itself always wins.",
+    "NATIVE `name` IS OPT-IN: FormField emits the same key as a real `name` attribute ONLY when the app set `<AppProvider emitFieldNames>`. It is off by default because `name` decides what a native `<form>` submit sends — turning it on globally in a shared package would make every consumer start posting new keys to its backend on an upgrade. Turn it on in apps that need native form posts or a screen-automation contract; a `name` written on the control itself always wins.",
+    "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer submit named values via hidden inputs; Upload appends staged local files to FormData when named. Disabled controls are excluded.",
+    "ERROR TIMING & RECOVERY: pass `error` only after a field is dirty or the form is submitted (don't show errors on pristine mount). The error node renders with `role='alert'` so it is announced live the moment it appears; clearing `error` (e.g. after the user corrects the value or a server round-trip succeeds) removes aria-invalid and restores the helper. On submit, focus the first invalid control and/or render an error summary that links to each field by `id`."
+  ],
+  "useCases": [
+    "Labelling a text `Input` or `Textarea` in an invoice-entry form, showing a red asterisk for required fields and surfacing server validation errors returned from a Laravel FormRequest.",
+    "Wrapping a `Select` or `DatePicker` inside a multi-field filter panel where each control needs a visible label, helper hint (e.g. 'YYYY/MM/DD'), and inline error state.",
+    "Adding a `labelAddon` tooltip button next to a 'Tax rate' label in an accounting form to explain when different rates apply, without breaking the label–control association.",
+    "Enclosing a `DatePicker range` or `TimePicker` in an admin settings page where the field needs a label, a muted hint ('Inclusive of start and end date'), and conditional error display.",
+    "Wrapping a `SearchSelect` or `Select` (with `showSearch`) control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
+    "Providing structured error feedback for a `Cascader` or `TreeSelect` in a multi-level category assignment screen, replacing ad-hoc error rendering with the standardised `role='alert'` pattern."
+  ]
+}

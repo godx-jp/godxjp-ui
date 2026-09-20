@@ -1,0 +1,389 @@
+{
+  "example": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectLabel,\n  SelectSeparator,\n  SelectTrigger,\n  SelectValue,\n} from \"@godxjp/ui/data-entry\";\nimport { Text } from \"@godxjp/ui/general\";\n// as=\"span\" on both: an option row is a phrasing context, so a <div> would be invalid HTML.\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// ── 1. Data-driven (Ant-style) — static list, no search ──────────────────────\nexport function StatusSelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      options={[\n        { value: \"draft\",    label: \"Draft\" },\n        { value: \"sent\",     label: \"Sent\" },\n        { value: \"paid\",     label: \"Paid\" },\n        { value: \"overdue\",  label: \"Overdue\" },\n      ]}\n      placeholder=\"Select status\"\n      name=\"status\"\n      id=\"status\"\n    />\n  );\n}\n\n// ── 2. Data-driven, searchable static list with groups ────────────────────────\nexport function CurrencySelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      showSearch\n      options={[\n        { value: \"JPY\", label: \"Japanese Yen\",  group: \"Asia\" },\n        { value: \"VND\", label: \"Vietnamese Dong\", group: \"Asia\" },\n        { value: \"EUR\", label: \"Euro\",           group: \"Europe\" },\n        { value: \"GBP\", label: \"Pound Sterling\", group: \"Europe\" },\n      ]}\n      placeholder=\"Select currency\"\n      searchPlaceholder=\"Search currencies…\"\n      name=\"currency\"\n    />\n  );\n}\n\n// ── 3. Data-driven, async (loadOptions) ──────────────────────────────────────\nexport function AccountSelect({ value, onChange, selectedLabel }) {\n  async function loadOptions({ query, page }) {\n    const res = await fetch(`/api/accounts?q=${query}&page=${page}`);\n    const json = await res.json();\n    return { options: json.data, hasMore: json.hasMore };\n  }\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      loadOptions={loadOptions}\n      selectedLabel={selectedLabel}\n      placeholder=\"Search accounts…\"\n      renderOption={(opt) => (\n        <Flex as=\"span\" align=\"center\" gap=\"xs\">\n          <Text as=\"span\" tone=\"muted\" mono>\n            {opt.value}\n          </Text>\n          {opt.label}\n        </Flex>\n      )}\n      name=\"account_id\"\n    />\n  );\n}\n\n// ── 4. Compound API — custom trigger content ──────────────────────────────────\nexport function PrioritySelect({ value, onValueChange }) {\n  return (\n    <Select value={value} onValueChange={onValueChange}>\n      <SelectTrigger size=\"sm\" id=\"priority\">\n        <SelectValue placeholder=\"Priority\" />\n      </SelectTrigger>\n      <SelectContent>\n        <SelectGroup>\n          <SelectLabel>Urgency</SelectLabel>\n          <SelectItem value=\"high\">High</SelectItem>\n          <SelectItem value=\"medium\">Medium</SelectItem>\n        </SelectGroup>\n        <SelectSeparator />\n        <SelectItem value=\"low\">Low</SelectItem>\n      </SelectContent>\n    </Select>\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Select",
+  "props": [
+    {
+      "description": "Select several options; value/defaultValue become string arrays. `tags` additionally ACCEPTS what was typed (a value that is not in the list), which is antd's own split between the two. The popup list of either mode renders as `Command split` (rows ruled, list padding 0, gh#699); retune it with --command-item-divider-color / --command-item-divider-width.",
+      "name": "mode",
+      "type": "\"multiple\" | \"tags\""
+    },
+    {
+      "description": "Maximum selected options; selected items remain removable.",
+      "name": "maxCount",
+      "type": "number"
+    },
+    {
+      "description": "Collapse extra selected labels.",
+      "name": "maxTagCount",
+      "type": "number"
+    },
+    {
+      "description": "Static option list. Passing this (or loadOptions) switches Select from the compound API to the data-driven API. An entry may be one of antd's nested GROUPS ({ label, options }) instead of a row; its heading becomes the same `group` a flat row carries. Rows in a foreign shape ({id,name}) go through fieldNames. Each option has { value, label, sublabel?, icon?, group?, disabled? }. `icon` (avatar / flag / lucide node) renders before the label in the rows AND on the trigger once selected. group buckets the option under an optgroup-style heading.",
+      "name": "options",
+      "type": "(SearchSelectOptionProp | { label: string; options: SearchSelectOptionProp[] })[]"
+    },
+    {
+      "description": "Async remote fetcher. Receives { query, page } (1-based). Must return { options, hasMore? }. Implies showSearch=true automatically.",
+      "name": "loadOptions",
+      "type": "(params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>"
+    },
+    {
+      "defaultValue": "true when loadOptions is set or mode is multiple/tags, false otherwise",
+      "description": "Toggle the searchable combobox mode vs the plain listbox. The OBJECT form is antd's and configures the search in one place (passing it also turns search ON). NOTE the argument order: `showSearch.filterOption(input, option)` is antd's, while the long-standing top-level `filterOption(option, query)` keeps this library's; `filterOption: false` keeps every row, for a list the server already filtered.",
+      "name": "showSearch",
+      "type": "boolean | { filterOption?: boolean | ((input, option) => boolean); optionFilterProp?: \"label\" | \"value\" | \"sublabel\"; filterSort?; searchValue?: string; onSearch?: (value: string) => void; autoClearSearchValue?: boolean }"
+    },
+    {
+      "defaultValue": "\"\"",
+      "description": "Controlled selected value (data-driven API). Pass an empty string to represent no selection.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial value (data-driven API). The trigger shows the matching option's label at rest — including in searchable (showSearch) mode — so an edit form pre-filled from server data renders the label, not the placeholder. Selected option is marked by a background tint (no check icon).",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Change handler for the data-driven API. Receives the new value string and the matching option object. The signature follows `mode` / `labelInValue`, and a bare `(value, option) => …` is inferred for each (no annotation needed under `strict`, gh#679): single `string` / `SelectOption | undefined`; `mode=\"multiple\" | \"tags\"` `string[]` / `SelectOption[] | undefined`; `labelInValue` the `{ value, label }` shapes.",
+      "name": "onValueChange",
+      "type": "(value: string, option?: SearchSelectOptionProp) => void"
+    },
+    {
+      "description": "Custom per-option renderer for the dropdown ROWS. Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
+      "name": "renderOption",
+      "type": "(option: SearchSelectOptionProp) => React.ReactNode"
+    },
+    {
+      "description": "Custom renderer for the SELECTED value shown on the TRIGGER (`labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
+      "name": "labelRender",
+      "type": "(selected: { value: string; label: React.ReactNode; option?: SearchSelectOptionProp }) => React.ReactNode"
+    },
+    {
+      "description": "Display label for the current value when its option is not in the loaded page (async). Prevents a flash of the raw id.",
+      "name": "selectedLabel",
+      "type": "string"
+    },
+    {
+      "description": "Leading icon shown on the trigger for the current value when its option isn't loaded yet (async preset) — the trigger counterpart of `selectedLabel`, so an edit form pre-filled from the server shows the avatar/flag at rest.",
+      "name": "selectedIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Placeholder shown in the trigger when no value is selected.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Placeholder inside the search input (combobox mode only).",
+      "name": "searchPlaceholder",
+      "type": "string"
+    },
+    {
+      "description": "Message rendered when the filtered list is empty.",
+      "name": "emptyMessage",
+      "type": "string"
+    },
+    {
+      "description": "Message rendered while loadOptions is resolving.",
+      "name": "loadingMessage",
+      "type": "string"
+    },
+    {
+      "description": "Message rendered when an async loadOptions REJECTS — a distinct state from empty/loading. Defaults to a localized 'Couldn’t load options'. The panel shows this instead of a blank surface or a misleading 'no results'.",
+      "name": "errorMessage",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Show the clear ✕ when a value is selected (data-driven API). Off by default, as antd `allowClear` — a required select is never one click from empty. Pass it (or `allowClear`) on an optional field whose empty state is a valid answer.",
+      "name": "clearable",
+      "type": "boolean"
+    },
+    {
+      "description": "Label for the clear row (data-driven combobox mode).",
+      "name": "clearLabel",
+      "type": "string"
+    },
+    {
+      "description": "Disables the entire select.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Searchable mode only (showSearch/loadOptions). Value is shown (and the clear affordance hidden) but the popover cannot be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract: stays focusable and still submits its value, unlike disabled.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Searchable mode only. Height tier forwarded to the SearchSelect trigger Button. For the compound API use SelectTrigger's own size prop instead (below).",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"full\"",
+      "description": "Trigger width on the data-driven API (options / loadOptions), searchable or not — the same axis SelectTrigger carries on the compound API. `full` is what a form field wants; `auto` is what a filter bar wants, so two Selects share one row instead of stacking (CONSUMER-RULES rule 5); `bounded` holds one width from --control-bounded-width for a trigger whose value varies in length. Never wrap a Select in a fixed-width Flex to get this.",
+      "name": "width",
+      "type": "\"full\" | \"auto\" | \"bounded\""
+    },
+    {
+      "description": "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Searchable mode only. Fires on every open/close attempt — including ones ignored because open is externally pinned — so a controlled consumer stays in sync.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Searchable mode only. Controlled search-box query (uncontrolled by default). Pair with onSearchChange.",
+      "name": "search",
+      "type": "string"
+    },
+    {
+      "description": "Searchable mode only. Fires on every keystroke in the search box.",
+      "name": "onSearchChange",
+      "type": "(query: string) => void"
+    },
+    {
+      "description": "Searchable mode only, static options (ignored with loadOptions, which owns its own server-side filtering). Overrides the default label/value substring filter. Only consulted while the query is non-empty.",
+      "name": "filterOption",
+      "type": "(option: SearchSelectOptionProp, query: string) => boolean"
+    },
+    {
+      "description": "Searchable mode only. Custom error slot, overriding the default errorMessage row. retry() reloads from the first page.",
+      "name": "renderError",
+      "type": "(params: { message: string; retry: () => void }) => React.ReactNode"
+    },
+    {
+      "description": "Searchable mode only. Custom 'load more' affordance appended below the list while another page is available — pairs with (does not replace) the built-in scroll-triggered pagination.",
+      "name": "renderLoadMore",
+      "type": "(params: { hasMore: boolean; loading: boolean; loadMore: () => void }) => React.ReactNode"
+    },
+    {
+      "description": "Form field name. Submits the selected value via a hidden input (data-driven API). Required for uncontrolled form submission.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "HTML id for the trigger element. Wire to a <label htmlFor> for a11y.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Additional CSS classes applied to the trigger.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Test id on the trigger. Option items get ${data-testid}-option-${value} automatically.",
+      "name": "data-testid",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Compound API only. Size variant on the SelectTrigger sub-component.",
+      "name": "SelectTrigger size",
+      "type": "\"sm\" | \"md\""
+    },
+    {
+      "defaultValue": "\"full\"",
+      "description": "Compound API only. `full` fills the field column (inside FormField). `auto` sizes the trigger to its label — use it in a PageContainer `extra` slot, a toolbar or a footer row, where a full-width trigger swallows the row and truncates its siblings.",
+      "name": "SelectTrigger width",
+      "type": "\"full\" | \"auto\""
+    },
+    {
+      "defaultValue": "true",
+      "description": "Compound API only. Set false to omit the built-in chevron disclosure indicator from the DOM entirely (not a CSS hide) — for specialized triggers (icon-only, etc.) that render their own affordance, so no consumer descendant CSS is needed.",
+      "name": "SelectTrigger showIndicator",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `defaultOpen` — uncontrolled initial popup state. The popup opens once every running ancestor animation has finished (a Popover sliding in), so inside a Popover the listbox is placed below its settled trigger exactly like a click-open (gh#708); with nothing animating it is open on the first render. onOpenChange is not called for this initial open.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd `allowClear` — the clear ✕ on the trigger while a value is selected. Default false, as in antd. The object form replaces the ✕ icon and/or its accessible label. Beats `clearable` when both are given.",
+      "name": "allowClear",
+      "type": "boolean | { clearIcon?: React.ReactNode; label?: string }"
+    },
+    {
+      "description": "antd `onClear` — fires after the value is cleared through the ✕.",
+      "name": "onClear",
+      "type": "() => void"
+    },
+    {
+      "description": "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      "name": "notFoundContent",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      "name": "autoClearSearchValue",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `filterSort` — orders what filterOption kept. Static options only; with loadOptions the server owns the order. Never mutates the caller's array.",
+      "name": "filterSort",
+      "type": "(a: SearchSelectOptionProp, b: SearchSelectOptionProp, info: { searchValue: string }) => number"
+    },
+    {
+      "description": "antd `optionRender` — per-option renderer in antd's own (option, { index }) shape. Outranks the older renderOption.",
+      "name": "optionRender",
+      "type": "(option: SearchSelectOptionProp, info: { index: number }) => React.ReactNode"
+    },
+    {
+      "description": "antd `menuItemSelectedIcon` — a decorative mark on the picked row. Off by default: the picked row is already marked by fill + weight, which costs no width.",
+      "name": "menuItemSelectedIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `popupMatchSelectWidth`. true (default) pins the popup to the trigger width, false lets it hug its rows, a number pins it to that many pixels.",
+      "name": "popupMatchSelectWidth",
+      "type": "boolean | number"
+    },
+    {
+      "description": "antd `fieldNames` — read rows in a FOREIGN shape ({id,name,children}) without copying them into a second array first. The same spelling Cascader and TreeSelect take. A foreign row needs a cast at the call site, exactly as theirs does.",
+      "name": "fieldNames",
+      "type": "{ label?: string; value?: string; options?: string; groupLabel?: string; disabled?: string }"
+    },
+    {
+      "description": "antd `labelInValue` — value and onValueChange speak {value,label} instead of a bare string (an array of them in multiple/tags). It earns its place on the async EDIT form: a record holding {value:'52',label:'東京本社'} renders the pick immediately, with no options page loaded and no flash of the raw id.",
+      "name": "labelInValue",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `prefix` — a node pinned BEFORE the value on the trigger (a currency mark, an icon). Deliberately not aria-hidden: for role=combobox the trigger's text is the VALUE, and a prefix that is part of the value belongs in it. The NAME still comes from the label.",
+      "name": "prefix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `suffixIcon` — replaces the trailing chevron; `null` removes the indicator entirely (antd's own replacement for the deprecated showArrow). While a value is clearable the ✕ owns that seat, as in antd.",
+      "name": "suffixIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `placement`, spelled on the LOGICAL inline axis (antd's bottomLeft/topRight cannot mirror for an RTL layout). Absent = below, start-aligned, with collision flipping — what a picker wants.",
+      "name": "placement",
+      "type": "\"bottomStart\" | \"bottomEnd\" | \"topStart\" | \"topEnd\""
+    },
+    {
+      "description": "antd `popupRender` — wrap the popup's own node to add a footer, a 'create' action or a hint line. It must still render originNode: dropping it leaves a popup with no options.",
+      "name": "popupRender",
+      "type": "(originNode: React.ReactNode) => React.ReactNode"
+    },
+    {
+      "description": "antd `listHeight` — the option list's max height in px for THIS instance. It overrides the --select-content-max-height token rather than hard-coding a height, so the token stays the default everywhere else.",
+      "name": "listHeight",
+      "type": "number"
+    },
+    {
+      "description": "antd `onPopupScroll` — fires on the option list's own scroll. It runs BESIDE the built-in infinite scroll (loadOptions paging), never instead of it.",
+      "name": "onPopupScroll",
+      "type": "(event: React.UIEvent<HTMLElement>) => void"
+    },
+    {
+      "description": "antd `optionFilterProp` — which field the default filter matches while searching. Unset matches BOTH label and value (this library's long-standing behaviour); antd's own default is value alone.",
+      "name": "optionFilterProp",
+      "type": "\"label\" | \"value\" | \"sublabel\""
+    },
+    {
+      "description": "antd `tokenSeparators` (multiple/tags) — characters that commit what has been typed. Typing or PASTING 'a,b,c' commits three values in ONE onValueChange. A pasted run is read off the clipboard, so a '\\n' separator works even though a single-line input strips newlines.",
+      "name": "tokenSeparators",
+      "type": "string[]"
+    },
+    {
+      "description": "antd `maxTagTextLength` (multiple/tags) — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value keeps its whole label.",
+      "name": "maxTagTextLength",
+      "type": "number"
+    },
+    {
+      "description": "antd `tagRender` (multiple/tags) — render one chip yourself. Exactly the shape TagInput's tagRender takes. The onClose handed in is the same remover the built-in ✕ calls, so a custom chip cannot end up unremovable; supplying tagRender withdraws the built-in ✕.",
+      "name": "tagRender",
+      "type": "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode"
+    },
+    {
+      "description": "antd `onSelect` / `onDeselect` — fires as one option JOINS or LEAVES the selection, beside onValueChange (which reports the whole value).",
+      "name": "onSelect / onDeselect",
+      "type": "(value: string, option: SearchSelectOptionProp) => void"
+    },
+    {
+      "description": "antd `maxTagPlaceholder` — the node standing in for the values maxTagCount hid. A function receives the omitted values, so '+3 件' or a tooltip listing them is possible.",
+      "name": "maxTagPlaceholder",
+      "type": "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)"
+    }
+  ],
+  "related": [
+    "Segmented — the same choice when the option set is small and worth showing at once. Select hides its options behind a trigger; Segmented lays them out, which reads better for 2-4 mutually exclusive options.",
+    "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
+    "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
+    "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
+    "RadioGroup — use instead of Select when there are 2-4 mutually exclusive choices that must all be visible at once without opening a popover.",
+    "Combobox (if present) — compound cmdk-powered combobox for free-text + suggestion; Select is for strict value lists only."
+  ],
+  "rules": [
+    3,
+    6,
+    23
+  ],
+  "storyPath": "data-entry/Select.stories.tsx",
+  "subParts": [
+    "SelectContent",
+    "SelectGroup",
+    "SelectItem",
+    "SelectLabel",
+    "SelectScrollDownButton",
+    "SelectScrollUpButton",
+    "SelectSeparator",
+    "SelectTrigger",
+    "SelectValue"
+  ],
+  "tagline": "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>.",
+  "usage": [
+    "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
+    "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
+    "READING THE SELECTED CODE FROM THE DOM: the trigger publishes `data-value` = the selected VALUE, alongside the `data-field` key it inherits from FormField. Use that in e2e tests and screen automation — the trigger's visible text is the option LABEL (東京本社), and the only other place the code lives is the aria-hidden, 1px-clipped native <select> react-aria renders so a native submit (and browser autofill) carries the value. `data-value` is absent while nothing is selected, and it tracks uncontrolled picks too.",
+    "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
+    "A Select is safe inside a draggable element (a Kanban card with draggable=true) and inside a `contain: paint` / `transform` app region: the aria-hidden native <select> fallback is held at its static position beside the trigger (position: absolute, 1px clipped), so the browser's drag image stays the card's own box instead of reaching to the region's corner (gh#708). No wrapper or consumer CSS is needed.",
+    "DO name the control with FormField, aria-label, or a <label htmlFor> pointing at the trigger id — all three work. (An earlier version of this entry said htmlFor does NOT name the trigger. That was wrong: the trigger is a <button>, which is a labelable element, so <label for> does name it — src/components/data-entry/__tests__/select-rac.test.tsx pins it on both the old Radix base and the react-aria one, because 17 godx-task files name their Selects exactly that way.) What role=combobox does NOT do is take a name from its own content, so the visible value is the VALUE, never the name — a Select with no label of any kind is anonymous. Wrapping in <FormField label=…> stays the route that also wires helper, error and required. This holds for BOTH APIs; anything set directly on SelectTrigger wins.",
+    "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
+    "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
+    "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
+    "COMPOUND API sub-parts (when NOT using options/loadOptions): Select → SelectTrigger (contains SelectValue) → SelectContent → SelectItem. Optionally wrap items in SelectGroup + SelectLabel for headings, or add SelectSeparator between sections.",
+    "DO reach for open/onOpenChange (searchable mode) to drive the popover from outside — e.g. opening it programmatically after a validation error — and search/onSearchChange to seed or read the query text. Both fall back to internal state when omitted; onOpenChange/onSearchChange still fire either way so a controlled consumer stays in sync.",
+    "DO use readOnly (searchable mode) for a value that must stay visible and submittable but not editable in this view — it differs from disabled: the control stays focusable and its value still submits. allowClear / clearable is ignored while readOnly.",
+    "DO use filterOption (searchable mode, static options) when the default label/value substring match isn't right — e.g. filtering by a hidden code field. It is NOT consulted when loadOptions is set (that fetcher owns its own filtering).",
+    "DO use renderError + renderLoadMore (searchable mode) to replace the default error row with a branded retry affordance, or to pair a manual 'load more' button with (not instead of) the built-in scroll-triggered pagination.",
+    "DO set SelectTrigger showIndicator={false} (compound API) on a specialized trigger — icon-only, or one with its own affordance — instead of hiding [data-slot=select-chevron] with consumer CSS."
+  ],
+  "useCases": [
+    "Status filter on an invoice list — pass options=[{value:'draft',label:'Draft'},{value:'paid',label:'Paid'}] with onChange to drive a query param; no search needed so omit showSearch.",
+    "Legal-entity switcher — static options list with showSearch=true for client-side filtering when there are many entities; use selectedLabel to show the entity name before the full list loads.",
+    "Account category picker backed by an API — pass loadOptions to stream pages of accounts as the user types; use renderOption to show account code + name side by side; pass selectedLabel so the trigger shows the name on first render.",
+    "Grouped currency picker — set option.group='Asia' / 'Europe' on each option; the plain (non-search) data-driven mode renders SelectGroup headings automatically.",
+    "Form field in an accounting entry — use the compound API when the trigger must show a currency flag icon alongside the SelectValue; wire SelectTrigger size='sm' for dense table rows.",
+    "Required department select in a HR form — leave allowClear off (the default) so the user cannot clear the field once set; pair with name='department_id' for Inertia useForm submission. An OPTIONAL filter select passes allowClear so the user can return to 'no filter'.",
+    "Async account picker whose API can fail — pass loadOptions plus errorMessage so a rejected fetch shows a clear error affordance in the panel (not a blank surface or a false 'no results'); the loading and empty states are handled automatically."
+  ]
+}

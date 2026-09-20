@@ -1,0 +1,90 @@
+{
+  "docPath": "docs/data-entry/time-range-picker.tsx",
+  "example": "import { TimeRangePicker } from \"@godxjp/ui/data-entry\";\n<TimeRangePicker aria-label=\"Shift\" defaultValue={[\"09:00\", \"18:00\"]} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "TimeRangePicker",
+  "props": [
+    {
+      "description": "Controlled canonical times.",
+      "name": "value",
+      "type": "[string,string]"
+    },
+    {
+      "description": "Uncontrolled initial range.",
+      "name": "defaultValue",
+      "type": "[string,string]"
+    },
+    {
+      "description": "Reports edited range.",
+      "name": "onValueChange",
+      "type": "(value: [string,string]) => void"
+    },
+    {
+      "description": "Sort times automatically; false allows overnight ranges.",
+      "name": "order",
+      "type": "boolean"
+    },
+    {
+      "description": "Permitted empty endpoints, default [true,true].",
+      "name": "allowEmpty",
+      "type": "[boolean,boolean]"
+    },
+    {
+      "description": "Native names are name_from and name_to.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "TimePicker display format.",
+      "name": "format",
+      "type": "string"
+    },
+    {
+      "description": "Shared time constraints.",
+      "name": "disabledTime",
+      "type": "TimePickerDisabledTimeProp"
+    },
+    {
+      "description": "Enable second precision.",
+      "name": "showSeconds",
+      "type": "boolean"
+    },
+    {
+      "description": "Minute column step.",
+      "name": "minuteStep",
+      "type": "number"
+    },
+    {
+      "description": "Hour column step.",
+      "name": "hourStep",
+      "type": "number"
+    },
+    {
+      "description": "Second column step.",
+      "name": "secondStep",
+      "type": "number"
+    },
+    {
+      "description": "Permit clear only for an endpoint also allowed empty.",
+      "name": "allowClear",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "TimePicker",
+    "DatePicker"
+  ],
+  "rules": [
+    9
+  ],
+  "storyPath": "data-entry/time-range-picker.tsx",
+  "tagline": "Ordered time range with optional endpoints and canonical native fields.",
+  "usage": [
+    "Use for a start/end time pair. Set order=false for overnight intervals.",
+    "Each endpoint follows the one-trailing-icon rule; allowEmpty=false suppresses its clear action."
+  ],
+  "useCases": [
+    "Shift scheduling and reception hours."
+  ]
+}

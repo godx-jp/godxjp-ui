@@ -1,0 +1,58 @@
+{
+  "example": "import { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>\n  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/query",
+  "name": "InfiniteQueryState",
+  "props": [
+    {
+      "description": "The useInfiniteQuery result.",
+      "name": "query",
+      "required": true,
+      "type": "UseInfiniteQueryResult"
+    },
+    {
+      "description": "Shown while initial load pends.",
+      "name": "skeleton",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Reduce pages to a flat list (use flattenItemPages helper).",
+      "name": "flatten",
+      "required": true,
+      "type": "(data) => TFlat"
+    },
+    {
+      "description": "Render with flat data + { fetchNextPage, hasNextPage, isFetchingNextPage }.",
+      "name": "children",
+      "required": true,
+      "type": "(flat, helpers) => ReactNode"
+    }
+  ],
+  "related": [
+    "DataState — use instead when the query is a plain `useQuery` (not infinite). Identical lifecycle surface (skeleton/empty/error/children) but expects a single page of data, not accumulated pages. Pick DataState for any paginated table where only one page is visible at a time.",
+    "DataTable — use for tabular data with server-side pagination where pages are swapped, not appended. DataTable manages its own pagination UI (cursor buttons); InfiniteQueryState is for append-only / infinite-scroll patterns.",
+    "SkeletonTable / SkeletonStat — pass as the `skeleton` prop to InfiniteQueryState; do not render them manually alongside InfiniteQueryState since the component controls when skeleton is visible.",
+    "ButtonRefetch — companion component for the page header refresh action wired to `query.refetch()`. Use alongside InfiniteQueryState when you want an explicit refresh control in addition to the built-in load-more footer."
+  ],
+  "rules": [],
+  "storyPath": "query/InfiniteQueryState.stories.tsx",
+  "tagline": "useInfiniteQuery widget — flatten pages, skeleton/empty/error, load-more footer. Import from @godxjp/ui/query.",
+  "usage": [
+    "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",
+    "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
+    "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
+    "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; 401 routes to `onAuthError`, and raw backend/token text is never rendered.",
+    "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
+    "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
+    "DON'T: Confuse the two generics: `TPage` is the raw page shape from the API, `TFlat` is what `flatten` returns (usually `TItem[]`). The `children` render-prop receives `TFlat`, not `TPage`. Pass `isEmpty` if `TFlat` is not a plain array so empty detection works correctly."
+  ],
+  "useCases": [
+    "Activity / audit-log feed that accumulates pages as the user scrolls down or clicks 'Load more' — the default footer button handles `fetchNextPage` automatically.",
+    "Invoice or transaction list with cursor-based pagination where total count is unknown and pages are appended rather than replaced (replacing pages is DataTable's job).",
+    "Notification inbox, comment thread, or journal entry list where new items are appended at the bottom and the user never pages backwards.",
+    "Search results with a 'Show more' button rather than numbered pages — pass `showLoadMore={true}` (default) and hide the button once `hasNextPage` is false without any extra state.",
+    "Admin dashboard 'recent events' widget backed by `useInfiniteQuery` — use `SkeletonTable` as `skeleton` and `<EmptyState title='No events yet' />` as `empty` so every state is handled.",
+    "Infinite-scroll implementation: receive the `helpers` argument in `children` (`{ fetchNextPage, hasNextPage, isFetchingNextPage }`) to wire a scroll sentinel (Intersection Observer) instead of the built-in button, while still benefiting from error/skeleton/empty lifecycle handling."
+  ]
+}

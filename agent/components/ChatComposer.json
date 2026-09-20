@@ -1,0 +1,160 @@
+{
+  "docPath": "data-entry/chat-composer.tsx",
+  "example": "import { ChatComposer } from \"@godxjp/ui/data-entry\";\n\nconst [draft, setDraft] = useState(\"\");\nconst [streaming, setStreaming] = useState(false);\n\n<ChatComposer\n  value={draft}\n  onValueChange={setDraft}\n  onSubmit={(text) => { send(text); setDraft(\"\"); }}\n  loading={streaming}\n  onCancel={() => setStreaming(false)}\n  placeholder={t(\"chat.placeholder\")}\n  footer={t(\"dataEntry.chatComposer.hintEnter\")}\n/>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "ChatComposer",
+  "props": [
+    {
+      "description": "Controlled draft text. Pair with onValueChange or the box freezes.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial draft text.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Draft-text change handler; fires on every keystroke, including during an IME conversion.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Send the draft. Never fires for empty or whitespace-only text (unless allowEmptySubmit, which passes \"\"), nor while loading/disabled/readOnly.",
+      "name": "onSubmit",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Stop the in-flight response. Only reachable while loading.",
+      "name": "onCancel",
+      "type": "() => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "A response is streaming: the trailing action BECOMES cancel. Send and cancel never render together.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"enter\"",
+      "description": "\"enter\": Enter sends, Shift+Enter breaks the line. \"shiftEnter\": the inverse, for long deliberate drafts. \"modEnter\" (library extension; antd X Sender has only the first two): ⌘+Enter on Apple platforms, Ctrl+Enter elsewhere sends, while Enter and Shift+Enter both break the line — the record-comment convention (GitHub, Jira, Linear).",
+      "name": "submitType",
+      "type": "\"enter\" | \"shiftEnter\" | \"modEnter\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Let an empty or whitespace-only draft be sent when header/footer carry payload of their own (a status change on a record). The send button stays enabled and the button and keyboard submit call onSubmit(\"\"). Still blocked while loading/disabled/readOnly.",
+      "name": "allowEmptySubmit",
+      "type": "boolean"
+    },
+    {
+      "description": "Empty-state text of the draft box — pass it through t() at the call site.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disable the composer and every action.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Show the draft without allowing an edit; still focusable.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Slot ABOVE the draft row — attachments, a reply-to banner, a model picker.",
+      "name": "header",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Slot at the inline START of the draft row — an attach Button, an Avatar.",
+      "name": "prefix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Slot BELOW the draft row — a hint line, a token counter.",
+      "name": "footer",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Extra trailing actions, rendered BEFORE the send/cancel action.",
+      "name": "actions",
+      "type": "React.ReactNode"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Height tier on the shared --control-height ladder; moves both auto-grow bounds together.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Hard ceiling on the draft length, forwarded to the textarea.",
+      "name": "maxLength",
+      "type": "number"
+    },
+    {
+      "description": "Validation state the frame paints. error also reports aria-invalid (colour alone fails WCAG 1.4.1).",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "Accessible name override for the send action (localized default otherwise).",
+      "name": "submitLabel",
+      "type": "string"
+    },
+    {
+      "description": "Accessible name override for the cancel action (localized default otherwise).",
+      "name": "cancelLabel",
+      "type": "string"
+    },
+    {
+      "description": "Keydown on the draft box — how ChatSuggestion drives its list. A handler that calls preventDefault() owns the key, and the composer will not treat it as a send.",
+      "name": "onKeyDown",
+      "type": "React.KeyboardEventHandler<HTMLTextAreaElement>"
+    },
+    {
+      "description": "Native form name, forwarded to the textarea.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "DOM id of the textarea (the semantic focus target FormField labels).",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Textarea — the primitive underneath. Use it directly for an ordinary multi-line form field with no send action.",
+    "ChatSuggestion — wraps ChatComposer to add trigger-character (/) autocomplete.",
+    "ChatBubbleList — the feed the composer sends into.",
+    "SearchInput — a single-line query field; a composer is multi-line and holds a draft."
+  ],
+  "rules": [
+    2,
+    6,
+    43,
+    45
+  ],
+  "storyPath": "data-entry/ChatComposer.stories.tsx",
+  "tagline": "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion.",
+  "usage": [
+    "DO pair a controlled `value` with `onValueChange` — a controlled value with no synchronised handler is the classic frozen-input bug, and it freezes the whole conversation.",
+    "DO wrap it in FormField when the composer is a labelled field; the label/helper/error contract lands on the <textarea>, which is the semantic focus target (ref goes there too).",
+    "DON'T hand-roll Enter-to-send. An IME conversion (ja/vi) fires a real Enter to ACCEPT a candidate; ChatComposer already guards compositionstart/compositionend, and skipping that guard makes Japanese and Vietnamese input impossible.",
+    "DON'T render your own stop button beside the send button — set `loading` and the trailing action becomes cancel. Exactly one trailing action exists at a time (the picker trailing-action discipline).",
+    "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter') / 'hintShiftEnter') when you flip `submitType` — the keystroke contract is invisible otherwise. For submitType=\"modEnter\" use t('dataEntry.chatComposer.hintModEnter', { modifier: isApplePlatform() ? '⌘' : 'Ctrl' }) with isApplePlatform from @godxjp/ui/lib/utils — the same platform test the composer uses to pick metaKey vs ctrlKey.",
+    "DO set `allowEmptySubmit` (not a hidden fake draft) when the composer also submits field changes from `header`/`footer`; your onSubmit receives \"\" and decides whether anything changed.",
+    "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme."
+  ],
+  "useCases": [
+    "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
+    "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
+    "A long-form reply box where Enter must break the line: submitType=\"shiftEnter\".",
+    "A comment bar on an issue/record where Enter breaks the line and ⌘/Ctrl+Enter posts, and a status change may be posted without text: submitType=\"modEnter\" + allowEmptySubmit.",
+    "A streaming answer the user can stop: loading + onCancel."
+  ]
+}

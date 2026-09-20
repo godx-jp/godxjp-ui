@@ -1,0 +1,102 @@
+{
+  "example": "import { ToggleGroup, ToggleGroupItem } from \"@godxjp/ui/data-entry\";\n\n// size/variant are set ONCE on the group and reach every item.\n<ToggleGroup type=\"single\" size=\"lg\" variant=\"outline\" defaultValue=\"left\" aria-label=\"Alignment\">\n  <ToggleGroupItem value=\"left\">Left</ToggleGroupItem>\n  <ToggleGroupItem value=\"center\">Center</ToggleGroupItem>\n</ToggleGroup>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "ToggleGroup",
+  "props": [
+    {
+      "description": "Selection mode.",
+      "name": "type",
+      "required": true,
+      "type": "\"single\" | \"multiple\""
+    },
+    {
+      "description": "Controlled selected value(s).",
+      "name": "value",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Uncontrolled initial value(s).",
+      "name": "defaultValue",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Selection callback.",
+      "name": "onValueChange",
+      "type": "(value: string | string[]) => void"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all. `soft` (gh#734) is the chip fill: use it for a tag-filter panel, where `default`/`outline` leave the unselected chips reading as transparent.",
+      "name": "variant",
+      "type": "\"default\" | \"outline\" | \"soft\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Corner shape, PROVIDED TO EVERY ITEM via context exactly as `variant`/`size` are — a chip row is a row of pills, so the decision belongs to the row (gh#734). An explicit `shape` on an item still wins. Same three values and same radius tokens as Button and Badge.",
+      "name": "shape",
+      "type": "\"default\" | \"pill\" | \"sharp\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (xs 24px · sm 28px · md 32px · lg 36px). Pick the step the ROW already has: xs is the one that fits a 24px-dense row (gh#716).",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Disables the whole group; individual items also accept `disabled`.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "May the group end up with NOTHING selected? Omitted it may — pressing the selected item again clears it and reports `\"\"`, which is what a tag-filter row wants. THIS PROP DECIDES THE ARIA ROLE of a type=single group (gh#744), because emptiness is the one thing the two candidate roles disagree about: ARIA has no press-again-to-deselect for a radio, so a radiogroup the user just emptied is a state a screen reader cannot read out. Omitted → `role=\"group\"` + `aria-pressed` per item (no `aria-orientation`, which `group` does not take), arrow keys move FOCUS and Space/Enter presses. Set → `role=\"radiogroup\"` + `role=\"radio\"` / `aria-checked`, the selected item is the single tab stop, arrow keys move the SELECTION as APG requires, and pressing the selected item again keeps it. The name is React Aria's own (`useToggleGroupState`); neither antd nor Radix names the capability, and Radix's own single group emits radio roles while still allowing empty — the divergence is recorded in docs/DESIGN-AUTHORITY.md. On type=multiple it only keeps the last item selected; the roles do not move.",
+      "name": "disallowEmptySelection",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Let the row break onto further lines instead of running past its rail (gh#741) — the SAME name, boolean shape and `data-wrap` attribute `Flex` carries. OPT-IN, and the same default for every `variant`, both decided by measurement: a twelve-chip soft/pill xs row in a 320px rail is scrollWidth 644 > clientWidth 320 and 171.5px tall without it (chips squeezed to min-content, labels broken over up to seven lines) and scrollWidth 320 = clientWidth 320, 108px, 4 lines with it — while forcing wrap on all 18 groups of the docs page changed NONE of the 17 that already fit, at a 320px and a 1358px rail. So a default of true could only reflow rows that overflow today, silently, on an upgrade; and `variant=\"soft\"` gets no different default because forcing wrap changed nothing across default/outline/soft either — paint is not the axis that decides, content width against the rail is. The wrapped lines keep the group's single `gap`, so both axes measure the same 4px, and `flex-wrap` reorders nothing: arrow keys still walk the items in DOM order across lines, in LTR and in RTL.",
+      "name": "wrap",
+      "type": "boolean"
+    },
+    {
+      "description": "The counter-pill vocabulary is available PER ITEM, because variant/size are a group decision but the number is per-item data. Same vocabulary and same rendering as Toggle and Button: Intl.NumberFormat on the active locale, `{overflowCount}+` above the cap, and the count folded into that item's own accessible name. This is the faceted filter chip row (Open 42 / Closed 118) and the reaction row.",
+      "name": "ToggleGroupItem count / overflowCount / showZero / countLabel",
+      "type": "number | number | boolean | string"
+    }
+  ],
+  "related": [
+    "Segmented — the single-select sibling with a shared connected track. ToggleGroup is the generic multi/single toggle set; Segmented is the one-of-N control.",
+    "Toggle",
+    "RadioGroup"
+  ],
+  "rules": [
+    3,
+    13
+  ],
+  "storyPath": "data-entry/ToggleGroup.stories.tsx",
+  "subParts": [
+    "ToggleGroupItem"
+  ],
+  "tagline": "Single or multiple toggle selection on react-aria-components. On type=single the ARIA role follows `disallowEmptySelection`: omitted it is a `group` of `aria-pressed` buttons that MAY be all-off, set it is a `radiogroup` of `radio`s (gh#744).",
+  "usage": [
+    "DO choose type='single' for mutually exclusive toolbar modes.",
+    "DO add `disallowEmptySelection` to a type='single' group that is a SETTING — a view density, a sort order, a fiscal period. It is what makes the group a real radiogroup (role, aria-checked, one tab stop, arrow keys that move the selection) and it stops the second press from clearing the value, so you no longer need the `onValueChange={(v) => { if (v) setX(v) }}` guard that used to paper over it (gh#744).",
+    "DON'T add `disallowEmptySelection` to a FILTER row. Clearing a chip by pressing it again is what the user expects there, and without the prop the group says so honestly: `role=\"group\"` + `aria-pressed`, a set of buttons that may all be off.",
+    "DO choose type='multiple' for independent formatting toggles.",
+    "DO set `variant`/`size`/`shape` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
+    "DO build a tag-filter panel as `<ToggleGroup type=\"multiple\" variant=\"soft\" shape=\"pill\" size=\"xs\">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).",
+    "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
+    "DO add `wrap` to a TAG FILTER ROW — `<ToggleGroup type=\"multiple\" variant=\"soft\" shape=\"pill\" size=\"xs\" wrap>` is the whole folder-tag panel however many tags the folder has. This is what replaces the hand-built `<ul>` of individual `<Toggle>`s a row wider than its rail used to force (gh#741): that list loses exactly what the group owns — the shared `variant`/`size`/`shape` context, ONE `value`/`onValueChange`, and the group's arrow-key traversal, which keeps walking the chips in DOM order across the wrapped lines.",
+    "DON'T set `wrap` on a 3–4 item segmented group. Measured at a 320px rail it is one 32px line either way, so the prop buys nothing and only adds a way for a toolbar to reflow.",
+    "DON'T pass size='default' — it is not a member of the `xs | sm | md | lg` union. Omit `size` for the md default.",
+    "DO give the group an accessible name (`aria-label`) — it renders a `group` of toggle buttons (single, the default), a `radiogroup` (single + `disallowEmptySelection`) or a `toolbar` of toggle buttons (multiple), and all three need a name."
+  ],
+  "useCases": [
+    "Text alignment selector",
+    "Formatting toolbar",
+    "View density switcher",
+    "Tag filter row (wrap)"
+  ]
+}

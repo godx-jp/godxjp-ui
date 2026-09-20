@@ -1,0 +1,92 @@
+{
+  "example": "import { Rating } from \"@godxjp/ui/data-entry\";\n\n<Rating name=\"score\" defaultValue={4} onValueChange={(v) => console.log(v)} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Rating",
+  "props": [
+    {
+      "defaultValue": "5",
+      "description": "antd `count` — number of symbols. This library's older `max` still works; `count` wins when both are given.",
+      "name": "count",
+      "type": "number"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd `allowHalf` — a symbol can be half-filled, so the scale steps by 0.5 (keyboard included). It adds a hit area per symbol WITHOUT doubling the radios: a half is a position inside a step, and ten radios announced for a five-star scale would misstate the scale.",
+      "name": "allowHalf",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd `allowClear` — choosing the chosen value clears it to 0. antd defaults this ON; it is OFF here, because a rating in a business form is usually required and a silent reset on a second click reads as a lost answer.",
+      "name": "allowClear",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `character` — what a symbol IS. A node for every symbol, or a function of the 1-based index for a scale whose symbols differ (A/B/C, 松竹梅).",
+      "name": "character",
+      "type": "React.ReactNode | ((index: number) => React.ReactNode)"
+    },
+    {
+      "description": "antd `tooltips` — a label per step, in order. Folded into each symbol's ACCESSIBLE NAME rather than shown only on hover: a `title` is invisible to a keyboard and to touch, and saying what '3 of 5' means is the whole point of the prop.",
+      "name": "tooltips",
+      "type": "readonly string[]"
+    },
+    {
+      "description": "Controlled rating (1..max).",
+      "name": "value",
+      "type": "number"
+    },
+    {
+      "defaultValue": "0",
+      "description": "Uncontrolled initial rating.",
+      "name": "defaultValue",
+      "type": "number"
+    },
+    {
+      "description": "Rating callback.",
+      "name": "onValueChange",
+      "type": "(value: number) => void"
+    },
+    {
+      "defaultValue": "5",
+      "description": "Number of stars.",
+      "name": "max",
+      "type": "number"
+    },
+    {
+      "description": "Display-only (e.g. an average score).",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Hidden input name for native form submission.",
+      "name": "name",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "RadioGroup (non-star single choice)",
+    "Slider (continuous 0-100 value)"
+  ],
+  "rules": [
+    3,
+    6,
+    23
+  ],
+  "storyPath": "data-entry/Rating.stories.tsx",
+  "tagline": "Star-rating input (radiogroup) — controlled via value/onValueChange, form-submittable via name, supports readOnly display.",
+  "usage": [
+    "DO theme the stars with `--rating-star-filled-color` (default `var(--warning)`) and `--rating-star-empty-color` (default `var(--muted-foreground)`, at `--rating-star-empty-alpha` 0.45) — HSL components, set on :root or a scoped [data-tenant] (gh#694). NEVER override `.ui-rating-star-filled`: it is an internal class. Unset, the stars paint exactly as before.",
+    "DO use readOnly to DISPLAY a score (e.g. product average); interactive (default) for collecting a rating.",
+    "DO pass `name` to submit the value in a plain form.",
+    "DON'T render raw star icons for input — this handles keyboard (radiogroup), hover preview, and a11y.",
+    "NOTE a long scale WRAPS rather than overflowing. At `max={10}` the row needs ~276px of hit area and a 320px viewport offers ~212 inside a card, so the stars fall onto a second line instead of being painted where no one can reach them. Don't add `flex-nowrap` or a fixed width to force one line; use a smaller `max` if a single row matters."
+  ],
+  "useCases": [
+    "Product / vendor review input",
+    "Display an average score (readOnly)",
+    "Feedback / CSAT survey",
+    "Priority or quality scoring in admin"
+  ]
+}

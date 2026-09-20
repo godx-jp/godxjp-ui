@@ -1,0 +1,57 @@
+{
+  "example": "import { Prose } from \"@godxjp/ui/data-display\";\nimport Markdown from \"react-markdown\";\nimport remarkGfm from \"remark-gfm\";\n\n<Prose size=\"sm\">\n  <Markdown remarkPlugins={[remarkGfm]}>{issue.description}</Markdown>\n</Prose>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Prose",
+  "props": [
+    {
+      "defaultValue": "\"md\"",
+      "description": "Body size. `md` is the page body size (a wiki page); `sm` is the compact step (an issue description, a comment).",
+      "name": "size",
+      "type": "\"sm\" | \"md\""
+    },
+    {
+      "defaultValue": "\"fit\"",
+      "description": "`fit` scales images to the column; `original` shows them at their authored size and the container scrolls horizontally.",
+      "name": "imageSize",
+      "type": "\"fit\" | \"original\""
+    },
+    {
+      "description": "The rendered content.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Extra classes on the container.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "CodeBlock - a standalone block of preformatted text; Prose delegates its `pre` to the same tokens.",
+    "Text / Heading - UI copy, not a document.",
+    "LegalDocumentShell - a whole legal document with its own table of contents and section anchors; use Prose for the body of arbitrary rendered content.",
+    "ScrollArea - if a very long document needs its own scroll viewport, wrap Prose in ScrollArea."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Prose.stories.tsx",
+  "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from.",
+  "usage": [
+    "DO import from `@godxjp/ui/data-display`: `import { Prose } from \"@godxjp/ui/data-display\";`",
+    "DO wrap the OUTPUT of your Markdown pipeline (react-markdown + remark-gfm + rehype-sanitize), a sanitised CMS string via `dangerouslySetInnerHTML`, or plain JSX. Prose styles descendants: h1..h4, p, ul/ol/li, blockquote, code, pre, table/th/td, a, img, hr.",
+    "DO keep soft line breaks the pipeline's job (remark-breaks or the renderer's `breaks` option). Prose does not turn single newlines into `<br>`; it is typography, not parsing.",
+    "DON'T restate the heading scale, table cell measures or list rhythm with `[&_h1]:text-lg [&_td]:border …` utilities: they copy token values and never follow a retune. Prose reads --heading-h1..h4, --table-cell-padding-* and --prose-* directly.",
+    "DO tune the link through --prose-link-color and --prose-link-decoration-line (gh#717). The ink defaults to hsl(var(--primary)) resolved at the anchor, so a scoped [data-tenant] re-tint reaches it; the resting underline defaults to `underline` and is a SEPARATE knob from --text-link-decoration-line, because Prose is running text and there the underline is a WCAG 1.4.1 requirement, not a taste.",
+    "DO style a state your own renderer knows about by marking the anchor and selecting it: `a[data-unresolved]` (a wiki link whose target does not exist yet), then re-declare --prose-link-color inside that selector. Prose writes data-* on its ROOT ONLY — never on a descendant — so every data-* on an `a` inside it is yours and stays selectable. That is a promise held by a test (prose-link-717.test.tsx), not a coincidence; there is no prop for it, the same way `TableRow data-expanded-row` is an attribute rather than an API.",
+    "DON'T sanitise inside Prose: it renders whatever HTML it is given. Sanitise before (rehype-sanitize, or the server).",
+    "DON'T use Prose for UI text (labels, descriptions, empty states): those are Text / Heading. Prose is for a document."
+  ],
+  "useCases": [
+    "A wiki page rendered from Markdown, at the page body size.",
+    "A wiki page whose renderer marks links it knows something extra about: `<a data-unresolved=\"true\">` for a target nobody has written yet, re-declaring --prose-link-color as --text-error inside `a[data-unresolved]` so it reads differently from a link that resolves.",
+    "An issue description or a comment in a tracker, `size=\"sm\"`.",
+    "A bug-report intake inbox that renders the report body (description, steps, environment table) sent by a browser extension.",
+    "A CMS article body delivered as sanitised HTML.",
+    "An email preview rendered from stored HTML."
+  ]
+}

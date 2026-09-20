@@ -1,0 +1,827 @@
+[
+  {
+    "group": "data-entry",
+    "name": "inertiaUpload",
+    "tagline": "Bridge Inertia multipart visits to Upload progress, cancellation, retry and error recovery."
+  },
+  {
+    "group": "data-entry",
+    "name": "FormRoot",
+    "tagline": "Client or server-adapted forms with shared layout, validation, submission, reset and error recovery."
+  },
+  {
+    "group": "data-entry",
+    "name": "FormFieldControl",
+    "tagline": "Bind a typed field to RHF or a server adapter, with shared FormField presentation and validation."
+  },
+  {
+    "group": "data-entry",
+    "name": "FormFieldArray",
+    "tagline": "Dynamic typed field collections with stable keys, nested validation and append/remove/reorder operations."
+  },
+  {
+    "group": "data-entry",
+    "name": "useZodForm",
+    "tagline": "Create a typed React Hook Form instance with Zod validation; reuse reset, setValue, trigger, formState and field errors."
+  },
+  {
+    "group": "data-display",
+    "name": "CardBar",
+    "tagline": "Inline card toolbar with scoped inset and divider edges."
+  },
+  {
+    "group": "data-entry",
+    "name": "TimeRangePicker",
+    "tagline": "Ordered time range with optional endpoints and canonical native fields."
+  },
+  {
+    "group": "general",
+    "name": "VisuallyHidden",
+    "tagline": "Accessible supporting text without a visible layout box."
+  },
+  {
+    "group": "data-display",
+    "name": "RangeTimeline",
+    "tagline": "Horizontal intervals with token-owned geometry and optional endpoint editing."
+  },
+  {
+    "group": "layout",
+    "name": "PageContainer",
+    "tagline": "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb)."
+  },
+  {
+    "group": "layout",
+    "name": "Flex",
+    "tagline": "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls."
+  },
+  {
+    "group": "layout",
+    "name": "ResponsiveGrid",
+    "tagline": "Container-responsive card grid with configurable base, sm, md and lg columns."
+  },
+  {
+    "group": "layout",
+    "name": "AppShell",
+    "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer."
+  },
+  {
+    "group": "layout",
+    "name": "AuthShell",
+    "tagline": "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density."
+  },
+  {
+    "group": "layout",
+    "name": "CenteredShell",
+    "tagline": "Authenticated, no-sidebar, centred-column page shell (hosted-ID My Page / account / standalone settings) — padded topbar with real actions + a width-tiered centred column, zero custom CSS."
+  },
+  {
+    "group": "layout",
+    "name": "MobileShell",
+    "tagline": "Handheld app shell (gh#354) — status band · app bar · the ONE scroll region · sticky action bar · bottom tab bar, with device safe-area insets and a document that never scrolls."
+  },
+  {
+    "group": "layout",
+    "name": "Sidebar",
+    "tagline": "Data-driven vertical nav rail with collapsible submenu groups and a collapsed icon-only mode — never build nav manually with raw buttons."
+  },
+  {
+    "group": "layout",
+    "name": "Topbar",
+    "tagline": "A PURE SLOT bar for the app shell — positions three clusters (start / center / end) and owns ONLY the bar layout. It bakes NO chrome: no product switcher, no search box, no notification bell, no language picker. The CONSUMER composes those from real primitives and drops them into a slot; whether a control is icon-only / labelled / bordered is that control's own config, never the shell's."
+  },
+  {
+    "group": "layout",
+    "name": "TopbarItem",
+    "tagline": "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill."
+  },
+  {
+    "group": "layout",
+    "name": "NavList",
+    "tagline": "Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current=\"page\"`) in a `<nav>` landmark, without the AppShell grid the rail depends on."
+  },
+  {
+    "group": "layout",
+    "name": "MasterDetail",
+    "tagline": "Responsive master-detail composition: a fluid list beside a token-owned 300px/320px fixed rail, with a themeable collapse threshold. `rail` picks which region is fixed — default `detail` (the canonical 1fr/320px list + detail rail); `master` for a leading navigator rail."
+  },
+  {
+    "group": "layout",
+    "name": "DraggablePanel",
+    "tagline": "A floating surface the person using it can MOVE — drag it by the title-bar handle, or focus the handle and nudge it with the arrow keys. Bounded to the viewport, position reported through onPositionChange and never stored by the library."
+  },
+  {
+    "group": "layout",
+    "name": "SplitPane",
+    "tagline": "Two-column layout with a main content area and a fixed-width aside panel."
+  },
+  {
+    "group": "layout",
+    "name": "ErrorSurface",
+    "tagline": "Package-owned semantic exception surface for 400 / 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: \"application\" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); \"system\" owns the whole page via CenteredShell align=\"center\" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots."
+  },
+  {
+    "group": "layout",
+    "name": "LegalDocumentShell",
+    "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned."
+  },
+  {
+    "group": "layout",
+    "name": "Breadcrumb",
+    "tagline": "Standalone breadcrumb nav rendering an ordered trail of page segments."
+  },
+  {
+    "group": "general",
+    "name": "FloatButton",
+    "tagline": "Ant Design's corner action, ported whole — a control pinned to the viewport above the page, with FloatButton.Group (a stack, or a menu behind one trigger) and FloatButton.BackTop. The corner insets are tokens, so a service moves the mark without a media query."
+  },
+  {
+    "group": "general",
+    "name": "Button",
+    "tagline": "Core button with variant + size presets, built on cva and Radix Slot (asChild)."
+  },
+  {
+    "group": "general",
+    "name": "Text",
+    "tagline": "Typographic primitive — use INSTEAD of a hand-rolled `<span className=\"text-[13px] font-medium text-muted-foreground\">`. Size is a type-scale step (never px); tone/weight are tokens."
+  },
+  {
+    "group": "general",
+    "name": "Heading",
+    "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>."
+  },
+  {
+    "group": "general",
+    "name": "Typography",
+    "tagline": "antd's prose container — a plain <article> that Title / Paragraph / Text / Link sit inside, and the compound root so `<Typography.Text>` from an antd codebase compiles here unchanged."
+  },
+  {
+    "group": "general",
+    "name": "Title",
+    "tagline": "antd Typography.Title — a heading with five levels and the antd block behaviours (copyable, editable, ellipsis, the decorations). A SIBLING of `Heading`, which is this library's own four-level heading and is unchanged."
+  },
+  {
+    "group": "general",
+    "name": "Paragraph",
+    "tagline": "antd Typography.Paragraph — a block of body text with the full ellipsis contract (rows + an expand control) and the antd block behaviours. Renders a <div>, matching antd."
+  },
+  {
+    "group": "general",
+    "name": "Link",
+    "tagline": "antd Typography.Link — an anchor that already carries this library's inline link affordance (underline on hover AND on keyboard focus), plus antd's rel guard for target=\"_blank\"."
+  },
+  {
+    "group": "general",
+    "name": "Logo",
+    "tagline": "The product brand mark — a glyph/identity box, or (with `wordmark`) the full mark + wordmark LOCKUP. Tokenised size/radius/type/gap, and `size` scales every branch (boxed glyph, identity mark, lockup); the boxed fill reads --primary, while the GoDX identity mark and wordmark read the --brand IDENTITY role instead, so an action-colour re-theme never recolours the brand."
+  },
+  {
+    "group": "general",
+    "name": "Reveal",
+    "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes."
+  },
+  {
+    "group": "general",
+    "name": "Activity",
+    "tagline": "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live)."
+  },
+  {
+    "group": "general",
+    "name": "Icon",
+    "tagline": "A glyph on the --icon-size-* scale, and the ONLY supported way to render a standalone one. A lucide component ships width=\"24\" height=\"24\"; only four rules in this library override that (.ui-button svg, the menu row, the topbar cell, the ListRow leading slot), so everywhere else a glyph draws at 24px beside 14px text."
+  },
+  {
+    "group": "data-display",
+    "name": "DataTable",
+    "tagline": "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack)."
+  },
+  {
+    "group": "data-display",
+    "name": "Card",
+    "tagline": "Surface container with optional accent stripe, variant fill (including the Ant Design borderless edge), hoverable lift, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For Ant Design's card-head TAB STRIP (tabs under the title, inside the card border) use the `tabList`/`activeTabKey`/`defaultActiveTabKey`/`onTabChange`/`extra`/`tabProps` props — the Card renders the strip and the children become the selected tab's body. For a non-tab toolbar/filter strip (list controls, filter chips) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card."
+  },
+  {
+    "group": "data-display",
+    "name": "CardContent",
+    "tagline": "Card body. flush = edge-to-edge (for DataTable/tabs); tight = no top gap; solo = no header above. NEVER put a Toolbar inside flush (it loses padding)."
+  },
+  {
+    "group": "data-display",
+    "name": "StatCard",
+    "tagline": "KPI tile. ⚠️ StatCard IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). Use `accent` for a semantic leading-edge rail on a KPI needing attention."
+  },
+  {
+    "group": "data-display",
+    "name": "ServiceLauncherCard",
+    "tagline": "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA."
+  },
+  {
+    "group": "data-display",
+    "name": "ServiceCatalogCta",
+    "tagline": "Dashed companion tile that closes a launcher grid with the real catalog/add route — same Card geometry as ServiceLauncherCard, no status or metadata."
+  },
+  {
+    "group": "data-display",
+    "name": "Badge",
+    "tagline": "Plain or lifecycle badge. Use `variant` for static chips, or `status` to auto-map lifecycle keys to semantic tone + icon. Labels never wrap."
+  },
+  {
+    "group": "data-display",
+    "name": "Legend",
+    "tagline": "The KEY for a colour-coded surface: which tone means what, spelled out in words once — a square swatch per tone with its label."
+  },
+  {
+    "group": "data-display",
+    "name": "Swatch",
+    "tagline": "A READ-ONLY sample of ONE colour a person chose — a brand's primary_color, a calendar category, a tag tint. The colour is a VALUE on the element, never a token in a stylesheet."
+  },
+  {
+    "group": "data-display",
+    "name": "FeatureList",
+    "tagline": "A list of STATEMENTS, each with a leading state glyph (included ✓ / limited − / excluded ✗), an optional wrapping description, and the glyph aligned to the first text line."
+  },
+  {
+    "group": "data-display",
+    "name": "Thumbnail",
+    "tagline": "A framed picture at a FIXED height with its own INTRINSIC width — the shape a wrapping row of screenshots with different aspect ratios needs."
+  },
+  {
+    "group": "data-display",
+    "name": "ListRow",
+    "tagline": "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations."
+  },
+  {
+    "group": "data-display",
+    "name": "CredentialReveal",
+    "tagline": "One-time secret surface — masked-by-default value with a show/hide toggle, a copy button that confirms the copy, optional download, and an optional acknowledge action to pair with Dialog. The GitHub/Stripe token-reveal pattern as a real primitive so consumers stop hand-rolling it."
+  },
+  {
+    "group": "data-display",
+    "name": "QrCode",
+    "tagline": "Local-only SVG QR renderer for enrollment links, device pairing and other values that must never be sent to a third-party image service."
+  },
+  {
+    "group": "data-display",
+    "name": "Descriptions",
+    "tagline": "Responsive definition grid for detail-page metadata. COMPOUND — value goes in Descriptions.Item children."
+  },
+  {
+    "group": "data-display",
+    "name": "EmptyState",
+    "tagline": "Centred empty placeholder with icon, title, description, and optional CTA."
+  },
+  {
+    "group": "data-display",
+    "name": "Progress",
+    "tagline": "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track)."
+  },
+  {
+    "group": "data-display",
+    "name": "CodeBlock",
+    "tagline": "A block of preformatted text (request and response bodies, console output, snippets): mono, muted surface, soft-wrapped long lines by default, and an optional height cap that scrolls inside the block instead of pushing the page."
+  },
+  {
+    "group": "data-display",
+    "name": "Prose",
+    "tagline": "Typography for rendered content (Markdown, CMS bodies, issue descriptions): styles the semantic HTML inside it from the tokens, with no opinion about where the HTML comes from."
+  },
+  {
+    "group": "data-display",
+    "name": "Timeline",
+    "tagline": "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`."
+  },
+  {
+    "group": "data-display",
+    "name": "TimelineGrid",
+    "tagline": "The time-axis half of the Timeline family: a vertical hour axis, one column per day (or room, or machine) and event blocks placed by start time and duration. Overlapping events are laid out side by side automatically. NOT a calendar — no month view, no navigation, no drag-to-create, no recurrence, no timezone conversion."
+  },
+  {
+    "group": "data-display",
+    "name": "Table",
+    "tagline": "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables."
+  },
+  {
+    "group": "data-display",
+    "name": "DataState",
+    "tagline": "TanStack Query lifecycle widget — skeleton / error / empty / success for one useQuery block. Import from @godxjp/ui/query."
+  },
+  {
+    "group": "data-display",
+    "name": "InfiniteQueryState",
+    "tagline": "useInfiniteQuery widget — flatten pages, skeleton/empty/error, load-more footer. Import from @godxjp/ui/query."
+  },
+  {
+    "group": "data-entry",
+    "name": "Form",
+    "tagline": "Ant-style layout container — renders <form> and pushes layout (vertical/horizontal), labelWidth/controlWidth, label alignment, responsive collapse, and multi-column grid down to every FormField (overridable per field)."
+  },
+  {
+    "group": "data-entry",
+    "name": "FormField",
+    "tagline": "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field."
+  },
+  {
+    "group": "data-entry",
+    "name": "FormErrors",
+    "tagline": "The 'no field to stand on' error summary — renders the entries of the surrounding Form's server error bag that no mounted FormField name='…' claims: validation errors on hidden/derived fields (action_mode, page, a source-record id) that would otherwise fail silently. Composed on Alert tone='destructive' (role='alert'); renders nothing while every entry is claimed or the bag is empty."
+  },
+  {
+    "group": "data-entry",
+    "name": "Input",
+    "tagline": "Styled wrapper around native <input>; accepts all HTML input attributes. Pair with FormField for labelled fields."
+  },
+  {
+    "group": "data-entry",
+    "name": "NumberInput",
+    "tagline": "WAI-ARIA spinbutton for localized numeric entry — composes the real Input (role=spinbutton, inputMode=decimal) with stacked increment/decrement step Buttons. Type freely, Arrow/Shift-Arrow step, value commits clamped to min/max + rounded to precision."
+  },
+  {
+    "group": "data-entry",
+    "name": "SearchInput",
+    "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue)."
+  },
+  {
+    "group": "data-entry",
+    "name": "Select",
+    "tagline": "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>."
+  },
+  {
+    "group": "data-entry",
+    "name": "Switch",
+    "tagline": "Toggle switch (bare), on react-aria-components. For a labelled row use Field. `role=\"switch\"` is the real `<input>`; the painted track is the `<label>` around it, and that is where `data-state`/`data-size` live."
+  },
+  {
+    "group": "data-entry",
+    "name": "Textarea",
+    "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields."
+  },
+  {
+    "group": "data-entry",
+    "name": "Label",
+    "tagline": "Styled Radix Label; use htmlFor to associate with a control."
+  },
+  {
+    "group": "data-entry",
+    "name": "Checkbox",
+    "tagline": "Checkbox on react-aria-components; standalone or via CheckboxGroup with an options array. `role=\"checkbox\"` is the real `<input>`; the painted box is the `<label>` around it and carries `data-state`."
+  },
+  {
+    "group": "data-entry",
+    "name": "RadioGroup",
+    "tagline": "Radio group accepting an options array or RadioItem children."
+  },
+  {
+    "group": "data-entry",
+    "name": "DatePicker",
+    "tagline": "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance."
+  },
+  {
+    "group": "feedback",
+    "name": "Dialog",
+    "tagline": "Compound modal. Controlled via open + onOpenChange. Parts available flat (DialogTrigger/DialogContent/…) or as Dialog.Trigger/Dialog.Content. Rendered with role=dialog."
+  },
+  {
+    "group": "feedback",
+    "name": "AlertDialog",
+    "tagline": "Canonical modal confirmation flow (destructive / high-stakes decisions). Preserves confirm semantics with `role=\"alertdialog\"` and built-in cancel/confirm handling."
+  },
+  {
+    "group": "feedback",
+    "name": "AlertDialogRoot",
+    "tagline": "Compound alertdialog Root — the role=\"alertdialog\" mirror of Dialog's root. Wraps Radix AlertDialog.Root and supplies the context AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel read. Parts: AlertDialogTrigger/AlertDialogPortal/AlertDialogOverlay/AlertDialogContent/AlertDialogHeader/AlertDialogFooter/AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel."
+  },
+  {
+    "group": "feedback",
+    "name": "Sheet",
+    "tagline": "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter."
+  },
+  {
+    "group": "feedback",
+    "name": "Alert",
+    "tagline": "Inline alert banner with variant-aware icon + optional dismiss. Parts: Alert/AlertTitle/AlertDescription/AlertActions/AlertQueryError."
+  },
+  {
+    "group": "feedback",
+    "name": "Banner",
+    "tagline": "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). Parts: Banner.Title/Description/Content/Actions."
+  },
+  {
+    "group": "feedback",
+    "name": "Callout",
+    "tagline": "Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role=\"note\", never a live region. Parts: Callout.Title/Description/Content/Actions."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonTable",
+    "tagline": "Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props)."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonRows",
+    "tagline": "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose."
+  },
+  {
+    "group": "feedback",
+    "name": "Toaster",
+    "tagline": "Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from \"sonner\"` — NOT from @godxjp/ui."
+  },
+  {
+    "group": "navigation",
+    "name": "Tabs",
+    "tagline": "Radix tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control."
+  },
+  {
+    "group": "navigation",
+    "name": "Pagination",
+    "tagline": "Offset/page-based pagination bar. Sits below a table card."
+  },
+  {
+    "group": "navigation",
+    "name": "DropdownMenu",
+    "tagline": "Dropdown menu (react-aria). Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator. `trigger` picks the gestures — click (default), hover, or contextMenu, which is what replaced the deleted ContextMenu component."
+  },
+  {
+    "group": "navigation",
+    "name": "Steps",
+    "tagline": "Multi-step progress indicator — horizontal or vertical, default or dot style."
+  },
+  {
+    "group": "navigation",
+    "name": "Toolbar",
+    "tagline": "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky."
+  },
+  {
+    "group": "providers",
+    "name": "AppProvider",
+    "tagline": "Root locale/timezone/date-time context — wrap the app ONCE. All pickers + formatDate read from it. Import from @godxjp/ui/app."
+  },
+  {
+    "group": "providers",
+    "name": "OverlayPortalProvider",
+    "tagline": "Moves EVERY overlay in this library (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard, Select, Cascader) into a container you name — the one thing an app mounted inside a SHADOW ROOT cannot do with props."
+  },
+  {
+    "group": "providers",
+    "name": "formatDate",
+    "tagline": "MANDATORY for all date/time display. Auto-detects ISO date / HH:mm / instant; reads AppProvider context. Import from @godxjp/ui/datetime."
+  },
+  {
+    "group": "data-entry",
+    "name": "TimePicker",
+    "tagline": "Time combobox with hours, minutes, optional seconds, confirmation and 12-hour formatting. Native submission stays canonical 24-hour time."
+  },
+  {
+    "group": "data-entry",
+    "name": "Cascader",
+    "tagline": "Multi-level hierarchical path picker (Popover + cascading columns); value is always a string[] path, never a flat ID — passing a bare string breaks it."
+  },
+  {
+    "group": "data-entry",
+    "name": "TreeSelect",
+    "tagline": "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onValueChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data."
+  },
+  {
+    "group": "data-entry",
+    "name": "Transfer",
+    "tagline": "Dual-list shuttle that moves items between source and target via Checkbox selection — you own targetKeys state; never hand-roll a two-panel picker."
+  },
+  {
+    "group": "data-entry",
+    "name": "Upload",
+    "tagline": "Drag-and-drop / button / avatar / picture file uploader in six variants — wire onUpload to your media-service and call collectUploadCommitActions on form submit; supports multipart forms and custom media storage."
+  },
+  {
+    "group": "data-entry",
+    "name": "UploadCropDialog",
+    "tagline": "Modal crop dialog for a single image file — always controlled (open + file + onConfirm required); do NOT use standalone when Upload variant=\"avatar-crop\" already embeds it."
+  },
+  {
+    "group": "data-entry",
+    "name": "ColorPicker",
+    "tagline": "Native color-swatch picker with an optional editable hex input — always pass a valid 3- or 6-digit hex `value`; invalid hex is silently ignored and the previous value is restored."
+  },
+  {
+    "group": "data-entry",
+    "name": "Slider",
+    "tagline": "Numeric slider on react-aria-components with the antd 6 API — one thumb over a point, or `range` for a span. `value` takes a plain number (antd) or a number[] (the Radix-era spelling); both still work."
+  },
+  {
+    "group": "data-entry",
+    "name": "Calendar",
+    "tagline": "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker (add `range` for a from/to pair) instead when you need a form-submittable input. `components={{ DayButton }}` is the documented seam for marking a day (a shift, a price, a badge): import `DayButton` and its types from `@godxjp/ui/data-entry` rather than from react-day-picker, so the type is this package's copy and not a second one (gh#797)."
+  },
+  {
+    "group": "data-entry",
+    "name": "Command",
+    "tagline": "Accessible, keyboard-navigable command palette / combobox list built on cmdk — always pair CommandInput inside its own wrapper div, never render items outside CommandList."
+  },
+  {
+    "group": "data-entry",
+    "name": "CheckboxGroup",
+    "tagline": "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group."
+  },
+  {
+    "group": "data-entry",
+    "name": "Radio",
+    "tagline": "Radio group on react-aria-components, with an options-array shorthand — always use Radio.Group, never a bare radio input. `role=\"radio\"` is the real `<input>`; the painted dot is the `<label>` around it and carries `data-state`."
+  },
+  {
+    "group": "data-display",
+    "name": "Popover",
+    "tagline": "Radix-backed floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay."
+  },
+  {
+    "group": "data-display",
+    "name": "ScrollArea",
+    "tagline": "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor)."
+  },
+  {
+    "group": "data-display",
+    "name": "Collapsible",
+    "tagline": "Three-part compound (Collapsible + CollapsibleTrigger + CollapsibleContent) that toggles a region open/closed — never use just one part alone."
+  },
+  {
+    "group": "data-display",
+    "name": "Tree",
+    "tagline": "The standalone WAI-ARIA tree view on a page (antd `Tree` / `DirectoryTree`) — nested `treeData`, a disclosure triangle per branch, roving-tabindex arrow navigation, optional tri-state checkboxes and async `loadData`. Reach for it whenever nodes expand, collapse or are navigated by keyboard; TreeSelect is the same hierarchy inside a Popover."
+  },
+  {
+    "group": "feedback",
+    "name": "Tooltip",
+    "tagline": "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time."
+  },
+  {
+    "group": "data-display",
+    "name": "PrefetchLink",
+    "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context."
+  },
+  {
+    "group": "data-display",
+    "name": "Avatar",
+    "tagline": "Radix Avatar wrapper with image and fallback slots for users, teams, and entities."
+  },
+  {
+    "group": "layout",
+    "name": "Separator",
+    "tagline": "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction)."
+  },
+  {
+    "group": "feedback",
+    "name": "Skeleton",
+    "tagline": "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article)."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonArticle",
+    "tagline": "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonAvatar",
+    "tagline": "Avatar-shaped placeholder (also Skeleton.Avatar) sized from the --control-height tier."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonButton",
+    "tagline": "Button-shaped placeholder (also Skeleton.Button) — two control-heights wide."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonInput",
+    "tagline": "Field-shaped placeholder (also Skeleton.Input) — five control-heights wide."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonForm",
+    "tagline": "The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonNode",
+    "tagline": "Square media/custom placeholder (also Skeleton.Node); children centre inside it."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonImage",
+    "tagline": "SkeletonNode carrying the image glyph (also Skeleton.Image)."
+  },
+  {
+    "group": "data-entry",
+    "name": "Toggle",
+    "tagline": "Radix Toggle wrapper with default/outline variants and tokenized sizes."
+  },
+  {
+    "group": "data-entry",
+    "name": "ToggleGroup",
+    "tagline": "Single or multiple toggle selection on react-aria-components. On type=single the ARIA role follows `disallowEmptySelection`: omitted it is a `group` of `aria-pressed` buttons that MAY be all-off, set it is a `radiogroup` of `radio`s (gh#744)."
+  },
+  {
+    "group": "layout",
+    "name": "AspectRatio",
+    "tagline": "Radix AspectRatio wrapper for stable media and preview frames."
+  },
+  {
+    "group": "data-display",
+    "name": "Accordion",
+    "tagline": "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent."
+  },
+  {
+    "group": "data-display",
+    "name": "HoverCard",
+    "tagline": "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text)."
+  },
+  {
+    "group": "data-entry",
+    "name": "PasswordInput",
+    "tagline": "Input for passwords with a built-in show/hide eye toggle. Accepts all Input props except `type`."
+  },
+  {
+    "group": "data-entry",
+    "name": "PasswordStrength",
+    "tagline": "Evaluates password quality with a 0-4 score and optional rule checklist. Use with PasswordInput in secure forms."
+  },
+  {
+    "group": "data-entry",
+    "name": "InputOTP",
+    "tagline": "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot."
+  },
+  {
+    "group": "data-entry",
+    "name": "Rating",
+    "tagline": "Star-rating input (radiogroup) — controlled via value/onValueChange, form-submittable via name, supports readOnly display."
+  },
+  {
+    "group": "data-entry",
+    "name": "Segmented",
+    "tagline": "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen."
+  },
+  {
+    "group": "data-entry",
+    "name": "TagInput",
+    "tagline": "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[])."
+  },
+  {
+    "group": "layout",
+    "name": "ResizablePanel",
+    "tagline": "Resizable panel group/child/handle primitives from react-resizable-panels."
+  },
+  {
+    "group": "data-display",
+    "name": "Carousel",
+    "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API."
+  },
+  {
+    "group": "navigation",
+    "name": "AppSettingPicker",
+    "tagline": "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange."
+  },
+  {
+    "group": "navigation",
+    "name": "AppSettingToggle",
+    "tagline": "ONE button that steps a single AppProvider setting to its NEXT value and shows that value as its glyph — theme (Sun/Moon/Monitor), density, fontSize, timeFormat. The no-menu counterpart to AppSettingPicker: same binding contract, same option order, one tap instead of open-then-choose. Renders disabled (never throws) outside AppProvider when uncontrolled."
+  },
+  {
+    "group": "data-entry",
+    "name": "Field",
+    "tagline": "Label + optional description laid out beside a single checkbox/radio/switch control — the inline alternative to FormField's full block layout."
+  },
+  {
+    "group": "data-display",
+    "name": "LineChart",
+    "tagline": "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot."
+  },
+  {
+    "group": "data-display",
+    "name": "BarChart",
+    "tagline": "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram."
+  },
+  {
+    "group": "data-display",
+    "name": "CompactBarTrend",
+    "tagline": "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens. Needs NO recharts. Sparkline / micro-chart / activity pulse / KPI trend strip."
+  },
+  {
+    "group": "data-display",
+    "name": "AreaChart",
+    "tagline": "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot."
+  },
+  {
+    "group": "data-display",
+    "name": "PieChart",
+    "tagline": "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram."
+  },
+  {
+    "group": "data-entry",
+    "name": "CommandPalette",
+    "tagline": "Searchable command dialog with controlled or uncontrolled open state and consumer-owned selection."
+  },
+  {
+    "group": "feedback",
+    "name": "TwoFactorSetup",
+    "tagline": "Canonical two-factor enrollment dialog for QR/manual-key verification and recovery-code acknowledgement."
+  },
+  {
+    "group": "layout",
+    "name": "AuthDivider",
+    "tagline": "The auth-scoped PRESET over `Separator label` — a localized conjunction between two equal rules."
+  },
+  {
+    "group": "layout",
+    "name": "AuthFooter",
+    "tagline": "Compact hosted-auth footer for consumer-owned product, legal, privacy, and locale content."
+  },
+  {
+    "group": "layout",
+    "name": "AuthIdentity",
+    "tagline": "Hosted-auth identity heading with the shared mark (or the product's own lockup) and optional requesting-client context."
+  },
+  {
+    "group": "layout",
+    "name": "AccountChip",
+    "tagline": "Signed-in user for a PageContainer extra slot, Topbar or footer row: avatar, name and one ghost action at the control tier height — never a hand-rolled rounded-full border div."
+  },
+  {
+    "group": "layout",
+    "name": "AuthAccountSummary",
+    "tagline": "Compact signed-in account row for hosted auth: avatar fallback, authoritative email and switch action."
+  },
+  {
+    "group": "layout",
+    "name": "AuthStack",
+    "tagline": "Token-spaced vertical stack for direct sections inside a canonical auth card."
+  },
+  {
+    "group": "layout",
+    "name": "OrgSwitcher",
+    "tagline": "Searchable organization switcher with canonical trigger geometry, desktop popover, and mobile sheet."
+  },
+  {
+    "group": "layout",
+    "name": "AppLauncher",
+    "tagline": "Nine-dot topbar app grid — the platform-standard way to switch app (the Google Workspace shape)."
+  },
+  {
+    "group": "navigation",
+    "name": "FilterBar",
+    "tagline": "Domain-neutral list-page filter toolbar with optional clear action and labelled groups."
+  },
+  {
+    "group": "data-display",
+    "name": "PermissionMatrix",
+    "tagline": "Domain data is 100% consumer-supplied."
+  },
+  {
+    "group": "data-entry",
+    "name": "BranchScopePicker",
+    "tagline": "Canonical scope control: all branches vs an explicit subset."
+  },
+  {
+    "group": "layout",
+    "name": "ServiceRolePanel",
+    "tagline": "Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens."
+  },
+  {
+    "group": "data-display",
+    "name": "ChatBubble",
+    "tagline": "One message in a conversation: an author mark, a header naming the turn, the body, and a footer. Renders as an <article> inside ChatBubbleList's log; `loading` shows Skeleton and `typing` streams a string in, dropping the animation entirely under prefers-reduced-motion."
+  },
+  {
+    "group": "data-display",
+    "name": "ChatBubbleList",
+    "tagline": "The message feed. It owns STICK-TO-BOTTOM (auto-scroll only while the reader is already at the bottom; the moment they scroll up the pin is revoked and a focusable jump-to-latest button appears), one aria-live=\"polite\" role=\"log\" region for the whole conversation, and per-role bubble defaults."
+  },
+  {
+    "group": "data-entry",
+    "name": "ChatComposer",
+    "tagline": "The message input of a conversation (Ant Design X Sender): an auto-growing Textarea plus exactly ONE trailing action — send, or cancel while a response streams. Enter / Shift+Enter / ⌘-or-Ctrl+Enter is configurable and never fires during an IME conversion."
+  },
+  {
+    "group": "data-entry",
+    "name": "ChatSuggestion",
+    "tagline": "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it."
+  },
+  {
+    "group": "navigation",
+    "name": "Conversations",
+    "tagline": "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets — the whole rail one roving-tabindex tab stop, not one tab stop per conversation."
+  },
+  {
+    "group": "data-display",
+    "name": "Welcome",
+    "tagline": "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW — which is the placement a hand-roll gets wrong."
+  },
+  {
+    "group": "general",
+    "name": "Actions",
+    "tagline": "The strip of actions under an assistant message (Ant Design X Actions): copy, retry, like, and a menu for the rest — a WAI-ARIA toolbar with ONE tab stop, where Ant X's own strip is <div onClick> with no role and no accessible name."
+  },
+  {
+    "group": "data-display",
+    "name": "ThoughtChain",
+    "tagline": "The assistant's reasoning, step by step (Ant Design X ThoughtChain): an ORDERED list of steps, each with an ordinal or a glyph, a status, and a body it can collapse — where Ant X's own step is a <div onClick> with no role and no aria-expanded."
+  },
+  {
+    "group": "data-entry",
+    "name": "Attachments",
+    "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`."
+  }
+]

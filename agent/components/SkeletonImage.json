@@ -1,0 +1,37 @@
+{
+  "example": "import { SkeletonImage } from \"@godxjp/ui/feedback\";\n\n<SkeletonImage active />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonImage",
+  "props": [
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SkeletonNode",
+    "Skeleton"
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "SkeletonNode carrying the image glyph (also Skeleton.Image).",
+  "usage": [
+    "DO use it where the loaded content is a picture, so the placeholder says WHICH kind of content is coming.",
+    "DON'T use it for a generic square — that is SkeletonNode."
+  ],
+  "useCases": [
+    "Gallery grid loading",
+    "Product thumbnail",
+    "Attachment preview"
+  ]
+}

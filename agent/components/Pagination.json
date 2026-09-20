@@ -1,0 +1,132 @@
+{
+  "example": "import { Pagination } from \"@godxjp/ui/navigation\";\n\n<Pagination value={page} total={filtered.length} pageSize={10} showTotal onValueChange={(p) => setPage(p)} />",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "Pagination",
+  "props": [
+    {
+      "description": "Tên khả truy cập của landmark phân trang. Bắt buộc khi một trang có nhiều bộ phân trang.",
+      "name": "ariaLabel",
+      "type": "string"
+    },
+    {
+      "defaultValue": "1",
+      "description": "Current page (1-indexed).",
+      "name": "value",
+      "type": "number"
+    },
+    {
+      "description": "Total number of items.",
+      "name": "total",
+      "type": "number"
+    },
+    {
+      "defaultValue": "10",
+      "description": "Items per page.",
+      "name": "pageSize",
+      "type": "number"
+    },
+    {
+      "description": "Show total count, or a custom label fn.",
+      "name": "showTotal",
+      "type": "boolean | (total, range) => ReactNode"
+    },
+    {
+      "description": "Page / page-size change handler.",
+      "name": "onValueChange",
+      "type": "(page: number, pageSize: number) => void"
+    },
+    {
+      "description": "Selectable page sizes shown in the size changer.",
+      "name": "pageSizeOptions",
+      "type": "number[]"
+    },
+    {
+      "description": "Show the page-size selector beside the pager.",
+      "name": "showSizeChanger",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Hide the control when there is nothing to page through — zero items OR exactly one page. Set false to opt in to the bar on a single page (e.g. to keep showTotal visible); total=0 is always hidden.",
+      "name": "hideOnSinglePage",
+      "type": "boolean"
+    },
+    {
+      "description": "Compact form for narrow contexts — Prev / n·N / Next, no page-number buttons. The intentional mobile transformation (desktop never wraps).",
+      "name": "simple",
+      "type": "boolean"
+    },
+    {
+      "description": "Ant Design `showQuickJumper` — a 'go to page' number field at the inline end of the bar. Enter (or the optional `goButton`) commits, clamped into [1, pageCount]; a non-numeric commit is ignored rather than jumping to NaN. The field is named by a real `<label htmlFor>`, not an aria-label.",
+      "name": "showQuickJumper",
+      "type": "boolean | { goButton?: React.ReactNode }"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Ant Design `size` (`small` → `sm`, `middle` → `md`). Implemented as ONE local `--control-height` on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together and cannot drift apart. `sm` reads `--control-height-sm` of the surrounding density scope (knob `--pagination-control-height-sm`, default `initial`), so a small pager in a compact DataTable matches its size=\"sm\" toolbar controls.",
+      "name": "size",
+      "type": "\"sm\" | \"md\""
+    },
+    {
+      "defaultValue": "\"end\"",
+      "description": "Ant Design `align`, on the logical inline axis. `end` keeps the long-standing table-footer position. With `align=\"end\"` the `showTotal` label sits BESIDE the page buttons (antd); `start` / `center` keep the total pushed to the inline start.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "defaultValue": "true",
+      "description": "Ant Design `responsive`. Collapses the bar to its `simple` form below the library's single mobile breakpoint (`useIsMobile`, max-width 767px) instead of leaving a number strip wider than the phone to scroll. `simple` always wins; pass `responsive={false}` to pin the full pager at every width.",
+      "name": "responsive",
+      "type": "boolean"
+    },
+    {
+      "description": "Disable all navigation controls.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Override the nav landmark's accessible name (defaults to a localized \"Pagination\"). Required when more than one Pagination renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "DataTable.Pagination — use instead of standalone Pagination when the list is rendered inside a DataTable compound and uses cursor-based navigation (cursor + hasMore + onChange). DataTable.Pagination handles First/Next without page arithmetic; standalone Pagination requires a known total.",
+    "InfiniteQueryState — use for infinite-scroll / load-more lists driven by useInfiniteQuery. It auto-manages skeleton, empty, and error states; Pagination is inappropriate here because there is no discrete page number.",
+    "DataTable — when offset pagination is needed inside DataTable, prefer composing DataTable with a standalone Pagination below the card rather than DataTable.Pagination if the API is offset-based and returns a total count. DataTable itself does not paginate; you supply `data` for the current page.",
+    "SearchInput — often placed in the same toolbar as Pagination. Resetting `value` to page 1 inside the search `onSearchChange` handler is mandatory; forgetting this is the most common bug when combining search and Pagination."
+  ],
+  "rules": [
+    40
+  ],
+  "storyPath": "navigation/Pagination.stories.tsx",
+  "subParts": [
+    "PaginationContent",
+    "PaginationEllipsis",
+    "PaginationItem",
+    "PaginationLink",
+    "PaginationNext",
+    "PaginationPrevious"
+  ],
+  "tagline": "Offset/page-based pagination bar. Sits below a table card.",
+  "usage": [
+    "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
+    "DO let Pagination hide itself for zero items and single pages (`hideOnSinglePage`, default true) — it is navigation between multiple result pages. Render it inside a table footer only in the DATA state: never during loading, empty, error, or an unmet prerequisite. Pass `hideOnSinglePage={false}` only when you still want the bar on one page to keep `showTotal` visible.",
+    "DO trust Pagination to stay ONE horizontal row on desktop (it never wraps). For genuinely narrow viewports use `simple` for the intentional compact transformation rather than letting controls wrap.",
+    "DO pass `total` as the raw item count (not page count). The component computes `Math.ceil(total / pageSize)` internally; passing a pre-computed page count as `total` will over-paginate.",
+    "DO use `showSizeChanger` together with `pageSizeOptions` when the user needs density control (default options are [10, 20, 50, 100]). When `showSizeChanger` is omitted the page-size Select is not rendered at all — do NOT hand-roll your own Select beside Pagination.",
+    "DO use `simple` mode for compact contexts (mobile, sidebars, sheet footers) — it renders Prev / `n / total` / Next with no page-number buttons. Use the full form for primary admin list pages.",
+    "DO use `showTotal` to surface item counts: pass `true` for the built-in i18n label, or a function `(total, [from, to]) => ReactNode` for a custom range label like '1–10 of 342 invoices'. Never hard-code a total string beside the component.",
+    "DON'T use Pagination for cursor- or infinite-scroll-based lists. Pagination is strictly offset/page-based (`value` is a page number). For cursor pagination inside a DataTable use `DataTable.Pagination`; for infinite scroll use `InfiniteQueryState`.",
+    "NOTE the page strip scrolls horizontally rather than wrapping, and its page buttons are normally the keyboard route to that overflow. Disable the whole bar (`disabled`) and there is no such route, so the strip takes `tabindex=0` itself to stay keyboard-scrollable (WCAG 2.1.1). Nothing to configure — just don't strip the attribute in consumer CSS/JS."
+  ],
+  "useCases": [
+    "Server-paged DataTable: do NOT place a Pagination below the card — pass `pagination={{ total, current, pageSize, onChange }}` to DataTable and it renders this component in its own footer (total + page numbers, density-sized).",
+    "Standalone offset-paginated admin list pages (e.g. invoice list, customer list, transaction history) rendered outside DataTable — place Pagination below the table card, outside the card border, with `showTotal` and optionally `showSizeChanger`.",
+    "Search results pages where the backend accepts `page` + `per_page` query parameters and returns a total count — wire `value` and `pageSize` to URL search params so the URL is shareable and browser-back works.",
+    "Reports and filtered data grids where the user needs to export 'all selected pages': `showTotal` with a custom function lets you show '1–50 of 1 200 rows' so the user understands the scope before exporting.",
+    "Compact modal or sheet footers with a long list (e.g. selecting from a product catalog inside a dialog) — use `simple` mode to save horizontal space while keeping navigation accessible.",
+    "DataTable instances where the server returns an offset-based total and `DataTable.Pagination` is not being used: attach a standalone Pagination below the card and pass the same `page` / `pageSize` state to both the DataTable `data` prop and the API fetch."
+  ]
+}

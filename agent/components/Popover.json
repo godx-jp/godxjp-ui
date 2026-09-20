@@ -1,0 +1,110 @@
+{
+  "example": "import {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverDescription,\n} from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\n\n// Uncontrolled — basic usage\nexport function InvoiceFilterPopover() {\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button variant=\"outline\">Advanced filters</Button>\n      </PopoverTrigger>\n      <PopoverContent align=\"start\" width=\"trigger\">\n        <PopoverHeader>\n          <PopoverTitle>Filter invoices</PopoverTitle>\n          <PopoverDescription>Narrow results by date range and status.</PopoverDescription>\n        </PopoverHeader>\n        {/* place form controls here */}\n      </PopoverContent>\n    </Popover>\n  );\n}\n\n// Controlled — programmatic open/close\nimport * as React from \"react\";\n\nexport function ControlledPopover() {\n  const [open, setOpen] = React.useState(false);\n  return (\n    <Popover open={open} onOpenChange={setOpen}>\n      <PopoverTrigger asChild>\n        <Button variant=\"ghost\" size=\"icon\" aria-label=\"Show details\">\n          ?\n        </Button>\n      </PopoverTrigger>\n      <PopoverContent side=\"right\" sideOffset={8}>\n        <PopoverHeader>\n          <PopoverTitle>About this field</PopoverTitle>\n          <PopoverDescription>\n            The MF ID is the unique identifier assigned by Money Forward.\n          </PopoverDescription>\n        </PopoverHeader>\n      </PopoverContent>\n    </Popover>\n  );\n}",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Popover",
+  "props": [
+    {
+      "description": "Controls open state in controlled mode. Pair with onOpenChange.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Initial open state for uncontrolled usage.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Callback fired when the popover open state changes. Required when using controlled mode (open prop).",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, interaction outside the popover is blocked and focus is trapped inside (Radix Root prop).",
+      "name": "modal",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "PopoverContent prop. Horizontal alignment of the popover relative to the trigger.",
+      "name": "align",
+      "type": "'start' | 'center' | 'end'"
+    },
+    {
+      "defaultValue": "4",
+      "description": "PopoverContent prop. Distance in pixels between the popover panel and its anchor.",
+      "name": "sideOffset",
+      "type": "number"
+    },
+    {
+      "defaultValue": "\"bottom\"",
+      "description": "PopoverContent prop. Which side of the trigger the panel prefers to open on (auto-flips on overflow).",
+      "name": "side",
+      "type": "'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      "defaultValue": "false",
+      "description": "PopoverTrigger prop. Merges trigger props onto the immediate child element (e.g. a Button) instead of rendering an extra DOM node. Strongly recommended to avoid a wrapping <button>.",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "PopoverContent prop. The panel's CONTENT owns its inset: the popover zeroes its own --popover-space-inset so a Command list, a menu or a table runs edge to edge and draws its separators across the full width. Reach for it whenever the child already paints its own rows; leave it off for prose panels, which want the panel padding.",
+      "name": "flush",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"panel\"",
+      "description": "PopoverContent prop. How the panel is MEASURED across the inline axis. \"panel\" (default) is the popover's own --popover-width (18rem) — right for prose and for a list the panel sizes itself. \"auto\" lets the CONTENT decide, the only correct answer for something with a width of its own (a two-month Calendar is far wider than 18rem and was being clipped by it). \"trigger\" matches the anchor. It is the counterpart of `flush`: both set a token the panel already reads, so a service theme keeps owning them, where a `w-*` utility on className is a per-call-site constant nothing can retune.",
+      "name": "width",
+      "type": "\"panel\" | \"auto\" | \"trigger\""
+    },
+    {
+      "description": "PopoverContent prop. Extra Tailwind classes merged onto the panel (default: w-72 p-4 rounded-md border shadow-md z-50).",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Tooltip — use Tooltip for brief, non-interactive label-like hints (hover-only, no inputs). Use Popover when the floating content is interactive (buttons, inputs, forms).",
+    "Dialog/Sheet — use Dialog or Sheet for full modal actions that require user confirmation or significant input. Use Popover for lightweight, anchor-relative panels that dismiss on outside click.",
+    "DropdownMenu — use DropdownMenu for a flat list of clickable actions or links. Use Popover when the floating panel needs arbitrary layout (forms, grids, rich content) rather than a menu list."
+  ],
+  "rules": [
+    3,
+    23,
+    31,
+    35
+  ],
+  "storyPath": "data-display/Popover.stories.tsx",
+  "subParts": [
+    "PopoverAnchor",
+    "PopoverContent",
+    "PopoverDescription",
+    "PopoverHeader",
+    "PopoverTitle",
+    "PopoverTrigger"
+  ],
+  "tagline": "Radix-backed floating panel anchored to a trigger — always compose with PopoverTrigger + PopoverContent; never use a raw div overlay.",
+  "usage": [
+    "DO compose: <Popover> → <PopoverTrigger asChild> → <Button/> and <PopoverContent>. All four parts are required for any popover to function; omitting PopoverTrigger or PopoverContent produces nothing.",
+    "DO set `<PopoverContent width=\"auto\">` when the child brings its own measure — a Calendar, a chart, a fixed-width preview. The panel's own 18rem clips them, and a `w-*` utility on className is a per-call-site constant no service theme can retune, which is exactly what `flush` exists to avoid on the padding axis. `width=\"trigger\"` matches the anchor, the shape every select-like control wants.",
+    "DO set `<PopoverContent flush>` when the panel holds a Command list, a menu or a table — the child owns its own inset, so its rows and separators reach the panel edges. Never zero the padding with a utility on className: that is a per-call-site constant no service theme can retune, while `flush` keeps the inset on --popover-space-inset.",
+    "DO use asChild on PopoverTrigger when the trigger is already a Button or link — this avoids a nested <button><button> violation and extra DOM nesting.",
+    "DO use controlled mode (open + onOpenChange) when external code must open/close the popover programmatically (e.g., form validation reveal, keyboard shortcut). For toggle-only interactions, uncontrolled (defaultOpen) is simpler.",
+    "DO structure panel content with PopoverHeader > PopoverTitle + PopoverDescription for labelled panels. This is purely presentational but establishes the correct font-weight and muted-foreground on the description.",
+    "DON'T hand-roll a floating div or use a CSS show/hide toggle — Popover provides portal rendering, focus trap, Escape-to-close, and ARIA automatically.",
+    "DON'T place a Popover inside a Dialog without setting modal={false} on the Popover — nested modals conflict with Radix's focus management and produce stuck focus."
+  ],
+  "useCases": [
+    "Advanced filter panel: a Filters Button triggers a Popover containing filter inputs (date range, status selects); panel measured with `<PopoverContent width='auto'>` so the filters set the width, or `width='trigger'` to match the button.",
+    "Row action menu overflow: when a DataTable row has too many actions for inline display, a Popover holds the secondary actions (Edit, Archive, Delete) without navigating away.",
+    "Contextual help / tooltip-rich: a small '?' icon button opens a Popover with PopoverTitle + PopoverDescription explaining a form field — richer than a Tooltip but less intrusive than a Dialog.",
+    "Inline record preview: clicking a reference number in an invoice list opens a Popover showing a summary card of the linked document before the user decides to navigate.",
+    "Column visibility picker: a 'Columns' button above a DataTable opens a Popover containing checkboxes to show/hide columns, with controlled state managed in parent.",
+    "Quick-edit cell: for an admin table, clicking a status badge opens a Popover with a RadioGroup to change status in-place without a full Dialog."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "example": "import { Reveal } from \"@godxjp/ui/general\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\n\n// single entrance\n<Reveal>\n  <Card><CardContent>…</CardContent></Card>\n</Reveal>\n\n// staggered column\n{items.map((item, i) => (\n  <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>\n    <Card><CardContent>{item.label}</CardContent></Card>\n  </Reveal>\n))}",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Reveal",
+  "props": [
+    {
+      "description": "Content to reveal on enter.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "0",
+      "description": "Stagger ordinal — an INDEX into the motion ladder, never a raw ms. Each step adds one `--reveal-stagger-step` of delay so a column of reveals cascades. 0 = enter immediately.",
+      "name": "delay",
+      "type": "0 | 1 | 2 | 3 | 4 | 5 | 6"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout.",
+      "name": "asChild",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
+    "Card — the most common thing to wrap in <Reveal> (dashboard cards, auth card, settings sections).",
+    "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal."
+  ],
+  "rules": [],
+  "storyPath": "general/Reveal.stories.tsx",
+  "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes.",
+  "usage": [
+    "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
+    "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
+    "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
+    "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
+    "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens."
+  ],
+  "useCases": [
+    "Auth card entrance: `<AuthShell><Reveal><Card/></Reveal></AuthShell>` — the sign-in card fades up on load, respecting reduced-motion.",
+    "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
+    "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
+    "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in."
+  ]
+}

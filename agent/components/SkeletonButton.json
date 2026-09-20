@@ -1,0 +1,57 @@
+{
+  "example": "import { SkeletonButton } from \"@godxjp/ui/feedback\";\n\n<SkeletonButton size=\"sm\" shape=\"pill\" />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonButton",
+  "props": [
+    {
+      "defaultValue": "\"md\"",
+      "description": "Height, from the --control-height tier Button sizes from.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Corner, in Button's own vocabulary. `pill` is Ant Design's shape=\"round\".",
+      "name": "shape",
+      "type": "\"default\" | \"pill\" | \"sharp\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Fill the inline axis instead of holding the control's own measure.",
+      "name": "block",
+      "type": "boolean"
+    },
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Button",
+    "SkeletonInput",
+    "Skeleton"
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Button-shaped placeholder (also Skeleton.Button) — two control-heights wide.",
+  "usage": [
+    "DO use it in a toolbar or card footer whose actions depend on data that has not arrived.",
+    "DO pass `block` when the real Button spans its column, so the row does not reflow on swap.",
+    "DON'T render a disabled Button as a loading state — a disabled control announces a different thing."
+  ],
+  "useCases": [
+    "Toolbar actions pre-mount",
+    "Card footer CTA placeholder",
+    "Form submit row"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "example": "import { Topbar, TopbarItem } from \"@godxjp/ui/layout\";\nimport { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from \"@godxjp/ui/navigation\";\n\n<Topbar\n  end={\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <TopbarItem aria-label=\"Account\">\n          <Avatar><AvatarFallback>SD</AvatarFallback></Avatar>\n        </TopbarItem>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent align=\"end\">…</DropdownMenuContent>\n    </DropdownMenu>\n  }\n/>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "TopbarItem",
+  "props": [
+    {
+      "description": "The cell's leading glyph, placed in a slot the CELL sizes (--topbar-icon-size). Prefer it over passing the glyph as a child whenever the glyph is wrapped: `.ui-topbar-item > svg` only reaches a DIRECT child, so a glyph inside a `<Flex hideBelow>` renders at lucide's intrinsic 24px — measured at 390px on an org-switcher cell, 1.5x the cell's step (gh#712). Decorative by convention (the cell's name comes from its own aria-label); pass <Icon as={…} size=… label=… /> here when the glyph needs a name or a different step. Rendered with asChild too (gh#726): the sized slot is inserted INSIDE the child element, ahead of that element's own children, and the child element (e.g. an <a>) stays the rendered root with every merged prop.",
+      "name": "icon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Drop the icon slot FROM a breakpoint step upwards (Flex hideFrom's contract, scoped to the glyph), so the cell reads label-only on a wide bar. Decorative: the accessible name is unaffected (gh#726).",
+      "name": "iconHideFrom",
+      "type": "BreakpointProp"
+    },
+    {
+      "description": "VISUALLY hide the label BELOW a breakpoint step (Flex hideBelow's contract, scoped to the label), so the cell collapses to icon-only on a narrow bar. The label stays in the accessibility tree (clipped, not display:none), so the icon-only cell keeps its accessible name. Under asChild the child element's own children are the label (gh#726).",
+      "name": "labelHideBelow",
+      "type": "BreakpointProp"
+    },
+    {
+      "description": "Overlaid count; does not change the bar cell width. Not rendered with asChild.",
+      "name": "badge",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Count tone, shared with Sidebar badges.",
+      "name": "badgeTone",
+      "type": "\"neutral\" | \"destructive\""
+    },
+    {
+      "description": "Hide the bar cell below a design-system breakpoint without interrupting its stretch chain.",
+      "name": "hideBelow",
+      "type": "BreakpointProp"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Render the bar-cell shape onto the child instead of emitting a <button> — for a router link, or a menu/popover trigger that must own the element.",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "description": "Cell content — a glyph, a label, an Avatar, or any pair of them.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Root class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Topbar (the slot bar it belongs to)",
+    "Button (the right control everywhere that is not a bar)",
+    "AppShell (owns the bar height it stretches to)"
+  ],
+  "rules": [
+    2,
+    3,
+    5,
+    6
+  ],
+  "storyPath": "layout/TopbarItem.stories.tsx",
+  "tagline": "ONE interactive cell of a Topbar slot — the account button, a settings or notifications trigger. Full bar height, the bar's own hover surface, and the focus mark hosted INSIDE the cell. Use it INSTEAD OF a Button in a Topbar slot: a Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill.",
+  "usage": [
+    "DO put bar triggers in a Topbar slot as TopbarItem, not as Button — that is the difference between chrome and a control that landed in the chrome.",
+    "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
+    "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
+    "DO collapse a cell by breakpoint with its own props, never by hand-wrapping the glyph: `<TopbarItem asChild icon={<Target />} labelHideBelow=\"sm\"><a href=\"/goals\">Goals</a></TopbarItem>` replaces `<Flex hideFrom=\"sm\"><Icon as={Target} size=\"md\" /></Flex>` — icon-only below sm, the label still the accessible name. Add `iconHideFrom` for a label-only cell from a step up (gh#726).",
+    "DON'T reach for it outside a Topbar — a full-bleed cell needs a bar to bleed to. Use Button anywhere else."
+  ],
+  "useCases": [
+    "Account / user-menu trigger in the topbar end slot",
+    "Notifications bell, settings or theme trigger",
+    "Sidebar collapse toggle in the topbar start slot"
+  ]
+}

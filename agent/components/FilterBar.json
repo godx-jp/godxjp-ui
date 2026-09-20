@@ -1,0 +1,99 @@
+{
+  "example": "import { FilterBar } from \"@godxjp/ui/navigation\";\n\n<FilterBar\n  search={{ value: query, onValueChange: setQuery, placeholder: \"Search records\" }}\n  filters={[\n    {\n      value: \"status\",\n      label: \"Status\",\n      options: STATUS_OPTIONS,\n      selected: status,\n      onSelectedChange: setStatus,\n    },\n  ]}\n  chips={appliedChips}\n  onChipRemove={removeFilter}\n  onClear={clearFilters}\n  hasActiveFilters={hasFilters}\n  resultCount={rows.length}\n  actions={<Button onClick={openCreate}>Add member</Button>}\n/>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "FilterBar",
+  "props": [
+    {
+      "description": "Filter controls and groups (composition form). In the typed-model form children remain valid as CUSTOM filters, rendered after the typed `filters`.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Consumer-owned clear/reset action — also the chips' clear-all.",
+      "name": "onClear",
+      "type": "() => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Shows clear only when filters are active.",
+      "name": "hasActiveFilters",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Uses the token-owned sticky presentation.",
+      "name": "sticky",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "'wrap'",
+      "description": "Responsive overflow strategy. 'wrap': stacked column below 640px, wrapping rows above. 'scroll': one bounded inline-scrolling row above 640px (still stacked below) with the clear-all action pinned at the inline end. The geometry is entirely token/CSS owned — never re-implement it in the page.",
+      "name": "overflow",
+      "type": "'wrap' | 'scroll'"
+    },
+    {
+      "description": "Typed model: search slot, first in the strip, token-owned width (--filter-bar-search-width). Presence of ANY model prop (search/filters/chips/onChipRemove/actions/resultCount/loading/disabled/error) activates the model layout; without them the composition form renders unchanged.",
+      "name": "search",
+      "type": "FilterBarSearchProp"
+    },
+    {
+      "description": "Typed model: labelled Select filters ({ value, label, options, selected/defaultSelected/onSelectedChange, placeholder, disabled }) — label becomes the control's real <label>. Width knob: --filter-bar-filter-width.",
+      "name": "filters",
+      "type": "FilterBarFilterProp[]"
+    },
+    {
+      "description": "Typed model: applied-filter chips ({ value, label, disabled }) in a labelled row. Add = include in the array; remove = onChipRemove(value); clear-all = onClear.",
+      "name": "chips",
+      "type": "FilterBarChipProp[]"
+    },
+    {
+      "description": "Per-chip remove handler; required for the × remove buttons to render.",
+      "name": "onChipRemove",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Typed model: trailing action slot at the inline end, after reset in DOM/keyboard order.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Typed model: localized CLDR-pluralized count in a polite role='status' line; 0 is the rendered empty state.",
+      "name": "resultCount",
+      "type": "number"
+    },
+    {
+      "description": "Typed model: aria-busy strip + data-loading root while results (re)load.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Typed model: disables all model-rendered controls.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Typed model: role='alert' error line replacing the result count.",
+      "name": "error",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional structural class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "rules": [],
+  "storyPath": "navigation/FilterBar.stories.tsx",
+  "subParts": [
+    "FilterBarGroup"
+  ],
+  "tagline": "Domain-neutral list-page filter toolbar with optional clear action and labelled groups.",
+  "usage": [
+    "Prefer the typed model for a canonical list page: pass `search` + `filters` + `chips` + `resultCount` and the bar owns the layout, widths, chip lifecycle, keyboard order (search → filters → children → reset → actions → chip removes) and responsive stacking through --filter-bar-* tokens. Everything stays consumer data — the bar renders state, never owns it.",
+    "Compose real controls as children when the model doesn't fit; filter state and URL synchronization remain consumer-owned. Children also render INSIDE the model layout (after the typed filters) for one-off custom controls like a date-range picker.",
+    "Give each FilterBarGroup a `controlId` matching its single control's `id` so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader. Typed `filters` wire this automatically.",
+    "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
+    "A mobile sheet presentation is a COMPOSITION, not a prop: put the same typed FilterBar inside a Sheet triggered from a compact toolbar when a screen wants drawer-style filters. The bar's own responsive behavior is stack (below 640px) + wrap/scroll (above), token-owned."
+  ]
+}

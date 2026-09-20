@@ -1,0 +1,232 @@
+{
+  "example": "import { useState } from \"react\";\nimport { FormField, TreeSelect } from \"@godxjp/ui/data-entry\";\n\nconst accountTree = [\n  {\n    value: \"assets\",\n    label: \"Assets\",\n    content: [\n      { value: \"current-assets\", label: \"Current Assets\", content: [\n          { value: \"cash\", label: \"Cash\" },\n          { value: \"ar\", label: \"Accounts Receivable\" },\n        ],\n      },\n      { value: \"fixed-assets\", label: \"Fixed Assets\", content: [\n          { value: \"equipment\", label: \"Equipment\" },\n        ],\n      },\n    ],\n  },\n  {\n    value: \"liabilities\",\n    label: \"Liabilities\",\n    content: [\n      { value: \"ap\", label: \"Accounts Payable\" },\n    ],\n  },\n];\n\n// Single-select (returns string | undefined)\nexport function AccountPicker() {\n  const [account, setAccount] = useState<string | undefined>();\n  return (\n    <FormField id=\"account-picker\" label=\"GL Account\">\n      <TreeSelect\n        id=\"account-picker\"\n        treeData={accountTree}\n        value={account}\n        onValueChange={(v) => setAccount(v as string | undefined)}\n        showSearch\n        treeDefaultExpandAll\n        placeholder=\"Select account…\"\n        allowClear\n      />\n    </FormField>\n  );\n}\n\n// Multi-select with checkboxes + cascade + SHOW_PARENT display\nexport function DepartmentFilter() {\n  const [selected, setSelected] = useState<string[]>([]);\n  return (\n    <TreeSelect\n      id=\"dept-filter\"\n      treeData={accountTree}\n      value={selected}\n      onValueChange={(v) => setSelected(v as string[])}\n      treeCheckable\n      showCheckedStrategy={TreeSelect.SHOW_PARENT}\n      showSearch\n      placeholder=\"Filter by department…\"\n    />\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "TreeSelect",
+  "props": [
+    {
+      "description": "Native form field name; repeated values for multiple selections.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Prevent edits while preserving value.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "The tree data. Each node: `{ value: string; label: ReactNode; disabled?: boolean; disableCheckbox?: boolean; isLeaf?: boolean; children?: TreeOptionProp[] }`. Use `fieldNames` to remap custom keys.",
+      "name": "treeData",
+      "required": true,
+      "type": "TreeOptionProp[]"
+    },
+    {
+      "description": "Controlled selected value(s). Pass `string` in single mode, `string[]` in multi/checkable mode. When undefined the component is uncontrolled.",
+      "name": "value",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Initial value for uncontrolled usage. Ignored once `value` is provided.",
+      "name": "defaultValue",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Called on selection change. Returns `string` in single mode, `string[]` in multi/checkable mode, or `undefined` when cleared.",
+      "name": "onValueChange",
+      "type": "(value: string | string[] | undefined) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Enable multi-select without checkboxes. When true, `onValueChange` always fires with `string[]`.",
+      "name": "multiple",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Render Checkbox controls beside each node. Implies multi-select; cascade-selects all descendants by default unless `treeCheckStrictly` is set.",
+      "name": "treeCheckable",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true (only with `treeCheckable`), parent and child selections are independent — checking a parent does NOT auto-check its children.",
+      "name": "treeCheckStrictly",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"SHOW_CHILD\"",
+      "description": "Controls which values appear in the trigger label when checkboxes are used. `SHOW_CHILD` (default) — show only leaf nodes selected; `SHOW_PARENT` — show nearest ancestor when all children selected; `SHOW_ALL` — show every checked node. Use the exported constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` instead of raw strings.",
+      "name": "showCheckedStrategy",
+      "type": "\"SHOW_CHILD\" | \"SHOW_PARENT\" | \"SHOW_ALL\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Show a labelled SearchInput at the top of the dropdown. Filters visible tree nodes by label text; the trigger combobox controls the tree.",
+      "name": "showSearch",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Expand all nodes when the dropdown first opens. Initialised once; does not re-expand on re-render.",
+      "name": "treeDefaultExpandAll",
+      "type": "boolean"
+    },
+    {
+      "description": "Trigger button placeholder text when nothing is selected. Defaults to the i18n key `dataEntry.treeSelect.placeholder`.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables the trigger button and all interactions.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Show an `X` icon in the trigger to clear the selection. Off by default, as antd TreeSelect; pass `allowClear` on an optional field.",
+      "name": "allowClear",
+      "type": "boolean"
+    },
+    {
+      "description": "Additional Tailwind classes applied to the trigger Button.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "HTML `id` placed on the trigger Button — use this to associate a `<label htmlFor>` for accessibility.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Accessible name for the combobox trigger when no visible label is available.",
+      "name": "aria-label",
+      "type": "string"
+    },
+    {
+      "description": "ID of the element containing the current validation error message.",
+      "name": "aria-errormessage",
+      "type": "string"
+    },
+    {
+      "description": "Marks the semantic combobox trigger invalid for assistive technology.",
+      "name": "aria-invalid",
+      "type": "boolean | 'true' | 'false'"
+    },
+    {
+      "description": "Marks the semantic combobox trigger required for assistive technology.",
+      "name": "aria-required",
+      "type": "boolean | 'true' | 'false'"
+    },
+    {
+      "description": "Remap data object keys. Example: `{ label: 'name', value: 'id', children: 'items' }` so you don't have to transform your API response before passing it to `treeData`.",
+      "name": "fieldNames",
+      "type": "{ label?: string; value?: string; children?: string }"
+    },
+    {
+      "description": "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `size` — height tier on the shared --control-height ladder.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `open` — controlled panel state. The consumer is the authority: nothing internal closes a pinned panel.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `defaultOpen` — uncontrolled initial panel state.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `onOpenChange` — fires for both controlled and uncontrolled panels.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd's `\"responsive\"` is not supported (see the parity PR).",
+      "name": "maxTagCount",
+      "type": "number"
+    },
+    {
+      "description": "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      "name": "maxTagPlaceholder",
+      "type": "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)"
+    },
+    {
+      "description": "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      "name": "notFoundContent",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      "name": "autoClearSearchValue",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `loadData` — lazy children. Called ONCE per node that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into treeData. Such a node still reads as expandable (aria-expanded + a working expander).",
+      "name": "loadData",
+      "type": "(node: TreeOptionProp) => void | Promise<void>"
+    },
+    {
+      "description": "antd `treeTitleRender` — owns a node's title only; the checkbox, expander and row ARIA stay with the component.",
+      "name": "treeTitleRender",
+      "type": "(node: TreeOptionProp) => React.ReactNode"
+    },
+    {
+      "description": "Controlled search query (antd `showSearch.searchValue`).",
+      "name": "search",
+      "type": "string"
+    },
+    {
+      "description": "Search query change (antd `showSearch.onSearch`).",
+      "name": "onSearchChange",
+      "type": "(query: string) => void"
+    }
+  ],
+  "related": [
+    "Select — flat single/multi picker; use when data has no parent-child hierarchy. Pick TreeSelect as soon as items have `children`.",
+    "Cascader — also renders tree data but in a multi-column panel where the user drills down column by column; pick Cascader for strict path selection (select a full path Country→Region→City). Pick TreeSelect when the user may select any node at any level or needs checkboxes.",
+    "Checkbox / CheckboxGroup — use for a small, always-visible flat list of options. Use TreeSelect when options are hierarchical or the list is long enough to warrant a dropdown.",
+    "Command / CommandInput — low-level search primitive; TreeSelect already embeds this internally. Do NOT compose your own tree dropdown out of Command — use TreeSelect."
+  ],
+  "rules": [
+    3,
+    6,
+    13,
+    23
+  ],
+  "storyPath": "data-entry/TreeSelect.stories.tsx",
+  "tagline": "Hierarchical tree picker in a Popover (single or multi-select with checkboxes) — `onValueChange` receives `string` in single mode and `string[]` in multi/checkable mode; never use a raw `<select>` for tree-structured data.",
+  "usage": [
+    "DO pair with a `<label htmlFor={id}>` and pass the matching `id` prop so screen readers announce the control correctly. The underlying trigger is a `<Button role='combobox'>` — not a native `<select>` — so an explicit label is required.",
+    "DO use `treeCheckable` (+ optionally `showCheckedStrategy`) for selecting multiple nodes with parent–child cascade; use `multiple` only when you want multi-select WITHOUT the checkbox cascade behaviour.",
+    "DO use the static constants `TreeSelect.SHOW_CHILD`, `TreeSelect.SHOW_PARENT`, `TreeSelect.SHOW_ALL` (or the named exports `SHOW_CHILD`/`SHOW_PARENT`/`SHOW_ALL` from the same import path) instead of raw string literals for `showCheckedStrategy`.",
+    "DON'T pass `value` and `defaultValue` simultaneously — pick controlled (`value` + `onValueChange`) OR uncontrolled (`defaultValue` only). Mixing them causes the component to silently prefer the controlled path.",
+    "DON'T hand-roll `onValueChange` type narrowing: in single mode the callback receives `string | undefined`; in multi/checkable mode it receives `string[]`. Branch on `multiple || treeCheckable` if you need to handle both shapes in the same handler.",
+    "DON'T use a raw `<select>` or a flat `Select` component for hierarchical/nested data — TreeSelect is the correct primitive. If hierarchy is irrelevant and data is flat, use `Select` instead."
+  ],
+  "useCases": [
+    "Chart-of-accounts picker in an accounting app where accounts belong to groups (Assets > Current Assets > Cash) and the user must select one leaf account.",
+    "Multi-select department or cost-centre filter where selecting a parent division should auto-select all child departments (treeCheckable + SHOW_PARENT).",
+    "Category assignment on invoice line items where categories have up to 3 levels of nesting and users can assign a parent or a leaf.",
+    "Permission scope selector where roles are structured in a tree and selecting a parent role should cascade to all child scopes (treeCheckable + treeCheckStrictly=false).",
+    "Location picker (Country > Prefecture > City) in a form where only leaf-level cities are valid selections (single mode, no checkboxes).",
+    "Large GL hierarchy browser with showSearch enabled so users can type to filter thousands of account codes instead of manually expanding nodes."
+  ]
+}

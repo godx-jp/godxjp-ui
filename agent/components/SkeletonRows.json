@@ -1,0 +1,49 @@
+{
+  "example": "import { SkeletonRows } from \"@godxjp/ui/feedback\";\n\n<SkeletonRows rows={6} columns={3} />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonRows",
+  "props": [
+    {
+      "defaultValue": "6",
+      "description": "How many skeleton lines to draw.",
+      "name": "rows",
+      "type": "number"
+    },
+    {
+      "defaultValue": "4",
+      "description": "Columns per row on the internal ResponsiveGrid — match the loaded list's column count so nothing reflows on hydration.",
+      "name": "columns",
+      "type": "number"
+    },
+    {
+      "description": "Root class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SkeletonTable — tabular placeholder with a header band; not a flat line list.",
+    "SkeletonForm — label + control pairs on a form grid.",
+    "SkeletonArticle — avatar beside prose lines.",
+    "Skeleton — the bare block this preset is built from."
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Repeated flat loading lines on a responsive grid — the list-shaped placeholder when the final layout is rows of short bars, not a table header, not avatar + prose.",
+  "usage": [
+    "DO use SkeletonRows for a flat list of short bars — activity feeds without avatars, settings rows, filter result lists.",
+    "DO match `rows` and `columns` to the loaded layout so the skeleton does not jump when data arrives.",
+    "DON'T use it for tabular data with a header row — SkeletonTable matches DataTable's chrome.",
+    "DON'T use it for a form — SkeletonForm draws label + control pairs on the form's column grid.",
+    "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages."
+  ],
+  "useCases": [
+    "Card body while a simple list deferred prop resolves",
+    "Stacked settings rows before the record loads",
+    "Generic repeated rows when SkeletonArticle's avatar + prose rhythm is wrong"
+  ]
+}

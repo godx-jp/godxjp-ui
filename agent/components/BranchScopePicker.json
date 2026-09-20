@@ -1,0 +1,89 @@
+{
+  "docPath": "data-entry/branch-scope-picker.tsx",
+  "example": "import { BranchScopePicker, FormField } from \"@godxjp/ui/data-entry\";\n\n<FormField label=\"適用範囲\" required error={errors.scope}>\n  <BranchScopePicker\n    branches={branches}\n    value={scope}\n    onValueChange={setScope}\n    error={scope.mode === \"selected\" && !scope.branchIds?.length ? \"1件以上選択してください\" : undefined}\n  />\n</FormField>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "BranchScopePicker",
+  "props": [
+    {
+      "description": "Giá trị có kiểm soát: phạm vi đang chọn.",
+      "name": "value",
+      "type": "BranchScopeValueProp"
+    },
+    {
+      "description": "Giá trị khởi tạo khi không kiểm soát.",
+      "name": "defaultValue",
+      "type": "BranchScopeValueProp"
+    },
+    {
+      "description": "Phát khi phạm vi đổi.",
+      "name": "onValueChange",
+      "type": "(value: BranchScopeValueProp) => void"
+    },
+    {
+      "description": "The selectable branches — consumer domain data.",
+      "name": "branches",
+      "required": true,
+      "type": "{ id: string; name: string; description?: string; disabled?: boolean }[]"
+    },
+    {
+      "description": "The controlled triad; default { mode: \"all\" }. Mode flips PRESERVE branchIds so switching back to all never destroys a curated subset.",
+      "name": "value / defaultValue / onValueChange",
+      "type": "{ mode: \"all\" | \"selected\"; branchIds?: string[] }"
+    },
+    {
+      "description": "Field VALIDATION message — rendered under the control and wired via aria-invalid/aria-errormessage on the radiogroup. Collection read failures are `listError`, not this.",
+      "name": "error",
+      "type": "ReactNode"
+    },
+    {
+      "description": "`true` renders the built-in localized message.",
+      "name": "listError / denied / loading / empty",
+      "type": "boolean | ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Locked view: the current scope as a static summary (mode + branch badges).",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Controls visible but inert.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Built-in branch search above the checkbox list.",
+      "name": "searchable",
+      "type": "boolean"
+    },
+    {
+      "description": "Override the localized radio labels (e.g. domain wording like 全店舗).",
+      "name": "allLabel / selectedLabel",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "CheckboxGroup / RadioGroup — the primitives underneath; use them directly for non-scope choices.",
+    "Transfer — large two-list assignment; BranchScopePicker is the compact all-vs-subset scope idiom.",
+    "TreeSelect — hierarchical selection when branches nest."
+  ],
+  "rules": [
+    24
+  ],
+  "storyPath": "data-entry/BranchScopePicker.stories.tsx",
+  "tagline": "Canonical scope control: all branches vs an explicit subset.",
+  "usage": [
+    "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
+    "DO import it from @godxjp/ui/data-entry — never compose an ad-hoc radio+checkbox scope block per screen.",
+    "DO use `error` ONLY for validation (e.g. mode=selected with zero branches checked); a failed branch fetch is `listError`, a 403 is `denied`.",
+    "DO NOT preselect branches for the user — default is { mode: \"all\" }; an explicit subset is a user decision."
+  ],
+  "useCases": [
+    "Role/permission assignment scoped to branches (service role forms).",
+    "Report or notification audience: whole org vs selected branches.",
+    "Read-only scope display on a detail screen (readOnly)."
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "example": "{`import { Cascader } from \"@godxjp/ui/data-entry\";\n\nconst REGIONS = [\n  {\n    value: \"jp\",\n    label: \"日本\",\n    content: [\n      {\n        value: \"tokyo\",\n        label: \"東京都\",\n        content: [\n          { value: \"shinjuku\", label: \"新宿区\" },\n          { value: \"shibuya\", label: \"渋谷区\" },\n        ],\n      },\n    ],\n  },\n  {\n    value: \"vn\",\n    label: \"Việt Nam\",\n    content: [\n      {\n        value: \"hcm\",\n        label: \"TP. Hồ Chí Minh\",\n        content: [\n          { value: \"q1\", label: \"Quận 1\" },\n          { value: \"q3\", label: \"Quận 3\" },\n        ],\n      },\n    ],\n  },\n];\n\n// Controlled single-path\nfunction RegionPicker() {\n  const [path, setPath] = React.useState<string[]>([]);\n\n  return (\n    <Cascader\n      options={REGIONS}\n      value={path}\n      onValueChange={(v) => setPath(v as string[])}\n      showSearch\n      placeholder=\"Select region…\"\n    />\n  );\n}\n\n// Multi-path (multiple selection)\nfunction MultiRegionPicker() {\n  const [paths, setPaths] = React.useState<string[][]>([]);\n\n  return (\n    <Cascader\n      options={REGIONS}\n      multiple\n      value={paths}\n      onValueChange={(v) => setPaths(v as string[][])}\n      showSearch\n    />\n  );\n}\n\n// With custom field names (data uses 'name'/'id'/'nodes')\n<Cascader\n  options={rawApiData}\n  fieldNames={{ label: \"name\", value: \"id\", content: \"nodes\" }}\n  defaultValue={[\"dept-1\", \"team-3\"]}\n/>\n\n// changeOnSelect: lets user pick a branch node (not only leaves)\n<Cascader\n  options={REGIONS}\n  changeOnSelect\n  onValueChange={(v) => console.log(\"path\", v)}\n/>\n`}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Cascader",
+  "props": [
+    {
+      "description": "Native form field name; repeated values for multiple paths.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Prevent edits while preserving the displayed value.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "The hierarchical option tree. Each node has { value: string; label: ReactNode; disabled?: boolean; isLeaf?: boolean; children?: TreeOptionProp[] }. Normalised internally via fieldNames.",
+      "name": "options",
+      "required": true,
+      "type": "TreeOptionProp[]"
+    },
+    {
+      "description": "Controlled value. Single mode: string[] path (e.g. ['vn','hcm','q1']). Multiple mode: string[][] array of paths.",
+      "name": "value",
+      "type": "string[] | string[][]"
+    },
+    {
+      "description": "Initial value for uncontrolled mode. Same shape as value.",
+      "name": "defaultValue",
+      "type": "string[] | string[][]"
+    },
+    {
+      "description": "Fires when selection changes. First arg is the selected path(s); second is the matching node objects. On clear, called with [].",
+      "name": "onValueChange",
+      "type": "(value: string[] | string[][], selectedOptions?: TreeOptionProp[] | TreeOptionProp[][]) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Enable multi-path selection. Renders checkboxes in columns and search results. Panel stays open on each pick. value/defaultValue become string[][].",
+      "name": "multiple",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, clicking any node (including branch nodes with children) commits that path immediately instead of waiting for a leaf selection.",
+      "name": "changeOnSelect",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Renders a CommandInput at the top of the popover. Filters to matching leaf paths across the whole tree when a query is typed; reverts to cascade columns when the query is cleared.",
+      "name": "showSearch",
+      "type": "boolean"
+    },
+    {
+      "description": "Trigger button placeholder text when no value is selected. Defaults to the i18n key dataEntry.cascader.placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables the trigger button and prevents the popover from opening.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"click\"",
+      "description": "How child columns are expanded. 'hover' expands on mouseenter and collapses back on mouseleave.",
+      "name": "expandTrigger",
+      "type": "\"click\" | \"hover\""
+    },
+    {
+      "description": "Remap custom data keys: { label?: string; value?: string; children?: string }. Use when your data uses e.g. 'name' and 'id' instead of 'label' and 'value'.",
+      "name": "fieldNames",
+      "type": "TreeFieldNamesProp"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Shows an X icon on the trigger when a value is selected. Clicking it calls onChange([]) and resets to placeholder. On by default, as antd Cascader; pass `false` on a required field.",
+      "name": "allowClear",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra Tailwind classes applied to the trigger button.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "HTML id forwarded to the trigger button. Use to associate a <label htmlFor>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "antd `loading` — the FIELD is in flight: the trailing chevron becomes a spinner and the trigger reports aria-busy. Distinct from the list-level spinner an async loadOptions shows inside the popup.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `size` — height tier on the shared --control-height ladder.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `open` — controlled panel state. The consumer is the authority: nothing internal closes a pinned panel.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `defaultOpen` — uncontrolled initial panel state.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `onOpenChange` — fires for both controlled and uncontrolled panels.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd's `\"responsive\"` is not supported (see the parity PR).",
+      "name": "maxTagCount",
+      "type": "number"
+    },
+    {
+      "description": "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      "name": "maxTagPlaceholder",
+      "type": "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)"
+    },
+    {
+      "description": "antd `notFoundContent` — the node shown when the popup has nothing to list. Outranks the string-only emptyMessage.",
+      "name": "notFoundContent",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `autoClearSearchValue` (default true) — clear the search box after a pick / on close. Set false to resume the same filtered list on the next open.",
+      "name": "autoClearSearchValue",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `showCheckedStrategy` (multiple only). SHOW_PARENT collapses a fully-checked branch into the branch itself; SHOW_CHILD (default) lists the leaves.",
+      "name": "showCheckedStrategy",
+      "type": "\"SHOW_CHILD\" | \"SHOW_PARENT\""
+    },
+    {
+      "description": "antd `loadData` — lazy children. Called ONCE per branch that has no children and isLeaf !== true, the first time it is expanded; push the fetched children into options.",
+      "name": "loadData",
+      "type": "(selectedOptions: TreeOptionProp[]) => void | Promise<void>"
+    },
+    {
+      "description": "antd `displayRender` — owns the trigger label built from the selected path.",
+      "name": "displayRender",
+      "type": "(labels: string[], selectedOptions?: TreeOptionProp[]) => React.ReactNode"
+    },
+    {
+      "description": "antd `optionRender` — owns a column row's body. The checkbox, check mark and chevron stay with the component.",
+      "name": "optionRender",
+      "type": "(option: TreeOptionProp) => React.ReactNode"
+    },
+    {
+      "description": "Controlled search query (antd `showSearch.searchValue`).",
+      "name": "search",
+      "type": "string"
+    },
+    {
+      "description": "Search query change (antd `showSearch.onSearch`).",
+      "name": "onSearchChange",
+      "type": "(query: string) => void"
+    }
+  ],
+  "related": [
+    "TreeSelect — use when the hierarchy is a collapsible tree (expand/collapse nodes) rather than side-by-side columns, and when a single flat value string (node key) is sufficient instead of a full ancestor path. TreeSelect also supports treeCheckable for multi-select.",
+    "Select — use for a flat (non-hierarchical) list of options. Cascader is only needed when items have meaningful parent–child levels.",
+    "Transfer — use when the user needs to shuttle multiple items between two panels; not for hierarchical path selection."
+  ],
+  "rules": [
+    3,
+    6,
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Cascader.stories.tsx",
+  "tagline": "Multi-level hierarchical path picker (Popover + cascading columns); value is always a string[] path, never a flat ID — passing a bare string breaks it.",
+  "usage": [
+    "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",
+    "DO use value + onChange together for controlled mode, or defaultValue alone for uncontrolled. DON'T mix both — providing value without onChange makes the field read-only (the internal state won't update).",
+    "DO set multiple={true} and pass value as string[][] (array of paths) for multi-selection. onChange receives string[][] in that mode. Mixing single-mode shape with multiple={true} silently produces no selection.",
+    "DON'T hand-roll a search input next to Cascader. Use showSearch={true} — it adds a built-in CommandInput that filters leaf paths across the full tree and reverts to cascade columns when cleared.",
+    "DO use fieldNames to remap data keys ({label:'name', value:'id', children:'nodes'}) rather than pre-transforming your API data. This keeps options in their original shape.",
+    "For form submission, Cascader has no 'name' prop. Wrap in a controlled pattern and store the path array in your form state (useForm/useState). For Inertia useForm, keep the field as an array (e.g. data.categoryPath = ['a','b','c'])."
+  ],
+  "useCases": [
+    "Geographic drilldown (Country → Prefecture → City) for address or branch-office pickers in accounting or logistics forms.",
+    "Expense category selection (e.g. Operating Expenses → Marketing → Digital Ads) where the full classification path is required for the general ledger.",
+    "Product taxonomy navigation (Department → Category → Sub-category) in inventory or invoice line-item entry.",
+    "Organisational unit picker (Company → Division → Department) in budget allocation or approval-routing configurations.",
+    "Multi-region filter in a report or dashboard filter bar, using multiple={true} to allow selecting several leaf locations at once.",
+    "Any deeply nested classification where the relationship between levels is meaningful and must be captured — not just the leaf value."
+  ]
+}

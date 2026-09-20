@@ -1,0 +1,60 @@
+{
+  "example": "{`import { useState } from \"react\";\nimport { UploadCropDialog } from \"@godxjp/ui/upload\"; // internal — prefer Upload variant=\"avatar-crop\" instead\n\nexport function AvatarField() {\n  const [cropFile, setCropFile] = useState<File | null>(null);\n\n  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    const file = e.target.files?.[0] ?? null;\n    setCropFile(file);\n    e.target.value = \"\"; // reset so re-selecting same file fires onChange\n  };\n\n  const handleConfirm = (cropped: File) => {\n    // cropped is always image/jpeg 256×256\n    const form = new FormData();\n    form.append(\"avatar\", cropped);\n    fetch(\"/api/avatar\", { method: \"POST\", body: form });\n  };\n\n  return (\n    <>\n      <input type=\"file\" accept=\"image/*\" onValueChange={handleFileChange} />\n      <UploadCropDialog\n        open={cropFile !== null}\n        onOpenChange={(open) => { if (!open) setCropFile(null); }}\n        file={cropFile}\n        onConfirm={handleConfirm}\n      />\n    </>\n  );\n}`}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "UploadCropDialog",
+  "props": [
+    {
+      "description": "Controls dialog visibility. Drive this with useState; the component never auto-opens.",
+      "name": "open",
+      "required": true,
+      "type": "boolean"
+    },
+    {
+      "description": "Called when the dialog requests close (Cancel button or overlay click). Set your open state to false here.",
+      "name": "onOpenChange",
+      "required": true,
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "The raw File object to crop. An object URL is created internally and revoked on cleanup. Pass null when no file is selected (dialog renders empty).",
+      "name": "file",
+      "required": true,
+      "type": "File | null"
+    },
+    {
+      "description": "Called with the cropped result — always a JPEG File (256x256, quality 0.92) regardless of the original format. The dialog closes itself after calling this.",
+      "name": "onConfirm",
+      "required": true,
+      "type": "(cropped: File) => void"
+    }
+  ],
+  "related": [
+    "Upload (variant='avatar-crop') — the preferred way to get crop-on-upload for avatars; it wraps UploadCropDialog automatically. Use UploadCropDialog directly only when you need a custom file-picking trigger or a non-avatar crop flow.",
+    "Upload (variant='avatar') — same circular avatar UI without the crop step; the file is used as-is.",
+    "Upload (variant='picture') — rectangular single-image upload without crop; no dialog.",
+    "Upload (variant='picture-card') — multi-image grid upload without crop."
+  ],
+  "rules": [
+    3,
+    13,
+    23
+  ],
+  "storyPath": "data-entry/UploadCropDialog.stories.tsx",
+  "tagline": "Modal crop dialog for a single image file — always controlled (open + file + onConfirm required); do NOT use standalone when Upload variant=\"avatar-crop\" already embeds it.",
+  "usage": [
+    "DO pass a File object selected by the user (e.g. from an <input type='file'> or drag-drop handler) to `file`; the dialog creates and revokes its own object URL — never create one yourself before passing.",
+    "DO close the dialog in onOpenChange: `onOpenChange={(open) => !open && setCropFile(null)}` — always clear cropFile state on close to avoid a stale image on the next open.",
+    "DO handle the cropped File in onConfirm and then upload or store it; the output is always image/jpeg 256×256 named `<originalName>.jpg`.",
+    "DON'T use UploadCropDialog directly if you are already using `<Upload variant='avatar-crop'>` — that variant already embeds UploadCropDialog internally. Using both will double-mount the dialog.",
+    "DON'T try to control the zoom slider from outside — scale state is fully internal; the user controls zoom in-dialog via a Slider (1–2.5×, step 0.05).",
+    "DON'T submit the dialog's output File as a form field directly; pass it to your upload handler (e.g. onUpload prop on Upload, or a manual FormData POST), since File objects cannot survive a standard HTML form serialisation."
+  ],
+  "useCases": [
+    "Avatar / profile photo upload flow: show a file picker, pass the chosen File to UploadCropDialog, upload the cropped 256×256 JPEG to the server on confirm.",
+    "Admin user management: let admins set or replace a team member's avatar with consistent square crop instead of accepting arbitrary-shaped originals.",
+    "Legal-entity logo upload in an accounting app: enforce a square, web-ready JPEG from any source image before storing it as the entity's icon.",
+    "Any single-image form field that needs browser-side crop before upload — avoids a round-trip to a server-side image processor.",
+    "Building a custom avatar picker UI on top of the godx-ui Upload primitives when the built-in variant='avatar-crop' does not fit your layout."
+  ]
+}

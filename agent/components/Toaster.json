@@ -1,0 +1,42 @@
+{
+  "example": "// app root — mount once\nimport { Toaster } from \"@godxjp/ui/feedback\";\n<>{children}<Toaster richColors /></>\n\n// anywhere — import toast from \"sonner\"\nimport { toast } from \"sonner\";\ntoast.success(\"クーポンを公開しました\");\ntoast.error(\"保存に失敗しました\");",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Toaster",
+  "props": [
+    {
+      "defaultValue": "\"bottom-right\"",
+      "description": "Toast stack anchor.",
+      "name": "position",
+      "type": "\"top-right\" | \"top-center\" | \"bottom-right\" | \"…\""
+    },
+    {
+      "description": "Enable Sonner rich variant colours.",
+      "name": "richColors",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Alert — use for persistent, inline feedback that must stay visible (validation summaries, page-level warnings, destructive notices). Unlike Toaster, Alert does not auto-dismiss and lives in the document flow.",
+    "AlertMutationFeedback — use when you have a TanStack `useMutation` result and want an inline error + retry UI inside a form or card. Renders nothing on success/idle; pairs naturally with a `toast.success` in `onSuccess`.",
+    "Dialog — use when the user must make a conscious decision (confirm delete, resolve conflict) before proceeding. Toaster toasts are fire-and-forget; Dialog blocks until the user responds."
+  ],
+  "rules": [],
+  "storyPath": "feedback/Toaster.stories.tsx",
+  "tagline": "Mount once at app root to enable toasts. IMPORTANT: trigger toasts via `import { toast } from \"sonner\"` — NOT from @godxjp/ui.",
+  "usage": [
+    "DO: Mount exactly ONE `<Toaster richColors />` at the app root (e.g. inside your layout or AppShell children). Multiple mounts create duplicate toast stacks — there is no provider context, only DOM portals.",
+    "DO: Import `toast` from `\"sonner\"` directly (not from `@godxjp/ui`) to fire toasts anywhere: `toast.success(…)`, `toast.error(…)`, `toast.warning(…)`, `toast.info(…)`, `toast.loading(…)`, `toast.promise(…)`.",
+    "DON'T: Try to import a `toast` helper from `@godxjp/ui/feedback` — it does not exist. The component re-exports only the `Toaster` mount; the imperative API lives in the `sonner` package.",
+    "DO: Let the wrapper handle theming — it uses `useDocumentTheme()` to sync with the document `dark` class and `prefers-color-scheme` automatically. Never pass a hardcoded `theme` prop unless you are deliberately overriding.",
+    "DON'T: Use `Toaster` for persistent errors or blocking confirmations. Toasts auto-dismiss; they are not a substitute for `Alert` (inline persistent warnings) or `Dialog` (decisions requiring user input).",
+    "DO: Pass `position` to relocate the stack if a persistent sidebar/footer would obscure the default `bottom-right`. The wrapper already sets a safe `mobileOffset`; don't add redundant mobile offsets unless your layout differs."
+  ],
+  "useCases": [
+    "After a successful form save (invoice, journal entry, vendor record) — show `toast.success(\"保存しました\")` to confirm without blocking navigation.",
+    "After a background job is enqueued (e.g. bulk sync or export) — show `toast.info(\"エクスポートを開始しました\")` then later update with `toast.promise()` to track completion.",
+    "Mutation error fallback when the error is transient and retrying is the right UX — show `toast.error(message)` instead of replacing page content; reserve `AlertMutationFeedback` for inline, persistent error display inside a form.",
+    "Soft destructive action confirmation outcome — e.g. \"削除しました\" after an item is removed, paired with an undo action via `toast(\"…\", { action: { label: '元に戻す', onClick: undo } })`.",
+    "OAuth / session expiry warnings — surface a brief `toast.warning(\"セッションの有効期限が近づいています\")` without interrupting the user's current form state."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "example": "import { AuthFooter } from \"@godxjp/ui/layout\";\n\n<AuthFooter product=\"Acme ID\" terms={<a href=\"/terms\">Terms</a>} privacy={<a href=\"/privacy\">Privacy</a>} locale=\"English\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AuthFooter",
+  "props": [
+    {
+      "description": "Product identity content.",
+      "name": "product",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Terms link or localized text.",
+      "name": "terms",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Privacy link or localized text.",
+      "name": "privacy",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional consumer-owned locale control.",
+      "name": "locale",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional structural class override merged onto the footer root.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "rules": [
+    45
+  ],
+  "storyPath": "layout/AuthFooter.stories.tsx",
+  "tagline": "Compact hosted-auth footer for consumer-owned product, legal, privacy, and locale content.",
+  "usage": [
+    "Pass real links and locale controls from the consumer; AuthFooter never invents navigation.",
+    "DO drop it into AuthShell's `footer` slot — that slot supplies the contentinfo landmark, so AuthFooter itself renders a plain div and can also sit inside an existing footer without nesting landmarks.",
+    "AuthFooter owns ONLY the geometry: mono ramp, wrap, and a `·` separator between the slots that are actually PRESENT (omit `locale` and its separator disappears). Don't hand-write separators into the slot content.",
+    "Public type: `AuthFooterProp` (alias `AuthFooterProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
+    "Retune the line through `--auth-footer-content-gap` / `--auth-footer-text-font-size`, never page CSS (rule #45)."
+  ]
+}

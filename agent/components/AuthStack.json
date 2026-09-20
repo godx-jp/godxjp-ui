@@ -1,0 +1,21 @@
+{
+  "example": "import { AuthStack } from \"@godxjp/ui/layout\";\n\n<AuthStack><PasskeyAction /><CredentialsForm /></AuthStack>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AuthStack",
+  "props": [
+    {
+      "description": "Auth sections in visual order.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional structural class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "rules": [],
+  "storyPath": "layout/AuthStack.stories.tsx",
+  "tagline": "Token-spaced vertical stack for direct sections inside a canonical auth card."
+}

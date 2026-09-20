@@ -1,0 +1,91 @@
+{
+  "example": "import { RadioGroup } from \"@godxjp/ui/data-entry\";\n\n<RadioGroup value={trigger} onValueChange={setTrigger} orientation=\"horizontal\" options={[\n  { label: \"初回購入\", value: \"first_purchase\" },\n  { label: \"誕生日\", value: \"birthday\" },\n]} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "RadioGroup",
+  "props": [
+    {
+      "defaultValue": "\"default\"",
+      "description": "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds the choices into one segmented bar. The role stays `radiogroup`/`radio` either way: this is paint, never semantics, so a screen reader hears the same group in both.",
+      "name": "optionType",
+      "type": "\"default\" | \"button\""
+    },
+    {
+      "defaultValue": "\"outline\"",
+      "description": "antd `buttonStyle` — fill of the SELECTED choice while `optionType=\"button\"`. Inert on the default option type.",
+      "name": "buttonStyle",
+      "type": "\"outline\" | \"solid\""
+    },
+    {
+      "description": "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Controlled selected value.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Fires on selection change.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Declarative list: { label, value, disabled?, description? }.",
+      "name": "options",
+      "type": "ChoiceOptionProp[]"
+    },
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Layout direction.",
+      "name": "orientation",
+      "type": "\"horizontal\" | \"vertical\""
+    },
+    {
+      "description": "Uncontrolled initial selected value.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Disable the whole group.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Form field name for native submission.",
+      "name": "name",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "CheckboxGroup — use when the user may select zero or more values simultaneously (multi-select); RadioGroup enforces exactly one selection. Both share the same options array shape and orientation prop.",
+    "Select — use when there are 5 or more options or the option list is dynamic/searchable; RadioGroup is preferred for 2-4 fixed visible choices where scanning all options at once matters.",
+    "Field — use when there are exactly two states that map to on/off (boolean); RadioGroup is the right pick when the two-or-more options are semantically distinct named values, not a toggle.",
+    "Field — the low-level label+description wrapper that RadioGroup uses internally for each item. Use it directly only when manually composing Radio.Item children inside Radio.Group; never hand-roll a label alongside a bare Radio.Item without it."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "data-entry/RadioGroup.stories.tsx",
+  "subParts": [
+    "RadioGroupRoot"
+  ],
+  "tagline": "Radio group accepting an options array or RadioItem children.",
+  "usage": [
+    "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
+    "DO provide `name` whenever the group lives inside an HTML form: Radix renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
+    "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
+    "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a Field — rendering a bare Radio.Item without Field skips the label and breaks a11y.",
+    "DO NOT use RadioGroup when the user may select zero or multiple items — that is CheckboxGroup. RadioGroup enforces exactly one selection at all times (or none before first interaction when uncontrolled).",
+    "A11y: the root emits `role=radiogroup`; each item is a real `<input type=\"radio\">` (implicit `role=radio`) and is keyboard-navigable with arrow keys. Never suppress `name` on the Root when inside a form — without it the input is unnamed and won't submit. Name an item with `<Label htmlFor>` (or `Field`) BESIDE it, never by wrapping it: the control already sits inside its own `<label>`, and a second one nested outside leaves it nameless."
+  ],
+  "useCases": [
+    "Selecting a single billing cycle (monthly / quarterly / annual) in an invoice or subscription settings form where all 2-4 options must be visible at once.",
+    "Choosing a report output format (PDF / CSV / Excel) before triggering an async export job — keeps all options scannable without opening a dropdown.",
+    "Picking a transaction type (income / expense / transfer) on an accounting entry form where the choice changes which subsequent fields are shown.",
+    "Selecting a sync trigger mode (first purchase / birthday / manual) in a campaign or automation settings panel — matches the catalog example exactly.",
+    "Filtering a compact inline control (horizontal orientation) such as date granularity (day / week / month) inside a dashboard filter bar where a full Select dropdown would be over-engineered.",
+    "Choosing an approval status (pending / approved / rejected) on an admin detail sheet where all states must be visible so reviewers can compare them without interaction."
+  ]
+}

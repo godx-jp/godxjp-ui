@@ -1,0 +1,181 @@
+{
+  "example": "import { PageContainer, Flex } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\n\nexport default function OrdersPage() {\n  return (\n    <PageContainer\n      title=\"注文一覧\"\n      subtitle=\"直近30日間の受注データ\"\n      breadcrumb={[{ label: \"ホーム\", to: \"/\" }, { label: \"注文一覧\" }]}\n      extra={<Button>新規注文</Button>}\n    >\n      <Flex direction=\"col\" gap=\"lg\">{/* page content */}</Flex>\n    </PageContainer>\n  );\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "PageContainer",
+  "props": [
+    {
+      "description": "Instance footer inset; omitted preserves the theme.",
+      "name": "footerPad",
+      "type": "PadProp"
+    },
+    {
+      "description": "Instance toolbar inset; omitted preserves the theme.",
+      "name": "toolbarPad",
+      "type": "PadProp"
+    },
+    {
+      "description": "Tên khả truy cập của landmark <nav> breadcrumb. Mặc định là chuỗi Breadcrumb đã dịch.",
+      "name": "breadcrumbLabel",
+      "type": "string"
+    },
+    {
+      "description": "Page heading rendered as <h1>.",
+      "name": "title",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Secondary line beneath the title.",
+      "name": "subtitle",
+      "type": "string"
+    },
+    {
+      "description": "Status/meta band beside the title (StatusBadge, environment tag, \"updated …\" meta). Sits on the title line at the token-owned --page-header-status-gap and wraps UNDER the title on compact viewports. Part of the canonical page-header contract — never hand-lay a badge next to the <h1>.",
+      "name": "status",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Action buttons / controls rendered at the END of the title row. A bare node is the whole slot and stays the shape every page already passes — it lands in `start`. `{ start, end }` splits it in two so a page can put something AFTER the actions: the record-screen convention is identity → actions → PAGER LAST, and with one slot the pager had to live in a second header band inside the body, so an app carried two header shapes (gh#734). Both sub-slots are direct children of the one header-extra box in source order, so DOM order IS reading order and the accessibility tree follows; unused, nothing renders at all. The union is `TabsExtraProp`'s on purpose — `Tabs.extra` already accepts exactly this for exactly this reason, and the names are logical (`start`/`end`, never left/right), so they swap sides under dir=\"rtl\".",
+      "name": "extra",
+      "type": "ReactNode | { start?: ReactNode; end?: ReactNode }"
+    },
+    {
+      "description": "FIXED chrome band between the page header and the body — a filter strip, a status bar, a \"channel workflow\" rail. It is a SIBLING of the body, not content inside it: with `fill` the body is the scroll viewport, so the band is `flex: none` OUTSIDE the scroller and never scrolls away or gets slid under. Shares the page gutters and the `measure` cap with the header and the body (the three bands line up on both edges), goes full-bleed under variant=\"flush\" (wrap padded strips in PageContainer.Inset), and renders NOTHING when omitted — no wrapper, no gap. It sits FLUSH against the header above and the body below: chrome is attached, not a third page section floating between two voids, so the band cancels the container gap from itself and its ONLY breathing room is its own inset.",
+      "name": "toolbar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Content area pinned below the page body. The BAND (its top rule and, with `stickyFooter`, its background) always spans the page; its CONTENT is laid out in the same column as the header and body (gh#682). With a cap — `measure=\"narrow\" | \"medium\"` or a service-wide `--app-shell-page-max-width` inside AppShell — an end-aligned Save/Cancel bar ends on the body's end edge and a full-row composer (`<Flex grow>`) spans exactly the body's content column; with no cap it is unchanged. The footer's children stay its direct children (no wrapper element), and an instance `footerPad` end inset composes with the cap. Never add a call-site `max-w-*` to line it up.",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The page sections. Every direct child of the body is spaced from the previous one by --page-body-gap (the section step): drop your Cards straight in — do NOT wrap them in a Flex to space them, do NOT add gap-*/mt-*. Group items INSIDE a section with <Flex direction=\"col\" gap> or <ResponsiveGrid>.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Ordered trail of { label, to? } segments above the title.",
+      "name": "breadcrumb",
+      "type": "BreadcrumbItemProp[]"
+    },
+    {
+      "description": "Override the breadcrumb nav landmark's accessible name (defaults to a localized \"Breadcrumb\"). Required when more than one PageContainer (each with its own breadcrumb) renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.",
+      "name": "breadcrumbAriaLabel",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Page shell layout; flush removes padding for full-bleed content.",
+      "name": "variant",
+      "type": "\"default\" | \"narrow\" | \"flush\" | \"ghost\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Spacing density across the page subtree.",
+      "name": "density",
+      "type": "\"compact\" | \"default\" | \"comfortable\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Whole-page semantic composition. \"admin-collection\" owns header-to-toolbar rhythm, collection search measure, control height and table density for the subtree through themeable tokens.",
+      "name": "preset",
+      "type": "\"default\" | \"admin-collection\""
+    },
+    {
+      "defaultValue": "\"stack\"",
+      "description": "How the title band and `extra` share the header row BELOW the 640px step. \"stack\" (default) drops `extra` onto its own full-width line under the subtitle. \"responsive-inline\" keeps it beside the title at the token-owned --page-header-extra-measure (11rem) and lets the title/subtitle wrap — use it for ONE compact control (a search field, a single primary action) that must stay on the title row at 390px. At >=640px the two arrangements are identical.",
+      "name": "headerLayout",
+      "type": "\"stack\" | \"responsive-inline\""
+    },
+    {
+      "defaultValue": "\"document\"",
+      "description": "What the page's top row IS, which decides the `<h1>`'s type step. \"document\" (default) = the row is the page's TITLE (a record, a form, a collection, a report): --page-title-font-size (h1, 20px) with the existing responsive step down at 720px; no attribute is emitted, so an existing page is byte-identical. \"chrome\" = the row is the surface's own furniture — a chat channel name, a mail subject line, an IDE tab — naming the thing the user is already INSIDE instead of announcing a document; the h1 takes --page-title-font-size-chrome (--heading-h3 = the 14px body step) at EVERY width, including below 720px where the document-scale step would otherwise pull it back UP. The heading stays an `<h1>` either way — this moves the type step only, never the element, so the screen-reader outline is untouched.",
+      "name": "headerScale",
+      "type": "\"document\" | \"chrome\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). \"narrow\" (--page-measure-narrow, 42rem outer → 624px visible surface) and \"medium\" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant=\"narrow\", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer BAND is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it), but its CONTENT follows the same measure (gh#682): an end-aligned footer action ends flush with the body too, instead of stranded at the band edge. Inside AppShell the page is fluid by default; a service-wide `--app-shell-page-max-width` caps the same header/toolbar/body bands and the footer CONTENT (never the footer band), and `measure` overrides it on the page that sets it.",
+      "name": "measure",
+      "type": "\"default\" | \"narrow\" | \"medium\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Pin footer to viewport bottom on scroll — pairs with variant=\"narrow\".",
+      "name": "stickyFooter",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"always\"",
+      "description": "When the footer is sticky, control WHEN it shows. \"always\" keeps it pinned the whole time; \"onScroll\" hides it until the header scrolls out of view then slides it up — the standard edit/create save bar. Stays mounted (no reflow → no jitter).",
+      "name": "footerReveal",
+      "type": "\"always\" | \"onScroll\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Grow the body to fill the remaining shell height. Default false = top-packed, content-height (short pages leave no stretched void). Enable for a full-height DataTable, SplitPane, or a chat surface.",
+      "name": "fill",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
+      "name": "headerLoading",
+      "type": "boolean"
+    },
+    {
+      "description": "Link component used for breadcrumb / header links (e.g. an Inertia or React Router `Link`). Defaults to a native `<a>`.",
+      "name": "linkComponent",
+      "type": "React.ElementType"
+    }
+  ],
+  "related": [
+    "PageContainer.Inset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like Toolbar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
+    "PageContainer — always use PageContainer for new pages; it supports `children`, `toolbar`, `footer`, `variant`, `density`, `stickyFooter`, and `fill`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
+    "AppShell — the outer shell that owns the sidebar/topbar layout grid; PageContainer lives inside AppShell's `children` slot. Do not put AppShell inside PageContainer — the nesting order is AppShell → PageContainer.",
+    "SplitPane — use instead of PageContainer when the page body needs a fixed-width aside panel alongside main content (e.g. a detail drawer next to a list). PageContainer has no aside slot; SplitPane fills that gap and can itself be placed inside PageContainer's children."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "layout/PageContainer.stories.tsx",
+  "tagline": "Mandatory page shell — EVERY page wraps its content in PageContainer (title/subtitle/extra/footer/breadcrumb).",
+  "usage": [
+    "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
+    "CANONICAL PAGE-HEADER CONTRACT: PageContainer's embedded header IS the DXS `PageHeader` — there is deliberately NO separate PageHeader export, so the page header cannot be re-created or nested. It owns breadcrumbs (`breadcrumb`), title (`title`), subtitle/description (`subtitle`), status/meta (`status`), actions (`extra`) and responsive overflow (`headerLayout` + `measure`). Loading/error/denied are compositions of siblings, never hand-rolls: skeleton `title`/`subtitle` content or `SkeletonDetail` body while a detail loads; `ErrorSurface` (from @godxjp/ui/layout) REPLACES the page for denied (403) / not-found (404) / failed (5xx) whole-page states; `Alert.QueryError` / `DataState` own an in-body query failure.",
+    "DO: Use the `extra` prop (not a sibling div, not a wrapper) for action buttons or controls that sit right of the title row — e.g. `extra={<Button>新規作成</Button>}`. Use the `footer` prop for a pinned action bar below the body (e.g. Save/Cancel on a form page); combine with `stickyFooter` to pin it to the viewport bottom on scroll.",
+    "DO: Use `toolbar` for any FIXED strip that belongs between the page header and the page content — a filter/segment bar, a status or connection band, a list's bulk-action rail. DON'T put it in `children` (with `fill` the body is the scroller, so it scrolls out of sight) and NEVER hand-lay it with `position: sticky` / a `top-0 z-10` wrapper at the call site: page chrome is the shell's job, and a sticky strip still lets content flow underneath it — the half-sliced row every hand-rolled version produces. It stays out of the scroll viewport, inherits the page gutters and the `measure` cap so it lines up with the title and the body, and is entirely absent from the DOM when the prop is omitted.",
+    "DO: Know the `toolbar` band draws NO bottom rule by default — `--page-toolbar-divider` is unset and falls back to `--page-header-divider` (itself `none`), so a service that opts into the page-header divider gets a consistent band rule in ONE declaration, and `--page-toolbar-divider: none` silences just the band. `variant='ghost'` keeps both quiet unless a theme opts one in explicitly, which it then lets through.",
+    "DO: Give the `toolbar` band its own SURFACE from the theme when the design separates it from the page ground — `--page-toolbar-background: hsl(var(--card));` declared once (`:root` or a scoped `[data-tenant]`) paints the whole band, page gutters and `measure` cap included, and stays re-themeable per tenant. It is the `background` shorthand, so a gradient works too. The default is `transparent`, i.e. the band looks exactly as it did before the knob existed (rule #44).",
+    "DO: Set `--page-toolbar-pad-block` in the SAME theme declaration that paints or rules the band. It is the band's ONLY breathing room: the band sits FLUSH against the header and the body (chrome is attached — a ruled, painted band adrift in two 16px voids divides nothing), so there is no outside space to tune. The default is `0` and stays `0`: a transparent band is not a surface and has no inside for an inset to breathe, and under `fill` every pixel of band height comes straight off the scroll viewport the slot exists to protect. Once the band is painted or ruled it DOES have an inside, and `--page-toolbar-pad-block: var(--space-2)` is where that inset belongs. The CALL SITE never sets it — a strip padded at the call site pads only the strip, not the band.",
+    "DO: Silence the `footer` band's top rule with `--page-footer-divider: none` when the footer content already carries its own frame — a chat composer is a bordered Card, and the shell's full-width rule then lands directly above it as a SECOND line (a pixel diff against a consumer chat design caught a 100%-wide rule at y=701 the design does not have). This is the ONE page-chrome divider whose default is a RULE rather than silence, deliberately: `footer` is the shared slot a form's Save/Cancel bar lands in, where that line separates the actions from the content. Unset is byte-identical to the literal the rule used to hard-code. All three page bands are now one contract: `--page-header-divider` / `--page-toolbar-divider` / `--page-footer-divider`, each read at the CALL SITE with a fallback, none of them a `border-*` utility at the call site.",
+    "DON'T: Style the `toolbar` band from the call site. `toolbar={<div className='bg-card py-1.5'>…</div>}` is hand-laid page chrome: the utility paints the STRIP, not the band, so it stops at the content box instead of running the full page width (and full-bleed under `variant='flush'`); it is invisible to per-tenant theming; and it puts geometry the shell owns back into the app. The band's ground, inset and rule are `--page-toolbar-background` / `--page-toolbar-pad-block` / `--page-toolbar-divider` — three theme declarations, zero call-site classes.",
+    "DO: Set `headerScale='chrome'` when the page's top row is CHROME rather than a document title — a chat channel header, a mail thread's subject line, an IDE tab, a conversation view. The `<h1>` drops to the body type step (--page-title-font-size-chrome) at every width, so the header band stops eating the height the content needs: a consumer chat page measured a 61px band with a 24px channel name where the design asked for ~40px at the `sm` step. Pair it with `variant='ghost'` for the full quiet chrome header — ghost drops the header's bottom pad and lets no divider inherit in — and with `fill` + `toolbar` + `footer`/`stickyFooter` for the canonical chat surface. The heading stays an `<h1>`: this is a type step, never a heading-level downgrade. The same attribute also drops the page's top padding to `--page-pad-block-start-chrome` (0), so the band sits ON the frame instead of floating in a document's top margin — four consequences of ONE fact (this row is furniture), not four props a call site has to keep in lockstep: the subtitle drops to `--page-subtitle-font-size-chrome` (~11px) so the caption under a channel name stops matching the name's own size, and the `extra` cluster centres on the bar instead of top-packing against a heading that is no longer tall. If a design wants its chrome inset or a different caption step, the theme retunes those tokens once; never pad, negative-margin or `self-center` the page at the call site.",
+    "DON'T: Reach for `headerScale='chrome'` just because a title \"looks too big\" on an ordinary document page (a record detail, a form, a collection, a report) — the page title is the document's headline and the h1 step is the system's answer for it; shrinking it there only breaks the type rhythm the rest of the page is measured against. And NEVER override `--page-title-font-size` (or put a `text-sm` / `text-base` utility on the title) at the call site to fake it: that re-themes every page in the subtree, is invisible to the 720px responsive step, and puts page-chrome geometry back in the app. If a service wants a different chrome step, it retunes `--page-title-font-size-chrome` (or `--page-subtitle-font-size-chrome`) once in its theme. Same for the header actions: never hang `self-center` / `items-center` on the node you pass to `extra` to fix an off-centre icon row — that aligns one call site's box while every other chrome page keeps the document's top-packed row.",
+    "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (Toolbar, intro text) in `<PageContainer.Inset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageContainer.Inset.",
+    "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
+    "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
+    "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
+    "DO: Use `subtitle` (not `description`) and `extra` (not `actions`) — those are the canonical page-header names. If you see `description` / `actions` in old code, migrate them.",
+    "DO: Pass `extra={{ start: <actions/>, end: <pager/> }}` when the header convention is identity → action cluster → PAGER LAST. The two sub-slots render in that order inside the one header-extra box, so the record-pager band that used to live inside the body moves up and the app stops carrying two header shapes (gh#734). The shape is `Tabs.extra`'s, logical (`start`/`end`), and a bare node still means exactly what it always did.",
+    "DON'T: Fake \"after the actions\" by putting the pager in a second header strip inside `children`, or by appending it to the same node you pass to `extra` and spacing it with a utility — the first gives the page two header bands to keep in sync, the second hand-lays the gap the header-extra box already owns.",
+    "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`; or a page whose ENTIRE body is a `variant='page'` EmptyState, which then takes that height and centres in it (a zero-state that is the whole page is the one short page that must NOT top-pack — see EmptyState). DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
+    "DO: Reach for `headerLayout=\"responsive-inline\"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.",
+    "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title. `variant='ghost'` does NOT overrule the token: it blocks a divider from INHERITING in (so an unset token stays silent) but an explicit `--page-header-divider` still draws on a ghost page — the same shape as `--page-toolbar-divider` on the band. Ghost's real quiet half is the header's bottom pad, which it drops.",
+    "DO: Bound a readable/feed page with `measure=\"medium\"` (720px visible surface) or `measure=\"narrow\"` (624px) — NEVER a page-local `max-w-[720px]`, a wrapper div, or a consumer CSS variable override. `measure` caps the HEADER and the BODY together, which is the whole point: with `variant=\"narrow\"` the header action stays out at the page edge while the body is 624px, so the action and the card do not share an end edge. Retune the presets once in a service theme via `--page-measure-narrow` / `--page-measure-medium`.",
+    "DO: Compose the axes — `variant=\"ghost\" measure=\"medium\" headerLayout=\"responsive-inline\"` is the canonical quiet notification/inbox feed: ghost owns the quiet header rhythm (no divider, no header bottom pad, tighter title→body gap), `measure` owns the shared 720px measure, `headerLayout` keeps one compact control on the title row at 390px. They are independent props precisely so chrome and measure are no longer one variant axis. DON'T stack `variant=\"narrow\"` on top of `measure` — the measure rule simply wins on the body (verified in Chromium: variant=\"narrow\" + measure=\"medium\" resolves the body to 768px, not the intersection), so the `variant=\"narrow\"` is dead weight that only misleads the next reader. `variant=\"narrow\"` is the legacy body-only cap; `measure=\"narrow\"` is the same 624px surface with the header included."
+  ],
+  "useCases": [
+    "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
+    "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row' justify='between' fill><Button variant='outline'>削除</Button><Button>保存</Button></Flex>}` with `stickyFooter` + `footerReveal='onScroll'` so the save bar slides up only once the header (and its actions) scroll out of view — the canonical edit/create pattern.",
+    "A settings or narrow-form page (e.g. account profile, entity configuration) where `variant='narrow'` constrains content to a readable column width and `stickyFooter` pins the submit bar.",
+    "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
+    "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
+    "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, Toolbar, and controls in a single prop.",
+    "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<Composer/>}` + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
+    "A Slack-like chat channel, a mail thread, or an IDE-style tab view whose top row is the SURFACE's name rather than a document title — `headerScale='chrome'` (usually with `variant='ghost'`) puts the `<h1>` on the body type step so the header reads as a channel label and the band collapses to roughly the height of one control row, leaving the vertical space to the conversation.",
+    "A chat channel page where a fixed band (channel workflow / pinned-message / connection status) must sit between the page header and the scrolling transcript — `toolbar={<Toolbar>…</Toolbar>}` with `fill` + `footer={<Composer/>}` + `stickyFooter`. The band is outside the scroller, so the transcript never travels under it and the composer stays pinned; a collection page uses the same slot for its filter strip above a full-bleed DataTable (`variant='flush'`)."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "example": "import { Banner } from \"@godxjp/ui/feedback\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<Banner tone=\"warning\">\n  <Banner.Content>\n    <Banner.Title>お支払いが確認できていません</Banner.Title>\n    <Banner.Description>サービスの停止を避けるため、お支払い方法を更新してください。</Banner.Description>\n  </Banner.Content>\n  <Banner.Actions>\n    <Button size=\"sm\" variant=\"outline\">お支払い方法を更新</Button>\n  </Banner.Actions>\n</Banner>",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Banner",
+  "props": [
+    {
+      "defaultValue": "\"default\"",
+      "description": "Semantic tone driving the surface colour, the default leading icon AND live-region politeness (\"destructive\"/\"warning\" announce assertively via role=\"alert\"; every other tone politely via role=\"status\").",
+      "name": "tone",
+      "type": "\"default\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"muted\" | \"neutral\""
+    },
+    {
+      "description": "Renders the built-in localized dismiss button (top/inline-end). It sits LAST in DOM and focus order: content → actions → dismiss.",
+      "name": "onDismiss",
+      "type": "() => void | Promise<void>"
+    },
+    {
+      "description": "Override or hide (false) the tone's default leading icon.",
+      "name": "icon",
+      "type": "LucideIcon | false"
+    }
+  ],
+  "related": [
+    "Alert — the SAME primitive in its inline-card presentation; use inside a page section or Card for persistent local feedback. Banner is the full-bleed strip presentation for shell/page-level attention.",
+    "Toaster — transient auto-dismissing feedback (toast()). Banner is persistent until acted on or dismissed.",
+    "ErrorSurface — a whole-page semantic exception state (403/404/5xx) that REPLACES the page. Banner annotates a page that still works.",
+    "PageContainer — Banner sits ABOVE or as the first child of PageContainer, never inside the header slots; the page header's own status/meta belongs in PageContainer's `status` prop."
+  ],
+  "rules": [],
+  "storyPath": "feedback/Banner.stories.tsx",
+  "tagline": "Full-bleed page/shell attention strip (past-due subscription, support session, maintenance). Parts: Banner.Title/Description/Content/Actions.",
+  "usage": [
+    "CANONICAL BANNER CONTRACT: `Banner` is `Alert` with the structural axis fixed to `variant=\"banner\"` — same tone system, same slots, same dismiss/a11y behaviour, but STRIP geometry owned by the `--banner-*` tokens (square corners, hairline block-end rule, page-gutter inline inset). Never fake a banner by putting `className` overrides on an `Alert`, and never hand-roll a coloured div strip.",
+    "DO: Place a Banner FULL-BLEED at the top of the surface it warns about — directly under the Topbar inside AppShell's children for shell-wide attention (past-due subscription, active support session), or as the first child of a page for page-scoped notices. Its inline inset defaults to the page gutter (--space-page-active-x) so the text column aligns with page content.",
+    "DO: Compose text as `Banner.Title` + `Banner.Description` (group multi-part copy in `Banner.Content` when you add `Banner.Actions`). At >=640px actions sit in a trailing column; below the step they drop onto their own full-width WRAPPING line, so a 390px viewport wraps instead of clipping.",
+    "DO: Pass `onDismiss` for dismissible notices — the component renders its own accessible, localized dismiss button. DON'T hand-roll an × Button in `Banner.Actions`.",
+    "DON'T: Use Banner for transient feedback ('saved successfully') — that is `toast()` + `<Toaster>`. Banner is persistent and page/shell-scoped, and there should be at most ONE per surface; stack further messages inside the page as inline `Alert`s.",
+    "DON'T: Encode DXS business rules here (when past_due shows, who sees a support-session strip) — the app decides WHEN to render; Banner owns only presentation and behaviour."
+  ],
+  "useCases": [
+    "Past-due subscription strip across the console shell — `tone=\"warning\"` with a `Banner.Actions` \"お支払い方法を更新\" Button, rendered above the page slot until billing recovers.",
+    "Active support-session indicator — `tone=\"info\"` with the operator name in `Banner.Description` and a \"セッションを終了\" action; not dismissible while the session runs.",
+    "Scheduled maintenance notice — `tone=\"neutral\"` with `onDismiss` so the user can clear it for the session.",
+    "Read-only / archived-organization mode — `tone=\"muted\"` explaining why every mutation control on the page is disabled.",
+    "Degraded-service warning after a partial outage — `tone=\"destructive\"` with a status-page link in `Banner.Actions`."
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "example": "import { Steps } from \"@godxjp/ui/navigation\";\n\n<Steps value={1} items={[{ title: \"申請\" }, { title: \"審査中\" }, { title: \"完了\" }]} />",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "Steps",
+  "props": [
+    {
+      "description": "Array of { title, subtitle?, description?, icon?, status? }.",
+      "name": "items",
+      "type": "StepItemProp[]"
+    },
+    {
+      "defaultValue": "0",
+      "description": "Active step index (0-based).",
+      "name": "value",
+      "type": "number"
+    },
+    {
+      "defaultValue": "0",
+      "description": "Base offset for the first rendered step index.",
+      "name": "defaultValue",
+      "type": "number"
+    },
+    {
+      "defaultValue": "\"horizontal\"",
+      "description": "Layout direction.",
+      "name": "orientation",
+      "type": "\"horizontal\" | \"vertical\""
+    },
+    {
+      "description": "Status of the CURRENT step (drives the active step colour).",
+      "name": "status",
+      "type": "\"wait\" | \"process\" | \"finish\" | \"error\""
+    },
+    {
+      "description": "Render full markers, compact dots, a numbered inline auth progress row, or Ant Design's `navigation` bar — slab steps with a chevron between them (the default hairline connector is switched off there so it is not drawn through the glyph). `dot` IS antd's `progressDot`; antd 6.6.2 deprecates that prop in favour of exactly this value.",
+      "name": "type",
+      "type": "\"default\" | \"dot\" | \"inline\" | \"navigation\""
+    },
+    {
+      "description": "Ant Design `percent` — completion of the CURRENT (`process`) step only, 0–100 (out-of-range values are clamped). Draws a determinate arc around that step's marker and exposes it as a real `progressbar` with aria-valuenow/min/max. Ignored by `type=\"inline\"`, which has no marker to draw into.",
+      "name": "percent",
+      "type": "number"
+    },
+    {
+      "description": "Step size.",
+      "name": "size",
+      "type": "\"md\" | \"sm\""
+    },
+    {
+      "description": "Lay step titles beside or below the step icons.",
+      "name": "titlePlacement",
+      "type": "\"horizontal\" | \"vertical\""
+    },
+    {
+      "defaultValue": "\"chevron\"",
+      "description": "`chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads \"drill into\", an arrow reads \"then\", which is what a step row means. Both flip under dir=\"rtl\". Ignored by every other `type`.",
+      "name": "separator",
+      "type": "\"chevron\" | \"arrow\""
+    },
+    {
+      "description": "Fires with the clicked step index (0-based).",
+      "name": "onValueChange",
+      "type": "(value: number) => void"
+    }
+  ],
+  "related": [
+    "Timeline — use Timeline (from @godxjp/ui) when you need a chronological event log with timestamps and variable content per entry; use Steps when the number of stages is fixed and forward-progress is the semantic.",
+    "Tabs / Tabs — use Tabs when each section has its own rendered panel and users switch freely between them; use Steps when stages are ordered and the indicator communicates completion state rather than just selection.",
+    "Progress — use Progress for a single continuous percentage (file upload, quota fill); use Steps for discrete named stages with individual pass/fail status.",
+    "Breadcrumb — use Breadcrumb for hierarchical location within a page tree; use Steps for sequential workflow progress where order and completion matter."
+  ],
+  "rules": [],
+  "storyPath": "navigation/Steps.stories.tsx",
+  "tagline": "Multi-step progress indicator — horizontal or vertical, default or dot style.",
+  "usage": [
+    "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
+    "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
+    "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
+    "DO: Use type='inline' for compact hosted-auth/device progress. It retains process/finish/error/wait and aria-current semantics without the tall icon rail; never rebuild the row from Text and arrows in a consumer.",
+    "DO: Pick the inline progression marker with `separator` (`\"arrow\"` for the canonical hosted-identity row, `\"chevron\"` for the default), and express the step-number emphasis through `--steps-inline-index-{color,font-weight}` + `--steps-inline-separator-color` in the service theme. The canonical treatment is an accent TINT at normal weight; the library default is bold at the inherited colour. Both are one token away — never fork `.ui-steps-inline-index` in app CSS.",
+    "DON'T: Use Steps for navigation that needs URL routing or tab-switching — it has no built-in panel rendering. Pair it with your own conditional panel or a `Tabs`/`Tabs` body; Steps only renders the indicator bar.",
+    "DON'T: Wire `onValueChange` unless you actually support non-linear navigation. `onValueChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onValueChange`, or the prop is meaningless.",
+    "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onValueChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
+    "DO: Put a `data-testid` (or an `id`, or any other DOM attribute) straight on `<Steps>` — the rest of an `<ol>`'s attributes ride through to the list element. NEVER bind a test to `.ui-steps-list` or to a `[data-status]` on an item: those are internal names this package renames without notice, and a suite that binds to them breaks on an upgrade that changed nothing about the component's contract. A caller-supplied `aria-label` also wins over the localized default.",
+    "NOTE: `type` on Steps is the MARKER APPEARANCE (`default` | `dot` | `inline` | `navigation`), not an `<ol>`'s numbering style — the native attribute of that name is deliberately not forwarded."
+  ],
+  "useCases": [
+    "Multi-step form wizard (entity onboarding, invoice creation): render Steps above a form, drive `current` from local state, advance on validated submit — use `status='error'` on the current step when server validation fails.",
+    "Async background job tracker: display steps for a long-running import/export pipeline; poll job status and map job phases to `StepStatusProp` values (`'process'` with spinner for in-flight, `'finish'` for done, `'error'` for failed).",
+    "Document approval workflow (accounting, contracts): map approval stages (Draft → Review → Approved → Archived) to `items` with per-item `status` reflecting the real state from the server — use `orientation='vertical'` for a sidebar timeline feel.",
+    "Onboarding checklist sidebar: `orientation='vertical'` + `type='dot'` + `size='sm'` for a compact sidebar progress guide alongside a multi-section settings page.",
+    "Non-linear step navigation (e.g. revisit a previous step to correct data): provide `onValueChange` and leave only future steps `disabled`; past and current steps become clickable buttons."
+  ]
+}

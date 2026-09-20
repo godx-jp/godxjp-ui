@@ -1,0 +1,81 @@
+{
+  "example": "import { Field, Switch } from \"@godxjp/ui/data-entry\";\n\n// Field, not a hand-rolled row: it owns the label-to-control id wiring, the description slot and\n// the row rhythm. A <div className=\"flex items-center gap-2\"> around a bare <Label> loses all three.\n<Field id=\"stackable\" label=\"他クーポンとの併用を許可\" description=\"会計時に自動で合算されます\">\n  <Switch id=\"stackable\" checked={stackable} onCheckedChange={setStackable} />\n</Field>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Switch",
+  "props": [
+    {
+      "defaultValue": "false",
+      "description": "antd `loading` — the toggle is mid-flight: a spinner replaces the thumb glyph and the control refuses the change. It reports `aria-busy`/`aria-disabled` rather than `disabled`, so a keyboard user's focus is not thrown to the next field the instant they flip a switch that saves over the network.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `checkedChildren` — content shown INSIDE the track while on (`有効`, `ON`, a glyph). Rendered aria-hidden: `role=switch` + `aria-checked` already say on/off.",
+      "name": "checkedChildren",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `unCheckedChildren` — the same, shown while off.",
+      "name": "unCheckedChildren",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Controlled checked state.",
+      "name": "checked",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Uncontrolled initial state. Switch keeps its own state from here, so an uncontrolled toggle works without Field.",
+      "name": "defaultChecked",
+      "type": "boolean"
+    },
+    {
+      "description": "Fires when toggled.",
+      "name": "onCheckedChange",
+      "type": "(checked: boolean) => void"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Thumb size — 'sm' for dense rows.",
+      "name": "size",
+      "type": "\"sm\" | \"md\""
+    },
+    {
+      "description": "Links to a <Label htmlFor>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disable the toggle.",
+      "name": "disabled",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Field — use this instead of bare Switch whenever the toggle needs a visible label, helper text, error message, or must submit its value inside an HTML <form>. Field composes Label + Switch + hidden input automatically.",
+    "Checkbox — use Checkbox (or CheckboxGroup) when the user is selecting one or more items from a set, or when the binary choice semantically means 'agree/select' rather than 'enable/disable'. Switch implies an immediate, persistent state change; Checkbox implies a form choice.",
+    "Field — use for a binary or small-set choice rendered as radio-style cards with rich descriptions, when the visual weight of a toggle is insufficient for the decision importance.",
+    "RadioGroup — use when the user must choose exactly one option from 2–4 mutually exclusive values; Switch is only appropriate for a single on/off boolean."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/Switch.stories.tsx",
+  "tagline": "Toggle switch (bare), on react-aria-components. For a labelled row use Field. `role=\"switch\"` is the real `<input>`; the painted track is the `<label>` around it, and that is where `data-state`/`data-size` live.",
+  "usage": [
+    "DO use Switch (bare) only when you are building a custom inline toggle without a visible label — e.g., a DataTable row action column. Always pair it with a <Label htmlFor={id}> placed adjacent in the DOM; never leave it label-less for screen readers.",
+    "DO pass `name` when the toggle must submit: Switch itself renders `<input type=\"hidden\" name value=\"1|0\">` beside the control, so a native <form> carries the value with no extra wiring. (The old advice here — that a bare Switch drops `name` — was never true of this component.)",
+    "DO use the `size` prop ('sm' | 'md') to control thumb size. 'sm' is appropriate in dense DataTable rows or filter bars; omit it (defaults to 'md') everywhere else.",
+    "DO wire controlled state: pass both `checked` and `onCheckedChange` together. For uncontrolled use pass `defaultChecked` (or neither) — Switch holds that state itself; Field is not required for it.",
+    "DON'T hand-roll a <div> + <label> wrapper with bare Switch to get a labelled field — that is exactly what Field provides, including aria-describedby, aria-invalid, error/helper text, and the hidden input. Reach for Field instead.",
+    "DO link the switch to its label via matching `id` on Switch and `htmlFor` on Label. Without this pairing, clicking the label text does not toggle the switch and the a11y association is broken."
+  ],
+  "useCases": [
+    "Inline toggle in a DataTable action cell (e.g., 'Active' column) where the label is already provided by the column header and no form submission is involved.",
+    "Settings panel where a React state boolean is toggled immediately via an optimistic API call — no <form> submit, so Field's hidden input is unnecessary.",
+    "Custom compound component where you compose Switch + Label yourself and need to put your own aria-* or data-* attributes on the control.",
+    "Filter toolbar toggle (e.g., 'Show archived') rendered inline next to other filter controls, using size='sm' for density parity with adjacent inputs.",
+    "Preview/demo UI where the switch controls a local display state (dark-mode preview, feature flag preview) with no server persistence."
+  ]
+}

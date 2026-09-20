@@ -1,0 +1,259 @@
+{
+  "example": "import { useState } from \"react\";\nimport { Calendar } from \"@godxjp/ui/data-entry\";\nimport { ja } from \"react-day-picker/locale\";\n\n// --- Single-date example (controlled) ---\nexport function InvoiceDateCalendar() {\n  const [date, setDate] = useState<Date | undefined>(new Date());\n\n  return (\n    <Calendar\n      mode=\"single\"\n      selected={date}\n      onSelect={setDate}\n      locale={ja}\n      disabled={{ before: new Date(2024, 0, 1) }}\n      footer={date ? `選択日: ${date.toLocaleDateString(\"ja-JP\")}` : \"日付を選択してください\"}\n      aria-label=\"発行日カレンダー\"\n    />\n  );\n}\n\n// --- Range example inside a Popover (mirrors DatePicker range internals) ---\nimport { Popover, PopoverContent, PopoverTrigger } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\nimport type { DateRange } from \"react-day-picker\";\n\nexport function ReportRangeFilter() {\n  const [range, setRange] = useState<DateRange | undefined>();\n\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button variant=\"outline\">期間を選択</Button>\n      </PopoverTrigger>\n      {/* flush drops the panel's padding and width=\"auto\" lets the calendar set the measure —\n          the panel's own 18rem would clip two months. Never a w-auto/p-0 utility on className:\n          those are per-call-site constants no service theme can retune. */}\n      <PopoverContent flush width=\"auto\" align=\"end\">\n        <Calendar\n          mode=\"range\"\n          selected={range}\n          onSelect={setRange}\n          locale={ja}\n          numberOfMonths={2}\n          disabled={{ after: new Date() }}\n          autoFocus\n        />\n      </PopoverContent>\n    </Popover>\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Calendar",
+  "props": [
+    {
+      "description": "OVERRIDE only — omit it and the calendar follows AppProvider, like every other component here. It did not always: `locale` used to arrive solely through the react-day-picker spread, so with nothing passed the library's own en-US default won and a Japanese page rendered Su Mo Tu We Th Fr Sa inside an otherwise Japanese card, with no error and no warning. Pass it to PIN one market (a booking screen that must stay Japanese wherever it is opened); the locale also decides which weekday the grid starts on, not only the labels.",
+      "name": "locale",
+      "type": "DayPickerLocale"
+    },
+    {
+      "description": "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
+      "name": "cellRender",
+      "type": "(date: Date, info: { originNode: ReactNode }) => ReactNode"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Rule the grid: one line between every pair of days, weekday header included (the header row is also tinted --muted). ON BY DEFAULT — with no ruling the month read as a cloud of numbers and was reported as very hard to read. Pass `bordered={false}` for floating day buttons. It is NOT a box around the calendar — that is Card's job, and the Card/popover edge is the OUTER FRAME tier. The INSIDE grid is the `--calendar-grid-border-color` knob, default `hsl(var(--border))` (L* 93.80 / 1.149:1 on the popover in light, L* 20.76 / 1.270:1 in dark) — the same tier as the frame around it, as a DataTable row rule and as the RangeTimeline grid, so the ruling can never out-weigh the surface it is drawn on. It was `hsl(var(--input) / 0.5)` (L* 78.67 / 1.738:1) through 27.6.0 and gh#730 reported that still darker than the --border every card and table uses. Retint with `--calendar-grid-border-color: hsl(var(--input) / 0.5)` for the 27.6.0 weight or `hsl(var(--input))` for the heavy line. DatePicker forwards the same prop to its popup calendar.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"auto\"",
+      "description": "How the grid claims horizontal space. `auto` (default) shrink-wraps to seven fixed day columns — the shape a picker popover needs, because the panel is shrink-to-fit and takes ITS width from the calendar inside it. Use `full` for an EMBEDDED calendar (a shift board, a booking month) that is the content of a Card rather than a dropdown: it stacks the months and lets the day cells share the row. Measured at a 1200px container: auto → root 248px / cells 32px; full → root 1200px / cells 168px; the DatePicker popover stays 250px either way. Do NOT reach for `className=\"w-full\"` instead — it widens the root and leaves the grid at 224px pinned left.",
+      "name": "width",
+      "type": "\"auto\" | \"full\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside startMonth / endMonth or matches `disabled`.",
+      "name": "showToday",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Footer action that calls `onClose`.",
+      "name": "showClose",
+      "type": "boolean"
+    },
+    {
+      "description": "Called by the Close footer action.",
+      "name": "onClose",
+      "type": "() => void"
+    },
+    {
+      "description": "Selection mode. 'single' picks one day, 'multiple' picks several, 'range' picks a from/to span. Omit or set undefined for a display-only calendar with no selection.",
+      "name": "mode",
+      "type": "'single' | 'multiple' | 'range' | undefined"
+    },
+    {
+      "description": "Controlled selected value. Shape depends on mode: Date for 'single', Date[] for 'multiple', { from?: Date; to?: Date } for 'range'.",
+      "name": "selected",
+      "type": "Date | Date[] | DateRange | undefined"
+    },
+    {
+      "description": "Callback fired when the user clicks a day. Receives the new selection, the clicked date, active modifiers, and the event.",
+      "name": "onSelect",
+      "type": "(date: Date | Date[] | DateRange | undefined, triggerDate: Date, modifiers: Modifiers, e: MouseEvent) => void"
+    },
+    {
+      "description": "Uncontrolled initial month shown. For controlled month navigation use month + onMonthChange.",
+      "name": "defaultMonth",
+      "type": "Date"
+    },
+    {
+      "description": "Controlled currently-displayed month. Pair with onMonthChange to drive navigation programmatically.",
+      "name": "month",
+      "type": "Date"
+    },
+    {
+      "description": "Fired when the user navigates to a different month.",
+      "name": "onMonthChange",
+      "type": "(month: Date) => void"
+    },
+    {
+      "defaultValue": "1",
+      "description": "Number of month grids to show side-by-side.",
+      "name": "numberOfMonths",
+      "type": "number"
+    },
+    {
+      "description": "Earliest month reachable via navigation. Also constrains the dropdown range when captionLayout includes 'dropdown'.",
+      "name": "startMonth",
+      "type": "Date | undefined"
+    },
+    {
+      "description": "Latest month reachable via navigation.",
+      "name": "endMonth",
+      "type": "Date | undefined"
+    },
+    {
+      "description": "Days to disable. Accepts a Date, Date[], { before: Date }, { after: Date }, { from: Date; to: Date }, { dayOfWeek: number[] }, or an array of any of these.",
+      "name": "disabled",
+      "type": "Matcher | Matcher[] | undefined"
+    },
+    {
+      "description": "Days to hide entirely from the grid.",
+      "name": "hidden",
+      "type": "Matcher | Matcher[] | undefined"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Show greyed-out days from adjacent months. godx-ui defaults this to true (overrides react-day-picker's false default).",
+      "name": "showOutsideDays",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Show ISO/locale week-number column on the left.",
+      "name": "showWeekNumber",
+      "type": "boolean"
+    },
+    {
+      "description": "Always render 6 weeks per month, padding with days from the next month.",
+      "name": "fixedWeeks",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "'label'",
+      "description": "Caption area layout. 'dropdown' shows month/year select dropdowns for faster large-range navigation.",
+      "name": "captionLayout",
+      "type": "'label' | 'dropdown' | 'dropdown-months' | 'dropdown-years'"
+    },
+    {
+      "description": "Day index (0=Sun) for the first column of the week grid. Overrides locale default.",
+      "name": "weekStartsOn",
+      "type": "0 | 1 | 2 | 3 | 4 | 5 | 6 | undefined"
+    },
+    {
+      "description": "Custom named modifiers applied to matched days. Pair with modifiersClassNames or modifiersStyles to style them.",
+      "name": "modifiers",
+      "type": "Record<string, Matcher | Matcher[] | undefined>"
+    },
+    {
+      "description": "CSS class names keyed by modifier name.",
+      "name": "modifiersClassNames",
+      "type": "ModifiersClassNames"
+    },
+    {
+      "description": "Content rendered below the grid as a live ARIA region. Use a string to communicate selection status to screen readers. Set it to replace the built-in showToday / showClose actions.",
+      "name": "footer",
+      "type": "React.ReactNode | string"
+    },
+    {
+      "description": "Focus the first selected day (or today) when the calendar mounts — recommended when opening inside a Popover.",
+      "name": "autoFocus",
+      "type": "boolean"
+    },
+    {
+      "description": "Override the 'today' date used for the today modifier and default navigation. Defaults to new Date().",
+      "name": "today",
+      "type": "Date"
+    },
+    {
+      "description": "Extra class added to the root wrapper element (adds to the built-in p-3 padding).",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Override individual part class names (months, weekday, day, selected, today, range_start, range_end, range_middle, disabled, outside, etc.). Merged with godx-ui defaults.",
+      "name": "classNames",
+      "type": "Partial<ClassNames>"
+    },
+    {
+      "description": "Swap out internal sub-components (Chevron is already replaced by lucide icons). Use for advanced custom rendering.",
+      "name": "components",
+      "type": "Partial<CustomComponents>"
+    },
+    {
+      "description": "Animate month-to-month navigation transitions (react-day-picker >=9.6).",
+      "name": "animate",
+      "type": "boolean"
+    },
+    {
+      "description": "'ltr' (default) or 'rtl' for right-to-left layouts.",
+      "name": "dir",
+      "type": "string"
+    },
+    {
+      "description": "aria-label on the container. Provide a meaningful label when the calendar is not described by a visible heading.",
+      "name": "aria-label",
+      "type": "string"
+    },
+    {
+      "description": "ARIA role for the container element. Use 'dialog' when rendering inside a modal Popover.",
+      "name": "role",
+      "type": "'application' | 'dialog' | undefined"
+    },
+    {
+      "description": "When true the user cannot deselect the currently selected day (mode must also be set).",
+      "name": "required",
+      "type": "boolean | undefined"
+    },
+    {
+      "description": "When numberOfMonths > 1, advance all visible months at once instead of one at a time.",
+      "name": "pagedNavigation",
+      "type": "boolean"
+    },
+    {
+      "description": "Render months newest-first (right-to-left reading order) when numberOfMonths > 1.",
+      "name": "reverseMonths",
+      "type": "boolean"
+    },
+    {
+      "description": "Hide the prev/next navigation buttons without disabling keyboard navigation.",
+      "name": "hideNavigation",
+      "type": "boolean"
+    },
+    {
+      "description": "Disable month navigation entirely (buttons hidden and keyboard navigation locked).",
+      "name": "disableNavigation",
+      "type": "boolean"
+    },
+    {
+      "description": "Hide the row of weekday abbreviation headers (Mon, Tue, ...).",
+      "name": "hideWeekdays",
+      "type": "boolean"
+    },
+    {
+      "description": "Use ISO week numbering (Monday first week, ignores weekStartsOn and firstWeekContainsDate).",
+      "name": "ISOWeek",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "DatePicker — the complete single-date form control (typeable ISO input + calendar icon + Popover). Use DatePicker instead of Calendar when you need a form-submittable field with an input box.",
+    "DatePicker — the complete date form control (typeable ISO input + calendar icon + Popover); add `range` for the two-input from/to pair. Use it instead of Calendar when you need form fields.",
+    "Popover / PopoverContent — the shell you must provide when you want Calendar inside a trigger. Pass `flush` and `width=\"auto\"` so the panel neither double-pads nor clips the grid."
+  ],
+  "rules": [
+    3,
+    5,
+    6,
+    23
+  ],
+  "storyPath": "data-entry/Calendar.stories.tsx",
+  "subParts": [
+    "DayButton"
+  ],
+  "tagline": "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker (add `range` for a from/to pair) instead when you need a form-submittable input. `components={{ DayButton }}` is the documented seam for marking a day (a shift, a price, a badge): import `DayButton` and its types from `@godxjp/ui/data-entry` rather than from react-day-picker, so the type is this package's copy and not a second one (gh#797).",
+  "usage": [
+    "DO set mode explicitly ('single', 'multiple', 'range') — omitting it renders a display-only grid with no selection. The value passed to selected and the argument shape of onSelect both depend on mode.",
+    "DO embed Calendar inside a Popover + PopoverContent when building a date-picker UI — `<PopoverContent flush width=\"auto\">`. `flush` drops the panel padding (Calendar brings its own) and `width=\"auto\"` lets the calendar set the measure, which the panel's own 18rem would otherwise clip at two months. For form-submittable single-date or range inputs prefer the higher-level DatePicker (with `range` for a from/to pair) — it owns the input, icon, locale wiring, and ISO form submission natively.",
+    "DO pass a locale object imported from 'react-day-picker/locale' (e.g. import { ja } from 'react-day-picker/locale') for i18n — weekday names, month names, and first-day-of-week all come from the locale.",
+    "DO use the disabled prop with Matcher objects ({ before: minDate }, { after: maxDate }, { dayOfWeek: [0, 6] }) to restrict selectable days — never render your own disabled overlay on top.",
+    "DON'T zero the panel padding or pin its width with utilities on className. Those are per-call-site constants no service theme can retune; `flush` and `width=\"auto\"` set the same two tokens the panel already reads.",
+    "DON'T hand-roll a calendar grid — Calendar wraps react-day-picker which is keyboard-navigable, ARIA-annotated, and screen-reader friendly out of the box. Provide a footer string for screen-reader status announcements when the selection changes.",
+    "The month frame is two knobs, not a stack of them (gh#730). `--calendar-space-inset` is the ONE inset the caption row, the `‹`/`›` nav buttons and the day grid all sit at — `--calendar-nav-space-inline` is declared as that same value, because the nav is absolutely positioned and would otherwise get its own (measured 4px against the grid's 12px, so the header read wider than the body). `--calendar-grid-space-block-start` is the ONE caption→weekday-row step (space-3, 12px; it used to stack with the month column gap for 32px). Retune those tokens rather than adding padding on the call site."
+  ],
+  "useCases": [
+    "Inline date picker within a form section where the calendar grid must always be visible (e.g., a booking page or a date-of-issue field on an invoice creation form).",
+    "Date range selection inside a Popover triggered by a filter button on an accounting report page (use mode='range', pass selected={dateRange}, onSelect updates the filter state).",
+    "Multi-date selection for picking recurring reminder dates or batch-action target dates (mode='multiple').",
+    "Custom calendar with highlighted days (e.g., marking invoice due dates or shipment ETDs with a custom modifier + modifiersClassNames) overlaid on a standard single-select grid.",
+    "Month navigator with year/month dropdowns for jumping to a historical accounting period quickly (captionLayout='dropdown', startMonth set to earliest fiscal year).",
+    "Display-only calendar (no mode set) showing booked or blocked dates using the modifiers prop with read-only styling, embedded in a dashboard card."
+  ]
+}

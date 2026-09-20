@@ -1,0 +1,106 @@
+{
+  "example": "import { InputOTP, InputOTPGroup, InputOTPSlot } from \"@godxjp/ui/data-entry\";\n\n<InputOTP maxLength={6}>\n  <InputOTPGroup>\n    <InputOTPSlot index={0} /><InputOTPSlot index={1} /><InputOTPSlot index={2} />\n    <InputOTPSlot index={3} /><InputOTPSlot index={4} /><InputOTPSlot index={5} />\n  </InputOTPGroup>\n</InputOTP>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "InputOTP",
+  "props": [
+    {
+      "description": "Initial uncontrolled code.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Canonical value callback, compatible with FormFieldControl.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Mask filled visual slots without changing the submitted code.",
+      "name": "mask",
+      "type": "boolean | string"
+    },
+    {
+      "description": "Normalize typed and pasted codes.",
+      "name": "formatter",
+      "type": "(value: string) => string"
+    },
+    {
+      "description": "Shared control height tier.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Validation appearance.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "Shared field chrome.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\" | \"underlined\""
+    },
+    {
+      "description": "Refuse edits including paste.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Number of slots (e.g. 6).",
+      "name": "maxLength",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "description": "Controlled value.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Value callback (this is a true text input — onChange is the DOM-style value handler here).",
+      "name": "onChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Allowed-char regex (e.g. digits only).",
+      "name": "pattern",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"start\"",
+      "description": "Main-axis alignment of the whole code row (groups + separators) inside the field. `center` is the canonical auth challenge. Before this existed, every consumer wrapped the OTP in their own flex-centring div — do not. A service that wants all code fields centred sets `--otp-container-align` once instead.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    }
+  ],
+  "related": [
+    "Input (a normal single text field)",
+    "PasswordInput (masked secret field)"
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "data-entry/InputOTP.stories.tsx",
+  "subParts": [
+    "InputOTPGroup",
+    "InputOTPSeparator",
+    "InputOTPSlot"
+  ],
+  "tagline": "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot.",
+  "usage": [
+    "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
+    "DO centre a challenge with `align=\"center\"` on InputOTP — never with a wrapper `<div className=\"flex justify-center\">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.",
+    "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
+    "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
+    "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
+    "DO widen the slots with `--otp-slot-size` when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+    "DO use `--otp-slot-inline-size` / `--otp-slot-block-size` when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `AuthShell preset=\"device-authorization\"`: that preset already owns its code-field measure.",
+    "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only."
+  ],
+  "useCases": [
+    "2FA / OTP verification code",
+    "Email / SMS confirmation code",
+    "PIN entry",
+    "Invite / redemption code"
+  ]
+}

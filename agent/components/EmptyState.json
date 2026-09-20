@@ -1,0 +1,83 @@
+{
+  "example": "import { EmptyState } from \"@godxjp/ui/data-display\";\n\n<EmptyState title=\"該当データがありません\" description=\"検索条件を変更してください。\" />",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "EmptyState",
+  "props": [
+    {
+      "description": "Primary empty message.",
+      "name": "title",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Secondary helper text.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "description": "Icon above the title.",
+      "name": "icon",
+      "type": "LucideIcon"
+    },
+    {
+      "description": "CTA element (e.g. a Button).",
+      "name": "action",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"page\"",
+      "description": "Contextual visual weight. Compact omits the icon medallion.",
+      "name": "variant",
+      "type": "\"page\" | \"section\" | \"compact\""
+    },
+    {
+      "defaultValue": "\"muted\"",
+      "description": "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Recolours BOTH the icon GLYPH and the medallion fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class. The glyph inherits `--empty-state-icon-foreground`; never pass a `text-*` colour utility on your icon, it would out-specify the token and pin every tone to muted.",
+      "name": "tone",
+      "type": "\"muted\" | \"success\" | \"warning\" | \"destructive\" | \"info\""
+    },
+    {
+      "defaultValue": "3",
+      "description": "Semantic heading level of the title. A page/onboarding empty state directly under the page h1 uses titleLevel={2}; one nested in an already-h2 section keeps the default 3.",
+      "name": "titleLevel",
+      "type": "1 | 2 | 3 | 4"
+    },
+    {
+      "description": "Render the title as a non-heading element (p/div) instead of a heading — for a compact/section empty state inside a section that already owns its heading, so the message is not announced as a heading and cannot skip an outline level. Overrides titleLevel.",
+      "name": "titleAs",
+      "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | \"div\""
+    }
+  ],
+  "related": [
+    "DataTable — already embeds an EmptyState automatically when `data` is empty; customise via the `empty=` prop. Do NOT wrap DataTable in a `data.length === 0` guard that renders EmptyState separately.",
+    "DataState — TanStack Query lifecycle widget (`@godxjp/ui/query`). Pass `<EmptyState />` to its `empty=` prop for zero-items; DataState itself covers loading/error — do not use EmptyState for those states.",
+    "InfiniteQueryState — same pattern as DataState but for `useInfiniteQuery`; pass EmptyState to `empty=` when the flattened list is empty.",
+    "SkeletonTable — use for the loading skeleton before data arrives (pass to DataState's `skeleton=` or DataTable's `loading=`). EmptyState is for after data arrives and is empty, not while loading."
+  ],
+  "rules": [],
+  "storyPath": "data-display/EmptyState.stories.tsx",
+  "tagline": "Centred empty placeholder with icon, title, description, and optional CTA.",
+  "usage": [
+    "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
+    "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
+    "DO use `tone=\"success\"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.",
+    "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
+    "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
+    "DO NOT hand-roll a `data.length === 0 ? <EmptyState /> : <DataTable />` conditional — `DataTable` already embeds an `EmptyState` in its body when `data` is empty. Use the `empty=` prop on `DataTable` to customise it, not a wrapper conditional.",
+    "DO NOT use EmptyState inside a `DataState` or `InfiniteQueryState` for the loading or error states — those widgets handle skeleton/error themselves; pass `EmptyState` only to their `empty=` prop for the zero-items case.",
+    "DO NOT add padding directly on `EmptyState` via `className` when placing it inside a `Card` — wrap it in `<CardContent>` first; EmptyState is a self-contained block with its own internal spacing via `ui-empty-state` styles.",
+    "DO omit optional secondary sections when absence has no user value. Otherwise use variant='compact' or 'section'; reserve page for the primary page job.",
+    "DO match empty-state visual weight to the section's importance and expected content density — a low-priority 'no received invitations' block uses variant='compact' (no medallion, minimal padding), not the full page treatment that would outweigh real content.",
+    "DO NOT wrap every empty condition in its own bordered Card. A compact/section empty state sits directly in the existing CardContent / section it belongs to; a dedicated bordered Card is only for a page-level or standalone zero-state.",
+    "DO pair `variant='page'` (the default) with `<PageContainer fill>` when the zero-state IS the whole page body — `fill` hands the body the shell's remaining height and the page zero-state then takes that height and centres in it. That is ONE fact (this page's body is its empty state), not a second prop to keep in lockstep: no `fill` on the empty state, no `h-full`/`min-h-screen`/`grid place-items-center` wrapper, no spacer div. Measured on a consumer dashboard at 1440x805: without it the block top-packed at y=240 with 348px of white below; with `fill` alone the body grew to 541px and the void merely moved; with both the block resolves to 525px and centres. Under an ordinary auto-height body nothing changes, so leave `fill` off on a page that has real content beneath the header."
+  ],
+  "useCases": [
+    "Zero-row admin list pages (invoices, accounts, transactions) that are NOT backed by a `DataTable` — e.g. a card-grid or custom list layout where DataTable's built-in empty state doesn't apply.",
+    "Post-filter / post-search zero results — show `icon={SearchIcon}` + a `description` explaining what was searched and an `action` to clear filters.",
+    "First-run onboarding screens where no data has been created yet — e.g. 'No entities added yet' with an action button to create the first legal entity.",
+    "Passed as the `empty=` prop inside `DataState` or `InfiniteQueryState` to satisfy the TanStack Query lifecycle widget's zero-items slot without hand-rolling markup.",
+    "Standalone section within a `CardContent` to indicate a sub-section (e.g. attachments, comments, related records) has no entries yet, separate from the page-level list.",
+    "Error-adjacent zero states where the page loaded successfully but the filtered result set is empty — distinct from an error state handled by `DataState`/`AlertMutationFeedback`."
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "example": "import { NumberInput } from \"@godxjp/ui/data-entry\";\n\n<NumberInput\n  value={qty}\n  onValueChange={setQty}\n  min={1}\n  max={99}\n  step={1}\n  prefix=\"¥\"\n  aria-label=\"数量\"\n/>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "NumberInput",
+  "props": [
+    {
+      "description": "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "defaultValue": "\"outlined\"",
+      "description": "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "antd `formatter` — how the committed number is DISPLAYED at rest (a unit, a separator, 円). Replaces the built-in `Intl.NumberFormat`; pair it with `parser` or the text cannot be read back.",
+      "name": "formatter",
+      "type": "(value: number | null) => string"
+    },
+    {
+      "description": "antd `parser` — the inverse of `formatter`. Without one, the built-in reader NFKC-folds 全角 digits, periods and minus signs to ASCII first, so a value typed on a Japanese keyboard survives blur.",
+      "name": "parser",
+      "type": "(display: string) => number | null"
+    },
+    {
+      "defaultValue": "true",
+      "description": "antd `keyboard` — ArrowUp/ArrowDown step the value (Shift = ×10).",
+      "name": "keyboard",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd `changeOnWheel` — a mouse wheel steps the value. Off by default and gated on FOCUS even when on, so scrolling past a long form cannot silently edit it.",
+      "name": "changeOnWheel",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "antd `controls` — draw the increment/decrement buttons. `false` keeps the spinbutton role and the arrow keys; it only stops drawing the two buttons.",
+      "name": "controls",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled value. `null` = empty field. Pair with `onValueChange`.",
+      "name": "value",
+      "type": "number | null"
+    },
+    {
+      "defaultValue": "null",
+      "description": "Uncontrolled initial value.",
+      "name": "defaultValue",
+      "type": "number | null"
+    },
+    {
+      "description": "Value change callback (vocabulary triad — NOT onChange). Receives `null` when the field is empty.",
+      "name": "onValueChange",
+      "type": "(value: number | null) => void"
+    },
+    {
+      "description": "Lower bound — clamps on commit and disables the decrement stepper at the floor.",
+      "name": "min",
+      "type": "number"
+    },
+    {
+      "description": "Upper bound — clamps on commit and disables the increment stepper at the ceiling.",
+      "name": "max",
+      "type": "number"
+    },
+    {
+      "defaultValue": "1",
+      "description": "Increment for the steppers + ArrowUp/ArrowDown (Shift = ×10).",
+      "name": "step",
+      "type": "number"
+    },
+    {
+      "description": "Committed decimal places. Inferred from `step` when omitted.",
+      "name": "precision",
+      "type": "number"
+    },
+    {
+      "description": "Disables typing and stepping.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Value is shown and selectable but not typeable or steppable.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control height tier (--control-height). Aligns with sibling controls on a row.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Placeholder shown when empty.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Leading decorative affix inside the field (e.g. `¥`). aria-hidden.",
+      "name": "prefix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Trailing decorative affix inside the field (e.g. `%`). aria-hidden.",
+      "name": "suffix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Form field name — submits its value natively.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Associates with a <label htmlFor> / FormField.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Accessible name for the spinbutton when no visible FormField label is present.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Input — the plain single-line field NumberInput composes; use Input directly only for free numeric text with no stepper/clamp need.",
+    "Slider — use instead when the user picks an approximate value within a range by dragging; NumberInput is for exact keyed entry.",
+    "FormField — compose NumberInput inside FormField (matching id) for label/helper/error a11y wiring.",
+    "TimePicker — the HH:mm time sibling; NumberInput is for plain numbers, TimePicker for clock times."
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "data-entry/NumberInput.stories.tsx",
+  "tagline": "WAI-ARIA spinbutton for localized numeric entry — composes the real Input (role=spinbutton, inputMode=decimal) with stacked increment/decrement step Buttons. Type freely, Arrow/Shift-Arrow step, value commits clamped to min/max + rounded to precision.",
+  "usage": [
+    "DO use NumberInput (not `<Input type='number'>`) whenever numeric entry wants steppers, min/max clamping, precision rounding, or a ¥/% affix — it is the canonical numeric primitive. Plain Input has no stepper and no clamp.",
+    "DO drive it controlled with `value` + `onValueChange` carrying `number | null` (the vocabulary triad — NOT `onChange`). `null` means the field is empty; never substitute 0 for empty.",
+    "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input it would freeze. Omit both for uncontrolled (use `defaultValue`).",
+    "DO set `step` to your increment and let `precision` (or the decimals of `step`) round the committed value: `step={0.25} precision={2}` gives quarter-step entry rounded to 2 places on blur/Enter.",
+    "DO set `min`/`max` for bounded quantities — the value clamps on commit and the matching stepper Button auto-disables at the bound. The steppers are tabIndex=-1 so they never pollute the keyboard tab order (Arrow keys cover keyboard stepping).",
+    "DON'T wrap it in a hand-rolled label/error markup — compose it inside FormField (matching `id`) for the aria wiring, exactly like Input.",
+    "DON'T format the value yourself for display — NumberInput formats at rest via Intl.NumberFormat in the active locale while keeping the raw value typeable on focus."
+  ],
+  "useCases": [
+    "Quantity / line-item steppers in order, invoice, or cart forms (min={1}, step={1}) where ± buttons and a floor are expected.",
+    "Price / amount fields with a currency affix (prefix='¥', step={10}) — the affix is decorative and the committed value stays a plain number.",
+    "Percentage / rate inputs bounded 0–100 (suffix='%', min={0} max={100}).",
+    "Decimal measurements — weight, dimensions, exchange rates (step={0.25}, precision={2}) needing rounded commit.",
+    "Any bounded numeric setting (timeouts, retry counts, page sizes) where a slider is too coarse and a free Input lacks clamping."
+  ]
+}

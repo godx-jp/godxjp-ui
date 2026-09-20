@@ -1,0 +1,79 @@
+{
+  "example": "import { TwoFactorSetup } from \"@godxjp/ui/feedback\";\n\n<TwoFactorSetup\n  open={open}\n  onOpenChange={setOpen}\n  qrValue={enrollment.qr}\n  manualKey={enrollment.secret}\n  code={code}\n  onCodeChange={setCode}\n  onConfirm={verify}\n  recoveryCodes={recoveryCodes}\n  onAcknowledge={finish}\n  labels={labels}\n/>",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "TwoFactorSetup",
+  "props": [
+    {
+      "description": "Controlled dialog state.",
+      "name": "open",
+      "required": true,
+      "type": "boolean"
+    },
+    {
+      "description": "Dialog state callback.",
+      "name": "onOpenChange",
+      "required": true,
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Consumer-provided enrollment secret.",
+      "name": "manualKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Optional QR payload for the same enrollment secret.",
+      "name": "qrValue",
+      "type": "string"
+    },
+    {
+      "description": "Current verification code.",
+      "name": "code",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Verification-code callback.",
+      "name": "onCodeChange",
+      "required": true,
+      "type": "(code: string) => void"
+    },
+    {
+      "description": "Consumer-owned verification action.",
+      "name": "onConfirm",
+      "required": true,
+      "type": "() => void"
+    },
+    {
+      "description": "Codes shown only after successful enrollment.",
+      "name": "recoveryCodes",
+      "type": "string[]"
+    },
+    {
+      "description": "Recovery-code acknowledgement action.",
+      "name": "onAcknowledge",
+      "required": true,
+      "type": "() => void"
+    },
+    {
+      "description": "All localized copy.",
+      "name": "labels",
+      "required": true,
+      "type": "TwoFactorSetupLabels"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables actions while the consumer request runs.",
+      "name": "pending",
+      "type": "boolean"
+    }
+  ],
+  "rules": [],
+  "storyPath": "feedback/TwoFactorSetup.stories.tsx",
+  "tagline": "Canonical two-factor enrollment dialog for QR/manual-key verification and recovery-code acknowledgement.",
+  "usage": [
+    "Keep enrollment, verification, persistence, and secret lifecycle in the consumer; this component is presentational.",
+    "Only pass recovery codes after verification succeeds, and clear them when the dialog lifecycle ends."
+  ]
+}

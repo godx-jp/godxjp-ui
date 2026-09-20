@@ -12,6 +12,64 @@ npm i @godxjp/ui
 
 ---
 
+## Using this from an AI agent
+
+The catalog — 165 components, 1616 tokens, 47 cardinal rules — is published in two forms from one
+source. **Entry point for either: [`AGENTS.md`](AGENTS.md).**
+
+### If your agent can run a process
+
+Claude Code · Codex CLI · Cursor · any MCP client:
+
+```bash
+npx @godxjp/ui sync-rules
+```
+
+Writes `.mcp.json`, `CLAUDE.md` and `.ai/rules/` into the consumer repo and wires
+`@godxjp/ui-mcp`. Prefer this: it is searchable, it drills down instead of dumping, and it is
+**locked to the version on disk** — the failure it prevents is an agent being told a prop does not
+exist because the catalog was two minors behind (gh#789).
+
+### If your agent can only fetch URLs
+
+ChatGPT on the web, Claude.ai, or any client without a local process. The same data is served as
+static files straight from this public repo — no hosting, no deploy step:
+
+| file                                                                                                                    | size    | what it is                                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
+| [`agent/START-HERE.md`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md)                   | 6 KB    | **read first** — self-contained: the four rules, the token override model, a page that passes review   |
+| [`agent/llms.txt`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/llms.txt)                             | 2 KB    | the [llms.txt](https://llmstxt.org/) entry point                                                       |
+| [`agent/index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json)                         | 2 KB    | manifest: version, counts, every file's URL                                                            |
+| [`agent/components-index.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json)   | 42 KB   | all 165 as name + group + tagline — **fetch this first**                                               |
+| [`agent/components/<Name>.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json) | 1–32 KB | one file per component, each with its `importPath` — **this is the route to take**                     |
+| [`agent/components.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json)               | 1.1 MB  | all 165 entries in one file — most URL fetchers truncate this silently; prefer the per-component files |
+| [`agent/tokens.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json)                       | 0.6 MB  | every design token, its value and why it exists                                                        |
+| [`agent/vocabulary.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json)               | 7 KB    | the controlled prop vocabulary                                                                         |
+| [`agent/rules.json`](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json)                         | 17 KB   | the 47 cardinal rules                                                                                  |
+
+Pasteable bootstrap:
+
+> Read https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md and follow it.
+> Then fetch .../agent/components-index.json to choose components, and
+> .../agent/components/<Name>.json for the props of each one you chose. Tell me which catalog
+> version you read.
+
+**Pin to the version you installed.** Every URL above tracks `main`. Swap `main` for the matching
+tag — `https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.4.0/agent/...` — because a catalog
+newer than your package describes props you do not have, an older one hides props you do, and
+neither failure announces itself. Pinned URLs only resolve for releases whose tag contains
+`agent/`; on a 404 the release predates this catalog, so read `main` and compare
+`index.json` → `version` against what you installed.
+
+### Why static files and not a hosted MCP endpoint
+
+GitHub serves files; it does not run servers. MCP over the network needs a process handling POST
+requests, which no amount of Pages or raw hosting provides. A hosted HTTP MCP would work and would
+need real hosting, ops and an auth decision — so the static lane ships first, carrying the same
+data at no operational cost. Regenerate both from the one source with `pnpm gen:agent-catalog`.
+
+---
+
 ## Role & boundary — read this first
 
 This package is **the single source of UI truth**. It is shared, versioned infrastructure, which means two things are non-negotiable:

@@ -1,0 +1,40 @@
+{
+  "example": "import { Paragraph } from \"@godxjp/ui/general\";\n\n<Paragraph ellipsis={{ rows: 3, expandable: true }}>{description}</Paragraph>\n<Paragraph copyable>{ticketBody}</Paragraph>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Paragraph",
+  "props": [
+    {
+      "defaultValue": "\"div\"",
+      "description": "Rendered element. The default is antd's <div>, not <p>, because the editing textarea and the action cluster are BLOCK content: inside a <p> the parser would split the paragraph and leave the actions outside it. Pass `as=\"p\"` when the content is known to be phrasing-only.",
+      "name": "as",
+      "type": "\"div\" | \"p\" | \"span\""
+    },
+    {
+      "description": "Truncation. `rows` clamps to N lines; `expandable` adds an expand control (\"collapsible\" keeps a collapse one); `symbol` relabels it; `suffix` pins text after the ellipsis; `onEllipsis` fires when the measured overflow flips. This is the antd spelling of `clamp` and outranks it. One deviation from antd: the expand control is a sibling AFTER the clamped box rather than inline at the end of the last line, because the truncation is done by CSS line-clamping here (antd re-slices the text in JavaScript, which drops any element after the cut).",
+      "name": "ellipsis",
+      "type": "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }"
+    }
+  ],
+  "related": [
+    "Text",
+    "Typography",
+    "Prose",
+    "Title"
+  ],
+  "rules": [
+    2,
+    23
+  ],
+  "storyPath": "general/typography.tsx",
+  "tagline": "antd Typography.Paragraph — a block of body text with the full ellipsis contract (rows + an expand control) and the antd block behaviours. Renders a <div>, matching antd.",
+  "usage": [
+    "DO use `Paragraph` for a block of body copy that may need to be clamped with a way to read the rest. `Text clamp={n}` clamps but has no expand control.",
+    "DO keep the default <div>. Change it to a <p> only when you know the content holds no interactive parts.",
+    "DON'T stack Paragraphs and then space them by hand — put them in a `<Flex direction=\"col\" gap>`; never write `mb-4` on your own element."
+  ],
+  "useCases": [
+    "An issue description clamped to three lines with a 続きを読む control: `<Paragraph ellipsis={{ rows: 3, expandable: true }}>{body}</Paragraph>`.",
+    "A release note whose text can be edited in place by an admin."
+  ]
+}

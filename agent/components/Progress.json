@@ -1,0 +1,79 @@
+{
+  "example": "import { Progress } from \"@godxjp/ui/data-display\";\n\n<Progress value={pct} label={pct + \"% 使用中\"} tone={pct >= 80 ? \"warning\" : \"success\"} />\n<Progress value={252} over label=\"252% 積載\" />\n<Progress\n  segments={[\n    { value: 2, tone: \"destructive\", label: \"期限超過\" },\n    { value: 3, tone: \"warning\", label: \"期限間近\" },\n    { value: 12, tone: \"success\", label: \"対応済\" },\n  ]}\n  aria-labelledby={companyNameId}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Progress",
+  "props": [
+    {
+      "description": "METER mode: progress percentage 0–100 (clamped unless `over`). Required unless you pass `segments` — the two modes are a discriminated union, so `value` and `segments` can never appear together.",
+      "name": "value",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "description": "BREAKDOWN mode: one total split into slices. Pass ABSOLUTE amounts in one unit (counts, bytes, yen) — the bar computes each share, so three numbers never have to be rounded into 100. Renders role=\"img\" named from every slice (a partition is not three progressbars), on a taller track (--progress-breakdown-block-size 1.375rem, --progress-breakdown-radius var(--radius)) because three abutting fills on the meter's 0.5rem pill read as a coloured hairline. `label` on each slice is REQUIRED — colour alone never carries meaning (WCAG 1.4.1). Mutually exclusive with value/tone/over.",
+      "name": "segments",
+      "type": "{ value: number; tone: \"success\" | \"warning\" | \"destructive\"; label: string }[]"
+    },
+    {
+      "description": "Text label beside/below the bar; it also becomes the accessible name. Pass `aria-labelledby` instead when the name is ALREADY on screen (a row's company name, a card heading) — the bar then borrows it rather than repeating it.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"success\"",
+      "description": "Bar colour tone. Over-capacity defaults to destructive.",
+      "name": "tone",
+      "type": "\"success\" | \"warning\" | \"destructive\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100). On shape='ring' there is no hatch — diagonal stripes are a rectangle drawing — so the destructive tone and aria-valuetext carry it.",
+      "name": "over",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"bar\"",
+      "description": "METER geometry — the SAME measurement drawn as a full-width bar or as an arc. Same value, tone, size and ARIA either way; `label` moves INSIDE the ring, which is the point of it: a phone app bar showing '18 of 42 done' beside a title has one square of space, and a bar plus its caption needs two stacked rows. Reach for it when the SPACE is square, not when the number is important. It is meter-only: a ring around a `segments` breakdown is a pie chart, which is `PieChart donut` in the charts entry point — a part-to-whole across CATEGORIES with a legend, announced as an image rather than as a progressbar. The arc reads the MARK token tier, exactly as the bar does, so a warning ring and a warning bar on one screen are one colour.",
+      "name": "shape",
+      "type": "\"bar\" | \"ring\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Bar THICKNESS, on both modes. `md` is what each mode was designed at and stays the default. `sm` is for a bar that annotates a row rather than being the subject of the screen — an in-table capacity column, where a 1.375rem breakdown outweighs the row and sets the height of the whole table. Thickness only: the ARIA, the spoken breakdown and the corner are untouched. Never hand-write CSS to thin a bar — ui-audit blocks that in a consumer, and the two steps come from --progress-meter-block-size(-sm) / --progress-breakdown-block-size(-sm) so a theme retunes the scale instead of one call site.",
+      "name": "size",
+      "type": "\"sm\" | \"md\""
+    }
+  ],
+  "related": [
+    "Slider — use Slider when the user must drag or set a bounded numeric value (volume, priority, price range); use Progress when the value is read-only and must not be interacted with.",
+    "Steps — use Steps for a discrete, named sequence of phases (onboarding wizard, checkout flow) where each step has a label and a clear current/done/pending state; use Progress for a continuous 0–100 fill.",
+    "Badge / Badge — use Badge or Badge to communicate a categorical status label (e.g. \"Paid\", \"Overdue\") without a fill metaphor; use Progress when the numeric proportion itself is the information.",
+    "StatCard — use StatCard to headline a single KPI metric with a title; compose Progress inside or alongside StatCard when a visual fill adds meaning to the number.",
+    "Legend — the key for a breakdown: which tone means what, spelled out in words once for the whole card instead of on every bar.",
+    "BarChart / PieChart / LineChart (@godxjp/ui/charts) — a Progress breakdown handles ONE total split into a few named states, inline and without a charting runtime; move up to a chart when you have several series, many categories, or a value changing over time."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Progress.stories.tsx",
+  "tagline": "Progress in two modes: a METER (`value` 0–100, optional tone, over-capacity striped state, drawn as a bar or — with `shape='ring'` — as an arc with the readout inside it) and a BREAKDOWN (`segments` — one total split into tone-coloured slices on a taller track).",
+  "usage": [
+    "DO import from `@godxjp/ui/data-display`, not from a generic UI path: `import { Progress } from \"@godxjp/ui/data-display\";`",
+    "DO pass `value` as a 0–100 number — the component clamps it internally via `Math.max(0, Math.min(100, value))`, so out-of-range values are safe but misleading; compute the real percentage before passing it.",
+    "DO drive `tone` dynamically from business logic — e.g. `variant={pct >= 80 ? \"warning\" : \"success\"}` — to communicate threshold status semantically rather than with raw colour classes.",
+    "DON'T use a `disabled` Slider as a read-only progress bar — Slider is semantically an interactive control even when disabled, which pollutes the a11y tree and exposes the wrong ARIA role (`slider` vs `progressbar`). Progress renders the correct read-only indicator.",
+    "DON'T pass children or sub-components — Progress is a single self-contained element (track + bar + label). The `label` prop is the only text injection point; don't wrap it in a custom parent div to add a label alongside it.",
+    "DON'T hand-roll a stacked bar out of three divs to show a part-to-whole split — pass `segments`. Hand-rolled slices need a hex fill, an arbitrary height and an arbitrary radius, which ui-audit blocks three ways (no-arbitrary-hex, no-arbitrary-size, no-arbitrary-radius), and they leave the picture with no accessible name at all.",
+    "DON'T convert segment amounts to percentages yourself — pass the raw counts. The component divides by the total, so the slices always sum to the whole; pre-rounded percentages do not.",
+    "DO pair a breakdown with `Legend` so each tone is spelled out in words once, instead of repeating the labels on every bar.",
+    "DON'T use Progress for editable numeric input or range selection — it has no callbacks, no interactivity, and no form `name` prop. Use Slider (bounded range input) or Input (free-form number) for data-entry scenarios."
+  ],
+  "useCases": [
+    "Budget utilisation in an accounting dashboard — show how much of a monthly budget has been consumed, switching to `tone=\"warning\"` when the figure crosses 80%.",
+    "Invoice payment progress — display the proportion of an invoice total that has been settled (e.g. partial payments), with a label like `\"¥45,000 / ¥60,000 支払済\"` computed before passing `value`.",
+    "Storage or quota indicator in an admin panel — visualise disk usage, API quota, or seat licence consumption against a fixed limit.",
+    "Sync / import job completion feedback — surface the completion percentage of a long-running background job (polling the server) without giving the user an interactive control.",
+    "StatCard companion — pair with a `StatCard` metric to add a visual fill below the KPI number, reinforcing how close a target is to being met.",
+    "Multi-step onboarding or setup checklist — render one Progress per section (e.g. 3/5 steps complete = 60%) to give users a quick scan of overall progress across areas.",
+    "Over-capacity meter — an air-cargo weight/volume load or an over-booked resource pushed past its limit (e.g. 252%): pass `over` with the real ratio to get a red diagonal-hatched bar that reads unmistakably as over-limit, not merely full."
+  ]
+}

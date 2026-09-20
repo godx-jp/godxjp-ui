@@ -1,0 +1,99 @@
+{
+  "example": "import { PieChart } from \"@godxjp/ui/charts\";\n\n<PieChart\n  label={t(\"dashboard.expenseSplit\")}\n  data={data}\n  dataKey=\"amount\"\n  nameKey=\"category\"\n  numberFormat={{ style: \"currency\", currency: \"JPY\" }}\n  donut\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/charts",
+  "name": "PieChart",
+  "props": [
+    {
+      "description": "Row data: one slice per row.",
+      "name": "data",
+      "required": true,
+      "type": "ChartDatum[]"
+    },
+    {
+      "description": "Key into each datum holding the slice's numeric value.",
+      "name": "dataKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Key into each datum holding the slice's category label.",
+      "name": "nameKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Accessible name + visible caption.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      "name": "showCaption",
+      "type": "boolean"
+    },
+    {
+      "description": "Per-slice colours by index (defaults to the --chart-1..6 palette).",
+      "name": "colors",
+      "type": "string[]"
+    },
+    {
+      "description": "Extra context appended to the screen-reader description.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Canvas height preset. Ignored when `height` is set.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Explicit canvas height in px (overrides `size`).",
+      "name": "height",
+      "type": "number"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Show the slice legend.",
+      "name": "showLegend",
+      "type": "boolean"
+    },
+    {
+      "description": "Locale-aware formatting for tooltip values.",
+      "name": "numberFormat",
+      "type": "Intl.NumberFormatOptions"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Render a donut (hollow centre) instead of a full pie.",
+      "name": "donut",
+      "type": "boolean"
+    },
+    {
+      "description": "Message shown when `data` is empty.",
+      "name": "emptyMessage",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "BarChart — when there are many categories or precise comparison matters.",
+    "Progress — single ratio against a target rather than a multi-slice split."
+  ],
+  "rules": [],
+  "storyPath": "charts/PieChart.stories.tsx",
+  "tagline": "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
+  "usage": [
+    "DO import from the charts entry: `import { PieChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",
+    "DO import only the chart a screen uses — `import { PieChart } from \"@godxjp/ui/charts/pie-chart\";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.",
+    "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
+    "DO pass `numberFormat` (e.g. percent or currency) so tooltip values localize.",
+    "DON'T use a pie for trends over time (LineChart/AreaChart) or precise comparison (BarChart)."
+  ],
+  "useCases": [
+    "Budget / expense split across a few categories.",
+    "Market or status share (e.g. paid vs overdue vs draft)."
+  ]
+}

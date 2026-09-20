@@ -1,0 +1,78 @@
+{
+  "docPath": "general/actions.tsx",
+  "example": "import { Actions, ActionsCopy, ActionsFeedback } from \"@godxjp/ui/general\";\nimport { RefreshCw, Share2 } from \"lucide-react\";\n\n<Actions\n  label=\"回答の操作\"\n  items={[\n    { key: \"retry\", label: \"やり直す\", icon: <RefreshCw />, onItemClick: () => regenerate() },\n    {\n      key: \"more\",\n      label: \"その他\",\n      subItems: [{ key: \"share\", label: \"共有\", icon: <Share2 /> }],\n    },\n    { key: \"copy\", actionRender: <ActionsCopy text={answer} /> },\n    { key: \"feedback\", actionRender: <ActionsFeedback value={vote} onChange={setVote} /> },\n  ]}\n  onClick={({ key }) => run(key)}\n/>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Actions",
+  "props": [
+    {
+      "description": "The actions: { key, label?, icon?, onItemClick?, danger?, subItems?, actionRender? }. `label` is the accessible name AND the tooltip. `subItems` folds the action into a menu; `actionRender` replaces it entirely.",
+      "name": "items",
+      "required": true,
+      "type": "ActionsItemsProp[]"
+    },
+    {
+      "description": "Fires for any action WITHOUT its own onItemClick — a per-item handler wins and this does not also fire, exactly as in Ant Design X. A sub-item reports keyPath [subKey, parentKey].",
+      "name": "onClick",
+      "type": "(info: { item, key, keyPath, domEvent }) => void"
+    },
+    {
+      "defaultValue": "\"borderless\"",
+      "description": "Chrome of the STRIP, not the intent of the buttons (that is `danger` per item).",
+      "name": "variant",
+      "type": "\"borderless\" | \"filled\" | \"outlined\""
+    },
+    {
+      "description": "The strip fades in on mount. Zeroed under prefers-reduced-motion.",
+      "name": "fadeIn",
+      "type": "boolean"
+    },
+    {
+      "description": "The same fade, arriving along the LOGICAL inline axis (so it mirrors under dir=rtl).",
+      "name": "fadeInLeft",
+      "type": "boolean"
+    },
+    {
+      "description": "Accessible name of the toolbar (a plain string). Localized default otherwise.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "DOM id of the strip.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Toolbar / FilterBar — the list-page filter strip. Actions is the per-message action cluster, not a page-level control bar.",
+    "DropdownMenu — what `subItems` renders; compose it directly when the menu is not one action in a strip.",
+    "ChatBubble — the message the strip belongs to.",
+    "CredentialReveal — a copy affordance for a SECRET field; ActionsCopy copies message text."
+  ],
+  "rules": [
+    2,
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "general/Actions.stories.tsx",
+  "subParts": [
+    "ActionsItem",
+    "ActionsCopy",
+    "ActionsFeedback"
+  ],
+  "tagline": "The strip of actions under an assistant message (Ant Design X Actions): copy, retry, like, and a menu for the rest — a WAI-ARIA toolbar with ONE tab stop, where Ant X's own strip is <div onClick> with no role and no accessible name.",
+  "usage": [
+    "DO give every action a `label`. It becomes the accessible name and the tooltip; without one the key is used, which is better than nameless but worse than a sentence.",
+    "DO use `subItems` once the strip passes about five actions — it folds them behind one trigger instead of widening the row under every message.",
+    "DO reach for ActionsCopy and ActionsFeedback instead of hand-rolling copy and thumbs: ActionsCopy announces the copy through a live region (a tick alone is invisible to a screen reader), and ActionsFeedback keeps BOTH buttons on screen with aria-pressed rather than hiding the one you did not pick.",
+    "DON'T put a form control in the strip. It is a toolbar of buttons with one tab stop; a field inside would be unreachable by Tab.",
+    "DON'T expect `dropdownProps`, `triggerSubMenuAction`, `styles` or `classNames` from Ant Design X — they are not ported; the strip is retuned through the --actions-* tokens."
+  ],
+  "useCases": [
+    "Under an assistant answer: copy, regenerate, like/dislike, and a menu with share and report.",
+    "Under a streaming answer: an ActionsItem with status=\"running\" while the audio plays back, error when it fails.",
+    "In a message hover strip inside ChatBubbleList."
+  ]
+}

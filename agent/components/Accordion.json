@@ -1,0 +1,60 @@
+{
+  "example": "import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from \"@godxjp/ui/data-display\";\n\n<Accordion type=\"single\" collapsible>\n  <AccordionItem value=\"ship\">\n    <AccordionTrigger>配送について</AccordionTrigger>\n    <AccordionContent>3〜5営業日でお届けします。</AccordionContent>\n  </AccordionItem>\n</Accordion>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Accordion",
+  "props": [
+    {
+      "description": "single = one open at a time; multiple = independent.",
+      "name": "type",
+      "required": true,
+      "type": "\"single\" | \"multiple\""
+    },
+    {
+      "description": "When type=single, allow closing the open item.",
+      "name": "collapsible",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled open item(s).",
+      "name": "value",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Uncontrolled initial open item(s).",
+      "name": "defaultValue",
+      "type": "string | string[]"
+    },
+    {
+      "description": "Open-state callback.",
+      "name": "onValueChange",
+      "type": "(value: string | string[]) => void"
+    }
+  ],
+  "related": [
+    "Collapsible (single open/close region, no item set)",
+    "Tabs (mutually-exclusive views, always one visible)"
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "data-display/Accordion.stories.tsx",
+  "subParts": [
+    "AccordionContent",
+    "AccordionItem",
+    "AccordionTrigger"
+  ],
+  "tagline": "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
+  "usage": [
+    "DO compose the full set: <Accordion type=\"single\" collapsible><AccordionItem value=\"a\"><AccordionTrigger/><AccordionContent/></AccordionItem></Accordion>.",
+    "DO give each AccordionItem a unique `value`.",
+    "DON'T use it for primary navigation — that's Sidebar/Tabs. Accordion is for collapsible content/FAQ."
+  ],
+  "useCases": [
+    "FAQ lists",
+    "Grouped settings sections",
+    "Collapsible detail panels on a record page",
+    "Filter facet groups in a sidebar"
+  ]
+}

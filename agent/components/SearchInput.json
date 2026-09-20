@@ -1,0 +1,98 @@
+{
+  "example": "import { SearchInput } from \"@godxjp/ui/data-entry\";\n\n<SearchInput placeholder=\"クーポン名・IDで検索\" value={search} onSearch={setSearch} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "SearchInput",
+  "props": [
+    {
+      "description": "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "defaultValue": "\"outlined\"",
+      "description": "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "Called after a changed query settles. Never fires for the initial value on mount or callback-only rerenders. Optional when filtering uses onValueChange.",
+      "name": "onSearch",
+      "type": "(q: string) => void"
+    },
+    {
+      "description": "Controlled value.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"\"",
+      "description": "Initial uncontrolled value.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Input placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "250",
+      "description": "Debounce delay (ms).",
+      "name": "debounce",
+      "type": "number"
+    },
+    {
+      "description": "Input id; pair with `label` or an external `<label htmlFor>`.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Optional visible label rendered above the search box (falls back to an sr-only label).",
+      "name": "label",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Accessible search name when there is no visible label.",
+      "name": "ariaLabel",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disable search input and clearing.",
+      "name": "disabled",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Input — use `Input` (inside `FormField`) when the search field is part of a submitted form and needs a `name` attribute, or when you need full `onChange` control without any debounce or clear button. SearchInput is the right pick when the field only triggers filtering, not form submission.",
+    "Toolbar — SearchInput is almost always placed as a direct child of `Toolbar`, which provides the surrounding strip, clear-all button, and active-filter state. Do not use SearchInput as a standalone header widget when a full filter strip (with selects etc.) already exists — compose them together.",
+    "Command — use `Command` + `CommandInput` when you need a keyboard-navigable command palette or combobox list with grouped items and keyboard selection. `Command` is only meaningful when paired with `CommandList`; SearchInput is the right pick for a plain filter box with no item-selection behavior.",
+    "Select (with showSearch) — when users must pick a value from a list AND search to narrow it, use `<Select options={...} showSearch>` (which has its own built-in search input). SearchInput is for filtering an external data set, not for value selection from an option list."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "data-entry/SearchInput.stories.tsx",
+  "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue).",
+  "usage": [
+    "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
+    "DO: choose controlled vs uncontrolled deliberately. Pass `value` + `onValueChange` together for controlled mode; optionally add `onSearch` for debounced effects (e.g. when search state lives in a URL param or shared parent). For local-only ephemeral search pass only `defaultValue` + `onSearch` — omitting `value` puts the component in uncontrolled mode.",
+    "DO: supply an `ariaLabel` (or visible `label`) when no adjacent label exists. Without either prop, SearchInput falls back to the i18n key `common.search` rendered as a visually-hidden `<Label>` — still accessible, but providing a context-specific string (e.g. `ariaLabel='請求書を検索'`) is more descriptive for screen readers.",
+    "DON'T: use SearchInput inside a `<form>` expecting native form submission. The component has no `name` prop and does not emit a form field value — it is a filter-trigger widget. For a form search field, use a plain `Input` inside `FormField`.",
+    "DON'T: hand-roll a debounced input when you need a search box. SearchInput ships the debounce, clear button (×), search icon, and accessible label — recreating these with a raw `<Input>` adds code and misses the UX contract.",
+    "DON'T: place SearchInput inside a `ToolbarGroup` wrapper — `ToolbarGroup` is for Select/DatePicker controls with a label chip. SearchInput goes directly as a child of `Toolbar` (or standalone above a table), not wrapped in `ToolbarGroup`."
+  ],
+  "useCases": [
+    "List-page filter bar: placed as the first child of `Toolbar` (before any `ToolbarGroup` children) to drive text-based filtering of a `DataTable`. The `onSearch` callback updates a query param or state variable that the table's data fetch reads.",
+    "Inline client-side search over a small in-memory list (e.g. a sidebar nav list, a transfer panel, a settings category list) where results narrow immediately as the user types without a server round-trip — use uncontrolled mode (`defaultValue`) so no state is needed in the parent.",
+    "URL-synced search: controlled mode where `value` comes from `useSearchParams()` and `onSearch` pushes to the URL, enabling deep-linkable, bookmarkable filtered views on invoice/transaction/customer index pages.",
+    "Panel or dialog search: filtering a long dropdown list, a tree, or a multi-item selection panel that does not use the built-in `Command` palette — SearchInput provides the search box while the parent renders the filtered result set.",
+    "Toolbar search on a data-heavy accounting page (e.g. journal-entry search, partner lookup in a subledger view) where the 250 ms debounce prevents a flood of API calls on every keystroke without requiring the developer to implement debounce logic."
+  ]
+}

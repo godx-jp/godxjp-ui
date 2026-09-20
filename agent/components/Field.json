@@ -1,0 +1,52 @@
+{
+  "example": "{`import { Field, Switch } from \"@godxjp/ui/data-entry\";\n\nexport function NotifyRow() {\n  return (\n    <Field id=\"notify\" label=\"メール通知\" description=\"重要な更新をメールで受け取る\">\n      <Switch id=\"notify\" defaultChecked />\n    </Field>\n  );\n}`}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Field",
+  "props": [
+    {
+      "description": "id wired to the control via htmlFor; pass the same id to the child control.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "The field label, rendered as a <Label>.",
+      "name": "label",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional helper text rendered under the label.",
+      "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The control (Checkbox/Radio/Switch) placed beside the label.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Extra CSS classes on the wrapper.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "FormField — block label/helper/error/required layout for text inputs; use it instead when those slots are needed.",
+    "Switch / Checkbox / Radio — the controls Field typically wraps."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "data-entry/Field.stories.tsx",
+  "tagline": "Label + optional description laid out beside a single checkbox/radio/switch control — the inline alternative to FormField's full block layout.",
+  "usage": [
+    "DO: Use Field to label a single boolean/choice control (Switch, Checkbox, Radio) in a compact two-column row — control beside label + description.",
+    "DO: Match the child control's id to Field's id so the label is correctly associated.",
+    "DON'T: Use Field for text inputs needing helper/error/required slots — use FormField (block layout) instead. There is no ChoiceField anymore; Field is the canonical name."
+  ],
+  "useCases": [
+    "A settings list of toggle rows (notifications, auto-save) where each Switch has a label + description.",
+    "A consent checkbox with an explanatory description beside it.",
+    "A radio option row in a preferences form."
+  ]
+}

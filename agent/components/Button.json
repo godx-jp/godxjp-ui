@@ -1,0 +1,133 @@
+{
+  "example": "import { Button } from \"@godxjp/ui/general\";\nimport { Trash2 } from \"lucide-react\";\n\n<>\n  <Button>保存</Button>\n  <Button variant=\"outline\" size=\"sm\">編集</Button>\n  <Button variant=\"ghost\" size=\"icon-sm\"><Trash2 className=\"size-4\" /></Button>\n</>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Button",
+  "props": [
+    {
+      "defaultValue": "\"default\"",
+      "description": "Visual style. `dashed` = outline with a dashed border (Ant-style add-row / placeholder action).",
+      "name": "variant",
+      "type": "\"default\" | \"destructive\" | \"outline\" | \"dashed\" | \"secondary\" | \"ghost\" | \"link\" | \"bare\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Size preset (height, padding, icon dims).",
+      "name": "size",
+      "type": "\"default\" | \"xs\" | \"sm\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Corner radius from the tokens — `default` (control radius), `pill` (fully rounded, --radius-pill), `sharp` (square, --radius-sharp). Use the prop instead of a `rounded-*` className.",
+      "name": "shape",
+      "type": "\"default\" | \"pill\" | \"sharp\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Span the full container width (`width:100%`) instead of sizing to content.",
+      "name": "fullWidth",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Take the space the siblings leave, and let a long label ELLIPSE instead of widening the row — the same axis Flex calls `fill`, for the same reason. Button ships flex-shrink: 0, which is right almost everywhere and wrong in a constrained bar: an account menu holding an avatar plus a person's name keeps its full width while the cluster clips it, so a keyboard user tabs to a control they cannot see (SC 2.4.7). Sets flex: 1 1 auto and min-inline-size: 0; pair it with a <Text truncate> label. This is what replaces className=\"min-w-0 flex-1\", which ui-audit blocks — and which this package's own Topbar guidance used to recommend.",
+      "name": "fill",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Allow multi-line text labels to grow the button height. Uses the active size tier as its minimum height; use with fullWidth in narrow collections.",
+      "name": "wrap",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "Logical content alignment. Use start for full-width collection actions; respects RTL.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Render as Radix Slot — merge props onto the child (<a>/<Link>).",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "description": "Disable the button.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "In-flight state — shows a leading `Loader2` spinner (replaces a leading icon if present), sets `aria-busy=\"true\"`, and blocks activation (non-interactive, pointer-events disabled) while keeping the label visible so the width doesn't jump. Prefer this over a hand-rolled `<Loader2 className=\"animate-spin\">` inside the button. Ignored when `asChild` (Slot requires a single child).",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Optional label to swap in while `loading` (pass the `t()`-translated string, e.g. `loadingText={t('saving')}`). When omitted the original children stay beside the spinner.",
+      "name": "loadingText",
+      "type": "string"
+    },
+    {
+      "description": "Click handler. Does not fire while `loading` or `disabled`.",
+      "name": "onClick",
+      "type": "React.MouseEventHandler<HTMLButtonElement>"
+    },
+    {
+      "description": "Trailing borderless counter pill after the label (filter tabs / segmented toggles, e.g. \"Chờ bay 18\"). Localized via `Intl.NumberFormat`; styled per variant — never nest a `Badge` in a Button for this. Ignored when `asChild`.",
+      "name": "count",
+      "type": "number"
+    },
+    {
+      "defaultValue": "99",
+      "description": "Cap for `count` (Ant Badge parity) — when `count` exceeds it the pill renders `{overflowCount}+` (e.g. `99+`).",
+      "name": "overflowCount",
+      "type": "number"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Whether the pill renders when `count` is 0 (Ant Badge parity). Pass `false` to hide the pill at zero.",
+      "name": "showZero",
+      "type": "boolean"
+    },
+    {
+      "description": "Localized description of what `count` MEANS, folded into the accessible name — the SAME prop and the same contract Toggle has carried since gh#312, added here in gh#734 because a counted Button measured `\"Git3\"` in the accessibility tree, not \"Git, 3 pages\". The pill is aria-hidden and the spoken clause is an sr-only sibling, so a text button announces as `\"<label>, <count> <countLabel>\"`; with an explicit `aria-label` (an icon-only counted button) the clause is folded into that instead. Pass a t()-resolved string — the library does not own this wording. Even without it the name is now `\"Git, 3\"` rather than `\"Git3\"`; `countLabel` is what turns the digits into a unit.",
+      "name": "countLabel",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "TopbarItem — the same trigger INSIDE a Topbar slot. A Button there is a --control-height pill floating in a taller bar, with its own hover fill and a ring around the pill instead of the cell; TopbarItem is the bar cell itself. Anywhere that is not a bar, Button is right.",
+    "DropdownMenu — when a button needs to reveal a list of actions (e.g. 'Actions ▾' in a DataTable row), wrap the Button as a `DropdownMenuTrigger` inside a `DropdownMenu` compound; don't open a Sheet/Dialog just to show a list of options.",
+    "ButtonRefetch — a pre-wired Button variant from `@godxjp/ui/query` that binds directly to a TanStack Query result (shows spinner, auto-disables while fetching, retries on click). Use it instead of a raw Button whenever the action is a query refetch — do not pass `onClick`/`disabled` to it manually.",
+    "AlertMutationFeedback — for surfacing mutation errors and a retry action; it renders its own retry Button internally. Do not add a separate Button alongside AlertMutationFeedback for the same mutation.",
+    "PrefetchLink — use when the goal is purely navigation with hover-prefetch (Inertia v3 prefetch); it renders as an `<a>` not a button. Only reach for `Button asChild + Link` when the navigation control must look like a button (primary CTA style)."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "general/Button.stories.tsx",
+  "subParts": [
+    "ButtonRefetch"
+  ],
+  "tagline": "Core button with variant + size presets, built on cva and Radix Slot (asChild).",
+  "usage": [
+    "DO pick the right variant for intent: `default` (primary CTA, one per section), `destructive` (irreversible actions like delete/revoke), `outline` (secondary actions alongside a primary), `secondary` (less prominent actions), `ghost` (toolbar icon-only actions), `link` (inline text-style navigation without an underline by default).",
+    "DO use icon-only sizes (`icon`, `icon-xs`, `icon-sm`, `icon-lg`) exclusively for buttons that contain only an SVG — these sizes set equal width/height. For text+icon buttons use `default|sm|lg|xs` sizes; icons inside are auto-sized to 1rem via `[&_svg:not([class*='size-'])]:size-4`.",
+    "DO use `asChild` to render the button as a React Router/Inertia `<Link>` or native `<a>` while keeping all button styling and a11y: `<Button asChild variant=\"outline\"><Link href={route('invoices.show', id)}>詳細</Link></Button>`. Never wrap a `<button>` around an `<a>` — that is invalid HTML.",
+    "DON'T use raw `<button>` elements anywhere in the UI — always use this `Button`. The only exception is an `aria-hidden` native control used as an e2e/a11y hook paired with a visible godx-ui control.",
+    "DO set `type=\"submit\"` explicitly on form submit buttons (the default HTML button type inside `<form>` is already `submit`, but being explicit prevents accidental double-submissions when a `type=\"button\"` sibling exists). For cancel/reset actions set `type=\"button\"` to avoid accidental form submission.",
+    "DON'T apply raw padding, height, or `rounded-*` overrides to `Button` via `className` — the size variants encode the full box model. If a custom size is truly needed, use `buttonVariants` from `@godxjp/ui/general` to compose a new cva class rather than fighting the existing ones.",
+    "DO use the `loading` prop for async/pending actions instead of hand-rolling `<Loader2 className=\"animate-spin\">` inside the button — `loading` renders the spinner, sets `aria-busy`, and blocks activation for you; pair with `loadingText={t('saving')}` to swap the label. For a TanStack Query refetch use `ButtonRefetch` (it owns its own loading lifecycle) rather than wiring `loading` manually.",
+    "DO pass `countLabel` with every `count` — without it the number is read as a bare digit run glued to the label. `<Button count={3} countLabel={t('common.pages')}>Git</Button>` announces \"Git, 3 pages\".",
+    "DON'T reach for `<Button count aria-pressed>` to build a FILTER CHIP — Button paints no pressed state, so the chip looks identical selected and unselected. That is `<Toggle variant=\"soft\" shape=\"pill\" count countLabel>` (gh#734)."
+  ],
+  "useCases": [
+    "Primary form submission in a Dialog or Sheet (e.g. `<Button type=\"submit\" disabled={form.processing}>保存</Button>`) — the `disabled` prop greys it out and blocks pointer events, preventing double-submit during async operations.",
+    "Destructive confirmation inside a Dialog — pair `tone=\"destructive\"` Button as the confirm action and `variant=\"outline\"` as Cancel; never use `variant=\"default\"` for a delete action.",
+    "Icon-only toolbar actions in a DataTable column (edit, delete, copy) using `size=\"icon-sm\"` + `variant=\"ghost\"` + a Lucide icon child — gives equal-width square targets that don't distort the row.",
+    "Navigation links styled as buttons (e.g. 'New Invoice', 'Back to list') using `asChild` + Inertia `<Link>` — preserves SPA navigation while using the button's visual treatment.",
+    "Async mutation trigger in an accounting workflow (e.g. 'Sync from MF', 'Export CSV') — disable on processing state; pair with `AlertMutationFeedback` for error/retry UI rather than inline `try/catch` alerts.",
+    "Refetch / retry trigger when NOT using TanStack Query — for manual cache refresh inside a TanStack Query context use `ButtonRefetch` instead, which owns its own `disabled`/`onClick` lifecycle."
+  ]
+}

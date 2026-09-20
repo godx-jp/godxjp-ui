@@ -1,0 +1,107 @@
+{
+  "example": "import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from \"@godxjp/ui/data-display\";\n\n<Table>\n  <TableHeader><TableRow><TableHead>項目</TableHead><TableHead numeric>金額</TableHead></TableRow></TableHeader>\n  <TableBody>\n    <TableRow><TableCell>送料</TableCell><TableCell numeric>¥500</TableCell></TableRow>\n    <TableRow><TableCell indent={1}>うち離島加算</TableCell><TableCell numeric>¥200</TableCell></TableRow>\n    <TableRow><TableCell flush colSpan={2}><ShippingBreakdown /></TableCell></TableRow>\n  </TableBody>\n</Table>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Table",
+  "props": [
+    {
+      "description": "PER-INSTANCE column measures for preset=\"action-collection\", in place of re-pointing its --table-action-collection-* knobs from a consumer stylesheet. Those knobs are global by design, and that is the problem: two collections on one screen do not share a column budget — a console that widened `actions` globally so a Japanese status badge would stop breaking to one character per line (an SC 1.4.10 reflow failure) collapsed a sibling table's name column to ~15px in the same change. Emitted as inline custom properties, the same contract Flex `width` uses for a call-site measurement, leaving data-column-widths on the DOM so each escape stays countable.",
+      "name": "columnWidths",
+      "type": "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string }"
+    },
+    {
+      "description": "On TableHead/TableCell: logical text alignment.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "description": "On TableHead/TableCell: tabular figures and end alignment; explicit align wins.",
+      "name": "numeric",
+      "type": "boolean"
+    },
+    {
+      "description": "On TableHead/TableCell: allow text to wrap.",
+      "name": "wrap",
+      "type": "boolean"
+    },
+    {
+      "description": "On TableHead/TableCell: column measure; numbers mean CSS pixels.",
+      "name": "width",
+      "type": "WidthProp"
+    },
+    {
+      "description": "TableHeader / TableBody composition.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Extra classes on the table element.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Whether Table owns its own horizontal-scroll region (default true). Leave true for a standalone table so a table wider than its container scrolls in a keyboard-reachable wrapper. Set false only when an ancestor already provides the scroll region (DataTable does) to avoid a redundant nested scroller + duplicate keyboard tab stop.",
+      "name": "scrollable",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Draw the full cell GRID: an outer frame plus vertical rules between columns (the horizontal row rules already come from TableRow). Reach for it whenever the table carries rowSpan/colSpan merged cells — without column rules the merge relationships are unreadable. Colour comes from --table-border-color (default --border). Default false emits nothing.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "description": "Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA). Mark a hand-composed detail row `<TableRow data-expanded-row=\"\">` and it is skipped when counting and wears its record's stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped=\"\" (100%), `false` emits data-striped=\"false\" (0%) for this table only.",
+      "name": "striped",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Named collection contract. \"default\" emits no attribute and keeps the plain table. \"action-collection\" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440.",
+      "name": "preset",
+      "type": "\"default\" | \"action-collection\""
+    },
+    {
+      "defaultValue": "\"sm\"",
+      "description": "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is \"default\".",
+      "name": "collapseBelow",
+      "type": "\"sm\" | \"md\" | \"lg\" | \"xl\""
+    }
+  ],
+  "related": [
+    "DataTable — choose DataTable for any data array that needs sorting, filtering, pagination, row selection, bulk actions, or density toggle. DataTable internally renders Table primitives, so switching up is non-breaking. Default to DataTable for all admin list pages.",
+    "SkeletonTable — use as a loading placeholder before a Table or DataTable mounts. Drop it in the `skeleton` slot of DataState, or render it directly while data is fetching. Do not show a Table with empty rows as a loading state.",
+    "Descriptions — choose Descriptions when content is label→value pairs (two columns, no repeated rows of the same type). Table is better when every row shares the same typed columns.",
+    "DataState — when your Table's data comes from `useQuery`, wrap it in DataState to handle loading/error/empty states declaratively instead of writing conditional logic around the Table yourself."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Table.stories.tsx",
+  "subParts": [
+    "TableBody",
+    "TableCell",
+    "TableHead",
+    "TableHeader",
+    "TableRow"
+  ],
+  "tagline": "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
+  "usage": [
+    "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
+    "DO use `TableHead` (not `TableCell`) for header cells — it renders `<th>` with `data-slot=\"table-head\"` and the `--table-row-height` CSS variable for consistent header sizing across the design system. `TableCell` renders `<td>` with `data-slot=\"table-cell\"` and is for body rows only.",
+    "DO use `numeric` on TableHead/TableCell for tabular end-aligned numbers; `align=\"start|center|end\"` overrides alignment, `wrap` allows multi-line text, and `width` sets a CSS column measure. These props replace alignment and width classes.",
+    "DO use `striped` on dense list tables so a row is easy to follow across its columns; to turn it on for EVERY Table and DataTable at once, set `:root { --table-row-striped-alpha: 100%; }` in the theme rather than passing the prop everywhere (`striped={false}` opts one table out). A detail row under a record is `<TableRow data-expanded-row=\"\">` so the stripe counts records, not DOM rows — never stripe with `:nth-child` page CSS or row utilities.",
+    "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
+    "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
+    "DO reach for `preset=\"action-collection\"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. For text actions such as 対応する, set ColumnDef.width (or TableHead width) to reserve the label measure; leave a content column fluid. The default actions token is sized for icon actions. Do not add a hidden column or page-local breakpoint to make a table fit. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.",
+    "DO reach for `<TableCell flush>` when the cell's CONTENT owns its inset — an expanded detail panel under a row (`<TableCell flush colSpan={n}>`), a nested table, a full-bleed media strip. It drops the cell's own padding so the child spans the whole cell; without it the panel is indented by `--table-cell-space-x` and the only route was a `p-0` utility, which no service theme can reach.",
+    "DO express hierarchy with `<TableCell indent={depth}>` — a grouped table's detail rows under their subtotal header, or a tree row under its parent. The measure is `--table-cell-space-x + depth x --table-cell-indent-space-step`, so level 0 sits on the column's own text axis and a service retunes (or flattens) the step in one token. Never hand-roll `style={{ paddingInlineStart }}` at the call site — that is a per-page constant no theme can reach, and it breaks in RTL unless you remember the logical property.",
+    "DO place `<Table>` inside a `<CardContent flush>` (or `p-0` card) when embedding in a Card, so the built-in `overflow-auto` wrapper sits flush to the card edges. Wrapping with plain `<CardContent>` adds padding that clips the horizontal scroll shadow."
+  ],
+  "useCases": [
+    "Invoice line-item breakdowns — a fixed, read-only list of product/quantity/unit-price/total rows where columns are predefined and will never need sort or filter controls.",
+    "Summary/comparison tables inside a detail panel or Dialog, such as showing two payment plans side-by-side, where the structure is hand-authored and not driven by a data array.",
+    "Print or PDF-export views where a minimal, stateless `<table>` element with predictable markup is required and DataTable's JS-driven features would interfere with server-side rendering or CSS print rules.",
+    "Embedded sub-tables inside a DataTable expanded row (the inner table uses Table primitives because nesting a full DataTable instance inside another is unsupported).",
+    "Static reference tables in documentation, onboarding, or settings pages — e.g. a permission matrix or feature comparison — where every cell is literal JSX content, not from a data array."
+  ]
+}

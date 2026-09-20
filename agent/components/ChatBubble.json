@@ -1,0 +1,100 @@
+{
+  "docPath": "data-display/chat-bubble.tsx",
+  "example": "import { Avatar, AvatarFallback, ChatBubble } from \"@godxjp/ui/data-display\";\nimport { formatAppTime } from \"@godxjp/ui/datetime\";\n\n<ChatBubble\n  placement=\"start\"\n  variant=\"filled\"\n  avatar={<Avatar aria-hidden=\"true\"><AvatarFallback>AI</AvatarFallback></Avatar>}\n  header={t(\"chat.bubble.assistant\")}\n  footer={formatAppTime(message.sentAt)}\n  typing={{ step: 2, interval: 24 }}\n>\n  {message.text}\n</ChatBubble>\n\n// The reply has been requested and has not arrived yet.\n<ChatBubble placement=\"start\" header={t(\"chat.bubble.assistant\")} loading />\n\n// A failed send: colour AND a localized sr-only word, never colour alone.\n<ChatBubble placement=\"end\" tone=\"destructive\" header={t(\"chat.bubble.you\")}>\n  {draft}\n</ChatBubble>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ChatBubble",
+  "props": [
+    {
+      "description": "The message. Pass a plain STRING to make `typing` animatable — a ReactNode has no character count to reveal, so it always renders whole.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"start\"",
+      "description": "Side of the conversation, on the LOGICAL inline axis: \"start\" is the other party, \"end\" is the reader's own message. It flips automatically under dir=\"rtl\" — never branch on locale.",
+      "name": "placement",
+      "type": "\"start\" | \"end\""
+    },
+    {
+      "defaultValue": "\"filled\"",
+      "description": "Structural treatment of the body. Ant Design X's `shadow` is absent on purpose: this is a 1px-border system with no drop shadows. Status colour is `tone`, never `variant`.",
+      "name": "variant",
+      "type": "\"filled\" | \"borderless\" | \"outlined\""
+    },
+    {
+      "description": "The author's mark — a real <Avatar>, never a styled div. Mark it aria-hidden when `header` already names the author.",
+      "name": "avatar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Line above the body naming the turn. When present it becomes the bubble's ACCESSIBLE NAME (aria-labelledby), so keep it text.",
+      "name": "header",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Line below the body — a timestamp (format it with formatAppTime from @godxjp/ui/datetime), per-message actions, a token count.",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "The reply was requested and has not arrived: renders Skeleton bars (aria-hidden, they are decorative) plus a localized sr-only line, and sets aria-busy on the article.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Stream the text in. `true` = 1 character every 50ms; the object form retunes it. While streaming the half-typed text is aria-hidden and the article is aria-busy, so the log announces the finished message ONCE. Under prefers-reduced-motion: reduce the full text renders immediately and no timer starts.",
+      "name": "typing",
+      "type": "boolean | { step?: number; interval?: number }"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Type step and inner inset. Never \"default\".",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Status intent for a message that is not ordinary conversation (a failed send, a rate-limit warning). Washes the role colour like Alert AND renders a localized sr-only tone word — never colour alone.",
+      "name": "tone",
+      "type": "\"default\" | \"info\" | \"success\" | \"warning\" | \"destructive\""
+    },
+    {
+      "description": "DOM id forwarded to the bubble's `<article>`. Supply one when something outside the bubble has to point at it (an `aria-describedby` from a retry button, a deep link to a single message); otherwise leave it off and let React generate the ids the header/label wiring needs.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ChatBubbleList — the feed. Use it whenever there is more than one message: it owns stick-to-bottom, the jump-to-latest affordance and the single aria-live region.",
+    "ListRow — a single-line entity row for short lists (sessions, tokens). Use ListRow for records, ChatBubble for conversation turns.",
+    "Alert — a page-level status banner. A toned ChatBubble is a status INSIDE a conversation; an Alert is a status about the screen.",
+    "Prose — use it inside `children` when the assistant returns rendered Markdown; ChatBubble owns the container, Prose owns the typography of the body.",
+    "Skeleton — what `loading` renders. Do not compose it yourself around a bubble; the prop also sets aria-busy and the localized status line."
+  ],
+  "rules": [
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "data-display/ChatBubble.stories.tsx",
+  "tagline": "One message in a conversation: an author mark, a header naming the turn, the body, and a footer. Renders as an <article> inside ChatBubbleList's log; `loading` shows Skeleton and `typing` streams a string in, dropping the animation entirely under prefers-reduced-motion.",
+  "usage": [
+    "DO let ChatBubbleList own the feed. A lone ChatBubble is for a single quoted message; a conversation is `items` + `roles` on the list, which is where stick-to-bottom and the one aria-live region live.",
+    "DO pass a real <Avatar> to `avatar` and a plain string to `header`. The header is the accessible name of the bubble, so a decorative avatar next to it should be aria-hidden.",
+    "DO pass `typing` on the streaming message only, and only when its body is a string. Do not re-mount the bubble on every token — change `children` and let the component reveal it.",
+    "DO format timestamps for `footer` with formatAppTime / formatAppDate from @godxjp/ui/datetime (Intl.DateTimeFormat + the AppProvider timezone). Never hand-build a date string.",
+    "DO NOT put an aria-live region inside a bubble. The feed owns exactly one; one per bubble floods a screen reader on every token.",
+    "DO NOT reach for `variant` to signal an error — that is `tone`. `variant` is structural (filled/borderless/outlined) and has no status values.",
+    "DO NOT hand-roll the bubble as a rounded div with a background: placement, the RTL flip, the max measure and the tone wash are all tokens on this component (--chat-bubble-*)."
+  ],
+  "useCases": [
+    "An AI assistant panel — assistant turns on the start side, the operator's own prompts on the end side, with the in-flight reply streaming via `typing`.",
+    "A support-inbox thread where an agent reads the customer's history: the same feed renders both parties and marks a failed send with tone=\"destructive\".",
+    "A tool/agent transcript where a system note (tone=\"info\", variant=\"outlined\") sits between conversational turns.",
+    "A quoted single message inside a Card — a reported message in a moderation screen, rendered as one ChatBubble with a footer carrying the report time."
+  ]
+}

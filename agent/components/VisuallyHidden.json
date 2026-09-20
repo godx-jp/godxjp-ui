@@ -1,0 +1,20 @@
+{
+  "docPath": "docs/general/typography.tsx",
+  "example": "<VisuallyHidden>Unread</VisuallyHidden>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "VisuallyHidden",
+  "props": [
+    {
+      "description": "Text available to assistive technology.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "rules": [],
+  "storyPath": "general/typography.tsx",
+  "tagline": "Accessible supporting text without a visible layout box.",
+  "usage": [
+    "Use for supplementary accessible labels. Do not hide controls that remain focusable."
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "example": "import { Link } from \"@godxjp/ui/general\";\n\n<Link href=\"/docs/billing\">請求の設定</Link>\n<Link href=\"https://example.com\" target=\"_blank\">外部サイト</Link>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Link",
+  "props": [
+    {
+      "defaultValue": "\"a\"",
+      "description": "Rendered element.",
+      "name": "as",
+      "type": "\"a\" | \"span\""
+    },
+    {
+      "description": "Single-line truncation. antd allows only a boolean on `Link`, and that restriction is ported.",
+      "name": "ellipsis",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Text",
+    "Typography",
+    "Button",
+    "PrefetchLink"
+  ],
+  "rules": [
+    2,
+    6,
+    23
+  ],
+  "storyPath": "general/typography.tsx",
+  "tagline": "antd Typography.Link — an anchor that already carries this library's inline link affordance (underline on hover AND on keyboard focus), plus antd's rel guard for target=\"_blank\".",
+  "usage": [
+    "DO use `Link` when you want an anchor with the link affordance already on it. `<Text link>` is the same affordance for a run that is not an anchor, and `<Text asChild link>` is the shape a router link takes.",
+    "DON'T reach for `Button variant=\"link\"` inside running content: that is a CONTROL box (nowrap, a control height, inline padding), so in a table cell it neither wraps nor shares the cell's line box.",
+    "A `target=\"_blank\"` with no `rel` of its own is given `noopener noreferrer`, because the opened document otherwise keeps a live handle back into this one."
+  ],
+  "useCases": [
+    "A documentation link at the end of a helper line: `<Link href=\"/docs/billing\">請求の設定</Link>`.",
+    "An external link that must not leak the opener: `<Link href=\"https://example.com\" target=\"_blank\">外部サイト</Link>`."
+  ]
+}

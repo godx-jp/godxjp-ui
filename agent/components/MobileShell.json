@@ -1,0 +1,73 @@
+{
+  "example": "import { Flex, MobileShell } from \"@godxjp/ui/layout\";\nimport { Button, Heading, Text } from \"@godxjp/ui/general\";\nimport { Inbox, Package, ScanLine, Truck } from \"lucide-react\";\n\nexport function HandyInbound() {\n  return (\n    <MobileShell\n      statusBar={<Text size=\"sm\" tabular>9:41</Text>}\n      header={\n        <Flex align=\"center\" justify=\"between\" gap=\"xs\" className=\"w-full\">\n          <Heading level={3} as=\"h1\">入庫</Heading>\n          <Button variant=\"ghost\" size=\"sm\">選択</Button>\n        </Flex>\n      }\n      actions={\n        <Button className=\"flex-[2]\">\n          <ScanLine aria-hidden=\"true\" />\n          スキャン\n        </Button>\n      }\n      tabBar={\n        <>\n          <Button variant=\"ghost\" aria-current=\"page\" className=\"h-full flex-col rounded-none\">\n            <Inbox aria-hidden=\"true\" />\n            <Text size=\"2xs\">入庫</Text>\n          </Button>\n          <Button variant=\"ghost\" className=\"h-full flex-col rounded-none\">\n            <Package aria-hidden=\"true\" />\n            <Text size=\"2xs\">梱包</Text>\n          </Button>\n          <Button variant=\"ghost\" className=\"h-full flex-col rounded-none\">\n            <Truck aria-hidden=\"true\" />\n            <Text size=\"2xs\">出庫</Text>\n          </Button>\n        </>\n      }\n    >\n      <Flex direction=\"col\" gap=\"sm\">\n        <Text>洗顔フォーム</Text>\n        <Text>日焼け止め</Text>\n      </Flex>\n    </MobileShell>\n  );\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "MobileShell",
+  "props": [
+    {
+      "description": "The scrolling screen body — the ONLY scroll container in the shell and its only elastic band. Everything else is fixed chrome, so a long list scrolls under a stationary app bar and tab bar instead of taking them off screen with it.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "App bar (banner) pinned to the top: the screen title plus its inline actions. Absorbs the top safe-area inset when there is no statusBar. Omit → no banner. For a screen MODE (multi-select, search, edit) swap the whole node rather than stacking a second strip under it — replacing the bar's contents is the platform pattern on iOS and Android alike.",
+      "name": "header",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The band that sits IN the OS status-bar strip above the app bar — the carrier/clock row of a display-mode:standalone PWA, or the simulated one in a device-frame preview. It owns the top safe-area inset when present. Omit it in an ordinary browser tab, where the OS already paints that strip and the header takes the inset instead.",
+      "name": "statusBar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The sticky action bar pinned above the tab bar — the screen's primary verb (Scan, Save, Hand over) and at most one secondary. It sits OUTSIDE the scroll region, so it is always reachable with no `position: sticky` and no scroll-padding hack, and it takes the home-indicator inset whenever no tabBar follows it.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Bottom tab bar (navigation) — the app's top-level destinations. Children TILE: equal width, no seam, no page gutter, so you never hand-roll a grid with a column count. Always the last band, so it owns the home-indicator inset.",
+      "name": "tabBar",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"viewport\"",
+      "description": "Where the shell's one-screen height comes from. \"viewport\" (default) is the real app: exactly 100dvh, so the DOCUMENT never scrolls and the tab bar cannot slide away under a collapsing URL bar. \"fill\" fills a BOUNDED parent instead — a device-frame preview, or a phone view embedded in a wider page — where a viewport-tall root would overflow its frame. Nothing else differs between the two.",
+      "name": "height",
+      "type": "\"viewport\" | \"fill\""
+    },
+    {
+      "defaultValue": "\"fill\"",
+      "description": "How wide the shell is allowed to get. \"fill\" (default) takes the whole inline size it is given — a real handheld, where that IS the phone. \"phone\" caps it at --mobile-shell-max-inline-size (430px, the widest current handheld logical width) and centres the column: the SAME situation height=\"fill\" already names on the other axis, a handheld screen rendered on a viewport wider than a handheld. Measured at 1280px before this axis existed: max-inline-size none, shell 1232px wide, a four-destination tab bar spread across the whole screen.",
+      "name": "width",
+      "type": "\"fill\" | \"phone\""
+    }
+  ],
+  "related": [
+    "AppShell — the authenticated shell WITH a sidebar rail and a mobile drawer at the 900px step. Use it for an admin console that happens to be viewed on a phone; use MobileShell when the phone IS the product.",
+    "CenteredShell — the authenticated no-sidebar shell whose main scrolls the PAGE. MobileShell is its handheld counterpart: same 'no rail' shape, opposite scroll contract.",
+    "AuthShell — the unauthenticated root. A login screen inside a handheld app still belongs to AuthShell, not MobileShell.",
+    "Sheet — `side=\"bottom\"` is the handheld modal: scanners, pickers and forms open from the bottom over MobileShell rather than navigating away."
+  ],
+  "rules": [
+    23,
+    24,
+    45
+  ],
+  "storyPath": "layout/MobileShell.stories.tsx",
+  "tagline": "Handheld app shell (gh#354) — status band · app bar · the ONE scroll region · sticky action bar · bottom tab bar, with device safe-area insets and a document that never scrolls.",
+  "usage": [
+    "DO use MobileShell for a HANDHELD app screen — a warehouse/handy terminal, a driver app, a field-work PWA. It is the fourth root shell: AppShell (needs a sidebar) · AuthShell (unauthenticated card) · CenteredShell (authenticated scrolling document) · MobileShell (a phone app that does NOT scroll its document).",
+    "DO let `children` be the only thing that scrolls. Put the primary verb in `actions` and navigation in `tabBar` — both sit outside the scroll region, so neither needs `position: sticky`, a z-index, or bottom padding to clear the other.",
+    "DO NOT compose one out of <Card> + `ui-card-inset*` + `overflow-y-auto` (what docs/showcase/case6 did before gh#354). That reproduces the look and neither behaviour that matters on a device: the document still scrolls, and nothing pads out of env(safe-area-inset-*), so the notch covers the app bar and the home indicator covers the primary button.",
+    "DO swap the `header` node for a screen MODE (select mode, search mode) instead of stacking a second contextual strip below it — one bar to read, and the platform pattern on both iOS and Android.",
+    "DO use `height=\"fill\"` ONLY when the shell is inside a bounded parent (a device-frame preview). In a real app leave it at \"viewport\": that is what keeps the document from scrolling.",
+    "DO NOT nest MobileShell inside AppShell / AuthShell / CenteredShell (or the reverse) — it is a ROOT shell. Retune the page gutter and the three band heights from the theme (--mobile-shell-inset-inline, --mobile-shell-header-bar-height, --mobile-shell-tab-bar-height, --mobile-shell-status-bar-height); never fork .ui-mobile-shell-* CSS."
+  ],
+  "useCases": [
+    "Warehouse handheld (代理店ハンディ): a status band, an app bar with a select-mode text action, a scrolling item list, a dominant Scan button in `actions`, and a three-destination `tabBar` (inbound · packing · outbound). See the case6-agency-handy showcase.",
+    "Driver / delivery app: route list in the scroll region, 'Arrived' as the single `actions` verb, tabs for today · history · profile.",
+    "Field-inspection PWA installed to the home screen: `statusBar` paints the standalone strip, `header` carries the site name, and the form scrolls under both.",
+    "A phone view embedded in a desktop device-frame preview: the same composition with `height=\"fill\"` inside a fixed-size frame."
+  ]
+}

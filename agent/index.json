@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "components": 165,
+    "rules": 47,
+    "tokens": 1616,
+    "vocabulary": 14
+  },
+  "files": [
+    {
+      "file": "components-index.json",
+      "note": "42 KB — name + group + tagline for all 165. FETCH THIS FIRST, then fetch only the components you chose.",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
+    },
+    {
+      "file": "components/<Name>.json",
+      "note": "One file per component (1 KB–32 KB, median 5 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.1 MB blob.",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/<Name>.json"
+    },
+    {
+      "file": "components.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json"
+    },
+    {
+      "file": "tokens.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json"
+    },
+    {
+      "file": "vocabulary.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json"
+    },
+    {
+      "file": "rules.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json"
+    }
+  ],
+  "generated": "scripts/gen-agent-catalog.mjs",
+  "name": "@godxjp/ui",
+  "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
+  "read": {
+    "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.4.0/agent/index.json"
+  },
+  "source": "mcp/src/data — the same data @godxjp/ui-mcp serves",
+  "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
+  "version": "28.4.0"
+}
