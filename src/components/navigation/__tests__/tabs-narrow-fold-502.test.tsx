@@ -5,6 +5,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Tabs } from "../tabs";
+import { anchorIndex } from "../../../test/css-selector";
 
 /**
  * gh#502 — `tabPlacement="start"` on a phone.
@@ -209,12 +210,17 @@ describe("Tabs — a vertical strip folds to a horizontal one on a phone (gh#502
 describe("Tabs — a vertical strip cannot be shrunk out of existence (gh#502)", () => {
   it("refuses to let the strip shrink beside a panel with a wide min-content", () => {
     const css = readFileSync(join(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
-    const selector =
-      '[data-slot="tabs"][data-orientation="vertical"] > [data-slot="tabs-list"],\n' +
-      '  [data-slot="tabs"][data-orientation="vertical"] > .ui-tabs-bar {';
-    const start = css.indexOf(selector);
+    // gh#767/gh#769 — anchor on STRUCTURE, not on Prettier's line breaks. The previous form
+    // concatenated a literal ending in `\n` with one starting in two spaces, so it matched the
+    // stylesheet byte-for-byte and would have read as "rule missing" the next time the selector
+    // list re-wrapped. `anchorIndex` collapses whitespace, so one space here matches any layout.
+    const anchor =
+      '[data-slot="tabs"][data-orientation="vertical"] > [data-slot="tabs-list"], ' +
+      '[data-slot="tabs"][data-orientation="vertical"] > .ui-tabs-bar {';
+    const start = anchorIndex(css, anchor);
     expect(start, "the vertical-strip shrink rule is gone").toBeGreaterThan(-1);
-    const body = css.slice(start + selector.length, css.indexOf("}", start));
+    const open = css.indexOf("{", start);
+    const body = css.slice(open + 1, css.indexOf("}", open));
     expect(body).toMatch(/flex-shrink:\s*0;/);
   });
 });
