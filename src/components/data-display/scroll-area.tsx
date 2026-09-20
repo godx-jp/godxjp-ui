@@ -213,6 +213,7 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       anchorOffset,
       onAnchoredChange,
       orientation = "vertical",
+      scrollbar = "auto",
       ...props
     },
     ref,
@@ -249,6 +250,7 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
         data-slot="scroll-area-viewport"
         data-anchor={anchor}
         data-orientation={orientation}
+        data-scrollbar={scrollbar}
         className={cn("ui-scroll-area", className)}
         {...props}
       >

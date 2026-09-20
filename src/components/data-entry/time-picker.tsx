@@ -513,6 +513,7 @@ export function TimePicker({
   defaultOpen = false,
   onOpenChange,
   inputReadOnly,
+  width,
   preserveInvalidOnBlur,
   placement = "bottom-end",
   renderExtraFooter,
@@ -577,6 +578,9 @@ export function TimePicker({
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
           <Input
+            // `width` lands on the Input because the Input IS the `.ui-control` box; the wrapper is
+            // only a positioning context (gh#799). `bounded` emits no utility — control.css owns it.
+            data-width={width}
             id={id}
             ref={ref}
             size={size}
@@ -594,8 +598,12 @@ export function TimePicker({
             aria-haspopup="dialog"
             aria-controls={open ? dialogId : undefined}
             {...fieldA11y}
-
-            className="tabular-nums"
+            className={cn(
+              "tabular-nums",
+              width === "auto" && "w-auto",
+              width === "full" && "w-full",
+              width === "bounded" && "w-[var(--control-bounded-width)] max-w-full",
+            )}
             trailingIcon={
               <span className="ui-time-picker-affix">
                 {showClear ? (

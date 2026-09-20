@@ -150,3 +150,20 @@ export type {
   AttachmentsOverflowProp,
   AttachmentsRefProp,
 } from "./attachments";
+
+/*
+ * The react-day-picker seam, handed out by THIS package (gh#797). A consumer typing a custom
+ * `DayButton` used to import react-day-picker by name and resolve its own copy — two `DateLib`s,
+ * one TS2322 on a seam the docs call supported. Imported from here, the types are this package's
+ * copy by construction.
+ */
+export { DayButton, dateMatchModifiers } from "./calendar";
+export type {
+  DateRange,
+  Modifiers,
+  DayPickerProps,
+  DayButtonProps,
+  Matcher,
+  CalendarDay,
+  DateLib,
+} from "./calendar";

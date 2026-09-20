@@ -31,5 +31,12 @@
    * then tracks the user's font size, so the band is still one row at 200% zoom (WCAG 1.4.4)
    * instead of collapsing to a third of a row. The `anchorOffset` prop overrides it per instance;
    * px/rem/em are all accepted. */
+  /* `scrollbar="always"` geometry (gh#798). Only these two, and only for that value: the
+   * always-on bar is DRAWN by this package via `::-webkit-scrollbar`, so unlike the platform bar
+   * it has a size this package must name. The colours are NOT duplicated — the always-on rules
+   * read the same `--scroll-area-thumb-color` / `-track-color` role-mirrors as the standard ones. */
+  --scroll-area-always-bar-size: 0.625rem;
+  --scroll-area-always-thumb-radius: var(--radius-pill);
+
   --scroll-area-anchor-offset: 3rem;
 }

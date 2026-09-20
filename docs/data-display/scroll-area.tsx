@@ -16,8 +16,12 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 /**
  * ScrollArea — a native scrolling box. ALWAYS give it an explicit height/max-height
  * (vertical) or width (horizontal), or nothing ever overflows and no scrollbar appears.
- * `orientation` decides which axes may scroll; the browser draws the bar, styled from
- * the --scroll-area-* tokens. Composed only from real @godxjp/ui components.
+ * `orientation` decides which axes may scroll. By default the PLATFORM draws the bar,
+ * styled from the --scroll-area-* tokens — and on macOS/iPadOS with the system default
+ * "Show scroll bars: when scrolling" that bar is an OVERLAY: it exists only while the
+ * reader is already scrolling, so a wide area does not look scrollable at rest (gh#798).
+ * `scrollbar="always"` forces a classic bar that occupies layout, from the same tokens.
+ * Composed only from real @godxjp/ui components.
  */
 const entries = Array.from(
   { length: 18 },

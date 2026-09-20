@@ -8432,7 +8432,7 @@ import { Button } from "@godxjp/ui/general";
     name: "Callout",
     group: "feedback",
     tagline:
-      "Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role=\"note\", never a live region. Parts: Callout.Title/Description/Content/Actions.",
+      'Static aside INSIDE a document body (docs admonition, CMS note, GitHub `> [!NOTE]`). role="note", never a live region. Parts: Callout.Title/Description/Content/Actions.',
     props: [
       {
         name: "kind",
@@ -8456,14 +8456,14 @@ import { Button } from "@godxjp/ui/general";
     usage: [
       'CANONICAL CALLOUT CONTRACT: `Callout` is `Alert` with the structural axis fixed to `variant="callout"` — same tone system, same slots, but ASIDE geometry owned by the `--callout-*` tokens (leading rail, prose insets, block margin) and, uniquely, NO live region. Never fake a callout with `className` on an `Alert`, and never hand-roll a coloured div with a left border.',
       "DO: Use Callout for content that is part of the document the reader is reading — a docs admonition, a note in a CMS article, a caveat inside a policy page. It is rendered with the page, so it must not announce.",
-      'DON\'T: Use `<Alert role="note">` for this. That worked only because `{...props}` is spread after the computed `role`, which the package never promised; one refactor would have silently restored the live region. A consumer neutralising a component\'s own semantics is the tell that it is the wrong primitive (gh#765).',
+      "DON'T: Use `<Alert role=\"note\">` for this. That worked only because `{...props}` is spread after the computed `role`, which the package never promised; one refactor would have silently restored the live region. A consumer neutralising a component's own semantics is the tell that it is the wrong primitive (gh#765).",
       "DON'T: Reach for Callout to report something that just HAPPENED (a save failed, a session expired). That is an update to the page, not part of it — use `Alert` (inline), `Banner` (page/shell strip) or `toast()`, all of which announce.",
       "DON'T: Pass `onDismiss` — the type excludes it. Prose does not get dismissed; if the reader can remove it, it is an Alert.",
-      'MARKDOWN RENDERERS: map the five GitHub types straight onto `kind` — `[!NOTE]`→note, `[!TIP]`→tip, `[!IMPORTANT]`→important, `[!WARNING]`→warning, `[!CAUTION]`→caution. Obsidian\'s lower-case spelling is the same set. `important` takes the NEUTRAL tone (this system has no purple role); its glyph, not its colour, is what tells it from `note`.',
+      "MARKDOWN RENDERERS: map the five GitHub types straight onto `kind` — `[!NOTE]`→note, `[!TIP]`→tip, `[!IMPORTANT]`→important, `[!WARNING]`→warning, `[!CAUTION]`→caution. Obsidian's lower-case spelling is the same set. `important` takes the NEUTRAL tone (this system has no purple role); its glyph, not its colour, is what tells it from `note`.",
     ],
     useCases: [
       'Docs/handbook admonition inside a prose column — `kind="note"` for an aside, `kind="tip"` for a shortcut worth knowing.',
-      'A caveat inside a rendered CMS article (react-markdown + rehype-sanitize), drawn from `> [!WARNING]` in the source.',
+      "A caveat inside a rendered CMS article (react-markdown + rehype-sanitize), drawn from `> [!WARNING]` in the source.",
       'A legal or policy page clause that needs emphasis without interrupting a screen-reader user reading the page top to bottom — `kind="important"`.',
       'A destructive-consequence note beside a runbook step — `kind="caution"`, still silent on load.',
     ],
@@ -11226,8 +11226,9 @@ function PlanSlider() {
   {
     name: "Calendar",
     group: "data-entry",
+    subParts: ["DayButton"],
     tagline:
-      "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker (add `range` for a from/to pair) instead when you need a form-submittable input.",
+      "A styled react-day-picker grid for picking single dates, multiple dates, or date ranges — always embed it inside a Popover for full date-picker UX; use DatePicker (add `range` for a from/to pair) instead when you need a form-submittable input. `components={{ DayButton }}` is the documented seam for marking a day (a shift, a price, a badge): import `DayButton` and its types from `@godxjp/ui/data-entry` rather than from react-day-picker, so the type is this package's copy and not a second one (gh#797).",
     props: [
       {
         name: "locale",
@@ -12219,6 +12220,13 @@ export function ControlledPopover() {
         type: "React.Ref<HTMLDivElement>",
         description:
           "Ref to the element that actually SCROLLS. Since v23 that is the component's own element, so `ref` and `viewportRef` hand back the SAME node (before v23 `ref` pointed at an overflow:hidden root that never scrolled). Use it to read scrollTop/scrollHeight, call scrollTo(), restore a saved position or drive a 'jump to newest' button. `[data-radix-scroll-area-viewport]` no longer exists anywhere — query `[data-slot=\"scroll-area-viewport\"]` only if you truly cannot hold a ref.",
+      },
+      {
+        name: "scrollbar",
+        type: '"auto" | "always"',
+        defaultValue: '"auto"',
+        description:
+          'Whether the bar is ALWAYS drawn or left to the platform. `auto` styles whatever bar the platform decides to draw — and on macOS/iPadOS with the system default "Show scroll bars: when scrolling" that is an OVERLAY bar, present only while the reader is already scrolling, so a wide area does not look scrollable at rest (measured: clientWidth 727 of scrollWidth 3476, nothing occupying layout). `always` forces a classic bar that occupies layout, from the same `--scroll-area-*` tokens. Reach for it where the affordance IS the information (a wide table, a roster, a board); leave it `auto` for a chat stream.',
       },
       {
         name: "anchor",
@@ -13583,7 +13591,7 @@ import { Separator } from "@godxjp/ui/layout";
         type: "boolean",
         defaultValue: "false",
         description:
-          "May the group end up with NOTHING selected? Omitted it may — pressing the selected item again clears it and reports `\"\"`, which is what a tag-filter row wants. THIS PROP DECIDES THE ARIA ROLE of a type=single group (gh#744), because emptiness is the one thing the two candidate roles disagree about: ARIA has no press-again-to-deselect for a radio, so a radiogroup the user just emptied is a state a screen reader cannot read out. Omitted → `role=\"group\"` + `aria-pressed` per item (no `aria-orientation`, which `group` does not take), arrow keys move FOCUS and Space/Enter presses. Set → `role=\"radiogroup\"` + `role=\"radio\"` / `aria-checked`, the selected item is the single tab stop, arrow keys move the SELECTION as APG requires, and pressing the selected item again keeps it. The name is React Aria's own (`useToggleGroupState`); neither antd nor Radix names the capability, and Radix's own single group emits radio roles while still allowing empty — the divergence is recorded in docs/DESIGN-AUTHORITY.md. On type=multiple it only keeps the last item selected; the roles do not move.",
+          'May the group end up with NOTHING selected? Omitted it may — pressing the selected item again clears it and reports `""`, which is what a tag-filter row wants. THIS PROP DECIDES THE ARIA ROLE of a type=single group (gh#744), because emptiness is the one thing the two candidate roles disagree about: ARIA has no press-again-to-deselect for a radio, so a radiogroup the user just emptied is a state a screen reader cannot read out. Omitted → `role="group"` + `aria-pressed` per item (no `aria-orientation`, which `group` does not take), arrow keys move FOCUS and Space/Enter presses. Set → `role="radiogroup"` + `role="radio"` / `aria-checked`, the selected item is the single tab stop, arrow keys move the SELECTION as APG requires, and pressing the selected item again keeps it. The name is React Aria\'s own (`useToggleGroupState`); neither antd nor Radix names the capability, and Radix\'s own single group emits radio roles while still allowing empty — the divergence is recorded in docs/DESIGN-AUTHORITY.md. On type=multiple it only keeps the last item selected; the roles do not move.',
       },
       {
         name: "wrap",
@@ -13602,7 +13610,7 @@ import { Separator } from "@godxjp/ui/layout";
     usage: [
       "DO choose type='single' for mutually exclusive toolbar modes.",
       "DO add `disallowEmptySelection` to a type='single' group that is a SETTING — a view density, a sort order, a fiscal period. It is what makes the group a real radiogroup (role, aria-checked, one tab stop, arrow keys that move the selection) and it stops the second press from clearing the value, so you no longer need the `onValueChange={(v) => { if (v) setX(v) }}` guard that used to paper over it (gh#744).",
-      "DON'T add `disallowEmptySelection` to a FILTER row. Clearing a chip by pressing it again is what the user expects there, and without the prop the group says so honestly: `role=\"group\"` + `aria-pressed`, a set of buttons that may all be off.",
+      'DON\'T add `disallowEmptySelection` to a FILTER row. Clearing a chip by pressing it again is what the user expects there, and without the prop the group says so honestly: `role="group"` + `aria-pressed`, a set of buttons that may all be off.',
       "DO choose type='multiple' for independent formatting toggles.",
       "DO set `variant`/`size`/`shape` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
       'DO build a tag-filter panel as `<ToggleGroup type="multiple" variant="soft" shape="pill" size="xs">` with one counted `ToggleGroupItem` per tag — that is the whole antd `Tag.CheckableTag` row, one tab stop per chip, no `Tag` component needed (gh#734).',

@@ -97,6 +97,7 @@ export function DatePicker(props: DatePickerProp) {
     defaultOpen = false,
     onOpenChange,
     inputReadOnly,
+    width,
     preserveInvalidOnBlur,
     placement = "bottom-start",
     renderExtraFooter,
@@ -833,11 +834,16 @@ export function DatePicker(props: DatePickerProp) {
             data-size={size}
             data-status={status}
             data-variant={variant}
+            data-width={width}
             aria-disabled={allDisabled ? true : undefined}
             data-disabled={allDisabled ? "" : undefined}
             data-state={open ? "open" : "closed"}
             className={cn(
               "ui-control ui-control-composite-field",
+              // `bounded` emits NO utility on purpose — control.css owns it, and a utility here
+              // would win the layer order and kill the token (gh#366, gh#375, gh#799).
+              width === "auto" && "w-auto",
+              width === "full" && "w-full",
               "aria-invalid:border-destructive",
               CONTROL_VARIANT_CHROME_CLASS[variant ?? "outlined"],
               CONTROL_STATUS_CHROME_CLASS,
@@ -867,6 +873,23 @@ export function DatePicker(props: DatePickerProp) {
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
           <Input
+            // `width` lands on the Input because the Input IS the `.ui-control` box here; the
+            // wrapper is only a positioning context (gh#799).
+            /*
+             * `bounded` DIFFERS FROM Select HERE, AND THE DIFFERENCE IS FORCED (gh#799). Select's
+             * trigger emits no width utility for `bounded` so that the `[data-width="bounded"]`
+             * rule in control.css can own it. That works because the trigger has no baked width.
+             * `Input` DOES: `w-full` is in its base classes, and a utility beats a
+             * `@layer components` rule, so the CSS rule could never apply here — the token would
+             * be dead exactly the way gh#366 describes. Emitting the utility FROM the token keeps
+             * the token as the single source and lets tailwind-merge drop the baked `w-full`.
+             */
+            data-width={width}
+            className={cn(
+              width === "auto" && "w-auto",
+              width === "full" && "w-full",
+              width === "bounded" && "w-[var(--control-bounded-width)] max-w-full",
+            )}
             // Always an id, injected or generated — Chrome flags a form field without one, and a
             // FormField label needs something to point `htmlFor` at.
             id={rootId}
