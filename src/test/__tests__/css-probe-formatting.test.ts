@@ -40,6 +40,23 @@ const LOOKS_LIKE_CSS = /\[data-|\.ui-|\.sb-|\.tb-|:root|:is\(|:where\(/;
  */
 const WRAPPED_SELECTOR = /\\n[ ]*[.[:#>+~*a-zA-Z]/;
 
+/**
+ * THE SAME DEFECT, SPELLED WITH `+`. `WRAPPED_SELECTOR` wants a selector character AFTER the
+ * `\n`, so it only ever sees the hazard when the whole wrapped selector lives in ONE literal.
+ * Concatenation splits it, and then nothing matches:
+ *
+ *     '…[data-slot="tabs-list"],\n' +      ← `\n` is the LAST thing in this literal
+ *     '  …> .ui-tabs-bar {'                ← and this one has no `\n` at all
+ *
+ * Measured: `WRAPPED_SELECTOR` returns false for both halves, and
+ * `tabs-narrow-fold-502.test.tsx:212` sat in `main` carrying exactly this shape while the guard
+ * reported zero offenders — a live instance of the thing the guard was written to stop.
+ *
+ * A CSS-looking literal that ENDS in `\n` is formatter-dependent no matter what follows it: the
+ * only reason to write that newline is to match the stylesheet's own line break.
+ */
+const TRAILING_BREAK = /\\n$/;
+
 /** Single-line string and template literals, as authored. */
 const LITERALS = /"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'|`((?:[^`\\\n]|\\.)*)`/g;
 
@@ -63,7 +80,8 @@ describe("CSS probes read structure, not Prettier's line breaks (gh#769)", () =>
         if (isProse(raw)) return;
         for (const match of strip(raw).matchAll(LITERALS)) {
           const body = match[1] ?? match[2] ?? match[3] ?? "";
-          if (!WRAPPED_SELECTOR.test(body) || !LOOKS_LIKE_CSS.test(body)) continue;
+          const wrapped = WRAPPED_SELECTOR.test(body) || TRAILING_BREAK.test(body);
+          if (!wrapped || !LOOKS_LIKE_CSS.test(body)) continue;
           offenders.push(`${file}:${i + 1} — ${body.slice(0, 100)}`);
         }
       });
