@@ -410,7 +410,8 @@
     "check:mcp-token-sync": "node scripts/gen-component-tokens.mjs --check",
     "check:email-token-sync": "node scripts/gen-email-tokens.mjs --check",
     "check:focus-ring-paint": "node scripts/check-focus-ring-paint.mjs",
-    "typecheck:mcp": "node node_modules/typescript-7/bin/tsc --noEmit -p mcp/tsconfig.json"
+    "typecheck:mcp": "node node_modules/typescript-7/bin/tsc --noEmit -p mcp/tsconfig.json",
+    "check:pr-closes-keyword": "node scripts/check-pr-closes-keyword.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",

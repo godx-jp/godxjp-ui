@@ -178,7 +178,11 @@ describe("Topbar overflow contract (gh#728)", () => {
   });
 
   it("floors the start cluster at ONE cell — not at its content, which includes a title", () => {
-    const body = ruleBody(shellCss, '.ui-topbar[data-overflow="scroll"] > .ui-topbar-start {');
+    // The floor moved OFF this mode selector and onto `.ui-topbar-start` itself (gh#789): it was
+    // never mode-specific, and `clip` had never been given one — measured at 320px on the live
+    // bar, `scroll` floored at 32px and `clip` at 0px, which is how a 28px cell came to be clipped
+    // to 8px and fail WCAG 2.2 SC 2.5.8. Scroll mode is unchanged: 32px before and after.
+    const body = ruleBody(shellCss, ".ui-topbar-start {");
     expect(body).toMatch(/min-inline-size: var\(--topbar-item-min-width\);/);
     // A content floor here demanded 631px of a 720px bar for a 418px nowrap title at 1024px and
     // pushed the end cluster out of the bar — measured, and the reason this is not `auto`.

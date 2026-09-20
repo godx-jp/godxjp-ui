@@ -304,11 +304,13 @@ describe("responsive shell geometry", () => {
     // The start cluster's floor is ONE CELL, not its content: its last child is a title with
     // `white-space: nowrap`, whose min-content size is the whole string — a content floor there
     // demanded 631px of a 720px bar at 1024px in `en` and pushed the end cluster out of the bar.
-    const start = declarationsFor(
-      shellStyles,
-      '.ui-topbar[data-overflow="scroll"] > .ui-topbar-start',
+    //
+    // The floor now sits on `.ui-topbar-start` itself rather than under this mode selector, so it
+    // reaches `clip` too — which never had one and clipped a cell to 8px (gh#789). Scroll mode is
+    // unchanged: measured 32px before and after. Asserted in its own case above.
+    expect(declarationsFor(shellStyles, ".ui-topbar-start")).toMatch(
+      /min-inline-size:\s*var\(--topbar-item-min-width\);/,
     );
-    expect(start).toMatch(/min-inline-size:\s*var\(--topbar-item-min-width\);/);
   });
 
   it("removes the optional Topbar center before it collides with long start/end content (gh#244)", () => {
@@ -338,6 +340,33 @@ describe("responsive shell geometry", () => {
     expect(startTitle).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
     expect(startTitle).toMatch(/text-overflow:\s*ellipsis;/);
     expect(startTitle).toMatch(/white-space:\s*nowrap;/);
+  });
+
+  it("floors the start cluster at one cell in BOTH overflow modes (gh#789)", () => {
+    // `.ui-topbar-start` carries `min-width: 0` and `overflow: clip` from the slot rule, so with no
+    // floor it shrinks below its own content and then clips it — and what it clips is a CELL, which
+    // cannot be read at half width (`partiallyObscured`, gh#639) the way a title can. A consumer
+    // measured the end of that: a 28px trigger down to 8px visible at 320px, WCAG 2.2 SC 2.5.8.
+    //
+    // The floor existed, but only under `[data-overflow="scroll"]`. MEASURED on
+    // /isolate/layout-topbar at 320px, toggling the attribute on the live bar:
+    //     before   scroll min-inline-size 32px · clip min-inline-size 0px   ← no floor at all
+    //     after    both 32px
+    // No desktop cost: end cluster overflow is 0px at 390/768/1024/1440 after the change.
+    const start = declarationsFor(shellStyles, ".ui-topbar-start");
+    expect(start, "the floor belongs on the cluster, not on one of its two modes").toMatch(
+      /min-inline-size:\s*var\(--topbar-item-min-width\);/,
+    );
+    // And it must NOT have moved back onto the mode selector, which is how it came to be missing
+    // from `clip` in the first place.
+    expect(
+      declarationsFor(shellStyles, '.ui-topbar[data-overflow="scroll"] > .ui-topbar-start'),
+      "a mode-scoped copy would re-open the clip-mode hole",
+    ).toBe("");
+    // ONE CELL, deliberately, not the content: a content floor demanded 631px of a 720px bar for a
+    // 418px title and pushed the end cluster out at 1024px, trading the 320px defect for a desktop
+    // one. `--topbar-item-min-width` is the cell measure.
+    expect(shellTokens).toContain("--topbar-item-min-width: var(--control-height);");
   });
 
   it("compacts the bar's OWN cells at phone widths, not only the chip/search recipes (gh#639)", () => {
@@ -479,10 +508,14 @@ describe("responsive shell geometry", () => {
     expect(railWidth).toBeDefined();
     expect(collapsedWidth).toBeDefined();
     expect(railWidth).not.toBe(collapsedWidth);
-    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
+    expect(
+      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
+    ).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
     );
-    expect(declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]')).toMatch(
+    expect(
+      declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
+    ).toMatch(
       /grid-template-areas:\s*"navrail sidebar topbar"\s*"navrail sidebar main"\s*"navrail sidebar footer";/,
     );
   });
@@ -491,10 +524,12 @@ describe("responsive shell geometry", () => {
     // Slack's behaviour, and the one that keeps the rail's destinations reachable while collapsed.
     // If this ever read `--app-shell-sidebar-collapsed-width` twice, both columns would shrink and
     // the workspace switcher would become a second strip of anonymous icons.
-    expect(declarationsFor(
-      shellStyles,
-      '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
-    )).toMatch(
+    expect(
+      declarationsFor(
+        shellStyles,
+        '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
+      ),
+    ).toMatch(
       /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
     );
   });
@@ -566,9 +601,9 @@ describe("responsive shell geometry", () => {
       "(width > 56.25rem)",
     ]);
     // The reset itself stays in ONE place: two narrow blocks could disagree with each other.
-    expect(
-      restructuring.filter((block) => block.condition === "(width <= 56.25rem)"),
-    ).toHaveLength(1);
+    expect(restructuring.filter((block) => block.condition === "(width <= 56.25rem)")).toHaveLength(
+      1,
+    );
     expect(shellBlock("(width <= 56.25rem)")).toContain('"footer"');
     // THE BAR HEIGHT STAYS THE TOKEN AT EVERY WIDTH. This used to be spelled "no
     // `grid-template-rows` in this block at all", which was the blunt form of the real rule and

@@ -98,6 +98,16 @@ jobs:
       # THREE STEPS, NOT ONE `pnpm verify:*`. CONTRACT.md Nguyên tắc 3: a single bundled command
       # that goes red tells you the branch is broken but not what broke. Each of these names
       # itself in the step list.
+      # A PR BODY THAT AUTO-CLOSES AN ISSUE IS REFUSED (gh#783). `Closes #N` fires on MERGE, when
+      # no release exists and no version is knowable, so it cannot carry the number gh#620 requires
+      # — by construction, not by carelessness. It happened on #773: three issues closed at merge,
+      # with no comment and no version, while `main` was red and the registry a release behind.
+      # First step in the lane because it costs nothing and reading it is the fastest feedback here.
+      - name: no auto-closing keyword in the PR body
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-pr-closes-keyword.mjs
+
       - name: typecheck
         run: pnpm typecheck
 

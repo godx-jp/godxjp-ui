@@ -574,11 +574,28 @@ async function main() {
       // not-found guard: a query string that resolves to nothing must fail, not pass quietly.
       const params = new URL(url).searchParams;
       if (params.get("theme") === "dark") {
-        const applied = await page.evaluate(() => document.documentElement.dataset.theme);
+        // WAIT FOR THE CONDITION, NOT FOR A DURATION (gh#790). Reading `dataset.theme` once after a
+        // fixed 1200ms was a guess about how long hydration takes, and it lost roughly one run in
+        // three on this machine: `navigation-filter-bar?theme=dark` reported "the page ignored the
+        // switch" while two re-runs of the identical page passed.
+        //
+        // Widening the 1200ms would have made that rare rather than absent, and it would have left
+        // the WORSE half untouched: this guard is the only thing standing between a slow hydration
+        // and a sweep that measures the LIGHT page, finds it AA clean, and reports it under a dark
+        // label. That is coverage which reads as present and is not — the same failure the
+        // not-found guard above exists for. A poll returns the moment the attribute lands, so it is
+        // faster than the guess when the page is quick and still fails loudly when it truly ignores
+        // the switch.
+        const applied = await page
+          .waitForFunction(() => document.documentElement.dataset.theme === "dark", null, {
+            timeout: 10000,
+          })
+          .then(() => "dark")
+          .catch(() => page.evaluate(() => document.documentElement.dataset.theme));
         if (applied !== "dark") {
           console.error(
-            `✗ ${route}: asked for ?theme=dark and got <html data-theme="${applied ?? ""}"> — the ` +
-              `page ignored the switch, so this route is a duplicate of its light twin.`,
+            `✗ ${route}: asked for ?theme=dark and got <html data-theme="${applied ?? ""}"> after ` +
+              `10s — the page ignored the switch, so this route is a duplicate of its light twin.`,
           );
           total++;
           continue;
