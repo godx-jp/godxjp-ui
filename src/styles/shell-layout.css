@@ -2658,6 +2658,25 @@
   }
   .ui-topbar-start {
     flex: 0 1 auto;
+    /* ONE CELL IS THE FLOOR, IN BOTH OVERFLOW MODES (gh#789). The cluster carries `min-width: 0`
+     * and `overflow: clip` from the slot rule above, so without a floor it shrinks below its own
+     * content and then clips it — and what it clips is a CELL, which cannot be read at half width
+     * (`partiallyObscured`, gh#639) the way a title can. A consumer measured the end of that: a
+     * 28px trigger down to 8px visible at 320px, failing WCAG 2.2 SC 2.5.8.
+     *
+     * The floor already existed, but only under `[data-overflow="scroll"]`. Measured on
+     * /isolate/layout-topbar at 320px, toggling the attribute on the live bar:
+     *
+     *     scroll  min-inline-size 32px
+     *     clip    min-inline-size  0px      <- no floor at all
+     *
+     * The reasoning written beside the scroll rule ("a bar cell cannot be read at half width, a
+     * title can, which is what truncation IS") never depended on the overflow mode, so the floor
+     * belongs on the cluster rather than on one of its two modes. Deliberately ONE cell and not
+     * the content: a content floor demanded 631px of a 720px bar for a 418px title and pushed the
+     * end cluster out at 1024px, trading the 320px defect for a desktop one. After: both modes
+     * 32px, and the end cluster overflows the bar by 0px at 390/768/1024/1440. */
+    min-inline-size: var(--topbar-item-min-width);
   }
   /* Truncates a long brand/org label. `clip` + the ring margin, NOT `hidden`: this selector hits
    * whatever the slot's last child happens to be, and when that is an interactive control — or a
@@ -2760,9 +2779,8 @@
    * at 1024px — trading the 320px defect for a desktop one. A floor of one cell is the part that
    * is really indivisible: a bar cell cannot be read at half width (`partiallyObscured`, gh#639),
    * a title can, which is what truncation IS. */
-  .ui-topbar[data-overflow="scroll"] > .ui-topbar-start {
-    min-inline-size: var(--topbar-item-min-width);
-  }
+  /* (The floor this rule used to carry now lives on `.ui-topbar-start` itself — see gh#789. It was
+   * never mode-specific; `clip` had simply never been given it.) */
 
   /* ── TOPBAR BAR ITEM ──────────────────────────────────────────────────────────────────────
    * A cell that IS the bar, not a control dropped into it. The knobs and the outside precedent are
