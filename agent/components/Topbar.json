@@ -1,0 +1,83 @@
+{
+  "example": "import { Topbar, TopbarItem, AppShell } from \"@godxjp/ui/layout\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Avatar, AvatarFallback } from \"@godxjp/ui/data-display\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\nimport { PanelLeftClose, Search } from \"lucide-react\";\n\n// The shell gives you slots; YOU decide what goes in them.\n<AppShell\n  sidebar={<MySidebar />}\n  topbar={\n    <Topbar\n      start={\n        <>\n          <TopbarItem aria-label={t(\"toggleSidebar\")} onClick={toggle}>\n            <PanelLeftClose />\n          </TopbarItem>\n          <Avatar className=\"rounded-md\">\n            <AvatarFallback className=\"bg-primary text-primary-foreground font-bold\">C</AvatarFallback>\n          </Avatar>\n        </>\n      }\n      center={\n        <TopbarItem onClick={openSearch}>\n          <Search />\n          {t(\"search\")}\n        </TopbarItem>\n      }\n      end={\n        <>\n          <AppSettingPicker kind=\"locale\" />\n          <UserMenu />\n        </>\n      }\n    />\n  }\n>\n  {children}\n</AppShell>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Topbar",
+  "props": [
+    {
+      "description": "Instance inset using logical token steps.",
+      "name": "pad",
+      "type": "PadProp"
+    },
+    {
+      "description": "bar uses shell bar height/inset. Renders a div, suitable for nested panel chrome.",
+      "name": "height",
+      "type": "\"bar\" | \"auto\""
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Inline-start cluster — typically the sidebar toggle (a `Button` with a `PanelLeftClose` icon), the brand mark (an `Avatar`), and primary nav.",
+      "name": "start",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`). ⚠ HIDDEN AT 1100px AND BELOW by default: the slot follows `--topbar-center-compact-display` (default `none`) so it cannot cover the start breadcrumb/title or the end utilities when a 16rem sidebar is docked. A global search placed here is therefore invisible on tablets and every phone until you set `--topbar-center-compact-display: flex`.",
+      "name": "center",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Inline-end cluster — settings pickers (`AppSettingPicker kind=\"locale\"|\"theme\"`), a notifications `Button`, the user-menu `DropdownMenu`.",
+      "name": "end",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"scroll\"",
+      "description": "What a bar that does not fit does with the cells that do not fit (gh#728). scroll (default) lets the BAR scroll on the inline axis while the start and end clusters keep their cells whole — every cell stays in the DOM and in the accessibility tree, Tab reaches each one in order, and the browser scrolls a focused cell into view; the scrollbar is suppressed (a horizontal bar inside a 48px chrome row would eat the height that caused the deficit), so the pointer affordance is drag/wheel. clip is the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted — still focusable, still announced, invisible and unreachable by pointer. Independent of TopbarItem hideBelow, which REMOVES a cell at a step; this is only about what happens once there is no budget left.",
+      "name": "overflow",
+      "type": "\"scroll\" | \"clip\""
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Escape hatch — render fully custom bar content instead of the three slots. When set, `start`/`center`/`end` are ignored.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Merged onto the bar element; arbitrary props (aria-*, etc.) are forwarded.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AppShell — place Topbar in its `topbar` slot. AppShell also exposes its own `logo`/`topbarLeft`/`topbarRight` slots if you don't want a separate Topbar at all.",
+    "Avatar — the brand mark for the `start` slot (use `shape=\"square\"` for a product glyph; never a `rounded-*` utility, which freezes the radius where no theme can reach it).",
+    "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
+    "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot."
+  ],
+  "rules": [
+    2,
+    3,
+    5,
+    6
+  ],
+  "storyPath": "layout/Topbar.stories.tsx",
+  "tagline": "A PURE SLOT bar for the app shell — positions three clusters (start / center / end) and owns ONLY the bar layout. It bakes NO chrome: no product switcher, no search box, no notification bell, no language picker. The CONSUMER composes those from real primitives and drops them into a slot; whether a control is icon-only / labelled / bordered is that control's own config, never the shell's.",
+  "usage": [
+    "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
+    "DO build the sidebar toggle as a `TopbarItem` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell's `sidebarCollapsed`. There is no baked toggle — but there IS a bar CELL, and it is not a Button: a Button in a slot is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill instead of the cell. The same holds for the notifications bell and the account trigger.",
+    "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
+    "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
+    "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
+    "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
+    "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, a long tenant/brand string truncates rather than spilling over a sibling or leaking a horizontal document scroll, and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
+    "KNOW what happens when the shrink contract runs out: the BAR scrolls (`overflow=\"scroll\"`, the default), it does not slice. The start cluster keeps a floor of one bar cell and the end cluster keeps its cells whole, so what does not fit is off-port rather than half-painted — Tab still reaches every cell and the browser scrolls the focused one fully into view. Measured at 320x568 on a bar 44px over budget: start cluster 0 -> 32px, end cluster clientWidth 150.3/scrollWidth 285 -> 204/204, last end cell x=384.8 (outside a 390px viewport) -> fully inside it, 7/7 cells reachable by keyboard. `overflow=\"clip\"` restores the pre-gh#728 slicing for a bar you have measured as never overflowing (gh#728).",
+    "KNOW the shrink contract reaches only the LAST child of `start` — and `Button` ships `shrink-0`, so any Button you put mid-slot (the classic entity switcher, with a brand mark before it and a screen title after) keeps its full width while the cluster clips it. Clipped, but still focusable: a keyboard user tabs to a control they cannot see (SC 2.4.7). Give such a control `fill` so it takes the leftover room and lets its label ellipse, and wrap that label in `<Text truncate>` — NOT `className=\"min-w-0 flex-1\"` plus a `truncate` span, which is the utility pair ui-audit blocks and which this guidance used to recommend. Budget the `end` cluster too — it is `flex: 0 1 auto` and shrink-weighted, but a cell in it is still a cell you chose to put on a phone: an ambient status chip there is space the start cluster does not get (a 93px environment Badge left `start` 25px of a 198px bar at 320). Hide ambient chips below `sm`."
+  ],
+  "useCases": [
+    "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
+    "Minimal shell (no search, no notifications): pass only `start` (brand mark) and `end` (user menu). Nothing else renders — no empty chrome.",
+    "Marketing / docs header: pass `children` with a fully custom flex layout when the three-cluster model doesn't fit."
+  ]
+}

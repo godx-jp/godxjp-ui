@@ -1,0 +1,45 @@
+{
+  "example": "import { SkeletonTable } from \"@godxjp/ui/feedback\";\n\n{!coupons ? <SkeletonTable rows={10} columns={6} /> : <DataTable data={coupons} columns={columns} />}",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonTable",
+  "props": [
+    {
+      "defaultValue": "8",
+      "description": "Body skeleton rows.",
+      "name": "rows",
+      "type": "number"
+    },
+    {
+      "defaultValue": "5",
+      "description": "Columns in header + body.",
+      "name": "columns",
+      "type": "number"
+    }
+  ],
+  "related": [
+    "DataTable — sibling component that SkeletonTable precedes. Once DataTable mounts, use its `loading` prop (renders an in-table loading row) for subsequent refetches rather than swapping back to SkeletonTable. Pick SkeletonTable only for the pre-mount gap.",
+    "DataState — query lifecycle widget from `@godxjp/ui/query`; accepts SkeletonTable as its `skeleton` prop and handles loading/empty/error transitions automatically. Prefer DataState + SkeletonTable over a hand-rolled ternary when the data comes from a useQuery hook.",
+    "SkeletonStat — sibling skeleton shaped like a StatCard tile; use inside a ResponsiveGrid to placeholder KPI dashboard cards, not tabular data.",
+    "DataTable — when data is already mounted but re-fetching (e.g. pagination, filter change), set `loading={true}` on DataTable directly instead of unmounting it and swapping in SkeletonTable; avoids layout shift and preserves scroll position."
+  ],
+  "rules": [],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Loading placeholder matching the DataTable layout (header + N rows). Drop-in while data loads (deferred props).",
+  "usage": [
+    "DO use SkeletonTable as the pre-mount placeholder — either as a ternary fallback (`{!data ? <SkeletonTable rows={10} columns={6} /> : <DataTable … />}`) for Inertia deferred props, or as the `skeleton` prop of `DataState` (`<DataState query={q} skeleton={<SkeletonTable />} …>`). It is NOT for in-table loading; once DataTable has mounted use its own `loading` prop instead.",
+    "DO match rows/columns to the final DataTable layout: pass `rows` equal to your expected page size and `columns` equal to your column count so the skeleton doesn't visually jump on hydration. Defaults are rows=8, columns=5.",
+    "DO NOT use SkeletonTable when data is already present but refetching — use `DataTable loading={isFetching}` for in-table refetch states. SkeletonTable is only for the initial pre-mount gap before DataTable is rendered.",
+    "DO NOT wrap SkeletonTable in a Card — it renders its own header + body structure matching DataTable's DOM. Placing it inside CardContent adds unwanted padding around the skeleton rail.",
+    "The root element carries `aria-busy=\"true\"` automatically — do not add a second aria-busy on a wrapper. Screen readers announce the loading state correctly without extra markup.",
+    "Import from `@godxjp/ui/feedback` (not `@godxjp/ui/admin`). Both paths resolve but the canonical export is `feedback`."
+  ],
+  "useCases": [
+    "Inertia deferred props: the server streams the page shell immediately and defers the table data; render SkeletonTable until the prop arrives (`{!invoices ? <SkeletonTable rows={20} columns={7} /> : <DataTable data={invoices} columns={columns} />}`).",
+    "TanStack Query initial load via DataState: pass SkeletonTable as the `skeleton` prop so DataState shows the correct table shape during the query's loading state before switching to the populated DataTable.",
+    "Filter / search reset that unmounts and remounts DataTable: briefly show SkeletonTable while the new dataset fetches, preventing a flash of the empty state before results arrive.",
+    "Admin list pages (invoices, journal entries, partners) where the table has a known column count — tune `columns` to match so column widths feel stable and don't reflow on hydration.",
+    "Page-level Suspense boundaries: use SkeletonTable as the `fallback` of a React Suspense wrapping a lazy-loaded data table component.",
+    "Route prefetch / navigation transitions: render SkeletonTable in the destination slot while Inertia visits are in-flight, keeping perceived layout stable."
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "docPath": "docs/data-entry/form-root.tsx",
+  "example": "import { FormRoot, FormFieldControl, useZodForm } from \"@godxjp/ui/form\";\nimport { Input } from \"@godxjp/ui/data-entry\";\nimport { z } from \"zod\";\nconst schema = z.object({ email: z.string().email() });\n// Inside your component:\nconst form = useZodForm(schema, { defaultValues: { email: \"\" } });\n<FormRoot form={form} onSubmit={save} layout=\"horizontal\"><FormFieldControl name=\"email\" label=\"Email\">{field => <Input {...field} value={String(field.value ?? \"\")} />}</FormFieldControl></FormRoot>;",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/form",
+  "name": "FormRoot",
+  "props": [
+    {
+      "description": "RHF form returned by useZodForm; use either form or adapter.",
+      "name": "form",
+      "type": "UseFormReturn<T>"
+    },
+    {
+      "description": "External store with getValue/setValue/getError/getValues/isSubmitting and optional reset.",
+      "name": "adapter",
+      "type": "FormStateAdapter"
+    },
+    {
+      "description": "Validated submit callback.",
+      "name": "onSubmit",
+      "type": "(values: T) => void | Promise<void>"
+    },
+    {
+      "description": "Validation failure callback.",
+      "name": "onSubmitFailed",
+      "type": "(errors: FieldErrors<T>) => void"
+    },
+    {
+      "description": "Handle rejected submission.",
+      "name": "onSubmitError",
+      "type": "(error: unknown) => void"
+    },
+    {
+      "description": "Banner shown when onSubmit rejects. Default: localized dataEntry.form.submitFailed text; a node replaces it; false never shows it. Skipped by default for a validation rejection (400/422) once the `errors` bag holds a message.",
+      "name": "submitFailedMessage",
+      "type": "ReactNode | false"
+    },
+    {
+      "description": "Called after values reset.",
+      "name": "onReset",
+      "type": "() => void"
+    },
+    {
+      "description": "Scroll the first invalid field into view.",
+      "name": "scrollToFirstError",
+      "type": "boolean"
+    },
+    {
+      "description": "Disable field mutations.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Shared Form layout.",
+      "name": "layout",
+      "type": "FormLayoutProp"
+    },
+    {
+      "description": "Shared label width.",
+      "name": "labelWidth",
+      "type": "WidthProp"
+    },
+    {
+      "description": "Shared control width.",
+      "name": "controlWidth",
+      "type": "WidthProp"
+    },
+    {
+      "description": "Shared label alignment.",
+      "name": "labelAlign",
+      "type": "\"start\" | \"end\""
+    },
+    {
+      "description": "Responsive stacking breakpoint.",
+      "name": "collapseBelow",
+      "type": "BreakpointProp | false"
+    },
+    {
+      "description": "Control density.",
+      "name": "density",
+      "type": "DensityProp"
+    },
+    {
+      "description": "Server error bag.",
+      "name": "errors",
+      "type": "ErrorBagProp"
+    },
+    {
+      "description": "Required/optional marking policy.",
+      "name": "requiredMark",
+      "type": "boolean | \"optional\""
+    },
+    {
+      "description": "Responsive field grid rendered inside the form element.",
+      "name": "columns",
+      "type": "ResponsiveGridColumnsProp"
+    }
+  ],
+  "related": [
+    "Form",
+    "FormField",
+    "FormRoot",
+    "FormFieldControl"
+  ],
+  "rules": [
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Form.stories.tsx",
+  "tagline": "Client or server-adapted forms with shared layout, validation, submission, reset and error recovery.",
+  "usage": [
+    "Use inside the documented form composition; do not nest native form elements.",
+    "Use godx-ui controls and preserve field names, errors and disabled state.",
+    "SUBMIT-FAILED BANNER: when `onSubmit` rejects, FormRoot shows a destructive banner (`submitFailedMessage`, default the localized `dataEntry.form.submitFailed`). It is SKIPPED for a validation rejection (`classifyQueryError(error).category === \"validation\"`: 400/422) once the `errors` bag holds at least one message — the fields / `<FormErrors />` show it, as antd shows field errors instead of a form banner — and stays skipped for that failure if the app later clears the bag. A validation rejection with an empty or message-less bag, and every 5xx / network / unknown rejection, still shows it, so a failure is never silently swallowed. Errors mapped with react-hook-form `setError` instead of `errors` are not detected: pass `submitFailedMessage={false}` there. `submitFailedMessage={false}` never shows the banner; a node replaces its text.",
+    "CANONICAL SERVER-VALIDATION FORM (gh#698) — a 422 renders EXACTLY ONCE: `const m = useMutation({ mutationFn: save }); <FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} /><FormFieldControl name=\"code\" label=\"Code\">{(field) => <Input {...field} value={String(field.value ?? \"\")} />}</FormFieldControl></FormRoot>` (`serverErrors` = your API client's mapper from its error to the Laravel-style `{ key: string[] }` bag). Each message appears once: under its field (claimed key) or in `<FormErrors />` (unclaimed key); `AlertMutationFeedback` skips the validation error (gh#690) and FormRoot shows no `submitFailed` banner. A 5xx / network rejection still shows both the FormRoot banner and the AlertMutationFeedback alert — pass `submitFailedMessage={false}` to keep only the latter.",
+    "DON'T hand-guard the banner or wrap `mutateAsync` in try/catch just to hide a 422 — pass the bag to `errors` and the form renders it once."
+  ],
+  "useCases": [
+    "Validated settings forms",
+    "Nested repeating data entry"
+  ]
+}

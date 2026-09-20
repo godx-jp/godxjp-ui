@@ -1,0 +1,237 @@
+[
+  {
+    "body": "Every primitive / shell / composite has a paired story under `src/stories/<group>/<Name>.stories.tsx` covering every variant + state on light + dark.",
+    "number": 1,
+    "title": "Storybook is mandatory"
+  },
+  {
+    "body": "Visual values come from CSS custom properties in `src/tokens/` + `src/styles/theme.css`. Token-named Tailwind utilities (`bg-background`) are fine; raw value utilities (`bg-blue-500`) are forbidden.",
+    "number": 2,
+    "title": "Tokens, not utilities"
+  },
+  {
+    "body": "Anything with keyboard / ARIA / portal wraps the relevant Radix primitive.",
+    "number": 3,
+    "title": "Radix for interactive primitives"
+  },
+  {
+    "body": "Primitives are thin wrappers; consumers can fork the source in place.",
+    "number": 4,
+    "title": "shadcn-style ownership"
+  },
+  {
+    "body": "`initI18n()` in `src/i18n/index.ts` is THE instance; consumers extend via `addResourceBundle`.",
+    "number": 5,
+    "title": "One i18next singleton"
+  },
+  {
+    "body": "Every interactive primitive passes axe-core (keyboard nav, ARIA, focus-visible, 4.5:1 contrast, `prefers-reduced-motion`). Stories double as a11y test surfaces.",
+    "number": 6,
+    "title": "WCAG 2.1 AA baseline"
+  },
+  {
+    "body": "Every release-worthy change updates `CHANGELOG.md` under `## Unreleased` in the same PR.",
+    "number": 7,
+    "title": "SemVer 2.0 + Keep a Changelog 1.1"
+  },
+  {
+    "body": "`allowlist` / `denylist`, `main` / `primary` / `replica` / `secondary`, `they/them`. Never `whitelist` / `blacklist` / `master` / `slave`. Lint-enforced.",
+    "number": 8,
+    "title": "Inclusive naming"
+  },
+  {
+    "body": "Banned: \"powerful\", \"robust\", \"blazing fast\", \"best-in-class\", \"seamless\", \"enterprise-grade\". State what it does.",
+    "number": 9,
+    "title": "No marketing speak"
+  },
+  {
+    "body": "Localised docs at `docs/i18n/<bcp47>/`; front-matter tracks staleness.",
+    "number": 10,
+    "title": "English is canonical for docs"
+  },
+  {
+    "body": "Never push a pin to a SHA not on the submodule remote.",
+    "number": 11,
+    "title": "Submodule discipline"
+  },
+  {
+    "body": "`feat/<scope>` / `fix/<scope>` → submodule `main`. CI green + squash-merge. No direct push to `main`. `--no-verify` forbidden.",
+    "number": 12,
+    "title": "Branch + PR workflow"
+  },
+  {
+    "body": "Explicit types on every export. `forwardRef` for components; `ComponentPropsWithoutRef` for extension. No `any`. No `@ts-ignore` without comment + issue link.",
+    "number": 13,
+    "title": "TypeScript strict"
+  },
+  {
+    "body": "Locked stack: Radix UI, cmdk, sonner, lucide-react, react-aria-components + `@internationalized/date`, i18next + react-i18next, class-variance-authority + clsx + tailwind-merge. New peer → ADR documenting why it's the canonical choice.",
+    "number": 14,
+    "title": "Every third-party library is shadcn / Radix-recommended"
+  },
+  {
+    "body": "Inside a primitive `.tsx`, don't `@apply` a Tailwind utility that re-encodes a token — reference the canonical CSS class from `tokens.css` instead. Composite token-named utilities remain fine.",
+    "number": 15,
+    "title": "No `@apply` re-encoding tokens"
+  },
+  {
+    "body": "A primitive that needs a new color / spacing / radius adds it there FIRST, then references it.",
+    "number": 16,
+    "title": "CSS source-of-truth is `src/tokens/` + `src/styles/theme.css`"
+  },
+  {
+    "body": "Story set matches primitive set under each group. CI-checked via `scripts/check-stories-parity.mjs`.",
+    "number": 17,
+    "title": "`src/stories/` ↔ `src/components/` parity"
+  },
+  {
+    "body": "Every primitive has a reference page; every page maps to a primitive. CI-checked via `scripts/check-docs-parity.mjs`.",
+    "number": 18,
+    "title": "`docs/reference/<group>/` ↔ `src/components/<group>/` parity"
+  },
+  {
+    "body": "`me-service`, `forge-service`, `admin-service` never appear in source / comments / prop names. Per-deployment brand color lives at `[data-accent=\"<palette>\"]`.",
+    "number": 19,
+    "title": "No service-specific anything"
+  },
+  {
+    "body": "Every primitive ships via `package.json::exports`. Internal-only helpers stay un-exported.",
+    "number": 20,
+    "title": "No \"platform-only\" exports"
+  },
+  {
+    "body": "`data-theme` (light / dark), `data-accent` (6 palettes), `data-density` (compact / default / comfortable), `data-font-size` (sm / base / lg / xl). Read from tokens, never hardcode values.",
+    "number": 21,
+    "title": "Every component honours every theme axis"
+  },
+  {
+    "body": "Every visual literal comes from `design-handoff/ui-system/<latest-bundle>/`. Token-pin canon literals; never substitute \"close enough\". If the bundle doesn't cover a case — STOP, ask the user to mock it.",
+    "number": 22,
+    "title": "100% match to the design canon"
+  },
+  {
+    "body": "One concept per prop. Reuse shared vocabulary (`size`, `variant`, `color`, `tone`, `accent`, `padding`, `density`, `orientation`, `placement`, `current`, `value` / `defaultValue` / `onValueChange`, `open` / `defaultOpen` / `onOpenChange`, `justify`, `sticky`, `offset`). Before adding a new prop or token: grep for an existing one.",
+    "number": 23,
+    "title": "Concept-first prop API"
+  },
+  {
+    "body": "Defaults target `xs` (≥0px); progressive enhancement via `sm:` / `md:` / `lg:` / `xl:` / `2xl:`. Touch targets ≥ 44 × 44 px (`--touch-target-min`, does NOT scale with density). Runtime viewport via `useBreakpoint`, never `window.innerWidth`. Stories render at narrow viewport first.",
+    "number": 24,
+    "title": "Mobile-first"
+  },
+  {
+    "body": "When a story looks wrong, fix the primitive / CSS / token. Never paper over with a story tweak. Story-only diff without a paired primitive / CSS / token diff is rejected.",
+    "number": 25,
+    "title": "Stories are docs; UI is the primitive"
+  },
+  {
+    "body": "`dist/` ships only the consumer surface. Storybook, tests, scripts, design-handoff, `dev-probe/` stay out of npm. Every `dependencies` entry is `external` in `tsup`. Verification via `pnpm pack` + grep of `dist/`.",
+    "number": 26,
+    "title": "Library isolation"
+  },
+  {
+    "body": "Primitives at `src/components/<group>/<Name>.tsx`; six canonical groups (general, layout, data-display, data-entry, feedback, navigation). Barrel = `src/components/primitives.ts` (single file). Stories + reference docs mirror the same group hierarchy.",
+    "number": 27,
+    "title": "Per-group folder structure"
+  },
+  {
+    "body": "Three classes: consumer surface (matched by `tsup` entry + `package.json::exports`), Storybook-only (`src/stories/`), build-input-only (`cn.ts`, per-group sources consumed via the barrel). No `src/lib/`, `src/utils/`, `src/internal/`, `src/clients/`, `src/screens/`. Service clients live with the composite that uses them.",
+    "number": 28,
+    "title": "`src/` folder taxonomy"
+  },
+  {
+    "body": "No raw `<button>` / `<input>` / hand-rolled chips when a primitive exists. HTML semantics (`<section>`, `<article>`, …) for structure are fine. Inline `style={{}}` limited to layout / positioning; no colour / radius / typography overrides.",
+    "number": 29,
+    "title": "Stories consume framework primitives only"
+  },
+  {
+    "body": "No opaque `<XyzDemo />` wrapper components, no zero-arg `Demo` helpers. Use `render: function StoryName() { … }` so Storybook's source panel shows runnable JSX, not `<XyzDemo />`.",
+    "number": 30,
+    "title": "Story `render` returns JSX directly"
+  },
+  {
+    "body": "One Radix base = one framework primitive. `<SimpleX>` over `<X>` is forbidden; add a prop to `<X>` instead. Composites under `src/components/composites/` that combine multiple primitives are NOT wrappers.",
+    "number": 31,
+    "title": "No nested wrapper / convenience primitives"
+  },
+  {
+    "body": "Before adding a prop / item field / variant, grep the existing surface; if a field already covers the concept, use it. Top-level prop that re-expresses an item field (Timeline `pending` ↔ `items[i].animate`) is rejected.",
+    "number": 32,
+    "title": "No redundant props"
+  },
+  {
+    "body": "No two names for the same export across the framework surface; no legacy aliases in stories / docs (source may keep an alias for a deprecation cycle, but the marketing surfaces use the canonical name only).",
+    "number": 33,
+    "title": "Stories / source / docs name-synchronized"
+  },
+  {
+    "body": "Storybook's react-docgen serializer strips every function value (`cell: ({row}) => <JSX/>`, `render: ({field}) => <Input/>`, `rowClassName`, `renderItem`, …) to `() => {}`. Any story whose `render` passes a function-valued prop, references a module-level helper (`Badge`, `EMPLOYEE_COLUMNS`, etc.), or uses a render-prop pattern MUST override `parameters.docs.source.code` with the literal copy-paste-ready snippet — type aliases, helper functions spelled out, column definitions with cell JSX visible, inline data array. The `render()` callback stays as-is (module-level constants are fine for runtime performance); `source.code` is the marketing surface. Skip ONLY for stories whose JSX is purely static primitives Storybook can serialize verbatim (`<Button variant=\"primary\">Click</Button>`).",
+    "number": 34,
+    "title": "Storybook source panel = real, copy-paste-ready code"
+  },
+  {
+    "body": "A `Badge` / `Badge` reads as one atomic unit. Its label must never break across lines — pin `white-space: nowrap` on the chip (done in `badge-layout.css`), especially inside narrow `DataTable` cells (スコープ / ステータス columns). If a cell is too tight, widen the column or shorten the label; never let the chip wrap.",
+    "number": 35,
+    "title": "Status chips never wrap"
+  },
+  {
+    "body": "For ANY other value — localized labels (公開中, アクティブ) or categorical tiers (会員ランク, 契約プラン) — pass `tone` explicitly (success | warning | destructive | info | neutral) and, for non-lifecycle tiers, `icon={null}` to drop the misleading glyph. Don't let domain labels fall back to neutral grey + ○. Map domain→tone in the CONSUMER layer; the framework only provides the props.",
+    "number": 36,
+    "title": "Badge tone/icon are the colour escape hatch"
+  },
+  {
+    "body": "A multi-column `DataTable` occupies its OWN row at the page's full width: `<Card><CardContent flush><DataTable …/></CardContent></Card>`. Never nest it in a `lg:col-span-2` of a `ResponsiveGrid columns={3}` beside a chart — the columns get squeezed until CJK text collapses to one character per line. Charts / KPI cards go in their own row ABOVE the table. (See the `inertia-list-page` pattern.)",
+    "number": 37,
+    "title": "DataTable is full-width — never inside a narrow grid column"
+  },
+  {
+    "body": "`CardContent flush` strips horizontal padding for edge-to-edge tables. A `FilterBar` placed inside it loses all padding and sticks to the card edge. Render `FilterBar` as a STANDALONE block above the table card; wrap ONLY the `DataTable` / `EmptyState` in the `Card` + `CardContent flush`. Order on a list page: KPIs → FilterBar → table card.",
+    "number": 38,
+    "title": "FilterBar stays OUT of CardContent flush"
+  },
+  {
+    "body": "For columns whose value can be long (name / title / segment / address), set `col.width` to a Tailwind width class (e.g. `w-64`, `w-48`) so the column reserves space instead of shrinking and wrapping to many lines; leave numeric / status columns auto. Table cells default to `white-space: nowrap`, so an over-tight table scrolls horizontally rather than crushing — give the important columns real widths so the default layout reads well before any scroll.",
+    "number": 39,
+    "title": "Long text columns get an explicit width"
+  },
+  {
+    "body": "Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction=\"col\"`, control rows = the default `direction=\"row\"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers.",
+    "number": 40,
+    "title": "Pages are mobile-first"
+  },
+  {
+    "body": "Sheet/Dialog/AlertDialog footers are a pinned action bar (the Drawer footer convention): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className=\"me-auto\"` — the logical edge, so the action stays on the reading-start side under RTL too. NEVER stack footer buttons full-width or center them.",
+    "number": 41,
+    "title": "Drawer & dialog footer layout"
+  },
+  {
+    "body": "Before reaching for a Tailwind class, inline `style`, or extra CSS, you MUST first check whether the component already supports the need via a PROP, a design TOKEN, or a layout/typography PRIMITIVE. godx-ui is meant to be enough on its own: `className` is for genuine one-offs only — never to redo what an API already does. Specifically: (1) NEVER hand-roll typography — no `text-[13px]`/`text-[11px]` arbitrary px (bypasses the golden type scale), no `font-medium`/`font-semibold`/`text-muted-foreground` on a raw `<span>`; use `<Text size tone weight tabular mono>` / `<Heading level>`. (2) NEVER hand-roll a trivial flex/grid wrapper; use `<Flex>` / `<ResponsiveGrid>` / `<PageContainer>`. (3) NEVER set a control's radius/height/colour with a utility when a `shape`/`size`/`tone`/token exists.",
+    "number": 42,
+    "title": "Props & Tokens Before Customization"
+  },
+  {
+    "body": "Consumers MUST wrap every labelled form control (Input, Select, DatePicker, NumberInput, Radio.Group, Checkbox groups, range pairs, ...) in FormField — it owns the label (aria-labelledby, never a dangling <label for>), auto-generates/injects the control id, and wires aria-describedby/aria-errormessage/aria-invalid. Bare controls are the rare exception (e.g. a toolbar quick-filter with its own aria-label) and must carry id/name + aria-label themselves. Never hand-roll a label+control stack with Text/Label.",
+    "number": 43,
+    "title": "Every form control goes through FormField"
+  },
+  {
+    "body": "Any decorative chrome a component draws — dividers, separator borders, and the padding that exists only to space that chrome — MUST read a token; never hard-code it in `src/styles/*.css` (a hard-coded `border-bottom: 1px solid hsl(var(--border))` leaves consumers no off-switch short of a variant fork). The DEFAULT is the quietest state (`none` / balanced rhythm); a service theme opts IN, e.g. `--page-header-divider: 1px solid hsl(var(--border))`.",
+    "number": 44,
+    "title": "Chrome is a token, default quiet"
+  },
+  {
+    "body": "When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: \"would a service theme.css want to change this to match its design grid?\" If yes and the only route is forking CSS, that is a library gap — fix the library, don't patch the app.",
+    "number": 45,
+    "title": "Every service-tunable constant gets a knob"
+  },
+  {
+    "body": "The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Every component token is surfaced in the MCP `get_component` output (check:mcp-token-sync).",
+    "number": 46,
+    "title": "Typography is tokens, default is base"
+  },
+  {
+    "body": "Every rule this package ships is inside a cascade layer, and layer order beats specificity outright. Two consequences. (1) INSIDE the package: `@layer components` is EARLIER than Tailwind's `utilities`, so a utility a component emits on its own element (`<table class=\"text-sm\">`) silently outranks the component rule meant to own that property — no selector can win. A responsive re-point that must beat such a utility goes in `@layer godxjp-ui-responsive`, declared after Tailwind in `styles/base.css` and therefore LAST; it is reserved for `@container`/`@media` re-points, never static rules.",
+    "number": 47,
+    "title": "The layer contract — cascade layers, not specificity"
+  }
+]

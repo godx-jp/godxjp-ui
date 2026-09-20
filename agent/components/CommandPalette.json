@@ -1,0 +1,84 @@
+{
+  "example": "import { CommandPalette } from \"@godxjp/ui/data-entry\";\n\n<CommandPalette\n  groups={[{ id: \"pages\", label: \"Pages\", items: [{ id: \"home\", label: \"Home\" }] }]}\n  labels={{ open: \"Open commands\", title: \"Commands\", description: \"Choose a command\", placeholder: \"Search\", empty: \"No results\" }}\n  onSelect={(item) => navigate(item.id)}\n/>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "CommandPalette",
+  "props": [
+    {
+      "description": "Grouped command items.",
+      "name": "groups",
+      "required": true,
+      "type": "CommandPaletteGroup[]"
+    },
+    {
+      "description": "Localized dialog and search copy.",
+      "name": "labels",
+      "required": true,
+      "type": "CommandPaletteLabels"
+    },
+    {
+      "description": "Consumer-owned selection handler.",
+      "name": "onSelect",
+      "required": true,
+      "type": "(item: CommandPaletteItem) => void"
+    },
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Initial uncontrolled open state.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state callback.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Controlled search-box query. Pairs with `onSearchChange`.",
+      "name": "search",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"\"",
+      "description": "Initial uncontrolled query, and the value the palette resets to when it closes.",
+      "name": "defaultSearch",
+      "type": "string"
+    },
+    {
+      "description": "Fires on every keystroke with the current query — the seam for search-as-you-type. Also fires with `defaultSearch` when the palette closes.",
+      "name": "onSearchChange",
+      "type": "(query: string) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Whether the palette filters `groups` itself. Set false for server-side search, which also hands the empty node to the palette (derived from `groups`).",
+      "name": "shouldFilter",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Shows the supplied loading content.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Consumer-supplied error content.",
+      "name": "error",
+      "type": "ReactNode"
+    }
+  ],
+  "rules": [],
+  "storyPath": "data-entry/CommandPalette.stories.tsx",
+  "tagline": "Searchable command dialog with controlled or uncontrolled open state and consumer-owned selection.",
+  "usage": [
+    "Provide localized labels and real command groups; the component does not fetch commands.",
+    "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
+    "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
+    "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late."
+  ]
+}

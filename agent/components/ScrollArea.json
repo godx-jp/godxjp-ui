@@ -1,0 +1,97 @@
+{
+  "example": "import { Card, CardContent, ScrollArea } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// Vertical-only (default). The FRAME is a Card, not a rounded-md border — a hand-rolled surface\n// freezes the radius and the border colour at the call site, where no theme can reach them. The\n// bounded height stays a class because it is a measurement of this SCREEN, not a shape of the\n// component.\n<Card>\n  <CardContent flush>\n    <ScrollArea className=\"h-64\">\n      <Flex direction=\"col\" gap=\"sm\" pad={4}>\n        {entries.map((entry) => (\n          <Text key={entry.id} size=\"sm\">{entry.label}</Text>\n        ))}\n      </Flex>\n    </ScrollArea>\n  </CardContent>\n</Card>\n\n// Horizontal + vertical (e.g. wide Cascader columns). Use border-e, never border-r: a physical\n// edge puts the rule on the wrong side under RTL.\n<ScrollArea className=\"w-full\" orientation=\"both\">\n  <Flex className=\"max-h-[min(280px,50vh)]\">\n    {columns.map((col, i) => (\n      <ul key={i} className=\"min-w-36 border-e last:border-e-0\">\n        {col.map((item) => <li key={item.value}>{item.label}</li>)}\n      </ul>\n    ))}\n  </Flex>\n</ScrollArea>\n\n// Live stream — pinned to the newest post, never yanked while reading history\nconst viewport = React.useRef<HTMLDivElement>(null);\nconst [atNewest, setAtNewest] = React.useState(true);\n\n<Card>\n  <CardContent flush>\n    <ScrollArea\n      anchor=\"bottom\"\n      viewportRef={viewport}\n      onAnchoredChange={setAtNewest}\n      className=\"h-64\"\n    >\n      <Flex direction=\"col\" pad={{ inline: 3 }}>\n        {posts.map((post) => <PostRow key={post.id} post={post} />)}\n      </Flex>\n    </ScrollArea>\n  </CardContent>\n</Card>\n<Button\n  type=\"button\"\n  disabled={atNewest}\n  onClick={() => {\n    const node = viewport.current;\n    if (node) node.scrollTop = node.scrollHeight;\n  }}\n>\n  {t(\"chat.jumpToNewest\")}\n</Button>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ScrollArea",
+  "props": [
+    {
+      "description": "Extra classes applied to the root element. Must include a height constraint (h-*, max-h-*) — without one, the viewport expands to fit its content and no scrollbar is rendered.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "The content to make scrollable. Wrap it in a single element so the Viewport can measure its full size correctly.",
+      "name": "children",
+      "required": true,
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Rides through to the element as a plain attribute. Rarely needed: the element inherits the page's direction, and the component stamps NO direction of its own (the Radix root used to stamp `ltr`, which reset the inline axis for everything inside it on an RTL page).",
+      "name": "dir",
+      "type": "\"ltr\" | \"rtl\""
+    },
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Axes that scroll — this IS the element's `overflow`, so an axis you do not ask for is `hidden` and its content is CLIPPED, not merely missing a bar. Use 'horizontal' for a strip of non-shrinking columns (a board, a lane of cards) — the element keeps its tab stop so the strip stays keyboard-scrollable, and the consumer writes no overflow class of its own. Pair it with a width constraint, exactly as the vertical case needs a height one. 'both' is the replacement for the pre-v23 shape of a vertical area that also mounted <ScrollBar orientation=\"horizontal\" />.",
+      "name": "orientation",
+      "type": "\"vertical\" | \"horizontal\" | \"both\""
+    },
+    {
+      "description": "Ref to the element that actually SCROLLS. Since v23 that is the component's own element, so `ref` and `viewportRef` hand back the SAME node (before v23 `ref` pointed at an overflow:hidden root that never scrolled). Use it to read scrollTop/scrollHeight, call scrollTo(), restore a saved position or drive a 'jump to newest' button. `[data-radix-scroll-area-viewport]` no longer exists anywhere — query `[data-slot=\"scroll-area-viewport\"]` only if you truly cannot hold a ref.",
+      "name": "viewportRef",
+      "type": "React.Ref<HTMLDivElement>"
+    },
+    {
+      "defaultValue": "\"auto\"",
+      "description": "Whether the bar is ALWAYS drawn or left to the platform. `auto` styles whatever bar the platform decides to draw — and on macOS/iPadOS with the system default \"Show scroll bars: when scrolling\" that is an OVERLAY bar, present only while the reader is already scrolling, so a wide area does not look scrollable at rest (measured: clientWidth 727 of scrollWidth 3476, nothing occupying layout). `always` forces a classic bar that occupies layout, from the same `--scroll-area-*` tokens. Reach for it where the affordance IS the information (a wide table, a roster, a board); leave it `auto` for a chat stream.",
+      "name": "scrollbar",
+      "type": "\"auto\" | \"always\""
+    },
+    {
+      "defaultValue": "\"none\"",
+      "description": "Edge the viewport sticks to as its content grows. 'none' leaves the scroll offset entirely alone (today's behaviour).",
+      "name": "anchor",
+      "type": "\"none\" | \"bottom\""
+    },
+    {
+      "defaultValue": "--scroll-area-anchor-offset (3rem)",
+      "description": "Distance in px from the bottom edge inside which the reader still counts as 'following' for anchor=\"bottom\". Read from the --scroll-area-anchor-offset token at mount, so a theme moves it globally; this prop overrides it per instance. Size it to the row height the service renders (a dense log line vs a chat bubble with an avatar).",
+      "name": "anchorOffset",
+      "type": "number"
+    },
+    {
+      "description": "Fires when the pinned state flips — false when the reader scrolls away from the bottom, true when they return inside anchorOffset. Render a real focusable 'jump to newest' Button from it: anchoring must never be the only route back to new content.",
+      "name": "onAnchoredChange",
+      "type": "(anchored: boolean) => void"
+    }
+  ],
+  "related": [
+    "DataTable — use DataTable (not ScrollArea) when data is tabular and needs sorting/selection; DataTable manages its own overflow internally.",
+    "Collapsible — use Collapsible to show/hide a section; pair with ScrollArea when the revealed content can itself overflow.",
+    "Card/CardContent — when the card body should scroll, put ScrollArea inside CardContent rather than applying overflow directly to CardContent."
+  ],
+  "rules": [
+    2,
+    3,
+    24,
+    31
+  ],
+  "storyPath": "data-display/ScrollArea.stories.tsx",
+  "subParts": [
+    "ScrollBar"
+  ],
+  "tagline": "A native scrolling box (no Radix since v23): one `overflow: auto` element whose scrollbar is styled from --scroll-area-* tokens. Always set an explicit height/max-height, or nothing overflows and no scrollbar appears. Owns the scrolling element, so it also owns reaching it (viewportRef) and bottom anchoring for a live stream (anchor).",
+  "usage": [
+    "DO set an explicit height or max-height on ScrollArea via className (e.g. `className=\"h-64\"` or `className=\"max-h-[min(300px,50vh)]\"`). Without a height constraint the viewport grows to fit content and the scrollbar is never rendered.",
+    "DO wrap content in a single child element inside ScrollArea — the Viewport observes its single child's size to decide whether overflow exists.",
+    "DO open a second axis with `orientation=\"both\"`. `ScrollBar` still exports but RENDERS NOTHING — before v23 mounting it was what enabled an axis; now `orientation` is the only thing that does, so a leftover `<ScrollBar orientation=\"horizontal\" />` silently leaves that axis `hidden`.",
+    "DO reach for ScrollArea rather than your own `overflow-auto` div: it is the same native scrolling, plus the token-styled scrollbar, the keyboard tab stop the axe rule wants, and bottom anchoring. A bare overflow div gets none of that and each call site re-decides the scrollbar's look.",
+    "DON'T put ScrollArea inside a flex parent without giving it a `flex-1` or fixed size — it will collapse to zero height and appear broken.",
+    "For horizontal-only scrolling use `orientation=\"horizontal\"` with a width constraint; the content is allowed to grow past the box on that axis, so a row of non-shrinking columns overflows instead of squashing.",
+    "DO use `viewportRef` (or plain `ref`) when you need the scrolling element, never a `querySelector` for an internal attribute — `[data-radix-scroll-area-viewport]` is gone with Radix, and any selector matches the wrong node the moment two ScrollAreas nest.",
+    "DO build a live stream (chat, log tail, streaming response, activity feed) with `anchor=\"bottom\"` instead of writing `viewport.scrollTop = viewport.scrollHeight` in an effect. That naive version is the BUG, not the feature: it yanks a reader who has scrolled up back to the bottom on every arriving message (WCAG 3.2.5).",
+    "DO pair `anchor=\"bottom\"` with `onAnchoredChange` and a real Button (\"jump to newest\"). A keyboard user who has scrolled up needs a focusable route back to new content — the anchor alone is a pointer affordance.",
+    "DON'T remove the viewport's `tabIndex={0}`, and don't wrap the scrolling content in something that swallows arrow keys: the region must stay keyboard-scrollable (WCAG 2.1.1 / axe scrollable-region-focusable).",
+    "DON'T add an `aria-live` region to the ScrollArea to announce arriving items — a live region on a scroll container re-announces on reflow. Announce from your own small status region next to it.",
+    "Retune the stickiness once per service with the `--scroll-area-anchor-offset` token rather than passing `anchorOffset` on every instance."
+  ],
+  "useCases": [
+    "Long dropdown lists inside Popovers or Selects where the list height must be capped (e.g. TreeSelect, Cascader columns, Combobox options).",
+    "Sidebar navigation panels or filter drawers whose content can exceed viewport height.",
+    "Transfer-list panels with a fixed height that must scroll through a large item list.",
+    "Cascader multi-column layouts where both axes may overflow (orientation=\"both\").",
+    "Detail panels or audit-log timelines inside a fixed-height Card that should not stretch the page.",
+    "Code or JSON viewers with a fixed max-height needing both axes scrollable.",
+    "Live message streams and log tails: `anchor=\"bottom\"` pins to the newest item while the reader is at the bottom, freezes when they scroll up to read history, and preserves their position when a page of older history is prepended."
+  ]
+}

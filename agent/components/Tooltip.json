@@ -1,0 +1,110 @@
+{
+  "example": "import {\n  Tooltip,\n  TooltipTrigger,\n  TooltipContent,\n} from \"@godxjp/ui/feedback\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Trash2Icon } from \"lucide-react\";\n\n// Icon-only button with tooltip label\nexport function DeleteAction() {\n  return (\n    <Tooltip>\n      <TooltipTrigger asChild>\n        <Button variant=\"ghost\" size=\"icon\" aria-label=\"Delete invoice\">\n          <Trash2Icon className=\"size-4\" />\n        </Button>\n      </TooltipTrigger>\n      <TooltipContent side=\"top\">Delete invoice</TooltipContent>\n    </Tooltip>\n  );\n}\n\n// Controlled tooltip (e.g. force-open for a tutorial)\nexport function ControlledExample() {\n  const [open, setOpen] = React.useState(false);\n  return (\n    <Tooltip open={open} onOpenChange={setOpen}>\n      <TooltipTrigger asChild>\n        <Button variant=\"outline\" onMouseEnter={() => setOpen(true)}>\n          Hover me\n        </Button>\n      </TooltipTrigger>\n      <TooltipContent side=\"bottom\" sideOffset={8}>\n        This is a controlled tooltip\n      </TooltipContent>\n    </Tooltip>\n  );\n}",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Tooltip",
+  "props": [
+    {
+      "defaultValue": "200",
+      "description": "Milliseconds of hover before the tooltip opens. Accepted on both Tooltip (per-instance) and TooltipProvider (subtree-wide override).",
+      "name": "delayDuration",
+      "type": "number"
+    },
+    {
+      "description": "Controlled open state. Pair with onOpenChange to drive the tooltip programmatically.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Callback fired when the open state changes. Required when using controlled 'open'.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Uncontrolled initial open state.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, the tooltip closes as soon as the pointer leaves the trigger (content is not hoverable). Passed through to Radix Root.",
+      "name": "disableHoverableContent",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"top\"",
+      "description": "On TooltipContent — preferred side for the tooltip panel. Radix flips automatically when there is not enough space.",
+      "name": "side",
+      "type": "'top' | 'right' | 'bottom' | 'left'"
+    },
+    {
+      "defaultValue": "6",
+      "description": "On TooltipContent — pixel gap between the trigger edge and the tooltip panel.",
+      "name": "sideOffset",
+      "type": "number"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "On TooltipContent — alignment relative to the trigger along the cross-axis.",
+      "name": "align",
+      "type": "'start' | 'center' | 'end'"
+    },
+    {
+      "defaultValue": "0",
+      "description": "On TooltipContent — pixel offset applied to the align position.",
+      "name": "alignOffset",
+      "type": "number"
+    },
+    {
+      "description": "On TooltipContent — extra Tailwind classes merged with the built-in panel styles (z-50, max-w-xs, rounded-md, shadow-md, text-xs).",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "On TooltipContent — the text or JSX rendered inside the floating panel.",
+      "name": "children",
+      "required": true,
+      "type": "React.ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "On TooltipTrigger — merges props onto the immediate child instead of wrapping with a <button>. Use when the trigger is already an interactive element.",
+      "name": "asChild",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Popover — use Popover (also @godxjp/ui/feedback) when the floating panel needs interactive content (forms, links, action menus) rather than read-only text. Tooltip is read-only; Popover is interactive.",
+    "HoverCard — for rich preview cards (user profiles, link previews) that appear on hover with more complex layout. Tooltip is for short text hints only.",
+    "Badge / StatusChip — for persistent, always-visible short labels inline with text; not hover-triggered. Use Tooltip when the hint should be hidden until hovered."
+  ],
+  "rules": [
+    3,
+    6,
+    23,
+    39
+  ],
+  "storyPath": "feedback/Tooltip.stories.tsx",
+  "subParts": [
+    "TooltipContent",
+    "TooltipProvider",
+    "TooltipTrigger"
+  ],
+  "tagline": "Radix-based hover/focus tooltip — self-providing, no app-level TooltipProvider required; compose Tooltip > TooltipTrigger > TooltipContent every time.",
+  "usage": [
+    "DO compose the full three-part structure every time: <Tooltip> wraps <TooltipTrigger> (the element that triggers the tip) and <TooltipContent> (the floating panel). Omitting any part silently produces nothing.",
+    "DO NOT add an app-level <TooltipProvider> — every <Tooltip> self-provides its own Radix Provider. Only add <TooltipProvider> at a subtree root when you need a shared delayDuration different from the default 200ms across many tooltips.",
+    "DO use asChild on TooltipTrigger when the trigger is already a Button, IconButton, or other interactive element — this avoids nesting a <button> inside a <button>, which is invalid HTML and breaks keyboard focus.",
+    "DON'T put non-interactive elements (plain <div>, <span>) as the direct TooltipTrigger child without asChild — Radix needs a focusable element for keyboard accessibility. Wrap the target in a <span tabIndex={0}> or use a Button.",
+    "For controlled usage (e.g. programmatic show/hide or testing), pass open + onOpenChange to <Tooltip>. For typical hover/focus behaviour, leave both unset (uncontrolled).",
+    "TooltipContent renders inside a Radix Portal appended to document.body — z-index and overflow:hidden on ancestors do NOT clip it. Use className to extend max width beyond the built-in max-w-xs if long text is expected."
+  ],
+  "useCases": [
+    "Explaining an icon-only Button action (e.g. a trash icon, a copy-to-clipboard icon) in a DataTable action column — show the label on hover without cluttering the row.",
+    "Annotating a truncated cell value in a DataTable (e.g. a long account name clipped with text-ellipsis) — reveal the full text on hover without a modal.",
+    "Providing contextual help for a form field label or an info icon next to an accounting term (e.g. 'AR Balance' with a short definition).",
+    "Surfacing keyboard shortcut hints next to toolbar buttons (e.g. '⌘K — open search') without adding visible text to the UI.",
+    "NOT for a disabled control's reason. A disabled Button gets `pointer-events: none` (control.css) and leaves the tab order, so a tooltip on one can never open — measured in Chromium: the same trigger showed 1 tooltip on hover while enabled and 0 while disabled, and `.focus()` on it left activeElement as BODY, so keyboard and touch get nothing either. Render the reason as VISIBLE TEXT before the action instead — that is what ServiceLauncherCard's `disabledReason` does, and it puts the explanation ahead of the control in DOM order (WCAG 1.3.2). See docs/CONSUMER-RULES.md."
+  ]
+}

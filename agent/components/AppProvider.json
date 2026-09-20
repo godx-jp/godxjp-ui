@@ -1,0 +1,105 @@
+{
+  "example": "import { AppProvider } from \"@godxjp/ui/app\";\n\n<AppProvider defaultLocale=\"ja\" defaultTimezone=\"Asia/Tokyo\" defaultDateFormat=\"iso\" defaultTimeFormat=\"24h\">\n  {children}\n</AppProvider>",
+  "group": "providers",
+  "importPath": "@godxjp/ui/app",
+  "name": "AppProvider",
+  "props": [
+    {
+      "defaultValue": "\"vi\"",
+      "description": "Initial locale.",
+      "name": "defaultLocale",
+      "type": "\"ja\" | \"en\" | \"vi\""
+    },
+    {
+      "defaultValue": "\"browser\"",
+      "description": "Initial IANA timezone.",
+      "name": "defaultTimezone",
+      "type": "string | \"browser\" | \"system\""
+    },
+    {
+      "defaultValue": "\"locale\"",
+      "description": "Initial date display format.",
+      "name": "defaultDateFormat",
+      "type": "\"iso\" | \"ymd\" | \"dmy\" | \"mdy\" | \"locale\""
+    },
+    {
+      "defaultValue": "\"locale\"",
+      "description": "Initial clock format.",
+      "name": "defaultTimeFormat",
+      "type": "\"24h\" | \"12h\" | \"locale\""
+    },
+    {
+      "defaultValue": "\"light\"",
+      "description": "Theme axis → <html data-theme>. Equal alias of the legacy .dark class. \"system\" defers to prefers-color-scheme and is followed LIVE (matchMedia listener), so <html data-theme> flips with the OS; the persisted value stays \"system\" (the CHOICE), never the resolved light/dark. Persisted; change via setTheme / <AppSettingPicker kind=\"theme\"> / <Segmented>.",
+      "name": "theme",
+      "type": "\"light\" | \"dark\" | \"system\""
+    },
+    {
+      "defaultValue": "null",
+      "description": "Brand-palette axis → <html data-brand> (sets --primary/--ring/--accent). OPT-IN: null keeps the --primary your own theme.css defines. \"dxs\" is THE CANONICAL DXS PRESET and is more than a tint: it also binds the canonical hosted-identity surface contract (36px auth controls, 22.5rem auth card measure, 16px page inset / 15px below 30rem), so a DXS surface needs ZERO page CSS for auth geometry, density, insets, logo colour, divider or footer. Stylesheet-only apps (no provider) import \"@godxjp/ui/theme/dxs.canonical.css\" instead — same contract, guarded against drift by a test.",
+      "name": "brand",
+      "type": "\"brand\" | \"crm\" | \"logistics\" | \"partner\" | \"slate\" | \"dxs\" | null"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Density axis → <html data-density>. A named preset of the global --scaling factor (compact .92 / default 1 / comfortable 1.08): every size token rescales in proportion app-wide. PageContainer density= overrides locally.",
+      "name": "density",
+      "type": "\"compact\" | \"default\" | \"comfortable\""
+    },
+    {
+      "defaultValue": "null",
+      "description": "Continuous global size multiplier → inline --scaling on <html> (Radix model). Scales spacing, control/table/checkbox/switch heights, radius in proportion. null defers to the density preset; a number (e.g. 0.95) overrides it. Type is NOT scaled (separate fontSize axis).",
+      "name": "scaling",
+      "type": "number | null"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Base type-size axis → <html data-font-size>. A preset sets --font-size-base and the whole golden scale rescales. Orthogonal to --scaling.",
+      "name": "fontSize",
+      "type": "\"sm\" | \"default\" | \"lg\""
+    },
+    {
+      "defaultValue": "true",
+      "description": "Which viewer preferences survive a reload: `true` every axis, `false` none, or a LIST — `persist={[\"theme\", \"density\", \"fontSize\"]}`. The list exists because THE AXES DO NOT SHARE AN OWNER. theme/brand/density/fontSize/scaling are the VIEWER's and belong in this browser; locale/timezone/timeFormat/dateFormat are frequently the SERVER's, resolved per request from a cookie, an account row or a header — and a stored copy then WINS over the value the server just sent, because storage is read after the props. Given one all-or-nothing flag, that consumer sets `persist={false}` and loses the viewer's theme along with it (measured: a hosted Inertia app whose theme toggle reset on every full page load). Naming the axes keeps both owners.",
+      "name": "persist",
+      "type": "boolean | readonly AppPreferenceAxis[]"
+    },
+    {
+      "defaultValue": "false",
+      "description": "OFF by default and deliberately opt-in: `name` decides what a native <form> submit sends, so switching it on for every consumer of a shared package would make apps start posting new keys to their backend on a library upgrade. Turn it on for apps that need native form posts or a screen-automation (RPA) contract on their controls. The inert `data-field` companion attribute is emitted regardless; a `name` written on the control itself always wins. NOT persisted to localStorage: it is the app's configuration, not a user choice.",
+      "name": "emitFieldNames",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "LocalePicker — the language-selector control that reads/writes AppProvider locale context automatically when used as a zero-prop child. Prefer LocalePicker over calling setLocale from useAppContext() directly in UI.",
+    "TimezonePicker — the timezone-selector control; inherits `timezoneOptions` from AppProvider context when its own `options` prop is omitted. Both pickers require AppProvider to be in the tree unless controlled props are passed.",
+    "formatDate — the MANDATORY date/time formatter that reads locale, timezone, timeFormat, and dateFormat from AppProvider context. Do NOT call date-fns or Intl.DateTimeFormat directly; formatDate is the single source of truth for display.",
+    "AppShell — the top-level application shell that composes AppProvider, AppShell, Sidebar, and Topbar into a single ready-to-use layout. If your project uses AppShell, AppProvider is already mounted inside it — do not add a second one.",
+    "OverlayPortalProvider — the other root-level provider, and the one to reach for when this library is mounted inside a SHADOW ROOT. Every overlay here (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard) portals to `document.body` by default, which is correct on an ordinary page and wrong in a shadow root: the panel lands outside the tree carrying the stylesheet and renders with none of it — measured on an embedded bar as border 0, radius 0, a transparent background, and the anchor maths 40px off. `<OverlayPortalProvider container={shadowRoot}>` moves all of them at once; a per-component prop cannot, because a component that owns its own overlay (AppLauncher) is unreachable from the outside."
+  ],
+  "rules": [
+    5
+  ],
+  "storyPath": "app/AppProvider.stories.tsx",
+  "tagline": "Root locale/timezone/date-time context — wrap the app ONCE. All pickers + formatDate read from it. Import from @godxjp/ui/app.",
+  "usage": [
+    "DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind=\"density\" | \"fontSize\" | \"theme\" | \"brand\" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().",
+    "DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every godx-ui picker (LocalePicker, TimezonePicker, DateFormatPicker, TimeFormatPicker), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.",
+    "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
+    "DO use `persist={false}` on AppProvider for isolated tests and standalone settings forms where localStorage must not be read or written. With the default `persist={true}` the provider reads localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
+    "DO NOT reach for `persist={false}` because the SERVER owns the locale — pass the axes the BROWSER owns instead: `persist={[\"theme\", \"brand\", \"density\", \"fontSize\", \"scaling\"]}`. Storage is read after the props, so a stored `locale` overrides the one the server just resolved; turning persistence off wholesale fixes that and silently takes the viewer's theme with it, which is how a hosted app shipped a theme toggle that reset on every reload.",
+    "DO set `defaultTimezone='system'` together with `systemTimezone={serverTimezone}` when your backend knows the legal entity's canonical timezone (e.g. 'Asia/Ho_Chi_Minh'). Use `defaultTimezone='browser'` (the default) only when you want the user's browser clock. Do NOT pass a raw IANA string to `defaultTimezone` if the user may be in a different zone — use the named aliases.",
+    "DO wire `onLocaleChange`, `onTimezoneChange`, `onTimeFormatChange`, `onDateFormatChange` to persist changes server-side (e.g. patch user profile via Inertia router) in addition to the automatic localStorage write. These callbacks fire after state is set, so the new value is already reflected in context.",
+    "DO set `emitFieldNames` on AppProvider when the app is driven by screen automation (RPA) or posts native forms — every control under a FormField then carries a real `name` taken from the field key, and legacy automation that addressed controls by `name` keeps working after a rewrite. Leave it off (the default) otherwise: it changes what a native submit sends. The `data-field` attribute is emitted either way, so e2e selectors do not depend on this flag.",
+    "DO restrict the timezone dropdown by passing `timezoneOptions={APP_TIMEZONE_PRESET}` (an exported constant) to AppProvider — all TimezonePicker instances that omit their own `options` prop will inherit this restricted list automatically from context. Without it, TimezonePicker renders the full IANA list (~600 entries)."
+  ],
+  "useCases": [
+    "App bootstrap in a multi-locale SaaS admin (ja/en/vi) — mount AppProvider at the root with the tenant's preferred locale and IANA timezone so every DataTable date column, every formatDate call, and every picker renders consistently in the user's locale without any per-component configuration.",
+    "User settings page — render LocalePicker, TimezonePicker, DateFormatPicker, and TimeFormatPicker as zero-prop children inside the existing AppProvider; each picker reads and writes context automatically. Wire `onLocaleChange` to an Inertia form submit to persist the change to the server profile.",
+    "Server-rendered Inertia app with SSR hydration — pass `defaultTimezone='system'` and `systemTimezone={sharedProps.timezone}` (injected via HandleInertiaRequests) so the initial render is timezone-deterministic and avoids hydration mismatches caused by browser-timezone detection.",
+    "Multi-entity accounting dashboard — use `timezoneOptions` to restrict the picker to the legal entity's permissible zones (e.g. Southeast Asian IANA ids only), preventing users from accidentally switching to an out-of-scope timezone that would misrepresent transaction timestamps.",
+    "Isolated preview / Storybook story — wrap a single component in `<AppProvider persist={false} defaultLocale='en'>` to give it a stable context without polluting localStorage between stories.",
+    "Test harness — wrap the component under test in `<AppProvider persist={false} defaultLocale='ja' defaultDateFormat='iso'>` to assert locale-sensitive formatting output deterministically, independent of whatever the browser or stored preferences report."
+  ]
+}

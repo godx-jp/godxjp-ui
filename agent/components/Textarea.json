@@ -1,0 +1,126 @@
+{
+  "example": "import { Textarea } from \"@godxjp/ui/data-entry\";\n\n<Textarea id=\"notes\" rows={4} placeholder=\"自由記述\" value={notes} onChange={(e) => setNotes(e.target.value)} />\n\n// Chat / comment composer — grows with its content, scrolls past 8 rows, collapses on send.\n<Textarea autoGrow minRows={1} maxRows={8} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder=\"メッセージを入力...\" />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Textarea",
+  "props": [
+    {
+      "description": "Measured padding escape, stamped on the field.",
+      "name": "padRaw",
+      "type": "PadRawProp"
+    },
+    {
+      "description": "Instance padding with logical asymmetric sides.",
+      "name": "pad",
+      "type": "PadProp"
+    },
+    {
+      "description": "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "defaultValue": "\"outlined\"",
+      "description": "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box. This library's older `default`/`ghost` are still accepted and resolve to `outlined`/`borderless`.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\" | \"default\" | \"ghost\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control height tier — reads the shared `--control-height` ladder.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `autoSize`. `true` is `autoGrow`; the object form carries the row bounds with it, so `autoSize={{ minRows: 2, maxRows: 6 }}` is `autoGrow minRows={2} maxRows={6}`. An explicit `minRows`/`maxRows` still wins.",
+      "name": "autoSize",
+      "type": "boolean | { minRows?: number; maxRows?: number }"
+    },
+    {
+      "description": "Character counter — Ant Design `count`. Counts CODE POINTS by default, so one emoji and one 全角 kanji are each worth one. It REPORTS an overrun (`data-exceeded`) and never edits the value: antd's `exceedFormatter` truncates while the user types, which in Japanese cuts a live IME conversion in half.",
+      "name": "count",
+      "type": "{ max?: number; show?: boolean; formatter?: (info: { value: string; count: number; max?: number }) => React.ReactNode; strategy?: (value: string) => number }"
+    },
+    {
+      "description": "Associates with a <Label htmlFor>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Visible text rows.",
+      "name": "rows",
+      "type": "number"
+    },
+    {
+      "description": "Controlled value.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Change handler.",
+      "name": "onChange",
+      "type": "React.ChangeEventHandler<HTMLTextAreaElement>"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Opt-in inline ✕ at the top-end that clears the field while it holds text (controlled + uncontrolled). Off by default.",
+      "name": "allowClear",
+      "type": "boolean"
+    },
+    {
+      "description": "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
+      "name": "onClear",
+      "type": "() => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "The floor is `minRows` (or `rows`, when that is the only one given) and never undercuts the `--control-height` tier, so a resting one-row composer still lines up with the Button beside it; past `maxRows` the control stops growing and scrolls internally. Sizing happens in CSS from a hidden replica of the text, so it follows a paste, an IME composition, a programmatic value change, a font swap and a container resize — not just typing — and the component never writes `style.height`, never reads `scrollHeight` and never moves `scrollTop`. Works controlled and uncontrolled. Off by default: an existing Textarea keeps the exact geometry it has today.",
+      "name": "autoGrow",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "1 (--textarea-autogrow-min-height-rows)",
+      "description": "Floor in text rows while `autoGrow`. Theme-global default is the `--textarea-autogrow-min-height-rows` token; this prop overrides it per instance. Ignored when `autoGrow` is false.",
+      "name": "minRows",
+      "type": "number"
+    },
+    {
+      "defaultValue": "8 (--textarea-autogrow-max-height-rows)",
+      "description": "Ceiling in text rows while `autoGrow`; beyond it the box stops growing and scrolls internally rather than pushing the page. Pass `0` for no ceiling — only correct inside an owning scroll container. Theme-global default is the `--textarea-autogrow-max-height-rows` token. Ignored when `autoGrow` is false.",
+      "name": "maxRows",
+      "type": "number"
+    },
+    {
+      "description": "Immediate value callback; native onChange remains supported. Shared form bindings are emitted once.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    }
+  ],
+  "related": [
+    "Input — use Input for single-line values (names, amounts, codes). Use Textarea only when the expected value spans multiple lines or could be longer than ~80 characters.",
+    "FormField — always the parent wrapper for Textarea in forms; provides label, helper text, error message, and injects all required aria attributes onto the Textarea child automatically.",
+    "Select — when the user must pick from a finite set of multi-line-looking options (e.g. template choices) use Select, not a Textarea presenting options as free text.",
+    "Select with showSearch or SearchSelect — if the multi-line field is actually a tag/token input or a constrained lookup, prefer Select (showSearch) or SearchSelect over a Textarea that the user types into freely."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/Textarea.stories.tsx",
+  "tagline": "Styled wrapper around native <textarea>. Pair with FormField for labelled fields.",
+  "usage": [
+    "DO reach for `variant=\"ghost\"` ONLY when a parent surface already draws the box and owns focus — the composer Card, an inline edit cell. A standalone field keeps the default: without its own border it reads as plain text, not something you can type into.",
+    "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
+    "DO use the godx-ui Textarea (`import { Textarea } from '@godxjp/ui/data-entry'`) — never a raw `<textarea>`. The component applies the `ui-control-multiline` token class that picks up density, focus-ring, and border tokens from the design system.",
+    "DO control the value with `value` + `onChange` in React-managed forms (e.g. Inertia `useForm`). Textarea is a plain `forwardRef` over the native element so it accepts all standard `HTMLTextAreaElement` attributes — `rows`, `maxLength`, `disabled`, `name`, `placeholder`, `readOnly` all pass through directly.",
+    "DO pass `name` when the textarea sits inside an HTML `<form>` for native form submission or when Inertia's `useForm` destructures field values by key — the `name` attribute maps the value into the form data bag.",
+    "DON'T apply manual height or padding classes directly on Textarea to simulate a taller field — use `rows` for a fixed height, or `autoGrow` for a box that grows with its content.",
+    "DON'T hand-roll auto-grow with an `onInput` handler that sets `style.height` from `scrollHeight` — that is a forced synchronous reflow on every keystroke, it re-derives the library's own box model (`--control-height`, `--control-padding-x`, `--control-border-width`), it freezes the height against the density axis and a tenant retheme, and it misses the paths that matter: a paste, an IME composition in ja/vi, a programmatic reset after submit, and a webfont swap. Pass `autoGrow` instead — the library owns the measurement in CSS.",
+    "DO reach for `autoGrow` + `minRows`/`maxRows` for a chat or comment composer: `<Textarea autoGrow minRows={1} maxRows={8} />` starts one row tall, grows line by line as the author types or pastes, scrolls internally past the ceiling, and collapses back to `minRows` the moment a controlled value is reset to `\"\"` after send. Bound it in ROWS, never in px — a row count survives a density change and a `--font-size-base` retheme.",
+    "DON'T hand-roll label + error markup next to a bare Textarea. Always use FormField: it injects aria-invalid (red ring on the control), renders a `role='alert'` error paragraph, and links them via aria-describedby automatically."
+  ],
+  "useCases": [
+    "Free-text memo or note fields on an invoice or transaction detail form — e.g. '備考 / Notes' that can hold multi-line internal comments alongside structured Invoice fields.",
+    "Rejection reason or approval comment in an admin workflow dialog — a short-to-medium text block a reviewer types before confirming an action in a Dialog or Sheet.",
+    "Address or multi-line description input on a vendor / partner entity form where a single-line Input would be too restrictive.",
+    "Email body composer or message template editor in a lightweight CRM or notification settings screen where rich text is not required.",
+    "Audit log annotation — allowing an accountant to attach a plain-text explanation to a manual journal entry or adjustment record."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "example": "import { Breadcrumb } from \"@godxjp/ui/layout\";\n\n<Breadcrumb items={[\n  { label: \"ホーム\", to: \"/\" },\n  { label: \"会員管理\", to: \"/members\" },\n  { label: \"田中 太郎\" },\n]} />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Breadcrumb",
+  "props": [
+    {
+      "description": "Array of { label, to?, menu? } — omit `to` on the last (current) segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+      "name": "items",
+      "required": true,
+      "type": "BreadcrumbItemProp[]"
+    },
+    {
+      "description": "Ant Design `separator`. Defaults to the chevron glyph; a string (`\"/\"`) or any node replaces it and `\"\"` removes it. Always `aria-hidden` — the trail's structure is the `<ol>`/`<li>`, so a screen reader never reads the glyph.",
+      "name": "separator",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Ant Design `itemRender`. Replaces ONE segment's body while Breadcrumb keeps owning the `<nav>` landmark, the `<ol>`/`<li>`, the separators and `aria-current`. Use it to hand the trail a router `<Link>` (Inertia, react-router) instead of a bare `<a>`.",
+      "name": "itemRender",
+      "type": "(item: BreadcrumbItemProp, info: { index: number; isLast: boolean; items: BreadcrumbItemProp[] }) => React.ReactNode"
+    },
+    {
+      "description": "Override the nav landmark's accessible name (defaults to a localized \"Breadcrumb\"). Required when more than one Breadcrumb renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.",
+      "name": "aria-label",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "PageContainer — accepts `breadcrumb` as `BreadcrumbItemProp[]` (raw array, not a ReactNode); use this when each page owns its own breadcrumb and you want it co-located with the page title, actions, and body.",
+    "AppShell — accepts `breadcrumb` as `ReactNode`; pass `<Breadcrumb items={…} />` here when the breadcrumb is a persistent shell-level strip that sits above all page content rather than being owned by individual pages.",
+    "Steps — use instead of Breadcrumb when showing progress through an ordered multi-step flow (wizard, checkout, onboarding); Steps conveys sequence and completion state, not spatial location.",
+    "PrefetchLink — if ancestor breadcrumb segments should prefetch their destination query on hover/focus, consider pairing the `to` values with `PrefetchLink` in a custom breadcrumb or pre-warming the cache on mount; Breadcrumb's internal links are plain react-router-dom `<Link>` with no prefetch behaviour."
+  ],
+  "rules": [],
+  "storyPath": "layout/Breadcrumb.stories.tsx",
+  "tagline": "Standalone breadcrumb nav rendering an ordered trail of page segments.",
+  "usage": [
+    "DO import from `@godxjp/ui/layout` (not from a navigation or general sub-path) and pass a single `items` prop — an ordered array of `{ label, to? }` objects. No children, no sub-components, no render-prop API.",
+    "DO omit `to` on the last (current-page) segment — the component automatically renders it as a `<span aria-current=\"page\">` instead of a router `<Link>`. Passing `to` on the last item does NOT make it a link; drop it intentionally.",
+    "DO pass the Breadcrumb node as a ReactNode to the `breadcrumb` prop of `AppShell` (or `AppShell`) for shell-level breadcrumbs, or to `PageContainer`'s `breadcrumb` prop (which accepts `BreadcrumbItemProp[]` directly — not a ReactNode). When passing to `PageContainer`, pass the raw array; when passing to `AppShell`, wrap it: `breadcrumb={<Breadcrumb items={…} />}`.",
+    "DON'T hand-roll a breadcrumb strip (divs with chevrons, anchors, separators) — Breadcrumb ships the `<nav aria-label=\"Breadcrumb\">` + `<ol>` + `aria-hidden` chevrons. Any custom trail is a violation of the no-hand-roll rule and will fail `npm run ui:audit`.",
+    "DON'T use Breadcrumb for tab-style or step-style navigation (multi-step forms, wizard progress). Those flows belong to `Steps`. Breadcrumb is strictly a spatial location trail, not a process indicator.",
+    "The component is fully uncontrolled and stateless — it renders whatever `items` you pass. Dynamic breadcrumbs (route-derived, breadcrumb context, etc.) must be assembled in the parent and passed down as a plain array; there is no internal routing awareness."
+  ],
+  "useCases": [
+    "Per-page location trail on any admin page deeper than two levels — e.g. Home → Accounting → Invoices → Invoice #1042 — passed to `PageContainer`'s `breadcrumb` prop so it appears above the page `<h1>`.",
+    "Persistent shell-level breadcrumb in a `AppShell` or `AppShell` layout that updates as the user navigates between Inertia/React Router pages; constructed from route params and passed as a ReactNode to `AppShell`'s `breadcrumb` prop.",
+    "Master-detail drill-down in an accounting app: the detail page (journal entry, partner, bank account) shows a breadcrumb back to the list and to the domain root, giving the user a one-click escape without using the browser back button.",
+    "Embedded sub-panel breadcrumb inside a `SplitPane` or `Sheet` where a secondary content area has its own navigable hierarchy and needs a compact location indicator.",
+    "Audit log or document history page where the entity being reviewed (invoice, payment) is the current segment and the parent module (Accounting, Receivables) is a clickable ancestor.",
+    "Prefetch pairing: wrap ancestor segments' `to` values with `PrefetchLink` semantics by putting them in `items` — each non-last item with `to` is already rendered as a router `<Link>`, so hovering naturally prefetches if `PrefetchLink` is used elsewhere on the same route."
+  ]
+}

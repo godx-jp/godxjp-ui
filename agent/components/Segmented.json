@@ -1,0 +1,96 @@
+{
+  "example": "import { Segmented } from \"@godxjp/ui/data-entry\";\n\n<Segmented\n  aria-label=\"Theme\"\n  value={theme}\n  onValueChange={(next) => setTheme(next as AppTheme)}\n  options={[\n    { value: \"light\", label: \"Light\" },\n    { value: \"dark\", label: \"Dark\" },\n    { value: \"system\", label: \"System\" },\n  ]}\n/>\n\n<Segmented\n  aria-label=\"Status filter\"\n  value={status}\n  onValueChange={setStatus}\n  options={[\n    { value: \"all\", label: \"All\", count: 128 },\n    { value: \"active\", label: \"Active\", count: 96 },\n  ]}\n/>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Segmented",
+  "props": [
+    {
+      "defaultValue": "false",
+      "description": "antd `block` — stretch the bar to its container and share the width EQUALLY between the choices, so the selected pill does not resize as the label under it changes length.",
+      "name": "block",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "antd `vertical` — stack the choices in a column. It changes the ARROW KEYS as well as the layout: the primitive reads `orientation` to decide which arrows move the roving focus.",
+      "name": "vertical",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control height tier — reads the shared `--control-height` ladder: xs 24px · sm 28px · md 32px · lg 36px. The TRACK measures exactly one control height, so the bar sits level with an Input, a Button or a ToggleGroup of the same step on the same row. Pick the step the ROW already has: xs (gh#719) is the one that fits a 24px-dense toolbar or audit-log row — before it, that row could only get a hand-rolled set of Buttons, which loses the radiogroup semantics and the arrow keys. xs is the DENSE step, not a smaller default: the track spends its 2px inset at every step, so the individual SEGMENT measures 20px and clears WCAG 2.2 SC 2.5.8 through the Spacing exception (adjacent segments 26.47px apart for a one-glyph label) rather than the 24px minimum. Keep labels at a glyph or more, and stay on sm or md wherever the row height is yours to choose.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "The closed set of choices, in reading order. `label` is the visible content AND the item's accessible name. Use `count` for a filter total — do not nest `Badge` in `label` (gh#602).",
+      "name": "options",
+      "type": "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean; count?: number | string; overflowCount?: number; showZero?: boolean; countLabel?: string }[]"
+    },
+    {
+      "description": "Controlled selection.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial selection.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Selection callback.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Disable the whole group.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Form field name — submits the selected value with a native form.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Root id, for a label that points at it.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Root class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ToggleGroup (independently pressed buttons, or a multi-select toolbar)",
+    "RadioGroup (the same semantics with a vertical, described list)",
+    "Select (the same choice when the set is long or hidden by default)",
+    "Tabs (switches PANELS, not a value)"
+  ],
+  "rules": [
+    3,
+    6,
+    23
+  ],
+  "storyPath": "data-entry/Segmented.stories.tsx",
+  "tagline": "One-of-N from a small, closed, always-visible set — the enterprise Segmented / filter bar drawn on react-aria-components' RadioGroup. A track with the chosen item as a lifted slab. Reach for it INSTEAD OF a Select when there are 2-4 options and all of them fit on screen, and instead of ToggleGroup when exactly one must always be chosen.",
+  "usage": [
+    "DO use it for a closed set of 2-4 peer choices that are cheap to show — theme, view mode, a date range preset.",
+    "DO give it an aria-label (or aria-labelledby) — the group needs a name, and each item takes its own from its label.",
+    "DON'T use ToggleGroup for a one-of-N choice unless you also pass `disallowEmptySelection`: without it, type=single is a row of aria-pressed toggle buttons that can end up with nothing selected, which a setting can never be (gh#744). Segmented is the one-of-N control and needs no such switch.",
+    "DON'T use it past ~4 options — that is a Select. Up to four, a horizontal track WRAPS to a second row when its options cannot share one (a phone-width status filter with counts), so no label or count is truncated while its item fits on a row. `block` is the exception: it promises EQUAL widths, so it still truncates — don't use `block` for four labelled options at phone width.",
+    "DO show a short mark and speak a long name by putting BOTH in `label`: an aria-hidden span for the glyph and a VisuallyHidden for the words. `label` is a ReactNode, the item takes its accessible name from its content, and the glyph drops out of that name once it is aria-hidden — so a bar of circle/triangle/cross marks still announces the state in words. There is no separate accessible-name prop and there does not need to be.",
+    "DO pass per-option totals via `count` — the DS paints an opaque pill that reads on both the recessed track and the selected slab. Do not put `Badge` in `label` for counts: `secondary` is `--muted`, which is the track fill (1.00:1, gh#602).",
+    "DO stack with `vertical` when the labels are too long to sit side by side: a stacked row is a WHOLE `--control-height` tall, where a horizontal bar spends part of that height on the track padding so the bar as a whole lines up with an Input beside it. Inside a MobileShell, which scopes the control tier to the touch step, that is what makes each row a 44px target.",
+    "DO remember that `size` and any scoped `--control-height` both reach the track: the item height is composed on the Segmented root, not frozen at :root.",
+    "DO set `size=\"xs\"` for a 24px-dense row — an audit-log toolbar, a table header strip, a row that already carries `<Button size=\"xs\">` or an `xs` ToggleGroup. All three measure 24px off the same `--control-height-xs` step, so the row stays level, and the label type and the item inline padding step down with the band (gh#719). DON'T hand-roll that row out of Buttons to get the height: a segmented control is a radiogroup, and a row of buttons loses the arrow keys and the \"1 of 3, selected\" announcement."
+  ],
+  "useCases": [
+    "Theme switch (light / dark / system)",
+    "List vs board vs calendar view mode",
+    "Chart range: day / week / month",
+    "Status filter above a list, each option carrying its count (All 128 / Active 96 / Pending 12 / Archived 0)"
+  ]
+}

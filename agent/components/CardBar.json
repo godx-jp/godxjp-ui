@@ -1,0 +1,49 @@
+{
+  "docPath": "docs/data-display/card/index.tsx",
+  "example": "<Card><CardBar pad={{block:2,inline:3}} border=\"block-start\">Tools</CardBar></Card>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "CardBar",
+  "props": [
+    {
+      "description": "Instance padding on the token scale.",
+      "name": "pad",
+      "type": "PadProp"
+    },
+    {
+      "description": "Measured padding escape.",
+      "name": "padRaw",
+      "type": "PadRawProp"
+    },
+    {
+      "description": "Spacing between main and extra slots.",
+      "name": "gap",
+      "type": "GapProp"
+    },
+    {
+      "description": "Optional muted ground.",
+      "name": "surface",
+      "type": "\"muted\""
+    },
+    {
+      "description": "Override positional divider edges for stacked bars.",
+      "name": "border",
+      "type": "\"none\" | \"block-start\" | \"block-end\" | \"both\""
+    }
+  ],
+  "related": [
+    "Card",
+    "Flex"
+  ],
+  "rules": [
+    9
+  ],
+  "storyPath": "data-display/Card.stories.tsx",
+  "tagline": "Inline card toolbar with scoped inset and divider edges.",
+  "usage": [
+    "Compose inside Card. Unset border follows its position; explicit border prevents double rules in stacked bars."
+  ],
+  "useCases": [
+    "Composer tool strips and view tabs."
+  ]
+}

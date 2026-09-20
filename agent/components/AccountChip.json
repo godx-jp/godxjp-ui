@@ -1,0 +1,59 @@
+{
+  "example": "import { AccountChip } from \"@godxjp/ui/layout\";\n\n<PageContainer title=\"Bug report\" extra={<><Button variant=\"outline\">History</Button><AccountChip name={user.name} email={user.email} actionLabel={t(\"auth.signOut\")} onAction={signOut} /><Button>Send</Button></>}>…</PageContainer>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AccountChip",
+  "props": [
+    {
+      "description": "Display name; its first character is the avatar fallback.",
+      "name": "name",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Shown as the chip's title (hover / assistive tooltip).",
+      "name": "email",
+      "type": "string"
+    },
+    {
+      "description": "Optional avatar image URL.",
+      "name": "avatarSrc",
+      "type": "string"
+    },
+    {
+      "description": "Overrides the first-character fallback.",
+      "name": "avatarFallback",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Accessible name of the action button, e.g. a localized sign-out label.",
+      "name": "actionLabel",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Action handler; omit it to render no button.",
+      "name": "onAction",
+      "type": "() => void"
+    },
+    {
+      "description": "Disables the action button.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Optional structural class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "rules": [
+    40
+  ],
+  "storyPath": "layout/AccountChip.stories.tsx",
+  "tagline": "Signed-in user for a PageContainer extra slot, Topbar or footer row: avatar, name and one ghost action at the control tier height — never a hand-rolled rounded-full border div.",
+  "usage": [
+    "Put it in PageContainer `extra` beside Buttons and a Select width=\"auto\": every control in that row shares --control-height.",
+    "Pass a localized actionLabel with onAction; the component owns no route, session or permission behaviour.",
+    "DO compose from the package (it is Avatar + Text + Button in a Flex row); DON'T hand-roll <div className=\"inline-flex rounded-full border py-0.5\"> — it drifts from the control height and the audit flags it (no-hand-rolled-surface)."
+  ]
+}

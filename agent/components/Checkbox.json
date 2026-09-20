@@ -1,0 +1,68 @@
+{
+  "example": "import { Checkbox } from \"@godxjp/ui/data-entry\";\n\n// children is the inline label (antd): box first, label on the same line, the text toggles the box.\n// Never a hand-rolled <div className=\"flex items-center gap-2\"> around a bare <Label>.\n<Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v === true)}>\n  利用規約に同意する\n</Checkbox>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Checkbox",
+  "props": [
+    {
+      "description": "antd `indeterminate` — paint the PARTIAL mark (a dash) and announce `mixed`, without changing `checked`. This component also accepts the same state as `checked=\"indeterminate\"`; the flag is antd's spelling of it, and the box falls back to the underlying `checked` the moment the flag goes false.",
+      "name": "indeterminate",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled checked state.",
+      "name": "checked",
+      "type": "boolean | 'indeterminate'"
+    },
+    {
+      "description": "Uncontrolled initial state. It takes the tri-state too, and the box keeps the dash until the first click rather than falling back to unchecked.",
+      "name": "defaultChecked",
+      "type": "boolean | 'indeterminate'"
+    },
+    {
+      "description": "Fires when checked state changes.",
+      "name": "onCheckedChange",
+      "type": "(checked) => void"
+    },
+    {
+      "description": "Links to a <Label htmlFor>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "antd `<Checkbox>label</Checkbox>` — the INLINE label: box first, label at inline-end on the same line, the same markup as a `Checkbox.Group` option. A real `<label for>`: clicking the text toggles the box and the text is its accessible name. `className` then styles the labelled row.",
+      "name": "children",
+      "type": "React.ReactNode"
+    }
+  ],
+  "related": [
+    "CheckboxGroup — use instead of bare Checkbox when you have a list of 2+ options from an array; it handles id generation, Field wrapping, value array management, and the `name` prop for form submission. Checkbox is for a single boolean; CheckboxGroup is for multi-select.",
+    "Switch / Field — use Switch when the action takes immediate effect (enable/disable a feature in settings) rather than selecting an option to be submitted later. Checkbox implies 'will be submitted as part of a form'; Switch implies 'applies now'. Field adds a hidden input for HTML form compatibility.",
+    "RadioGroup — use when only one option in a group may be selected at a time (mutually exclusive). CheckboxGroup = multiple selections allowed; RadioGroup = single selection only.",
+    "Field — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/Checkbox.stories.tsx",
+  "subParts": [
+    "CheckboxVisual"
+  ],
+  "tagline": "Checkbox on react-aria-components; standalone or via CheckboxGroup with an options array. `role=\"checkbox\"` is the real `<input>`; the painted box is the `<label>` around it and carries `data-state`.",
+  "usage": [
+    "DO give a single boolean its label as children (antd `<Checkbox>label</Checkbox>`, gh#709): `<Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(v === true)}>利用規約に同意する</Checkbox>` — box first, label on the same line, the text toggles the box and is its accessible name. In a form: `<FormFieldControl name=\"agree\" valuePropName=\"checked\">{(field) => <Checkbox {...field}>利用規約に同意する</Checkbox>}</FormFieldControl>`.",
+    "DON'T render a boolean field's label ABOVE its checkbox — `<FormFieldControl label=\"…\">{(field) => <Checkbox checked={field.value} … />}</FormFieldControl>` puts the label on one row and the box far below it. Put the label in the Checkbox's children and use `valuePropName=\"checked\"` on the field.",
+    "DO pair every standalone Checkbox WITHOUT children with a `<Label htmlFor={id}>` (or an `aria-label`) — the id prop on Checkbox must match the htmlFor on Label so screen readers announce the label on focus. Without this pairing the control is inaccessible.",
+    "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
+    "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
+    "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
+    "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
+    "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, pass the label as children (`<Checkbox …>label</Checkbox>`, the catalog example) — it renders the same row. Use `<Field id='x' label='…' description='…'><Checkbox id='x' … /></Field>` only when the row needs a description line — Field owns the label-to-control id wiring, the description slot and the row rhythm, and a hand-rolled flex row owns none of them; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group."
+  ],
+  "useCases": [
+    "A 'Select all' / bulk-action row above a DataTable — standalone Checkbox with `checked='indeterminate'` when some (not all) rows are selected, toggling between all-selected and none-selected.",
+    "A multi-step filter panel (e.g. filter invoices by payment status: Paid, Unpaid, Overdue) — `Checkbox.Group` with `options` prop and `orientation='vertical'`, controlled value wired to Toolbar state.",
+    "Confirmation or consent acknowledgement before a destructive action in a Dialog — standalone Checkbox with controlled state used to enable/disable the confirm Button.",
+    "Settings panel where each feature flag is a boolean toggle with a description line — `Checkbox.Group` with options carrying a `description` field so each row renders label + subtext via Field.",
+    "Bulk-edit form row in an accounting ledger (e.g. 'Apply to all selected entries') — standalone Checkbox with name + value inside a `<form>` for native HTML form submission.",
+    "Onboarding checklist (e.g. 'I have read the terms', 'I consent to data processing') with multiple distinct items whose values are independent — two separate standalone Checkboxes, each with their own id/state, not a Checkbox.Group (since each item maps to a different boolean field)."
+  ]
+}

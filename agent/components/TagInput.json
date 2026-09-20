@@ -1,0 +1,100 @@
+{
+  "example": "import { TagInput } from \"@godxjp/ui/data-entry\";\n\n<TagInput name=\"labels\" placeholder=\"ラベルを追加…\" onValueChange={(tags) => setTags(tags)} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "TagInput",
+  "props": [
+    {
+      "description": "Prevent adding and removing tags.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled tag list.",
+      "name": "value",
+      "type": "string[]"
+    },
+    {
+      "description": "Uncontrolled initial tags.",
+      "name": "defaultValue",
+      "type": "string[]"
+    },
+    {
+      "description": "Tag-list callback.",
+      "name": "onValueChange",
+      "type": "(tags: string[]) => void"
+    },
+    {
+      "description": "Shown when empty.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Hidden input (comma-joined) for native form submission.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "antd `status`. `error` recolours the control AND sets aria-invalid (a colour-only error fails WCAG 2.2 SC 1.4.1); `warning` recolours only. An aria-invalid injected by FormField always wins.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "antd `variant` — the control surface. Default `outlined`. Drawn from --control-{surface,filled,borderless}-* tokens, so a theme retunes all three at once.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "antd `size` — height tier on the shared --control-height ladder.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `maxTagCount` — how many selected values stay visible before the rest collapse into the overflow node. antd's `\"responsive\"` is not supported (see the parity PR).",
+      "name": "maxTagCount",
+      "type": "number"
+    },
+    {
+      "description": "antd `maxTagPlaceholder` — the node standing in for what maxTagCount hid. Defaults to a localized `+N`.",
+      "name": "maxTagPlaceholder",
+      "type": "React.ReactNode | ((omitted: { value: string; label: React.ReactNode }[]) => React.ReactNode)"
+    },
+    {
+      "description": "antd `maxCount` — a hard ceiling on how many tags may be held. A tag past the limit is refused, so the value handed to onValueChange is never over it.",
+      "name": "maxCount",
+      "type": "number"
+    },
+    {
+      "description": "antd `tagRender` — owns the chip body. The onClose it receives is the same remover the built-in ✕ calls, so a custom chip can never be unremovable.",
+      "name": "tagRender",
+      "type": "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode"
+    },
+    {
+      "description": "antd `tokenSeparators` (default [\",\"]) — characters that commit the draft into a tag. A pasted run containing one is split into several tags. Enter always commits and is not a separator.",
+      "name": "tokenSeparators",
+      "type": "string[]"
+    }
+  ],
+  "related": [
+    "Select (multiple) — when the values come from a fixed option set",
+    "Combobox (multi) — searchable known set"
+  ],
+  "rules": [
+    3,
+    6,
+    23
+  ],
+  "storyPath": "data-entry/TagInput.stories.tsx",
+  "tagline": "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[]).",
+  "usage": [
+    "DO use for free-form multi-value entry (labels, emails, keywords) where options aren't a fixed list.",
+    "DO note dedupe is built in; Enter/comma commits, Backspace on empty removes the last chip.",
+    "DON'T use for choosing from a KNOWN set — use Select (multiple) or a multi-Combobox instead."
+  ],
+  "useCases": [
+    "Labels / tags on a record",
+    "Recipient email entry",
+    "Keyword / skill lists",
+    "Ad-hoc filter terms"
+  ]
+}

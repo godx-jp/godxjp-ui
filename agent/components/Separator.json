@@ -1,0 +1,86 @@
+{
+  "example": "import { formatDate } from \"@godxjp/ui/datetime\";\nimport { Separator } from \"@godxjp/ui/layout\";\n\n// Plain section rule — decorative, nothing announced.\n<Separator />\n\n// Day divider: the label is the calendar boundary, formatted on the active locale.\n<Separator label={formatDate(\"2026-08-22\", { kind: \"long\" })} labelAlign=\"start\" />\n\n// Unread watermark: content, not decoration — announced once as the separator's name.\n<Separator label={t(\"chat.newMessages\")} tone=\"primary\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Separator",
+  "props": [
+    {
+      "description": "Hide from viewport breakpoint.",
+      "name": "hideFrom",
+      "type": "BreakpointProp"
+    },
+    {
+      "description": "Hide below viewport breakpoint.",
+      "name": "hideBelow",
+      "type": "BreakpointProp"
+    },
+    {
+      "description": "Block spacing on the token scale.",
+      "name": "space",
+      "type": "GapProp"
+    },
+    {
+      "description": "Label typography step.",
+      "name": "labelSize",
+      "type": "\"2xs\" | \"xs\" | \"sm\" | \"md\""
+    },
+    {
+      "defaultValue": "\"horizontal\"",
+      "description": "Divider direction.",
+      "name": "orientation",
+      "type": "\"horizontal\" | \"vertical\""
+    },
+    {
+      "description": "Localized text that interrupts the rule — the rule splits into two halves around it. Horizontal only (ignored with a dev warning when vertical). A string, not a node, because it becomes the separator's ACCESSIBLE NAME. Omit for a plain rule.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"center\"",
+      "description": "Where the label sits on the rule. `center` is the classic conjunction; `start` is the Slack/Mattermost stream convention. Logical — it flips under dir=\"rtl\".",
+      "name": "labelAlign",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Semantic emphasis of the label AND the rule together (never colour-only). `default` is the quiet chrome; use a role for an attention rule such as an unread watermark.",
+      "name": "tone",
+      "type": "\"default\" | \"muted\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"inherit\""
+    },
+    {
+      "defaultValue": "true (false when `label` is set)",
+      "description": "Whether the separator is decorative for assistive tech. A `label` flips the default to false so the rule becomes a real role=\"separator\" named by the label.",
+      "name": "decorative",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Flex direction='col' — use for vertical spacing without a visible rule.",
+    "AuthDivider — the auth-scoped preset over `Separator label` (it only re-points the --separator-* knobs at the --auth-shell-divider-* layer)."
+  ],
+  "rules": [
+    2,
+    3,
+    44,
+    45
+  ],
+  "storyPath": "layout/Separator.stories.tsx",
+  "tagline": "Tokenized horizontal or vertical rule, optionally INTERRUPTED by a localized label (day divider, unread watermark, auth conjunction).",
+  "usage": [
+    "DO use Separator for section dividers instead of raw border divs.",
+    "DO set orientation='vertical' only when the parent gives it a stable height.",
+    "DO use `label` for a message stream's day divider or a \"new messages\" unread watermark — it is the generic primitive AuthDivider was being misused for. Never hand-roll a <div> grid of two <span> rules.",
+    "DO format a day divider's date with the package's Intl/CLDR date subsystem (`formatDate(iso, { kind: \"long\" })` from @godxjp/ui/datetime) on the active locale — never hand-build the string.",
+    "DO pass `label` as a t() string. It becomes the separator's accessible name, and the visible node is aria-hidden so it is announced EXACTLY once.",
+    "DON'T set `decorative` on a labelled rule unless you mean it: role=\"none\" cannot carry a name, so the rule stops being announced as a milestone.",
+    "DON'T reach for AuthDivider outside an auth form — it is the auth-scoped preset over this and drags the --auth-shell-divider-* micro-scale with it.",
+    "DON'T bake the rule weight, the label gap/inset or the label type ramp into page CSS — they are --separator-* component tokens (rules #44/#45); retune them from theme.css."
+  ],
+  "useCases": [
+    "Separating toolbar groups",
+    "Dividing stacked page sections",
+    "Vertical split between metadata groups",
+    "A message stream's calendar-boundary day divider",
+    "A \"new messages\" unread watermark above the first unread post"
+  ]
+}

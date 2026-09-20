@@ -1,0 +1,67 @@
+{
+  "example": "import { Title } from \"@godxjp/ui/general\";\n\n<Title level={2}>請求書一覧</Title>\n<Title level={3} editable={{ onChange: rename }}>{projectName}</Title>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Title",
+  "props": [
+    {
+      "defaultValue": "1",
+      "description": "Sets BOTH the --heading-h{1..5} size token and the semantic <h1>..<h5>. Level 5 reads --heading-h5, which is bound to the existing --font-size-2xs step rather than being a new number. A value outside 1..5 falls back to h1, the way antd does — an <h7> from a runtime value would have no heading semantics at all. NOTE the default is antd's 1, while `Heading` defaults to 2.",
+      "name": "level",
+      "type": "1 | 2 | 3 | 4 | 5"
+    },
+    {
+      "description": "Override the rendered element — a visual h2 that is a real <h1>.",
+      "name": "as",
+      "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"div\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Semantic foreground colour. Outranks antd's `type`.",
+      "name": "tone",
+      "type": "\"default\" | \"muted\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"inherit\""
+    },
+    {
+      "description": "Logical text alignment.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "description": "Single-line ellipsis. `ellipsis` outranks it when both are passed.",
+      "name": "truncate",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"medium\"",
+      "description": "Font weight, from the three-weight canon.",
+      "name": "weight",
+      "type": "\"regular\" | \"medium\" | \"semibold\" | \"bold\""
+    },
+    {
+      "description": "Truncation. `true` is one line; `rows` clamps to N. `expandable` adds an expand control, `symbol` relabels it, `onEllipsis` fires when the measured overflow flips.",
+      "name": "ellipsis",
+      "type": "boolean | { rows, expandable, suffix, symbol, defaultExpanded, expanded, onExpand, onEllipsis, tooltip }"
+    }
+  ],
+  "related": [
+    "Heading",
+    "Typography",
+    "Text",
+    "CardTitle"
+  ],
+  "rules": [
+    2,
+    23
+  ],
+  "storyPath": "general/typography.tsx",
+  "tagline": "antd Typography.Title — a heading with five levels and the antd block behaviours (copyable, editable, ellipsis, the decorations). A SIBLING of `Heading`, which is this library's own four-level heading and is unchanged.",
+  "usage": [
+    "DO use `Title` when you want antd's spelling, a fifth level, or a heading that is copyable / editable.",
+    "DO use `Heading` for everything else. It is the four-level heading the rest of this library is written in, and `CardTitle` / `PageContainer` already render one for you.",
+    "DON'T set `level` to pick a SIZE. It sets the semantic element too, so skipping from h1 to h4 for looks breaks the document outline — override the element with `as` instead."
+  ],
+  "useCases": [
+    "A project name a user can rename in place: `<Title level={2} editable={{ onChange: rename }}>{name}</Title>`.",
+    "A dense sub-label below the body step, where `Heading` has no level left: `<Title level={5}>内訳</Title>`."
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "docPath": "docs/FORMS.md",
+  "example": "import { FormFieldArray, FormFieldControl } from \"@godxjp/ui/form\";\nimport { Input } from \"@godxjp/ui/data-entry\";\n<FormFieldArray name=\"contacts\">{({fields}) => fields.map(row => <FormFieldControl key={row.key} name={`${row.name}.email`} label=\"Email\">{field => <Input {...field} value={String(field.value ?? \"\")} />}</FormFieldControl>)}</FormFieldArray>;",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/form",
+  "name": "FormFieldArray",
+  "props": [
+    {
+      "description": "Array field path in the surrounding RHF FormRoot.",
+      "name": "name",
+      "type": "FieldArrayPath<T>"
+    },
+    {
+      "description": "Receives fields with stable key/name/index, append/prepend/insert/remove/move/swap/replace, array error and disabled state.",
+      "name": "children",
+      "type": "(collection) => React.ReactNode"
+    }
+  ],
+  "related": [
+    "Form",
+    "FormField",
+    "FormRoot",
+    "FormFieldControl"
+  ],
+  "rules": [
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Form.stories.tsx",
+  "tagline": "Dynamic typed field collections with stable keys, nested validation and append/remove/reorder operations.",
+  "usage": [
+    "Use inside the documented form composition; do not nest native form elements.",
+    "Use godx-ui controls and preserve field names, errors and disabled state."
+  ],
+  "useCases": [
+    "Validated settings forms",
+    "Nested repeating data entry"
+  ]
+}

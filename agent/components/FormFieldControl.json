@@ -1,0 +1,129 @@
+{
+  "docPath": "docs/data-entry/form-root.tsx",
+  "example": "import { FormFieldControl } from \"@godxjp/ui/form\";\nimport { Input } from \"@godxjp/ui/data-entry\";\n<FormFieldControl name=\"email\" label=\"Email\" required>{field => <Input {...field} value={String(field.value ?? \"\")} />}</FormFieldControl>;",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/form",
+  "name": "FormFieldControl",
+  "props": [
+    {
+      "description": "Typed field path, including nested list rows.",
+      "name": "name",
+      "type": "FieldPath<T>"
+    },
+    {
+      "description": "Visible field label. Optional (antd): omitted, the field renders NO label row and reserves no space for one — the boolean-field shape, where the control carries its own inline label.",
+      "name": "label",
+      "type": "React.ReactNode"
+    },
+    {
+      "defaultValue": "\"value\"",
+      "description": "antd `valuePropName`. `\"checked\"` hands the render prop `checked` / `onCheckedChange` instead of `value` / `onChange` (the render-prop type narrows) and stores a boolean, so `<Checkbox {...field}>label</Checkbox>` / `<Switch {...field} />` need no wiring.",
+      "name": "valuePropName",
+      "type": "\"value\" | \"checked\""
+    },
+    {
+      "description": "Dependent fields that trigger revalidation.",
+      "name": "dependencies",
+      "type": "FieldPath<T>[]"
+    },
+    {
+      "description": "Extract the control value.",
+      "name": "getValueFromEvent",
+      "type": "(...args: unknown[]) => unknown"
+    },
+    {
+      "description": "Normalize before storage.",
+      "name": "normalize",
+      "type": "(value: unknown, previous: unknown) => unknown"
+    },
+    {
+      "description": "Keep value after unmount, default true.",
+      "name": "preserve",
+      "type": "boolean"
+    },
+    {
+      "description": "Override validation error text.",
+      "name": "help",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Field-level disabled state.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Validation feedback state.",
+      "name": "validateStatus",
+      "type": "\"success\" | \"warning\" | \"error\" | \"validating\""
+    },
+    {
+      "description": "Show accessible validation feedback.",
+      "name": "hasFeedback",
+      "type": "boolean"
+    },
+    {
+      "description": "Custom feedback icon/content.",
+      "name": "feedback",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Render a godx-ui control bound to the field.",
+      "name": "children",
+      "type": "(field) => React.ReactNode"
+    },
+    {
+      "description": "Optional DOM identity; defaults to a unique id even across sibling forms.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Per-field layout override.",
+      "name": "layout",
+      "type": "FormLayoutProp"
+    },
+    {
+      "description": "Per-field label width.",
+      "name": "labelWidth",
+      "type": "WidthProp"
+    },
+    {
+      "description": "Per-field control width.",
+      "name": "controlWidth",
+      "type": "WidthProp"
+    },
+    {
+      "description": "Label help or action. In a horizontal/inline layout it wraps under the label inside the label column when it does not fit beside it.",
+      "name": "labelAddon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Grid column span.",
+      "name": "colSpan",
+      "type": "number"
+    }
+  ],
+  "related": [
+    "Form",
+    "FormField",
+    "FormRoot",
+    "FormFieldControl"
+  ],
+  "rules": [
+    23,
+    31
+  ],
+  "storyPath": "data-entry/Form.stories.tsx",
+  "tagline": "Bind a typed field to RHF or a server adapter, with shared FormField presentation and validation.",
+  "usage": [
+    "Use inside the documented form composition; do not nest native form elements.",
+    "Use godx-ui controls and preserve field names, errors and disabled state.",
+    "RENDER-PROP BAG: `{ id, name, value, onChange, onValueChange, onBlur, ref, disabled? }`. `ref` is `RefCallback<HTMLElement>` (gh#698), so `{...field}` spreads onto Input, Textarea, Select, NumberInput and DatePicker with NO cast — never cast or drop the ref (react-hook-form focuses the first invalid field through it). `value` is `unknown`: narrow it per control (`String(field.value ?? \"\")`, `typeof field.value === \"number\" ? field.value : null`).",
+    "SERVER VALIDATION: a `FormField name` under `FormRoot errors={…}` claims its bag key, so the 422 message renders once under the field — see FormRoot's canonical server-validation composition (FormRoot + FormErrors + AlertMutationFeedback renders a 422 exactly once).",
+    "CANONICAL BOOLEAN FIELD (gh#709, antd `Form.Item valuePropName=\"checked\"`): `<FormFieldControl name=\"is_shared\" valuePropName=\"checked\">{(field) => <Checkbox {...field}>プロジェクトに共有する</Checkbox>}</FormFieldControl>` — box and label on ONE line, the label text toggles the box and names it, no label row above it, and a validation / 422 error still lands on the checkbox (`aria-invalid` + `aria-describedby`). The bag is `{ id, name, checked, onCheckedChange, onBlur, ref, disabled? }`; the stored value is always a boolean.",
+    "DON'T put a boolean field's label ABOVE its checkbox — `<FormFieldControl name=\"is_shared\" label=\"プロジェクトに共有する\">{(field) => <Checkbox checked={field.value} onCheckedChange={(c) => field.onChange(c === true)} />}</FormFieldControl>` renders the label on one row and the box far below it. Use `valuePropName=\"checked\"` with the label as the Checkbox's children."
+  ],
+  "useCases": [
+    "Validated settings forms",
+    "Nested repeating data entry"
+  ]
+}

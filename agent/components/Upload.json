@@ -1,0 +1,221 @@
+{
+  "example": "import { useState } from \"react\";\nimport { Upload, type UploadFileItem, collectUploadCommitActions } from \"@godxjp/ui/data-entry\";\n\n// Example: avatar picker with server upload\nexport function AvatarUploadForm() {\n  const [items, setItems] = useState<UploadFileItem[]>([]);\n\n  async function handleUpload(file: File, _item: UploadFileItem) {\n    const fd = new FormData();\n    fd.append(\"file\", file);\n    const res = await fetch(\"/api/media/upload\", { method: \"POST\", body: fd });\n    const { mediaId, previewUrl } = await res.json();\n    return { mediaId, previewUrl };\n  }\n\n  function handleSubmit(e: React.FormEvent) {\n    e.preventDefault();\n    const { deleteMediaIds, promoteMediaIds } = collectUploadCommitActions(items);\n    // Send to your API — never send raw File objects\n    console.log({ deleteMediaIds, promoteMediaIds });\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <Upload\n        variant=\"avatar-crop\"\n        value={items}\n        onValueChange={setItems}\n        onUpload={handleUpload}\n        maxSizeBytes={5 * 1024 * 1024}\n      />\n      <button type=\"submit\">Save Profile</button>\n    </form>\n  );\n}\n\n// Example: multi-file dropzone\nexport function DocumentUploadDropzone() {\n  const [items, setItems] = useState<UploadFileItem[]>([]);\n\n  return (\n    <Upload\n      variant=\"dropzone\"\n      value={items}\n      onValueChange={setItems}\n      accept=\".pdf,.xlsx\"\n      maxCount={10}\n      maxSizeBytes={20 * 1024 * 1024}\n      onUpload={async (file) => {\n        const res = await fetch(\"/api/media/upload\", {\n          method: \"POST\",\n          body: Object.assign(new FormData(), { file }),\n        });\n        return res.json();\n      }}\n    />\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Upload",
+  "props": [
+    {
+      "defaultValue": "\"dropzone\"",
+      "description": "Controls the visual rendering mode. dropzone = large dashed drop area + file list; button = compact outline button + file list; picture-card = grid of 96×96 image thumbnails; picture = single image preview with change/remove actions; avatar = circular single-image picker; avatar-crop = avatar with an in-dialog crop step before the item is staged.",
+      "name": "variant",
+      "type": "\"dropzone\" | \"button\" | \"picture-card\" | \"picture\" | \"avatar\" | \"avatar-crop\""
+    },
+    {
+      "defaultValue": "\"picture\" for variant=\"picture\", otherwise \"text\"",
+      "description": "HOW THE CHOSEN FILES ARE LISTED — antd's listType, and an axis of its own: variant decides how files are PICKED, listType decides how the picked ones are DRAWN. text = name, size and actions (the classic dropzone/button row). picture = a leading box on every row: the thumbnail when the item has a previewUrl, otherwise the glyph for its file kind (image / pdf / archive / text / generic), both boxes the same size so a mixed list keeps one row height. The glyph is decorative (aria-hidden) and carries its kind as data-file-kind for theming. antd's picture-card is variant='picture-card' here — the tile grid IS the picker there, so it is not offered as a listType.",
+      "name": "listType",
+      "type": "\"text\" | \"picture\""
+    },
+    {
+      "description": "Controlled list of file items. When provided the component is controlled — you own the state. Omit to run uncontrolled.",
+      "name": "value",
+      "type": "UploadFileItem[]"
+    },
+    {
+      "description": "Initial list of file items for uncontrolled usage. Ignored once value is provided.",
+      "name": "defaultValue",
+      "type": "UploadFileItem[]"
+    },
+    {
+      "description": "MIME / extension accept string passed to the hidden <input type=\"file\">. avatar/avatar-crop/picture/picture-card default to \"image/*\"; dropzone and button default to unrestricted.",
+      "name": "accept",
+      "type": "string"
+    },
+    {
+      "description": "Allow multi-file selection. Auto-derived: false when maxCount is 1 (or when variant is avatar/avatar-crop/picture); otherwise true.",
+      "name": "multiple",
+      "type": "boolean"
+    },
+    {
+      "description": "Hard upper bound on the number of items. avatar/avatar-crop/picture auto-default to 1. Once the limit is reached the add button is hidden (picture-card) or additions are rejected; maxCount=1 replaces the current item.",
+      "name": "maxCount",
+      "type": "number"
+    },
+    {
+      "description": "Files larger than this limit are rejected with localized feedback and onReject.",
+      "name": "maxSizeBytes",
+      "type": "number"
+    },
+    {
+      "description": "Disables all interactive surfaces (drop zone, buttons). Visual opacity + pointer-events-none applied.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Show the remove/delete control on each item. Set false to make uploads permanent within the session.",
+      "name": "removable",
+      "type": "boolean"
+    },
+    {
+      "description": "Called immediately after a file is picked (before form submit). Transitions the item to status='uploading', then 'done' on resolve or 'error' on reject. Wire this to your media-service issue/PUT/complete cycle. If omitted files stay in status='idle' and the raw File object remains in item.file.",
+      "name": "onUpload",
+      "type": "(file: File, item: UploadFileItem, context: UploadRequestContext) => Promise<UploadResult>"
+    },
+    {
+      "description": "Extra CSS class applied to the outer wrapper div.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Custom button label for variant='button'. Falls back to the i18n 'Upload file' string.",
+      "name": "children",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Fires with the current file list.",
+      "name": "onValueChange",
+      "type": "(items: UploadFileItemProp[]) => void"
+    },
+    {
+      "description": "`variant=\"button\"` only — size of the visible trigger, forwarded to Button. An icon size renders it icon-only and moves the label to `aria-label`: a 32px square beside other icon buttons rather than a 147px labelled one that outweighs them.",
+      "name": "triggerSize",
+      "type": "\"default\" | \"md\" | \"xs\" | \"sm\" | \"lg\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\""
+    },
+    {
+      "defaultValue": "\"outline\"",
+      "description": "`variant=\"button\"` only — visual weight of the visible trigger, forwarded to Button. Default `outline` suits a standalone form field. Pass `ghost` when the trigger sits in a toolbar row beside other icon buttons — inside a chat composer, say — where a bordered square reads as the odd one out.",
+      "name": "triggerVariant",
+      "type": "\"default\" | \"destructive\" | \"outline\" | \"dashed\" | \"secondary\" | \"ghost\" | \"link\" | \"bare\""
+    },
+    {
+      "defaultValue": "the lucide upload arrow",
+      "description": "`variant=\"button\"` only — the glyph the trigger draws. Pass the COMPONENT (`triggerIcon={Plus}`), not an element, exactly as `Icon`'s `as` takes it; every lucide icon qualifies. It exists because the glyph was hard-coded and `triggerVariant` only moves emphasis, so a \"create new\" action that HAPPENS to upload could not carry a plus and had to announce itself as an upload (gh#734). The library still owns the class, the label spacing and the `aria-hidden`, so a swapped glyph renders at the same `--upload-row-icon-size` and never reaches the accessible name — the trigger's metrics cannot drift with the icon.",
+      "name": "triggerIcon",
+      "type": "React.ComponentType<React.SVGProps<SVGSVGElement> & React.RefAttributes<SVGSVGElement>>"
+    },
+    {
+      "description": "Displays existing files, blocks changes, preserves staged form data.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Select a folder; each item preserves relativePath.",
+      "name": "directory",
+      "type": "boolean"
+    },
+    {
+      "description": "Paste clipboard files while focus is inside this Upload; text paste is untouched.",
+      "name": "pastable",
+      "type": "boolean"
+    },
+    {
+      "description": "Defaults true. Disable native dialog activation for drop-only surfaces.",
+      "name": "openFileDialogOnClick",
+      "type": "boolean"
+    },
+    {
+      "description": "Multipart file field name; named staged files also join native FormData.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Multipart upload URL; onUpload takes precedence.",
+      "name": "action",
+      "type": "string | ((file: File) => string | Promise<string>)"
+    },
+    {
+      "description": "Request method, default POST.",
+      "name": "method",
+      "type": "\"POST\" | \"PUT\" | \"PATCH\""
+    },
+    {
+      "description": "Request headers such as CSRF tokens; multipart boundaries remain browser-owned.",
+      "name": "headers",
+      "type": "Record<string, string>"
+    },
+    {
+      "description": "Additional multipart fields, optionally resolved per file.",
+      "name": "data",
+      "type": "Record<string, string | Blob> | ((file: File) => Record<string, string | Blob> | Promise<Record<string, string | Blob>>)"
+    },
+    {
+      "description": "Send credentials with the default transport.",
+      "name": "withCredentials",
+      "type": "boolean"
+    },
+    {
+      "description": "Validate or transform before upload; false stages manually; UPLOAD_LIST_IGNORE excludes. Rejections are reported.",
+      "name": "beforeUpload",
+      "type": "(file: File, files: File[]) => boolean | File | Blob | typeof UPLOAD_LIST_IGNORE | Promise<boolean | File | Blob | typeof UPLOAD_LIST_IGNORE>"
+    },
+    {
+      "description": "Reports accept, size, count, or preflight rejection.",
+      "name": "onReject",
+      "type": "(rejection: UploadRejection) => void"
+    },
+    {
+      "description": "Returning false or rejecting vetoes removal. Accepted removal aborts active upload.",
+      "name": "onRemove",
+      "type": "(item: UploadFileItem) => boolean | void | Promise<boolean | void>"
+    },
+    {
+      "description": "Preview action callback.",
+      "name": "onPreview",
+      "type": "(item: UploadFileItem) => void"
+    },
+    {
+      "description": "Download action callback.",
+      "name": "onDownload",
+      "type": "(item: UploadFileItem) => void"
+    },
+    {
+      "description": "Asynchronously generate a custom thumbnail.",
+      "name": "previewFile",
+      "type": "(file: File) => Promise<string>"
+    },
+    {
+      "description": "Observe drop events.",
+      "name": "onDrop",
+      "type": "React.DragEventHandler<HTMLElement>"
+    },
+    {
+      "description": "Show the default file list, default true.",
+      "name": "showUploadList",
+      "type": "boolean"
+    },
+    {
+      "description": "Customize a file row while preserving its default actions.",
+      "name": "itemRender",
+      "type": "(node: React.ReactElement, item: UploadFileItem, items: UploadFileItem[], actions: UploadItemActions) => React.ReactNode"
+    }
+  ],
+  "related": [
+    "Input (type='file') — never hand-roll a raw file input; use Upload instead. Upload provides drag-drop, preview, upload lifecycle, and soft-delete draft.",
+    "Avatar (display-only) — the godx-ui Avatar component renders a user's existing image; use Upload variant='avatar' or 'avatar-crop' when you need the user to change it.",
+    "DataTable — unrelated to Upload but both appear together in bulk-import flows: Upload (button variant) triggers the import, DataTable shows the result."
+  ],
+  "rules": [
+    3,
+    23
+  ],
+  "storyPath": "data-entry/Upload.stories.tsx",
+  "tagline": "Drag-and-drop / button / avatar / picture file uploader in six variants — wire onUpload to your media-service and call collectUploadCommitActions on form submit; supports multipart forms and custom media storage.",
+  "usage": [
+    "DO provide onUpload to auto-upload on pick. The callback must return { mediaId, previewUrl? } — the component transitions item.status through uploading → done/error automatically. Without onUpload the File object sits in item.file until you manually process it.",
+    "DO call collectUploadCommitActions(items) on form submit to get { deleteMediaIds, promoteMediaIds } for your media-service. For multipart endpoints submit File objects via FormData; never submit blob URLs as persisted media.",
+    "DO use createUploadItem(file) to build UploadFileItem objects when pre-populating value from server data (e.g. edit forms). Set status='done' and mediaId on existing server media so the draft/undo machinery tracks them correctly.",
+    "For native multipart or Inertia Form submissions, set name: staged local files are appended during the formdata event. Completed media uploads use collectUploadCommitActions instead.",
+    "Avatar/picture variants (maxCount=1) use internal soft-delete draft logic: removing an item marks it pendingDelete so the user can undo before committing. On form submit, collectUploadCommitActions converts pendingDelete → deleteMediaIds and done mediaIds → promoteMediaIds.",
+    "For avatar-crop: a crop dialog opens after pick. The cropped Blob is staged as a new UploadFileItem. The original file never enters the list — only the cropped version is passed to onUpload.",
+    "For a drawer or panel listing MIXED attachments (.png beside .json and .txt), keep variant='dropzone' and set listType='picture': the image rows draw their previewUrl as a thumbnail and every other row draws the glyph for its kind, on one row height. Do NOT switch to variant='picture' to get thumbnails — that variant also changes the picker, the default accept to image/* and maxCount to 1."
+  ],
+  "useCases": [
+    "Profile / user avatar editor: use variant='avatar-crop' so users can crop the image before upload; wire onUpload to your media-service; call collectUploadCommitActions on profile form submit to promote or delete.",
+    "Invoice / document attachment list: use variant='dropzone' with accept='.pdf,.xlsx' and maxSizeBytes to let accountants drag-drop supporting documents; show the file list with status indicators below the drop zone.",
+    "Product gallery (multiple images): use variant='picture-card' with maxCount to display a grid of thumbnails; each item gets an individual remove ✕ button; collectUploadCommitActions on product save.",
+    "Single cover-image picker on a content form: use variant='picture' with maxCount=1 to show a preview rectangle with change/remove controls and undo-delete support.",
+    "CSV / bulk-import button in an admin table header: use variant='button' with accept='.csv' and custom children label ('Import CSV') to keep the UI compact; process item.file in the onChange handler.",
+    "Inline document replacement on an accounting record (replace, not append): use variant='avatar' (single-slot logic) or picture; onUpload returns the new mediaId; collectUploadCommitActions delivers replacesMediaId → deleteMediaIds."
+  ]
+}

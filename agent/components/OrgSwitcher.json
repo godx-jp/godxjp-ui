@@ -1,0 +1,89 @@
+{
+  "example": "import { OrgSwitcher } from \"@godxjp/ui/layout\";\nimport { Badge } from \"@godxjp/ui/data-display\";\n\n<OrgSwitcher\n  organizations={[\n    {\n      id: \"dxs\",\n      name: \"DXS Holdings\",\n      meta: t(\"org.role.owner\"),\n      badge: <Badge variant=\"secondary\">{t(\"org.plan.trial\")}</Badge>,\n      badgeLabel: t(\"org.plan.trial.sr\"),\n    },\n  ]}\n  value={organizationId}\n  onValueChange={setOrganizationId}\n  labels={labels}\n/>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "OrgSwitcher",
+  "props": [
+    {
+      "description": "Consumer-provided organization choices.",
+      "name": "organizations",
+      "required": true,
+      "type": "readonly OrgSwitcherOrganization[]"
+    },
+    {
+      "description": "Selected organization id.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Selection callback; persistence remains consumer-owned.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Localized trigger, search, state, and retry copy.",
+      "name": "labels",
+      "required": true,
+      "type": "OrgSwitcherLabels"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Compact trigger presentation.",
+      "name": "collapsed",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables the trigger.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Shows the loading state.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Consumer-supplied error state.",
+      "name": "error",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Consumer-owned retry callback.",
+      "name": "onRetry",
+      "type": "() => void"
+    },
+    {
+      "defaultValue": "\"auto\"",
+      "description": "Which SURFACE the panel opens on. \"auto\" (default) is a desktop popover above --sheet-responsive-breakpoint-width (48rem/768px) and a focus-trapped bottom Sheet at/below it. \"dialog\" is a centred modal above that breakpoint and the SAME Sheet below it — reach for it once a row carries more than a name (a role, a plan, a member count, a create-organization action): a popover is anchored to its trigger, clipped by the viewport and sized by --org-switcher-menu-width, while a dialog has a real title, a scrolling body and room for a footer, and takes full attention, which is the right trade when switching organization re-scopes everything on screen. \"popover\" and \"sheet\" pin one surface at every width, for deterministic embedded surfaces and component tests. \"auto\" and \"dialog\" are the two RESPONSIVE pairs and share their mobile half, because a centred modal on a phone is a Sheet with worse ergonomics. All four resolve the breakpoint through the shared useSheetResponsiveMode() hook, so moving that one token moves the line for every overlay. Width of the dialog surface is --org-switcher-dialog-width (26rem), separate from --dialog-width-default so re-tuning the picker does not re-tune every dialog.",
+      "name": "responsive",
+      "type": "\"auto\" | \"popover\" | \"sheet\" | \"dialog\""
+    },
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state callback.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    }
+  ],
+  "related": [
+    "AppShell (navRail) — WHERE this control goes when switching organization is constant: the rail is the docked platform-scope column, and its own prop doc is the authority on which of the three columns owns which scope. Pass the collapsed trigger; the rail is 3.5rem.",
+    "AppLauncher — the OTHER platform-scope control: which APP, not which ORGANIZATION. They compose (a launcher in the bar and a switcher in the rail is one coherent platform surface); neither replaces the other.",
+    "Sidebar — APP scope, and therefore NOT where this goes. Its `brand` slot is the app's own lockup; putting the organization switcher there mixes two scopes in one header."
+  ],
+  "rules": [],
+  "storyPath": "layout/OrgSwitcher.stories.tsx",
+  "tagline": "Searchable organization switcher with canonical trigger geometry, desktop popover, and mobile sheet.",
+  "usage": [
+    "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",
+    "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
+    "DO put a plan/status affordance in `organization.badge` (a <Badge>) instead of stuffing it into `meta` — the badge is end-aligned in the expanded trigger and in the menu row, and hidden in the collapsed rail. ALWAYS pair it with a localized `organization.badgeLabel`: the trigger's accessible name comes from `labels.trigger`, so the badge is announced as an aria-describedby DESCRIPTION and the raw node is marked presentational (WCAG 1.1.1). `badgeLabel` also becomes a search keyword.",
+    "DON'T wrap OrgSwitcher in your own media query to pick popover vs sheet — `responsive=\"auto\"` already reads the shared --sheet-responsive-breakpoint-width token.",
+    "DON'T put it in the SIDEBAR — not as a row, not in `Sidebar`'s `brand` slot, not stacked under the product lockup. Which organization you are in is PLATFORM scope: it survives changing app, while everything else in the sidebar is this app's own sections. Its two legal homes are `AppShell`'s `navRail` (a permanent 3.5rem column — the Slack shape, when switching is frequent enough to deserve the width) and the topbar (a `TopbarItem`-height control, with `topbarSpan=\"full\"` so the bar outranks the section beneath it). Stacking it under the sidebar's own logo also puts two lockups of different heights in one header, which is what visibly skews the sidebar's top edge against the topbar's."
+  ]
+}

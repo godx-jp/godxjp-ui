@@ -79,6 +79,7 @@ export {
   useUploadDraft,
 } from "./upload";
 export type { UploadProps, UploadFileItem, UploadVariant, UploadCommitAction } from "./upload";
+export { UploadCropDialog } from "./upload-crop-dialog";
 export { Cascader } from "./cascader";
 export type { CascaderProps, TreeOption, TreeFieldNames } from "./cascader";
 export { TreeSelect, SHOW_CHILD, SHOW_PARENT, SHOW_ALL } from "./tree-select";

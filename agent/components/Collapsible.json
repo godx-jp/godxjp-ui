@@ -1,0 +1,74 @@
+{
+  "example": "{`import { useState } from \"react\";\nimport { ChevronDown } from \"lucide-react\";\n// Money goes through Intl — the symbol, the grouping and the minor units are all locale data.\nconst money = new Intl.NumberFormat(\"ja-JP\", { style: \"currency\", currency: \"JPY\" });\nimport {\n  Collapsible,\n  CollapsibleTrigger,\n  CollapsibleContent,\n} from \"@godxjp/ui/data-display\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// --- Uncontrolled (simplest) ---\n// The icon needs no margin of its own: Button spaces its own icon slot. The gap between the\n// trigger and the revealed body belongs to the Flex around them, and the body is a Card — a\n// rounded-md border div is a hand-rolled surface with the radius frozen at the call site.\nexport function InvoiceLineDetail() {\n  return (\n    <Collapsible>\n      <Flex direction=\"col\" align=\"start\" gap=\"sm\">\n        <CollapsibleTrigger asChild>\n          <Button variant=\"ghost\" size=\"sm\">\n            <ChevronDown aria-hidden=\"true\" />\n            Show tax breakdown\n          </Button>\n        </CollapsibleTrigger>\n        <CollapsibleContent>\n          <Card>\n            <CardContent>\n              <Flex direction=\"col\" gap=\"xs\">\n                <Text size=\"sm\">Consumption tax (10%): {money.format(1234)}</Text>\n                <Text size=\"sm\">Withholding tax: {money.format(0)}</Text>\n              </Flex>\n            </CardContent>\n          </Card>\n        </CollapsibleContent>\n      </Flex>\n    </Collapsible>\n  );\n}\n\n// --- Controlled (open driven externally) ---\nexport function FilterSection() {\n  const [open, setOpen] = useState(false);\n  return (\n    <Collapsible open={open} onOpenChange={setOpen}>\n      <Flex direction=\"col\" align=\"start\" gap=\"sm\">\n        <CollapsibleTrigger asChild>\n          <Button variant=\"outline\" size=\"sm\">\n            Advanced filters\n            <ChevronDown aria-hidden=\"true\" />\n          </Button>\n        </CollapsibleTrigger>\n        <CollapsibleContent>\n          {/* place filter controls here */}\n          <Text size=\"sm\" tone=\"muted\">Date range, entity, status…</Text>\n        </CollapsibleContent>\n      </Flex>\n    </Collapsible>\n  );\n}`}",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Collapsible",
+  "props": [
+    {
+      "description": "Controlled open state. When provided, pair with onOpenChange to keep in sync. Omit for uncontrolled behaviour.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Initial open state when used uncontrolled. Useful for auto-expanding when a child is active (e.g. sidebar nav group).",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Callback fired when the open state changes. Required in controlled mode.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Prevents the trigger from toggling the content. The trigger is still rendered but inert.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Applied to the root Collapsible element. Use for layout (e.g. sb-nav-group) — the root renders a div.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "On CollapsibleTrigger only — merges Radix trigger behaviour onto the single child element (e.g. a godx-ui Button) instead of rendering a default button. The child must accept onClick and aria-* props.",
+      "name": "asChild (CollapsibleTrigger)",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Accordion (from @godxjp/ui/data-entry or Radix) — use Accordion when only ONE section can be open at a time across a group; use Collapsible when each section is independent and can be open simultaneously.",
+    "Popover — use Popover when the revealed content should float above the layout in a portal overlay; use Collapsible when the content should push surrounding content down inline.",
+    "Dialog/Sheet — use Dialog or Sheet for modal or slide-over panels that demand full user attention; Collapsible stays in-flow and non-modal.",
+    "Tree (@godxjp/ui/data-display) — use Tree for hierarchical data that expands, collapses and is navigated by keyboard; use Collapsible for ad-hoc single-level toggle regions."
+  ],
+  "rules": [
+    3,
+    6,
+    23
+  ],
+  "storyPath": "data-display/Collapsible.stories.tsx",
+  "subParts": [
+    "CollapsibleContent",
+    "CollapsibleTrigger"
+  ],
+  "tagline": "Three-part compound (Collapsible + CollapsibleTrigger + CollapsibleContent) that toggles a region open/closed — never use just one part alone.",
+  "usage": [
+    "DO compose all three parts together: <Collapsible> wraps both <CollapsibleTrigger> and <CollapsibleContent>. Never render CollapsibleContent without a parent Collapsible — the open state lives on the root.",
+    "DO use asChild on CollapsibleTrigger when you want a godx-ui Button (or any styled element) to act as the trigger: <CollapsibleTrigger asChild><Button>Toggle</Button></CollapsibleTrigger>. Without asChild the trigger renders its own plain button.",
+    "DO pass defaultOpen={true} (uncontrolled) when the section should auto-expand on mount — for example, a sidebar nav group whose active child matches the current route.",
+    "DO use controlled mode (open + onOpenChange) when external UI — a separate button, route change, or search filter — needs to drive the open state independently of the trigger.",
+    "DON'T add hidden native <details>/<summary> as a fallback — the Radix primitive is already accessible (aria-expanded, aria-controls) out of the box.",
+    "DON'T put interactive controls (Buttons, links, inputs) inside CollapsibleTrigger itself unless using asChild — nested focusable elements break keyboard navigation. Put them inside CollapsibleContent instead."
+  ],
+  "useCases": [
+    "Sidebar navigation group: a top-level nav item with children collapses/expands its sub-items in the rail (used directly in the godx-ui Sidebar component with defaultOpen={active}).",
+    "Invoice line-item detail: an invoice row that expands inline to show tax breakdown, allocation notes, or audit trail without navigating away.",
+    "Filter panel section: a labelled group of filter controls (date range, entity, status) that can be collapsed to save vertical space in a dense accounting dashboard.",
+    "Read-more / long description: a truncated journal entry or payment memo that expands to full text on demand.",
+    "Settings sub-section: an optional advanced settings block that is hidden by default and revealed only when the user opts in.",
+    "Audit log detail: a compact log entry row that expands to show full diff, user, timestamp, and before/after values."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "example": "import { HoverCard, HoverCardTrigger, HoverCardContent } from \"@godxjp/ui/data-display\";\n\n<HoverCard>\n  <HoverCardTrigger>@yamada</HoverCardTrigger>\n  <HoverCardContent>山田太郎 — 経理部</HoverCardContent>\n</HoverCard>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "HoverCard",
+  "props": [
+    {
+      "defaultValue": "700",
+      "description": "ms before opening on hover.",
+      "name": "openDelay",
+      "type": "number"
+    },
+    {
+      "defaultValue": "300",
+      "description": "ms before closing.",
+      "name": "closeDelay",
+      "type": "number"
+    },
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state callback.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    }
+  ],
+  "related": [
+    "Tooltip (short text label, not rich content)",
+    "Popover (click-triggered, interactive content)"
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "data-display/HoverCard.stories.tsx",
+  "subParts": [
+    "HoverCardContent",
+    "HoverCardTrigger"
+  ],
+  "tagline": "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text).",
+  "usage": [
+    "DO compose HoverCard > HoverCardTrigger > HoverCardContent.",
+    "DO use for RICH preview content (a card, avatar + bio); for short plain-text hints use Tooltip.",
+    "DON'T rely on it for essential info — hover isn't available on touch; provide the same content on click/tap elsewhere."
+  ],
+  "useCases": [
+    "User/profile preview on @mention hover",
+    "Entity preview (customer/account) on a table cell",
+    "Glossary term definitions",
+    "Commit/PR preview links"
+  ]
+}

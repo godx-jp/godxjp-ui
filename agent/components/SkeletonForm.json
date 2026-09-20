@@ -1,0 +1,52 @@
+{
+  "example": "import { SkeletonForm } from \"@godxjp/ui/feedback\";\n\n{loading ? <SkeletonForm columns={4} fields={8} /> : <Form columns={4}>…</Form>}",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonForm",
+  "props": [
+    {
+      "defaultValue": "1",
+      "description": "Columns of the form this stands in for. Passed straight to ResponsiveGrid, so it is the SAME value and the SAME breakpoint ladder the Form uses — that shared source is the point of the component.",
+      "name": "columns",
+      "type": "number"
+    },
+    {
+      "defaultValue": "6",
+      "description": "How many label+control pairs to draw.",
+      "name": "fields",
+      "type": "number"
+    },
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Form — the thing this stands in for; give both the same `columns`.",
+    "FormField — the label+control pair each cell here draws.",
+    "SkeletonRows — a FLAT list of lines, for a list. Not a form.",
+    "SkeletonInput — one field's control on its own, when you are composing something else."
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "The skeleton of a `Form columns={N}` — label + control PAIRS on the form's own ResponsiveGrid, not the flat line list SkeletonRows draws.",
+  "usage": [
+    "DO pass the same `columns` the Form takes. Anything else and the layout jumps when the data lands.",
+    "DO use it instead of SkeletonRows for a form: a field is a short label stacked on a full-width control, and SkeletonRows has no idea a cell has an inside.",
+    "DON'T hand-assemble SkeletonInput inside a ResponsiveGrid to approximate one — that is what this replaces, and 'close enough' drifts the first time someone changes the Form's columns."
+  ],
+  "useCases": [
+    "An edit form before the record resolves",
+    "A multi-column settings panel on first paint",
+    "A wizard step whose defaults arrive from the server"
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "example": "import { Toggle } from \"@godxjp/ui/data-entry\";\n\n<Toggle aria-label=\"Bold\">B</Toggle>\n\n// A counted filter chip — one control, one accessible name (\"Unread, 12 items\").\n// Drive the state with the usual Radix pair: pressed / defaultPressed / onPressedChange.\n// variant=\"soft\" + shape=\"pill\" is the antd Tag.CheckableTag shape: it has a RESTING fill, so\n// the chip is legible before it is pressed.\n<Toggle\n  variant=\"soft\"\n  shape=\"pill\"\n  onPressedChange={setUnreadOnly}\n  count={12}\n  countLabel={t(\"common.items\")}\n>\n  {t(\"inbox.unread\")}\n</Toggle>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Toggle",
+  "props": [
+    {
+      "description": "Controlled pressed state.",
+      "name": "pressed",
+      "type": "boolean"
+    },
+    {
+      "description": "Pressed-state callback.",
+      "name": "onPressedChange",
+      "type": "(pressed: boolean) => void"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Visual style. `default` is a 1px TRANSPARENT border (a toolbar affordance — no resting surface at all), `outline` a hairline on --background, and `soft` (gh#734) the REST FILL a chip needs: hsl(var(--secondary)), byte-identical to the fill `Badge variant=\"secondary\"` and `Button variant=\"secondary\"` already paint, so a chip, a badge and a button on one row are one family. `soft` is antd Tag's resting surface and is what makes a FILTER CHIP legible before it is pressed — with `default` or `outline` the chip reads as transparent, which is the reported defect. Hover is the opaque --secondary-hover (not a translucent tint, which would shift between a page and a Card); pressed still wins over both.",
+      "name": "variant",
+      "type": "\"default\" | \"outline\" | \"soft\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control size on the --control-height tier: xs 24px · sm 28px · md 32px · lg 36px. Pick the step the ROW already has — an xs chip is what lets a 24px-dense row carry a pressed/segmented control instead of someone hand-rolling one out of Buttons (gh#716). Every step clears the WCAG 2.2 SC 2.5.8 24px target floor, xs exactly.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Corner shape, the SAME three values and the same two radius tokens `Button` and `Badge` use, so `shape=\"pill\"` means one thing across the library (gh#734). `pill` + `variant=\"soft\"` is the antd-Tag filter chip. On a ToggleGroup it propagates to every item through context, because a chip row is a row of pills, not one pill among squares.",
+      "name": "shape",
+      "type": "\"default\" | \"pill\" | \"sharp\""
+    },
+    {
+      "description": "Optional numeric count rendered as a borderless counter pill after the label — the SAME vocabulary Button defines (count/overflowCount/showZero), so a counted filter tab and a counted PRESSED chip read identically. This is what makes a faceted filter chip ('Open 42', selected or not) or a reaction chip ONE control: one button[aria-pressed], one tab stop, one focus ring, one accessible name. Formatted with Intl.NumberFormat in the active locale — never String(n), never a hand-rolled separator. NEVER nest a Badge inside a Toggle for this (a Badge is a status chip with its own surface: it double-borders the chip and puts two boxes where there is one control), and never hand-write a <span> counter inside a Toggle (that re-derives the Intl formatting, the cap and the pill's type ramp page-side).",
+      "name": "count",
+      "type": "number"
+    },
+    {
+      "defaultValue": "99",
+      "description": "Cap for `count` — above it the pill shows `{overflowCount}+` (e.g. 99+). The cap itself is locale-formatted too (vi: 1.000+). Same default and semantics as Button.",
+      "name": "overflowCount",
+      "type": "number"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Render the pill when `count` is 0. Same default as Button. Set false to hide an empty facet's pill while keeping the chip.",
+      "name": "showZero",
+      "type": "boolean"
+    },
+    {
+      "description": "Localized description of what the count MEANS, folded into the accessible name so the control never announces as a bare number. The name always comes out as '<label>, <count> <unit>' — from contents for a text chip ('Unread, 12 items'), or folded into `aria-label` for an icon/emoji chip ('thumbs up, 3 reactions'). REQUIRED in practice whenever the visible label is an icon or emoji. Pass a t()-resolved string; the library does not own this wording.",
+      "name": "countLabel",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ToggleGroup",
+    "Button",
+    "Badge — the REMOVABLE chip (`onRemove` = antd Tag `closable`). Toggle is the SELECTABLE chip. Between them they cover antd's Tag family, which is why no `Tag` component exists here."
+  ],
+  "rules": [
+    3,
+    13,
+    45
+  ],
+  "storyPath": "data-entry/Toggle.stories.tsx",
+  "tagline": "Radix Toggle wrapper with default/outline variants and tokenized sizes.",
+  "usage": [
+    "DO provide an accessible label when the toggle only contains an icon.",
+    "DON'T use Toggle for multi-option selection; use ToggleGroup.",
+    "DO reach for `count` for a faceted filter chip, a counted segmented toggle or a reaction chip — Toggle is the primitive that owns BOTH the count and the pressed state.",
+    "DON'T write `<Button count={n} aria-pressed>` for this: buttonVariants has no pressed branch, so the state paints nothing and the chip is indistinguishable from an unpressed one.",
+    "DON'T nest a Badge (or a hand-written span) inside a Toggle to show a count — use `count`.",
+    "DO pass `countLabel` whenever the label is an icon or an emoji, so the chip does not announce as a bare number.",
+    "DON'T wrap the chip in a live region to announce count changes — Toggle deliberately does not, because a count driven by other people is not this control's status.",
+    "DO build a FILTER CHIP (antd `Tag.CheckableTag`) as `<Toggle variant=\"soft\" shape=\"pill\" count countLabel>` — that IS the chip: a resting --secondary fill, a pill corner, a real pressed state and the counter pill, in one control with one tab stop. There is no separate `Tag` / `CheckableTag` export and there will not be one (gh#734).",
+    "DON'T substitute `<Button variant=\"secondary\" shape=\"pill\" aria-pressed>` for it: Button has no pressed branch, so the chip paints identically selected and unselected (WCAG 1.4.1).",
+    "DO reach for `Badge onRemove` instead when the chip is REMOVABLE rather than selectable — an applied-filter chip that draws its own × is antd `Tag closable`, and this library put that on Badge, not on Toggle."
+  ],
+  "useCases": [
+    "Bold/italic toolbar buttons",
+    "Pinned filter toggles",
+    "Compact view mode buttons",
+    "Faceted filter chips with facet sizes (Open 42 / Closed 118)",
+    "A tag-filter panel — `variant=\"soft\" shape=\"pill\"` chips carrying tag counts (antd Tag.CheckableTag)",
+    "Reaction chips (emoji + how many reacted + whether YOU did)"
+  ]
+}

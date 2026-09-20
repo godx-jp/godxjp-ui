@@ -1,0 +1,98 @@
+{
+  "example": "{`import { Radio } from \"@godxjp/ui/data-entry\";\n\n// --- Options-array API (recommended for most cases) ---\nconst PAYMENT_METHODS = [\n  { label: \"Credit Card\", value: \"card\", description: \"Charged immediately on save.\" },\n  { label: \"Bank Transfer\", value: \"bank\" },\n  { label: \"Invoice\", value: \"invoice\", disabled: true },\n];\n\nfunction PaymentMethodPicker() {\n  const [method, setMethod] = React.useState(\"card\");\n\n  return (\n    <Radio.Group\n      name=\"payment_method\"\n      value={method}\n      onValueChange={setMethod}\n      options={PAYMENT_METHODS}\n      orientation=\"vertical\"\n    />\n  );\n}\n\n// --- Manual composition (when you need custom layout) ---\nfunction CustomRadioGroup() {\n  return (\n    <Radio.Group name=\"account_type\" defaultValue=\"asset\">\n      <Radio.Item id=\"opt-asset\" value=\"asset\" />\n      {/* wrap each item in Field for label + description */}\n    </Radio.Group>\n  );\n}`}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Radio",
+  "props": [
+    {
+      "defaultValue": "\"default\"",
+      "description": "antd `optionType` — how each choice is DRAWN. `default` is a radio dot beside its label; `button` welds them into one segmented bar. It is paint, never semantics: the roles stay radiogroup/radio, so arrow-key traversal and native submission keep working. That is also why this is not a ToggleGroup: a ToggleGroup's single mode is a row of aria-pressed buttons that permits 'none chosen' unless it is given `disallowEmptySelection` (gh#744), and Radio is a form control with a `name` that submits.",
+      "name": "optionType",
+      "type": "\"default\" | \"button\""
+    },
+    {
+      "defaultValue": "\"outline\"",
+      "description": "antd `buttonStyle` — fill of the selected choice while `optionType` is `button`. Ignored otherwise.",
+      "name": "buttonStyle",
+      "type": "\"outline\" | \"solid\""
+    },
+    {
+      "description": "Controlled selected value. Must be paired with onValueChange to update state.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial value. Use when you do not need to track selection in state.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Callback fired when the user selects a different option. Required when value is controlled.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Declarative option list: { label: ReactNode; value: string; disabled?: boolean; description?: ReactNode }[]. When provided, Radio.Group renders each option as a labelled Field automatically. Omit to compose children manually.",
+      "name": "options",
+      "type": "ChoiceOptionProp[]"
+    },
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Layout direction for the option list. Vertical stacks options; horizontal lays them side by side.",
+      "name": "orientation",
+      "type": "\"vertical\" | \"horizontal\""
+    },
+    {
+      "description": "Disables the entire group when true. Individual options can also be disabled via options[].disabled.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "HTML form field name. Required for native form submission — each option is a real `<input type=\"radio\">` under this name, so the browser serialises the selected value with no extra wiring.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Additional CSS class applied to the group root.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Manual composition fallback — used only when options is not provided. Render Radio.Item (+ Field wrapper) children directly inside Radio.Group.",
+      "name": "children",
+      "type": "React.ReactNode"
+    }
+  ],
+  "related": [
+    "Checkbox.Group — use when users may select multiple options simultaneously; Radio.Group enforces single-selection only.",
+    "Switch / Field — use for a single boolean on/off toggle (e.g. enable notifications); Radio.Group is for choosing one among three or more named options.",
+    "Select — use when there are many options (5+) and vertical screen space is limited; Radio.Group is preferable for 2-4 short options where all choices should be visible at a glance."
+  ],
+  "rules": [
+    3,
+    6,
+    13,
+    23
+  ],
+  "storyPath": "data-entry/Radio.stories.tsx",
+  "subParts": [
+    "RadioItem"
+  ],
+  "tagline": "Radio group on react-aria-components, with an options-array shorthand — always use Radio.Group, never a bare radio input. `role=\"radio\"` is the real `<input>`; the painted dot is the `<label>` around it and carries `data-state`.",
+  "usage": [
+    "DO use Radio.Group (not the bare Radio export) as the root — it wires up the group context, keyboard navigation, and the shared input name. A lone Radio.Item outside a Radio.Group has no context and will not function.",
+    "DO prefer the options array API for static/data-driven option lists: pass options={[{ label, value, description?, disabled? }]} and Radio.Group renders each as a correctly-labelled Field automatically — no manual id/label wiring needed.",
+    "DO pass name to Radio.Group when the selection must be submitted via a native HTML form — the options ARE `<input type=\"radio\" name={name}>`, so FormData/fetch pick the value up without extra wiring.",
+    "DO use controlled mode (value + onValueChange) when the selection drives other UI (conditional fields, preview panels). Use defaultValue for fire-and-forget uncontrolled forms.",
+    "DON'T hand-roll a label-plus-radio row with raw <input type='radio'> — use Radio.Group with options or compose Radio.Item inside Field for custom markup. Every option must be wrapped in Field (or equivalent) for the label htmlFor/id linkage.",
+    "DON'T disable individual options inside the options array and ALSO set disabled on the group — group-level disabled wins and overrides all per-item disabled states."
+  ],
+  "useCases": [
+    "Payment method selection (Credit Card / Bank Transfer / Invoice) on a checkout or invoice-creation form — mutually exclusive, 2-4 options, use options array + name for form submission.",
+    "Account type picker (Asset / Liability / Equity / Revenue / Expense) on a chart-of-accounts create/edit page — use options with descriptions to explain each type.",
+    "Report frequency chooser (Daily / Weekly / Monthly / Quarterly) in a scheduled-report settings panel — horizontal orientation when options are short labels.",
+    "Tax regime selector on an entity or vendor profile form where exactly one option must always be active — controlled mode so adjacent fields can react to the selection.",
+    "Approval workflow step type (Automatic / Manual / Conditional) in a workflow builder — use descriptions inside options to explain each mode without extra tooltip markup.",
+    "Filter scope toggle (All entities / Current entity only) in an admin dashboard filter bar — horizontal orientation, no name needed (state managed in React, not submitted)."
+  ]
+}

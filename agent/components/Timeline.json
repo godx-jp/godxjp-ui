@@ -1,0 +1,47 @@
+{
+  "example": "import { Timeline } from \"@godxjp/ui/data-display\";\n\n// Default icon variant\n<Timeline items={[\n  { title: \"注文受付\", time: \"2024-06-01 10:00\" },\n  { title: \"発送準備中\", time: \"2024-06-01 14:00\" },\n  { title: \"配送中\", current: true },\n]} />\n\n// Numbered route stepper (Pattern A)\n<Timeline variant=\"ordinal\" items={[\n  { title: \"集荷\", location: \"東京 → 名古屋\", status: \"pending\" },\n  { title: \"幹線輸送\", location: \"名古屋 → 大阪\", status: \"pending\" },\n]} />\n\n// Status tracker (Pattern B): done → check, current → dot, pending → number\n<Timeline variant=\"status\" items={[\n  { title: \"請求書を発行\", status: \"done\" },\n  { title: \"承認待ち\", status: \"current\" },\n  { title: \"消費税を計上\", status: \"pending\" },\n]} />",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Timeline",
+  "props": [
+    {
+      "description": "Array of `{ title, location?, time?, note?, current?, status?, icon? }`. `status` is the explicit 3-state ('done' | 'current' | 'pending'); `current: true` is shorthand for `status: 'current'`. `icon` (a LucideIcon) overrides the auto-glyph for that item.",
+      "name": "items",
+      "required": true,
+      "type": "TimelineItem[]"
+    },
+    {
+      "description": "Rail glyph strategy (default 'icon'). 'icon' = legacy look (Plane for current, CheckCircle2 otherwise). 'ordinal' = every glyph is its 1-based step number; status sets colour only. 'status' = glyph by status (done → check, current → filled dot, pending → step number).",
+      "name": "variant",
+      "type": "\"icon\" | \"ordinal\" | \"status\""
+    }
+  ],
+  "related": [
+    "Steps — use Steps (navigation group) when the user must actively progress through a wizard (interactive, shows step numbers/status, horizontal layout by default); use Timeline for read-only historical event sequences that have already happened.",
+    "Descriptions — use Descriptions to display a flat set of label/value metadata fields (e.g., invoice header); use Timeline when events are ordered chronologically and a connector rail communicates sequence and progress.",
+    "DataTable — use DataTable for multi-row, multi-column tabular event logs where sorting, filtering, and pagination are needed; use Timeline when the sequence/rail visual is the primary communication and there are fewer than ~10 events.",
+    "Badge — Badge is a single-item inline indicator; Timeline sequences multiple statuses with connectors. Compose Badge inside a Timeline `title` or `note` field for richer per-event context, but do not replace Timeline with a stack of Badges."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Timeline.stories.tsx",
+  "tagline": "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`. The whole progress column is ONE hue: done dot, current dot and travelled line all paint `--primary`, exactly as `Steps` paints `finish` and `process`.",
+  "usage": [
+    "DO pass an array of `TimelineItem` objects to `items`. Each item is `{ title, location?, time?, note?, current?, status?, icon? }`. All fields except `title` are optional. The only other prop is `variant`.",
+    "DO mark the in-progress event with `current: true` (or `status: 'current'`). In the default `variant='icon'`, the current item renders a `Plane` icon and every other item a `CheckCircle2`. Use `variant='ordinal'` for a numbered route stepper (1,2,3…) or `variant='status'` for a done→check / current→dot / pending→number tracker. Pass `status: 'done' | 'current' | 'pending'` per item to drive colour and (in the status variant) the glyph; pass `icon` (a LucideIcon) to override the glyph for a single item.",
+    "DO pass `ReactNode` to `title`, `location`, `time`, and `note` — you can embed formatted text, `<Badge>`, `<Badge>`, or `<span>` inside those fields. Use `formatDate` to pre-format timestamps before passing them as `time`.",
+    "DO NOT hand-roll a vertical event list with divs, icons, and connector lines — that is exactly what Timeline ships. Do not apply extra padding or wrapping outside the component; it manages its own rail and spacing internally.",
+    "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
+    "DO wrap Timeline in `<CardContent>` when placing it inside a `Card` — bare `Card` has no inner padding, so the rail will render flush against the card edge without `CardContent`.",
+    "THE PROGRESS COLUMN IS ONE HUE (gh#731). The done dot, the current dot and the travelled line all default to `hsl(var(--primary))` — the same contract `Steps` uses for `finish` + `process`, and antd's (only `error` leaves the primary hue). The current item is told apart by a ring (`--timeline-dot-current-ring-width`, `--steps-dot-process-ring-width`'s value), by `aria-current=\"step\"` + a localized sr-only prefix, and by a different glyph — never by a second colour role. Re-theme `--primary` and the whole rail follows. Measured light: done 2.18:1 → 6.31:1 against the card, glyph 6.31:1 on the fill; dark 7.22:1 → 9.84:1, glyph 10.72:1.",
+    "DON'T expect `--success` on a `status: 'done'` item — `done | current | pending` is POSITION IN A SEQUENCE, not status, and Timeline has no `tone` axis. Put a real status on the item's `title` or `note` with a `<Badge tone=\"success\">`, which is the surface that owns the status green.",
+    "TO RESTORE the pre-27.9 green/violet pairing, set the done dot's fill AND its ink together in your theme (global or `[data-tenant]`) — the two roles have opposite ink polarity, so the fill alone leaves a near-white glyph on 若竹 green at 2.18:1 (gh#643): `--timeline-dot-done-background: hsl(var(--success)); --timeline-dot-done-foreground: hsl(var(--success-foreground));`. `--timeline-dot-current-background` and `--timeline-line-completed-background` retint the other two surfaces the same way."
+  ],
+  "useCases": [
+    "Shipment / delivery tracking — showing a parcel's journey through 'Order placed → Packed → In transit → Delivered' with timestamps and a current-stop indicator.",
+    "Accounting document audit trail — rendering the lifecycle of an invoice or payment (Draft → Submitted → Approved → Paid) with the current approval stage highlighted.",
+    "Support ticket / task history — displaying a chronological log of status transitions (Open → Assigned → In Review → Closed) with agent names in the `note` field and timestamps in `time`.",
+    "MF sync log viewer — listing each sync run event (OAuth refresh, fetch, upsert) with timestamps and record counts so an operator can see what the last sync did.",
+    "Approval workflow status panel — showing a multi-stage approval chain where completed stages have CheckCircle2 icons and the pending stage has the Plane (in-flight) icon.",
+    "Order / purchase-order lifecycle in an admin detail page — placed alongside a `Descriptions` summary at the top of a `Card` to give a compact at-a-glance history."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "example": "import { Typography } from \"@godxjp/ui/general\";\n\n<Typography>\n  <Typography.Title level={3}>リリースノート</Typography.Title>\n  <Typography.Paragraph>請求書の一括ダウンロードに対応しました。</Typography.Paragraph>\n  <Typography.Link href=\"/changelog\">変更履歴</Typography.Link>\n</Typography>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Typography",
+  "props": [
+    {
+      "defaultValue": "\"article\"",
+      "description": "Rendered element.",
+      "name": "as",
+      "type": "string"
+    },
+    {
+      "description": "antd's private alias for `as`. Accepted so antd code pastes in unchanged; `as` wins when both are passed.",
+      "name": "component",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Text",
+    "Title",
+    "Paragraph",
+    "Link",
+    "Heading",
+    "Prose"
+  ],
+  "rules": [
+    2,
+    23
+  ],
+  "storyPath": "general/typography.tsx",
+  "tagline": "antd's prose container — a plain <article> that Title / Paragraph / Text / Link sit inside, and the compound root so `<Typography.Text>` from an antd codebase compiles here unchanged.",
+  "usage": [
+    "DO reach for it when you have a RUN of prose — a heading, some paragraphs, a link — rather than one label. A single caption is just `<Text>`.",
+    "DO use the compound spelling when porting from antd: `Typography.Text`, `Typography.Title`, `Typography.Paragraph` and `Typography.Link` ARE the flat `Text` / `Title` / `Paragraph` / `Link` exports, not poorer copies of them.",
+    "DON'T use it as a layout box. It carries type, not spacing — sections are spaced by `PageContainer` and groups by `Flex` / `ResponsiveGrid`."
+  ],
+  "useCases": [
+    "A release-note body: a `Title`, two `Paragraph`s and a `Link`, wrapped so the block rhythm is owned in one place.",
+    "Pasting an antd screen in unchanged, `Typography.Paragraph` and all."
+  ]
+}

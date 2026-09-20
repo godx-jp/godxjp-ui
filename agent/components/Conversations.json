@@ -1,0 +1,82 @@
+{
+  "docPath": "navigation/conversations.tsx",
+  "example": "import { Conversations } from \"@godxjp/ui/navigation\";\n\nconst [active, setActive] = useState(\"c1\");\n\n<Conversations\n  activeKey={active}\n  onActiveChange={setActive}\n  groupable={{ collapsible: true }}\n  creation={{ onClick: () => startNewChat() }}\n  items={[\n    { key: \"c1\", label: \"請求書の下書き\", group: \"today\" },\n    { key: \"c2\", label: \"経費精算の規則\", group: \"today\" },\n    { key: \"c3\", label: \"出張手当の確認\", group: \"earlier\" },\n  ]}\n  menu={{\n    items: [\n      { key: \"rename\", label: \"名前を変更\" },\n      { key: \"delete\", label: \"削除\", danger: true },\n    ],\n    onClick: ({ key, conversation }) => run(key, conversation.key),\n  }}\n/>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "Conversations",
+  "props": [
+    {
+      "description": "The rows. A conversation is { key, label?, group?, icon?, disabled? }; a rule between runs is { type: \"divider\", key?, dashed? }. Ant Design X `items`.",
+      "name": "items",
+      "type": "(ConversationsItemProp | ConversationsDividerProp)[]"
+    },
+    {
+      "description": "Controlled selection — the key of the conversation on screen. Ant Design X `activeKey`.",
+      "name": "activeKey",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial selection. Ant Design X `defaultActiveKey`.",
+      "name": "defaultActiveKey",
+      "type": "string"
+    },
+    {
+      "description": "Fires with the picked key and the entry behind it. Ant Design X `onActiveChange`.",
+      "name": "onActiveChange",
+      "type": "(key: string, item?: ConversationsItemProp | ConversationsDividerProp) => void"
+    },
+    {
+      "description": "The per-row overflow menu: { items: [{ key, label, icon?, danger?, disabled? }], onClick?, triggerLabel? }. Pass a function to vary it per row, or return undefined for a row that has no menu. Ant Design X `menu` (antd MenuProps there).",
+      "name": "menu",
+      "type": "ConversationsMenuProp | ((conversation: ConversationsItemProp) => ConversationsMenuProp | undefined)"
+    },
+    {
+      "description": "Bucket rows by their `group` field. The object form takes label (node or (group) => node), collapsible (boolean or (group) => boolean), defaultExpandedKeys, expandedKeys and onExpand. Ant Design X `groupable`.",
+      "name": "groupable",
+      "type": "boolean | ConversationsGroupableProp"
+    },
+    {
+      "description": "The \"new conversation\" button pinned above the rail: { label?, icon?, disabled?, onClick? }. Ant Design X `creation`.",
+      "name": "creation",
+      "type": "ConversationsCreationProp"
+    },
+    {
+      "description": "Accessible name of the rail (a plain string — it lands on aria-label). Localized default otherwise.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "DOM id of the rail root.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ChatBubbleList — the feed beside this rail; Conversations picks WHICH feed is shown.",
+    "ListRow — a single-line entity row with a trailing action, for short lists inside a Card. It has no selection, no roving focus and no grouping.",
+    "Sidebar / NavList — route navigation. Use those when a row changes the URL; use Conversations when a row changes which conversation the surface is on.",
+    "DropdownMenu — what the per-row `menu` renders; compose it directly when the menu is not attached to a conversation row."
+  ],
+  "rules": [
+    2,
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "navigation/Conversations.stories.tsx",
+  "tagline": "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets — the whole rail one roving-tabindex tab stop, not one tab stop per conversation.",
+  "usage": [
+    "DO give every conversation a stable `key` — it is what activeKey, onActiveChange and the menu callback all address. A key that changes on re-render moves the selection.",
+    "DO reach for `menu` for rename/delete instead of adding a second Button to each row. The trigger is keyboard-reachable with the forward arrow (→ in LTR, ← in RTL), so a row's second action costs no extra tab stop.",
+    "DO pass `menu.triggerLabel` when the rows are user content: the default names the row, and twelve identical \"More actions\" buttons are indistinguishable in a screen reader's element list.",
+    "DON'T hand-roll the rail out of full-width Buttons plus aria-current. That is one tab stop PER conversation; this is one for the whole rail, with ↑/↓/Home/End inside it.",
+    "DON'T expect `styles`/`classNames` from Ant Design X — they are deliberately not ported. Retune the rail through the --conversations-* tokens (rules #44/#45).",
+    "DO use `groupable={{ collapsible: true }}` for \"Today / Previous 7 days\": the bucket headings join the same roving order, so collapsing a bucket is reachable without leaving the rail."
+  ],
+  "useCases": [
+    "The assistant rail of a chat product — past sessions, the current one marked, rename and delete per row.",
+    "Recency buckets over a long history (Today / Yesterday / Previous 7 days) with the older buckets collapsed.",
+    "A rail beside ChatBubbleList and ChatComposer: the three are one surface, and Conversations is the half that used to be missing."
+  ]
+}

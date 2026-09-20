@@ -1,0 +1,102 @@
+{
+  "example": "import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from \"@godxjp/ui/navigation\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<DropdownMenu>\n  <DropdownMenuTrigger asChild><Button variant=\"outline\" size=\"sm\">操作</Button></DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>編集</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem variant=\"destructive\">削除</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>\n\n// Right-click menu — what replaced the ContextMenu component (v23). Opens at the pointer,\n// suppresses the browser menu, and opens from Shift+F10 for keyboard users.\n<DropdownMenu trigger={[\"contextMenu\"]}>\n  <DropdownMenuTrigger>行 JE-0042</DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>編集</DropdownMenuItem>\n    <DropdownMenuItem variant=\"destructive\">削除</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "DropdownMenu",
+  "props": [
+    {
+      "description": "On DropdownMenuContent: match the trigger, fit content, or use a token width. Omit to keep the default minimum.",
+      "name": "width",
+      "type": "\"trigger\" | \"auto\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Controlled open state (Ant Design `open`).",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "[\"click\"]",
+      "description": "On the ROOT. Ant Design `trigger` — the gestures that open the menu, and more than one may be live at once. `contextMenu` opens AT the pointer and suppresses the browser's own menu; it is the replacement for the ContextMenu component deleted in v23, and antd expresses right-click menus the same way. The default is `[\"click\"]`, not antd's `[\"hover\"]`. The keyboard opener survives every mode: Enter/Space/ArrowDown for click and hover, Shift+F10 or the ContextMenu key for contextMenu — so a gesture list can never produce a pointer-only menu (WCAG 2.1.1).",
+      "name": "trigger",
+      "type": "(\"click\" | \"hover\" | \"contextMenu\")[]"
+    },
+    {
+      "description": "On the ROOT. Ant Design `disabled` — no gesture opens the menu (antd implements it by emptying the trigger list). The trigger's own `disabled` still works for the button case.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "0.15",
+      "description": "On the ROOT, in SECONDS (antd's unit). Hover dwell before a `trigger={[\"hover\"]}` menu opens.",
+      "name": "mouseEnterDelay",
+      "type": "number"
+    },
+    {
+      "defaultValue": "0.1",
+      "description": "On the ROOT, in SECONDS. Grace period after the pointer leaves before a hover menu closes — it is what lets the reader cross the gap from the trigger onto the menu, so do not set it to 0.",
+      "name": "mouseLeaveDelay",
+      "type": "number"
+    },
+    {
+      "description": "Open-state change handler (Ant Design `onOpenChange`).",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "On DropdownMenuContent. Ant Design `placement`, spelled on the LOGICAL inline axis (antd's `bottomLeft` is `bottomStart` here), so an RTL app anchors on the correct edge with no second value. It is sugar over Radix's `side` + `align`, and an explicitly passed `side`/`align` still wins. antd's inline-side placements (`left*`/`right*`) are deliberately absent — Radix's `side` is physical and this library ships no DirectionProvider, so they would open on the wrong edge in RTL; pass Radix's own `side` if you knowingly want a physical one.",
+      "name": "placement",
+      "type": "\"top\" | \"topStart\" | \"topEnd\" | \"bottom\" | \"bottomStart\" | \"bottomEnd\""
+    },
+    {
+      "description": "On DropdownMenuContent. Ant Design `arrow` — paints the pointer at the anchored edge (default off). Sized from --dropdown-arrow-{width,height,background} rather than Radix's built-in 10×5.",
+      "name": "arrow",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "Popover — use Popover when the floating panel needs arbitrary layout (filter forms, date pickers, rich content grids). Use DropdownMenu only for a list of discrete clickable actions or toggle items; DropdownMenu has no layout flexibility beyond label/separator/group.",
+    "Command — use Command (cmdk) when the list is large, needs fuzzy-search filtering, or acts as a keyboard-driven command palette. DropdownMenu has no built-in search input; once the list exceeds ~8 items or needs filtering, switch to Command (often inside a Popover).",
+    "Select — use Select when the purpose is choosing a value to submit in a form field (has a name prop for native form submission, renders a hidden select for a11y). Use DropdownMenu when the purpose is triggering actions, not picking a form value.",
+    "Sidebar — use Sidebar for persistent left-rail navigation. DropdownMenu is transient (opens on click, dismisses on select); Sidebar is always-visible structural navigation."
+  ],
+  "rules": [],
+  "storyPath": "navigation/DropdownMenu.stories.tsx",
+  "subParts": [
+    "DropdownMenuCheckboxItem",
+    "DropdownMenuContent",
+    "DropdownMenuGroup",
+    "DropdownMenuItem",
+    "DropdownMenuLabel",
+    "DropdownMenuPortal",
+    "DropdownMenuRadioGroup",
+    "DropdownMenuRadioItem",
+    "DropdownMenuSeparator",
+    "DropdownMenuShortcut",
+    "DropdownMenuSub",
+    "DropdownMenuSubContent",
+    "DropdownMenuSubTrigger",
+    "DropdownMenuTrigger"
+  ],
+  "tagline": "Dropdown menu (react-aria). Compose DropdownMenu/DropdownMenuTrigger/DropdownMenuContent/DropdownMenuItem/DropdownMenuSeparator. `trigger` picks the gestures — click (default), hover, or contextMenu, which is what replaced the deleted ContextMenu component.",
+  "usage": [
+    "DO compose the full sub-part tree: DropdownMenu (root) → DropdownMenuTrigger (with asChild to delegate to your Button/icon) → DropdownMenuContent → DropdownMenuItem / DropdownMenuSeparator / DropdownMenuLabel / DropdownMenuGroup. Omitting any level (e.g. rendering DropdownMenuContent without DropdownMenu as ancestor) breaks Radix context and the menu will not open.",
+    "DO use DropdownMenuTrigger with asChild and pass a godx-ui Button or icon Button as the child — never render a raw <button> or <div> as the trigger, and never omit asChild when the child is already a button-like element (double-button nesting breaks a11y).",
+    "DO use variant='destructive' on DropdownMenuItem for irreversible actions (delete, revoke, void) — this applies the semantic destructive colour token automatically without any className override.",
+    "DO use DropdownMenuSub + DropdownMenuSubTrigger + DropdownMenuSubContent for nested sub-menus (e.g. 'Export' → 'CSV', 'PDF'). The ChevronRight icon is rendered automatically by DropdownMenuSubTrigger — do not add your own.",
+    "DO use DropdownMenuCheckboxItem (with checked + onCheckedChange) or DropdownMenuRadioGroup + DropdownMenuRadioItem for toggle/selection menus such as column visibility or active view. These items manage their own checked indicator — do not layer a Checkbox or RadioGroup inside a plain DropdownMenuItem.",
+    "DON'T put anything but collection nodes directly inside DropdownMenuContent / DropdownMenuGroup / DropdownMenuRadioGroup — only DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuSub, or a component that returns one. A leading icon or a bare text label goes INSIDE an item. react-aria builds the menu through a stand-in document that cannot create SVG or text nodes, so an icon placed beside the items throws during render (`createElementNS is not a function`); the library contains that throw so the page survives, but the menu comes up EMPTY and the console says why (gh#637).",
+    "DON'T use DropdownMenu for form submission — items fire onSelect callbacks, not form field values. There is no name prop for native form submission. If a menu selection must feed a form field, lift state into a controlled value and wire a hidden Input or use Select instead.",
+    "DO use `trigger={[\"contextMenu\"]}` for a right-click menu on a row, card or tile — there is no ContextMenu component any more (deleted in v23). Give that target something focusable and an interactive role: the menu must be reachable with Shift+F10, and react-aria warns in dev when an `asChild` trigger has neither.",
+    "DON'T put actions ONLY behind `contextMenu`. Right-click is undiscoverable for new users and absent on touch (it falls back to long-press), so mirror anything critical in a visible click trigger.",
+    "DO keep `mouseLeaveDelay` non-zero on `trigger={[\"hover\"]}`: closing the instant the pointer leaves the trigger makes the menu impossible to reach, because the pointer has to cross the gap to get there."
+  ],
+  "useCases": [
+    "Row action menu in a DataTable: a '...' icon Button opens a DropdownMenu with Edit, Duplicate, DropdownMenuSeparator, then Delete (variant='destructive') — keeps the row compact and avoids inline button clutter.",
+    "Topbar / avatar chip: a user-avatar Button triggers a DropdownMenu with Profile, Settings, DropdownMenuSeparator, Sign out — standard app-shell pattern for account actions.",
+    "Bulk-action toolbar: after selecting rows, an 'Actions' Button opens a DropdownMenu with Approve, Reject, Export — prevents the toolbar from overflowing with individual buttons.",
+    "Column visibility toggle in a report table: a 'Columns' Button opens a DropdownMenu whose items are DropdownMenuCheckboxItem entries, letting users show/hide columns without a Dialog.",
+    "Quick status change on an accounting entry: a Badge-like trigger opens a DropdownMenu with DropdownMenuRadioGroup items (Draft, Posted, Voided) so the user can transition status without navigating away.",
+    "Right-click actions on a DataTable row or a file tile: `trigger={[\"click\", \"contextMenu\"]}` puts the same menu behind the row's kebab AND a right-click anywhere on the row, so the accelerator and the discoverable affordance stay one menu.",
+    "Hover-opened menu on a toolbar entry (`trigger={[\"hover\"]}`) where the pointer is already travelling — the keyboard still opens it with Enter."
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "example": "import { AuthShell, AuthIdentity, AuthFooter } from \"@godxjp/ui/layout\";\nimport { Reveal, Logo, Button } from \"@godxjp/ui/general\";\nimport { Card, CardContent, CardHeader, CardTitle } from \"@godxjp/ui/data-display\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function DeviceAuthorizationPage() {\n  return (\n    // 380px card at 1440/1024 · 5px inline gutter at 390 — all token-owned, no page CSS.\n    <AuthShell\n      variant=\"canonical\"\n      preset=\"device-authorization\"\n      brand={<Logo mark=\"godx\" tone=\"success\" />}\n      footer={\n        <AuthFooter\n          product=\"GoDX ID\"\n          terms=\"Terms\"\n          privacy=\"Privacy\"\n          locale={<AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact />}\n        />\n      }\n    >\n      <Reveal>\n        <Card>\n          <CardHeader>\n            <AuthIdentity title=\"デバイスを認証\" requester=\"勤怠管理が認証を要求しています\" />\n            <CardTitle level={2}>確認コードを入力</CardTitle>\n          </CardHeader>\n          <CardContent>\n            {/* InputOTP + actions */}\n            <Button fullWidth>デバイスを承認</Button>\n          </CardContent>\n        </Card>\n      </Reveal>\n    </AuthShell>\n  );\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AuthShell",
+  "props": [
+    {
+      "description": "Centred content — typically a single auth <Card> holding the form.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Brand bar slot pinned to the top (e.g. a <Logo> / product mark).",
+      "name": "brand",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Page-level controls pinned to the TOP-RIGHT of the same banner row as `brand` — a locale <Select>/<AppSettingPicker>, a theme <ToggleGroup>, a \"need help?\" link. They belong to the PAGE, not the auth form, so they sit in the bar, not in the card. The banner renders as soon as `brand` OR `actions` is present.",
+      "name": "actions",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Footer slot pinned to the bottom (legal links, locale switch, support).",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Visual contract for the auth surface. \"canonical\" applies the shared DXS compact geometry (36px controls, 22.5rem/360px card measure, responsive page insets, tighter field labels) through component tokens. \"default\" keeps the comfortable 44px shell with the 24rem card.",
+      "name": "variant",
+      "type": "\"default\" | \"canonical\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. \"device-authorization\" = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. \"registration\" = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as \"login\", so sign-in to sign-up never jumps on a phone). START-aligned like login: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach.",
+      "name": "preset",
+      "type": "\"default\" | \"login\" | \"registration\" | \"device-authorization\" | \"context-selection\" | \"account-recovery\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Inline MEASURE of the shell content slot. \"default\" is the single auth card (24rem, or 22.5rem under variant=\"canonical\"). \"wide\" opens the slot to --auth-shell-wide-card-max-width (64rem) for a SPLIT login: a brand/marketing panel beside the auth card, laid out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>. The wide slot centres with auto margins, so a tall two-column layout starts at the top instead of overflowing above the scroll origin. Ignored under a `preset` — a preset already owns its flow geometry.",
+      "name": "measure",
+      "type": "\"default\" | \"wide\""
+    },
+    {
+      "description": "Block-axis placement of the auth column — ORTHOGONAL to `preset` the way `variant` is: the preset owns the page MEASURE (card width, inline gutters, section rhythm), `align` owns where that column sits vertically. Omit it to keep the preset's own choice: \"login\" and \"registration\" anchor so a requester/identity line that wraps to two lines cannot move the card (gh#237), every other preset centres. Pass \"center\" for a vertically centred column — the block-start inset collapses to the preset's block-end one on desktop AND mobile, so the padding is symmetric and justify-content has nothing to fight — or \"anchored\" for a top-anchored one. This is what replaces re-declaring a preset's offset tokens from consumer CSS, the page-local-vertical-offset anti-pattern presets exist to remove. HAZARD on a tall flow: a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach — which is why \"registration\" anchors by default; \"center\" is legal there but is the caller's judgement.",
+      "name": "align",
+      "type": "\"anchored\" | \"center\""
+    },
+    {
+      "description": "Vertical density scoped to auth-card descendants. Defaults to \"compact\" under variant=\"canonical\" and \"comfortable\" otherwise.",
+      "name": "density",
+      "type": "\"comfortable\" | \"compact\""
+    },
+    {
+      "description": "Extra CSS classes merged onto the shell root.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "AppShell — the shell for AUTHENTICATED app pages (sidebar + topbar + main). AuthShell is its unauthenticated counterpart (brand bar + centred card + footer). Never nest the two.",
+    "Reveal — wrap the auth <Card> in <Reveal> for the entrance animation; AuthShell delegates motion (and prefers-reduced-motion handling) to it rather than baking an animation in.",
+    "Card — the canonical container for the auth form; place the form inside <CardContent>. AuthShell centres and width-constrains it.",
+    "EmptyState — with `tone=\"success\"` for a confirmation card inside the shell (e.g. device approved).",
+    "AuthIdentity / AuthFooter / AuthStack / AuthDivider — the auth composites that fill the shell: the GoDX identity mark + heading + requesting-client line, the mono legal footer (its `locale` slot takes an <AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact />), the 12px section rhythm, and the labelled \"or\" rule.",
+    "ListRow — compose the organisation choice list for `preset=\"context-selection\"` as <Card><CardContent flush><Flex as=\"ul\" marker=\"none\"> of <ListRow as=\"li\">: shared row dividers, no per-row card outline. There is no separate OrganizationChoiceList component — that is a composition pattern (rule #46), not a framework component."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "layout/AuthShell.stories.tsx",
+  "tagline": "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density.",
+  "usage": [
+    "DO pass a single <Card> (with the form inside <CardContent>) as `children` — AuthShell centres it and constrains its width via `--auth-shell-card-max-width`; do NOT hand-roll a `.auth-shell-main` / `.ui-auth-scope` wrapper.",
+    "DO use `variant=\"canonical\" preset=\"login\"` for SCR-001 and pass <AuthIdentity>, <Card>, <AuthFooter> as direct children in that order (an anchor may wrap AuthIdentity). The preset owns the identity slot, card anchor, 20px section rhythm and compact card block inset for standalone and real requester states. Do not wrap the three sections in a consumer Flex/Stack or the semantic grid cannot anchor them.",
+    "DO select a `preset` instead of overriding geometry: `preset=\"login\"` for the stable SCR-001 identity/card/footer anchor, `preset=\"registration\"` for the sign-up form and its pending-email state, `preset=\"device-authorization\"` for the 380px OAuth device-grant measure, `preset=\"context-selection\"` for the 25rem organisation/context picker, `preset=\"account-recovery\"` for the 432px SCR-008 recovery/MFA panel. Page-local width/inset/vertical-offset variables are the exact anti-pattern these presets replace.",
+    "DO build the SOCIAL / PROVIDER ACTION row as a COMPOSITION — there is NO SocialLinks component: `<AuthDivider label=\"or\" />` followed by a `Flex direction=\"col\" gap=\"sm\"` of real `Button variant=\"outline\"` with the provider glyph as an aria-hidden icon. The package deliberately does not own it: which providers a product offers, in what order, and what consent they imply are product decisions, and a component would have to invent them. `disabled` / `loading` are the Button's own props — do not add a provider-specific API.",
+    "DO build the ORGANIZATION CHOICE LIST as a COMPOSITION — there is NO OrganizationChoiceList component: `Card` > `CardContent flush` > a `<Flex as=\"ul\" marker=\"none\">` of `ListRow as=\"li\"` (leading Avatar, title, description, trailing Button). `CardContent flush` is what gives shared row dividers instead of a card outline per row. Its states are existing exports, never bespoke markup: Skeleton rows for loading, `EmptyState` for no invitations, `Alert tone=\"destructive\"` for a failed fetch and `Alert tone=\"warning\"` for permission-denied. See the auth-shell-context and auth-shell-registration frames.",
+    "DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset=\"account-recovery\"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component: Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify=\"between\" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.",
+    "DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant=\"canonical\" preset=\"device-authorization\"` is the canonical device screen.",
+    "DO let `preset=\"context-selection\"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing \"remember\" row pass as three siblings with NO page-local spacing.",
+    "DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
+    "DO state the block placement with `align` when a product wants the opposite of its preset's default — align=\"center\" on preset=\"login\" for a vertically centred SCR-001, align=\"anchored\" to top-anchor a preset that centres. It collapses the preset's block-start inset to its block-end one on desktop AND mobile, so justify-content has nothing to fight. Re-declaring --auth-shell-login-flow-offset-block (or any preset offset token) from a consumer stylesheet is the anti-pattern it replaces.",
+    "DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
+    "DO put page-level controls in `actions` — the locale picker, the theme <ToggleGroup>, a \"need help?\" link. They land at the banner's inline end at a tokenized gap (`--auth-shell-bar-gap`), and the banner appears even with no `brand`. Do NOT hand-roll a top-right row with `ms-auto` on the `brand` content, and do NOT reach for CenteredShell just to get a topbar with actions: CenteredShell is the AUTHENTICATED shell.",
+    "DO use `measure=\"wide\"` for the SPLIT login — a brand/marketing panel beside the auth card. The content slot opens to 64rem (`--auth-shell-wide-card-max-width`) and centres with auto margins, so the tall two-column layout starts at the top instead of overflowing above the scroll origin; lay the two halves out with <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> and hide the panel below `lg`. It is IGNORED under a `preset` (a preset owns its flow geometry), so pick one or the other.",
+    "DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
+    "DO wrap the card in <Reveal> for the entrance animation (`<AuthShell><Reveal><Card/></Reveal></AuthShell>`) — Reveal honours prefers-reduced-motion; AuthShell itself stays layout-only.",
+    "DO NOT re-scope control height or heading size in the app — AuthShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
+    "DO tune the COMPACT auth card through its three independent knobs, never a consumer selector on `[data-slot=\"card-content\"]`: `--auth-shell-compact-card-inset` = the inline column, `--auth-shell-card-padding-block-compact` = the card's block (top/bottom) padding — it is wired to the card's `--card-space-shell-y` and really moves CardContent's block edges — and `--auth-shell-card-body-gap-compact` = the header↔body gap. Each defaults to today's canonical rhythm, so overriding one moves ONLY that axis.",
+    "DO NOT nest AuthShell inside AppShell (or vice-versa) — AuthShell is the ROOT shell for unauthenticated pages (login/mfa/passkey/device/reset); AppShell is for the authenticated app."
+  ],
+  "useCases": [
+    "Canonical Login (SCR-001): <AuthShell variant=\"canonical\" preset=\"login\"> with direct AuthIdentity · Card · AuthFooter children; the card remains anchored when requester is absent, one line or wraps to two lines.",
+    "Login page: <AuthShell brand={<Logo/>} footer={<AuthFooter/>}> wrapping a <Card> with the email/password form and a primary <Button fullWidth>.",
+    "MFA / passkey / device-authorisation step: same shell, a <Card> with the one-time-code <InputOTP> or a passkey prompt.",
+    "OAuth device-grant screen (SCR-004): <AuthShell variant=\"canonical\" preset=\"device-authorization\"> — a 380px card at 1440/1024 and a 5px inline gutter at 390, with zero page-local CSS.",
+    "Organisation / context selection (/select-context): <AuthShell variant=\"canonical\" preset=\"context-selection\" brand={<Logo mark=\"godx\" />}> with an <AuthIdentity> intro, a <Card><CardContent flush> list of <ListRow as=\"li\"> organisations, and a trailing \"remember this choice\" <Checkbox> — the preset spaces the three sections.",
+    "Split product login: <AuthShell measure=\"wide\" brand={<Logo/>} actions={<><Select locale/><ToggleGroup theme/></>}> around a <ResponsiveGrid columns={{ sm: 1, lg: 2 }}> whose first cell is the brand/value panel (hidden below lg) and whose second is the auth <Card>. See docs/showcase/case4-login.",
+    "Password reset / forgot-password / accept-invite: the centred single-card flow with a brand bar and a legal footer.",
+    "SSO landing / success confirmation: pair with an <EmptyState tone=\"success\"> inside the card for an approved-device confirmation."
+  ]
+}

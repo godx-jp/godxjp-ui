@@ -1,0 +1,83 @@
+{
+  "example": "import { StatCard } from \"@godxjp/ui/data-display\";\nimport { ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n// ✅ StatCard sits directly in the grid — it draws its own card + border.\n<ResponsiveGrid columns={3}>\n  <StatCard label=\"総会員数\" value=\"12,450\" hint=\"先月比 +3%\" />\n  <StatCard label=\"月次売上\" value=\"¥8,200,000\" delta=\"+12%\" />\n  <StatCard label=\"利用率\" value=\"68.4%\" />\n</ResponsiveGrid>\n\n// ❌ Double border — do NOT wrap StatCard in a Card:\n// <Card><CardContent><StatCard label=\"x\" value=\"1\" /></CardContent></Card>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "StatCard",
+  "props": [
+    {
+      "description": "Metric name.",
+      "name": "label",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Metric value (string/number/ReactNode).",
+      "name": "value",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Secondary context below the value.",
+      "name": "hint",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Optional leading icon rendered as a tinted medallion above the metric. Decorative (aria-hidden) — the label carries the meaning. Tint via the --stat-card-icon-{background,foreground} tokens (default a soft brand-primary wash).",
+      "name": "icon",
+      "type": "LucideIcon"
+    },
+    {
+      "description": "Compact trend text beside the value. Sign-aware tone (+ green / - red).",
+      "name": "delta",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"stacked\"",
+      "description": "stacked = label over value; inline = label left / value right.",
+      "name": "layout",
+      "type": "\"stacked\" | \"inline\""
+    },
+    {
+      "description": "Align the metric group.",
+      "name": "align",
+      "type": "\"start\" | \"end\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Flip delta tone semantics for metrics where lower is better (cost, error rate): '-' renders green, '+' renders red.",
+      "name": "inverse",
+      "type": "boolean"
+    },
+    {
+      "description": "Semantic 3px leading-edge rail (forwarded to the underlying Card) — flags a KPI that needs attention (e.g. attention = backlog with a deadline, destructive = overdue).",
+      "name": "accent",
+      "type": "\"primary\" | \"success\" | \"warning\" | \"info\" | \"attention\" | \"destructive\""
+    }
+  ],
+  "related": [
+    "ResponsiveGrid — required layout wrapper for StatCard grids; controls column count and responsive breakpoints. Always pair them together.",
+    "SkeletonStat — exact loading placeholder shaped like a StatCard tile; swap in while KPI data is fetching, then replace with the real StatCard.",
+    "Descriptions — use instead when displaying multiple label/value metadata pairs on a detail page (not headline KPIs); Descriptions is not card-bordered and does not show delta/hint slots.",
+    "Card + CardContent — use when you need a general-purpose content container with a header, footer, or arbitrary body; do NOT wrap StatCard inside these.",
+    "LineChart / BarChart / PieChart (@godxjp/ui/charts) — when the trend or composition BEHIND a KPI matters, pair the StatCard headline number with a chart in the same dashboard grid: StatCard states the figure, the chart shows its shape over time or its breakdown."
+  ],
+  "rules": [],
+  "storyPath": "data-display/StatCard.stories.tsx",
+  "tagline": "KPI tile. ⚠️ StatCard IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). Use `accent` for a semantic leading-edge rail on a KPI needing attention.",
+  "usage": [
+    "DO place StatCard directly as a child of ResponsiveGrid — it renders its own bordered Card shell internally, so no wrapping <Card> or <CardContent> is needed or allowed. Wrapping creates a double border.",
+    "DO pass `delta` as a sign-prefixed string (e.g. '+12%' or '-3%') to get automatic color tone: '+' renders text-success, '-' renders text-destructive. For metrics where a negative delta is good (e.g. cost reduction, error rate), pass `inverse` so the tone is flipped correctly.",
+    "DO use `hint` for secondary context (e.g. '先月比 +3%', 'last 30 days'). In the default `stacked` layout hint renders below the value; in `inline` layout it renders beside the label.",
+    "DO use `accent` (not a className border) for the semantic leading-edge rail — `attention` for a non-destructive backlog needing action, `destructive` only for overdue/exceeded states. Most tiles in a grid stay rail-less; an all-accented grid says nothing.",
+    "DO NOT hand-roll a KPI tile using a plain <Card><CardContent>. StatCard is the correct primitive and token-aligns the label/value/hint/delta slots automatically.",
+    "WHILE data is loading, replace each StatCard with a <SkeletonStat /> at the same grid position — never render an empty value string or a spinner inside StatCard itself."
+  ],
+  "useCases": [
+    "Dashboard KPI row: monthly revenue, invoice count, overdue balance, and collection rate displayed side-by-side in a ResponsiveGrid with delta trend vs previous period.",
+    "Accounting summary header: total debits, total credits, and net balance for a journal entry list page, each with a hint showing the date range in scope.",
+    "Coupon/membership admin overview: active members, live coupons, monthly redemptions, and total discount amount — the canonical example in the catalog.",
+    "Inline variant for a narrow sidebar or detail panel where space is constrained: label on the left, large value on the right (layout='inline'), e.g. contract value next to a deal record.",
+    "Cost or error-rate metrics where a falling number is positive: pass `inverse` so a '-15%' delta shows green, preventing misleading red-for-good UI.",
+    "Loading state for any KPI grid: render the same ResponsiveGrid columns filled with <SkeletonStat /> components while the query is in-flight, then replace with StatCard tiles once data resolves."
+  ]
+}

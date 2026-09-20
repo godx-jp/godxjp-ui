@@ -1,0 +1,86 @@
+{
+  "docPath": "data-entry/chat-composer.tsx",
+  "example": "import { ChatComposer, ChatSuggestion } from \"@godxjp/ui/data-entry\";\n\nconst [draft, setDraft] = useState(\"\");\n\n<ChatSuggestion\n  items={[\n    { value: \"summarize\", label: \"要約する\", description: \"Summarize the thread\" },\n    { value: \"translate\", label: \"翻訳する\" },\n  ]}\n  onValueChange={(value) => setDraft(\"/\" + value + \" \")}\n>\n  {({ onTrigger, onKeyDown }) => (\n    <ChatComposer\n      value={draft}\n      onValueChange={(next) => { setDraft(next); onTrigger(next); }}\n      onKeyDown={onKeyDown}\n      onSubmit={(text) => send(text)}\n    />\n  )}\n</ChatSuggestion>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "ChatSuggestion",
+  "props": [
+    {
+      "description": "The rows to offer: { value, label?, description?, icon?, disabled?, children? }. One level of children is honoured — picking a parent drills into it instead of emitting.",
+      "name": "items",
+      "required": true,
+      "type": "ChatSuggestionItemProp[]"
+    },
+    {
+      "description": "Fires with the picked row's value. The CALLER owns what that does to the draft text — the component never rewrites the textarea behind your back.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "defaultValue": "\"/\"",
+      "description": "The character that opens the list when typed at a word boundary (use \"@\" for a mention list).",
+      "name": "triggerCharacter",
+      "type": "string"
+    },
+    {
+      "description": "Controlled open state of the list.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Uncontrolled initial open state.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state change handler.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Render prop wrapping the composer. Call onTrigger from the composer's onValueChange and forward onKeyDown to its onKeyDown.",
+      "name": "children",
+      "required": true,
+      "type": "(props: { onTrigger: (value?: string | false) => void; onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> }) => React.ReactNode"
+    },
+    {
+      "description": "Shown when the query matches nothing (localized default otherwise).",
+      "name": "emptyMessage",
+      "type": "string"
+    },
+    {
+      "description": "Accessible name of the listbox (localized default otherwise).",
+      "name": "listLabel",
+      "type": "string"
+    },
+    {
+      "description": "DOM id of the anchor wrapping the composer.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ChatComposer — the control it wraps; use it alone when there is nothing to suggest.",
+    "Command / CommandPalette — a full-screen command surface opened by a shortcut, not by a character in a draft.",
+    "Select (showSearch) — the searchable single-select; a suggestion list edits free text, it does not hold a value."
+  ],
+  "rules": [
+    2,
+    3,
+    6
+  ],
+  "storyPath": "data-entry/ChatSuggestion.stories.tsx",
+  "tagline": "Trigger-character autocomplete over a ChatComposer (Ant Design X Suggestion): type / at a word boundary and a Command list opens against the composer, driven from the textarea without ever taking focus off it.",
+  "usage": [
+    "DO wire BOTH halves of the render prop: `onTrigger` from the composer's onValueChange and `onKeyDown` from its onKeyDown. With only one wired the list either never opens or cannot be driven.",
+    "DO decide yourself what a pick does to the draft — onValueChange hands you the value; the typed /query is still in the box, so replace it or append to it as your screen needs.",
+    "DON'T hand-roll a listbox next to a textarea. This composes the real Command (cmdk) inside a Popover, which already ships the listbox/option roles, active-row bookkeeping and scroll-into-view.",
+    "DO rely on Escape: it closes the list, returns focus to the textarea and leaves the typed text intact. It also stops propagating, so a composer inside a Dialog does not close the Dialog too.",
+    "DON'T expect it to filter server-side — filtering is a plain substring match over label/value/description. For a remote list, filter `items` yourself as the query changes."
+  ],
+  "useCases": [
+    "Slash commands over an assistant composer (/summarize, /translate, /explain).",
+    "Mention picker in a comment composer (triggerCharacter=\"@\").",
+    "Prompt-template inserter grouped one level deep (a category row that drills into its templates)."
+  ]
+}

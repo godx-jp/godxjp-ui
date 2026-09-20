@@ -1,0 +1,30 @@
+# @godxjp/ui
+
+> A Japanese-enterprise React design system: 165 components, 1616 design tokens,
+> 47 cardinal rules. This file is the entry point for AI agents. Catalog version 28.4.0.
+
+If your client can run a process, do not read these files — run the MCP server instead
+(`npx @godxjp/ui-mcp@28.4.0`). It is searchable and version-locked. These files exist for agents
+that can only fetch URLs.
+
+## Start
+
+- [START-HERE.md](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md): the whole contract — the four rules, the token override model, a page that passes review. Read this first; it is self-contained.
+- [index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json): version, counts, and the URL of every file.
+
+## Catalog
+
+- [components-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json): 42 KB — all 165 components as name, group, tagline. Fetch this first.
+- [components/&lt;Name&gt;.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json): one file per component (1 KB–32 KB, median 5 KB). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
+- [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.1 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
+- [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value and the reason it exists.
+- [vocabulary.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
+- [rules.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json): 47 cardinal rules.
+
+## Pinning
+
+Every URL above tracks `main`. To pin to the release a project actually installed, swap `main` for
+the tag: `.../godx-jp/godxjp-ui/v28.4.0/agent/...`. A catalog that does not match the installed
+package describes props that are absent, or hides props that are present, and says nothing either way.
+
+Pinned catalogs only exist for releases whose tag actually contains `agent/`. If `…/v<version>/agent/index.json` returns 404, that release predates this catalog: read `…/main/…` instead and compare `index.json` → `version` against the package you have, so you at least know which way it drifted.

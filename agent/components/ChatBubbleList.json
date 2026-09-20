@@ -1,0 +1,64 @@
+{
+  "docPath": "data-display/chat-bubble.tsx",
+  "example": "import { ChatBubbleList, type ChatMessageProp } from \"@godxjp/ui/data-display\";\n\nconst messages: ChatMessageProp[] = [\n  { id: \"m1\", role: \"assistant\", content: \"How can I help?\" },\n  { id: \"m2\", role: \"user\", content: \"Summarise yesterday's invoices.\" },\n  { id: \"m3\", role: \"assistant\", content: reply, typing: true },\n];\n\n<ChatBubbleList\n  label={t(\"chat.list.label\")}\n  items={messages}\n  roles={{\n    assistant: { placement: \"start\", variant: \"filled\", avatar: assistantAvatar },\n    user: { placement: \"end\", variant: \"outlined\" },\n    system: { placement: \"start\", variant: \"borderless\", tone: \"info\", size: \"sm\" },\n  }}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ChatBubbleList",
+  "props": [
+    {
+      "description": "`{ id, role?, content?, ...ChatBubbleProp }` in conversation order, oldest first. `id` is the React key AND the rendered <article>'s DOM id.",
+      "name": "items",
+      "required": true,
+      "type": "ChatMessageProp[]"
+    },
+    {
+      "description": "Per-role bubble defaults, merged UNDER each message's own props: `{ assistant: { placement: \"start\" }, user: { placement: \"end\", variant: \"outlined\" } }`. Written once instead of on every message.",
+      "name": "roles",
+      "type": "Record<string, Partial<ChatBubbleProp>>"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Keep the newest message in view WHILE the reader is at the bottom. It is not \"scroll to the bottom when content arrives\": scrolling up revokes the pin until the reader asks for it back, because yanking them down mid-sentence is a change of context they did not request (WCAG 3.2.5).",
+      "name": "autoScroll",
+      "type": "boolean"
+    },
+    {
+      "description": "Accessible name of the feed; lands on aria-label. Defaults to the localized t(\"chat.list.label\").",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "DOM id forwarded to the feed's scroll container (`role=\"log\"`). Supply one when a control outside the feed must reference it — an `aria-controls` on a \"jump to latest\" button of your own, or a skip link that moves focus into the transcript.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "ChatBubble — one message; this list renders them and supplies per-role defaults.",
+    "ScrollArea — the scrolling primitive underneath. Use ScrollArea anchor=\"bottom\" directly for a non-conversational live stream (an audit log); use ChatBubbleList when the rows are conversation turns.",
+    "Timeline — an ordered event rail with no scale and no live region. Use Timeline for a record's history, ChatBubbleList for a dialogue.",
+    "DataTable — for many rows that need sorting, filtering and pagination. A conversation is neither sorted nor paged."
+  ],
+  "rules": [
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "data-display/ChatBubbleList.stories.tsx",
+  "tagline": "The message feed. It owns STICK-TO-BOTTOM (auto-scroll only while the reader is already at the bottom; the moment they scroll up the pin is revoked and a focusable jump-to-latest button appears), one aria-live=\"polite\" role=\"log\" region for the whole conversation, and per-role bubble defaults.",
+  "usage": [
+    "DO drive the feed from `items` and shape it with `roles`. Mapping ChatBubbles yourself inside a ScrollArea loses stick-to-bottom, the jump affordance and the single live region — the three reasons this component exists.",
+    "DO give the list a DEFINITE height — `className=\"h-96\"`, or a flex/grid parent that hands it a track. It scrolls inside itself; measured at 1280px, a list with no height grew to its content (1,952px) inside a 256px Card, scrollHeight === clientHeight, and stick-to-bottom had nothing to anchor.",
+    "DO keep `id` stable per message. It is the React key, so a regenerated id re-mounts the bubble and restarts any typing animation.",
+    "DO leave autoScroll on for a live conversation and turn it off for an archived transcript, where landing on the newest message is not what the reader wants.",
+    "DO NOT add your own aria-live region inside the feed, and do not put one on a bubble. This list already declares role=\"log\" with aria-live=\"polite\"; a second region double-announces every message.",
+    "DO NOT scroll the viewport yourself on every append. That is the defect stick-to-bottom exists to prevent; the reader's scroll position is the only thing that grants the pin."
+  ],
+  "useCases": [
+    "The transcript pane of an AI assistant screen, above a ChatComposer, streaming the assistant's reply into the last bubble.",
+    "A support conversation in an admin detail page, where an operator scrolls up to re-read an earlier message while new ones keep arriving.",
+    "An agent/tool run log rendered as a conversation, with system notes as toned bubbles between turns.",
+    "An archived thread opened read-only from a report (autoScroll={false}), so the reader lands where the citation is rather than at the end."
+  ]
+}

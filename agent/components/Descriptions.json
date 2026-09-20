@@ -1,0 +1,67 @@
+{
+  "example": "import { Descriptions } from \"@godxjp/ui/data-display\";\n\n<Descriptions columns={2}>\n  <Descriptions.Item label=\"会員ID\" mono>{member.id}</Descriptions.Item>\n  <Descriptions.Item label=\"プラン\">{member.plan}</Descriptions.Item>\n  <Descriptions.Item label=\"メモ\" span={2}>{member.note}</Descriptions.Item>\n</Descriptions>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Descriptions",
+  "props": [
+    {
+      "defaultValue": "2",
+      "description": "Column count (antd `column`, in this library's plural spelling). A plain 1 | 2 | 3 keeps the mobile-first ladder it has always painted (1 → sm:2 → lg:3). Any other number, or the responsive object, publishes --descriptions-column-count per breakpoint instead, so a 4- or 6-column reference grid — and a per-breakpoint one — is expressible without a class-name fork.",
+      "name": "columns",
+      "type": "number | { sm?: number; md?: number; lg?: number; xl?: number }"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Draw the grid as a bordered table with a rule between every cell and a shaded label cell (antd `bordered`) — the read-only counterpart of a dense data grid. Every cell draws its own block-start/inline-start rule and the container closes the other two edges, so the frame is complete at any column count, including a responsive one. Colour, radius and cell inset come from the --descriptions-* tokens.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Label placement within each item — `vertical` stacks the label over the value (default); `horizontal` puts the label BESIDE the value in a token-aligned column (mirrors `<Form layout>`). Tune the horizontal label-column width via `--descriptions-label-width`.",
+      "name": "layout",
+      "type": "\"vertical\" | \"horizontal\""
+    },
+    {
+      "defaultValue": "\"start\"",
+      "description": "Applies only in layout=\"horizontal\" — a vertical label sits above its value and end-aligning it there would read as a mistake, the same contract `Form` keeps.",
+      "name": "labelAlign",
+      "type": "\"start\" | \"end\""
+    },
+    {
+      "description": "Descriptions.Item elements.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Declarative items (antd `items`) — the alternative to composing `Descriptions.Item` children. `children` is antd's name for the value and `value` is this library's older one; either works. Both APIs can be mixed: items render first, then any children. On an item, span accepts antd's 'filled' (take the whole remaining row) and the responsive object as well as the 2 | 3 the compound form has always taken.",
+      "name": "items",
+      "type": "{ key?: React.Key; label: ReactNode; children?: ReactNode; value?: ReactNode; mono?: boolean; span?: number | 'filled' | { sm?, md?, lg?, xl? }; className?: string }[]"
+    }
+  ],
+  "related": [
+    "Card / CardContent — Descriptions provides the internal grid layout; Card/CardContent provides the outer container, padding, and border. Always wrap Descriptions in CardContent (never add p-4 directly on Descriptions). Use Card when you need the visual surface; use Descriptions inside it for the label/value structure.",
+    "DataTable — use DataTable when you have multiple rows of the same entity type that need sorting, filtering, or pagination. Use Descriptions when you have a single entity's fields laid out as labelled metadata (one row per field, not one row per record).",
+    "Table — use Table (the lower-level primitive) for tabular data with explicit column headers and multiple data rows. Use Descriptions when the data is inherently label→value (no column headers needed, each field is its own row/cell).",
+    "Flex — use Flex for arbitrary vertical/horizontal layout of heterogeneous UI elements. Use Descriptions when every item follows the label-on-top / value-below pattern and you want responsive multi-column alignment for free."
+  ],
+  "rules": [],
+  "storyPath": "data-display/Descriptions.stories.tsx",
+  "tagline": "Responsive definition grid for detail-page metadata. COMPOUND — value goes in Descriptions.Item children.",
+  "usage": [
+    "DO use Descriptions.Item as the ONLY direct child — never raw <div>, <dt>/<dd>, or plain text nodes. Every label/value pair must be wrapped in <Descriptions.Item label=\"…\">value</Descriptions.Item>.",
+    "DO pass span={2} or span={3} on an Item when its value is long (e.g. a full address, a memo field, a JSON blob) — span={2} applies sm:col-span-2 and span={3} applies lg:col-span-3, keeping the grid aligned across breakpoints.",
+    "DO pass mono on Item for machine-readable values: IDs, UUIDs, file paths, currency codes, JSON snippets. This sets font-mono + break-all so long strings wrap rather than overflow.",
+    "DO embed any ReactNode as the Item child — Badge, Badge, formatDate output, a Tooltip-wrapped value, or a plain string all work. The value slot is not text-only.",
+    "DON'T use Descriptions as a hand-rolled <dl>/<dt>/<dd> replacement for prose or running text — it is for structured metadata on detail/show pages only. For flowing key→value prose, use a plain <dl>.",
+    "DON'T add className padding or margin to the root Descriptions to simulate a Card — wrap it in CardContent instead. Descriptions provides only grid layout (gap-x-6 gap-y-3); outer spacing is the Card/CardContent concern."
+  ],
+  "useCases": [
+    "Detail/show page header block — displaying entity metadata such as invoice number, status, due date, vendor name, and payment method in a 2- or 3-column grid before the line-item DataTable.",
+    "Account or member profile panel — showing user ID (mono), plan, registered date, email, and a status Badge in one scannable block instead of a vertical stack of FormField-looking rows.",
+    "Accounting journal entry detail — date, reference code (mono), debit account, credit account, amount, and memo (span={2}) grouped in a compact grid alongside a Timeline of audit events.",
+    "Read-only summary step in a multi-step form or wizard — displaying the values the user entered before final submission (Steps + Descriptions), without any input controls.",
+    "Sidebar or Sheet detail pane — a narrow 1-column Descriptions inside a Sheet presenting the selected row's metadata while the main DataTable stays visible.",
+    "API / webhook event inspector — showing event ID (mono, span={2}), event type, timestamp, HTTP status, and payload size in a grid, with a Badge for the status code."
+  ]
+}

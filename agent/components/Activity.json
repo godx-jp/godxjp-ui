@@ -1,0 +1,70 @@
+{
+  "example": "import { Activity } from \"@godxjp/ui/general\";\n\n// a channel typing indicator — no live region by default (it flickers with every socket event)\n<Activity label={t(\"channel.typing\", { name: \"佐藤\" })} />\n\n// an ambient sync mark in a header\n<Activity variant=\"bar\" tone=\"info\" label={t(\"sync.running\")} />\n\n// a reconnect notice that must actually be heard, announced once and politely\n<Activity announce=\"polite\" tone=\"warning\" label={t(\"realtime.reconnecting\")} />",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Activity",
+  "props": [
+    {
+      "defaultValue": "\"dots\"",
+      "description": "The mark. `dots` = three dots rising in sequence, the ellipsis convention (someone is typing). `pulse` = a single breathing mark (live / recording). `bar` = an indeterminate sweep (syncing / streaming).",
+      "name": "variant",
+      "type": "\"dots\" | \"pulse\" | \"bar\""
+    },
+    {
+      "defaultValue": "\"sm\"",
+      "description": "Size step. Default `sm` — an ambient mark is never the loudest thing on screen. Scales the mark AND the label together (the mark is em-based off `--activity-font-size-*`).",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"muted\"",
+      "description": "Semantic colour intent for the mark and the label.",
+      "name": "tone",
+      "type": "\"default\" | \"muted\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"inherit\""
+    },
+    {
+      "description": "Localized description of WHAT is happening ('佐藤さんが入力しています…', 'Hưng đang nhập…'). Rendered as visible Text beside the mark when `children` are absent; when `children` ARE present it becomes an sr-only description instead. Consumer-owned copy — the library never invents it, and 'N people are typing' must be pluralized with the consumer's Intl.PluralRules.",
+      "name": "label",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Richer visible content in place of `label` (a name in a <strong>, a Badge…). The mark stays aria-hidden; pass `label` alongside for the sr-only description.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Announce the label to assistive technology. Default `false` and then NO live region is emitted at all — the DELIBERATE default, because an ambient indicator that fires a live region on every socket event is a screen-reader flood. `'polite'` wraps ONLY the label in one aria-live='polite' aria-atomic='true' region; the mark stays outside it and aria-hidden.",
+      "name": "announce",
+      "type": "false | \"polite\""
+    }
+  ],
+  "related": [
+    "Reveal — the one-shot ENTRANCE counterpart. Reveal runs once on mount; Activity runs forever. Both live in styles/motion.css and both drop their animation under prefers-reduced-motion.",
+    "Skeleton — content is LOADING (aria-busy + a shaped placeholder). Use Skeleton when the content itself has not arrived; use Activity when content is present and something is happening elsewhere.",
+    "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
+    "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists."
+  ],
+  "rules": [],
+  "storyPath": "general/Activity.stories.tsx",
+  "tagline": "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live).",
+  "usage": [
+    "DO use <Activity> INSTEAD of hand-rolling `@keyframes typing-bounce` in a consumer app CSS. That re-derives interval/amplitude/stagger the DS owns as tokens (`--duration-loop`, `--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`) and needs its own prefers-reduced-motion guard — the guard consumers forget.",
+    "DO NOT reuse Skeleton for an ambient indicator. Skeleton hard-codes `aria-busy='true'` + `aria-live='polite'` because it means CONTENT IS LOADING; a persistent typing indicator built on it tells every screen reader the region is busy for as long as anyone is typing, and re-announces. Activity emits neither by default.",
+    "DO NOT reuse Button `loading`. That is a spinner bound to an in-flight action, on a control. Activity means something is happening indefinitely, ELSEWHERE.",
+    "DO leave `announce` at its default `false` for a flickering affordance (typing, presence). Opt into `announce='polite'` only when the change genuinely must be heard (a reconnect banner, a recording that just started) — and never on a value that changes on every socket event.",
+    "DO always pass a localized `label` (or `children`) when the indicator carries meaning: the mark alone announces nothing and communicates nothing under reduced motion. Route the string through your app's t()/Intl.PluralRules — the library ships no copy for it.",
+    "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the loop is dropped and each mark falls back to a DESIGNED resting state (three solid dots / a solid pulse mark / a bar segment parked at the reading-start), never to nothing, with no layout shift (WCAG 2.2 SC 2.3.3 and SC 2.2.2).",
+    "DO retune the ambient feel from a service theme, not per call site: `--activity-interval` (rhythm), `--activity-stagger-step` (dot offset), `--activity-mark-size` / `--activity-mark-offset` (mark and travel), `--activity-mark-rest-alpha`, `--activity-pulse-mark-size`, `--activity-gap`, `--activity-font-size-{xs,sm,md,lg}`, `--activity-bar-{width,height,radius,segment-width,track-alpha}`, `--activity-color`.",
+    "DO reserve the indicator's row height in the surrounding layout (it sits above a composer): Activity itself never changes size, but the row appearing and disappearing is the consumer's layout to keep stable.",
+    "DO NOT add `role='status'` yourself — that implies an unconditional polite live region, which is exactly what the `announce` default exists to keep off. Activity is not focusable and is not a tab stop."
+  ],
+  "useCases": [
+    "A chat channel's typing affordance under the composer: `<Activity label={t('channel.typing', { name })} />` — appears and disappears on socket events without ever announcing.",
+    "A live-sync pulse in a page header: `<Activity variant='bar' tone='info' label='同期中…' />`.",
+    "A streaming assistant response: `<Activity variant='dots' label='生成しています…' />` under the partial answer.",
+    "A recording / live mark: `<Activity variant='pulse' tone='destructive' label='録画中' />`.",
+    "A live-updating dashboard tile: `<Activity variant='pulse' size='xs' label='リアルタイム更新中' />` beside the metric.",
+    "A reconnect notice that MUST be heard once: `<Activity announce='polite' tone='warning' label='接続を再試行しています…' />`."
+  ]
+}

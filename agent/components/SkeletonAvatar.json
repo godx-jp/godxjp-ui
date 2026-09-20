@@ -1,0 +1,50 @@
+{
+  "example": "import { SkeletonAvatar } from \"@godxjp/ui/feedback\";\n\n<SkeletonAvatar size=\"lg\" shape=\"square\" />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonAvatar",
+  "props": [
+    {
+      "defaultValue": "\"md\"",
+      "description": "Box, from the same height tier the real Avatar sizes from.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "\"circle\"",
+      "description": "Circle for a person, square for an entity/service mark — Avatar's vocabulary.",
+      "name": "shape",
+      "type": "\"circle\" | \"square\""
+    },
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Avatar",
+    "SkeletonArticle",
+    "Skeleton"
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Avatar-shaped placeholder (also Skeleton.Avatar) sized from the --control-height tier.",
+  "usage": [
+    "DO pair the `shape` with the Avatar it replaces so the swap does not change the silhouette.",
+    "DON'T hand-size a bare Skeleton into a circle — this preset already carries the tier box."
+  ],
+  "useCases": [
+    "Member list loading rows",
+    "Comment author placeholder",
+    "Org switcher loading"
+  ]
+}

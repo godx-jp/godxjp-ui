@@ -1,0 +1,158 @@
+{
+  "example": "import { Tabs } from \"@godxjp/ui/navigation\";\n\n<Tabs\n  defaultValue=\"overview\"\n  items={[\n    { value: \"overview\", label: \"概要\", content: \"概要コンテンツ\" },\n    { value: \"history\", label: \"履歴\", content: \"履歴コンテンツ\" },\n  ]}\n/>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "Tabs",
+  "props": [
+    {
+      "description": "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled. `icon` is a leading glyph in the trigger (Ant Design `Tab.icon`). `closable` / `closeIcon` only apply under `variant=\"editable-card\"`; `closable: false` opts one tab out of removal (Ant Design `getRemovable`). `forceRender` (Ant Design `Tab.forceRender`) mounts THAT panel up front and keeps it mounted while another tab is selected, without switching the whole strip over with `destroyOnHidden={false}` — antd's per-item `destroyOnHidden` is deliberately not offered, because on this component \"kept mounted\" is one state and it would be a second spelling of `forceRender`. `count` (+ `overflowCount`, default 99; `showZero`, default true; `countLabel`) draws the counter pill beside the label — 「未対応 12」 — in the SAME vocabulary Button and Toggle publish and through the same helper, formatted with `Intl.NumberFormat` in the active locale. Pass `countLabel` to say what the number is: the pill is `aria-hidden` and an `sr-only` clause carries the digits, so the tab announces \"未対応, 12 件の課題\" and never the concatenated \"未対応12\". Prefer this over antd's answer, which is to put a Badge inside `label` — with the number inside the label the package owns neither its size nor its tone as the tab moves between selected / unselected / disabled, so every consumer aligns it differently.",
+      "name": "items",
+      "type": "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean; icon?: React.ReactNode; closable?: boolean; closeIcon?: React.ReactNode; forceRender?: boolean; count?: number; overflowCount?: number; showZero?: boolean; countLabel?: string }[]"
+    },
+    {
+      "description": "Controlled active tab key.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial tab key. Ignored (falls back to the first enabled item) when it names a disabled item or an unknown key.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Active-tab change handler.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`.",
+      "name": "variant",
+      "type": "\"default\" | \"line\" | \"card\" | \"editable-card\""
+    },
+    {
+      "defaultValue": "\"top\"",
+      "description": "Which edge the trigger strip parks on — Ant Design 6.6.2's `tabPlacement` (its `tabPosition` is deprecated there), so the inline values are already RTL-logical. `start`/`end` also flip the tablist to vertical roving focus, which is what `orientation=\"vertical\"` did on its own before; either prop still works and the other is derived from it. The strip stays FIRST in the DOM at every placement — `bottom`/`end` are a flex reversal, not a re-ordered tree. NARROW FOLD: `start`/`end` become `top`/`bottom` (arrow keys included) at or below `--tabs-placement-responsive-breakpoint-width` (48rem) — a vertical strip and its panel share one inline axis and a phone has room for one of them; Ant Design folds the same pair the same way. Set that token to `0px` to keep the strip vertical at every width.",
+      "name": "tabPlacement",
+      "type": "\"top\" | \"bottom\" | \"start\" | \"end\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control tier of the triggers (Ant Design `size`). Expressed as the library's own control bands (--tabs-trigger-height-*/--tabs-trigger-font-size-*), so a tab strip and the Buttons beside it stay on one rhythm; `md` reproduces the previous trigger exactly.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Ant Design `centered` — centre the strip on its own inline axis. Keeps the `safe` centring rule the strip depends on, so a strip that overflows still falls back to start alignment instead of stranding the leading tab outside the scrollport.",
+      "name": "centered",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Draw the PANEL BODY the card strip opens into, so the strip and the panel are ONE object: a surface, a border continuous with the rail, and the radius only on the two corners AWAY from the strip. `variant=\"card\"` already repaints the active tab's joined edge in the surface colour (antd `genCardStyle`), but the package shipped no surface for it to merge into — measured at 1440px, `<Card>` under a card strip left an 8px gap AND a second 1px border at a 9.708px radius (two stacked boxes), `<Card variant=\"borderless\">` and no box at all left the same 8px gap. With `bodied`: gap 0 (the body is pulled back exactly one border width so its edge and the tabs' sit on one device row), one continuous line around the whole object, and no line at all across the active tab. HONOURED ONLY BY `card` / `editable-card` — the pill strip floats by design and the `line` strip's body is the `Card` it lives in (`<Card tabList>`), which is already joined; on any other variant it emits no attribute and changes no pixel. Retune it from `--tabs-panel-{background,border-width,radius,space-inset}`; `--tabs-panel-background` is read by the body AND by the merged tab edge, so the two can never disagree.",
+      "name": "bodied",
+      "type": "boolean"
+    },
+    {
+      "description": "Ant Design `tabBarExtraContent`, renamed to the library's `extra` slot and made logical: antd's `left`/`right` keys are `start`/`end` here. A bare node goes to `end` (antd's own default). Renders a bar row beside the strip; without it — and without an add button — no extra wrapper is emitted at all. Under `bodied` the bar row aligns its contents to the JOINED edge instead of centring them, so the add button and the extra sit on the rail rather than hanging across it.",
+      "name": "extra",
+      "type": "React.ReactNode | { start?: React.ReactNode; end?: React.ReactNode }"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Ant Design `destroyOnHidden`. `true` (the default here, and Radix's own behaviour) unmounts a panel the moment it stops being selected. `false` keeps EVERY panel mounted and only hides the inactive ones, so a live chart, a scroll position or an unsent form draft survives a tab switch. The default is deliberately the opposite of antd's, which keeps panels mounted.",
+      "name": "destroyOnHidden",
+      "type": "boolean"
+    },
+    {
+      "description": "Ant Design `onEdit`. Required for `variant=\"editable-card\"` to grow its controls. `remove` passes the item's own `value`; `add` passes the click event. Tabs never mutates `items` itself — the consumer owns the list.",
+      "name": "onEdit",
+      "type": "(target: string | React.MouseEvent<HTMLButtonElement>, action: \"add\" | \"remove\") => void"
+    },
+    {
+      "description": "Ant Design `addIcon` — replaces the default + on the editable-card add button.",
+      "name": "addIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Ant Design `hideAdd` — keep editable-card's remove shortcuts but drop the add button.",
+      "name": "hideAdd",
+      "type": "boolean"
+    },
+    {
+      "description": "Ant Design `removeIcon` — the strip-wide default glyph on `editable-card`'s remove shortcut. An item's own `closeIcon` still wins over it, which is antd's precedence. It replaces the glyph only: the × stays an `aria-hidden` pointer shortcut inside the tab and the announced route stays Delete/Backspace, so a custom icon never becomes a second focusable control inside a `role=\"tab\"`.",
+      "name": "closeIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "defaultValue": "\"scroll\"",
+      "description": "What the trigger strip does when there are more tabs than fit — Ant Design's `more`, mapped onto the `overflow` vocabulary Toolbar already uses for the same question rather than re-spelled. `scroll` (default, and what every strip does today) keeps one bounded row that scrolls its own inline overflow, with the active (or, under manual activation, focused) trigger re-pinned into view. `menu` keeps all of that AND puts a real named button beside the strip listing the tabs currently outside the scrollport; choosing one selects it. DIVERGES FROM ANTD DELIBERATELY: antd REMOVES the overflowing tabs from the bar, but the WAI-ARIA APG tab pattern requires the tablist to own every tab and a `display: none` tab cannot take roving focus — so here every tab stays in the strip and the menu is an ADDITIONAL pointer route, not a relocation. The default is not `menu` because switching it would change the rendered bar for every existing consumer at once.",
+      "name": "overflow",
+      "type": "\"scroll\" | \"menu\""
+    },
+    {
+      "description": "Ant Design `onTabClick`. POINTER activation of a trigger, carrying the DOM event — that is what makes it a different prop from `onValueChange` rather than a second spelling of it. Keyboard activation is NOT routed here: under `activationMode=\"manual\"` the arrow keys move focus without activating, so a key-driven \"click\" would be a fiction. Use `onValueChange` for the selection, whatever moved it. Note that `onValueChange` also fires when the ALREADY SELECTED tab is clicked, so `onTabClick` is not the way to detect a re-click.",
+      "name": "onTabClick",
+      "type": "(value: string, event: React.MouseEvent<HTMLButtonElement>) => void"
+    },
+    {
+      "defaultValue": "{ inkBar: true, tabPane: false }",
+      "description": "Ant Design `animated`, ported from antd's own `useAnimateConfig`: `false` turns both switches off, `true` turns both ON, an object merges over `{ inkBar: true }`. `inkBar` is the `line` variant's active bar cross-fading between triggers (on by default, and the default is byte for byte what the strip already painted). `tabPane` fades the panel in when the selection moves — antd's motion really is an opacity fade and nothing else, so this is a port, not an invention; it reads `--tabs-pane-motion-duration`. Both switches are additionally off under `prefers-reduced-motion`, which antd's are not. What is NOT ported is antd's fade-OUT of the leaving pane (it parks the old node `position: absolute; inset: 0`): this component destroys a hidden panel by default, so there is usually no leaving node.",
+      "name": "animated",
+      "type": "boolean | { inkBar?: boolean; tabPane?: boolean }"
+    },
+    {
+      "defaultValue": "{ size: \"full\", align: \"center\" }",
+      "description": "Ant Design `indicator`, governing the `line` variant's active bar only (no other variant has one). `align` keeps antd's name AND its values, which are already logical, so it reads the shared TextAlignProp vocabulary. `size` keeps antd's name with this library's values: antd takes `number | (origin) => number` — a px length or a function of the measured tab width — and neither can enter this API (a literal is what `no-arbitrary-spacing` stops; an origin function is the free-form escape hatch docs/DESIGN-AUTHORITY.md refuses). `full` is the whole trigger (antd's default, today's bar) and `label` is the trigger's content box, i.e. minus its own inline padding — which is what `size: (origin) => origin - 2 * padding` is written to produce. `align` only has anything to place once `size` is shorter than the trigger, exactly as upstream.",
+      "name": "indicator",
+      "type": "{ size?: \"full\" | \"label\"; align?: \"start\" | \"center\" | \"end\" }"
+    },
+    {
+      "description": "Ant Design `moreIcon` (its `more.icon` in 6.x; the flat prop is still published there) — the glyph on the `overflow=\"menu\"` button. Flat here for the same reason `addIcon` and `closeIcon` are: `overflow` names the BEHAVIOUR, the icon is a slot. The button keeps its own `aria-label`, so a custom glyph never costs the control its accessible name.",
+      "name": "moreIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Ant Design `onTabScroll`, fired whenever the trigger strip's own scrollport moves — a swipe, a wheel, or the component re-pinning the active trigger (antd reports its own re-pins too). LOGICAL VALUES instead of antd's `left | right | top | bottom`: two of those four are just the other axis of the same event, and upstream's pair is read off the sign of an inner transform, so in an RTL strip its `left` means the opposite of what it means in LTR. `start`/`end` say the same thing on whichever axis and in whichever direction the strip is written. Only fires for the `items` API, which is the path that owns the strip element.",
+      "name": "onTabScroll",
+      "type": "(info: { direction: \"start\" | \"end\" }) => void"
+    }
+  ],
+  "related": [
+    "Steps (@godxjp/ui/navigation) — sequential wizard/progress indicator. Use Steps when order and completion state matter (multi-step forms, onboarding flows); use Tabs when panels are non-sequential and any tab can be visited freely.",
+    "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
+    "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a DropdownSidebar is a lighter alternative to a full tab strip."
+  ],
+  "rules": [],
+  "storyPath": "navigation/Tabs.stories.tsx",
+  "subParts": [
+    "TabsContent",
+    "TabsList",
+    "TabsTrigger"
+  ],
+  "tagline": "Radix tab container with optional Ant-style `items` API. Pass items for the common full TabsList/TabsContent set, or compose TabsList/TabsTrigger/TabsContent manually when you need per-panel control.",
+  "usage": [
+    "DO pass `items` when all tab content is known up front — each item needs a unique `value`, trigger `label`, and panel `content`.",
+    "When not using `items`, compose the full four-part tree — `<Tabs>` root, `<TabsList>` trigger bar, one `<TabsTrigger value=\"…\">` per tab, one `<TabsContent value=\"…\">` per matching trigger.",
+    "DO: use `defaultValue` (uncontrolled) for simple local state; use `value` + `onValueChange` together (controlled) when the active tab is driven by URL query params, router state, or parent state. NEVER set both simultaneously.",
+    "DO use `variant` on Tabs when using `items`; when composing manually, set `variant` on `TabsList`.",
+    "DO: pass `orientation=\"vertical\"` to `<Tabs>` (not to `TabsList`) for a side-rail layout — the CSS group classes on root and triggers respond automatically, so no extra className gymnastics are needed.",
+    "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles, including the token-owned indicator bar for the `line` variant. Adding your own `border-b-2 border-primary` (or a page-local `ring-0` override to remove one) breaks the design; retune --tabs-indicator-{background,size,offset} in the service theme instead.",
+    "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that is now the framework's job.",
+    "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
+    "DON'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers' `data-state` and re-pins the active (or focused, under `activationMode=\"manual\"`) trigger with `scrollIntoView({ block: \"nearest\", inline: \"nearest\" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before that, a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected=\"true\"`.",
+    "DO reach for `variant=\"editable-card\"` + `onEdit` instead of hand-rolling a closable tab bar. The × inside a tab is an `aria-hidden` pointer shortcut and the announced keyboard route is Delete/Backspace on the focused tab (`aria-keyshortcuts`) — a real <button> there is an axe failure twice over (`aria-required-children`, because a tablist may own nothing but tabs, and `nested-interactive`). The ADD button is a real button because it sits outside the tablist.",
+    "DO use `destroyOnHidden={false}` when a hidden panel must keep state — a mounted chart, a scroll position, an unsent draft. Note it is the opposite default from Ant Design: here panels are destroyed unless you say otherwise.",
+    "DO add `bodied` whenever a `card`/`editable-card` strip stands on its own (a saved-views ribbon over a list). DON'T wrap the panel in your own `<Card>` to give it a surface — that is the measured defect `bodied` exists for: it adds a SECOND border at the Card radius over the strip↔panel gap and the pair reads as two stacked boxes. The one place you do not need it is inside `<Card tabList>`, where the card's own border already wraps strip and body.",
+    "DO put a tab's count in `count` (+ `countLabel`), not inside `label`. A number concatenated into the label loses the pill's size, its tone as the tab is selected/deselected, and — measured on Button in gh#734 — the accessible name: the digits run straight onto the label («未対応12»). With the slot the tab announces \"未対応, 12 件の課題\". DON'T drop a `<Badge>` into `label` to get the same look; there is one counting API and Button, Toggle and Tabs all draw it.",
+    "DON'T go looking for antd's `tabBarGutter`, `tabBarStyle`, `renderTabBar`, `classNames`/`styles` or `more.popupRender` — each is declined on the record, not missing. The gutter between triggers is a theme knob (`--tabs-list-line-space-gap`, `--tabs-card-list-space-gap`; the pill strip has no gutter by design) because a px number is a constant, not a semantic axis; the other four exist upstream to let a consumer replace the rendered markup, and this library answers that layer with tokens (docs/DESIGN-AUTHORITY.md refuses them by name).",
+    "DON'T re-centre the strip with a `justify-center` utility. `TabsList` aligns with `safe center` on purpose: plain centring splits the overflow across BOTH edges while `scrollLeft` only ever covers the trailing one, so the leading tab ends up permanently outside the scrollport and no gesture reaches it. `safe` keeps the centred look while the tabs fit and falls back to start alignment the moment they don't."
+  ],
+  "useCases": [
+    "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
+    "Controlled tabs driven by URL search params (e.g. `?tab=history`) where the parent reads/writes the active key and passes it to `value` / `onValueChange`.",
+    "Vertical side-rail navigation inside a `SplitPane` or settings layout where `orientation=\"vertical\"` on the root and `variant=\"line\"` on `TabsList` combine to produce a sidebar-style tab strip.",
+    "Lightweight widget tabs on a dashboard card — e.g. switching a `DataTable` between 'Pending' and 'Paid' invoice views — where an uncontrolled `defaultValue` is sufficient and no URL state is needed.",
+    "Admin entity profile pages (company, partner, employee) where each `TabsContent` wraps an Inertia deferred prop panel, lazy-loading expensive data only when the tab is first activated."
+  ]
+}

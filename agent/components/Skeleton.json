@@ -1,0 +1,57 @@
+{
+  "example": "import { Skeleton } from \"@godxjp/ui/feedback\";\n\n<Skeleton className=\"h-6 w-48\" />\n\n// The same component is the antd namespace:\n<Skeleton.Button size=\"sm\" />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Skeleton",
+  "props": [
+    {
+      "description": "Size and layout classes for the block.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Swap the resting pulse for a travelling sheen (Ant Design's `active`). The block already pulses without it — `active` picks the louder of the two motions, it does not turn motion on. Both stop under prefers-reduced-motion.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Pass `false` to render `children` INSTEAD of the placeholder, so a call site can swap without a ternary. Omitting it keeps the placeholder (Ant Design's `loading || !('loading' in props)`).",
+      "name": "loading",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "SkeletonArticle",
+    "SkeletonRows",
+    "SkeletonTable",
+    "SkeletonStat",
+    "SkeletonButton",
+    "SkeletonInput",
+    "SkeletonAvatar",
+    "SkeletonNode",
+    "SkeletonImage",
+    "Activity — the ambient 'working…' mark. Skeleton is a SHAPE standing in for content that has not arrived; Activity is motion beside content that is already there."
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "subParts": [
+    "SkeletonDetail",
+    "SkeletonStat"
+  ],
+  "tagline": "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
+  "usage": [
+    "DO use Skeleton for a custom block when SkeletonRows/Table/Stat/Article do not match the final layout.",
+    "DO reach for a shaped preset before sizing a bare block by hand: SkeletonButton, SkeletonInput, SkeletonAvatar, SkeletonNode and SkeletonImage already carry the box of the control they stand in for, from the --control-height tier.",
+    "DON'T use a spinner overlay for skeletonable page content.",
+    "DON'T reuse Skeleton as an ambient 'something is happening' mark — it hard-codes aria-busy + aria-live because it means CONTENT IS LOADING. Use Activity for ambient motion."
+  ],
+  "useCases": [
+    "Single loading line",
+    "Custom card media placeholder",
+    "Inline metadata placeholder"
+  ]
+}

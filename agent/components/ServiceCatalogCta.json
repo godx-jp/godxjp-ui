@@ -1,0 +1,46 @@
+{
+  "example": "import { ServiceCatalogCta } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<ServiceCatalogCta\n  title={t(\"addFromCatalog\")}\n  action={\n    <Button asChild variant=\"outline\">\n      <a href={catalogUrl}>{t(\"viewCatalog\")}</a>\n    </Button>\n  }\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "ServiceCatalogCta",
+  "props": [
+    {
+      "defaultValue": "Plus",
+      "description": "Decorative glyph above the title, rendered aria-hidden. Override only when the route is not an add/browse action.",
+      "name": "icon",
+      "type": "LucideIcon"
+    },
+    {
+      "description": "Localized invitation, e.g. the label of the catalog route this tile opens.",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "The real navigation control — normally a Button, or Button asChild wrapping the catalog link. The tile itself is not clickable.",
+      "name": "action",
+      "required": true,
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "ServiceLauncherCard — the real service tile this one accompanies; it carries status, metadata and the launch action.",
+    "ServiceLauncherCardSkeleton — the loading placeholder for the launcher tiles, documented under ServiceLauncherCard.",
+    "EmptyState — the zero-state primitive to reach for when the grid has NO services at all; this CTA is a companion to existing tiles, not an empty state."
+  ],
+  "rules": [
+    40
+  ],
+  "storyPath": "data-display/ServiceLauncherCard.stories.tsx",
+  "tagline": "Dashed companion tile that closes a launcher grid with the real catalog/add route — same Card geometry as ServiceLauncherCard, no status or metadata.",
+  "usage": [
+    "DO render it as the LAST child of the same ResponsiveGrid that holds the ServiceLauncherCards, so it inherits the 3→2→1 ladder and lines up with the tiles it follows.",
+    "DO give it a route that already exists. It is an invitation to a real catalog/add screen; a tile whose action goes nowhere reads as a broken service.",
+    "DON'T use it as an empty state for a grid that has no services — an empty launcher grid needs Empty, which explains the absence, not a CTA that implies there is something to add.",
+    "DON'T rebuild it as a Card with a dashed border and utility padding: the dashed surface, the medallion and the internal rhythm are token-owned (--card-service-launcher-*), same as the launcher tile."
+  ],
+  "useCases": [
+    "Closing tile of an organization console launcher grid, linking to the service catalog.",
+    "Add-a-service affordance beside the subscribed applications an admin already has."
+  ]
+}

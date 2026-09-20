@@ -135,7 +135,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | TreeSelect | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Transfer | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Upload | ✓ | ✓ | · | · | · | · | · | · | · | · |
-| UploadCropDialog | ✓ | · | · | · | · | · | · | · | · | · |
+| UploadCropDialog | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | ColorPicker | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Slider | ✓ | N/A | · | · | · | · | · | · | · | · |
 | Calendar | ✓ | N/A | · | N/A | · | · | · | · | · | · |

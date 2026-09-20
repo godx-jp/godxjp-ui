@@ -1,0 +1,42 @@
+{
+  "example": "import { SkeletonNode } from \"@godxjp/ui/feedback\";\n\n<SkeletonNode />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonNode",
+  "props": [
+    {
+      "description": "Centred content, e.g. a glyph.",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "SkeletonImage",
+    "Skeleton"
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Square media/custom placeholder (also Skeleton.Node); children centre inside it.",
+  "usage": [
+    "DO use it as the generic square when no other preset matches — a chart slot, a map tile, a QR code.",
+    "DON'T put text in it; it is a shape, and its container is already aria-busy."
+  ],
+  "useCases": [
+    "Chart panel placeholder",
+    "Map / canvas slot",
+    "QR or barcode slot"
+  ]
+}

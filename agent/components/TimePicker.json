@@ -1,0 +1,200 @@
+{
+  "example": "import { FormField, TimePicker } from \"@godxjp/ui/data-entry\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { useState } from \"react\";\n\n// Controlled usage inside a React form\nexport function ShiftStartField() {\n  const [startTime, setStartTime] = useState(\"09:00\");\n\n  return (\n    <FormField id=\"shift-start\" label=\"Shift start\" controlWidth=\"9rem\">\n      <TimePicker\n        id=\"shift-start\"\n        name=\"shift_start\"\n        value={startTime}\n        onValueChange={setStartTime}\n        minuteStep={15}\n      />\n    </FormField>\n  );\n}\n\n// Uncontrolled usage inside a native form\nexport function CutoffTimeForm() {\n  return (\n    <form method=\"post\" action=\"/settings/cutoff\">\n      <TimePicker\n        id=\"cutoff\"\n        name=\"cutoff_time\"\n        defaultValue=\"17:00\"\n        minuteStep={30}\n        placeholder=\"hh:mm\"\n      />\n      <Button type=\"submit\">Save</Button>\n    </form>\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "TimePicker",
+  "props": [
+    {
+      "description": "Opt-in wheel selection, skipping disabled entries without closing the panel. Defaults off.",
+      "name": "changeOnScroll",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled panel visibility.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Initial panel visibility.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Panel visibility changes.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Validation appearance; error announces invalid state.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "Shared control surface.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "description": "Shared control sizing.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Disable typing while preserving panel selection.",
+      "name": "inputReadOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Keep invalid draft text on blur; never submit it as a committed value.",
+      "name": "preserveInvalidOnBlur",
+      "type": "boolean"
+    },
+    {
+      "description": "Logical popup placement.",
+      "name": "placement",
+      "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\""
+    },
+    {
+      "description": "Additional panel footer content.",
+      "name": "renderExtraFooter",
+      "type": "() => ReactNode"
+    },
+    {
+      "description": "Ref to the editable input (range start).",
+      "name": "ref",
+      "type": "Ref<HTMLInputElement>"
+    },
+    {
+      "description": "Hour column step, default 1.",
+      "name": "hourStep",
+      "type": "number"
+    },
+    {
+      "description": "Second column step, default 1.",
+      "name": "secondStep",
+      "type": "number"
+    },
+    {
+      "description": "Enable seconds in the panel and canonical value.",
+      "name": "showSeconds",
+      "type": "boolean"
+    },
+    {
+      "description": "Override the locale hour cycle.",
+      "name": "use12Hours",
+      "type": "boolean"
+    },
+    {
+      "description": "HH:mm, HH:mm:ss, h:mm A or date-fns a. Canonical value stays HH:mm or HH:mm:ss.",
+      "name": "format",
+      "type": "string"
+    },
+    {
+      "description": "Forbid individual hours, minutes and seconds. Without it a 開始/終了 pair has no way to stop the end time being set before the start — the columns will happily offer it. Applies to BOTH routes into the value: a disabled option cannot be clicked, is skipped by the arrow keys, and a forbidden time typed into the field is rejected.",
+      "name": "disabledTime",
+      "type": "TimePickerDisabledTimeProp"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Drop disabled options from the columns instead of greying them out (antd's default too). Greyed-out is usually better — a visible-but-refused option tells the reader the rule exists — but a column that is mostly forbidden reads better short.",
+      "name": "hideDisabledOptions",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Offer a \\u201cnow\\u201d action in the panel footer (antd's `showNow`). It is REFUSED, not hidden, when `disabledTime` forbids the current time — the same treatment a forbidden column option gets.",
+      "name": "showNow",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Hold the panel's choices as a DRAFT until a confirm action commits them (antd's `needConfirm`). Default `false` diverges from antd deliberately: this library has always committed on select and closed, and flipping the default would silently add a click to every existing time field. Opt in where the value is expensive to change (a saved shift, a published slot).",
+      "name": "needConfirm",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled value in HH:mm (24h) format. When provided the component is fully controlled — you must update it via `onValueChange`.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial value in HH:mm format. Used only when `value` is not provided.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Called with the canonical HH:mm string whenever the user commits a time (picks from columns or types and blurs/presses Enter). Not called for every keystroke.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Native form field name. Formatted or staged controls manage a hidden canonical value internally; do not add a second hidden field.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "HTML id for the visible input — use with a `<label htmlFor>` for accessibility.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "defaultValue": "hh:mm (i18n fallback)",
+      "description": "Placeholder text shown when the input is empty. Falls back to the i18n key `dataEntry.timePicker.placeholder`.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Disables both the visible input and the clock-icon popover trigger.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "5",
+      "description": "Step for the minute column (1–60). Only multiples of this step appear in the picker; typed values are still free-form and normalized on blur.",
+      "name": "minuteStep",
+      "type": "number"
+    },
+    {
+      "description": "Extra Tailwind classes applied to the outer wrapper `<div>`. Use for width overrides (e.g. `w-32`).",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
+      "name": "allowClear",
+      "type": "boolean"
+    }
+  ],
+  "related": [
+    "DatePicker — use for calendar date selection; combine with TimePicker in a flex row when you need a full datetime. DatePicker emits an ISO date string; TimePicker emits HH:mm.",
+    "Input — the raw primitive TimePicker wraps internally. Use Input directly only when you need a plain text field with no time semantics or popover.",
+    "ColorPicker — another popover-backed input primitive in the same group; structurally similar pattern but for hex colour values."
+  ],
+  "rules": [
+    3,
+    6,
+    13,
+    23
+  ],
+  "storyPath": "data-entry/TimePicker.stories.tsx",
+  "tagline": "Time combobox with hours, minutes, optional seconds, confirmation and 12-hour formatting. Native submission stays canonical 24-hour time.",
+  "usage": [
+    "One trailing icon: empty shows calendar/clock; filled and clearable shows only ×; allowClear=false retains the picker icon. Click the input or ArrowDown to open a filled picker.",
+    "DO give it a name in native forms. It submits HH:mm or HH:mm:ss, regardless of display format; the component manages any hidden canonical field.",
+    "DO use the controlled pattern (`value` + `onValueChange`) in React-managed forms (e.g. useForm). For simple HTML forms without React state, omit `value` and use `defaultValue` for the uncontrolled pattern.",
+    "DON'T pass a raw `<input type='time'>` alongside or instead — this component IS the input, fully accessible (role='combobox', aria-expanded, aria-haspopup) and e2e-testable by filling the text input directly.",
+    "DO pair with a `<label htmlFor={id}>` for screen-reader accessibility — the component renders a plain `<input>` internally that `id` connects to.",
+    "DON'T expect `onValueChange` on every keystroke — it fires only when a valid HH:mm is committed (column pick closes popover; typed value normalised on blur or Enter). Guard downstream logic accordingly.",
+    "DO adjust `minuteStep` for domain needs (e.g. `minuteStep={15}` for scheduling, `minuteStep={1}` for precise entry) — the minute column only shows multiples, but the type-in field accepts any valid HH:mm."
+  ],
+  "useCases": [
+    "Shift/schedule entry forms where workers select start and end times from a scrollable hour/minute grid (use `minuteStep={15}` or `minuteStep={30}`).",
+    "Invoice or transaction timestamp fields that require a 24h HH:mm time alongside a DatePicker — pair the two in a flex row.",
+    "Logistics cut-off time configuration (e.g. 'last order by') where the default `minuteStep={5}` aligns with typical operational granularity.",
+    "Admin settings panels that persist a canonical HH:mm string to the database — the `name` prop makes native form submission trivial.",
+    "Time-range pickers (from/to) — render two TimePicker instances side-by-side with separate controlled values and validate that `to > from` in `onValueChange`.",
+    "E2E-tested forms — test helpers can fill the text input directly (it accepts typed HH:mm) without needing to interact with the popover columns."
+  ]
+}

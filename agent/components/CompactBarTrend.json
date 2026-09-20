@@ -1,0 +1,101 @@
+{
+  "example": "import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";\n\n<CompactBarTrend\n  label={t(\"dashboard.newOrganizations7d\")}\n  description={t(\"dashboard.newOrganizationsHint\")}\n  data={trend}\n  categoryKey=\"date\"\n  valueKey=\"count\"\n  emphasizedIndex={-1}\n  size=\"xs\"\n  footer={<Text size=\"xs\" tone=\"muted\">{t(\"dashboard.lastUpdated\", { at })}</Text>}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/charts/compact-bar-trend",
+  "name": "CompactBarTrend",
+  "props": [
+    {
+      "description": "Row data — one bar per row. Any point count (7 is not hard-coded).",
+      "name": "data",
+      "required": true,
+      "type": "ChartDatum[]"
+    },
+    {
+      "description": "Key into each datum holding the category (tick) label.",
+      "name": "categoryKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Key into each datum holding the plotted numeric value.",
+      "name": "valueKey",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Accessible name + visible caption.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Paint `label` as a visible caption. Set false when a CardTitle or section heading already says it — the caption stays in the DOM as sr-only, so role=img keeps its accessible name.",
+      "name": "showCaption",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra context appended to the screen-reader description.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"xs\"",
+      "description": "Plot-height tier (--chart-trend-plot-height-*). xs is the dashboard summary-card density.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "Index of the emphasized 'current' bar. Negative counts from the end (-1 = latest); out of range = no emphasis. Also annotated in the text alternative, so it is never colour-only.",
+      "name": "emphasizedIndex",
+      "type": "number"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Render the category tick labels under the plot.",
+      "name": "showCategoryLabels",
+      "type": "boolean"
+    },
+    {
+      "description": "Locale-aware formatting for the values in the text alternative.",
+      "name": "numberFormat",
+      "type": "Intl.NumberFormatOptions"
+    },
+    {
+      "description": "Activity footer slot below the plot, rendered OUTSIDE the role=img graphic so links/buttons in it stay reachable.",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Message shown when `data` is empty.",
+      "name": "emptyMessage",
+      "type": "string"
+    },
+    {
+      "description": "Forwarded to the <figure> element.",
+      "name": "ref",
+      "type": "React.Ref<HTMLElement>"
+    }
+  ],
+  "related": [
+    "BarChart — full cartesian bar chart with axes/grid/tooltip/legend (requires the recharts optional peer).",
+    "StatCard — the KPI headline this trend usually sits under.",
+    "Progress — one ratio against a target, not a series over time."
+  ],
+  "rules": [],
+  "storyPath": "charts/CompactBarTrend.stories.tsx",
+  "tagline": "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens. Needs NO recharts. Sparkline / micro-chart / activity pulse / KPI trend strip.",
+  "usage": [
+    "DO import from the isolated entry: `import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";` — unlike the charts barrel, this path never links modules that require the optional `recharts` peer.",
+    "DO reach for it INSIDE a dashboard summary card (a 7-day signup/organization/activity strip under a StatCard headline) — that is the density `size=\"xs\"` is tuned for.",
+    "DO mark the current period with `emphasizedIndex={-1}` (or an explicit index); the highlight is duplicated in the screen-reader text alternative, so it never depends on colour alone.",
+    "DO retheme through the `--chart-trend-*` tokens (bar gap/radius/width, plot heights, muted + emphasis fills, opt-in baseline). NEVER add page-local CSS, an inline height calculation, or a hardcoded colour.",
+    "DON'T use it when you need axes, a grid, tooltips, multiple series, or a continuous trend — that is BarChart / LineChart / AreaChart (recharts peer). DON'T fake bars with styled divs in the app.",
+    "DON'T put interactive content in the plot: anything clickable goes in `footer`, which renders outside the `role=\"img\"` graphic."
+  ],
+  "useCases": [
+    "Seven-day new-organizations / new-users trend inside an admin dashboard summary card (SCR-201).",
+    "Weekly activity pulse beside a KPI headline, where the SHAPE matters more than exact figures.",
+    "A dependency-constrained app (no recharts) that still needs a token-driven chart."
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "example": "import { AppShell, Sidebar } from \"@godxjp/ui/layout\";\nimport { LayoutDashboard, Users } from \"lucide-react\";\nimport { router } from \"@inertiajs/react\";\n\nconst sidebar = (\n  <Sidebar\n    activeId=\"/dashboard\"\n    onSelect={(id) => router.visit(id)}\n    sections={[{ items: [\n      { id: \"/dashboard\", label: \"ダッシュボード\", icon: LayoutDashboard },\n      { id: \"/users\", label: \"ユーザー\", icon: Users },\n    ] }]}\n    product={{ name: \"JOVY CRM\", role: \"本部\", color: \"var(--color-primary)\" }}\n  />\n);\n\nexport function CrmLayout({ children }: { content: React.ReactNode }) {\n  return <AppShell sidebar={sidebar}>{children}</AppShell>;\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AppShell",
+  "props": [
+    {
+      "description": "Optional sidebar node, typically a Sidebar. Omit or pass null/false to remove its landmark and grid track. Logo remains in the topbar; navRail is independent.",
+      "name": "sidebar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Main page content rendered in <main>.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "Full topbar override; else a rail is built from topbarLeft/topbarRight/logo. Omit ALL FOUR bar slots (topbar, topbarLeft, topbarRight, logo) and there is NO `<header class=\"app-topbar\">` in the DOM at all: the shell publishes `data-topbar=\"none\"` on its root and the bar's grid row collapses to zero, for a shell whose PAGE owns the top row. The one exception is the AppShell-owned drawer trigger — at or below 900px the header comes back carrying the hamburger alone, so navigation is never unreachable.",
+      "name": "topbar",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Right slot of the auto-built topbar rail (user menu, switcher).",
+      "name": "topbarRight",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Left slot of the auto-built topbar rail.",
+      "name": "topbarLeft",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The shell's brand lockup. ALWAYS rendered — unlike topbarLeft/topbarRight it survives a custom `topbar`, because identity belongs to the frame, not to the bar's contents. WHERE it lands follows `topbarSpan`, the axis that already says who owns the top-left corner: `content` puts it at the sidebar's head, aligned to that track; `full` puts it in the bar beside the space-level chrome. Do not place it yourself in `Sidebar.brand` or a `Topbar` slot — that pins it to one arrangement while the axis moves the rest of the shell.",
+      "name": "logo",
+      "type": "ReactNode"
+    },
+    {
+      "description": "The brand node a NARROW bar gets instead of `logo` — a mark without the wordmark, a shorter lockup, a different viewBox (gh#728). The brand cell already shrinks without it: below the sm step it is capped at --app-shell-brand-compact-max-inline-size (the bar's own height) and anything past the cap is cropped from the inline-end, which is all a stylesheet can do to artwork it did not author — viewBox is an ATTRIBUTE, which is why consumers were re-cropping their own SVG through a media-query hook. Pass a node here to CHOOSE what the narrow bar shows. Both nodes are rendered and the breakpoint drops one with display:none, so exactly one brand is ever in the accessibility tree. Applies to the brand IN THE BAR (topbarSpan=\"full\", or a shell with no sidebar); under the default content span the brand sits at the rail's head, which the drawer has already replaced at that width.",
+      "name": "logoCompact",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"sm\"",
+      "description": "The step at which `logoCompact` takes over — Flex hideBelow's vocabulary on the same canonical scale (sm 40rem · md 48rem · lg 64rem · xl 80rem). Ignored without `logoCompact` (gh#728).",
+      "name": "logoCompactBelow",
+      "type": "BreakpointProp"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Collapse the sidebar to icon-only mode.",
+      "name": "sidebarCollapsed",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"drawer\"",
+      "description": "Navigation strategy below the canonical 900px breakpoint. drawer exposes the accessible mobile Sheet; docked retains the token-sized sidebar grid track and suppresses the redundant drawer trigger.",
+      "name": "responsiveNavigation",
+      "type": "\"drawer\" | \"docked\""
+    },
+    {
+      "defaultValue": "\"content\"",
+      "description": "Which columns the topbar spans. content starts it beside the sidebar, so the rail runs the full window height and the bar sits over the content only. full runs the bar edge to edge with the rail beneath it, for a bar carrying space-level chrome (global search, account, notifications) that outranks the current section. full also renders the header before the aside so keyboard order follows the visual order.",
+      "name": "topbarSpan",
+      "type": "\"content\" | \"full\""
+    },
+    {
+      "description": "A SECOND navigation column, narrower than `sidebar` and placed before it — the workspace/organization switcher shape (Slack, Teams, Discord): rail → sidebar → content. THE THREE COLUMNS ARE THREE SCOPES, and that is what decides where a control goes. The rail is PLATFORM scope: what is true across every app in the organization — which organization, which app, notifications, messages, events, organization settings, cross-app shortcuts. The sidebar is APP scope: this app's own sections, channels, routes. The topbar is PAGE scope: where you are and what you can do here. App navigation never goes in the rail and a platform switch never goes in the sidebar; a destination that would fit both belongs to the rail, because it survives changing apps. A rail repeating the sidebar's own entries is a second chrome band carrying the first one's rank, just vertical. Passing a node adds the grid track and publishes `data-nav-rail` on the root; omitting it leaves the two-column shell unchanged. ONE THICKNESS, BOTH AXES: `--app-shell-nav-rail-width` (2.5rem) and `--app-shell-nav-rail-height`, which resolves to it, so the rail is the same measure on every edge and a service retunes both with one line. Deliberately not the collapsed sidebar's 4rem — at equal widths the two nav tracks fuse into one block when the sidebar collapses. THE RAIL SIZES ITS OWN CELLS through `--app-shell-nav-rail-item-size` (2.25rem): a control carries its own band token, so narrowing the TRACK alone does not narrow it, it CLIPS it (the rail clips) — the same relationship the bar has with TopbarItem, which stretches to the bar rather than the other way round. `@media (pointer: coarse)` lifts the cell to the 44px tap floor of rule #24 and the track with it. Fully orthogonal to `topbarSpan` — the rail says how many navigation COLUMNS exist, `topbarSpan` says how far the BAR reaches, and all four combinations are supported. `sidebarCollapsed` folds the sidebar track only; the rail keeps its width (the Slack behaviour). Rendered as its own `complementary` landmark, and its content is added to the mobile drawer automatically.",
+      "name": "navRail",
+      "type": "ReactNode"
+    },
+    {
+      "defaultValue": "\"start\"",
+      "description": "WHICH EDGE the rail sits on. `start` (default) and `end` are the INLINE edges — logical, so an RTL document mirrors them with no `[dir]` rule, because grid columns lay out in the inline direction. `top` and `bottom` are the BLOCK edges: the rail becomes a full-measure horizontal strip and the shell grows a ROW instead of a column, which is the phone tab-bar shape at the bottom and a platform band above the app's own bar at the top. THE SCOPE CONTRACT DOES NOT MOVE WITH IT — wherever it sits, the rail is platform scope and the sidebar is app scope; the edge is a presentation choice, not a re-ranking. Thickness follows the orientation (`--app-shell-nav-rail-width` as a column, `--app-shell-nav-rail-height` as a strip), and `sidebarCollapsed` folds the sidebar track only at every position.",
+      "name": "navRailPosition",
+      "type": "\"start\" | \"end\" | \"top\" | \"bottom\""
+    },
+    {
+      "description": "Rail content pinned to its FAR end — the counterpart of Sidebar's `footer`, and the tray end of a taskbar: appearance, settings, the account glyph. It follows the orientation, so it is the bottom of a column and the inline-end of a strip, and it stays put while `navRail` scrolls. A SLOT rather than \"whatever you put last\", because pinning needs an auto margin on whichever axis the rail currently runs — geometry that would otherwise land in consumer CSS, which this library does not accept. It reaches the mobile drawer with the rest of the rail; a control that exists on only some viewports is a trap, not a control. Ignored without `navRail`: there is no rail to pin it to.",
+      "name": "navRailEnd",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Accessible name for the `navRail` landmark. Defaults to the localized 'Workspaces'. The rail and the sidebar are two `complementary` landmarks on one page, so ARIA requires distinct names; the shell supplies both defaults so the two columns of equal rank behave the same way.",
+      "name": "navRailLabel",
+      "type": "string"
+    },
+    {
+      "description": "App-level footer outside the main content area.",
+      "name": "footer",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Breadcrumb trail rendered in the topbar header for back-navigation.",
+      "name": "breadcrumb",
+      "type": "BreadcrumbProp"
+    },
+    {
+      "description": "Navigation shown in the AppShell-owned mobile drawer at or below 900px (where the docked sidebar is hidden). Defaults to the `sidebar` node; pass a tailored menu, or null to opt out.",
+      "name": "mobileNav",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Accessible title for the mobile navigation drawer. Defaults to localized 'Menu'.",
+      "name": "mobileNavLabel",
+      "type": "string"
+    },
+    {
+      "description": "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
+      "name": "mobileNavOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Change handler for the mobile drawer open state.",
+      "name": "onMobileNavOpenChange",
+      "type": "(open: boolean) => void"
+    }
+  ],
+  "related": [
+    "AppShell — opinionated wrapper that composes AppShell + a frozen default Topbar in three props (menu, children, breadcrumb). Use AppShell for quick scaffolding when the default GodX product chip and no-op search/notification handlers are acceptable; switch to AppShell directly the moment you need a custom entity switcher, real onSearchOpen, user slot, or any topbar configuration.",
+    "Sidebar — the canonical node to pass as AppShell's `sidebar` prop; owns activeId, collapsible submenu groups, collapsed icon-only mode, and section labels. Never hand-roll a nav list inside the sidebar slot.",
+    "Topbar — the structured topbar component to pass to AppShell's `topbar` prop when you need live product/project chip switchers, search, notifications, sidebar toggle, user avatar, or rightSlot extras. A custom `topbar` replaces the DEFAULT bar layout, so `topbarLeft`/`topbarRight` are ignored — but `logo` is not: the shell always renders it, and `topbarSpan` decides whether it lands in the bar or at the sidebar's head.",
+    "PageContainer — the mandatory direct child inside AppShell's `children` for every page; provides title, subtitle, extra actions, breadcrumb, footer, variant (flush/narrow/ghost), and density. Never render raw content directly as AppShell's child without a PageContainer wrapper."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "layout/AppShell.stories.tsx",
+  "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer.",
+  "usage": [
+    "useAppShellNavigationMode() returns drawer/docked at the same 56.25rem boundary as AppShell. The root also publishes data-navigation. Use this instead of a consumer media query.",
+    "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
+    "DO rely on AppShell's OWNED mobile drawer at or below 900px (NOT the Tailwind `lg` 1024px step — the shipped media query is `width <= 56.25rem`): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
+    "DO set `responsiveNavigation=\"docked\"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.",
+    "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
+    "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — `topbarLeft`/`topbarRight` are then ignored (they are slots of the DEFAULT bar layout, and a custom `topbar` IS replacing that layout; a dev-mode warning names them). `logo` is NOT one of them: it is always rendered, because brand identity belongs to the frame rather than to the bar's contents. Two repos passed both for months and got no logo at all — no error, no warning, and a bar that still looked right because it had other content.",
+    "DO pass `logo` and let the shell place it — do NOT put the lockup in `Sidebar`'s `brand` slot or hand-position it in a `Topbar` slot. THE TOP-LEFT CORNER BELONGS TO WHOEVER `topbarSpan` SAYS: under `content` the rail runs the full window height and the brand sits at the sidebar's head, aligned to that track; under `full` the bar runs edge to edge and the brand goes in the bar with the rest of the space-level chrome. Placing it yourself pins it to one of those answers, and the axis then moves the rest of the shell out from under it (measured on a shipped consumer: the logo floating in the content column at x=280, indented 24px past the rail it should have sat above).",
+    "DO give a wide brand lockup a narrow-bar answer with `logoCompact` instead of cropping your own artwork in the app: `<AppShell topbarSpan=\"full\" logo={<FullLockup />} logoCompact={<MarkOnly />} />` swaps the NODE below the `sm` step, which is the only way to change a `viewBox` (no stylesheet can set an attribute). Without it the brand cell still gives room back — it is capped at --app-shell-brand-compact-max-inline-size below that step and cropped from the inline-end — where before it kept its intrinsic width at every viewport: measured with a 6:1 lockup at 390px, brand 143.7px, `.ui-topbar` 150.3px, `.ui-topbar-start` width 0 and the end cluster's last cell painting at x=384.8 on a 390px viewport (gh#728).",
+    "DO build a chat / mail / IDE shell by omitting ALL FOUR bar slots (`topbar`, `topbarLeft`, `topbarRight`, `logo`) — a shell whose PAGE owns the top row. AppShell then renders no `<header class='app-topbar'>` and marks its root `data-topbar='none'`, so the bar's grid row collapses to zero and the page header IS the first row of chrome. Keeping an empty bar instead costs a fixed `--app-shell-bar-height` band plus its border and card background, stacking a second row of chrome (~48px + the page header) over exactly the region a transcript or an editor needs most. The mobile drawer survives: at or below 900px the header returns carrying the hamburger alone.",
+    "DO NOT fake the bar-less shell with `topbar={<></>}` (or `topbarLeft={<div />}`, `logo={null}`) — any defined slot counts as bar content, so the `<header>` is still rendered, still paints its border and background, and still eats the grid row. The trigger is the slot being UNDEFINED; pass nothing at all (a conditional slot must resolve to `undefined`, not to an empty node).",
+    "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
+    "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
+    "DO build a three-column shell (a narrow workspace/org rail, then the channel or section sidebar, then content) by passing `navRail` — NEVER by putting two columns inside the single `sidebar` slot. Hand-rolling it hits two measured traps: `Sidebar` renders `.sb-root { display: contents }`, so two Sidebars dropped side by side dissolve into one flex row and both collapse to zero unless each is separately wrapped in its own flex-column box; and sizing the one available track for two columns means overriding `--app-shell-sidebar-width`, which is how a shipped consumer moved its content edge 64px between routes. `navRail` owns the track, so neither is needed.",
+    "DO leave `sidebarCollapsed` wired to the sidebar alone when a `navRail` is present — collapse folds the sidebar track (16rem → 4rem) and the rail keeps its width, so the rail's destinations stay reachable while collapsed. That is the Slack behaviour and it is the shell's, not something to reproduce with consumer CSS.",
+    "DO NOT pass `mobileNav` just to re-add the rail on mobile — when `navRail` is present the drawer already defaults to the rail followed by the sidebar, because BOTH docked columns are hidden below 900px and a `sidebar`-only default would silently delete every app-level destination the rail carries.",
+    "DO NOT nest a second AppShell or AppShell inside AppShell's children — AppShell renders the root `app-root` div; nesting shells breaks the CSS grid layout.",
+    "DO NOT add padding directly to children expecting it to reach the viewport edge — AppShell's `<main>` is a scroll container; use <PageContainer> (or <PageContainer.Inset> inside a flush PageContainer) inside children to get standard page padding.",
+    "DO let the page be FLUID: inside AppShell a <PageContainer> spans the whole main column at every sidebar state (gh#672 — the old default 80rem cap left a 168px dead strip at a 1512px viewport once the sidebar collapsed, and cut a sticky footer short). A service that wants ONE bounded column sets `--app-shell-page-max-width` once in its theme (default `none`); it caps the page header, toolbar and body — never the `.ui-page-footer` band, which keeps spanning `.app-main` while its CONTENT ends on the end edge of the body (gh#682) — and a page-level `measure` overrides it on that page. Bound a single readable page with `measure=\"narrow\" | \"medium\"`, never a page-local max-width or a wrapper div."
+  ],
+  "useCases": [
+    "Full admin SPA shell: AppShell wraps a <Sidebar> nav rail and a <Topbar> (with productMenu entity-switcher, onSearchOpen, onNotificationsOpen, user avatar) and every Inertia page renders as children inside a <PageContainer>.",
+    "Collapsible-sidebar layout: maintain a `collapsed` boolean in a persistent Inertia layout component, pass it to both AppShell's `sidebarCollapsed` and Sidebar's `collapsed`, wire Topbar's `onToggleCollapsed` to flip it — AppShell handles the CSS transition automatically.",
+    "Multi-tenant accounting app: pass a <Topbar start={<DropdownMenu>…</DropdownMenu>}> to AppShell's `topbar` slot so the legal-entity chip opens an inline switcher without a modal.",
+    "App-level footer (e.g. version/build info, compliance notice): pass a <footer> node to AppShell's `footer` prop — it renders outside `<main>` so it stays pinned below the scroll area.",
+    "Rapid prototype or internal tool where you want a branded shell with minimal topbar: skip the `topbar` prop entirely and use `logo`, `topbarLeft`, `topbarRight` to build the rail declaratively without instantiating <Topbar>.",
+    "Breadcrumb-aware shell: pass a <Breadcrumb items={…}> node to AppShell's `breadcrumb` prop so the breadcrumb strip appears above all page content without each page having to render it separately.",
+    "Chat / mail / IDE shell: a channel rail in `sidebar`, no bar slots at all, and a <PageContainer fill toolbar={…} footer={<Composer/>} stickyFooter> as children — the page's own header is the top row and the shell reserves no band above it, while the 900px drawer still reaches the channel list."
+  ]
+}

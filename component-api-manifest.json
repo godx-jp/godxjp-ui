@@ -19281,6 +19281,43 @@
         }
       ]
     },
+    "UploadCropDialog": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "file",
+          "origin": "owned",
+          "required": true,
+          "type": "File | null",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/upload-crop-dialog.tsx"]
+        },
+        {
+          "name": "onConfirm",
+          "origin": "owned",
+          "required": true,
+          "type": "(cropped: File) => void",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/upload-crop-dialog.tsx"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": true,
+          "type": "(open: boolean) => void",
+          "values": [],
+          "declaredIn": ["src/components/data-entry/upload-crop-dialog.tsx"]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": true,
+          "type": "boolean",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-entry/upload-crop-dialog.tsx"]
+        }
+      ]
+    },
     "VisuallyHidden": {
       "group": "general",
       "props": []

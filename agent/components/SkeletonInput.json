@@ -1,0 +1,51 @@
+{
+  "example": "import { SkeletonInput } from \"@godxjp/ui/feedback\";\n\n<SkeletonInput block />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonInput",
+  "props": [
+    {
+      "defaultValue": "\"md\"",
+      "description": "Height, from the --control-height tier Input sizes from.",
+      "name": "size",
+      "type": "\"xs\" | \"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "defaultValue": "false",
+      "description": "Fill the inline axis — the usual choice inside a FormField column.",
+      "name": "block",
+      "type": "boolean"
+    },
+    {
+      "description": "Travelling sheen instead of the pulse.",
+      "name": "active",
+      "type": "boolean"
+    },
+    {
+      "description": "Extra classes.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Input",
+    "FormField",
+    "SkeletonButton",
+    "Skeleton"
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Field-shaped placeholder (also Skeleton.Input) — five control-heights wide.",
+  "usage": [
+    "DO use it for a form whose initial values are still loading, one per field.",
+    "DON'T render a real Input with a spinner inside it; an empty field invites typing that will be overwritten."
+  ],
+  "useCases": [
+    "Edit form before the record resolves",
+    "Filter bar pre-mount",
+    "Settings panel"
+  ]
+}

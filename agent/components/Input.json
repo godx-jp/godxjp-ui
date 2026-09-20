@@ -1,0 +1,122 @@
+{
+  "example": "import { Input } from \"@godxjp/ui/data-entry\";\n\n<Input id=\"qty\" type=\"number\" placeholder=\"例: 500\" value={value} onValueChange={(e) => setValue(e.target.value)} />",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Input",
+  "props": [
+    {
+      "description": "Validation state the field paints — Ant Design `status`. `error` also reports `aria-invalid`, so the red boundary and what a screen reader hears are one fact; `warning` paints only, because a warning is not a validity failure. antd's `success`/`validating` are not implemented: antd only draws them together with its `hasFeedback` icon slot, which FormField owns here.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "defaultValue": "\"outlined\"",
+      "description": "Chrome level — Ant Design `variant`. `outlined` is the historical field; `filled` swaps the boundary for a tinted surface (dense forms); `borderless` drops both, for a field inside a box that already draws one. antd's fourth member `underlined` is deliberately absent — a single bottom rule is a Material convention and SmartHR, the JP authority here, draws every field as a full box.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\""
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Control height tier — reads the shared `--control-height` ladder.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `prefix` — content pinned INSIDE the start of the field (¥, a unit, a glyph). Unlike `leadingIcon` it is not aria-hidden, because a unit is meaning and not decoration.",
+      "name": "prefix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `suffix` — content pinned INSIDE the end of the field (%, 円). The clear ✕ replaces it while `allowClear` has a value, exactly as it replaces `trailingIcon`.",
+      "name": "suffix",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `addonBefore` — a segment welded OUTSIDE the field's box (`https://`, a currency). Outside is the whole distinction from `prefix`: an addon has its own surface and closes the field's corners on the joined side.",
+      "name": "addonBefore",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "antd `addonAfter` — the same, welded to the end of the box (`.com`, a unit).",
+      "name": "addonAfter",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Character counter — Ant Design `count`. Counts CODE POINTS by default, so one emoji and one 全角 kanji are each worth one. It REPORTS an overrun (`data-exceeded`) and never edits the value: antd's `exceedFormatter` truncates while the user types, which in Japanese cuts a live IME conversion in half.",
+      "name": "count",
+      "type": "{ max?: number; show?: boolean; formatter?: (info: { value: string; count: number; max?: number }) => React.ReactNode; strategy?: (value: string) => number }"
+    },
+    {
+      "description": "Associates with a <label htmlFor>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"text\"",
+      "description": "Native input type.",
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "description": "Placeholder.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "description": "Controlled value.",
+      "name": "value",
+      "type": "string | number"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Opt-in inline ✕ that clears the field while it holds text (works controlled + uncontrolled). Off by default, so existing inputs are unchanged.",
+      "name": "allowClear",
+      "type": "boolean"
+    },
+    {
+      "description": "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
+      "name": "onClear",
+      "type": "() => void"
+    },
+    {
+      "description": "A leading affordance pinned inside the start of the field (e.g. a Mail / Lock / Search glyph) — purely decorative, rendered before the text. Sized to the control via tokens and offset with `ps-9` automatically; never hand-roll an absolutely-positioned icon over a plain Input.",
+      "name": "leadingIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "A trailing affordance pinned inside the field (e.g. a calendar / clock popover trigger). ONE trailing icon shows at a time: when `allowClear` and the field holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both — this is how DatePicker/TimePicker render their open trigger.",
+      "name": "trailingIcon",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Immediate value callback; native onChange remains supported. Shared form bindings are emitted once.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    }
+  ],
+  "related": [
+    "PasswordInput — the password field. It owns the reveal toggle, the caps-lock hint and the autocomplete contract; a raw Input with type=password re-implements all three.",
+    "SearchInput — use instead of Input when the value drives a live filter or search query; SearchInput debounces internally, fires `onSearch` (not `onChange`), and provides a built-in clear button. Never put debounce logic on top of a plain Input.",
+    "Textarea — use instead of Input for multi-line text (notes, descriptions, memo fields). Input is strictly single-line.",
+    "FormField — always compose Input inside FormField when the field needs a visible label, helper hint, or validation error message; FormField handles all a11y wiring so Input stays a pure unstyled-but-styled primitive.",
+    "Select — use instead of Input when the value must come from a fixed or async option list; never render a plain Input and parse free text when the set of valid values is enumerable."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/Input.stories.tsx",
+  "tagline": "Styled wrapper around native <input>; accepts all HTML input attributes. Pair with FormField for labelled fields.",
+  "usage": [
+    "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
+    "DO match the `id` prop on Input to the `id` prop on its parent FormField so that `htmlFor` linkage and the generated helper/error ids are consistent.",
+    "DO use Input in controlled mode (`value` + `onChange`) for forms driven by Inertia's `useForm` or React state; uncontrolled usage (no `value`) is only acceptable for fire-and-forget inline edits where form state is not needed.",
+    "DON'T use a raw `<input>` element — Input adds the full token-based styling (border-input, focus ring, disabled/invalid states, file-slot styling) and the `data-slot='input'` marker that FormField relies on to inject aria attributes.",
+    "DON'T hand-roll an error border or red ring with className — Input reads `aria-invalid` (set by FormField) and applies `border-destructive` + `ring-destructive/20` automatically; adding manual destructive classes will conflict.",
+    "DON'T use Input for multi-line text — use Textarea; DON'T use it for filtered/debounced search — use SearchInput which fires `onSearch` after a debounce and includes a clear button."
+  ],
+  "useCases": [
+    "Single-line text fields in create/edit forms — invoice reference numbers, company names, contact emails, coupon codes, amounts typed as text (pair with `type='number'` for numeric entry).",
+    "Inline editable cells or quick-edit dialogs where a single short value needs to be changed (e.g. editing a journal entry memo or an account code) and full Select/DatePicker overhead is unnecessary.",
+    "File upload trigger when wrapped with `type='file'` — the file-slot classes style the native file button consistently without any extra wrapper.",
+    "Password entry fields (`type='password'`) in auth or settings screens, where the styled focus ring and disabled-state opacity are needed without building a custom control.",
+    "Numeric/currency input in accounting forms (`type='number'`, `inputMode='decimal'`) for quantities, exchange rates, or tax amounts where a free-form numeric entry is required rather than a slider or stepper."
+  ]
+}

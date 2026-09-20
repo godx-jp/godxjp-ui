@@ -49,11 +49,11 @@ describe("pnpm regen (gh#801)", () => {
     );
   });
 
-  it("finds SEVEN today — the number is asserted so an eighth is noticed", () => {
-    // Not because seven is correct forever, but because the failure mode is a derivation that
+  it("finds EIGHT today — the number is asserted so a ninth is noticed", () => {
+    // Not because eight is correct forever, but because the failure mode is a derivation that
     // quietly matches FEWER things after someone renames a script. A count that changes makes
     // that visible; a runner that silently shrinks does not.
-    expect(checkersWithGenerators()).toHaveLength(7);
+    expect(checkersWithGenerators()).toHaveLength(8);
   });
 
   it("refuses to pass silently if the derivation ever matches nothing", () => {

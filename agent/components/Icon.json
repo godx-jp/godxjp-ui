@@ -1,0 +1,60 @@
+{
+  "example": "import { Lock, ShieldCheck } from \"lucide-react\";\nimport { Icon, Text } from \"@godxjp/ui/general\";\n\n// decorative — aria-hidden, on the same step as the text beside it\n<Text size=\"sm\">\n  <Icon as={Lock} size=\"sm\" tone=\"muted\" /> {t(\"invoice.encrypted\")}\n</Text>\n\n// the glyph IS the value — give it a name\n<Icon as={ShieldCheck} size=\"md\" tone=\"success\" label={t(\"session.secure\")} />",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Icon",
+  "props": [
+    {
+      "description": "The glyph COMPONENT — `as={Lock}`, not `<Lock />`. Every lucide-react icon qualifies. Icon renders ONTO it (the sized element is the <svg> itself), so no wrapper box enters the row and Button's own `svg` rule still sees a direct svg child.",
+      "name": "as",
+      "required": true,
+      "type": "ComponentType<SVGProps<SVGSVGElement> & RefAttributes<SVGSVGElement>>"
+    },
+    {
+      "defaultValue": "\"md\"",
+      "description": "Step of the nine-step icon scale (10/12/14/16/20/24/36/40/48px at a 16px root — docs/TOKENS.md). NOT the four-step control SizeProp: a glyph beside 2xs caption text and a 48px empty-state mark are the same primitive. An explicit step OUT-RANKS the context rules, so `size=\"lg\"` inside a Button renders at 20px, not the button's 16px.",
+      "name": "size",
+      "type": "\"2xs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\""
+    },
+    {
+      "description": "Semantic colour intent, the SAME vocabulary Text uses (a status glyph reads the AA-safe --text-warning, never the --warning fill role). Omitted by default, and that default is load-bearing: a glyph inherits currentColor, so an Icon inside a Button, a Badge or a toned Text paints in that surface's own ink without being told.",
+      "name": "tone",
+      "type": "\"default\" | \"muted\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"inherit\""
+    },
+    {
+      "description": "Accessible NAME, for a glyph that is the only thing saying what it says (a lock in a status cell with no text beside it). Supplying it renders role=\"img\" + aria-label; leaving it off (the default) renders aria-hidden, which is correct for a glyph beside a visible label. Consumer-owned copy — route it through your t().",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Merged onto the glyph. NOT the place to size it — the sizing rule is (0,3,1) and deliberately out-ranks a utility, so pass `size` instead.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Button / DropdownMenuItem / TopbarItem / ListRow — the four contexts that size a glyph for you. Inside them a bare glyph is already correct; reach for Icon there only when you want a DIFFERENT step.",
+    "Text — shares the `tone` vocabulary, and is the usual thing an Icon sits beside. Match the icon step to the text step (`size=\"sm\"` beside `Text size=\"sm\"`).",
+    "Logo — a brand mark, not a glyph: it has its own sizes and its own tone axis.",
+    "Avatar — a person or an entity, not an icon; it brings its own box and must not be squeezed into an icon measure."
+  ],
+  "rules": [],
+  "storyPath": "general/Icon.stories.tsx",
+  "tagline": "A glyph on the --icon-size-* scale, and the ONLY supported way to render a standalone one. A lucide component ships width=\"24\" height=\"24\"; only four rules in this library override that (.ui-button svg, the menu row, the topbar cell, the ListRow leading slot), so everywhere else a glyph draws at 24px beside 14px text.",
+  "usage": [
+    "DO use <Icon> for ANY glyph that is not already inside Button / DropdownMenuItem / TopbarItem / a ListRow leading slot — in a Text, a table cell, an <a>, a Flex. Those four are the only contexts in the library that size a glyph for you; everywhere else a bare lucide icon renders at 24px.",
+    "DO NOT reach for `className=\"size-4\"` or `w-[16px]` — docs/CONSUMER-RULES.md §3/§8 forbid them, and they re-derive a metric the theme owns. DO NOT pass lucide's own `size={16}` either: that is a literal where the design system has a scale.",
+    "DO leave `label` off for a decorative glyph beside a visible label — Icon is aria-hidden by default, which is what WCAG 2.2 SC 1.1.1 asks for. Announcing the same thing twice is the usual defect.",
+    "DO pass a localized `label` when the glyph carries meaning nothing else on screen says (a lock alone in a status column). It becomes role=\"img\" + that name.",
+    "DO leave `tone` unset inside a Button, a Badge or a coloured surface, so the glyph inherits that surface's ink. Set it only when the glyph carries its own status meaning.",
+    "DO retune the SCALE from the theme (`--icon-size-sm`, `--icon-size-lg`, …) rather than per call site; a single instance that genuinely sits off the scale sets `--icon-glyph-size` inline (tier 2, docs/TOKENS.md).",
+    "DO NOT wrap the glyph in a <span> to size it — a wrapper adds a box to every flex row that holds an icon, and it puts an element between Button and the svg its own rule targets."
+  ],
+  "useCases": [
+    "A status glyph inline with 14px body text: `<Text size=\"sm\"><Icon as={Lock} size=\"sm\" tone=\"muted\" /> 暗号化済み</Text>`.",
+    "A lock/unlock column in a table, where the glyph IS the value: `<Icon as={Lock} size=\"sm\" label={t('row.locked')} />`.",
+    "A glyph that must be bigger than the control around it: `<Button><Icon as={Download} size=\"lg\" />…</Button>`.",
+    "An icon inside a breakpoint wrapper (`<Flex hideBelow=\"sm\"><Icon as={Building2} size=\"lg\" /></Flex>`), where a direct-child rule can no longer reach it.",
+    "An external-link marker at the end of a link: `<Icon as={ArrowUpRight} size=\"sm\" />`."
+  ]
+}

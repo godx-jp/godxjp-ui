@@ -1,0 +1,96 @@
+{
+  "example": "import { CheckboxGroup } from \"@godxjp/ui/data-entry\";\nimport { useState } from \"react\";\n\nconst PERMISSIONS = [\n  { label: \"View invoices\", value: \"invoices:read\" },\n  { label: \"Create invoices\", value: \"invoices:write\", description: \"Includes editing and deleting\" },\n  { label: \"Manage users\", value: \"users:manage\", disabled: true },\n];\n\n// Uncontrolled — use defaultValue\nexport function PermissionsForm() {\n  return (\n    <form method=\"post\">\n      <CheckboxGroup\n        name=\"permissions\"\n        options={PERMISSIONS}\n        defaultValue={[\"invoices:read\"]}\n        orientation=\"vertical\"\n      />\n    </form>\n  );\n}\n\n// Controlled — use value + onChange\nexport function ControlledExample() {\n  const [selected, setSelected] = useState<string[]>([\"invoices:read\"]);\n  return (\n    <CheckboxGroup\n      name=\"permissions\"\n      options={PERMISSIONS}\n      value={selected}\n      onValueChange={setSelected}\n    />\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "CheckboxGroup",
+  "props": [
+    {
+      "description": "Id của nhóm; `FormField` tự truyền xuống để nối nhãn ↔ control.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Data-driven mode: array of { label, value, disabled?, description? }. When provided and non-empty, renders all checkboxes automatically. When omitted, renders `children` instead.",
+      "name": "options",
+      "type": "ChoiceOptionProp[]"
+    },
+    {
+      "description": "Controlled selected values. When provided, the component is controlled and won't manage state internally — you must handle onChange to update it.",
+      "name": "value",
+      "type": "string[]"
+    },
+    {
+      "defaultValue": "[]",
+      "description": "Uncontrolled initial selection. Use this instead of `value` when you don't need to control state externally.",
+      "name": "defaultValue",
+      "type": "string[]"
+    },
+    {
+      "description": "Called with the full updated selection array whenever any checkbox is toggled. Works in both controlled and uncontrolled modes.",
+      "name": "onChange",
+      "type": "(value: string[]) => void"
+    },
+    {
+      "defaultValue": "\"vertical\"",
+      "description": "Layout direction of the checkbox items. Vertical stacks items; horizontal places them in a row.",
+      "name": "orientation",
+      "type": "\"vertical\" | \"horizontal\""
+    },
+    {
+      "description": "Disables the entire group. Individual options can also set their own disabled flag via ChoiceOptionProp.disabled.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "HTML form name applied to each underlying checkbox input. Required for native form submission — all checkboxes share the same name so the form collects multiple values.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "Extra CSS class on the group container div.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Manual children mode: used when `options` is omitted or empty. Render Checkbox items directly as children. You are responsible for composing each Checkbox with a Field for correct label/description layout.",
+      "name": "children",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Fires with the checked values array.",
+      "name": "onValueChange",
+      "type": "(value: string[]) => void"
+    }
+  ],
+  "related": [
+    "RadioGroup — use when only ONE selection is allowed at a time (mutually exclusive). CheckboxGroup = multiple, RadioGroup = single.",
+    "Checkbox (standalone) — use a bare `Checkbox` for a single boolean toggle (e.g. 'I agree to terms'). Use CheckboxGroup when you have 2+ related choices.",
+    "Checkbox.Group — alias; the same component is also accessible as `Checkbox.Group` (the Checkbox export attaches CheckboxGroup as `.Group`). Both are equivalent — prefer the named `CheckboxGroup` import for clarity in larger files.",
+    "Switch / Field — for a single binary on/off toggle with immediate effect (not a form submission value). Do not use CheckboxGroup to fake toggle rows.",
+    "Select (multi) — for a long list (10+ items) where space is limited; CheckboxGroup is better for ≤10 visible options that benefit from scanning all at once."
+  ],
+  "rules": [
+    3,
+    6,
+    23,
+    31
+  ],
+  "storyPath": "data-entry/CheckboxGroup.stories.tsx",
+  "tagline": "Multi-select checkbox list from an options array or manual children — use `options` prop for the data-driven path, never hand-roll individual Checkbox items in a group.",
+  "usage": [
+    "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
+    "DO pass `name` when inside an HTML form so each checkbox submits its value under the same field name, giving the server a multi-value array. Without `name`, native form submission silently drops all values.",
+    "Controlled vs uncontrolled: pass `value` + `onChange` together for controlled usage (e.g. react-hook-form). Pass `defaultValue` alone for uncontrolled usage. Do NOT mix both — if `value` is provided, `defaultValue` is ignored and onChange must update value externally or the UI freezes.",
+    "Each option's `description` renders as a secondary line below its label via Field — use it for help text or sub-copy; keep `label` short.",
+    "Group-level `disabled` disables all checkboxes. Individual `options[n].disabled` disables only that item. Both can coexist.",
+    "DO NOT wrap this inside another ARIA group or fieldset without removing the built-in `role=\"group\"` — it already provides the correct grouping semantics. Pair the group with a `<legend>` or visible heading for a11y."
+  ],
+  "useCases": [
+    "Permission / role selectors in admin forms — e.g. 'Select applicable roles: Admin, Editor, Viewer' where users can pick multiple.",
+    "Filter panels — e.g. 'Filter by status: Active, Pending, Archived' with horizontal orientation for compact toolbar layout.",
+    "Feature flag or settings toggles where multiple independent boolean flags share a label/description pair, loaded from a config array.",
+    "Multi-category tagging forms — e.g. 'Tag this invoice: Recurring, Billable, Internal' driven by an options array fetched from an API.",
+    "Onboarding checklists or multi-step preference screens where selections persist across steps via controlled `value`.",
+    "Accounting module: select which cost centres or account codes apply to a transaction, driven by a normalized options list."
+  ]
+}

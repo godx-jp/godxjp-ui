@@ -1,0 +1,51 @@
+{
+  "example": "import { Form, FormErrors, FormField, Input } from \"@godxjp/ui/data-entry\";\nimport { useForm } from \"@inertiajs/react\";\n\nconst form = useForm({ customer_nm: \"\", action_mode: \"regist\" });\n\n<Form asChild layout=\"horizontal\" labelWidth={140} errors={form.errors}>\n  <form onSubmit={submit}>\n    <FormErrors />\n    <FormField name=\"customer_nm\" label=\"顧客名\" required>\n      <Input value={form.data.customer_nm} onChange={(e) => form.setData(\"customer_nm\", e.target.value)} />\n    </FormField>\n  </form>\n</Form>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "FormErrors",
+  "props": [
+    {
+      "description": "Explicit error bag — overrides the surrounding Form's `errors`. Use when the component sits outside a Form (e.g. inside FormRoot); field claiming still applies when a Form provides the registry.",
+      "name": "errors",
+      "type": "Partial<Record<string, string | string[]>>"
+    },
+    {
+      "description": "Heading above the messages. Defaults to the localized 'please review your input' title (dataEntry.formErrors.title).",
+      "name": "title",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Root class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Form — provides the error bag (`errors`) and the claim registry FormErrors reads; FormErrors must sit inside it (or receive `errors` explicitly).",
+    "FormErrorsProvider — the shared registry for a REGION of sibling Forms (multi-Card edit screens): wrap the region with it, leave `errors` off the section Forms, and one FormErrors covers the whole screen.",
+    "FormField — `name` claims a bag key and self-binds its message; the claimed key never re-appears in FormErrors.",
+    "Alert — the underlying destructive banner; use Alert directly for non-validation notices."
+  ],
+  "rules": [
+    23
+  ],
+  "storyPath": "data-entry/FormErrors.stories.tsx",
+  "subParts": [
+    "FormErrorsProvider"
+  ],
+  "tagline": "The 'no field to stand on' error summary — renders the entries of the surrounding Form's server error bag that no mounted FormField name='…' claims: validation errors on hidden/derived fields (action_mode, page, a source-record id) that would otherwise fail silently. Composed on Alert tone='destructive' (role='alert'); renders nothing while every entry is claimed or the bag is empty.",
+  "usage": [
+    "DO pass the WHOLE bag to `<Form errors={form.errors}>` and place `<FormErrors />` at the top of the form — never hand-filter the bag per page. Fields with `name` claim their keys automatically; FormErrors shows only the remainder, so the consumer never maintains an except-list.",
+    "DO give every visible field its `name` when adopting `Form errors` on a screen. A field that keeps a manual `error={errors.x}` WITHOUT `name` does not claim its key, and FormErrors will show that message twice.",
+    "DON'T hand-roll a destructive Alert bound to `errors.hidden_key` per page — that is exactly the per-page listing this component exists to remove, and it goes stale the moment the server adds a new derived-field rule.",
+    "DON'T use FormErrors as a generic mutation-failure banner — that is `Alert.QueryError` / toast territory. FormErrors is scoped to the VALIDATION bag of the surrounding form.",
+    "INSIDE FormRoot: `<FormRoot form={form} onSubmit={(v) => m.mutateAsync(v)} errors={serverErrors(m.error)}><FormErrors /><AlertMutationFeedback mutation={m} />…</FormRoot>` — FormRoot mounts the claim registry, so `<FormErrors />` needs no `errors` of its own and shows only unclaimed keys. A 422 renders exactly once: claimed keys under their fields, unclaimed keys here, no AlertMutationFeedback alert (gh#690) and no FormRoot submitFailed banner (gh#698).",
+    "ARRAY ENTRIES: a `string[]` bag value lists every message in the banner; a claimed field shows only the FIRST message of its array (Laravel `$errors->first()` semantics).",
+    "SIBLING FORMS: when the screen is split into several Card+Form sections, wrap the REGION in `<FormErrorsProvider errors={form.errors}>` and give NO `errors` to the section Forms — they join the shared registry and one `<FormErrors />` covers the whole screen. A nested Form WITH its own `errors` deliberately starts a separate (shadowed) registry."
+  ],
+  "useCases": [
+    "An Inertia edit screen whose Laravel FormRequest validates hidden/derived inputs (`action_mode`, `page`, `source_slip_cd`) — the user pressed save and previously saw NOTHING because those keys have no visible field.",
+    "A ported legacy screen where the server rejects a stale edit-lock or a missing source record under a key that only exists server-side.",
+    "A create form where a Laravel `RuleObject` attaches a cross-field error to a synthetic key (e.g. `combination`) rather than to one input."
+  ]
+}

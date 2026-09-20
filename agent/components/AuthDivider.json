@@ -1,0 +1,35 @@
+{
+  "example": "import { AuthDivider } from \"@godxjp/ui/layout\";\n\n<AuthDivider label=\"or\" />",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AuthDivider",
+  "props": [
+    {
+      "description": "Localized conjunction such as “or”.",
+      "name": "label",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "description": "Optional structural class override.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Separator — the primitive this presets; use it directly for any labelled rule outside auth."
+  ],
+  "rules": [
+    44,
+    45
+  ],
+  "storyPath": "layout/AuthDivider.stories.tsx",
+  "tagline": "The auth-scoped PRESET over `Separator label` — a localized conjunction between two equal rules.",
+  "usage": [
+    "DO use AuthDivider only INSIDE an auth form. It is a thin preset over `<Separator label>`: it re-points the --separator-* knobs at the --auth-shell-divider-* layer (the 11px auth micro-scale, the auth rule/label colours), so using it elsewhere drags auth geometry into an unrelated screen.",
+    "DON'T use it for a message stream's day divider or a \"new messages\" watermark — that is `<Separator label>` with a `labelAlign` and a `tone`. Misusing AuthDivider recreates the exact defect the preset removed: a service retuning its login divider silently retuned every divider in its chat."
+  ],
+  "useCases": [
+    "An “or” conjunction between a credential form and a provider action row"
+  ]
+}

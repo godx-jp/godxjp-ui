@@ -1,0 +1,65 @@
+{
+  "docPath": "data-display/welcome.tsx",
+  "example": "import { Welcome } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Bot } from \"lucide-react\";\n\n<Welcome\n  icon={<Bot />}\n  title=\"こんにちは\"\n  description=\"請求、経費、勤怠のことならお手伝いできます。\"\n  extra={<Button variant=\"ghost\" size=\"sm\">閉じる</Button>}\n/>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Welcome",
+  "props": [
+    {
+      "description": "Leading glyph. A STRING beginning with http(s) is rendered as a decorative <img alt=\"\"> (Ant Design X does the same, with alt=\"icon\"); any other string renders as text.",
+      "name": "icon",
+      "type": "React.ReactNode | string"
+    },
+    {
+      "description": "The greeting. Renders as an <h4>, which is Ant Design X's hardcoded Typography.Title level={4}.",
+      "name": "title",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "The line under the greeting.",
+      "name": "description",
+      "type": "React.ReactNode"
+    },
+    {
+      "description": "Trailing slot on the TITLE row — a dismiss button, a model picker. Not under the description.",
+      "name": "extra",
+      "type": "React.ReactNode"
+    },
+    {
+      "defaultValue": "\"filled\"",
+      "description": "filled gives the block its own tinted ground and hairline; borderless lets it sit on the page.",
+      "name": "variant",
+      "type": "\"filled\" | \"borderless\""
+    },
+    {
+      "description": "DOM id of the block.",
+      "name": "id",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "EmptyState — the general 'nothing here yet' block for a list or a table. Welcome is the chat surface's greeting and carries an icon/title/description/extra shape of its own.",
+    "PageContainer — owns the PAGE header; Welcome sits inside the page body.",
+    "ChatSuggestion / ChatBubbleList — the rest of the same surface."
+  ],
+  "rules": [
+    2,
+    6,
+    44,
+    45
+  ],
+  "storyPath": "data-display/Welcome.stories.tsx",
+  "tagline": "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW — which is the placement a hand-roll gets wrong.",
+  "usage": [
+    "DO put it above the composer on an empty chat, with ChatSuggestion or a Prompts row beneath it — that is the surface it belongs to.",
+    "DO pass `extra` for the one action the greeting carries (dismiss, switch model). It lands beside the title, top-aligned, so a two-line title does not float it.",
+    "DON'T reach for it as a generic page header — that is PageContainer's title/subtitle/extra, which owns the page rhythm.",
+    "DON'T expect a heading-level prop: Ant Design X hardcodes level 4 and this ports that. Wrap it in your own heading hierarchy if the page needs a different rung.",
+    "DON'T expect `styles`/`classNames` from Ant Design X — retune through the --welcome-* tokens."
+  ],
+  "useCases": [
+    "The first screen of an assistant, before the first message.",
+    "The head of a fresh conversation started from the Conversations rail.",
+    "A feature introduction card inside a chat surface, dismissed through `extra`."
+  ]
+}

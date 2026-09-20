@@ -1,0 +1,76 @@
+{
+  "docPath": "data-entry/attachments.tsx",
+  "example": "import { Attachments } from \"@godxjp/ui/data-entry\";\n\n<Attachments\n  items={files}\n  onChange={({ fileList }) => setFiles(fileList)}\n  overflow=\"scrollX\"\n  maxCount={5}\n/>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Attachments",
+  "props": [
+    {
+      "description": "Controlled attachment list. Ant Design X `items` (= antd Upload `fileList`).",
+      "name": "items",
+      "type": "AttachmentsItemProp[]"
+    },
+    {
+      "description": "antd Upload `onChange` — NOT `onValueChange`.",
+      "name": "onChange",
+      "type": "(info: { file: AttachmentsItemProp; fileList: AttachmentsItemProp[] }) => void"
+    },
+    {
+      "description": "Ant Design X `overflow`.",
+      "name": "overflow",
+      "type": "\"wrap\" | \"scrollX\" | \"scrollY\""
+    },
+    {
+      "description": "Empty-state copy for inline and drop surfaces.",
+      "name": "placeholder",
+      "type": "AttachmentsPlaceholderProp | ((type) => AttachmentsPlaceholderProp)"
+    },
+    {
+      "description": "Host for a full-screen drop overlay.",
+      "name": "getDropContainer",
+      "type": "() => HTMLElement | null"
+    },
+    {
+      "description": "Maximum files (antd Upload `maxCount`).",
+      "name": "maxCount",
+      "type": "number"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Blocks selection and drop; the control stays focusable so a reader can still reach it.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Forwarded to the hidden file input.",
+      "name": "accept",
+      "type": "string"
+    },
+    {
+      "description": "Child mode: visible trigger; upload runs through a hidden input beside it.",
+      "name": "children",
+      "type": "ReactElement"
+    }
+  ],
+  "related": [
+    "Upload",
+    "ChatComposer",
+    "ChatBubbleList"
+  ],
+  "rules": [
+    6,
+    44,
+    45
+  ],
+  "storyPath": "data-entry/Attachments.stories.tsx",
+  "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`.",
+  "usage": [
+    "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",
+    "DO use `ref.select({ accept, multiple })` to open the picker programmatically (Ant X 2.0).",
+    "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens."
+  ],
+  "useCases": [
+    "The attachment tray above a ChatComposer in an assistant surface.",
+    "A Sender.Header slot showing picked files before send."
+  ]
+}

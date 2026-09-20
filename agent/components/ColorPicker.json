@@ -1,0 +1,87 @@
+{
+  "example": "import { useState } from \"react\";\nimport { ColorPicker, FormField } from \"@godxjp/ui/data-entry\";\n\nexport function BrandColorField() {\n  const [color, setColor] = useState(\"#2563eb\");\n\n  return (\n    <FormField id=\"brand-color\" label=\"Brand color\" className=\"max-w-xs\">\n      <ColorPicker\n        id=\"brand-color\"\n        value={color}\n        onValueChange={setColor}\n      />\n    </FormField>\n  );\n}\n\n// Compact swatch-only variant (no hex input)\nexport function SwatchOnly() {\n  const [color, setColor] = useState(\"#16a34a\");\n  return <ColorPicker value={color} onValueChange={setColor} showHexInput={false} />;\n}\n\n// Disabled state\nexport function DisabledColor() {\n  return <ColorPicker value=\"#6b7280\" disabled />;\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "ColorPicker",
+  "props": [
+    {
+      "description": "Initial uncontrolled color.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Native form field name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "defaultValue": "\"#2563eb\"",
+      "description": "The current hex color string (3- or 6-digit, with leading #). Component auto-prepends # if missing. Invalid hex values are discarded and the previous valid value is kept.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Called with the normalized, validated hex string whenever the user commits a new color — via the native swatch picker or by pressing Enter / blurring the hex input. Not called for invalid hex drafts.",
+      "name": "onChange",
+      "type": "(hex: string) => void"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Disables both the swatch input and the hex text input, preventing all user interaction.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "When true (default), renders an editable godx-ui Input alongside the swatch that shows the current hex value and lets the user type a hex string. Set to false for a compact swatch-only control.",
+      "name": "showHexInput",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "Extra CSS class(es) applied to the root wrapper div. Use for layout sizing; avoid overriding design-token colours.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "defaultValue": "undefined",
+      "description": "DOM id applied to the hidden native <input type='color'>. Pass the FormField id here so the label's htmlFor targets this control correctly.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Fires with the committed hex string.",
+      "name": "onValueChange",
+      "type": "(value: string) => void"
+    }
+  ],
+  "related": [
+    "Input — use for plain text/number entry; use ColorPicker when the value is specifically a color hex code and you want a visual swatch.",
+    "Select / SearchSelect — use for choosing from a fixed palette of named colors (e.g. 'Red', 'Blue'); use ColorPicker for freeform hex color entry."
+  ],
+  "rules": [
+    2,
+    3,
+    6,
+    13
+  ],
+  "storyPath": "data-entry/ColorPicker.stories.tsx",
+  "tagline": "Native color-swatch picker with an optional editable hex input — always pass a valid 3- or 6-digit hex `value`; invalid hex is silently ignored and the previous value is restored.",
+  "usage": [
+    "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onValueChange={setV} /></FormField>`.",
+    "DO use controlled mode (value + onChange) — there is no defaultValue/uncontrolled path; always supply value.",
+    "DON'T pass an invalid or empty string to value — the component will flash the invalid color on the preview swatch. Always initialize state to a valid 3- or 6-digit hex (e.g. '#2563eb').",
+    "The hex Input is a live draft field — onChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onChange firing on every keystroke.",
+    "Set showHexInput={false} only for compact/inline contexts (icon pickers, table cells) where space is tight and keyboard hex entry is not needed.",
+    "NEVER hand-roll a color picker with raw <input type='color'> — always use this component; it normalizes hex, debounces draft state, and respects the design-token control styles."
+  ],
+  "useCases": [
+    "Brand / campaign color selection in settings or campaign creation forms where users need to pick or type an exact hex value.",
+    "Invoice or document theme customization — letting users pick accent colors that are stored and applied to PDF output.",
+    "Accounting dashboard category tagging — assigning a color code to GL account categories or chart-of-accounts nodes for visual grouping.",
+    "Product or inventory label colors in admin panels where a compact swatch (showHexInput={false}) fits inside a table cell or sidebar.",
+    "Design-token or CSS variable editor pages where the user needs precise hex entry alongside a visual swatch preview.",
+    "User-profile or team avatar color personalization forms."
+  ]
+}

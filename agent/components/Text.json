@@ -1,0 +1,201 @@
+{
+  "example": "import { Text } from \"@godxjp/ui/general\";\n\n<Text size=\"xs\" tone=\"muted\">補助テキスト</Text>\n<Text weight=\"medium\" tabular>¥1,240,000</Text>\n<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>\n\n// A link in running content — the affordance, composed onto a router link.\n<Text asChild link><Link href=\"/view/PKG-12\">ログイン画面の余白</Link></Text>",
+  "group": "general",
+  "importPath": "@godxjp/ui/general",
+  "name": "Text",
+  "props": [
+    {
+      "description": "Text decoration, including deleted Markdown content.",
+      "name": "decoration",
+      "type": "\"none\" | \"underline\" | \"line-through\""
+    },
+    {
+      "description": "Inline code chip: compose Text as=\"code\" chip without Prose wrapper.",
+      "name": "chip",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"sm\"",
+      "description": "Golden-ratio type-scale step (2xs…2xl). NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
+      "name": "size",
+      "type": "\"2xs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
+    },
+    {
+      "defaultValue": "\"default\"",
+      "description": "Semantic foreground colour. Replaces `text-muted-foreground` etc. on a raw span.",
+      "name": "tone",
+      "type": "\"default\" | \"muted\" | \"primary\" | \"success\" | \"warning\" | \"destructive\" | \"info\" | \"inherit\""
+    },
+    {
+      "defaultValue": "\"regular\"",
+      "description": "Font weight — the 3-weight canon: regular 400 (body), medium 500 (label), bold 700 (emphasis). `semibold` is an alias that renders at the canon's 500 (there is no 600 face), so code written in the common Tailwind vocabulary type-checks without a fourth weight.",
+      "name": "weight",
+      "type": "\"regular\" | \"medium\" | \"semibold\" | \"bold\""
+    },
+    {
+      "description": "Logical text alignment.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "description": "Single-line ellipsis. Mutually exclusive with `clamp` (`clamp` wins).",
+      "name": "truncate",
+      "type": "boolean"
+    },
+    {
+      "description": "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
+      "name": "clamp",
+      "type": "number"
+    },
+    {
+      "defaultValue": "\"normal\"",
+      "description": "Whitespace handling. 'normal' is CSS's own behaviour (newlines and space runs collapse) and stays the default. 'pre-wrap' is for text a PERSON typed — a plain-text note, an issue description, a pasted log — where the line breaks and the indentation are CONTENT: it keeps both, still wraps long lines at the container edge, and breaks an over-long unbroken token (a URL, an id) instead of overflowing. Use it INSTEAD of `className=\"whitespace-pre-wrap\"`. Precedence is explicit: `truncate` is a single-line contract and wins (dev builds warn); `clamp` COMPOSES with it, showing the first N preserved lines. Not for rendered Markdown/HTML — that is `Prose`, which styles rendered elements and does nothing to whitespace.",
+      "name": "whitespace",
+      "type": "\"normal\" | \"pre-wrap\""
+    },
+    {
+      "description": "Tabular figures for aligned numbers.",
+      "name": "tabular",
+      "type": "boolean"
+    },
+    {
+      "description": "Monospace family for codes / ids.",
+      "name": "mono",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"span\"",
+      "description": "Rendered element. `code`/`kbd` are monospace by default.",
+      "name": "as",
+      "type": "\"span\" | \"p\" | \"div\" | \"a\" | \"label\" | \"strong\" | \"em\" | \"small\" | \"code\" | \"kbd\" | \"dt\" | \"dd\" | \"caption\" | \"abbr\""
+    },
+    {
+      "description": "This text IS a link: underline on hover AND on keyboard focus at --text-link-underline-offset, plus the focus mark every other interactive element draws. An AFFORDANCE, not a colour — `tone` still owns the colour and merely defaults to `primary` here, so `link tone=\"destructive\"` reads destructive and still underlines.",
+      "name": "link",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Render the typography ONTO the child instead of emitting an element — the shape a router link takes (`<Text asChild link><Link href=…>…</Link></Text>`). The child owns the element and its navigation; Text owns the type step, tone, weight and truncation.",
+      "name": "asChild",
+      "type": "boolean"
+    },
+    {
+      "description": "When set, Text renders as a `<label>` bound to this control id (polymorphic label use).",
+      "name": "htmlFor",
+      "type": "string"
+    },
+    {
+      "description": "Anchor target, for `as=\"a\"`. Declared explicitly rather than by widening the base to AnchorHTMLAttributes, for the same reason `htmlFor` is declared explicitly for `as=\"label\"`: the element union IS the contract, so each polymorphic branch names the attributes it actually accepts instead of every span silently offering an href it will never render.",
+      "name": "href",
+      "type": "string"
+    },
+    {
+      "description": "Anchor browsing context, for `as=\"a\"`.",
+      "name": "target",
+      "type": "React.HTMLAttributeAnchorTarget"
+    },
+    {
+      "description": "Anchor relationship, for `as=\"a\"` — pair `rel=\"noopener noreferrer\"` with `target=\"_blank\"`.",
+      "name": "rel",
+      "type": "string"
+    },
+    {
+      "description": "Anchor download hint, for `as=\"a\"`.",
+      "name": "download",
+      "type": "boolean | string"
+    },
+    {
+      "description": "antd's emphasis axis. This library's `tone` is the SAME axis and is wider (it also carries default/primary/info), so `tone` wins when both are passed and dev builds warn. Folds secondary → muted, danger → destructive.",
+      "name": "type",
+      "type": "\"secondary\" | \"success\" | \"warning\" | \"danger\""
+    },
+    {
+      "description": "Renders the run as unavailable: the disabled ink, `cursor: not-allowed`, no text selection, and `aria-disabled` so a screen reader hears \"unavailable\" rather than merely seeing it de-emphasised.",
+      "name": "disabled",
+      "type": "boolean"
+    },
+    {
+      "description": "Copy affordance beside the text. `true` copies the rendered children. `text` may be a string or an async function, so the value can be fetched on demand. `icon` and `tooltips` each take `[idle, copied]`; `tooltips: false` drops the tooltip but keeps the accessible name. `format: \"text/html\"` writes an HTML flavour alongside the plain one. `onCopy` fires only AFTER the write resolves — a clipboard refusal leaves the button unconfirmed instead of claiming a copy that never happened.",
+      "name": "copyable",
+      "type": "boolean | { text, onCopy, icon, tooltips, format, tabIndex }"
+    },
+    {
+      "description": "In-place editing. The run is REPLACED by an auto-growing textarea that inherits its type step, family and weight, so editing is WYSIWYG. Enter confirms with the trimmed value then fires `onEnd`; blur confirms WITHOUT `onEnd` (antd's split); Escape cancels. `triggerType: [\"text\"]` makes the text itself the affordance and renders no icon. Focus returns to the edit button when the editor closes.",
+      "name": "editable",
+      "type": "boolean | { text, editing, icon, tooltip, onStart, onChange, onCancel, onEnd, maxLength, autoSize, triggerType, enterIcon, tabIndex }"
+    },
+    {
+      "description": "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip.",
+      "name": "ellipsis",
+      "type": "boolean | { suffix, symbol, defaultExpanded, expanded, onEllipsis, tooltip }"
+    },
+    {
+      "description": "Which side the copy / edit / expand cluster sits on. Logical, so it mirrors in RTL. Default `end`.",
+      "name": "actions",
+      "type": "{ placement?: \"start\" | \"end\" }"
+    },
+    {
+      "description": "Wrap the content in a real `<code>` element. Different from `mono`, which only swaps the font family: this changes what the content IS, so it reaches assistive technology.",
+      "name": "code",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<mark>` — highlighted.",
+      "name": "mark",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<u>` — underlined.",
+      "name": "underline",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<del>` — struck through.",
+      "name": "delete",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<strong>` — bold AND semantically strong. Composes with `weight`: `weight` paints, `strong` means. The seven decoration flags nest in antd's order (strong → u → del → code → mark → kbd → i).",
+      "name": "strong",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<kbd>` — a key or key combination.",
+      "name": "keyboard",
+      "type": "boolean"
+    },
+    {
+      "description": "Wrap in `<i>` — italic.",
+      "name": "italic",
+      "type": "boolean"
+    },
+    {
+      "description": "antd's private alias for `as`. Accepted so antd code pastes in unchanged; `as` wins when both are passed.",
+      "name": "component",
+      "type": "string"
+    }
+  ],
+  "rules": [
+    2,
+    23
+  ],
+  "storyPath": "general/typography.tsx",
+  "tagline": "Typographic primitive — use INSTEAD of a hand-rolled `<span className=\"text-[13px] font-medium text-muted-foreground\">`. Size is a type-scale step (never px); tone/weight are tokens.",
+  "usage": [
+    "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
+    "DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className=\"text-muted-foreground font-mono tabular-nums\"`.",
+    "DO use `clamp={n}` for a description limited to n lines (card grids) and `truncate` for a one-line ellipsis — never `className=\"line-clamp-2\"` (banned utility). They are mutually exclusive; `clamp` wins.",
+    "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
+    "DO use `link` for a link inside RUNNING CONTENT — an issue subject in a table cell, a page name in a list, a \"see all\" at the end of a row — and compose it onto your router link with `asChild`. Never `className=\"text-primary hover:underline\"`: that is consumer rules 6 and 7 in one string, and it leaves a keyboard user with no underline because `hover:` cannot fire for them.",
+    "DON'T reach for `Button variant=\"link\"` in running content. `.ui-button` is a CONTROL box — `white-space: nowrap`, `flex-shrink: 0`, a `--control-height` tier and inline padding — so in a table cell it cannot wrap to a second line and cannot share the cell's line box. If you find yourself writing `whitespace-normal` back on top of it, you wanted `<Text link>`. `Button variant=\"link\"` stays right for a link-LOOKING action that submits or opens something."
+  ],
+  "useCases": [
+    "A muted caption under a value: `<Text size=\"xs\" tone=\"muted\">2026年5月度</Text>`.",
+    "A monospace id in a list row: `<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>`.",
+    "An emphasized inline figure: `<Text weight=\"medium\" tabular>¥1,240,000</Text>`.",
+    "A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as=\"p\" size=\"sm\" tone=\"muted\" clamp={2}>{description}</Text>`.",
+    "An issue subject linking out of a table cell, wrapping to two lines: `<Text asChild link truncate={false}><Link href={`/view/${key}`}>{subject}</Link></Text>`.",
+    "A destructive link in a settings row: `<Text as=\"a\" href=\"/danger\" link tone=\"destructive\">取り消す</Text>`."
+  ]
+}

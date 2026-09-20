@@ -1,0 +1,42 @@
+{
+  "example": "import { OverlayPortalProvider } from \"@godxjp/ui/app\";\n\n// The React root lives inside a shadow root, so every overlay must portal there too.\nconst shadowRoot = host.attachShadow({ mode: \"open\" });\n\n<OverlayPortalProvider container={shadowRoot}>\n  <AppProvider defaultLocale=\"ja\">{children}</AppProvider>\n</OverlayPortalProvider>",
+  "group": "providers",
+  "importPath": "@godxjp/ui/app",
+  "name": "OverlayPortalProvider",
+  "props": [
+    {
+      "description": "The element overlays render into — pass the shadow root, or any element inside it. `undefined` restores the document.body default, so a subtree can opt back out.",
+      "name": "container",
+      "required": true,
+      "type": "Element | undefined"
+    },
+    {
+      "description": "The subtree whose overlays are relocated.",
+      "name": "children",
+      "required": true,
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "AppProvider — the other root-level provider (locale, timezone, theme axes). Both are mounted once at the root; neither replaces the other.",
+    "Popover — one of the overlays this provider relocates; its own `container` has no prop equivalent.",
+    "Dialog — likewise portals to document.body unless this provider names another container."
+  ],
+  "rules": [
+    5
+  ],
+  "storyPath": "app/OverlayPortalProvider.stories.tsx",
+  "tagline": "Moves EVERY overlay in this library (Popover, Dialog, Sheet, Tooltip, DropdownMenu, HoverCard, Select, Cascader) into a container you name — the one thing an app mounted inside a SHADOW ROOT cannot do with props.",
+  "usage": [
+    "DO mount it when this library is rendered inside a shadow root (an embedded bar, a widget injected into a host page, a Web Component wrapper). Overlays default to document.body, which is outside the tree carrying this library's stylesheet — measured on an embedded bar as border 0, radius 0, a transparent background and the anchor maths 40px off.",
+    "DO wrap the whole embedded subtree ONCE, the same way AppProvider is mounted once. Where overlays render is a fact about the tree, not about any one control, and a component that owns its own overlay (AppLauncher) has no prop a consumer could reach it through.",
+    "DO expect it to fix DISMISSAL and FOCUS too, not just paint: mounting it switches react-aria onto its shadow-DOM code paths, without which the click that opened an overlay reads as a click outside it (an embedded launchpad that opened and shut on one press) and a focus scope believes focus never entered the dialog.",
+    "DON'T mount it on an ordinary page. document.body is the right destination there, and the provider is not a styling knob — it changes nothing you would want changed outside a shadow root.",
+    "DON'T look for a per-overlay container prop instead. There is none by design; a consumer asked to remember six of them gets five right."
+  ],
+  "useCases": [
+    "A GoDX bar or launchpad injected into a third-party page inside a shadow root, where its Popover and DropdownMenu must stay styled and dismissable.",
+    "A Web Component wrapper around an app built with this library, mounting the React tree in its own shadow DOM.",
+    "A widget embedded in a host that happens to load this library too — the case where the default is not obviously broken, only subtly wrong, until the first host that does not load it."
+  ]
+}

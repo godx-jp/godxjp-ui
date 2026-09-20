@@ -1,0 +1,69 @@
+{
+  "example": "import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from \"@godxjp/ui/layout\";\n\n<ResizablePanelGroup orientation=\"horizontal\">\n  <ResizablePanel id=\"list\" defaultSize=\"35%\" minSize=\"20%\">Panel A</ResizablePanel>\n  <ResizableHandle />\n  <ResizablePanel id=\"detail\" defaultSize=\"65%\" minSize=\"40%\">Panel B</ResizablePanel>\n</ResizablePanelGroup>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "ResizablePanel",
+  "props": [
+    {
+      "defaultValue": "\"horizontal\"",
+      "description": "ResizablePanelGroup prop — axis the panels are laid out / resized along (horizontal = side-by-side).",
+      "name": "orientation",
+      "type": "\"horizontal\" | \"vertical\""
+    },
+    {
+      "description": "ResizablePanel identifier — required for collapse/expand control and for layout persistence.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "For a percentage of the group pass a string like \"35%\" — `defaultSize={35}` means 35px (a sliver), not 35%.",
+      "name": "defaultSize",
+      "type": "string | number"
+    },
+    {
+      "description": "ResizablePanel minimum size — drag can't shrink below this. Same unit rule: \"20%\" for percent, bare number = px.",
+      "name": "minSize",
+      "type": "string | number"
+    },
+    {
+      "description": "ResizablePanel maximum size. \"60%\" for percent, bare number = px.",
+      "name": "maxSize",
+      "type": "string | number"
+    },
+    {
+      "defaultValue": "false",
+      "description": "ResizablePanel — allow the panel to collapse to collapsedSize when dragged below minSize. Pair with onResize to react to collapse.",
+      "name": "collapsible",
+      "type": "boolean"
+    },
+    {
+      "description": "ResizablePanel — fires while/after the panel is resized (e.g. to persist layout).",
+      "name": "onResize",
+      "type": "(size: PanelSize, id, prevSize) => void"
+    }
+  ],
+  "rules": [
+    3,
+    6
+  ],
+  "storyPath": "layout/ResizablePanel.stories.tsx",
+  "subParts": [
+    "ResizableHandle",
+    "ResizablePanelGroup"
+  ],
+  "tagline": "Resizable panel group/child/handle primitives from react-resizable-panels.",
+  "usage": [
+    "DO put the layout on `<ResizablePanelGroup orientation=\"horizontal|vertical\">`, the resizable regions in `<ResizablePanel>`, and a `<ResizableHandle>` BETWEEN every adjacent pair — a group of N panels needs N-1 handles or there is nothing to drag.",
+    "DO express `defaultSize`/`minSize`/`maxSize` as PERCENTAGE STRINGS like `defaultSize=\"35%\"` (react-resizable-panels v4: a bare number is PIXELS, so `defaultSize={35}` renders a 35px sliver, NOT 35% — pass the string). Don't fight sizing with a fixed `w-[280px]` className on the panel.",
+    "DON'T reach for ResizablePanel when the split is fixed and never user-adjustable — use a plain `Flex`/`ResponsiveGrid`, or `SplitPane` for a simple two-pane layout. Resizable is for *user-draggable* boundaries only.",
+    "DO give each panel a stable `id` and use `collapsible` + `collapsedSize` for a side panel the user can fully tuck away (e.g. a filters rail), reacting via `onResize`.",
+    "DON'T hand-roll a draggable divider with mouse-move listeners — the primitive handles pointer + keyboard resizing, ARIA separator semantics, and min/max clamping. Always render `<ResizableHandle>`, never a bare styled `<div>`.",
+    "DON'T add your own `overflow: auto` wrapper inside a panel: the panel IS the scroll container. Let it own the scrolling and it also manages keyboard reachability — when a panel scrolls but holds nothing focusable, ResizablePanel gives it `tabindex=0` so keyboard users can still reach the clipped content (WCAG 2.1.1); a panel whose content is focusable is left alone, so no redundant tab stop appears. Your own nested scroller gets neither."
+  ],
+  "useCases": [
+    "Master–detail admin layout: a draggable list pane on the left and a detail/preview pane on the right (e.g. 仕訳一覧 | 仕訳詳細).",
+    "Collapsible filters or navigation rail beside a data table that operators can widen for long labels or tuck away to maximize the table.",
+    "Stacked vertical split (orientation='vertical') such as a results table over a live JSON/log preview in a data-import tool.",
+    "Three-pane workbench (nav | content | inspector) where each boundary is independently draggable and layout is persisted via id + onResize."
+  ]
+}

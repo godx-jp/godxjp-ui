@@ -1,0 +1,43 @@
+{
+  "example": "import { Label } from \"@godxjp/ui/data-entry\";\n\n<Label htmlFor=\"stackable\">併用を許可</Label>",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "Label",
+  "props": [
+    {
+      "description": "Id of the associated control.",
+      "name": "htmlFor",
+      "type": "string"
+    },
+    {
+      "description": "Label content.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "FormField — prefer this over a bare Label whenever the field needs helper text, an error message, or a required marker; FormField renders Label internally and wires aria-describedby/aria-invalid automatically.",
+    "Field — use for a Checkbox or Radio.Item that needs a visible label and optional description line; it renders Label internally — do NOT add a second Label around it.",
+    "Field — use instead of a bare Switch + Label pair when the control must submit a value via an HTML form name; Field owns the Label + hidden input composition.",
+    "Checkbox — the most common bare-Label partner; pair with Label via shared useId() id/htmlFor when Field's layout is too heavy."
+  ],
+  "rules": [],
+  "storyPath": "data-entry/Label.stories.tsx",
+  "tagline": "Styled Radix Label; use htmlFor to associate with a control.",
+  "usage": [
+    "DO: always pass `htmlFor` matching the `id` of the associated control — this is the entire purpose of the component. Without it, clicking the label text does NOT focus or toggle the control, breaking a11y and UX.",
+    "DO: import from `@godxjp/ui/data-entry` (not shadcn or Radix directly). The godx-ui Label extends Radix's LabelPrimitive with `data-slot=\"label\"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.",
+    "DON'T: use Label as a standalone visible heading or section title. It is a form-control association primitive. For page/section headings use semantic HTML (`<h2>`, etc.) or a typography class instead.",
+    "DON'T: wrap Label around a control that is already labelled internally. FormField, Field, and CheckboxGroup all render Label internally — adding a second Label creates a duplicate association and redundant screen-reader announcement.",
+    "DO: pair Label with Checkbox or Switch when NOT using the compound wrapper (Field). In that case generate the shared id with `React.useId()` and pass it to both `id` on the control and `htmlFor` on Label.",
+    "PREFER FormField over a bare Label + control pair whenever you also need helper text, error messages, or `required` asterisk. FormField injects `aria-describedby` and `aria-invalid` automatically; a bare Label does not."
+  ],
+  "useCases": [
+    "Pairing with a standalone Checkbox when Field's two-line layout is unnecessary — e.g. a single 'Remember me' option in a login form.",
+    "Labelling a bare Switch (not Field) in a settings row where the switch is controlled by parent state and no HTML form name attribute is needed.",
+    "Adding a visible label to a custom or third-party control that accepts an `id` prop but isn't wrapped by FormField or Field.",
+    "Labelling a Textarea in a free-text form field when FormField's helper/error slots aren't needed, keeping the markup minimal.",
+    "Rendering an accessible label inside a table row where a FormField's block layout would break the inline/grid structure.",
+    "Adding a label to a DatePicker, TimePicker, or ColorPicker inside a simple layout that doesn't need the full FormField wrapper."
+  ]
+}

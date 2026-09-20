@@ -1,0 +1,102 @@
+{
+  "example": "import { LegalDocumentShell, CenteredShell, Flex, Topbar } from \"@godxjp/ui/layout\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { useState } from \"react\";\n\nexport function TermsPage() {\n  const [activeSection, setActiveSection] = useState(\"acceptance\");\n\n  return (\n    <CenteredShell width=\"lg\" topbar={<Topbar start={<Brand />} />}>\n      <LegalDocumentShell\n        title=\"利用規約\"\n        version=\"2.4\"\n        effectiveDate=\"2026-04-01\"\n        summary=\"本規約は、当社が提供するサービスの利用条件を定めるものです。\"\n        contentsLabel=\"目次\"\n        activeSection={activeSection}\n        onActiveSectionChange={setActiveSection}\n        sections={[\n          { id: \"acceptance\", title: \"第1条(本規約への同意)\", content: <Text as=\"p\">…</Text> },\n          { id: \"accounts\", title: \"第2条(アカウントの管理)\", content: <Text as=\"p\">…</Text> },\n        ]}\n        documentNavigation={\n          <Flex direction=\"col\" gap=\"xs\" role=\"group\" aria-label=\"法的文書\">\n            <Button variant=\"secondary\" size=\"sm\" fullWidth aria-current=\"page\">利用規約</Button>\n            <Button variant=\"ghost\" size=\"sm\" fullWidth>プライバシーポリシー</Button>\n          </Flex>\n        }\n        footerAction={<Button size=\"sm\">同意する</Button>}\n      />\n    </CenteredShell>\n  );\n}",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "LegalDocumentShell",
+  "props": [
+    {
+      "description": "Document title — the <h1> that names the <article> (e.g. 'Terms of Service').",
+      "name": "title",
+      "required": true,
+      "type": "ReactNode"
+    },
+    {
+      "description": "The document's sections in reading order. Drives BOTH the contents list and the body: `id` is the REAL anchor target (<section id> + href='#id'), `title` becomes the <h2> AND the contents label, `content` is the consumer-owned legal copy.",
+      "name": "sections",
+      "required": true,
+      "type": "{ id: string; title: string; content: ReactNode }[]"
+    },
+    {
+      "description": "Bare version identifier (e.g. '2.4'). Rendered as a localized 'Version {version}' — never pass a pre-localized sentence.",
+      "name": "version",
+      "type": "string"
+    },
+    {
+      "description": "ISO 8601 calendar date (yyyy-MM-dd) or a full ISO instant. Formatted with Intl.DateTimeFormat in the active locale and emitted inside <time dateTime={effectiveDate}>, so the machine-readable value is always the ISO input. NEVER pass a pre-formatted date string.",
+      "name": "effectiveDate",
+      "type": "string"
+    },
+    {
+      "description": "Short plain-language summary rendered under the metadata, above the contents.",
+      "name": "summary",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Accessible name + visible caption of the contents <nav>. Defaults to a localized 'Contents'. Override it when two documents share a view, so the two nav landmarks stay distinguishable (axe landmark-unique, WCAG 2.4.1).",
+      "name": "contentsLabel",
+      "type": "string"
+    },
+    {
+      "description": "Controlled active section id (the entry marked aria-current='location'). Pair with onActiveSectionChange; omit both for the uncontrolled form.",
+      "name": "activeSection",
+      "type": "string"
+    },
+    {
+      "description": "Uncontrolled initial active section id. Defaults to the first section.",
+      "name": "defaultActiveSection",
+      "type": "string"
+    },
+    {
+      "description": "Fires on contents-anchor activation, on an initial hash deep link, and continuously from the scroll spy as the reader moves through the document.",
+      "name": "onActiveSectionChange",
+      "type": "(sectionId: string) => void"
+    },
+    {
+      "description": "Rail slot above the contents list — a switcher across the legal set (Terms · Privacy · Cookies). Rendered as a plain wrapper, so the consumer owns its semantics.",
+      "name": "documentNavigation",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Slot below the last section — accept / download / print / contact actions.",
+      "name": "footerAction",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Root element id; also seeds the internal ids.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Root class override (rarely needed).",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "CenteredShell — the page shell to put a LegalDocumentShell inside (brand bar + centred column + footer). LegalDocumentShell is the document, not the page chrome; never nest two shells of the same kind.",
+    "SplitPane — a generic main + fixed aside. It gives similar GEOMETRY but owns no scroll-spy / hash / focus behaviour, so it is the wrong pick for a document with a table of contents.",
+    "PageContainer — for a titled section inside an app page; LegalDocumentShell already renders its own document header (h1 + version + effective date + summary).",
+    "Text / Heading — compose the section `content` from these; the shell only supplies the section heading (h2) and the body wrapper."
+  ],
+  "rules": [
+    23,
+    24
+  ],
+  "storyPath": "layout/LegalDocumentShell.stories.tsx",
+  "tagline": "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned.",
+  "usage": [
+    "DO use LegalDocumentShell for ANY long-form legal/policy document — terms of service, privacy policy, DPA, cookie policy, SLA, EULA, security policy. It is the only primitive that owns the document behaviour: scroll-spy active section, hash deep links, scroll offset, focus handoff and reduced-motion scrolling.",
+    "DO pass `effectiveDate` as an ISO 8601 string ('2026-04-01'). The shell formats it with Intl.DateTimeFormat in the active locale and keeps the ISO value in <time dateTime>. A pre-formatted string ('April 1, 2026') is a bug — it will not localize.",
+    "DO keep ALL legal text in the consumer: the shell only receives `sections` (+ the `summary` / `documentNavigation` / `footerAction` slots). It never ships legal copy.",
+    "DO give every section a URL-safe, page-unique `id` — it is simultaneously the <section id>, the contents href, the deep-link target and the aria-current key.",
+    "DO NOT hand-roll this from CenteredShell + SplitPane + `.legal-*` CSS. The geometry is the easy half; the scroll spy, hash offset, focus handoff and aria-current wiring are what the shell exists to own, and no token can express them.",
+    "DO NOT add a consumer `className` for the measure, the rail width, the section rhythm or the dividers — every one of those is a --legal-document-* token. Dividers default to `none` (rule #44): opt in with `--legal-document-toc-border: 1px solid hsl(var(--border))`.",
+    "DO NOT expect a viewport media query: the shell owns its query container, so the one-column ⇄ two-column split (56rem) is decided by the SHELL's own width. Below it the contents are a STATIC compact block (never pinned on a phone); above it they are a sticky rail."
+  ],
+  "useCases": [
+    "Hosted legal terms/privacy screen (SCR-005): <CenteredShell width=\"lg\" topbar={<Topbar …/>}><LegalDocumentShell title=\"利用規約\" version=\"2.4\" effectiveDate=\"2026-04-01\" contentsLabel=\"目次\" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={<DocumentSwitcher/>} footerAction={<Button>同意する</Button>} /></CenteredShell>",
+    "In-app policy viewer inside a Dialog/Sheet during onboarding: the same `sections` with `footerAction` carrying the accept button; the shell stays single-column because its container is narrow.",
+    "Deep-linkable DPA / sub-processor document: link to /legal/dpa#data-retention — the shell selects, scrolls to (with the scroll offset) and focuses that section on arrival.",
+    "Multi-document legal set (Terms · Privacy · Cookies): render the switcher in `documentNavigation` so it sits above the contents in the sticky rail."
+  ]
+}

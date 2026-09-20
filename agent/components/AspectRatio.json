@@ -1,0 +1,38 @@
+{
+  "example": "import { AspectRatio } from \"@godxjp/ui/layout\";\n\n<AspectRatio ratio={16 / 9}>...</AspectRatio>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "AspectRatio",
+  "props": [
+    {
+      "defaultValue": "16 / 9",
+      "description": "Width divided by height.",
+      "name": "ratio",
+      "type": "number"
+    },
+    {
+      "description": "Content constrained to the ratio.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "CardCover",
+    "Skeleton"
+  ],
+  "rules": [
+    2,
+    3
+  ],
+  "storyPath": "layout/AspectRatio.stories.tsx",
+  "tagline": "Radix AspectRatio wrapper for stable media and preview frames.",
+  "usage": [
+    "DO use AspectRatio for media, maps, charts, or previews that must not jump during load.",
+    "DON'T use it for unconstrained text content."
+  ],
+  "useCases": [
+    "Video embed frame",
+    "Image preview slot",
+    "Dashboard chart placeholder"
+  ]
+}

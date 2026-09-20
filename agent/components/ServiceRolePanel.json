@@ -1,0 +1,83 @@
+{
+  "docPath": "layout/service-role-panel.tsx",
+  "example": "import { PermissionMatrix } from \"@godxjp/ui/data-display\";\nimport { ServiceRolePanel } from \"@godxjp/ui/layout\";\n\n<ServiceRolePanel\n  roles={roles}\n  value={selectedRoleId}\n  onValueChange={setSelectedRoleId}\n  onDeleteRole={(roleId) => deleteRole.mutate(roleId)}\n>\n  {(role) =>\n    role && <PermissionMatrix roles={[role]} permissions={permissions} grants={grants} readOnly={role.locked} />\n  }\n</ServiceRolePanel>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "ServiceRolePanel",
+  "props": [
+    {
+      "description": "Giá trị có kiểm soát: id vai trò đang chọn.",
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "description": "Id vai trò khởi tạo khi không kiểm soát.",
+      "name": "defaultValue",
+      "type": "string"
+    },
+    {
+      "description": "Phát khi vai trò đổi.",
+      "name": "onValueChange",
+      "type": "(roleId: string) => void"
+    },
+    {
+      "description": "The role collection — consumer domain data. `locked` = system role: lock badge, never deletable. memberCount is CLDR-pluralized.",
+      "name": "roles",
+      "required": true,
+      "type": "{ id: string; name: string; description?: string; memberCount?: number; locked?: boolean }[]"
+    },
+    {
+      "description": "Controlled selection triad; defaults to the first role.",
+      "name": "value / defaultValue / onValueChange",
+      "type": "string / (roleId: string) => void"
+    },
+    {
+      "description": "The detail surface. A render function receives the selected role — typically renders a PermissionMatrix + role metadata.",
+      "name": "children",
+      "type": "ReactNode | (role) => ReactNode"
+    },
+    {
+      "description": "Its PRESENCE arms a per-role delete affordance behind the built-in destructive AlertDialog; it fires only after the user confirms. Locked roles never offer it.",
+      "name": "onDeleteRole",
+      "type": "(roleId: string) => void"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Hide every mutating affordance.",
+      "name": "readOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "The #216 lifecycle vocabulary (precedence loading → denied → error → empty), same semantics as DataTable/PermissionMatrix.",
+      "name": "loading / denied / error / empty / onRetry",
+      "type": "boolean | ReactNode / handler"
+    },
+    {
+      "description": "Forwarded to MasterDetail (localized region labels by default). Never re-derive tracks or breakpoints in the app.",
+      "name": "railWidth / masterViewport / collapseBelow / masterLabel / detailLabel",
+      "type": "MasterDetail geometry + region labels"
+    }
+  ],
+  "related": [
+    "MasterDetail — the geometry underneath; use it directly for non-role collections.",
+    "PermissionMatrix — the canonical detail body for a selected role.",
+    "AlertDialog — the confirm primitive the panel embeds; use directly for other destructive flows."
+  ],
+  "rules": [
+    24,
+    40
+  ],
+  "storyPath": "layout/ServiceRolePanel.stories.tsx",
+  "tagline": "Geometry (1440/1024 two-track, 390 stacked) is MasterDetail's tokens.",
+  "usage": [
+    "DO compose the detail from real primitives — the panel deliberately owns NO detail layout; PermissionMatrix + Descriptions is the typical body.",
+    "DO rely on the built-in AlertDialog for deletion — never wire a bare onClick delete; the confirm gate is the contract.",
+    "DO pass masterViewport=\"compact\" for long role collections so the rail scrolls inside its region after stacking.",
+    "DO NOT nest interactive controls in a role row — the select button and the delete button are SIBLINGS by design; keep any custom row content non-interactive."
+  ],
+  "useCases": [
+    "Service detail → roles tab: role list rail + permission matrix detail.",
+    "Org role management screen with locked system roles and confirmed deletion.",
+    "Read-only role browser for auditors (readOnly)."
+  ]
+}

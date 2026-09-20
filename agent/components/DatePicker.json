@@ -1,0 +1,272 @@
+{
+  "example": "import { useState } from \"react\";\nimport { DatePicker, FormField } from \"@godxjp/ui/data-entry\";\nimport { Flex } from \"@godxjp/ui/layout\";\nimport type { DateRange } from \"react-day-picker\";\n\n// One component, three shapes: a day, a month, and a range.\nexport function BillingFields() {\n  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);\n  const [month, setMonth] = useState<Date | undefined>(undefined);\n  const [period, setPeriod] = useState<DateRange | undefined>(undefined);\n\n  return (\n    <Flex direction=\"col\" gap=\"md\">\n      <FormField id=\"due-date\" label=\"支払期日\" required>\n        <DatePicker\n          id=\"due-date\"\n          name=\"due_date\"\n          value={dueDate}\n          onValueChange={setDueDate}\n          minDate={new Date()}\n        />\n      </FormField>\n\n      <FormField id=\"billing-month\" label=\"請求年月\">\n        <DatePicker\n          id=\"billing-month\"\n          name=\"billing_month\"\n          picker=\"month\"\n          value={month}\n          onValueChange={setMonth}\n        />\n      </FormField>\n\n      <FormField id=\"period\" label=\"会計期間\">\n        <DatePicker id=\"period\" name=\"period\" range value={period} onValueChange={setPeriod} />\n      </FormField>\n    </Flex>\n  );\n}",
+  "group": "data-entry",
+  "importPath": "@godxjp/ui/data-entry",
+  "name": "DatePicker",
+  "props": [
+    {
+      "description": "Controlled panel visibility.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Initial panel visibility.",
+      "name": "defaultOpen",
+      "type": "boolean"
+    },
+    {
+      "description": "Panel visibility changes.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "description": "Validation appearance; error announces invalid state.",
+      "name": "status",
+      "type": "\"error\" | \"warning\""
+    },
+    {
+      "description": "Shared control surface.",
+      "name": "variant",
+      "type": "\"outlined\" | \"filled\" | \"borderless\" | \"underlined\""
+    },
+    {
+      "description": "Shared control sizing.",
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "description": "antd `inputReadOnly` — sets the readonly attribute on the input so the mobile virtual keyboard stays down. The PANEL STILL OPENS: this is 'pick from the panel, do not type', not a second `disabled`. Use `disabled` to make the control inert.",
+      "name": "inputReadOnly",
+      "type": "boolean"
+    },
+    {
+      "description": "Keep invalid draft text on blur; never submit it as a committed value.",
+      "name": "preserveInvalidOnBlur",
+      "type": "boolean"
+    },
+    {
+      "description": "Logical popup placement.",
+      "name": "placement",
+      "type": "\"bottom-start\" | \"bottom-end\" | \"top-start\" | \"top-end\""
+    },
+    {
+      "description": "Additional panel footer content.",
+      "name": "renderExtraFooter",
+      "type": "() => ReactNode"
+    },
+    {
+      "description": "Ref to the editable input (with `range`, the start edge).",
+      "name": "ref",
+      "type": "Ref<HTMLInputElement>"
+    },
+    {
+      "description": "Display using date-fns patterns, Intl options (Japanese era supported), or a callback. Submission stays ISO.",
+      "name": "format",
+      "type": "string | Intl.DateTimeFormatOptions | ((date: Date) => string)"
+    },
+    {
+      "description": "Parser for custom or era display. Complete ISO input always works.",
+      "name": "parseFormat",
+      "type": "(text: string) => Date | undefined"
+    },
+    {
+      "description": "Earliest selectable date, inclusive, enforced on BOTH routes into the value — the panel greys the cell out and a typed date is rejected. The ONLY lower bound: the removed MonthPicker's `fromYear` is `minDate={new Date(year, 0, 1)}`. Alias of fromDate.",
+      "name": "minDate",
+      "type": "Date"
+    },
+    {
+      "description": "Latest selectable date, inclusive, enforced on both routes. `toYear={y}` becomes `maxDate={new Date(y, 11, 31)}`. Alias of toDate.",
+      "name": "maxDate",
+      "type": "Date"
+    },
+    {
+      "description": "Show week numbers.",
+      "name": "showWeek",
+      "type": "boolean"
+    },
+    {
+      "description": "Which period the PANEL opens on, independently of the value (antd `defaultPickerValue`), and — as in antd — RE-APPLIED every time the panel opens, not only at mount. Use it for 'open on the fiscal year's start month' or 'open on the month of the row being edited'.",
+      "name": "defaultPickerValue",
+      "type": "Date"
+    },
+    {
+      "description": "Controlled panel period (antd `pickerValue`). Wins over `defaultPickerValue` and over the value, and freezes the panel's own navigation — the parent owns which period is shown.",
+      "name": "pickerValue",
+      "type": "Date"
+    },
+    {
+      "description": "Stage choices until confirmed; defaults on with showTime.",
+      "name": "needConfirm",
+      "type": "boolean"
+    },
+    {
+      "description": "Include time editing; object takes TimePicker steps/hour-cycle/disabledTime. Not available with `range` or `multiple`.",
+      "name": "showTime",
+      "type": "boolean | object"
+    },
+    {
+      "description": "Quick choices resolved on click and checked against the constraints. `T` follows the cardinality: `Date` normally, `DateRange` with `range`.",
+      "name": "presets",
+      "type": "{ label: ReactNode; value: T | (() => T) }[]"
+    },
+    {
+      "description": "GRANULARITY of one selection (antd `picker`). `date`/`week` show the day grid; `month`/`quarter`/`year` show a period grid. The value is always the START of the chosen period, and `name` submits the matching reduced ISO form.",
+      "name": "picker",
+      "type": "\"date\" | \"week\" | \"month\" | \"quarter\" | \"year\""
+    },
+    {
+      "description": "CARDINALITY: two endpoints in one control (antd `DatePicker.RangePicker`). value/defaultValue and the callback become `DateRange`; the pair submits as `${name}_from` / `${name}_to`. Composes with `picker`, so a month range is `<DatePicker range picker=\"month\" />`. Never place two DatePickers side by side to fake this.",
+      "name": "range",
+      "type": "boolean"
+    },
+    {
+      "description": "Select several dates; value/defaultValue and the callback use Date[]. Incompatible with showTime and with range.",
+      "name": "multiple",
+      "type": "boolean"
+    },
+    {
+      "description": "With `range`: which of the two endpoints may stay empty (antd `allowEmpty`). Default `[true, true]`.",
+      "name": "allowEmpty",
+      "type": "[boolean, boolean]"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Normalise the selection into ascending order (antd `order`). ONE rule seen through two value shapes: a `range` picked backwards is SWAPPED, a `multiple` selection is SORTED. Pass false to keep pick order.",
+      "name": "order",
+      "type": "boolean"
+    },
+    {
+      "description": "Decorate a day cell — 祝日, a booked day, a deadline. It WRAPS the library's own day button rather than replacing it: `originNode` already carries the selection state, `aria-selected`, the disabled handling and its place in the grid's roving tabindex. Write `<>{originNode}<Badge …/></>` — decorate, never rebuild, or every marker re-derives all of that and most get it wrong.",
+      "name": "cellRender",
+      "type": "(date: Date, info: { originNode: ReactNode }) => ReactNode"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Rule the popup's DAY grid — forwarded to `Calendar bordered`, on by default like it. Applies to `picker=\"date\"` / `\"week\"` in single, `multiple` and `range`; the month / quarter / year period grid has no day cells and ignores it. `bordered={false}` opts out. Line colour: `--calendar-grid-border-color` (default `hsl(var(--border))`, the same tier as the popover edge and a table row rule — lightened from `hsl(var(--input) / 0.5)` in gh#730). The caption→weekday-row step is ONE token now, `--calendar-grid-space-block-start` (space-3, measured 32px → 12px): it used to stack with the month column gap.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "description": "Forbid individual dates by predicate — a business rule the `minDate`/`maxDate` window cannot express (holidays, blackout days, a 開始 date already chosen). A forbidden day is refused on BOTH routes into the value: it cannot be clicked and it is rejected when typed.",
+      "name": "disabledDate",
+      "type": "(date: Date) => boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Footer action that jumps to the current month and selects today (single), fills the open end of the range (range) or adds today (multiple). Disabled when today is outside minDate / maxDate or matches `disabledDate`.",
+      "name": "showToday",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Footer action that calls `onClose`.",
+      "name": "showClose",
+      "type": "boolean"
+    },
+    {
+      "description": "Invoked by the showClose footer action.",
+      "name": "onClose",
+      "type": "() => void"
+    },
+    {
+      "description": "Controlled selection. `Date` by default, `Date[]` with `multiple`, `DateRange` with `range`. The input text and the panel stay in sync with it.",
+      "name": "value",
+      "type": "Date | Date[] | DateRange | undefined"
+    },
+    {
+      "description": "Uncontrolled initial selection, same shape as `value`.",
+      "name": "defaultValue",
+      "type": "Date | Date[] | DateRange | undefined"
+    },
+    {
+      "description": "Fires when the user commits — a panel pick, a complete typed entry, Enter, or a clear (undefined). The argument type follows the cardinality, so no narrowing is needed at the call site.",
+      "name": "onValueChange",
+      "type": "(value: Date | Date[] | DateRange | undefined) => void"
+    },
+    {
+      "description": "Form field name. Submits ISO-8601 at the precision `picker` selects: `2026-03-01` for date/week, `2026-03` for month and quarter, `2026` for year. With `range` the pair submits as `${name}_from` / `${name}_to`.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "HTML `id` for the input (the group, with `range`). Auto-generated when omitted, so the field always has one.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Placeholder shown while empty. Defaults to the i18n string for the cardinality and granularity in play.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Makes the control inert: the input, the clear button and the panel trigger all go dead, and a controlled `open` cannot force the panel up. With `range`, the TUPLE form `[from, to]` locks ONE endpoint and leaves the other editable (antd's RangePicker `disabled`) — the locked edge keeps its committed value whatever is typed or picked, and the ✕ is withdrawn because clearing would wipe it.",
+      "name": "disabled",
+      "type": "boolean | [boolean, boolean]"
+    },
+    {
+      "description": "Extra CSS classes on the outermost wrapper. Use for width/margin overrides.",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Locale object (from `date-fns/locale`) forwarded to the panel. Controls month/day names and the week start. The input always accepts the ISO form regardless of locale.",
+      "name": "locale",
+      "type": "DayPickerProps[\"locale\"]"
+    },
+    {
+      "description": "Alias of minDate, kept for the antd v4 spelling.",
+      "name": "fromDate",
+      "type": "Date"
+    },
+    {
+      "description": "Alias of maxDate, kept for the antd v4 spelling.",
+      "name": "toDate",
+      "type": "Date"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Inline ✕ that resets the value when one is set (antd `allowClear`). The object form replaces the icon and/or the accessible label. Pass `false` on a required field.",
+      "name": "allowClear",
+      "type": "boolean | { clearIcon?: ReactNode; label?: string }"
+    },
+    {
+      "description": "Accessible NAME of the calendar button. The default (「カレンダーを開く」 / 'Open calendar') is right for one picker on a page and useless for three: a screen-reader user hears the same sentence three times with nothing to say which field each button belongs to (WCAG 2.2 SC 2.4.6). Name it after the FIELD — `開始日のカレンダーを開く`. Same axis and same reason as Select's `clearLabel`.",
+      "name": "triggerLabel",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "TimePicker — companion for HH:mm time selection; same form-submittable-input pattern with a `name` prop.",
+    "Calendar — the bare calendar grid used inside DatePicker; reach for it only when you need an always-visible month grid with no input.",
+    "MonthPicker / MonthRangePicker / DateRangePicker were separate components until 22.0.0. They are now `picker=\"month\"`, `range picker=\"month\"` and `range` on this component."
+  ],
+  "rules": [
+    3,
+    6,
+    13,
+    31
+  ],
+  "storyPath": "data-entry/DatePicker.stories.tsx",
+  "tagline": "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance.",
+  "usage": [
+    "ONE component covers every date-shaped field. `picker` is the granularity axis, `range` and `multiple` are the cardinality axis, and they compose: `<DatePicker range picker=\"month\" />` is a month range.",
+    "DO use `name` to make the field form-submittable — it emits ISO-8601 at the picker's own precision (`2026-03` for a month, `2026` for a year, `2026-03-01` for a day). No hidden input of your own is needed.",
+    "DO wrap it in FormField like every other labelled control; FormField injects the id/aria wiring onto the input.",
+    "DO pass `triggerLabel` whenever a screen has MORE THAN ONE date field. Without it every calendar button on the page carries the identical name and a screen-reader user cannot tell which field each one opens.",
+    "DO test by filling the input directly: `await user.type(screen.getByRole('combobox'), '2026-04-15')`. With `range`, the two edges are named textboxes (From / To). The panel is secondary and not required for testing.",
+    "DO use `minDate` / `maxDate` to restrict what is selectable — they are enforced on the panel AND on typed entry, so the keyboard is not a way around the rule the mouse obeys.",
+    "DON'T place two DatePickers side by side to fake a from~to pair — that is `range`, which is one control, one shell and one value.",
+    "DO use `defaultPickerValue` when the panel should open somewhere other than the value — it is the only way to say it, and it re-applies on every open.",
+    "DON'T reach for `inputReadOnly` to switch the control off; it only sets the input's readonly attribute (the panel still opens). `disabled` is the inert one.",
+    "DON'T hand-roll a date text input + calendar popover — this component IS that pattern at WAI-ARIA combobox spec level."
+  ],
+  "useCases": [
+    "Invoice due-date field in an accounting form — attach `name='due_date'` and submit natively.",
+    "A 対象月 / 締め年月 field where the day is meaningless — `picker=\"month\"`, which submits `2026-03`.",
+    "A 会計期間 from~to pair — `range`, submitting `period_from` / `period_to`.",
+    "A quarterly or fiscal-year reporting filter — `picker=\"quarter\"` or `picker=\"year\"`.",
+    "Restricting a closing date to future days with `minDate={new Date()}`.",
+    "Locale-aware picker in a multi-language admin panel — pass a `date-fns` locale for the panel while the input keeps its ISO form."
+  ]
+}

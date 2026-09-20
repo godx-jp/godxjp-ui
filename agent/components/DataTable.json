@@ -1,0 +1,260 @@
+{
+  "example": "import { useState } from \"react\";\nimport { Badge, DataTable, type ColumnDef } from \"@godxjp/ui/data-display\";\nimport { EmptyState } from \"@godxjp/ui/data-display\";\n\ntype Invoice = {\n  id: string;\n  customer: string;\n  amount: number;\n  status: \"paid\" | \"pending\" | \"overdue\";\n};\n\nconst columns: ColumnDef<Invoice>[] = [\n  { key: \"id\", header: \"Invoice #\", width: \"w-32\" },\n  { key: \"customer\", header: \"Customer\" },\n  {\n    key: \"status\",\n    header: \"Status\",\n    render: (row) => (\n      <Badge\n        variant={\n          row.status === \"paid\" ? \"success\" : row.status === \"overdue\" ? \"destructive\" : \"secondary\"\n        }\n      >\n        {row.status}\n      </Badge>\n    ),\n  },\n  { key: \"amount\", header: \"Amount\", align: \"right\", sortable: true },\n];\n\nexport default function InvoiceList({\n  invoices,\n  loading,\n}: {\n  invoices: Invoice[];\n  loading: boolean;\n}) {\n  const [selected, setSelected] = useState<Set<string>>(new Set());\n  const [sort, setSort] = useState<{ key: string; direction: \"asc\" | \"desc\" } | undefined>();\n\n  return (\n    <DataTable\n      data={invoices}\n      columns={columns}\n      getRowId={(row) => row.id}\n      selectable\n      selected={selected}\n      onSelectChange={setSelected}\n      sort={sort}\n      onSortChange={setSort}\n      loading={loading}\n      empty={\n        <EmptyState\n          title=\"No invoices found\"\n          description=\"Adjust your filters or create a new invoice.\"\n        />\n      }\n    >\n      <DataTable.Toolbar>\n        <DataTable.BulkActions>\n          <button type=\"button\" onClick={() => setSelected(new Set())}>\n            Mark paid\n          </button>\n        </DataTable.BulkActions>\n        <DataTable.DensityToggle />\n      </DataTable.Toolbar>\n    </DataTable>\n  );\n}",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "DataTable",
+  "props": [
+    {
+      "description": "Array of row data. When empty and loading is false, a built-in EmptyState renders automatically inside the table body — no external guard needed.",
+      "name": "data",
+      "required": true,
+      "type": "T[]"
+    },
+    {
+      "description": "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hideBelow?: 'sm'|'md'|'lg'|'xl' (same contract as Flex hideBelow — stamped as data-hide-below on th/td); hiddenOnMobile?: boolean (alias for hideBelow:'md'); enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). ANT DESIGN PARITY on the same column: fixed:'start'|'end' freezes the column against a scroll edge (logical, so it mirrors in RTL; the stacking offsets are MEASURED from the rendered header, so several adjacent frozen columns are correct at any width — pin:'end' is the older spelling of fixed:'end'). ellipsis holds the cell to one line and keeps the full value as its title (it also switches the table to table-layout: fixed, without which no ellipsis truncates anything). sorter is antd's richer `sortable`: true | (a, b) => number | { compare, multiple }, where multiple is the MULTI-column sort priority (highest sorts first). sortOrder / defaultSortOrder / sortDirections control and shape the cycle per column, and showSorterTooltip explains the next step. filters + onFilter + filteredValue / defaultFilteredValue / filterMultiple add a real filter menu to the header (filterMultiple: false makes it single-choice); omit onFilter for a server filter and drive it from the table's onFilterChange.",
+      "name": "columns",
+      "required": true,
+      "type": "ColumnDef<T>[]"
+    },
+    {
+      "defaultValue": "(row) => String(row.id)",
+      "description": "Extracts a stable unique string key per row. Required when selectable is true or rows lack an 'id' field. Falls back to row.id cast to string.",
+      "name": "getRowId",
+      "type": "(row: T) => string"
+    },
+    {
+      "description": "Human name of a row — what its selection checkbox (or radio) is announced as: `Select row {label}`. Default: the text of the `priority: \"primary\"` column, else of the first column, when that value is a string or number; the row id only as a last resort, because an id is a KEY and announced it reads a UUID aloud. Set it when the first column is not the row's name (an avatar, a status badge, an id). `rowSelection.getCheckboxProps` `aria-label` still overrides a single row.",
+      "name": "getRowLabel",
+      "type": "(row: T) => string"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Adds a checkbox column and a SelectAll header checkbox. Use with selected + onSelectChange for controlled selection, or omit both for uncontrolled.",
+      "name": "selectable",
+      "type": "boolean"
+    },
+    {
+      "description": "Controlled set of selected row IDs. Pair with onSelectChange. Omit for uncontrolled.",
+      "name": "selected",
+      "type": "Set<string>"
+    },
+    {
+      "description": "Per-row STATE — a leading-edge rail plus a weak wash, in the same six tone names Card `accent` uses, so a row needing attention and a card needing attention are one vocabulary. Return undefined for an ordinary row. This is the supported alternative to painting rows through rowClassName: ui-audit treats any prop whose name ends in `className` as a class expression, so a `border-l-4 bg-amber-50` inside that arrow is an error in a consumer. NEVER the only signal — colour alone cannot carry meaning (WCAG 1.4.1), so keep the reason in a cell (a Badge, a status column) and let the rail make that cell findable in a long table. The rail reads the --mark-* tier, which is held at 3:1 against its own row by src/tokens/__tests__/tone-mark-contrast.test.ts.",
+      "name": "rowTone",
+      "type": "(row: T) => \"primary\" | \"success\" | \"warning\" | \"info\" | \"attention\" | \"destructive\" | undefined"
+    },
+    {
+      "description": "Called with the full new selection set after any checkbox interaction.",
+      "name": "onSelectChange",
+      "type": "(next: Set<string>) => void"
+    },
+    {
+      "description": "Makes rows clickable for navigation. Row click is suppressed when the user clicks an interactive descendant (button, a, input, select, textarea, [role=menuitem]).",
+      "name": "onRowClick",
+      "type": "(row: T) => void"
+    },
+    {
+      "defaultValue": "'compact'",
+      "description": "Controlled row density across all three tiers (compact 28 / default 36 / comfortable 48) — drive it from a 表示密度 radio. Omit to let DataTable manage it internally (DataTable.DensityToggle flips compact↔comfortable).",
+      "name": "density",
+      "type": "'compact' | 'default' | 'comfortable'"
+    },
+    {
+      "description": "Called when the user toggles density. Only needed when density is controlled.",
+      "name": "onDensityChange",
+      "type": "(density: 'compact' | 'default' | 'comfortable') => void"
+    },
+    {
+      "description": "Zebra rows: every EVEN LOGICAL record paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA, computed at the row so dark mode and scoped themes follow). Parity is by record, not DOM row — an expanded detail row is skipped when counting and wears its own record's stripe; on a paged table the count restarts per rendered page. Frozen (`fixed`) cells wear the stripe over their opaque base; hover, selection, `rowClassName` and `rowTone` all still read on a striped row. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` / `false` override it for this table. Element Plus `stripe` / Bootstrap `.table-striped`; antd has no prop.",
+      "name": "striped",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Highlight a row on hover even when it is not clickable. onRowClick already implies hover; use this for read-only tables that still want the hover affordance.",
+      "name": "hoverable",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "true",
+      "description": "Pin the header to the top while the body scrolls (ヘッダ追従). Set false to let it scroll away with the rows.",
+      "name": "stickyHeader",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "'default'",
+      "description": "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL.",
+      "name": "preset",
+      "type": "'default' | 'action-collection'"
+    },
+    {
+      "defaultValue": "'sm'",
+      "description": "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query on sm 40rem · md 48rem · lg 64rem · xl 80rem), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is 'default'.",
+      "name": "collapseBelow",
+      "type": "'sm' | 'md' | 'lg' | 'xl'"
+    },
+    {
+      "description": "Active sort state (controlled/server surface). When provided alongside onSortChange, sortable columns show directional arrow icons and clicking the active column twice clears sort (calls onSortChange(undefined)). Omit both sort and onSortChange to sort client-side via TanStack.",
+      "name": "sort",
+      "type": "{ key: string; direction: 'asc' | 'desc' }"
+    },
+    {
+      "description": "Called when a sortable column header is clicked. Receives undefined when sort is cleared (third click on same column). Providing sort or onSortChange opts into the controlled (server) sort surface; omit both and the table sorts client-side via TanStack.",
+      "name": "onSortChange",
+      "type": "(sort: { key: string; direction: 'asc' | 'desc' } | undefined) => void"
+    },
+    {
+      "description": "Global search term surfaced by DataTable.Search. Omit both for client-side filtering; pass them to drive a server query (with manualFiltering).",
+      "name": "globalFilter / onGlobalFilterChange",
+      "type": "string / (next: string) => void"
+    },
+    {
+      "description": "Pagination state. THREE shapes: the TanStack `{ pageIndex, pageSize }` (surfaced by a composed DataTable.Pagination); antd's TablePaginationConfig `{ total, current (1-based), pageSize, pageSizeOptions, showSizeChanger, showTotal, position, onChange(page, pageSize) }`; or `false` (no pager, rows unsliced). The antd object WITHOUT a composed DataTable.Pagination renders the table's own footer — the real Pagination (total beside the page numbers) at `position` (TablePaginationPositionProp[], logical: topStart|topCenter|topEnd|bottomStart|bottomCenter|bottomEnd|none; default ['bottomEnd'] = antd bottomRight), `size=\"sm\"` on a compact table so it matches the toolbar's sm controls. Server-paged: `pagination={{ total, current, pageSize, onChange }}` with `data` = the current page — a total larger than data.length with ≤ pageSize rows reads as server paging (antd's rule), giving ceil(total / pageSize) pages. A composed DataTable.Pagination keeps its own footer (never two pagers). `hideOnSinglePage` defaults to FALSE here (antd's table default), so a list filtered down to one page keeps its total and rows-per-page select; pass `hideOnSinglePage: true` for the standalone Pagination's behaviour.",
+      "name": "pagination / onPaginationChange / rowCount",
+      "type": "{ pageIndex: number; pageSize: number } | TablePaginationProp | false / OnChangeFn / number"
+    },
+    {
+      "description": "Column show/hide state surfaced by DataTable.ViewOptions ('set view'). Internal if omitted.",
+      "name": "columnVisibility / onColumnVisibilityChange",
+      "type": "VisibilityState / OnChangeFn<VisibilityState>"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Default false so the simple data+columns case sorts/filters/paginates in-browser. Set the relevant flag true and drive the matching state from your query for server-side behaviour.",
+      "name": "manualSorting / manualFiltering / manualPagination",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "When true, swaps the body for SHAPED skeleton rows rendered inside the table's own grid (one border, aligned columns) — never a separate <SkeletonTable> in a Card (that double-borders). With React Query keepPreviousData, drive this off isPlaceholderData (pagination/search) || isLoading (first load), NOT isLoading alone. Suppresses the empty state while true.",
+      "name": "loading",
+      "type": "boolean"
+    },
+    {
+      "description": "Custom content rendered inside the table body when data is empty and loading is false. Defaults to a built-in EmptyState with a localised 'No data' message. Pass a custom <EmptyState title='...' description='...' action={...}/> to tailor the message.",
+      "name": "empty",
+      "type": "ReactNode"
+    },
+    {
+      "description": "FAILURE state. Pass error={isError} — `true` renders the built-in localized destructive EmptyState ('Couldn't load this list') announced with role='alert'; any other node REPLACES that copy (e.g. an <Alert> carrying an error code + request id). `false`/`undefined` means the read succeeded. NEVER pass a raw Error object (it is not renderable).",
+      "name": "error",
+      "type": "ReactNode"
+    },
+    {
+      "description": "PERMISSION-DENIED state — the read was REFUSED (403), not failed. `true` renders the built-in localized warning EmptyState ('You don't have access to this list') with NO retry, announced politely (aria-live) because a permission boundary is expected information, not a fault. Takes precedence over `error`. Any other node replaces the copy.",
+      "name": "denied",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Retry handler surfaced as a Retry button inside the BUILT-IN error state only. Omit it to render the error without a retry affordance; it is intentionally never offered for `denied` (repeating a 403 cannot succeed).",
+      "name": "onRetry",
+      "type": "() => void"
+    },
+    {
+      "description": "Full row-selection configuration (antd rowSelection). Supersedes — and can be mixed with — selectable/selected/onSelectChange, which drive the same state. type:'radio' makes the column single-choice (no header checkbox at all). getCheckboxProps is the declared home for 'this row cannot be selected' (disabled) and for a per-row accessible name. preserveSelectedRowKeys keeps a key selected after its row leaves `data` (server paging / a filter), which is the only way a select-across-pages bulk action can be correct. selections adds bulk entries under the header checkbox (true = the built-in all · invert · none).",
+      "name": "rowSelection",
+      "type": "{ type?: 'checkbox'|'radio'; selectedRowKeys?: string[]; defaultSelectedRowKeys?: string[]; onChange?: (keys, rows) => void; getCheckboxProps?: (row) => { disabled?, 'aria-label'? }; preserveSelectedRowKeys?: boolean; selections?: true | { key, text, onSelect }[]; hideSelectAll?: boolean; columnTitle?: ReactNode }"
+    },
+    {
+      "description": "Expandable detail rows (antd expandable). Supplying expandedRowRender adds a leading expand column before the selection column and renders the panel in a real <tr> spanning every column, so the table's grid semantics survive. rowExpandable gates the affordance per row; expandedRowKeys + onExpandedRowsChange make it controlled.",
+      "name": "expandable",
+      "type": "{ expandedRowRender?: (row, index, expanded) => ReactNode; rowExpandable?: (row) => boolean; defaultExpandAllRows?: boolean; expandedRowKeys?: string[]; onExpandedRowsChange?: (keys) => void; expandRowByClick?: boolean; columnTitle?: ReactNode }"
+    },
+    {
+      "description": "Footer totals row (antd summary), rendered in a real <tfoot> so it keeps the column widths and the screen-reader row navigation. Receives the rows currently rendered (post sort/filter/page), so a page total and a grand total are both expressible. Compose the return with <TableRow>/<TableCell> from the Table primitive.",
+      "name": "summary",
+      "type": "(rows: readonly T[]) => ReactNode"
+    },
+    {
+      "description": "Scroll envelope (antd scroll). x is the table's MINIMUM inline size — it scrolls horizontally past it; y is the body's MAXIMUM block size — it scrolls vertically past it, with the sticky header staying put. Both are published as --table-scroll-inline-size / --table-scroll-block-size, so the lengths stay data and the geometry stays in the stylesheet. Setting x also switches the table to `table-layout: fixed`, which is what makes column widths (and `ellipsis`) authoritative.",
+      "name": "scroll",
+      "type": "{ x?: number | string; y?: number | string }"
+    },
+    {
+      "description": "Sticky header (antd sticky). Supersedes stickyHeader when given. The object form carries the offset a page-level fixed topbar needs, published as --table-sticky-offset.",
+      "name": "sticky",
+      "type": "boolean | { offsetHeader?: number | string }"
+    },
+    {
+      "description": "Per-row DOM props merged onto the <tr> (antd onRow) — a context menu, a drag handle, a data attribute for an E2E hook. The returned onClick/onKeyDown/className COMPOSE with the built-in row-click and row-tint behaviour rather than replacing it. For plain row navigation prefer onRowClick, which already handles the keyboard and the interactive-descendant guard.",
+      "name": "onRow",
+      "type": "(row: T, index: number) => React.HTMLAttributes<HTMLTableRowElement>"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Draw the vertical rules between columns (antd bordered), forwarded to the Table primitive. The surface keeps drawing the outer frame, so the two never stack. Reach for it when the table carries merged cells or a dense numeric grid.",
+      "name": "bordered",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Explain the NEXT sort step in a tooltip on every sortable header (antd showSorterTooltip). Defaults to false, not antd's true, so an existing table gains no hover chrome; a column's own showSorterTooltip overrides it either way.",
+      "name": "showSorterTooltip",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "['asc', 'desc']",
+      "description": "Table-wide sort cycle (antd sortDirections, in this library's asc/desc spelling). The cycle runs through the listed directions and then clears, so ['desc','asc'] sorts descending first — the right default for a date or amount column. A column's own sortDirections wins.",
+      "name": "sortDirections",
+      "type": "('asc' | 'desc')[]"
+    },
+    {
+      "description": "Column filters changed, keyed by column — this library's split of the `filters` argument antd passes to the table-level onChange. Pair it with a column's filteredValue to drive filtering from a server query; omit both and the column filters client-side through its onFilter.",
+      "name": "onFilterChange",
+      "type": "(filters: Record<string, (string | number | boolean)[]>) => void"
+    },
+    {
+      "description": "Extra classes applied to the root wrapper div (ui-data-table-root).",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Compound sub-parts: DataTable.Toolbar, DataTable.Search (global filter), DataTable.ViewOptions (column show/hide), DataTable.SelectAll, DataTable.BulkActions (ReactNode children OR a (count)=>node render-prop), DataTable.DensityToggle, DataTable.Pagination (cursor first/next when given cursor+hasMore+onChange, else numbered page-size form), DataTable.RowActions (kebab trigger), DataTable.Content. If no DataTable.Content is present in children, one is auto-rendered.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "Table — raw primitive (TableHeader/TableBody/TableRow/TableCell). Use DataTable instead; only reach for Table directly when you need a non-standard layout that DataTable cannot express.",
+    "SkeletonTable — standalone skeleton placeholder rendered before any DataTable mounts (e.g. in a Suspense fallback or deferred-prop skeleton slot). DataTable.loading covers in-table loading; SkeletonTable covers pre-mount skeletons.",
+    "EmptyState — standalone empty state for non-table lists. DataTable already embeds EmptyState in its body; only use bare EmptyState for card content, non-tabular lists, or zero-state pages outside a DataTable.",
+    "LineChart / BarChart / AreaChart / PieChart (@godxjp/ui/charts) — when the SHAPE or trend of aggregated data matters more than exact per-row figures, visualize it with a chart instead of (or alongside) the table; keep DataTable when users need to read, sort, or act on individual rows.",
+    "DataState / InfiniteQueryState — TanStack Query lifecycle widgets from @godxjp/ui/query. Prefer these over DataTable when your list is driven by useQuery/useInfiniteQuery and you want automatic skeleton/empty/error handling at the query level rather than at the table level."
+  ],
+  "rules": [
+    24,
+    31,
+    35,
+    37
+  ],
+  "storyPath": "data-display/DataTable.stories.tsx",
+  "tagline": "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack).",
+  "usage": [
+    "DO use `striped` on dense list tables (many columns, a row the eye must follow across the width). To stripe EVERY Table and DataTable in a service, set it ONCE in the theme — `:root { --table-row-striped-alpha: 100%; }` — instead of passing `striped` at each call site; `striped={false}` then opts one table out. Retint with `--table-row-striped-background`, never with a `rowClassName` utility or `:nth-child` page CSS (those count DOM rows, so an expanded detail row shifts every stripe after it).",
+    "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
+    "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
+    "SIX STATES, ZERO HAND-ROLLING: loading (`loading`), empty (automatic / `empty`), error (`error` + optional `onRetry`), denied (`denied`), pagination (`DataTable.Pagination`), row actions (`DataTable.RowActions`). Wire them straight off the query — `<DataTable loading={isPending} error={isError} denied={status === 403} onRetry={refetch} …/>` — and never branch the page around the table to render your own alert/empty/forbidden block. Precedence is loading > denied > error > empty > rows, so exactly one state ever shows.",
+    "DO provide getRowId when selectable is true or when rows do not have a string/number 'id' field — the default falls back to row.id and silently returns '' for missing IDs, which breaks selection.",
+    "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
+    "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
+    "DataTable.Pagination OWNS ITS OWN INSET. The footer is a self-contained slot: it declares `padding-block` + `padding-inline` from `--table-pagination-padding-{y,x}` (block default = `--space-stack-sm`, inline default = `--table-cell-space-x`, so the 'rows per page' label lands on the same optical axis as the first column's text). Before the fix it declared `padding-top` only, so inside the documented flush container (`<Card><CardContent flush><DataTable/>`) the label and page-size Select sat flush against the container edge and border. DON'T ship a local `.ui-data-table-pagination { padding: … }` override in an app — retune the two tokens in your theme instead.",
+    "RESPONSIVE APPROVAL / ACTION QUEUE: reach for `preset=\"action-collection\"` when a dense five-column queue (requester · target · reason · requested date · row actions) must stay readable at 390px, and give every column a `priority` on its ColumnDef — `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved FIRST so it can never be pushed off-screen). Leave the free-text column unmarked; it takes the remaining space. This is the SAME contract, the SAME `--table-action-collection-*` tokens and the SAME container query as `Table preset=\"action-collection\"` — there is no separate DataTable family. Never add a consumer width, a hidden column, `hiddenOnMobile` or a page-local breakpoint to make a table fit: retune the tokens instead.",
+    "DON'T set `width` on a column that also has a `priority` — an explicit width utility wins the cascade over the priority measure and re-opens the horizontal scroll. Under the preset, `pin: 'end'` is also redundant: nothing scrolls sideways, so the actions column is already in frame.",
+    "The DataTable surface's narrow-viewport width floor is `--table-surface-min-inline-size` (default 640px, released at the `sm` viewport step). It used to be a hard-coded `min-w-[640px] sm:min-w-0` utility pair on the surface — the literal that forced the horizontal scroll at 390. Retune (or zero) the token in your theme; `preset=\"action-collection\"` already opts out of it.",
+    "DO use ColumnDef.render for custom cell content (Badge, Link, RowActions). For plain string/number fields render can be omitted — DataTable falls back to String(row[key]).",
+    "DO give every visually-empty column an accessible header via `ariaLabel` — a row-actions column (`header: ''`, `pin: 'end'`) sets `ariaLabel: t('actions')`, so screen readers announce the column and axe reports no `empty-table-header`. DataTable dev-warns any column that renders a `<th>` with neither visible text nor an `ariaLabel`. The selection column added by `selectable` is already named by its SelectAll checkbox — no `ariaLabel` needed there.",
+    "COLUMN SEMANTICS + KEYBOARD: a `sortable` header renders as a real <button> inside the <th> with `aria-sort` (ascending/descending/none) on the <th>; it is Tab-reachable and toggles asc → desc → cleared on Enter/Space/click. A selection column exposes a header 'select all' Checkbox (indeterminate when a subset is selected) and a per-row Checkbox, each keyboard-operable with Space. An action column is visually empty but carries an `ariaLabel`; its per-row controls (kebab menu / buttons) own their own accessible names and keyboard behavior. Row click (`onRowClick`) is suppressed when the user activates an interactive descendant.",
+    "DO NOT nest DataTable.Content in a conditional — it is already guarded internally. If you need to override the table body slot, drop exactly one <DataTable.Content /> in children; DataTable auto-detects it by displayName and skips the default."
+  ],
+  "useCases": [
+    "Admin list pages (invoices, customers, orders, accounts) where rows are clickable for detail navigation via onRowClick.",
+    "Bulk-action workflows (e.g. mark invoices paid, export selected rows) — use selectable + DataTable.BulkActions to show contextual action buttons only when something is selected.",
+    "Server-side sorted tables: pass sort + onSortChange and update the data prop after the API call; DataTable renders asc/desc/neutral icons on the header automatically.",
+    "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic. For page-size + numbered prev/next instead, use DataTable.Pagination with pageSizeOptions (no cursor/onChange) driven by the internal TanStack pagination.",
+    "Server-paged table (antd `Table pagination`): `pagination={{ total, current, pageSize, onChange }}` with `data` = the rows of the current page — the table renders its own footer with the real Pagination (total + page numbers, bottom-end, sized from density). Add `showTotal: true` or `(total, [from, to]) => …` for the total label; `position: ['topEnd']` to move it.",
+    "Full grid screens (global search + column 'set view' + numbered pagination): compose DataTable.Search, DataTable.ViewOptions, DataTable.DensityToggle in the toolbar and DataTable.Pagination pageSizeOptions={[…]} — client-side by default, or server-side by passing globalFilter/pagination/sort state with the matching manual* flag.",
+    "Responsive admin tables where columns should drop at specific viewport steps — set hideBelow on each ColumnDef (sm/md/lg/xl, same ladder as Flex hideBelow); hiddenOnMobile: true remains an alias for hideBelow:\"md\". ColumnDef.priority is ONLY for preset=\"action-collection\" width allocation, not for hiding. When every column must stay DISCOVERABLE at 390 (an approval/action queue), use preset=\"action-collection\" + priority rather than hideBelow.",
+    "Access-approval / action queues at 390px (SCR-105): preset=\"action-collection\" + a priority on each ColumnDef keeps requester · target · reason · requested date · row actions inside the initial narrow frame with no page-local CSS, no consumer width, no hidden column and no horizontal scroll — see the DataTable 'Approval queue' example page.",
+    "Loading skeletons during initial page load or filter change: set loading={true} alongside an empty data={[]} to show the loading row without flashing an empty state."
+  ]
+}

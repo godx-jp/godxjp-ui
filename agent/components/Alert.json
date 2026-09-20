@@ -1,0 +1,65 @@
+{
+  "example": "import { Alert, AlertTitle, AlertDescription } from \"@godxjp/ui/feedback\";\n\n<Alert tone=\"warning\">\n  <AlertTitle>3 件の打刻漏れがあります</AlertTitle>\n  <AlertDescription>本日中に確認してください。</AlertDescription>\n</Alert>",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Alert",
+  "props": [
+    {
+      "defaultValue": "\"default\"",
+      "description": "STRUCTURAL axis, orthogonal to `tone` (which owns colour + icon): \"default\" is the inline rounded card; \"banner\" is the full-bleed attention strip — prefer the `Banner` export, which fixes this axis.",
+      "name": "variant",
+      "type": "\"default\" | \"banner\""
+    },
+    {
+      "description": "Renders an × dismiss button when provided.",
+      "name": "onDismiss",
+      "type": "() => void"
+    },
+    {
+      "description": "Override or hide (false) the icon.",
+      "name": "icon",
+      "type": "LucideIcon | false"
+    },
+    {
+      "description": "Semantic tone driving the colour + leading icon.",
+      "name": "tone",
+      "type": "\"success\" | \"warning\" | \"destructive\" | \"info\" | \"neutral\""
+    }
+  ],
+  "related": [
+    "Toaster — use for transient, auto-dismissing feedback ('Record saved', 'Deleted'). Alert is for persistent page-scoped banners; Toaster is for fire-and-forget notifications triggered by toast() from sonner.",
+    "AlertMutationFeedback — use when you want inline success/error feedback tightly coupled to a form mutation's state (renders inline below the submit button). Alert requires you to manage show/hide state yourself.",
+    "DataState — use for full query lifecycle (loading skeleton + empty state + error) inside a data-fetching section. Alert.QueryError is the error sub-component DataState uses internally; prefer DataState when you also need the loading/empty states.",
+    "EmptyState — use for the zero-data case inside a list or table section, not for errors or warnings. Alert is for status messages; EmptyState is for the absence of data."
+  ],
+  "rules": [],
+  "storyPath": "feedback/Alert.stories.tsx",
+  "subParts": [
+    "AlertActions",
+    "AlertBase",
+    "AlertContent",
+    "AlertDescription",
+    "AlertMutationFeedback",
+    "AlertQueryError",
+    "AlertTitle"
+  ],
+  "tagline": "Inline alert banner with variant-aware icon + optional dismiss. Parts: Alert/AlertTitle/AlertDescription/AlertActions/AlertQueryError.",
+  "usage": [
+    "ANATOMY (positions are fixed — never re-lay-them-out): Alert is ONE horizontal row — a SINGLE leading tone icon at the inline-start (top-aligned to the first text line, auto-selected by `tone`, never two icons), then the text body (Title/Description), then `<Alert.Actions>` in a trailing-RIGHT column (≥sm), and the dismiss × pinned to the TOP-RIGHT corner (rendered by `onDismiss`). DON'T stack these vertically, DON'T make the action a full-width bar under the text, DON'T center the × at the bottom, DON'T add a second icon — that hand-rolled vertical banner is the #1 Alert mistake.",
+    "DO compose text as `<Alert.Title>` + `<Alert.Description>` — they stack vertically inside the body (the Example below is canonical). When you add `<Alert.Actions>`, the body becomes a two-column grid (text | actions) at ≥sm; group multi-part text in `<Alert.Content>` so it occupies the text column as one block: `<Alert tone=\"destructive\"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.",
+    "DO use `Alert.QueryError` (alias `AlertQueryError`) for TanStack Query / API failure surfaces — it already renders humanError(error), an i18n title, and an optional Retry button. Never hand-roll that pattern.",
+    "`AlertMutationFeedback` props: `mutation`, `onRetry?`, `showRetry?` (default `true`), `pending?`, `ignoreValidationErrors?: boolean`, `className?`. `ignoreValidationErrors={true}` skips the alert for every error where `classifyQueryError(mutation.error).category === \"validation\"` (400/422). DEFAULT (omitted): skip a validation error only when rendered inside a `FormRoot`/`Form` whose `errors` bag holds at least one message (the fields show it, `<FormErrors />` shows unclaimed keys); outside such a form, or with an empty/absent bag, the alert renders. So DON'T hand-guard `{!isValidation && <AlertMutationFeedback …/>}` inside `FormRoot errors={…}` — a 422 is not drawn twice, and a 5xx still renders. Pass `ignoreValidationErrors={false}` to force the alert in such a form.",
+    "DON'T pass raw action elements directly as top-level children of `<Alert>` without wrapping them in `<Alert.Actions>` — the layout slot only activates correctly via the `data-slot=\"alert-actions\"` wrapper.",
+    "DON'T hand-roll a dismiss ✕ button — pass `onDismiss` to `<Alert>` and the component renders its own accessible dismiss button with `aria-label=\"Dismiss\"`. The `onDismiss` handler may return a Promise.",
+    "DON'T suppress the icon with `icon={false}` unless there is a deliberate design reason; the icon is the primary a11y cue for sighted users since the root already carries `role=\"alert\"` for screen readers.",
+    "DO NOT use `Alert` for transient ephemeral feedback (e.g. 'saved successfully'). Use `toast()` from sonner + `<Toaster>` for that. `Alert` is for persistent, page-scoped banners that stay visible until the user acts or dismisses."
+  ],
+  "useCases": [
+    "Page-level error banner after a form submission fails server-side validation — `tone=\"destructive\"` with `Alert.Title` summarising the error and `Alert.Description` listing field issues, paired with `onDismiss` so the user can clear it.",
+    "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `tone=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
+    "Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `tone=\"success\"` with `Alert.Description` showing the record count imported.",
+    "TanStack Query data-fetch failure inside a Card body — use `<Alert.QueryError error={error} onRetry={refetch} />` instead of writing a custom error state.",
+    "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `tone=\"info\"` with a short description and an `Alert.Actions` 'Learn more' link.",
+    "Dismissible billing-overdue notice at the top of the dashboard — `tone=\"destructive\"` with `onDismiss` that sets a session flag so it does not reappear until the next login."
+  ]
+}

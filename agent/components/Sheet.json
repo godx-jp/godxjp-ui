@@ -1,0 +1,85 @@
+{
+  "example": "import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from \"@godxjp/ui/feedback\";\nimport { Button } from \"@godxjp/ui/general\";\n\n<Sheet open={open} onOpenChange={setOpen}>\n  <SheetTrigger asChild><Button variant=\"outline\" size=\"sm\">絞り込み</Button></SheetTrigger>\n  <SheetContent side=\"right\">\n    <SheetHeader><SheetTitle>フィルター設定</SheetTitle></SheetHeader>\n    {/* filter fields */}\n  </SheetContent>\n</Sheet>",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "Sheet",
+  "props": [
+    {
+      "description": "Controlled open state.",
+      "name": "open",
+      "type": "boolean"
+    },
+    {
+      "description": "Open-state change handler.",
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void"
+    },
+    {
+      "defaultValue": "true",
+      "description": "On Sheet (root). `false` renders a NON-MODAL sheet (WAI-ARIA APG allows non-modal dialogs): the page behind stays interactive and in the accessibility tree (no inert/aria-hidden), no scroll lock, no scrim, an outside press does NOT close it, and there is no `aria-modal`. The panel keeps role=dialog + its title as name, and the same side placement, width, responsive presentation and tokens. Focus moves into it on open, Tab can leave it, Escape closes it while focus is inside, and focus returns to the trigger on close (only if focus was still inside). Same contract as Dialog `modal={false}`. gh#701.",
+      "name": "modal",
+      "type": "boolean"
+    },
+    {
+      "description": "On SheetContent (side left/right): desired panel width (number→px). Default w-3/4 sm:max-w-md.",
+      "name": "width",
+      "type": "number | string"
+    },
+    {
+      "defaultValue": "\"side\"",
+      "description": "On SheetContent: the responsive drawer / detail-panel contract. \"side\" (default) always renders the physical `side` you named. \"auto\" renders the desktop side panel above --sheet-responsive-breakpoint-width (48rem/768px) and the mobile BOTTOM sheet at/below it, capped by --sheet-bottom-max-height (85dvh). \"bottom\" pins the bottom-sheet presentation.",
+      "name": "responsive",
+      "type": "\"auto\" | \"side\" | \"bottom\""
+    },
+    {
+      "description": "On SheetHeader (Ant-style): title (→ SheetTitle, accessible name), subtitle (→ SheetDescription), right-aligned extra actions, and a soft semantic `tone` background band. Children still supported.",
+      "name": "title / subtitle / extra / tone",
+      "type": "ReactNode / ReactNode / ReactNode / ToneProp"
+    }
+  ],
+  "related": [
+    "Dialog — use Dialog (centered modal) when the action is destructive, requires full user focus, or needs a confirm/alertdialog (mode='confirm'). Use Sheet when the user benefits from seeing the page content behind the slide-over (filters, detail peek, quick-edit).",
+    "Toolbar/ToolbarGroup — use Toolbar for inline persistent filter controls above a DataTable (no overlay). Use Sheet when the filter set is large (>4 controls) or on mobile where inline controls collapse poorly.",
+    "Popover — use Popover for lightweight, anchor-positioned context menus or single-control overlays (date picker, color picker). Use Sheet when the panel has a header, multiple fields, or footer actions that need a dedicated panel.",
+    "SplitPane — use SplitPane for a persistent side-by-side layout where both panes are always visible. Use Sheet when the secondary panel is transient and should overlay the primary content."
+  ],
+  "rules": [
+    3
+  ],
+  "storyPath": "feedback/Sheet.stories.tsx",
+  "subParts": [
+    "SheetBody",
+    "SheetClose",
+    "SheetContent",
+    "SheetDescription",
+    "SheetFooter",
+    "SheetHeader",
+    "SheetOverlay",
+    "SheetPortal",
+    "SheetTitle",
+    "SheetTrigger"
+  ],
+  "tagline": "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
+  "usage": [
+    "DO build the panel with SheetHeader (pass `title`/`subtitle`/`extra`/`tone` OR children) > SheetBody (scrollable, ring-safe) > SheetFooter (pinned). SheetTitle is required for a11y — the `title` prop renders it for you. Never skip the title.",
+    "DO set `width` on SheetContent for a wider/narrower panel (e.g. width={480}); it caps at the viewport so small screens still get a full-width panel.",
+    "DO use responsive=\"auto\" for a record detail panel / drawer that must be a desktop side panel and a mobile bottom sheet — ONE <Sheet>, no page-local media query. The breakpoint is the --sheet-responsive-breakpoint-width token, so a service moves the line once for every overlay. `width` is ignored while the bottom presentation is active (a bottom sheet is full-bleed).",
+    "DON'T hardcode an overlay breakpoint in app code (useMediaQuery(\"(max-width: 390px)\")). If a composite must swap a desktop surface for a mobile sheet (a Popover→Sheet switcher, for example), call the exported useSheetResponsiveMode(\"auto\") hook so it reads the same themeable token.",
+    "DO use all named sub-parts in order: Sheet (root) > SheetTrigger (opener) > SheetContent (panel) > SheetHeader > SheetTitle (required for a11y — maps to Radix DialogPrimitive.Title, announced as the accessible name) > optional SheetDescription > body content > SheetFooter. Never skip SheetTitle inside an open SheetContent.",
+    "DO control state explicitly with open + onOpenChange on Sheet root when you need to close programmatically (e.g. after form submit). Uncontrolled (no props) works for simple trigger-only cases but gives you no hook to reset form state on close.",
+    "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
+    "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
+    "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
+    "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
+    "DO set `modal={false}` on Sheet when the user must keep working on the page behind the open panel (edit a list while a detail panel stays open). Control `open` yourself: an outside press no longer closes it, so keep the ✕ or a footer close action. Escape closes it only while focus is inside the panel.",
+    "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet."
+  ],
+  "useCases": [
+    "Filter/search panel: slide in from the right with filter FormFields (Select, `DatePicker range`, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
+    "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
+    "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
+    "Non-modal side panel: `modal={false}` keeps a list behind the sheet editable while the panel stays open (change order lines while their running total stays visible in the panel).",
+    "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
+    "Step-by-step wizard side panel: multi-step form (Steps component inside SheetContent) for onboarding or import flows where full-page navigation would lose list context."
+  ]
+}
