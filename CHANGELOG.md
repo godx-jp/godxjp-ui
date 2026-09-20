@@ -4,6 +4,41 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.3.1] - 2026-09-21
+
+PATCH. One CSS rule and its token, on a surface 28.3.0 introduced a day earlier.
+
+### Fixed
+
+- **`CodeBlock` styles Shiki's TWELFTH token name — `changed` was rendering as the block
+  foreground** (gh#793). 28.3.0 shipped the `data-code-token` vocabulary with **eleven** rules;
+  `createCssVariablesTheme` emits **twelve**. `changed` is reachable only through a CONTEXT diff
+  (`markup.changed.diff` = `^(!).*$`, i.e. `diff -c`), so a changed line rendered **identically to
+  an unchanged context line** — losing exactly the distinction the `!` marker exists to make. A
+  unified-diff sample never produces the token, which is why it survived a release.
+  It got in because gh#784's own summary of the vocabulary listed eleven and **the list was copied
+  instead of the source** — the same mechanism as the `hideFrom` correction in gh#789, where a
+  version-stale MCP catalog made "there is no such prop" worthless. The durable half of the fix is
+  therefore a **count**: the vocabulary must have twelve entries, because eleven-of-twelve shipped
+  precisely when nothing counted.
+  `changed` defaults to `--text-warning`, sharing amber with `constant`.
+
+### Changed (internal — no rendered difference)
+
+- **The colour-sharing rule is now enumerated and enforced.** 28.3.0 justified `changed`/`constant`
+  sharing with "a language grammar and a diff grammar never meet in one block". That is **false**,
+  with a repro: markdown EMBEDS other grammars, so one `<pre lang="markdown">` with a JSON fence
+  above a context-diff fence emits `changed, constant, deleted, keyword, punctuation, string`. The
+  real reason the sharing is safe is that **a diff line carries its own marker** — `+`, `-`, `!`
+  are in the text, so hue is reinforcement and WCAG 1.4.1 is met by the marker rather than the
+  palette. Every shared ink is now a named family with its reason, and an unlisted pair fails.
+- **`text-decoration-skip-ink` on the `link` token is documented as load-bearing.** Measured in
+  Chromium on a mono URL with five descenders: at 14px the underline offset is 2.52px against a
+  3.01px descent, at 12px 2.16px against 2.58px. The rule runs _through_ the descender band at
+  both code-block sizes, and skip-ink is the only reason a `p`/`j`/`q`/`g`/`y` is not struck
+  through. The comment now carries the numbers, because the obvious cleanup is to delete a
+  property that looks redundant.
+
 ## [28.3.0] - 2026-09-20
 
 MINOR. One new public vocabulary (twelve `--code-block-token-*` knobs plus a `data-code-token`
