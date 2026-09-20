@@ -4,6 +4,61 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.3.0] - 2026-09-20
+
+MINOR. One new public vocabulary (twelve `--code-block-token-*` knobs plus a `data-code-token`
+contract), one CSS fix to an existing rule, and two CI gates. No existing markup moves.
+
+### Added
+
+- **`CodeBlock` colours syntax a consumer can actually reach** (gh#784). `CodeBlock` is a surface
+  and does not highlight — and its own prop docs told a consumer to bring a highlighter and pass
+  its spans, while the consumer rules closed every route those spans could take colour from:
+  `style` and `className` are both visual overrides, and an app stylesheet may declare no custom
+  properties. **The package documented a path it made unbuildable**, which is why this was a bug
+  rather than a request.
+  Twelve knobs alone would NOT have fixed it: reading them still means
+  `style={{ color: "var(--…)" }}`, and the consumer's guard matches the attribute NAME. So both
+  halves ship together — twelve knobs named for Shiki `createCssVariablesTheme` verbatim (so
+  mapping is a rename, never a translation), and package-owned CSS keyed on **`data-code-token`**.
+  A consumer writes `<span data-code-token="keyword">` and nothing else.
+  **The defaults are TEXT-tier roles, and that distinction is load-bearing.** The first cut used
+  the FILL roles, because those are the names that read correctly in prose ("a string is a success
+  colour"). Measured against the block's own `--muted` ground, `--success` gives **2.01:1** in
+  light and `--destructive` **2.41:1** in dark, where code at 14px owes 4.5:1 — string literals,
+  the most common token in any file, would have shipped unreadable. On the `--text-*` tier all
+  twelve clear AA in both themes, lowest 4.51.
+  **`link` is underlined, not merely tinted.** Pairwise dE over the RENDERED colours found
+  `--text-link` and `--primary` are the same colour in dark (dE 0.0, both hue-snapped to the
+  identity violet), so a link was indistinguishable from a **keyword** — the rare token hiding
+  inside the most frequent one. The underline uses the GoDX v2.3 link treatment
+  (`--text-link-underline-offset` + `skip-ink`); a bare underline strikes through the descenders
+  of a URL on a mono face.
+
+### Fixed
+
+- **The Topbar start cluster is floored at one cell in BOTH overflow modes** (gh#789).
+  `.ui-topbar-start` carries `min-width: 0` and `overflow: clip`, so with no floor it shrinks below
+  its own content and clips it — and what it clips is a CELL, which cannot be read at half width
+  the way a title can. A consumer measured a 28px trigger down to **8px visible at 320px**, failing
+  WCAG 2.2 SC 2.5.8. The floor existed but was scoped to `[data-overflow="scroll"]`; measured on
+  the live bar at 320px, `scroll` floored at 32px and `clip` at **0px**. The reasoning beside the
+  scroll rule never depended on the mode. After: both 32px, and the end cluster overflows the bar
+  by 0px at 390/768/1024/1440.
+
+### Changed (repo gates — these do not reach the package)
+
+- **`check:contrast` waits for the theme, not for a duration** (gh#790). It read
+  `documentElement.dataset.theme` once after a fixed 1200ms and lost roughly one run in three.
+  It now polls, which is FASTER on a quick page and still fails loudly after 10s. Widening the
+  timeout would have made the loud failure rare and left the worse one untouched: a sweep that
+  measures the LIGHT page, finds it AA clean, and files it under a dark label. 1 red in 3 → 8
+  green in 8.
+- **A PR body may no longer carry a GitHub auto-closing keyword** (gh#783). `Closes #N` fires on
+  MERGE, when no release exists and no version is knowable, so it cannot carry the number gh#620
+  requires — by construction, not by carelessness. It already happened on #773. The gate is the
+  first step of the required `pr-lane` check.
+
 ## [28.2.1] - 2026-09-20
 
 PATCH. One CSS rule, gated on `bodied`; a strip without it emits byte-identical DOM.
