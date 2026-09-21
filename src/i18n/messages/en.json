@@ -656,5 +656,158 @@
         "error": "failed"
       }
     }
+  },
+  "themeEditor": {
+    "title": "Theme editor",
+    "subtitle": "One seed colour in, a whole brand out, measured rather than asserted.",
+    "unreadable": {
+      "title": "The token stylesheet could not be read",
+      "description": "This page derives a brand from the canvas colours and ramp steps the document is painting, read from the live stylesheet. Neither could be read here, so nothing below it would be a measurement."
+    },
+    "order": {
+      "title": "Seed, then role, then scope, then instance",
+      "description": "Stop at the first level that does the job. Every level below the seed is a value that has stopped deriving, and nothing tells you when the brand moves past it."
+    },
+    "seed": {
+      "title": "1. Seed",
+      "description": "The brand's action colour: what a primary button is filled with. In most cases this is the whole theme.",
+      "label": "Brand seed",
+      "helper": "A six digit hex. Everything below derives from it and is measured against WCAG 2.2 AA.",
+      "presetLabel": "Edge cases",
+      "presetHelper": "Each of these produces an answer a well behaved blue hides.",
+      "presetPlaceholder": "A seed of your own",
+      "preset": {
+        "godx": "This package's own seed",
+        "blue": "An ordinary brand blue",
+        "very-light": "Near white: the fill cannot clear the light canvas",
+        "very-dark": "Near black: the dark seed runs to white",
+        "sunflower": "Sunflower: repoints the state steps in both themes"
+      },
+      "announce": {
+        "one": "Seed {hex}. Light {light}, dark {dark}. {pass} of {count} measured pair clears AA.",
+        "other": "Seed {hex}. Light {light}, dark {dark}. {pass} of {count} measured pairs clear AA."
+      },
+      "announceNoDark": "Seed {hex}. No lightness at this hue and saturation carries a readable fill on the dark canvas, so there is no dark theme to measure."
+    },
+    "derived": {
+      "title": "2. What the seed produces",
+      "description": "Read only, because these are results. Three roles per theme are written into the export; the rest derive from the primary in scope at the element that paints them, so writing them would pin them to this seed.",
+      "tableLabel": "Roles derived from the seed",
+      "column": {
+        "token": "Token",
+        "light": "Light",
+        "dark": "Dark",
+        "emitted": "In the export"
+      },
+      "written": "Written",
+      "derivedOnly": "Derives"
+    },
+    "contrast": {
+      "title": "3. Contrast",
+      "description": "Every pair the seed produces, measured with the package's own WCAG helper. A label on its fill owes 4.5:1 (SC 1.4.3); a fill on the canvas behind it owes 3:1 (SC 1.4.11).",
+      "tableLabel": "Measured contrast pairs",
+      "column": {
+        "pair": "Pair",
+        "measured": "Measured",
+        "threshold": "Needs",
+        "result": "Result"
+      },
+      "pair": {
+        "label-on-fill-light": "Primary label on fill, light",
+        "label-on-fill-dark": "Primary label on fill, dark",
+        "fill-on-canvas-light": "Primary fill on canvas, light",
+        "fill-on-canvas-dark": "Primary fill on canvas, dark",
+        "link-on-canvas-light": "Link ink on canvas, light",
+        "link-on-canvas-dark": "Link ink on canvas, dark"
+      },
+      "ratio": "{value}:1",
+      "pass": "Clears AA",
+      "fail": "Below AA"
+    },
+    "overrides": {
+      "title": "4. Per token overrides",
+      "description": "Below the seed on purpose. Reach for one only when the seed is right and a single token must differ.",
+      "costTitle": "What an override costs",
+      "costDescription": "A token set by hand stops following the seed. The next brand change moves everything derived and leaves this value behind, and no audit reports it.",
+      "labelTitle": "Label colour on the fill",
+      "labelHelper": "By default the label is chosen by the seed's own luminance, the same 0.179 threshold a runtime re-theme uses. Forcing it is the one override the generator has a flag for.",
+      "labelAuto": "Automatic",
+      "labelLight": "Light label",
+      "labelDark": "Dark label",
+      "darkTitle": "Dark seed lightness",
+      "darkHelper": "Contrast parity with the light theme puts it at {parity}. Hue and saturation are held either way; only lightness moves. An authored value is allowed to fail, and the table above is how it says so.",
+      "darkNoParity": "No lightness at this hue and saturation clears both floors, so there is no parity value to depart from.",
+      "darkReset": "Back to parity",
+      "darkAuthored": "Authored",
+      "darkParity": "At parity"
+    },
+    "export": {
+      "title": "5. Export",
+      "description": "Paste the first block into your own theme file and the second over the baked email palette, which no stylesheet can reach.",
+      "nameLabel": "Theme name",
+      "nameHelper": "Writes {name}.service.css and {name}.email.ts.",
+      "matches": "Identical to gen:brand",
+      "diverges": "No command emits this",
+      "divergesWhy": "The dark seed's lightness was authored here. The generator searches for parity and has no flag for it, so no command reproduces this file.",
+      "cssLabel": "Theme CSS for {name}",
+      "emailLabel": "Email palette for {name}",
+      "noDarkTitle": "This seed has no readable dark fill",
+      "noDarkDescription": "No lightness at this hue and saturation clears both 4.5:1 on its own label and 3:1 on the dark canvas. Desaturate the seed, or force the label above and look again."
+    },
+    "preview": {
+      "lightTitle": "Light",
+      "darkTitle": "Dark",
+      "seedIs": "Scoped to {hex}",
+      "tableLabel": "Invoice lines",
+      "column": {
+        "id": "Line",
+        "item": "Item",
+        "owner": "Owner",
+        "state": "State"
+      },
+      "state": {
+        "active": "Active",
+        "pending": "Pending"
+      },
+      "line": {
+        "licence": "Licence",
+        "support": "Support",
+        "setup": "Setup"
+      },
+      "action": {
+        "save": "Save",
+        "duplicate": "Duplicate",
+        "export": "Export",
+        "add": "Add line",
+        "dismiss": "Dismiss",
+        "delete": "Delete",
+        "details": "Details"
+      },
+      "badge": {
+        "brand": "Brand",
+        "success": "Paid",
+        "warning": "Due soon",
+        "destructive": "Overdue",
+        "info": "Draft",
+        "neutral": "Archived"
+      },
+      "alert": {
+        "title": "Billing address is incomplete",
+        "description": "Invoices cannot be issued until it is filled in.",
+        "link": "Back to the seed"
+      },
+      "field": {
+        "org": "Organisation",
+        "orgHelper": "Appears on every issued document.",
+        "plan": "Plan",
+        "tax": "Include tax",
+        "mail": "Send automatically"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro",
+        "scale": "Scale"
+      }
+    }
   }
 }
