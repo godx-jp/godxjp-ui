@@ -23,6 +23,7 @@
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
     "LICENSE",
+    "agent",
     "dist",
     "scripts/ui-audit.mjs",
     "README.md",
@@ -392,7 +393,7 @@
     "postinstall": "node scripts/postinstall.mjs",
     "prepublishOnly": "pnpm run build",
     "preview": "node preview/scripts/kill-port.mjs && vite --config preview/vite.config.ts --port 6008 --strictPort",
-    "preview:build": "vite build --config preview/vite.config.ts && node scripts/gen-registry.mjs",
+    "preview:build": "vite build --config preview/vite.config.ts && node scripts/gen-registry.mjs && node scripts/copy-agent-catalog.mjs",
     "regen": "node scripts/regen-generated.mjs",
     "release": "node scripts/release.mjs",
     "ship:surface": "pnpm regen && pnpm verify:ci:static && pnpm check:frame-contracts",

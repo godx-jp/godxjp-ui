@@ -14,6 +14,21 @@ Pinned catalogs only exist for releases whose tag actually contains `agent/`. If
 
 ## Which lane are you in
 
+## Where to read these files
+
+Three places carry this catalog, and they are not equivalent:
+
+| source | URL / path | use it when |
+| --- | --- | --- |
+| docs site | `https://godx-jp.github.io/godxjp-ui/agent/…` | you are an assistant in a browser and can only fetch a URL |
+| npm package | `node_modules/@godxjp/ui/agent/…` | the project is on disk — this copy is **version-locked to the installed package by construction** |
+| raw GitHub | `https://raw.githubusercontent.com/godx-jp/godxjp-ui/v<version>/agent/…` | you need a version the other two cannot give you |
+
+Prefer the package copy when a project is in front of you: it cannot drift from what is installed,
+which is exactly the failure the version note above describes. The docs-site copy always describes
+the LATEST release, so pair it with the raw `v<version>` URL if the project is pinned to an older
+one.
+
 **You can run a process** (Claude Code · Codex CLI · Cursor · any client with MCP)
 → Do not use these files. Run the MCP server; it is searchable, version-locked to the package on
 disk, and costs far fewer tokens than fetching a 1 MB JSON.
