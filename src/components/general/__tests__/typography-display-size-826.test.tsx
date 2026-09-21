@@ -28,7 +28,7 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     // The half that was missing. jsdom does no cascade, so the rule is asserted in the source.
     expect(TEXT_LAYOUT).toMatch(
       new RegExp(
-        `\\[data-slot="text"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}[,)]`,
+        `\\[data-slot="text"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(\\s*--font-size-${size}[,)]`,
       ),
     );
   });
@@ -61,7 +61,7 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     const foundation = readFileSync("src/tokens/foundation.css", "utf8");
     expect(foundation).toMatch(/--font-size-5xl:\s*initial;/);
     expect(TEXT_LAYOUT).toMatch(
-      /\[data-slot="text"\]\[data-size="5xl"\]\s*\{\s*font-size:\s*var\(--font-size-5xl,\s*var\(--font-size-display\)\);/,
+      /\[data-slot="text"\]\[data-size="5xl"\]\s*\{\s*font-size:\s*var\(\s*--font-size-5xl,\s*var\(--font-size-display\)\);/,
     );
     const { container } = render(<Text size="5xl">hero</Text>);
     expect(container.querySelector('[data-slot="text"]')).toHaveAttribute("data-size", "5xl");
@@ -102,7 +102,7 @@ describe("Heading — `size` overrides the ramp, `level` keeps the outline (gh#8
     for (const size of DISPLAY_STEPS) {
       expect(TEXT_LAYOUT).toMatch(
         new RegExp(
-          `\\[data-slot="heading"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}[,)]`,
+          `\\[data-slot="heading"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(\\s*--font-size-${size}[,)]`,
         ),
       );
     }

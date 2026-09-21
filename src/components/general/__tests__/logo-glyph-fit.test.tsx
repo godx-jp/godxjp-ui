@@ -173,7 +173,19 @@ class Evaluator {
       this.take(")");
       if (variable in this.overrides) return this.overrides[variable];
       const declaration = this.vars[variable];
-      if (declaration !== undefined) return Evaluator.run(declaration, this.vars, this.overrides);
+      /* `--x: initial` MEANS "use the fallback", and this evaluator has to know that (gh#834).
+       *
+       * The freeze fix turned the ramp's knobs into `initial` with the formula at the call site,
+       * which is the documented shape in docs/TOKENS.md — and this parser walked into the bare
+       * `initial` ident, asked for the `(` that starts a function, and died at end of input with
+       * "expected \"(\", found \"<end>\"". Five cases failed on a CSS keyword, not on geometry.
+       *
+       * Per CSS Variables 1 §3, a custom property set to the guaranteed-invalid value makes any
+       * `var()` referencing it fall back — so that is exactly what happens here, and a `var()` with
+       * NO fallback is still the error it always was. */
+      if (declaration !== undefined && declaration.trim() !== "initial") {
+        return Evaluator.run(declaration, this.vars, this.overrides);
+      }
       if (fallback !== undefined) return fallback;
       throw new Error(`unresolved ${variable}`);
     }

@@ -204,10 +204,24 @@
    *
    * `overflow-wrap` is the other half of the promise: `pre-wrap` alone wraps at spaces, so one
    * unbroken 300-character URL or id still overflows its container. `break-word` breaks such a
-   * token only when it cannot fit whole, leaving ordinary prose to wrap at its spaces. */
+   * token only when it cannot fit whole, leaving ordinary prose to wrap at its spaces.
+   *
+   * AND `min-inline-size`, WHICH IS WHY THE PROMISE USED TO BE FALSE (gh#838). `overflow-wrap`
+   * decides where a break MAY happen; it does not reduce the box's min-content size. A flex item
+   * keeps `min-width: auto`, whose floor IS min-content — so inside a `Flex` row, which is where
+   * most text in this library sits, an unbroken token propagated its full width up through the row
+   * and past the viewport, and nothing wrapped. Measured on `/showcase/marketing-page`: a
+   * 71-character identifier held the document open at 457px at 390/375/320 until the item was
+   * given `min-inline-size: 0`.
+   *
+   * Setting it here rather than asking every call site for `Flex fill` is the fix, because the
+   * prop's own documentation promises the break and a consumer reading that sentence should get
+   * it. On a block-level box this declaration is inert — `min-width: auto` only resolves to
+   * min-content for a flex or grid item — so it costs nothing anywhere else. */
   [data-slot="text"][data-whitespace="pre-wrap"] {
     white-space: pre-wrap;
     overflow-wrap: break-word;
+    min-inline-size: 0;
   }
   /* Visual-only: the full text stays in the DOM and the accessible name. */
   [data-slot="text"][data-clamp] {
