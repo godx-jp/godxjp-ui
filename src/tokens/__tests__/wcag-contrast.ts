@@ -161,3 +161,30 @@ export function triplet(value: string): Hsl {
   if (!m) throw new Error(`not an H S% L% triplet: ${value}`);
   return [Number(m[1]), Number(m[2]), Number(m[3])];
 }
+
+/**
+ * A DERIVED ROLE'S VALUE, as the browser would paint it.
+ *
+ * `--text-link` and `--text-brand` are knobs declared `initial` (src/tokens/derived.css): a theme
+ * that sets one pins it, and a theme that does not gets one ramp step off the `--primary` in scope,
+ * resolved at the element that paints. A test that reads only the literal therefore measures the
+ * pinned case and silently skips the derived one — which, for a role that exists because it was
+ * LEFT BEHIND on an old seed (gh#664), is the case worth measuring.
+ *
+ * `themeBody` is the theme block that may pin it; `derivedScopes` are the `derived.css` blocks that
+ * carry the `-channels`, nearest scope first.
+ */
+export function derivedRole(
+  name: string,
+  seed: Hsl,
+  themeBody: string,
+  ...derivedScopes: string[]
+): Hsl {
+  try {
+    const pinned = declaration(themeBody, name);
+    if (pinned !== "initial") return triplet(pinned);
+  } catch {
+    /* not declared in this theme at all — derive it */
+  }
+  return relative(seed, channelsOf(name, ...derivedScopes));
+}

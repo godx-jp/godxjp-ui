@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { anchorIndex } from "../../test/css-selector";
-import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
+import { contrast, derivedRole, hsl, hslToRgb, over } from "./wcag-contrast";
 
 /**
  * gh#700 — a zebra stripe has two obligations and they pull against each other:
@@ -19,6 +19,13 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
  * default re-runs this against the new value instead of a copy.
  */
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
+const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+
+function derivedBlock(selector: string): string {
+  const start = anchorIndex(derived, selector);
+  const open = derived.indexOf("{", start);
+  return derived.slice(open + 1, derived.indexOf("\n}", open));
+}
 const layout = readFileSync(join(process.cwd(), "src/styles/table-layout.css"), "utf8");
 
 function block(selector: string): string {
@@ -56,7 +63,18 @@ describe("gh#700 — striped table rows", () => {
     { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
   ])("$theme", ({ selector }) => {
     const body = block(selector);
-    const role = (name: string) => hslToRgb(hsl(body, name));
+    /* `--text-link` is a knob declared `initial` (gh#664 · src/tokens/derived.css) — it has no
+     * literal in this theme block; its value is one ramp step off the `--primary` in scope. */
+    const derivedScopes =
+      selector === ":root {"
+        ? [derivedBlock(":root {")]
+        : [derivedBlock('.dark, :root[data-theme="dark"] {'), derivedBlock(":root {")];
+    const role = (name: string) =>
+      hslToRgb(
+        name === "text-link"
+          ? derivedRole(name, hsl(body, "primary"), body, ...derivedScopes)
+          : hsl(body, name),
+      );
 
     describe.each(["background", "card"])("on --%s", (surfaceName) => {
       const surface = role(surfaceName);
