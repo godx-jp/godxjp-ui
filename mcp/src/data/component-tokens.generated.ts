@@ -70,22 +70,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--activity-font-size-xs",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
   },
   {
     "name": "--activity-font-size-sm",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-font-size-md",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-font-size-lg",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
@@ -200,7 +200,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--attachments-placeholder-title-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
   },
   {
@@ -245,7 +245,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--badge-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Badge component tokens."
   },
   {
@@ -410,7 +410,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-description-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -495,7 +495,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -510,7 +510,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-value-font-size",
-    "value": "var(--font-size-2xl)",
+    "value": "var( --font-size-2xl, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -525,7 +525,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-hint-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -560,7 +560,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-delta-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
@@ -605,7 +605,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-service-launcher-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Description prose — also drives the disabled-reason line and the catalog-CTA caption."
   },
   {
@@ -615,7 +615,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-service-launcher-metadata-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Mono metadata line (hostname · plan) — tighter leading than prose by design."
   },
   {
@@ -710,7 +710,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chart-trend-tick-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
   },
   {
@@ -865,7 +865,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chat-composer-footer-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Type scale of the footer hint line (a token counter, a \"Shift+Enter for a new line\" hint)."
   },
   {
@@ -1005,7 +1005,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-count-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed."
   },
   {
@@ -1050,7 +1050,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--switch-content-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Switch `checkedChildren` / `unCheckedChildren` and `loading`."
   },
   {
@@ -1065,7 +1065,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--slider-mark-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Slider marks / dots / value bubble — antd `marks`, `dots`, `tooltip`."
   },
   {
@@ -1110,7 +1110,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--slider-tooltip-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1475,42 +1475,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--choice-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
   },
   {
     "name": "--color-picker-hex-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--command-group-heading-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--search-input-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--tag-input-chip-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--toggle-sm-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--toggle-xs-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--button-sm-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1615,7 +1615,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--input-file-button-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1655,12 +1655,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--search-select-option-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--search-select-option-sublabel-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1680,7 +1680,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--search-select-status-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1725,7 +1725,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--cascader-option-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1810,7 +1810,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--time-picker-heading-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1830,7 +1830,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--time-picker-option-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1870,7 +1870,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tree-select-row-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1920,7 +1920,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-caption-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1950,7 +1950,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-weekday-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -1960,7 +1960,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-day-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2025,7 +2025,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-header-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2065,7 +2065,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-row-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2075,7 +2075,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-row-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2115,7 +2115,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--month-picker-nav-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2155,7 +2155,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--button-xs-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2215,7 +2215,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--button-count-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
@@ -2260,7 +2260,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-label-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site * (which is exactly why --form-label-font-size had to be invented as a per-instance escape). * They live under the `control` prefix because Label is a control-family primitive and * src/tokens/components/ has no `label` file of its own. * * Defaults reproduce today's rendering exactly: * font-size ← `text-sm` → --text-sm → var(--font-size-sm) * line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
   },
   {
@@ -2395,7 +2395,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--conversations-item-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
@@ -2470,17 +2470,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--code-block-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs."
   },
   {
     "name": "--code-block-font-size-xs",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -2585,7 +2585,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--prose-font-size-sm",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -2655,7 +2655,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--timeline-note-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -2695,17 +2695,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-font-size-xs",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Initials in the 24px mark — one step below sm on the type scale."
   },
   {
     "name": "--avatar-font-size-sm",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Initials in the 28px mark — the same step a `size=\"sm\"` control's label reads."
   },
   {
     "name": "--avatar-font-size-lg",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Initials in the 36px mark — one step above the body step."
   },
   {
@@ -2895,7 +2895,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--legend-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -2940,12 +2940,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--feature-list-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--feature-list-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -3055,17 +3055,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--timeline-grid-axis-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--timeline-grid-head-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--timeline-grid-event-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -3205,12 +3205,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--password-strength-score-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
     "name": "--password-strength-checklist-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
@@ -3265,7 +3265,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--descriptions-value-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "VALUE TYPOGRAPHY (gh#294 + #319). `FormField staticText` renders its read-only value with the * SAME typography as a <dd> so a static Form row and a Descriptions value are indistinguishable * when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a * comment asking future editors to keep them in sync; both call sites now read these tokens, so * the mirror is mechanical and a service retunes BOTH from one place."
   },
   {
@@ -3700,12 +3700,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sheet-title-font-size",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
     "name": "--sheet-description-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
@@ -3820,7 +3820,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--dialog-step-up-error-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were * `text-sm text-destructive` on the component, i.e. unreachable from a theme."
   },
   {
@@ -4110,7 +4110,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tooltip-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
@@ -4160,7 +4160,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--popover-header-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
@@ -4255,7 +4255,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--float-button-content-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "The line under the glyph, in the square shape. The smallest step, because it is a caption on a control, not body text."
   },
   {
@@ -4300,7 +4300,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--float-button-badge-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
   },
   {
@@ -4425,12 +4425,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--legal-document-toc-title-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
   },
   {
@@ -4455,7 +4455,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--legal-document-meta-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
   },
   {
@@ -4625,17 +4625,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-font-size-xs",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-sm",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-md",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
@@ -4750,12 +4750,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-wordmark-font-size-xs",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-size-sm",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
@@ -4765,7 +4765,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-wordmark-font-size-lg",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
@@ -4880,7 +4880,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-trigger-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
   },
   {
@@ -4995,7 +4995,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-group-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
   },
   {
@@ -5005,7 +5005,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-group-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
   },
   {
@@ -5040,7 +5040,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-link-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
   },
   {
@@ -5065,7 +5065,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-link-description-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
   },
   {
@@ -5115,7 +5115,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--pagination-total-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5155,7 +5155,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--filter-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5180,7 +5180,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-inline-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5220,12 +5220,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-setting-picker-compact-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
     "name": "--breadcrumb-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5235,7 +5235,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--menu-shortcut-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5325,7 +5325,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-trigger-font-size-sm",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5335,7 +5335,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-trigger-font-size-lg",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5420,7 +5420,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-count-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5685,7 +5685,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-marker-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5700,17 +5700,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-title-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
     "name": "--steps-title-font-size-compact",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
     "name": "--steps-subtitle-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5915,7 +5915,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-xs-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row * carry the same label size. One step of the existing scale, not a new constant."
   },
   {
@@ -6020,7 +6020,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--separator-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
   },
   {
@@ -6115,17 +6115,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-section-label-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-product-tenant-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-badge-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6180,7 +6180,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-user-role-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6190,37 +6190,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-sub-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-flyout-title-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--topbar-chip-icon-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--kbd-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-logo-mark-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-avatar-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--sidebar-user-name-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6365,7 +6365,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-item-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale * runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row * in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the * auth field label below, which is pinned to an artboard y-coordinate and keeps its literal with * a declared `scale-exempt` — only the checked-in hi-fi source's number. * * GEOMETRY MOVES, by 0.53px: 13px → --font-size-xs (≈12.47px), the step the sub-row * (--sidebar-nav-sub-font-size) and the flyout title already take. Nothing reflows — the row is a * fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same * headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the * rail's labels with the rest of its type, instead of leaving one constant behind."
   },
   {
@@ -6535,7 +6535,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--topbar-item-badge-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6600,7 +6600,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--org-switcher-legend-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6720,17 +6720,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-mark-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--app-launcher-name-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--app-launcher-group-label-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6825,7 +6825,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-mark-background",
-    "value": "color-mix( in srgb, hsl(var(--card)) 78%, transparent )",
+    "value": "color-mix(in srgb, hsl(var(--card)) 78%, transparent)",
     "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
   },
   {
@@ -6835,7 +6835,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-mark-font-size",
-    "value": "var(--font-size-lg)",
+    "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6845,12 +6845,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-name-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
     "name": "--app-launcher-launchpad-title-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -6890,7 +6890,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-heading-size",
-    "value": "var(--font-size-2xl)",
+    "value": "var( --font-size-2xl, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -7135,7 +7135,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-divider-label-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -7205,7 +7205,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-account-summary-email-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -7215,7 +7215,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-footer-text-font-size",
-    "value": "var(--font-size-2xs)",
+    "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
@@ -7350,7 +7350,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--centered-shell-landing-heading-size-compact",
-    "value": "var(--font-size-3xl)",
+    "value": "var( --font-size-3xl, calc(var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
@@ -7530,7 +7530,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-head-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -7670,7 +7670,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-action-collection-font-size-compact",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -7715,7 +7715,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-stacked-collection-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -7740,7 +7740,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-pagination-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Table component tokens: row height, cell padding."
   },
   {
@@ -7765,7 +7765,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical."
   },
   {
@@ -7860,7 +7860,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--thought-chain-icon-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
   },
   {
@@ -7950,7 +7950,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toggle-count-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
   },
   {
@@ -8045,7 +8045,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tree-node-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
@@ -8120,7 +8120,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-hint-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8130,7 +8130,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-meta-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8160,12 +8160,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-tile-label-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-overlay-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8225,12 +8225,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-picture-empty-label-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-overlay-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8255,7 +8255,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-picture-badge-font-size",
-    "value": "var(--font-size-xs)",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8315,7 +8315,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-draft-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {
@@ -8345,7 +8345,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-row-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "var(--font-size-sm, var(--font-size-base))",
     "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
   },
   {

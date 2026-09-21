@@ -20,9 +20,12 @@
   --upload-dropzone-border-width: var(--stroke-md);
   --upload-dropzone-icon-size: var(--icon-size-3xl);
   --upload-dropzone-hint-space-block-start: var(--space-3);
-  --upload-dropzone-hint-font-size: var(--font-size-sm);
+  --upload-dropzone-hint-font-size: var(--font-size-sm, var(--font-size-base));
   --upload-dropzone-meta-space-block-start: var(--space-1);
-  --upload-dropzone-meta-font-size: var(--font-size-xs);
+  --upload-dropzone-meta-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* TILE — the 96px square shared by picture-card thumbnails and the "add image" button.
    * One knob resizes the whole gallery; picture-card grids are the most common thing a service
@@ -32,8 +35,14 @@
   --upload-tile-space-gap: var(--space-3);
   --upload-tile-icon-size: var(--icon-size-xl);
   --upload-tile-label-space-block-start: var(--space-1);
-  --upload-tile-label-font-size: var(--font-size-xs);
-  --upload-tile-overlay-font-size: var(--font-size-xs);
+  --upload-tile-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --upload-tile-overlay-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the
    * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7). */
   --upload-overlay-background: initial;
@@ -54,8 +63,8 @@
    * between the 96px tile (24) and the 185px dropzone (40), so its mark does too. */
   --upload-picture-icon-size: var(--icon-size-2xl);
   --upload-picture-empty-label-space-block-start: var(--space-2);
-  --upload-picture-empty-label-font-size: var(--font-size-sm);
-  --upload-picture-overlay-font-size: var(--font-size-sm);
+  --upload-picture-empty-label-font-size: var(--font-size-sm, var(--font-size-base));
+  --upload-picture-overlay-font-size: var(--font-size-sm, var(--font-size-base));
   /* "Pending replace" chip. The radius previously came from a bare `rounded`, which resolves to a
    * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss.
    * It now follows the tile radius like every other chip in the component. */
@@ -63,7 +72,10 @@
   --upload-picture-badge-offset: var(--space-2);
   --upload-picture-badge-space-inline: var(--space-2);
   --upload-picture-badge-space-block: 0.125rem;
-  --upload-picture-badge-font-size: var(--font-size-xs);
+  --upload-picture-badge-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* AVATAR — the round single-image variant. */
   --upload-avatar-size: 6rem;
@@ -84,7 +96,7 @@
   --upload-draft-space-block: var(--space-2);
   --upload-draft-space-gap: var(--space-2);
   --upload-draft-radius: var(--radius-md);
-  --upload-draft-font-size: var(--font-size-sm);
+  --upload-draft-font-size: var(--font-size-sm, var(--font-size-base));
   --upload-draft-icon-size: var(--icon-size-sm);
 
   /* FILE ROW — the list rendered under the dropzone/button variants. */
@@ -92,7 +104,7 @@
   --upload-row-space-block: var(--space-2);
   --upload-row-space-gap: var(--space-3);
   --upload-row-radius: var(--radius-md);
-  --upload-row-font-size: var(--font-size-sm);
+  --upload-row-font-size: var(--font-size-sm, var(--font-size-base));
   --upload-row-icon-size: var(--icon-size-md);
 
   /* CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above

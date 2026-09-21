@@ -1523,19 +1523,31 @@
   }
 
   .ui-prose h1 {
-    font-size: var(--heading-h1);
+    font-size: var(
+      --heading-h1,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio)
+      )
+    );
   }
 
   .ui-prose h2 {
-    font-size: var(--heading-h2);
+    font-size: var(
+      --heading-h2,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
   }
 
   .ui-prose h3 {
-    font-size: var(--heading-h3);
+    font-size: var(--heading-h3, var(--font-size-base));
   }
 
   .ui-prose h4 {
-    font-size: var(--heading-h4);
+    font-size: var(
+      --heading-h4,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
   }
 
   .ui-prose :is(ul, ol) {
@@ -2588,7 +2600,10 @@
   /* Size steps pick a NAMED tier — never a calc() offset off --control-height. */
   .ui-tree[data-size="xs"] {
     --tree-node-height: var(--control-height-xs);
-    --tree-node-font-size: var(--font-size-xs);
+    --tree-node-font-size: var(
+      --font-size-xs,
+      calc(var(--font-size-base) / var(--font-size-ratio))
+    );
   }
 
   .ui-tree[data-size="sm"] {

@@ -30,7 +30,7 @@
   --tree-node-padding-inline: var(--space-2);
   --tree-node-gap: var(--space-2);
   --tree-node-radius: var(--radius-sm);
-  --tree-node-font-size: var(--font-size-sm);
+  --tree-node-font-size: var(--font-size-sm, var(--font-size-base));
 
   /* The disclosure triangle (NameThatUI: "disclosure triangle"; an indented tree that expands is
    * an "Outline View"). Its box is what makes the switcher a real 24px-class target inside the

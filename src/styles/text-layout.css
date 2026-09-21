@@ -7,25 +7,43 @@
 
   /* Size — steps of the golden-ratio scale (sm = base). */
   [data-slot="text"][data-size="2xs"] {
-    font-size: var(--font-size-2xs);
+    font-size: var(
+      --font-size-2xs,
+      calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+    );
   }
   [data-slot="text"][data-size="xs"] {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
   [data-slot="text"][data-size="sm"] {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm, var(--font-size-base));
   }
   [data-slot="text"][data-size="md"] {
     font-size: var(--font-size-base);
   }
   [data-slot="text"][data-size="lg"] {
-    font-size: var(--font-size-lg);
+    font-size: var(
+      --font-size-lg,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
   }
   [data-slot="text"][data-size="xl"] {
-    font-size: var(--font-size-xl);
+    font-size: var(
+      --font-size-xl,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio)
+      )
+    );
   }
   [data-slot="text"][data-size="2xl"] {
-    font-size: var(--font-size-2xl);
+    font-size: var(
+      --font-size-2xl,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio) * var(--font-size-ratio)
+      )
+    );
   }
 
   /* DISPLAY steps — the marketing ramp (≈28 / 42 / 54px), derived from --font-size-display.
@@ -47,13 +65,21 @@
     letter-spacing: var(--letter-spacing-tight);
   }
   [data-slot="text"][data-size="3xl"] {
-    font-size: var(--font-size-3xl);
+    font-size: var(
+      --font-size-3xl,
+      calc(
+        var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
+      )
+    );
   }
   [data-slot="text"][data-size="4xl"] {
-    font-size: var(--font-size-4xl);
+    font-size: var(
+      --font-size-4xl,
+      calc(var(--font-size-display) / var(--font-size-display-ratio))
+    );
   }
   [data-slot="text"][data-size="5xl"] {
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-5xl, var(--font-size-display));
   }
 
   /* Weight — the reference-design canon (400 body · 500 heading/label · 700 emphasis). */
@@ -243,16 +269,28 @@
    * would be decided by an edit in a different section of this file. With the guard, the two
    * branches are mutually exclusive and the order stops mattering. */
   [data-slot="heading"][data-level="1"]:not([data-size]) {
-    font-size: var(--heading-h1);
+    font-size: var(
+      --heading-h1,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio)
+      )
+    );
   }
   [data-slot="heading"][data-level="2"]:not([data-size]) {
-    font-size: var(--heading-h2);
+    font-size: var(
+      --heading-h2,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
   }
   [data-slot="heading"][data-level="3"]:not([data-size]) {
-    font-size: var(--heading-h3);
+    font-size: var(--heading-h3, var(--font-size-base));
   }
   [data-slot="heading"][data-level="4"]:not([data-size]) {
-    font-size: var(--heading-h4);
+    font-size: var(
+      --heading-h4,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
   }
 
   /* Heading `size` — the SAME ten-step ladder `Text size` reads (gh#826).
@@ -266,34 +304,60 @@
    * ceiling precisely BECAUSE a seventh size would need an `<h7>`. DESIGN-AUTHORITY asks for
    * antd's answer first; on this axis antd has none to port. */
   [data-slot="heading"][data-size="2xs"] {
-    font-size: var(--font-size-2xs);
+    font-size: var(
+      --font-size-2xs,
+      calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+    );
   }
   [data-slot="heading"][data-size="xs"] {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
   [data-slot="heading"][data-size="sm"] {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm, var(--font-size-base));
   }
   [data-slot="heading"][data-size="md"] {
     font-size: var(--font-size-base);
   }
   [data-slot="heading"][data-size="lg"] {
-    font-size: var(--font-size-lg);
+    font-size: var(
+      --font-size-lg,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
   }
   [data-slot="heading"][data-size="xl"] {
-    font-size: var(--font-size-xl);
+    font-size: var(
+      --font-size-xl,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio)
+      )
+    );
   }
   [data-slot="heading"][data-size="2xl"] {
-    font-size: var(--font-size-2xl);
+    font-size: var(
+      --font-size-2xl,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio) * var(--font-size-ratio)
+      )
+    );
   }
   [data-slot="heading"][data-size="3xl"] {
-    font-size: var(--font-size-3xl);
+    font-size: var(
+      --font-size-3xl,
+      calc(
+        var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
+      )
+    );
   }
   [data-slot="heading"][data-size="4xl"] {
-    font-size: var(--font-size-4xl);
+    font-size: var(
+      --font-size-4xl,
+      calc(var(--font-size-display) / var(--font-size-display-ratio))
+    );
   }
   [data-slot="heading"][data-size="5xl"] {
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-5xl, var(--font-size-display));
   }
 }
 
@@ -308,7 +372,13 @@
   /* Title level 5 — the one step `Heading` does not have. Levels 1..4 are shared with `Heading`
    * by the `[data-slot="heading"]` rules above; only the fifth needs its own line. */
   [data-slot="heading"][data-level="5"] {
-    font-size: var(--heading-h5);
+    font-size: var(
+      --heading-h5,
+      var(
+        --font-size-2xs,
+        calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+      )
+    );
   }
 
   /* `disabled` — antd paints the disabled ink, forbids the cursor and forbids selection. All three

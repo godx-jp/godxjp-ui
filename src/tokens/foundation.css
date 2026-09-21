@@ -494,16 +494,43 @@
    * `--font-size-ratio`) and the entire scale rescales in golden proportion. */
   --font-size-base: 0.875rem; /* 14px — THE base (= <body>). The single knob; override to retheme. */
   --font-size-ratio: 1.1227; /* φ^¼ — golden-ratio step (φ=1.618, φ^¼ keeps the dense scale small) */
-  --font-size-2xs: calc(
-    var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)
-  ); /* ratio⁻² ≈ 11px */
-  --font-size-xs: calc(var(--font-size-base) / var(--font-size-ratio)); /* ratio⁻¹ ≈ 12.5px */
-  --font-size-sm: var(--font-size-base); /* 14px — body (alias of base) */
-  --font-size-lg: calc(
-    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)
-  ); /* ratio² ≈ 17.6px */
-  --font-size-xl: calc(var(--font-size-lg) * var(--font-size-ratio)); /* ratio³ ≈ 19.8px */
-  --font-size-2xl: calc(var(--font-size-xl) * var(--font-size-ratio)); /* ratio⁴ ≈ 22.3px */
+
+  /* ── EVERY DERIVED STEP IS AN `initial` KNOB, NOT A VALUE (gh#834) ──────────────────────────
+   * A custom property substitutes its `var()`s AT THE ELEMENT THAT DECLARES IT. Written here as
+   * `--font-size-5xl: var(--font-size-display)`, the step computed ONCE, on `<html>`, and a scope
+   * below it that re-declared the seed only inherited the answer root had already given. Measured
+   * in Chromium before this change, with `[data-tenant] { --font-size-base: 24px;
+   * --font-size-display: 80px }`: `text-base` moved 14 → 24px and EVERY OTHER STEP DID NOT MOVE AT
+   * ALL — text-2xs 11.11, xs 12.47, sm 14, lg 17.65, xl 19.81, 2xl 22.24, 3xl 32.96, 4xl 42.19,
+   * 5xl 54, h1 19.81, h2 17.65, h3 14, h4 12.47. `docs/showcase/futurelastic-web.tsx` carried a
+   * comment reading "80px hero via text-5xl"; it painted 54.
+   *
+   * That is not a display-ramp bug, it is the tier's shape, and `docs/CUSTOMER-THEMING.md` sells
+   * the opposite in two places at once: level 1 calls `--font-size-base` a seed, and level 3 says
+   * the same token may be set "under `[data-tenant]` / `.dark` / any subtree".
+   *
+   * So the ramp takes the shape docs/TOKENS.md already prescribes for role-mirror knobs — the knob
+   * is `initial` (a real, catalogued, guaranteed-invalid declaration: there is no value to freeze)
+   * and THE FORMULA MOVES TO THE CALL SITE as the `var()` fallback, where it re-resolves at the
+   * painting element under any scope. An explicit override of a step still wins, because a set
+   * knob is not invalid and the fallback never fires.
+   *
+   * CONSEQUENCE, AND IT IS NOT OPTIONAL: every reader must carry the fallback. A bare
+   * `var(--font-size-xs)` now resolves to NOTHING — silent and total, the same failure gh#664's
+   * call-site test was written for. `check:frame-token-scope` (REACH) is the gate that measures
+   * it on a real element; the formulas below are the canonical text every reader repeats.
+   *
+   * Each formula reads ONLY the un-derived knobs (`--font-size-base`, `--font-size-ratio`,
+   * `--font-size-display`, `--font-size-display-ratio`). `xl` and `2xl` used to chain through
+   * `lg` and `xl`; an `initial` knob cannot be chained through, so they are flattened to
+   * `base × ratioⁿ`. Left-associative and therefore bit-identical to the nested form — re-measured
+   * at 19.8116px and 22.2425px, unchanged. */
+  --font-size-2xs: initial; /* = calc(base / ratio / ratio) — ratio⁻² ≈ 11px */
+  --font-size-xs: initial; /* = calc(base / ratio) — ratio⁻¹ ≈ 12.5px */
+  --font-size-sm: initial; /* = var(--font-size-base) — 14px body (alias of base) */
+  --font-size-lg: initial; /* = calc(base * ratio * ratio) — ratio² ≈ 17.6px */
+  --font-size-xl: initial; /* = calc(base * ratio * ratio * ratio) — ratio³ ≈ 19.8px */
+  --font-size-2xl: initial; /* = calc(base * ratio * ratio * ratio * ratio) — ratio⁴ ≈ 22.3px */
 
   /* DISPLAY type — OPT-IN large sizes for MARKETING / hero surfaces (landing pages, CTA banners).
    * The enterprise heading scale stays small by design (h1 = 20px, 渋み restraint); these are a
@@ -512,26 +539,22 @@
    * (its own base). Nothing in the admin system uses them, so defaults are unchanged. */
   --font-size-display: 3.375rem; /* 54px — hero display (the single display knob) */
   --font-size-display-ratio: 1.28; /* bolder step than the body φ^¼ — marketing wants more contrast */
-  --font-size-3xl: calc(
-    var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
-  ); /* ≈ 33 → 28px feature heading */
-  --font-size-4xl: calc(
-    var(--font-size-display) / var(--font-size-display-ratio)
-  ); /* ≈ 36px section */
-  --font-size-5xl: var(--font-size-display); /* 54px hero */
+  /* `initial` knobs, formula at the call site — see the block above for why. */
+  --font-size-3xl: initial; /* = calc(display / dratio / dratio) — ≈ 33px feature heading */
+  --font-size-4xl: initial; /* = calc(display / dratio) — ≈ 42px section */
+  --font-size-5xl: initial; /* = var(--font-size-display) — 54px hero */
 
-  /* Headings — also golden-derived. h1=ratio³, h2=ratio²; h3/h4 reuse body sizes (single source). */
-  --heading-h1: calc(
-    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio)
-  ); /* ≈ 20px */
-  --heading-h2: calc(
-    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)
-  ); /* ≈ 18px */
-  --heading-h3: var(--font-size-base); /* 14px — h3 */
-  --heading-h4: var(--font-size-xs); /* ≈ 12.5px — h4 */
+  /* Headings — also golden-derived, and `initial` for the same reason. h1=ratio³, h2=ratio²;
+   * h3/h4/h5 reuse body steps (single source), so their call-site default CHAINS through the body
+   * step rather than re-spelling it: `var(--heading-h4, var(--font-size-xs, <xs formula>))` keeps
+   * "h4 IS the xs step" true through a scoped `--font-size-xs` as well as a scoped base. */
+  --heading-h1: initial; /* = calc(base * ratio * ratio * ratio) — ≈ 20px */
+  --heading-h2: initial; /* = calc(base * ratio * ratio) — ≈ 18px */
+  --heading-h3: initial; /* = var(--font-size-base) — 14px */
+  --heading-h4: initial; /* = the --font-size-xs step — ≈ 12.5px */
   /* h5 exists for antd's `Typography.Title level={5}`; `Heading` still stops at 4. It takes the
    * next step DOWN the same scale rather than a new number — see TitleLevelProp. */
-  --heading-h5: var(--font-size-2xs); /* ≈ 11.1px — h5 (antd Title only) */
+  --heading-h5: initial; /* = the --font-size-2xs step — ≈ 11.1px (antd Title only) */
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;

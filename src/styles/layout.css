@@ -1954,13 +1954,16 @@
     }
   }
   .ui-separator[data-label-size="2xs"] .ui-separator-label {
-    font-size: var(--font-size-2xs);
+    font-size: var(
+      --font-size-2xs,
+      calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+    );
   }
   .ui-separator[data-label-size="xs"] .ui-separator-label {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
   .ui-separator[data-label-size="sm"] .ui-separator-label {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm, var(--font-size-base));
   }
   .ui-separator[data-label-size="md"] .ui-separator-label {
     font-size: var(--font-size-base);

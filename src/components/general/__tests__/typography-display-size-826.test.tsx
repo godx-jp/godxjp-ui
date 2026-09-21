@@ -28,7 +28,7 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     // The half that was missing. jsdom does no cascade, so the rule is asserted in the source.
     expect(TEXT_LAYOUT).toMatch(
       new RegExp(
-        `\\[data-slot="text"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}\\);`,
+        `\\[data-slot="text"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}[,)]`,
       ),
     );
   });
@@ -50,11 +50,19 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
   });
 
   it("reaches --font-size-display through 5xl rather than a `display` step of its own", () => {
-    // --font-size-display is the ramp's BASE KNOB, not a member of it: foundation.css binds
-    // `--font-size-5xl: var(--font-size-display)` and derives 3xl/4xl by dividing it. A
-    // size="display" would therefore be a second name for 5xl.
+    // --font-size-display is the ramp's BASE KNOB, not a member of it: 5xl IS the display size and
+    // 3xl/4xl divide it. A size="display" would therefore be a second name for 5xl.
+    //
+    // WHERE THAT BINDING LIVES CHANGED IN gh#834, and this issue's own showcase is why. Written
+    // `--font-size-5xl: var(--font-size-display)` on `:root`, it substituted ONCE on <html>, so
+    // `docs/showcase/futurelastic-web.tsx` — which scoped --font-size-display for an "80px hero
+    // via text-5xl" — measured 54px. The step is an `initial` knob now and the binding is the
+    // CALL-SITE fallback, which is what makes it follow a scope.
     const foundation = readFileSync("src/tokens/foundation.css", "utf8");
-    expect(foundation).toMatch(/--font-size-5xl:\s*var\(--font-size-display\);/);
+    expect(foundation).toMatch(/--font-size-5xl:\s*initial;/);
+    expect(TEXT_LAYOUT).toMatch(
+      /\[data-slot="text"\]\[data-size="5xl"\]\s*\{\s*font-size:\s*var\(--font-size-5xl,\s*var\(--font-size-display\)\);/,
+    );
     const { container } = render(<Text size="5xl">hero</Text>);
     expect(container.querySelector('[data-slot="text"]')).toHaveAttribute("data-size", "5xl");
   });
@@ -94,7 +102,7 @@ describe("Heading — `size` overrides the ramp, `level` keeps the outline (gh#8
     for (const size of DISPLAY_STEPS) {
       expect(TEXT_LAYOUT).toMatch(
         new RegExp(
-          `\\[data-slot="heading"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}\\);`,
+          `\\[data-slot="heading"\\]\\[data-size="${size}"\\]\\s*\\{\\s*font-size:\\s*var\\(--font-size-${size}[,)]`,
         ),
       );
     }

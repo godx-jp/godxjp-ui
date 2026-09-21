@@ -25,7 +25,10 @@
   --float-button-icon-size: var(--icon-size-md);
   /* The line under the glyph, in the square shape. The smallest step, because it is a caption on a
      control, not body text. */
-  --float-button-content-font-size: var(--font-size-2xs);
+  --float-button-content-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --float-button-content-line-height: var(--line-height-tight);
 
   /* Elevation. The mark sits ABOVE the page, so it needs the shadow that says so; the same step
@@ -44,7 +47,10 @@
   --float-button-badge-foreground: hsl(var(--destructive-foreground));
   --float-button-badge-size: var(--space-4);
   --float-button-badge-padding-inline: var(--space-1);
-  --float-button-badge-font-size: var(--font-size-2xs);
+  --float-button-badge-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --float-button-badge-inset-block-start: calc(var(--space-1) * -1);
   --float-button-badge-inset-inline-end: calc(var(--space-1) * -1);
   --float-button-badge-dot-size: var(--space-2);

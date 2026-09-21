@@ -197,7 +197,10 @@
   }
 
   [data-slot="dialog-title"] {
-    font-size: var(--font-size-lg);
+    font-size: var(
+      --font-size-lg,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);

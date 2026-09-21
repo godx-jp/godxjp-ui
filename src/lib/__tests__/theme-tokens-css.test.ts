@@ -145,8 +145,10 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   });
 
   it("wires Tailwind text-* to typography tokens", () => {
-    expect(stylesBase).toContain("--text-sm: var(--font-size-sm)");
-    expect(stylesBase).toContain("--text-xs: var(--font-size-xs)");
+    expect(stylesBase).toContain("--text-sm: var(--font-size-sm, var(--font-size-base))");
+    expect(stylesBase).toContain(
+      "--text-xs: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
+    );
   });
 
   it("imports split layout CSS owners", () => {

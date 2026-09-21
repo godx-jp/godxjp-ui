@@ -38,5 +38,8 @@
    * so a service retunes the chrome once instead of per composer. */
   --chat-composer-header-border: initial;
   /* Type scale of the footer hint line (a token counter, a "Shift+Enter for a new line" hint). */
-  --chat-composer-footer-font-size: var(--font-size-xs);
+  --chat-composer-footer-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 }

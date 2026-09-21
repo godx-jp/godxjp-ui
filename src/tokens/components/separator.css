@@ -27,7 +27,10 @@
    * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks
    * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark
    * without touching the day divider. */
-  --separator-label-font-size: var(--font-size-xs);
+  --separator-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --separator-label-line-height: var(--line-height-normal);
   --separator-label-font-weight: var(--font-weight-medium);
   /* Label colour. Role-mirror → `initial`; documented default = hsl(var(--muted-foreground)). */

@@ -106,8 +106,12 @@ describe("Toggle xs (gh#716) — the box comes from the tier, not a literal", ()
   });
 
   it("the type step is Button xs's step, declared as its own knob (rule #45)", () => {
-    expect(controlTokens).toContain("--toggle-xs-font-size: var(--font-size-xs);");
-    expect(controlTokens).toContain("--button-xs-font-size: var(--font-size-xs);");
+    expect(controlTokens).toContain(
+      "--toggle-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
+    expect(controlTokens).toContain(
+      "--button-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
   });
 
   it("the other three steps are unchanged", () => {

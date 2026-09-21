@@ -35,7 +35,9 @@ describe("chart legend label reads the text tier, not the series colour", () => 
   it("overrides the inline series colour — nothing weaker can", () => {
     const rules = css.match(/\.ui-chart \.recharts-legend-item-text\s*\{[^}]*\}/g) ?? [];
     expect(rules.length, "no rule targets the legend label").toBeGreaterThan(0);
-    const wins = rules.some((r) => /color:\s*hsl\(var\(--muted-foreground\)\)\s*!important/.test(r));
+    const wins = rules.some((r) =>
+      /color:\s*hsl\(var\(--muted-foreground\)\)\s*!important/.test(r),
+    );
     expect(
       wins,
       "recharts sets the label colour inline; without !important this rule never applies",

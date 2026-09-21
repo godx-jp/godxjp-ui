@@ -1,8 +1,14 @@
 /* Data-entry component tokens — small-by-design text knobs (rule #45/#46). */
 
 :root {
-  --password-strength-score-font-size: var(--font-size-xs);
-  --password-strength-checklist-font-size: var(--font-size-xs);
+  --password-strength-score-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --password-strength-checklist-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* BranchScopePicker (gh#319). `.ui-branch-scope-picker` was a bare hook with no rule anywhere:
    * every measure lived as a Tailwind literal on the component, so a service could only retune

@@ -1065,10 +1065,10 @@ describe("PageContainer", () => {
       );
       // A step of the shared golden scale, never a literal (rule #46) — and a SEPARATE knob that
       // sits beside the two document steps rather than redefining either of them.
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(--font-size-2xs\);/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(--font-size-2xs[,)]/);
       expect(layoutCss).not.toMatch(/--page-subtitle-font-size-chrome:/);
       expect(layoutTokens).toMatch(/--page-subtitle-font-size: var\(--font-size-base\);/);
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(--font-size-sm\);/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(--font-size-sm[,)]/);
       // Type only. --line-height-body still owns the rhythm, so a wrapped JA/VI purpose line stays
       // readable at the smaller step; colour/weight belong to the base rule for both scales.
       const chromeSubtitleRule =

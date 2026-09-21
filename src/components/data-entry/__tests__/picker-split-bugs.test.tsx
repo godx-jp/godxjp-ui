@@ -117,7 +117,12 @@ describe("bug 4 — the native form value is ISO-8601 at the picker's own precis
   it("picker=month submits yyyy-MM, not yyyy/MM", () => {
     expect(
       submitted(
-        <DatePicker picker="month" aria-label="対象月" name="billing" value={new Date(2026, 2, 1)} />,
+        <DatePicker
+          picker="month"
+          aria-label="対象月"
+          name="billing"
+          value={new Date(2026, 2, 1)}
+        />,
         "billing",
       ),
     ).toBe("2026-03");
@@ -200,7 +205,9 @@ describe("prop collisions, settled", () => {
 
   it("order={false} keeps the endpoints as picked", () => {
     const onValueChange = vi.fn();
-    renderWithUi(<DatePicker range order={false} aria-label="期間" onValueChange={onValueChange} />);
+    renderWithUi(
+      <DatePicker range order={false} aria-label="期間" onValueChange={onValueChange} />,
+    );
     fireEvent.change(screen.getByLabelText("Từ"), { target: { value: "2026-06-10" } });
     fireEvent.change(screen.getByLabelText("Đến"), { target: { value: "2026-03-04" } });
     expect(onValueChange).toHaveBeenLastCalledWith({

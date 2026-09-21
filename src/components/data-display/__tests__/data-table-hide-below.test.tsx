@@ -62,9 +62,7 @@ const taskColumns: ColumnDef<TaskRow>[] = [
 
 describe("DataTable ColumnDef.hideBelow (gh#603)", () => {
   it("stamps the same hideBelow contract as Flex on head and body cells", () => {
-    renderWithUi(
-      <DataTable data={taskRows} columns={taskColumns} getRowId={(row) => row.id} />,
-    );
+    renderWithUi(<DataTable data={taskRows} columns={taskColumns} getRowId={(row) => row.id} />);
 
     const kindHeader = screen.getByRole("columnheader", { name: "種別" });
     expect(kindHeader).toHaveAttribute("data-hide-below", "xl");
@@ -72,9 +70,7 @@ describe("DataTable ColumnDef.hideBelow (gh#603)", () => {
   });
 
   it("keeps the expected readable column headers at each viewport step", () => {
-    renderWithUi(
-      <DataTable data={taskRows} columns={taskColumns} getRowId={(row) => row.id} />,
-    );
+    renderWithUi(<DataTable data={taskRows} columns={taskColumns} getRowId={(row) => row.id} />);
 
     expect(columnHeadersReadableAtWidth(1400)).toEqual([
       "期限日",

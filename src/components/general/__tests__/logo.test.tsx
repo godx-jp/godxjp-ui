@@ -174,7 +174,9 @@ describe("Logo brand tokens", () => {
     // Anchored at `.ui-logo` and allowing only a size qualifier — a descendant selector like
     // `[data-mark="godx"] .ui-logo-wordmark` is the TYPESET wordmark and legitimately has a colour.
     const identityRules =
-      layout.match(/\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g) ?? [];
+      layout.match(
+        /\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g,
+      ) ?? [];
     expect(identityRules.length).toBeGreaterThan(0);
     for (const rule of identityRules) {
       expect(rule).not.toMatch(/(^|[^-])color:/);

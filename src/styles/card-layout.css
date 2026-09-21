@@ -877,7 +877,7 @@
 
   [data-slot="service-launcher-skeleton-status"] {
     width: var(--card-service-launcher-skeleton-status-width);
-    height: var(--font-size-xs);
+    height: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
     margin-inline-start: auto;
   }
 
@@ -885,7 +885,7 @@
   [data-slot="service-launcher-skeleton-metadata"],
   [data-slot="service-launcher-skeleton-action"] {
     width: 100%;
-    height: var(--font-size-xs);
+    height: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
 
   [data-slot="service-launcher-skeleton-action"] {

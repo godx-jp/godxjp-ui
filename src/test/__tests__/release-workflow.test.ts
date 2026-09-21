@@ -1815,10 +1815,7 @@ describe("CD delegates verification to CI's verdict on the exact commit instead 
  * literals would fail the next time someone tunes them in the right direction.
  */
 describe("registry verification waits long enough for npm to catch up", () => {
-  const source = readFileSync(
-    resolve(process.cwd(), "scripts/release-core.mjs"),
-    "utf8",
-  );
+  const source = readFileSync(resolve(process.cwd(), "scripts/release-core.mjs"), "utf8");
 
   it("budgets at least 30s of read-after-write lag by default", () => {
     const attempts = Number(
@@ -1850,11 +1847,15 @@ describe("registry verification waits long enough for npm to catch up", () => {
    */
   it("revalidates every registry read, so the budget is spent on the registry and not on a cache", () => {
     const reads = source.match(/npmJson\(\s*\[\s*"view"[^\]]*\]/g) ?? [];
-    expect(reads.length, "expected the registryState reads to still be npm view calls").toBeGreaterThan(0);
+    expect(
+      reads.length,
+      "expected the registryState reads to still be npm view calls",
+    ).toBeGreaterThan(0);
     for (const read of reads) {
-      expect(read, `a registry read without --prefer-online can be served from npm's cache: ${read}`).toContain(
-        '"--prefer-online"',
-      );
+      expect(
+        read,
+        `a registry read without --prefer-online can be served from npm's cache: ${read}`,
+      ).toContain('"--prefer-online"');
     }
   });
 });

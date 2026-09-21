@@ -4,8 +4,11 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-// @ts-expect-error — plain ESM script without a declaration file
-import { ensureMcpJson, mcpServerFor, readConsumerUiMetadata } from "../../scripts/_agent-setup.mjs";
+import {
+  ensureMcpJson,
+  mcpServerFor,
+  readConsumerUiMetadata,
+} from "../../scripts/_agent-setup.mjs";
 
 const roots: string[] = [];
 
@@ -107,7 +110,9 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
     });
     writeFileSync(join(root, ".mcp.json"), original);
 
-    expect(ensureMcpJson(root)).toMatch(/^present \(custom godx-ui MCP entry under key "godxjp-ui"/);
+    expect(ensureMcpJson(root)).toMatch(
+      /^present \(custom godx-ui MCP entry under key "godxjp-ui"/,
+    );
     expect(readFileSync(join(root, ".mcp.json"), "utf8")).toBe(original);
   });
 
@@ -117,7 +122,11 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
       join(root, ".mcp.json"),
       fourSpaces({
         mcpServers: {
-          ui: { command: "npx", args: ["@godxjp/ui-mcp@25.4.0"], env: { GODX_UI_VERSION: "25.4.0" } },
+          ui: {
+            command: "npx",
+            args: ["@godxjp/ui-mcp@25.4.0"],
+            env: { GODX_UI_VERSION: "25.4.0" },
+          },
         },
       }),
     );
@@ -126,7 +135,11 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
     expect(readFileSync(join(root, ".mcp.json"), "utf8")).toBe(
       fourSpaces({
         mcpServers: {
-          ui: { command: "npx", args: ["@godxjp/ui-mcp@26.2.0"], env: { GODX_UI_VERSION: "26.2.0" } },
+          ui: {
+            command: "npx",
+            args: ["@godxjp/ui-mcp@26.2.0"],
+            env: { GODX_UI_VERSION: "26.2.0" },
+          },
         },
       }),
     );
@@ -134,7 +147,10 @@ describe("ensureMcpJson pins MCP and passes installed UI version (gh#543)", () =
 
   it("adding the entry to an existing file keeps that file's indentation", () => {
     const root = consumerRepo({ version: "26.2.0" });
-    writeFileSync(join(root, ".mcp.json"), fourSpaces({ mcpServers: { omnify: { command: "npx" } } }));
+    writeFileSync(
+      join(root, ".mcp.json"),
+      fourSpaces({ mcpServers: { omnify: { command: "npx" } } }),
+    );
 
     expect(ensureMcpJson(root)).toBe("added");
     const raw = readFileSync(join(root, ".mcp.json"), "utf8");

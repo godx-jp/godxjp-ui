@@ -45,9 +45,7 @@ describe("Dialog header — a toned header is a band wherever it appears", () =>
   });
 
   it("carries real padding, so the tint never hugs the glyphs", () => {
-    expect(bandRule?.[0]).toMatch(
-      /padding:\s*var\(--dialog-space-y\)\s+var\(--dialog-space-x\)/,
-    );
+    expect(bandRule?.[0]).toMatch(/padding:\s*var\(--dialog-space-y\)\s+var\(--dialog-space-x\)/);
   });
 });
 
@@ -88,7 +86,10 @@ describe("Dialog confirm body — antd Modal.confirm shape", () => {
   });
 
   it("rides a named step of the icon scale rather than minting a value", () => {
-    const tokens = readFileSync(resolve(process.cwd(), "src/tokens/components/feedback.css"), "utf8");
+    const tokens = readFileSync(
+      resolve(process.cwd(), "src/tokens/components/feedback.css"),
+      "utf8",
+    );
     expect(tokens).toMatch(/--dialog-confirm-icon-size:\s*var\(--icon-size-xl\)/);
     expect(tokens).toMatch(/--dialog-confirm-space-gap:\s*var\(--space-3\)/);
   });

@@ -11,7 +11,7 @@
   --attachments-placeholder-space-inset: var(--upload-dropzone-space-inset);
   --attachments-placeholder-radius: var(--upload-dropzone-radius);
   --attachments-placeholder-icon-size: var(--upload-dropzone-icon-size);
-  --attachments-placeholder-title-font-size: var(--font-size-sm);
+  --attachments-placeholder-title-font-size: var(--font-size-sm, var(--font-size-base));
   --attachments-placeholder-description-font-size: var(--upload-dropzone-meta-font-size);
   --attachments-placeholder-gap: var(--space-2);
   --attachments-drop-overlay-background: initial;

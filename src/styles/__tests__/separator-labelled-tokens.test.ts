@@ -75,7 +75,9 @@ describe("separator token tier (gh#308)", () => {
   });
 
   it("keeps the label type ramp on the modular scale, never a literal", () => {
-    expect(declared["--separator-label-font-size"]).toBe("var(--font-size-xs)");
+    expect(declared["--separator-label-font-size"]).toBe(
+      "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
+    );
     expect(declared["--separator-label-line-height"]).toBe("var(--line-height-normal)");
     expect(declared["--separator-label-font-weight"]).toBe("var(--font-weight-medium)");
   });

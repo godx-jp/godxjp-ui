@@ -76,7 +76,7 @@
   --control-variant-filled-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
 
   /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
-  --control-count-font-size: var(--font-size-sm);
+  --control-count-font-size: var(--font-size-sm, var(--font-size-base));
   --control-count-color: var(--muted-foreground);
   /* `initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a
    * `[data-tenant]` re-theming the error ink would keep this counter on the root's answer
@@ -92,12 +92,18 @@
   --input-addon-padding-inline: var(--control-padding-x);
 
   /* Switch `checkedChildren` / `unCheckedChildren` and `loading`. */
-  --switch-content-font-size: var(--font-size-xs);
+  --switch-content-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --switch-content-space-inline: var(--space-1);
   --switch-spinner-size: calc(var(--switch-thumb-size) - var(--space-1));
 
   /* Slider marks / dots / value bubble — antd `marks`, `dots`, `tooltip`. */
-  --slider-mark-font-size: var(--font-size-xs);
+  --slider-mark-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --slider-mark-color: var(--muted-foreground);
   --slider-mark-space-block-start: var(--space-2);
   --slider-dot-size: var(--slider-track-height);
@@ -106,7 +112,10 @@
   --slider-dot-active-border-color: initial; /* default = var(--primary), resolved at the call site */
   --slider-tooltip-background: var(--popover);
   --slider-tooltip-color: var(--popover-foreground);
-  --slider-tooltip-font-size: var(--font-size-xs);
+  --slider-tooltip-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --slider-tooltip-radius: var(--radius-sm);
   --slider-tooltip-padding-inline: var(--space-2);
   --slider-tooltip-offset-block: var(--space-2);
@@ -289,14 +298,29 @@
 
   /* The --font-size-xs tier, spelled once per control that reads it, so a service can retune a
    * single one of them without moving the whole scale. */
-  --choice-description-font-size: var(--font-size-xs);
-  --color-picker-hex-font-size: var(--font-size-xs);
-  --command-group-heading-font-size: var(--font-size-xs);
-  --search-input-label-font-size: var(--font-size-xs);
-  --tag-input-chip-font-size: var(--font-size-xs);
-  --toggle-sm-font-size: var(--font-size-xs);
-  --toggle-xs-font-size: var(--font-size-xs);
-  --button-sm-font-size: var(--font-size-xs);
+  --choice-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --color-picker-hex-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --command-group-heading-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --search-input-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --tag-input-chip-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --toggle-sm-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --toggle-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --button-sm-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
 }
 
 /* Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target
@@ -376,7 +400,7 @@
   /* The <input type=file> button is a browser-owned box we restyle; it sits one tier below the
    * field so it reads as a control INSIDE the control. */
   --input-file-button-height: var(--band-height-sm);
-  --input-file-button-font-size: var(--font-size-sm);
+  --input-file-button-font-size: var(--font-size-sm, var(--font-size-base));
 
   /* SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the
    * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could
@@ -391,13 +415,16 @@
   --search-select-list-max-height: none;
   --search-select-footer-space-inset: var(--space-1);
   --search-select-option-space-gap: var(--space-2);
-  --search-select-option-font-size: var(--font-size-sm);
-  --search-select-option-sublabel-font-size: var(--font-size-xs);
+  --search-select-option-font-size: var(--font-size-sm, var(--font-size-base));
+  --search-select-option-sublabel-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --search-select-status-space-inline: var(--space-2);
   --search-select-status-space-block: var(--space-3);
   /* Empty/error states sit alone in the panel, so they get a taller, centred block. */
   --search-select-placeholder-space-block: var(--space-6);
-  --search-select-status-font-size: var(--font-size-sm);
+  --search-select-status-font-size: var(--font-size-sm, var(--font-size-base));
   --search-select-spinner-size: 1rem;
 
   /* CASCADER — column browser + flat search list. Its option rows, column widths and panel
@@ -410,7 +437,7 @@
   --cascader-option-space-inline: var(--space-3);
   --cascader-option-space-block: var(--space-2);
   --cascader-option-space-gap: var(--space-1);
-  --cascader-option-font-size: var(--font-size-sm);
+  --cascader-option-font-size: var(--font-size-sm, var(--font-size-base));
   --cascader-option-icon-size: var(--icon-size-md);
   /* The flat search result row is denser than a column row — it has no chevron to balance. */
   --cascader-result-space-inline: var(--space-2);
@@ -441,11 +468,14 @@
   --time-picker-panel-width-12h: 13rem;
   --time-picker-heading-space-inline: var(--space-1);
   --time-picker-heading-space-block: 0.375rem;
-  --time-picker-heading-font-size: var(--font-size-xs);
+  --time-picker-heading-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --time-picker-column-space-inset: var(--space-1);
   --time-picker-option-space-block: 0.375rem;
   --time-picker-option-radius: var(--radius-md);
-  --time-picker-option-font-size: var(--font-size-sm);
+  --time-picker-option-font-size: var(--font-size-sm, var(--font-size-base));
   --time-picker-footer-space-inset: var(--space-2);
   --time-picker-footer-space-gap: var(--space-2);
 
@@ -458,7 +488,7 @@
   --tree-select-row-space-block: 0.375rem;
   --tree-select-row-space-inline-end: var(--space-2);
   --tree-select-row-radius: var(--radius-sm);
-  --tree-select-row-font-size: var(--font-size-sm);
+  --tree-select-row-font-size: var(--font-size-sm, var(--font-size-base));
   /* Indent = base + depth × step. A denser service dials the step down without touching JSX. */
   --tree-select-depth-space-base: var(--space-2);
   --tree-select-depth-space-step: 1.25rem;
@@ -479,7 +509,7 @@
    * gap and --calendar-grid-space-block-start is the whole caption→weekday step. */
   --calendar-month-space-gap: var(--space-4);
   --calendar-caption-space-inline: var(--space-8);
-  --calendar-caption-font-size: var(--font-size-sm);
+  --calendar-caption-font-size: var(--font-size-sm, var(--font-size-base));
   --calendar-nav-space-block-start: var(--space-3);
   /* THE SAME INSET AS THE GRID, by construction rather than by coincidence (gh#730 item 5).
    * `.ui-calendar-nav` is `position: absolute; inset-inline: 0`, and an absolutely positioned box
@@ -498,9 +528,12 @@
    * week row, at 12px it still reads as the boundary of a group. */
   --calendar-grid-space-block-start: var(--space-3);
   --calendar-week-space-block-start: var(--space-2);
-  --calendar-weekday-font-size: var(--font-size-xs);
+  --calendar-weekday-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --calendar-weekday-radius: var(--radius-md);
-  --calendar-day-font-size: var(--font-size-sm);
+  --calendar-day-font-size: var(--font-size-sm, var(--font-size-base));
   --calendar-day-radius: var(--radius-md);
   --calendar-chevron-size: var(--icon-size-md);
   --calendar-footer-space-gap: var(--space-2);
@@ -533,7 +566,7 @@
   --transfer-panes-space-gap: var(--space-3);
   --transfer-header-space-inline: var(--space-3);
   --transfer-header-space-block: var(--space-2);
-  --transfer-header-font-size: var(--font-size-sm);
+  --transfer-header-font-size: var(--font-size-sm, var(--font-size-base));
   --transfer-header-space-gap: var(--space-2);
   --transfer-search-space-inset: var(--space-2);
   --transfer-list-space-inset: var(--space-1);
@@ -541,11 +574,14 @@
   --transfer-row-space-block: var(--space-2);
   --transfer-row-space-gap: var(--space-2);
   --transfer-row-radius: var(--radius-sm);
-  --transfer-row-font-size: var(--font-size-sm);
+  --transfer-row-font-size: var(--font-size-sm, var(--font-size-base));
   /* The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to
    * sit level with the first line's cap height rather than its box. */
   --transfer-row-check-space-block-start: 0.125rem;
-  --transfer-row-description-font-size: var(--font-size-xs);
+  --transfer-row-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --transfer-empty-space-block: var(--space-8);
   --transfer-actions-space-gap: var(--space-2);
   --transfer-action-icon-size: var(--icon-size-md);
@@ -558,7 +594,7 @@
   --month-picker-grid-space-block-start: var(--space-3);
   --month-picker-grid-space-gap: var(--space-1);
   --month-picker-cell-space-inline: var(--space-4);
-  --month-picker-nav-font-size: var(--font-size-sm);
+  --month-picker-nav-font-size: var(--font-size-sm, var(--font-size-base));
   /* Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so
    * the two panels stay visually consistent when either is retuned. */
   --month-picker-nav-rest-alpha: var(--calendar-nav-rest-alpha);
@@ -604,7 +640,7 @@
   --button-bare-target-size: initial;
   --button-xs-space-inline: var(--space-2);
   --button-xs-space-gap: var(--space-1);
-  --button-xs-font-size: var(--font-size-xs);
+  --button-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   --button-xs-icon-size: var(--icon-size-xs);
   /* Icon-adjacent padding: a button whose only child is an icon needs less inline room than one
    * carrying a label, or the glyph floats in a too-wide box. One knob per size tier. */
@@ -628,7 +664,10 @@
 
   --button-count-min-width: var(--space-4);
   --button-count-space-inline: var(--space-1);
-  --button-count-font-size: var(--font-size-xs);
+  --button-count-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the
    * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means
@@ -679,7 +718,7 @@
    * Defaults reproduce today's rendering exactly:
    *   font-size   ← `text-sm`      → --text-sm → var(--font-size-sm)
    *   line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height) */
-  --control-label-font-size: var(--font-size-sm);
+  --control-label-font-size: var(--font-size-sm, var(--font-size-base));
   /* A LABEL WRAPS, so its line box cannot be 1.
    *
    * This was a literal `1`, which is right for the one case it was chosen for — a single-line

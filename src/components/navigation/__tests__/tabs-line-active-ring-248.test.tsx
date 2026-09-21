@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Tabs, } from "../tabs";
+import { Tabs } from "../tabs";
 
 /**
  * The `line` variant must NOT keep a ring around the SELECTED trigger, while the keyboard focus

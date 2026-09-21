@@ -44,7 +44,9 @@ describe("Radio — the two states must not paint the same", () => {
   });
 
   it("keeps the dot painted when checked — the rule must not hide both", () => {
-    expect(css).not.toMatch(/\.ui-radio\[data-state="checked"\]\s+\.ui-radio-icon\s*\{[^}]*visibility:\s*hidden/);
+    expect(css).not.toMatch(
+      /\.ui-radio\[data-state="checked"\]\s+\.ui-radio-icon\s*\{[^}]*visibility:\s*hidden/,
+    );
     // The base rule still fills the glyph; only the unchecked case is hidden.
     expect(css).toMatch(/\.ui-radio-icon\s*\{[^}]*fill:\s*currentColor/);
   });

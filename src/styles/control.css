@@ -155,7 +155,7 @@
 
   .ui-button {
     flex-shrink: 0;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm, var(--font-size-base));
     outline: none;
   }
 
@@ -1105,7 +1105,7 @@
   .ui-command-palette-meta {
     margin-inline-start: auto;
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
 
   .ui-command-palette-state {
@@ -1124,7 +1124,7 @@
     padding: var(--command-palette-hint-padding-y) var(--command-palette-hint-padding-x);
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   }
 
   .ui-search-input {
@@ -3713,7 +3713,13 @@
    * (vertical, from the bottom) — the same fraction the thumbs use, so they survive a resize,
    * `reverse` and RTL without a second code path. */
   .ui-slider[data-has-marks="true"]:not([data-orientation="vertical"]) {
-    margin-block-end: calc(var(--slider-mark-space-block-start) + var(--font-size-lg));
+    margin-block-end: calc(
+      var(--slider-mark-space-block-start) +
+        var(
+          --font-size-lg,
+          calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+        )
+    );
   }
 
   .ui-slider-marks {

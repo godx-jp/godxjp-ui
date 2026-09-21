@@ -48,7 +48,10 @@
    * split shape across the five geometry knobs would be worse than a consistent one.) */
   --toggle-count-min-width: var(--space-4);
   --toggle-count-space-inline: var(--space-1);
-  --toggle-count-font-size: var(--font-size-xs);
+  --toggle-count-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --toggle-count-radius: var(--radius-pill);
   /* Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob
    * ADDS to it for a service whose design grid wants the counter pushed further out. */

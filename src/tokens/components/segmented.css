@@ -73,7 +73,10 @@
    * and they are knobs rather than literals in the rule so a service can retune them (rule #45). */
   /* xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row
    * carry the same label size. One step of the existing scale, not a new constant. */
-  --segmented-xs-font-size: var(--font-size-xs);
+  --segmented-xs-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* xs item padding-inline = the SAME derivation as the md step (control padding-x − one border
    * width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px
    * around a 12.47px label a three-option bar no longer reads as dense. */

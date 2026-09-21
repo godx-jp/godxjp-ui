@@ -33,7 +33,9 @@ describe("PageContainer header — the action group wraps instead of covering th
 
   /** Rule bodies for `.ui-page-header-extra > .ui-flex[data-direction="row"]`, in source order. */
   const wrapRules = [
-    ...css.matchAll(/\.ui-page-header-extra\s*>\s*\.ui-flex\[data-direction="row"\]\s*\{([^}]*)\}/g),
+    ...css.matchAll(
+      /\.ui-page-header-extra\s*>\s*\.ui-flex\[data-direction="row"\]\s*\{([^}]*)\}/g,
+    ),
   ].map((m) => m[1]);
 
   it("declares the wrap exactly once", () => {

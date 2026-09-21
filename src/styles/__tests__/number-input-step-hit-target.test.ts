@@ -24,7 +24,8 @@ describe("number input step — fine pointer hit area", () => {
   });
 
   it("does not grow the painted stepper box", () => {
-    const paint = css.match(/\.ui-number-input-step\s*\{[^}]*pointer-events:\s*auto[^}]*\}/)?.[0] ?? "";
+    const paint =
+      css.match(/\.ui-number-input-step\s*\{[^}]*pointer-events:\s*auto[^}]*\}/)?.[0] ?? "";
     expect(paint).toContain("block-size: calc(var(--control-height) / 2 - 0.1875rem)");
     expect(paint).not.toContain("min-block-size: var(--touch-target-min)");
   });
