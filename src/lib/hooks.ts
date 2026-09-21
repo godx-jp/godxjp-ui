@@ -1,5 +1,5 @@
 // Shared hooks for admin components.
-import { useEffect, useState } from "react";
+import { type RefObject, useEffect, useState } from "react";
 
 /**
  * Returns a debounced view of `value`, updated only after `delay` ms of no
@@ -167,4 +167,42 @@ export function useScrollableRegionTabIndex(element: HTMLElement | null): void {
       for (const observer of observers) observer.disconnect();
     };
   }, [element]);
+}
+
+/**
+ * Does this scroll box actually have somewhere to scroll horizontally?
+ *
+ * Drives BOTH halves of a table's scroll region: the `tabindex="0"` a keyboard user needs to reach
+ * the overflow (WCAG 2.1.1 / axe `scrollable-region-focusable`) AND the `role`/name that stop needs
+ * in order not to be an anonymous one (gh#817). A stop that scrolls nothing is pure noise, and a
+ * name on it is noise too, so both are withheld until there is overflow to reach.
+ *
+ * The measurement may only ever REMOVE the stop, never withhold it on a guess: a box that has not
+ * been laid out reports `clientWidth === 0` (the server render, jsdom, a `display:none` ancestor,
+ * the frame before first layout), and that is not evidence that nothing overflows. Reading it as
+ * "no overflow" would strand the table's overflow from every keyboard user — a worse failure than
+ * an extra tab stop — so an unmeasured box counts as scrolling.
+ */
+export function useScrollsHorizontally(
+  ref: RefObject<HTMLElement | null>,
+  enabled: boolean,
+): boolean {
+  const [scrolls, setScrolls] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!enabled || !el) return undefined;
+    const update = () => {
+      setScrolls(el.clientWidth === 0 || el.scrollWidth - el.clientWidth > 1);
+    };
+    update();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    // The content resizes without the box doing so whenever data/columns/density change.
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref, enabled]);
+  return enabled && scrolls;
 }

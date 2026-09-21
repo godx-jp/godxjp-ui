@@ -37,7 +37,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
-2. `components/<Name>.json` — one file per component (1 KB–32 KB, median 5 KB), carrying its props,
+2. `components/<Name>.json` — one file per component (1 KB–33 KB, median 5 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.

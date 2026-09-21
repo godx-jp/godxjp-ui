@@ -3892,6 +3892,12 @@ import { Icon, Text } from "@godxjp/ui/general";
           "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query on sm 40rem · md 48rem · lg 64rem · xl 80rem), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is 'default'.",
       },
       {
+        name: "label",
+        type: "LabelProp",
+        description:
+          'Accessible name for the horizontal-scroll REGION — the tabindex="0" wrapper a keyboard user lands on to scroll a table wider than its container — NOT for the <table> element (pass aria-label for that; it still reaches the table). OPTIONAL: left out, the region takes the localized dataTable.scrollRegion default ("Scrollable table"), so no consumer has to invent a name for every table. Pass a plain string when the page can say WHICH table; a non-string node cannot be an aria-label and falls back to the default. The wrapper carries role="group" (not "region" — a named region is a LANDMARK, and several tables on one page would then collide under axe landmark-unique) and is emitted ONLY while the region actually has overflow to reach, measured at runtime: a table that fits adds no tab stop, no role and no name. (gh#817)',
+      },
+      {
         name: "sort",
         type: "{ key: string; direction: 'asc' | 'desc' }",
         description:
@@ -5860,6 +5866,12 @@ import remarkGfm from "remark-gfm";
         defaultValue: '"sm"',
         description:
           'Step at which preset="action-collection" switches to the compact priority measures, measured against the TABLE\'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is "default".',
+      },
+      {
+        name: "label",
+        type: "LabelProp",
+        description:
+          'Accessible name for the horizontal-scroll REGION — the tabindex="0" wrapper a keyboard user lands on to scroll a table wider than its container — NOT for the <table> element (pass aria-label for that; it still reaches the table). OPTIONAL: left out, the region takes the localized dataTable.scrollRegion default ("Scrollable table"), so no consumer has to invent a name for every table. Pass a plain string when the page can say WHICH table; a non-string node cannot be an aria-label and falls back to the default. The wrapper carries role="group" (not "region" — a named region is a LANDMARK, and several tables on one page would then collide under axe landmark-unique) and is emitted ONLY while the region actually has overflow to reach, measured at runtime: a table that fits adds no tab stop, no role and no name. (gh#817)',
       },
     ],
     usage: [
