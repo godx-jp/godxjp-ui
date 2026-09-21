@@ -77,6 +77,7 @@ new UI need
 | `Select` (incl. search/async)                           | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
 | `DataTable`, `Dialog`, `Calendar`, `Switch`, `Combobox` | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
 | `StatCard` (+ `icon`)                                   | ✅  | ➖  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component** (a reusable KPI tile with a stable API + tokens) |
+| `ServiceLauncherCard`                                   | ➖  | ❌  | ❌  | ✅  | ✅  | ➖  | ➖  | **Composition by the test — RETAINED as a recorded exception** (gh#814) |
 | Marketing **Hero**                                      | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — section, static, composable, brand-specific            |
 | **Navbar** / **Footer**                                 | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — layout of `Text`/`Button`/`Flex`                       |
 | **PricingTable** / feature grid                         | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — `ResponsiveGrid` + `Card`                              |
@@ -84,6 +85,8 @@ new UI need
 | "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
 
 `✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
+
+**ServiceLauncherCard is the ONE recorded exception, and it is recorded so that it stays one.** It shipped before the test was run against it, and when the test was run it came back with two hard FAILs: **C2** — no state, no keyboard handling, no focus management, its only ARIA three static attributes — and **C3** — its own imports are `Card` + `CardContent` + `Badge` + a Lucide glyph, so "could I build this right now from primitives?" is yes. By §2 that makes it a composition pattern. It is kept anyway because `src/components/layout/app-launcher.tsx` consumes it: it is an internal building block of a component that **does** pass, so the question was never "should it exist" but "should it be PUBLIC", and removing a public export is breaking. Keeping it public was the cheaper call and the ledger lives on gh#814 and at the top of `src/components/data-display/service-launcher-card.tsx`. **Consumers should compose `Card` + `Badge` for a service tile** — reach for `ServiceLauncherCard` only to match `AppLauncher`'s own tiles — and this row is not precedent for adding another static tile to `src/components/`.
 
 ---
 
