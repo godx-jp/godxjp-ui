@@ -5,6 +5,8 @@ name: CI · browser (full sweep)
 # WHAT IS HERE, AND WHY IT LEFT ci-browser.yml
 #   • geometry         — viewport-matrix sweep, 8 widths (320→1920), baseline-guarded.
 #   • token-wins       — CDP cascade sweep for component tokens the browser throws away.
+#   • token-scope      — the neighbouring defect: tokens declared where the scope that needs them
+#                        cannot reach (frozen at :root, or declared under an unreachable selector).
 #   • rendered-runtime — five shards of per-frame data-entry / layout / provider runtime contracts.
 #
 # Measured on run 33976207776 (a normal, uncongested merge): the five rendered-runtime shards cost
@@ -105,6 +107,32 @@ jobs:
           chromium: "true"
       - name: inert component tokens
         run: pnpm check:frame-token-wins
+
+  token-scope:
+    name: Unreachable tokens (scope + freeze sweep)
+    # HERE AND NOT ci-browser.yml, for the same arithmetic that put `token-wins` here. Its REACH
+    # stage visits every element matching a bare `var()` reader on all 192 frames, and the cost is
+    # the 192 navigations, ~10 minutes — over the merge lane's whole 5-minute budget (CONTRACT.md
+    # L4) on its own. It is baseline-guarded, so what it protects against is a NEW unreachable
+    # token arriving with a commit, and a nightly catch is soon enough for that.
+    #
+    # A SEPARATE JOB FROM token-wins, not a second step in it: the two gates share only the preview
+    # server, and sharing one job would serialise ~20 minutes behind a single runner slot on a pool
+    # four projects contend for. Own port, so the two previews cannot collide.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      PREVIEW_BASE: http://localhost:6058
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - name: unreachable + frozen tokens
+        run: pnpm check:frame-token-scope
 
   rendered-runtime:
     name: rendered-runtime (${{ matrix.name }})

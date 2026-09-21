@@ -210,17 +210,38 @@
   --color-wa-sumi: var(--wa-sumi);
   --color-wa-nezu: var(--wa-nezu);
   /* Wire Tailwind text-* utilities to runtime typography tokens (fontSize toolbar). */
-  --text-2xs: var(--font-size-2xs);
-  --text-xs: var(--font-size-xs);
-  --text-sm: var(--font-size-sm);
+  --text-2xs: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --text-xs: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --text-sm: var(--font-size-sm, var(--font-size-base));
   --text-base: var(--font-size-base);
-  --text-lg: var(--font-size-lg);
-  --text-xl: var(--font-size-xl);
-  --text-2xl: var(--font-size-2xl);
+  --text-lg: var(
+    --font-size-lg,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
+  --text-xl: var(
+    --font-size-xl,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio)
+    )
+  );
+  --text-2xl: var(
+    --font-size-2xl,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio) * var(--font-size-ratio)
+    )
+  );
   /* Opt-in DISPLAY ramp (marketing/hero) — wired to the display tokens, unused by the admin scale. */
-  --text-3xl: var(--font-size-3xl);
-  --text-4xl: var(--font-size-4xl);
-  --text-5xl: var(--font-size-5xl);
+  --text-3xl: var(
+    --font-size-3xl,
+    calc(var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio))
+  );
+  --text-4xl: var(--font-size-4xl, calc(var(--font-size-display) / var(--font-size-display-ratio)));
+  --text-5xl: var(--font-size-5xl, var(--font-size-display));
 }
 
 @layer base {
@@ -259,32 +280,44 @@
   }
 
   h1 {
-    font-size: var(--heading-h1);
+    font-size: var(
+      --heading-h1,
+      calc(
+        var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+          var(--font-size-ratio)
+      )
+    );
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-tight);
   }
 
   h2 {
-    font-size: var(--heading-h2);
+    font-size: var(
+      --heading-h2,
+      calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+    );
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-tight);
   }
 
   h3 {
-    font-size: var(--heading-h3);
+    font-size: var(--heading-h3, var(--font-size-base));
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-tight);
   }
 
   h4 {
-    font-size: var(--heading-h4);
+    font-size: var(
+      --heading-h4,
+      var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))
+    );
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-tight);
   }
 
   h5,
   h6 {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-tight);
   }

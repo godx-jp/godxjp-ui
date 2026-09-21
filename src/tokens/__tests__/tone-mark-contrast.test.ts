@@ -57,7 +57,10 @@ const LAYOUT = collapse(
     .join("\n"),
 );
 const MARK_SOURCE = Object.fromEntries(
-  [...LAYOUT.matchAll(/var\( ?--mark-([a-z]+), ?var\( ?--([a-z-]+)[,) ]/g)].map((m) => [m[1], m[2]]),
+  [...LAYOUT.matchAll(/var\( ?--mark-([a-z]+), ?var\( ?--([a-z-]+)[,) ]/g)].map((m) => [
+    m[1],
+    m[2],
+  ]),
 ) as Record<string, string>;
 
 /** `--text-primary` is itself a derived knob (gh#664), so its value is a ramp step off the seed;

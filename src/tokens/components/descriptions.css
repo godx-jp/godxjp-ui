@@ -27,7 +27,7 @@
    * when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a
    * comment asking future editors to keep them in sync; both call sites now read these tokens, so
    * the mirror is mechanical and a service retunes BOTH from one place. */
-  --descriptions-value-font-size: var(--font-size-sm);
+  --descriptions-value-font-size: var(--font-size-sm, var(--font-size-base));
   /* Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this
    * replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height`
    * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the

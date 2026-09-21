@@ -79,6 +79,6 @@ describe("gh#254 — a clipping single-line box owns its line-height", () => {
     expect(row).toContain("align-items: center;");
     // 1.5 × --font-size-xs (≈12.47px) = 18.7px, comfortably inside the 32px row, so nothing
     // reflows — the same headroom the earlier 19.5px had, one step lower.
-    expect(shellTokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs\);/);
+    expect(shellTokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs[,)]/);
   });
 });

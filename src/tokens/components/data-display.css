@@ -11,11 +11,17 @@
    * (styles/focus-ring.css). */
   --accordion-focus-ring-offset: 2px;
   --carousel-dot-focus-ring-offset: 2px;
-  --progress-label-font-size: var(--font-size-xs);
+  --progress-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* CodeBlock — a preformatted block; Prose delegates its `pre` treatment to the same knobs. */
-  --code-block-font-size: var(--font-size-sm);
-  --code-block-font-size-xs: var(--font-size-xs);
+  --code-block-font-size: var(--font-size-sm, var(--font-size-base));
+  --code-block-font-size-xs: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --code-block-line-height: var(--line-height-normal);
   --code-block-space-inset: var(--space-3);
   --code-block-radius: var(--radius-md);
@@ -60,7 +66,7 @@
   /* Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell
    * measures from --table-cell-padding-*; these are the rhythm knobs. */
   --prose-font-size: var(--font-size-base);
-  --prose-font-size-sm: var(--font-size-xs);
+  --prose-font-size-sm: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   --prose-line-height: var(--line-height-body);
   --prose-space-block: var(--space-3);
   --prose-heading-space-block-start: var(--space-6);
@@ -87,7 +93,10 @@
    * must not drop it here by accident. */
   --prose-link-decoration-line: underline;
   --prose-image-radius: var(--radius-md);
-  --timeline-note-font-size: var(--font-size-xs);
+  --timeline-note-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* Avatar surface — `initial` so the --muted default re-resolves at the call site under a scoped
      theme (a :root binding to a role var freezes at :root; a scoped role override never reaches it).
@@ -123,11 +132,17 @@
      every step), which is what keeps initials centred and legible rather than clipped. */
   --avatar-font-size: var(--font-size-base);
   /* Initials in the 24px mark — one step below sm on the type scale. */
-  --avatar-font-size-xs: var(--font-size-2xs);
+  --avatar-font-size-xs: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   /* Initials in the 28px mark — the same step a `size="sm"` control's label reads. */
-  --avatar-font-size-sm: var(--font-size-xs);
+  --avatar-font-size-sm: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   /* Initials in the 36px mark — one step above the body step. */
-  --avatar-font-size-lg: var(--font-size-lg);
+  --avatar-font-size-lg: var(
+    --font-size-lg,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
 
   /* Glyph box per step — the `--icon-size-*` scale the `Icon` primitive was minted on (gh#712),
      multiplied by --scaling exactly as --control-icon-size is, so a glyph inside a sized mark
@@ -263,7 +278,7 @@
   --legend-item-gap: 0.3125rem; /* scale-exempt: half the swatch, so a mark and its label read as one word; derived from --legend-swatch-size, not from the layout scale. */
   --legend-swatch-size: 0.625rem;
   --legend-swatch-radius: 0.125rem; /* scale-exempt: --radius (6px) on a 10px square is 60% of the mark and reads as a DOT, a different symbol; this is the smallest corner that softens the square without becoming one. */
-  --legend-font-size: var(--font-size-xs);
+  --legend-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   /* `initial` so the muted role re-resolves at the call site under a scoped theme.
      Default = hsl(var(--muted-foreground)). */
   --legend-color: initial;
@@ -294,8 +309,11 @@
   --feature-list-space-gap: var(--space-stack-sm);
   /* Glyph column ↔ label. */
   --feature-list-space-inline: var(--space-inline-sm);
-  --feature-list-font-size: var(--font-size-sm);
-  --feature-list-description-font-size: var(--font-size-xs);
+  --feature-list-font-size: var(--font-size-sm, var(--font-size-base));
+  --feature-list-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* The glyph takes the same step a Button's icon takes, so a feature list beside a control tier
      reads at the same weight. The mark BOX is `1lh` in the stylesheet — deliberately not a token,
      because the one correct value is "however tall this text's line is". */
@@ -351,9 +369,18 @@
      biết hai khối có đè nhau trên màn hình hay không. Nếu để sàn bằng pixel thì thuật toán tính
      theo thời gian còn CSS lại kéo chiều cao lên, và hai ca không trùng giờ vẫn vẽ chồng. */
   --timeline-grid-event-min-height-minutes: 36;
-  --timeline-grid-axis-font-size: var(--font-size-2xs);
-  --timeline-grid-head-font-size: var(--font-size-xs);
-  --timeline-grid-event-font-size: var(--font-size-2xs);
+  --timeline-grid-axis-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --timeline-grid-head-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --timeline-grid-event-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --timeline-grid-event-gap: var(--space-1);
   --timeline-grid-event-space-inset: var(--space-1);
   --timeline-grid-event-radius: var(--radius-sm);

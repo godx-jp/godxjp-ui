@@ -55,16 +55,14 @@ const THEME = `
   --font-family-display: "Sora", system-ui, sans-serif;
   --font-family-body: "Be Vietnam Pro", system-ui, "Noto Sans JP", sans-serif;
   --font-family-sans: var(--font-family-body);
-  /* 80px hero. --font-size-display is the display ramp's BASE KNOB, but overriding it HERE does
-     not move the derived steps: --font-size-5xl is declared at :root as var(--font-size-display),
-     so it computes on :root and merely INHERITS down — the freeze docs/TOKENS.md names, and the
-     reason its role-mirror knobs are declared initial. The whole --font-size-* scale is built this way
-     (--font-size-lg freezes on --font-size-base identically), so it is a systemic token-tier
-     defect, not this ramp's, and not gh#826's to fix. Measured, not assumed: with only the line
-     below, <Heading size="5xl"> painted 54px here, the :root value. Setting the STEP works,
-     because this declaration is on an ancestor of the heading. */
+  /* 80px hero, from the display ramp's BASE KNOB alone (gh#834).
+     This used to need a second line — --font-size-5xl: 5rem — and the comment that stood here said
+     why: --font-size-5xl was declared at :root as var(--font-size-display), so it substituted on
+     <html> and this scope merely INHERITED the answer root had given. Heading size="5xl" painted
+     54px with the display knob alone. The step is an initial knob now and the formula sits at the
+     call site, so one line moves the ramp: re-measured here at 80px, with 3xl/4xl following to
+     48.83/62.5px. */
   --font-size-display: 5rem;
-  --font-size-5xl: 5rem;
   /* The glass bar, opted into once (gh#831). acme-website.tsx hand-wrote the identical pair,
      which is why these are framework knobs now and not two literals on .fl-navbar. */
   --topbar-background-alpha: 80%;

@@ -157,9 +157,15 @@ describe("Avatar size (gh#716) — the token graph behind the measurements", () 
   );
 
   it("the type step is one step of the type scale per step of the box", () => {
-    expect(dataDisplayTokens).toContain("--avatar-font-size-xs: var(--font-size-2xs);");
-    expect(dataDisplayTokens).toContain("--avatar-font-size-sm: var(--font-size-xs);");
-    expect(dataDisplayTokens).toContain("--avatar-font-size-lg: var(--font-size-lg);");
+    expect(dataDisplayTokens).toContain(
+      "--avatar-font-size-xs: var(--font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)));",
+    );
+    expect(dataDisplayTokens).toContain(
+      "--avatar-font-size-sm: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
+    expect(dataDisplayTokens).toContain(
+      "--avatar-font-size-lg: var(--font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)));",
+    );
   });
 
   it("the glyph step rides the --icon-size-* scale and tracks density, like every control glyph", () => {

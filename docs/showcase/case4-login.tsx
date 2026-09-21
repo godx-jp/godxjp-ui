@@ -283,11 +283,19 @@ export default function LoginShowcase() {
 
               <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
                 ログインすると{" "}
-                <Button variant="link" size="sm" className="text-[length:var(--font-size-2xs)]">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-[length:var(--font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)))]"
+                >
                   利用規約
                 </Button>{" "}
                 ·{" "}
-                <Button variant="link" size="sm" className="text-[length:var(--font-size-2xs)]">
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-[length:var(--font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)))]"
+                >
                   プライバシーポリシー
                 </Button>{" "}
                 に同意したものとみなされます。

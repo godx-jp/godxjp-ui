@@ -8,9 +8,12 @@
   --logo-size-sm: 1.5rem;
   --logo-size-md: 1.75rem;
   --logo-size-lg: 2.25rem;
-  --logo-font-size-xs: var(--font-size-2xs);
-  --logo-font-size-sm: var(--font-size-xs);
-  --logo-font-size-md: var(--font-size-sm);
+  --logo-font-size-xs: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --logo-font-size-sm: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+  --logo-font-size-md: var(--font-size-sm, var(--font-size-base));
   --logo-font-size-lg: var(--font-size-base);
   /* Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed
    * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on
@@ -205,10 +208,16 @@
    * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the
    * godx / tone="success" lockup. */
   --logo-wordmark-gap: var(--space-2);
-  --logo-wordmark-font-size-xs: var(--font-size-xs);
-  --logo-wordmark-font-size-sm: var(--font-size-sm);
+  --logo-wordmark-font-size-xs: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --logo-wordmark-font-size-sm: var(--font-size-sm, var(--font-size-base));
   --logo-wordmark-font-size-md: var(--font-size-base);
-  --logo-wordmark-font-size-lg: var(--font-size-lg);
+  --logo-wordmark-font-size-lg: var(
+    --font-size-lg,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
   --logo-wordmark-font-weight: 700;
   --logo-wordmark-letter-spacing: -0.01em;
   --logo-wordmark-font-family: initial;

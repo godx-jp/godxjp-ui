@@ -78,6 +78,10 @@
   --space-inline-sm: var(--space-2);
   --space-inline-md: var(--space-3);
   --space-inline-lg: var(--space-4);
+  /* gh#835 — the comfortable density re-states the whole spacing tier so it scales, and the inline
+   * axis's `xl` has to be re-stated with it or `gap="xl"` on a row falls back to the unscaled
+   * `:root` value inside `.ui-density-comfortable`. */
+  --space-inline-xl: var(--space-6);
   --space-chrome-x: var(--space-6);
   --space-chrome-y: var(--space-4);
   --space-chrome-gap: var(--space-2);

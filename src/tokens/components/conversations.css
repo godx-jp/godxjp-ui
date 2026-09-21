@@ -27,7 +27,10 @@
   --conversations-item-gap: var(--space-inline-sm);
   --conversations-item-padding-inline: var(--space-inline-sm);
   --conversations-item-radius: var(--radius);
-  --conversations-item-font-size: var(--font-size-xs);
+  --conversations-item-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at
    * the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a

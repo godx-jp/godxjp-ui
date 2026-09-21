@@ -31,9 +31,7 @@ function block(anchor: string): string {
    * hand-wrapped literal therefore asserts the FORMATTING, not the rule. Match any whitespace run
    * where the caller wrote one instead.
    */
-  const pattern = new RegExp(
-    anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"),
-  );
+  const pattern = new RegExp(anchor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"));
   const match = pattern.exec(css);
   expect(match, `rule not found: ${anchor}`).not.toBeNull();
   const at = match!.index;

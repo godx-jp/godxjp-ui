@@ -41,7 +41,9 @@ describe("Sidebar brand slot follows the nav surface", () => {
 
   it("still accepts a plain node, unchanged", () => {
     renderWithUi(
-      <AppShell sidebar={<Sidebar activeId="dashboard" sections={sections} brand={<span>固定</span>} />}>
+      <AppShell
+        sidebar={<Sidebar activeId="dashboard" sections={sections} brand={<span>固定</span>} />}
+      >
         <p>本文</p>
       </AppShell>,
     );

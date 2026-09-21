@@ -4,9 +4,18 @@
 
 :root {
   --responsive-grid-column-width: 20rem;
-  --sidebar-section-label-font-size: var(--font-size-2xs);
-  --sidebar-product-tenant-font-size: var(--font-size-2xs);
-  --sidebar-badge-font-size: var(--font-size-2xs);
+  --sidebar-section-label-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --sidebar-product-tenant-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --sidebar-badge-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   /* Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail
    * that needed to tell "unread" from "mentions you" had to nest a <Badge> inside `badge` and got
    * two pills, one inside the other. `initial` so the role defaults re-resolve at the call site
@@ -49,15 +58,39 @@
   /* Opaque for the same reason as --sidebar-user-focus-ring-alpha above (SC 2.4.13). */
   --topbar-icon-focus-ring-alpha: 1;
 
-  --sidebar-user-role-font-size: var(--font-size-2xs);
+  --sidebar-user-role-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --org-switcher-meta-foreground: var(--muted-foreground);
-  --sidebar-nav-sub-font-size: var(--font-size-xs);
-  --sidebar-flyout-title-font-size: var(--font-size-xs);
-  --topbar-chip-icon-font-size: var(--font-size-2xs);
-  --kbd-font-size: var(--font-size-2xs);
-  --sidebar-logo-mark-font-size: var(--font-size-xs);
-  --sidebar-avatar-font-size: var(--font-size-2xs);
-  --sidebar-user-name-font-size: var(--font-size-xs);
+  --sidebar-nav-sub-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --sidebar-flyout-title-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --topbar-chip-icon-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --kbd-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --sidebar-logo-mark-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
+  --sidebar-avatar-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --sidebar-user-name-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* Brand-chrome gradient hooks — opt-in, invisible by default. A service paints
    * the sidebar/topbar surface by setting these to a gradient (no-op = none). */
@@ -243,7 +276,10 @@
    * fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same
    * headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the
    * rail's labels with the rest of its type, instead of leaving one constant behind. */
-  --sidebar-nav-item-font-size: var(--font-size-xs);
+  --sidebar-nav-item-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip
    * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2. */
   --sidebar-nav-item-line-height: 1.5;
@@ -369,7 +405,10 @@
   --topbar-item-badge-offset-inline: var(--space-1);
   --topbar-item-badge-size: 1rem;
   --topbar-item-badge-padding-inline: var(--space-1);
-  --topbar-item-badge-font-size: var(--font-size-2xs);
+  --topbar-item-badge-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --topbar-item-badge-background: initial;
   --topbar-item-badge-foreground: initial;
   --topbar-item-badge-destructive-background: initial;
@@ -398,7 +437,10 @@
   --org-switcher-list-offset: 0px;
   /* The keyboard legend under a modal picker — see `.ui-org-switcher-legend`. */
   --org-switcher-legend-space-gap: var(--space-4);
-  --org-switcher-legend-font-size: var(--font-size-2xs);
+  --org-switcher-legend-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --org-switcher-hint-space-gap: var(--space-1);
   /* The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to
    * reach for the dialog is that a row carries more than a name; narrower than the generic
@@ -446,9 +488,15 @@
   --app-launcher-mark-radius: var(--radius);
   --app-launcher-mark-background: var(--secondary);
   --app-launcher-mark-foreground: var(--secondary-foreground);
-  --app-launcher-mark-font-size: var(--font-size-sm);
-  --app-launcher-name-font-size: var(--font-size-2xs);
-  --app-launcher-group-label-font-size: var(--font-size-2xs);
+  --app-launcher-mark-font-size: var(--font-size-sm, var(--font-size-base));
+  --app-launcher-name-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
+  --app-launcher-group-label-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --app-launcher-group-label-color: var(--muted-foreground);
   --app-launcher-state-min-height: 8rem;
 
@@ -497,20 +545,22 @@
   --app-launcher-launchpad-mark-radius: var(--radius-lg);
   /* The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the
    * theme and stays legible on a light page and a dark one. */
-  --app-launcher-launchpad-mark-background: color-mix(
-    in srgb,
-    hsl(var(--card)) 78%,
-    transparent
-  );
+  --app-launcher-launchpad-mark-background: color-mix(in srgb, hsl(var(--card)) 78%, transparent);
   --app-launcher-launchpad-mark-border-color: color-mix(
     in srgb,
     hsl(var(--foreground)) 14%,
     transparent
   );
-  --app-launcher-launchpad-mark-font-size: var(--font-size-lg);
+  --app-launcher-launchpad-mark-font-size: var(
+    --font-size-lg,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
   --app-launcher-launchpad-mark-shadow: var(--shadow-lg);
-  --app-launcher-launchpad-name-font-size: var(--font-size-sm);
-  --app-launcher-launchpad-title-font-size: var(--font-size-2xs);
+  --app-launcher-launchpad-name-font-size: var(--font-size-sm, var(--font-size-base));
+  --app-launcher-launchpad-title-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --app-launcher-launchpad-title-letter-spacing: 0.08em;
   --app-launcher-launchpad-close-space-padding: var(--space-2);
 
@@ -576,7 +626,13 @@
    * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets
    * and heading size without forking. */
   --auth-shell-control-height: var(--control-height-comfortable);
-  --auth-shell-heading-size: var(--font-size-2xl);
+  --auth-shell-heading-size: var(
+    --font-size-2xl,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio) * var(--font-size-ratio)
+    )
+  );
   --auth-shell-card-max-width: 24rem;
   --auth-shell-bar-padding: var(--space-5) var(--space-6);
   --auth-shell-main-padding: var(--space-6);
@@ -746,7 +802,10 @@
    * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a
    * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were. */
   --auth-shell-divider-gap: 0.625rem;
-  --auth-shell-divider-label-font-size: var(--font-size-2xs);
+  --auth-shell-divider-label-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   --auth-shell-divider-label-line-height: calc(19 / 11);
   --auth-shell-divider-rule-color: var(--border);
   --auth-shell-divider-label-color: var(--muted-foreground);
@@ -760,11 +819,14 @@
   --auth-account-summary-identity-min-width: 12rem;
   --auth-account-summary-avatar-size: var(--control-height-sm);
   --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);
-  --auth-account-summary-email-font-size: var(--font-size-sm);
+  --auth-account-summary-email-font-size: var(--font-size-sm, var(--font-size-base));
   --auth-footer-content-gap: 0.375rem;
   /* The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard
    * anchor at all, only the literal. GEOMETRY MOVES by 0.11px. */
-  --auth-footer-text-font-size: var(--font-size-2xs);
+  --auth-footer-text-font-size: var(
+    --font-size-2xs,
+    calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
+  );
   /* The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page
    * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the
    * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the
@@ -850,7 +912,10 @@
    * `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}`
    * and never a consumer font-size. */
   --centered-shell-landing-heading-size: var(--font-size-display);
-  --centered-shell-landing-heading-size-compact: var(--font-size-3xl);
+  --centered-shell-landing-heading-size-compact: var(
+    --font-size-3xl,
+    calc(var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio))
+  );
   /* Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE
    * (`var(--centered-shell-landing-background, var(--background))`), so a scoped
    * `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md ·

@@ -39,7 +39,7 @@
   --card-title-font-size: var(--font-size-base);
   --card-title-line-height: var(--line-height-tight);
   --card-title-font-weight: var(--font-weight-semibold);
-  --card-description-font-size: var(--font-size-sm);
+  --card-description-font-size: var(--font-size-sm, var(--font-size-base));
   --card-description-line-height: var(--line-height-normal);
   /* Card fill + edge — opt-in knobs that DEFAULT to the live --card / --border roles. Declared
    * `initial` (not `var(--card)`) so the default re-resolves at the call site under a scoped theme:
@@ -90,13 +90,25 @@
    * at once. Default = hsl(var(--primary)). */
   --card-featured-border-color: initial;
   --card-featured-ring-width: var(--stroke-hairline);
-  --stat-card-label-font-size: var(--font-size-xs);
+  --stat-card-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --stat-card-label-font-weight: var(--font-weight-medium);
   --stat-card-label-letter-spacing: 0.04em;
-  --stat-card-value-font-size: var(--font-size-2xl);
+  --stat-card-value-font-size: var(
+    --font-size-2xl,
+    calc(
+      var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) *
+        var(--font-size-ratio) * var(--font-size-ratio)
+    )
+  );
   --stat-card-value-line-height: 1.1;
   --stat-card-value-font-weight: var(--font-weight-semibold);
-  --stat-card-hint-font-size: var(--font-size-xs);
+  --stat-card-hint-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --stat-card-gap: var(--space-stack-xs);
   --stat-card-icon-size: var(--icon-size-2xl);
   --stat-card-icon-glyph-size: var(--icon-size-lg);
@@ -107,7 +119,10 @@
    * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph. */
   --stat-card-icon-background: initial;
   --stat-card-icon-foreground: initial;
-  --stat-card-delta-font-size: var(--font-size-xs);
+  --stat-card-delta-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* ── ServiceLauncherCard (gh#219) ───────────────────────────────────────────────────
    * Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the
    * icon↔title↔status row, so a service theme retunes the whole tile density once. */
@@ -132,10 +147,16 @@
   --card-service-launcher-unavailable-icon-background: initial;
   --card-service-launcher-unavailable-icon-foreground: initial;
   /* Description prose — also drives the disabled-reason line and the catalog-CTA caption. */
-  --card-service-launcher-description-font-size: var(--font-size-xs);
+  --card-service-launcher-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --card-service-launcher-description-line-height: var(--line-height-body);
   /* Mono metadata line (hostname · plan) — tighter leading than prose by design. */
-  --card-service-launcher-metadata-font-size: var(--font-size-xs);
+  --card-service-launcher-metadata-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --card-service-launcher-metadata-line-height: var(--line-height-normal);
   /* Dashed catalog/add companion tile: kept tall enough to sit level with a populated launcher
    * tile in the same grid row. Four control tiers ≈ medallion + title + description + action. */

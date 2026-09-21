@@ -25,7 +25,7 @@ body {
 .preview-runtime-loading,
 .preview-runtime-error {
   padding: 16px;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-sm, var(--font-size-base));
   color: hsl(var(--foreground));
 }
 

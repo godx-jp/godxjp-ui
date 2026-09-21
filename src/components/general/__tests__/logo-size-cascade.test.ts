@@ -137,7 +137,9 @@ describe("Logo size cascade — `size` drives the godx identity mark (regression
     // Read the identity RULES, not the cascade winner: `.ui-logo` still sets a colour for the
     // boxed-glyph branch and that inherits harmlessly, because the master uses no `currentColor`.
     // What must not exist is a colour declared ON the identity rules themselves.
-    for (const rule of layout.match(/\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g) ?? []) {
+    for (const rule of layout.match(
+      /\.ui-logo\[data-mark="godx(?:-lockup)?"\](?:\[data-size="[a-z]+"\])?\s*\{[^}]*\}/g,
+    ) ?? []) {
       expect(rule).not.toMatch(/(^|[^-])color:/);
     }
     expect(winner("background", godx("lg"))).toBe("transparent");

@@ -14,7 +14,7 @@
   --mega-menu-trigger-padding-x: var(--space-3);
   --mega-menu-trigger-gap: var(--space-inline-sm);
   --mega-menu-trigger-radius: var(--radius-sm);
-  --mega-menu-trigger-font-size: var(--font-size-sm);
+  --mega-menu-trigger-font-size: var(--font-size-sm, var(--font-size-base));
   --mega-menu-trigger-foreground: hsl(var(--foreground));
   --mega-menu-trigger-background: transparent;
   /* ROLE-MIRROR KNOBS — `initial`, NOT `hsl(var(--accent))` (gh#687, docs/TOKENS.md).
@@ -53,9 +53,15 @@
   /* A column may not get narrower than this before the grid drops to fewer columns; this is what
    * keeps a 40-link panel readable instead of pouring it into one ribbon. */
   --mega-menu-group-min-width: 12rem;
-  --mega-menu-group-label-font-size: var(--font-size-xs);
+  --mega-menu-group-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --mega-menu-group-label-foreground: hsl(var(--muted-foreground));
-  --mega-menu-group-description-font-size: var(--font-size-xs);
+  --mega-menu-group-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --mega-menu-group-description-foreground: hsl(var(--muted-foreground));
   --mega-menu-group-icon-size: var(--control-icon-size-sm);
 
@@ -64,12 +70,15 @@
   --mega-menu-link-padding-x: var(--space-2);
   --mega-menu-link-padding-y: var(--space-2);
   --mega-menu-link-radius: var(--radius-sm);
-  --mega-menu-link-font-size: var(--font-size-sm);
+  --mega-menu-link-font-size: var(--font-size-sm, var(--font-size-base));
   --mega-menu-link-foreground: hsl(var(--foreground));
   --mega-menu-link-hover-background: initial;
   --mega-menu-link-hover-foreground: initial;
   --mega-menu-link-current-foreground: initial;
-  --mega-menu-link-description-font-size: var(--font-size-xs);
+  --mega-menu-link-description-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --mega-menu-link-description-foreground: hsl(var(--muted-foreground));
   --mega-menu-link-icon-size: var(--control-icon-size-sm);
   /* A nav row is a WCAG 2.2 SC 2.5.8 target: the AA floor, scale-exempt like the token itself. */

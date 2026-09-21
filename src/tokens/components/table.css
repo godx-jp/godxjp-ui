@@ -42,7 +42,7 @@
    * re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is
    * what `preset="action-collection"` does, because there the priority measures own the width. */
   --table-surface-min-inline-size: 640px;
-  --table-head-font-size: var(--font-size-xs);
+  --table-head-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   /* Header WEIGHT (gh#410). Was the literal `var(--font-weight-medium)` in table-layout.css, which
    * left a service that wants a quiet header row writing `font-normal` on every `<TableHead>` — 18
    * of them in the app that reported this. Default is byte-identical; a quiet header is now one
@@ -158,7 +158,10 @@
    * shredding, moved to the free-text column. The actions floor is simply
    * `--table-action-collection-actions-width-compact`, already an absolute measure. */
   --table-action-collection-flex-width-floor: 5rem;
-  --table-action-collection-font-size-compact: var(--font-size-xs);
+  --table-action-collection-font-size-compact: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --table-action-collection-cell-space-x-compact: var(--space-2);
   --table-action-collection-cell-padding-y-compact: var(--space-2);
   --table-action-collection-row-height-compact: var(--table-row-height-compact);
@@ -194,7 +197,10 @@
   --table-stacked-collection-card-padding-x: var(--space-inline-md);
   --table-stacked-collection-card-gap: var(--space-stack-sm);
   --table-stacked-collection-cell-padding-y: var(--space-stack-xs);
-  --table-stacked-collection-label-font-size: var(--font-size-xs);
+  --table-stacked-collection-label-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
 
   /* DATA TABLE odds and ends that were still literal on the component (#319). The table's cell
    * rhythm, widths and action-collection tiers were already tokenized; these are the pieces
@@ -203,7 +209,7 @@
   --table-sort-icon-size: var(--icon-size-xs);
   --table-toolbar-icon-size: var(--icon-size-md);
   --table-pagination-icon-size: var(--icon-size-md);
-  --table-pagination-font-size: var(--font-size-sm);
+  --table-pagination-font-size: var(--font-size-sm, var(--font-size-base));
   /* Skeleton placeholders mimic the real content they stand in for: a checkbox square and a
    * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading
    * state the same height as the loaded one. */
@@ -221,7 +227,7 @@
 
   /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
    * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. */
-  --table-font-size: var(--font-size-sm);
+  --table-font-size: var(--font-size-sm, var(--font-size-base));
   /* MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set
    * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm`
    * but NOT that companion. Without this the table would silently inherit ambient page leading

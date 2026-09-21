@@ -52,8 +52,10 @@ describe("Badge --badge-font-size knob (gh#260)", () => {
   });
 
   it("token defaults reproduce the retired `text-xs` utility exactly", () => {
-    // Same font-size step the utility resolved to (--text-xs: var(--font-size-xs) in @theme).
-    expect(tokens).toMatch(/--badge-font-size:\s*var\(--font-size-xs\)/);
+    // Same font-size step the utility resolved to (--text-xs reads --font-size-xs in @theme).
+    // The step is an `initial` knob since gh#834, so the reader carries its formula as the
+    // call-site fallback; the assertion is that badge still reads THAT step, not a literal.
+    expect(tokens).toMatch(/--badge-font-size:\s*var\(--font-size-xs,/);
     // Tailwind's default companion --text-xs--line-height is calc(1 / 0.75); the theme never
     // remapped it, so this unitless ratio is what `text-xs` actually applied.
     expect(tokens).toMatch(/--badge-line-height:\s*calc\(1 \/ 0\.75\)/);

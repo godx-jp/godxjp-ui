@@ -20,7 +20,10 @@
    * would break that alignment to buy nothing.
    * scale-exempt: 28px ordinal medallion sized to the title band, not a glyph */
   --thought-chain-icon-size: var(--band-height-sm);
-  --thought-chain-icon-font-size: var(--font-size-xs);
+  --thought-chain-icon-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   --thought-chain-icon-radius: var(--radius-pill);
   /* Role-mirror knobs (docs/TOKENS.md): `initial`, so each documented default resolves at the CALL
    * SITE and a scoped `[data-tenant]` / `.dark` override still reaches it.

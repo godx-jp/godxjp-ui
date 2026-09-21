@@ -19,8 +19,11 @@
   --sheet-title-row-space-gap: var(--space-3);
   --sheet-extra-space-gap: var(--space-2);
   --sheet-footer-space-gap: var(--space-2);
-  --sheet-title-font-size: var(--font-size-lg);
-  --sheet-description-font-size: var(--font-size-sm);
+  --sheet-title-font-size: var(
+    --font-size-lg,
+    calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio))
+  );
+  --sheet-description-font-size: var(--font-size-sm, var(--font-size-base));
   /* The scroll region keeps a sliver of padding so a focused control's ring is never clipped at
    * the scroll edges — retune together with --focus-ring-width. */
   --sheet-body-space-block: var(--space-1);
@@ -79,7 +82,7 @@
   --dialog-close-size: var(--touch-target-min);
   /* Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were
    * `text-sm text-destructive` on the component, i.e. unreachable from a theme. */
-  --dialog-step-up-error-font-size: var(--font-size-sm);
+  --dialog-step-up-error-font-size: var(--font-size-sm, var(--font-size-base));
   /* Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the
    * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by
    * overriding this once. Default keeps the historical --radius-md. */
@@ -229,7 +232,7 @@
   --tooltip-space-inline: var(--space-2);
   --tooltip-space-block: var(--space-1);
   --tooltip-radius: var(--radius);
-  --tooltip-font-size: var(--font-size-xs);
+  --tooltip-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   /* Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once. */
   --tooltip-shadow: var(--shadow-md);
   /* Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped
@@ -246,7 +249,7 @@
   --popover-radius: var(--radius);
   --popover-shadow: var(--shadow-md);
   --popover-header-space-gap: var(--space-1);
-  --popover-header-font-size: var(--font-size-sm);
+  --popover-header-font-size: var(--font-size-sm, var(--font-size-base));
   /* Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above). */
   --popover-surface-background: initial;
   --popover-surface-foreground: initial;

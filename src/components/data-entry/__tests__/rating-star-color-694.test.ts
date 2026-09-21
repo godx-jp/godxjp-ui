@@ -14,7 +14,10 @@ const tokens = read("src/tokens/components/control.css");
 const control = read("src/styles/control.css");
 /** A rule's body with runs of whitespace collapsed — Prettier may wrap a long declaration. */
 const rule = (selector: string) =>
-  (control.match(new RegExp(`\\n\\s*${selector.replace(/\./g, "\\.")}\\s*\\{([^}]*)\\}`))?.[1] ?? "")
+  (
+    control.match(new RegExp(`\\n\\s*${selector.replace(/\./g, "\\.")}\\s*\\{([^}]*)\\}`))?.[1] ??
+    ""
+  )
     .replace(/\s+/g, " ")
     .trim();
 
@@ -27,7 +30,9 @@ describe("Rating star colour knobs (gh#694)", () => {
 
   it("paints a filled and a half-filled star from the knob, defaulting to --warning", () => {
     for (const selector of [".ui-rating-star-filled", ".ui-rating-star-half-filled"]) {
-      expect(rule(selector)).toContain("color: hsl(var(--rating-star-filled-color, var(--warning)))");
+      expect(rule(selector)).toContain(
+        "color: hsl(var(--rating-star-filled-color, var(--warning)))",
+      );
     }
   });
 

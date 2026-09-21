@@ -122,8 +122,8 @@ describe("no component reads process.env directly", () => {
   it("the helper itself is the only place the global is touched", () => {
     // If this file list ever grows, the reason has to be written down here rather than discovered
     // by a consumer whose bundler does not define `process`.
-    const readers = sourceFiles("src").filter(
-      (file) => /\bprocess\s*\.\s*env\b/.test(readFileSync(join(ROOT, file), "utf8")),
+    const readers = sourceFiles("src").filter((file) =>
+      /\bprocess\s*\.\s*env\b/.test(readFileSync(join(ROOT, file), "utf8")),
     );
     expect(readers).toEqual(["src/lib/dev.ts"]);
   });

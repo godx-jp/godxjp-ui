@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
-import { Select, } from "../select";
+import { Select } from "../select";
 import { FormField } from "../form-field";
 import { Label } from "../label";
 

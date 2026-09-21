@@ -47,9 +47,7 @@ function alternation(): string[] {
 function flushScopedClasses(): string[] {
   const css = [alertLayout, tableLayout, cardLayout].join("\n");
   const found = new Set<string>();
-  for (const rule of css.matchAll(
-    /\[data-slot="card-content"\]\[data-flush\][^{]*\{/g,
-  )) {
+  for (const rule of css.matchAll(/\[data-slot="card-content"\]\[data-flush\][^{]*\{/g)) {
     for (const cls of rule[0].matchAll(/\.(ui-[a-z-]+)/g)) found.add(cls[1]!);
   }
   return [...found].sort();

@@ -109,15 +109,21 @@ describe("Segmented xs (gh#719) — the box comes from the tier, not a literal",
   });
 
   it("declares both stepped lengths as its own knobs (rule #45)", () => {
-    expect(segmentedTokens).toContain("--segmented-xs-font-size: var(--font-size-xs);");
+    expect(segmentedTokens).toContain(
+      "--segmented-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
     expect(segmentedTokens).toContain(
       "--segmented-xs-item-padding-inline: calc(var(--control-padding-x-compact) - 1px);",
     );
   });
 
   it("takes the type step Button xs already reads — one step, not a new constant", () => {
-    expect(controlTokens).toContain("--button-xs-font-size: var(--font-size-xs);");
-    expect(controlTokens).toContain("--toggle-xs-font-size: var(--font-size-xs);");
+    expect(controlTokens).toContain(
+      "--button-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
+    expect(controlTokens).toContain(
+      "--toggle-xs-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));",
+    );
   });
 
   it("the other three steps are unchanged", () => {

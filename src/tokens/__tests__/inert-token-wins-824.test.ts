@@ -92,7 +92,9 @@ describe("gh#824 · --control-label-font-size reaches a FormField label", () => 
     expect(resolveToken("--control-label-font-size", env)).toBe("0.875rem"); // 14px
     expect(resolveToken("--form-label-font-size", env)).toBe("0.875rem"); // 14px, unmoved
     expect(readFileSync(join(ROOT, "src/styles/base.css"), "utf8")).toMatch(
-      /--text-sm:\s*var\(--font-size-sm\)/,
+      /* gh#834 made the step an `initial` knob, so the reader carries its formula as the
+       * call-site fallback. What this line is about is unchanged: `--text-sm` reads the sm STEP. */
+      /--text-sm:\s*var\(--font-size-sm[,)]/,
     );
   });
 

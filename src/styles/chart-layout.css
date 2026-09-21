@@ -10,7 +10,7 @@
 }
 
 .ui-chart-title {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-sm, var(--font-size-base));
   font-weight: var(--font-weight-medium);
   color: hsl(var(--foreground));
 }
@@ -23,7 +23,7 @@
 /* recharts legend/axis text inherits the design typography + muted tone. */
 .ui-chart .recharts-text,
 .ui-chart .recharts-legend-item-text {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   fill: hsl(var(--muted-foreground));
   color: hsl(var(--muted-foreground));
 }
@@ -60,14 +60,14 @@
   border: 1px solid hsl(var(--border)) !important;
   background: hsl(var(--popover)) !important;
   color: hsl(var(--popover-foreground));
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
 }
 
 /* Content that sits BELOW the plot (the activity footer slot) — outside the `role="img"` canvas so
  * links/buttons in it stay reachable and announced. */
 .ui-chart-footer {
   margin-block-start: var(--chart-trend-footer-gap);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   color: hsl(var(--muted-foreground));
 }
 
@@ -149,7 +149,7 @@
   /* Truncating box: the line box is the CLIPPING boundary, not a rhythm choice, so it must
      * contain descender ink. 1.25 clipped the dot-below of Vietnamese `ị` elsewhere in this file
      * (see .ui-org-switcher-meta, measured); this carries localized text through the same shape. */
-    line-height: var(--line-height-normal);
+  line-height: var(--line-height-normal);
   color: hsl(var(--muted-foreground));
   text-align: center;
   text-overflow: ellipsis;
@@ -166,7 +166,7 @@
   inset-inline-start: 0;
   visibility: hidden;
   margin-inline-end: var(--chart-category-axis-gap);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
   white-space: nowrap;
   pointer-events: none;
 }

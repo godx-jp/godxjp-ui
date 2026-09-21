@@ -113,7 +113,10 @@
   .ui-otp-slot[data-active="true"],
   .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
     outline: var(--focus-ring-width) solid
-      hsl(var(--focus-outline-color, var(--focus-ring-color, var(--ring))) / var(--focus-ring-opacity, 1));
+      hsl(
+        var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+          var(--focus-ring-opacity, 1)
+      );
     outline-offset: var(--focus-ring-offset);
     /* Both are zeroed, so the mark appears the instant focus lands rather than easing in. */
     transition:

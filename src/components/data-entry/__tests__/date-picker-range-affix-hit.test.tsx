@@ -15,7 +15,9 @@ describe("DatePicker range trailing affix — structure", () => {
     renderWithUi(
       <DatePicker range defaultValue={{ from: date, to: date }} allowClear id="period" />,
     );
-    expect(screen.getByRole("button", { name: "Xóa" })).toHaveClass("ui-control-inline-affix-action");
+    expect(screen.getByRole("button", { name: "Xóa" })).toHaveClass(
+      "ui-control-inline-affix-action",
+    );
   });
 
   it("DateRangePicker calendar trigger uses ui-control-inline-affix-action when empty", () => {

@@ -213,8 +213,11 @@ describe('boxed <Logo mark="glyph"> text clears WCAG 2.2 AA on its fill', () => 
     const scope = { ...COMPONENT_SCOPE, ...declarations(blockOf(foundation, ":root {")) };
     for (const tier of ["xs", "sm", "md", "lg"]) {
       const ref = scope[`--logo-font-size-${tier}`];
+      /* `\s*` after the paren: since gh#834 the step is an `initial` knob whose formula is the
+       * call-site fallback, so the declaration is long enough that prettier wraps it onto the
+       * next line. Still a token reference, which is the whole claim. */
       expect(ref, `--logo-font-size-${tier} must be a token reference`).toMatch(
-        /^var\(--font-size-/,
+        /^var\(\s*--font-size-/,
       );
     }
     for (const remBase of [14, 16]) {

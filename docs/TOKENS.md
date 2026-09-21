@@ -297,7 +297,22 @@ Instead, declare the knob `initial` (a real, catalogued, guaranteed-invalid decl
 }
 ```
 
-The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any `:root`-declared **composite** that wraps a role (e.g. a focus-ring box-shadow): read the role **directly** at the call site, never through a frozen `:root` intermediate. Pure non-colour knobs (spacing, radius, font-size) don't need this — they aren't scope-retinted — but any colour/fill/ border/shadow knob whose default is a role token does.
+The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any `:root`-declared **composite** that wraps a role (e.g. a focus-ring box-shadow): read the role **directly** at the call site, never through a frozen `:root` intermediate. Pure non-colour knobs (spacing, radius, font-size) don't need this **as long as nothing re-scopes what they read** — see the two paragraphs below, which is where that qualifier cost a release.
+
+**A DERIVED TIER FREEZES ON ITS OWN SEED — the `--font-size-*` ramp (gh#834).** The type scale is one base and one ratio, and every step used to be written `--font-size-5xl: var(--font-size-display)` / `--font-size-lg: calc(var(--font-size-base) * …)` on `:root`. Those substitute on `<html>`, so a `[data-tenant]` that re-seeds the base — the route level 3 of `docs/CUSTOMER-THEMING.md` documents, and which level 1 calls a seed — moved `text-base` and **nothing else**. Measured with `--font-size-base: 24px; --font-size-display: 80px` on a scope: 2xs/xs/sm/lg/xl/2xl/3xl/4xl/5xl all sat exactly where `:root` had left them, and a showcase whose comment read "80px hero via text-5xl" painted 54.
+
+So every **derived** step is now an `initial` knob and the formula lives at the call site, spelled in terms of the un-derived knobs only (`--font-size-base`, `--font-size-ratio`, `--font-size-display`, `--font-size-display-ratio`) — an `initial` knob cannot be chained through, so `xl` reads `base × ratio³` rather than `lg × ratio`:
+
+```css
+:root {
+  --font-size-5xl: initial;
+} /* documented default = var(--font-size-display) */
+[data-slot="text"][data-size="5xl"] {
+  font-size: var(--font-size-5xl, var(--font-size-display));
+}
+```
+
+**Every reader must carry the fallback**: a bare `var(--font-size-xs)` on an `initial` knob resolves to nothing, and the failure is silent and total. `check:frame-token-scope` is the gate that measures both halves — it fails on a step that stops following a scoped seed, and on a bare read of an empty knob.
 
 **The same freeze bites any knob whose default is a RE-SCOPED tier, colour or not.** `--control-height` is re-scoped by `.ui-auth-shell` (44px comfortable) and by `.ui-auth-shell[data-variant="canonical"]` (36px), so a knob that mirrors it must follow the same `initial` + call-site-fallback shape:
 

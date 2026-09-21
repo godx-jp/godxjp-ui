@@ -41,7 +41,10 @@
    * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`. */
   --chart-trend-baseline-border: initial;
   --chart-trend-tick-gap: var(--space-1);
-  --chart-trend-tick-font-size: var(--font-size-xs);
+  --chart-trend-tick-font-size: var(
+    --font-size-xs,
+    calc(var(--font-size-base) / var(--font-size-ratio))
+  );
   /* Gap between the plot block and the optional activity footer slot. */
   --chart-trend-footer-gap: var(--space-2);
 }

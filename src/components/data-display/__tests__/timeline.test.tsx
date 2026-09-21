@@ -67,7 +67,10 @@ describe("Timeline", () => {
 
   it("never leaves an English status prefix on a Japanese screen", () => {
     renderIn("ja", <Timeline items={ITEMS} />);
-    const list = screen.getAllByRole("listitem").map((li) => li.textContent ?? "").join(" ");
+    const list = screen
+      .getAllByRole("listitem")
+      .map((li) => li.textContent ?? "")
+      .join(" ");
     for (const english of ["Completed:", "Current:", "Upcoming:"]) {
       expect(list).not.toContain(english);
     }
