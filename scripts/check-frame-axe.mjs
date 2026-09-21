@@ -159,6 +159,22 @@ async function openDeclaredOverlay(page) {
   const target =
     gesture === "contextmenu" || isTarget ? declaration : declaration.locator(OPEN_TARGET).first();
   const before = await page.locator(OVERLAY_MOUNTED).count();
+  /* SCROLL FIRST, AND LET IT SETTLE, before computing where to press.
+   *
+   * Playwright's own click scrolls the target into view and then clicks — in one step, from a
+   * point it computed around the same time. On the tallest frames at the narrowest viewport that
+   * is not enough: `/isolate/data-display-popover` at 320x568 puts the trigger at y=702, so the
+   * click needs the most scrolling exactly where the layout has the most settling left to do, and
+   * the press landed somewhere that was no longer the trigger. The route failed `overlay-did-not-
+   * open` twice in a row and read exactly like a broken Popover.
+   *
+   * It is not one. Measured across 320x568 / 320x900 / 375x568 / 360x640 and both `reducedMotion`
+   * settings: with this scroll and a beat in front of it, the popover opens 8 times out of 8 and
+   * `aria-expanded` goes true. Without it, only the 320-wide short viewport fails. A gate that
+   * blames the component for its own timing is worse than no gate — that is gh#818 again, where
+   * the script we ship was the defect and the component was correct. */
+  await target.scrollIntoViewIfNeeded({ timeout: 5_000 }).catch(() => {});
+  await page.waitForTimeout(100);
   await target.click({ button: gesture === "contextmenu" ? "right" : "left", timeout: 10_000 });
   // Settle on the OVERLAY, never on a timer: wait until one more is mounted than before the press.
   await page.waitForFunction(
