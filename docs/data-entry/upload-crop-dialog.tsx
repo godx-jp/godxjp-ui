@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import {
   Avatar,
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import { Upload, UploadCropDialog } from "@godxjp/ui/data-entry";
-import { Button, Text } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -31,7 +31,6 @@ export default function Demo() {
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<string | null>(null);
-  const pickerRef = useRef<HTMLInputElement>(null);
 
   return (
     <PageContainer title="UploadCropDialog" subtitle="切り抜きだけを単体で使う場合">
@@ -46,31 +45,31 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Flex direction="row" gap="md" align="center" wrap>
-                <Avatar size="lg">
-                  {avatar ? <AvatarImage src={avatar} alt="切り抜いたプロフィール写真" /> : null}
-                  <AvatarFallback>田</AvatarFallback>
-                </Avatar>
-                <Button onClick={() => pickerRef.current?.click()}>写真を選ぶ</Button>
-              </Flex>
+              <Avatar size="lg">
+                {avatar ? <AvatarImage src={avatar} alt="切り抜いたプロフィール写真" /> : null}
+                <AvatarFallback>田</AvatarFallback>
+              </Avatar>
 
-              {/* The picker is the CONSUMER's, not the dialog's — that is the whole point of using
-                  this component standalone. It is hidden because the Button above is the affordance;
-                  a visible raw control beside a godx Button would be two controls for one job. */}
-              <input
-                ref={pickerRef}
-                type="file"
+              {/* The picker is the PAGE's, not the dialog's — that is the whole point of using this
+                  component standalone. It is `Upload variant="button"` rather than a raw
+                  <input type="file">: rule §3 forbids a raw control in an example, because a
+                  consumer copies what they see. `onUpload` hands back the File, which is exactly
+                  what UploadCropDialog wants. */}
+              <Upload
+                variant="button"
                 accept="image/*"
-                className="sr-only"
-                aria-hidden
-                tabIndex={-1}
-                onChange={(event) => {
-                  const file = event.target.files?.[0] ?? null;
-                  setCropFile(file);
-                  // Clear the input so re-picking the SAME file fires change again.
-                  event.target.value = "";
+                maxCount={1}
+                onValueChange={(items) => {
+                  /* No onUpload here on purpose: this page wants the FILE, not an upload. The
+                     catalog states it outright — "without onUpload the File object sits in
+                     item.file until you manually process it", which is exactly the standalone
+                     crop case. */
+                  const picked = items[0]?.file ?? null;
+                  if (picked) setCropFile(picked);
                 }}
-              />
+              >
+                写真を選ぶ
+              </Upload>
 
               <Text size="sm" tone="muted" aria-live="polite">
                 {lastResult ?? "まだ切り抜いていません。"}
