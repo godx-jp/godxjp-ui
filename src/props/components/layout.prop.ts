@@ -990,11 +990,14 @@ export type SidebarItemProp = {
   id: string;
   label: string;
   /**
-   * Leading 16px glyph — REQUIRED: the collapsed rail is icon-only and the expanded rail aligns
-   * every label to the icon column. Its colour is themeable separately from the label via
+   * Leading 16px glyph. STRONGLY RECOMMENDED on the rail — the collapsed rail is icon-only, so a
+   * row without one reads as a hole there — but OPTIONAL at the type level (gh#815): the runtime
+   * has always rendered an empty `.sb-icon` box for a row whose data carries no glyph, precisely
+   * so the label column still aligns, and `NavList` (which has no collapsed rail) routinely mixes
+   * rows with and without one. Its colour is themeable separately from the label via
    * `--sidebar-nav-icon-foreground` (see {@link SidebarProp}).
    */
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
   /**
    * Count/status affix rendered in the row's `.sb-badge` pill. Pass the CONTENT ONLY — a number, a
    * string, `"9+"`.
@@ -1026,7 +1029,11 @@ export type SidebarItemProp = {
    * right-click / open-in-new-tab / middle-click all work.
    */
   href?: string;
-  /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
+  /**
+   * Nested rows — renders a collapsible submenu group (the parent reads active when any child is).
+   * Honoured by BOTH `Sidebar` and `NavList` (gh#815): `NavList` used to map `items` straight to a
+   * row, so a nested group type-checked, rendered as one flat row and lost its children silently.
+   */
   children?: SidebarItemProp[];
 };
 
@@ -1038,7 +1045,11 @@ export type SidebarItemProp = {
  * learn a second one, and a fix to the row reaches both.
  */
 export type NavListProp = Omit<React.HTMLAttributes<HTMLElement>, "onSelect"> & {
-  /** Rows, in reading order. `icon` is required by `SidebarItemProp` — the label aligns to it. */
+  /**
+   * Rows, in reading order. An item carrying `children` renders as a collapsible GROUP — the same
+   * `.sb-nav-group` the rail draws, opened by the route whenever a descendant is active — so a
+   * grouped settings nav is one `NavList` and one `<nav>` landmark, not one per group (gh#815).
+   */
   items: SidebarItemProp[];
   /** `SidebarItemProp.id` of the current route; that row gets `aria-current="page"`. */
   activeId?: string;

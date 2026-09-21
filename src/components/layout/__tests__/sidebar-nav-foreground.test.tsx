@@ -156,7 +156,7 @@ describe("Sidebar row/icon style hooks (gh#228)", () => {
         renderItem={(item, rowProps) => (
           <a {...rowProps} href={`/${item.id}`}>
             <span className="sb-icon">
-              <item.icon aria-hidden="true" />
+              {item.icon ? <item.icon aria-hidden="true" /> : null}
             </span>
             <span className="sb-label">{item.label}</span>
           </a>

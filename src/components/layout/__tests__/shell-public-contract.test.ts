@@ -36,7 +36,13 @@ describe("DXS shell public contract", () => {
     type HeaderExtra = PageContainerProp["extra"];
     type RenderItem = SidebarRenderItemProp;
 
-    expectTypeOf<Icon>().toMatchTypeOf<ComponentType<SVGProps<SVGSVGElement>>>();
+    // gh#815: `icon` is OPTIONAL at the type level. The runtime always rendered an empty
+    // `.sb-icon` box for a row without one (that box is what keeps the label column aligned), and
+    // `NavList` — which has no collapsed rail to be icon-only — routinely mixes rows with and
+    // without a glyph. Both halves are pinned: the glyph is still the COMPONENT, and `undefined`
+    // is now an accepted value.
+    expectTypeOf<NonNullable<Icon>>().toMatchTypeOf<ComponentType<SVGProps<SVGSVGElement>>>();
+    expectTypeOf<undefined>().toMatchTypeOf<Icon>();
     expectTypeOf<Badge>().toMatchTypeOf<React.ReactNode>();
     expectTypeOf<MobileNav>().toMatchTypeOf<React.ReactNode>();
     expectTypeOf<TopbarActions>().toMatchTypeOf<React.ReactNode>();

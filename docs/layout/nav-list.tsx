@@ -14,6 +14,7 @@ import {
   Plug,
   Receipt,
   ScrollText,
+  ShieldCheck,
   Smartphone,
   Trash2,
   User,
@@ -36,8 +37,7 @@ import {
   MasterDetail,
   NavList,
   PageContainer,
-  SidebarSection,
-  type SidebarItemData,
+  type SidebarItemProp,
 } from "@godxjp/ui/layout";
 
 /**
@@ -48,20 +48,20 @@ import {
  * このページは「設定ナビ」を正準形として最初に置き、その周りに grouped / flat、行末スロット、
  * 状態、極端なラベル、長い一覧、空、狭い幅を並べます。
  *
+ * グループは item.children です（gh#815）。レールと同じ .sb-nav-group を描き、ランドマークは
+ * ページに 1 つのままです。子行はレールの入れ子行と同じくドットマーカーになるので、子の icon は
+ * 描かれません（同じ項目をフラットに並べたときは描かれます）。
+ *
  * 今日の NavList でできないこと（ページ内に明記してあります）:
- * - セクション見出しの API がない。SidebarSection で包み、グループごとに NavList を分けます。
- * - item.children は NavList では無視されます（入れ子グループは Sidebar だけの機能）。
- * - icon は必須。アイコンのない行は型が許しません。
  * - 行そのものの tone がない。破壊的な操作はペイン側の Button variant="destructive" に置きます。
  */
 
-type NavGroup = { id: string; label: string; items: SidebarItemData[] };
-
-const SETTINGS_GROUPS: NavGroup[] = [
+const SETTINGS_NAV: SidebarItemProp[] = [
   {
     id: "account",
     label: "アカウント",
-    items: [
+    icon: User,
+    children: [
       { id: "profile", label: "プロフィール", icon: User },
       { id: "organization", label: "組織情報", icon: Building2 },
       { id: "locale", label: "言語と地域", icon: Languages },
@@ -70,7 +70,8 @@ const SETTINGS_GROUPS: NavGroup[] = [
   {
     id: "security",
     label: "セキュリティ",
-    items: [
+    icon: ShieldCheck,
+    children: [
       { id: "password", label: "パスワード", icon: KeyRound },
       {
         id: "two-factor",
@@ -86,7 +87,8 @@ const SETTINGS_GROUPS: NavGroup[] = [
   {
     id: "notifications",
     label: "通知",
-    items: [
+    icon: Bell,
+    children: [
       { id: "mail", label: "メール通知", icon: Mail, badge: "8" },
       { id: "desktop", label: "デスクトップ通知", icon: Bell, badge: "新着" },
     ],
@@ -94,7 +96,8 @@ const SETTINGS_GROUPS: NavGroup[] = [
   {
     id: "billing",
     label: "請求",
-    items: [
+    icon: CreditCard,
+    children: [
       { id: "plan", label: "契約プラン", icon: BadgeCheck },
       { id: "payment", label: "支払い方法", icon: CreditCard },
       { id: "invoices", label: "請求書", icon: Receipt, badge: "3" },
@@ -102,7 +105,7 @@ const SETTINGS_GROUPS: NavGroup[] = [
   },
 ];
 
-const FLAT_ITEMS: SidebarItemData[] = SETTINGS_GROUPS.flatMap((group) => group.items);
+const FLAT_ITEMS: SidebarItemProp[] = SETTINGS_NAV.flatMap((group) => group.children ?? []);
 
 type Pane = { title: string; description: string; facts: [string, string][] };
 
@@ -232,31 +235,7 @@ function SettingsPane({ routeId }: { routeId: string }) {
   );
 }
 
-/** グループ見出し付きのナビ。NavList には見出し API がないので SidebarSection が受け持ちます。 */
-function GroupedSettingsNav({
-  activeId,
-  onSelect,
-}: {
-  activeId: string;
-  onSelect: (id: string) => void;
-}) {
-  return (
-    <Flex direction="col" gap="none">
-      {SETTINGS_GROUPS.map((group) => (
-        <SidebarSection key={group.id} label={group.label}>
-          <NavList
-            label={group.label}
-            items={group.items}
-            activeId={activeId}
-            onSelect={onSelect}
-          />
-        </SidebarSection>
-      ))}
-    </Flex>
-  );
-}
-
-const TRAILING_ITEMS: SidebarItemData[] = [
+const TRAILING_ITEMS: SidebarItemProp[] = [
   { id: "queue", label: "承認待ち", icon: FileText, badge: "12" },
   { id: "mentions", label: "自分宛のメンション", icon: Bell, badge: "3", badgeTone: "destructive" },
   { id: "release", label: "リリースノート", icon: BadgeCheck, badge: "新着" },
@@ -270,7 +249,7 @@ const TRAILING_ITEMS: SidebarItemData[] = [
   },
 ];
 
-const LABEL_STRESS_ITEMS: SidebarItemData[] = [
+const LABEL_STRESS_ITEMS: SidebarItemProp[] = [
   { id: "sso", label: "SSO", icon: KeyRound },
   { id: "mfa", label: "2FA", icon: Smartphone, badge: "2" },
   {
@@ -286,7 +265,7 @@ const LABEL_STRESS_ITEMS: SidebarItemData[] = [
   },
 ];
 
-const STATE_ITEMS: SidebarItemData[] = [
+const STATE_ITEMS: SidebarItemProp[] = [
   { id: "profile", label: "プロフィール", icon: User, href: "/settings/profile" },
   { id: "members", label: "メンバー管理", icon: Users, disabled: true },
   {
@@ -299,7 +278,15 @@ const STATE_ITEMS: SidebarItemData[] = [
   { id: "delete", label: "アカウントを削除", icon: Trash2 },
 ];
 
-const LONG_ITEMS: SidebarItemData[] = [
+/** `icon` は任意（gh#815）。無い行も空の `.sb-icon` 箱でラベル列を保ちます。 */
+const MIXED_ICON_ITEMS: SidebarItemProp[] = [
+  { id: "api-keys", label: "API キー", icon: KeyRound, badge: "2" },
+  { id: "webhooks", label: "Webhook" },
+  { id: "domains", label: "ドメイン認証", icon: Globe },
+  { id: "seats", label: "座席の割り当て" },
+];
+
+const LONG_ITEMS: SidebarItemProp[] = [
   ...FLAT_ITEMS,
   { id: "api-keys", label: "API キー", icon: KeyRound, badge: "2" },
   { id: "webhooks", label: "Webhook", icon: Plug },
@@ -322,10 +309,9 @@ export default function Demo() {
           <CardTitle level={2}>設定ナビゲーション · 正準形</CardTitle>
           <CardDescription>
             これがないと、各アプリが Button を並べて設定ナビを自作し、aria-current=&quot;page&quot;
-            とアイコン列が失われます。NavList にはセクション見出しの API
-            がないため、見出しはグループごとに SidebarSection が持ち、NavList
-            をグループの数だけ置きます。結果として各グループが名前付きの &lt;nav&gt;
-            ランドマークになります。
+            とアイコン列が失われます。グループは item.children
+            です。ページのナビゲーションは 1 つなので、&lt;nav&gt; ランドマークも 1
+            つのまま、NavList も 1 つです。ルートが子に当たったグループは自分で開きます。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -335,7 +321,9 @@ export default function Demo() {
             masterLabel="設定"
             detailLabel="設定の内容"
             detailId="nav-list-settings-pane"
-            master={<GroupedSettingsNav activeId={route} onSelect={setRoute} />}
+            master={
+              <NavList label="設定" items={SETTINGS_NAV} activeId={route} onSelect={setRoute} />
+            }
           >
             <SettingsPane routeId={route} />
           </MasterDetail>
@@ -347,17 +335,17 @@ export default function Demo() {
           <CardTitle level={2}>グループあり · グループなし</CardTitle>
           <CardDescription>
             これがないと、12
-            項目を一列に並べた読めないナビが既定になります。見出しを足す方法は一つだけ（SidebarSection
-            + グループごとの
-            NavList）だと示しておかないと、各アプリが独自の見出しマークアップを発明します。
-            item.children による入れ子グループは Sidebar 専用で、NavList では無視されます。
+            項目を一列に並べた読めないナビが既定になります。グループにする方法は一つだけ（item.children）だと示しておかないと、各アプリが独自の見出しマークアップを発明します。
+            どちらも NavList 1 つ、&lt;nav&gt; ランドマーク 1
+            つです。子行はレールの入れ子行と同じドットマーカーになるので、子の icon
+            は描かれません。左のフラット版では同じ 12 項目の icon がそのまま描かれます。
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                フラット · 見出しなし · ランドマーク 1 つ
+                フラット · 12 行 · ランドマーク 1 つ
               </Text>
               <NavList
                 label="設定（フラット）"
@@ -368,9 +356,14 @@ export default function Demo() {
             </Flex>
             <Flex direction="col" gap="sm" grow>
               <Text size="sm" weight="medium">
-                グループあり · 見出し 4 つ · ランドマーク 4 つ
+                グループあり · 開閉 4 つ · ランドマーク 1 つ
               </Text>
-              <GroupedSettingsNav activeId={groupedRoute} onSelect={setGroupedRoute} />
+              <NavList
+                label="設定（グループあり）"
+                items={SETTINGS_NAV}
+                activeId={groupedRoute}
+                onSelect={setGroupedRoute}
+              />
             </Flex>
           </Flex>
         </CardContent>
@@ -396,9 +389,10 @@ export default function Demo() {
         <CardHeader>
           <CardTitle level={2}>アイコン列とラベルの極端なケース</CardTitle>
           <CardDescription>
-            これがないと、icon が任意だと誤解されます。実際は必須で、そのおかげで「2
-            文字のラベル」も「3
-            行に折り返す日本語のラベル」も同じ列から始まります。行は縮まず、折り返すのはラベルだけです。
+            これがないと、icon のない行は型が許さないと誤解されます。icon
+            は任意です。無い行も空の .sb-icon
+            箱を保つので、ラベルの列は動きません。だから「2 文字のラベル」も「3
+            行に折り返す日本語のラベル」も同じ列から始まり、行は縮まず、折り返すのはラベルだけです。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -418,6 +412,12 @@ export default function Demo() {
                 items={LABEL_STRESS_ITEMS}
                 activeId="mfa"
               />
+            </Flex>
+            <Flex direction="col" gap="sm" width={240}>
+              <Text size="sm" weight="medium">
+                icon あり · なしの混在
+              </Text>
+              <NavList label="アイコンの混在" items={MIXED_ICON_ITEMS} activeId="webhooks" />
             </Flex>
           </Flex>
         </CardContent>
@@ -565,7 +565,9 @@ export default function Demo() {
               </Button>
             }
             master={
-              <GroupedSettingsNav
+              <NavList
+                label="設定"
+                items={SETTINGS_NAV}
                 activeId={narrowRoute}
                 onSelect={(id) => {
                   setNarrowRoute(id);

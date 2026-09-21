@@ -18,6 +18,7 @@ import type {
 
 export type {
   SidebarItemData,
+  SidebarItemProp,
   SidebarLinkComponentProp,
   SidebarLinkProp,
   SidebarProductProp as SidebarProduct,
@@ -278,7 +279,12 @@ function NavLeafsInGroup({
   ));
 }
 
-function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowProps) {
+/**
+ * The collapsible submenu group of a nested `SidebarItemProp`. Exported (not from the package —
+ * only within `src/components/layout`) so `NavList` renders nested items through the SAME group as
+ * the rail instead of dropping `item.children` on the floor (gh#815).
+ */
+export function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowProps) {
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
 

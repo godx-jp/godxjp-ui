@@ -26,6 +26,16 @@
  *   SPILLED   an absolutely-centred label wider than the element centring it — the text is
  *             legible but paints over its own container, which is the ring defect exactly.
  *
+ * WHERE IT RUNS. `verify:browser`, beside `check:text-ink-clip`, which is the complementary gate:
+ * that one measures the VERTICAL axis — whether a clipped box contains its own glyph ink, the
+ * descenders and diacritics Latin demo strings never reveal — and this one measures the
+ * HORIZONTAL, text wider than the box it was given. Neither sees the other's defect, and the lane
+ * already pays for Chromium.
+ *
+ * It is deliberately NOT exempt like `check:frame-axe`. That exemption is the owner's standing
+ * rule about axe specifically; this gate found three real defects nobody had reported on its first
+ * clean run, which is precisely the argument for it gating rather than waiting to be remembered.
+ *
  * A BASELINE, NOT A CLEAN SWEEP. Turning this on found pre-existing debt, and a gate that fails
  * on day one gets disabled on day two. `preview/frame-overflow.baseline.json` records what was
  * there, the gate fails on anything NEW, and the number may only go down. That is the same shape

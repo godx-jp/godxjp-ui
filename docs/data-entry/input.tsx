@@ -39,14 +39,17 @@ export default function Demo() {
             <CardTitle level={2}>サイズ · 高さラダー</CardTitle>
             <CardDescription>
               WHY: 一行に複数のコントロールが並ぶツールバーやフィルタ行では、高さが 1px
-              でもずれると行が波打つ。横に並べて初めて段差が見える。Input の size は sm / md / lg
-              の3段で、既定は md。NumberInput・Select・Button にある xs 段は Input
-              の型にはまだ無い（末尾の「既知のギャップ」参照）。
+              でもずれると行が波打つ。横に並べて初めて段差が見える。size は xs / sm / md / lg
+              の4段で、既定は md。xs は長らく Input の型にだけ無く、CSS もトークンも揃っていたのに
+              union が塞いでいた。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex direction="row" gap="sm" align="center" wrap>
+                <Flex width={140}>
+                  <Input aria-label="極小 (xs)" size="xs" defaultValue="xs · 極小" />
+                </Flex>
                 <Flex width={140}>
                   <Input aria-label="小 (sm)" size="sm" defaultValue="sm · 小" />
                 </Flex>
@@ -62,6 +65,9 @@ export default function Demo() {
                 は箱の高さを継承するので、段が変わっても行は揃ったまま。
               </Text>
               <Flex direction="row" gap="sm" align="center" wrap>
+                <Flex width={180}>
+                  <Input aria-label="極小 (xs) 金額" size="xs" prefix="¥" defaultValue="12,000" />
+                </Flex>
                 <Flex width={180}>
                   <Input aria-label="小 (sm) 金額" size="sm" prefix="¥" defaultValue="12,000" />
                 </Flex>
@@ -446,6 +452,19 @@ export default function Demo() {
                   placeholder="パスワードを入力"
                 />
               </FormField>
+              {/* xs を PasswordInput でも一度は描く。size は Input の型をそのまま継いでいるので、
+                  片方だけ描いて済ませると frame-contracts が「宣言した分岐に証拠が無い」と落ちる
+                  ── 公開した分岐は描いて証明する、というのがこのリポジトリの契約。 */}
+              <Flex width={220}>
+                <PasswordInput
+                  id="pw-pin"
+                  size="xs"
+                  name="pin"
+                  aria-label="PIN (xs)"
+                  autoComplete="off"
+                  defaultValue="8412"
+                />
+              </Flex>
               <FormField id="pw-api" label="APIシークレット" helper="発行後は再表示できない">
                 <PasswordInput
                   id="pw-api"

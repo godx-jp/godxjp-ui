@@ -4,6 +4,83 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.6.0] - 2026-09-21
+
+MINOR. One new size rung, one new library-owned class, and the examples that make the rest of the
+package judgeable. The trigger was a review of the published docs site: six defects reported in one
+sitting, five of which were the same failure — the examples used tidy data, so nothing ever reached
+an edge and nobody saw the edges break.
+
+### Added
+
+- **`Input` takes `size="xs"`** — the bottom rung it was missing while every sibling had it.
+  Everything underneath already worked: `Input` renders `ui-control`, emits `data-size`, and
+  `.ui-control[data-size="xs"]` binds `--control-height-xs`. That CSS was added FOR the select
+  family — its own comment says the token "existed with nothing reading it" — and this union was
+  never widened, so the package's most-used control was the one control that could not sit in an
+  `xs` row beside a `Select` that could. `withAddons` now derives its parameter from
+  `InputProp["size"]` rather than restating the union, which is how they drifted apart.
+
+- **`.ui-disclosure-chevron`** — a library-owned rotating indicator for any surface that emits
+  `data-state="open" | "closed"`. `Collapsible` shipped none, so the docs example picked
+  `ChevronsUpDown`, which draws an up AND a down chevron and is therefore **byte-identical in both
+  states**: the same two path strings at `aria-expanded="true"` and `"false"`. State reached a
+  screen reader and did not reach a sighted reader at all.
+
+- **`check:frame-overflow`** — sweeps every `/isolate/**` frame in Chromium for text that is
+  clipped or painted outside its box. jsdom lays nothing out, so `pnpm test` could not see one of
+  the six reported defects. Routes are DERIVED from `docs/`, because a hand-listed set is how this
+  was missed. Its first run returned 422 findings of which 420 were `sr-only`, whose clipping is
+  the entire technique — a gate that is 99% noise teaches everyone to ignore it, so those are
+  excluded and the sweep returns three, all real, all tracked (gh#813).
+
+### Fixed
+
+- **The Progress ring label could be wider than its ring.** `--progress-ring-label-font-size` was
+  one fixed step for every diameter, so a 32px `sm` ring carried the same 12.47px label as the 44px
+  default and `18/42` measured **32.6px**, painting over the arc. `0/42` fits, which is why the demo
+  looked correct. It derives from `--progress-ring-size` now, and since `[data-size="sm"]` already
+  rebinds that variable one line fixes every size including any added later — 44 × 0.28 = 12.3px, so
+  the default ring does not move. `max-inline-size` pins it to the inner circle, so longer content
+  clips INSIDE the ring instead of over it.
+
+- **`Legend` counts did not line up.** Four shrink-to-fit `Text` in a `Flex justify="end"`:
+  `tabular` equalises digits WITHIN one Text and cannot align two with different digit counts, so a
+  row ending in `9` sat 8px right of one ending in `21`. Fixed tracks.
+
+- **The `ScrollArea` examples did not scroll.** Three of nine had `scrollHeight === clientHeight`,
+  because `h-56` sat on an ancestor Card and neither `CardContent` nor `ScrollArea` inherits a
+  height. The page's own header states the rule; the examples broke it. 6 of 9 → 8 of 9; the ninth
+  is the deliberate control. The page also finally demonstrates `scrollbar="always"`, which shipped
+  in 28.4.0 for gh#798 — without it a macOS reader sees the platform's OVERLAY bar, which exists
+  only while already scrolling, and concludes the component draws nothing.
+
+- **`Dialog` / `Sheet` close button reached only 16×16** against WCAG 2.2 SC 2.5.8's 24×24 floor
+  (gh#806), with all four ±11px probes missing. The ✕ paint stays 16px — it sits at a fixed offset
+  from the panel corner and enlarging it shifts every overlay's optical weight — and the target is a
+  centred pseudo-element, the same answer the DataTable sort button already ships. `--dialog-close-size`
+  is raisable, because SC 2.5.8 is a floor and rule #47 forbids a consumer resizing package internals.
+
+- **The catalog was lying about `Field`.** `FormField`'s `related` entry claimed Field "already
+  includes its own label, hidden `<input name>` …, helper, and error" — three false claims in one
+  line, when `FieldProp` is exactly `{ id, label, description, className, children }` and renders no
+  hidden input. It contradicted Field's own entry too. Worse than documenting nothing: an agent that
+  believed it shipped a toggle with no error state and had no reason to check.
+
+- **`pnpm run audit` now runs in `verify:ci:static`.** The engine enforcing "no raw HTML controls"
+  ran in no workflow at all, so a docs page with a raw `<input type="file">` passed CI and left
+  `main` at `1 error(s)`. `check:audit-sync` is not the same gate — it keeps the catalogs in step
+  with the rule LIST and never runs a rule against code.
+
+### Changed
+
+- **Example pages, 1,219 → 3,448 lines across five core components**, plus StatCard 99 → 354 and
+  Descriptions 184 → 263. Every page now carries the cases that STRESS the component — a three-line
+  Japanese label beside a two-character one, a value longer than its box, `0` versus `—`, a 14-digit
+  total, 13 options — and says in the file that if those look bad the component owes an answer, not
+  the sample data. `Form` leads with compound fields (one label over 氏名/フリガナ, 郵便番号 3+4,
+  電話 3-part, 生年月日 as year/month/day) and shows horizontal, vertical AND mixed in one form.
+
 ## [28.5.0] - 2026-09-21
 
 MINOR. Everything in this release is for the people OUTSIDE this repo — a static catalog for agents
