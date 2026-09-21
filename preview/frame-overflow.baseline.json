@@ -1,5 +1,5 @@
 {
-  "note": "Overflowing text recorded when check:frame-overflow was introduced. It may only SHRINK. Run with --update-baseline after fixing entries.",
+  "note": "Text that renders outside its box. EMPTY IS THE TARGET, and it is empty: the three defects this file was created to record (gh#813) are fixed. Anything that appears here is a TRACKED defect, never accepted debt \u2014 file an issue and put its URL in a 'tracked' field before adding an entry. Entries are keyed on frame/kind/selector/text and NOT on the pixel amount, which varies by renderer: keying on it made every known entry look new on the first CI run.",
   "count": 0,
   "entries": []
 }
