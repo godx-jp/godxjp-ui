@@ -186,13 +186,22 @@ describe("Table action-collection priority floors (gh#262)", () => {
     }
   });
 
-  it("switches to the floor tier at the documented seven-column budget, at every step", () => {
-    // The budget is a `:has()` column-count gate per collapse step: within six columns the rule
-    // never matches (percent tier, scroll-free canon); from seven the shares are guaranteed to
-    // over-sum and every column — the unmarked free-text one included, which `auto` would
-    // collapse to 0px — takes its rem floor, so the table grows and the wrapper scrolls.
+  it("switches to the floor tier when the budget is over-subscribed, at every step", () => {
+    // The budget is one column per priority tier plus one free-text column, and the `:has()` gate
+    // per collapse step asks whether a queue exceeds it. Seven columns always do. A REPEATED
+    // percent tier does too, at any column count (gh#844) — the compact measures are per-column
+    // percentages, not shares, so two `meta` columns on a five-column queue take the surplus out
+    // of the `auto` free-text column and shred it. Either way every column — the unmarked
+    // free-text one included, which `auto` would collapse to 0px — takes its rem floor, so the
+    // table grows and the wrapper scrolls. `actions` is already an absolute measure, so repeating
+    // it over-subscribes nothing and is deliberately NOT an arm.
+    const head = '[data-slot="table-head"]';
     const gate =
-      ':has([data-slot="table-head"]:nth-child(7)){--table-action-collection-primary-width:var(--table-action-collection-primary-width-floor);';
+      `:has(${head}:nth-child(7),` +
+      `${head}[data-priority="primary"]~${head}[data-priority="primary"],` +
+      `${head}[data-priority="secondary"]~${head}[data-priority="secondary"],` +
+      `${head}[data-priority="meta"]~${head}[data-priority="meta"])` +
+      "{--table-action-collection-primary-width:var(--table-action-collection-primary-width-floor);";
     expect(tableCssFlat.split(gate).length - 1).toBe(4); // sm / md / lg / xl
     const flexFloor =
       "--table-action-collection-flex-width:var(--table-action-collection-flex-width-floor)";

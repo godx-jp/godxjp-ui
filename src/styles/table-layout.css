@@ -845,9 +845,22 @@
       white-space: normal;
     }
 
-    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
-     * queues scroll-free — the preset's documented column-count ceiling. */
-    [data-collapse-below="sm"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+    /* The floor tier engages when the percent budget is OVER-SUBSCRIBED. Seven columns is one way
+     * to over-subscribe it — not the only one, and not the common one (gh#844): the compact
+     * percentages are per-column, not shares of a sum, so a REPEATED tier over-subscribes the
+     * budget at ANY column count and takes the surplus out of the free-text column. A
+     * budget-shaped queue (one column per priority, one free-text column) matches none of them
+     * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
+    [data-collapse-below="sm"]
+      [data-slot="table"]:has(
+        [data-slot="table-head"]:nth-child(7),
+        [data-slot="table-head"][data-priority="primary"]
+          ~ [data-slot="table-head"][data-priority="primary"],
+        [data-slot="table-head"][data-priority="secondary"]
+          ~ [data-slot="table-head"][data-priority="secondary"],
+        [data-slot="table-head"][data-priority="meta"]
+          ~ [data-slot="table-head"][data-priority="meta"]
+      ) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
         --table-action-collection-secondary-width-floor
@@ -879,9 +892,22 @@
       white-space: normal;
     }
 
-    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
-     * queues scroll-free — the preset's documented column-count ceiling. */
-    [data-collapse-below="md"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+    /* The floor tier engages when the percent budget is OVER-SUBSCRIBED. Seven columns is one way
+     * to over-subscribe it — not the only one, and not the common one (gh#844): the compact
+     * percentages are per-column, not shares of a sum, so a REPEATED tier over-subscribes the
+     * budget at ANY column count and takes the surplus out of the free-text column. A
+     * budget-shaped queue (one column per priority, one free-text column) matches none of them
+     * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
+    [data-collapse-below="md"]
+      [data-slot="table"]:has(
+        [data-slot="table-head"]:nth-child(7),
+        [data-slot="table-head"][data-priority="primary"]
+          ~ [data-slot="table-head"][data-priority="primary"],
+        [data-slot="table-head"][data-priority="secondary"]
+          ~ [data-slot="table-head"][data-priority="secondary"],
+        [data-slot="table-head"][data-priority="meta"]
+          ~ [data-slot="table-head"][data-priority="meta"]
+      ) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
         --table-action-collection-secondary-width-floor
@@ -913,9 +939,22 @@
       white-space: normal;
     }
 
-    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
-     * queues scroll-free — the preset's documented column-count ceiling. */
-    [data-collapse-below="lg"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+    /* The floor tier engages when the percent budget is OVER-SUBSCRIBED. Seven columns is one way
+     * to over-subscribe it — not the only one, and not the common one (gh#844): the compact
+     * percentages are per-column, not shares of a sum, so a REPEATED tier over-subscribes the
+     * budget at ANY column count and takes the surplus out of the free-text column. A
+     * budget-shaped queue (one column per priority, one free-text column) matches none of them
+     * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
+    [data-collapse-below="lg"]
+      [data-slot="table"]:has(
+        [data-slot="table-head"]:nth-child(7),
+        [data-slot="table-head"][data-priority="primary"]
+          ~ [data-slot="table-head"][data-priority="primary"],
+        [data-slot="table-head"][data-priority="secondary"]
+          ~ [data-slot="table-head"][data-priority="secondary"],
+        [data-slot="table-head"][data-priority="meta"]
+          ~ [data-slot="table-head"][data-priority="meta"]
+      ) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
         --table-action-collection-secondary-width-floor
@@ -947,9 +986,22 @@
       white-space: normal;
     }
 
-    /* Up to six columns this rule never matches and the percent tier above keeps the canonical
-     * queues scroll-free — the preset's documented column-count ceiling. */
-    [data-collapse-below="xl"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7)) {
+    /* The floor tier engages when the percent budget is OVER-SUBSCRIBED. Seven columns is one way
+     * to over-subscribe it — not the only one, and not the common one (gh#844): the compact
+     * percentages are per-column, not shares of a sum, so a REPEATED tier over-subscribes the
+     * budget at ANY column count and takes the surplus out of the free-text column. A
+     * budget-shaped queue (one column per priority, one free-text column) matches none of them
+     * and keeps its scroll-free percent tier byte-for-byte. See tokens/components/table.css. */
+    [data-collapse-below="xl"]
+      [data-slot="table"]:has(
+        [data-slot="table-head"]:nth-child(7),
+        [data-slot="table-head"][data-priority="primary"]
+          ~ [data-slot="table-head"][data-priority="primary"],
+        [data-slot="table-head"][data-priority="secondary"]
+          ~ [data-slot="table-head"][data-priority="secondary"],
+        [data-slot="table-head"][data-priority="meta"]
+          ~ [data-slot="table-head"][data-priority="meta"]
+      ) {
       --table-action-collection-primary-width: var(--table-action-collection-primary-width-floor);
       --table-action-collection-secondary-width: var(
         --table-action-collection-secondary-width-floor
