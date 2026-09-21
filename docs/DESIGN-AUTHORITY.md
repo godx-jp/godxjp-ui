@@ -449,6 +449,20 @@ expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mappe
   (`role="toolbar"`, `aria-pressed`); the prop there only keeps the last item selected.
   Divergence from Radix's markup is the point of the change, not a side effect of it.
 
+- **`Input addonBefore` / `addonAfter` stay, although antd DEPRECATED them (gh#841).** Verified in
+  `ant-design@master` rather than on the docs page: `components/input/Input.tsx` carries
+  `@deprecated Use Space.Compact instead` on both props and fires a dev-time
+  `devUseWarning('Input').deprecated(…)` for each, while still rendering them; both locale tables
+  strike the rows through and the `addon` demo is flagged `debug`, so it no longer appears on the
+  published page. The deprecation is a REFACTOR onto `Space.Compact`, and this library has no
+  `Space` — so following it would delete the joined control and put nothing in its place, which is
+  a breaking change bought for nothing. `addonBefore` IS the joined control here: it renders
+  `.ui-input-group`, and gh#841 squared its seam. The steer that IS followed is the one antd's own
+  live surface gives: a GLYPH belongs in `prefix`, inside the field, where there is one box, one
+  border and no seam; an addon is for a label segment. Written on the prop
+  (`src/props/components/data-entry.prop.ts`) and in the MCP catalog. Revisit if a `Space`/compact
+  primitive is ever ported — then antd's steer is followable and this becomes a migration.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

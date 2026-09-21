@@ -200,9 +200,28 @@ export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"
   prefix?: React.ReactNode;
   /** antd `suffix` — content pinned INSIDE the end of the field (%, 円, a hint glyph). */
   suffix?: React.ReactNode;
-  /** antd `addonBefore` — a segment welded OUTSIDE the start of the box (`https://`, a currency). */
+  /**
+   * antd `addonBefore` — a LABEL segment welded OUTSIDE the start of the box (`https://`, a
+   * currency code, a unit). For a glyph, use `prefix`: it sits INSIDE the field, so there is one
+   * box, one border and no seam to get wrong.
+   *
+   * KEPT, NOT DEPRECATED — the verdict gh#841 asked for, so the next reviewer does not re-litigate
+   * it. Verified in `ant-design@master`, not on the docs page: `components/input/Input.tsx` marks
+   * both addons `@deprecated Use Space.Compact instead` on the type AND fires a dev-time
+   * `devUseWarning('Input').deprecated(…)` for each, while still rendering them; both locale docs
+   * strike the rows through and the `addon` demo is flagged `debug`, i.e. hidden from the
+   * published page. So the deprecation is real, and it is a REFACTOR onto `Space.Compact` —
+   * a component this library does not have. Deprecating a prop whose replacement does not exist
+   * would leave the joined control with no supported spelling at all, and removing a public prop
+   * is breaking. `Input addonBefore` IS this library's joined control: it renders the
+   * `.ui-input-group` that squares the seam (gh#841). If a `Space`/compact primitive is ever
+   * ported, revisit this line — the antd steer is then followable and this becomes a migration.
+   */
   addonBefore?: React.ReactNode;
-  /** antd `addonAfter` — a segment welded OUTSIDE the end of the box (`.com`, a unit, a button). */
+  /**
+   * antd `addonAfter` — a segment welded OUTSIDE the end of the box (`.com`, a unit, a button).
+   * Deprecated upstream alongside `addonBefore`, and kept for the reason written there.
+   */
   addonAfter?: React.ReactNode;
   /** Character counter — antd `count`. */
   count?: ControlCountProp;

@@ -119,6 +119,63 @@ describe("check:token-width-wins", () => {
     expect(code).toBe(0);
   });
 
+  it("refuses the gh#841 arrangement: a squared corner beaten by a `rounded-*` utility", () => {
+    // The exact shape of the defect, down to the shared constant: `ui-thing` and the utility that
+    // outranks it are both inside one module-scope array, which is where `inputBaseClass` put
+    // them. Green here before gh#841 widened the gate; red now.
+    const { code, output } = run(
+      repo(
+        `@layer components {
+  .ui-thing-group:has(> [data-slot="addon"]) .ui-thing {
+    border-start-start-radius: 0;
+  }
+}`,
+        `const baseClass = [
+  "ui-thing w-full rounded-[var(--control-radius)]",
+];
+export const Thing = () => <input className={cn(baseClass, className)} />;`,
+      ),
+    );
+    expect(code).toBe(1);
+    expect(output).toContain("border-start-start-radius: 0");
+    expect(output).toContain("rounded-[var(--control-radius)]");
+  });
+
+  it("accepts the gh#841 fix: the rule sets a KNOB and the utility reads it", () => {
+    const { code } = run(
+      repo(
+        `@layer components {
+  .ui-thing-group:has(> [data-slot="addon"]) .ui-thing {
+    --thing-radius-start: 0;
+    border-start-start-radius: 0;
+  }
+}`,
+        `const baseClass = [
+  "ui-thing w-full rounded-s-[var(--thing-radius-start,var(--control-radius))]",
+];
+export const Thing = () => <input className={cn(baseClass, className)} />;`,
+      ),
+    );
+    expect(code).toBe(0);
+  });
+
+  it("does not follow a constant the expression never names", () => {
+    // The constant resolution is a text rule, and a text rule that matched every constant in the
+    // file would blame one element for another's classes.
+    const { code } = run(
+      repo(
+        `@layer components {
+  .ui-thing {
+    border-radius: var(--thing-radius);
+  }
+}`,
+        `const otherClass = ["rounded-full"];
+export const Thing = () => <input className={cn("ui-thing", "p-2")} />;`,
+      ),
+    );
+    expect(code).toBe(0);
+  });
+
   it("guards only TOKEN widths — a literal in the components layer is out of scope by design", () => {
     const { code } = run(
       repo(
