@@ -364,7 +364,8 @@
     "tagInput": {
       "inputLabel": "Add tags",
       "removeTag": "Remove {tag}",
-      "tagCount": "{count} tags"
+      "tagCount": "{count} tags",
+      "overflowLabel": "Hidden tags: {tags}"
     },
     "passwordInput": {
       "show": "Show password",

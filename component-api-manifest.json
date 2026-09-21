@@ -16489,6 +16489,14 @@
           "declaredIn": ["src/components/ui/tag-input.tsx"]
         },
         {
+          "name": "maxTagTextLength",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/components/ui/tag-input.tsx"]
+        },
+        {
           "name": "name",
           "origin": "owned",
           "required": false,

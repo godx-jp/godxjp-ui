@@ -770,7 +770,19 @@
 
   .ui-switch-thumb {
     pointer-events: none;
-    display: block;
+    /* GRID, not BLOCK, so `loading`'s spinner lands in the middle of the thumb (gh#842).
+     *
+     * `--switch-spinner-size` resolved and `.ui-switch-spinner` read it, so the mark was the right
+     * SIZE all along — it was just laid out as the first block child of a block box, which puts it
+     * at the top-left corner. Measured on /showcase/theme-customization: a 12.6px spinner in a 16px
+     * thumb, inset −0.4px on the left where it should be inset 1.7px, i.e. 2.1px off-centre
+     * horizontally and 2.0px vertically. That is the whole defect the screenshot shows.
+     *
+     * `place-items: center` on a one-cell grid centres whatever the thumb is given without the
+     * thumb needing to know what that is, and it is inert when the thumb is empty — which is every
+     * switch that is not loading. */
+    display: grid;
+    place-items: center;
     width: var(--switch-thumb-size);
     height: var(--switch-thumb-size);
     border-radius: var(--radius-pill);
@@ -1526,6 +1538,8 @@
     background: hsl(var(--segmented-item-selected-background));
     box-shadow: var(--segmented-item-selected-shadow);
     color: hsl(var(--segmented-item-selected-color));
+    /* The signal that does not depend on the canvas (gh#843) — see the token's own note. */
+    font-weight: var(--segmented-item-selected-font-weight);
   }
 
   /* This system disables every control with one knob; see the note in the token file. */
@@ -3609,6 +3623,16 @@
     white-space: nowrap;
   }
 
+  /* A glyph in the addon is a CONTROL glyph (gh#841). Nothing sized it, so Lucide's own
+   * `width="24"` stood — measured 24x24 inside a 32px addon, three quarters of the box, against
+   * the 16px every other control glyph in this library paints. The icon tier exists precisely so
+   * no glyph ships at whatever its source library happened to default to. */
+  .ui-input-addon > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    flex-shrink: 0;
+  }
+
   .ui-input-group > [data-slot="input-addon-before"] {
     border-start-start-radius: var(--control-radius);
     border-end-start-radius: var(--control-radius);
@@ -3621,14 +3645,20 @@
     border-inline-start: 0;
   }
 
+  /* Set the KNOB, not the property: the field emits its radius as a utility and a utility beats
+   * this layer, so a `border-start-start-radius` here resolved and lost (gh#841). A custom
+   * property has no utility competing with it. The affix wrapper keeps the direct declaration —
+   * it carries no radius utility of its own. */
   .ui-input-group:has(> [data-slot="input-addon-before"]) .ui-input,
   .ui-input-group:has(> [data-slot="input-addon-before"]) .ui-input-affix-wrapper {
+    --input-radius-start: 0;
     border-start-start-radius: 0;
     border-end-start-radius: 0;
   }
 
   .ui-input-group:has(> [data-slot="input-addon-after"]) .ui-input,
   .ui-input-group:has(> [data-slot="input-addon-after"]) .ui-input-affix-wrapper {
+    --input-radius-end: 0;
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }

@@ -33,7 +33,14 @@ export type { InputProp, InputProp as InputProps } from "../../props/components/
  * src/styles/__tests__/focus-ring-utility-defeat.test.ts.
  */
 const inputBaseClass = [
-  "ui-control ui-input w-full rounded-[var(--control-radius)] transition-[color,box-shadow]",
+  // PER-EDGE RADIUS THROUGH A KNOB, because a joined control has to square one side (gh#841).
+  // `rounded-[var(--control-radius)]` is a UTILITY, and Tailwind v4 orders utilities after
+  // `@layer components` — so `.ui-input-group:has(…) .ui-input { border-start-start-radius: 0 }`
+  // resolved, was catalogued, and lost: the field kept 6px on its leading corners and drew a
+  // rounded edge exactly where the addon meets it. Fifth instance of the gh#366/#375/#819 trap.
+  // The repair is gh#366's: emit the value FROM a token as a utility, and let the components
+  // layer decide WHICH token — a custom property has no utility competing with it.
+  "ui-control ui-input w-full rounded-s-[var(--input-radius-start,var(--control-radius))] rounded-e-[var(--input-radius-end,var(--control-radius))] transition-[color,box-shadow]",
   "selection:bg-primary selection:text-primary-foreground",
   "placeholder:text-muted-foreground",
   "aria-invalid:border-destructive",

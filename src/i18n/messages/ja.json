@@ -357,7 +357,8 @@
     "tagInput": {
       "inputLabel": "タグを追加",
       "removeTag": "{tag} を削除",
-      "tagCount": "{count} 件のタグ"
+      "tagCount": "{count} 件のタグ",
+      "overflowLabel": "非表示のタグ: {tags}"
     },
     "passwordInput": {
       "show": "パスワードを表示",

@@ -358,7 +358,8 @@
     "tagInput": {
       "inputLabel": "Thêm thẻ",
       "removeTag": "Xóa {tag}",
-      "tagCount": "{count} thẻ"
+      "tagCount": "{count} thẻ",
+      "overflowLabel": "Thẻ đang ẩn: {tags}"
     },
     "passwordInput": {
       "show": "Hiện mật khẩu",

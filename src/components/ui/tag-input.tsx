@@ -58,6 +58,16 @@ export type TagInputProps = {
   maxTagCount?: MaxTagCountProp;
   /** The node standing in for what `maxTagCount` hid (antd `maxTagPlaceholder`). */
   maxTagPlaceholder?: MaxTagPlaceholderProp;
+  /**
+   * antd `maxTagTextLength` — cut each chip's TEXT to this many characters; the value is
+   * untouched and stays in `title` and in the remover's accessible name.
+   *
+   * It was declared on the public prop type and never destructured here, so a 71-character
+   * identifier set the chip's width and the chip set the row's, painting outside the control
+   * (gh#840). Declared and inert is the same defect as absent, with a worse failure mode:
+   * a consumer reads the prop, passes it, and watches nothing happen.
+   */
+  maxTagTextLength?: number;
   /** Render one chip yourself (antd `tagRender`) — receives the value and an `onClose` remover. */
   tagRender?: (props: {
     value: string;
@@ -95,6 +105,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onClear,
       maxTagCount,
       maxTagPlaceholder,
+      maxTagTextLength,
       tagRender,
       tokenSeparators = [","],
     },
@@ -185,6 +196,17 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           disabled && "ui-tag-input-disabled",
           className,
         )}
+        /* A TAG FIELD IS A TEXT INPUT WEARING CHIPS (gh#840). Clicking its empty area did
+           nothing — the caret never arrived, so the control looked inert to anyone who did
+           not happen to click the 2px-tall input itself. `mousedown` rather than `click`, so
+           focus lands before the browser decides what got selected; and only when the press
+           started on the box itself, so a press on a chip or its ✕ still does its own job. */
+        onMouseDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          event.preventDefault();
+          const field = event.currentTarget.querySelector<HTMLInputElement>(".ui-tag-input-field");
+          field?.focus();
+        }}
       >
         {tags.length > 0 ? (
           <ul role="list" className="ui-tag-input-list" data-slot="tag-input-list">
@@ -207,7 +229,22 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                   })
                 ) : (
                   <>
-                    {chip.value}
+                    {/* antd `maxTagTextLength`: the chip's TEXT is cut, never the value. The full
+                        string stays in `title` and in the remover's accessible name, because a chip
+                        that silently hides half an identifier is its own defect — a 71-character
+                        ledger id painted outside this control before the prop was read (gh#840). */}
+                    <span
+                      className="ui-tag-input-chip-label"
+                      title={
+                        maxTagTextLength && chip.value.length > maxTagTextLength
+                          ? chip.value
+                          : undefined
+                      }
+                    >
+                      {maxTagTextLength && chip.value.length > maxTagTextLength
+                        ? `${chip.value.slice(0, maxTagTextLength)}…`
+                        : chip.value}
+                    </span>
                     {!disabled && !readOnly ? (
                       <button
                         type="button"
@@ -223,7 +260,20 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               </li>
             ))}
             {omittedChips.length > 0 ? (
-              <li role="listitem" className="ui-tag-input-chip" data-slot="tag-input-overflow">
+              /* `+N` NAMES WHAT IT HIDES (gh#840). It used to be a bare `<li role="listitem">` with
+                 no title, no tabindex and no role — so a reader who saw `+1` had no way, by mouse
+                 or by keyboard, to learn which tag it stood for. antd's `maxTagPlaceholder` exists
+                 for exactly this; the default now carries the omitted values itself. */
+              <li
+                role="listitem"
+                className="ui-tag-input-chip"
+                data-slot="tag-input-overflow"
+                tabIndex={0}
+                title={omittedChips.map((c) => c.value).join(", ")}
+                aria-label={t("ui.tagInput.overflowLabel", {
+                  tags: omittedChips.map((c) => c.value).join(", "),
+                })}
+              >
                 {overflow ?? t("dataEntry.selection.overflow", { count: omittedChips.length })}
               </li>
             ) : null}
