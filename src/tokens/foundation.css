@@ -537,7 +537,31 @@
    * SEPARATE bolder ramp a marketing surface opts into via the text-3xl/-4xl/-5xl utilities (wired
    * in styles/index.css @theme). A service rescales the whole display ramp from --font-size-display
    * (its own base). Nothing in the admin system uses them, so defaults are unchanged. */
-  --font-size-display: 3.375rem; /* 54px — hero display (the single display knob) */
+  /* FLUID, and that is a deliberate change to what a display step MEANS (gh#836).
+   *
+   * The ramp shipped as a fixed 54px, so `text-5xl` was 54px at 1440 AND at 320. Measured with a
+   * 99-character headline: 6 lines at 1280, 10 at 375, **12 at 320** — a phone hero five screens
+   * tall. Both website showcases had already written their own `clamp()` for exactly this, and the
+   * package itself knows the answer for exactly one caller, privately, in
+   * `--centered-shell-landing-heading-size-compact`.
+   *
+   * gh#836 offered two roads. Widening `size` to the responsive object `Flex direction` takes is
+   * the larger API and leaves every consumer to restate the same three breakpoints; making the
+   * ramp fluid is the smaller diff and the larger commitment, because it changes what an existing
+   * size means. This takes the second, and the reason it is safe to take HERE is that the display
+   * steps were unreachable from any public API until 28.8.0 — there is no admin screen whose
+   * headline moves, because nothing could reach these tokens to use them.
+   *
+   * 2rem (32px) at the 320px floor to 3.375rem (54px) at 1280 and above, on viewport width. The
+   * upper bound is exactly the previous fixed value, so a desktop hero is unchanged to the pixel;
+   * only the small end moves. The derived 3xl/4xl steps divide this, so they narrow with it and
+   * the ratio between the three is preserved at every width.
+   *
+   * A `clamp()` on `vw` is the one place this library accepts a viewport unit: it is the axis the
+   * defect lives on, and the alternative is the page-local `clamp()` both showcases wrote — which,
+   * written a third time, would have become folklore. `--font-size-display` remains the single
+   * knob: a service that wants a fixed display size sets it to a length and the clamp is gone. */
+  --font-size-display: clamp(2rem, 1.5rem + 2.5vw, 3.375rem); /* 32px → 54px — the display knob */
   --font-size-display-ratio: 1.28; /* bolder step than the body φ^¼ — marketing wants more contrast */
   /* `initial` knobs, formula at the call site — see the block above for why. */
   --font-size-3xl: initial; /* = calc(display / dratio / dratio) — ≈ 33px feature heading */
