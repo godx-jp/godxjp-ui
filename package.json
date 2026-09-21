@@ -28,6 +28,7 @@
     "README.md",
     "scripts/visual-audit.mjs",
     "scripts/visual-audit-rules.mjs",
+    "scripts/brand-accent.generated.mjs",
     "scripts/audit-hook.mjs",
     "scripts/init-agent-kit.mjs",
     "scripts/init-guinea-pig.mjs",

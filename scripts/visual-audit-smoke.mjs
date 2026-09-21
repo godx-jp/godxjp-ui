@@ -35,6 +35,11 @@ const EXPECTED = [
  */
 const FORBIDDEN = [
   { needle: "HIDDEN-FALLBACK-", why: "a visually-hidden native <select> (gh#818)" },
+  // gh#823 — the fixture also carries a button painted in `hsl(268.7 100% 50%)`, this package's
+  // own `--primary`. Chromium serialises it to `rgb(122, 0, 255)` and the oversaturated-accent
+  // message quotes the channels, so this needle is a direct assertion that the 渋み rule stayed
+  // quiet on the accent we ship — while the vivid-blue button above keeps it in EXPECTED.
+  { needle: "rgb 122,0,255", why: "the brand accent this package ships (gh#823)" },
 ];
 
 async function peersAvailable() {
@@ -57,9 +62,7 @@ async function main() {
         "check:visual-audit requires playwright; on CI a missing peer is a broken gate, not a skip.",
       );
     }
-    console.warn(
-      "⚠ check:visual-audit skipped — playwright not installed (browser-only gate).",
-    );
+    console.warn("⚠ check:visual-audit skipped — playwright not installed (browser-only gate).");
     return;
   }
 

@@ -8,6 +8,8 @@ coverage
 # their format is enforced by the generator's own --check, not prettier.
 # e.g. mcp/src/data/component-tokens.generated.ts (scripts/gen-component-tokens.mjs)
 *.generated.ts
+# e.g. scripts/brand-accent.generated.mjs (scripts/gen-email-tokens.mjs)
+*.generated.mjs
 
 # Package-manager lockfiles are tool-owned (pnpm), not hand-formatted.
 pnpm-lock.yaml

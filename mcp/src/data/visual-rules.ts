@@ -67,7 +67,7 @@ export const VISUAL_RULES: VisualRule[] = [
     severity: "warn",
     category: "color",
     standard: "@godxjp/ui reference-design 渋み (OKLCH chroma ≤ 0.18)",
-    fix: "Desaturate brand/primary surfaces (OKLCH chroma ≤ 0.18); read --primary tokens, no raw vivid bars.",
+    fix: "Desaturate brand/primary surfaces (OKLCH chroma ≤ 0.18); read --primary tokens, no raw vivid bars. The accent @godxjp/ui itself ships is exempt (gh#823) — this finding is always a colour someone chose.",
   },
   {
     id: "emoji-rendered",

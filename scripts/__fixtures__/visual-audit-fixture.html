@@ -27,6 +27,18 @@
       </button>
 
       <!--
+        gh#823 — the SAME rule must stay SILENT on the accent this package ships. `--primary` is
+        `268.7 100% 50%` (#7A00FF, chroma 0.293), so every primary button in every consumer used to
+        trip 渋み over a colour they receive from us and cannot change. Written as `hsl()` with the
+        raw triplet, exactly as a component does, so this also exercises the engine round trip the
+        BRAND_ACCENT_TOLERANCE comment measures. Asserted by the smoke gate's FORBIDDEN list: no
+        finding may mention `rgb 122,0,255`.
+      -->
+      <button style="background: hsl(268.7 100% 50%); color: #fff; border: 0; padding: 8px 16px">
+        Save changes
+      </button>
+
+      <!--
         (2) target-size-min: a visible interactive target smaller than 24×24 AND crowded, so that
         NEITHER SC 2.5.8 exception applies.
 

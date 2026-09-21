@@ -4,6 +4,7 @@
  * feeds them here; the browser glue stays thin and these rules are fully unit-testable without a
  * browser.
  */
+import { SHIPPED_BRAND_ACCENTS } from "./brand-accent.generated.mjs";
 
 /** Catalog (agent-facing mirror lives in mcp/src/data/visual-rules.ts; kept in sync by a guard). */
 export const VISUAL_RULES = [
@@ -19,7 +20,7 @@ export const VISUAL_RULES = [
     severity: "warn",
     category: "color",
     standard: "@godxjp/ui reference-design 渋み (OKLCH chroma ≤ 0.18)",
-    fix: "Desaturate brand/primary surfaces — keep OKLCH chroma ≤ 0.18. Read --primary tokens; never paint a full-width bar in raw vivid blue.",
+    fix: "Desaturate brand/primary surfaces — keep OKLCH chroma ≤ 0.18. Read --primary tokens; never paint a full-width bar in raw vivid blue. The accent @godxjp/ui itself ships is exempt (gh#823) — this finding is always a colour someone chose.",
   },
   {
     id: "emoji-rendered",
@@ -95,8 +96,51 @@ export function oklchChroma({ r, g, b }) {
 /** reference-design restraint bound. A signal/brand surface above this chroma "screams". */
 export const CHROMA_LIMIT = 0.18;
 
-/** @returns {boolean} true when an accent surface exceeds the 渋み chroma limit. */
+/**
+ * Per-channel sRGB tolerance for "this IS the accent we ship" (gh#823).
+ *
+ * The audit reads a computed `rgb()` off a live page, so the match has to survive whatever rounding
+ * the engine applied on the way there. Measured in Chromium (playwright 1.61), all four routes to
+ * the token — `#7A00FF`, `hsl(268.7 100% 50%)`, the legacy comma form, and `hsl(var(--primary))` —
+ * serialise to exactly `rgb(122, 0, 255)`: today's drift is 0. The tolerance is 1, kept as headroom
+ * for an engine that rounds the other way, not because Chromium needs it.
+ *
+ * WHAT 1 ADMITS, and why it cannot hide a louder purple. The window is the ±1 box around
+ * rgb(122, 0, 255): 12 colours, since g is already at 0 and b at 255 — so 11 that are not the
+ * brand. The nearest of those is rgb(122, 1, 255) / #7A01FF at OKLab ΔE 0.0003; the furthest is
+ * rgb(123, 1, 254) / #7B01FE at ΔE 0.0027, about 1/7 of a just-noticeable difference (~0.02).
+ * None is distinguishable from the brand on a screen. The nearest colour OUTSIDE the window,
+ * rgb(124, 0, 255) / #7C00FF, is still flagged. A tenant who picks a genuinely different loud
+ * purple — #9D00FF (chroma 0.296), #B026FF (0.286) — is 30+ channel steps away and still told.
+ */
+export const BRAND_ACCENT_TOLERANCE = 1;
+
+/**
+ * True when an accent is the brand accent THIS PACKAGE SHIPS (gh#823) — read from
+ * `brand-accent.generated.mjs`, which `scripts/gen-email-tokens.mjs` derives from foundation.css,
+ * so the exemption moves if the brand ever does.
+ *
+ * Deliberately NOT "whatever `--primary` currently resolves to": a tenant who overrides `--primary`
+ * with something louder chose that colour and must still be told. Only the value a consumer
+ * receives from us, and cannot change without abandoning the brand, is exempt.
+ */
+export function isShippedBrandAccent({ r, g, b }) {
+  return SHIPPED_BRAND_ACCENTS.some(
+    (accent) =>
+      Math.abs(r - accent.rgb.r) <= BRAND_ACCENT_TOLERANCE &&
+      Math.abs(g - accent.rgb.g) <= BRAND_ACCENT_TOLERANCE &&
+      Math.abs(b - accent.rgb.b) <= BRAND_ACCENT_TOLERANCE,
+  );
+}
+
+/**
+ * @returns {boolean} true when an accent surface exceeds the 渋み chroma limit.
+ * The shipped brand accent is exempt — it is over the bound (chroma 0.293) but it is not a choice
+ * any consumer made, so reporting it warns every page about a colour nobody can act on, and the
+ * first reader to hit it silences the rule along with every real finding it would have caught.
+ */
 export function isOversaturated(rgb, limit = CHROMA_LIMIT) {
+  if (isShippedBrandAccent(rgb)) return false;
   return oklchChroma(rgb) > limit;
 }
 
