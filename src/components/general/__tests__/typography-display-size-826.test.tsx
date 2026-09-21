@@ -39,7 +39,7 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     const rule = TEXT_LAYOUT.match(
       /\[data-slot="text"\]\[data-size="3xl"\],\s*\[data-slot="text"\]\[data-size="4xl"\],\s*\[data-slot="text"\]\[data-size="5xl"\]\s*\{[^}]*\}/,
     )?.[0];
-    expect(rule).toMatch(/line-height:\s*var\(--line-height-tight\)/);
+    expect(rule).toMatch(/line-height:\s*var\(\s*--line-height-tight\)/);
   });
 
   it("keeps the UI ramp exactly as it was", () => {
@@ -61,7 +61,7 @@ describe("Text — the display ramp is reachable (gh#826)", () => {
     const foundation = readFileSync("src/tokens/foundation.css", "utf8");
     expect(foundation).toMatch(/--font-size-5xl:\s*initial;/);
     expect(TEXT_LAYOUT).toMatch(
-      /\[data-slot="text"\]\[data-size="5xl"\]\s*\{\s*font-size:\s*var\(\s*--font-size-5xl,\s*var\(--font-size-display\)\);/,
+      /\[data-slot="text"\]\[data-size="5xl"\]\s*\{\s*font-size:\s*var\(\s*--font-size-5xl,\s*var\(\s*--font-size-display\)\);/,
     );
     const { container } = render(<Text size="5xl">hero</Text>);
     expect(container.querySelector('[data-slot="text"]')).toHaveAttribute("data-size", "5xl");

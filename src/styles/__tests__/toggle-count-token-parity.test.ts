@@ -41,7 +41,7 @@ describe("Toggle counter pill ↔ Button counter pill (gh#312)", () => {
   it("uses the same pill corner as Button's counter", () => {
     expect(tokenValue(toggleTokens, "--toggle-count-radius")).toBe("var(--radius-pill)");
     expect(controlStyles).toMatch(
-      /\.ui-button-count\s*\{[^}]*border-radius:\s*var\(--radius-pill\)/,
+      /\.ui-button-count\s*\{[^}]*border-radius:\s*var\(\s*--radius-pill\)/,
     );
   });
 
@@ -76,6 +76,6 @@ describe("Toggle counter pill ↔ Button counter pill (gh#312)", () => {
       /\.ui-toggle\[data-state="on"\] \.ui-toggle-count\s*\{[^}]*background:[^}]*color:/,
     );
     expect(toggleStyles).toMatch(/@media \(forced-colors: active\)/);
-    expect(toggleStyles).toMatch(/outline:\s*var\(--toggle-count-forced-outline-width\)/);
+    expect(toggleStyles).toMatch(/outline:\s*var\(\s*--toggle-count-forced-outline-width\)/);
   });
 });

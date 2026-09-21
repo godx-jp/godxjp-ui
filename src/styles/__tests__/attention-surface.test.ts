@@ -44,7 +44,7 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
       );
     }
     expect(rule(cardStyles, '[data-slot="card"][data-accent]')).toMatch(
-      /border-inline-start-color:\s*var\(--card-accent-color\)/,
+      /border-inline-start-color:\s*var\(\s*--card-accent-color\)/,
     );
   });
 
@@ -53,15 +53,15 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
       cardStyles,
       '[data-slot="card"][data-accent][data-accent-placement="perimeter"]',
     );
-    expect(perimeter).toMatch(/border-width:\s*var\(--card-accent-perimeter-width\)/);
-    expect(perimeter).toMatch(/border-color:\s*var\(--card-accent-color\)/);
+    expect(perimeter).toMatch(/border-width:\s*var\(\s*--card-accent-perimeter-width\)/);
+    expect(perimeter).toMatch(/border-color:\s*var\(\s*--card-accent-color\)/);
     expect(perimeter).toMatch(
-      /box-shadow:\s*0 0 0 var\(--card-accent-perimeter-ring-width\) var\(--card-accent-color\)/,
+      /box-shadow:\s*0 0 0 var\(\s*--card-accent-perimeter-ring-width\) var\(\s*--card-accent-color\)/,
     );
     // The card's own elevation and opt-in glow survive the ring — a perimeter card must not lose
     // the surface treatment every other card on the page has.
-    expect(perimeter).toMatch(/var\(--card-shadow\)/);
-    expect(perimeter).toMatch(/var\(--card-glow\)/);
+    expect(perimeter).toMatch(/var\(\s*--card-shadow\)/);
+    expect(perimeter).toMatch(/var\(\s*--card-glow\)/);
     // The two weights read the hairline step (`--stroke-hairline` IS 1px), so assert
     // the step rather than a literal the file no longer carries.
     expect(cardTokens).toContain("--card-accent-perimeter-width: var(--stroke-hairline);");
@@ -81,7 +81,7 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     expect(compensation).toBeGreaterThan(-1);
     // Higher specificity AND later in source — either alone would be fragile.
     expect(reset).toBeGreaterThan(compensation);
-    expect(cardStyles.slice(reset)).toMatch(/padding-inline-start:\s*var\(--card-space-inset\)/);
+    expect(cardStyles.slice(reset)).toMatch(/padding-inline-start:\s*var\(\s*--card-space-inset\)/);
   });
 
   it("stops variant=featured hard-coding --primary", () => {
@@ -89,9 +89,9 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     // [data-tenant]/.dark override of --primary still reaches it.
     const featured = rule(cardStyles, '[data-slot="card"][data-variant="featured"]');
     expect(featured).toMatch(
-      /border-color:\s*var\(--card-featured-border-color,\s*hsl\(var\(--primary\)\)\)/,
+      /border-color:\s*var\(\s*--card-featured-border-color,\s*hsl\(var\(\s*--primary\)\)\)/,
     );
-    expect(featured).not.toMatch(/border-color:\s*hsl\(var\(--primary\)\);/);
+    expect(featured).not.toMatch(/border-color:\s*hsl\(var\(\s*--primary\)\);/);
     expect(cardTokens).toMatch(/--card-featured-border-color:\s*initial;/);
   });
 });
@@ -100,9 +100,11 @@ describe("Avatar appearance=tinted — the capability medallion (gh#12)", () => 
   it("washes the role instead of filling it, and tints the glyph to match", () => {
     const tinted = rule(displayStyles, '.ui-avatar[data-appearance="tinted"]');
     expect(tinted).toMatch(
-      /--avatar-background:\s*var\(--avatar-tinted-background,\s*hsl\(var\(--primary\) \/ 0\.1\)\)/,
+      /--avatar-background:\s*var\(\s*--avatar-tinted-background,\s*hsl\(var\(\s*--primary\) \/ 0\.1\)\)/,
     );
-    expect(tinted).toMatch(/color:\s*var\(--avatar-tinted-foreground,\s*hsl\(var\(--primary\)\)\)/);
+    expect(tinted).toMatch(
+      /color:\s*var\(\s*--avatar-tinted-foreground,\s*hsl\(var\(\s*--primary\)\)\)/,
+    );
     // Role-mirror: `initial` at :root so both defaults resolve at the call site above.
     expect(displayTokens).toMatch(/--avatar-tinted-background:\s*initial;/);
     expect(displayTokens).toMatch(/--avatar-tinted-foreground:\s*initial;/);
@@ -122,7 +124,7 @@ describe("Avatar appearance=tinted — the capability medallion (gh#12)", () => 
     // would outrank the per-call-site icon classes existing avatars already carry
     // (e.g. `.ui-auth-account-fallback-icon`), so the rule is scoped to the new appearance.
     expect(displayStyles).toMatch(
-      /\.ui-avatar\[data-appearance="tinted"\] svg\s*\{[^}]*inline-size:\s*var\(--avatar-tinted-glyph-size\)/,
+      /\.ui-avatar\[data-appearance="tinted"\] svg\s*\{[^}]*inline-size:\s*var\(\s*--avatar-tinted-glyph-size\)/,
     );
     expect(displayStyles).not.toMatch(/^\s*\.ui-avatar svg\s*\{/m);
     expect(displayTokens).toContain("--avatar-tinted-glyph-size: var(--control-icon-size);");

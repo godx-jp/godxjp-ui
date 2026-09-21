@@ -309,24 +309,26 @@ describe("CompactBarTrend token contract (gh#218)", () => {
     }
     // …and the role default lives at the CALL SITE so a scoped/.dark override reaches it
     expect(rule(".ui-chart-trend-bar")).toMatch(
-      /var\(\s*--chart-trend-bar-background,\s*hsl\(var\(--muted-foreground\)/,
+      /var\(\s*--chart-trend-bar-background,\s*hsl\(var\(\s*--muted-foreground\)/,
     );
     expect(rule('.ui-chart-trend-bar[data-emphasized="true"]')).toMatch(
-      /var\(--chart-trend-bar-emphasis-background,\s*hsl\(var\(--primary\)\)\)/,
+      /var\(\s*--chart-trend-bar-emphasis-background,\s*hsl\(var\(\s*--primary\)\)\)/,
     );
   });
 
   it("keeps the baseline chrome QUIET by default (cardinal rule #44)", () => {
     expect(rule(".ui-chart-trend-plot")).toMatch(
-      /border-block-end:\s*var\(--chart-trend-baseline-border,\s*none\)/,
+      /border-block-end:\s*var\(\s*--chart-trend-baseline-border,\s*none\)/,
     );
   });
 
   it("resolves the plot height from the size tier — never an inline pixel height", () => {
-    expect(rule(".ui-chart-trend-plot")).toMatch(/block-size:\s*var\(--chart-trend-plot-height\)/);
+    expect(rule(".ui-chart-trend-plot")).toMatch(
+      /block-size:\s*var\(\s*--chart-trend-plot-height\)/,
+    );
     for (const size of ["xs", "sm", "md", "lg"]) {
       expect(rule(`.ui-chart-trend[data-size="${size}"]`)).toMatch(
-        new RegExp(`--chart-trend-plot-height:\\s*var\\(--chart-trend-plot-height-${size}\\)`),
+        new RegExp(`--chart-trend-plot-height:\\s*var\\(\\s*--chart-trend-plot-height-${size}\\)`),
       );
     }
     // the component passes NO `height` to the frame (that is the recharts-only escape hatch)
@@ -351,12 +353,12 @@ describe("CompactBarTrend token contract (gh#218)", () => {
 
   it("sizes the bar height from the datum ratio plus the min-height floor", () => {
     const bar = rule(".ui-chart-trend-bar");
-    expect(bar).toMatch(/var\(--chart-trend-bar-min-height\)/);
-    expect(bar).toMatch(/calc\(var\(--chart-trend-bar-value,\s*0\)\s*\*\s*100%\)/);
-    expect(bar).toMatch(/max-inline-size:\s*var\(--chart-trend-bar-max-width\)/);
+    expect(bar).toMatch(/var\(\s*--chart-trend-bar-min-height\)/);
+    expect(bar).toMatch(/calc\(var\(\s*--chart-trend-bar-value,\s*0\)\s*\*\s*100%\)/);
+    expect(bar).toMatch(/max-inline-size:\s*var\(\s*--chart-trend-bar-max-width\)/);
     // rounded data-end anchored to the baseline, expressed logically (RTL-safe)
-    expect(bar).toMatch(/border-start-start-radius:\s*var\(--chart-trend-bar-radius\)/);
-    expect(bar).toMatch(/border-start-end-radius:\s*var\(--chart-trend-bar-radius\)/);
+    expect(bar).toMatch(/border-start-start-radius:\s*var\(\s*--chart-trend-bar-radius\)/);
+    expect(bar).toMatch(/border-start-end-radius:\s*var\(\s*--chart-trend-bar-radius\)/);
     expect(layoutCss).not.toMatch(/\.ui-chart-trend[^{]*\{[^}]*(?:margin|padding)-(?:left|right):/);
   });
 });

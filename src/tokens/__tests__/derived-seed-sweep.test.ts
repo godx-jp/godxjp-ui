@@ -143,7 +143,7 @@ describe("the family is a knob with a live default everywhere it is read", () =>
     const formula = `var(--${name}, from hsl(var(--primary)) var(--${name}-channels))`;
     const reads: string[] = [];
     for (const { file, code } of sheets) {
-      for (const m of code.matchAll(new RegExp(`var\\(--${name}\\b[^-]`, "g"))) {
+      for (const m of code.matchAll(new RegExp(`var\\(\\s*--${name}\\b[^-]`, "g"))) {
         const at = m.index!;
         if (!code.startsWith(formula, at)) reads.push(`${file}: ${code.slice(at, at + 90)}`);
       }
@@ -326,7 +326,7 @@ describe("applyPrimaryColor lands on the CSS formula, not a second one", () => {
           const pairs = ["hover", "active"].map((step) =>
             root.style
               .getPropertyValue(`--primary-${step}-channels`)
-              .match(/^var\(--primary-(hover|active)-(darken|lighten)-channels\)$/),
+              .match(/^var\(\s*--primary-(hover|active)-(darken|lighten)-channels\)$/),
           );
           expect(pairs[0], color).not.toBeNull();
           expect(pairs[1]![2]).toBe(pairs[0]![2]);

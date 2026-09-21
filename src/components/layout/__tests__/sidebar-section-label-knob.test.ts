@@ -22,12 +22,12 @@ describe("sidebar section label", () => {
   })();
 
   it("takes its colour from a knob", () => {
-    expect(rule).toMatch(/color:\s*var\(--sidebar-section-label-foreground/);
+    expect(rule).toMatch(/color:\s*var\(\s*--sidebar-section-label-foreground/);
   });
 
   it("falls back to what it used to be, so an unpainted sidebar is unchanged", () => {
     expect(rule).toMatch(
-      /var\(--sidebar-section-label-foreground,\s*hsl\(var\(--muted-foreground\)\)\)/,
+      /var\(\s*--sidebar-section-label-foreground,\s*hsl\(var\(\s*--muted-foreground\)\)\)/,
     );
   });
 
@@ -36,6 +36,6 @@ describe("sidebar section label", () => {
     // check that says so for the next one added.
     const section = css.slice(css.indexOf(".sb-section-label"), css.indexOf(".sb-nav {"));
 
-    expect(section).not.toMatch(/color:\s*hsl\(var\(--[a-z-]+\)\);/);
+    expect(section).not.toMatch(/color:\s*hsl\(var\(\s*--[a-z-]+\)\);/);
   });
 });

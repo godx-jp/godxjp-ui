@@ -124,7 +124,7 @@ describe("no component paints prose with the destructive FILL tier (gh#610)", ()
   // Also catches a knob whose DEFAULT is a fill token (`hsl(var(--knob, var(--warning)))`, gh#694):
   // routing the read through a knob does not change what paints when nobody sets it.
   const FILL_AS_INK =
-    /^\s*color:\s*hsl\(var\(--(?:[a-z0-9-]+,\s*var\(--)?(destructive|warning|success|info)\)/;
+    /^\s*color:\s*hsl\(var\(\s*--(?:[a-z0-9-]+,\s*var\(\s*--)?(destructive|warning|success|info)\)/;
 
   /**
    * Selectors allowed to read the FILL tier as `color`, each with the reason recorded next to the

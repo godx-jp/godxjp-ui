@@ -56,7 +56,7 @@ describe("the Prose link knobs (gh#717)", () => {
     // inherits that frozen value down, so a `[data-tenant]` re-tint never reaches the link
     // (docs/TOKENS.md, the freeze rule; tenant-scope-freeze-687.test.ts holds it tier-wide).
     expect(tier).toMatch(/--prose-link-color:\s*initial;/);
-    expect(tier).not.toMatch(/--prose-link-color:\s*var\(--primary\)/);
+    expect(tier).not.toMatch(/--prose-link-color:\s*var\(\s*--primary\)/);
   });
 
   it("resolves the ink's default at the call site, so a scope re-tints it", () => {

@@ -42,9 +42,11 @@ describe("AuthShell preset=account-recovery — token-owned SCR-008 panel measur
     const [rule] = presetRule("account-recovery");
     expect(rule).toBeTruthy();
     expect(rule).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-recovery-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-recovery-card-max-width\)/,
     );
-    expect(rule).toMatch(/--auth-shell-main-padding:\s*var\(--auth-shell-recovery-main-padding\)/);
+    expect(rule).toMatch(
+      /--auth-shell-main-padding:\s*var\(\s*--auth-shell-recovery-main-padding\)/,
+    );
     // A literal here is the exact regression the issue was filed against (a forked
     // `.recovery-panel { width: 432px }` in the consumer).
     expect(rule).not.toMatch(/:\s*[\d.]+(rem|px|em)\b/);
@@ -66,7 +68,7 @@ describe("AuthShell preset=account-recovery — token-owned SCR-008 panel measur
     expect(canonical).toBeGreaterThan(-1);
     expect(recovery).toBeGreaterThan(canonical);
     expect(mobile).toMatch(
-      /--auth-shell-main-padding:\s*var\(--auth-shell-recovery-main-padding-mobile\)/,
+      /--auth-shell-main-padding:\s*var\(\s*--auth-shell-recovery-main-padding-mobile\)/,
     );
   });
 
@@ -105,14 +107,14 @@ describe("InputOTP slot box — --otp-slot-size (gh#233)", () => {
     // The per-axis knobs sit IN FRONT of the square shorthand, which keeps the tier as the
     // final call-site fallback — so a field that sets no axis still resolves --control-height.
     expect(rule).toMatch(
-      /width:\s*var\(--otp-slot-inline-size,\s*var\(--otp-slot-size,\s*var\(--control-height\)\)\)/,
+      /width:\s*var\(\s*--otp-slot-inline-size,\s*var\(\s*--otp-slot-size,\s*var\(\s*--control-height\)\)\)/,
     );
     expect(rule).toMatch(
-      /height:\s*var\(--otp-slot-block-size,\s*var\(--otp-slot-size,\s*var\(--control-height\)\)\)/,
+      /height:\s*var\(\s*--otp-slot-block-size,\s*var\(\s*--otp-slot-size,\s*var\(\s*--control-height\)\)\)/,
     );
     // No literal box and no calc offset — the box is always a named tier (rule #3 / check:control-sizing).
     expect(rule).not.toMatch(/(?:width|height):\s*[\d.]+(?:rem|px|em)/);
-    expect(rule).not.toMatch(/calc\(var\(--control-height\)/);
+    expect(rule).not.toMatch(/calc\(var\(\s*--control-height\)/);
   });
 
   it("declares both per-axis knobs `initial` too, so the whole chain resolves at the call site", () => {

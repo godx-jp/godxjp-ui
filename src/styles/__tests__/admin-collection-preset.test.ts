@@ -27,7 +27,7 @@ describe("PageContainer admin collection preset (gh#242)", () => {
   it("measures the collection search without a consumer width override", () => {
     expect(layoutTokens).toContain("--admin-collection-search-measure:");
     expect(layoutStyles).toMatch(
-      /data-preset="admin-collection"\] \.ui-toolbar \.ui-search-input\s*\{[^}]*inline-size:\s*min\(100%, var\(--admin-collection-search-measure\)\)/s,
+      /data-preset="admin-collection"\] \.ui-toolbar \.ui-search-input\s*\{[^}]*inline-size:\s*min\(100%, var\(\s*--admin-collection-search-measure\)\)/s,
     );
   });
 

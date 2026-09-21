@@ -110,7 +110,7 @@ describe("bordered / full-bleed frame inside a flush CardContent (gh#305)", () =
     // The shape that causes the defect: `border: 0` followed by a hard-coded repaint of one edge.
     // Style and colour must stay with the surface's own border declaration, so this block may
     // not name a width, a style or a colour of its own.
-    expect(block).not.toMatch(/solid|hsl|var\(--(?!table-flush-divider)/);
+    expect(block).not.toMatch(/solid|hsl|var\(\s*--(?!table-flush-divider)/);
     expect(block).not.toMatch(/\dpx/);
   });
 });
@@ -220,6 +220,6 @@ describe("the flush body's block-start divider survives (gh#306)", () => {
 
   it("takes its width from a declared token, not a literal (cardinal rules #44/#45)", () => {
     expect(ruleBlock(RESTORE)).toBe("border-block-start-width: var(--table-flush-divider-width);");
-    expect(tokens).toMatch(/--table-flush-divider-width:\s*var\(--table-row-border-width\);/);
+    expect(tokens).toMatch(/--table-flush-divider-width:\s*var\(\s*--table-row-border-width\);/);
   });
 });

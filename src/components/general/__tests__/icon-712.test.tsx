@@ -111,7 +111,7 @@ describe("Icon sizing rule (gh#712)", () => {
   it("declares all nine steps, each reading a scale token rather than a literal", () => {
     for (const step of STEPS) {
       const rule = new RegExp(
-        `\\.ui-icon\\[data-size="${step}"\\]\\s*\\{\\s*--icon-glyph-size:\\s*var\\(--icon-size-${step}\\);`,
+        `\\.ui-icon\\[data-size="${step}"\\]\\s*\\{\\s*--icon-glyph-size:\\s*var\\(\\s*--icon-size-${step}\\);`,
       );
       expect(layout, `${step} must read var(--icon-size-${step})`).toMatch(rule);
     }

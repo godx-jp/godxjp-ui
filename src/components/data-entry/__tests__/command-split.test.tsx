@@ -57,19 +57,19 @@ function Members({ split }: { split?: boolean }) {
 describe("Command split — CSS contract", () => {
   it("zeroes the group padding, squares the row and bleeds it to the panel edge", () => {
     expect(declarationsFor(controlStyles, ".ui-command[data-split] .ui-command-group")).toMatch(
-      /padding:\s*var\(--command-list-split-padding\);/,
+      /padding:\s*var\(\s*--command-list-split-padding\);/,
     );
     const row = declarationsFor(controlStyles, ".ui-command[data-split] .ui-command-item");
     expect(row).toMatch(/border-radius:\s*0;/);
-    expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(--command-list-split-inset\)\);/);
+    expect(row).toMatch(/margin-inline:\s*calc\(-1 \* var\(\s*--command-list-split-inset\)\);/);
     // Content starts where CommandInput starts its leading glyph.
     expect(row).toMatch(
-      /padding-inline:\s*calc\(var\(--command-list-split-inset\) \+ var\(--command-input-padding-x\)\);/,
+      /padding-inline:\s*calc\(var\(\s*--command-list-split-inset\) \+ var\(\s*--command-input-padding-x\)\);/,
     );
     // SearchSelect's listbox is its own element, so split reaches it by name.
     expect(
       declarationsFor(controlStyles, ".ui-command[data-split] .ui-search-select-list"),
-    ).toMatch(/padding:\s*var\(--command-list-split-padding\);/);
+    ).toMatch(/padding:\s*var\(\s*--command-list-split-padding\);/);
   });
 
   it("rules a row only when a row follows it — never after the last visible one", () => {
@@ -79,7 +79,7 @@ describe("Command split — CSS contract", () => {
     );
     // Logical property (RTL-safe) and the role default resolved at the CALL SITE.
     expect(divider).toMatch(
-      /border-block-end:\s*var\(--command-item-divider-width\) solid\s+hsl\(var\(--command-item-divider-color, var\(--border\)\)\);/,
+      /border-block-end:\s*var\(\s*--command-item-divider-width\) solid\s+hsl\(var\(\s*--command-item-divider-color, var\(\s*--border\)\)\);/,
     );
     // No physical property sneaks into any split rule.
     const splitRules = [...controlStyles.matchAll(/\.ui-command\[data-split\][^{]*\{([^}]*)\}/g)]
@@ -91,7 +91,7 @@ describe("Command split — CSS contract", () => {
   it("declares the knobs, with the colour as an `initial` role mirror (no :root freeze)", () => {
     expect(controlTokens).toMatch(/--command-list-split-padding:\s*0;/);
     expect(controlTokens).toMatch(/--command-list-split-inset:\s*0px;/);
-    expect(controlTokens).toMatch(/--command-item-divider-width:\s*var\(--stroke-hairline\);/);
+    expect(controlTokens).toMatch(/--command-item-divider-width:\s*var\(\s*--stroke-hairline\);/);
     expect(controlTokens).toMatch(/--command-item-divider-color:\s*initial;/);
   });
 
@@ -100,7 +100,7 @@ describe("Command split — CSS contract", () => {
     expect(row).toMatch(/border-radius:\s*calc\(/);
     expect(row).not.toMatch(/border-block-end/);
     expect(declarationsFor(controlStyles, ".ui-command-group")).toMatch(
-      /padding:\s*var\(--command-group-padding\);/,
+      /padding:\s*var\(\s*--command-group-padding\);/,
     );
   });
 });

@@ -34,12 +34,13 @@
  * objects because no PROP reaches them. Each one is a named gap, in the order a reader meets them:
  *
  *  1. THE SECTION BAND — `paddingBlock: var(--space-section-band | --space-section-hero)`.
- *     gh#831 minted the tokens and nothing reads them. `Flex pad` / `ResponsiveGrid pad` take a
- *     `GapProp`, whose numeric ladder stops at `12` (`--space-12`, 48px); `--space-20` (80px) and
- *     `--space-24` (96px) are off the end of it, so the marketing rhythm is the one spacing a
- *     layout primitive cannot state. It also has no compact step: `--space-section-hero` measures
- *     96px at 1440 AND at 320, where the package's own landing preset drops its band through
- *     `--centered-shell-landing-main-padding-block-compact`.
+ *     PARTLY CLOSED by gh#839: the numeric `GapProp` ladder now reaches the two band steps, so
+ *     `pad={{ block: 20 }}` (80px) and `pad={{ block: 24 }}` (96px) state the rhythm through the
+ *     public API. The bands below still use an inline `style` because each one ALSO needs the
+ *     centred inner column (`SHELL`), and nothing owns "full-bleed outside, measured column
+ *     inside" — that half of gh#839 is open. Neither step has a compact variant either:
+ *     `--space-section-hero` measures 96px at 1440 and at 320, where the package's own landing
+ *     preset drops its band via `--centered-shell-landing-main-padding-block-compact`.
  *  2. THE CENTRED COLUMN — `marginInline: auto` + `inlineSize: 100%` +
  *     `maxInlineSize: var(--page-measure-wide)` + `paddingInline: var(--space-6)`, repeated at
  *     every band. gh#831 minted `--page-measure-wide` and deliberately did not add

@@ -152,14 +152,14 @@ describe("the rail's top row follows topbarSpan", () => {
    */
   it('sizes all three top rows from --app-shell-bar-height under topbarSpan="content"', () => {
     expect(declarationsFor(shellStyles, ".sb-brand")).toMatch(
-      /min-height:\s*var\(--app-shell-bar-height\);/,
+      /min-height:\s*var\(\s*--app-shell-bar-height\);/,
     );
     // The bar has no height of its own — its grid ROW carries the token.
     expect(declarationsFor(shellStyles, ".app-root")).toMatch(
-      /grid-template-rows:\s*var\(--app-shell-bar-height\)/,
+      /grid-template-rows:\s*var\(\s*--app-shell-bar-height\)/,
     );
     expect(declarationsFor(shellStyles, BAND_SELECTOR)).toMatch(
-      /min-block-size:\s*var\(--app-shell-bar-height\);/,
+      /min-block-size:\s*var\(\s*--app-shell-bar-height\);/,
     );
   });
 
@@ -186,7 +186,7 @@ describe("the rail's top row follows topbarSpan", () => {
   it('gives the rail its own inset, and drops the band, under topbarSpan="full"', () => {
     expect(shellTokens).toContain("--app-shell-nav-rail-inset: var(--space-3);");
     expect(declarationsFor(shellStyles, ".app-nav-rail")).toMatch(
-      /padding-block:\s*var\(--app-shell-nav-rail-inset\);/,
+      /padding-block:\s*var\(\s*--app-shell-nav-rail-inset\);/,
     );
     // The band and the top inset are BOTH scoped away from `full` — an unscoped rule would apply
     // to every arrangement, which is the bug this pair replaced.
@@ -225,10 +225,10 @@ describe("responsive shell geometry", () => {
     }
 
     expect(shellStyles).toMatch(
-      /\.sb-nav-item\s*\{[^}]*display:\s*flex;[^}]*height:\s*var\(--sidebar-nav-item-height\);[^}]*flex:\s*0 0 auto;[^}]*align-items:\s*center;/s,
+      /\.sb-nav-item\s*\{[^}]*display:\s*flex;[^}]*height:\s*var\(\s*--sidebar-nav-item-height\);[^}]*flex:\s*0 0 auto;[^}]*align-items:\s*center;/s,
     );
     expect(shellStyles).toMatch(
-      /\.sb-icon\s*\{[^}]*width:\s*var\(--sidebar-nav-icon-size\);[^}]*height:\s*var\(--sidebar-nav-icon-size\);[^}]*line-height:\s*0;/s,
+      /\.sb-icon\s*\{[^}]*width:\s*var\(\s*--sidebar-nav-icon-size\);[^}]*height:\s*var\(\s*--sidebar-nav-icon-size\);[^}]*line-height:\s*0;/s,
     );
   });
 
@@ -259,7 +259,7 @@ describe("responsive shell geometry", () => {
     // The dedicated 4px headroom token, consumed as a BARE var(): rings paint up to 3px while
     // --focus-ring-width is 2px, and Chromium rejects any calc() inside overflow-clip-margin at
     // parse time — a calc() here silently degrades the margin to 0.
-    expect(slots).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+    expect(slots).toMatch(/overflow-clip-margin:\s*var\(\s*--focus-ring-clip-margin\);/);
     expect(slots).not.toMatch(/overflow-clip-margin:\s*calc\(/);
     expect(slots).toMatch(/min-width:\s*0;/);
     // The grouped rule covers all three clusters.
@@ -309,7 +309,7 @@ describe("responsive shell geometry", () => {
     // reaches `clip` too — which never had one and clipped a cell to 8px (gh#789). Scroll mode is
     // unchanged: measured 32px before and after. Asserted in its own case above.
     expect(declarationsFor(shellStyles, ".ui-topbar-start")).toMatch(
-      /min-inline-size:\s*var\(--topbar-item-min-width\);/,
+      /min-inline-size:\s*var\(\s*--topbar-item-min-width\);/,
     );
   });
 
@@ -321,7 +321,7 @@ describe("responsive shell geometry", () => {
     );
     expect(collisionBlocks).toHaveLength(1);
     expect(collisionBlocks[0].body).toMatch(
-      /\.ui-topbar-center\s*\{[^}]*display:\s*var\(--topbar-center-compact-display\);/s,
+      /\.ui-topbar-center\s*\{[^}]*display:\s*var\(\s*--topbar-center-compact-display\);/s,
     );
 
     // Truncation is a TEXT contract. The selector excludes interactive boxes: a control put last
@@ -337,7 +337,7 @@ describe("responsive shell geometry", () => {
     // is, and `hidden` shaves the focus ring off an interactive one (gh#376). `overflow-clip-margin`
     // is ignored on `hidden`, so the choice of keyword IS the fix.
     expect(startTitle).toMatch(/overflow:\s*clip;/);
-    expect(startTitle).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+    expect(startTitle).toMatch(/overflow-clip-margin:\s*var\(\s*--focus-ring-clip-margin\);/);
     expect(startTitle).toMatch(/text-overflow:\s*ellipsis;/);
     expect(startTitle).toMatch(/white-space:\s*nowrap;/);
   });
@@ -355,7 +355,7 @@ describe("responsive shell geometry", () => {
     // No desktop cost: end cluster overflow is 0px at 390/768/1024/1440 after the change.
     const start = declarationsFor(shellStyles, ".ui-topbar-start");
     expect(start, "the floor belongs on the cluster, not on one of its two modes").toMatch(
-      /min-inline-size:\s*var\(--topbar-item-min-width\);/,
+      /min-inline-size:\s*var\(\s*--topbar-item-min-width\);/,
     );
     // And it must NOT have moved back onto the mode selector, which is how it came to be missing
     // from `clip` in the first place.
@@ -383,7 +383,7 @@ describe("responsive shell geometry", () => {
     );
     expect(density).toHaveLength(1);
     expect(density[0].body).toMatch(
-      /\.ui-topbar-item\s*\{[^}]*padding-inline:\s*var\(--topbar-item-padding-inline-compact\);/s,
+      /\.ui-topbar-item\s*\{[^}]*padding-inline:\s*var\(\s*--topbar-item-padding-inline-compact\);/s,
     );
     expect(shellTokens).toContain("--topbar-item-padding-inline-compact: var(--space-2);");
     // The inline inset is ALL that steps. The cell's height is the bar's (there is deliberately no
@@ -397,7 +397,7 @@ describe("responsive shell geometry", () => {
     const compactSearch = density[0].body.match(/\.tb-search\s*\{([^}]*)\}/s)?.[1] ?? "";
     for (const property of ["inline-size", "block-size", "min-inline-size", "min-width"]) {
       expect(compactSearch, `compact .tb-search must state ${property}`).toMatch(
-        new RegExp(`(^|[^-])${property}:\\s*var\\(--control-height-sm\\);`),
+        new RegExp(`(^|[^-])${property}:\\s*var\\(\\s*--control-height-sm\\);`),
       );
     }
     // Square + the base rule's --space-2 inline padding would overflow the square it was just
@@ -414,7 +414,7 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-background: initial;");
     expect(shellTokens).toContain("--app-shell-mobile-nav-alpha: 40%;");
     expect(shellStyles).toMatch(
-      /\.app-mobile-nav-overlay\s*\{[^}]*background-color:\s*var\(\s*--app-shell-mobile-nav-background,\s*color-mix\(in srgb, var\(--overlay-background\) var\(--app-shell-mobile-nav-alpha\), transparent\)\s*\);/s,
+      /\.app-mobile-nav-overlay\s*\{[^}]*background-color:\s*var\(\s*--app-shell-mobile-nav-background,\s*color-mix\(in srgb, var\(\s*--overlay-background\) var\(\s*--app-shell-mobile-nav-alpha\), transparent\)\s*\);/s,
     );
     expect(shellStyles).toMatch(
       /\.app-mobile-nav-drawer\s*\{[^}]*safe-area-inset-top[^}]*safe-area-inset-bottom[^}]*safe-area-inset-left[^}]*safe-area-inset-right[^}]*overscroll-behavior:\s*contain;/s,
@@ -467,11 +467,11 @@ describe("responsive shell geometry", () => {
     // only fix is a consumer selector against `.sb-nav-item` — the coupling rule #45 forbids.
     expect(shellTokens).toContain("--sidebar-nav-item-radius: calc(var(--radius) - 1px);");
     expect(declarationsFor(shellStyles, ".sb-nav-item")).toMatch(
-      /border-radius:\s*var\(--sidebar-nav-item-radius\);/,
+      /border-radius:\s*var\(\s*--sidebar-nav-item-radius\);/,
     );
     // The literal it replaced must not survive on the row — that is what pinned it before.
     expect(declarationsFor(shellStyles, ".sb-nav-item")).not.toMatch(
-      /border-radius:\s*calc\(var\(--radius\)/,
+      /border-radius:\s*calc\(var\(\s*--radius\)/,
     );
   });
 
@@ -481,10 +481,10 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--app-shell-sidebar-width: 16rem;");
     expect(shellTokens).toContain("--app-shell-sidebar-collapsed-width: 4rem;");
     expect(declarationsFor(shellStyles, ".app-root")).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(\s*--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
     );
     expect(declarationsFor(shellStyles, '.app-root[data-collapsed="true"]')).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-sidebar-collapsed-width\) minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(\s*--app-shell-sidebar-collapsed-width\) minmax\(0, 1fr\);/,
     );
     // No literal rail track may survive anywhere in the shell sheet.
     expect(shellStyles).not.toMatch(/grid-template-columns:\s*(?:16rem|4rem) minmax/);
@@ -511,7 +511,7 @@ describe("responsive shell geometry", () => {
     expect(
       declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
     ).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(\s*--app-shell-nav-rail-width\)\s*var\(\s*--app-shell-sidebar-width\)\s*minmax\(0, 1fr\);/,
     );
     expect(
       declarationsFor(shellStyles, '.app-root[data-nav-rail][data-nav-rail-position="start"]'),
@@ -530,7 +530,7 @@ describe("responsive shell geometry", () => {
         '.app-root[data-nav-rail][data-nav-rail-position="start"][data-collapsed="true"]',
       ),
     ).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-nav-rail-width\)\s*var\(--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(\s*--app-shell-nav-rail-width\)\s*var\(\s*--app-shell-sidebar-collapsed-width\)\s*minmax\(0, 1fr\);/,
     );
   });
 
@@ -615,7 +615,7 @@ describe("responsive shell geometry", () => {
       expect(rows[1], "narrow-width row template must be token-driven").not.toMatch(
         /\d+(\.\d+)?(px|rem|em)/,
       );
-      expect(rows[1]).toMatch(/var\(--app-shell-bar-height\)/);
+      expect(rows[1]).toMatch(/var\(\s*--app-shell-bar-height\)/);
     }
     expect(shellStyles).not.toMatch(/grid-template-rows:\s*3rem/);
     // …and nothing anywhere hides the footer landmark.
@@ -651,7 +651,7 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--app-shell-bar-inset-compact: var(--space-page-compact-x);");
     // The names survive as knobs — a theme that already overrides them keeps working.
     expect(declarationsFor(shellStyles, ".app-topbar")).toMatch(
-      /padding-inline:\s*var\(--app-shell-bar-inset\);/,
+      /padding-inline:\s*var\(\s*--app-shell-bar-inset\);/,
     );
     // The compact step lives at the PAGE's breakpoint, stated identically on both sides so the two
     // can never drift apart again.
@@ -692,9 +692,9 @@ describe("responsive shell geometry", () => {
 
     // Only the inline axis steps: the block shorthands stay whole, so a service that already sets
     // --centered-shell-main-padding keeps controlling all four sides above the step.
-    expect(compact[0].body).not.toMatch(/padding:\s*var\(--centered-shell-main-padding\)/);
+    expect(compact[0].body).not.toMatch(/padding:\s*var\(\s*--centered-shell-main-padding\)/);
     expect(declarationsFor(shellStyles, ".ui-centered-shell-main")).toMatch(
-      /padding:\s*var\(--centered-shell-main-padding\);/,
+      /padding:\s*var\(\s*--centered-shell-main-padding\);/,
     );
   });
 
@@ -709,7 +709,7 @@ describe("responsive shell geometry", () => {
     expect(shellBlock("(width <= 56.25rem)")).toContain('"sidebar main"');
     expect(shellBlock("(width <= 56.25rem)")).toContain('"sidebar footer"');
     expect(shellBlock("(width <= 56.25rem)")).toMatch(
-      /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
+      /grid-template-columns:\s*var\(\s*--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
     );
     // `[^{]*` rather than `\s*` after the selector: docked now re-shows BOTH navigation columns,
     // so `> .app-sidebar` heads a grouped selector and is followed by `, … > .app-nav-rail` before
@@ -732,18 +732,18 @@ describe("responsive shell geometry", () => {
     expect(shellTokens).toContain("--topbar-gap: var(--space-2);");
 
     const root = declarationsFor(shellStyles, ".ui-topbar");
-    expect(root).toMatch(/height:\s*var\(--topbar-height\);/);
-    expect(root).toMatch(/padding-inline:\s*var\(--topbar-inset\);/);
-    expect(root).toMatch(/gap:\s*var\(--topbar-gap\);/);
+    expect(root).toMatch(/height:\s*var\(\s*--topbar-height\);/);
+    expect(root).toMatch(/padding-inline:\s*var\(\s*--topbar-inset\);/);
+    expect(root).toMatch(/gap:\s*var\(\s*--topbar-gap\);/);
     // One knob re-rhythms the whole bar: the between-cluster gap and the in-cluster gap agree.
     for (const selector of [".ui-topbar-start", ".ui-topbar-center", ".ui-topbar-end"]) {
-      expect(declarationsFor(shellStyles, selector)).toMatch(/gap:\s*var\(--topbar-gap\);/);
+      expect(declarationsFor(shellStyles, selector)).toMatch(/gap:\s*var\(\s*--topbar-gap\);/);
     }
     // …and the shrink contract is untouched by the knobs (both-axes clip + clip-margin
     // — the margin, honoured only for two-axis clip, carries the focus ring).
     expect(root).toMatch(/flex:\s*1 1 0%;/);
     expect(root).toMatch(/overflow:\s*clip;/);
-    expect(root).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+    expect(root).toMatch(/overflow-clip-margin:\s*var\(\s*--focus-ring-clip-margin\);/);
   });
 
   it("OrgSwitcher's sheet re-tunes the chrome inset at a specificity that can actually win", () => {
@@ -757,10 +757,10 @@ describe("responsive shell geometry", () => {
      * decides this is whether both hooks are in the selector.
      */
     const decls = declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet');
-    expect(decls).toMatch(/--sheet-pad-x:\s*var\(--org-switcher-sheet-inset\);/);
+    expect(decls).toMatch(/--sheet-pad-x:\s*var\(\s*--org-switcher-sheet-inset\);/);
     // The bare class must NOT be where the inset lives, or the pairing above is decoration.
     expect(declarationsFor(shellStyles, ".ui-org-switcher-sheet")).not.toMatch(/--sheet-pad-x:/);
-    expect(shellTokens).toMatch(/--org-switcher-sheet-inset:\s*var\(--space-3\);/);
+    expect(shellTokens).toMatch(/--org-switcher-sheet-inset:\s*var\(\s*--space-3\);/);
   });
 
   it("OrgSwitcher aligns ruled rows and the search field through one shared column", () => {
@@ -795,14 +795,14 @@ describe("responsive shell geometry", () => {
      * row mark, the magnifier, the field and the list at identical coordinates.
      */
     const column = declarationsFor(shellStyles, ".ui-org-switcher-command");
-    expect(column).toMatch(/--command-list-split-inset:\s*var\(--org-switcher-list-inset\);/);
+    expect(column).toMatch(/--command-list-split-inset:\s*var\(\s*--org-switcher-list-inset\);/);
     expect(column).toMatch(
-      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
+      /padding-inline:\s*calc\(var\(\s*--org-switcher-list-inset\) - var\(\s*--org-switcher-list-offset\)\);/,
     );
     expect(shellTokens).toMatch(/--org-switcher-list-offset:\s*0px;/);
     expect(
       declarationsFor(shellStyles, '[data-slot="sheet-content"].ui-org-switcher-sheet'),
-    ).toMatch(/--org-switcher-list-offset:\s*var\(--org-switcher-sheet-inset\);/);
+    ).toMatch(/--org-switcher-list-offset:\s*var\(\s*--org-switcher-sheet-inset\);/);
 
     // The palette itself keeps its pill — split is opt-in, never the resting row.
     const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
@@ -816,11 +816,11 @@ describe("responsive shell geometry", () => {
       shellStyles,
       ".ui-org-switcher-command .ui-command-input-wrapper",
     );
-    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(--input\)\);/);
-    expect(decls).toMatch(/border-radius:\s*var\(--control-radius\);/);
+    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(\s*--input\)\);/);
+    expect(decls).toMatch(/border-radius:\s*var\(\s*--control-radius\);/);
     expect(decls).toMatch(/margin-inline:\s*0;/);
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(
-      /padding-inline:\s*calc\(var\(--org-switcher-list-inset\) - var\(--org-switcher-list-offset\)\);/,
+      /padding-inline:\s*calc\(var\(\s*--org-switcher-list-inset\) - var\(\s*--org-switcher-list-offset\)\);/,
     );
     // The offset half must NOT be pre-substituted in a root token — that is the whole bug.
     expect(shellTokens).not.toMatch(/--org-switcher-search-space-outset:/);
@@ -828,7 +828,7 @@ describe("responsive shell geometry", () => {
     // The palette keeps its bottom rule; this is a local re-shape, not a change to Command.
     const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
     expect(declarationsFor(controlStyles, ".ui-command-input-wrapper")).toMatch(
-      /border-bottom:\s*1px solid hsl\(var\(--border\)\);/,
+      /border-bottom:\s*1px solid hsl\(var\(\s*--border\)\);/,
     );
   });
 
@@ -840,14 +840,14 @@ describe("responsive shell geometry", () => {
      */
     const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
     expect(declarationsFor(controlStyles, ".ui-command-item")).toMatch(
-      /gap:\s*var\(--command-item-gap\);/,
+      /gap:\s*var\(\s*--command-item-gap\);/,
     );
     const controlTokens = readFileSync(
       resolve(process.cwd(), "src/tokens/components/control.css"),
       "utf8",
     );
     // --control-gap, not a literal: a command row is a control row, and it should move with them.
-    expect(controlTokens).toMatch(/--command-item-gap:\s*var\(--control-gap\);/);
+    expect(controlTokens).toMatch(/--command-item-gap:\s*var\(\s*--control-gap\);/);
   });
 
   it("OrgSwitcher sizes its glyphs and its mark from scales, not from literals", () => {
@@ -855,8 +855,8 @@ describe("responsive shell geometry", () => {
     // reach, and out of reach of the icon-size ratchet, whose pattern looks for `icon|glyph` and
     // never saw `chevron`, `check` or `spinner`.
     const glyphs = declarationsFor(shellStyles, ".ui-org-switcher-chevron");
-    expect(glyphs).toMatch(/width:\s*var\(--icon-size-md\);/);
+    expect(glyphs).toMatch(/width:\s*var\(\s*--icon-size-md\);/);
     expect(glyphs).not.toMatch(/width:\s*1rem/);
-    expect(shellTokens).toMatch(/--org-switcher-avatar-size:\s*var\(--control-height-sm\);/);
+    expect(shellTokens).toMatch(/--org-switcher-avatar-size:\s*var\(\s*--control-height-sm\);/);
   });
 });

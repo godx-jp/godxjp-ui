@@ -105,7 +105,7 @@ describe("Segmented sizes from the scope it is IN, not from :root", () => {
    */
   it("gives a WRAPPED row the same inset the track's outer edges get", () => {
     expect(rule(CONTROL_CSS, '  .ui-segmented:not([data-orientation="vertical"])')).toMatch(
-      /row-gap:\s*var\(--segmented-track-padding\);/,
+      /row-gap:\s*var\(\s*--segmented-track-padding\);/,
     );
   });
 
@@ -116,6 +116,8 @@ describe("Segmented sizes from the scope it is IN, not from :root", () => {
    * would drop to 16px — a 14px type size in a 16px box. docs/SPACING.md now says so out loud.
    */
   it("pins the 2px track padding the whole control geometry is derived from", () => {
-    expect(SEGMENTED_TOKENS).toMatch(/--segmented-track-padding:\s*calc\(var\(--space-1\) \/ 2\);/);
+    expect(SEGMENTED_TOKENS).toMatch(
+      /--segmented-track-padding:\s*calc\(var\(\s*--space-1\) \/ 2\);/,
+    );
   });
 });

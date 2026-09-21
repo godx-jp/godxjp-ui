@@ -35,6 +35,6 @@ describe("Calendar — outside days", () => {
   });
 
   it("uses the muted tier, which already promises AA on the calendar surface", () => {
-    expect(rule![2]).toMatch(/color:\s*hsl\(var\(--muted-foreground\)\)/);
+    expect(rule![2]).toMatch(/color:\s*hsl\(var\(\s*--muted-foreground\)\)/);
   });
 });

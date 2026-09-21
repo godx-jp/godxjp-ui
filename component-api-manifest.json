@@ -3660,7 +3660,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/components/data-display/card.tsx"]
         },
         {
@@ -7984,7 +7984,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -8008,7 +8008,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
@@ -10048,7 +10048,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
@@ -12850,7 +12850,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/components/layout/responsive-grid.tsx"]
         },
         {
@@ -14214,7 +14214,7 @@
           "origin": "owned",
           "required": false,
           "type": "GapProp | undefined",
-          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12, 20, 24],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

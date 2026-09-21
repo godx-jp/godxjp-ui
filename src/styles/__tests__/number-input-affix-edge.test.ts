@@ -32,13 +32,13 @@ const rule = (selector: string) =>
 describe("NumberInput affixes are placed by SLOT, never by sibling position", () => {
   it("the prefix takes the leading inset", () => {
     expect(rule('[data-slot="number-input-prefix"]')).toMatch(
-      /inset-inline-start:\s*var\(--control-padding-x\)/,
+      /inset-inline-start:\s*var\(\s*--control-padding-x\)/,
     );
   });
 
   it("the suffix takes the trailing inset, clear of the steppers", () => {
     const suffix = rule('[data-slot="number-input-suffix"]');
-    expect(suffix).toMatch(/inset-inline-end:\s*calc\(var\(--control-height\)/);
+    expect(suffix).toMatch(/inset-inline-end:\s*calc\(var\(\s*--control-height\)/);
     // and never the leading one — that is the bug, spelled out.
     expect(suffix).not.toMatch(/inset-inline-start/);
   });

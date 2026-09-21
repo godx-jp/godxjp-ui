@@ -335,7 +335,7 @@ describe("PageContainer", () => {
     it("owns the inline extra measure as a token, scoped to the compact range", () => {
       expect(layoutTokens).toMatch(/--page-header-extra-measure:\s*11rem/);
       expect(layoutCss).toMatch(
-        /@media \(max-width: 639\.98px\) \{[\s\S]*?\[data-layout="responsive-inline"\] \.ui-page-header-extra \{[^}]*inline-size:\s*var\(--page-header-extra-measure\)/,
+        /@media \(max-width: 639\.98px\) \{[\s\S]*?\[data-layout="responsive-inline"\] \.ui-page-header-extra \{[^}]*inline-size:\s*var\(\s*--page-header-extra-measure\)/,
       );
       // No raw pixel measure — the knob is the only route.
       expect(layoutCss).not.toMatch(/inline-size:\s*\d+px/);
@@ -391,10 +391,10 @@ describe("PageContainer", () => {
       // The whole point of the axis: variant="narrow" leaves the header action at the
       // page edge because only .ui-page-body is capped.
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-measure="medium"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-toolbar,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-body \{\s*max-inline-size: var\(--page-measure-medium\);/,
+        /\.ui-page-container\[data-measure="medium"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-toolbar,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-body \{\s*max-inline-size: var\(\s*--page-measure-medium\);/,
       );
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="narrow"\] \.ui-page-toolbar,\s*\.ui-page-container\[data-measure="narrow"\] \.ui-page-body \{\s*max-inline-size: var\(--page-measure-narrow\);/,
+        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="narrow"\] \.ui-page-toolbar,\s*\.ui-page-container\[data-measure="narrow"\] \.ui-page-body \{\s*max-inline-size: var\(\s*--page-measure-narrow\);/,
       );
       // Legacy variant stays body-only — untouched, so existing pages do not move.
       expect(layoutCss).toMatch(
@@ -408,15 +408,15 @@ describe("PageContainer", () => {
       // END INSET grows by the slack the cap takes off the header/body, so its content box is the
       // content column. jsdom has no layout: the geometry is `pnpm check:app-shell-page-width`.
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-measure="medium"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(--page-measure-medium\)\);/,
+        /\.ui-page-container\[data-measure="medium"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(\s*--page-measure-medium\)\);/,
       );
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(--page-measure-narrow\)\);/,
+        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-footer \{\s*--page-footer-content-slack: max\(0px, 100% - var\(\s*--page-measure-narrow\)\);/,
       );
       const footerRule =
         layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
       expect(footerRule).toMatch(
-        /padding-inline-end: calc\(var\(--space-page-active-x\) \+ var\(--page-footer-content-slack\)\);/,
+        /padding-inline-end: calc\(var\(\s*--space-page-active-x\) \+ var\(\s*--page-footer-content-slack\)\);/,
       );
       // Registered, so an uncapped page (`none` makes the arithmetic invalid) resolves to 0 instead
       // of dropping the band's end gutter.
@@ -503,9 +503,9 @@ describe("PageContainer", () => {
       // No new chrome token is needed for the "quiet header": the divider already defaults
       // to the quietest state and is read through a token, and ghost drops the header pad too.
       expect(layoutTokens).toMatch(/--page-header-divider:\s*none;/);
-      expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
+      expect(layoutCss).toMatch(/border-bottom: var\(\s*--page-header-divider\);/);
       expect(layoutCss).toMatch(
-        /\.ui-page-container--ghost \.ui-page-header \{\s*border-bottom: var\(--page-header-divider, none\);\s*padding-bottom: 0;/,
+        /\.ui-page-container--ghost \.ui-page-header \{\s*border-bottom: var\(\s*--page-header-divider, none\);\s*padding-bottom: 0;/,
       );
     });
 
@@ -521,12 +521,12 @@ describe("PageContainer", () => {
       // to the hard-set version.
       const ghostHeader =
         layoutCss.match(/\.ui-page-container--ghost \.ui-page-header \{[^}]*\}/)?.[0] ?? "";
-      expect(ghostHeader).toMatch(/border-bottom: var\(--page-header-divider, none\);/);
+      expect(ghostHeader).toMatch(/border-bottom: var\(\s*--page-header-divider, none\);/);
       expect(ghostHeader).not.toMatch(/border-bottom: none;/);
       // Header and band answer the question the same way — one page chrome, not two policies.
       const ghostBand =
         layoutCss.match(/\.ui-page-container--ghost \.ui-page-toolbar \{[^}]*\}/)?.[0] ?? "";
-      expect(ghostBand).toMatch(/border-block-end: var\(--page-toolbar-divider, none\);/);
+      expect(ghostBand).toMatch(/border-block-end: var\(\s*--page-toolbar-divider, none\);/);
     });
 
     it("does NOT touch ghost's padding-bottom: 0 — that half really is the quiet one", () => {
@@ -540,7 +540,7 @@ describe("PageContainer", () => {
       expect(ghostHeader).not.toMatch(/padding-bottom: var\(/);
       // …and the non-ghost header still takes the token-owned pad, so ghost is the only page that
       // drops it.
-      expect(layoutCss).toMatch(/padding-bottom: var\(--page-header-pad-bottom\);/);
+      expect(layoutCss).toMatch(/padding-bottom: var\(\s*--page-header-pad-bottom\);/);
     });
   });
 
@@ -632,7 +632,7 @@ describe("PageContainer", () => {
       // One source for all three bands is what keeps them flush at both edges — the alternative
       // (a private toolbar gutter knob) is exactly how a strip drifts off the title's axis.
       expect(layoutCss).toMatch(
-        /\.ui-page-header,\s*\.ui-page-toolbar,\s*\.ui-page-body,\s*\.ui-page-footer \{\s*padding-inline-start: var\(--space-page-active-x\);/,
+        /\.ui-page-header,\s*\.ui-page-toolbar,\s*\.ui-page-body,\s*\.ui-page-footer \{\s*padding-inline-start: var\(\s*--space-page-active-x\);/,
       );
       const { container } = renderWithUi(
         <PageContainer title="Feed" measure="medium" toolbar={<Button>Filter</Button>}>
@@ -668,13 +668,13 @@ describe("PageContainer", () => {
       // reaches the band (a `:root` binding would freeze it) — docs/TOKENS.md.
       expect(layoutTokens).toMatch(/--page-toolbar-divider:\s*initial;/);
       expect(layoutCss).toMatch(
-        /border-block-end: var\(--page-toolbar-divider, var\(--page-header-divider\)\);/,
+        /border-block-end: var\(\s*--page-toolbar-divider, var\(\s*--page-header-divider\)\);/,
       );
       // ghost is the quiet chrome variant — it must silence the INHERITED rule, and only that.
       // It re-declares the property with a `none` fallback rather than hard-setting `none`, so a
       // theme that explicitly opts the band into a rule still gets one. See the dedicated case.
       expect(layoutCss).toMatch(
-        /\.ui-page-container--ghost \.ui-page-toolbar \{\s*border-block-end: var\(--page-toolbar-divider, none\);/,
+        /\.ui-page-container--ghost \.ui-page-toolbar \{\s*border-block-end: var\(\s*--page-toolbar-divider, none\);/,
       );
     });
 
@@ -685,10 +685,10 @@ describe("PageContainer", () => {
       // renders exactly as it did before the knob existed (rule #44).
       expect(layoutTokens).toMatch(/--page-toolbar-background:\s*transparent;/);
       const band = layoutCss.match(/\n {2}\.ui-page-toolbar \{[^}]*\}/)?.[0] ?? "";
-      expect(band).toMatch(/background: var\(--page-toolbar-background\);/);
+      expect(band).toMatch(/background: var\(\s*--page-toolbar-background\);/);
       // NO fallback in the var(): the token is bound at :root (its default is a plain keyword, not
       // another role token), so a theme declaration is the only thing that can decide the ground.
-      expect(band).not.toMatch(/var\(--page-toolbar-background,/);
+      expect(band).not.toMatch(/var\(\s*--page-toolbar-background,/);
       // …and no literal colour anywhere in the band's own rule (rule #44/#46).
       expect(band).not.toMatch(/hsl\(|rgb\(|#[0-9a-f]{3}/i);
     });
@@ -744,11 +744,11 @@ describe("PageContainer", () => {
       // nothing and cost 32px of transcript. The container's gap is right for a document page and
       // wrong for chrome, so the band cancels it from ITSELF: one declaration, and the rhythm every
       // toolbar-less page depends on is untouched.
-      expect(toolbarBand).toMatch(/margin-block: calc\(-1 \* var\(--page-band-gap\)\);/);
+      expect(toolbarBand).toMatch(/margin-block: calc\(-1 \* var\(\s*--page-band-gap\)\);/);
       // …and the gap it cancels is the very number the container spaces by — read from one
       // variable, never restated as a length here (rule #46).
       expect(layoutCss).toMatch(
-        /\.ui-page-container \{\s*--page-band-gap: var\(--space-section-active\);[\s\S]*?gap: var\(--page-band-gap\);/,
+        /\.ui-page-container \{\s*--page-band-gap: var\(\s*--space-section-active\);[\s\S]*?gap: var\(\s*--page-band-gap\);/,
       );
       expect(toolbarBand).not.toMatch(/margin-block:[^;]*\d+(?:px|rem)/);
     });
@@ -763,7 +763,7 @@ describe("PageContainer", () => {
       // ghost swaps the gap token outright — it must do that by moving --page-band-gap, not by
       // re-declaring `gap`, or the band would cancel a gap the container is no longer using.
       expect(layoutCss).toMatch(
-        /\.ui-page-container--ghost \{\s*--page-band-gap: var\(--space-stack-md\);\s*\}/,
+        /\.ui-page-container--ghost \{\s*--page-band-gap: var\(\s*--space-stack-md\);\s*\}/,
       );
       expect(layoutCss).not.toMatch(/\.ui-page-container--ghost \{\s*gap:/);
       // The 720px step and the admin-collection preset both move --space-section-active ON THE
@@ -774,7 +774,7 @@ describe("PageContainer", () => {
       const presetRule =
         layoutCss.match(/\.ui-page-container\[data-preset="admin-collection"\] \{[^}]*\}/)?.[0] ??
         "";
-      expect(presetRule).toMatch(/--space-section-active: var\(--admin-collection-section-gap\);/);
+      expect(presetRule).toMatch(/--space-section-active: var\(\s*--admin-collection-section-gap\);/);
       expect(presetRule).not.toMatch(/gap:/);
       // Exactly one band cancels the gap. The header, the body and the footer keep the container's
       // rhythm — a page of three document blocks is what that rhythm is FOR.
@@ -810,8 +810,8 @@ describe("PageContainer", () => {
       // band is the one carrying the border.
       const footerRule =
         layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
-      expect(footerRule).toMatch(/padding-top: var\(--space-stack-md\);/);
-      expect(footerRule).toMatch(/border-top: var\(--page-footer-divider,/);
+      expect(footerRule).toMatch(/padding-top: var\(\s*--space-stack-md\);/);
+      expect(footerRule).toMatch(/border-top: var\(\s*--page-footer-divider,/);
       expect(footerRule).not.toMatch(/margin-block/);
     });
 
@@ -825,7 +825,7 @@ describe("PageContainer", () => {
       const footerRule =
         layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
       expect(footerRule).toMatch(
-        /border-top: var\(--page-footer-divider, 1px solid hsl\(var\(--border\)\)\);/,
+        /border-top: var\(\s*--page-footer-divider, 1px solid hsl\(var\(\s*--border\)\)\);/,
       );
       expect(footerRule).not.toMatch(/border-top: 1px solid/);
       // `initial` at the semantic tier, beside the other two, so a scoped [data-tenant]/.dark
@@ -835,9 +835,9 @@ describe("PageContainer", () => {
         /--page-toolbar-divider:\s*initial;[\s\S]{0,1400}--page-footer-divider:\s*initial;/,
       );
       // All three bands now answer the same way: a knob, resolved at the CALL SITE with a fallback.
-      expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
+      expect(layoutCss).toMatch(/border-bottom: var\(\s*--page-header-divider\);/);
       expect(layoutCss).toMatch(
-        /border-block-end: var\(--page-toolbar-divider, var\(--page-header-divider\)\);/,
+        /border-block-end: var\(\s*--page-toolbar-divider, var\(\s*--page-header-divider\)\);/,
       );
     });
 
@@ -867,7 +867,7 @@ describe("PageContainer", () => {
       // a quiet header, and a workflow band that reads as its own surface above the transcript.
       const ghostRule =
         layoutCss.match(/\.ui-page-container--ghost \.ui-page-toolbar \{[^}]*\}/)?.[0] ?? "";
-      expect(ghostRule).toMatch(/border-block-end: var\(--page-toolbar-divider, none\);/);
+      expect(ghostRule).toMatch(/border-block-end: var\(\s*--page-toolbar-divider, none\);/);
       expect(ghostRule).not.toMatch(/border-block-end: none;/);
       expect(ghostRule).not.toMatch(/background/);
     });
@@ -918,7 +918,7 @@ describe("PageContainer", () => {
       renderWithUi(<PageContainer title="Explicit" headerScale="document" />);
       expect(document.querySelectorAll(".ui-page-container[data-header-scale]")).toHaveLength(0);
       // …and the default title still reads the DOCUMENT step, from the token, in the base rule.
-      expect(layoutCss).toMatch(/\.ui-page-title \{\s*font-size: var\(--page-title-font-size\);/);
+      expect(layoutCss).toMatch(/\.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size\);/);
     });
 
     it("publishes chrome as one attribute, and the title takes the CHROME token", () => {
@@ -927,10 +927,10 @@ describe("PageContainer", () => {
       );
       expect(container.firstChild).toHaveAttribute("data-header-scale", "chrome");
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-title \{\s*font-size: var\(--page-title-font-size-chrome\);\s*\}/,
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size-chrome\);\s*\}/,
       );
       // Type is a token, never a literal (rule #46), and the chrome step is the BODY step.
-      expect(layoutTokens).toMatch(/--page-title-font-size-chrome:\s*var\(--heading-h3\);/);
+      expect(layoutTokens).toMatch(/--page-title-font-size-chrome:\s*var\(\s*--heading-h3[,)]/);
       expect(layoutCss).not.toMatch(/--page-title-font-size-chrome:\s*\d/);
     });
 
@@ -959,13 +959,13 @@ describe("PageContainer", () => {
     it("opens a chrome page flush with the frame, from a token, block-start only", () => {
       const paddingRule =
         layoutCss.match(/\.ui-page-container\[data-header-scale="chrome"\] \{[^}]*\}/)?.[0] ?? "";
-      expect(paddingRule).toMatch(/padding-block-start: var\(--page-pad-block-start-chrome\);/);
+      expect(paddingRule).toMatch(/padding-block-start: var\(\s*--page-pad-block-start-chrome\);/);
       // Flush IS the quiet state for chrome, and it is a knob rather than a literal (rule #44).
       expect(layoutTokens).toMatch(/--page-pad-block-start-chrome:\s*0px;/);
       expect(layoutCss).not.toMatch(/--page-pad-block-start-chrome:/);
       // A document page is untouched: the shorthand still owns the default page on BOTH blocks.
       expect(layoutCss).toMatch(
-        /\.ui-page-container \{[^}]*padding: var\(--space-page-active-y\) 0;/,
+        /\.ui-page-container \{[^}]*padding: var\(\s*--space-page-active-y\) 0;/,
       );
       // `headerScale` names the HEADER, so it may speak for the top edge only. The block-end
       // belongs to `stickyFooter`, which zeroes it for its own reason — a longhand here is what
@@ -989,7 +989,7 @@ describe("PageContainer", () => {
         layoutCss.match(
           /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-header \{[^}]*\}/,
         )?.[0] ?? "";
-      expect(bandRule).toMatch(/min-block-size: var\(--page-header-min-block-size-chrome\);/);
+      expect(bandRule).toMatch(/min-block-size: var\(\s*--page-header-min-block-size-chrome\);/);
       // The floor alone would only add dead air under top-packed content; centring is the half
       // that makes it useful, and it is inert while the knob is `auto` (a column whose min IS its
       // content height has nothing to distribute).
@@ -1011,7 +1011,7 @@ describe("PageContainer", () => {
       expect(compactCss).not.toBe("");
       // The existing responsive step is untouched: a document page still steps down to h2 <=720px.
       expect(compactCss).toMatch(
-        /\.ui-page-title \{\s*font-size: var\(--page-title-font-size-compact\);/,
+        /\.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size-compact[,)]/,
       );
       // That step is BIGGER than the chrome step (h2 18px vs h3 14px), so a chrome header would
       // SWELL on a phone if the compact rule won. It cannot: the compact rule's selector is the
@@ -1022,7 +1022,7 @@ describe("PageContainer", () => {
       expect(layoutCss).toMatch(
         /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-title/,
       );
-      expect(layoutTokens).toMatch(/--page-title-font-size-compact: var\(--heading-h2\);/);
+      expect(layoutTokens).toMatch(/--page-title-font-size-compact:\s*var\(\s*--heading-h2[,)]/);
     });
 
     it("composes with ghost, measure and the toolbar band rather than replacing them", () => {
@@ -1061,14 +1061,14 @@ describe("PageContainer", () => {
       );
       expect(container.querySelector(".ui-page-subtitle")?.textContent).toBe("Sổ sách và hoá đơn");
       expect(layoutCss).toMatch(
-        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-subtitle \{\s*font-size: var\(--page-subtitle-font-size-chrome\);\s*\}/,
+        /\.ui-page-container\[data-header-scale="chrome"\] \.ui-page-subtitle \{\s*font-size: var\(\s*--page-subtitle-font-size-chrome\);\s*\}/,
       );
       // A step of the shared golden scale, never a literal (rule #46) — and a SEPARATE knob that
       // sits beside the two document steps rather than redefining either of them.
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(--font-size-2xs[,)]/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(\s*--font-size-2xs[,)]/);
       expect(layoutCss).not.toMatch(/--page-subtitle-font-size-chrome:/);
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size: var\(--font-size-base\);/);
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(--font-size-sm[,)]/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size: var\(\s*--font-size-base\);/);
+      expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(\s*--font-size-sm[,)]/);
       // Type only. --line-height-body still owns the rhythm, so a wrapped JA/VI purpose line stays
       // readable at the smaller step; colour/weight belong to the base rule for both scales.
       const chromeSubtitleRule =
@@ -1083,7 +1083,7 @@ describe("PageContainer", () => {
       // The compact step is already a COMPOUND selector (0,2,0) — unlike the bare `.ui-page-title`
       // — so the chrome rule only wins by carrying the container attribute on top of its own class.
       expect(compactCss).toMatch(
-        /\.ui-page-header \.ui-page-subtitle \{\s*font-size: var\(--page-subtitle-font-size-compact\);/,
+        /\.ui-page-header \.ui-page-subtitle \{\s*font-size: var\(\s*--page-subtitle-font-size-compact\);/,
       );
       expect(compactCss).not.toMatch(/data-header-scale/);
       expect(layoutCss).toMatch(
@@ -1091,7 +1091,7 @@ describe("PageContainer", () => {
       );
       // Both halves of the responsive document step survive untouched.
       expect(compactCss).toMatch(
-        /\.ui-page-title \{\s*font-size: var\(--page-title-font-size-compact\);/,
+        /\.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size-compact[,)]/,
       );
     });
 

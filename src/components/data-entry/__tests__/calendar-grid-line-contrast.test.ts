@@ -129,7 +129,7 @@ describe("calendar grid line — stylesheet wiring", () => {
     const cell = [
       ...css.matchAll(/\.ui-calendar\[data-bordered="true"\] \.ui-calendar-day\s*\{([^}]*)\}/g),
     ];
-    expect(cell.some((m) => /inline-size:\s*var\(--control-height\);/.test(m[1]))).toBe(true);
+    expect(cell.some((m) => /inline-size:\s*var\(\s*--control-height\);/.test(m[1]))).toBe(true);
   });
 
   it("the knob is an `initial` role-mirror, so a scoped theme retints it live", () => {

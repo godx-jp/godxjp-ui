@@ -234,7 +234,7 @@ describe("theme axes integration (render + class contracts)", () => {
       );
       expect(controlCss).toContain(".ui-calendar .ui-calendar-day-button");
       expect(controlCss).toMatch(
-        /\.ui-calendar \.ui-calendar-day-button \{[^}]*var\(--control-height\)/,
+        /\.ui-calendar \.ui-calendar-day-button \{[^}]*var\(\s*--control-height\)/,
       );
     });
   });

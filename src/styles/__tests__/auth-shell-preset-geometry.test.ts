@@ -46,11 +46,11 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("login");
     expect(desktop).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-login-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-login-card-max-width\)/,
     );
     expect(desktop).toMatch(/--auth-shell-main-align:\s*flex-start/);
     expect(shellStyles).toMatch(
-      /data-preset="login"[^}]*\.ui-auth-shell-card\s*\{[^}]*grid-template-rows:\s*var\(--auth-shell-login-identity-slot-block-size\) auto auto;/s,
+      /data-preset="login"[^}]*\.ui-auth-shell-card\s*\{[^}]*grid-template-rows:\s*var\(\s*--auth-shell-login-identity-slot-block-size\) auto auto;/s,
     );
     expect(shellStyles).toMatch(
       /data-preset="login"[^}]*\.ui-auth-requester > :last-child\s*\{[^}]*overflow-wrap:\s*anywhere;/s,
@@ -65,9 +65,11 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("device-authorization");
     expect(desktop).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-device-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-device-card-max-width\)/,
     );
-    expect(desktop).toMatch(/--auth-shell-main-padding:\s*var\(--auth-shell-device-main-padding\)/);
+    expect(desktop).toMatch(
+      /--auth-shell-main-padding:\s*var\(\s*--auth-shell-device-main-padding\)/,
+    );
   });
 
   it("device-authorization also owns its CODE FIELD measure (gh#12)", () => {
@@ -80,10 +82,10 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("device-authorization");
     expect(desktop).toMatch(
-      /--otp-slot-inline-size:\s*var\(--auth-shell-device-otp-slot-inline-size\)/,
+      /--otp-slot-inline-size:\s*var\(\s*--auth-shell-device-otp-slot-inline-size\)/,
     );
     expect(desktop).toMatch(
-      /--otp-slot-block-size:\s*var\(--auth-shell-device-otp-slot-block-size\)/,
+      /--otp-slot-block-size:\s*var\(\s*--auth-shell-device-otp-slot-block-size\)/,
     );
     // Handed to the PUBLIC per-axis knobs, never to a `.ui-otp-*` selector inside the shell —
     // a shell that reaches into another component's internals is the fork this preset replaces.
@@ -97,10 +99,10 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("context-selection");
     expect(desktop).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-context-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-context-card-max-width\)/,
     );
     expect(desktop).toMatch(
-      /--auth-shell-card-stack-gap:\s*var\(--auth-shell-context-card-stack-gap\)/,
+      /--auth-shell-card-stack-gap:\s*var\(\s*--auth-shell-context-card-stack-gap\)/,
     );
   });
 
@@ -117,12 +119,12 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     expect(device).toBeGreaterThan(canonical);
     expect(context).toBeGreaterThan(canonical);
     expect(mobile).toMatch(
-      /--auth-shell-main-padding:\s*var\(--auth-shell-device-main-padding-mobile\)/,
+      /--auth-shell-main-padding:\s*var\(\s*--auth-shell-device-main-padding-mobile\)/,
     );
     expect(mobile).toMatch(
-      /--auth-shell-main-padding:\s*var\(--auth-shell-context-main-padding-mobile\)/,
+      /--auth-shell-main-padding:\s*var\(\s*--auth-shell-context-main-padding-mobile\)/,
     );
-    expect(mobile).toMatch(/var\(--auth-shell-login-flow-offset-block-mobile\)/);
+    expect(mobile).toMatch(/var\(\s*--auth-shell-login-flow-offset-block-mobile\)/);
   });
 
   it("registration owns the 360px sign-up measure and a 15px mobile inline gutter (gh#256)", () => {
@@ -136,10 +138,10 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("registration");
     expect(desktop).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-registration-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-registration-card-max-width\)/,
     );
     expect(desktop).toMatch(
-      /--auth-shell-card-stack-gap:\s*var\(--auth-shell-registration-card-stack-gap\)/,
+      /--auth-shell-card-stack-gap:\s*var\(\s*--auth-shell-registration-card-stack-gap\)/,
     );
 
     // The mobile gutter must live in the ONE shared max-width:30rem block, after the canonical
@@ -191,7 +193,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     // identity copy changes only the empty space above the content. Content aligns to the slot
     // END, as `login` does.
     expect(shellStyles).toMatch(
-      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(\s*--auth-shell-registration-identity-slot-block-size\)/s,
     );
     expect(shellStyles).toMatch(
       /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*justify-content:\s*flex-end/s,
@@ -237,7 +239,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     // (and every existing single-card consumer) is byte-for-byte unchanged.
     expect(shellTokens).toContain("--auth-shell-card-stack-gap: 0px;");
     expect(shellStyles).toMatch(
-      /\.ui-auth-shell\[data-preset\] \.ui-auth-shell-card\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*var\(--auth-shell-card-stack-gap\);/s,
+      /\.ui-auth-shell\[data-preset\] \.ui-auth-shell-card\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*var\(\s*--auth-shell-card-stack-gap\);/s,
     );
   });
 
@@ -252,10 +254,10 @@ describe("AuthShell flow presets — token-owned geometry", () => {
 
     const [desktop] = authBlock("registration");
     expect(desktop).toMatch(
-      /--auth-shell-card-max-width:\s*var\(--auth-shell-registration-card-max-width\)/,
+      /--auth-shell-card-max-width:\s*var\(\s*--auth-shell-registration-card-max-width\)/,
     );
     expect(desktop).toMatch(
-      /--auth-shell-card-stack-gap:\s*var\(--auth-shell-registration-card-stack-gap\)/,
+      /--auth-shell-card-stack-gap:\s*var\(\s*--auth-shell-registration-card-stack-gap\)/,
     );
 
     // The mobile gutter must live in the ONE shared max-width:30rem block, after the canonical
@@ -281,7 +283,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
     expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
     expect(shellStyles).toMatch(
-      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(\s*--auth-shell-registration-identity-slot-block-size\)/s,
     );
   });
 
@@ -289,7 +291,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     // With it, headless Chromium measured card y=274 identically for absent, short and wrapped
     // two-line requester copy. Content aligns to the slot END, as `login` does.
     expect(shellStyles).toMatch(
-      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(\s*--auth-shell-registration-identity-slot-block-size\)/s,
     );
     expect(shellStyles).toMatch(
       /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*justify-content:\s*flex-end/s,
@@ -321,7 +323,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
   it("routes the auth column's block alignment through a knob (rule #45)", () => {
     expect(shellTokens).toContain("--auth-shell-main-align: center;");
     expect(shellStyles).toMatch(
-      /\.ui-auth-shell-main\s*\{[^}]*justify-content:\s*var\(--auth-shell-main-align\);/s,
+      /\.ui-auth-shell-main\s*\{[^}]*justify-content:\s*var\(\s*--auth-shell-main-align\);/s,
     );
   });
 
@@ -357,11 +359,11 @@ describe("AppSettingPicker compact trigger — token-owned geometry (gh#217)", (
       "--app-setting-picker-compact-control-height: var(--control-height-sm);",
     );
     expect(navStyles).toMatch(
-      /\.ui-app-setting-picker-compact\s*\{[^}]*--control-height:\s*var\(--app-setting-picker-compact-control-height\);/s,
+      /\.ui-app-setting-picker-compact\s*\{[^}]*--control-height:\s*var\(\s*--app-setting-picker-compact-control-height\);/s,
     );
     const rule = navStyles.match(/\.ui-app-setting-picker-compact\s*\{[^}]*\}/)?.[0] ?? "";
     expect(rule).not.toMatch(/height:\s*[\d.]/);
-    expect(rule).not.toMatch(/calc\(var\(--control-height\)/);
+    expect(rule).not.toMatch(/calc\(var\(\s*--control-height\)/);
   });
 
   it("keeps padding, gap and font-size themeable", () => {
@@ -414,10 +416,10 @@ describe("AuthShell align — block-axis placement", () => {
     // looks centred — the asymmetry a token-level override is easy to half-fix.
     const rule = alignBlock("center", "login")[0] ?? "";
     expect(rule).toMatch(
-      /--auth-shell-login-flow-offset-block:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+      /--auth-shell-login-flow-offset-block:\s*var\(\s*--auth-shell-login-main-padding-block-end\)/,
     );
     expect(rule).toMatch(
-      /--auth-shell-login-flow-offset-block-mobile:\s*var\(--auth-shell-login-main-padding-block-end\)/,
+      /--auth-shell-login-flow-offset-block-mobile:\s*var\(\s*--auth-shell-login-main-padding-block-end\)/,
     );
   });
 
@@ -487,7 +489,7 @@ describe("audit + a11y drift guards", () => {
     // docs/data-display/list-row.tsx — reached for className="size-4". A library that documents
     // the utility it forbids is teaching the anti-pattern.
     expect(dataDisplay).toMatch(
-      /\[data-slot="list-row-leading"\] > svg:not\(\[class\*="size-"\]\)\s*\{[^}]*width:\s*var\(--list-row-leading-icon-size,\s*var\(--control-icon-size\)\)/s,
+      /\[data-slot="list-row-leading"\] > svg:not\(\[class\*="size-"\]\)\s*\{[^}]*width:\s*var\(\s*--list-row-leading-icon-size,\s*var\(\s*--control-icon-size\)\)/s,
     );
     // `> svg` only, and an explicit caller size still wins: an Avatar or Badge in the slot brings
     // its own box and must not be squeezed into an icon measure.
@@ -496,13 +498,13 @@ describe("audit + a11y drift guards", () => {
 
   it("floors the auth footer's interactive targets at the WCAG 2.2 AA size", () => {
     expect(foundation).toMatch(/--touch-target-min:\s*1\.5rem/);
-    expect(shellTokens).toMatch(/--auth-footer-target-min-size:\s*var\(--touch-target-min\)/);
+    expect(shellTokens).toMatch(/--auth-footer-target-min-size:\s*var\(\s*--touch-target-min\)/);
     const rule = shellStyles.match(/\.ui-auth-legal-footer :is\(a, button\)\s*\{[^}]*\}/)?.[0];
     expect(rule).toBeDefined();
     // inline-flex is load-bearing: min-block-size does nothing to an inline anchor, so dropping
     // the display line would leave a rule that reads correct and measures 19px.
     expect(rule).toMatch(/display:\s*inline-flex/);
-    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+    expect(rule).toMatch(/min-block-size:\s*var\(\s*--auth-footer-target-min-size\)/);
   });
 
   it("does not let the footer's inline picker rule undo that floor", () => {
@@ -514,7 +516,7 @@ describe("audit + a11y drift guards", () => {
       /\[data-slot="auth-legal-footer"\] \.ui-app-setting-picker-inline\s*\{[^}]*\}/,
     )?.[0];
     expect(rule).toBeDefined();
-    expect(rule).toMatch(/min-block-size:\s*var\(--auth-footer-target-min-size\)/);
+    expect(rule).toMatch(/min-block-size:\s*var\(\s*--auth-footer-target-min-size\)/);
     expect(rule, "the zeroed floor must not come back").not.toMatch(/min-height:\s*0/);
   });
 });

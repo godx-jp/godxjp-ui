@@ -273,7 +273,7 @@ describe("AuthShell", () => {
     // `:not([data-preset])` is the guard: the login/registration/device presets carry SCR-measured
     // card widths and page gutters, and a page measure must never reach them.
     expect(css).toMatch(
-      /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s*\{[^}]*--auth-shell-card-max-width:\s*var\(--auth-shell-wide-card-max-width\);/s,
+      /\.ui-auth-shell\[data-measure="wide"\]:not\(\[data-preset\]\)\s*\{[^}]*--auth-shell-card-max-width:\s*var\(\s*--auth-shell-wide-card-max-width\);/s,
     );
     // Auto margins, not `justify-content: center` — a tall two-column layout must not overflow
     // above the scroll origin (the hazard the registration preset documents).

@@ -84,10 +84,10 @@ describe.each(THEMES)("Segmented count pill non-text contrast ($name)", ({ selec
 describe("Segmented count pill contract (gh#602)", () => {
   it("uses an opaque primary fill in CSS, not Badge secondary / muted", () => {
     expect(controlStyles).toMatch(
-      /\.ui-segmented-count\s*\{[^}]*background:\s*var\(--segmented-count-background,\s*hsl\(var\(--primary\)\)\)/,
+      /\.ui-segmented-count\s*\{[^}]*background:\s*var\(\s*--segmented-count-background,\s*hsl\(var\(\s*--primary\)\)\)/,
     );
     expect(segmentedTokens).toContain("--segmented-count-background:");
-    expect(controlStyles).not.toMatch(/\.ui-segmented-count[^}]*hsl\(var\(--muted\)\)/);
+    expect(controlStyles).not.toMatch(/\.ui-segmented-count[^}]*hsl\(var\(\s*--muted\)\)/);
   });
 
   it("mutates when the fill is muted — the Badge-secondary regression", () => {

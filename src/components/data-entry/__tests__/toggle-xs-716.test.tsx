@@ -115,10 +115,10 @@ describe("Toggle xs (gh#716) — the box comes from the tier, not a literal", ()
   });
 
   it("the other three steps are unchanged", () => {
-    expect(controlCss).toMatch(/\.ui-toggle-sm \{[^}]*min-height: var\(--control-height-sm\);/);
+    expect(controlCss).toMatch(/\.ui-toggle-sm \{[^}]*min-height: var\(\s*--control-height-sm\);/);
     expect(controlCss).toMatch(
-      /\.ui-toggle-default-size \{[^}]*min-height: var\(--control-height\);/,
+      /\.ui-toggle-default-size \{[^}]*min-height: var\(\s*--control-height\);/,
     );
-    expect(controlCss).toMatch(/\.ui-toggle-lg \{[^}]*min-height: var\(--control-height-lg\);/);
+    expect(controlCss).toMatch(/\.ui-toggle-lg \{[^}]*min-height: var\(\s*--control-height-lg\);/);
   });
 });

@@ -53,8 +53,8 @@ describe("ScrollArea scrollbar (gh#798)", () => {
     // not the other. Only the two geometry knobs are new, because an always-on bar is drawn by
     // this package and therefore has a size this package must name.
     const always = css.slice(css.indexOf('[data-scrollbar="always"]::-webkit-scrollbar-track'));
-    expect(always).toMatch(/var\(--scroll-area-track-color, transparent\)/);
-    expect(always).toMatch(/var\(--scroll-area-thumb-color, hsl\(var\(--border\)\)\)/);
+    expect(always).toMatch(/var\(\s*--scroll-area-track-color, transparent\)/);
+    expect(always).toMatch(/var\(\s*--scroll-area-thumb-color, hsl\(var\(\s*--border\)\)\)/);
     expect(tokens).toMatch(/--scroll-area-always-bar-size:/);
     expect(tokens).toMatch(/--scroll-area-always-thumb-radius:/);
   });

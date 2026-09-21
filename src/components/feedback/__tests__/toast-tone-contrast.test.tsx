@@ -89,7 +89,7 @@ const ALPHAS = {
  */
 function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb {
   const mix = value.match(
-    /^color-mix\(in srgb, hsl\(var\(--([\w-]+)\)\) calc\(var\(--([\w-]+)\) \* 100%\), hsl\(var\(--([\w-]+)\)\)\)$/,
+    /^color-mix\(in srgb, hsl\(var\(\s*--([\w-]+)\)\) calc\(var\(\s*--([\w-]+)\) \* 100%\), hsl\(var\(\s*--([\w-]+)\)\)\)$/,
   );
   if (mix) {
     const tint = hslToken(theme, mix[1]);
@@ -99,7 +99,7 @@ function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb
     return base.map((c, i) => c + (tint[i] - c) * a) as Rgb;
   }
 
-  const translucent = value.match(/^hsl\(var\(--([\w-]+)\) \/ var\(--([\w-]+)\)\)$/);
+  const translucent = value.match(/^hsl\(var\(\s*--([\w-]+)\) \/ var\(\s*--([\w-]+)\)\)$/);
   if (translucent) {
     const colour = hslToken(theme, translucent[1]);
     const a = ALPHAS[translucent[2]];
@@ -107,7 +107,7 @@ function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb
     return over.map((c, i) => c + (colour[i] - c) * a) as Rgb;
   }
 
-  const plain = value.match(/^hsl\(var\(--([\w-]+)\)\)$/);
+  const plain = value.match(/^hsl\(var\(\s*--([\w-]+)\)\)$/);
   if (plain) return hslToken(theme, plain[1]);
 
   throw new Error(`unsupported toast colour expression: ${value}`);

@@ -58,7 +58,7 @@ describe("Pagination total placement (gh#705)", () => {
   it("size=sm reads the density-scoped --control-height-sm step unless the knob is themed", () => {
     expect(navTokens).toMatch(/--pagination-control-height-sm:\s*initial;/);
     expect(ruleBody(navCss, '.ui-pagination[data-size="sm"] {')).toMatch(
-      /--control-height:\s*var\(--pagination-control-height-sm,\s*var\(--control-height-sm\)\);/,
+      /--control-height:\s*var\(\s*--pagination-control-height-sm,\s*var\(\s*--control-height-sm\)\);/,
     );
   });
 });

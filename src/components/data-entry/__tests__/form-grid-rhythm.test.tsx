@@ -280,11 +280,11 @@ describe("Form grid spacing knobs (cardinal rule #45)", () => {
   const tokens = read("src/tokens/components/form.css");
 
   it("--form-grid-row-gap is a documented token defaulting to the canonical field rhythm", () => {
-    expect(tokens).toMatch(/--form-grid-row-gap:\s*var\(--form-field-row-gap\)/);
+    expect(tokens).toMatch(/--form-grid-row-gap:\s*var\(\s*--form-field-row-gap\)/);
   });
 
   it("--form-grid-column-gap is a documented token keeping the historical 16px gutter", () => {
-    expect(tokens).toMatch(/--form-grid-column-gap:\s*var\(--space-4\)/);
+    expect(tokens).toMatch(/--form-grid-column-gap:\s*var\(\s*--space-4\)/);
     expect(terminus("var(--form-grid-column-gap)")).toBe(terminus("var(--space-stack-md)"));
   });
 
@@ -350,12 +350,12 @@ describe("colSpan is honoured only where the grid has the columns (gh#321)", () 
     // Reading BOTH files is the point: a test that pinned 40rem in one place would pass happily
     // after someone moved the other.
     const gridQuery = read("src/styles/layout.css").match(
-      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid \{\s*grid-template-columns: repeat\(var\(--responsive-grid-sm/,
+      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid \{\s*grid-template-columns: repeat\(var\(\s*--responsive-grid-sm/,
     );
     expect(gridQuery?.[1]).toBeDefined();
 
     const spanQuery = css.match(
-      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid > \.ui-form-field \{\s*grid-column: span min\(var\(--responsive-grid-sm/,
+      /@container responsive-grid \(min-width: ([\d.]+rem)\) \{\s*\.ui-responsive-grid > \.ui-form-field \{\s*grid-column: span min\(var\(\s*--responsive-grid-sm/,
     );
     expect(spanQuery?.[1]).toBe(gridQuery?.[1]);
   });
@@ -376,14 +376,14 @@ describe("colSpan is honoured only where the grid has the columns (gh#321)", () 
 
     for (const [width, tier] of steps) {
       const field = new RegExp(
-        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid > \\.ui-form-field \\{\\s*grid-column: span min\\(var\\(--responsive-grid-${tier}, 1\\), var\\(--form-field-col-span, 1\\)\\);`,
+        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid > \\.ui-form-field \\{\\s*grid-column: span min\\(var\\(\\s*--responsive-grid-${tier}, 1\\), var\\(\\s*--form-field-col-span, 1\\)\\);`,
       );
       expect(css, `FormField is unclamped at ${width}`).toMatch(field);
 
       // And the ceiling must be the SAME tier variable ResponsiveGridItem clamps against, or the
       // two would drift into disagreeing about how many columns exist.
       const item = new RegExp(
-        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid-item \\{\\s*grid-column: span min\\(var\\(--responsive-grid-${tier}, 1\\),`,
+        `@container responsive-grid \\(min-width: ${width}\\) \\{\\s*\\.ui-responsive-grid-item \\{\\s*grid-column: span min\\(var\\(\\s*--responsive-grid-${tier}, 1\\),`,
       );
       expect(read("src/styles/layout.css"), `ResponsiveGridItem moved at ${width}`).toMatch(item);
     }

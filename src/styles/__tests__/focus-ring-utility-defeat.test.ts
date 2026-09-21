@@ -92,6 +92,6 @@ describe("focus ring — no utility defeats the components layer", () => {
   // to the box-shadow form, `outline-none` stops being a defeat and this gate has to be rewritten
   // rather than deleted — so pin the form the gate assumes.
   it("the mark is painted as an outline, which is what makes a suppressor a defeat", () => {
-    expect(FOCUS_RING_CSS).toMatch(/outline:\s*var\(--focus-ring-width\)\s*solid/);
+    expect(FOCUS_RING_CSS).toMatch(/outline:\s*var\(\s*--focus-ring-width\)\s*solid/);
   });
 });

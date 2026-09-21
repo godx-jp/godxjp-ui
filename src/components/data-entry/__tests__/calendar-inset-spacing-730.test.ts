@@ -71,8 +71,8 @@ describe("Calendar caption→weekday step is ONE token (gh#730 item 4)", () => {
   it("is space-3, not space-2: a group boundary has to out-measure the week rhythm", () => {
     // Unruled, rows sit --calendar-week-space-block-start (space-2, 8px) apart. At space-2 the
     // caption would read as one more week row; at space-3 (measured 12px) it reads as a boundary.
-    expect(tokens).toMatch(/--calendar-grid-space-block-start:\s*var\(--space-3\);/);
-    expect(tokens).toMatch(/--calendar-week-space-block-start:\s*var\(--space-2\);/);
+    expect(tokens).toMatch(/--calendar-grid-space-block-start:\s*var\(\s*--space-3\);/);
+    expect(tokens).toMatch(/--calendar-week-space-block-start:\s*var\(\s*--space-2\);/);
   });
 });
 
@@ -80,8 +80,8 @@ describe("Calendar nav and grid share ONE inset (gh#730 item 5)", () => {
   it("the nav's inset IS the calendar's inset, by construction and not by coincidence", () => {
     // One value, not two steps that happen to be equal: retuning --calendar-space-inset moves the
     // chevrons and the grid together, which is what stops them drifting apart again.
-    expect(tokens).toMatch(/--calendar-nav-space-inline:\s*var\(--calendar-space-inset\);/);
-    expect(tokens).toMatch(/--calendar-space-inset:\s*var\(--space-3\);/);
+    expect(tokens).toMatch(/--calendar-nav-space-inline:\s*var\(\s*--calendar-space-inset\);/);
+    expect(tokens).toMatch(/--calendar-space-inset:\s*var\(\s*--space-3\);/);
   });
 
   it("the root pads by that inset and the nav pads by the knob that mirrors it", () => {

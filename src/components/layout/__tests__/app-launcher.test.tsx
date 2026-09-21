@@ -380,18 +380,18 @@ describe("AppLauncher public contract", () => {
 
     const close = rule('.ui-app-launcher-launchpad [data-slot="dialog-close"]');
     expect(close).toMatch(/position:\s*fixed/);
-    expect(close).toMatch(/inset-block-start:\s*var\(--app-launcher-launchpad-space-inset\)/);
-    expect(close).toMatch(/inset-inline-end:\s*var\(--app-launcher-launchpad-space-inset\)/);
+    expect(close).toMatch(/inset-block-start:\s*var\(\s*--app-launcher-launchpad-space-inset\)/);
+    expect(close).toMatch(/inset-inline-end:\s*var\(\s*--app-launcher-launchpad-space-inset\)/);
     // The padding IS the target: a bare 16px glyph alone in a corner is under the SC 2.5.8 floor
     // with nothing beside it to share a hit area with.
-    expect(close).toMatch(/padding:\s*var\(--app-launcher-launchpad-close-space-padding\)/);
+    expect(close).toMatch(/padding:\s*var\(\s*--app-launcher-launchpad-close-space-padding\)/);
 
     // The scrim PLACES the panel, so the panel carries no transform to capture that `fixed`.
     const scrim = rule('[data-slot="dialog-overlay"].ui-app-launcher-launchpad-overlay');
     expect(scrim).toMatch(/place-items:\s*start/);
     // And it insets by whatever the host says it already owns — the close resolves against the
     // scrim's PADDING box, so one declaration moves the grid and the dismiss together.
-    expect(scrim).toMatch(/padding:\s*var\(--app-launcher-launchpad-space-safe-area\)/);
+    expect(scrim).toMatch(/padding:\s*var\(\s*--app-launcher-launchpad-space-safe-area\)/);
     expect(rule('[data-slot="dialog-content"].ui-app-launcher-launchpad')).toMatch(
       /transform:\s*none/,
     );
@@ -418,7 +418,9 @@ describe("AppLauncher public contract", () => {
     expect(grid).toMatch(/justify-content:\s*start/);
     // Fixed tracks, not `1fr`: `auto-fit` collapses what nothing occupies, so a short row is as
     // wide as its apps instead of stretching them apart as the screen widens.
-    expect(grid).toMatch(/repeat\(\s*auto-fit,\s*var\(--app-launcher-launchpad-tile-inline-size\)/);
+    expect(grid).toMatch(
+      /repeat\(\s*auto-fit,\s*var\(\s*--app-launcher-launchpad-tile-inline-size\)/,
+    );
     expect(grid).not.toMatch(/minmax\(0,\s*1fr\)/);
   });
 

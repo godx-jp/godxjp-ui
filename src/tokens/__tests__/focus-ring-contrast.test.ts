@@ -187,7 +187,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
     }
     // And the rule feeds the utility that paints that border, rather than declaring a colour it
     // would lose to. `@theme inline` compiles `border-input` to `border-color: hsl(var(--input))`.
-    expect(focusRing).toMatch(/--input:\s*var\(--focus-ring-color, var\(--ring\)\)/);
+    expect(focusRing).toMatch(/--input:\s*var\(\s*--focus-ring-color, var\(\s*--ring\)\)/);
   });
 
   it("the field halo is `--control-outline`, colour AND alpha", () => {
@@ -219,7 +219,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
     expect(GEOMETRY.lineWidth).toBe(1);
     expect(GEOMETRY.controlOutlineWidth).toBe(2);
     expect(GEOMETRY.lineWidthFocus).toBe(3);
-    expect(root).toMatch(/--control-outline-width:\s*calc\(var\(--stroke-md\) \* /); // 2px
+    expect(root).toMatch(/--control-outline-width:\s*calc\(var\(\s*--stroke-md\) \* /); // 2px
     expect(css).toMatch(/--stroke-md:\s*2px;/);
     expect(css).toMatch(/--stroke-lg:\s*3px;/); // the heavy outline weight, one token away
     expect(css).toMatch(/--stroke-hairline:\s*1px;/); // the shipped ON weight
@@ -230,7 +230,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
     // form paints outside the box model. This is the STRUCTURAL reason there is no layout shift,
     // asserted so a future "thicken the border on focus" cannot land without deleting it.
     expect(focusRing).not.toMatch(/border(?:-[a-z]+)?-width\s*:/);
-    expect(controlTokens).toMatch(/--control-border-width:\s*var\(--stroke-hairline\)/);
+    expect(controlTokens).toMatch(/--control-border-width:\s*var\(\s*--stroke-hairline\)/);
   });
 });
 
@@ -289,10 +289,10 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
     // multiplication is what this asserts; the DEFAULT VALUE is the separate claim above it.
     expect(root).toMatch(/--focus-outline:\s*1;/);
     expect(root).toMatch(
-      /--focus-ring-width:\s*calc\(var\(--focus-ring-weight\) \* var\(--focus-outline\)\)/,
+      /--focus-ring-width:\s*calc\(var\(\s*--focus-ring-weight\) \* var\(\s*--focus-outline\)\)/,
     );
     expect(root).toMatch(
-      /--control-outline-width:\s*calc\(var\(--stroke-md\) \* var\(--focus-outline\)\)/,
+      /--control-outline-width:\s*calc\(var\(\s*--stroke-md\) \* var\(\s*--focus-outline\)\)/,
     );
   });
 
@@ -318,7 +318,7 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
 
   it("EVERY painted path multiplies by the switch — no rule paints a raw length", () => {
     // The mark itself.
-    expect(focusRing).toMatch(/outline:\s*var\(--focus-ring-width\) solid/);
+    expect(focusRing).toMatch(/outline:\s*var\(\s*--focus-ring-width\) solid/);
     expect(flatFocusRing).toContain(`box-shadow: ${HALO_DEFAULT};`);
     // The region ring, which has its own opt-in token and would otherwise bypass the switch.
     const shell = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
@@ -463,7 +463,7 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     // The complaint was weight, not existence: 3px of opaque brand around an already-shaded
     // selected nav row is two heavy treatments on one element. The FIELD form of this indicator
     // is one hairline, and WCAG's AA bar for an indicator is CONTRAST, not thickness.
-    expect(root).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
+    expect(root).toMatch(/--focus-outline-weight:\s*var\(\s*--stroke-hairline\)/);
     expect(css).toMatch(/--stroke-hairline:\s*1px;/);
     // The heavier outline weight stays one token away.
     expect(css).toMatch(/--stroke-lg:\s*3px;/);
@@ -558,7 +558,7 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     );
     const strokeScale: Record<string, number> = { hairline: 1, sm: 1.5, md: 2, lg: 3, xl: 4 };
     const step = (value: string) =>
-      strokeScale[value.match(/var\(--stroke-([a-z0-9]+)\)/)?.[1] ?? ""] ??
+      strokeScale[value.match(/var\(\s*--stroke-([a-z0-9]+)\)/)?.[1] ?? ""] ??
       Number.parseFloat(value);
     const weights = [
       root.match(/--focus-outline-weight:\s*([^;\n]+);/)?.[1]?.trim() ?? "",
@@ -641,7 +641,7 @@ describe("one focus language, applied consistently", () => {
   });
 
   it("a focused field's BOUNDARY becomes the focus hue — the grey never survives", () => {
-    expect(focusRing).toMatch(/--input:\s*var\(--focus-ring-color, var\(--ring\)\)/);
+    expect(focusRing).toMatch(/--input:\s*var\(\s*--focus-ring-color, var\(\s*--ring\)\)/);
   });
 
   it("does NOT rebind the boundary on the Switch, which FILLS from --input", () => {
@@ -671,7 +671,7 @@ describe("one focus language, applied consistently", () => {
     const declaration = controlTokens.match(/--control-focus-ring-width:\s*([^;]+);/)?.[1]?.trim();
     expect(declaration, "--control-focus-ring-width must be declared").toBeDefined();
     expect(declaration, "must be a length with a unit — see the calc() note above").toMatch(
-      /^(0|var\(--stroke-[a-z0-9]+\)|[\d.]+[a-z%]+)$/,
+      /^(0|var\(\s*--stroke-[a-z0-9]+\)|[\d.]+[a-z%]+)$/,
     );
   });
 

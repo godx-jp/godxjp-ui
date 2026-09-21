@@ -84,7 +84,7 @@ function recessed(theme: "light" | "dark"): Rgb {
   const block = themeBlock(semanticLayout, theme);
   const declaration = block.match(/--surface-recessed:\s*([^;]+);/)?.[1].trim();
   if (!declaration) throw new Error(`no --surface-recessed in the ${theme} theme`);
-  const parsed = declaration.match(/^hsl\(var\(--([a-z-]+)\)(?:\s*\/\s*([\d.]+))?\)$/);
+  const parsed = declaration.match(/^hsl\(var\(\s*--([a-z-]+)\)(?:\s*\/\s*([\d.]+))?\)$/);
   if (!parsed) throw new Error(`unsupported --surface-recessed value: ${declaration}`);
   const role = hslToRgb(triplet(roles, parsed[1]));
   const alpha = parsed[2] === undefined ? 1 : Number(parsed[2]);
@@ -101,7 +101,7 @@ describe("AppShell page ground (gh#399)", () => {
     // inheriting the light value frozen at :root (docs/TOKENS.md).
     expect(shellTokens).toMatch(/--app-shell-main-background:\s*initial;/);
     expect(shellLayout).toMatch(
-      /background-color: var\(--app-shell-main-background, var\(--surface-recessed\)\);/,
+      /background-color: var\(\s*--app-shell-main-background, var\(\s*--surface-recessed\)\);/,
     );
   });
 

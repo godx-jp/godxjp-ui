@@ -50,13 +50,13 @@ describe("AuthShell compact card spacing", () => {
       // :root, and without a fallback this declaration would be invalid-at-computed-value whenever
       // the knob is unset — correct in real CSS, but it makes the resting default depend on a
       // subtle rule rather than on something a reader can see. Spelled out instead.
-      /\.ui-auth-shell\[data-density="compact"\]\s+\.ui-auth-shell-card\s*\{[^}]*--card-space-inset:\s*var\(--auth-shell-compact-card-inset\);[^}]*--card-space-solo-y:\s*var\(\s*--auth-shell-card-padding-block-compact,\s*var\(--auth-shell-compact-card-inset\)\s*\);/s,
+      /\.ui-auth-shell\[data-density="compact"\]\s+\.ui-auth-shell-card\s*\{[^}]*--card-space-inset:\s*var\(\s*--auth-shell-compact-card-inset\);[^}]*--card-space-solo-y:\s*var\(\s*--auth-shell-card-padding-block-compact,\s*var\(\s*--auth-shell-compact-card-inset\)\s*\);/s,
     );
     expect(cardLayoutCss).toMatch(
-      /\[data-slot="card-content"\]\s*\{[^}]*padding-inline:\s*var\(--card-space-inset\);/s,
+      /\[data-slot="card-content"\]\s*\{[^}]*padding-inline:\s*var\(\s*--card-space-inset\);/s,
     );
     expect(cardLayoutCss).toMatch(
-      /\[data-slot="card-content"\]\[data-solo\]\s*\{[^}]*padding-block:\s*var\(--card-space-solo-y,\s*var\(--card-space-shell-y,\s*var\(--card-space-inset\)\)\);/s,
+      /\[data-slot="card-content"\]\[data-solo\]\s*\{[^}]*padding-block:\s*var\(\s*--card-space-solo-y,\s*var\(\s*--card-space-shell-y,\s*var\(\s*--card-space-inset\)\)\);/s,
     );
   });
 });

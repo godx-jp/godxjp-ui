@@ -141,7 +141,7 @@ describe("focus-ring clip margin", () => {
     // rejected declaration is a 0 margin, i.e. `hidden` wearing a different keyword.
     expect(offenders).toEqual([]);
     for (const r of rules().filter((x) => /overflow-clip-margin\s*:/.test(x.body))) {
-      expect(r.body).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+      expect(r.body).toMatch(/overflow-clip-margin:\s*var\(\s*--focus-ring-clip-margin\);/);
     }
   });
 
@@ -149,7 +149,7 @@ describe("focus-ring clip margin", () => {
     const rule = rules().find((r) => r.file === file && r.selector === selector);
     expect(rule, `${selector} disappeared from ${file}`).toBeDefined();
     expect(rule!.body).toMatch(/overflow:\s*clip;/);
-    expect(rule!.body).toMatch(/overflow-clip-margin:\s*var\(--focus-ring-clip-margin\);/);
+    expect(rule!.body).toMatch(/overflow-clip-margin:\s*var\(\s*--focus-ring-clip-margin\);/);
     expect(rule!.body).not.toMatch(/overflow:\s*hidden;/);
     // Two-axis only: `overflow-x`/`overflow-y` would drop the margin without changing how the
     // rule reads.
@@ -230,6 +230,6 @@ describe("focus-ring clip margin", () => {
     // `height: auto` releases the definite height the shared row rule set; without it the
     // `min-height` below it is dead code.
     expect(label!.body).toMatch(/height:\s*auto;/);
-    expect(label!.body).toMatch(/min-height:\s*var\(--menu-item-height\);/);
+    expect(label!.body).toMatch(/min-height:\s*var\(\s*--menu-item-height\);/);
   });
 });

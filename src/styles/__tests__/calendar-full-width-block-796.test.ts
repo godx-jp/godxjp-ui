@@ -56,7 +56,7 @@ describe("Calendar width=full (gh#796)", () => {
 
   it("keeps a floor of one control height, so an empty full calendar does not move", () => {
     // This is the whole no-regression argument: measured 32px/305px before and after.
-    expect(full()).toMatch(/min-block-size:\s*var\(--control-height\);/);
+    expect(full()).toMatch(/min-block-size:\s*var\(\s*--control-height\);/);
   });
 
   it("lays the cell out as a column that reads from the start edge", () => {
@@ -70,7 +70,7 @@ describe("Calendar width=full (gh#796)", () => {
   it("leaves the DEFAULT day button pinned, so the popover is untouched", () => {
     // The popover never sets width="full"; its cell stays a fixed square.
     const base = rule(".ui-calendar .ui-calendar-day-button");
-    expect(base).toMatch(/block-size:\s*var\(--control-height\);/);
+    expect(base).toMatch(/block-size:\s*var\(\s*--control-height\);/);
     expect(base).not.toMatch(/min-block-size/);
   });
 });

@@ -263,7 +263,7 @@ describe("Table action-collection compact tier — the layer contract (gh#412)",
     // Every compact re-point — type AND measures — is inside the last layer…
     expect(responsiveLayer.match(/@container ui-table-collection \(width </g)).toHaveLength(4);
     expect(
-      responsiveLayer.match(/font-size: var\(--table-action-collection-font-size-compact\)/g),
+      responsiveLayer.match(/font-size: var\(\s*--table-action-collection-font-size-compact\)/g),
     ).toHaveLength(4);
     // …and none of it is left behind in `@layer components` (prose comments aside).
     const beforeRules = beforeResponsive.replace(/\/\*[\s\S]*?\*\//g, "");

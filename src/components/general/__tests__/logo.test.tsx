@@ -185,7 +185,7 @@ describe("Logo brand tokens", () => {
     expect(layout).toContain(
       "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
     );
-    expect(layout).not.toMatch(/var\(--success\b/);
+    expect(layout).not.toMatch(/var\(\s*--success\b/);
   });
 
   it("declares every role-mirror knob `initial` (no :root freeze)", () => {

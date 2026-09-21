@@ -42,14 +42,14 @@ describe("choice row alignment (gh#709)", () => {
     expect(rule, "no .ui-choice-field > .ui-choice-control rule").toBeDefined();
     expect(rule).toMatch(/align-items:\s*center;/);
     // One line box of the LABEL's own type — never a literal height.
-    expect(rule).toMatch(/line-height:\s*var\(--control-label-line-height\);/);
+    expect(rule).toMatch(/line-height:\s*var\(\s*--control-label-line-height\);/);
     expect(rule).toMatch(/min-block-size:\s*1lh;/);
     expect(rule).not.toMatch(/\d+px/);
   });
 
   it("keeps the box → label gap on the shared choice token", () => {
     const rule = ruleFor(CONTROL_CSS, /^\.ui-choice-field$/);
-    expect(rule).toMatch(/gap:\s*var\(--choice-gap\);/);
+    expect(rule).toMatch(/gap:\s*var\(\s*--choice-gap\);/);
   });
 
   it.each(COLLAPSE_KEYS)(

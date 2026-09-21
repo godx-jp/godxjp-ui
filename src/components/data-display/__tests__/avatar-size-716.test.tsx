@@ -125,9 +125,9 @@ describe("Avatar size (gh#716) — the DOM contract", () => {
 describe("Avatar size (gh#716) — the token graph behind the measurements", () => {
   it("the default box and type read the avatar knobs, not a baked value", () => {
     expect(dataDisplayCss).toMatch(
-      /\.ui-avatar \{[^}]*width: var\(--avatar-size\); height: var\(--avatar-size\);/,
+      /\.ui-avatar \{[^}]*width: var\(\s*--avatar-size\); height: var\(\s*--avatar-size\);/,
     );
-    expect(dataDisplayCss).toMatch(/\.ui-avatar \{[^}]*font-size: var\(--avatar-font-size\);/);
+    expect(dataDisplayCss).toMatch(/\.ui-avatar \{[^}]*font-size: var\(\s*--avatar-font-size\);/);
   });
 
   it.each(LADDER)("--avatar-size-%s IS the %s tier — never a px, never an offset", (step, tier) => {
@@ -182,7 +182,7 @@ describe("Avatar size (gh#716) — the token graph behind the measurements", () 
 
   it("sizes the glyph ONLY on a sized avatar — a bare `.ui-avatar svg` would outrank call sites", () => {
     expect(dataDisplayCss).toMatch(
-      /\.ui-avatar\[data-size\] svg \{[^}]*inline-size: var\(--avatar-glyph-size\)/,
+      /\.ui-avatar\[data-size\] svg \{[^}]*inline-size: var\(\s*--avatar-glyph-size\)/,
     );
     expect(dataDisplayCss).not.toMatch(/\.ui-avatar svg \{/);
   });

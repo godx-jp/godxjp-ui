@@ -123,7 +123,7 @@ describe("Flex marker axis", () => {
     const css = readFileSync(join(process.cwd(), "src/styles/layout.css"), "utf8");
     const scoped = css.match(/\.ui-flex\[data-list[^{]*\{[^}]*\}/g) ?? [];
 
-    expect(scoped.join("\n")).toMatch(/padding-inline-start:\s*var\(--space-5\)/);
+    expect(scoped.join("\n")).toMatch(/padding-inline-start:\s*var\(\s*--space-5\)/);
     expect(scoped.join("\n")).toMatch(/list-style-type:\s*disc/);
     expect(scoped.some((rule) => /> li\b/.test(rule) && /display:\s*list-item/.test(rule))).toBe(
       true,

@@ -50,7 +50,7 @@ function cssFiles(dir: string): string[] {
   });
 }
 
-const binding = new RegExp(`^\\s*(--[a-z0-9-]+):[^;]*var\\(--(?:${ROLES.join("|")})\\)`, "gm");
+const binding = new RegExp(`^\\s*(--[a-z0-9-]+):[^;]*var\\(\\s*--(?:${ROLES.join("|")})\\)`, "gm");
 const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 describe("no token tier freezes a tenant-scoped role at :root (gh#687)", () => {
@@ -68,7 +68,7 @@ describe("no token tier freezes a tenant-scoped role at :root (gh#687)", () => {
 
   it("the focus outline reads its default at the focused element", () => {
     const focusRing = readFileSync(join(process.cwd(), "src/styles/focus-ring.css"), "utf8");
-    const readers = focusRing.match(/var\(--focus-outline-color[,)]/g) ?? [];
+    const readers = focusRing.match(/var\(\s*--focus-outline-color[,)]/g) ?? [];
     expect(readers.length).toBeGreaterThan(0);
     expect(readers.every((read) => read.endsWith(","))).toBe(true);
     expect(focusRing).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
@@ -114,7 +114,7 @@ describe("the brand text roles derive from the --primary in scope (gh#664)", () 
     const bare: string[] = [];
     for (const file of cssFiles(styles)) {
       const css = stripComments(readFileSync(file, "utf8"));
-      if (new RegExp(`var\\(--${name}\\)`).test(css)) bare.push(file.slice(styles.length));
+      if (new RegExp(`var\\(\\s*--${name}\\)`).test(css)) bare.push(file.slice(styles.length));
     }
     expect(bare, `a bare var(--${name}) resolves to nothing and paints no colour`).toEqual([]);
   });

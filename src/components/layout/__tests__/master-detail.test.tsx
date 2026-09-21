@@ -205,11 +205,13 @@ describe("MasterDetail", () => {
       expect(layoutTokens).toMatch(/--master-detail-rail-compact:\s*18\.75rem/);
       expect(layoutTokens).toMatch(/--master-detail-rail-standard:\s*20rem/);
       expect(layoutCss).toMatch(
-        /\[data-rail-width="compact"\]\s*\{\s*--master-detail-rail-size:\s*var\(--master-detail-rail-compact\)/,
+        /\[data-rail-width="compact"\]\s*\{\s*--master-detail-rail-size:\s*var\(\s*--master-detail-rail-compact\)/,
       );
-      expect(layoutCss).toMatch(/\.ui-master-detail\s*\{[^}]*gap:\s*var\(--master-detail-gap\)/s);
       expect(layoutCss).toMatch(
-        /\.ui-master-detail\s*\{[^}]*--master-detail-rail-size:\s*var\(--master-detail-rail-standard\)/s,
+        /\.ui-master-detail\s*\{[^}]*gap:\s*var\(\s*--master-detail-gap\)/s,
+      );
+      expect(layoutCss).toMatch(
+        /\.ui-master-detail\s*\{[^}]*--master-detail-rail-size:\s*var\(\s*--master-detail-rail-standard\)/s,
       );
     });
 
@@ -218,10 +220,10 @@ describe("MasterDetail", () => {
       // which is why the breakpoint lives in a calc() here (rule #45).
       expect(layoutTokens).toMatch(/--master-detail-collapse-below:\s*40rem/);
       expect(layoutCss).toMatch(
-        /flex:\s*1 1 calc\(\(var\(--master-detail-collapse-below\) - 100%\) \* 999\)/,
+        /flex:\s*1 1 calc\(\(var\(\s*--master-detail-collapse-below\) - 100%\) \* 999\)/,
       );
       expect(layoutCss).toMatch(
-        /max\(\s*var\(--master-detail-rail-size\),\s*calc\(\(var\(--master-detail-collapse-below\) - 100%\) \* 999\)\s*\)/s,
+        /max\(\s*var\(\s*--master-detail-rail-size\),\s*calc\(\(var\(\s*--master-detail-collapse-below\) - 100%\) \* 999\)\s*\)/s,
       );
       expect(layoutCss).not.toMatch(/@container master-detail/);
     });
@@ -235,12 +237,12 @@ describe("MasterDetail", () => {
     it("bounds the master viewport from tokens only when a preset is selected", () => {
       expect(layoutTokens).toMatch(/--master-detail-master-viewport-compact:\s*20rem/);
       expect(layoutTokens).toMatch(/--master-detail-master-viewport-standard:\s*28rem/);
-      expect(layoutTokens).toMatch(/--master-detail-master-viewport-inset:\s*var\(--space-1\)/);
+      expect(layoutTokens).toMatch(/--master-detail-master-viewport-inset:\s*var\(\s*--space-1\)/);
       expect(layoutCss).toMatch(
-        /\[data-master-viewport="compact"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(--master-detail-master-viewport-compact\)/,
+        /\[data-master-viewport="compact"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(\s*--master-detail-master-viewport-compact\)/,
       );
       expect(layoutCss).toMatch(
-        /\[data-master-viewport="standard"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(--master-detail-master-viewport-standard\)/,
+        /\[data-master-viewport="standard"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(\s*--master-detail-master-viewport-standard\)/,
       );
       // `auto` must never be a selector — the default has to stay literally unstyled.
       expect(layoutCss).not.toMatch(/\[data-master-viewport="auto"\]/);
@@ -254,8 +256,10 @@ describe("MasterDetail", () => {
 
       expect(block).toMatch(/overflow-y:\s*auto/);
       expect(block).toMatch(/overscroll-behavior:\s*contain/);
-      expect(block).toMatch(/padding:\s*var\(--master-detail-master-viewport-inset\)/);
-      expect(block).toMatch(/scroll-padding-block:\s*var\(--master-detail-master-viewport-inset\)/);
+      expect(block).toMatch(/padding:\s*var\(\s*--master-detail-master-viewport-inset\)/);
+      expect(block).toMatch(
+        /scroll-padding-block:\s*var\(\s*--master-detail-master-viewport-inset\)/,
+      );
     });
 
     it("keeps the composition direction-agnostic (RTL-safe)", () => {

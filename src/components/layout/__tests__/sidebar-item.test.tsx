@@ -105,27 +105,27 @@ describe("SidebarItem", () => {
       // still line up in the same column. If the tone rule ever grows a size/pad/radius, they stop.
       expect(toneBadgeRule).not.toBe("");
       expect(toneBadgeRule).toMatch(
-        /background: var\(--sidebar-badge-destructive-background, hsl\(var\(--destructive\)\)\);/,
+        /background: var\(\s*--sidebar-badge-destructive-background, hsl\(var\(\s*--destructive\)\)\);/,
       );
       expect(toneBadgeRule).toMatch(
-        /color: var\(--sidebar-badge-destructive-foreground, hsl\(var\(--destructive-foreground\)\)\);/,
+        /color: var\(\s*--sidebar-badge-destructive-foreground, hsl\(var\(\s*--destructive-foreground\)\)\);/,
       );
       expect(toneBadgeRule).not.toMatch(
         /min-width|padding|border-radius|font-size|font-weight|line-height|display/,
       );
       // …and the geometry really does live on the base rule, which both tones share.
       expect(baseBadgeRule).toMatch(/min-width: 1\.125rem;/);
-      expect(baseBadgeRule).toMatch(/border-radius: var\(--radius-pill\);/);
+      expect(baseBadgeRule).toMatch(/border-radius: var\(\s*--radius-pill\);/);
       expect(baseBadgeRule).toMatch(/padding-inline: 0\.375rem;/);
     });
 
     it("owns both colour pairs as tokens, the resting pair unchanged (rule #44/#45)", () => {
       // The resting defaults are the literals the pill always carried, now reachable from a theme.
       expect(baseBadgeRule).toMatch(
-        /background: var\(--sidebar-badge-background, hsl\(var\(--secondary\)\)\);/,
+        /background: var\(\s*--sidebar-badge-background, hsl\(var\(\s*--secondary\)\)\);/,
       );
       expect(baseBadgeRule).toMatch(
-        /color: var\(--sidebar-badge-foreground, hsl\(var\(--muted-foreground\)\)\);/,
+        /color: var\(\s*--sidebar-badge-foreground, hsl\(var\(\s*--muted-foreground\)\)\);/,
       );
       // `initial` at the token tier so a scoped [data-tenant]/.dark override of the ROLE still
       // reaches the pill; a :root binding to a role var would freeze it (docs/TOKENS.md).
@@ -220,10 +220,10 @@ describe("SidebarHeader + SidebarSection", () => {
       // The measured defect: `.sb-icon` pinned 16px while `.sb-badge` let a 24px SVG through, so
       // the same chevron rendered 36x24 in a grey pill next to a 16x16 leading icon.
       expect(trailingRule).not.toBe("");
-      expect(trailingRule).toMatch(/width: var\(--sidebar-nav-icon-size\);/);
-      expect(trailingRule).toMatch(/height: var\(--sidebar-nav-icon-size\);/);
-      expect(trailingSvgRule).toMatch(/width: var\(--sidebar-nav-icon-size\);/);
-      expect(trailingSvgRule).toMatch(/height: var\(--sidebar-nav-icon-size\);/);
+      expect(trailingRule).toMatch(/width: var\(\s*--sidebar-nav-icon-size\);/);
+      expect(trailingRule).toMatch(/height: var\(\s*--sidebar-nav-icon-size\);/);
+      expect(trailingSvgRule).toMatch(/width: var\(\s*--sidebar-nav-icon-size\);/);
+      expect(trailingSvgRule).toMatch(/height: var\(\s*--sidebar-nav-icon-size\);/);
       // A glyph is not a pill: no fill, no capsule, no inline padding of its own.
       expect(trailingRule).not.toMatch(/background|border-radius|padding|min-width/);
     });

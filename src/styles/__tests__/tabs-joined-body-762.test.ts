@@ -77,7 +77,7 @@ describe("Tabs bodied — the trailing control's edge (gh#766)", () => {
       '[data-placement="top"] .ui-tabs-extra[data-side="end"]',
     );
     expect(rule).toMatch(
-      /margin-inline-end:\s*calc\(\s*var\(--tabs-panel-space-inset\)\s*\+\s*var\(--tabs-panel-border-width\)\s*\)/,
+      /margin-inline-end:\s*calc\(\s*var\(\s*--tabs-panel-space-inset\)\s*\+\s*var\(\s*--tabs-panel-border-width\)\s*\)/,
     );
   });
 
@@ -122,13 +122,13 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
   it("gives the panel a real body — border, radius, surface and an inset", () => {
     const body = ruleContaining(navStyles, '[data-bodied="true"] > [data-slot="tabs-panel"],');
     expect(body).toMatch(
-      /border:\s*var\(--tabs-panel-border-width\)\s+solid\s+hsl\(var\(--border\)\)/,
+      /border:\s*var\(\s*--tabs-panel-border-width\)\s+solid\s+hsl\(var\(\s*--border\)\)/,
     );
-    expect(body).toMatch(/border-radius:\s*var\(--tabs-panel-radius\)/);
+    expect(body).toMatch(/border-radius:\s*var\(\s*--tabs-panel-radius\)/);
     expect(body).toMatch(
-      /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(--background\)\s*\)\s*\)/,
+      /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(\s*--background\)\s*\)\s*\)/,
     );
-    expect(body).toMatch(/padding:\s*var\(--tabs-panel-space-inset\)/);
+    expect(body).toMatch(/padding:\s*var\(\s*--tabs-panel-space-inset\)/);
   });
 
   it("drops the LIST's rail, so the seam is one line and not two", () => {
@@ -164,7 +164,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
       // occupy the SAME device row, which is what makes it one outline instead of two.
       expect(rule).toMatch(
         new RegExp(
-          `${margin}:\\s*calc\\(\\s*-1\\s*\\*\\s*var\\(--tabs-panel-border-width\\)\\s*\\)`,
+          `${margin}:\\s*calc\\(\\s*-1\\s*\\*\\s*var\\(\\s*--tabs-panel-border-width\\)\\s*\\)`,
         ),
       );
       for (const corner of corners) expect(rule).toMatch(new RegExp(`${corner}:\\s*0;`));
@@ -182,7 +182,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     // Two declarations of one colour is how a retinted body leaves a hairline of the old
     // surface across the join. All four placements read the knob, and so does the active fill.
     const merges = tabsSource.match(
-      /data-\[state=active\]:border-[btse]-\[hsl\(var\(--tabs-panel-background,var\(--background\)\)\)\]/g,
+      /data-\[state=active\]:border-[btse]-\[hsl\(var\(\s*--tabs-panel-background,var\(\s*--background\)\)\)\]/g,
     );
     expect(merges).toHaveLength(4);
     expect(tabsSource).toContain(
@@ -264,6 +264,6 @@ describe("Tabs counter pill ↔ Toggle counter pill (gh#762)", () => {
     );
     expect(selected).toMatch(/background:/);
     expect(selected).toMatch(/color:/);
-    expect(navStyles).toMatch(/outline:\s*var\(--tabs-count-forced-outline-width\)/);
+    expect(navStyles).toMatch(/outline:\s*var\(\s*--tabs-count-forced-outline-width\)/);
   });
 });

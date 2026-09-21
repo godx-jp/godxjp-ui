@@ -136,7 +136,7 @@ describe("Label line box", () => {
      * 11px row and sat the lower half of the canonical Login card 8px high (gh#263).
      */
     expect(controlTokens).not.toMatch(/--control-label-line-height:\s*1\s*;/);
-    expect(controlTokens).toMatch(/--control-label-line-height:\s*var\(--line-height-normal\)/);
+    expect(controlTokens).toMatch(/--control-label-line-height:\s*var\(\s*--line-height-normal\)/);
   });
 
   it("keeps reading the token from the primitive, so a theme can still retune it", () => {

@@ -54,7 +54,7 @@ describe("TopbarItem icon slot (gh#712)", () => {
 
   it("sizes the slot's glyph from the bar's own token, not a literal", () => {
     expect(shell).toMatch(
-      /\.ui-topbar-item-icon svg\s*\{\s*inline-size: var\(--topbar-icon-size\);\s*block-size: var\(--topbar-icon-size\);/,
+      /\.ui-topbar-item-icon svg\s*\{\s*inline-size: var\(\s*--topbar-icon-size\);\s*block-size: var\(\s*--topbar-icon-size\);/,
     );
   });
 

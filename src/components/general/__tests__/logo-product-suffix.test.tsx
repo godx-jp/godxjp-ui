@@ -201,7 +201,7 @@ describe("Logo productSuffix tokens", () => {
     expect(layout).not.toMatch(/#[cC]5[cC]8[dD]6/);
     // --border is the table-grid hairline (1.15:1 on the page, by its own note in foundation.css)
     // and disappears at 1px × 1em between two words.
-    expect(layout).not.toMatch(/product-suffix[^}]*var\(--border\)/);
+    expect(layout).not.toMatch(/product-suffix[^}]*var\(\s*--border\)/);
   });
 
   it("gives the rule no DOM node — it is decoration, not content", () => {

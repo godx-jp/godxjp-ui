@@ -84,7 +84,7 @@ describe("TopbarItem", () => {
 
     const cell = declarationsFor(shellStyles, ".ui-topbar-item");
     // WHERE the mark sits is the cell's to say; what it is made of is not.
-    expect(cell).toMatch(/--focus-ring-offset:\s*var\(--topbar-item-focus-ring-offset\);/);
+    expect(cell).toMatch(/--focus-ring-offset:\s*var\(\s*--topbar-item-focus-ring-offset\);/);
     expect(cell).not.toMatch(/outline:/);
     expect(cell).not.toMatch(/box-shadow:/);
     // Inset by the mark's OWN width, so the two cannot drift and the `--focus-outline` switch
@@ -96,11 +96,11 @@ describe("TopbarItem", () => {
 
   it("takes hover, active and open from the bar's surface tokens — no literals", () => {
     expect(declarationsFor(shellStyles, ".ui-topbar-item:hover")).toMatch(
-      /background:\s*hsl\(var\(--topbar-item-hover-background, var\(--accent\)\)\);/,
+      /background:\s*hsl\(var\(\s*--topbar-item-hover-background, var\(\s*--accent\)\)\);/,
     );
     // The pointer has left the cell while its menu is open, so :hover alone loses the anchor.
     expect(declarationsFor(shellStyles, '.ui-topbar-item[data-state="open"]')).toMatch(
-      /background:\s*hsl\(var\(--topbar-item-active-background\)\);/,
+      /background:\s*hsl\(var\(\s*--topbar-item-active-background\)\);/,
     );
     const cell = declarationsFor(shellStyles, ".ui-topbar-item");
     expect(cell).not.toMatch(/\d+(?:\.\d+)?(?:px|rem|em)/);

@@ -66,7 +66,9 @@ describe("Timeline paints its whole progress column from ONE role (gh#731)", () 
   for (const [what, selector] of Object.entries(PROGRESS_CALL_SITES)) {
     it(`${what} falls back to hsl(var(--primary)), never --success`, () => {
       const body = rule(layout, selector);
-      expect(body).toMatch(/background:\s*var\(--timeline-[a-z-]+, hsl\(var\(--primary\)\)\)/);
+      expect(body).toMatch(
+        /background:\s*var\(\s*--timeline-[a-z-]+, hsl\(var\(\s*--primary\)\)\)/,
+      );
       expect(body).not.toContain("--success");
     });
   }
@@ -142,11 +144,13 @@ describe("the role-mirror knobs still override, and stay `initial` (gh#687 freez
   });
 
   it.each(KNOBS)("%s is read with its role default AT THE CALL SITE", (knob) => {
-    expect(layout).toMatch(new RegExp(`var\\(${knob}, hsl\\(var\\(--[a-z-]+\\)\\)\\)`));
+    expect(layout).toMatch(new RegExp(`var\\(${knob}, hsl\\(var\\(\\s*--[a-z-]+\\)\\)\\)`));
   });
 
   it("the token tier never binds a Timeline knob to a tenant-scoped role", () => {
-    expect(tokens).not.toMatch(/--timeline-(?:dot|line)-[a-z-]+:\s*var\(--(?:primary|success)\)/);
+    expect(tokens).not.toMatch(
+      /--timeline-(?:dot|line)-[a-z-]+:\s*var\(\s*--(?:primary|success)\)/,
+    );
   });
 
   it("documents the two-declaration line that restores the pre-gh#731 pairing", () => {

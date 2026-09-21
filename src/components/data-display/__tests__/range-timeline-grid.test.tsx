@@ -187,11 +187,11 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
   it("sizes a grid column exactly like a header column, so the lines align for unequal units", () => {
     const header = rule(".ui-range-timeline-column");
     const cell = rule(".ui-range-timeline-grid-column");
-    expect(header).toMatch(/padding:\s*var\(--space-2\);/);
-    expect(cell).toMatch(/padding-inline:\s*var\(--space-2\);/);
-    expect(header).toMatch(/border-inline-end:\s*var\(--range-timeline-grid-width\) solid/);
+    expect(header).toMatch(/padding:\s*var\(\s*--space-2\);/);
+    expect(cell).toMatch(/padding-inline:\s*var\(\s*--space-2\);/);
+    expect(header).toMatch(/border-inline-end:\s*var\(\s*--range-timeline-grid-width\) solid/);
     expect(cell).toMatch(
-      /border-inline-end:\s*var\(--range-timeline-grid-width\) solid transparent;/,
+      /border-inline-end:\s*var\(\s*--range-timeline-grid-width\) solid transparent;/,
     );
     expect(
       rule(
@@ -211,7 +211,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
     // label-column divider) is --range-timeline-border-color, the ruling inside is
     // --range-timeline-grid-color. Both resolve to --border, which is what makes "the grid is
     // never heavier than the box around it" true rather than a coincidence of two numbers.
-    expect(tokens).toMatch(/--range-timeline-border-color:\s*var\(--border\);/);
+    expect(tokens).toMatch(/--range-timeline-border-color:\s*var\(\s*--border\);/);
     expect(rule(".ui-range-timeline")).toContain(
       "border: 1px solid hsl(var(--range-timeline-border-color));",
     );
@@ -225,7 +225,7 @@ describe("RangeTimeline body grid — stylesheet contract", () => {
   it("declares the knobs: colour knobs `initial` (freeze rule), a hairline width", () => {
     expect(tokens).toMatch(/--range-timeline-grid-color:\s*initial;/);
     expect(tokens).toMatch(/--range-timeline-muted-column-background:\s*initial;/);
-    expect(tokens).toMatch(/--range-timeline-grid-width:\s*var\(--stroke-hairline\);/);
+    expect(tokens).toMatch(/--range-timeline-grid-width:\s*var\(\s*--stroke-hairline\);/);
   });
 
   it("places the out-of-range indicator on logical sides and mirrors its chevron under RTL", () => {

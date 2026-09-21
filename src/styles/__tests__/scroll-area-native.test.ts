@@ -29,12 +29,12 @@ describe("ScrollArea — native scrolling", () => {
   it("styles the browser's scrollbar from tokens, never from literals", () => {
     const body = ruleBody(".ui-scroll-area {");
     expect(body, "the .ui-scroll-area rule is missing").toBeDefined();
-    expect(body).toMatch(/scrollbar-width:\s*var\(--scroll-area-scrollbar-width\)/);
-    expect(body).toMatch(/scrollbar-gutter:\s*var\(--scroll-area-scrollbar-space\)/);
+    expect(body).toMatch(/scrollbar-width:\s*var\(\s*--scroll-area-scrollbar-width\)/);
+    expect(body).toMatch(/scrollbar-gutter:\s*var\(\s*--scroll-area-scrollbar-space\)/);
     // Both halves of `scrollbar-color` must resolve, or the whole declaration is dropped — hence a
     // role default at the call site behind each `initial` knob.
     expect(body).toMatch(
-      /scrollbar-color:\s*var\(--scroll-area-thumb-color,\s*hsl\(var\(--border\)\)\)\s*var\(--scroll-area-track-color,\s*transparent\)/,
+      /scrollbar-color:\s*var\(\s*--scroll-area-thumb-color,\s*hsl\(var\(\s*--border\)\)\)\s*var\(\s*--scroll-area-track-color,\s*transparent\)/,
     );
   });
 

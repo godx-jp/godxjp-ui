@@ -144,6 +144,6 @@ describe("Logo size cascade — `size` drives the godx identity mark (regression
     }
     expect(winner("background", godx("lg"))).toBe("transparent");
     // And never the 若竹 STATUS green, which the identity borrowed once before gh#250.
-    expect(layout).not.toMatch(/var\(--success\b/);
+    expect(layout).not.toMatch(/var\(\s*--success\b/);
   });
 });

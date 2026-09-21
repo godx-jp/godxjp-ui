@@ -108,7 +108,7 @@ describe("focus ring — single source", () => {
     expect(foundation).toMatch(/--focus-outline:\s*1;/);
     // The thickness is still a member of the stroke scale rather than a parallel authority, so a
     // theme retunes marks and borders together. The ON weight is the hairline stroke = 1px.
-    expect(foundation).toMatch(/--focus-outline-weight:\s*var\(--stroke-hairline\)/);
+    expect(foundation).toMatch(/--focus-outline-weight:\s*var\(\s*--stroke-hairline\)/);
     expect(foundation).toMatch(/--stroke-hairline:\s*1px;/);
     expect(foundation).toMatch(/--focus-ring-opacity:\s*1/);
     // And ONE attribute turns the whole thing off, with no code change. `"on"` is kept so every

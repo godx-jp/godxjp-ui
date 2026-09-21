@@ -148,10 +148,10 @@ describe("Progress breakdown", () => {
     const scoped = css.match(/\.ui-progress\[data-breakdown\][^{]*\{[^}]*\}/g)?.join("\n") ?? "";
 
     expect(scoped).toMatch(/display:\s*flex/);
-    expect(scoped).toMatch(/height:\s*var\(--progress-breakdown-block-size\)/);
-    expect(scoped).toMatch(/border-radius:\s*var\(--progress-breakdown-radius\)/);
+    expect(scoped).toMatch(/height:\s*var\(\s*--progress-breakdown-block-size\)/);
+    expect(scoped).toMatch(/border-radius:\s*var\(\s*--progress-breakdown-radius\)/);
 
     // The un-marked track keeps the meter's pill, or every existing Progress changes shape.
-    expect(css).toMatch(/\.ui-progress-track\s*\{[^}]*border-radius:\s*var\(--radius-pill\)/);
+    expect(css).toMatch(/\.ui-progress-track\s*\{[^}]*border-radius:\s*var\(\s*--radius-pill\)/);
   });
 });

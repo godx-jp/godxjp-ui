@@ -56,10 +56,10 @@ describe("RangeTimeline density — token + stylesheet contract", () => {
   it("keeps the 27.8.0 width as the `default` step, so no existing Gantt moves", () => {
     // Measured in Chromium: default 56px/day, exactly what shipped before this change.
     expect(tokens).toMatch(
-      /--range-timeline-unit-width-default:\s*calc\(var\(--control-height-sm\) \* 2\);/,
+      /--range-timeline-unit-width-default:\s*calc\(var\(\s*--control-height-sm\) \* 2\);/,
     );
     expect(tokens).toMatch(
-      /--range-timeline-unit-width:\s*var\(--range-timeline-unit-width-default\);/,
+      /--range-timeline-unit-width:\s*var\(\s*--range-timeline-unit-width-default\);/,
     );
   });
 
@@ -68,10 +68,10 @@ describe("RangeTimeline density — token + stylesheet contract", () => {
     // 1558px / 1992px / 2426px of canvas, i.e. compact fits ~27.8 days in 1167px where default
     // fits ~20.8.
     expect(tokens).toMatch(
-      /--range-timeline-unit-width-compact:\s*calc\(var\(--control-height-sm\) \* 1\.5\);/,
+      /--range-timeline-unit-width-compact:\s*calc\(var\(\s*--control-height-sm\) \* 1\.5\);/,
     );
     expect(tokens).toMatch(
-      /--range-timeline-unit-width-comfortable:\s*calc\(var\(--control-height-sm\) \* 2\.5\);/,
+      /--range-timeline-unit-width-comfortable:\s*calc\(var\(\s*--control-height-sm\) \* 2\.5\);/,
     );
   });
 
@@ -110,9 +110,9 @@ describe("RangeTimeline column labels are centred (gh#730)", () => {
     // in a content box one rule narrower than the track — measured exactly -0.500px on every
     // column, at the very edge of the 0.5px tolerance. With the compensation: 0.004px worst case
     // over 5 timelines x 4 viewports, light/dark, LTR/RTL.
-    expect(column).toMatch(/padding:\s*var\(--space-2\);/);
+    expect(column).toMatch(/padding:\s*var\(\s*--space-2\);/);
     expect(column).toMatch(
-      /padding-inline-start:\s*calc\(var\(--space-2\) \+ var\(--range-timeline-grid-width\)\);/,
+      /padding-inline-start:\s*calc\(var\(\s*--space-2\) \+ var\(\s*--range-timeline-grid-width\)\);/,
     );
   });
 

@@ -47,8 +47,8 @@ const rows: Row[] = Array.from({ length: 12 }, (_, i) => ({
 
 describe("DataTable.Pagination footer inset (gh#236)", () => {
   it("owns padding on BOTH axes instead of block-start only", () => {
-    expect(paginationRule).toMatch(/padding-block:\s*var\(--table-pagination-padding-y/);
-    expect(paginationRule).toMatch(/padding-inline:\s*var\(--table-pagination-padding-x/);
+    expect(paginationRule).toMatch(/padding-block:\s*var\(\s*--table-pagination-padding-y/);
+    expect(paginationRule).toMatch(/padding-inline:\s*var\(\s*--table-pagination-padding-x/);
     // the original single-axis declaration must not come back
     expect(paginationRule).not.toMatch(/padding-top\s*:/);
     expect(paginationRule).not.toMatch(/(?:^|[^-])padding\s*:/);
@@ -57,11 +57,11 @@ describe("DataTable.Pagination footer inset (gh#236)", () => {
   it("keeps the block default and puts the label on the first column's optical axis", () => {
     // block default = the previous padding-top value, now on both block edges
     expect(paginationRule).toMatch(
-      /padding-block:\s*var\(--table-pagination-padding-y,\s*var\(--space-stack-sm\)\)/,
+      /padding-block:\s*var\(\s*--table-pagination-padding-y,\s*var\(\s*--space-stack-sm\)\)/,
     );
     // inline default = the table's own cell inline padding
     expect(paginationRule).toMatch(
-      /padding-inline:\s*var\(--table-pagination-padding-x,\s*var\(--table-cell-space-x\)\)/,
+      /padding-inline:\s*var\(\s*--table-pagination-padding-x,\s*var\(\s*--table-cell-space-x\)\)/,
     );
   });
 

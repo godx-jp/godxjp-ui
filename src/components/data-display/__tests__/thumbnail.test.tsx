@@ -62,16 +62,16 @@ describe("Thumbnail", () => {
     const base = rule(".ui-thumbnail");
 
     expect(base).toMatch(/inline-size:\s*auto/);
-    expect(base).toMatch(/block-size:\s*var\(--thumbnail-block-size\)/);
+    expect(base).toMatch(/block-size:\s*var\(\s*--thumbnail-block-size\)/);
     expect(base).not.toMatch(/aspect-ratio/);
     // Clamped at the container so one panorama cannot scroll the page sideways.
     expect(base).toMatch(/max-inline-size:\s*100%/);
     expect(base).toMatch(/object-fit:\s*contain/);
     expect(rule('.ui-thumbnail[data-size="sm"]')).toMatch(
-      /block-size:\s*var\(--thumbnail-block-size-sm\)/,
+      /block-size:\s*var\(\s*--thumbnail-block-size-sm\)/,
     );
     expect(rule('.ui-thumbnail[data-size="lg"]')).toMatch(
-      /block-size:\s*var\(--thumbnail-block-size-lg\)/,
+      /block-size:\s*var\(\s*--thumbnail-block-size-lg\)/,
     );
   });
 
@@ -80,11 +80,11 @@ describe("Thumbnail", () => {
     const base = rule(".ui-thumbnail");
 
     expect(base).toMatch(
-      /border:\s*var\(--thumbnail-border-width\)\s+solid\s+hsl\(var\(--border\)\)/,
+      /border:\s*var\(\s*--thumbnail-border-width\)\s+solid\s+hsl\(var\(\s*--border\)\)/,
     );
-    expect(base).toMatch(/border-radius:\s*var\(--thumbnail-radius\)/);
-    expect(tokens()).toMatch(/--thumbnail-border-width:\s*var\(--stroke-hairline\)/);
-    expect(tokens()).toMatch(/--thumbnail-radius:\s*var\(--radius\)/);
+    expect(base).toMatch(/border-radius:\s*var\(\s*--thumbnail-radius\)/);
+    expect(tokens()).toMatch(/--thumbnail-border-width:\s*var\(\s*--stroke-hairline\)/);
+    expect(tokens()).toMatch(/--thumbnail-radius:\s*var\(\s*--radius\)/);
   });
 
   it("declares all three height steps in the token tier", () => {

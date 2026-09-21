@@ -52,7 +52,9 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
   it("lets the CONTENT COLUMN shrink below its intrinsic width, clamped to the container", () => {
     const body = rule('[data-slot="list-row-body"]');
     // min(…, 100%) is load-bearing: a container narrower than the knob must NOT be widened by it.
-    expect(body).toMatch(/min-inline-size:\s*min\(var\(--list-row-body-min-width[^)]*\),\s*100%\)/);
+    expect(body).toMatch(
+      /min-inline-size:\s*min\(var\(\s*--list-row-body-min-width[^)]*\),\s*100%\)/,
+    );
     expect(body).not.toMatch(/(?:^|[^-])min-width\s*:/);
     expect(tokenCss).toMatch(/--list-row-body-min-width:\s*\S+/);
   });
@@ -61,7 +63,7 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
     const trailing = rule('[data-slot="list-row-trailing"]');
     expect(trailing).toMatch(/flex-wrap:\s*wrap/);
     expect(trailing).toMatch(/max-inline-size:\s*100%/);
-    expect(trailing).toMatch(/gap:\s*var\(--list-row-trailing-gap/);
+    expect(trailing).toMatch(/gap:\s*var\(\s*--list-row-trailing-gap/);
     // still end-aligned, via a LOGICAL margin (RTL-safe)
     expect(trailing).toMatch(/margin-inline-start:\s*auto/);
     expect(tokenCss).toMatch(/--list-row-trailing-gap:\s*\S+/);
@@ -79,12 +81,12 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
     expect(tokenCss).toMatch(/--list-row-read-background:\s*initial/);
     expect(tokenCss).toMatch(/--list-row-indicator-color:\s*initial/);
     expect(rule('[data-slot="list-row"]')).toMatch(
-      /background:\s*var\(--list-row-read-background,\s*transparent\)/,
+      /background:\s*var\(\s*--list-row-read-background,\s*transparent\)/,
     );
     expect(layoutCss).toMatch(
-      /\[data-slot="list-row"\]\[data-unread\]\s*\{[^}]*background:\s*var\(--list-row-unread-background,\s*hsl\(var\(--muted\)\)\)/,
+      /\[data-slot="list-row"\]\[data-unread\]\s*\{[^}]*background:\s*var\(\s*--list-row-unread-background,\s*hsl\(var\(\s*--muted\)\)\)/,
     );
-    expect(layoutCss).toMatch(/hsl\(var\(--list-row-indicator-color,\s*var\(--primary\)\)\)/);
+    expect(layoutCss).toMatch(/hsl\(var\(\s*--list-row-indicator-color,\s*var\(\s*--primary\)\)\)/);
     // the dot keeps its gutter on read rows (titles stay on one optical axis) but paints nothing
     expect(rule('[data-slot="list-row-indicator"]')).toMatch(/background:\s*transparent/);
   });
@@ -110,17 +112,17 @@ describe("ListRow compact inline-actions CSS contract (gh#246)", () => {
     const body = rule('[data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"]');
     // Min(…, 100%) is load-bearing here too — compact must never widen a narrower container
     expect(body).toMatch(
-      /min-inline-size:\s*min\(var\(--list-row-compact-body-min-width[^)]*\),\s*100%\)/,
+      /min-inline-size:\s*min\(var\(\s*--list-row-compact-body-min-width[^)]*\),\s*100%\)/,
     );
-    expect(body).toMatch(/flex-basis:\s*var\(--list-row-compact-body-min-width/);
+    expect(body).toMatch(/flex-basis:\s*var\(\s*--list-row-compact-body-min-width/);
     expect(tokenCss).toMatch(/--list-row-compact-body-min-width:\s*\S+/);
   });
 
   it("tightens the compact row inset and gap through tokens only", () => {
     const row = rule('[data-slot="list-row"][data-density="compact"]');
-    expect(row).toMatch(/gap:\s*var\(--list-row-compact-gap/);
-    expect(row).toMatch(/padding:\s*var\(--list-row-compact-padding-y/);
-    expect(row).toMatch(/var\(--list-row-compact-padding-x/);
+    expect(row).toMatch(/gap:\s*var\(\s*--list-row-compact-gap/);
+    expect(row).toMatch(/padding:\s*var\(\s*--list-row-compact-padding-y/);
+    expect(row).toMatch(/var\(\s*--list-row-compact-padding-x/);
     // logical only — the compact inset must flip under dir="rtl"
     expect(row).not.toMatch(/(?:^|[^-])(?:margin|padding)-(?:left|right)\s*:/);
     // No literal geometry: every compact constant is a documented knob

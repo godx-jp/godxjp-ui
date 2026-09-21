@@ -25,7 +25,13 @@ function declarationsFor(selector: string): string {
       current += char;
     }
     list.push(current.trim().replace(/\s+/g, " "));
-    if (list.includes(selector)) blocks.push(match[2]);
+    /* Compare selectors with the padding prettier puts inside `:is(` removed. The same rule is
+     * written `:is([a], [b])` when it fits on one line and `:is(\n  [a],\n  [b]\n)` when it does
+     * not, and which one you get depends on the line length of neighbouring declarations. This
+     * test matched the wrapped spelling and started failing when the rule stopped wrapping — a
+     * formatter deciding whether a test passes, which is not a test. */
+    const flat = (sel: string) => sel.replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
+    if (list.map(flat).includes(flat(selector))) blocks.push(match[2]);
   }
   return blocks.join("\n").replace(/\s+/g, " ");
 }
@@ -138,7 +144,7 @@ describe("navRailPosition", () => {
       '.app-root[data-nav-rail]:is( [data-nav-rail-position="top"], [data-nav-rail-position="bottom"] )',
     );
     expect(reset).toMatch(
-      /grid-template-rows: var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto;/,
+      /grid-template-rows: var\(\s*--app-shell-bar-height\) minmax\(0, 1fr\) auto;/,
     );
   });
 
@@ -168,20 +174,20 @@ describe("navRailPosition", () => {
     const tokens = readFileSync(resolve(process.cwd(), "src/tokens/components/shell.css"), "utf8");
     // Same measure whichever edge it is docked to: two numbers for one rail is a shape that drifts
     // the moment either is retuned, and a service has to remember both.
-    expect(tokens).toMatch(/--app-shell-nav-rail-height:\s*var\(--app-shell-nav-rail-width\);/);
+    expect(tokens).toMatch(/--app-shell-nav-rail-height:\s*var\(\s*--app-shell-nav-rail-width\);/);
     // The rail sizes its own cells — a control carries its own band token, so a narrower TRACK
     // alone clips it instead of shrinking it (the rail clips).
-    expect(tokens).toMatch(/--app-shell-nav-rail-item-size:\s*var\(--band-height-lg\);/);
+    expect(tokens).toMatch(/--app-shell-nav-rail-item-size:\s*var\(\s*--band-height-lg\);/);
     // EVERY cell tier, not one component's knob: retuning only the organization trigger left the
     // rail with two sizes and two left offsets (36x36 at x=1.5 beside 28x28 at x=5.5).
     const railCells = declarationsFor(".app-nav-rail");
     expect(railCells).toMatch(
-      /--org-switcher-trigger-height:\s*var\(--app-shell-nav-rail-item-size\)/,
+      /--org-switcher-trigger-height:\s*var\(\s*--app-shell-nav-rail-item-size\)/,
     );
-    expect(railCells).toMatch(/--control-height-sm:\s*var\(--app-shell-nav-rail-item-size\)/);
+    expect(railCells).toMatch(/--control-height-sm:\s*var\(\s*--app-shell-nav-rail-item-size\)/);
     // Rule #24 on a finger: both the cell and the track it must fit inside go back up together.
     const coarse = tokens.slice(tokens.indexOf("@media (pointer: coarse)"));
-    expect(coarse).toMatch(/--app-shell-nav-rail-item-size:\s*var\(--band-height-xl\);/);
+    expect(coarse).toMatch(/--app-shell-nav-rail-item-size:\s*var\(\s*--band-height-xl\);/);
     expect(coarse).toMatch(/--app-shell-nav-rail-width:\s*3rem;/);
   });
 

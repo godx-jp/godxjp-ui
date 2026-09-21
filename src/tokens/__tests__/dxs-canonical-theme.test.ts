@@ -117,7 +117,7 @@ describe("theme/dxs.canonical.css — the stylesheet entry point", () => {
   });
 
   it("never binds the identity mark to --primary", () => {
-    expect(canonicalTheme).not.toMatch(/--logo-[a-z-]+:\s*var\(--primary\)/);
+    expect(canonicalTheme).not.toMatch(/--logo-[a-z-]+:\s*var\(\s*--primary\)/);
     expect(runtimePreset["--logo-godx-color"]).toBeUndefined();
   });
 });

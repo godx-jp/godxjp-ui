@@ -117,7 +117,7 @@ describe("DataTable headerAlign", () => {
       // the label box being symmetric, so a one-sided reservation centres the
       // wrong thing.
       expect(centredLabel).toMatch(
-        /padding-inline:\s*calc\(0\.75rem \+ var\(--space-inline-xs\)\)/,
+        /padding-inline:\s*calc\(0\.75rem \+ var\(\s*--space-inline-xs\)\)/,
       );
       expect(centredLabel.slice(0, 400)).not.toMatch(/padding-inline-(start|end):/);
     });

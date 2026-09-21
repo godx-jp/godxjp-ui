@@ -66,7 +66,7 @@ describe("Toggle soft (gh#734) — the chip has a REST fill", () => {
       ".ui-button--secondary { background: hsl(var(--secondary));",
     );
     // The two read the same role; neither hard-codes a colour.
-    expect(flat(controlCss)).toMatch(/\.ui-toggle-soft \{[^}]*hsl\(var\(--secondary\)\)/);
+    expect(flat(controlCss)).toMatch(/\.ui-toggle-soft \{[^}]*hsl\(var\(\s*--secondary\)\)/);
   });
 
   it("documents the defect it closes: `default` declares NO background at all", () => {

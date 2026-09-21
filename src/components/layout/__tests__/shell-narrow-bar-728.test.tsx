@@ -87,18 +87,18 @@ describe("AppShell brand cell shrinks on a narrow bar (gh#728)", () => {
 
   it("gives the brand cell a shrink contract instead of its intrinsic width", () => {
     const body = ruleBody(shellCss, ".app-topbar-logo {");
-    expect(body).toMatch(/max-inline-size: var\(--app-shell-brand-max-inline-size\);/);
+    expect(body).toMatch(/max-inline-size: var\(\s*--app-shell-brand-max-inline-size\);/);
     expect(body).toMatch(/min-inline-size: 0;/);
     expect(body).toMatch(/flex: 0 1 auto;/);
     // `clip` + the ring margin, never `hidden`: the same choice every other bar box makes.
     expect(body).toMatch(/overflow: clip;/);
-    expect(body).toMatch(/overflow-clip-margin: var\(--focus-ring-clip-margin\);/);
+    expect(body).toMatch(/overflow-clip-margin: var\(\s*--focus-ring-clip-margin\);/);
   });
 
   it("caps the brand below the sm step and steps the library wordmark aside there", () => {
     const narrow = shellCss.slice(shellCss.indexOf("@media (width < 40rem) {"));
     expect(narrow).toMatch(
-      /\.app-topbar-logo \{\s*max-inline-size: var\(--app-shell-brand-compact-max-inline-size\);/,
+      /\.app-topbar-logo \{\s*max-inline-size: var\(\s*--app-shell-brand-compact-max-inline-size\);/,
     );
     expect(narrow).toMatch(/\.app-topbar-logo \[data-slot="logo-wordmark"\] \{\s*display: none;/);
   });
@@ -106,7 +106,7 @@ describe("AppShell brand cell shrinks on a narrow bar (gh#728)", () => {
   it("declares both caps as component tokens, the compact one at the bar's own height", () => {
     expect(shellTokens).toMatch(/--app-shell-brand-max-inline-size: none;/);
     expect(shellTokens).toMatch(
-      /--app-shell-brand-compact-max-inline-size: var\(--app-shell-bar-height\);/,
+      /--app-shell-brand-compact-max-inline-size: var\(\s*--app-shell-bar-height\);/,
     );
   });
 
@@ -183,7 +183,7 @@ describe("Topbar overflow contract (gh#728)", () => {
     // bar, `scroll` floored at 32px and `clip` at 0px, which is how a 28px cell came to be clipped
     // to 8px and fail WCAG 2.2 SC 2.5.8. Scroll mode is unchanged: 32px before and after.
     const body = ruleBody(shellCss, ".ui-topbar-start {");
-    expect(body).toMatch(/min-inline-size: var\(--topbar-item-min-width\);/);
+    expect(body).toMatch(/min-inline-size: var\(\s*--topbar-item-min-width\);/);
     // A content floor here demanded 631px of a 720px bar for a 418px nowrap title at 1024px and
     // pushed the end cluster out of the bar — measured, and the reason this is not `auto`.
     expect(body).not.toMatch(/min-inline-size: auto/);

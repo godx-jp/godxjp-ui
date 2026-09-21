@@ -11,10 +11,10 @@ describe("DXS hi-fi visual contract", () => {
     const shell = read("../shell-layout.css");
 
     // The 48px band reads its step — `--band-height-2xl` IS 3rem.
-    expect(tokens).toMatch(/--app-shell-bar-height:\s*var\(--band-height-2xl\)/);
+    expect(tokens).toMatch(/--app-shell-bar-height:\s*var\(\s*--band-height-2xl\)/);
     expect(read("../../tokens/foundation.css")).toMatch(/--band-height-2xl:\s*3rem;/);
     expect(shell).toMatch(
-      /grid-template-rows:\s*var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto/,
+      /grid-template-rows:\s*var\(\s*--app-shell-bar-height\) minmax\(0, 1fr\) auto/,
     );
     /*
      * THE SHELL SIZES ITSELF TO THE VIEWPORT IT OWNS, which is not always the whole one.
@@ -28,9 +28,9 @@ describe("DXS hi-fi visual contract", () => {
      *
      * The default is `0px`, so a page that owns its window is byte-for-byte unchanged.
      */
-    expect(shell).toMatch(/height:\s*calc\(100vh - var\(--app-shell-viewport-inset, 0px\)\)/);
+    expect(shell).toMatch(/height:\s*calc\(100vh - var\(\s*--app-shell-viewport-inset, 0px\)\)/);
     expect(tokens).toMatch(/--app-shell-viewport-inset:\s*0px;/);
-    expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(--card\)\)/s);
+    expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(\s*--card\)\)/s);
     // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,
     // which held only while nothing else in the file had one; the launcher's launchpad scrim now
     // does, and it is not chrome — it is the surface the chrome opens on top of. Scoped to the
@@ -61,15 +61,15 @@ describe("DXS hi-fi visual contract", () => {
     // the identical composite this used to assert.
     expect(tokens).toMatch(/--app-shell-main-background:\s*initial/);
     expect(read("../../tokens/semantic/layout.css")).toMatch(
-      /--surface-recessed:\s*hsl\(var\(--muted\) \/ 0\.4\)/,
+      /--surface-recessed:\s*hsl\(var\(\s*--muted\) \/ 0\.4\)/,
     );
     expect(shell).toMatch(
-      /background-color: var\(--app-shell-main-background, var\(--surface-recessed\)\)/,
+      /background-color: var\(\s*--app-shell-main-background, var\(\s*--surface-recessed\)\)/,
     );
     // The cap lands on header/toolbar/body — the bands `measure` caps — at :where() specificity so
     // a page-level `measure` wins on that page.
     expect(shell).toMatch(
-      /\.app-main :where\(\.ui-page-header, \.ui-page-toolbar, \.ui-page-body\)\s*\{\s*max-inline-size:\s*var\(--app-shell-page-max-width\);\s*\}/,
+      /\.app-main :where\(\.ui-page-header, \.ui-page-toolbar, \.ui-page-body\)\s*\{\s*max-inline-size:\s*var\(\s*--app-shell-page-max-width\);\s*\}/,
     );
     // Never on the container (that caps the footer band with it) and never on the footer.
     expect(shell).not.toMatch(/\.ui-page-container\s*\{[^}]*max-(width|inline-size)/s);
@@ -78,16 +78,16 @@ describe("DXS hi-fi visual contract", () => {
     // cap takes off the content bands is added to the band's end inset, at the same :where()
     // specificity, so a page's `measure` still wins. Those are the only two readers of the knob.
     expect(shell).toMatch(
-      /\.app-main :where\(\.ui-page-footer\)\s*\{\s*--page-footer-content-slack:\s*max\(0px, 100% - var\(--app-shell-page-max-width\)\);\s*\}/,
+      /\.app-main :where\(\.ui-page-footer\)\s*\{\s*--page-footer-content-slack:\s*max\(0px, 100% - var\(\s*--app-shell-page-max-width\)\);\s*\}/,
     );
-    expect(shell.match(/var\(--app-shell-page-max-width\)/g)).toHaveLength(2);
+    expect(shell.match(/var\(\s*--app-shell-page-max-width\)/g)).toHaveLength(2);
   });
 
   it("uses the compact DXS sidebar rhythm and 900px drawer breakpoint", () => {
     const tokens = read("../../tokens/components/shell.css");
     const shell = read("../shell-layout.css");
 
-    expect(tokens).toMatch(/--sidebar-nav-item-height:\s*var\(--band-height-md\)/);
+    expect(tokens).toMatch(/--sidebar-nav-item-height:\s*var\(\s*--band-height-md\)/);
     expect(read("../../tokens/foundation.css")).toMatch(/--band-height-md:\s*2rem;/);
     // The rail's label step is a STEP, not the hi-fi source's 13px. 13 sits between
     // --font-size-xs (≈12.47) and the 14px base, so the whole rail read off the system's type
@@ -103,8 +103,8 @@ describe("DXS hi-fi visual contract", () => {
   it("uses the DXS 10px card radius and shadow-sm surface", () => {
     const card = read("../../tokens/components/card.css");
 
-    expect(card).toMatch(/--card-radius:\s*var\(--radius-xl\)/);
-    expect(card).toMatch(/--card-shadow:\s*var\(--shadow-sm\)/);
+    expect(card).toMatch(/--card-radius:\s*var\(\s*--radius-xl\)/);
+    expect(card).toMatch(/--card-shadow:\s*var\(\s*--shadow-sm\)/);
   });
 
   it("bundles Noto Sans JP as the default product face (product override, direct instruction)", () => {

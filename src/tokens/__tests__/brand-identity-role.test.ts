@@ -178,8 +178,8 @@ describe("Logo identity call sites read --brand, never --success", () => {
   });
 
   it("no logo rule falls back to --success or --primary for the identity", () => {
-    expect(logoLayout).not.toMatch(/var\(--success\b/);
-    expect(logoLayout).not.toMatch(/var\(--success-foreground\b/);
+    expect(logoLayout).not.toMatch(/var\(\s*--success\b/);
+    expect(logoLayout).not.toMatch(/var\(\s*--success-foreground\b/);
     const identityRules =
       logoLayout.match(/\[data-(?:mark="godx"|tone="success")\][\s\S]*?\}/g) ?? [];
     expect(identityRules.length).toBeGreaterThan(0);
@@ -196,7 +196,7 @@ describe("Logo identity call sites read --brand, never --success", () => {
       expect(logoTokens).toContain(`${knob}: initial;`);
     }
     // …and the token tier must never bind a knob to a role at :root.
-    expect(logoTokens).not.toMatch(/--logo-[a-z-]+:\s*var\(--(?:brand|success|primary)\)/);
+    expect(logoTokens).not.toMatch(/--logo-[a-z-]+:\s*var\(\s*--(?:brand|success|primary)\)/);
   });
 });
 
@@ -241,11 +241,11 @@ describe("status surfaces still read --success", () => {
    * next to it.
    */
   const statusOwners = {
-    "src/styles/alert-layout.css": /hsl\(var\(--success\)/,
-    "src/styles/text-layout.css": /color: hsl\(var\(--text-success\)\)/,
+    "src/styles/alert-layout.css": /hsl\(var\(\s*--success\)/,
+    "src/styles/text-layout.css": /color: hsl\(var\(\s*--text-success\)\)/,
     "src/styles/card-layout.css":
       /hsl\(\s*var\(\s*--mark-success,\s*var\(\s*--text-success\s*\)\s*\)\s*\)/,
-    "src/styles/data-display-layout.css": /hsl\(var\(--success\)\)/,
+    "src/styles/data-display-layout.css": /hsl\(var\(\s*--success\)\)/,
     "src/styles/data-entry-layout.css":
       /hsl\(\s*var\(\s*--mark-success,\s*var\(\s*--text-success\s*\)\s*\)\s*\)/,
   } as const;
@@ -254,7 +254,7 @@ describe("status surfaces still read --success", () => {
     it(`${file} keeps the wakatake status green`, () => {
       expect(read(file)).toMatch(pattern);
       // A status owner must not have been dragged onto the identity role.
-      expect(read(file)).not.toMatch(/var\(--brand\)/);
+      expect(read(file)).not.toMatch(/var\(\s*--brand\)/);
     });
   }
 });

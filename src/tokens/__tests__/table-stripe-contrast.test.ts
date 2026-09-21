@@ -36,10 +36,14 @@ function block(selector: string): string {
 }
 
 const stripeAlpha = Number(
-  layout.match(/var\(--table-row-striped-background, hsl\(var\(--muted\) \/ ([\d.]+)\)\)/)?.[1],
+  layout.match(
+    /var\(\s*--table-row-striped-background, hsl\(var\(\s*--muted\) \/ ([\d.]+)\)\)/,
+  )?.[1],
 );
 const hoverAlpha = Number(
-  layout.match(/var\(--table-row-hover-background, hsl\(var\(--accent\) \/ ([\d.]+)\)\)/)?.[1],
+  layout.match(
+    /var\(\s*--table-row-hover-background, hsl\(var\(\s*--accent\) \/ ([\d.]+)\)\)/,
+  )?.[1],
 );
 
 /** Luminance ratio between a plain row and a striped row below which the stripe is not a stripe. */

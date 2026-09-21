@@ -90,7 +90,7 @@ describe("Card `hoverable` — antd's lift, composed rather than painted", () =>
   });
 
   it("declares the lift on the shared elevation ramp", () => {
-    expect(cardTokens).toMatch(/--card-hover-shadow:\s*var\(--shadow-md\);/);
+    expect(cardTokens).toMatch(/--card-hover-shadow:\s*var\(\s*--shadow-md\);/);
   });
 
   it("animates from the motion tier and stops under prefers-reduced-motion", () => {

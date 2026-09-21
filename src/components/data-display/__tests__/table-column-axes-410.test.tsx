@@ -110,9 +110,9 @@ describe("Table column axes (gh#410)", () => {
   });
 
   it("moves the header weight onto a theme knob instead of eighteen call sites", () => {
-    expect(layout).toMatch(/font-weight: var\(--table-head-font-weight\);/);
+    expect(layout).toMatch(/font-weight: var\(\s*--table-head-font-weight\);/);
     expect(read("../../../tokens/components/table.css")).toMatch(
-      /--table-head-font-weight:\s*var\(--font-weight-medium\);/,
+      /--table-head-font-weight:\s*var\(\s*--font-weight-medium\);/,
     );
   });
 });

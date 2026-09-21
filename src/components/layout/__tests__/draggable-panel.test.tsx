@@ -441,7 +441,7 @@ describe("DraggablePanel — the stylesheet contract", () => {
 
   it("multiplies the two unitless offsets into one translate, keeping the literal out of the TSX", () => {
     expect(css()).toMatch(
-      /translate:\s*calc\(var\(--draggable-panel-offset-x\) \* 1px\)\s*calc\(var\(--draggable-panel-offset-y\) \* 1px\)/,
+      /translate:\s*calc\(var\(\s*--draggable-panel-offset-x\) \* 1px\)\s*calc\(var\(\s*--draggable-panel-offset-y\) \* 1px\)/,
     );
   });
 
@@ -492,11 +492,11 @@ describe("DraggablePanel — the stylesheet contract", () => {
     renderWithUi(<DraggablePanel title="アシスタント" width="xl" />);
     expect(panel()).toHaveAttribute("data-width", "xl");
     expect(sheet).toMatch(
-      /\.ui-draggable-panel\[data-width="xl"\]\s*\{[^}]*inline-size:\s*var\(--draggable-panel-width-xl\)/,
+      /\.ui-draggable-panel\[data-width="xl"\]\s*\{[^}]*inline-size:\s*var\(\s*--draggable-panel-width-xl\)/,
     );
     expect(tokens()).toMatch(/--draggable-panel-block-size:\s*auto;/);
     expect(sheet).toMatch(
-      /\.ui-draggable-panel\s*\{[^}]*block-size:\s*var\(--draggable-panel-block-size\)/,
+      /\.ui-draggable-panel\s*\{[^}]*block-size:\s*var\(\s*--draggable-panel-block-size\)/,
     );
   });
 });

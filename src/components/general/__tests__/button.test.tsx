@@ -107,7 +107,7 @@ describe("Button", () => {
     renderWithUi(<Button size={size}>I</Button>);
     const btn = screen.getByRole("button", { name: "I" });
     expect(btn).toHaveClass(tokenClass);
-    expect(btn.className).not.toMatch(/size-\[calc\(var\(--control-height\)/);
+    expect(btn.className).not.toMatch(/size-\[calc\(var\(\s*--control-height\)/);
   });
 
   it("icon-xs owns a 12px glyph even when the child requests size-4", () => {

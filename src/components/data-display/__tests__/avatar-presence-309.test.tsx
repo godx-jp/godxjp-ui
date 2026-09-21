@@ -226,11 +226,11 @@ describe("Avatar presence — every constant is a knob (rules #44/#45, gh#309)",
     // The three line weights read the stroke scale — --stroke-md IS 2px and
     // --stroke-sm IS 1.5px, pinned in src/tokens/__tests__/geometry-axis-scales.test.ts. A theme
     // that wants heavier presence rings now has both routes: the step, or these knobs.
-    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*var\(--stroke-md\);/);
-    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*var\(--stroke-sm\);/);
+    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*var\(\s*--stroke-md\);/);
+    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*var\(\s*--stroke-sm\);/);
     expect(tokens).toMatch(/--avatar-presence-bar-inline-size:\s*56%;/);
-    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*var\(--stroke-sm\);/);
-    expect(tokens).toMatch(/--avatar-presence-min-size:\s*var\(--space-2\);/);
+    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*var\(\s*--stroke-sm\);/);
+    expect(tokens).toMatch(/--avatar-presence-min-size:\s*var\(\s*--space-2\);/);
   });
 
   it("sizes the dot as a PROPORTION of the mark, so it scales with every avatar size", () => {

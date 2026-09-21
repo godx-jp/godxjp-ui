@@ -41,7 +41,7 @@ describe("the overlay close button's TARGET reaches 24px (gh#806)", () => {
   });
 
   it.each(["min-inline-size", "min-block-size"])("floors %s at the target token", (prop) => {
-    expect(rule).toMatch(new RegExp(`${prop}:\\s*var\\(--dialog-close-size\\)`));
+    expect(rule).toMatch(new RegExp(`${prop}:\\s*var\\(\\s*--dialog-close-size\\)`));
   });
 
   it("is centred on the glyph, not anchored to a corner", () => {
@@ -60,7 +60,7 @@ describe("the overlay close button's TARGET reaches 24px (gh#806)", () => {
   /* Rule #47 forbids a consumer re-sizing package internals, so the floor has to be a token they
    * are allowed to raise — SC 2.5.8 is a minimum, and a touch-first service wants more. */
   it("is raisable by a documented token, defaulting to the WCAG floor", () => {
-    expect(tokens).toMatch(/--dialog-close-size:\s*var\(--touch-target-min\)/);
+    expect(tokens).toMatch(/--dialog-close-size:\s*var\(\s*--touch-target-min\)/);
   });
 
   it("does not grow the GLYPH — the paint must stay on the affix icon size", () => {

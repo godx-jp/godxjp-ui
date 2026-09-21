@@ -102,7 +102,11 @@ export type GapNameProp = "none" | "xs" | "sm" | "md" | "lg" | "xl";
  * tên mang ý ĐỊNH ("cách nhau vừa phải, tuỳ trục"), số mang GIÁ TRỊ ("đúng
  * 12px"). Trộn hai nghĩa vào một thang là lý do thang cũ vừa thô vừa khó đoán.
  */
-export type GapStepProp = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12;
+export type GapStepProp = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 20 | 24;
+// 20 và 24 là hai bậc BAND của trang marketing (80px / 96px, gh#831 — Carbon $spacing-11/-12).
+// Chúng được thêm vì gh#839: hai token `--space-section-band` / `--space-section-hero` đã ship mà
+// KHÔNG prop nào đọc được — thang số dừng ở 12 (48px), nên một trang marketing phải viết `style`
+// inline cho mọi dải. Một token không có call site là lỗi tier-2 mà `docs/TOKENS.md` cảnh báo.
 
 export type GapProp = GapNameProp | GapStepProp;
 

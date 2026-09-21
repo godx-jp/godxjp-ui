@@ -30,7 +30,7 @@ describe("Dialog header — a toned header is a band wherever it appears", () =>
 
   /** The one rule that gives a header its full-bleed inset + divider. */
   const bandRule =
-    /([^{}]*?)\{\s*margin-inline:\s*calc\(-1 \* var\(--dialog-space-x\)\);\s*margin-block-start:[^}]*border-bottom:[^}]*\}/.exec(
+    /([^{}]*?)\{\s*margin-inline:\s*calc\(-1 \* var\(\s*--dialog-space-x\)\);\s*margin-block-start:[^}]*border-bottom:[^}]*\}/.exec(
       css,
     );
 
@@ -45,7 +45,9 @@ describe("Dialog header — a toned header is a band wherever it appears", () =>
   });
 
   it("carries real padding, so the tint never hugs the glyphs", () => {
-    expect(bandRule?.[0]).toMatch(/padding:\s*var\(--dialog-space-y\)\s+var\(--dialog-space-x\)/);
+    expect(bandRule?.[0]).toMatch(
+      /padding:\s*var\(\s*--dialog-space-y\)\s+var\(\s*--dialog-space-x\)/,
+    );
   });
 });
 
@@ -68,15 +70,15 @@ describe("Dialog confirm body — antd Modal.confirm shape", () => {
     const body = rule(".ui-dialog-confirm-body");
     expect(body).toMatch(/display:\s*flex/);
     expect(body).toMatch(/align-items:\s*flex-start/);
-    expect(body).toMatch(/gap:\s*var\(--dialog-confirm-space-gap\)/);
+    expect(body).toMatch(/gap:\s*var\(\s*--dialog-confirm-space-gap\)/);
   });
 
   it("sizes and inks the glyph from tokens, never a literal", () => {
     const icon = rule(".ui-dialog-confirm-icon");
-    expect(icon).toMatch(/inline-size:\s*var\(--dialog-confirm-icon-size\)/);
-    expect(icon).toMatch(/block-size:\s*var\(--dialog-confirm-icon-size\)/);
+    expect(icon).toMatch(/inline-size:\s*var\(\s*--dialog-confirm-icon-size\)/);
+    expect(icon).toMatch(/block-size:\s*var\(\s*--dialog-confirm-icon-size\)/);
     // The TEXT tier, not the FILL tier — a glyph on the surface is ink (gh#610/gh#612).
-    expect(icon).toMatch(/color:\s*hsl\(var\(--text-error\)\)/);
+    expect(icon).toMatch(/color:\s*hsl\(var\(\s*--text-error\)\)/);
     // A glyph that shrinks is a glyph that stops being a 24px status mark.
     expect(icon).toMatch(/flex:\s*none/);
   });
@@ -90,7 +92,7 @@ describe("Dialog confirm body — antd Modal.confirm shape", () => {
       resolve(process.cwd(), "src/tokens/components/feedback.css"),
       "utf8",
     );
-    expect(tokens).toMatch(/--dialog-confirm-icon-size:\s*var\(--icon-size-xl\)/);
-    expect(tokens).toMatch(/--dialog-confirm-space-gap:\s*var\(--space-3\)/);
+    expect(tokens).toMatch(/--dialog-confirm-icon-size:\s*var\(\s*--icon-size-xl\)/);
+    expect(tokens).toMatch(/--dialog-confirm-space-gap:\s*var\(\s*--space-3\)/);
   });
 });

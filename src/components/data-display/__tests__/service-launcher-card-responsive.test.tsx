@@ -80,7 +80,7 @@ describe("ServiceLauncherCard grid contract (gh#219) — 3 → 2 → 1 is owned 
   it("the grid resolves against its OWN container at the canonical breakpoints", () => {
     // The configurable base retains a single-column fallback for existing launchers.
     expect(rule(layoutCss, ".ui-responsive-grid")).toMatch(
-      /grid-template-columns:\s*repeat\(var\(--responsive-grid-base,\s*1\),\s*minmax\(0,\s*1fr\)\)/,
+      /grid-template-columns:\s*repeat\(var\(\s*--responsive-grid-base,\s*1\),\s*minmax\(0,\s*1fr\)\)/,
     );
     expect(layoutCss).toMatch(/\.ui-responsive-grid-scope\s*\{[^}]*container:\s*responsive-grid/);
     for (const [width, step] of [
@@ -109,7 +109,7 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
   it("breaks a long hostname·plan metadata run and keeps it mono", () => {
     const metadata = rule(cardCss, '[data-slot="service-launcher-metadata"]');
     expect(metadata).toMatch(/overflow-wrap:\s*anywhere/);
-    expect(metadata).toMatch(/font-family:\s*var\(--font-mono\)/);
+    expect(metadata).toMatch(/font-family:\s*var\(\s*--font-mono\)/);
   });
 
   it("renders the disabled reason as PROSE, never in the mono metadata treatment", () => {
@@ -192,17 +192,17 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
     // `--icon-size-2xl` is the 36px step; the explicit `* var(--scaling)` keeps the density
     // behaviour the control tier supplies.
     expect(tokenCss).toMatch(
-      /--card-service-launcher-icon-size:\s*calc\(var\(--icon-size-2xl\) \* var\(--scaling\)\)/,
+      /--card-service-launcher-icon-size:\s*calc\(var\(\s*--icon-size-2xl\) \* var\(\s*--scaling\)\)/,
     );
     const icon = rule(cardCss, '[data-slot="service-launcher-icon"]');
-    expect(icon).toMatch(/width:\s*var\(--card-service-launcher-icon-size\)/);
-    expect(icon).toMatch(/height:\s*var\(--card-service-launcher-icon-size\)/);
+    expect(icon).toMatch(/width:\s*var\(\s*--card-service-launcher-icon-size\)/);
+    expect(icon).toMatch(/height:\s*var\(\s*--card-service-launcher-icon-size\)/);
   });
 
   it("keeps the dashed catalog CTA token-owned and level with a populated tile", () => {
     const cta = rule(cardCss, '[data-slot="card"][data-service-catalog-cta]');
     expect(cta).toMatch(/border-style:\s*dashed/);
-    expect(cta).toMatch(/min-height:\s*var\(--card-service-launcher-cta-min-height\)/);
+    expect(cta).toMatch(/min-height:\s*var\(\s*--card-service-launcher-cta-min-height\)/);
     expect(tokenCss).toMatch(/--card-service-launcher-cta-min-height:\s*\S+/);
   });
 
@@ -214,7 +214,7 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
       "--card-service-launcher-unavailable-icon-foreground",
     ]) {
       expect(tokenCss, knob).toMatch(new RegExp(`${knob}:\\s*initial;`));
-      expect(cardCss, knob).toMatch(new RegExp(`var\\(${knob},\\s*var\\(--[a-z-]+\\)\\)`));
+      expect(cardCss, knob).toMatch(new RegExp(`var\\(${knob},\\s*var\\(\\s*--[a-z-]+\\)\\)`));
     }
   });
 });

@@ -59,7 +59,7 @@ describe("gh#824 · --control-radius is not a Button knob", () => {
     expect(resolveToken("--control-radius", env)).toBe("0.375rem"); // 6px
     expect(resolveToken("--radius-md", env)).toBe("(undeclared)");
     expect(readFileSync(join(ROOT, "src/styles/base.css"), "utf8")).toMatch(
-      /--radius-md:\s*calc\(var\(--radius\) \/ var\(--radius-ratio\)\)/,
+      /--radius-md:\s*calc\(var\(\s*--radius\) \/ var\(\s*--radius-ratio\)\)/,
     );
   });
 
@@ -80,7 +80,7 @@ describe("gh#824 · --control-label-font-size reaches a FormField label", () => 
      * /isolate/data-entry-label and none of the 21 FormField ones, because FormField passes
      * `text-[length:var(--form-label-font-size)]` and a utility outranks `@layer components`. */
     expect(read("src/tokens/components/form.css")).toMatch(
-      /--form-label-font-size:\s*var\(--control-label-font-size,\s*var\(--text-sm\)\)/,
+      /--form-label-font-size:\s*var\(\s*--control-label-font-size,\s*var\(\s*--text-sm\)\)/,
     );
   });
 
@@ -94,7 +94,7 @@ describe("gh#824 · --control-label-font-size reaches a FormField label", () => 
     expect(readFileSync(join(ROOT, "src/styles/base.css"), "utf8")).toMatch(
       /* gh#834 made the step an `initial` knob, so the reader carries its formula as the
        * call-site fallback. What this line is about is unchanged: `--text-sm` reads the sm STEP. */
-      /--text-sm:\s*var\(--font-size-sm[,)]/,
+      /--text-sm:\s*var\(\s*--font-size-sm[,)]/,
     );
   });
 
@@ -111,7 +111,7 @@ describe("gh#824 · --conversations-item-radius reaches the rail row", () => {
   it("the row re-points the variable its Button utility reads", () => {
     /* The row IS `<Button variant="ghost">`, so `rounded-[var(--button-radius)]` beat any
      * border-radius declared here: measured, 37px on :root left all 13 rows at 3.70828px. */
-    expect(body()).toMatch(/--button-radius:\s*var\(--conversations-item-radius\)/);
+    expect(body()).toMatch(/--button-radius:\s*var\(\s*--conversations-item-radius\)/);
   });
 
   it("and declares no border-radius of its own, which could only lose again", () => {
@@ -155,8 +155,8 @@ describe("gh#824 · --topbar-icon-size is NOT inert — the report is refused", 
     /* Measured: 37px on :root moved every other `.ui-topbar-item > svg` 16px -> 37px, plus all
      * four glyphs in the `.ui-topbar-item-icon` slot. 16px is exactly what it claims. */
     const shell = read("src/styles/shell-layout.css");
-    expect(ruleBody(shell, ".ui-topbar-item > svg")).toMatch(/var\(--topbar-icon-size\)/);
-    expect(shell).toMatch(/inline-size:\s*var\(--topbar-icon-size\)/);
+    expect(ruleBody(shell, ".ui-topbar-item > svg")).toMatch(/var\(\s*--topbar-icon-size\)/);
+    expect(shell).toMatch(/inline-size:\s*var\(\s*--topbar-icon-size\)/);
   });
 
   it("the one element that overrides it says why, at the call site", () => {

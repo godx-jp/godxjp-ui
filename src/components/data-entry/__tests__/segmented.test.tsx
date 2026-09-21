@@ -163,7 +163,7 @@ describe("Segmented", () => {
     // styles/focus-ring.css owns every outline/box-shadow the mark paints; nothing here may.
     const item = declarationsFor(controlStyles, ".ui-segmented-item");
     expect(item).not.toMatch(/outline:/);
-    expect(item).not.toMatch(/box-shadow:\s*(?!var\(--segmented)/);
+    expect(item).not.toMatch(/box-shadow:\s*(?!var\(\s*--segmented)/);
   });
 
   it("measures exactly one --control-height, so it sits level with an Input", () => {
@@ -180,9 +180,9 @@ describe("Segmented", () => {
       "--segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);",
     );
     expect(segmentedTokens).toContain("--segmented-track-padding:");
-    expect(track).toMatch(/padding:\s*var\(--segmented-track-padding\);/);
+    expect(track).toMatch(/padding:\s*var\(\s*--segmented-track-padding\);/);
     expect(declarationsFor(controlStyles, ".ui-segmented-item")).toMatch(
-      /height:\s*var\(--segmented-item-height\);/,
+      /height:\s*var\(\s*--segmented-item-height\);/,
     );
     // Every length is a knob — no literal may appear in either rule.
     expect(track).not.toMatch(/\d+(?:\.\d+)?(?:px|rem|em)/);

@@ -125,9 +125,11 @@ describe("card face — antd genCardStyle, all four placements", () => {
 
   it("the radius rounds the corners AWAY from the panel", () => {
     expect(table).toMatch(
-      /top:\s*"rounded-\[var\(--tabs-card-radius\)_var\(--tabs-card-radius\)_0_0\]/,
+      /top:\s*"rounded-\[var\(\s*--tabs-card-radius\)_var\(\s*--tabs-card-radius\)_0_0\]/,
     );
-    expect(table).toMatch(/rounded-\[0_0_var\(--tabs-card-radius\)_var\(--tabs-card-radius\)\]/);
+    expect(table).toMatch(
+      /rounded-\[0_0_var\(\s*--tabs-card-radius\)_var\(\s*--tabs-card-radius\)\]/,
+    );
     expect(table).toContain("rounded-s-[var(--tabs-card-radius)] rounded-e-none");
     expect(table).toContain("rounded-e-[var(--tabs-card-radius)] rounded-s-none");
   });

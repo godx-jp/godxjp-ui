@@ -248,7 +248,7 @@ describe("ChatBubble", () => {
     expect(block).not.toMatch(/\b(?:left|right):\s/);
     // And the measure is clamped to the row, so a narrow feed shrinks instead of clipping.
     expect(block).toMatch(
-      /\.ui-chat-bubble-column\s*\{[^}]*max-inline-size:\s*min\(\s*var\(--chat-bubble-max-inline-size\),\s*100%\s*\)/,
+      /\.ui-chat-bubble-column\s*\{[^}]*max-inline-size:\s*min\(\s*var\(\s*--chat-bubble-max-inline-size\),\s*100%\s*\)/,
     );
   });
 

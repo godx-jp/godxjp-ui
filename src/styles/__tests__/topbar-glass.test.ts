@@ -28,14 +28,14 @@ describe("Topbar glass contract (gh#831)", () => {
     // The freeze rule (docs/TOKENS.md): binding the tint at :root would leave a dark or
     // [data-tenant] subtree wearing the root canvas colour behind its own bar.
     expect(rule).toMatch(
-      /background-color:\s*hsl\(var\(--background\)\s*\/\s*var\(--topbar-background-alpha\)\);/,
+      /background-color:\s*hsl\(var\(\s*--background\)\s*\/\s*var\(\s*--topbar-background-alpha\)\);/,
     );
   });
 
   it("reads the blur knob through blur(), so an unset knob yields no backdrop root", () => {
-    expect(rule).toMatch(/backdrop-filter:\s*blur\(var\(--topbar-backdrop-blur-size\)\);/);
+    expect(rule).toMatch(/backdrop-filter:\s*blur\(var\(\s*--topbar-backdrop-blur-size\)\);/);
     // A literal fallback would defeat the whole design — see the docblock above.
-    expect(rule).not.toMatch(/blur\(var\(--topbar-backdrop-blur-size,/);
+    expect(rule).not.toMatch(/blur\(var\(\s*--topbar-backdrop-blur-size,/);
   });
 
   it("ships both knobs OFF, as `initial` — the bar paints nothing until a service opts in", () => {

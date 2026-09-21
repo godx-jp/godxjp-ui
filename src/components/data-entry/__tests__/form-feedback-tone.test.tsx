@@ -76,6 +76,6 @@ describe("validation feedback carries its status to the row AND the control", ()
     );
     const svg = container.querySelector(".ui-form-feedback svg");
     expect(svg).not.toBeNull();
-    expect(svg?.getAttribute("class") ?? "").not.toMatch(/var\(--control-height\)/);
+    expect(svg?.getAttribute("class") ?? "").not.toMatch(/var\(\s*--control-height\)/);
   });
 });

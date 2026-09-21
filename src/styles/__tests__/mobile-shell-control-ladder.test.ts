@@ -77,7 +77,7 @@ describe("MobileShell — the control ladder follows the shell's tier", () => {
    */
   it("reads the xs Button's height from the live ladder step at the button, not a :root alias", () => {
     expect(ruleBody(controlStyles, ".ui-button--xs")).toMatch(
-      /height:\s*var\(--button-xs-height,\s*var\(--control-height-xs\)\);/,
+      /height:\s*var\(\s*--button-xs-height,\s*var\(\s*--control-height-xs\)\);/,
     );
     expect(declared(allRootBodies(controlTokens), "--button-xs-height")).toBe("initial");
   });
@@ -97,10 +97,10 @@ describe("MobileShell — the control ladder follows the shell's tier", () => {
   it("reads the bare Button's TARGET from the live ladder step, not a :root alias", () => {
     const bare = ruleBody(controlStyles, ".ui-button.ui-button--bare::after");
     expect(bare).toMatch(
-      /min-inline-size:\s*var\(--button-bare-target-size,\s*var\(--control-height-xs\)\);/,
+      /min-inline-size:\s*var\(\s*--button-bare-target-size,\s*var\(\s*--control-height-xs\)\);/,
     );
     expect(bare).toMatch(
-      /min-block-size:\s*var\(--button-bare-target-size,\s*var\(--control-height-xs\)\);/,
+      /min-block-size:\s*var\(\s*--button-bare-target-size,\s*var\(\s*--control-height-xs\)\);/,
     );
     expect(declared(allRootBodies(controlTokens), "--button-bare-target-size")).toBe("initial");
   });

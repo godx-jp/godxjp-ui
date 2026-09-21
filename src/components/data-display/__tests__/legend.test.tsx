@@ -82,8 +82,8 @@ describe("Legend", () => {
     const css = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
     const scoped = css.match(/\.ui-legend-swatch\s*\{[^}]*\}/)?.[0] ?? "";
 
-    expect(scoped).toMatch(/inline-size:\s*var\(--legend-swatch-size\)/);
-    expect(scoped).toMatch(/block-size:\s*var\(--legend-swatch-size\)/);
-    expect(scoped).toMatch(/border-radius:\s*var\(--legend-swatch-radius\)/);
+    expect(scoped).toMatch(/inline-size:\s*var\(\s*--legend-swatch-size\)/);
+    expect(scoped).toMatch(/block-size:\s*var\(\s*--legend-swatch-size\)/);
+    expect(scoped).toMatch(/border-radius:\s*var\(\s*--legend-swatch-radius\)/);
   });
 });

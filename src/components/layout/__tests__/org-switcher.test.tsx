@@ -400,8 +400,8 @@ describe("OrgSwitcher responsive contract shares the Sheet breakpoint token (gh#
     );
     const block = decls.slice(0, decls.indexOf("}"));
     expect(block).toMatch(
-      /--dialog-space-inset:\s*var\(--dialog-space-y\)\s*var\(--org-switcher-sheet-inset\)/,
+      /--dialog-space-inset:\s*var\(\s*--dialog-space-y\)\s*var\(\s*--org-switcher-sheet-inset\)/,
     );
-    expect(block).toMatch(/--dialog-space-x:\s*var\(--org-switcher-sheet-inset\)/);
+    expect(block).toMatch(/--dialog-space-x:\s*var\(\s*--org-switcher-sheet-inset\)/);
   });
 });

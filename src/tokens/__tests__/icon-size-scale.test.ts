@@ -392,7 +392,7 @@ describe("icon axis hygiene (gh#327 / gh#328)", () => {
     // is retuned, along an axis nobody chose. If an icon token WANTS density it says so itself:
     // `calc(var(--icon-size-lg) * var(--scaling))`.
     const crossAxis = iconDecls
-      .filter((d) => /var\(--space-/.test(d.value))
+      .filter((d) => /var\(\s*--space-/.test(d.value))
       .map((d) => `${d.file}:${d.line} ${d.token}: ${d.value}`);
     expect(crossAxis).toEqual([]);
   });

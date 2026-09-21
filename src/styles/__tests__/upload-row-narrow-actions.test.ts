@@ -68,7 +68,7 @@ describe("Upload file row — actions wrap under the name instead of leaving the
     expect(actions).toMatch(/flex-wrap:\s*wrap/);
     // Logical, never `margin-left`: the row flips whole under dir="rtl".
     expect(actions).toMatch(/margin-inline-start:\s*auto/);
-    expect(actions).toMatch(/gap:\s*var\(--upload-row-space-gap\)/);
+    expect(actions).toMatch(/gap:\s*var\(\s*--upload-row-space-gap\)/);
   });
 
   it("collapses the group when a row has no actions, so that row keeps its old box", () => {
@@ -90,8 +90,8 @@ describe("Upload file row — actions wrap under the name instead of leaving the
   it("does not touch the listType boxes — 36×36 leading box, one row height (gh#720)", () => {
     for (const selector of [".ui-upload-list-thumb", ".ui-upload-list-glyph"]) {
       const [body] = ruleBodies(selector);
-      expect(body).toMatch(/inline-size:\s*var\(--control-height-lg\)/);
-      expect(body).toMatch(/block-size:\s*var\(--control-height-lg\)/);
+      expect(body).toMatch(/inline-size:\s*var\(\s*--control-height-lg\)/);
+      expect(body).toMatch(/block-size:\s*var\(\s*--control-height-lg\)/);
       expect(body).toMatch(/flex-shrink:\s*0/);
     }
   });

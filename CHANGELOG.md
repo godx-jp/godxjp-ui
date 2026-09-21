@@ -4,6 +4,90 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.9.0] - 2026-09-21
+
+MINOR. Six defects, five of them the same one wearing different clothes: **a knob that resolves
+correctly and freezes above the scope that sets it.** 28.8.0 shipped the tokens; this ships the
+ability to reach them, and the gate that would have caught all five on day one.
+
+### Added
+
+- **`check:frame-token-scope`** — the neighbour the three existing guards left a hole between.
+  `check:token-tiers` reads NAMES. `check:dist-tokens-resolve` catches a `var()` with no
+  declaration ANYWHERE. `check:frame-token-wins` (28.8.0) catches a token the cascade THREW AWAY.
+  None of them sees a token that resolves correctly at `:root` and then cannot be re-scoped, which
+  is the `[data-tenant]` route `docs/CUSTOMER-THEMING.md` recommends at level 3. It carries 69
+  baseline entries and 2 intentional, keyed on identity and never on a measurement, and runs in the
+  nightly browser lane. `check:gate-coverage` is now 70 gates, 67 reached.
+
+- **A blur axis** — `--blur-sm | --blur-md | --blur-lg`. `--topbar-backdrop-blur-size` shipped in
+  28.8.0 with nothing legal to feed it: a raw literal, another component's private knob, or a token
+  from the wrong axis. The marketing page borrowed `--space-2` and said so at the call site, which
+  is honest and is not a solution — `--space-*` is `calc(<n> * var(--scaling))`, so a blur taken
+  from it moves whenever density is retuned. Deliberately **not** `--scaling`-multiplied: a
+  backdrop blur is an optical effect, and compact density means more information per screen, not
+  thinner glass. Tailwind's own blur scale is fixed for the same reason, as are Material 3's scrims.
+
+- **`gap` and `pad` reach the marketing band steps** (`20` = 80px, `24` = 96px). 28.8.0 minted
+  `--space-section-band` and `--space-section-hero` and nothing could read them: the numeric ladder
+  stopped at `12` (48px). Same scale, not a second vocabulary — Carbon `$spacing-11`/`-12`.
+
+### Fixed
+
+- **`Flex direction="row" gap="xl"` painted `gap: normal`.** `--space-inline-xl` was declared in
+  exactly one place — inside `.ui-scale-fixed` — and nowhere else, so it computed to EMPTY on
+  `<html>` and on every ancestor of an ordinary component. Measured before: row `xs/sm/md/lg` =
+  4/8/12/16px, `xl` = `normal`. A documented member of the controlled `GapProp` vocabulary handing
+  back the browser's initial value. It is `--space-6` (24px) and not the block axis's 40px, because
+  the inline scale is tighter at every other step: a wide gap across a row cuts the reading line,
+  while a wide gap down a column separates blocks.
+
+- **The whole `--font-size-*` ramp froze at `:root`.** The derived steps were declared there as
+  `var(--font-size-display)` and merely inherited, so a scope that set the base moved the base and
+  nothing else. Measured with `[data-tenant] { --font-size-base: 24px; --font-size-display: 80px }`:
+  `text-base` moved 14 → 24px and **every other step did not move at all**.
+  `docs/showcase/futurelastic-web.tsx` carried a comment reading "80px hero via text-5xl"; it
+  painted 54. The ramp now takes the shape `docs/TOKENS.md` prescribes — the knob is `initial` and
+  the formula is at the call site.
+
+- **A `text-5xl` hero was 54px at 320px too.** Measured on one 81-character headline:
+
+  | viewport | was | now |
+  | --- | --- | --- |
+  | 320 | 54px / 9 lines | **32px / 6 lines** |
+  | 375 | 54px / 8 lines | 33.38px / 4 lines |
+  | 768 | 54px / 4 lines | 43.2px / 3 lines |
+  | 1280 | 54px / 2 lines | **54px / 2 lines** |
+  | 1440 | 54px / 2 lines | **54px / 2 lines** |
+
+  The desktop hero is unchanged to the pixel; only the small end moves. gh#836 offered two roads —
+  widen `size` to the responsive object `Flex direction` takes, or make the ramp fluid. This takes
+  the second, which is the smaller diff and the **larger commitment**, because it changes what an
+  existing size means. That is safe here for one reason: the display steps were unreachable from
+  any public API until 28.8.0, so there is no admin screen whose headline moves.
+
+- **`Text whitespace="pre-wrap"` did not break inside a `Flex` row**, though its own documentation
+  promises it "breaks an over-long unbroken token rather than letting it overflow". `overflow-wrap`
+  decides where a break MAY happen; it does not reduce the box's min-content size, and a flex item
+  keeps `min-width: auto`, whose floor IS min-content. Measured on `/showcase/marketing-page`: a
+  71-character identifier held the document open at **457px** at 390/375/320. `min-inline-size: 0`
+  is inert on a block-level box, so it costs nothing anywhere else.
+
+### Changed — tests
+
+- **One reformat broke three separate suites, and the pattern is worth naming.** The freeze fix adds
+  a call-site fallback to every `--font-size-*` consumer, which makes those declarations long enough
+  for prettier to wrap. **103 test files in this repo match CSS source with a `var\(--` regex**, and
+  every one was one long declaration away from failing for a reason that has nothing to do with
+  what it tests. They are widened to tolerate the wrap, and three helpers that already collapsed
+  whitespace now also drop the padding prettier inserts just inside `(`.
+
+  `logo-glyph-fit.test.tsx` has its own CSS expression evaluator, which walked into the bare
+  `initial` the freeze fix introduced, asked for the `(` that starts a function, and died at end of
+  input — five cases failing on a CSS keyword rather than on geometry. Per CSS Variables 1 §3 a
+  custom property set to the guaranteed-invalid value makes any `var()` referencing it fall back, so
+  that is now what it does.
+
 ## [28.8.0] - 2026-09-21
 
 MINOR. The library was 55% form-and-table — 90 of 165 components — with navigation the smallest

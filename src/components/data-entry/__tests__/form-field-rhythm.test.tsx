@@ -15,27 +15,27 @@ describe("Form field-to-field row rhythm (gh#295)", () => {
       formCss.indexOf(".ui-form {"),
       formCss.indexOf(".ui-form > * + *"),
     );
-    expect(uiFormBlock).not.toMatch(/gap:\s*var\(--space-4\)/);
+    expect(uiFormBlock).not.toMatch(/gap:\s*var\(\s*--space-4\)/);
   });
 
   it("carries block-to-block rhythm via margin on ANY direct child pair (e.g. CardContent -> CardFooter)", () => {
     expect(formCssFlat).toContain(".ui-form>*+*{margin-block-start:var(--form-block-gap);}");
-    expect(formTokens).toMatch(/--form-block-gap:\s*var\(--space-4\)/);
+    expect(formTokens).toMatch(/--form-block-gap:\s*var\(\s*--space-4\)/);
   });
 
   it("carries field-to-field rhythm via a MORE SPECIFIC margin rule on adjacent FormFields", () => {
     expect(formCssFlat).toContain(
       ".ui-form-field+.ui-form-field{margin-block-start:var(--form-field-row-gap);}",
     );
-    expect(formTokens).toMatch(/--form-field-row-gap:\s*var\(--space-3\)/);
+    expect(formTokens).toMatch(/--form-field-row-gap:\s*var\(\s*--space-3\)/);
   });
 
   it("mirrors Descriptions.Item's row rhythm — a static value and a real Descriptions block read the same everywhere", () => {
     const descriptionsTokens = read("../../../tokens/components/descriptions.css");
     // Both resolve to the SAME underlying --space-3 primitive, not independently-tuned literals
     // that could drift apart.
-    expect(formTokens).toMatch(/--form-field-row-gap:\s*var\(--space-3\)/);
-    expect(descriptionsTokens).toMatch(/--descriptions-row-gap:\s*var\(--space-3\)/);
+    expect(formTokens).toMatch(/--form-field-row-gap:\s*var\(\s*--space-3\)/);
+    expect(descriptionsTokens).toMatch(/--descriptions-row-gap:\s*var\(\s*--space-3\)/);
   });
 
   it("the field rule beats the block rule by CSS specificity (two classes > one), not by source order", () => {
@@ -66,7 +66,7 @@ describe("--form-label-font-size", () => {
      * `var(--font-size-sm)`, which is exactly what --control-label-font-size already read — and
      * the fallback keeps the old default if the Label knob is ever withdrawn. */
     expect(formTokens).toMatch(
-      /--form-label-font-size:\s*var\(--control-label-font-size,\s*var\(--text-sm\)\)/,
+      /--form-label-font-size:\s*var\(\s*--control-label-font-size,\s*var\(\s*--text-sm\)\)/,
     );
   });
 

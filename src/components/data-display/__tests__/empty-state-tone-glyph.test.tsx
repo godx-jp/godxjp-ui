@@ -66,10 +66,10 @@ describe("EmptyState tone → glyph colour", () => {
     expect(feedbackTokens).toMatch(/--empty-state-icon-foreground:\s*initial/);
     expect(feedbackTokens).toMatch(/--empty-state-icon-tint:\s*initial/);
     expect(layoutCss).toMatch(
-      /color:\s*var\(--empty-state-icon-foreground,\s*hsl\(var\(--muted-foreground\)\)\)/,
+      /color:\s*var\(\s*--empty-state-icon-foreground,\s*hsl\(var\(\s*--muted-foreground\)\)\)/,
     );
     expect(layoutCss).toMatch(
-      /background-color:\s*var\(--empty-state-icon-tint,\s*hsl\(var\(--muted\)\)\)/,
+      /background-color:\s*var\(\s*--empty-state-icon-tint,\s*hsl\(var\(\s*--muted\)\)\)/,
     );
   });
 

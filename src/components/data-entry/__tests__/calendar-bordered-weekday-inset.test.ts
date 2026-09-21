@@ -24,13 +24,13 @@ describe("Calendar bordered — weekday header inset", () => {
     const ruled = bodies(/\.ui-calendar\[data-bordered="true"\] \.ui-calendar-weekday/);
     expect(
       ruled.some((body) =>
-        /padding-block:\s*var\(--calendar-bordered-weekday-padding-block\);/.test(body),
+        /padding-block:\s*var\(\s*--calendar-bordered-weekday-padding-block\);/.test(body),
       ),
     ).toBe(true);
   });
 
   it("takes the inset from a named step of the spacing scale, never a literal", () => {
-    expect(tokens).toMatch(/--calendar-bordered-weekday-padding-block:\s*var\(--space-1\);/);
+    expect(tokens).toMatch(/--calendar-bordered-weekday-padding-block:\s*var\(\s*--space-1\);/);
   });
 
   it("leaves the unruled header alone — it has no edge for its text to sit against", () => {

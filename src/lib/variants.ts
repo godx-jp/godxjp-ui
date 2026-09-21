@@ -71,6 +71,9 @@ export const flexGapClass: Record<GapProp, string> = {
   8: "ui-flex-gap-8",
   10: "ui-flex-gap-10",
   12: "ui-flex-gap-12",
+  // Bậc BAND của trang marketing (gh#839) — xem GapStepProp.
+  20: "ui-flex-gap-20",
+  24: "ui-flex-gap-24",
 };
 
 /**

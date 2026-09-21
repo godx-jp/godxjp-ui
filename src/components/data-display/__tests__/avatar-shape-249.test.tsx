@@ -88,8 +88,8 @@ describe("Avatar shape (gh#249)", () => {
 
 describe("Avatar square appearance — token-owned (gh#249)", () => {
   it("declares every knob, with the brand colours as role-mirror `initial`", () => {
-    expect(dataDisplayTokens).toMatch(/--avatar-square-radius:\s*var\(--radius-lg\);/);
-    expect(dataDisplayTokens).toMatch(/--avatar-square-size:\s*var\(--control-height\);/);
+    expect(dataDisplayTokens).toMatch(/--avatar-square-radius:\s*var\(\s*--radius-lg\);/);
+    expect(dataDisplayTokens).toMatch(/--avatar-square-size:\s*var\(\s*--control-height\);/);
     // `initial` (NOT `var(--primary)`) so a scoped [data-tenant]/.dark override of the role
     // still reaches the mark — a :root binding to a role var freezes at the :root value.
     expect(dataDisplayTokens).toMatch(/--avatar-square-background:\s*initial;/);

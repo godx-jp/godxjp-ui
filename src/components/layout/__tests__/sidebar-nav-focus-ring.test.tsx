@@ -49,16 +49,16 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     expect(rule).toContain(".sb-nav-item");
     // The mark is an `outline` now rather than a `box-shadow`, so there is no browser outline left
     // to suppress — the rule REPLACES it instead of turning it off and painting beside it.
-    expect(rule).toMatch(/outline:\s*var\(--focus-ring-width\)/);
+    expect(rule).toMatch(/outline:\s*var\(\s*--focus-ring-width\)/);
   });
 
   it("draws the mark from the global focus tokens", () => {
     const rule = shadowFormRule();
-    expect(rule).toMatch(/outline:\s*var\(--focus-ring-width\) solid/);
+    expect(rule).toMatch(/outline:\s*var\(\s*--focus-ring-width\) solid/);
     expect(rule).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
     // The knob the private copy used to drop. A service that softens every mark must soften
     // this one too.
-    expect(rule).toMatch(/var\(--focus-ring-opacity, 1\)/);
+    expect(rule).toMatch(/var\(\s*--focus-ring-opacity, 1\)/);
     // And the halo, which lives in its OWN rule scoped to the switch — see the note in
     // focus-ring.css: leaving it in this rule with an `none` off-value stripped a focused
     // button's resting elevation, measured in Chromium.

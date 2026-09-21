@@ -89,7 +89,7 @@ describe("Badge nested in a Button (gh#404)", () => {
       "border-radius: var(--badge-radius);",
     );
     expect(read("../../../tokens/components/badge.css")).toMatch(
-      /--badge-radius:\s*var\(--radius-md\);/,
+      /--badge-radius:\s*var\(\s*--radius-md\);/,
     );
   });
 

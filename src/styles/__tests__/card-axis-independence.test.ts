@@ -234,7 +234,7 @@ describe("AuthShell compact card — three knobs, three axes (gh#232)", () => {
 
   it("keeps the header↔body gap on its own knob at the pre-gh#232 rhythm", () => {
     expect(stripComments(shellTokens)).toMatch(
-      /--auth-shell-card-body-gap-compact:\s*var\(--space-3\);/,
+      /--auth-shell-card-body-gap-compact:\s*var\(\s*--space-3\);/,
     );
     const gap = substitute(AUTH_CARD["--card-space-body-y"], ROOT);
     expect(gap).toBe(substitute("var(--space-3)", ROOT));

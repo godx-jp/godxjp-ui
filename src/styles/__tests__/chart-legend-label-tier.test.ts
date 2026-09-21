@@ -36,7 +36,7 @@ describe("chart legend label reads the text tier, not the series colour", () => 
     const rules = css.match(/\.ui-chart \.recharts-legend-item-text\s*\{[^}]*\}/g) ?? [];
     expect(rules.length, "no rule targets the legend label").toBeGreaterThan(0);
     const wins = rules.some((r) =>
-      /color:\s*hsl\(var\(--muted-foreground\)\)\s*!important/.test(r),
+      /color:\s*hsl\(var\(\s*--muted-foreground\)\)\s*!important/.test(r),
     );
     expect(
       wins,

@@ -15,7 +15,9 @@ const stackedRowRule = (size: string) =>
 
 describe("stacked table rows (gh#351)", () => {
   it("control.css still gives a normal row its fixed height", () => {
-    expect(controlStyles).toMatch(/\.ui-table-row\s*\{[^}]*height:\s*var\(--table-row-height\)/s);
+    expect(controlStyles).toMatch(
+      /\.ui-table-row\s*\{[^}]*height:\s*var\(\s*--table-row-height\)/s,
+    );
   });
 
   it.each(BREAKPOINTS)("a stacked row at %s is sized by its cells, not by the row tier", (size) => {

@@ -493,7 +493,7 @@ describe("AppShell", () => {
     it("collapses the grid row to `auto`, and hides the drawer-only header above the breakpoint", () => {
       // Default: a fixed, token-sized bar row.
       expect(declarationsFor(wideCss, ".app-root")).toMatch(
-        /grid-template-rows:\s*var\(--app-shell-bar-height\) minmax\(0, 1fr\) auto;/,
+        /grid-template-rows:\s*var\(\s*--app-shell-bar-height\) minmax\(0, 1fr\) auto;/,
       );
       // Bar-less: `auto`, not a `0` literal — that is what lets ONE attribute serve every branch
       // (absent header → 0, display:none header → 0, narrow header → its own min-height).
@@ -504,7 +504,7 @@ describe("AppShell", () => {
       // — which removes its border and its card background with it, not merely its height.
       const drawerOnlyBar = declarationsFor(wideCss, '.app-root[data-topbar="none"] > .app-topbar');
       expect(drawerOnlyBar).toMatch(/display:\s*none;/);
-      expect(drawerOnlyBar).toMatch(/min-height:\s*var\(--app-shell-bar-height\);/);
+      expect(drawerOnlyBar).toMatch(/min-height:\s*var\(\s*--app-shell-bar-height\);/);
     });
 
     it("brings the bar back at narrow widths without ever restating the row template as a literal", () => {
@@ -518,7 +518,7 @@ describe("AppShell", () => {
       // with the hidden rail), so the rule is about the VALUES, not about the property appearing.
       for (const rows of narrowCss.matchAll(/grid-template-rows:([^;]+);/g)) {
         expect(rows[1]).not.toMatch(/\d+(\.\d+)?(px|rem|em)/);
-        expect(rows[1]).toMatch(/var\(--app-shell-bar-height\)/);
+        expect(rows[1]).toMatch(/var\(\s*--app-shell-bar-height\)/);
       }
       expect(shellCss).not.toMatch(/grid-template-rows:\s*3rem/);
     });

@@ -261,6 +261,17 @@
   .ui-flex-gap-12 {
     gap: var(--space-12);
   }
+  /* The two BAND steps (gh#839). `--space-section-band` and `--space-section-hero` shipped in
+   * 28.8.0 and nothing could read them: the numeric ladder stopped at 12 (48px), so a marketing
+   * page wrote an inline `style` at every band. These are the same two values by their scale names
+   * — Carbon $spacing-11 and $spacing-12 — so the ladder stays one scale rather than gaining a
+   * second vocabulary for the same lengths. */
+  .ui-flex-gap-20 {
+    gap: var(--space-20);
+  }
+  .ui-flex-gap-24 {
+    gap: var(--space-24);
+  }
 
   /*
    * Bậc TÊN biết trục (gh#401).

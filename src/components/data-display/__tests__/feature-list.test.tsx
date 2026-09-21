@@ -114,7 +114,7 @@ describe("FeatureList", () => {
 
     expect(scoped).not.toMatch(/destructive/);
     expect(rule('.ui-feature-list-item[data-state="excluded"] .ui-feature-list-label')).toMatch(
-      /color:\s*hsl\(var\(--muted-foreground\)\)/,
+      /color:\s*hsl\(var\(\s*--muted-foreground\)\)/,
     );
   });
 
@@ -127,13 +127,13 @@ describe("FeatureList", () => {
   });
 
   it("takes its geometry from tokens, so a theme can retune it", () => {
-    expect(rule(".ui-feature-list")).toMatch(/gap:\s*var\(--feature-list-space-gap\)/);
+    expect(rule(".ui-feature-list")).toMatch(/gap:\s*var\(\s*--feature-list-space-gap\)/);
     expect(rule(".ui-feature-list-item")).toMatch(
-      /column-gap:\s*var\(--feature-list-space-inline\)/,
+      /column-gap:\s*var\(\s*--feature-list-space-inline\)/,
     );
     expect(rule(".ui-feature-list-mark > svg")).toMatch(
-      /inline-size:\s*var\(--feature-list-mark-icon-size\)/,
+      /inline-size:\s*var\(\s*--feature-list-mark-icon-size\)/,
     );
-    expect(tokens()).toMatch(/--feature-list-mark-icon-size:\s*var\(--icon-size-md\)/);
+    expect(tokens()).toMatch(/--feature-list-mark-icon-size:\s*var\(\s*--icon-size-md\)/);
   });
 });

@@ -115,8 +115,8 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   it("the spacing scale and --radius derive through --scaling", () => {
     const foundation = readSrc("tokens/foundation.css");
     expect(foundation).toContain("--scaling: 1;");
-    expect(foundation).toMatch(/--space-1:\s*calc\(0\.25rem \* var\(--scaling\)\)/);
-    expect(foundation).toMatch(/--radius:\s*calc\(0\.375rem \* var\(--scaling\)\)/);
+    expect(foundation).toMatch(/--space-1:\s*calc\(0\.25rem \* var\(\s*--scaling\)\)/);
+    expect(foundation).toMatch(/--radius:\s*calc\(0\.375rem \* var\(\s*--scaling\)\)/);
   });
 
   it("ui-scale-fixed pins a subtree to baseline (chrome exempt from density)", () => {
