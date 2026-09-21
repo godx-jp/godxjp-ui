@@ -4,6 +4,7 @@ name: CI · browser (full sweep)
 #
 # WHAT IS HERE, AND WHY IT LEFT ci-browser.yml
 #   • geometry         — viewport-matrix sweep, 8 widths (320→1920), baseline-guarded.
+#   • token-wins       — CDP cascade sweep for component tokens the browser throws away.
 #   • rendered-runtime — five shards of per-frame data-entry / layout / provider runtime contracts.
 #
 # Measured on run 33976207776 (a normal, uncongested merge): the five rendered-runtime shards cost
@@ -82,6 +83,28 @@ jobs:
           name: frame-geometry-evidence
           path: audit-evidence/frame-geometry/
           if-no-files-found: ignore
+
+  token-wins:
+    name: Inert component tokens (CDP cascade sweep)
+    # NOT in ci-browser.yml. That lane has a 5-minute budget (CONTRACT.md L4) and already spends
+    # most of it; this sweep costs ~10 minutes because `CSS.getMatchedStylesForNode` is ~60ms and
+    # ~930KB per element and cannot be pipelined, and it asks about ~5,300 elements across the 192
+    # frames. It is baseline-guarded, so what it protects against is a NEW inert token appearing —
+    # a thing that arrives with a commit, not with a minute, and a nightly catch is soon enough.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      PREVIEW_BASE: http://localhost:6048
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - name: inert component tokens
+        run: pnpm check:frame-token-wins
 
   rendered-runtime:
     name: rendered-runtime (${{ matrix.name }})

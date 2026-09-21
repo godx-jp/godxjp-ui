@@ -419,7 +419,8 @@
     "visual-audit": "node scripts/visual-audit.mjs",
     "gen:brand": "node scripts/gen-brand.mjs",
     "check:absorbed-names": "node scripts/check-absorbed-names.mjs",
-    "check:frame-overflow": "node scripts/check-frame-overflow.mjs"
+    "check:frame-overflow": "node scripts/check-frame-overflow.mjs",
+    "check:frame-token-wins": "node scripts/check-frame-token-wins.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",
