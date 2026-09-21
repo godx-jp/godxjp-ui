@@ -63,6 +63,10 @@ describe("PageContainer header — the action group wraps instead of covering th
       css,
     );
     expect(extra?.[1]).toMatch(/flex-shrink:\s*1/);
-    expect(extra?.[1]).toMatch(/min-inline-size:\s*0/);
+    // …but never past what its content can present. `min-inline-size: 0` was a floor of ZERO, so a
+    // child that cannot wrap — a single `<Button>` as a DIRECT child, which this selector's rule
+    // never reached — painted 41.8px outside the box, backwards over the title (gh#813). `auto`
+    // makes the floor min-content: one button, or one button per row for the group above.
+    expect(extra?.[1]).toMatch(/min-inline-size:\s*auto/);
   });
 });

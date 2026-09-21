@@ -37,9 +37,24 @@ export const controlOpenRingClass = "ui-control-trigger";
  * `--control-bounded-width` in gh#375). A control that wants the antd `variant` × `status` matrix
  * therefore composes THIS class plus `ui-control-surface`, which supplies the identical resting
  * border and fill from `--control-surface-*`.
+ *
+ * TRUNCATION HAS TO READ AS TRUNCATION (gh#813). `line-clamp-1` clips the value and — inside the
+ * trigger's `whitespace-nowrap` — never reaches a second line, so its own ellipsis never engages:
+ * `YYYY-MM-DD（年-月-日）` in a 101px value box showed `YYYY-MM-DD（全`, a format string cut through
+ * the middle of a glyph, with nothing to say it had been cut. Two declarations because the two
+ * engines ellipsize by different mechanisms, both measured on
+ * `/isolate/navigation-app-setting-picker` (dateFormat, ja, 1280×1000, value box 101px / text
+ * 160px):
+ *
+ *   text-ellipsis      Blink honours `text-overflow` on the clamped box → `YYYY-MM-DD…`.
+ *                      Gecko ignores it there (still `YYYY-MM-DD（全`).
+ *   whitespace-normal  lets `-webkit-line-clamp` clamp a real line, which is the ellipsis Gecko
+ *                      DOES paint → `YYYY-MM-D…` in Firefox, `YYYY-MM-DD…` in Chromium.
+ *
+ * The clamp keeps it to one line, so a wrappable value cannot grow the control.
  */
 export const controlTriggerBaseClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1";
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1 [&>[data-slot=select-value]]:whitespace-normal [&>[data-slot=select-value]]:text-ellipsis";
 
 export const controlTriggerClass = `${controlTriggerBaseClass} border-input bg-background`;
 
