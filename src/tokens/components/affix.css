@@ -1,0 +1,44 @@
+/* Affix component tokens — Ant Design `Affix` (6.6.5): pin an element to its scrollport and
+ * report that it is pinned.
+ *
+ * THESE TWO KNOBS PLACE THE PIN LINE, AND THEY PLACE IT ONLY ONCE. `src/styles/layout.css` reads
+ * each of them twice — `calc(-1 * …)` on the sentinel, which is where the CROSSING happens, and a
+ * plain `var()` on the pinned bar, which is where the PAINT happens — so the moment a section
+ * becomes pinned and the position it is pinned at can never disagree. The TypeScript never parses
+ * either one back: a custom property hands `getComputedStyle` its AUTHORED text, so a theme
+ * written in `rem` would come back as "4rem" and `parseFloat` would read it as 4 pixels.
+ *
+ * This is cardinal rules #44/#45 in their literal form. A product whose app header is 64px tall
+ * writes ONE line in its theme.css —
+ *
+ *     :root { --affix-inset-block-start: 4rem; }
+ *
+ * — and every affixed bar in the product clears the header. `Affix offsetBlockStart` /
+ * `offsetBlockEnd` override it per instance by writing the same property inline.
+ *
+ * NEITHER IS A ROLE MIRROR, so neither takes the `initial` + call-site-fallback shape the freeze
+ * rule requires (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). They are plain lengths
+ * with no token behind them: nothing re-scopes them, so there is nothing to freeze, and the `0px`
+ * here is the documented default rather than a value inherited from a tier.
+ *
+ * STACKING IS NOT HERE, and that is deliberate rather than an omission. `--affix-z-index` was the
+ * name in the plan (docs/roadmap/website-components.md §4.1), and it is not a token this file may
+ * hold, for two independent reasons. The shape gate rejects it — `check:token-tiers` requires
+ * `--{component}-{part}-{property}` where the property word comes from a closed list that has no
+ * word for a stacking order. And `src/tokens/semantic/layout.css` already says why in prose at
+ * `--overlay-z-index`: "Stacking is a SYSTEM decision, not a per-primitive one", written after
+ * five primitives each hard-coded `z-50` and a host app had to fight all five. A pinned bar is the
+ * sixth. The knob is `--sticky-z-index`, one layer for every pinned-in-flow surface, above page
+ * content and below every portaled overlay.
+ */
+:root {
+  /* Distance from the scrollport's BLOCK-START edge at which an Affix pins, and the distance it
+   * sits at once pinned. Ant Design `offsetTop`, whose default is `0`; ported as that default. */
+  --affix-inset-block-start: 0px;
+
+  /* The same, from the BLOCK-END edge — the sticky form footer rather than the sticky header.
+   * Ant Design `offsetBottom` has no default at all, because in antd the PRESENCE of the prop is
+   * what selects bottom pinning. That selection is still the prop's here; this is only the
+   * length it pins at. */
+  --affix-inset-block-end: 0px;
+}

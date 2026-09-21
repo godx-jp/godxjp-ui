@@ -412,6 +412,9 @@
     "breadcrumb": {
       "ariaLabel": "Breadcrumb"
     },
+    "anchor": {
+      "ariaLabel": "On this page"
+    },
     "toolbar": {
       "ariaLabel": "Filters"
     },

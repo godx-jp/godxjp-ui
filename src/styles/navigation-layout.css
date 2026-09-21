@@ -1588,4 +1588,119 @@
       hsl(var(--separator-rule-color, var(--border)));
     background: transparent;
   }
+
+  /* Anchor — Ant Design `Anchor` (6.6.5).
+   *
+   * Every colour here is read as `var(--knob, var(--role))` AT THE PAINTING ELEMENT, never as a
+   * `:root` binding, so a `[data-tenant]` (or `.dark`) that re-scopes `--primary` / `--border`
+   * re-tints the rail live. docs/TOKENS.md · the freeze rule. */
+  .ui-anchor-track {
+    position: relative;
+  }
+
+  .ui-anchor-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ui-anchor [data-slot="anchor-link"] {
+    display: block;
+    padding-block: var(--anchor-item-padding-block);
+    padding-inline: var(--anchor-item-padding-inline) 0;
+    color: hsl(var(--muted-foreground));
+    text-decoration: none;
+    /* A 71-character unbreakable identifier is a real section title (a config key, a German
+     * compound, a URL). It WRAPS rather than widening the rail past the layout — the difference
+     * between a long label and a horizontal scrollbar on the page. */
+    overflow-wrap: anywhere;
+  }
+
+  .ui-anchor [data-slot="anchor-link"]:hover {
+    color: hsl(var(--foreground));
+  }
+
+  .ui-anchor [data-slot="anchor-link"][data-active] {
+    color: hsl(var(--anchor-ink-color, var(--primary)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* antd allows exactly one level of nesting, and marks it by indent alone. */
+  .ui-anchor [data-slot="anchor-item"][data-nested] > [data-slot="anchor-link"] {
+    padding-inline-start: calc(
+      var(--anchor-item-padding-inline) + var(--anchor-nested-padding-inline)
+    );
+  }
+
+  .ui-anchor-ink {
+    position: absolute;
+    background: hsl(var(--anchor-ink-color, var(--primary)));
+    /* Hidden until a section is actually current, so an anchor that has resolved nothing yet does
+     * not park a bright rail on its first row. */
+    opacity: 0;
+    transition:
+      opacity var(--duration-fast) var(--ease-standard),
+      inset-block-start var(--duration-fast) var(--ease-standard),
+      inset-inline-start var(--duration-fast) var(--ease-standard),
+      block-size var(--duration-fast) var(--ease-standard),
+      inline-size var(--duration-fast) var(--ease-standard);
+  }
+
+  .ui-anchor-ink[data-visible] {
+    opacity: 1;
+  }
+
+  /* antd's `showInkInFixed`: with the nav left in the flow (`affix={false}`), the travelling ink
+   * is withheld unless the caller asks for it. The static rule stays — it is the list's own
+   * leading edge, not the indicator. */
+  .ui-anchor[data-ink="hidden"] .ui-anchor-ink {
+    display: none;
+  }
+
+  /* ── vertical (the default) ──────────────────────────────────────────────────────────────── */
+  .ui-anchor[data-direction="vertical"] .ui-anchor-track {
+    border-inline-start: var(--anchor-ink-width) solid hsl(var(--anchor-track-color, var(--border)));
+  }
+
+  .ui-anchor[data-direction="vertical"] .ui-anchor-ink {
+    /* Sits ON the track rule, which is why it is pulled back by its own width. */
+    inset-inline-start: calc(-1 * var(--anchor-ink-width));
+    inline-size: var(--anchor-ink-width);
+    inset-block-start: var(--anchor-ink-offset, 0px);
+    block-size: var(--anchor-ink-extent, 0px);
+  }
+
+  /* ── horizontal ──────────────────────────────────────────────────────────────────────────── */
+  .ui-anchor[data-direction="horizontal"] .ui-anchor-track {
+    border-block-end: var(--anchor-ink-width) solid hsl(var(--anchor-track-color, var(--border)));
+  }
+
+  .ui-anchor[data-direction="horizontal"] .ui-anchor-list {
+    display: flex;
+    gap: var(--anchor-gap);
+    /* One row that scrolls, never a second row: a wrapped horizontal anchor would put the ink
+     * rail under a row that is no longer beside the label it belongs to. The rows are links, so
+     * the scroll region is already keyboard-reachable (WCAG 2.1.1). */
+    overflow-x: auto;
+  }
+
+  .ui-anchor[data-direction="horizontal"] [data-slot="anchor-link"] {
+    padding-inline: 0;
+    white-space: nowrap;
+  }
+
+  .ui-anchor[data-direction="horizontal"] .ui-anchor-ink {
+    inset-block-end: calc(-1 * var(--anchor-ink-width));
+    block-size: var(--anchor-ink-width);
+    inset-inline-start: var(--anchor-ink-offset, 0px);
+    inline-size: var(--anchor-ink-extent, 0px);
+  }
+
+  /* The current item is conveyed by `aria-current` and by colour weight, so the rail may stop
+   * travelling without anything being lost. It SNAPS to the active row — it does not disappear. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-anchor-ink {
+      transition: none;
+    }
+  }
 }

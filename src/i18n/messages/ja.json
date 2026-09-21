@@ -405,6 +405,9 @@
     "breadcrumb": {
       "ariaLabel": "パンくずリスト"
     },
+    "anchor": {
+      "ariaLabel": "このページの内容"
+    },
     "toolbar": {
       "ariaLabel": "フィルター"
     },

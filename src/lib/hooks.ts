@@ -225,3 +225,93 @@ export function useScrollsHorizontally(
 ): boolean {
   return useScrollsOnAxis(ref, enabled, "horizontal");
 }
+
+/**
+ * Nearest scrollable ancestor — the box an element actually scrolls inside — else `null`, which is
+ * what `IntersectionObserver` already spells "the document viewport".
+ *
+ * Lifted VERBATIM out of `src/components/layout/page-container.tsx`, where it was private to
+ * `footerReveal="onScroll"`. See `useIntersects` for why it moved.
+ */
+export function scrollParent(el: HTMLElement | null): HTMLElement | null {
+  let node = el?.parentElement ?? null;
+  while (node) {
+    const overflowY = getComputedStyle(node).overflowY;
+    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") return node;
+    node = node.parentElement;
+  }
+  return null;
+}
+
+/** `useIntersects` options. `root` is DELIBERATELY tri-state — see the hook. */
+export type UseIntersectsOption = {
+  /** Observe at all. `false` parks the hook at `initial` and attaches nothing. Default `true`. */
+  enabled?: boolean;
+  /**
+   * The clipping box, and the reason this is an object rather than a positional argument:
+   * `undefined` (the key ABSENT) means "find my nearest scroll parent", which is what
+   * `PageContainer` has always done, while an explicit `null` means "the document viewport",
+   * which is what `Affix target={() => window}` means. Collapsing the two would make one of the
+   * two callers wrong, silently.
+   */
+  root?: Element | Document | null;
+  /** `IntersectionObserver` `rootMargin` — how far the clipping box is grown or shrunk. */
+  rootMargin?: string;
+  /** `IntersectionObserver` `threshold`. Default `0` — any overlap at all counts. */
+  threshold?: number | number[];
+  /**
+   * What to report before the first callback, and wherever `IntersectionObserver` does not exist
+   * (SSR, jsdom). Default `false`. A caller whose SAFE answer is "yes, it is on screen" passes
+   * `true`.
+   */
+  initial?: boolean;
+};
+
+/**
+ * Does this element currently intersect its scrollport?
+ *
+ * **This is the library's ONE `IntersectionObserver`.** It was `useFooterReveal`, private to
+ * `PageContainer`, and across 165 components it was the only scroll-position machinery in
+ * `src/components/` that was not `FloatButton.BackTop` — so the second component that needed it
+ * would have copied it, and the third would have copied the copy. `useScrollsOnAxis` is the shape
+ * this follows: the body moved up here, the original caller became a one-line wrapper, and its
+ * behaviour did not change by a byte.
+ *
+ * Callers today: `PageContainer footerReveal="onScroll"` (has the header LEFT the scrollport) and
+ * `Affix` (has a zero-height sentinel crossed the pin line). Both ask the same question of the
+ * same API; only `root` and `rootMargin` differ.
+ *
+ * SSR- and jsdom-safe: with no `IntersectionObserver` the hook reports `initial` forever, which is
+ * a correct non-tracking answer rather than a crash.
+ */
+export function useIntersects(
+  ref: RefObject<HTMLElement | null>,
+  { enabled = true, root, rootMargin, threshold = 0, initial = false }: UseIntersectsOption = {},
+): boolean {
+  const [intersects, setIntersects] = useState(initial);
+  const hasExplicitRoot = root !== undefined;
+
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return undefined; // jsdom/SSR-safe
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIntersects(entry.isIntersecting);
+      },
+      {
+        root: hasExplicitRoot ? root : scrollParent(el),
+        ...(rootMargin === undefined ? undefined : { rootMargin }),
+        threshold,
+      },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+    // `root` is read through `hasExplicitRoot` as well; both belong in the list.
+  }, [ref, enabled, hasExplicitRoot, root, rootMargin, threshold]);
+
+  return enabled ? intersects : initial;
+}

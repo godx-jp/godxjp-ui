@@ -13,3 +13,25 @@ export function isApplePlatform(): boolean {
   const platform = data?.platform || navigator.platform || "";
   return /mac|iphone|ipad|ipod/i.test(platform);
 }
+
+/**
+ * Has the user asked for reduced motion (WCAG 2.3.3)?
+ *
+ * Read at the moment of the gesture rather than subscribed to, because every caller asks the same
+ * question at the same instant: "am I allowed to tween THIS scroll / THIS transition". A falsy or
+ * unsupported environment — SSR, jsdom, a browser without `matchMedia`, a `matchMedia` that throws
+ * on an unknown feature — answers `false`, which is the ordinary animated behaviour rather than a
+ * crash.
+ *
+ * It lives here rather than beside its first caller because it had already been written twice
+ * (`src/form/form-root.tsx`, `src/components/layout/legal-document-shell.tsx`) before a third
+ * caller needed it.
+ */
+export function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  try {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
+}

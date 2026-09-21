@@ -1,0 +1,78 @@
+{
+  "docPath": "layout/affix.tsx",
+  "example": "import { Affix } from \"@godxjp/ui/layout\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\nconst [pinned, setPinned] = useState(false);\n\n<Affix offsetBlockStart={64} onChange={setPinned}>\n  <Flex align=\"center\" justify=\"between\" gap=\"sm\">\n    <Text weight=\"medium\">{pinned ? \"Invoices\" : \"All invoices, 2026\"}</Text>\n    <Button size={pinned ? \"sm\" : \"md\"}>New invoice</Button>\n  </Flex>\n</Affix>",
+  "group": "layout",
+  "importPath": "@godxjp/ui/layout",
+  "name": "Affix",
+  "props": [
+    {
+      "description": "What gets pinned. Must not itself be `position: absolute` (antd's note applies here for the same reason: the pin works by making this content `position: fixed`).",
+      "name": "children",
+      "type": "ReactNode"
+    },
+    {
+      "description": "antd `offsetTop`, on its LOGICAL axis. Pixels from the scrollport's block-start edge at which it pins, and the distance it sits at once pinned. Overrides the `--affix-inset-block-start` token per instance; omit it to take the theme's. Default `0` (antd's) via that token.",
+      "name": "offsetBlockStart",
+      "type": "number"
+    },
+    {
+      "description": "antd `offsetBottom`, on its LOGICAL axis — the sticky FORM FOOTER rather than the sticky header. Passing it (and no `offsetBlockStart`) is what selects block-end pinning, exactly as in antd; block-start wins when both are given.",
+      "name": "offsetBlockEnd",
+      "type": "number"
+    },
+    {
+      "description": "antd `target`, default `() => window` — the scroll box to pin against, which need not be the nearest scrolling ancestor. Same lazy-getter shape `FloatButton.BackTop.target` uses here, and for the same reason: the element does not exist on the render that declares it.",
+      "name": "target",
+      "type": "() => Window | HTMLElement | null"
+    },
+    {
+      "description": "antd `onChange`. Fires on the pin TRANSITION and only on it — never on a scroll frame that did not change the state. Structural, not guarded: the value is React state, so the effect cannot run without it having flipped, and the mount is skipped.",
+      "name": "onChange",
+      "type": "(affixed: boolean) => void"
+    },
+    {
+      "description": "NOT props. antd's physical spellings, kept in the type so that arriving from antd's docs is a COMPILE ERROR naming `offsetBlockStart` / `offsetBlockEnd`, plus a development console.warn. See docs/DESIGN-AUTHORITY.md.",
+      "name": "offsetTop / offsetBottom",
+      "type": "never"
+    },
+    {
+      "description": "DOM id of the outer (in-flow) box.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Structural class on the outer box.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Anchor — takes an `AffixProp` subset as its own `affix` prop and pins its section nav with this.",
+    "PageContainer — `stickyFooter` / `footerReveal=\"onScroll\"` is the page-level answer; it shares the same `useIntersects` observer this uses.",
+    "FloatButton.BackTop — the other public scroll-position API, and where `target`'s lazy-getter shape comes from.",
+    "Topbar / AppShell — the app chrome an affixed bar usually sits UNDER; `--affix-inset-block-start` is how it clears it."
+  ],
+  "rules": [
+    2,
+    40,
+    44,
+    45
+  ],
+  "storyPath": "layout/Affix.stories.tsx",
+  "tagline": "Ant Design `Affix` (6.6.5): pin an element to its scrollport once the page scrolls past it, and REPORT that it is pinned. `position: sticky` pins and then says nothing, so a sticky header cannot shrink, swap its logo or raise its shadow; this one exposes the boolean as `data-affixed` for CSS and `onChange` for JavaScript, and holds the flow open with a MEASURED placeholder so the page does not jump by the bar's height at the moment it pins.",
+  "usage": [
+    "DO use it whenever the pinned state has to be VISIBLE — a header that condenses, a toolbar that gains a shadow over the rows sliding under it, a filter rail that swaps to a compact form. That state is the entire reason this exists; if you need none of it, plain `position: sticky` is lighter and correct.",
+    "DO style the pinned state off `[data-affixed]` on `data-slot=\"affix-content\"`, and transition on `--duration-fast` / `--ease-standard`. The condensed bar must still be there under `prefers-reduced-motion` — it snaps to the smaller size, it never fades out.",
+    "DO set the resting offset ONCE in your theme (`:root { --affix-inset-block-start: 4rem; }`) when every affixed bar in the product has to clear the same app header. `offsetBlockStart` is the per-instance override, not the place to repeat a global decision.",
+    "DO pass `target` when the page scrolls inside a pane rather than the document — an AppShell main region, a dialog body, a MasterDetail column.",
+    "DON'T put a `transform`, `filter` or `backdrop-filter` on an ancestor. That ancestor becomes the containing block for `position: fixed` and the bar pins to it instead of the scrollport. The same limitation applies to `position: sticky` and to antd's Affix; there is no fix inside the component.",
+    "DON'T give the children `position: absolute`, and DON'T expect a horizontally scrolling container to work — antd documents both, and both are true here.",
+    "DON'T hand-roll the placeholder. The height is MEASURED, so it is right at every width and after any re-wrap; a number written once in CSS is wrong at every other width, which is the page-jump bug this component exists to remove."
+  ],
+  "useCases": [
+    "A site or app header that condenses on scroll: the wordmark shrinks to a monogram and the bar loses half its height, driven by `data-affixed` alone.",
+    "A table toolbar (search, filters, bulk actions) that stays reachable over a thousand-row list and gains a shadow the moment it starts covering rows.",
+    "A form's action footer pinned to the bottom of a long form with `offsetBlockEnd`, released once the real end of the form scrolls into view.",
+    "The substrate under `Anchor affix` — antd specifies Anchor's own `affix` prop as `AffixProps`, so the two are one stack."
+  ]
+}

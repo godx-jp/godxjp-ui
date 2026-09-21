@@ -1,46 +1,32 @@
 /** PageContainer — mandatory shell for every admin page (the PageHeader equivalent). */
-import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
+import { isValidElement, useRef, type ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { useIntersects } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
-
-/** Nearest scrollable ancestor (the page's scroll viewport), else the window. */
-function scrollParent(el: HTMLElement | null): HTMLElement | null {
-  let node = el?.parentElement ?? null;
-  while (node) {
-    const overflowY = getComputedStyle(node).overflowY;
-    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") return node;
-    node = node.parentElement;
-  }
-  return null;
-}
 
 /**
  * `footerReveal="onScroll"`: reveal the sticky footer once the header scrolls
  * out of the page's scroll viewport. The footer stays mounted (CSS only flips
  * a transform), so toggling never reflows the body — no scroll jitter.
+ *
+ * The observer itself is `useIntersects` (`src/lib/hooks.ts`) — this function's former body,
+ * moved up so `Affix` could stop short of writing a second one. Same root (the nearest scroll
+ * parent, which is what omitting `root` means there), same `threshold: 0`, same jsdom guard.
+ *
+ * `initial: true` is what keeps the behaviour byte-identical. The old local state was `revealed`
+ * and started `false`; the shared hook's state is `intersects` and the reveal is its NEGATION, so
+ * the same resting answer is "it IS intersecting". Left at the hook's `false` default the footer
+ * would paint revealed for the frame before the first observer callback, and would stay revealed
+ * forever in jsdom and under SSR, where the old code kept it hidden.
  */
 function useFooterReveal(enabled: boolean) {
   const headerRef = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    if (!enabled) return;
-    const el = headerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return; // jsdom/SSR-safe
-
-    const observer = new IntersectionObserver(([entry]) => setRevealed(!entry.isIntersecting), {
-      root: scrollParent(el),
-      threshold: 0,
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [enabled]);
-
-  return { headerRef, revealed: enabled && revealed };
+  const intersects = useIntersects(headerRef, { enabled, initial: true });
+  return { headerRef, revealed: enabled && !intersects };
 }
 
 export type {

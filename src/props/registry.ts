@@ -978,6 +978,51 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  AffixTargetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  AffixProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "offsetBlockStart",
+        local: true,
+        reason:
+          "Ant Design `Affix.offsetTop` on its LOGICAL axis — the pin distance from the scrollport's block-start edge. A length in pixels, backed by the `--affix-inset-block-start` token; no vocabulary type owns a per-instance pin offset.",
+      },
+      {
+        field: "offsetBlockEnd",
+        local: true,
+        reason: "Ant Design `Affix.offsetBottom` on its LOGICAL axis. See `offsetBlockStart`.",
+      },
+      {
+        field: "offsetTop",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's physical spelling is a compile error that names `offsetBlockStart` instead of a header that never pins (docs/DESIGN-AUTHORITY.md).",
+      },
+      {
+        field: "offsetBottom",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's physical spelling is a compile error that names `offsetBlockEnd`.",
+      },
+      {
+        field: "target",
+        local: true,
+        reason:
+          "Ant Design `Affix.target` — the lazy scroll-box getter, the same shape `FloatButton.BackTop.target` already spells here.",
+      },
+      {
+        field: "onChange",
+        local: true,
+        reason:
+          "Ant Design `Affix.onChange` — an OBSERVATION of the pinned boolean, fired only on the transition. There is no pinned VALUE to control, so it is not the OnValueChangeProp half of a triad, and it is not OnChangeProp's DOM ChangeEvent either. `Attachments.onChange` and `ActionsFeedback.onChange` are the precedent.",
+      },
+    ],
+  },
   MasterDetailRailWidthProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -4343,6 +4388,140 @@ export const COMPONENT_PROP_REGISTRY = {
       "LabelProp",
       "IdProp",
       "ClassNameProp",
+    ],
+  },
+  AnchorContainerProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  AnchorDirectionProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  AnchorItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "ChildrenProp",
+      {
+        field: "key",
+        local: true,
+        reason:
+          "Ant Design `AnchorItem.key` — the entry's identity in the `items` DATA, not React's reserved element key.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason:
+          "Ant Design `AnchorItem.href` — the in-page fragment. It is a real `<a href>`, so the field carries the HTML attribute's own name.",
+      },
+      {
+        field: "target",
+        local: true,
+        reason: "Ant Design `AnchorItem.target` — the `<a target>` attribute, passed through.",
+      },
+      {
+        field: "replace",
+        local: true,
+        reason:
+          "Ant Design `AnchorItem.replace` — history replace rather than push, overriding the component-level prop.",
+      },
+      {
+        field: "targetOffsetBlockStart",
+        local: true,
+        reason:
+          "Ant Design `AnchorItem.targetOffset` (6.4.0) on its LOGICAL axis — this entry's own scroll landing offset.",
+      },
+    ],
+  },
+  AnchorProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "OnClickProp",
+      "LabelProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Ant Design `Anchor.items` — the entries, in document order.",
+      },
+      {
+        field: "direction",
+        local: true,
+        reason:
+          "Ant Design `Anchor.direction` — the layout axis, and the same word Separator / Flex / Toolbar already use here for it.",
+      },
+      {
+        field: "affix",
+        local: true,
+        reason:
+          "Ant Design `Anchor.affix` — `boolean` or the `AffixProp` subset. It is literally antd's own AffixProps minus the fields Anchor supplies, which is why gh#827 lands before gh#828.",
+      },
+      {
+        field: "bounds",
+        local: true,
+        reason: "Ant Design `Anchor.bounds` — pixel tolerance added to the decision line.",
+      },
+      {
+        field: "getContainer",
+        local: true,
+        reason: "Ant Design `Anchor.getContainer` — the lazy scroll-box getter.",
+      },
+      {
+        field: "getCurrentAnchor",
+        local: true,
+        reason:
+          "Ant Design `Anchor.getCurrentAnchor` — antd's own escape hatch, which runs INSIDE the resolution with no render round-trip. A controlled `value` outranks it.",
+      },
+      {
+        field: "offsetBlockStart",
+        local: true,
+        reason:
+          "Ant Design `Anchor.offsetTop` on its LOGICAL axis — the decision line, and the distance Affix pins the nav at.",
+      },
+      {
+        field: "targetOffsetBlockStart",
+        local: true,
+        reason:
+          "Ant Design `Anchor.targetOffset` on its LOGICAL axis — where a clicked section lands.",
+      },
+      {
+        field: "showInkInFixed",
+        local: true,
+        reason:
+          "Ant Design `Anchor.showInkInFixed` — draw the travelling ink even with `affix={false}`.",
+      },
+      {
+        field: "replace",
+        local: true,
+        reason: "Ant Design `Anchor.replace` — history replace rather than push.",
+      },
+      {
+        field: "onChange",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's spelling is a compile error that names `onValueChange` — the active href here is a controlled value (`value` / `defaultValue` / `onValueChange`), which antd has no spelling for.",
+      },
+      {
+        field: "offsetTop",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's physical spelling is a compile error that names `offsetBlockStart`.",
+      },
+      {
+        field: "targetOffset",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's physical spelling is a compile error that names `targetOffsetBlockStart`.",
+      },
     ],
   },
   WelcomeVariantProp: {

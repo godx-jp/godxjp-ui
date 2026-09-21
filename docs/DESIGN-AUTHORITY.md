@@ -318,6 +318,51 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   restatement rejects. The same roadmap's invented `sequential` prop is not ported for the same
   reason: antd has no such knob, and improvements come after parity, not instead of it.
 
+- **`Affix` and `Anchor` take the LOGICAL axis where antd takes the physical one (gh#827/gh#828).**
+  Ported from `ant-design@master`, read out of `components/affix/{index.tsx,utils.ts}` and
+  `components/anchor/{Anchor,AnchorLink}.tsx` on 2026-09-21, not out of the docs tables. Every
+  antd prop is present. Four renames, and nothing else:
+
+  1. **`offsetTop` → `offsetBlockStart`, `offsetBottom` → `offsetBlockEnd`** (both components;
+     `Anchor.targetOffset` → `targetOffsetBlockStart` with it). `check:rtl` exists to keep
+     `inset-block-start` out of `top`'s hands in every stylesheet here, and a prop that names a
+     physical edge re-opens that door at the API. It is also load-bearing rather than cosmetic:
+     the offset is a CSS custom property (`--affix-inset-block-start`), read once by the sentinel
+     that detects the crossing and once by the pinned bar that paints it, so the name has to be
+     the one CSS uses. All three antd spellings are declared `never` — a compile error carrying an
+     `@deprecated` hint that names the replacement — plus a development `console.warn`, plus the
+     MCP catalog entry. The `Masonry gutter → gap` precedent, applied to a second component.
+  2. **`Anchor.onChange` → `onValueChange`,** beside new `value` / `defaultValue`. The active
+     `href` is a controlled value and this library has one spelling for that. antd has no
+     controlled form of it at all (`getCurrentAnchor` is a transform of the computed answer, not a
+     value), so this is an ADDITION with a rename attached rather than a substitution, and
+     `getCurrentAnchor` is ported unchanged beside it — a controlled `value` simply outranks it.
+     antd's own note is ported too: `onValueChange` reports the link the SCROLL POSITION resolved,
+     not the one `getCurrentAnchor` substituted.
+
+  **`Affix.onChange` is NOT renamed**, and the distinction is the point: there is no pinned VALUE
+  to control, only an observation of a derived boolean, so no triad applies. `Attachments.onChange`
+  and `ActionsFeedback.onChange` already carry antd's name with a non-DOM payload for the same
+  reason.
+
+  **Not ported, each under a rule that already exists:** `classNames` / `styles` on `Anchor` (a
+  knob only a fork could reach — `src/tokens/components/anchor.css` is the answer),
+  `prefixCls` / `rootClassName`, and antd's deprecated `Anchor children` / `Anchor.Link` JSX form
+  (antd itself warns on it and says to use `items`).
+
+  **One deliberate behavioural difference, in `Anchor`.** antd resolves from scroll position on
+  mount unconditionally, which overwrites a landing hash on any page whose hashed section happens
+  to be above the fold. Here the hash is read in the state INITIALISER and the mount resolution is
+  skipped when it matched, so `/page#section` is correct on the first render with no scroll event
+  ever firing — which is gh#828's acceptance criterion, and the one place antd's behaviour is
+  worse rather than merely differently named.
+
+  **Two things antd does not have at all**, both required by the contract rather than invented:
+  `Anchor.label` (antd ships an unnamed `<div>`; a `<nav>` landmark on a page that already has a
+  breadcrumb and a rail must be named, so `label` defaults through `t()`), and `Affix`'s
+  `scroll-padding-block-start` on the scroll box while pinned (WCAG 2.4.11 — without it the pinned
+  bar covers whatever the browser scrolls a focused element to).
+
 - **`Command.split` is antd `List.split`, with this library's default.** Same name, same meaning:
   a divider between rows and none after the last (gh#699). antd's `List` defaults it to `true`;
   `Command` defaults it to `false`, because its resting home is a command palette, where inset
