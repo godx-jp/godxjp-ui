@@ -72,6 +72,7 @@
     44,
     45
   ],
+  "storyPath": "data-display/Marquee.stories.tsx",
   "tagline": "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all.",
   "usage": [
     "DO leave the pause control alone. WCAG 2.2 SC 2.2.2 makes it a conformance requirement for anything that moves automatically for more than five seconds beside other content, and technique F16 names 'a scrolling news ticker without a mechanism to pause it' as the failure by example.",

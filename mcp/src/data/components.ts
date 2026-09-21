@@ -17454,6 +17454,7 @@ import { Text } from "@godxjp/ui/general";
   ))}
 </Marquee>`,
     docPath: "data-display/marquee.tsx",
+    storyPath: "data-display/Marquee.stories.tsx",
     rules: [2, 44, 45],
   },
   {
