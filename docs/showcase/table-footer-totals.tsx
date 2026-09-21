@@ -32,6 +32,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  ScrollArea,
   Table,
   TableBody,
   TableCell,
@@ -211,7 +212,16 @@ export default function Demo() {
         {/* flush so the table meets the card edge; vertical scroll inside the
             card with header pinned top and totals pinned bottom. */}
         <CardContent flush>
-          <div className="max-h-80 overflow-auto">
+          {/* A SCROLLPORT IS A COMPONENT, not a `div` with `overflow-auto` (gh#825).
+              This was `<div className="max-h-80 overflow-auto">`, and axe called it correctly:
+              125px of rows below the fold, no tab stop, and — unlike every other scrolling box in
+              these docs — no focusable cell inside to reach them with, so `scrollable-region-focusable`
+              failed. WCAG 2.1.1: content a mouse can reach and a keyboard cannot.
+
+              `ScrollArea` is the fix rather than a bare `tabIndex={0}`, because a named stop is what
+              gh#817/gh#821 settled on: it brings `role="group"` and a localized accessible name, and
+              it withholds all three while there is nothing to scroll. */}
+          <ScrollArea className="max-h-80" label="勤怠集計表">
             <Table>
               <TableHeader className="bg-secondary sticky top-0 z-10">
                 <TableRow>
@@ -285,7 +295,7 @@ export default function Demo() {
                 </TableRow>
               </tfoot>
             </Table>
-          </div>
+          </ScrollArea>
         </CardContent>
       </Card>
 

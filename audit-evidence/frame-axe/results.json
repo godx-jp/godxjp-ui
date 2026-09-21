@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T04:42:55.198Z",
+  "generatedAt": "2026-09-21T06:17:44.946Z",
   "base": "http://localhost:6008",
   "tags": [
     "wcag2a",
@@ -7,7 +7,7 @@
     "wcag21aa",
     "wcag22aa"
   ],
-  "routes": 215,
+  "routes": 222,
   "viewports": [
     "1440",
     "375",
@@ -22,5 +22,10 @@
     "/isolate/feedback-sheet",
     "/isolate/navigation-dropdown-menu"
   ],
-  "found": {}
+  "found": {
+    "/isolate/data-display-popover @320+open overlay-did-not-open": {
+      "count": 1,
+      "help": "page.waitForFunction: Timeout 8000ms exceeded."
+    }
+  }
 }
