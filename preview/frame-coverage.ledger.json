@@ -521,9 +521,7 @@
     "covered": 90,
     "untested": 2235,
     "notApplicable": 1749,
-    "knownMissingFrames": [
-      "data-entry/upload-crop-dialog"
-    ],
+    "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -8611,8 +8609,9 @@
     "UploadCropDialog": {
       "group": "data-entry",
       "owner": "data-entry/upload-crop-dialog",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/data-entry/upload-crop-dialog.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 6,

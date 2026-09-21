@@ -4,6 +4,89 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.5.0] - 2026-09-21
+
+MINOR. Two new surfaces for people outside this repo — a static catalog for agents that cannot run
+a process, and a brand generator — plus one token that stops being a literal. Nothing existing
+changes shape; the one behavioural change measures identical on this package's own theme.
+
+### Added
+
+- **A static agent catalog at `agent/`, served straight from this public repo** (#802).
+  `@godxjp/ui-mcp` answers every question in it and answers them better — searchable,
+  version-locked to the package on disk — but it is stdio, so it exists only for an agent that can
+  spawn a process. ChatGPT on the web and Claude.ai cannot, and until now they guessed prop names
+  from memory and invented components deleted two majors ago. Same data, one source
+  (`mcp/src/data/*`), as plain files over `raw.githubusercontent.com`: no hosting, no deploy step,
+  and two URL shapes free — `/main/` for live corrections, `/v<tag>/` pinned to a release.
+
+  **One file per component**, because `components.json` is 1.1 MB and web fetchers truncate a
+  response that size without saying so: the agent gets the head, believes it read the catalog, and
+  answers the rest from memory. `components-index.json` (42 KB) → `components/<Name>.json`
+  (1–32 KB, median 5) is the selective route — most of what a remote MCP endpoint would have bought,
+  over plain HTTP.
+
+  **Import paths are measured, not inferred.** 13 of 165 entries carried one; an agent had to guess
+  `@godxjp/ui/<group>`, right for 6 groups of 7 and wrong for `providers` (`AppProvider` is in
+  `@godxjp/ui/app`). esbuild now bundles each entry in `exports` and reports what it actually
+  exports. Entry points: `agent/START-HERE.md`, `agent/llms.txt`, `agent/index.json`.
+
+- **`UploadCropDialog` is exported from `@godxjp/ui/data-entry`** (#802). It was catalogued with
+  full props and a standalone use case and exported from **no public subpath** — anyone following
+  the catalog wrote an import that could not resolve. Found by the import-path resolver above, on
+  its first run. It now carries its own docs frame (`docs/data-entry/upload-crop-dialog.tsx`),
+  which says plainly that `<Upload variant="avatar-crop">` already embeds it and that mounting both
+  double-mounts the dialog — the standalone component is for when the FILE arrives from somewhere
+  you already own and only the crop step is wanted.
+
+- **`pnpm gen:brand '#RRGGBB'`** (#803) — one hex in, a complete brand out, measured rather than
+  asserted. It prints label-on-fill, fill-on-canvas and link-on-canvas for both themes and exits
+  non-zero when one misses AA, so a brand that cannot meet AA says so where the colour is chosen.
+  It writes the **dark seed** (nothing in CSS lifts a light seed onto the dark spine, so a file that
+  sets `--primary` only in `:root` keeps our violet in dark mode) and the **email palette** —
+  `src/email/tokens.generated.ts` bakes literal hex at build time because Gmail strips `<style>`,
+  so a re-themed product still sent GoDX-violet mail. Every screen rebranded; no inbox did.
+
+  It refuses to write `--primary-hover/-active/-border`, `--control-outline` (they derive, gh#678)
+  and `--brand` (independent of the action colour on purpose, gh#250).
+
+### Fixed
+
+- **`--text-link` and `--text-brand` follow the `--primary` in scope** (#805, gh#664). They were
+  literals on `:root`, and hue 204° — the pre-v2.3 #0071bd family — is what they still held a
+  release after identity v2.3 moved the seed to violet: the gh#648 defect one tier up, invisible to
+  that issue's hue lock because the lock only guards `--primary-*`. They are the same KIND of value
+  as `--primary-hover` — a ramp step off the action colour — so they are knobs now, `initial` with
+  the formula at the call site.
+
+  Measured in Chrome: `:root` paints **#6500D4** (the kit's `core.link`); a `[data-tenant]` that
+  sets only `--primary: 140 80% 30%` paints **#0B6328**, following the tenant; a tenant pinning
+  `--text-link` still wins; `.dark` paints **#DCBCFF** — exactly the literal it replaced, so this
+  is **no visual change** on this package's own theme.
+
+  `--text-primary` stays authored: it feeds `--mark-primary`, contracted to a RAW `H S% L%` triple
+  that CSS relative colour cannot produce.
+
+- **`docs/CUSTOMER-THEMING.md` said the focus indicator ships OFF** and that the package therefore
+  forfeits WCAG 2.2 SC 2.4.7 and a JIS X 8341-3 AA claim (#803). gh#544 flipped `--focus-outline` to
+  `1` and the doc did not follow — so the one page a consumer reads before theming told them the
+  package fails a criterion it meets.
+
+- **`src/theme/famgia.service.css` hand-wrote `--primary-hover` / `--primary-active`** (#803). They
+  derive, and the literals had drifted to hue 224/226 under a 221 seed.
+
+### Changed
+
+- **`check:agent-catalog` runs in `verify:ci:static`** (#802), so `agent/` cannot drift from
+  `mcp/src/data` — and because `index.json` carries the version, a release that skips `pnpm regen`
+  fails CI. A halved catalog used to pass every gate (`JSON.stringify` drops an undefined key);
+  shrinkage now fails unless declared with `--allow-shrink`.
+
+- **Upgrading is documented as TWO steps** (#804). `.mcp.json` launches the server by
+  `npx @godxjp/ui-mcp@<pin>`, so a package upgrade alone leaves the pin where it was — measured in
+  gh#794 as a project on 28.3.0 taking every answer from a 27.6.0 catalog. `npx @godxjp/ui
+  sync-rules` is the second half.
+
 ## [28.4.0] - 2026-09-21
 
 MINOR. Two new props, one new export surface, two new tokens. Nothing existing changes shape:

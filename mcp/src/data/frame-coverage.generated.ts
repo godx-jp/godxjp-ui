@@ -60,7 +60,7 @@ export const FRAME_COVERAGE_POLICY = {
     covered: 90,
     untested: 2235,
     notApplicable: 1749,
-    exportsWithoutFrame: 1,
+    exportsWithoutFrame: 0,
   },
   dimensions: [
     { id: "variants", title: "Variants", axis: "visual" },
@@ -380,7 +380,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"TwoFactorSetup","group":"feedback","frame":"docs/feedback/two-factor-setup.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"Typography","group":"general","frame":"docs/general/typography.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Upload","group":"data-entry","frame":"docs/data-entry/upload.tsx","covered":["variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones"]},
-  {"name":"UploadCropDialog","group":"data-entry","frame":null,"covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
+  {"name":"UploadCropDialog","group":"data-entry","frame":"docs/data-entry/upload-crop-dialog.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"VisuallyHidden","group":"general","frame":"docs/general/typography.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Welcome","group":"data-display","frame":"docs/data-display/welcome.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","variants"],"notApplicable":["density","ownership","shapes","sizes","states","tones"]},
 ];
