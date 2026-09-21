@@ -3,7 +3,6 @@ import { CheckCircle, CircleAlert, LoaderCircle, TriangleAlert } from "lucide-re
 import { useTranslation } from "../../i18n/use-translation";
 
 import { Label } from "../data-entry/label";
-import { controlIconClass } from "../../lib/control-styles";
 import { cn } from "../../lib/utils";
 import { FieldIdentityContext, FieldNameContext, mergeAriaIds } from "../../lib/field-a11y";
 import { useOptionalAppContext } from "../../app/app-provider";
@@ -114,11 +113,7 @@ export function FormField({
   // below applies (there is nothing to label), so it takes an entirely separate render path.
   const isStatic = staticText !== undefined;
 
-  if (
-    !isStatic &&
-    isDevelopment() &&
-    !React.isValidElement(children)
-  ) {
+  if (!isStatic && isDevelopment() && !React.isValidElement(children)) {
     // FormField wires aria-* onto a single control; multiple/no/text children can't receive them.
     console.warn(
       "FormField expects a single React element child to receive aria-describedby/aria-errormessage; " +
@@ -205,6 +200,17 @@ export function FormField({
         validationStatus === "error"
           ? true
           : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
+      /* THE BOX SHOWS ITS OWN STATE, not just the line under it. `error` already reached the
+       * control through `aria-invalid`, but `warning` reached nothing — so a warned field drew an
+       * ordinary border and the only signal was a sentence below it. `.ui-control[data-status]`
+       * has painted both edges for a long time; FormField simply never passed the value down.
+       *
+       * Only `error` and `warning` are sent: `ControlStatusProp` is exactly those two, and
+       * `success` / `validating` have no control-level representation today. A child that sets its
+       * own `status` keeps it. */
+      ...(validationStatus === "error" || validationStatus === "warning"
+        ? { status: (childProps?.status as string | undefined) ?? validationStatus }
+        : {}),
     })
   ) : (
     children
@@ -296,14 +302,17 @@ export function FormField({
           </FieldNameContext.Provider>
         )}
         {hasFeedback && validationStatus ? (
-          <span id={feedbackId} role="status" className="ui-inline-xs text-xs">
+          <span
+            id={feedbackId}
+            role="status"
+            data-status={validationStatus}
+            className="ui-form-feedback ui-inline-xs text-xs"
+          >
             {feedback ?? (
               <FeedbackIcon
                 aria-hidden="true"
                 className={
-                  validationStatus === "validating"
-                    ? `${controlIconClass} motion-safe:animate-spin`
-                    : controlIconClass
+                  validationStatus === "validating" ? "motion-safe:animate-spin" : undefined
                 }
               />
             )}
