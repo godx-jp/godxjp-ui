@@ -4,6 +4,153 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.8.0] - 2026-09-21
+
+MINOR. The library was 55% form-and-table — 90 of 165 components — with navigation the smallest
+functional group at 9 and **no site navigation in any of them**. This release is the first half of
+closing that, and the more useful finding is what the attempt uncovered: `grep -rln
+IntersectionObserver src/components/` returned **one non-test file**, whose hook was private. A
+website is scroll-position behaviour, and the library had one instance of it and exported none.
+
+The other thread runs through almost every fix below: **a thing that resolves, is catalogued, and
+does nothing.** Four more instances shipped today, and the two gates that close them are here.
+
+### Added
+
+- **`Masonry`**, ported from Ant Design 6.0.0 — `columns`, `gap`, `items`, `itemRender`, `fresh`,
+  `onLayoutChange`. Reading antd's source rather than its docs found three things its own table does
+  not say. **`MasonryItem.height` is dead in antd**: declared, documented as "Height of the item",
+  and never read — every `ItemHeightData` is built from `getBoundingClientRect()`. Shipping that
+  inert would be a trap, so here it is honoured and the deviation is written down. **A negative
+  `column` walks off the front of antd's own array** and poisons every later column height with
+  `NaN`; ours clamps both ends. And `onLayoutChange` is typed `({key, column}[])` while the
+  implementation spreads the whole item — we ported the implementation.
+
+  `fresh` turned out to mean one ResizeObserver **per tile** rather than only on the container, and
+  the docs page needs it: at 390px a long English tile re-wraps *after* the pass that measured it,
+  and the container reported 2472.2px while its content ended at 2489.7px. With `fresh`: 2489.7
+  against 2489.7.
+
+- **`MegaMenu`** — a disclosure navigation with top-level links, **not** the Menubar pattern.
+  `DropdownMenu` is `role="menu"` by construction, which is the wrong pattern for a nav of links
+  rather than a menu of commands; that is also why the narrow-viewport accordion costs no extra
+  code. Hover intent verified with a 24-step real mouse diagonal: closed at **0 of 24 steps**.
+  `role="menu|menuitem|menubar"` in the output: **0**.
+
+  Two defects it found by being measured rather than read: the panel was clipped to 32px by
+  `Topbar`'s `overflow: clip` and then to nothing by `Card`'s, with `elementFromPoint` inside the
+  panel's own rect returning the card behind it — invisible to unit tests and to `isVisible()`. And
+  `Topbar` is the wrong host below ~1280px, where its centre slot is `display: none`; the docs now
+  say so with the numbers and point phone width at a `Sheet`.
+
+- **`Marquee`** — and its WCAG 2.2.2 pause control is the reason it is a component. Of twelve design
+  systems checked — GOV.UK, USWDS, Carbon, Polaris, Spectrum, Fluent, Material, Atlassian,
+  Lightning, Primer, BBC GEL, Ant Design — **none ships a marquee at all**, and the prior art
+  everyone copies has no `prefers-reduced-motion`, no `aria-hidden` on its clones, and no keyboard
+  path to pause. Consumers build these anyway; the library shipping the only conformant one is the
+  whole argument.
+
+  The clone count is measured (`ceil(viewport/copy)+1`) because a CSS-only marquee cannot hold pace:
+  one item at 134px runs 2.04s and forty at 2890px run 43.98s — both **65.7 px/s**. A per-cycle
+  duration would make forty items forty times faster. Under `prefers-reduced-motion` it does not
+  move at all and becomes a real `ScrollArea`, not a hand-rolled scrollport.
+
+- **`Text` and `Heading` reach the display ramp.** `--font-size-display/3xl/4xl/5xl` (28–54px) had
+  shipped with **no public API able to reach them** — `Heading level` topped out near 20px, `Text
+  size` near 22px — so every marketing page wrote its own class. Radix, Polaris, Spectrum and Primer
+  all separate semantics from size; **antd is the lone outlier that makes `level` both, and the only
+  one with no display range at all**. `DESIGN-AUTHORITY` asks for antd's answer first; on this axis
+  antd has none to port, and the deviation is recorded at the prop.
+
+- **`Reveal` gains `on="view"`** rather than a second component. `once` and `amount` come from
+  Motion's `useInView` — but `amount` is clamped here to the ratio the element's own box can reach,
+  because `intersectionRatio` is measured against the target, so `amount="all"` on a section taller
+  than the viewport would otherwise hide it forever. Motion has that bug; there is a test for it.
+  Under `prefers-reduced-motion`: **0 observers constructed**, 24 of 24 elements at `opacity: 1`.
+
+- **Marketing tokens** — `--space-section-band` (80px), `--space-section-hero` (96px),
+  `--page-measure-wide`, `--topbar-background-alpha`, `--topbar-backdrop-blur-size`. Two unrelated
+  brand showcases had hand-written the **same thirteen class names** between them; that convergence
+  is the evidence, not the styling.
+
+  **The φ ladder was NOT extended**, against the initial ruling. `DESIGN-AUTHORITY` assigns spacing
+  to IBM Carbon, `carbon-scale-alignment.test.ts` enforces it, Carbon's scale already contains
+  64/80/96/160, and φ³ = 67.8px sits on neither the 4px nor the 8px grid. `semantic/layout.css` has
+  said since it was written that the semantic steps read the linear scale and not φ "because mixing
+  the two left an incoherent density rhythm" — that experiment already ran here. `--phi-p1` and
+  `--phi-p2` have zero consumers: the ladder describes the scale, it does not generate it.
+
+- **Two gates for the inert-token family.** `check:frame-token-wins` asks the browser, through CDP
+  `CSS.getMatchedStylesForNode`, which catalogued component tokens the cascade threw away — 276,448
+  overridden declarations narrowed to 32 baseline entries, and it proved four inert knobs by
+  perturbation. `no-hand-rolled-scrollport` bans an `overflow-auto` div where `ScrollArea` exists:
+  `eslint-plugin-jsx-a11y` looked at this exact problem and concluded static analysis could not
+  decide it, and axe can only ever see the instance whose content happened to expose it.
+
+### Fixed
+
+- **Every browser gate could measure another checkout's code and report clean.**
+  `ensurePreviewServer` asked whether the port was ANSWERING, never whose code was on the other end.
+  With worktree-isolated subagents — which exist precisely so two pieces of work cannot contaminate
+  each other — a `vite` left running in `.claude/worktrees/agent-…` held port 6008 and served its
+  own tree to every gate in the main checkout. A fix was read as not working three times before
+  `lsof` settled it; killing that process changed the answer with no code change at all. The port is
+  now derived from `REPO_ROOT`, so "same port" means "same code" by construction.
+
+- **`check:frame-overflow` sweeps 375px as well as 1280.** Every browser gate in this repo ran at
+  one width. The narrow rung found real ink painted outside its box with no scrollport to reach it,
+  and the sweep also learned that **reachable is not overflowing** — a `ScrollArea` demo putting
+  3008px of table in a 309px viewport looks exactly like a spill and is the component working.
+
+- **The 渋み rule was warning about our own brand.** `oversaturated-accent` fired on `#7A00FF` —
+  `--primary` in our own `foundation.css`, measured chroma 0.293 against the 0.18 limit — on every
+  page with a primary button, in every consumer, about a colour they receive from us and cannot
+  change. The exemption is generated from `foundation.css` so it follows the brand, and a tenant who
+  overrides `--primary` with something louder is still told.
+
+- **Three inert knobs repaired, one report refused** (gh#824). `--control-radius` on `.ui-button`
+  was deleted rather than chained: it resolved to 6px while every button painted 3.71px, so the
+  declaration was also untrue. `--control-label-font-size` chained for free. But
+  `--topbar-icon-size` was **not** inert — the claim generalised from the one element whose 20px
+  comes from a different, deliberately larger token.
+
+- **The control surface froze on the light canvas below `<html>`.** `--control-surface-background`,
+  `-border-color` and `--control-filled-background` were bound at `:root`, so a `Select` inside a
+  `.dark` subtree painted `rgb(253,253,252)` under `rgb(247,247,243)` text — **1.05:1** — while the
+  `Input` beside it was correctly dark. It only bites below `<html>`, which is the `[data-tenant]`
+  route `CUSTOMER-THEMING.md` recommends.
+
+- **`ChatBubble loading` painted 544px inside a 341px card**, 214px of it unreachable: a definite
+  `34rem` inside an implicit `auto` grid track, whose max-content floor made the line's own
+  `max-inline-size: 100%` resolve against 544px and do nothing.
+
+- **Two Masonry custom properties the browser drops before the packer runs.** Written inline by the
+  component, so a `var()` with no declaration and no fallback made the whole property invalid at
+  computed-value time — `inline-size` and `inset-inline-start` were dropped, not approximated.
+
+- **`check:frame-axe` blamed `Popover` for its own click timing.** The route failed
+  `overlay-did-not-open` twice at 320×568 and read exactly like a broken Popover. Measured across
+  four viewports and both `reducedMotion` settings with a scroll and a beat before the press: opens
+  8 times out of 8.
+
+- **A hand-rolled scrollport failed WCAG 2.1.1 on a showcase.** `overflow-auto` on a written `div`
+  appears 13 times in `docs/`; axe flagged exactly one, because `scrollable-region-focusable` passes
+  a container that holds focusable elements. The one that failed held a read-only totals table. The
+  defect is invisible in twelve places and fatal in the thirteenth, and which you get depends on the
+  **data**, not the markup.
+
+### Added — docs
+
+- **A theme editor** whose export is `gen:brand`'s own derivation, lifted into a shared module
+  rather than reimplemented: byte-identical on four seeds including the one that reproduces
+  `gen:brand`'s three contrast failures exactly. Where no CLI flag can emit what the page shows, the
+  page says so instead of printing a command that emits something else.
+- **A theme-customization board** showing 87 public exports repainting from one seed, with the two
+  freeze traps written down: `--ring` is bound at `:root` and left every focus ring on the old brand,
+  and the radius chain moves nothing until a scope restates all ten steps.
+- **`docs/roadmap/website-components.md`** — the plan, with a C1–C7 ledger per candidate and the
+  antd mapping for each.
+
 ## [28.7.0] - 2026-09-21
 
 MINOR. Six issues, and the thread running through five of them is the same one: a thing that

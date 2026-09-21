@@ -48,9 +48,9 @@
   "note": "Pin to the tag that matches the @godxjp/ui version you installed. A catalog newer than your package describes props you do not have; older, and it hides props you do.",
   "read": {
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
-    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.7.0/agent/index.json"
+    "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.8.0/agent/index.json"
   },
   "source": "mcp/src/data — the same data @godxjp/ui-mcp serves",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
-  "version": "28.7.0"
+  "version": "28.8.0"
 }
