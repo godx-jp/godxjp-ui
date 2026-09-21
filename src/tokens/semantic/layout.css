@@ -36,6 +36,17 @@
    * not a per-primitive one: a service raises every overlay together by setting this once. */
   --overlay-z-index: 50;
 
+  /* PINNED-IN-FLOW STACKING — the layer an element takes while it is stuck to the scrollport but
+   * still part of the document: `Affix`, the sticky `Anchor` rail, a sticky table header, a
+   * sticky form footer. It is the same argument as `--overlay-z-index` one layer down, and it is
+   * here for the same reason: `table-layout.css`, `data-display-layout.css` and
+   * `control.css` each reached for a bare `z-index: 20` independently, so a host app that mounts
+   * this package under its own stacking context had to fight each of them separately.
+   *
+   * Between page content and every portaled surface, on purpose: a pinned bar must cover the rows
+   * scrolling under it, and must never cover the dialog, the dropdown or the toast. */
+  --sticky-z-index: 20;
+
   /* Master-detail geometry. Consumers choose a semantic rail preset; they never author grid tracks. */
   --master-detail-rail-compact: 18.75rem; /* 300px */
   --master-detail-rail-narrow: 12rem;

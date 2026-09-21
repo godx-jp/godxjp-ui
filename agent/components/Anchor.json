@@ -1,0 +1,119 @@
+{
+  "docPath": "navigation/anchor.tsx",
+  "example": "import { Anchor } from \"@godxjp/ui/navigation\";\n\n<Anchor\n  offsetBlockStart={64}\n  targetOffsetBlockStart={88}\n  label=\"On this page\"\n  items={[\n    { key: \"overview\", href: \"#overview\", title: \"Overview\" },\n    {\n      key: \"pricing\",\n      href: \"#pricing\",\n      title: \"Pricing\",\n      children: [{ key: \"tiers\", href: \"#tiers\", title: \"Tiers\" }],\n    },\n    { key: \"faq\", href: \"#faq\", title: \"FAQ\" },\n  ]}\n  onValueChange={(href) => console.log(\"reading\", href)}\n/>",
+  "group": "navigation",
+  "importPath": "@godxjp/ui/navigation",
+  "name": "Anchor",
+  "props": [
+    {
+      "description": "antd `items`, in document order. Each is `{ key, href, title, target?, children?, replace?, targetOffsetBlockStart? }` — antd's AnchorItem, field for field, with its per-link `targetOffset` on the logical axis. `children` is ONE level of nesting and is dropped (with a warning) when `direction=\"horizontal\"`, as in antd.",
+      "name": "items",
+      "type": "AnchorItemProp[]"
+    },
+    {
+      "description": "antd `direction`, default `\"vertical\"`. Horizontal is one scrolling row: the ink rail moves along the block-end edge and nesting is not available.",
+      "name": "direction",
+      "type": "\"vertical\" | \"horizontal\""
+    },
+    {
+      "description": "antd `affix`, default `true` — literally antd's own `AffixProps` minus the fields Anchor supplies, which is why Affix is the dependency. `false` leaves the nav in the flow.",
+      "name": "affix",
+      "type": "boolean | Omit<AffixProp, 'offsetBlockStart' | 'offsetTop' | 'target' | 'children'>"
+    },
+    {
+      "description": "antd `bounds`, default `5`. Pixel tolerance added to the decision line.",
+      "name": "bounds",
+      "type": "number"
+    },
+    {
+      "description": "The active `href`, as the controlled triad. `onValueChange` is antd's `onChange` under this library's name, and it reports the link the SCROLL POSITION resolved (antd's own note) rather than what `getCurrentAnchor` substituted. antd's `onChange` is typed `never` and warns.",
+      "name": "value / defaultValue / onValueChange",
+      "type": "string / string / (href: string) => void"
+    },
+    {
+      "description": "antd `getCurrentAnchor` — the last word on the highlight, running INSIDE the resolution with no render round-trip. A controlled `value` outranks it.",
+      "name": "getCurrentAnchor",
+      "type": "(activeLink: string) => string"
+    },
+    {
+      "description": "antd `offsetTop`, on its LOGICAL axis: where the decision line sits, and the distance `Affix` pins the nav at. Default `0`.",
+      "name": "offsetBlockStart",
+      "type": "number"
+    },
+    {
+      "description": "antd `targetOffset`, on its LOGICAL axis: where a CLICKED section lands — the room a pinned header needs. Defaults to `offsetBlockStart`, and (as in antd) it moves the decision line too, so a click can never leave the entry it just selected unselected.",
+      "name": "targetOffsetBlockStart",
+      "type": "number"
+    },
+    {
+      "description": "antd `getContainer`, default `() => window` — the scroll box holding the sections.",
+      "name": "getContainer",
+      "type": "() => HTMLElement | Window"
+    },
+    {
+      "description": "antd `showInkInFixed`, default `false`. Draw the travelling ink even with `affix={false}`; the static rule is always drawn.",
+      "name": "showInkInFixed",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `replace`, default `false`. Replace the hash in history rather than pushing it; `items[].replace` overrides it per entry.",
+      "name": "replace",
+      "type": "boolean"
+    },
+    {
+      "description": "antd `onClick`, fired before the scroll. A modified click is never hijacked.",
+      "name": "onClick",
+      "type": "(event: React.MouseEvent<HTMLAnchorElement>, item: AnchorItemProp) => void"
+    },
+    {
+      "description": "Accessible name of the <nav> landmark. antd ships an unnamed <div>; a page routinely carries a breadcrumb, a rail and this, so a localized default (\"On this page\") applies when omitted.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "NOT props. antd's spellings, kept in the type so arriving from antd's docs is a COMPILE ERROR naming `onValueChange` / `offsetBlockStart` / `targetOffsetBlockStart`, plus a development console.warn.",
+      "name": "onChange / offsetTop / targetOffset",
+      "type": "never"
+    },
+    {
+      "description": "DOM id of the <nav>.",
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "description": "Structural class on the <nav>.",
+      "name": "className",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Affix — the pin underneath it. antd specifies `Anchor.affix` as `AffixProps`, so the two ship as one stack.",
+    "NavList — ROUTE navigation inside a page; its `activeId` is the answer Anchor computes, for a different kind of destination.",
+    "LegalDocumentShell — carries its own built-in contents rail for the legal-document case; Anchor is the general one, for content the shell does not own.",
+    "Breadcrumb — where you ARE in the hierarchy (`aria-current=\"page\"`), not where you are on the page."
+  ],
+  "rules": [
+    2,
+    6,
+    40,
+    44,
+    45
+  ],
+  "storyPath": "navigation/Anchor.stories.tsx",
+  "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`.",
+  "usage": [
+    "DO give every target a real `id` and point `href` at it as `#id`. The links are real anchors: middle-clickable, deep-linkable, and correct before JavaScript boots.",
+    "DO set `targetOffsetBlockStart` to the height of whatever is pinned above the content, or a clicked section lands under the header. Leave `offsetBlockStart` alone unless the DECISION LINE also needs moving; it follows `targetOffsetBlockStart` by default.",
+    "DO use `value` / `onValueChange` when the router owns the current section; use `getCurrentAnchor` only for antd's narrower job of rewriting the resolved link in place.",
+    "DON'T reach for NavList for this. NavList is ROUTE navigation — each row is a page the router renders, and its `activeId` is an answer you already have. Anchor's entries are fragments of the page being read, which is also why the current one is `aria-current=\"location\"` and not `\"page\"`.",
+    "DON'T use Tabs either: the sections are all on the page at once and scroll past each other, where a tab panel shows one at a time.",
+    "DON'T nest more than one level, and don't nest at all when horizontal — antd allows neither, and this warns rather than rendering a second row the ink rail cannot follow.",
+    "DON'T hand-roll the scrollspy with an IntersectionObserver band. A section taller than the band reports nothing, and with several short sections in the band at once the answer depends on scroll direction; both are why this measures against a line instead."
+  ],
+  "useCases": [
+    "A long settings or policy page whose sections a reader jumps between, with the current one always visible in the rail.",
+    "API or product documentation: the on-this-page rail beside the article, tracking the reader down the page.",
+    "A marketing landing page's section nav, pinned under the site header via `affix` and `offsetBlockStart`.",
+    "A horizontal section bar on a narrow viewport, where a vertical rail has no column to live in."
+  ]
+}

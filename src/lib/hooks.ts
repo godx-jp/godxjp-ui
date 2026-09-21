@@ -228,11 +228,33 @@ export function useScrollsHorizontally(
 }
 
 /**
+ * Nearest scrollable ancestor — the box an element actually scrolls inside — else `null`, which is
+ * what `IntersectionObserver` already spells "the document viewport".
+ *
+ * Lifted VERBATIM out of `src/components/layout/page-container.tsx`, where it was private to
+ * `footerReveal="onScroll"` (gh#827). It is exported because the callers that need `useInView` to
+ * measure against a scroll PANE rather than the viewport have to name that pane, and every one of
+ * them would otherwise write this walk again.
+ */
+export function scrollParent(el: HTMLElement | null): HTMLElement | null {
+  let node = el?.parentElement ?? null;
+  while (node) {
+    const overflowY = getComputedStyle(node).overflowY;
+    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") return node;
+    node = node.parentElement;
+  }
+  return null;
+}
+
+/**
  * Has this element entered the viewport (or `root`) yet?
  *
- * The ONE `IntersectionObserver` wrapper in the library. `Reveal on="view"` is its first caller
- * (gh#829); `PageContainer`'s private `useFooterReveal` is the second, and `root` exists here
- * because that caller measures against its nearest scrolling ancestor rather than the viewport.
+ * The ONE `IntersectionObserver` wrapper in the library, and it has to stay that way: before
+ * gh#827 the only observer in `src/components/` was `PageContainer`'s private `useFooterReveal`,
+ * so the next component that needed one copied it rather than finding it. Callers today are
+ * `Reveal on="view"` (gh#829, the first), `PageContainer footerReveal="onScroll"` and `Affix`
+ * (gh#827). `root` exists because two of the three measure against a scrolling PANE rather than
+ * the viewport; `scrollParent` above is how they name it.
  *
  * Borrowed from Motion's `useInView` (https://motion.dev/docs/react-use-in-view): `once` and
  * `amount` keep their names, their types and their defaults, including `amount`'s
@@ -244,6 +266,15 @@ export function useScrollsHorizontally(
  * report `true`. A caller that hides content until this returns `true` therefore shows it — the
  * only safe direction, because the alternative is content that is never revealed at all. Callers
  * MUST keep it that way: visibility is never gated on an observer that might not exist.
+ *
+ * ## `assumeInView` — which way to be wrong for the ONE frame before the first entry
+ *
+ * The hook normally flips to `false` the moment a live observer exists, before that observer has
+ * said anything, because a caller that HIDES on `false` would otherwise paint its content in and
+ * then take it away again. That is right for `Reveal` and wrong for the two callers that ACT on
+ * `false`: `PageContainer` would reveal its sticky footer for a frame, and `Affix` would fix a bar
+ * over the page before measuring it. Those pass `assumeInView`, which leaves the answer `true`
+ * until the observer actually reports — so neither ever acts on a measurement it has not taken.
  *
  * ## `amount` is clamped to what the element can actually reach
  *
@@ -260,6 +291,8 @@ export function useInView(
     once = false,
     amount = "some",
     root = null,
+    rootMargin,
+    assumeInView = false,
   }: {
     /** `false` skips the observer entirely and reports `true`. */
     enabled?: boolean;
@@ -269,6 +302,16 @@ export function useInView(
     amount?: "some" | "all" | number;
     /** Scroll container to measure against. `null` → the document viewport. */
     root?: Element | null;
+    /**
+     * `IntersectionObserver` `rootMargin` — grows or shrinks the clipping box before the test.
+     *
+     * `Affix` is why it exists: it observes a hairline SENTINEL at the pinning edge and grows the
+     * box a million pixels past the line, so that "has not reached the line yet" and "is far below
+     * it" are one answer and the pin reduces to `!inView` in both directions.
+     */
+    rootMargin?: string;
+    /** Stay `true` until the observer reports, instead of flipping to `false` on mount. */
+    assumeInView?: boolean;
   } = {},
 ): boolean {
   const [inView, setInView] = useState(true);
@@ -292,8 +335,9 @@ export function useInView(
         : 1;
     const threshold = Math.min(requested, reachable);
 
-    // Only now — with a live observer in hand — may the answer become `false`.
-    setInView(false);
+    // Only now — with a live observer in hand — may the answer become `false`, and only for a
+    // caller that hides on `false`. See `assumeInView`.
+    if (!assumeInView) setInView(false);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -310,13 +354,13 @@ export function useInView(
           setInView(false);
         }
       },
-      { root, threshold },
+      { root, threshold, ...(rootMargin === undefined ? undefined : { rootMargin }) },
     );
     observer.observe(el);
     return () => {
       observer.disconnect();
     };
-  }, [ref, enabled, once, amount, root]);
+  }, [ref, enabled, once, amount, root, rootMargin, assumeInView]);
 
   return !enabled || inView;
 }

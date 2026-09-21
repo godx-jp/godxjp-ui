@@ -119,6 +119,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". * Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
   },
   {
+    "name": "--affix-inset-block-start",
+    "value": "0px",
+    "description": "Distance from the scrollport's BLOCK-START edge at which an Affix pins, and the distance it * sits at once pinned. Ant Design `offsetTop`, whose default is `0`; ported as that default."
+  },
+  {
+    "name": "--affix-inset-block-end",
+    "value": "0px",
+    "description": "The same, from the BLOCK-END edge — the sticky form footer rather than the sticky header. * Ant Design `offsetBottom` has no default at all, because in antd the PRESENCE of the prop is * what selects bottom pinning. That selection is still the prop's here; this is only the * length it pins at."
+  },
+  {
+    "name": "--anchor-ink-width",
+    "value": "2px",
+    "description": "Thickness of the ink rail — its inline size in a vertical anchor, its block size in a * horizontal one. A hairline by default, matching the list's own leading rule."
+  },
+  {
+    "name": "--anchor-ink-color",
+    "value": "initial",
+    "description": "Paint of the ink rail, and of the active row's label. * * `initial` + a call-site fallback, NOT `var(--primary)` here, because `--primary` is exactly * the role a tenant re-scopes: a `[data-tenant] { --primary: … }` would override the role and * never reach a knob that had already frozen against `:root`'s copy of it, so the rail would * keep the default brand's colour under the tenant's. docs/TOKENS.md · \"Role-mirror knobs MUST * be `initial`\", and src/tokens/__tests__/tenant-scope-freeze-687.test.ts is the guard. * Documented default: `hsl(var(--primary))`."
+  },
+  {
+    "name": "--anchor-track-color",
+    "value": "initial",
+    "description": "Paint of the rail's TRACK — the full-length rule the ink slides along. Same freeze rule, same * shape. Documented default: `hsl(var(--border))`."
+  },
+  {
+    "name": "--anchor-item-padding-block",
+    "value": "var(--space-1)",
+    "description": "Vertical rhythm of one row: the block padding above and below a label. The row's HEIGHT is * this plus the label's own line box, deliberately — an anchor row is a line of running text, * not a control, so it must not be pinned to the `--control-height` tier (which is also * re-scoped by AuthShell, and would freeze if mirrored)."
+  },
+  {
+    "name": "--anchor-item-padding-inline",
+    "value": "var(--space-3)",
+    "description": "Inline distance from the rail to the label."
+  },
+  {
+    "name": "--anchor-nested-padding-inline",
+    "value": "var(--space-4)",
+    "description": "Extra inline indent applied to a NESTED row — antd's one level of `items[].children`."
+  },
+  {
+    "name": "--anchor-gap",
+    "value": "var(--space-inline-lg)",
+    "description": "Gap between rows on the HORIZONTAL axis. The vertical axis has none: its rows sit flush so * the ink rail reads as one continuous rule."
+  },
+  {
     "name": "--attachments-gap",
     "value": "var(--space-2)",
     "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."

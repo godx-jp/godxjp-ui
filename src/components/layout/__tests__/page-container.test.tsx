@@ -192,10 +192,16 @@ describe("PageContainer", () => {
     });
     expect(container.firstChild).toHaveAttribute("data-revealed", "true");
 
-    // header back in view → revealed clears
+    // header back in view → revealed clears.
+    //
+    // `intersectionRatio` is part of the fake now, and the fake without it was the thing that was
+    // wrong: `useInView` — the shared observer this reveal reads since gh#827 — compares the RATIO
+    // against its clamped threshold rather than trusting `isIntersecting`, which flips at the
+    // first pixel and is only the right answer at `amount: "some"`. A real observer always sends
+    // both, so an entry carrying only one of them never existed outside this test.
     act(() => {
       ioCallback!(
-        [{ isIntersecting: true } as IntersectionObserverEntry],
+        [{ isIntersecting: true, intersectionRatio: 1 } as IntersectionObserverEntry],
         {} as IntersectionObserver,
       );
     });

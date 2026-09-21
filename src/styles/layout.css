@@ -2375,4 +2375,77 @@
       transition: none;
     }
   }
+
+  /* Affix — Ant Design `Affix` (6.6.5).
+   *
+   * THE PIN LINE IS WRITTEN ONCE, HERE, AND READ TWICE. `--affix-inset-block-*` moves the
+   * SENTINEL (which is where the crossing is detected) and insets the PINNED BAR (which is where
+   * it is painted). One declaration, two readers, so the moment of pinning and the position of
+   * the pinned bar cannot drift apart — and no TypeScript has to parse a custom property back
+   * into a number to keep them together. See src/tokens/components/affix.css. */
+  .ui-affix {
+    /* The containing block for the sentinel. It is what keeps the sentinel anchored to the box
+     * that is still in FLOW after the content has gone `position: fixed` — without it the
+     * sentinel would follow the fixed bar and the pin would never release. */
+    position: relative;
+  }
+
+  .ui-affix-sentinel {
+    position: absolute;
+    inset-inline: 0;
+    /* A hairline, not zero. A zero-area observation target is legal (the IntersectionObserver
+     * spec handles the empty target rect explicitly) but it is the one shape engines have
+     * historically disagreed about, and 1px is inside the rounding antd's own `Math.round`
+     * comparison already applies. */
+    block-size: 1px;
+    pointer-events: none;
+  }
+
+  /* `calc(-1 * offset)`: the sentinel sits ABOVE the box by the offset, so its crossing of the
+   * scrollport's unshrunk edge IS the box's crossing of a line `offset` below that edge. The
+   * arithmetic lives here instead of in a `rootMargin` so that the observer's options — and
+   * therefore the observer itself — never change when the offset does. */
+  .ui-affix-sentinel[data-edge="block-start"] {
+    inset-block-start: calc(-1 * var(--affix-inset-block-start));
+  }
+
+  .ui-affix-sentinel[data-edge="block-end"] {
+    inset-block-end: calc(-1 * var(--affix-inset-block-end));
+  }
+
+  /* Holds the flow open at the content's MEASURED height while the content is out of it. Its
+   * `block-size` is the one inline style on this component that is a length, and it is measured
+   * rather than declared for the reason the component's header comment gives. */
+  .ui-affix-placeholder {
+    pointer-events: none;
+  }
+
+  .ui-affix-content[data-affixed] {
+    position: fixed;
+    /* ONE system layer for every pinned-in-flow surface — above the rows scrolling under it,
+     * below every portaled overlay. Never a private number here (semantic/layout.css). */
+    z-index: var(--sticky-z-index);
+    /* A fixed box loses its containing block, so the inline size is the measured one — written by
+     * the component, never by a theme, which is why it is not a token and why it needs the
+     * fallback: it does not exist until the first measurement, and a `var()` with no declaration
+     * and no fallback DROPS the whole declaration (check:dist-tokens-resolve). `auto` is the
+     * documented answer for that one frame: shrink-to-fit, which is what a fixed box does anyway.
+     *
+     * The INLINE POSITION is deliberately left alone: `inset-inline-start: auto` on a fixed
+     * element resolves to its STATIC position, which is exactly where the placeholder still is —
+     * so a bar inside a centred page column stays in that column with no second measurement, and
+     * mirrors under `dir="rtl"` with no rule of its own. antd sets `width` and nothing else for
+     * the same reason. */
+    inline-size: var(--affix-content-inline-size, auto);
+  }
+
+  /* `--affix-target-inset` is `0px` against the viewport and the live block-start (or block-end)
+   * edge of the scroll ELEMENT otherwise — the only part of the position JavaScript can know. */
+  .ui-affix-content[data-affixed][data-edge="block-start"] {
+    inset-block-start: calc(var(--affix-target-inset, 0px) + var(--affix-inset-block-start));
+  }
+
+  .ui-affix-content[data-affixed][data-edge="block-end"] {
+    inset-block-end: calc(var(--affix-target-inset, 0px) + var(--affix-inset-block-end));
+  }
 }

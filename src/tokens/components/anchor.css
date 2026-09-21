@@ -1,0 +1,52 @@
+/* Anchor component tokens — Ant Design `Anchor` (6.6.5): the in-page section navigation.
+ *
+ * antd retunes this surface through its `classNames` / `styles` semantic maps. Those are
+ * deliberately not ported (cardinal rules #44/#45, docs/DESIGN-AUTHORITY.md — "a knob that only a
+ * fork could reach is not parity either"); this file is the answer instead.
+ *
+ * TIMING IS NOT HERE. The ink rail's travel reads `--duration-fast` / `--ease-standard` from the
+ * motion tier (src/tokens/foundation.css), because the component-token name shape
+ * (`--{component}-{part}-{property}`) has no property word for a duration and a second copy of the
+ * motion scale is how the two drift apart — the same note masonry.css, float-button.css and
+ * activity.css carry.
+ *
+ * THE ACTIVE SECTION IS NOT A TOKEN either. It is state, computed from scroll position, and the
+ * rail's POSITION along the list is measured off the rendered rows (they are not a uniform height
+ * — a nested row is smaller, a wrapped label taller, a CJK label taller again). What is a token is
+ * everything about how the rail LOOKS.
+ */
+:root {
+  /* Thickness of the ink rail — its inline size in a vertical anchor, its block size in a
+   * horizontal one. A hairline by default, matching the list's own leading rule. */
+  --anchor-ink-width: 2px;
+
+  /* Paint of the ink rail, and of the active row's label.
+   *
+   * `initial` + a call-site fallback, NOT `var(--primary)` here, because `--primary` is exactly
+   * the role a tenant re-scopes: a `[data-tenant] { --primary: … }` would override the role and
+   * never reach a knob that had already frozen against `:root`'s copy of it, so the rail would
+   * keep the default brand's colour under the tenant's. docs/TOKENS.md · "Role-mirror knobs MUST
+   * be `initial`", and src/tokens/__tests__/tenant-scope-freeze-687.test.ts is the guard.
+   * Documented default: `hsl(var(--primary))`. */
+  --anchor-ink-color: initial;
+
+  /* Paint of the rail's TRACK — the full-length rule the ink slides along. Same freeze rule, same
+   * shape. Documented default: `hsl(var(--border))`. */
+  --anchor-track-color: initial;
+
+  /* Vertical rhythm of one row: the block padding above and below a label. The row's HEIGHT is
+   * this plus the label's own line box, deliberately — an anchor row is a line of running text,
+   * not a control, so it must not be pinned to the `--control-height` tier (which is also
+   * re-scoped by AuthShell, and would freeze if mirrored). */
+  --anchor-item-padding-block: var(--space-1);
+
+  /* Inline distance from the rail to the label. */
+  --anchor-item-padding-inline: var(--space-3);
+
+  /* Extra inline indent applied to a NESTED row — antd's one level of `items[].children`. */
+  --anchor-nested-padding-inline: var(--space-4);
+
+  /* Gap between rows on the HORIZONTAL axis. The vertical axis has none: its rows sit flush so
+   * the ink rail reads as one continuous rule. */
+  --anchor-gap: var(--space-inline-lg);
+}

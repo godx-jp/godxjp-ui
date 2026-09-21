@@ -3,44 +3,40 @@ import { isValidElement, useEffect, useRef, useState, type ReactNode } from "rea
 import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
+import { scrollParent, useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
-
-/** Nearest scrollable ancestor (the page's scroll viewport), else the window. */
-function scrollParent(el: HTMLElement | null): HTMLElement | null {
-  let node = el?.parentElement ?? null;
-  while (node) {
-    const overflowY = getComputedStyle(node).overflowY;
-    if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") return node;
-    node = node.parentElement;
-  }
-  return null;
-}
 
 /**
  * `footerReveal="onScroll"`: reveal the sticky footer once the header scrolls
  * out of the page's scroll viewport. The footer stays mounted (CSS only flips
  * a transform), so toggling never reflows the body — no scroll jitter.
+ *
+ * The observer is no longer this function's: it is `useInView` (`src/lib/hooks.ts`), the library's
+ * one `IntersectionObserver`. This function's former body — the `scrollParent` walk and the
+ * `threshold: 0` observation — moved up there so `Affix` (gh#827) could stop short of writing a
+ * second one, the way `useScrollsOnAxis` was generalised before it.
+ *
+ * `assumeInView` is what keeps the behaviour byte-identical. The old local state was `revealed`
+ * and started `false`; the shared hook's state is its NEGATION, so the resting answer has to be
+ * "it IS in view". Without it the footer would paint revealed for the frame before the first
+ * observer entry, and would stay revealed forever in jsdom and under SSR, where the old code kept
+ * it hidden.
+ *
+ * The root is state rather than a call, because `useInView` takes the element and the element does
+ * not exist until the header has mounted. The first observation therefore uses the viewport and
+ * the second uses the pane — the resting answer is the same for both, so nothing is ever painted
+ * from the difference.
  */
 function useFooterReveal(enabled: boolean) {
   const headerRef = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(false);
-
+  const [root, setRoot] = useState<Element | null>(null);
   useEffect(() => {
-    if (!enabled) return;
-    const el = headerRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return; // jsdom/SSR-safe
-
-    const observer = new IntersectionObserver(([entry]) => setRevealed(!entry.isIntersecting), {
-      root: scrollParent(el),
-      threshold: 0,
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
+    setRoot(scrollParent(headerRef.current));
   }, [enabled]);
-
-  return { headerRef, revealed: enabled && revealed };
+  const inView = useInView(headerRef, { enabled, root, assumeInView: true });
+  return { headerRef, revealed: enabled && !inView };
 }
 
 export type {

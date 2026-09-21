@@ -1862,3 +1862,80 @@ export type MasonryProp<TData = unknown> = {
   id?: IdProp;
   className?: ClassNameProp;
 };
+
+/**
+ * The scroll box an `Affix` pins against — Ant Design `Affix target`, shape for shape, and the
+ * same lazy getter `FloatButton.BackTop target` already spells here.
+ *
+ * It is a FUNCTION and not an element because the element does not exist on the render that
+ * declares it: the caller writes `target={() => scrollRef.current}` and the component calls it
+ * after mount. `window` (the default) means the document viewport.
+ * @see Affix
+ */
+export type AffixTargetProp = () => Window | HTMLElement | null;
+
+/**
+ * @see Affix — Ant Design's `Affix`: pin an element to its scrollport once the page scrolls past
+ * it, and SAY SO, which is the whole difference from `position: sticky`.
+ *
+ * antd's surface, field for field — `offsetTop`, `offsetBottom`, `target`, `onChange` — with the
+ * two physical offsets renamed to their logical axis (see the fields). `onChange` keeps antd's
+ * name and antd's payload: it is an OBSERVATION of a derived boolean, not the setter half of a
+ * controlled value, so the `value`/`defaultValue`/`onValueChange` triad does not apply to it —
+ * the same call `Attachments.onChange` and `ActionsFeedback.onChange` already make here.
+ */
+export type AffixProp = {
+  /** What gets pinned. Must not itself be `position: absolute` — antd's note, and it is the same
+   * note here, because the pin works by making this element `position: fixed`. */
+  children?: ChildrenProp;
+  /**
+   * Distance from the scrollport's BLOCK-START edge at which the element pins, in pixels.
+   * Ant Design `offsetTop`, default `0`.
+   *
+   * The name is the logical axis, not `top`, for the reason `check:rtl` exists and the reason
+   * `inset-block-start` replaced `top` in every stylesheet here: a sticky bar in a
+   * `writing-mode: vertical-rl` document pins against the axis it flows on, and "top" is only
+   * the right word for one of the four. `offsetTop` is still FINDABLE — it is declared `never`
+   * below, so arriving from antd's docs is a compile error that names the replacement.
+   *
+   * Pass neither offset and this defaults to `0` (antd's `internalOffsetTop` rule exactly:
+   * the block-start offset defaults to `0` ONLY when the block-end offset is also absent).
+   */
+  offsetBlockStart?: number;
+  /**
+   * Distance from the scrollport's BLOCK-END edge at which the element pins, in pixels.
+   * Ant Design `offsetBottom`. No default — passing it is what selects block-end pinning.
+   *
+   * Setting both is antd's own precedence: block-start wins, and block-end is only consulted
+   * when the element has not pinned to the start.
+   */
+  offsetBlockEnd?: number;
+  /**
+   * NOT A PROP — Ant Design's name for `offsetBlockStart`, kept in the type so that arriving from
+   * antd's docs is a compile error that says where to go, rather than a header that never pins
+   * and never complains. Passing it also warns in development.
+   *
+   * @deprecated Ant Design spells this `offsetTop`; in `@godxjp/ui` it is `offsetBlockStart` —
+   * the logical axis, per `check:rtl` and docs/DESIGN-AUTHORITY.md.
+   */
+  offsetTop?: never;
+  /**
+   * NOT A PROP — Ant Design's name for `offsetBlockEnd`. See `offsetTop`.
+   *
+   * @deprecated Ant Design spells this `offsetBottom`; in `@godxjp/ui` it is `offsetBlockEnd`.
+   */
+  offsetBottom?: never;
+  /** The scroll box to pin against. Ant Design `target`, default `() => window`. */
+  target?: AffixTargetProp;
+  /**
+   * Fires when the pinned state FLIPS, and only then — never on a scroll frame that did not
+   * change it. Ant Design `onChange`, whose payload is the new state.
+   *
+   * antd types the argument optional (`(affixed?: boolean) => void`) because its own call site can
+   * pass `undefined`; here the transition is derived from a boolean, so the argument is always
+   * present and the type says so. A handler written against antd's signature still compiles.
+   */
+  onChange?: (affixed: boolean) => void;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

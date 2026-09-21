@@ -1,5 +1,7 @@
 /** Navigation component prop types — @see docs/COMPONENTS.md#navigation */
 import type * as React from "react";
+import type { ReactNode } from "react";
+import type { AffixProp } from "./layout.prop";
 import type {
   ActionsProp,
   ChildrenProp,
@@ -876,3 +878,150 @@ export type MegaMenuProp = {
   id?: IdProp;
   className?: ClassNameProp;
 } & Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "defaultValue" | "children">;
+
+/**
+ * One entry of `Anchor items` — Ant Design `AnchorItem`, field for field.
+ *
+ * `key` / `href` / `title` / `target` / `children` are antd's, with the same meanings; antd's
+ * per-link `targetOffset` (6.4.0) is here under the logical name the component-level prop uses.
+ * @see Anchor
+ */
+export type AnchorItemProp = {
+  /** Stable identity of the link. Ant Design `AnchorItem.key`. */
+  key: React.Key;
+  /** The in-page fragment this entry points at — `"#pricing"`. Ant Design `AnchorItem.href`. */
+  href: string;
+  /** The link's visible content. Ant Design `AnchorItem.title`. */
+  title: ReactNode;
+  /** `<a target>` — for the rare entry that points off-page. Ant Design `AnchorItem.target`. */
+  target?: string;
+  /**
+   * ONE level of nesting, exactly as Ant Design allows, and — again exactly as Ant Design — it is
+   * DROPPED when `direction="horizontal"`, where a nested list has nowhere to go. A horizontal
+   * anchor carrying `children` warns in development rather than rendering a second row.
+   */
+  children?: AnchorItemProp[];
+  /**
+   * Replace this entry's `href` in history instead of pushing it. Ant Design `AnchorItem.replace`,
+   * default `false`, and it overrides the component-level `replace`.
+   */
+  replace?: boolean;
+  /**
+   * Scroll landing offset for THIS entry, overriding the component's `targetOffsetBlockStart`.
+   * Ant Design `AnchorItem.targetOffset` (6.4.0), renamed to its logical axis for the reason
+   * `AffixProp.offsetBlockStart` states.
+   */
+  targetOffsetBlockStart?: number;
+};
+
+/** The scroll box an `Anchor` measures its sections in. Ant Design `AnchorContainer`. @see Anchor */
+export type AnchorContainerProp = HTMLElement | Window;
+
+/**
+ * `Anchor`'s own layout axis — Ant Design `direction`, and the word `Separator` / `Flex` /
+ * `Toolbar` already use for the same idea here, so antd's spelling and this library's agree.
+ * @see Anchor
+ */
+export type AnchorDirectionProp = "vertical" | "horizontal";
+
+/**
+ * @see Anchor — Ant Design's `Anchor`: the in-page section navigation, and the thing that COMPUTES
+ * which section is current. `NavList activeId` takes that answer as a prop; nothing else in this
+ * library works it out.
+ *
+ * antd's surface, ported first: `items`, `direction`, `affix`, `bounds`, `getContainer`,
+ * `getCurrentAnchor`, `offsetTop`, `targetOffset`, `showInkInFixed`, `replace`, `onChange`,
+ * `onClick`. Three renames, each written at its field: the two physical offsets take their
+ * logical axis, and antd's `onChange` becomes `onValueChange` because the active href here IS a
+ * controlled value (`value` / `defaultValue` / `onValueChange`), which antd has no spelling for
+ * at all. All three antd names stay findable — declared `never`, `@deprecated` with the
+ * replacement named, and warned about in development.
+ */
+export type AnchorProp = {
+  /** The entries, in document order. Ant Design `items`. */
+  items?: AnchorItemProp[];
+  /** Layout axis. Ant Design `direction`, default `"vertical"`. */
+  direction?: AnchorDirectionProp;
+  /**
+   * Pin the nav with `Affix`. Ant Design `affix`, default `true`, and antd's object form is
+   * literally `AffixProps` minus the three fields `Anchor` supplies itself — which is why gh#827
+   * lands before gh#828.
+   *
+   * `false` leaves the nav in the flow. An object is forwarded to `Affix`; `offsetBlockStart`,
+   * `target` and `children` come from `Anchor` and are not yours to set there.
+   */
+  affix?: boolean | Omit<AffixProp, "offsetBlockStart" | "offsetTop" | "target" | "children">;
+  /** Tolerance, in pixels, added to the decision line. Ant Design `bounds`, default `5`. */
+  bounds?: number;
+  /** The scroll box holding the sections. Ant Design `getContainer`, default `() => window`. */
+  getContainer?: () => AnchorContainerProp;
+  /**
+   * Last word on the highlight, given the one the scroll position resolved. Ant Design
+   * `getCurrentAnchor`, kept because it is antd's own escape hatch and it runs INSIDE the
+   * resolution, with no render round-trip. A controlled `value` outranks it.
+   */
+  getCurrentAnchor?: (activeLink: string) => string;
+  /**
+   * Where the decision line sits, measured from the scrollport's block-start edge, and the
+   * distance `Affix` pins the nav at. Ant Design `offsetTop`, default `0`; renamed to its logical
+   * axis for the reason `AffixProp.offsetBlockStart` states.
+   */
+  offsetBlockStart?: number;
+  /**
+   * Where a CLICKED section lands, measured from the scrollport's block-start edge — the room a
+   * pinned header needs. Ant Design `targetOffset`, which defaults to `offsetTop`; same default
+   * here, against `offsetBlockStart`.
+   *
+   * antd uses `targetOffset` for the decision line too whenever it is a number, and that is
+   * ported: the line a section becomes current at and the line it lands on are the same line, so
+   * a click cannot leave the item it just selected unselected.
+   */
+  targetOffsetBlockStart?: number;
+  /** Draw the ink rail when `affix={false}`. Ant Design `showInkInFixed`, default `false`. */
+  showInkInFixed?: boolean;
+  /** Replace the hash in history instead of pushing it. Ant Design `replace`, default `false`. */
+  replace?: boolean;
+  /** Controlled active `href` (the entry carrying `aria-current="location"`). */
+  value?: string;
+  /** Uncontrolled initial active `href`, before the hash or the scroll position has an opinion. */
+  defaultValue?: string;
+  /**
+   * Fires when the active entry changes — from a click, from the landing hash, and from the
+   * scroll position. Ant Design calls this `onChange`; the pair `value`/`defaultValue` makes this
+   * the setter half of a controlled value, and the triad's name for that here is `onValueChange`.
+   *
+   * antd's own note is ported with it: the callback reports the link the SCROLL POSITION resolved,
+   * not the one `getCurrentAnchor` substituted for it.
+   */
+  onValueChange?: (href: string) => void;
+  /**
+   * NOT A PROP — Ant Design's name for `onValueChange`.
+   *
+   * @deprecated Ant Design spells this `onChange`; in `@godxjp/ui` the active href is a controlled
+   * value, so it is `onValueChange`, beside `value` and `defaultValue`.
+   */
+  onChange?: never;
+  /**
+   * NOT A PROP — Ant Design's name for `offsetBlockStart`.
+   *
+   * @deprecated Ant Design spells this `offsetTop`; in `@godxjp/ui` it is `offsetBlockStart`.
+   */
+  offsetTop?: never;
+  /**
+   * NOT A PROP — Ant Design's name for `targetOffsetBlockStart`.
+   *
+   * @deprecated Ant Design spells this `targetOffset`; in `@godxjp/ui` it is
+   * `targetOffsetBlockStart`.
+   */
+  targetOffset?: never;
+  /** Fires on activation, before the scroll. Ant Design `onClick`. */
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>, item: AnchorItemProp) => void;
+  /**
+   * Accessible name of the `<nav>` landmark — a plain STRING, because it lands on `aria-label`.
+   * antd has no equivalent and ships an unnamed `<div>`; a page routinely carries a breadcrumb, a
+   * rail and this, so a localized default ("On this page") applies when omitted.
+   */
+  label?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

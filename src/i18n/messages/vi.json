@@ -412,6 +412,9 @@
     "breadcrumb": {
       "ariaLabel": "Đường dẫn"
     },
+    "anchor": {
+      "ariaLabel": "Trong trang này"
+    },
     "toolbar": {
       "ariaLabel": "Bộ lọc"
     },

@@ -5,4 +5,4 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export { isApplePlatform } from "./platform";
+export { isApplePlatform, prefersReducedMotion } from "./platform";

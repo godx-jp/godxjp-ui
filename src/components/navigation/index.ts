@@ -84,3 +84,11 @@ export type {
   ConversationsGroupableProp,
   ConversationsCreationProp,
 } from "./conversations";
+export { Anchor } from "./anchor";
+export type {
+  AnchorContainerProp,
+  AnchorDirectionProp,
+  AnchorItemProp,
+  AnchorProp,
+  AnchorProps,
+} from "./anchor";

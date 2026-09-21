@@ -121,3 +121,5 @@ export type {
   MasonryProp,
   MasonryProps,
 } from "./masonry";
+export { Affix } from "./affix";
+export type { AffixProp, AffixProps, AffixTargetProp } from "./affix";

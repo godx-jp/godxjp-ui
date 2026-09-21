@@ -870,5 +870,15 @@
     "group": "layout",
     "name": "Masonry",
     "tagline": "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing."
+  },
+  {
+    "group": "layout",
+    "name": "Affix",
+    "tagline": "Ant Design `Affix` (6.6.5): pin an element to its scrollport once the page scrolls past it, and REPORT that it is pinned. `position: sticky` pins and then says nothing, so a sticky header cannot shrink, swap its logo or raise its shadow; this one exposes the boolean as `data-affixed` for CSS and `onChange` for JavaScript, and holds the flow open with a MEASURED placeholder so the page does not jump by the bar's height at the moment it pins."
+  },
+  {
+    "group": "navigation",
+    "name": "Anchor",
+    "tagline": "Ant Design `Anchor` (6.6.5): the in-page section navigation, and the only thing in this library that COMPUTES which section is current. `NavList activeId` takes that answer as a prop. Resolves by antd's rule — the last section whose edge has crossed a single decision line — which is a pure function of scroll position and therefore cannot flicker, suppresses itself during the programmatic scroll a click starts, reads the landing hash before any scroll event, and jumps rather than tweens under `prefers-reduced-motion`."
   }
 ]
