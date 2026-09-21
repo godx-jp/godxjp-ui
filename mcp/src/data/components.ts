@@ -6433,12 +6433,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "addonBefore",
         type: "React.ReactNode",
         description:
-          "antd `addonBefore` — a segment welded OUTSIDE the field's box (`https://`, a currency). Outside is the whole distinction from `prefix`: an addon has its own surface and closes the field's corners on the joined side.",
+          "antd `addonBefore` — a LABEL segment welded OUTSIDE the field's box (`https://`, a currency). Outside is the whole distinction from `prefix`: an addon has its own surface and closes the field's corners on the joined side. For a GLYPH use `prefix` — one box, one border, no seam. antd deprecates both addons in favour of `Space.Compact` (verified in ant-design@master: a `@deprecated` tag and a dev-time warning, still rendering); this library keeps them, because it has no `Space` and `addonBefore` IS its joined control (gh#841).",
       },
       {
         name: "addonAfter",
         type: "React.ReactNode",
-        description: "antd `addonAfter` — the same, welded to the end of the box (`.com`, a unit).",
+        description:
+          "antd `addonAfter` — the same, welded to the end of the box (`.com`, a unit). Deprecated upstream alongside `addonBefore`, and kept here for the same reason.",
       },
       {
         name: "count",
