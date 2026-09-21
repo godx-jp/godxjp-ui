@@ -8076,6 +8076,14 @@
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {
+          "name": "measure",
+          "origin": "owned",
+          "required": false,
+          "type": "FlexMeasureProp | undefined",
+          "values": ["narrow", "medium", "wide"],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
           "name": "pad",
           "origin": "owned",
           "required": false,

@@ -30,26 +30,34 @@
  *
  * ── WHAT IS STILL HAND-WRITTEN, AND WHY (the finding this page exists to produce) ───────────────
  *
- * Zero classes and zero literals did NOT mean zero CSS. Six things below are inline `style`
- * objects because no PROP reaches them. Each one is a named gap, in the order a reader meets them:
+ * Zero classes and zero literals did NOT mean zero CSS. Six things below WERE inline `style`
+ * objects because no PROP reached them. Each one is a named gap, in the order a reader meets them;
+ * gh#839 closed the first two:
  *
- *  1. THE SECTION BAND — `paddingBlock: var(--space-section-band | --space-section-hero)`.
- *     PARTLY CLOSED by gh#839: the numeric `GapProp` ladder now reaches the two band steps, so
+ *  1. THE SECTION BAND — was `paddingBlock: var(--space-section-band | --space-section-hero)`.
+ *     CLOSED by gh#839: the numeric `GapProp` ladder reaches the two band steps, so
  *     `pad={{ block: 20 }}` (80px) and `pad={{ block: 24 }}` (96px) state the rhythm through the
- *     public API. The bands below still use an inline `style` because each one ALSO needs the
- *     centred inner column (`SHELL`), and nothing owns "full-bleed outside, measured column
- *     inside" — that half of gh#839 is open. Neither step has a compact variant either:
- *     `--space-section-hero` measures 96px at 1440 and at 320, where the package's own landing
- *     preset drops its band via `--centered-shell-landing-main-padding-block-compact`.
- *  2. THE CENTRED COLUMN — `marginInline: auto` + `inlineSize: 100%` +
+ *     public API, and every band below now does. Neither step has a compact variant and gh#839
+ *     decided it should not: `--space-section-hero` measures 96px at 1440 AND at 320, which is
+ *     deliberate — Tailwind UI's own marketing sections are `py-24 sm:py-32`, i.e. 96px is the
+ *     NARROW rung of the industry pair and the desktop one is the step above. A numeric `pad`
+ *     step is a VALUE (`pad={3}` is 12px everywhere); making one of them responsive would break
+ *     that contract for the whole ladder. `--centered-shell-landing-main-padding-block-compact`
+ *     is not the counter-example it looks like: 40px → 24px is a SHELL's main padding, not a
+ *     marketing band, and it switches inside `.ui-centered-shell`'s own scope, which a plain
+ *     `<section>` has no equivalent of.
+ *  2. THE CENTRED COLUMN — was `marginInline: auto` + `inlineSize: 100%` +
  *     `maxInlineSize: var(--page-measure-wide)` + `paddingInline: var(--space-6)`, repeated at
- *     every band. gh#831 minted `--page-measure-wide` and deliberately did not add
- *     `PageContainer measure="wide"`, reasoning that a marketing page is full-bleed sections with
- *     a centred inner column and `PageContainer` owns neither. The reasoning holds; its
- *     consequence is that NOTHING owns the centred inner column.
- *  3. THE STICKY BAR — `position: sticky` + `insetBlockStart` + `zIndex`. `Affix` does not exist
- *     here (`docs/roadmap/website-components.md` §5.2 proposed `--affix-inset-block-start` and
- *     `--affix-z-index`; neither shipped) and `Topbar` has no `sticky` prop.
+ *     every band. CLOSED by gh#839 as `Flex measure="wide"` + `pad={{ inline: 6 }}`. gh#831 minted
+ *     `--page-measure-wide` and deliberately did not add `PageContainer measure="wide"`, reasoning
+ *     that a marketing page is full-bleed sections with a centred inner column and `PageContainer`
+ *     owns neither. That reasoning still holds and was not reopened — the prop went to `Flex`, the
+ *     primitive a full-bleed `<section>` can actually put inside itself, where it has seven call
+ *     sites on this page. `measure` adds NO gutter: `pad` owns that, and one band with two padding
+ *     owners is how a measure and its inset drift apart.
+ *  3. THE STICKY BAR — `position: sticky` + `insetBlockStart` + `zIndex`. `Affix` has since
+ *     shipped (28.8.0, with the measured placeholder that removes the 62px page jump) and this
+ *     page has not yet been moved onto it; `Topbar` still has no `sticky` prop.
  *  4. THE GLASS — `--topbar-background-alpha` / `--topbar-backdrop-blur-size` as inline custom
  *     properties. They are `initial` by design, so a call site MUST set them, and that is correct.
  *     This used to read `--space-2`, borrowing a token that means something else, because the
@@ -155,20 +163,9 @@ import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, ResponsiveGrid, Separator, Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
-/* ── The five inline-style constants named in the docblock. Every value is a token reference; no
-   number with a unit appears anywhere in this file. ─────────────────────────────────────────── */
-
-/** (2) The centred inner column. Nothing in the package owns this shape yet. */
-const SHELL: CSSProperties = {
-  marginInline: "auto",
-  inlineSize: "100%",
-  maxInlineSize: "var(--page-measure-wide)",
-  paddingInline: "var(--space-6)",
-};
-
-/** (1) The section rhythm gh#831 named and no prop reads. */
-const BAND: CSSProperties = { paddingBlock: "var(--space-section-band)" };
-const HERO_BAND: CSSProperties = { paddingBlock: "var(--space-section-hero)" };
+/* ── The inline-style constants named in the docblock. Every value is a token reference; no number
+   with a unit appears anywhere in this file. Gaps 1 and 2 no longer have one: `Flex measure` and
+   `Flex pad` state the band through props (gh#839). ──────────────────────────────────────────── */
 
 /** (5) The halo host and the halo layer. */
 const GLOW_HOST: CSSProperties = { position: "relative", overflow: "hidden" };
@@ -446,7 +443,13 @@ export default function MarketingPage() {
             className="ui-brand-glow"
             style={{ ...GLOW_LAYER, ...HERO_GLOW }}
           />
-          <div style={{ ...SHELL, ...HERO_BAND, ...ABOVE_GLOW }}>
+          <Flex
+            direction="col"
+            gap="none"
+            measure="wide"
+            pad={{ inline: 6, block: 24 }}
+            style={ABOVE_GLOW}
+          >
             <ResponsiveGrid columns={{ base: 1, lg: 2 }} gap="xl" align="start">
               <Reveal>
                 <Flex direction="col" gap="lg">
@@ -532,12 +535,12 @@ export default function MarketingPage() {
                 </Card>
               </Reveal>
             </ResponsiveGrid>
-          </div>
+          </Flex>
         </section>
 
         {/* ── LOGO WALL ────────────────────────────────────────────────────────────────────── */}
         <section aria-labelledby="logos-title">
-          <div style={{ ...SHELL, ...BAND }}>
+          <Flex direction="col" gap="none" measure="wide" pad={{ inline: 6, block: 20 }}>
             <Flex direction="col" gap="lg">
               <Flex direction="col" gap="xs">
                 <Heading level={2} size="lg" id="logos-title">
@@ -567,13 +570,13 @@ export default function MarketingPage() {
                 ))}
               </Marquee>
             </Flex>
-          </div>
+          </Flex>
         </section>
 
         {/* ── FEATURE GRID ─────────────────────────────────────────────────────────────────── */}
         <section id="solutions" aria-labelledby="features-title">
           <Flex as="div" direction="col" gap="none" surface="muted">
-            <div style={{ ...SHELL, ...BAND }}>
+            <Flex direction="col" gap="none" measure="wide" pad={{ inline: 6, block: 20 }}>
               <Flex direction="col" gap="xl">
                 <Flex direction="col" gap="xs">
                   <Heading level={2} size="3xl" weight="bold" id="features-title">
@@ -613,13 +616,13 @@ export default function MarketingPage() {
                   ))}
                 </ResponsiveGrid>
               </Flex>
-            </div>
+            </Flex>
           </Flex>
         </section>
 
         {/* ── TESTIMONIALS ─────────────────────────────────────────────────────────────────── */}
         <section aria-labelledby="quotes-title">
-          <div style={{ ...SHELL, ...BAND }}>
+          <Flex direction="col" gap="none" measure="wide" pad={{ inline: 6, block: 20 }}>
             <Flex direction="col" gap="lg">
               <Heading level={2} size="3xl" weight="bold" id="quotes-title">
                 {t("marketingShowcase.testimonials.title")}
@@ -673,13 +676,13 @@ export default function MarketingPage() {
                 <CarouselDots />
               </Carousel>
             </Flex>
-          </div>
+          </Flex>
         </section>
 
         {/* ── PRICING ──────────────────────────────────────────────────────────────────────── */}
         <section id="pricing" aria-labelledby="pricing-title">
           <Flex as="div" direction="col" gap="none" surface="muted">
-            <div style={{ ...SHELL, ...BAND }}>
+            <Flex direction="col" gap="none" measure="wide" pad={{ inline: 6, block: 20 }}>
               <Flex direction="col" gap="xl">
                 <Flex direction="col" gap="md">
                   <Heading level={2} size="3xl" weight="bold" id="pricing-title">
@@ -774,7 +777,7 @@ export default function MarketingPage() {
                   })}
                 </ResponsiveGrid>
               </Flex>
-            </div>
+            </Flex>
           </Flex>
         </section>
 
@@ -785,7 +788,13 @@ export default function MarketingPage() {
             className="ui-brand-glow"
             style={{ ...GLOW_LAYER, ...CTA_GLOW }}
           />
-          <div style={{ ...SHELL, ...BAND, ...ABOVE_GLOW }}>
+          <Flex
+            direction="col"
+            gap="none"
+            measure="wide"
+            pad={{ inline: 6, block: 20 }}
+            style={ABOVE_GLOW}
+          >
             <Reveal on="view">
               <Flex direction="col" gap="md" align="center">
                 <Heading level={2} size="4xl" weight="bold" align="center" id="cta-title">
@@ -810,14 +819,14 @@ export default function MarketingPage() {
                 </Text>
               </Flex>
             </Reveal>
-          </div>
+          </Flex>
         </section>
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────────────────────── */}
       <footer>
         <Flex as="div" direction="col" gap="none" surface="muted">
-          <div style={{ ...SHELL, ...BAND }}>
+          <Flex direction="col" gap="none" measure="wide" pad={{ inline: 6, block: 20 }}>
             <Flex direction="col" gap="lg">
               {/* ResponsiveGrid.Item span — the asymmetric footer both siblings hand-wrote a
                   `grid-template-columns: 1.4fr 1fr 1fr 1fr` for. It has shipped the whole time. */}
@@ -877,7 +886,7 @@ export default function MarketingPage() {
                 </Flex>
               </Flex>
             </Flex>
-          </div>
+          </Flex>
         </Flex>
       </footer>
     </Flex>

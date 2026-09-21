@@ -861,6 +861,7 @@ export const COMPONENT_PROP_REGISTRY = {
   FlexMarkerProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexJustifyProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexMeasureProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   FlexProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -893,6 +894,12 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "hideFrom",
         local: true,
         reason: "Inverse of hideBelow — keeps a compact-only region off the wide layout.",
+      },
+      {
+        field: "measure",
+        local: true,
+        reason:
+          'The CENTRED, CAPPED column (narrow | medium | wide), backed by --page-measure-* — the inner half of "full-bleed outside, measured column inside" (gh#839). Same word and same three token steps as PageContainer `measure`, on the primitive a full-bleed <section> can actually use: PageContainer owns page padding and a header scaffold, which is why measure="wide" was refused there, and the refusal left the centred column with no owner at all — three showcases hand-wrote the same four declarations. It adds NO gutter (that is `pad`), and an explicit `width` wins over it.',
       },
     ],
   },

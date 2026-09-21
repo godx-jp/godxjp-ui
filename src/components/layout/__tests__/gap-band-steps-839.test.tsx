@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { Flex } from "../flex";
 import { flexGapClass, padStepToken } from "../../../lib/variants";
 
 /**
@@ -47,5 +49,73 @@ describe("gap/pad reach the marketing band steps (gh#839)", () => {
     const semantic = readFileSync(join(process.cwd(), "src/tokens/semantic/layout.css"), "utf8");
     expect(semantic).toMatch(/--space-section-band:\s*var\(\s*--space-20\s*\)/);
     expect(semantic).toMatch(/--space-section-hero:\s*var\(\s*--space-24\s*\)/);
+  });
+});
+
+/**
+ * The OTHER half of gh#839: the centred inner column.
+ *
+ * `--page-measure-wide` shipped in the same release as the band steps and had the same defect —
+ * vocabulary with no caller. `PageContainer measure="wide"` was refused for a reason that holds
+ * (a marketing page is full-bleed `<section>`s and cannot consume PageContainer's page padding or
+ * its header scaffold), and the refusal left "full-bleed outside, measured column inside" owned by
+ * nobody: `docs/showcase/marketing-page.tsx` wrote it as an inline `style` constant,
+ * `acme-website.tsx` as `.tx-shell` and `futurelastic-web.tsx` as `.fl-shell` — the SAME four
+ * declarations in three unrelated files, which `docs/TOKENS.md` calls tier 1.
+ *
+ * So the prop sits on `Flex`, the primitive a full-bleed `<section>` can actually put inside
+ * itself, and it reads the tokens rather than printing a length.
+ */
+describe("Flex measure — the centred, capped column (gh#839)", () => {
+  it("omitted emits NO attribute, so no rule can match", () => {
+    render(<Flex data-testid="plain">x</Flex>);
+    expect(screen.getByTestId("plain").hasAttribute("data-measure")).toBe(false);
+  });
+
+  it.each(["narrow", "medium", "wide"] as const)("measure=%s lands on the DOM", (value) => {
+    render(
+      <Flex data-testid={`m-${value}`} measure={value}>
+        x
+      </Flex>,
+    );
+    expect(screen.getByTestId(`m-${value}`)).toHaveAttribute("data-measure", value);
+  });
+
+  /**
+   * jsdom applies no author cascade, so the rule is asserted in the source — the same reason the
+   * gap-step test above reads text rather than computed style.
+   */
+  it.each(["narrow", "medium", "wide"] as const)(
+    "the %s cap is the page-measure TOKEN, never a literal",
+    (value) => {
+      expect(layoutCss).toMatch(
+        new RegExp(
+          `\\.ui-flex\\[data-measure="${value}"\\]\\s*\\{\\s*max-inline-size:\\s*var\\(\\s*--page-measure-${value}\\s*\\)`,
+        ),
+      );
+    },
+  );
+
+  /**
+   * The centring half. `inline-size: 100%` is load-bearing beside `margin-inline: auto`: a Flex is
+   * often a flex ITEM, and a parent that is not `align-items: stretch` shrinks it to its content,
+   * at which point auto margins centre a box of the wrong size.
+   */
+  it("centres with logical properties only, so check:rtl needs no exception", () => {
+    const rule = layoutCss.match(/\.ui-flex\[data-measure\]\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(rule).toContain("margin-inline: auto");
+    expect(rule).toContain("inline-size: 100%");
+    expect(rule).not.toMatch(/margin-(?:left|right)|max-width/);
+  });
+
+  /**
+   * It must NOT own a gutter. `pad` already does, and one band with two padding owners is how a
+   * measure and its inset drift apart — which is the whole reason three showcases each wrote
+   * their own four declarations instead of sharing one.
+   */
+  it("adds no padding of its own", () => {
+    const block =
+      layoutCss.match(/\.ui-flex\[data-measure[\s\S]*?--page-measure-wide[^}]*\}/)?.[0] ?? "";
+    expect(block).not.toMatch(/padding/);
   });
 });

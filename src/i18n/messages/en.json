@@ -1185,6 +1185,10 @@
         "one": "Load {count} more",
         "other": "Load {count} more"
       }
+    },
+    "flexMeasure": {
+      "title": "measure — full-bleed outside, a measured column inside",
+      "lead": "A band is a <section> carrying the edge-to-edge paint around one Flex that measure centres and caps at --page-measure-*. The gutter stays pad's job: measure adds none. narrow (42rem) and medium (48rem) are reading measures; wide (72rem) is the marketing one."
     }
   }
 }

@@ -8,6 +8,7 @@ import {
   ListRow,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -20,6 +21,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Flex"
@@ -394,6 +396,44 @@ export default function Demo() {
                   old_status
                 </Text>
                 <Text>更新済み</Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.flexMeasure.title")}</CardTitle>
+            <CardDescription>{t("showcase.flexMeasure.lead")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Flex
+                id="measure-narrow"
+                measure="narrow"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;narrow&quot; · 42rem</Text>
+              </Flex>
+              <Flex
+                id="measure-medium"
+                measure="medium"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;medium&quot; · 48rem</Text>
+              </Flex>
+              <Flex
+                id="measure-wide"
+                measure="wide"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;wide&quot; · 72rem</Text>
               </Flex>
             </Flex>
           </CardContent>
