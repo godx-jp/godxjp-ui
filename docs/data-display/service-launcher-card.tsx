@@ -79,7 +79,7 @@ export default function Demo() {
               statusLabel="利用可能"
               statusTone="success"
               description="打刻、シフト、休暇申請を一つのワークスペースで管理します。"
-              metadata="kintai.corp.example.jp · v4.2"
+              metadata="attend.corp.example.jp · v4.2"
               action={<Button>サービスを開く</Button>}
             />
             <ServiceLauncherCard
