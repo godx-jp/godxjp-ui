@@ -4,6 +4,143 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.7.0] - 2026-09-21
+
+MINOR. Six issues, and the thread running through five of them is the same one: a thing that
+RESOLVED, was CATALOGUED, and did nothing. An inert width token, an anonymous focus stop, a glyph
+sized off the wrong axis, a lint rule firing on a node nobody can point at. Every one of them
+passed every gate this repo had, which is why three new gates ship with the fixes.
+
+### Added
+
+- **`Table` / `DataTable` / `ScrollArea` take `label`** — an accessible name for the scroll REGION,
+  not for the content. Optional: left out, each takes a localized default (`dataTable.scrollRegion`,
+  `dataDisplay.scrollArea.region`) in en/ja/vi, so no consumer has to invent a name for every
+  scrolling box in order to stop being broken. `label` names the region; a consumer's own
+  `aria-label` still reaches the `<table>`, and still wins on `ScrollArea`.
+
+- **`check:token-width-wins`** — a components-layer rule that sets an inline-axis size FROM A TOKEN
+  may not be paired with a competing width utility on the same element. This is the fourth time
+  that shape has shipped (gh#366, gh#375, gh#819 and, found by the gate on its first run,
+  `.ui-pagination-size-trigger`), so it is now a gate rather than a thing four reviewers failed to
+  remember. Its limits are written at the top of the script: literal class names only, token values
+  only. It is a pairing rule, not a cascade proof.
+
+### Fixed
+
+- **`Table`, `DataTable` and `ScrollArea` each shipped an anonymous tab stop** (gh#817, gh#821).
+  `godx-jp/id` walked the first 40 tab stops of a Platform admin page; number 27 was
+  `<div class="… ui-table-collection" tabindex="0">` with no role and no name. `ScrollArea`'s
+  viewport was the identical defect one component over, found in the same sweep.
+
+  The `tabindex="0"` is RIGHT — it is how overflow is reached without a pointer (WCAG 2.1.1 / axe
+  `scrollable-region-focusable`) — so it stays and gets NAMED: `role="group"` plus an accessible
+  name. `group`, not `region`, though the issue suggested either: a named region IS a landmark, so
+  three tables on a page would ship three identically-named landmarks and fail axe
+  `landmark-unique`. That is precisely why the original comment said "no landmark role" and left
+  the stop anonymous — `group` closes the defect without reopening the one the role was omitted to
+  avoid.
+
+  And the stop now exists only while there is something to scroll. The measurement may only ever
+  REMOVE it: an unlaid-out box reports `clientWidth === 0` (SSR, jsdom, a `display:none` ancestor),
+  and reading that as "nothing overflows" would strand the overflow from every keyboard user — a
+  worse failure than a spare stop. `ScrollArea` has three orientations to the table's one, so the
+  shared hook was generalized upstream into `useScrollsOnAxis(ref, enabled, axis)` rather than
+  copied; `useScrollsHorizontally` is now a one-line wrapper and `Table`/`DataTable` behaviour is
+  byte-identical. The axis measured is the axis that SCROLLS — an axis `orientation` leaves out is
+  `overflow: hidden`, so content overflowing there is clipped rather than reachable and must not
+  buy a focus stop.
+
+- **Eight per-kind width tokens on `AppSettingPicker` were inert** (gh#819).
+  `.ui-app-setting-picker-trigger[data-kind]` declared each width in `@layer components` while the
+  labelled trigger emitted `w-auto`. Tailwind v4 orders utilities after components, so the utility
+  won: all eight tokens resolved, were catalogued, and moved nothing. Measured at 1440px, the
+  `fontSize` trigger painted **1358px** where its token says 9rem.
+
+  | kind | token | before | after |
+  | --- | --- | --- | --- |
+  | locale | 10rem | 177px | 160px |
+  | timezone | 14rem | 224px | 224px |
+  | dateFormat | 11rem | 177px | 176px |
+  | timeFormat | 11rem | 177px | 176px |
+  | theme | 9rem | 177px | 144px |
+  | brand | 11rem | 177px | 176px |
+  | density | 10rem | 177px | 160px |
+  | fontSize | 9rem | **1358px** | 144px |
+
+  The fix takes gh#366's precedent, not gh#375's: the width is emitted FROM the token as a utility
+  (`w-[length:var(--app-setting-picker-trigger-width)]`). What a components-layer rule can still
+  own is WHICH token that utility reads — a custom property has no utility competing with it — so
+  `data-kind` resolves the variable and the trigger carries one unprefixed `w-*`. Unprefixed on
+  purpose: `cn` is tailwind-merge, so a form field's `className="w-full"` still replaces it.
+
+- **Validation feedback was a 32px glyph in one colour, on a box that showed nothing** (gh#820).
+  Three defects in one row, all reported from the published docs site.
+
+  The glyph used `controlIconClass` — `size-[length:var(--control-height)]`, the height of a whole
+  CONTROL, written for something that FILLS a control-sized box. On a 12px feedback line that
+  renders ~32px. It rides the new `--form-feedback-icon-size` now: **14px** against 12.47px text.
+
+  All four states drew in the SAME ink — 確認済み / 確認中 / 注意 / エラー differed only in their
+  wording, so the icon was carrying meaning colour should have been sharing, which is the inverse
+  of WCAG 1.4.1 and not excused by it. After: success `rgb(9,103,59)`, warning `rgb(143,86,0)`,
+  error `rgb(184,40,48)`, and `validating` deliberately MUTED because it is not an outcome and
+  colouring it would claim one. The inks are the TEXT tier, for the reason gh#610 records one
+  element below in the same file: a fill-tier red measures 2.95:1 on the dark spine where the text
+  tier is 5.52:1.
+
+  And the control never showed its own state. `error` reached it through `aria-invalid`; `warning`
+  reached NOTHING, so a warned field drew an ordinary border and the only signal was a sentence
+  underneath. `.ui-control[data-status="warning"]` has painted that edge for a long time —
+  `FormField` simply never passed the value down. After: `rgb(250,183,0)`. Only `error` and
+  `warning` are forwarded, because `ControlStatusProp` is exactly those two; the tests assert that
+  ABSENCE too, so a future reader can tell a documented limit from an oversight.
+
+- **`scripts/visual-audit.mjs` reported a target nobody can point at** (gh#818). The reporter
+  measured `target "Tiếng ViệtEnglish日本語" is 85x22px` beside the `appearance="inline"` trigger
+  and read it as two overlapping language controls. Measured in Chromium, it is not: the native
+  `<select>` is react-aria's form-submit/autofill fallback and still carries every hiding style it
+  should — a 1×1 `overflow:hidden` container at `clip-path: inset(50%)`, `aria-hidden="true"`,
+  `tabindex="-1"`. `elementFromPoint` at the select's centre returns `SPAN.ui-text`, never the
+  select; all five probes on the trigger hit the trigger.
+
+  So the component is correct and **the shipped audit script is the defect** — and it ships in this
+  package, so the artefact the consumer ran is ours. Its `visible()` was ELEMENT-LOCAL: own box,
+  own `visibility`, own `display`. The visually-hidden idiom hides a FULL-SIZE child inside a 1px
+  clipped container, so the child's own rect stays full size and the check called it visible; since
+  gh#708 pinned that container at its static position, the phantom also landed on top of the real
+  target. `target-size-min` now walks the ancestors and drops any node clipped to a 1px sliver,
+  before the target list is built — so a node nobody can point at cannot spend a real target's
+  SC 2.5.8 Spacing exception either. Measured: **4 → 0** on that frame. The regression asserts the
+  rule does NOT fire on that exact DOM shape; asserting that rules DO fire could never have caught
+  this.
+
+- **The icon tier's frozen inventory went stale the moment a token was minted.** `--form-feedback-icon-size`
+  was declared, passed every gate the fix ran, and failed `icon-size-scale.test.ts` on CI. That is
+  the test working: the table is not documentation of the tier, it IS the tier's inventory, and an
+  unlisted icon token is indistinguishable from an icon that moved.
+
+### Changed
+
+- **`ServiceLauncherCard`'s docs page stops being our product catalogue, and the exception is
+  written into the code** (gh#814). The page shipped `attendance.godx.jp`, `billing.godx.jp`, plan
+  names and a 「カタログを見る」 link — a product feature dressed as a component demo, and a page
+  demonstrating a product cannot demonstrate a component. It is now any organization's internal
+  tools on RFC 2606 reserved domains, 145 → 296 lines, and it reaches the edges the other pages now
+  do: a name running to three lines, a tile with no description beside one carrying all five slots,
+  an unbreakable 71-character hostname, and the minimum tile.
+
+  What did NOT go is the state set — available / restricted / suspended / archived / loading —
+  because those ARE the API: the component infers no entitlement, no URL and no disabled state.
+
+  The component FAILS the Framework-Component Test on C2 (no state, no keyboard, no focus; its only
+  ARIA is three static attributes) and C3 (its own imports are `Card` + `CardContent` + `Badge`).
+  It stays public because `AppLauncher` consumes it and removing a public export is breaking — but
+  a decision that lives only in a closed issue gets re-litigated by the next reviewer, so it is now
+  at the top of the file and in `COMPOSITION-VS-COMPONENT.md` §3 with its C1–C7 row, including the
+  part a consumer needs: **compose `Card` + `Badge` for a service tile.** This row is not precedent
+  for adding another static tile to `src/components/`.
+
 ## [28.6.0] - 2026-09-21
 
 MINOR. One new size rung, one new library-owned class, and the examples that make the rest of the
