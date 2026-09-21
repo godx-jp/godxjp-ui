@@ -138,10 +138,24 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
     download?: React.AnchorHTMLAttributes<HTMLAnchorElement>["download"];
   };
 
-/** @see Heading — h1..h4 sized from the `--heading-h*` tokens. */
+/** @see Heading — h1..h4 sized from the `--heading-h*` tokens, or from `size` when one is given. */
 export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"> & {
   /** Heading level — sets size token AND the semantic element (override the element with `as`). */
   level?: HeadingLevelProp;
+  /**
+   * Visual size, overriding the step `level` would have taken — the SAME ten-step ladder
+   * `Text size` reads, so a headline and a stat figure beside it are one step name apart rather
+   * than a lookup between two ramps.
+   *
+   * `level` still owns the document outline, and that separation is the point (gh#826). The
+   * enterprise heading ramp tops out at `--heading-h1` ≈ 20px by deliberate 渋み restraint, so a
+   * marketing hero had no way to be both a real `<h1>` and 54px: the display tokens existed,
+   * nothing public reached them, and every marketing page wrote its own class instead. Now it is
+   * `<Heading level={1} size="5xl">`, and no admin screen's `<h1>` moves.
+   *
+   * Omit it and `level` decides, exactly as before — this is an override, not a second default.
+   */
+  size?: TextSizeProp;
   as?: "h1" | "h2" | "h3" | "h4" | "div";
   tone?: TextToneProp;
   align?: TextAlignProp;
