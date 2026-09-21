@@ -104,6 +104,13 @@ const FROZEN: Record<string, [string, string, string]> = {
   "--control-inline-affix-icon-size": ["1rem", "1rem", "1rem"],
   "--empty-state-icon-glyph-size": ["1.5rem", "1.5rem", "1.5rem"],
   "--empty-state-icon-size": ["3rem", "3rem", "3rem"],
+  // The validation-feedback glyph (gh#820). It was UNSIZED — an inherited lucide default at the
+  // full control height beside 12px text — and the fix had to mint a token rather than a literal,
+  // because the row is `--form-feedback-*` geometry a service retunes once. `--icon-size-sm`, the
+  // step that sits one notch under body text, and FIXED: the feedback row is chrome beside the
+  // control, not a glyph inside it, so it does not track density. The scanner below is what
+  // demanded this row — the table went stale the moment the token was declared.
+  "--form-feedback-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--feature-list-mark-icon-size": ["1rem", "1rem", "1rem"],
   "--menu-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-icon-size": ["1rem", "1rem", "1rem"],
