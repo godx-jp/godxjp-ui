@@ -1156,5 +1156,15 @@
       "address": "東京都千代田区",
       "rights": "Example Works · ドキュメント用の架空の会社です。"
     }
+  },
+  "showcase": {
+    "pagination": {
+      "recordCount": {
+        "other": "{count} 件"
+      },
+      "loadMore": {
+        "other": "さらに {count} 件を読み込む"
+      }
+    }
   }
 }

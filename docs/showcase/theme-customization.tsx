@@ -565,7 +565,19 @@ function ComponentsBoard(props: {
   } = props;
 
   return (
-    <ResponsiveGrid columns={{ base: 1, sm: 2, lg: 3 }} gap="lg" align="start">
+    /* PADDED HERE, because nothing above this pads it (gh#841 follow-up). The board sits in
+       `<CardContent flush>` so the tab STRIP can meet the card edge — which is right, a line
+       variant's underline should run edge to edge — and `bodied` is a no-op on `variant="line"`
+       by design (`tabs.tsx`: `const bodiedCard = card && Boolean(bodied)`). So the body has no
+       inline inset from either side, and the form sat 1px from the card border: measured label
+       at x=25 against a card at x=24. `pad` on the board is the composition answer — the same
+       step `CardContent` would have used. */
+    <ResponsiveGrid
+      columns={{ base: 1, sm: 2, lg: 3 }}
+      gap="lg"
+      align="start"
+      pad={{ inline: "lg", block: "md" }}
+    >
       {/* 1 · text entry */}
       <Flex direction="col" gap="md">
         <FormField

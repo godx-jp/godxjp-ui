@@ -36,6 +36,7 @@ import {
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Pagination } from "@godxjp/ui/navigation";
+import { useTranslation } from "@godxjp/ui/i18n";
 import {
   Select,
   SelectContent,
@@ -91,8 +92,13 @@ function makeRows(count: number, prefix = "ATT"): Attendance[] {
       date: `2026-06-${String((i % 28) + 1).padStart(2, "0")}`,
       employee: NAMES[i % NAMES.length],
       dept: DEPTS[i % DEPTS.length],
-      clockIn: `0${startHour}:${["02", "58", "31", "07"][i % 4]}`,
-      clockOut: ot ? `${18 + Math.floor(ot / 60)}:${String(ot % 60).padStart(2, "0")}` : "18:00",
+      // `0${startHour}` hard-coded the leading zero and printed `010:07` at startHour 10 —
+      // the hand-built formatting this repo's own rules forbid. `padStart` on the hour, the
+      // same way the line above already does it for the date.
+      clockIn: `${String(startHour).padStart(2, "0")}:${["02", "58", "31", "07"][i % 4]}`,
+      clockOut: ot
+        ? `${String(18 + Math.floor(ot / 60)).padStart(2, "0")}:${String(ot % 60).padStart(2, "0")}`
+        : "18:00",
       overtime: ot,
       status: statuses[i % statuses.length],
     };
@@ -138,6 +144,8 @@ const columns: ColumnDef<Attendance>[] = [
 const NUMBERED_DATA = makeRows(83, "OFS");
 
 function NumberedPaginationCard() {
+  const { t } = useTranslation();
+  const fmt = useFormatters();
   const [page, setPage] = React.useState(2); // start mid-set so prev/next are both live
   const [pageSize, setPageSize] = React.useState(10);
 
@@ -150,7 +158,7 @@ function NumberedPaginationCard() {
         <CardTitle level={2}>番号付き + 件数選択</CardTitle>
         <CardAction>
           <Text size="xs" tone="muted" tabular>
-            全 {NUMBERED_DATA.length} 件
+            {t("showcase.pagination.recordCount", { count: NUMBERED_DATA.length })}
           </Text>
         </CardAction>
       </CardHeader>
@@ -164,7 +172,9 @@ function NumberedPaginationCard() {
           pageSize={pageSize}
           pageSizeOptions={[10, 20, 50]}
           showSizeChanger
-          showTotal={(total, [from, to]) => `${from}–${to} / ${total} 件`}
+          showTotal={(total, [from, to]) =>
+            `${fmt.number(from)}–${fmt.number(to)} / ${t("showcase.pagination.recordCount", { count: total })}`
+          }
           onValueChange={(nextPage, nextSize) => {
             setPage(nextPage);
             setPageSize(nextSize);
@@ -181,6 +191,8 @@ const LOADMORE_DATA = makeRows(42, "LDM");
 const LOADMORE_STEP = 8;
 
 function LoadMoreCard() {
+  const { t } = useTranslation();
+  const fmt = useFormatters();
   // Mid-load state at rest: some rows already revealed, more remaining.
   const [visible, setVisible] = React.useState(LOADMORE_STEP * 2);
   const [loading, setLoading] = React.useState(false);
@@ -205,7 +217,8 @@ function LoadMoreCard() {
         <CardTitle level={2}>もっと読む</CardTitle>
         <CardAction>
           <Text size="xs" tone="muted" tabular>
-            {rows.length} / {LOADMORE_DATA.length} 件表示
+            {fmt.number(rows.length)} /{" "}
+            {t("showcase.pagination.recordCount", { count: LOADMORE_DATA.length })}
           </Text>
         </CardAction>
       </CardHeader>
@@ -225,11 +238,13 @@ function LoadMoreCard() {
             {!done && <ChevronDown aria-hidden="true" />}
             {done
               ? "すべて表示しました"
-              : `さらに ${Math.min(LOADMORE_STEP, remaining)} 件を読み込む`}
+              : t("showcase.pagination.loadMore", {
+                  count: Math.min(LOADMORE_STEP, remaining),
+                })}
           </Button>
           {!done && (
             <Text size="xs" tone="muted" tabular>
-              残り {remaining} 件
+              {t("showcase.pagination.recordCount", { count: remaining })}
             </Text>
           )}
         </Flex>
@@ -242,11 +257,11 @@ function LoadMoreCard() {
 
 // Time-series 勤怠 logs grouped by month — offset paging is meaningless here,
 // so we use cursor first/next (DataTable.Pagination) + a period Select to jump.
-const PERIODS = [
-  { value: "2026-06", label: "2026年 6月" },
-  { value: "2026-05", label: "2026年 5月" },
-  { value: "2026-04", label: "2026年 4月" },
-] as const;
+/* The VALUE is data; the LABEL is a formatting decision and belongs to the active locale.
+ * Hard-coded "2026年 6月" rendered beside the library's own "Đầu" / "Tiếp" — two languages in one
+ * row, which is what the owner photographed. `Intl.DateTimeFormat` gives 「2026年6月」, "June 2026"
+ * and "tháng 6 năm 2026" from the same value. */
+const PERIODS = [{ value: "2026-06" }, { value: "2026-05" }, { value: "2026-04" }] as const;
 
 const PERIOD_DATA: Record<string, Attendance[]> = {
   "2026-06": makeRows(7, "CUR-06"),
@@ -255,6 +270,8 @@ const PERIOD_DATA: Record<string, Attendance[]> = {
 };
 
 function CursorPeriodCard() {
+  const { t } = useTranslation();
+  const fmt = useFormatters();
   const [period, setPeriod] = React.useState<string>("2026-06");
   // cursor === id of the last row of the previous page; undefined = first page.
   const [cursor, setCursor] = React.useState<string | undefined>(undefined);
@@ -284,7 +301,7 @@ function CursorPeriodCard() {
             <SelectContent>
               {PERIODS.map((p) => (
                 <SelectItem key={p.value} value={p.value}>
-                  {p.label}
+                  {fmt.month(p.value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -297,7 +314,7 @@ function CursorPeriodCard() {
       <CardContent className="border-t">
         <Flex direction="row" align="center" justify="between" wrap gap="sm">
           <Text size="xs" tone="muted" tabular>
-            {PERIODS.find((p) => p.value === period)?.label} · {all.length} 件
+            {fmt.month(period)} · {t("showcase.pagination.recordCount", { count: all.length })}
           </Text>
           <DataTable.Pagination
             cursor={lastVisibleId}
@@ -309,6 +326,27 @@ function CursorPeriodCard() {
     </Card>
   );
 }
+
+/* COUNTS AND MONTHS FOLLOW THE ACTIVE LOCALE, and this page used to hard-code them.
+ *
+ * The library's own chrome is localized — the page-size Select renders "10 / trang" under `vi` —
+ * so a page that hard-codes `件` puts two languages in one row and they can never agree. That is
+ * exactly what the owner photographed: "11–20 / 83 件" beside "10 / trang".
+ *
+ * `Intl.NumberFormat` groups the number for the locale; the unit word comes from the library's own
+ * message catalogue, which already carries a CLDR plural map per language. Nothing here is a
+ * hand-built string. */
+const useFormatters = () => {
+  const { locale } = useTranslation();
+  return React.useMemo(() => {
+    const number = new Intl.NumberFormat(locale);
+    const month = new Intl.DateTimeFormat(locale, { year: "numeric", month: "long" });
+    return {
+      number: (n: number) => number.format(n),
+      month: (iso: string) => month.format(new Date(`${iso}-01T00:00:00`)),
+    };
+  }, [locale]);
+};
 
 export default function Demo() {
   return (

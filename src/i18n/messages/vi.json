@@ -1157,5 +1157,15 @@
       "address": "Chiyoda, Tokyo",
       "rights": "Example Works. Một công ty hư cấu, chỉ dùng cho tài liệu."
     }
+  },
+  "showcase": {
+    "pagination": {
+      "recordCount": {
+        "other": "{count} bản ghi"
+      },
+      "loadMore": {
+        "other": "Tải thêm {count}"
+      }
+    }
   }
 }

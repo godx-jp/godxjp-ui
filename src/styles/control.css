@@ -2619,6 +2619,48 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /* A GLYPH IN EITHER INLINE AFFIX IS A CONTROL GLYPH (gh#841).
+   *
+   * `.ui-control-affix` and `.ui-control-inline-affix-action` were already sized — measured 16px
+   * both — and these two slots were not, so `Input prefix={<Mail />}` painted Lucide's own
+   * `width="24"` inside a 32px field: three quarters of the box, next to a 16px sibling in the
+   * very same form. Two of three affix slots correct is how a defect hides; the one that was
+   * missed is the one a consumer reaches for first. */
+  /* ── THE CONTROL GLYPH FLOOR (gh#844) ───────────────────────────────────────────────────
+   *
+   * A glyph inside a control-sized box is a control glyph. Nothing said so, so any component that
+   * did not remember to size its own SVG shipped Lucide's `width="24"` — measured on
+   * /showcase/case4-login at 1280px:
+   *
+   *   ui-toggle-sm          box 42x28   glyph 24px   ratio 0.86
+   *   ui-control-trigger    box 128x28  glyph 24px AND 16px in the SAME control
+   *   ui-password-input-toggle  box 40x44  glyph 16px  ratio 0.36   ← what it should look like
+   *
+   * A glyph at 86% of its button's height is what the owner reported as "icon quá to", and the
+   * locale picker showing two different glyph sizes side by side is the same defect twice.
+   *
+   * `Button` already solved this per-component, with
+   * `[&_svg:not([class*='size-'])]:size-[var(--button-xs-icon-size)]`, and that is the shape to
+   * keep: an explicit size WINS. This rule is the floor beneath it — it names the boxes that are
+   * controls and gives their unsized glyphs the control step, so a component only writes a rule
+   * when it wants a DIFFERENT step, not to avoid a broken default.
+   *
+   * `:not([class*="size-"])` mirrors Button's guard: anything a caller or a variant sized on
+   * purpose keeps its size, and the utility that does so still wins the cascade regardless. */
+  .ui-toggle > svg,
+  .ui-control-trigger > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    flex-shrink: 0;
+  }
+
+  .ui-input-leading > svg,
+  .ui-input-trailing > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    flex-shrink: 0;
+  }
+
   .ui-input-trailing {
     inset-inline-end: var(--control-inline-affix-inset-inline);
   }

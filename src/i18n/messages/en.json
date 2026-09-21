@@ -1174,5 +1174,17 @@
       "address": "Chiyoda, Tokyo",
       "rights": "Example Works. A fictional company, for documentation only."
     }
+  },
+  "showcase": {
+    "pagination": {
+      "recordCount": {
+        "one": "{count} record",
+        "other": "{count} records"
+      },
+      "loadMore": {
+        "one": "Load {count} more",
+        "other": "Load {count} more"
+      }
+    }
   }
 }
