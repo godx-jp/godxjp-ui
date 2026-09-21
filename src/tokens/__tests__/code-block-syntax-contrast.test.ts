@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { anchorIndex } from "../../test/css-selector";
-import { contrast, hsl, hslToRgb } from "./wcag-contrast";
+import { contrast, derivedRole, hsl, hslToRgb } from "./wcag-contrast";
 
 /**
  * SYNTAX COLOUR IS TEXT, SO IT OWES WCAG 1.4.3 (gh#784).
@@ -23,6 +23,7 @@ import { contrast, hsl, hslToRgb } from "./wcag-contrast";
  * mapping cannot drift back to the names that merely sound right.
  */
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
+const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 const layout = readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8");
 
 /** Code is body text at `--code-block-font-size` (sm), so the bar is the small-text one. */
@@ -58,11 +59,28 @@ const TOKENS = [
   "changed",
 ] as const;
 
+function scopeOf(css: string, selector: string): string {
+  const at = anchorIndex(css, selector);
+  const open = css.indexOf("{", at);
+  return css.slice(open + 1, css.indexOf("\n}", open));
+}
+
 describe.each(themes)("CodeBlock syntax colours ($theme)", ({ selector }) => {
   const start = anchorIndex(foundation, selector);
   const open = foundation.indexOf("{", start);
   const body = foundation.slice(open + 1, foundation.indexOf("\n}", open));
-  const rgb = (name: string) => hslToRgb(hsl(body, name));
+  /* `--text-link` is a knob declared `initial` (gh#664), so it has no literal to read here; its
+   * value is one ramp step off the `--primary` in scope. Every other role below is authored. */
+  const derivedScopes =
+    selector === ":root {"
+      ? [scopeOf(derived, ":root {")]
+      : [scopeOf(derived, '.dark, :root[data-theme="dark"] {'), scopeOf(derived, ":root {")];
+  const rgb = (name: string) =>
+    hslToRgb(
+      name === "text-link" || name === "text-brand"
+        ? derivedRole(name, hsl(body, "primary"), body, ...derivedScopes)
+        : hsl(body, name),
+    );
 
   it.each(TOKENS)("%s is readable on the block's own ground", (token) => {
     // The surface is `hsl(var(--muted))` — see `:is(.ui-code-block, .ui-prose pre)`.

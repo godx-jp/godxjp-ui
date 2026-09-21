@@ -1380,7 +1380,7 @@
    * colour is the rule here anyway (WCAG 1.4.1), and underlining a link in code is conventional. */
   .ui-code-block [data-code-token="link"],
   .ui-prose pre [data-code-token="link"] {
-    color: var(--code-block-token-link-color, hsl(var(--text-link)));
+    color: var(--code-block-token-link-color, hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels))));
     text-decoration-line: underline;
     /* The house link treatment, not a bare underline (`--text-link-underline-offset`,
      * tokens/components/text.css).

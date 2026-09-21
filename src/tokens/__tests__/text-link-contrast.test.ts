@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { anchorIndex } from "../../test/css-selector";
 
-import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
+import { contrast, derivedRole, hsl, hslToRgb, over } from "./wcag-contrast";
 
 /**
  * A LINK IN RUNNING TEXT IS MARKED BY MORE THAN ITS HUE (gh#664).
@@ -25,6 +25,7 @@ import { contrast, hsl, hslToRgb, over } from "./wcag-contrast";
 const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 const textTokens = readFileSync(join(process.cwd(), "src/tokens/components/text.css"), "utf8");
 const textLayout = readFileSync(join(process.cwd(), "src/styles/text-layout.css"), "utf8");
+const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
 
 function block(css: string, selector: string): string {
   const start = anchorIndex(css, selector);
@@ -33,9 +34,10 @@ function block(css: string, selector: string): string {
   return css.slice(open + 1, css.indexOf("\n}", open));
 }
 
+const DARK_SELECTOR = '.dark, :root[data-theme="dark"] {';
 const THEMES = [
   { theme: "light", selector: ":root {" },
-  { theme: "dark", selector: '.dark, :root[data-theme="dark"] {' },
+  { theme: "dark", selector: DARK_SELECTOR },
 ] as const;
 
 const AA_TEXT = 4.5;
@@ -44,15 +46,23 @@ const COLOUR_ONLY_LINK = 3;
 const HUE_TOLERANCE_DEGREES = 0.5;
 const STRIPE_ALPHA = 0.8; // gh#700 — was 0.4, measured invisible in light
 
+/* `--text-link` is a knob declared `initial` (gh#664 · src/tokens/derived.css), so the value a
+ * browser paints is the derived one unless a theme pins it. Measuring the literal would measure the
+ * case that cannot regress; `linkInk` measures the case that can. */
+const derivedScope = (selector: string) =>
+  selector === ":root {"
+    ? [block(derived, ":root {")]
+    : [block(derived, DARK_SELECTOR), block(derived, ":root {")];
+
 describe.each(THEMES)("the link ink ($theme)", ({ selector }) => {
   const body = block(foundation, selector);
-  const link = hslToRgb(hsl(body, "text-link"));
+  const linkInk = derivedRole("text-link", hsl(body, "primary"), body, ...derivedScope(selector));
+  const link = hslToRgb(linkInk);
   const background = hslToRgb(hsl(body, "background"));
   const muted = hslToRgb(hsl(body, "muted"));
 
   it("is on the brand's hue, not the pre-v2.3 blue", () => {
-    const seedHue = hsl(body, "primary")[0];
-    expect(Math.abs(hsl(body, "text-link")[0] - seedHue)).toBeLessThanOrEqual(
+    expect(Math.abs(linkInk[0] - hsl(body, "primary")[0])).toBeLessThanOrEqual(
       HUE_TOLERANCE_DEGREES,
     );
   });
@@ -100,7 +110,10 @@ describe("a default link paints the link ink, and nothing else does", () => {
 
   it("reads --text-link, not the --primary fill role", () => {
     expect(rule, "the link-ink rule must exist").not.toBe("");
-    expect(rule).toContain("hsl(var(--text-link))");
+    /* The knob first, then its derived default — pinning `--text-link` must still win, and the
+     * fallback must resolve from the `--primary` IN SCOPE rather than the one at `:root`, which is
+     * the whole reason the formula lives at the call site (docs/TOKENS.md, the freeze rule). */
+    expect(rule).toContain("var(--text-link, from hsl(var(--primary)) var(--text-link-channels))");
   });
 
   it('is scoped to the DEFAULT tone, so `link tone="destructive"` still wins', () => {

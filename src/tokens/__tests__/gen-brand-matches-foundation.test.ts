@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 import { afterAll, describe, expect, it } from "vitest";
 
-import { contrast, hslToRgb, triplet } from "./wcag-contrast";
+import { channelsOf, contrast, hslToRgb, relative, triplet } from "./wcag-contrast";
 
 /**
  * `pnpm gen:brand <hex>` WRITES THE FILE A CONSUMER WOULD OTHERWISE AUTHOR BY EYE.
@@ -51,6 +51,11 @@ const authored = {
   light: blockOf(foundation, ":root {"),
   dark: blockOf(foundation, `${DARK} {`),
 };
+const derivedCss = readFileSync(join(ROOT, "src/tokens/derived.css"), "utf8");
+const derivedScopes = {
+  light: [blockOf(derivedCss, ":root {")],
+  dark: [blockOf(derivedCss, `${DARK} {`), blockOf(derivedCss, ":root {")],
+};
 const emitted = {
   light: blockOf(generated, ":root {"),
   dark: blockOf(generated, `${DARK} {`),
@@ -61,16 +66,32 @@ describe("gen:brand reproduces foundation.css on foundation.css's own seed", () 
     expect(role(emitted.light, "primary")).toEqual(role(authored.light, "primary"));
   });
 
-  /* Lightness, not the whole triplet: the generator hue-LOCKS every derived role to the seed, and
-   * foundation.css's hand-authored values drift up to 0.7° off it (268.3 and 268 against a 268.7
-   * seed). That drift is the gh#648 class of defect, so the generator being stricter than the file
-   * is the correct direction — asserting the full triplet would pin the generator to the drift. */
-  it.each(["text-link", "text-brand", "text-primary"])(
-    "puts light --%s on the same ramp step foundation.css authored",
-    (name) => {
-      expect(role(emitted.light, name)[2]).toBeCloseTo(role(authored.light, name)[2], 1);
-    },
-  );
+  /* `--text-primary` is still AUTHORED in foundation.css (it feeds `--mark-primary`, which is
+   * contracted to a RAW triple that CSS relative colour cannot produce), so it is compared against
+   * the literal. Lightness, not the whole triplet: the generator hue-LOCKS every derived role to
+   * the seed and the authored value drifts 0.7° off it — the gh#648 class of defect, so the
+   * generator being stricter is the correct direction. */
+  it("puts light --text-primary on the ramp step foundation.css authored", () => {
+    expect(role(emitted.light, "text-primary")[2]).toBeCloseTo(
+      role(authored.light, "text-primary")[2],
+      1,
+    );
+  });
+
+  /* `--text-link` and `--text-brand` DERIVE now (gh#664), so there is no literal to compare to —
+   * the thing worth asserting is that the generator lands on the value the CSS would paint. A
+   * generator that agreed with an old literal but not with the live formula would be the same
+   * class of bug one layer out. */
+  it.each([
+    ["light", "text-link"],
+    ["light", "text-brand"],
+    ["dark", "text-link"],
+    ["dark", "text-brand"],
+  ] as const)("puts %s --%s exactly where derived.css would paint it", (theme, name) => {
+    const seed = role(emitted[theme], "primary");
+    const expected = relative(seed, channelsOf(name, ...derivedScopes[theme]));
+    expect(role(emitted[theme], name)).toEqual(expected.map((n) => Number(n.toFixed(1))));
+  });
 
   it.each(["text-link", "text-brand", "text-primary"])(
     "holds light --%s on the seed's hue",
@@ -83,9 +104,9 @@ describe("gen:brand reproduces foundation.css on foundation.css's own seed", () 
    * the published identity kit, not from a formula. What IS reproducible is how the dark text roles
    * sit relative to whatever the dark seed is — the link ink IS the seed, and the pressed ink is
    * one hover step above it — and that is the rule foundation.css follows too. */
-  it("puts the dark link ink ON the dark seed, as foundation.css does", () => {
+  it("puts the dark link ink ON the dark seed, as derived.css does", () => {
     expect(role(emitted.dark, "text-link")).toEqual(role(emitted.dark, "primary"));
-    expect(role(authored.dark, "text-link")[2]).toBeCloseTo(role(authored.dark, "primary")[2], 1);
+    expect(channelsOf("text-link", ...derivedScopes.dark)).toBe("h s l");
   });
 
   it("puts the dark pressed ink one hover step above the seed, as foundation.css does", () => {

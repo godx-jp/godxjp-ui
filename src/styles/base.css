@@ -175,8 +175,8 @@
   /* Extended text-hierarchy roles (tertiary / disabled / link / brand) → text-* / bg-* utilities. */
   --color-foreground-tertiary: hsl(var(--text-tertiary));
   --color-foreground-disabled: hsl(var(--text-disabled));
-  --color-link: hsl(var(--text-link));
-  --color-brand: hsl(var(--text-brand));
+  --color-link: hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)));
+  --color-brand: hsl(var(--text-brand, from hsl(var(--primary)) var(--text-brand-channels)));
   /* Interaction ramp (hover / active) → bg-primary-hover etc. */
   /* The primary pair are `initial` knobs whose default derives from the live --primary (gh#678,
    * src/tokens/derived.css); `@theme inline` puts this fallback at the element that paints. */

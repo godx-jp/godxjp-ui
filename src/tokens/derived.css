@@ -101,6 +101,27 @@
   --control-outline-channels: h s calc(l - 5.3);
   --control-outline-alpha: 0.11; /* the alpha half of that halo */
 
+  /* ── THE BRAND TEXT FAMILY — the same shape, for the same reason (gh#664). ──
+   *
+   * `--text-link` and `--text-brand` are RAMP STEPS off the action colour, not independent inks:
+   * identity v2.3 puts the link one step below the action bg (#6400D4), which is exactly where
+   * `--primary-hover` lands. They were authored as literals, and that is how `--text-link` spent a
+   * release on the pre-v2.3 BLUE after the seed moved to violet — the miss gh#648 found in this
+   * tier, one tier up, and invisible to that issue's hue lock because the lock only guards
+   * `--primary-*`. Declared as knobs, the step follows the seed and cannot be left behind.
+   *
+   * NOT `--text-primary`, deliberately. It feeds `--mark-primary`, which is contracted to carry a
+   * RAW `H S% L%` triple that callers wash at an alpha (`hsl(var(--mark-primary) / .2)`). CSS
+   * relative colour only yields a colour inside `hsl()`, never a bare triple, so a derived
+   * `--text-primary` cannot satisfy that contract — converting it means converting `--mark-primary`
+   * and its three consumers too, which is a change of its own. */
+  --text-link: initial;
+  --text-brand: initial;
+  /* Light: one step DOWN the ramp from the action colour — the same step `--primary-hover` takes,
+   * so the link sits where identity v2.3 puts it and moves when the seed does. */
+  --text-link-channels: var(--primary-hover-channels);
+  --text-brand-channels: var(--primary-hover-channels);
+
   --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
   --destructive-active: 355 70.6% 33.3%; /* #911923 */
   /* the same halo on an invalid field */
@@ -129,6 +150,12 @@
   --control-outline-channels: h calc(s * 0.99) calc(l - 25.1);
   --control-outline-alpha: 0.29; /* the alpha half of that halo */
 
+  /* Dark: the link ink IS the seed (#DCBCFF), not a step off it. The dark seed already sits at the
+   * bright end of the ramp, so stepping further pushes the link PAST the only anchor a reader has
+   * — which is why foundation.css authored them equal here and one step apart in light. */
+  --text-link-channels: h s l;
+  --text-brand-channels: h s l;
+
   --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
   --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
   /* the same halo on an invalid field */
@@ -150,6 +177,8 @@
     --primary-active: 268.7 100% 34.5%;
     --primary-border: 268.7 68% 66%;
     --control-outline: 268.7 100% 44.7%;
+    --text-link: 268.7 100% 41.6%;
+    --text-brand: 268.7 100% 41.6%;
   }
 
   .dark,
@@ -158,5 +187,7 @@
     --primary-active: 268.7 100% 81.1%;
     --primary-border: 268.7 46.7% 23.5%;
     --control-outline: 268.7 99% 61.8%;
+    --text-link: 268.7 100% 86.9%;
+    --text-brand: 268.7 100% 86.9%;
   }
 }

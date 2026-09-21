@@ -61,3 +61,48 @@ describe("no token tier freezes a tenant-scoped role at :root (gh#687)", () => {
     expect(focusRing).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
   });
 });
+
+/**
+ * THE BRAND TEXT FAMILY IS A KNOB, NOT A LITERAL (gh#664).
+ *
+ * `--text-link` / `--text-brand` were authored values on `:root`, and hue 204° — the pre-v2.3 blue
+ * — is what they still held a release after the seed moved to violet. Declaring them `initial`
+ * with the formula at the call site is what makes them follow a `--primary` in ANY scope, including
+ * a `[data-tenant]` below `<html>`, which a `:root` binding cannot do (docs/TOKENS.md, the freeze
+ * rule). So the shape is the contract, and these assert the shape rather than a value.
+ */
+describe("the brand text roles derive from the --primary in scope (gh#664)", () => {
+  const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+  const BRAND_TEXT = ["text-link", "text-brand"] as const;
+
+  it.each(BRAND_TEXT)("declares --%s as an `initial` knob, never a value", (name) => {
+    expect(derived).toMatch(new RegExp(`^\\s*--${name}:\\s*initial;`, "m"));
+  });
+
+  it.each(BRAND_TEXT)("declares --%s-channels in BOTH themes", (name) => {
+    const light = derived.slice(derived.indexOf(":root {"), derived.indexOf("\n.dark,"));
+    const dark = derived.slice(derived.indexOf("\n.dark,"));
+    expect(light).toMatch(new RegExp(`--${name}-channels:`));
+    expect(dark).toMatch(new RegExp(`--${name}-channels:`));
+  });
+
+  it.each(BRAND_TEXT)("has no --%s literal left in foundation.css", (name) => {
+    const foundation = stripComments(
+      readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8"),
+    );
+    expect(foundation).not.toMatch(new RegExp(`^\\s*--${name}:`, "m"));
+  });
+
+  /* Every reader must carry the fallback. A bare `hsl(var(--text-link))` paints NOTHING once the
+   * knob is `initial` — the failure is silent and total, and it is why this asserts on the call
+   * sites rather than trusting that they were all updated. */
+  it.each(BRAND_TEXT)("every rule that reads --%s carries the derived fallback", (name) => {
+    const styles = join(process.cwd(), "src/styles");
+    const bare: string[] = [];
+    for (const file of cssFiles(styles)) {
+      const css = stripComments(readFileSync(file, "utf8"));
+      if (new RegExp(`var\\(--${name}\\)`).test(css)) bare.push(file.slice(styles.length));
+    }
+    expect(bare, `a bare var(--${name}) resolves to nothing and paints no colour`).toEqual([]);
+  });
+});

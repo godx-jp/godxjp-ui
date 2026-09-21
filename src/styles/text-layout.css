@@ -188,7 +188,7 @@
    * rule below is (0,2,0), so without it a DISABLED default link painted the live link ink at rest
    * and read as clickable. */
   [data-slot="text"][data-link][data-tone="primary"]:not([data-disabled]) {
-    color: hsl(var(--text-link));
+    color: hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)));
   }
   [data-slot="text"][data-link]:hover,
   [data-slot="text"][data-link]:focus-visible {

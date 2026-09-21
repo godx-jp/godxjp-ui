@@ -138,19 +138,21 @@
    * Roles primitives bake in today: caption/meta, disabled, inline link, brand numerals. */
   --text-tertiary: 44 5% 55%; /* lighter than muted-foreground — captions / meta */
   --text-disabled: 40 6% 68%; /* disabled control text */
-  /* THE INLINE LINK INK — identity v2.3 `core.link`, and it was still the pre-v2.3 BLUE (gh#664).
+  /* THE INLINE LINK INK IS DERIVED, NOT AUTHORED (gh#664 · src/tokens/derived.css).
    *
-   * `204 100% 39%` is hue 204°, the old #0071bd family: the v2.3 repaint moved `--primary`, `--brand`,
-   * `--text-brand` and `--text-primary` and left this one behind — the same miss gh#648 found in the
-   * derived tier, one tier up, and invisible to that issue's hue lock because it only guards
-   * `derived.css`. The guideline names the value outright: `:root { --gx-link: #6400D4 }`, which is
-   * the kit's `core.link` and the exact value `--text-brand` below already carries.
+   * `--text-link` and `--text-brand` were literals here, and hue 204° — the old #0071bd family —
+   * is what they still held after identity v2.3 moved `--primary`, `--brand` and `--text-primary`
+   * to violet. The same miss gh#648 found in the derived tier, one tier up, and invisible to that
+   * issue's hue lock because the lock only guards `derived.css`. They are knobs there now: one
+   * ramp step off the `--primary` in scope, resolved at the element that paints them, which is
+   * the value the guideline names outright (`--gx-link: #6400D4`, the kit's `core.link`).
    *
-   * 8.29:1 on --background and 6.94:1 on the heaviest surface a link sits on (--accent). But only
-   * 1.87:1 against body ink, so colour alone CANNOT mark a link here (WCAG 1.4.1, G183 wants 3:1) —
-   * which is why `--text-link-decoration-line` underlines at rest. */
-  --text-link: 268.3 100% 41.6%; /* #6400D4 — identity v2.3 core.link */
-  --text-brand: 268.3 100% 41.6%; /* #6400D4 — identity v2.3 core.link; 8.43:1 on --card */
+   * Set either one to pin it; leave it and it follows the seed.
+   *
+   * On our own seed that is 8.29:1 on --background and 6.94:1 on the heaviest surface a link sits
+   * on (--accent) — but only 1.87:1 against body ink, so colour alone CANNOT mark a link (WCAG
+   * 1.4.1, G183 wants 3:1), which is why `--text-link-decoration-line` underlines at rest. */
+
   /* Status TEXT colours — darker than the fill roles so small coloured text (a StatCard delta, an
    * outline status badge label) clears WCAG AA 4.5:1 on white. The fill roles (--success/--warning/
    * --info) stay the brighter wa-iro for badges/bars; only TEXT reads these via text-*-strong. */
@@ -862,11 +864,10 @@
   --brand: 268.7 100% 86.9%; /* #DCBCFF — the light violet lifted for dark, hue and chroma held */
   --brand-foreground: 48 9% 9%;
 
-  /* Extended text hierarchy + interaction ramp (dark) */
+  /* Extended text hierarchy + interaction ramp (dark). --text-link / --text-brand derive; in this
+   * theme the step is zero — the link ink IS the seed. See src/tokens/derived.css. */
   --text-tertiary: 44 6% 56%;
   --text-disabled: 45 6% 40%;
-  --text-link: 268.7 100% 86.9%; /* #DCBCFF — identity v2.3 dark core.link (kit #D8BCFF, hue-snapped like --primary); 10.72:1 on the canvas, 1.54:1 against body ink */
-  --text-brand: 268.7 100% 86.9%; /* #DCBCFF — identity v2.3 dark core.link */
   /* Status text on the dark spine reads LIGHT (AA on dark surfaces). */
   --text-primary: 262.7 100% 92.7%; /* #E8DAFF — identity v2.3 dark action.primary.hover; 11.99:1 on the dark canvas */
   --text-success: 146 55% 64%;

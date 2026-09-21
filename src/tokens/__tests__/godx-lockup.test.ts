@@ -25,7 +25,12 @@ const component = read("src/components/general/logo.tsx");
 
 describe("the master artwork ships as-is", () => {
   it("carries BOTH variants, each with the master's gradients", () => {
-    for (const name of ["GODX_LOCKUP_LIGHT", "GODX_LOCKUP_DARK", "GODX_MARK_LIGHT", "GODX_MARK_DARK"]) {
+    for (const name of [
+      "GODX_LOCKUP_LIGHT",
+      "GODX_LOCKUP_DARK",
+      "GODX_MARK_LIGHT",
+      "GODX_MARK_DARK",
+    ]) {
       expect(artwork).toContain(`export const ${name}`);
     }
     // The master is a gradient artwork; a variant that lost them would be the flat cut smuggled in.
