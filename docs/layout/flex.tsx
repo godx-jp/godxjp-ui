@@ -398,6 +398,55 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>measure · 全幅の外、測度の内（gh#839）</CardTitle>
+            <CardDescription>
+              フルブリードの帯は
+              <Text as="code" chip>
+                &lt;section&gt;
+              </Text>
+              が塗り、その内側の一列を measure が中央寄せして
+              <Text as="code" chip>
+                --page-measure-*
+              </Text>
+              で止める。余白は pad が持つ（measure はガターを足さない）。narrow 42rem / medium 48rem
+              は読み物の測度、wide 72rem はマーケティングの測度。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm">
+              <Flex
+                id="measure-narrow"
+                measure="narrow"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;narrow&quot; · 42rem</Text>
+              </Flex>
+              <Flex
+                id="measure-medium"
+                measure="medium"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;medium&quot; · 48rem</Text>
+              </Flex>
+              <Flex
+                id="measure-wide"
+                measure="wide"
+                surface="muted"
+                pad={{ block: 2, inline: 6 }}
+                justify="center"
+              >
+                <Text tone="muted">measure=&quot;wide&quot; · 72rem</Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

@@ -84,6 +84,7 @@ new UI need
 | **PricingTable** / feature grid                         | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — `ResponsiveGrid` + `Card`                              |
 | Dashboard **page layout**                               | ❌  | ❌  | ❌  | ❌  | ➖  | ❌  | ❌  | **Composition** — `AppShell` + `PageContainer` + `ResponsiveGrid`        |
 | "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
+| **Section** / **Band** (full-bleed + measured column)   | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `<section>` + `Flex measure` + `pad`; see §3.1         |
 
 `✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
 
@@ -105,6 +106,46 @@ with several product areas needs, and because the cost is one file with no new d
 C2 rather than C7.
 
 **ServiceLauncherCard is the ONE recorded exception, and it is recorded so that it stays one.** It shipped before the test was run against it, and when the test was run it came back with two hard FAILs: **C2** — no state, no keyboard handling, no focus management, its only ARIA three static attributes — and **C3** — its own imports are `Card` + `CardContent` + `Badge` + a Lucide glyph, so "could I build this right now from primitives?" is yes. By §2 that makes it a composition pattern. It is kept anyway because `src/components/layout/app-launcher.tsx` consumes it: it is an internal building block of a component that **does** pass, so the question was never "should it exist" but "should it be PUBLIC", and removing a public export is breaking. Keeping it public was the cheaper call and the ledger lives on gh#814 and at the top of `src/components/data-display/service-launcher-card.tsx`. **Consumers should compose `Card` + `Badge` for a service tile** — reach for `ServiceLauncherCard` only to match `AppLauncher`'s own tiles — and this row is not precedent for adding another static tile to `src/components/`.
+
+### 3.1 "Full-bleed outside, measured column inside" — the case that was answered with a PROP (gh#839)
+
+This row exists because the question it settles was asked the other way round, and the right answer
+turned out to be neither "add a component" nor "do nothing".
+
+**A `Section` component is refused, and it is refused for Hero's reasons.** It owns no state, no
+keyboard, no focus and no ARIA a `<section aria-labelledby>` does not already have (**C2**); it is
+`<section>` + `Flex` + padding + a max-width, i.e. buildable today (**C3**); its API would be the
+grab-bag `band` / `measure` / `glow` / `surface` / `bleed` that **C4** names by name; and a JP
+business-software library would be shipping a marketing band to every consumer (**C7**). One
+criterion of seven passes. Nothing about that is close.
+
+**But "do nothing" was also refused, and that is the part worth remembering.** The doctrine's own
+remedy for a composition is a TOKEN (§4.3), and `--page-measure-wide` shipped in 28.8.0 — so on
+paper the gap was already closed. It was not. A token is only closed when something can READ it,
+and three unrelated pages had each hand-written the identical four declarations to do so:
+`docs/showcase/marketing-page.tsx` as an inline `style` constant, `acme-website.tsx` as `.tx-shell`,
+`futurelastic-web.tsx` as `.fl-shell` — one shape, three spellings, two of them page-local CSS
+classes on the pages whose entire claim is that they need none. `docs/TOKENS.md` calls a value that
+appears in more than one place tier 1, and the same logic reads on a SHAPE.
+
+**The third move is a prop on a primitive that already passes the test.** `Flex measure` (narrow |
+medium | wide) centres the box and caps it at `var(--page-measure-*)`; it adds no gutter, because
+`pad` owns that. A full-bleed band is now `<section>` — carrying the edge-to-edge paint — around one
+`<Flex direction="col" measure="wide" pad={{ inline: 6, block: 20 }}>`. Measured on
+`marketing-page.tsx`: seven bands, 7 inline `style` spreads and 3 `CSSProperties` constants gone,
+the metric that page defends (0 bespoke classes, 0 raw px/rem literals) unchanged at 0/0, and the
+geometry byte-identical (1440: section 1440px, column 1152px, band 96/80px, gutter 24px).
+
+**`PageContainer measure="wide"` stays refused, and for the original reason.** A marketing page is
+full-bleed `<section>`s; `PageContainer` owns page padding and a header/toolbar/footer scaffold, so
+the two pages that are the prop's proof still cannot consume it. The prop went to the primitive
+those pages CAN put inside a `<section>`, which is the distinction the earlier deferral was missing
+rather than a reversal of it.
+
+**The rule this leaves behind:** when a composition repeats a shape, ask whether an existing
+primitive is missing ONE AXIS before you ask whether a new component is missing. A component that
+fails C1–C7 and a prop that closes the same gap are not the same proposal, and the test above is
+only asking about the first.
 
 ---
 

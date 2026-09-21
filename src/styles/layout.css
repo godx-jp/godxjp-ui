@@ -178,6 +178,41 @@
     flex: none;
   }
 
+  /* `measure` — the CENTRED, CAPPED column: the inner half of "full-bleed outside, measured column
+   * inside" (gh#839).
+   *
+   * `--page-measure-wide` shipped with no prop that reads it, because `PageContainer measure="wide"`
+   * was refused on sound grounds (a marketing page is full-bleed sections; it cannot consume
+   * PageContainer's page padding and header scaffold). The consequence was that three unrelated
+   * pages each hand-wrote the SAME four declarations — `docs/showcase/marketing-page.tsx` as an
+   * inline style constant, `acme-website.tsx` as `.tx-shell`, `futurelastic-web.tsx` as `.fl-shell`
+   * — which is tier 1 by docs/TOKENS.md's own rule.
+   *
+   * `inline-size: 100%` is not redundant with `margin-inline: auto`: a block in flow is already
+   * full-width, but a Flex is often a flex ITEM, and a parent that is not `align-items: stretch`
+   * shrinks it to its content, at which point `auto` margins centre a box that is the wrong size.
+   * An explicit `width` still wins — it rides in the style attribute — which is the right order: a
+   * fixed column is a stronger statement than a cap.
+   *
+   * There is deliberately NO gutter here. The page inset is `pad={{ inline: 6 }}`; a measure that
+   * also owned padding would give one band two spacing owners that drift apart. */
+  .ui-flex[data-measure] {
+    margin-inline: auto;
+    inline-size: 100%;
+  }
+
+  .ui-flex[data-measure="narrow"] {
+    max-inline-size: var(--page-measure-narrow);
+  }
+
+  .ui-flex[data-measure="medium"] {
+    max-inline-size: var(--page-measure-medium);
+  }
+
+  .ui-flex[data-measure="wide"] {
+    max-inline-size: var(--page-measure-wide);
+  }
+
   .ui-flex[data-align="start"] {
     align-items: flex-start;
   }

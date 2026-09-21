@@ -166,6 +166,17 @@ export type FlexMarkerProp = "disc" | "decimal" | "none";
 export type FlexAlignProp = "start" | "center" | "end" | "stretch" | "baseline";
 export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" | "evenly";
 
+/**
+ * The bounded inline MEASURE of a centred column, named for the `--page-measure-*` token it reads
+ * — the same three words `PageContainer measure` uses, plus the marketing step that has no
+ * `PageContainer` branch (gh#839).
+ *
+ * It is the token family, not a new one: `narrow` (42rem) and `medium` (48rem) bracket
+ * Bringhurst's 45–75 character reading band, `wide` (72rem) is the MARKETING measure. Do not give
+ * a reading column `wide` — that rule is `--page-measure-wide`'s own, and it travels with the word.
+ */
+export type FlexMeasureProp = "narrow" | "medium" | "wide";
+
 /** @see Flex */
 export type FlexProp = React.HTMLAttributes<HTMLElement> & {
   /**
@@ -335,6 +346,38 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    * call site đều ĐẾM ĐƯỢC, nên một kho đang trôi khỏi thang tự lộ ra bằng con số.
    */
   width?: WidthProp;
+  /**
+   * CENTRE this box and CAP it at a page measure — the inner half of "full-bleed outside, measured
+   * column inside" (gh#839).
+   *
+   * ## Why it is here and not on `PageContainer`
+   *
+   * `--page-measure-wide` shipped in 28.8.0 with no prop that reads it, and `PageContainer
+   * measure="wide"` was deliberately refused: a marketing page is a stack of full-bleed
+   * `<section>`s, and `PageContainer` owns page padding plus a header/toolbar/footer scaffold, so
+   * the pages that are the prop's proof could not have consumed it. That reasoning holds and is
+   * not reopened here. What it left behind is that NOTHING owned the centred inner column, and
+   * three unrelated pages each hand-wrote the same four declarations for it —
+   * `docs/showcase/marketing-page.tsx` as an inline `style` constant, `acme-website.tsx` as
+   * `.tx-shell` and `futurelastic-web.tsx` as `.fl-shell`. By `docs/TOKENS.md` a shape that
+   * appears in more than one place is tier 1.
+   *
+   * ## What it does, and what it deliberately does NOT
+   *
+   * `margin-inline: auto` + `inline-size: 100%` + `max-inline-size: var(--page-measure-{value})`.
+   * It does **not** add a gutter: the page inset is `pad={{ inline: 6 }}`, which already exists,
+   * and two owners for one padding is how a measure and a gutter drift apart. It is a MAX, so
+   * below the cap the box is fluid and nothing binds at 390px.
+   *
+   * An explicit `width` wins (it lands in the style attribute), which is the right order: a fixed
+   * column is a stronger statement than a cap.
+   *
+   * ## When NOT to reach for it
+   *
+   * Inside a `Card`, a `Dialog` or any surface that already owns its measure. This is PAGE
+   * geometry; a Flex that is a row of controls has no business carrying it.
+   */
+  measure?: FlexMeasureProp;
 };
 
 /** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */

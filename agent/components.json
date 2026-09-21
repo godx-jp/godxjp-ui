@@ -860,6 +860,11 @@
         "type": "number | string"
       },
       {
+        "description": "CENTRE this box and CAP it at a page measure (--page-measure-narrow 42rem / -medium 48rem / -wide 72rem): margin-inline:auto + inline-size:100% + max-inline-size. THE public answer to \"full-bleed outside, measured column inside\" — a marketing <section> paints edge to edge and its inner Flex measure=\"wide\" holds the content on the page measure. Deliberately NOT on PageContainer: that owns page padding and a header/toolbar/footer scaffold, so a full-bleed page cannot consume it, and the refusal left the centred column owned by nobody — three showcases each hand-wrote the same four declarations (gh#839). It adds NO gutter: the page inset is pad={{ inline: 6 }}, and one band with two padding owners drifts. A MAX, so nothing binds below the cap at 390px. An explicit `width` wins. Do not give a READING column \"wide\" — prose stays narrow/medium, which bracket Bringhurst's 45-75 characters. Omitted emits no attribute at all.",
+        "name": "measure",
+        "type": "\"narrow\" | \"medium\" | \"wide\""
+      },
+      {
         "description": "Cross-axis alignment, emitted as a data attribute for the layout CSS.",
         "name": "align",
         "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\""
@@ -900,7 +905,7 @@
       "Flex `direction='col'` — the standard pattern for ordinary vertical block spacing; use explicit `align`, `justify`, or `wrap` props when you need more control.",
       "Flex `direction='row'` — the standard pattern for simple horizontal groups; add `wrap` and `align='center'` for the typical row with wrapped centered items.",
       "ResponsiveGrid — use for equal-width, multi-column tile layouts. Flex arranges children on one flex axis and does not provide column-count behavior.",
-      "PageContainer — page scaffold and padding context. Flex is an inner layout primitive used inside page sections, cards, dialogs, and toolbars."
+      "PageContainer — page scaffold and padding context. Flex is an inner layout primitive used inside page sections, cards, dialogs, and toolbars. PageContainer `measure` bounds an APP page (header and body together, narrow | medium); Flex `measure` bounds ONE centred column inside a full-bleed band, and is the only one that reaches the marketing `wide` step."
     ],
     "rules": [
       2,
@@ -914,6 +919,7 @@
       "DO use `direction=\"row\"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than simple row composition.",
       "DO use `direction=\"col\"` for vertical groupings that need explicit `align` or `justify` behavior. For pure vertical stacking without alignment control, `direction=\"col\"` is sufficient.",
       "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
+      "FULL-BLEED BAND: a marketing/landing section is a `<section>` carrying the edge-to-edge paint (background, border, halo) around ONE `<Flex direction=\"col\" measure=\"wide\" pad={{ inline: 6, block: 20 }}>`. The measure centres and caps the column, `pad` owns the gutter and the band rhythm (`block: 20` = 80px, `block: 24` = 96px — the two band steps). Never a page-local `max-width: 1200px` + `margin-inline: auto` class, and never an inline style saying the same thing: that four-declaration idiom is what this prop replaced (gh#839).",
       "Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper. When the parent only accepts phrasing content — a TabsTrigger, PopoverTrigger or Button, all of which render a <button> — pass `as=\"span\"` rather than reaching for a raw `<span className=\"flex …\">`.",
       "SEMANTIC LIST: a list of rows is `<Flex as=\"ul\" marker=\"none\" direction=\"col\" gap=\"none\">` with `<ListRow as=\"li\">` children — never a raw `<ul>` (no gap token), never `<div role=\"list\">` + `<div role=\"listitem\">` (ARIA re-describing markup HTML already has), and never a wrapper around each row: the divider is `:not(:last-child)` among SIBLINGS, so a row alone in its own wrapper loses it silently. `ui-audit` flags all three as `no-hand-rolled-list`.",
       "NAMED FLEX = GROUP: a role-less div may not carry a naming attribute (axe aria-allowed-attr), so a Flex given `aria-label`/`aria-labelledby` — e.g. by FormField wrapping a composite range/年月 field — automatically renders `role='group'`, folds `aria-errormessage` into `aria-describedby`, and drops the widget-only `aria-required`/`aria-invalid`. Passing an explicit `role` opts out of all of this and the caller owns the attribute set."

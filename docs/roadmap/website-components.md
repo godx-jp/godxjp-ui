@@ -649,6 +649,40 @@ with no call site in the two pages that are its proof, which is the tier-2 mista
 warns about. The token stands on its own as the vocabulary a composition caps its shell with, the
 way `--gradient-hero` does.
 
+**CLOSED in gh#839, and the refusal above still stands.** Leaving the centred column to "the
+composition writes it" was measured and found wanting: three unrelated pages hand-wrote the SAME
+four declarations — `marketing-page.tsx` as an inline `style` constant, `acme-website.tsx` as
+`.tx-shell`, `futurelastic-web.tsx` as `.fl-shell` — which `docs/TOKENS.md` calls tier 1, and two of
+the three spelled it as a page-local CSS class. The answer was not a `Section` component (it fails
+C1–C7 the way Hero does — `docs/COMPOSITION-VS-COMPONENT.md` §3.1 carries the ledger) and not
+`PageContainer`, which still cannot be consumed by a full-bleed page. It is **`Flex measure`**
+(`narrow | medium | wide`, reading `--page-measure-*`), on the primitive a `<section>` CAN put
+inside itself. It centres and caps and nothing else: `pad` keeps the gutter, so a band is
+`<section>` around one `<Flex direction="col" measure="wide" pad={{ inline: 6, block: 20 }}>`.
+
+| step                               | reader                                                         |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `--space-section-band` (80px)      | `pad={{ block: 20 }}` — `GapStepProp` gained 20/24             |
+| `--space-section-hero` (96px)      | `pad={{ block: 24 }}`                                          |
+| `--page-measure-{narrow,med,wide}` | `Flex measure` — and `PageContainer measure` for the first two |
+
+**No compact rung for the band steps, decided on measurement.** At 320×568 the hero band is 96px
+at both edges = 33.8% of the first screen, and the `<h1>` still lands fully above the fold (top
+195px, bottom 315px). Three reasons not to add one: (1) 96px is already the NARROW rung of the
+industry pair — Tailwind UI's marketing sections are `py-24 sm:py-32`, i.e. 96px on a phone and
+128px from `sm` up, so the missing step is at the wide end, not the narrow one; (2) a numeric `pad`
+step is a VALUE by contract (`pad={3}` is 12px at every width — `GapStepProp`'s own docstring says
+so), and making 20/24 responsive would make them the two steps whose number lies; (3) a
+`--space-section-band-compact` token would have nowhere to be flipped: every `-active`/`-compact`
+pair in this repo switches inside a COMPONENT's scope (`.ui-page-container`,
+`.ui-centered-shell[data-preset="public-landing"]`), and a plain `<section>` has no such scope — so
+it would ship as vocabulary with no caller, the exact defect gh#839 exists to stop.
+`--centered-shell-landing-main-padding-block-compact` is not the counter-example it looks like: it
+is 40px → 24px of a SHELL's `main` padding, not a marketing band, and it lives inside that shell's
+own scope. **The real capability the band wants is a responsive object form for `pad`**, the one
+`direction` and `ResponsiveGrid columns` already take (`pad={{ block: { base: 12, md: 20 } }}`) —
+that is its own issue, and a much larger one than a token rung.
+
 ---
 
 ## 6. The animation and motion story

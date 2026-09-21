@@ -52,6 +52,7 @@ export type {
   FlexDirectionProp,
   FlexJustifyProp,
   FlexMarkerProp,
+  FlexMeasureProp,
   FlexProp,
   FlexProp as FlexProps,
 } from "../../props/components/layout.prop";
@@ -78,6 +79,7 @@ export function Flex({
   hideFromRaw,
   fill = false,
   width,
+  measure,
   className,
   style,
   children,
@@ -143,6 +145,10 @@ export function Flex({
       data-fill={fill ? "" : undefined}
       // Cùng hợp đồng với `gapRaw`/`padRaw`: một số đo cứng ở call site phải ĐẾM ĐƯỢC trên DOM.
       data-width-raw={width === undefined ? undefined : ""}
+      // `measure` — the centred, capped column (gh#839). Omitted emits NO attribute, so no rule
+      // matches and the box is byte-identical to before (the same inert-default contract as
+      // `hideBelow`). The cap itself is a token read in the stylesheet, never a length printed here.
+      data-measure={measure}
       // `gapRaw` thắng `gap`, và `gap` thôi phát lớp — hai bên cùng đặt
       // `gap` thì lớp CSS và style nội tuyến sẽ tranh nhau, mà kết quả của
       // cuộc tranh ấy phụ thuộc thứ tự chèn stylesheet, tức không đoán được.
