@@ -1169,6 +1169,11 @@
     "flexMeasure": {
       "title": "measure · 全幅の外、測度の内",
       "lead": "帯は塗りを持つ <section> で、その内側の一列を measure が中央寄せし --page-measure-* で止める。余白は pad の担当で measure は足さない。narrow（42rem）と medium（48rem）は読み物の測度、wide（72rem）はマーケティングの測度。"
+    },
+    "tagInput": {
+      "longIdTitle": "長い識別子と「+N」",
+      "ledgerLabel": "台帳ID",
+      "ledgerHelper": "71文字の識別子でも行からはみ出さない"
     }
   }
 }

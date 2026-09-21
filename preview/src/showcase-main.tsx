@@ -72,10 +72,19 @@ function ShowcaseApp() {
 
   if (!Comp) return null;
 
+  // `?theme=dark` — the SAME switch /frame/** and /isolate/** honour, and the reason a probe of
+  // /showcase/theme-customization?theme=dark reported the light thumb and the light track twice
+  // and called it "identical in both themes" (gh#843). It is not that the tokens sit still: this
+  // entry point simply never read the query string, so both runs rendered the light page. Exactly
+  // the failure isolate-main.tsx already learned about — a query string that resolves to nothing
+  // reports success on a page that was never the page under test.
+  const theme =
+    new URLSearchParams(window.location.search).get("theme") === "dark" ? "dark" : "light";
+
   return (
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <AppProvider persist={false}>
+        <AppProvider persist={false} theme={theme}>
           <StoryErrorBoundary storyId={entry.id}>
             <Comp />
           </StoryErrorBoundary>
