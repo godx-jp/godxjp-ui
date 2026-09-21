@@ -274,6 +274,14 @@ export const AUDIT_RULES: AuditRule[] = [
     standard: "WAI-ARIA 1.2 (dialog) · WCAG 2.2 SC 4.1.2",
     fix: "Pass onDismiss to <Alert>, or use <Dialog>/<Sheet>'s built-in labelled close — not a bare ✕.",
   },
+  {
+    id: "no-hand-rolled-scrollport",
+    severity: "warn",
+    category: "a11y",
+    standard:
+      "WCAG 2.2 SC 2.1.1 (Keyboard) · WAI-ARIA 1.2 (group) · Deque axe-core scrollable-region-focusable",
+    fix: 'Replace className="overflow-auto / overflow-y-auto / overflow-x-auto / overflow-scroll" on your own element with <ScrollArea label={t("…")} orientation>, which is the tab stop, the role and the localized name — and withholds all three while there is nothing to scroll. A browser audit only fails a scrollport whose content has NO focusable child, so the same markup is clean or broken depending on the data; this reads the markup instead (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged.',
+  },
 
   // ── i18n (ECMA-402 Intl + ISO + IANA) ────────────────────────────────────
   {

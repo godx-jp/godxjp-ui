@@ -1,5 +1,5 @@
 {
-  "example": "import { Heading } from \"@godxjp/ui/general\";\n\n<Heading level={2}>請求書一覧</Heading>\n<Heading level={3} tone=\"muted\">補足セクション</Heading>",
+  "example": "import { Heading } from \"@godxjp/ui/general\";\n\n<Heading level={2}>請求書一覧</Heading>\n<Heading level={3} tone=\"muted\">補足セクション</Heading>\n<Heading level={1} size=\"5xl\" align=\"center\">Ship it everywhere</Heading>",
   "group": "general",
   "importPath": "@godxjp/ui/general",
   "name": "Heading",
@@ -12,9 +12,14 @@
     },
     {
       "defaultValue": "2",
-      "description": "Heading level — sizes from --heading-h{1..4} and renders the matching <h*>.",
+      "description": "Heading level — renders the matching <h*> and, unless `size` overrides it, sizes from --heading-h{1..4}.",
       "name": "level",
       "type": "1 | 2 | 3 | 4"
+    },
+    {
+      "description": "Visual size, overriding the step `level` would have taken — the SAME ladder `Text size` reads. `level` still owns the document outline, so a marketing hero is `<Heading level={1} size=\"5xl\">`: a real <h1> at 54px, with no admin screen's <h1> moving. Omit it and `level` decides, exactly as before. Use this INSTEAD of a bespoke `.display` class with a raw font-size.",
+      "name": "size",
+      "type": "\"2xs\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\""
     },
     {
       "description": "Override the rendered element (e.g. a visual h2 that is a real <h1>).",
@@ -43,13 +48,14 @@
     23
   ],
   "storyPath": "general/typography.tsx",
-  "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
+  "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs.",
   "usage": [
     "DO use `<Heading level>` for section titles instead of a raw `<h2 className=\"text-lg font-semibold\">`. The level drives both the token size and the semantic element.",
     "Inside a Card use `<CardTitle>`; use `<Heading>` for free-standing page/section headings not covered by a component slot."
   ],
   "useCases": [
     "A section heading on a dashboard: `<Heading level={3}>今月のKPI</Heading>`.",
-    "A visually-smaller heading that must stay an <h1> for a11y: `<Heading level={1} as=\"h1\">…</Heading>`."
+    "A visually-smaller heading that must stay an <h1> for a11y: `<Heading level={1} as=\"h1\">…</Heading>`.",
+    "A marketing hero headline: `<Heading level={1} size=\"5xl\">` — a real <h1> on the display ramp, instead of a page-local `.display` class."
   ]
 }

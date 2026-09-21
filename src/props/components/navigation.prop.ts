@@ -729,6 +729,156 @@ export type ConversationsProp = {
   className?: ClassNameProp;
 };
 
+/* ───────────────────────────── MegaMenu ─────────────────────────────
+ * Ant Design's `Menu mode="horizontal"` is the authority for the NAMES and the SEMANTICS here
+ * (docs/DESIGN-AUTHORITY.md). What antd calls `items` / `triggerSubMenuAction` /
+ * `subMenuOpenDelay` / `subMenuCloseDelay` / `selectedKeys` / `openKeys` keeps its spelling or an
+ * exactly-documented collapse of it.
+ *
+ * TWO deliberate departures, both forced by a rule this repo outranks antd with:
+ *
+ * 1. `openKeys: string[]` -> `open: string | null`. antd's array exists because its Menu nests
+ *    SubMenus arbitrarily deep, so several levels can be open at once. A megamenu bar is ONE
+ *    level by construction: at most one panel is open. The array would only ever hold zero or one
+ *    key, and the controlled-vocabulary rule (`open`/`defaultOpen`/`onOpenChange`) applies to the
+ *    overlay triad. So the triad keeps its vocabulary spelling and carries the open panel's key.
+ * 2. `selectedKeys: string[]` -> `value: string`. Same reason plus a stronger one: in a site nav
+ *    the "selection" is the CURRENT ROUTE, and a route is one key. It drives `aria-current="page"`,
+ *    not a selection highlight, so `multiple` / `onDeselect` have nothing to mean here.
+ *
+ * antd props NOT ported, each because the thing they configure does not exist at one level:
+ * `inlineCollapsed` / `inlineIndent` (no inline mode - the narrow layout is the same disclosure,
+ * laid out in flow), `overflowedIndicator` (a nav bar of 4-8 links wraps; it does not collapse
+ * into an ellipsis SubMenu), `forceSubMenuRender` (every panel is in the DOM already - that is
+ * what makes the narrow accordion and the `aria-controls` target free), `theme` (tokens),
+ * `multiple` / `selectable` / `onDeselect` (a route is singular).
+ */
+
+/**
+ * Which pointer action opens a panel. Ant Design `triggerSubMenuAction`, minus antd's third
+ * value: `contextMenu` is a Dropdown affordance, and a right-click that opened a site nav panel
+ * would shadow the browser's own menu.
+ *
+ * `click` is the default here where antd defaults to `hover`, and that is the WCAG 2.2 call, not
+ * a taste one: a hover-only trigger has no equivalent on a touch screen. `hover` remains
+ * available and still accepts click - see `MegaMenuProp.triggerAction`.
+ */
+export type MegaMenuTriggerActionProp = "click" | "hover";
+
+/** One link inside a panel group. A leaf: it navigates, it never opens anything. */
+export type MegaMenuLinkProp = {
+  /** Stable identity. Ant Design `MenuItemType.key`. */
+  key: string;
+  /** Ant Design `MenuItemType.label`. */
+  label: React.ReactNode;
+  /** Destination. Omit it and the row reports through `onValueChange` instead (SPA visit). */
+  href?: string;
+  /** A line under the label. Ant Design `MenuItemType.extra`, given the shape a nav panel uses. */
+  description?: React.ReactNode;
+  /** Ant Design `MenuItemType.icon`. Decorative - the label is the accessible name. */
+  icon?: React.ReactNode;
+  /** Ant Design `MenuItemType.disabled`. */
+  disabled?: DisabledProp;
+};
+
+/**
+ * One column of a panel. Ant Design `MenuItemGroupType` (`type: "group"`), which is exactly this:
+ * a labelled cluster of items that is itself not interactive.
+ */
+export type MegaMenuGroupProp = {
+  key: string;
+  /** Ant Design `MenuItemGroupType.label`. Omit for a bare column of links with no heading. */
+  label?: LabelProp;
+  /** A sentence under the group heading. No antd equivalent - antd groups carry a label only. */
+  description?: React.ReactNode;
+  /** Decorative glyph beside the group heading. */
+  icon?: React.ReactNode;
+  /** Ant Design `MenuItemGroupType.children`, narrowed to leaves: a panel is one level deep. */
+  links: readonly MegaMenuLinkProp[];
+};
+
+/** The disclosure panel behind one top-level item. Ant Design `SubMenuType.children`. */
+export type MegaMenuPanelProp = {
+  /** The columns. Ant Design `SubMenuType.children` restricted to `type: "group"` entries. */
+  groups: readonly MegaMenuGroupProp[];
+  /** A full-width strip below the columns - a promo, a "see all", a support line. */
+  footer?: React.ReactNode;
+};
+
+/**
+ * One top-level bar item. With a `panel` it is a DISCLOSURE BUTTON (Ant Design `SubMenuType`);
+ * without one it is a plain link (Ant Design `MenuItemType`) - the "Top-Level Links" half of the
+ * APG pattern this implements.
+ */
+export type MegaMenuItemProp = {
+  key: string;
+  label: React.ReactNode;
+  /** Only meaningful without a `panel`: a disclosure button is not a link. */
+  href?: string;
+  icon?: React.ReactNode;
+  disabled?: DisabledProp;
+  panel?: MegaMenuPanelProp;
+};
+
+/**
+ * Router link component, same contract as `Sidebar.linkComponent`: it receives `href` plus the
+ * row's state props and children, and renders exactly one `<a>`.
+ */
+export type MegaMenuLinkComponentProp = React.ComponentType<
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href?: string }
+>;
+
+/**
+ * MegaMenu - a primary site navigation whose top-level items disclose a full-width panel of
+ * grouped links.
+ *
+ * Implements WAI-ARIA APG **Disclosure Navigation with Top-Level Links**, NOT Menubar. A site nav
+ * is a set of LINKS to places, not a menu of commands, and `role="menu"` promises assistive
+ * technology a command widget it will then navigate as one. That is the classic megamenu a11y
+ * error, and it is also why this cannot be `DropdownMenu` + a token: `DropdownMenu` is
+ * react-aria-components `Menu`, i.e. `role="menu"` / `role="menuitem"` by construction.
+ */
+export type MegaMenuProp = {
+  /** The bar. Ant Design `items`. */
+  items: readonly MegaMenuItemProp[];
+  /** Key of the open panel, or `null` for none. Ant Design `openKeys`, collapsed to one level. */
+  open?: string | null;
+  /** Initial uncontrolled open panel. Ant Design `defaultOpenKeys`, collapsed to one level. */
+  defaultOpen?: string | null;
+  /** Fires with the newly open panel's key, or `null` when everything closed. Ant `onOpenChange`. */
+  onOpenChange?: (key: string | null) => void;
+  /** Key of the item for the CURRENT ROUTE - renders `aria-current="page"`. Ant `selectedKeys`. */
+  value?: string;
+  /** Uncontrolled initial current route. Ant Design `defaultSelectedKeys`. */
+  defaultValue?: string;
+  /**
+   * Fires with the activated key (a top-level link, or a panel link). Ant Design `onClick`.
+   * Activation always closes the open panel - the "close on route change" half of the contract
+   * that does not need a router.
+   */
+  onValueChange?: (key: string) => void;
+  /** Bar density. The trigger box tracks the matching `--control-height` tier. */
+  size?: "xs" | "sm" | "md" | "lg";
+  /** Ant Design `triggerSubMenuAction`. `hover` also accepts click, so touch is never stranded. */
+  triggerAction?: MegaMenuTriggerActionProp;
+  /** Ant Design `subMenuOpenDelay`, in MILLISECONDS (antd uses seconds). `hover` only. */
+  openDelay?: number;
+  /**
+   * Ant Design `subMenuCloseDelay`, in MILLISECONDS. This is the hover-intent grace period: the
+   * pointer may leave the bar entirely for this long - crossing a diagonal toward the panel -
+   * before anything closes. `hover` only.
+   */
+  closeDelay?: number;
+  /** Accessible name of the `<nav>` landmark. A plain string: it lands on `aria-label`. */
+  label?: string;
+  /** Ant Design `expandIcon`. `false` removes the chevron; a node replaces it. */
+  expandIcon?: React.ReactNode | false;
+  /** Router link component for every `href` in the bar and the panels. */
+  linkComponent?: MegaMenuLinkComponentProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+} & Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "defaultValue" | "children">;
+
 /**
  * One entry of `Anchor items` — Ant Design `AnchorItem`, field for field.
  *

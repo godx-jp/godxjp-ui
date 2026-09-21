@@ -1,9 +1,9 @@
 /** PageContainer — mandatory shell for every admin page (the PageHeader equivalent). */
-import { isValidElement, useRef, type ReactNode } from "react";
+import { isValidElement, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { useIntersects } from "../../lib/hooks";
+import { scrollParent, useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
@@ -13,20 +13,30 @@ import type { PageContainerProp, PageInsetProp } from "../../props/components/la
  * out of the page's scroll viewport. The footer stays mounted (CSS only flips
  * a transform), so toggling never reflows the body — no scroll jitter.
  *
- * The observer itself is `useIntersects` (`src/lib/hooks.ts`) — this function's former body,
- * moved up so `Affix` could stop short of writing a second one. Same root (the nearest scroll
- * parent, which is what omitting `root` means there), same `threshold: 0`, same jsdom guard.
+ * The observer is no longer this function's: it is `useInView` (`src/lib/hooks.ts`), the library's
+ * one `IntersectionObserver`. This function's former body — the `scrollParent` walk and the
+ * `threshold: 0` observation — moved up there so `Affix` (gh#827) could stop short of writing a
+ * second one, the way `useScrollsOnAxis` was generalised before it.
  *
- * `initial: true` is what keeps the behaviour byte-identical. The old local state was `revealed`
- * and started `false`; the shared hook's state is `intersects` and the reveal is its NEGATION, so
- * the same resting answer is "it IS intersecting". Left at the hook's `false` default the footer
- * would paint revealed for the frame before the first observer callback, and would stay revealed
- * forever in jsdom and under SSR, where the old code kept it hidden.
+ * `assumeInView` is what keeps the behaviour byte-identical. The old local state was `revealed`
+ * and started `false`; the shared hook's state is its NEGATION, so the resting answer has to be
+ * "it IS in view". Without it the footer would paint revealed for the frame before the first
+ * observer entry, and would stay revealed forever in jsdom and under SSR, where the old code kept
+ * it hidden.
+ *
+ * The root is state rather than a call, because `useInView` takes the element and the element does
+ * not exist until the header has mounted. The first observation therefore uses the viewport and
+ * the second uses the pane — the resting answer is the same for both, so nothing is ever painted
+ * from the difference.
  */
 function useFooterReveal(enabled: boolean) {
   const headerRef = useRef<HTMLElement>(null);
-  const intersects = useIntersects(headerRef, { enabled, initial: true });
-  return { headerRef, revealed: enabled && !intersects };
+  const [root, setRoot] = useState<Element | null>(null);
+  useEffect(() => {
+    setRoot(scrollParent(headerRef.current));
+  }, [enabled]);
+  const inView = useInView(headerRef, { enabled, root, assumeInView: true });
+  return { headerRef, revealed: enabled && !inView };
 }
 
 export type {

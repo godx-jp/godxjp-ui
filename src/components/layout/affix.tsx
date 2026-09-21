@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { isDevelopment } from "../../lib/dev";
-import { useIntersects } from "../../lib/hooks";
+import { useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { AffixProp } from "../../props/components/layout.prop";
 
@@ -70,11 +70,11 @@ type AffixStyle = React.CSSProperties & {
  * ## One `IntersectionObserver`, and it is not this file's
  *
  * The pin is a threshold crossing — the one question `IntersectionObserver` exists to answer — and
- * this component asks it through `useIntersects` (`src/lib/hooks.ts`), the hook that used to be
- * private to `PageContainer footerReveal="onScroll"`. Nothing here polls, and nothing here listens
- * to `scroll` at all when the scroll box is the viewport: antd's `Affix` re-measures on seven
- * event types on every animation frame of every scroll, and all of that is replaced by one
- * observer callback per transition.
+ * this component asks it through `useInView` (`src/lib/hooks.ts`), the library's single observer
+ * wrapper, which gained `rootMargin` and `assumeInView` for exactly these two needs. Nothing here
+ * polls, and nothing here listens to `scroll` at all when the scroll box is the viewport: antd's
+ * `Affix` re-measures on seven event types on every animation frame of every scroll, and all of
+ * that is replaced by one observer entry per transition.
  *
  * The observed element is a zero-ish **sentinel** at the pinning edge, not the box itself. This is
  * the published `position: sticky` sentinel technique ("An event for position: sticky",
@@ -83,9 +83,9 @@ type AffixStyle = React.CSSProperties & {
  * it should pin. A hairline node at the LEADING edge flips on the leading edge. It is
  * `aria-hidden`, out of flow, and contributes nothing to the measured height.
  *
- * Both directions reduce to the same expression — `affixed = !intersects` — because the sentinel
- * sits at the block-start edge with the clipping box grown downwards, and at the block-end edge
- * with it grown upwards.
+ * Both directions reduce to the same expression — `affixed = !inView` — because the sentinel sits
+ * at the block-start edge with the clipping box grown downwards, and at the block-end edge with it
+ * grown upwards.
  *
  * ## The offset is a TOKEN that the prop overrides, and it is never a number in JavaScript
  *
@@ -168,16 +168,15 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     setTargetElement(resolveTarget(target));
   }, [target]);
 
-  // `initial: true` — "not yet pinned" is the resting answer, so an Affix renders in flow on the
-  // server, in jsdom, and on the frame before the first observer callback. Reporting `affixed`
-  // from a measurement that has not happened would fix a bar over content it has never measured.
-  const intersects = useIntersects(sentinelRef, {
+  // `assumeInView` — "not yet pinned" is the resting answer, so an Affix renders in flow on the
+  // server, in jsdom, and on the frame before the first observer entry. Reporting `affixed` from a
+  // measurement that has not happened would fix a bar over content it has never measured.
+  const inView = useInView(sentinelRef, {
     root: targetElement,
     rootMargin: pinToEnd ? ROOT_MARGIN_BLOCK_END : ROOT_MARGIN_BLOCK_START,
-    threshold: 0,
-    initial: true,
+    assumeInView: true,
   });
-  const affixed = !intersects;
+  const affixed = !inView;
 
   const [box, setBox] = React.useState<{ inline: number; block: number } | null>(null);
   const [targetInset, setTargetInset] = React.useState(0);

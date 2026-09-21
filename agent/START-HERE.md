@@ -32,16 +32,16 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 44 KB, all 168 components as name + group +
+1. `components-index.json` — 45 KB, all 170 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
    first; it exists because that is the mistake.
-2. `components/<Name>.json` — one file per component (1 KB–33 KB, median 5 KB), carrying its props,
+2. `components/<Name>.json` — one file per component (1 KB–33 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 1630 design tokens. Only when you need a specific knob's name.
+4. `tokens.json` — 1682 design tokens. Only when you need a specific knob's name.
 5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 

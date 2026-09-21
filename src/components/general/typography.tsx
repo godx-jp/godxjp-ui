@@ -930,20 +930,35 @@ Link.displayName = "Link";
 
 /**
  * Heading — h1..h4 sized from the `--heading-h*` tokens. `level` sets both the size token and the
- * semantic element; override the rendered element with `as` (e.g. a visual h2 that is a real <h1>).
+ * semantic element; override the rendered element with `as` (e.g. a visual h2 that is a real <h1>),
+ * and override the SIZE alone with `size` — the same ten-step ladder `Text` reads, whose top three
+ * steps are the display ramp a marketing hero needs (gh#826).
  *
  * UNCHANGED by the antd port. antd's heading is `Title`, which is the sibling below; `Heading` is
  * this library's own and keeps its four levels, its props and its markup exactly as they shipped.
  */
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
   (
-    { level = 2, as, tone = "default", align, truncate, weight = "medium", className, ...props },
+    {
+      level = 2,
+      size,
+      as,
+      tone = "default",
+      align,
+      truncate,
+      weight = "medium",
+      className,
+      ...props
+    },
     ref,
   ) =>
     React.createElement(as ?? `h${level}`, {
       ref,
       "data-slot": "heading",
       "data-level": level,
+      // Emitted only when asked for. The absent attribute is what `[data-level]:not([data-size])`
+      // keys on, so a Heading with no `size` paints from its level exactly as it always has.
+      "data-size": size,
       "data-tone": tone,
       "data-align": align,
       "data-weight": weight,

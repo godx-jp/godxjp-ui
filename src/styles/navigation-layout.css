@@ -1704,3 +1704,338 @@
     }
   }
 }
+
+@layer components {
+  /* MegaMenu — WAI-ARIA APG "Disclosure Navigation with Top-Level Links".
+   *
+   * The DOM is ONE tree for both layouts: a panel lives inside its own `<li>`, which is what lets
+   * the narrow case be a layout change and not a second component. Above the breakpoint the panel
+   * is taken out of flow and spans the whole bar; below it, it stays in flow and reads as an
+   * accordion under its trigger. Same markup, same `aria-expanded` / `aria-controls`, same
+   * keyboard. That is the dividend of Disclosure over Menubar: an accordion IS a disclosure.
+   *
+   * Every length resolves through a `--mega-menu-*` token (src/tokens/components/mega-menu.css).
+   */
+  .ui-mega-menu {
+    position: relative;
+    display: block;
+  }
+
+  .ui-mega-menu-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mega-menu-bar-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-mega-menu-item {
+    position: static;
+    list-style: none;
+  }
+
+  .ui-mega-menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mega-menu-trigger-gap);
+    min-block-size: var(--mega-menu-trigger-height);
+    padding-inline: var(--mega-menu-trigger-padding-x);
+    border: 0;
+    border-radius: var(--mega-menu-trigger-radius);
+    background: var(--mega-menu-trigger-background);
+    color: var(--mega-menu-trigger-foreground);
+    font-size: var(--mega-menu-trigger-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .ui-mega-menu-trigger:hover {
+    background: var(--mega-menu-trigger-hover-background, hsl(var(--accent)));
+    color: var(--mega-menu-trigger-hover-foreground, hsl(var(--accent-foreground)));
+  }
+
+  .ui-mega-menu-trigger[data-open="true"] {
+    background: var(--mega-menu-trigger-open-background, hsl(var(--accent)));
+    color: var(--mega-menu-trigger-open-foreground, hsl(var(--accent-foreground)));
+  }
+
+  /* `aria-current` is the CURRENT ROUTE, and it must not be colour-only (WCAG 1.4.1): the weight
+   * step and the underline carry it for anyone who cannot see the hue. */
+  .ui-mega-menu-trigger[aria-current="page"] {
+    color: var(--mega-menu-trigger-current-foreground, hsl(var(--primary)));
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: var(--space-1);
+  }
+
+  .ui-mega-menu-trigger:disabled,
+  .ui-mega-menu-trigger[aria-disabled="true"] {
+    opacity: var(--mega-menu-trigger-disabled-alpha);
+    cursor: not-allowed;
+  }
+
+  .ui-mega-menu-trigger-icon {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .ui-mega-menu-trigger-icon svg {
+    inline-size: var(--mega-menu-expand-icon-size);
+    block-size: var(--mega-menu-expand-icon-size);
+  }
+
+  /* A 71-character unbreakable token is a real label, not a hypothetical: it must wrap inside the
+   * cell rather than widen the bar past the viewport (check:frame-overflow gates 375 at 0). */
+  .ui-mega-menu-trigger-label {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-mega-menu-expand-icon {
+    display: inline-flex;
+    flex: none;
+    transition: rotate var(--duration-fast) var(--ease-standard);
+  }
+
+  .ui-mega-menu-expand-icon svg {
+    inline-size: var(--mega-menu-expand-icon-size);
+    block-size: var(--mega-menu-expand-icon-size);
+  }
+
+  .ui-mega-menu-trigger[data-open="true"] .ui-mega-menu-expand-icon {
+    rotate: 180deg;
+  }
+
+  /* `fixed`, NOT `absolute`, and the reason is measured rather than stylistic — see the long note
+   * on the geometry effect in src/components/navigation/mega-menu.tsx. An absolutely-positioned
+   * panel is clipped away by the two surfaces a megamenu actually lives in: `Topbar`'s slots are
+   * `overflow: clip` (the panel became a 32px strip) and `Card` is `overflow: hidden` (331px of
+   * 348px gone, and not hit-testable). A fixed box escapes ancestor overflow entirely.
+   *
+   * The position therefore has to be MEASURED, and arrives as three custom properties the
+   * component writes on the nav root. `inset-*: 0` puts the box at the viewport corner that
+   * `inset-inline-start` resolves to, and `translate` — which is direction-agnostic — carries it
+   * to the bar. No physical `left`/`right` anywhere (`pnpm check:rtl`). */
+  .ui-mega-menu-panel {
+    position: fixed;
+    z-index: var(--overlay-z-index);
+    inset-inline-start: 0;
+    inset-block-start: var(--mega-menu-panel-offset);
+    inline-size: var(--mega-menu-panel-measured-width, 100%);
+    translate: var(--mega-menu-panel-translate-x, 0) var(--mega-menu-panel-translate-y, 0);
+    max-block-size: var(--mega-menu-panel-max-height);
+    overflow-y: auto;
+    border: var(--mega-menu-panel-border-width) solid var(--mega-menu-panel-border-color);
+    border-radius: var(--mega-menu-panel-radius);
+    background: var(--mega-menu-panel-background);
+    color: var(--mega-menu-panel-foreground);
+    box-shadow: var(--mega-menu-panel-shadow);
+    animation: ui-mega-menu-panel-in var(--duration-fast) var(--ease-standard);
+  }
+
+  /* The entrance animates OPACITY ONLY. `translate` is now the panel's position, so animating it
+   * would fight the measured geometry and land the panel a few pixels off its bar. */
+  @keyframes ui-mega-menu-panel-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .ui-mega-menu-panel-inner {
+    padding: var(--mega-menu-panel-padding);
+  }
+
+  .ui-mega-menu-groups {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(var(--mega-menu-group-min-width), 100%), 1fr)
+    );
+    gap: var(--mega-menu-groups-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-mega-menu-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mega-menu-group-gap);
+    min-inline-size: 0;
+    list-style: none;
+  }
+
+  /* No `text-transform: uppercase` here, deliberately. The heading is localized, and a JP label
+   * cannot be uppercased at all while a CJK run beside a Latin one in small caps just reads as
+   * noise — docs/DESIGN-AUTHORITY.md puts the Japanese convention above the Latin habit for
+   * anything the user reads. */
+  .ui-mega-menu-group-label {
+    display: flex;
+    align-items: center;
+    gap: var(--mega-menu-link-gap);
+    margin: 0;
+    color: var(--mega-menu-group-label-foreground);
+    font-size: var(--mega-menu-group-label-font-size);
+    font-weight: var(--font-weight-semibold);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-mega-menu-group-icon {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .ui-mega-menu-group-icon svg {
+    inline-size: var(--mega-menu-group-icon-size);
+    block-size: var(--mega-menu-group-icon-size);
+  }
+
+  .ui-mega-menu-group-description {
+    margin: 0;
+    color: var(--mega-menu-group-description-foreground);
+    font-size: var(--mega-menu-group-description-font-size);
+    line-height: var(--line-height-body);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-mega-menu-group-links {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-mega-menu-link-row {
+    list-style: none;
+  }
+
+  .ui-mega-menu-link {
+    display: flex;
+    align-items: start;
+    gap: var(--mega-menu-link-gap);
+    min-block-size: var(--mega-menu-link-min-height);
+    padding-block: var(--mega-menu-link-padding-y);
+    padding-inline: var(--mega-menu-link-padding-x);
+    border-radius: var(--mega-menu-link-radius);
+    color: var(--mega-menu-link-foreground);
+    font-size: var(--mega-menu-link-font-size);
+    line-height: var(--line-height-body);
+    text-decoration: none;
+  }
+
+  .ui-mega-menu-link:hover {
+    background: var(--mega-menu-link-hover-background, hsl(var(--accent)));
+    color: var(--mega-menu-link-hover-foreground, hsl(var(--accent-foreground)));
+  }
+
+  .ui-mega-menu-link[aria-current="page"] {
+    color: var(--mega-menu-link-current-foreground, hsl(var(--primary)));
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-mega-menu-link[data-disabled="true"] {
+    opacity: var(--mega-menu-trigger-disabled-alpha);
+    cursor: not-allowed;
+  }
+
+  .ui-mega-menu-link-icon {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .ui-mega-menu-link-icon svg {
+    inline-size: var(--mega-menu-link-icon-size);
+    block-size: var(--mega-menu-link-icon-size);
+  }
+
+  .ui-mega-menu-link-text {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-mega-menu-link-description {
+    color: var(--mega-menu-link-description-foreground);
+    font-size: var(--mega-menu-link-description-font-size);
+    font-weight: var(--font-weight-normal);
+  }
+
+  .ui-mega-menu-panel-footer {
+    margin-block-start: var(--mega-menu-panel-footer-gap);
+    padding-block-start: var(--mega-menu-panel-footer-gap);
+    border-block-start: var(--mega-menu-panel-border-width) solid
+      var(--mega-menu-panel-footer-border-color);
+  }
+
+  /* NARROW: the same disclosure, in flow.
+   * A full-width overlay has nowhere to go at 375px, so below the step the bar stacks and each
+   * panel opens UNDER ITS OWN TRIGGER. Nothing about the widget changes. */
+  @media (max-width: 47.99rem) {
+    .ui-mega-menu-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ui-mega-menu-trigger {
+      inline-size: 100%;
+      justify-content: space-between;
+    }
+
+    /* Back IN FLOW, and the measured geometry is switched off with it: `translate` and the
+     * measured width belong to the fixed box only, and leaving either on would shove the
+     * accordion off the screen. */
+    .ui-mega-menu-panel {
+      position: static;
+      inline-size: auto;
+      translate: none;
+      max-block-size: none;
+      margin-block-start: var(--mega-menu-bar-gap);
+      box-shadow: none;
+    }
+
+    .ui-mega-menu-panel-inner {
+      padding: var(--mega-menu-link-padding-x);
+    }
+
+    .ui-mega-menu-groups {
+      grid-template-columns: 1fr;
+      gap: var(--mega-menu-group-gap);
+    }
+  }
+
+  /* SNAP, never disappear. The panel keeps its full open state; only the travel and the chevron's
+   * rotation stop being animated. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-mega-menu-panel {
+      animation: none;
+    }
+
+    .ui-mega-menu-expand-icon {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .ui-mega-menu-panel {
+      border-color: CanvasText;
+    }
+
+    .ui-mega-menu-trigger[data-open="true"],
+    .ui-mega-menu-link[aria-current="page"] {
+      forced-color-adjust: none;
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}

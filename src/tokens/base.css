@@ -50,5 +50,7 @@
 @import "./components/float-button.css";
 @import "./components/draggable-panel.css";
 @import "./components/masonry.css";
+@import "./components/mega-menu.css";
+@import "./components/marquee.css";
 @import "./components/affix.css";
 @import "./components/anchor.css";

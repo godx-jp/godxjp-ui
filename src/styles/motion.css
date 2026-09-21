@@ -6,6 +6,31 @@
     will-change: transform, opacity;
   }
 
+  /* `on="view"` (gh#829) — the observer gates the ANIMATION, never the VISIBILITY.
+   *
+   * The resting state below is the FINISHED one: `animation: none` on a fully opaque, untranslated
+   * box. A server render, a browser with no `IntersectionObserver`, and `prefers-reduced-motion:
+   * reduce` (under which the component attaches no observer at all) therefore paint the content
+   * exactly as it will finally look. `opacity: 0` is never the stylesheet's resting state — a
+   * reveal that never reveals is the one failure this component may not have.
+   *
+   * `data-reveal-state` is written ONLY by a mounted component holding a live observer: `out` is
+   * the pre-entry state it measured, `in` is the entrance. Longhands, not the `animation`
+   * shorthand, so the `data-reveal-delay` stagger below survives regardless of source order. */
+  .ui-reveal[data-reveal-on="view"] {
+    animation: none;
+  }
+  .ui-reveal[data-reveal-state="out"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  .ui-reveal[data-reveal-state="in"] {
+    animation-name: ui-reveal-in;
+    animation-duration: var(--duration-slow);
+    animation-timing-function: var(--ease-emphasized);
+    animation-fill-mode: both;
+  }
+
   .ui-reveal[data-reveal-delay="1"] {
     animation-delay: calc(var(--reveal-stagger-step) * 1);
   }
@@ -36,11 +61,21 @@
     }
   }
 
-  /* Accessibility: no motion → no animation, content stays visible (WCAG 2.3.3 / 2.2.2). */
+  /* Accessibility: no motion → no animation, content stays visible (WCAG 2.3.3 / 2.2.2).
+   *
+   * The `data-reveal-state="out"` reset is belt AND braces: the component already drops the
+   * observer under `reduce`, so the attribute should not exist — but if the OS setting is flipped
+   * mid-session the stylesheet answers before React re-renders, and the content is never left
+   * hidden for even one frame. */
   @media (prefers-reduced-motion: reduce) {
     .ui-reveal,
-    .ui-reveal[data-reveal-delay] {
+    .ui-reveal[data-reveal-delay],
+    .ui-reveal[data-reveal-state] {
       animation: none;
+    }
+    .ui-reveal[data-reveal-state="out"] {
+      opacity: 1;
+      transform: none;
     }
   }
 }
@@ -205,6 +240,148 @@
     }
     .ui-activity-bar {
       border: 1px solid CanvasText;
+    }
+  }
+}
+
+/* MARQUEE — the TRAVELLING member of the loop family, in the same file for the same reason: the
+ * library keeps exactly one place where motion is written. */
+@layer components {
+  /* The root is a row: the track, then the WCAG 2.2.2 pause control beside it. G186 asks for the
+   * control "adjacent to the moving content", and being a sibling rather than an overlay is also
+   * what keeps it off the content it would otherwise cover. */
+  .ui-marquee {
+    display: flex;
+    align-items: center;
+    gap: var(--marquee-gap-inline);
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  /* The window the track travels behind. `overflow: hidden` rather than `clip` on purpose: a
+   * hidden box is still a scroll container, so the browser can bring a focused link inside the
+   * track into view — `clip` would strand it. */
+  .ui-marquee-viewport {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+  }
+
+  /* Under prefers-reduced-motion the viewport IS a ScrollArea, which owns its own overflow — this
+   * class therefore carries the row geometry and nothing else. */
+  .ui-marquee-scroller {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  /* Symmetric by construction, so it needs no `[dir]` counterpart: the same fade sits at both
+   * ends whichever way the text runs. A MASK, so the surface behind shows through — an opaque
+   * gradient cannot follow a themed background. */
+  .ui-marquee[data-fade="true"] .ui-marquee-viewport {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black var(--marquee-mask-width),
+      black calc(100% - var(--marquee-mask-width)),
+      transparent
+    );
+  }
+
+  /* One lap = exactly one copy, expressed as a fraction of the track's own width rather than a
+   * measured pixel distance: every copy is the same width, so `-100% / n` lands on the seam at
+   * any zoom and any device pixel ratio, and the only thing JavaScript has to publish is the
+   * COUNT. `--marquee-cycle-scale` (copy width ÷ viewport width, also measured) is what keeps the
+   * PACE constant — without it forty logos would cross the screen forty times faster than one. */
+  .ui-marquee-track {
+    display: flex;
+    inline-size: max-content;
+    will-change: transform;
+    animation: ui-marquee-travel calc(var(--marquee-interval) * var(--marquee-cycle-scale, 1))
+      linear infinite;
+  }
+  .ui-marquee[data-speed="slow"] .ui-marquee-track {
+    animation-duration: calc(var(--marquee-interval-slow) * var(--marquee-cycle-scale, 1));
+  }
+  .ui-marquee[data-speed="fast"] .ui-marquee-track {
+    animation-duration: calc(var(--marquee-interval-fast) * var(--marquee-cycle-scale, 1));
+  }
+
+  /* The gap between two items and the gap between two copies are one rhythm, so the trailing one
+   * is the copy's own padding. That is what makes the seam between copies indistinguishable from
+   * the seam between items — and what lets `offsetWidth` be the exact lap distance. */
+  .ui-marquee-copy {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--marquee-gap-inline);
+    padding-inline-end: var(--marquee-gap-inline);
+  }
+
+  .ui-marquee-control {
+    flex: 0 0 auto;
+  }
+
+  @keyframes ui-marquee-travel {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% / var(--marquee-copies, 2)));
+    }
+  }
+
+  /* THE RTL TWIN IS NOT A LUXURY, AND `animation-direction: reverse` IS NOT A SUBSTITUTE FOR IT.
+   *
+   * A flex track under `dir="rtl"` anchors its inline-start edge to the RIGHT of the window and
+   * overflows LEFTWARDS, so the spare content to slide in sits on the left and the track has to
+   * travel over the range 0 → +one copy. `reverse` moves the right way but over the WRONG RANGE
+   * (−one copy → 0), which walks the track off the right-hand edge. Measured on this docs page by
+   * stepping the animation through a full lap with the Web Animations API and asking how much of
+   * the window no copy covered: 0px at every phase in LTR, and up to a full copy of bare track in
+   * RTL (836.66px on the logo wall, the whole 1314px window on the forty-item row). Two keyframes,
+   * one per writing direction, and the gap is 0px at every phase in both. */
+  @keyframes ui-marquee-travel-rtl {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(100% / var(--marquee-copies, 2)));
+    }
+  }
+  [dir="rtl"] .ui-marquee-track {
+    animation-name: ui-marquee-travel-rtl;
+  }
+
+  /* DIRECTION IS LOGICAL: `start` travels towards the inline-start edge, which is leftwards in LTR
+   * and rightwards in RTL. The keyframe above supplies the writing direction; `reverse` supplies
+   * the prop, and it is safe HERE because reversing a lap re-uses the same range of offsets. */
+  .ui-marquee[data-direction="end"] .ui-marquee-track {
+    animation-direction: reverse;
+  }
+
+  /* PAUSE — `animation-play-state`, never a reset: the track holds exactly where it was and
+   * resumes from there (WCAG technique G4, "paused and restarted from where it was paused"). */
+  .ui-marquee[data-playing="false"] .ui-marquee-track {
+    animation-play-state: paused;
+  }
+  /* Focus inside the track always pauses, whatever `pauseOnHover` says — a moving link cannot be
+   * activated. The control is a sibling of the viewport, so focusing the control is NOT inside
+   * this scope and does not pause the thing it is offering to pause. */
+  .ui-marquee-viewport:focus-within .ui-marquee-track {
+    animation-play-state: paused;
+  }
+  /* An addition, never the mechanism: a keyboard user never hovers. */
+  .ui-marquee[data-pause-on-hover="true"] .ui-marquee-viewport:hover .ui-marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Accessibility: no motion → no travel at all. The component ALSO drops the clones and hands
+   * the track to a ScrollArea under this query, but a media rule is what guarantees that not even
+   * the first frame moves, before any hook has resolved. A horizontal translation is the textbook
+   * vestibular trigger; there is no toned-down version of it to fall back to. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-marquee-track {
+      animation: none;
     }
   }
 }

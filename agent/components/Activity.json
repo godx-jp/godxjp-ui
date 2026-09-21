@@ -1,4 +1,10 @@
 {
+  "absorbed": [
+    "Spin",
+    "Spinner",
+    "Loading",
+    "LoadingIndicator"
+  ],
   "example": "import { Activity } from \"@godxjp/ui/general\";\n\n// a channel typing indicator — no live region by default (it flickers with every socket event)\n<Activity label={t(\"channel.typing\", { name: \"佐藤\" })} />\n\n// an ambient sync mark in a header\n<Activity variant=\"bar\" tone=\"info\" label={t(\"sync.running\")} />\n\n// a reconnect notice that must actually be heard, announced once and politely\n<Activity announce=\"polite\" tone=\"warning\" label={t(\"realtime.reconnecting\")} />",
   "group": "general",
   "importPath": "@godxjp/ui/general",
@@ -43,12 +49,16 @@
     "Reveal — the one-shot ENTRANCE counterpart. Reveal runs once on mount; Activity runs forever. Both live in styles/motion.css and both drop their animation under prefers-reduced-motion.",
     "Skeleton — content is LOADING (aria-busy + a shaped placeholder). Use Skeleton when the content itself has not arrived; use Activity when content is present and something is happening elsewhere.",
     "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
-    "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists."
+    "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists.",
+    "DataState — antd `Spin`'s wrapper form (`<Spin spinning>{children}</Spin>`) over a query: skeleton → prerequisite → empty → error, with cause-aware retry. This is what to reach for when the REGION is loading.",
+    "antd `Spin` — no such component here, by a ruling recorded twice in docs/roadmap/parity-backlog.md and docs/roadmap/parity-audit-data-display-feedback.md §2.20. Its four jobs are Activity / Skeleton / DataState / Button `loading`. Its `delay` (flicker guard) is tracked separately against Button as `loadingDelay`; its `fullscreen` is a Dialog/app-shell concern, not an indicator one."
   ],
   "rules": [],
   "storyPath": "general/Activity.stories.tsx",
-  "tagline": "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live).",
+  "tagline": "The official AMBIENT-motion primitive and the standalone indeterminate indicator (antd `Spin`) — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). Loading a REGION is Skeleton; an in-flight ACTION is Button loading; a known percentage is Progress.",
   "usage": [
+    "DO read this first if you came looking for a Spin/Spinner (gh#830). antd's `Spin` is ONE component with a `spinning` boolean covering four different situations; here those are four components, because the accessible semantics of each are genuinely different: (1) something is happening ELSEWHERE, indefinitely → Activity, no live region by default; (2) the CONTENT of this region is loading → Skeleton (aria-busy + aria-live, shaped placeholders) or DataState (the whole skeleton → prerequisite → empty → error lifecycle); (3) THIS action is in flight → Button `loading` (aria-busy + activation blocked on the control itself); (4) a percentage is known → Progress. Picking by shape ('I want the round one') is how a persistent indicator ends up telling a screen reader the page is busy forever.",
+    "DO use `variant='bar'` for the indeterminate case — that IS this library's indeterminate indicator, and the mark being a sweeping bar rather than a rotating circle is a system-level decision, not a gap. antd's `Spin percent='auto'` (a synthesized percentage that never reaches 100) is deliberately NOT ported: a fabricated number over an unknown wait is a determinate-looking lie, and Progress is there for when the number is real.",
     "DO use <Activity> INSTEAD of hand-rolling `@keyframes typing-bounce` in a consumer app CSS. That re-derives interval/amplitude/stagger the DS owns as tokens (`--duration-loop`, `--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`) and needs its own prefers-reduced-motion guard — the guard consumers forget.",
     "DO NOT reuse Skeleton for an ambient indicator. Skeleton hard-codes `aria-busy='true'` + `aria-live='polite'` because it means CONTENT IS LOADING; a persistent typing indicator built on it tells every screen reader the region is busy for as long as anyone is typing, and re-announces. Activity emits neither by default.",
     "DO NOT reuse Button `loading`. That is a spinner bound to an in-flight action, on a control. Activity means something is happening indefinitely, ELSEWHERE.",

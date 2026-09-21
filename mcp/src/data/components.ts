@@ -3055,10 +3055,10 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "size",
-        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl"',
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl"',
         defaultValue: '"sm"',
         description:
-          "Golden-ratio type-scale step (2xs…2xl). NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
+          "Type-scale step. NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step. Ten steps in two ramps: 2xs…2xl is the golden-ratio UI ramp (≈11…22px, the dense enterprise scale); 3xl…5xl is the DISPLAY ramp (≈28/42/54px, derived from --font-size-display) for a marketing hero, CTA headline or stat figure. The same ladder `Heading size` reads, so a headline and the figure beside it are one step name apart.",
       },
       {
         name: "tone",
@@ -3237,7 +3237,7 @@ import { Trash2 } from "lucide-react";
     name: "Heading",
     group: "general",
     tagline:
-      "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
+      "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs.",
     props: [
       {
         name: "weight",
@@ -3249,7 +3249,14 @@ import { Trash2 } from "lucide-react";
         name: "level",
         type: "1 | 2 | 3 | 4",
         defaultValue: "2",
-        description: "Heading level — sizes from --heading-h{1..4} and renders the matching <h*>.",
+        description:
+          "Heading level — renders the matching <h*> and, unless `size` overrides it, sizes from --heading-h{1..4}.",
+      },
+      {
+        name: "size",
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl"',
+        description:
+          'Visual size, overriding the step `level` would have taken — the SAME ladder `Text size` reads. `level` still owns the document outline, so a marketing hero is `<Heading level={1} size="5xl">`: a real <h1> at 54px, with no admin screen\'s <h1> moving. Omit it and `level` decides, exactly as before. Use this INSTEAD of a bespoke `.display` class with a raw font-size.',
       },
       {
         name: "as",
@@ -3272,13 +3279,15 @@ import { Trash2 } from "lucide-react";
     useCases: [
       "A section heading on a dashboard: `<Heading level={3}>今月のKPI</Heading>`.",
       'A visually-smaller heading that must stay an <h1> for a11y: `<Heading level={1} as="h1">…</Heading>`.',
+      'A marketing hero headline: `<Heading level={1} size="5xl">` — a real <h1> on the display ramp, instead of a page-local `.display` class.',
     ],
     storyPath: "general/typography.tsx",
     rules: [6, 23],
     example: `import { Heading } from "@godxjp/ui/general";
 
 <Heading level={2}>請求書一覧</Heading>
-<Heading level={3} tone="muted">補足セクション</Heading>`,
+<Heading level={3} tone="muted">補足セクション</Heading>
+<Heading level={1} size="5xl" align="center">Ship it everywhere</Heading>`,
   },
   {
     name: "Typography",
@@ -3579,15 +3588,39 @@ import { Trash2 } from "lucide-react";
           "Stagger ordinal — an INDEX into the motion ladder, never a raw ms. Each step adds one `--reveal-stagger-step` of delay so a column of reveals cascades. 0 = enter immediately.",
       },
       {
+        name: "on",
+        type: '"mount" | "view"',
+        defaultValue: '"mount"',
+        description:
+          "What STARTS the entrance. `mount` is the historical behaviour (plays as soon as the element renders), so existing call sites are unchanged. `view` holds the entrance until the element reaches the viewport. A trigger, not a second component — same keyframes, same tokens, same reduced-motion contract, which is why there is no `ScrollReveal` here.",
+      },
+      {
+        name: "once",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'on="view" only. Reveal once and never re-hide. Default `true` because a Reveal is a ONE-SHOT entrance under either trigger — this keeps `view` semantically identical to `mount`. (Motion\'s useInView, where the prop comes from, defaults it to `false`; that is the neutral reading for a general-purpose observer, not for an entrance primitive.) `false` replays the entrance on every re-entry.',
+      },
+      {
+        name: "amount",
+        type: '"some" | "all" | number',
+        defaultValue: '"some"',
+        description:
+          "on=\"view\" only. How much of the element must be visible before it reveals — Motion's `amount`, name and type unchanged, mapped to IntersectionObserver `threshold` the same way (`some` → 0, `all` → 1, a number passes through). `all` is clamped to the most the element's own box can attain inside the viewport, because the ratio is measured against the TARGET's box: without the clamp a section taller than the viewport could never reach 1 and would stay hidden forever.",
+      },
+      {
         name: "asChild",
         type: "boolean",
         defaultValue: "false",
         description:
-          "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout.",
+          'Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout. Under `on="view"` the observed box is that child\'s own.',
       },
     ],
     usage: [
       "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
+      'DO use `on="view"` for a scroll reveal INSTEAD of adding a scroll listener or a second component. It is the same primitive with the trigger moved; the library deliberately ships no ScrollReveal/AnimateOnScroll, and no animation runtime.',
+      'DO NOT gate your own visibility on an observer. `on="view"` never does: the stylesheet\'s resting state is the finished, fully visible one, and only a mounted component holding a live IntersectionObserver writes the hidden state. A server render, jsdom, a browser without the API, and `prefers-reduced-motion: reduce` (under which NO observer is attached at all) therefore all show the content.',
+      'DO reach for `amount` rather than a margin when a reveal should wait — the default `"some"` fires on the first visible pixel (threshold 0), which is the earliest and never reads as late. There is deliberately no `margin`/`rootMargin` prop: it accepts px/% only, so it could not read a design token.',
       "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
       "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
       "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
@@ -3598,6 +3631,8 @@ import { Trash2 } from "lucide-react";
       "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
       "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
       "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in.",
+      'Long marketing/landing page: `<Reveal on="view">` per section so each band enters as the reader reaches it, instead of all of them firing above the fold on load.',
+      'A long feed or report where only the first screen should animate on load: `<Reveal on="view" amount={0.25}>` — a quarter visible before the entrance starts.',
     ],
     related: [
       "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
@@ -3617,15 +3652,30 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
   <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>
     <Card><CardContent>{item.label}</CardContent></Card>
   </Reveal>
-))}`,
+))}
+
+// scroll reveal — same component, the trigger moved to the viewport
+<Reveal on="view">
+  <Card><CardContent>…</CardContent></Card>
+</Reveal>
+
+// wait until a quarter of the section is visible, and replay on every re-entry
+<Reveal on="view" amount={0.25} once={false}>
+  <Card><CardContent>…</CardContent></Card>
+</Reveal>`,
     storyPath: "general/Reveal.stories.tsx",
     rules: [],
   },
   {
     name: "Activity",
+    // gh#830 — "there is no standalone spinner in 165 components". There is: this is it, and the
+    // reason nobody found it is that the catalog never said the word. antd's `Spin` is FOUR
+    // components here, deliberately (parity-backlog.md ruled it COVERED-ELSEWHERE twice), so the
+    // name lands on the standalone indicator and `related` forks to the other three readings.
+    absorbed: ["Spin", "Spinner", "Loading", "LoadingIndicator"],
     group: "general",
     tagline:
-      "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live).",
+      "The official AMBIENT-motion primitive and the standalone indeterminate indicator (antd `Spin`) — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). Loading a REGION is Skeleton; an in-flight ACTION is Button loading; a known percentage is Progress.",
     props: [
       {
         name: "variant",
@@ -3668,6 +3718,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      "DO read this first if you came looking for a Spin/Spinner (gh#830). antd's `Spin` is ONE component with a `spinning` boolean covering four different situations; here those are four components, because the accessible semantics of each are genuinely different: (1) something is happening ELSEWHERE, indefinitely → Activity, no live region by default; (2) the CONTENT of this region is loading → Skeleton (aria-busy + aria-live, shaped placeholders) or DataState (the whole skeleton → prerequisite → empty → error lifecycle); (3) THIS action is in flight → Button `loading` (aria-busy + activation blocked on the control itself); (4) a percentage is known → Progress. Picking by shape ('I want the round one') is how a persistent indicator ends up telling a screen reader the page is busy forever.",
+      "DO use `variant='bar'` for the indeterminate case — that IS this library's indeterminate indicator, and the mark being a sweeping bar rather than a rotating circle is a system-level decision, not a gap. antd's `Spin percent='auto'` (a synthesized percentage that never reaches 100) is deliberately NOT ported: a fabricated number over an unknown wait is a determinate-looking lie, and Progress is there for when the number is real.",
       "DO use <Activity> INSTEAD of hand-rolling `@keyframes typing-bounce` in a consumer app CSS. That re-derives interval/amplitude/stagger the DS owns as tokens (`--duration-loop`, `--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`) and needs its own prefers-reduced-motion guard — the guard consumers forget.",
       "DO NOT reuse Skeleton for an ambient indicator. Skeleton hard-codes `aria-busy='true'` + `aria-live='polite'` because it means CONTENT IS LOADING; a persistent typing indicator built on it tells every screen reader the region is busy for as long as anyone is typing, and re-announces. Activity emits neither by default.",
       "DO NOT reuse Button `loading`. That is a spinner bound to an in-flight action, on a control. Activity means something is happening indefinitely, ELSEWHERE.",
@@ -3691,6 +3743,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Skeleton — content is LOADING (aria-busy + a shaped placeholder). Use Skeleton when the content itself has not arrived; use Activity when content is present and something is happening elsewhere.",
       "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
       "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists.",
+      "DataState — antd `Spin`'s wrapper form (`<Spin spinning>{children}</Spin>`) over a query: skeleton → prerequisite → empty → error, with cause-aware retry. This is what to reach for when the REGION is loading.",
+      "antd `Spin` — no such component here, by a ruling recorded twice in docs/roadmap/parity-backlog.md and docs/roadmap/parity-audit-data-display-feedback.md §2.20. Its four jobs are Activity / Skeleton / DataState / Button `loading`. Its `delay` (flicker guard) is tracked separately against Button as `loadingDelay`; its `fullscreen` is a Dialog/app-shell concern, not an indicator one.",
     ],
     example: `import { Activity } from "@godxjp/ui/general";
 
@@ -16849,6 +16903,157 @@ const messages: ChatMessageProp[] = [
     rules: [2, 6, 23, 44, 45],
   },
   {
+    name: "MegaMenu",
+    group: "navigation",
+    tagline:
+      'A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode="horizontal"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow.',
+    props: [
+      {
+        name: "items",
+        type: "MegaMenuItemProp[]",
+        description:
+          "The bar. An item WITH a `panel` is a disclosure button (antd SubMenuType); an item WITHOUT one is a plain link (antd MenuItemType). { key, label, href?, icon?, disabled?, panel? } where panel is { groups: [{ key, label?, description?, icon?, links: [{ key, label, href?, description?, icon?, disabled? }] }], footer? }. Ant Design `items`.",
+      },
+      {
+        name: "open",
+        type: "string | null",
+        description:
+          "Key of the OPEN PANEL, or null for none. Ant Design `openKeys` collapsed to one level — a megamenu bar is one level deep, so at most one panel is open and the array would only ever hold zero or one key.",
+      },
+      {
+        name: "defaultOpen",
+        type: "string | null",
+        description: "Initial uncontrolled open panel. Ant Design `defaultOpenKeys`.",
+        defaultValue: "null",
+      },
+      {
+        name: "onOpenChange",
+        type: "(key: string | null) => void",
+        description:
+          "Fires with the newly open panel's key, or null when everything closed. Ant Design `onOpenChange`.",
+      },
+      {
+        name: "value",
+        type: "string",
+        description:
+          'Key of the item for the CURRENT ROUTE — renders aria-current="page" on the bar item and on the matching panel link. Ant Design `selectedKeys`, singular because a route is singular.',
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial current route. Ant Design `defaultSelectedKeys`.",
+      },
+      {
+        name: "onValueChange",
+        type: "(key: string) => void",
+        description:
+          "Fires with the activated key (a top-level link or a panel link). Activation always closes the open panel. Ant Design `onClick`.",
+      },
+      {
+        name: "size",
+        type: "xs | sm | md | lg",
+        description: "Bar density. The trigger box tracks the matching --control-height tier.",
+        defaultValue: "md",
+      },
+      {
+        name: "triggerAction",
+        type: "click | hover",
+        description:
+          "Ant Design `triggerSubMenuAction`. Default is `click` here where antd defaults to `hover`, because a hover-only trigger has no equivalent on a touch screen; `hover` still accepts click, so touch is never stranded. antd's third value `contextMenu` is not ported.",
+        defaultValue: "click",
+      },
+      {
+        name: "openDelay",
+        type: "number",
+        description:
+          "Ant Design `subMenuOpenDelay`, in MILLISECONDS (antd uses seconds). `hover` only.",
+        defaultValue: "0",
+      },
+      {
+        name: "closeDelay",
+        type: "number",
+        description:
+          "Ant Design `subMenuCloseDelay`, in MILLISECONDS. The hover-intent grace period: the pointer may cross a diagonal toward the panel for this long before anything closes. `hover` only.",
+        defaultValue: "100",
+      },
+      {
+        name: "expandIcon",
+        type: "React.ReactNode | false",
+        description:
+          "Ant Design `expandIcon`, verbatim including its `false` to remove the chevron.",
+      },
+      {
+        name: "linkComponent",
+        type: "React.ComponentType<AnchorHTMLAttributes & { href?: string }>",
+        description:
+          "Router link component for every href in the bar and the panels — same contract and same spelling as Sidebar.linkComponent / NavList.linkComponent.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name of the <nav> landmark (a plain string — it lands on aria-label). Localized default otherwise.",
+      },
+      { name: "id", type: "string", description: "DOM id of the nav root." },
+    ],
+    usage: [
+      'DO reach for this INSTEAD of DropdownMenu for a site nav. DropdownMenu is react-aria-components Menu, i.e. role="menu" / role="menuitem": a row of them announces a desktop application menubar for what is actually a set of links, and Tab then leaves the whole widget instead of walking the links. That is the classic megamenu a11y defect and it is why this component exists.',
+      "DO give the bar its landmark name through `label` when a page has more than one nav (a primary bar plus a footer nav): two unnamed <nav> landmarks are indistinguishable in a landmark list.",
+      "DO drive `value` from your router. A change to it CLOSES the open panel, which is the close-on-route-change half of the contract and needs no router dependency here.",
+      "DO use `linkComponent` for a client-side router; the library composes the row and your component renders only the <a>.",
+      "DON'T nest a second level inside a panel. A panel is exactly one level deep by construction (`groups[].links[]`) — antd's arbitrary SubMenu nesting is `Sidebar`/`NavList` territory, not a bar.",
+      "DON'T set `triggerAction=\"hover\"` and then also hide the trigger's own affordance: hover still opens on click here precisely so a touch user is not stranded, and WCAG 1.4.13 applies to anything hover-revealed.",
+      "DON'T add a `theme=\"dark\"` prop expecting antd's. This library inverts by role scoping ([data-tenant] / per-region), and every surface here is a --mega-menu-* token (rules #44/#45).",
+      "KNOW that the open panel is `position: fixed` and its geometry is MEASURED from the bar, not inherited. That is not a preference: an absolutely-positioned panel is clipped away by both surfaces a megamenu lives in (`Topbar`'s slots are `overflow: clip`, `Card` is `overflow: hidden` — measured at 331px of 348px gone, and not hit-testable). The consequence for you is that an open panel OVERLAYS what is beneath it, so do not leave one open by default in the middle of a scrolling page.",
+    ],
+    useCases: [
+      "A marketing or product site's primary navigation, where Products / Solutions / Resources each open a panel of grouped links rather than a narrow list.",
+      "An admin console with several product areas: a top bar where a section opens a panel of its screens, grouped with headings and one-line descriptions.",
+      "A documentation site's top bar, where the current page is marked with aria-current in both the bar and the open panel.",
+    ],
+    related: [
+      'DropdownMenu — a menu of COMMANDS on a trigger (role="menu"). Use it for actions; use MegaMenu for navigation to places.',
+      'NavList — the same idea laid out vertically inside a page (a settings nav). antd\'s `Menu mode="inline"` is Sidebar; `mode="vertical"` is NavList.',
+      "Topbar / TopbarItem — the APP shell's bar, and NOT where this goes. Measured, both slots break it: `topbar-center` is `display: none` below roughly 1280px (flex at 1440, none at 1024) so the nav vanishes on a laptop, and `topbar-start` is one `overflow: clip` / `flex-wrap: nowrap` row, so the narrow accordion runs out of it (58 elements past the viewport at 375). Put MegaMenu in the site header's own row beside the logo, and give phone width a `Sheet` behind a trigger — which is what real sites do anyway.",
+      "Tabs — switches which panel of the SAME page is shown. A nav goes somewhere else.",
+      "Breadcrumb — where you are in the hierarchy, not where you can go.",
+    ],
+    example: [
+      'import { MegaMenu } from "@godxjp/ui/navigation";',
+      "",
+      "<MegaMenu",
+      '  label="メインナビゲーション"',
+      "  value={route}",
+      "  onValueChange={setRoute}",
+      '  triggerAction="hover"',
+      "  items={[",
+      "    {",
+      '      key: "products",',
+      '      label: "製品",',
+      "      panel: {",
+      "        groups: [",
+      "          {",
+      '            key: "core",',
+      '            label: "コア",',
+      '            description: "毎日使う業務アプリ",',
+      "            links: [",
+      '              { key: "hr", label: "人事管理", href: "/hr", description: "従業員台帳と異動" },',
+      '              { key: "payroll", label: "給与計算", href: "/payroll" },',
+      "            ],",
+      "          },",
+      "        ],",
+      '        footer: <a href="/products">すべての製品を見る</a>,',
+      "      },",
+      "    },",
+      '    { key: "pricing", label: "料金", href: "/pricing" },',
+      "  ]}",
+      "/>",
+    ].join("\n"),
+    docPath: "navigation/mega-menu.tsx",
+    storyPath: "navigation/MegaMenu.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
+  {
     name: "Welcome",
     group: "data-display",
     tagline:
@@ -17150,6 +17355,107 @@ const messages: ChatMessageProp[] = [
     docPath: "data-entry/attachments.tsx",
     storyPath: "data-entry/Attachments.stories.tsx",
     rules: [6, 44, 45],
+  },
+  {
+    name: "Marquee",
+    group: "data-display",
+    tagline:
+      "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          "The row of content. Rendered ONCE for real; every further copy that fills the track is an aria-hidden + inert clone, so the accessibility tree and the tab order see it exactly once however wide the viewport is.",
+      },
+      {
+        name: "play",
+        type: "boolean",
+        description:
+          "Controlled motion state; pass with `onPlayChange`. Exists so one page-level 'stop all motion' switch can halt every track at once. The built-in pause control stays either way.",
+      },
+      {
+        name: "defaultPlay",
+        type: "boolean",
+        description:
+          "Uncontrolled initial state. Default true. Set false where the motion is not the point of the screen: WebAIM recommends animated content be paused by default.",
+      },
+      {
+        name: "onPlayChange",
+        type: "(play: boolean) => void",
+        description: "Fires on every transition, from the built-in control or a controlled write.",
+      },
+      {
+        name: "direction",
+        type: '"start" | "end"',
+        description:
+          'The edge the content travels TOWARDS, spelled logically. Default `start`, which follows the reading direction; both members mirror under dir="rtl" with no prop change.',
+      },
+      {
+        name: "speed",
+        type: '"slow" | "base" | "fast"',
+        description:
+          "Pace ordinal over the `--marquee-interval` motion token (a duration per SCREENFUL, so the pace is the same with one item or forty). Default `base`. Not px/s: a raw number is neither themeable nor width-aware.",
+      },
+      {
+        name: "gap",
+        type: "GapProp",
+        description:
+          "Space between items AND between copies, as a token step. Defaults to the `--marquee-gap-inline` token.",
+      },
+      {
+        name: "pauseOnHover",
+        type: "boolean",
+        description:
+          "Also pause under the pointer. Default false. An ADDITION to the pause control, never the mechanism. Focus inside the track always pauses it regardless.",
+      },
+      {
+        name: "fade",
+        type: "boolean",
+        description:
+          "Mask both edges over `--marquee-mask-width`. Default false. A mask, not an opaque gradient colour, so it follows a themed or dark background.",
+      },
+      {
+        name: "label",
+        type: "ReactNode",
+        description:
+          "Names the CONTENT (\"partner logos\"), not the button. The control's accessible name is composed from it and the state verb ('Pause scrolling: partner logos'), so the name still flips when the state does. A non-string node is ignored.",
+      },
+      { name: "className", type: "string", description: "Structural class on the root." },
+    ],
+    usage: [
+      "DO leave the pause control alone. WCAG 2.2 SC 2.2.2 makes it a conformance requirement for anything that moves automatically for more than five seconds beside other content, and technique F16 names 'a scrolling news ticker without a mechanism to pause it' as the failure by example.",
+      "DO ask first whether it should move at all. Nielsen Norman Group and WebAIM both discourage auto-moving content, and no major design system ships a ticker. A static `Flex wrap` or `ResponsiveGrid` logo wall is usually the better screen; `defaultPlay={false}` is the middle ground.",
+      "DO use `play` / `onPlayChange` for a page-level 'reduce motion on this screen' switch across several tracks.",
+      "DON'T reach for `pauseOnHover` as the pause mechanism. A keyboard user never hovers; that is exactly the gap in `react-fast-marquee`, whose clones also carry no `aria-hidden`.",
+      "DON'T put essential, non-duplicated information in it. A reader who looks away misses it, and under prefers-reduced-motion the row becomes a scrollable strip instead.",
+      "DON'T wrap it in your own overflow/animation CSS. The clone count and the lap distance are measured; a second overflow box breaks the measurement and the seam.",
+      'DON\'T add a role. `role="marquee"` is a LIVE REGION for frequently CHANGING content; here nothing changes, only its position. Wrap it in a labelled <section> when the collection needs a name.',
+    ],
+    useCases: [
+      "A partner or customer logo wall on a marketing page, where the row is wider than the viewport.",
+      "An announcement or status strip above an application shell (maintenance windows, release notes) that must stay pausable.",
+      "A 'now processing' rail of job identifiers beside a dashboard, where the motion signals activity rather than carrying the data.",
+    ],
+    related: [
+      "Carousel — the answer whenever the reader should STEP through discrete items. It is user-driven, has prev/next and dots, and does not move on its own.",
+      "Activity — ambient motion with no travel: a pulse or three dots that say something is happening, with no content to read.",
+      "ScrollArea — what a Marquee becomes under prefers-reduced-motion, and what to reach for directly when the row should simply be scrollable.",
+      "Flex / ResponsiveGrid — the static logo wall. Start here; add motion only when something asks for it.",
+    ],
+    example: `import { Marquee } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+
+<Marquee fade pauseOnHover label={t("partners.pauseLogos")}>
+  {partners.map((partner) => (
+    <Text key={partner.id} size="sm" tone="muted">
+      {partner.name}
+    </Text>
+  ))}
+</Marquee>`,
+    docPath: "data-display/marquee.tsx",
+    storyPath: "data-display/Marquee.stories.tsx",
+    rules: [2, 44, 45],
   },
   {
     name: "Masonry",

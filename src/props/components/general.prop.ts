@@ -14,12 +14,14 @@ import type {
   HeadingLevelProp,
   IconSizeProp,
   IdProp,
+  InViewAmountProp,
   LabelProp,
   OnClickProp,
   OnOpenChangeProp,
   OpenProp,
   PendingProp,
   RevealDelayProp,
+  RevealTriggerProp,
   ShapeProp,
   SizeProp,
   TextAlignProp,
@@ -136,10 +138,24 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
     download?: React.AnchorHTMLAttributes<HTMLAnchorElement>["download"];
   };
 
-/** @see Heading — h1..h4 sized from the `--heading-h*` tokens. */
+/** @see Heading — h1..h4 sized from the `--heading-h*` tokens, or from `size` when one is given. */
 export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"> & {
   /** Heading level — sets size token AND the semantic element (override the element with `as`). */
   level?: HeadingLevelProp;
+  /**
+   * Visual size, overriding the step `level` would have taken — the SAME ten-step ladder
+   * `Text size` reads, so a headline and a stat figure beside it are one step name apart rather
+   * than a lookup between two ramps.
+   *
+   * `level` still owns the document outline, and that separation is the point (gh#826). The
+   * enterprise heading ramp tops out at `--heading-h1` ≈ 20px by deliberate 渋み restraint, so a
+   * marketing hero had no way to be both a real `<h1>` and 54px: the display tokens existed,
+   * nothing public reached them, and every marketing page wrote its own class instead. Now it is
+   * `<Heading level={1} size="5xl">`, and no admin screen's `<h1>` moves.
+   *
+   * Omit it and `level` decides, exactly as before — this is an override, not a second default.
+   */
+  size?: TextSizeProp;
   as?: "h1" | "h2" | "h3" | "h4" | "div";
   tone?: TextToneProp;
   align?: TextAlignProp;
@@ -359,10 +375,20 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 /**
  * @see Reveal — entrance-motion primitive (staggered fade-up). Wraps content in a real element
- * that animates in on mount reading the DS motion tokens (`--duration-slow`, `--ease-emphasized`,
+ * that animates in reading the DS motion tokens (`--duration-slow`, `--ease-emphasized`,
  * `--reveal-distance`), replacing hand-rolled `@keyframes` + `.app-reveal`/`.d1..d6` classes.
  * Honours `prefers-reduced-motion` — the animation is dropped and content stays fully visible with
  * no layout shift.
+ *
+ * `on` moves the TRIGGER and nothing else (gh#829): `"mount"` is the historical behaviour, `"view"`
+ * waits for the viewport. There is deliberately no second `ScrollReveal` component — same
+ * animation, same tokens, same reduced-motion contract, one extra prop.
+ *
+ * **Visibility is never gated on the observer.** The resting state in the stylesheet is the FINAL,
+ * fully visible one; only a mounted component that has attached a live `IntersectionObserver` and
+ * measured the element as still outside the viewport writes the hidden state. A server render,
+ * jsdom, a browser without `IntersectionObserver` and `prefers-reduced-motion: reduce` therefore
+ * all show the content — a reveal that never reveals is the worst outcome available here.
  */
 export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
   /** Child content to reveal on enter. */
@@ -372,6 +398,26 @@ export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
    * `--reveal-stagger-step` of delay so sibling reveals cascade.
    */
   delay?: RevealDelayProp;
+  /**
+   * What starts the entrance. Default `"mount"` — today's behaviour, so nothing moves for existing
+   * consumers. `"view"` holds the entrance until the element reaches the viewport.
+   */
+  on?: RevealTriggerProp;
+  /**
+   * `on="view"` only. Reveal once and never re-hide. Default `true` — a `Reveal` is a ONE-SHOT
+   * entrance under either trigger, so this keeps `"view"` semantically identical to `"mount"`.
+   * (Motion's `useInView`, where this prop comes from, defaults it to `false`; that is the neutral
+   * reading for a general-purpose observer, not for an entrance primitive.) `false` re-plays the
+   * entrance on every re-entry.
+   */
+  once?: boolean;
+  /**
+   * `on="view"` only. How much of the element must be visible before it reveals — Motion's
+   * `amount`, unchanged: `"some"` (default, any pixel) | `"all"` | an explicit `0..1` ratio.
+   * `"all"` is clamped to the most the element's own box can show inside the viewport, so a
+   * full-height section still reveals.
+   */
+  amount?: InViewAmountProp;
   /**
    * Merge the reveal behaviour onto the single child element (Radix `Slot`) instead of rendering a
    * wrapper `<div>` — use when an extra box would break a grid/flex layout. Default `false`.

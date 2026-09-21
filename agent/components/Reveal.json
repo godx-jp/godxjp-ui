@@ -1,5 +1,5 @@
 {
-  "example": "import { Reveal } from \"@godxjp/ui/general\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\n\n// single entrance\n<Reveal>\n  <Card><CardContent>…</CardContent></Card>\n</Reveal>\n\n// staggered column\n{items.map((item, i) => (\n  <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>\n    <Card><CardContent>{item.label}</CardContent></Card>\n  </Reveal>\n))}",
+  "example": "import { Reveal } from \"@godxjp/ui/general\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\n\n// single entrance\n<Reveal>\n  <Card><CardContent>…</CardContent></Card>\n</Reveal>\n\n// staggered column\n{items.map((item, i) => (\n  <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>\n    <Card><CardContent>{item.label}</CardContent></Card>\n  </Reveal>\n))}\n\n// scroll reveal — same component, the trigger moved to the viewport\n<Reveal on=\"view\">\n  <Card><CardContent>…</CardContent></Card>\n</Reveal>\n\n// wait until a quarter of the section is visible, and replay on every re-entry\n<Reveal on=\"view\" amount={0.25} once={false}>\n  <Card><CardContent>…</CardContent></Card>\n</Reveal>",
   "group": "general",
   "importPath": "@godxjp/ui/general",
   "name": "Reveal",
@@ -17,8 +17,26 @@
       "type": "0 | 1 | 2 | 3 | 4 | 5 | 6"
     },
     {
+      "defaultValue": "\"mount\"",
+      "description": "What STARTS the entrance. `mount` is the historical behaviour (plays as soon as the element renders), so existing call sites are unchanged. `view` holds the entrance until the element reaches the viewport. A trigger, not a second component — same keyframes, same tokens, same reduced-motion contract, which is why there is no `ScrollReveal` here.",
+      "name": "on",
+      "type": "\"mount\" | \"view\""
+    },
+    {
+      "defaultValue": "true",
+      "description": "on=\"view\" only. Reveal once and never re-hide. Default `true` because a Reveal is a ONE-SHOT entrance under either trigger — this keeps `view` semantically identical to `mount`. (Motion's useInView, where the prop comes from, defaults it to `false`; that is the neutral reading for a general-purpose observer, not for an entrance primitive.) `false` replays the entrance on every re-entry.",
+      "name": "once",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "\"some\"",
+      "description": "on=\"view\" only. How much of the element must be visible before it reveals — Motion's `amount`, name and type unchanged, mapped to IntersectionObserver `threshold` the same way (`some` → 0, `all` → 1, a number passes through). `all` is clamped to the most the element's own box can attain inside the viewport, because the ratio is measured against the TARGET's box: without the clamp a section taller than the viewport could never reach 1 and would stay hidden forever.",
+      "name": "amount",
+      "type": "\"some\" | \"all\" | number"
+    },
+    {
       "defaultValue": "false",
-      "description": "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout.",
+      "description": "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout. Under `on=\"view\"` the observed box is that child's own.",
       "name": "asChild",
       "type": "boolean"
     }
@@ -33,6 +51,9 @@
   "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes.",
   "usage": [
     "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
+    "DO use `on=\"view\"` for a scroll reveal INSTEAD of adding a scroll listener or a second component. It is the same primitive with the trigger moved; the library deliberately ships no ScrollReveal/AnimateOnScroll, and no animation runtime.",
+    "DO NOT gate your own visibility on an observer. `on=\"view\"` never does: the stylesheet's resting state is the finished, fully visible one, and only a mounted component holding a live IntersectionObserver writes the hidden state. A server render, jsdom, a browser without the API, and `prefers-reduced-motion: reduce` (under which NO observer is attached at all) therefore all show the content.",
+    "DO reach for `amount` rather than a margin when a reveal should wait — the default `\"some\"` fires on the first visible pixel (threshold 0), which is the earliest and never reads as late. There is deliberately no `margin`/`rootMargin` prop: it accepts px/% only, so it could not read a design token.",
     "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
     "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
     "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
@@ -42,6 +63,8 @@
     "Auth card entrance: `<AuthShell><Reveal><Card/></Reveal></AuthShell>` — the sign-in card fades up on load, respecting reduced-motion.",
     "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
     "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
-    "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in."
+    "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in.",
+    "Long marketing/landing page: `<Reveal on=\"view\">` per section so each band enters as the reader reaches it, instead of all of them firing above the fold on load.",
+    "A long feed or report where only the first screen should animate on load: `<Reveal on=\"view\" amount={0.25}>` — a quarter visible before the entrance starts."
   ]
 }

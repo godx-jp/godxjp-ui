@@ -55,6 +55,23 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+export { MegaMenu } from "./mega-menu";
+export type {
+  MegaMenuProp,
+  MegaMenuProps,
+  MegaMenuItemProp,
+  MegaMenuItemProps,
+  MegaMenuPanelProp,
+  MegaMenuPanelProps,
+  MegaMenuGroupProp,
+  MegaMenuGroupProps,
+  MegaMenuLinkProp,
+  MegaMenuLinkProps,
+  MegaMenuLinkComponentProp,
+  MegaMenuLinkComponentProps,
+  MegaMenuTriggerActionProp,
+  MegaMenuTriggerActionProps,
+} from "./mega-menu";
 export { Conversations } from "./conversations";
 export type {
   ConversationsProp,

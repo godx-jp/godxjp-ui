@@ -150,7 +150,7 @@
   {
     "group": "general",
     "name": "Heading",
-    "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>."
+    "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs."
   },
   {
     "group": "general",
@@ -183,9 +183,15 @@
     "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes."
   },
   {
+    "absorbed": [
+      "Spin",
+      "Spinner",
+      "Loading",
+      "LoadingIndicator"
+    ],
     "group": "general",
     "name": "Activity",
-    "tagline": "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live)."
+    "tagline": "The official AMBIENT-motion primitive and the standalone indeterminate indicator (antd `Spin`) — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). Loading a REGION is Skeleton; an in-flight ACTION is Button loading; a known percentage is Progress."
   },
   {
     "group": "general",
@@ -831,6 +837,11 @@
     "tagline": "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets — the whole rail one roving-tabindex tab stop, not one tab stop per conversation."
   },
   {
+    "group": "navigation",
+    "name": "MegaMenu",
+    "tagline": "A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode=\"horizontal\"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow."
+  },
+  {
     "group": "data-display",
     "name": "Welcome",
     "tagline": "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW — which is the placement a hand-roll gets wrong."
@@ -849,6 +860,11 @@
     "group": "data-entry",
     "name": "Attachments",
     "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`."
+  },
+  {
+    "group": "data-display",
+    "name": "Marquee",
+    "tagline": "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all."
   },
   {
     "group": "layout",

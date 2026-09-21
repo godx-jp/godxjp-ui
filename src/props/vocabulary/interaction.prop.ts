@@ -34,8 +34,32 @@ export type ShapeProp = "default" | "pill" | "sharp";
  */
 export type AvatarShapeProp = "circle" | "square";
 
-/** Text size — steps of the golden-ratio type scale (NEVER an arbitrary px). `sm` = base. */
-export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+/**
+ * Text size — steps of the type scale (NEVER an arbitrary px). `sm` = base.
+ *
+ * TEN steps, in TWO ramps that meet at `2xl`, exactly where Tailwind's own scale stops naming
+ * t-shirt sizes and starts counting (`xl` → `2xl` → `3xl`):
+ *
+ *  - `2xs`…`2xl` — the UI ramp. `--font-size-base` × `--font-size-ratio`ⁿ (φ^¼), ≈11…22px. This is
+ *    the dense enterprise scale and nothing about it moves.
+ *  - `3xl`…`5xl` — the DISPLAY ramp, ≈28/42/54px, for a marketing hero / CTA headline. Its own
+ *    base is `--font-size-display` and its own step is `--font-size-display-ratio` (1.28, bolder
+ *    than the body's φ^¼ because marketing wants more contrast), so a service retunes the whole
+ *    display ramp without touching a single admin screen.
+ *
+ * The four display tokens shipped at `foundation.css:513-521` with NOTHING public able to reach
+ * them, so every marketing page wrote its own `font-size` class instead — 58 bespoke classes
+ * across two showcases (gh#826). These three steps ARE that public surface. `--font-size-display`
+ * itself is deliberately NOT a step: it is the ramp's single re-tuning knob and `5xl` already
+ * resolves to it, so a `"display"` member would be a second name for the same value.
+ *
+ * SHARED WITH `Heading size`, on purpose. Radix Themes is the prior art — one numeric ladder that
+ * `Heading` and `Text` both read, so "make this figure as big as that headline" is one step name
+ * rather than a lookup between two ramps. (Material 3 and Polaris take the other fork, named ROLES
+ * on separate ramps; that fork is equally defensible but it would put a second size vocabulary
+ * beside this one, which `check:prop-vocabulary` exists to prevent.)
+ */
+export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
 
 /**
  * Icon size — the NINE steps of the `--icon-size-*` scale (docs/TOKENS.md · gh#326), not the four
@@ -327,6 +351,21 @@ export type SortStateProp = { key: string; direction: SortDirectionProp };
  * rows cascades in.
  */
 export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/**
+ * What STARTS a `Reveal` — `mount` (default, the historical behaviour: the entrance plays as soon
+ * as the element renders) or `view` (the entrance waits until the element reaches the viewport).
+ * A trigger, never a second component: the animation, the tokens and the reduced-motion contract
+ * are identical either way.
+ */
+export type RevealTriggerProp = "mount" | "view";
+
+/**
+ * How much of an element must be inside the viewport to count as in view — Motion's `useInView`
+ * `amount`, name and type unchanged. `"some"` (default) is any pixel, `"all"` is the whole box, a
+ * number is an explicit 0..1 ratio.
+ */
+export type InViewAmountProp = "some" | "all" | number;
 
 /**
  * Ambient-activity mark for `Activity` — the LOOP counterpart to `RevealDelayProp`'s one-shot

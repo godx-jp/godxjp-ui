@@ -32,7 +32,7 @@ import {
   Warehouse,
 } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Icon, Text } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback, Card, CardContent, CardCover } from "@godxjp/ui/data-display";
 import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
 
@@ -52,6 +52,7 @@ const THEME = `
      3.18 on --muted. It was 216 16% 80% = 1.46:1. --border is decorative chrome; it stays. */
   --border: 214 27% 90%; --input: 216 16% 55%;
   --success: 152 100% 25%; --warning: 41 73% 53%; --destructive: 11 82% 56%; --info: 203 100% 37%;
+  --letter-spacing-tight: -0.02em; /* the display tracking .tx-display/.tx-h2 hand-wrote, once */
   --radius: 0.875rem; --radius-md: 10px; --radius-lg: 14px;
   --card-radius: var(--radius); --control-radius: var(--radius);
   --shadow-color: 38 79 145;
@@ -62,33 +63,44 @@ const THEME = `
   --font-family-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-family-sans: var(--font-family-body);
   --text-brand: 41 84% 26%;          /* dark gold, eyebrows clear AA on light sections */
+  /* The glass bar, opted into once (gh#831). These two used to be a literal 0.85 alpha and a
+     literal 10px blur on .tx-navbar. futurelastic-web.tsx hand-wrote the identical pair. */
+  --topbar-background-alpha: 85%;
+  --topbar-backdrop-blur-size: 10px;
 }
 /* Marketing layout + type (a consumer's section stylesheet) */
-[data-tenant="acme-web"] .tx-shell { margin-inline: auto; width: 100%; max-width: 1200px; padding-inline: 2rem;
+[data-tenant="acme-web"] .tx-shell { margin-inline: auto; width: 100%; max-inline-size: var(--page-measure-wide);
+  padding-inline: var(--space-8);
   /* ResponsiveGrid uses @container queries, so establish the container here (PageContainer does this
    * in an app; a marketing composition provides it on its own shell). */
   container-type: inline-size; }
-[data-tenant="acme-web"] .tx-section { padding-block: 5rem; }
-[data-tenant="acme-web"] .tx-navbar { position: sticky; top: 0; z-index: 30; background: hsl(var(--background) / 0.85);
-  backdrop-filter: blur(10px); border-bottom: 1px solid hsl(var(--border)); }
+[data-tenant="acme-web"] .tx-section { padding-block: var(--space-section-band); }
+/* The sticky header IS this page's bar region, so it reads the --topbar-* glass knobs. It is not a
+   <Topbar> for one reason: the glass must span the full bleed while the bar's CONTENT stays on the
+   .tx-shell measure, and Topbar is a single flex row with no inner shell. */
+[data-tenant="acme-web"] .tx-navbar { position: sticky; inset-block-start: 0; z-index: 30;
+  background-color: hsl(var(--background) / var(--topbar-background-alpha));
+  backdrop-filter: blur(var(--topbar-backdrop-blur-size));
+  border-block-end: var(--stroke-hairline) solid hsl(var(--border)); }
 [data-tenant="acme-web"] .tx-navbar-inner { height: 72px; display: flex; align-items: center; gap: 2.25rem; }
 [data-tenant="acme-web"] .tx-brand { font-family: var(--font-family-display); font-weight: 800; font-size: 1.375rem; letter-spacing: -0.01em; color: hsl(var(--foreground)); }
 [data-tenant="acme-web"] .tx-eyebrow { font-family: var(--font-family-display); font-weight: 700; font-size: 0.8125rem;
   letter-spacing: 0.12em; text-transform: uppercase; color: hsl(var(--text-brand)); }
-[data-tenant="acme-web"] .tx-display { font-family: var(--font-family-display); font-weight: 900; font-size: 3.5rem;
-  line-height: 1.05; letter-spacing: -0.02em; margin: 1rem 0; color: hsl(var(--foreground)); }
-[data-tenant="acme-web"] .tx-h2 { font-family: var(--font-family-display); font-weight: 800; font-size: 2.25rem;
-  line-height: 1.15; letter-spacing: -0.02em; margin: 0.75rem 0 0.625rem; color: hsl(var(--foreground)); }
-[data-tenant="acme-web"] .tx-lead { font-size: 1.1875rem; line-height: 1.6; color: hsl(var(--muted-foreground)); max-width: 480px; }
+/* .tx-display / .tx-h2 / .tx-lead are GONE (gh#826). They existed only because the display type
+   ramp had tokens and no prop, so all three were a raw font-size plus the leading that has to come
+   with it. They are now Heading size="5xl", Heading size="4xl" and Text size="xl". The
+   brand face is not lost with them: base.css already points every <h1>-<h6> at
+   --font-family-display, which the token block above sets. The one knob those classes carried that
+   is genuinely brand and not scale is the display tracking, and it IS a token — set once, below. */
 /* --text-brand, not --primary (gh#643): --primary is a FILL role, and as ink it measured
    2.01:1 here. The AA-safe text tier already exists and .tx-eyebrow above already reads it. */
 [data-tenant="acme-web"] .tx-gold { color: hsl(var(--text-brand)); }
 [data-tenant="acme-web"] .tx-stat { font-family: var(--font-family-display); font-weight: 800; font-size: 1.75rem; color: hsl(var(--primary)); }
-[data-tenant="acme-web"] .tx-hero-grid { display: grid; gap: 3rem; align-items: center; padding-block: 6rem; }
+[data-tenant="acme-web"] .tx-hero-grid { display: grid; gap: var(--space-12); align-items: center; padding-block: var(--space-section-hero); }
 @media (min-width: 1024px) { [data-tenant="acme-web"] .tx-hero-grid { grid-template-columns: 1.1fr 0.9fr; } }
-[data-tenant="acme-web"] .tx-glow { position: absolute; inset: 0; pointer-events: none; }
-[data-tenant="acme-web"] .tx-glow-tr { background: radial-gradient(40% 50% at 88% -10%, hsl(41 73% 53% / 0.22), transparent 70%); }
-[data-tenant="acme-web"] .tx-glow-bl { background: radial-gradient(40% 50% at 12% 120%, hsl(41 73% 53% / 0.18), transparent 70%); }
+/* .tx-glow* are GONE too: .ui-brand-glow shipped with exactly this gradient and these four
+   knobs, and nothing in the repo referenced it while four sections hand-wrote it (gh#826). The
+   halo's position/size/alpha are now per-instance token overrides at the call site. */
 [data-tenant="acme-web"] .tx-field { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
   background: hsl(0 0% 100% / 0.08); border-radius: var(--radius-md); }
 [data-tenant="acme-web"] .tx-quote-total { display: flex; align-items: center; justify-content: space-between;
@@ -98,10 +110,7 @@ const THEME = `
 [data-tenant="acme-web"] .tx-footer-grid { display: grid; gap: 2.25rem; }
 @media (min-width: 768px) { [data-tenant="acme-web"] .tx-footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
 [data-tenant="acme-web"] .tx-footer-bottom { display: flex; align-items: center; justify-content: space-between;
-  margin-top: 2.25rem; padding-top: 1.25rem; border-top: 1px solid hsl(0 0% 100% / 0.1); }
-[data-tenant="acme-web"] .tx-medallion svg { width: 1.25rem; height: 1.25rem; }
-[data-tenant="acme-web"] .tx-icon-18 { width: 1.125rem; height: 1.125rem; }
-[data-tenant="acme-web"] .tx-icon-22 { width: 1.375rem; height: 1.375rem; }
+  margin-block-start: 2.25rem; padding-block-start: var(--space-5); border-block-start: var(--stroke-hairline) solid hsl(0 0% 100% / 0.1); }
 /* Navy region: role scoping so descendants render on-dark (white text, glass cards, outline btns). */
 [data-tenant="acme-web"] .tx-navy {
   background: hsl(217 61% 12%); --foreground: 0 0% 100%;
@@ -156,19 +165,28 @@ function Hero() {
   ];
   return (
     <section className="tx-navy relative overflow-hidden">
-      <div className="tx-glow tx-glow-tr" />
+      <div
+        className="ui-brand-glow absolute inset-0"
+        style={
+          {
+            "--brand-glow-size": "40% 50%",
+            "--brand-glow-position": "88% -10%",
+            "--brand-glow-alpha": "0.22",
+          } as React.CSSProperties
+        }
+      />
       <div className={`${SHELL} tx-hero-grid relative`}>
         <Flex direction="col" gap="xl">
           <div className="tx-eyebrow">Mua hộ &amp; vận chuyển quốc tế</div>
-          <h1 className="tx-display">
+          <Heading level={1} size="5xl" weight="bold">
             Mua sắm toàn cầu,
             <br />
             <span className="tx-gold">ACME</span> lo phần còn lại.
-          </h1>
-          <p className="tx-lead">
+          </Heading>
+          <Text as="p" size="xl" tone="muted">
             Đặt mua, thanh toán và vận chuyển hàng từ Nhật, Hàn, Indonesia và Mỹ về tận nhà. Minh
             bạch chi phí, theo dõi từng bước.
-          </p>
+          </Text>
           <Flex direction="row" gap="md">
             <Button size="lg">
               Nhận báo giá miễn phí
@@ -196,9 +214,9 @@ function Hero() {
             <Flex direction="col" gap="md">
               <div className="tx-eyebrow">Ước tính phí vận chuyển</div>
               <Flex direction="col" gap="sm">
-                {fields.map(([Icon, label, value]) => (
+                {fields.map(([Glyph, label, value]) => (
                   <div key={label} className="tx-field">
-                    <Icon aria-hidden="true" className="tx-gold tx-icon-18" />
+                    <Icon as={Glyph} size="lg" className="tx-gold" />
                     <div className="min-w-0 flex-1">
                       <Text as="div" size="2xs" tone="muted">
                         {label}
@@ -207,7 +225,7 @@ function Hero() {
                         {value}
                       </Text>
                     </div>
-                    <ChevronDown aria-hidden="true" className="tx-icon-18" />
+                    <Icon as={ChevronDown} size="lg" />
                   </div>
                 ))}
                 <div className="tx-quote-total">
@@ -241,17 +259,23 @@ function SectionHead({
   return (
     <div className={center ? "mx-auto text-center" : undefined}>
       <div className="tx-eyebrow">{eyebrow}</div>
-      <h2 className="tx-h2">{title}</h2>
-      {sub ? <p className="tx-lead mx-auto">{sub}</p> : null}
+      <Heading level={2} size="4xl" weight="bold">
+        {title}
+      </Heading>
+      {sub ? (
+        <Text as="p" size="xl" tone="muted" className="mx-auto">
+          {sub}
+        </Text>
+      ) : null}
     </div>
   );
 }
 
-function Medallion({ icon: Icon }: { icon: typeof Globe }) {
+function Medallion({ icon: Glyph }: { icon: typeof Globe }) {
   return (
     <Avatar className="rounded-md">
-      <AvatarFallback className="bg-primary/10 text-primary tx-medallion rounded-md">
-        <Icon aria-hidden="true" />
+      <AvatarFallback className="bg-primary/10 text-primary rounded-md">
+        <Icon as={Glyph} size="lg" />
       </AvatarFallback>
     </Avatar>
   );
@@ -315,7 +339,7 @@ function Steps() {
       <Flex direction="col" gap="xl" className={SHELL}>
         <SectionHead eyebrow="Quy trình" title="Mua hàng quốc tế trong 4 bước" />
         <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-          {steps.map(([Icon, t, d], i) => (
+          {steps.map(([Glyph, t, d], i) => (
             <Flex direction="col" gap="md" key={t}>
               <Flex direction="row" gap="sm" align="center">
                 <Avatar>
@@ -323,7 +347,7 @@ function Steps() {
                     {i + 1}
                   </AvatarFallback>
                 </Avatar>
-                <Icon aria-hidden="true" className="text-brand tx-icon-22" />
+                <Icon as={Glyph} size="xl" className="text-brand" />
               </Flex>
               <Text as="div" weight="bold" size="lg">
                 {t}
@@ -380,10 +404,22 @@ function Routes() {
 function CtaBanner() {
   return (
     <section className="tx-navy tx-section relative overflow-hidden">
-      <div className="tx-glow tx-glow-bl" />
+      <div
+        className="ui-brand-glow absolute inset-0"
+        style={
+          {
+            "--brand-glow-size": "40% 50%",
+            "--brand-glow-position": "12% 120%",
+          } as React.CSSProperties
+        }
+      />
       <div className={`${SHELL} relative text-center`}>
-        <h2 className="tx-h2">Sẵn sàng cho đơn hàng đầu tiên?</h2>
-        <p className="tx-lead mx-auto">Tạo tài khoản miễn phí và nhận báo giá trong 5 phút.</p>
+        <Heading level={2} size="4xl" weight="bold">
+          Sẵn sàng cho đơn hàng đầu tiên?
+        </Heading>
+        <Text as="p" size="xl" tone="muted" className="mx-auto">
+          Tạo tài khoản miễn phí và nhận báo giá trong 5 phút.
+        </Text>
         <Flex direction="row" gap="md" justify="center">
           <Button size="lg">
             <UserPlus aria-hidden="true" />
@@ -406,7 +442,7 @@ function Footer() {
   ];
   return (
     <footer className="tx-navy tx-navy-deep">
-      <div className={`${SHELL} tx-footer-grid`} style={{ paddingBlock: "3.5rem 2rem" }}>
+      <div className={`${SHELL} tx-footer-grid`} style={{ paddingBlock: "3.5rem var(--space-8)" }}>
         <Flex direction="col" gap="md">
           <span className="tx-brand">
             TIXI<span className="tx-gold">MAX</span>
@@ -438,8 +474,8 @@ function Footer() {
           2026 ACME Logistics. All rights reserved.
         </Text>
         <Flex direction="row" gap="md">
-          {[Mail, Phone, Globe].map((Icon, i) => (
-            <Icon key={i} aria-hidden="true" className="text-muted-foreground tx-icon-18" />
+          {[Mail, Phone, Globe].map((Glyph, i) => (
+            <Icon key={i} as={Glyph} size="lg" tone="muted" />
           ))}
         </Flex>
       </div>

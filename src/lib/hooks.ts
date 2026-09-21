@@ -1,4 +1,5 @@
 // Shared hooks for admin components.
+import { useLayoutEffect } from "@react-aria/utils";
 import { type RefObject, useEffect, useState } from "react";
 
 /**
@@ -231,7 +232,9 @@ export function useScrollsHorizontally(
  * what `IntersectionObserver` already spells "the document viewport".
  *
  * Lifted VERBATIM out of `src/components/layout/page-container.tsx`, where it was private to
- * `footerReveal="onScroll"`. See `useIntersects` for why it moved.
+ * `footerReveal="onScroll"` (gh#827). It is exported because the callers that need `useInView` to
+ * measure against a scroll PANE rather than the viewport have to name that pane, and every one of
+ * them would otherwise write this walk again.
  */
 export function scrollParent(el: HTMLElement | null): HTMLElement | null {
   let node = el?.parentElement ?? null;
@@ -243,75 +246,121 @@ export function scrollParent(el: HTMLElement | null): HTMLElement | null {
   return null;
 }
 
-/** `useIntersects` options. `root` is DELIBERATELY tri-state — see the hook. */
-export type UseIntersectsOption = {
-  /** Observe at all. `false` parks the hook at `initial` and attaches nothing. Default `true`. */
-  enabled?: boolean;
-  /**
-   * The clipping box, and the reason this is an object rather than a positional argument:
-   * `undefined` (the key ABSENT) means "find my nearest scroll parent", which is what
-   * `PageContainer` has always done, while an explicit `null` means "the document viewport",
-   * which is what `Affix target={() => window}` means. Collapsing the two would make one of the
-   * two callers wrong, silently.
-   */
-  root?: Element | Document | null;
-  /** `IntersectionObserver` `rootMargin` — how far the clipping box is grown or shrunk. */
-  rootMargin?: string;
-  /** `IntersectionObserver` `threshold`. Default `0` — any overlap at all counts. */
-  threshold?: number | number[];
-  /**
-   * What to report before the first callback, and wherever `IntersectionObserver` does not exist
-   * (SSR, jsdom). Default `false`. A caller whose SAFE answer is "yes, it is on screen" passes
-   * `true`.
-   */
-  initial?: boolean;
-};
-
 /**
- * Does this element currently intersect its scrollport?
+ * Has this element entered the viewport (or `root`) yet?
  *
- * **This is the library's ONE `IntersectionObserver`.** It was `useFooterReveal`, private to
- * `PageContainer`, and across 165 components it was the only scroll-position machinery in
- * `src/components/` that was not `FloatButton.BackTop` — so the second component that needed it
- * would have copied it, and the third would have copied the copy. `useScrollsOnAxis` is the shape
- * this follows: the body moved up here, the original caller became a one-line wrapper, and its
- * behaviour did not change by a byte.
+ * The ONE `IntersectionObserver` wrapper in the library, and it has to stay that way: before
+ * gh#827 the only observer in `src/components/` was `PageContainer`'s private `useFooterReveal`,
+ * so the next component that needed one copied it rather than finding it. Callers today are
+ * `Reveal on="view"` (gh#829, the first), `PageContainer footerReveal="onScroll"` and `Affix`
+ * (gh#827). `root` exists because two of the three measure against a scrolling PANE rather than
+ * the viewport; `scrollParent` above is how they name it.
  *
- * Callers today: `PageContainer footerReveal="onScroll"` (has the header LEFT the scrollport) and
- * `Affix` (has a zero-height sentinel crossed the pin line). Both ask the same question of the
- * same API; only `root` and `rootMargin` differ.
+ * Borrowed from Motion's `useInView` (https://motion.dev/docs/react-use-in-view): `once` and
+ * `amount` keep their names, their types and their defaults, including `amount`'s
+ * `"some" | "all" | number` and Motion's own `{ some: 0, all: 1 }` threshold mapping.
  *
- * SSR- and jsdom-safe: with no `IntersectionObserver` the hook reports `initial` forever, which is
- * a correct non-tracking answer rather than a crash.
+ * ## Unobservable counts as IN VIEW
+ *
+ * The server render, jsdom, a browser without `IntersectionObserver`, and `enabled: false` all
+ * report `true`. A caller that hides content until this returns `true` therefore shows it — the
+ * only safe direction, because the alternative is content that is never revealed at all. Callers
+ * MUST keep it that way: visibility is never gated on an observer that might not exist.
+ *
+ * ## `assumeInView` — which way to be wrong for the ONE frame before the first entry
+ *
+ * The hook normally flips to `false` the moment a live observer exists, before that observer has
+ * said anything, because a caller that HIDES on `false` would otherwise paint its content in and
+ * then take it away again. That is right for `Reveal` and wrong for the two callers that ACT on
+ * `false`: `PageContainer` would reveal its sticky footer for a frame, and `Affix` would fix a bar
+ * over the page before measuring it. Those pass `assumeInView`, which leaves the answer `true`
+ * until the observer actually reports — so neither ever acts on a measurement it has not taken.
+ *
+ * ## `amount` is clamped to what the element can actually reach
+ *
+ * `threshold` is the ratio of the intersection to the TARGET's own box
+ * (https://www.w3.org/TR/intersection-observer/#dom-intersectionobserverentry-intersectionratio), so
+ * an element taller than the root can never reach `1`: `amount: "all"` on a full-height section
+ * would hide it forever. The requested ratio is clamped at observe time to the largest ratio the
+ * element's measured box can attain inside the root.
  */
-export function useIntersects(
-  ref: RefObject<HTMLElement | null>,
-  { enabled = true, root, rootMargin, threshold = 0, initial = false }: UseIntersectsOption = {},
+export function useInView(
+  ref: RefObject<Element | null>,
+  {
+    enabled = true,
+    once = false,
+    amount = "some",
+    root = null,
+    rootMargin,
+    assumeInView = false,
+  }: {
+    /** `false` skips the observer entirely and reports `true`. */
+    enabled?: boolean;
+    /** Stop observing after the first entry, so the element never reports out-of-view again. */
+    once?: boolean;
+    /** How much must be visible — `"some"` (any pixel) | `"all"` | a 0..1 ratio. */
+    amount?: "some" | "all" | number;
+    /** Scroll container to measure against. `null` → the document viewport. */
+    root?: Element | null;
+    /**
+     * `IntersectionObserver` `rootMargin` — grows or shrinks the clipping box before the test.
+     *
+     * `Affix` is why it exists: it observes a hairline SENTINEL at the pinning edge and grows the
+     * box a million pixels past the line, so that "has not reached the line yet" and "is far below
+     * it" are one answer and the pin reduces to `!inView` in both directions.
+     */
+    rootMargin?: string;
+    /** Stay `true` until the observer reports, instead of flipping to `false` on mount. */
+    assumeInView?: boolean;
+  } = {},
 ): boolean {
-  const [intersects, setIntersects] = useState(initial);
-  const hasExplicitRoot = root !== undefined;
+  const [inView, setInView] = useState(true);
 
-  useEffect(() => {
-    if (!enabled) return undefined;
+  // A LAYOUT effect, not a passive one: the first paint after mount must already carry the hidden
+  // state, or a caller that hides on `false` flashes its content in before taking it away again.
+  // `@react-aria/utils`' copy is the SSR-safe one (a no-op on the server, where `true` stands).
+  useLayoutEffect(() => {
     const el = ref.current;
-    if (!el || typeof IntersectionObserver === "undefined") return undefined; // jsdom/SSR-safe
+    if (!enabled || !el || typeof IntersectionObserver === "undefined") return undefined;
+
+    const requested = typeof amount === "number" ? amount : amount === "all" ? 1 : 0;
+    const box = el.getBoundingClientRect();
+    const rootBox = root?.getBoundingClientRect();
+    const rootWidth = rootBox?.width ?? window.innerWidth;
+    const rootHeight = rootBox?.height ?? window.innerHeight;
+    const reachable =
+      box.width > 0 && box.height > 0
+        ? (Math.min(box.width, rootWidth) * Math.min(box.height, rootHeight)) /
+          (box.width * box.height)
+        : 1;
+    const threshold = Math.min(requested, reachable);
+
+    // Only now — with a live observer in hand — may the answer become `false`, and only for a
+    // caller that hides on `false`. See `assumeInView`.
+    if (!assumeInView) setInView(false);
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIntersects(entry.isIntersecting);
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (!entry) return;
+        // Compared against the clamped ratio rather than trusting `isIntersecting`, which flips at
+        // the first pixel and is only the right answer when `amount` is `"some"`.
+        if (entry.isIntersecting && entry.intersectionRatio >= threshold) {
+          setInView(true);
+          // Motion unobserves the target rather than disconnecting; with one target per hook the
+          // effect is the same, and the observer is still disconnected on cleanup.
+          if (once) observer.unobserve(entry.target);
+        } else if (!once) {
+          setInView(false);
+        }
       },
-      {
-        root: hasExplicitRoot ? root : scrollParent(el),
-        ...(rootMargin === undefined ? undefined : { rootMargin }),
-        threshold,
-      },
+      { root, threshold, ...(rootMargin === undefined ? undefined : { rootMargin }) },
     );
     observer.observe(el);
     return () => {
       observer.disconnect();
     };
-    // `root` is read through `hasExplicitRoot` as well; both belong in the list.
-  }, [ref, enabled, hasExplicitRoot, root, rootMargin, threshold]);
+  }, [ref, enabled, once, amount, root, rootMargin, assumeInView]);
 
-  return enabled ? intersects : initial;
+  return !enabled || inView;
 }

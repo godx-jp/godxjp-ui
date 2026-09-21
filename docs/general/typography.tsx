@@ -30,6 +30,8 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * golden-ratio type scale (never an arbitrary px); tone/weight are semantic tokens.
  */
 const sizes = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"] as const;
+/** The display ramp — its own card below, because it is a different ramp, not three more steps. */
+const displaySizes = ["3xl", "4xl", "5xl"] as const;
 const tones = ["default", "muted", "primary", "success", "warning", "destructive", "info"] as const;
 const levels = [1, 2, 3, 4] as const;
 
@@ -56,7 +58,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Heading levels</CardTitle>
             <CardDescription>
-              level sets BOTH the --heading-h* size token and the semantic &lt;h1..h4&gt; element.
+              level sets BOTH the --heading-h* size token and the semantic &lt;h1..h4&gt; element —
+              unless `size` overrides the size alone (see the display ramp below), which leaves the
+              document outline where the author put it.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -139,6 +143,92 @@ export default function Demo() {
                   {size} — 関連する仕訳データを表示します
                 </Text>
               ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>size · 10 段の共通ラダー（Text と Heading が共有）</CardTitle>
+            <CardDescription>
+              size は Text と Heading が共有する一本のラダーです。2xs…2xl は UI
+              ランプ（--font-size-base × φ^¼、管理画面の密度）、3xl…5xl はマーケティング用の
+              ディスプレイランプ（--font-size-display と --font-size-display-ratio
+              から導出）。別ランプなので、サービスは管理画面に一切触れずにヒーローだけを調整できます。
+              ここに至る公開 API が無かったため、どのマーケティングページも自前の font-size
+              クラスを書いていました（gh#826）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              {/* Heading `size` over the WHOLE ladder. `level` keeps the document outline — every
+                  row below is the same <h2> — and `size` moves the ramp alone. Ten drawn branches,
+                  which is the evidence check:frame-coverage wants for a new public prop. */}
+              <Flex direction="col" gap="sm">
+                {[...sizes, ...displaySizes].map((size) => (
+                  <Flex key={size} direction="row" gap="sm" align="baseline">
+                    <Heading level={2} size={size}>
+                      国境を越える物流を、ひとつに
+                    </Heading>
+                    <Text size="2xs" mono tone="muted">
+                      {`size="${size}"`}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
+
+              {/* The hero shape the two website showcases used to hand-write. `level` and `size`
+                  are separate axes — antd is the one system that conflates them, and it is also
+                  the only one with no display range at all (38px ceiling), which is the same fact
+                  twice. On a marketing page this headline IS the page title and takes `level={1}`:
+                  a real <h1> at 54px, with no admin screen's <h1> moving. It is `level={2}` here
+                  only because PageContainer already renders this page's one <h1> (WCAG 1.3.1). */}
+              <Flex direction="col" gap="xs">
+                <Heading level={2} size="5xl">
+                  Ship it everywhere
+                </Heading>
+                <Text size="xl" tone="muted">
+                  リード文は UI ランプの xl / 2xl のままで十分です — 大きくすべきは見出しだけ。
+                </Text>
+                <Text size="2xs" mono tone="muted">
+                  {`<Heading level={1} size="5xl"> + <Text size="xl" tone="muted"> — zero bespoke classes`}
+                </Text>
+              </Flex>
+
+              {/* The same ladder on Text — a stat figure is display-sized but is NOT a heading, so
+                  it must be reachable without inventing an <h*> for it. This is exactly why the
+                  size axis has to be separate from the semantic one. */}
+              <Flex direction="col" gap="xs">
+                {displaySizes.map((size) => (
+                  <Flex key={size} direction="row" gap="sm" align="baseline">
+                    <Text size={size} weight="bold" tone="primary" tabular>
+                      98.4%
+                    </Text>
+                    <Text size="2xs" mono tone="muted">
+                      {`<Text size="${size}" weight="bold" tabular>`}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
+
+              {/* Paragraph and Link read the SAME TextSizeProp, so widening the ladder widened
+                  their public surface too. Drawn over the whole ladder rather than left as an
+                  undrawn branch — an undrawn branch is what refused the 28.6.0 release. */}
+              <Flex direction="col" gap="xs">
+                {[...sizes, ...displaySizes].map((size) => (
+                  <Flex key={size} direction="row" gap="sm" align="baseline">
+                    <Paragraph size={size} tone="muted">
+                      「速い」
+                    </Paragraph>
+                    <Link href="#typography" size={size}>
+                      詳しく
+                    </Link>
+                    <Text size="2xs" mono tone="muted">
+                      {`<Paragraph size="${size}"> · <Link size="${size}">`}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

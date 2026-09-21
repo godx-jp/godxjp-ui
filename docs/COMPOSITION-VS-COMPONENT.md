@@ -77,7 +77,8 @@ new UI need
 | `Select` (incl. search/async)                           | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
 | `DataTable`, `Dialog`, `Calendar`, `Switch`, `Combobox` | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component**                                                  |
 | `StatCard` (+ `icon`)                                   | ✅  | ➖  | ✅  | ✅  | ✅  | ✅  | ✅  | **Framework component** (a reusable KPI tile with a stable API + tokens) |
-| `ServiceLauncherCard`                                   | ➖  | ❌  | ❌  | ✅  | ✅  | ➖  | ➖  | **Composition by the test — RETAINED as a recorded exception** (gh#814) |
+| `ServiceLauncherCard`                                   | ➖  | ❌  | ❌  | ✅  | ✅  | ➖  | ➖  | **Composition by the test — RETAINED as a recorded exception** (gh#814)  |
+| `MegaMenu`                                              | ✅  | ✅  | ✅  | ✅  | ✅  | ✅  | ➖  | **Framework component** — the instructive contrast with Hero, below      |
 | Marketing **Hero**                                      | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — section, static, composable, brand-specific            |
 | **Navbar** / **Footer**                                 | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — layout of `Text`/`Button`/`Flex`                       |
 | **PricingTable** / feature grid                         | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | ❌  | **Composition** — `ResponsiveGrid` + `Card`                              |
@@ -85,6 +86,23 @@ new UI need
 | "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
 
 `✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
+
+**MegaMenu is the instructive PASS, and it is in this table because it sits next to Navbar.** A
+Navbar fails every criterion; a megamenu is the same bar with behaviour bolted through it, and that
+one difference flips the verdict. **C2** is the whole case: a roving tabindex across the top-level
+items, `aria-expanded`/`aria-controls` per trigger, hover intent (a diagonal pointer path toward the
+panel must not close it), `Escape` closing and returning focus to its trigger, Tab-out and
+outside-click closing, and close-on-route-change. None of that is layout. **C3** is the one people
+get wrong: `DropdownMenu` looks like the answer and is the WRONG primitive, not an awkward one — it
+is react-aria-components `Menu`, i.e. `role="menu"` / `role="menuitem"`, which announces a set of
+site links as a desktop application menu and takes Tab out of the widget. The APG says so itself in
+its Disclosure Navigation example. A recipe over `DropdownMenu` would therefore ship the classic
+megamenu accessibility defect, which is exactly the case C3 is asking about. **C7 is the weak
+one** — marked ➖ deliberately: this is a JP business-software library, and a marketing megamenu is
+not in every consumer's build. It is kept because the same disclosure bar is what an admin console
+with several product areas needs, and because the cost is one file with no new dependency (no
+`@radix-ui/react-navigation-menu`, no animation runtime). Compare `StatCard`, whose borderline is
+C2 rather than C7.
 
 **ServiceLauncherCard is the ONE recorded exception, and it is recorded so that it stays one.** It shipped before the test was run against it, and when the test was run it came back with two hard FAILs: **C2** — no state, no keyboard handling, no focus management, its only ARIA three static attributes — and **C3** — its own imports are `Card` + `CardContent` + `Badge` + a Lucide glyph, so "could I build this right now from primitives?" is yes. By §2 that makes it a composition pattern. It is kept anyway because `src/components/layout/app-launcher.tsx` consumes it: it is an internal building block of a component that **does** pass, so the question was never "should it exist" but "should it be PUBLIC", and removing a public export is breaking. Keeping it public was the cheaper call and the ledger lives on gh#814 and at the top of `src/components/data-display/service-launcher-card.tsx`. **Consumers should compose `Card` + `Badge` for a service tile** — reach for `ServiceLauncherCard` only to match `AppLauncher`'s own tiles — and this row is not precedent for adding another static tile to `src/components/`.
 

@@ -8579,6 +8579,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -9741,7 +9749,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -9989,6 +9997,102 @@
         }
       ]
     },
+    "Marquee": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultPlay",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "direction",
+          "origin": "owned",
+          "required": false,
+          "type": "MarqueeDirectionProp | undefined",
+          "values": ["start", "end"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "fade",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "gap",
+          "origin": "owned",
+          "required": false,
+          "type": "GapProp | undefined",
+          "values": [0, "none", "xs", "sm", "md", "lg", "xl", 1, 2, 3, 4, 5, 6, 8, 10, 12],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "onPlayChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((play: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "pauseOnHover",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "play",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "speed",
+          "origin": "owned",
+          "required": false,
+          "type": "MarqueeSpeedProp | undefined",
+          "values": ["base", "slow", "fast"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        }
+      ]
+    },
     "Masonry": {
       "group": "layout",
       "props": [
@@ -10156,6 +10260,145 @@
           "type": "MasterDetailRailWidthProp | undefined",
           "values": ["compact", "narrow", "wide", "standard"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
+    "MegaMenu": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "closeDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "string | null | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "expandIcon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/@types/react/index.d.ts",
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly MegaMenuItemProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "MegaMenuLinkComponentProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string | null) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((key: string) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "string | null | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "openDelay",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "triggerAction",
+          "origin": "owned",
+          "required": false,
+          "type": "MegaMenuTriggerActionProp | undefined",
+          "values": ["hover", "click"],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         }
       ]
     },
@@ -11212,7 +11455,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -12640,6 +12883,14 @@
       "group": "general",
       "props": [
         {
+          "name": "amount",
+          "origin": "owned",
+          "required": false,
+          "type": "InViewAmountProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "asChild",
           "origin": "owned",
           "required": false,
@@ -12675,6 +12926,22 @@
           "required": false,
           "type": "RevealDelayProp | undefined",
           "values": [0, 1, 2, 3, 4, 5, 6],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "on",
+          "origin": "owned",
+          "required": false,
+          "type": "RevealTriggerProp | undefined",
+          "values": ["view", "mount"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "once",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
           "declaredIn": ["src/props/components/general.prop.ts"]
         }
       ]
@@ -16521,7 +16788,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

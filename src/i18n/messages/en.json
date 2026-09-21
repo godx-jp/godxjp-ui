@@ -306,6 +306,12 @@
       "unread": "Unread",
       "read": "Read"
     },
+    "marquee": {
+      "pause": "Pause scrolling",
+      "play": "Resume scrolling",
+      "pauseNamed": "Pause scrolling: {label}",
+      "playNamed": "Resume scrolling: {label}"
+    },
     "permissionMatrix": {
       "caption": "Role and permission matrix",
       "permissionColumn": "Permission",
@@ -487,6 +493,9 @@
       "label": "Conversations",
       "creation": "New conversation",
       "rowActions": "More actions for {label}"
+    },
+    "megaMenu": {
+      "label": "Main navigation"
     }
   },
   "locale": {

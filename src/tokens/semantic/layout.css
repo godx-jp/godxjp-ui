@@ -8,6 +8,17 @@
   --space-page-x: var(--space-6); /* 24px — page gutter */
   --space-page-y: var(--space-6); /* 24px */
   --space-section: var(--space-4); /* 16px */
+  /* THE MARKETING BAND RHYTHM (gh#831). `--space-section` is the gap BETWEEN the blocks of one
+   * admin page; these two are the block-axis padding of a full-bleed marketing BAND and of the
+   * hero band that opens the page. Named `--space-section-*` and not `--space-band-*` on purpose:
+   * `band` already means "the vertical extent of a control/row" in this repo (`--band-height-*`,
+   * rule #24) and a second meaning for the same word is the drift check:prop-vocabulary exists to
+   * stop. They read the linear `--space-*` grid for the reason stated four lines above — the φ
+   * ladder is not the spacing generator here, and 80/96px are Carbon `$spacing-11`/`$spacing-12`
+   * (docs/DESIGN-AUTHORITY.md). Re-declared in styles/density.css: both alias a --scaling-derived
+   * step, so a descendant density scope that did not re-derive them would FREEZE at :root. */
+  --space-section-band: var(--space-20); /* 80px — band padding-block */
+  --space-section-hero: var(--space-24); /* 96px — hero band padding-block */
   --space-stack-xs: var(--space-1); /* 4px */
   --space-stack-sm: var(--space-2); /* 8px */
   --space-stack-md: var(--space-4); /* 16px */
@@ -199,6 +210,14 @@
    * (358px surface). A service theme retunes both in ONE place; never a page-local max-width. */
   --page-measure-narrow: 42rem; /* 672px outer → 624px surface */
   --page-measure-medium: 48rem; /* 768px outer → 720px surface */
+  /* THE MARKETING MEASURE (gh#831). A landing page is not a reading column: two unrelated website
+   * showcases each hand-wrote a shell cap (1200px and 1140px) because the widest name here was
+   * `medium` at 768px. 72rem sits between the two measured values and is a step the industry
+   * already ships (Tailwind `--container-6xl`); the wide-container cluster runs 1136–1320px
+   * (Radix Container 4 = 1136, Primer/Tailwind = 1280, Bootstrap = 1320). No `PageContainer`
+   * branch reads it yet — see docs/roadmap/website-components.md §5.9 — so today this is the
+   * VOCABULARY a marketing composition caps its own shell with, as `--gradient-hero` is. */
+  --page-measure-wide: 72rem; /* 1152px outer → 1104px surface */
 
   /* Responsive page typography is independent from density. Density changes information spacing;
    * these tokens change only page chrome so mobile keeps readable body text and touch targets. */

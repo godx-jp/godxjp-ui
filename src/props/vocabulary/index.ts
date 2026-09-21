@@ -104,6 +104,8 @@ export type {
   ColumnAlignProp,
   SortStateProp,
   RevealDelayProp,
+  RevealTriggerProp,
+  InViewAmountProp,
   ActivityVariantProp,
   ActivityAnnounceProp,
   IconSizeProp,

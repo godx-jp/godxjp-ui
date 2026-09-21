@@ -22,7 +22,16 @@ function flip(intersecting: boolean, index = 0) {
   const observer = observers[index];
   act(() => {
     observer.callback(
-      [{ isIntersecting: intersecting } as IntersectionObserverEntry],
+      [
+        // `intersectionRatio` is not optional here, and a fake that omits it is the fake that is
+        // wrong: `useInView` compares the RATIO against its clamped threshold rather than trusting
+        // `isIntersecting`, which flips at the first pixel and is only the right answer at
+        // `amount: "some"`. A real observer always sends both.
+        {
+          isIntersecting: intersecting,
+          intersectionRatio: intersecting ? 1 : 0,
+        } as IntersectionObserverEntry,
+      ],
       {} as IntersectionObserver,
     );
   });

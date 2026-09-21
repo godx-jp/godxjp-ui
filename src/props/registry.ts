@@ -469,7 +469,8 @@ export const VOCABULARY_REGISTRY = {
   TextSizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Text size — golden-ratio type-scale steps (2xs…2xl), never an arbitrary px",
+    description:
+      "Text size — ten type-scale steps shared by Text and Heading, never an arbitrary px: the golden-ratio UI ramp 2xs…2xl (≈11…22px) plus the display ramp 3xl…5xl (≈28/42/54px, derived from --font-size-display) that a marketing hero needs",
   },
   IconSizeProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -490,7 +491,8 @@ export const VOCABULARY_REGISTRY = {
   HeadingLevelProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Heading level 1-4 — sizes from --heading-h* and the semantic element",
+    description:
+      "Heading level 1-4 — the semantic element, and the --heading-h* size it takes unless `size` (TextSizeProp) overrides it",
   },
   TextAlignProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -610,6 +612,18 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description:
       "Reveal entrance-stagger ordinal (0..6) — an index into the motion ladder, never a raw ms",
+  },
+  RevealTriggerProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "What starts a Reveal entrance — mount (default, historical) | view (reaches the viewport)",
+  },
+  InViewAmountProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "How much of an element must be visible to count as in view — some | all | a 0..1 ratio (Motion's useInView `amount`)",
   },
   ActivityVariantProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -1585,12 +1599,30 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "ChildrenProp",
       "RevealDelayProp",
+      "RevealTriggerProp",
+      "InViewAmountProp",
       "AsChildProp",
       "ClassNameProp",
       {
         field: "delay",
         local: true,
         reason: "Reveal stagger ordinal — RevealDelayProp vocabulary.",
+      },
+      {
+        field: "on",
+        local: true,
+        reason: "Entrance trigger — RevealTriggerProp vocabulary (mount | view).",
+      },
+      {
+        field: "once",
+        local: true,
+        reason:
+          "Reveal-once latch for on='view' — Motion's useInView `once`, borrowed by name and type.",
+      },
+      {
+        field: "amount",
+        local: true,
+        reason: "Visibility threshold for on='view' — InViewAmountProp vocabulary.",
       },
     ],
   },
@@ -1774,7 +1806,13 @@ export const COMPONENT_PROP_REGISTRY = {
   HeadingProp: {
     group: "general",
     file: "components/general.prop.ts",
-    vocabulary: ["HeadingLevelProp", "TextToneProp", "TextAlignProp", "ClassNameProp"],
+    vocabulary: [
+      "HeadingLevelProp",
+      "TextSizeProp",
+      "TextToneProp",
+      "TextAlignProp",
+      "ClassNameProp",
+    ],
   },
   TypographyProp: {
     group: "general",
@@ -2430,6 +2468,68 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason:
           "Row-local overflow resolution for the title/description column (truncate | wrap, #224).",
+      },
+    ],
+  },
+  MarqueeDirectionProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "direction",
+        local: true,
+        reason:
+          "LOGICAL travel direction (start | end) — the edge the track moves towards, so it flips with `dir` instead of naming a physical side the way the prior art's `left | right | up | down` does.",
+      },
+    ],
+  },
+  MarqueeSpeedProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "speed",
+        local: true,
+        reason:
+          "Pace ordinal (slow | base | fast) over the `--marquee-interval` motion token. Not SizeProp: it names a DURATION rung, not a control box, and `xs|sm|md|lg` would read as a size on something that has none.",
+      },
+    ],
+  },
+  MarqueeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "GapProp",
+      "LabelProp",
+      "ClassNameProp",
+      {
+        field: "play",
+        local: true,
+        reason:
+          "Controlled motion state. The boolean triad spelled for this surface (play / defaultPlay / onPlayChange), the same shape `open`/`defaultOpen`/`onOpenChange` takes for an overlay — `value` would say nothing about what is being valued.",
+      },
+      {
+        field: "defaultPlay",
+        local: true,
+        reason: "Uncontrolled member of the play triad.",
+      },
+      {
+        field: "onPlayChange",
+        local: true,
+        reason: "Change member of the play triad; value-first, like every other On*Change here.",
+      },
+      {
+        field: "pauseOnHover",
+        local: true,
+        reason:
+          "Positive boolean, default false. An ADDITION to the pause control, never the mechanism — hover-only pause is the WCAG 2.2.2 failure (F16) the prior art ships.",
+      },
+      {
+        field: "fade",
+        local: true,
+        reason:
+          "Positive boolean, default false. Masks both edges over `--marquee-mask-width`; the prior art's `gradient`/`gradientColor`/`gradientWidth` trio is one boolean and one token here.",
       },
     ],
   },
@@ -4388,6 +4488,151 @@ export const COMPONENT_PROP_REGISTRY = {
       "LabelProp",
       "IdProp",
       "ClassNameProp",
+    ],
+  },
+  MegaMenuTriggerActionProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  MegaMenuLinkProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DisabledProp",
+      "DescriptionProp",
+      {
+        field: "key",
+        local: true,
+        reason:
+          "Ant Design MenuItemType.key — the row's identity, not a value axis. Kept as antd spells it so a consumer's existing `items` array transfers unchanged.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason:
+          "The destination of a nav LINK. Sidebar/NavList already spell it `href` on their own row types; there is no vocabulary entry because no control-shaped component has a destination.",
+      },
+    ],
+  },
+  MegaMenuGroupProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DescriptionProp",
+      {
+        field: "key",
+        local: true,
+        reason: "Ant Design MenuItemGroupType identity — see MegaMenuLinkProp.key.",
+      },
+      {
+        field: "links",
+        local: true,
+        reason:
+          "Ant Design MenuItemGroupType.children, narrowed to leaves. Named for what it holds because a megamenu panel is exactly one level deep — `children` would imply the arbitrary nesting this deliberately does not have.",
+      },
+    ],
+  },
+  MegaMenuPanelProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      {
+        field: "groups",
+        local: true,
+        reason:
+          'The panel\'s columns — Ant Design SubMenuType.children restricted to `type: "group"` entries.',
+      },
+      {
+        field: "footer",
+        local: true,
+        reason:
+          "A full-width strip below the columns. Same word Card/Dialog use for the slot in that position; no vocabulary type exists for it.",
+      },
+    ],
+  },
+  MegaMenuItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DisabledProp",
+      {
+        field: "key",
+        local: true,
+        reason: "Ant Design MenuItemType/SubMenuType identity — see MegaMenuLinkProp.key.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason: "Destination of a top-level LINK — see MegaMenuLinkProp.href.",
+      },
+      {
+        field: "panel",
+        local: true,
+        reason:
+          "Presence of this field is what makes the item a DISCLOSURE BUTTON rather than a link (Ant Design SubMenuType vs MenuItemType). A discriminant, not a styling axis.",
+      },
+    ],
+  },
+  MegaMenuLinkComponentProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  MegaMenuProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "LabelProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Ant Design Menu.items — the bar, in antd's own spelling.",
+      },
+      {
+        field: "triggerAction",
+        local: true,
+        reason:
+          "Ant Design `triggerSubMenuAction`, shortened because there is no sub-MENU here (the APG pattern is disclosure, not menubar). Its own union type MegaMenuTriggerActionProp, mirroring DropdownMenuTriggerActionProp.",
+      },
+      {
+        field: "openDelay",
+        local: true,
+        reason:
+          "Ant Design `subMenuOpenDelay`, in ms rather than seconds. No vocabulary type: no other component times a hover open.",
+      },
+      {
+        field: "closeDelay",
+        local: true,
+        reason:
+          "Ant Design `subMenuCloseDelay`, in ms. This is the hover-intent grace period — the diagonal a pointer may take toward the panel without it closing.",
+      },
+      {
+        field: "expandIcon",
+        local: true,
+        reason: "Ant Design `expandIcon`, kept verbatim including its `false` to remove it.",
+      },
+      {
+        field: "linkComponent",
+        local: true,
+        reason:
+          "Same contract and same spelling as Sidebar.linkComponent / NavList.linkComponent, so a consumer who wired a router once wires it the same way here.",
+      },
     ],
   },
   AnchorContainerProp: {

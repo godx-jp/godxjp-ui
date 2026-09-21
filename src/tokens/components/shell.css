@@ -291,6 +291,20 @@
   --topbar-height: auto;
   --topbar-inset: 0px;
   --topbar-gap: var(--space-2);
+  /* THE GLASS BAR (gh#831) — the same two declarations two unrelated website showcases each
+   * hand-wrote on their own sticky header: a translucent page fill plus a backdrop blur. Both knobs
+   * are `initial`, i.e. QUIET by default in exactly the sense the paragraph above describes: a
+   * guaranteed-invalid value makes the whole declaration at the call site invalid-at-computed-value
+   * time, so `background-color` falls back to its own initial `transparent` and `backdrop-filter`
+   * to `none`. The shipped bar therefore paints nothing, creates no backdrop root, and is
+   * byte-identical to the pure slot bar it was. A service opts in with
+   * `--topbar-background-alpha: 85%` / `--topbar-backdrop-blur-size: 10px`.
+   * The TINT is NOT a knob: `.ui-topbar` reads `--background` directly at the call site, so a dark
+   * or tenant-scoped subtree re-tints the glass instead of inheriting :root's answer
+   * (docs/TOKENS.md · the `:root` freeze rule). Precedent for the blur name:
+   * --app-launcher-launchpad-backdrop-blur-size. */
+  --topbar-background-alpha: initial; /* default = none — the bar paints no fill */
+  --topbar-backdrop-blur-size: initial; /* default = none — the bar blurs nothing */
   /* ⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot.
    * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three
    * intrinsically-sized clusters, so the package hides the optional center slot before it can
