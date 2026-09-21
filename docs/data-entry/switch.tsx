@@ -12,7 +12,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Field, Label, Switch } from "@godxjp/ui/data-entry";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@godxjp/ui/feedback";
-import { Button, Icon, Text } from "@godxjp/ui/general";
+import { Button, Icon } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -172,24 +172,16 @@ export default function Demo() {
               <Field id="sw-state-loading" label="保存中" description="aria-busy / aria-disabled">
                 <Switch id="sw-state-loading" loading defaultChecked />
               </Field>
-              {/* 不正状態: Field にエラー用スロットが無いため、メッセージの id と
-                  aria-describedby を手で結んでいる。FormField なら error が
-                  aria-errormessage まで配線するが、Switch を FormField で包むのは禁止。
-                  gh#812 と同じ欠落。 */}
+              {/* 不正状態は Field の error スロットが持つ。role=alert のメッセージを出し、
+                  制御に aria-invalid / aria-errormessage / aria-describedby を配線する。
+                  description と error は競合せず、上下に積む。 */}
               <Field
                 id="sw-state-invalid"
                 label="電子帳簿保存に対応する"
-                description={
-                  <Text as="span" id="sw-state-invalid-error" tone="destructive" role="alert">
-                    保存先のストレージが未設定のため有効にできません。
-                  </Text>
-                }
+                description="保存先を設定すると有効にできます"
+                error="保存先のストレージが未設定のため有効にできません。"
               >
-                <Switch
-                  id="sw-state-invalid"
-                  aria-invalid
-                  aria-describedby="sw-state-invalid-error"
-                />
+                <Switch id="sw-state-invalid" />
               </Field>
             </Flex>
           </CardContent>
@@ -197,11 +189,11 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>ラベル脇の補助 · Field に labelAddon が無い (gh#812)</CardTitle>
+            <CardTitle level={2}>ラベル脇の補助 · labelAddon</CardTitle>
             <CardDescription>
-              FormField は labelAddon を持つが Field は持たない。Badge のような非対話の印は label
-              に直接置ける。押せる補助は label の中に入れると押した瞬間にトグルが
-              反転するため、Field の外に並べるしかない。これは仕様ではなく欠落で gh#812。
+              Badge のような非対話の印は label に直接置ける。押せる補助は labelAddon に渡す。 label
+              は制御を指す本物の &lt;label htmlFor&gt; なので、その中に入れたボタンは
+              押した瞬間にトグルを反転させる。labelAddon は label の外の兄弟として行内に並ぶ。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -221,26 +213,30 @@ export default function Demo() {
               >
                 <Switch id="sw-addon-badge" defaultChecked />
               </Field>
-              {/* 回避策: 押せる補助は Field の外。labelAddon が入れば行内に収まる (gh#812)。 */}
-              <Flex align="center" gap="sm">
-                <Field
-                  id="sw-addon-help"
-                  label="源泉徴収の自動計算"
-                  description="報酬の支払時に源泉徴収額を自動で行に足します"
-                >
-                  <Switch id="sw-addon-help" />
-                </Field>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon-sm" aria-label="源泉徴収の自動計算について">
-                      <Icon as={CircleHelp} size="sm" tone="muted" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    税率は支払先の区分と支払額から決まります。確定値は請求書の明細に残ります。
-                  </TooltipContent>
-                </Tooltip>
-              </Flex>
+              {/* 押せる補助は labelAddon。label の外にあるので押してもトグルは動かない。 */}
+              <Field
+                id="sw-addon-help"
+                label="源泉徴収の自動計算"
+                description="報酬の支払時に源泉徴収額を自動で行に足します"
+                labelAddon={
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="源泉徴収の自動計算について"
+                      >
+                        <Icon as={CircleHelp} size="sm" tone="muted" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      税率は支払先の区分と支払額から決まります。確定値は請求書の明細に残ります。
+                    </TooltipContent>
+                  </Tooltip>
+                }
+              >
+                <Switch id="sw-addon-help" />
+              </Field>
             </Flex>
           </CardContent>
         </Card>

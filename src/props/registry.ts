@@ -1799,7 +1799,14 @@ export const COMPONENT_PROP_REGISTRY = {
   FieldProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "LabelProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: [
+      "IdProp",
+      "LabelProp",
+      "DescriptionProp",
+      "ErrorProp",
+      "ClassNameProp",
+      "ChildrenProp",
+    ],
   },
   SliderProp: {
     group: "data-entry",

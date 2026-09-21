@@ -621,7 +621,31 @@ export type SwitchProp = Omit<
 export type FieldProp = {
   id: IdProp;
   label: LabelProp;
+  /**
+   * Optional content rendered BESIDE the label and OUTSIDE the `<label>` element — a help
+   * button, a Tooltip trigger, a status chip, a short text action. `FormField.labelAddon` with
+   * the same semantics, and it has to live outside the label for a reason this row has that a
+   * stacked field does not: `Field`'s label is a real `<label htmlFor>` pointing at a
+   * checkbox / radio / switch, so a browser forwards a click anywhere inside it to that
+   * control. An interactive addon passed through `label` therefore TOGGLES the control when
+   * pressed (gh#812). A non-interactive mark (a `Badge as="span"`) is still fine inside
+   * `label`; anything pressable belongs here.
+   */
+  labelAddon?: React.ReactNode;
+  /**
+   * Muted hint under the label. Announced with the control (`aria-describedby`) rather than
+   * left as decoration, and it COMPOSES with `error` — `.ui-choice-content` is already a
+   * vertical stack, so the two lines sit under each other exactly as they do on `FormField`.
+   */
   description?: React.ReactNode;
+  /**
+   * Validation message under the description (`role="alert"`). Presence of a message IS the
+   * invalid state: the control is cloned with `aria-invalid`, and the message id reaches it
+   * through `aria-errormessage` AND `aria-describedby` (see field.tsx — react-aria's hidden
+   * input drops the former). This is the slot that lets a validated boolean stay in `Field`:
+   * `FormField` must not wrap a bare `Switch`, so before this there was nowhere to put it.
+   */
+  error?: ErrorProp;
   className?: ClassNameProp;
   children: React.ReactNode;
 };
