@@ -95,10 +95,10 @@ describe("FeatureList", () => {
 
   it("reads the MARK tier for the glyph — a shape that carries meaning is held to 3:1", () => {
     expect(rule('.ui-feature-list-item[data-state="included"] .ui-feature-list-mark')).toMatch(
-      /color:\s*hsl\(var\(--mark-success\)\)/,
+      /color:\s*hsl\(\s*var\(\s*--mark-success,/,
     );
     expect(rule('.ui-feature-list-item[data-state="limited"] .ui-feature-list-mark')).toMatch(
-      /color:\s*hsl\(var\(--mark-warning\)\)/,
+      /color:\s*hsl\(\s*var\(\s*--mark-warning,/,
     );
   });
 

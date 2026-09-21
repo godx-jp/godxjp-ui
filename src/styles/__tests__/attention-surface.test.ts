@@ -40,7 +40,7 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     // is 6px by the full height of the card). See docs/TOKENS.md, "The three tone tiers".
     for (const tone of ["primary", "success", "warning", "info", "attention", "destructive"]) {
       expect(rule(cardStyles, `[data-slot="card"][data-accent="${tone}"]`)).toMatch(
-        new RegExp(`--card-accent-color:\\s*hsl\\(var\\(--mark-${tone}\\)\\)`),
+        new RegExp(`--card-accent-color:\\s*hsl\\(\\s*var\\(\\s*--mark-${tone},`),
       );
     }
     expect(rule(cardStyles, '[data-slot="card"][data-accent]')).toMatch(
