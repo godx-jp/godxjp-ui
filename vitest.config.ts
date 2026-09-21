@@ -25,7 +25,22 @@ export default defineConfig({
     globals: false,
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
-    testTimeout: 8_000,
+    /* 8s was not enough on CI, and the reason is in the two comments below rather than in any
+     * test. Four shards run AT THE SAME TIME on one self-hosted runner, and each one takes
+     * `maxWorkers: "75%"` of that box — roughly 300% oversubscription. A `userEvent.type` inserts
+     * a real macrotask between every keystroke, so a ten-character type is ten scheduler round
+     * trips, and under that contention they stop being free.
+     *
+     * Measured today: `date-typing-regression`, `form-flow`, `label-select`, `date-range-picker`
+     * and `picker-extended` all timed out at 8000ms on CI across several runs, always in a typing
+     * case, always in whichever shard was unlucky — and every one of them completes locally in
+     * well under a second. Nothing about them changed; the machine did.
+     *
+     * 20s is a load allowance, not a budget: no test here is expected to take more than a fraction
+     * of it, and a genuine hang still fails. The real fix is the oversubscription — either fewer
+     * shards or a per-shard worker cap that accounts for them — and that is a CI change with its
+     * own measurement, not something to slip into a release. */
+    testTimeout: 20_000,
     // `forks`, not `threads`: these are jsdom tests and several suites reach for process-level
     // globals (matchMedia stubs, IANA timezone, the i18n singleton). A forked child gets a real
     // fresh global object; a worker thread shares more than it looks like it does.
