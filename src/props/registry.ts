@@ -4345,6 +4345,151 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  MegaMenuTriggerActionProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  MegaMenuLinkProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DisabledProp",
+      "DescriptionProp",
+      {
+        field: "key",
+        local: true,
+        reason:
+          "Ant Design MenuItemType.key — the row's identity, not a value axis. Kept as antd spells it so a consumer's existing `items` array transfers unchanged.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason:
+          "The destination of a nav LINK. Sidebar/NavList already spell it `href` on their own row types; there is no vocabulary entry because no control-shaped component has a destination.",
+      },
+    ],
+  },
+  MegaMenuGroupProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DescriptionProp",
+      {
+        field: "key",
+        local: true,
+        reason: "Ant Design MenuItemGroupType identity — see MegaMenuLinkProp.key.",
+      },
+      {
+        field: "links",
+        local: true,
+        reason:
+          "Ant Design MenuItemGroupType.children, narrowed to leaves. Named for what it holds because a megamenu panel is exactly one level deep — `children` would imply the arbitrary nesting this deliberately does not have.",
+      },
+    ],
+  },
+  MegaMenuPanelProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      {
+        field: "groups",
+        local: true,
+        reason:
+          'The panel\'s columns — Ant Design SubMenuType.children restricted to `type: "group"` entries.',
+      },
+      {
+        field: "footer",
+        local: true,
+        reason:
+          "A full-width strip below the columns. Same word Card/Dialog use for the slot in that position; no vocabulary type exists for it.",
+      },
+    ],
+  },
+  MegaMenuItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "IconProp",
+      "DisabledProp",
+      {
+        field: "key",
+        local: true,
+        reason: "Ant Design MenuItemType/SubMenuType identity — see MegaMenuLinkProp.key.",
+      },
+      {
+        field: "href",
+        local: true,
+        reason: "Destination of a top-level LINK — see MegaMenuLinkProp.href.",
+      },
+      {
+        field: "panel",
+        local: true,
+        reason:
+          "Presence of this field is what makes the item a DISCLOSURE BUTTON rather than a link (Ant Design SubMenuType vs MenuItemType). A discriminant, not a styling axis.",
+      },
+    ],
+  },
+  MegaMenuLinkComponentProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
+  MegaMenuProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "DefaultOpenProp",
+      "OnOpenChangeProp",
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "LabelProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Ant Design Menu.items — the bar, in antd's own spelling.",
+      },
+      {
+        field: "triggerAction",
+        local: true,
+        reason:
+          "Ant Design `triggerSubMenuAction`, shortened because there is no sub-MENU here (the APG pattern is disclosure, not menubar). Its own union type MegaMenuTriggerActionProp, mirroring DropdownMenuTriggerActionProp.",
+      },
+      {
+        field: "openDelay",
+        local: true,
+        reason:
+          "Ant Design `subMenuOpenDelay`, in ms rather than seconds. No vocabulary type: no other component times a hover open.",
+      },
+      {
+        field: "closeDelay",
+        local: true,
+        reason:
+          "Ant Design `subMenuCloseDelay`, in ms. This is the hover-intent grace period — the diagonal a pointer may take toward the panel without it closing.",
+      },
+      {
+        field: "expandIcon",
+        local: true,
+        reason: "Ant Design `expandIcon`, kept verbatim including its `false` to remove it.",
+      },
+      {
+        field: "linkComponent",
+        local: true,
+        reason:
+          "Same contract and same spelling as Sidebar.linkComponent / NavList.linkComponent, so a consumer who wired a router once wires it the same way here.",
+      },
+    ],
+  },
   WelcomeVariantProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",

@@ -112,6 +112,13 @@ const FROZEN: Record<string, [string, string, string]> = {
   // demanded this row — the table went stale the moment the token was declared.
   "--form-feedback-icon-size": ["0.875rem", "0.875rem", "0.875rem"],
   "--feature-list-mark-icon-size": ["1rem", "1rem", "1rem"],
+  // MegaMenu's three glyphs — the bar chevron, a group heading's mark, a panel row's mark. All
+  // three ride `--control-icon-size-sm`, so all three follow density like every other control
+  // glyph: a bar cell sits on the control tier and its glyph must not be the one thing that
+  // freezes when a service turns density down.
+  "--mega-menu-expand-icon-size": ["0.875rem", "0.805rem", "0.945rem"],
+  "--mega-menu-group-icon-size": ["0.875rem", "0.805rem", "0.945rem"],
+  "--mega-menu-link-icon-size": ["0.875rem", "0.805rem", "0.945rem"],
   "--menu-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-icon-size": ["1rem", "1rem", "1rem"],
   "--month-picker-separator-icon-size": ["0.875rem", "0.875rem", "0.875rem"],

@@ -16849,6 +16849,157 @@ const messages: ChatMessageProp[] = [
     rules: [2, 6, 23, 44, 45],
   },
   {
+    name: "MegaMenu",
+    group: "navigation",
+    tagline:
+      'A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode="horizontal"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow.',
+    props: [
+      {
+        name: "items",
+        type: "MegaMenuItemProp[]",
+        description:
+          "The bar. An item WITH a `panel` is a disclosure button (antd SubMenuType); an item WITHOUT one is a plain link (antd MenuItemType). { key, label, href?, icon?, disabled?, panel? } where panel is { groups: [{ key, label?, description?, icon?, links: [{ key, label, href?, description?, icon?, disabled? }] }], footer? }. Ant Design `items`.",
+      },
+      {
+        name: "open",
+        type: "string | null",
+        description:
+          "Key of the OPEN PANEL, or null for none. Ant Design `openKeys` collapsed to one level — a megamenu bar is one level deep, so at most one panel is open and the array would only ever hold zero or one key.",
+      },
+      {
+        name: "defaultOpen",
+        type: "string | null",
+        description: "Initial uncontrolled open panel. Ant Design `defaultOpenKeys`.",
+        defaultValue: "null",
+      },
+      {
+        name: "onOpenChange",
+        type: "(key: string | null) => void",
+        description:
+          "Fires with the newly open panel's key, or null when everything closed. Ant Design `onOpenChange`.",
+      },
+      {
+        name: "value",
+        type: "string",
+        description:
+          'Key of the item for the CURRENT ROUTE — renders aria-current="page" on the bar item and on the matching panel link. Ant Design `selectedKeys`, singular because a route is singular.',
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial current route. Ant Design `defaultSelectedKeys`.",
+      },
+      {
+        name: "onValueChange",
+        type: "(key: string) => void",
+        description:
+          "Fires with the activated key (a top-level link or a panel link). Activation always closes the open panel. Ant Design `onClick`.",
+      },
+      {
+        name: "size",
+        type: "xs | sm | md | lg",
+        description: "Bar density. The trigger box tracks the matching --control-height tier.",
+        defaultValue: "md",
+      },
+      {
+        name: "triggerAction",
+        type: "click | hover",
+        description:
+          "Ant Design `triggerSubMenuAction`. Default is `click` here where antd defaults to `hover`, because a hover-only trigger has no equivalent on a touch screen; `hover` still accepts click, so touch is never stranded. antd's third value `contextMenu` is not ported.",
+        defaultValue: "click",
+      },
+      {
+        name: "openDelay",
+        type: "number",
+        description:
+          "Ant Design `subMenuOpenDelay`, in MILLISECONDS (antd uses seconds). `hover` only.",
+        defaultValue: "0",
+      },
+      {
+        name: "closeDelay",
+        type: "number",
+        description:
+          "Ant Design `subMenuCloseDelay`, in MILLISECONDS. The hover-intent grace period: the pointer may cross a diagonal toward the panel for this long before anything closes. `hover` only.",
+        defaultValue: "100",
+      },
+      {
+        name: "expandIcon",
+        type: "React.ReactNode | false",
+        description:
+          "Ant Design `expandIcon`, verbatim including its `false` to remove the chevron.",
+      },
+      {
+        name: "linkComponent",
+        type: "React.ComponentType<AnchorHTMLAttributes & { href?: string }>",
+        description:
+          "Router link component for every href in the bar and the panels — same contract and same spelling as Sidebar.linkComponent / NavList.linkComponent.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name of the <nav> landmark (a plain string — it lands on aria-label). Localized default otherwise.",
+      },
+      { name: "id", type: "string", description: "DOM id of the nav root." },
+    ],
+    usage: [
+      'DO reach for this INSTEAD of DropdownMenu for a site nav. DropdownMenu is react-aria-components Menu, i.e. role="menu" / role="menuitem": a row of them announces a desktop application menubar for what is actually a set of links, and Tab then leaves the whole widget instead of walking the links. That is the classic megamenu a11y defect and it is why this component exists.',
+      "DO give the bar its landmark name through `label` when a page has more than one nav (a primary bar plus a footer nav): two unnamed <nav> landmarks are indistinguishable in a landmark list.",
+      "DO drive `value` from your router. A change to it CLOSES the open panel, which is the close-on-route-change half of the contract and needs no router dependency here.",
+      "DO use `linkComponent` for a client-side router; the library composes the row and your component renders only the <a>.",
+      "DON'T nest a second level inside a panel. A panel is exactly one level deep by construction (`groups[].links[]`) — antd's arbitrary SubMenu nesting is `Sidebar`/`NavList` territory, not a bar.",
+      "DON'T set `triggerAction=\"hover\"` and then also hide the trigger's own affordance: hover still opens on click here precisely so a touch user is not stranded, and WCAG 1.4.13 applies to anything hover-revealed.",
+      "DON'T add a `theme=\"dark\"` prop expecting antd's. This library inverts by role scoping ([data-tenant] / per-region), and every surface here is a --mega-menu-* token (rules #44/#45).",
+      "KNOW that the open panel is `position: fixed` and its geometry is MEASURED from the bar, not inherited. That is not a preference: an absolutely-positioned panel is clipped away by both surfaces a megamenu lives in (`Topbar`'s slots are `overflow: clip`, `Card` is `overflow: hidden` — measured at 331px of 348px gone, and not hit-testable). The consequence for you is that an open panel OVERLAYS what is beneath it, so do not leave one open by default in the middle of a scrolling page.",
+    ],
+    useCases: [
+      "A marketing or product site's primary navigation, where Products / Solutions / Resources each open a panel of grouped links rather than a narrow list.",
+      "An admin console with several product areas: a top bar where a section opens a panel of its screens, grouped with headings and one-line descriptions.",
+      "A documentation site's top bar, where the current page is marked with aria-current in both the bar and the open panel.",
+    ],
+    related: [
+      'DropdownMenu — a menu of COMMANDS on a trigger (role="menu"). Use it for actions; use MegaMenu for navigation to places.',
+      'NavList — the same idea laid out vertically inside a page (a settings nav). antd\'s `Menu mode="inline"` is Sidebar; `mode="vertical"` is NavList.',
+      "Topbar / TopbarItem — the APP shell's bar, and NOT where this goes. Measured, both slots break it: `topbar-center` is `display: none` below roughly 1280px (flex at 1440, none at 1024) so the nav vanishes on a laptop, and `topbar-start` is one `overflow: clip` / `flex-wrap: nowrap` row, so the narrow accordion runs out of it (58 elements past the viewport at 375). Put MegaMenu in the site header's own row beside the logo, and give phone width a `Sheet` behind a trigger — which is what real sites do anyway.",
+      "Tabs — switches which panel of the SAME page is shown. A nav goes somewhere else.",
+      "Breadcrumb — where you are in the hierarchy, not where you can go.",
+    ],
+    example: [
+      'import { MegaMenu } from "@godxjp/ui/navigation";',
+      "",
+      "<MegaMenu",
+      '  label="メインナビゲーション"',
+      "  value={route}",
+      "  onValueChange={setRoute}",
+      '  triggerAction="hover"',
+      "  items={[",
+      "    {",
+      '      key: "products",',
+      '      label: "製品",',
+      "      panel: {",
+      "        groups: [",
+      "          {",
+      '            key: "core",',
+      '            label: "コア",',
+      '            description: "毎日使う業務アプリ",',
+      "            links: [",
+      '              { key: "hr", label: "人事管理", href: "/hr", description: "従業員台帳と異動" },',
+      '              { key: "payroll", label: "給与計算", href: "/payroll" },',
+      "            ],",
+      "          },",
+      "        ],",
+      '        footer: <a href="/products">すべての製品を見る</a>,',
+      "      },",
+      "    },",
+      '    { key: "pricing", label: "料金", href: "/pricing" },',
+      "  ]}",
+      "/>",
+    ].join("\n"),
+    docPath: "navigation/mega-menu.tsx",
+    storyPath: "navigation/MegaMenu.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
+  {
     name: "Welcome",
     group: "data-display",
     tagline:

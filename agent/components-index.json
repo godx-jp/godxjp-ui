@@ -831,6 +831,11 @@
     "tagline": "The session rail of a chat surface (Ant Design X Conversations): past conversations, the current one marked with aria-current, a per-row overflow menu, and recency buckets — the whole rail one roving-tabindex tab stop, not one tab stop per conversation."
   },
   {
+    "group": "navigation",
+    "name": "MegaMenu",
+    "tagline": "A primary site navigation whose top-level items disclose a full-width panel of grouped links (Ant Design `Menu mode=\"horizontal\"` whose SubMenu renders through popupRender). Implements the WAI-ARIA APG Disclosure Navigation pattern — NOT menu/menubar roles — with a roving tabindex across the bar, hover intent, Escape-to-trigger, and a narrow layout where the same disclosure lays out in flow."
+  },
+  {
     "group": "data-display",
     "name": "Welcome",
     "tagline": "The greeting block at the head of an empty conversation (Ant Design X Welcome): glyph, greeting, one line under it, and a trailing slot ON THE TITLE ROW — which is the placement a hand-roll gets wrong."

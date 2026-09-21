@@ -484,6 +484,9 @@
       "label": "Conversations",
       "creation": "New conversation",
       "rowActions": "More actions for {label}"
+    },
+    "megaMenu": {
+      "label": "Main navigation"
     }
   },
   "locale": {

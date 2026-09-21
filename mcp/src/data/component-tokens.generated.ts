@@ -4799,6 +4799,246 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Masonry component tokens — Ant Design `Masonry` (6.0.0): tiles of unequal height packed into * columns. * * antd retunes this surface through `classNames` / `styles` semantic maps. Those are deliberately * not ported (cardinal rules #44/#45, docs/DESIGN-AUTHORITY.md — \"a knob that only a fork could * reach is not parity either\"); this file is the answer instead. * * TIMING IS NOT HERE. The re-flow and the appear fade read `--duration-base` / `--ease-standard` * from the motion tier (src/tokens/foundation.css), because the component-token name shape * (`--{component}-{part}-{property}`) has no property word for a duration and a second copy of the * motion scale is how the two drift apart — the same note `float-button.css` and `activity.css` * carry. * * The COLUMN COUNT is not a token. It is `columns`, a prop, because a masonry's column count is * the call site's decision about that collection and not a global design knob."
   },
   {
+    "name": "--mega-menu-bar-gap",
+    "value": "var(--space-inline-xs)",
+    "description": "Bar"
+  },
+  {
+    "name": "--mega-menu-trigger-height",
+    "value": "var(--control-height)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-padding-x",
+    "value": "var(--space-3)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-radius",
+    "value": "var(--radius-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-foreground",
+    "value": "hsl(var(--foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-background",
+    "value": "transparent",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-hover-background",
+    "value": "initial",
+    "description": "ROLE-MIRROR KNOBS — `initial`, NOT `hsl(var(--accent))` (gh#687, docs/TOKENS.md). * A tier that binds to a tenant-scoped role computes ONCE at `:root` and every descendant * inherits that computed colour, so a `[data-tenant]` block redefining `--accent` would leave * this bar on the root brand while its neighbours followed. The knob stays empty here and the * role is the FALLBACK at the call site in styles/navigation-layout.css, which re-resolves per * scope. Documented defaults: hover/open = accent on accent-foreground, current = primary."
+  },
+  {
+    "name": "--mega-menu-trigger-hover-foreground",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-open-background",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-open-foreground",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-current-foreground",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-trigger-disabled-alpha",
+    "value": "0.5",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-expand-icon-size",
+    "value": "var(--control-icon-size-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-background",
+    "value": "hsl(var(--popover))",
+    "description": "Panel surface"
+  },
+  {
+    "name": "--mega-menu-panel-foreground",
+    "value": "hsl(var(--popover-foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-border-color",
+    "value": "hsl(var(--border))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-border-width",
+    "value": "1px",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-radius",
+    "value": "var(--radius-md)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-padding",
+    "value": "var(--space-6)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-shadow",
+    "value": "var(--shadow-md)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-offset",
+    "value": "0px",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-max-height",
+    "value": "70vh",
+    "description": "A forty-link panel must not run off the bottom of a laptop; past this it scrolls in the * block axis and nothing is unreachable."
+  },
+  {
+    "name": "--mega-menu-panel-translate",
+    "value": "var(--space-1)",
+    "description": "Travel of the open animation. Zeroed under prefers-reduced-motion, where the panel SNAPS * into place — it is never removed, only un-animated."
+  },
+  {
+    "name": "--mega-menu-groups-gap",
+    "value": "var(--space-6)",
+    "description": "Panel columns"
+  },
+  {
+    "name": "--mega-menu-group-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-group-min-width",
+    "value": "12rem",
+    "description": "A column may not get narrower than this before the grid drops to fewer columns; this is what * keeps a 40-link panel readable instead of pouring it into one ribbon."
+  },
+  {
+    "name": "--mega-menu-group-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-group-label-foreground",
+    "value": "hsl(var(--muted-foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-group-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-group-description-foreground",
+    "value": "hsl(var(--muted-foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-group-icon-size",
+    "value": "var(--control-icon-size-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-gap",
+    "value": "var(--space-inline-sm)",
+    "description": "Panel rows"
+  },
+  {
+    "name": "--mega-menu-link-padding-x",
+    "value": "var(--space-2)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-padding-y",
+    "value": "var(--space-2)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-radius",
+    "value": "var(--radius-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-foreground",
+    "value": "hsl(var(--foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-hover-background",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-hover-foreground",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-current-foreground",
+    "value": "initial",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-description-foreground",
+    "value": "hsl(var(--muted-foreground))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-icon-size",
+    "value": "var(--control-icon-size-sm)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-min-height",
+    "value": "var(--touch-target-min)",
+    "description": "A nav row is a WCAG 2.2 SC 2.5.8 target: the AA floor, scale-exempt like the token itself."
+  },
+  {
+    "name": "--mega-menu-panel-footer-gap",
+    "value": "var(--space-4)",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
+    "name": "--mega-menu-panel-footer-border-color",
+    "value": "hsl(var(--border))",
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+  },
+  {
     "name": "--pagination-gap",
     "value": "var(--space-inline-sm)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
