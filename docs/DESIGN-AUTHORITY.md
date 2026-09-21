@@ -648,11 +648,31 @@ because removing it would break the contents anchor.
 
 **Every other focusable non-interactive element in this library is a genuinely scrollable region**
 — `.app-main`, `.ui-mobile-shell-main`, `.ui-timeline-grid`, `.ui-code-block` when it overflows,
-MasterDetail's bounded master, the DataTable and Table scroll containers, ScrollArea, and the
-BranchScopePicker list. Each carries `tabIndex={0}` for axe `scrollable-region-focusable` and must
-stay reachable, so each keeps BOTH halves rather than becoming focusable-but-unpainted. The region
-ring (`--region-focus-ring-width`, off by default) now also multiplies by `--focus-outline`, so a
-service that opts it in still cannot paint while the library-wide switch is off.
+MasterDetail's bounded master, the DataTable and Table scroll containers when they overflow,
+ScrollArea, and the BranchScopePicker list. Each carries `tabIndex={0}` for axe
+`scrollable-region-focusable` and must stay reachable, so each keeps BOTH halves rather than
+becoming focusable-but-unpainted. The region ring (`--region-focus-ring-width`, off by default) now
+also multiplies by `--focus-outline`, so a service that opts it in still cannot paint while the
+library-wide switch is off.
+
+### A focusable scroll region is ROLED and NAMED, and only exists while it scrolls (gh#817)
+
+Reaching the overflow is half the contract; knowing what you reached is the other half. A stop with
+no role and no accessible name announces nothing at all, which is why `godx-jp/id` found `Table`'s
+wrapper sitting at tab stop 27 as a bare `<div tabindex="0">`. So the Table and DataTable scroll
+containers carry `role="group"` plus a name that defaults to the localized `dataTable.scrollRegion`
+— a consumer is never forced to invent one per table, and `label` overrides it per instance.
+
+`group`, not `region`: a NAMED `region` is a landmark, so a page with three tables would ship three
+identically-named landmarks and fail axe `landmark-unique`. That collision is the reason the role
+was left off in the first place; `group` is announced, takes a name, and is not a landmark.
+
+And all three attributes are withheld until the box provably overflows (`useScrollsHorizontally`,
+`src/lib/hooks.ts`) — a focus stop that scrolls nothing is noise. The measurement may only ever
+REMOVE the stop: an unlaid-out box reports `clientWidth === 0` (SSR, jsdom, a `display:none`
+ancestor), and reading that as "nothing overflows" would strand the overflow from every keyboard
+user, a worse failure than the extra stop. Gated by
+`src/components/data-display/__tests__/table-scroll-region-a11y-817.test.tsx`.
 
 ## How a decision gets made from here
 

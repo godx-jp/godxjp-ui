@@ -525,7 +525,8 @@
     "sortAscending": "Sắp xếp tăng dần",
     "sortDescending": "Sắp xếp giảm dần",
     "sortCancel": "Bỏ sắp xếp",
-    "selectColumn": "Chọn"
+    "selectColumn": "Chọn",
+    "scrollRegion": "Bảng có thể cuộn"
   },
   "dataGrid": {
     "search": "Tìm kiếm",

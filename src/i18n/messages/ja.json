@@ -524,7 +524,8 @@
     "sortAscending": "昇順に並べ替え",
     "sortDescending": "降順に並べ替え",
     "sortCancel": "並べ替えを解除",
-    "selectColumn": "選択"
+    "selectColumn": "選択",
+    "scrollRegion": "スクロール可能な表"
   },
   "dataGrid": {
     "search": "検索",

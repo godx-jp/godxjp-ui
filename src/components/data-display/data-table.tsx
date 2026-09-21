@@ -98,8 +98,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  scrollRegionLabel,
 } from "../data-display/table";
 import { cn } from "../../lib/utils";
+import { useScrollsHorizontally } from "../../lib/hooks";
 import { densityClass } from "../../lib/variants";
 import {
   controlIconSmClass,
@@ -113,6 +115,7 @@ import type {
   ColumnFilterStateProp,
   ColumnFilterValueProp,
   DensityProp,
+  LabelProp,
   OnColumnFilterChangeProp,
   OnRowProp,
   RowToneProp,
@@ -368,6 +371,7 @@ interface DataTableContextValue<T = unknown> {
   stickyHeader: boolean;
   preset: TablePresetProp;
   collapseBelow: BreakpointProp;
+  label?: LabelProp;
   rowClassName?: (row: T) => string | undefined;
   rowTone?: RowToneProp<T>;
   // ── antd 6.6.2 parity surface ────────────────────────────────────────
@@ -489,6 +493,14 @@ interface DataTableProps<T> {
   /** Default `"sm"`. Ignored while `preset` is `"default"`. */
   collapseBelow?: BreakpointProp;
   /**
+   * Accessible name for the horizontal-scroll REGION (the `tabindex="0"` wrapper a keyboard user
+   * lands on), not for the `<table>`. Optional: left out, the region takes the localized
+   * `dataTable.scrollRegion` default, so no consumer has to invent a name for every list. The
+   * region is announced only while it HAS overflow to reach. Same contract as `Table label`.
+   * (gh#817)
+   */
+  label?: LabelProp;
+  /**
    * Per-row className for state-based row tinting (e.g. flag an invalid or empty record). Returned
    * classes are appended last, so they win over the built-in hover/selected fills.
    */
@@ -592,6 +604,7 @@ export function DataTable<T>({
   stickyHeader = true,
   preset = "default",
   collapseBelow = "sm",
+  label,
   rowClassName,
   rowTone,
   rowSelection,
@@ -909,6 +922,7 @@ export function DataTable<T>({
     stickyHeader: sticky === undefined ? stickyHeader : sticky !== false,
     preset,
     collapseBelow,
+    label,
     rowClassName,
     rowTone,
     bordered,
@@ -1357,6 +1371,7 @@ DataTable.Content = function DataTableContent() {
     stickyHeader,
     preset,
     collapseBelow,
+    label,
     rowClassName,
     rowTone,
     bordered,
@@ -1436,6 +1451,8 @@ DataTable.Content = function DataTableContent() {
   // CSS alone cannot know (there is no :overflowing selector), so measure the
   // scroll box and mirror the state into a class the stylesheet gates on.
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  // Only this region can own the tab stop, and only while it overflows (see `useScrollsHorizontally`).
+  const scrolls = useScrollsHorizontally(scrollRef, !presetAttr);
   const [hasOverflowEnd, setHasOverflowEnd] = React.useState(false);
   React.useEffect(() => {
     const el = scrollRef.current;
@@ -1575,11 +1592,17 @@ DataTable.Content = function DataTableContent() {
       aria-busy={loading}
       // A table wider than its container scrolls horizontally here; keep the scroll region
       // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
-      // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions
-      // when a page renders several tables. With the collection preset the Table primitive's
-      // own wrapper owns the overflow + tab stop instead (see `scrollable` below), so this
-      // region drops its tab stop rather than adding a second, never-scrollable one.
-      tabIndex={presetAttr ? undefined : 0}
+      // scrollable-region-focusable) — and NAMED, because an unroled, unnamed focus stop
+      // announces nothing at all (gh#817). `role="group"`, not `region`: a named region is a
+      // landmark, and a page with several tables would then ship several same-named landmarks
+      // (axe `landmark-unique`) — the collision the role was originally left off to avoid.
+      // Emitted only while the region HAS overflow to reach, so a table that fits adds no stop.
+      // With the collection preset the Table primitive's own wrapper owns the overflow + tab stop
+      // instead (see `scrollable` below), so this region emits nothing rather than adding a
+      // second, never-scrollable one.
+      {...(scrolls
+        ? { role: "group", "aria-label": scrollRegionLabel(label, t), tabIndex: 0 }
+        : {})}
     >
       <div
         // to be a hard-coded 640px min-width utility pair, i.e. exactly the literal that forced
@@ -1593,6 +1616,7 @@ DataTable.Content = function DataTableContent() {
         {/* With `preset="default"` the `.ui-data-table-scroll` region above owns the overflow, so the primitive's wrapper is a bare box (`scrollable={false}` — no nested scroller, no duplicate tab stop). Only the table's DIRECT wrapper sees the growth, so for the preset that wrapper is the keyboard-reachable scroll region (exactly the bare `Table` behaviour), scrolling inside the surface border. */}
         <Table
           scrollable={preset !== "default"}
+          label={label}
           preset={preset}
           collapseBelow={collapseBelow}
           bordered={bordered}

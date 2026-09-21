@@ -1,9 +1,12 @@
 import * as React from "react";
+import { useTranslation } from "../../i18n/use-translation";
 import { tableHeadHeightClass } from "../../lib/control-styles";
+import { useScrollsHorizontally } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type {
   BreakpointProp,
   FlushProp,
+  LabelProp,
   TableCellIndentProp,
   TableColumnPriorityProp,
   TablePresetProp,
@@ -68,7 +71,35 @@ export type TableProps = React.HTMLAttributes<HTMLTableElement> & {
   };
   /** Defaults to `"sm"` (40rem). Ignored while `preset` is `"default"`. */
   collapseBelow?: BreakpointProp;
+  /**
+   * Accessible name for the horizontal-scroll REGION — the `tabindex="0"` wrapper a keyboard user
+   * lands on to scroll a table wider than its container, NOT the `<table>` itself (pass `aria-label`
+   * for that; it reaches the table element as it always has).
+   *
+   * Optional on purpose. A consumer is never forced to invent a name for every table: left out, the
+   * region takes the localized `dataTable.scrollRegion` default ("Scrollable table"), which is what
+   * a screen-reader user needs to hear anyway — that the arrow keys now scroll something. Pass a
+   * plain string when the page can say WHICH table ("Pending approvals"); a non-string node cannot
+   * be an `aria-label`, so it falls back to the default (the PermissionMatrix `label` contract).
+   *
+   * The region is only announced while it HAS overflow to reach: no overflow, no tab stop, no role
+   * and no name, because a focus stop that scrolls nothing is noise. (gh#817)
+   */
+  label?: LabelProp;
 };
+
+/**
+ * The scroll region's accessible name. A `label` is only usable as an `aria-label` when it is a
+ * plain string, and no consumer is obliged to supply one at all — so anything else takes the
+ * localized default, which still tells the user what the stop is for. Shared with `DataTable`, so
+ * both tables name their region the same way.
+ */
+export function scrollRegionLabel(
+  label: LabelProp | undefined,
+  t: (key: string) => string,
+): string {
+  return typeof label === "string" && label.trim() !== "" ? label : t("dataTable.scrollRegion");
+}
 
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
   (
@@ -80,49 +111,65 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
       preset = "default",
       collapseBelow = "sm",
       columnWidths,
+      label,
       ...props
     },
     ref,
-  ) => (
-    // A table wider than its container scrolls horizontally in this wrapper; keep it
-    // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
-    // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions.
-    // When `scrollable` is false an ancestor owns the scroll region, so this is a bare
-    // positioning box (no `overflow`, no tab stop) to avoid a redundant nested scroller.
-    // step attribute; with `preset="default"` neither is emitted, so the box is byte-identical.
-    <div
-      className={cn(
-        scrollable ? "relative w-full overflow-auto" : "relative w-full",
-        preset === "action-collection" && "ui-table-collection",
-        preset === "stacked-record-collection" && "ui-table-stacked-collection",
-      )}
-      data-preset={preset === "default" ? undefined : preset}
-      data-collapse-below={preset === "default" ? undefined : collapseBelow}
-      data-column-widths={columnWidths ? "" : undefined}
-      style={
-        columnWidths
-          ? ({
-              "--table-action-collection-actions-width": columnWidths.actions,
-              "--table-action-collection-actions-width-compact": columnWidths.actionsCompact,
-              "--table-action-collection-meta-width-compact": columnWidths.metaCompact,
-              "--table-action-collection-min-inline-size-compact": columnWidths.minInlineSizeCompact,
-            } as React.CSSProperties)
-          : undefined
-      }
-      {...(scrollable ? { tabIndex: 0 } : {})}
-    >
-      {/* ui-audit-disable-next-line no-raw-table — this IS the Table primitive; it renders the native element. */}
-      <table
-        ref={ref}
-        data-slot="table"
-        // Tri-state on purpose: no attribute inherits the theme's `--table-row-striped-alpha`.
-        data-striped={striped === undefined ? undefined : striped ? "" : "false"}
-        // Type metrics live on `[data-slot="table"]` in table-layout.css
-        className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
-        {...props}
-      />
-    </div>
-  ),
+  ) => {
+    const { t } = useTranslation();
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+    // Measured, not assumed — see `useScrollsHorizontally`. `scrollable={false}` means an ancestor
+    // owns the scroll region, so nothing is measured and nothing is emitted here.
+    const scrolls = useScrollsHorizontally(scrollRef, scrollable);
+    return (
+      // A table wider than its container scrolls horizontally in this wrapper; keep it
+      // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
+      // scrollable-region-focusable). That stop must not be ANONYMOUS: an unnamed, unroled focus
+      // stop announces nothing at all, so it carries `role="group"` + an accessible name (gh#817).
+      // `group`, not `region`: a named `region` IS a landmark, and a page with three tables would
+      // then ship three same-named landmarks (axe `landmark-unique`) — the reason the role was left
+      // off in the first place. `group` is announced, takes a name, and is not a landmark.
+      // When `scrollable` is false an ancestor owns the scroll region, so this is a bare
+      // positioning box (no `overflow`, no tab stop) to avoid a redundant nested scroller.
+      // step attribute; with `preset="default"` neither is emitted, so the box is byte-identical.
+      <div
+        ref={scrollRef}
+        className={cn(
+          scrollable ? "relative w-full overflow-auto" : "relative w-full",
+          preset === "action-collection" && "ui-table-collection",
+          preset === "stacked-record-collection" && "ui-table-stacked-collection",
+        )}
+        data-preset={preset === "default" ? undefined : preset}
+        data-collapse-below={preset === "default" ? undefined : collapseBelow}
+        data-column-widths={columnWidths ? "" : undefined}
+        style={
+          columnWidths
+            ? ({
+                "--table-action-collection-actions-width": columnWidths.actions,
+                "--table-action-collection-actions-width-compact": columnWidths.actionsCompact,
+                "--table-action-collection-meta-width-compact": columnWidths.metaCompact,
+                "--table-action-collection-min-inline-size-compact":
+                  columnWidths.minInlineSizeCompact,
+              } as React.CSSProperties)
+            : undefined
+        }
+        {...(scrolls
+          ? { role: "group", "aria-label": scrollRegionLabel(label, t), tabIndex: 0 }
+          : {})}
+      >
+        {/* ui-audit-disable-next-line no-raw-table — this IS the Table primitive; it renders the native element. */}
+        <table
+          ref={ref}
+          data-slot="table"
+          // Tri-state on purpose: no attribute inherits the theme's `--table-row-striped-alpha`.
+          data-striped={striped === undefined ? undefined : striped ? "" : "false"}
+          // Type metrics live on `[data-slot="table"]` in table-layout.css
+          className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
+          {...props}
+        />
+      </div>
+    );
+  },
 );
 Table.displayName = "Table";
 

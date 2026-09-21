@@ -537,7 +537,8 @@
     "sortAscending": "Sort ascending",
     "sortDescending": "Sort descending",
     "sortCancel": "Cancel sort",
-    "selectColumn": "Select"
+    "selectColumn": "Select",
+    "scrollRegion": "Scrollable table"
   },
   "dataGrid": {
     "search": "Search",
