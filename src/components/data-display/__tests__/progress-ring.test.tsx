@@ -100,11 +100,11 @@ describe("Progress shape=ring", () => {
   it("strokes the MARK tier, like the bar and the breakdown slices", () => {
     // The default reads the same component knob the bar does, so a service that retunes
     // `--progress-fill-background` once moves both shapes; the fallback behind it is the mark.
-    expect(layoutCss).toContain(
-      "stroke: var(--progress-fill-background, hsl(var(--mark-success)));",
+    expect(layoutCss).toMatch(
+      /stroke:\s*var\(\s*--progress-fill-background,\s*hsl\(\s*var\(\s*--mark-success,/,
     );
-    expect(layoutCss).toContain("stroke: hsl(var(--mark-warning));");
-    expect(layoutCss).toContain("stroke: hsl(var(--mark-destructive));");
+    expect(layoutCss).toMatch(/stroke:\s*hsl\(\s*var\(\s*--mark-warning,/);
+    expect(layoutCss).toMatch(/stroke:\s*hsl\(\s*var\(\s*--mark-destructive,/);
     // And no ring rule may fall back to the FILL tier, which is the defect the bar was moved off.
     for (const fill of ["--success", "--warning", "--destructive"]) {
       expect(layoutCss).not.toContain(`stroke: hsl(var(${fill}));`);

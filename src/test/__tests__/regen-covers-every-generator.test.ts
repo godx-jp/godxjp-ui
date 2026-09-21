@@ -41,13 +41,32 @@ describe("pnpm regen (gh#801)", () => {
     );
   });
 
-  it("reaches every generator that has a --check counterpart", () => {
-    const out = execFileSync("node", ["scripts/regen-generated.mjs"], { encoding: "utf8" });
-    const reached = [...out.matchAll(/\((check:[\w-]+)\)/g)].map((m) => m[1]).sort();
-    expect(reached, "a generator reachable by --check must be reachable by regen").toEqual(
-      checkersWithGenerators().sort(),
-    );
-  });
+  /*
+   * EXPLICIT TIMEOUT, for the same reason gen-component-api-manifest-comment-ghost carries one and
+   * with the same history: this test SPAWNS `regen`, which runs all eight generators for real, and
+   * one of them (`gen-component-api-manifest`) puts the TypeScript compiler over the whole project.
+   * Measured on a laptop: 3.6s for the chain, 3.0s of it that one generator. vitest's 8000ms
+   * default leaves no room on a shared CI pool running four shards at once, and it failed exactly
+   * that way on the 28.5.0 release commit — a timeout rather than an assertion, and the tag could
+   * not be pushed. The same shape cost the 23.4.1 tag, which is why the sibling test says so too.
+   *
+   * Running `regen` for real is the point: the thing under test is that the generator list is
+   * DERIVED from package.json, so a stubbed runner would prove nothing. The cost is accepted and
+   * bounded here rather than hidden by weakening the test.
+   */
+  const SPAWNS_EVERY_GENERATOR = 120_000;
+
+  it(
+    "reaches every generator that has a --check counterpart",
+    { timeout: SPAWNS_EVERY_GENERATOR },
+    () => {
+      const out = execFileSync("node", ["scripts/regen-generated.mjs"], { encoding: "utf8" });
+      const reached = [...out.matchAll(/\((check:[\w-]+)\)/g)].map((m) => m[1]).sort();
+      expect(reached, "a generator reachable by --check must be reachable by regen").toEqual(
+        checkersWithGenerators().sort(),
+      );
+    },
+  );
 
   it("finds EIGHT today — the number is asserted so a ninth is noticed", () => {
     // Not because eight is correct forever, but because the failure mode is a derivation that
