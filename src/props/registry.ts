@@ -2383,6 +2383,7 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           'Pinned-state change handler (boolean), so the consumer can render its own focusable "jump to newest" affordance.',
       },
+      "LabelProp",
     ],
   },
   ChartSeriesProp: {

@@ -170,29 +170,40 @@ export function useScrollableRegionTabIndex(element: HTMLElement | null): void {
 }
 
 /**
- * Does this scroll box actually have somewhere to scroll horizontally?
+ * Does this scroll box actually have somewhere to scroll, on the axes it is allowed to scroll on?
  *
- * Drives BOTH halves of a table's scroll region: the `tabindex="0"` a keyboard user needs to reach
- * the overflow (WCAG 2.1.1 / axe `scrollable-region-focusable`) AND the `role`/name that stop needs
- * in order not to be an anonymous one (gh#817). A stop that scrolls nothing is pure noise, and a
- * name on it is noise too, so both are withheld until there is overflow to reach.
+ * Drives BOTH halves of a scroll region: the `tabindex="0"` a keyboard user needs to reach the
+ * overflow (WCAG 2.1.1 / axe `scrollable-region-focusable`) AND the `role`/name that stop needs in
+ * order not to be an anonymous one (gh#817 for the table, gh#821 for `ScrollArea`). A stop that
+ * scrolls nothing is pure noise, and a name on it is noise too, so both are withheld until there is
+ * overflow to reach.
  *
  * The measurement may only ever REMOVE the stop, never withhold it on a guess: a box that has not
- * been laid out reports `clientWidth === 0` (the server render, jsdom, a `display:none` ancestor,
- * the frame before first layout), and that is not evidence that nothing overflows. Reading it as
- * "no overflow" would strand the table's overflow from every keyboard user — a worse failure than
- * an extra tab stop — so an unmeasured box counts as scrolling.
+ * been laid out reports 0 for `clientWidth`/`clientHeight` (the server render, jsdom, a
+ * `display:none` ancestor, the frame before first layout), and that is not evidence that nothing
+ * overflows. Reading it as "no overflow" would strand the overflow from every keyboard user — a
+ * worse failure than an extra tab stop — so an unmeasured box counts as scrolling.
+ *
+ * `axis` is the box's OWN `overflow`, not a preference: an axis it does not scroll on is `hidden`
+ * there, so overflow on that axis is CLIPPED rather than reachable, and measuring it would keep a
+ * tab stop that scrolls nothing. `ScrollArea`'s `orientation` is exactly this union.
  */
-export function useScrollsHorizontally(
+export function useScrollsOnAxis(
   ref: RefObject<HTMLElement | null>,
   enabled: boolean,
+  axis: "horizontal" | "vertical" | "both",
 ): boolean {
   const [scrolls, setScrolls] = useState(true);
   useEffect(() => {
     const el = ref.current;
     if (!enabled || !el) return undefined;
+    // `client === 0` is an UNLAID-OUT box, never "it fits" — see the note above.
+    const overflows = (client: number, scroll: number) => client === 0 || scroll - client > 1;
     const update = () => {
-      setScrolls(el.clientWidth === 0 || el.scrollWidth - el.clientWidth > 1);
+      setScrolls(
+        (axis !== "vertical" && overflows(el.clientWidth, el.scrollWidth)) ||
+          (axis !== "horizontal" && overflows(el.clientHeight, el.scrollHeight)),
+      );
     };
     update();
     if (typeof ResizeObserver === "undefined") return undefined;
@@ -203,6 +214,14 @@ export function useScrollsHorizontally(
     return () => {
       observer.disconnect();
     };
-  }, [ref, enabled]);
+  }, [ref, enabled, axis]);
   return enabled && scrolls;
+}
+
+/** A table's wrapper scrolls on one axis only, so it asks the one question it has (gh#817). */
+export function useScrollsHorizontally(
+  ref: RefObject<HTMLElement | null>,
+  enabled: boolean,
+): boolean {
+  return useScrollsOnAxis(ref, enabled, "horizontal");
 }

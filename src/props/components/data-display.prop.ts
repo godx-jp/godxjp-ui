@@ -683,6 +683,20 @@ export type ScrollAreaProp = {
    * from it — anchoring must never be the only route back to new content.
    */
   onAnchoredChange?: (anchored: boolean) => void;
+  /**
+   * Accessible name for the scroll REGION — the `tabindex="0"` element a keyboard user lands on to
+   * scroll content taller or wider than the box.
+   *
+   * Optional on purpose. A consumer is never forced to invent a name for every scrolling box: left
+   * out, the region takes the localized `dataDisplay.scrollArea.region` default ("Scrollable
+   * region"), which is what a screen-reader user needs to hear anyway — that the arrow keys now
+   * scroll something. Pass a plain string when the screen can say WHICH region ("Activity log"); a
+   * non-string node cannot be an `aria-label`, so it falls back to the default.
+   *
+   * The region is only announced while it HAS overflow to reach, on the axes `orientation` opens:
+   * no overflow, no tab stop, no role and no name. (gh#821)
+   */
+  label?: LabelProp;
 };
 
 /**

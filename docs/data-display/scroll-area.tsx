@@ -357,6 +357,37 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>スクロール領域に名前を付ける（label）</CardTitle>
+            <CardDescription>
+              溢れている間、ビューポートは Tab
+              で止まる（キーボードだけで中身を送るために必要）。その停止点は名前を持つ。既定は
+              「スクロール可能な領域」の翻訳で、画面がその領域を呼べるときは label
+              で「監査ログ」と名乗る。ロールはランドマークの region ではなく group
+              にしてある。同じ名前のランドマークが一画面に並ぶと axe landmark-unique
+              に触れるため。溢れていなければ停止点も role も名前も出ない（gh#821）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Card variant="outline" className="w-full">
+              <CardContent flush>
+                <ScrollArea className="h-40" label="監査ログ">
+                  <CardContent>
+                    <Flex direction="col" gap="xs">
+                      {entries.map((e) => (
+                        <div key={e} className="text-sm tabular-nums">
+                          {e}
+                        </div>
+                      ))}
+                    </Flex>
+                  </CardContent>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>内容が収まる場合（バー非表示）</CardTitle>
             <CardDescription>
               中身が高さに収まるときはスクロールバーは表示されません。

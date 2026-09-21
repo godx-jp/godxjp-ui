@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useTranslation } from "../../i18n/use-translation";
+import { useScrollsOnAxis } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { ScrollAreaProp } from "../../props/components/data-display.prop";
 
@@ -214,15 +216,21 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       onAnchoredChange,
       orientation = "vertical",
       scrollbar = "auto",
+      label,
       ...props
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     // State, not a ref, so the anchoring effect re-runs the moment the element mounts.
     const [viewport, setViewport] = React.useState<HTMLDivElement | null>(null);
+    // The same node, held as a ref as well: the overflow measurement watches ONE element for the
+    // life of the mount, so it wants a handle it can read without re-running on every state change.
+    const viewportHandle = React.useRef<HTMLDivElement | null>(null);
     const attachViewport = React.useCallback(
       (node: HTMLDivElement | null) => {
         setViewport(node);
+        viewportHandle.current = node;
         for (const target of [ref, viewportRef]) {
           if (typeof target === "function") target(node);
           else if (target) (target as React.RefObject<HTMLDivElement | null>).current = node;
@@ -232,10 +240,24 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
     );
 
     useBottomAnchor(viewport, anchor === "bottom", anchorOffset, onAnchoredChange);
+    // Measured, not assumed — and measured on the axes this box actually scrolls on, since an axis
+    // `orientation` leaves out is `overflow: hidden` and cannot be scrolled to at all.
+    const scrolls = useScrollsOnAxis(viewportHandle, true, orientation);
+    // Only a plain string can BE an `aria-label`; anything else (and the usual nothing at all) takes
+    // the localized default, which still tells the reader what the stop is for — the same contract
+    // as `Table`'s `label` (gh#817).
+    const regionLabel =
+      typeof label === "string" && label.trim() !== "" ? label : t("dataDisplay.scrollArea.region");
 
     return (
       // `tabIndex={0}` keeps the scroll viewport keyboard-reachable so overflowing content can be
-      // scrolled without a pointer (WCAG 2.1.1 / axe scrollable-region-focusable).
+      // scrolled without a pointer (WCAG 2.1.1 / axe scrollable-region-focusable). That stop must
+      // not be ANONYMOUS: unroled and unnamed it announces nothing, so it carries `role="group"`
+      // plus an accessible name (gh#821, the same defect gh#817 fixed in Table). `group`, not
+      // `region`: a named `region` IS a landmark, and a page with several scroll areas would ship
+      // several identically-named landmarks (axe `landmark-unique`). All three attributes come and
+      // go together with the overflow, because a focus stop that scrolls nothing is noise — and
+      // they precede `{...props}`, so a consumer's own `role`/`aria-label`/`tabIndex` still wins.
       //
       // NO `dir` IS STAMPED HERE, deliberately. Radix's Root called `useDirection(dir)`, which
       // falls back to the literal "ltr" and writes it onto the element — and a `dir` attribute is
@@ -246,12 +268,12 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
       // needs no code. A caller may still pass `dir` explicitly; it rides through with the rest.
       <div
         ref={attachViewport}
-        tabIndex={0}
         data-slot="scroll-area-viewport"
         data-anchor={anchor}
         data-orientation={orientation}
         data-scrollbar={scrollbar}
         className={cn("ui-scroll-area", className)}
+        {...(scrolls ? { role: "group", "aria-label": regionLabel, tabIndex: 0 } : {})}
         {...props}
       >
         <div data-slot="scroll-area-content" className="ui-scroll-area-content">
