@@ -1,0 +1,14 @@
+{
+  "code": "// resources/js/layouts/crm-layout.tsx\nimport { router, usePage } from \"@inertiajs/react\"\nimport { AppShell, Sidebar } from \"@godxjp/ui/layout\"\nimport { LayoutDashboard } from \"lucide-react\"\nimport type { ReactNode } from \"react\"\n\nexport function CrmLayout({ children }: { children: ReactNode }) {\n  const { url } = usePage()\n  const sections = [{ label: \"メイン\", items: [{ id: \"/dashboard\", label: \"ダッシュボード\", icon: LayoutDashboard }] }]\n  return (\n    <AppShell sidebar={<Sidebar activeId={url} onSelect={(id) => router.visit(id)} sections={sections} product={{ name: \"JOVY CRM\" }} />}>\n      {children}\n    </AppShell>\n  )\n}\n\n// ⚠️ GOTCHA 1 — persistent layout MUST be the ARRAY form.\n// A render fn `(page) => <CrmLayout>{page}</CrmLayout>` is indistinguishable from a\n// component; Inertia React calls it with the page-PROPS object and renders that\n// object as a child → \"Objects are not valid as a React child {errors, auth, …}\".\nexport const withCrmLayout = [CrmLayout]   // ✅ array → Inertia passes the page as children\n// page usage:  Dashboard.layout = withCrmLayout\n\n// ⚠️ GOTCHA 2 — Inertia v3 SSRs even in `npm run dev`. NEVER call Math.random() or\n// argless new Date() during render (e.g. fabricating chart/demo numbers) → React\n// hydration mismatch (\"server rendered text didn't match the client\"). Seed\n// deterministically by index, or compute inside an event handler:\nconst seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; return x - Math.floor(x) }",
+  "name": "inertia-persistent-layout",
+  "tagline": "Inertia persistent layout (AppShell+Sidebar) — the array-form gotcha + the SSR/Math.random gotcha.",
+  "tags": [
+    "inertia",
+    "layout",
+    "appshell",
+    "sidebar",
+    "ssr",
+    "hydration",
+    "gotcha"
+  ]
+}

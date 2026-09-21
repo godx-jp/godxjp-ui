@@ -1,0 +1,12 @@
+{
+  "code": "// Server (Laravel): defer the heavy prop\n//   Inertia::render('crm/coupons/index', [\n//     'coupons' => Inertia::defer(fn () => Coupon::all()),\n//   ]);\nimport { Card, CardContent, DataTable } from \"@godxjp/ui/data-display\";\nimport type { ColumnDef } from \"@godxjp/ui/data-display\";\nimport { SkeletonTable } from \"@godxjp/ui/feedback\";\n\ntype Coupon = { id: string; name: string };\nconst columns: ColumnDef<Coupon>[] = [{ key: \"name\", header: \"クーポン名\" }];\n\n// coupons is undefined until the deferred request resolves\nexport default function Coupons({ coupons }: { coupons?: Coupon[] }) {\n  return (\n    <Card>\n      <CardContent flush>\n        {!coupons\n          ? <SkeletonTable rows={10} columns={6} />\n          : <DataTable data={coupons} columns={columns} getRowId={(c) => c.id} />}\n      </CardContent>\n    </Card>\n  );\n}",
+  "name": "deferred-loading",
+  "tagline": "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",
+  "tags": [
+    "loading",
+    "skeleton",
+    "deferred",
+    "inertia",
+    "table"
+  ]
+}

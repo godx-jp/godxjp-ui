@@ -1,4 +1,13 @@
 {
+  "absorbed": [
+    "LocalePicker",
+    "LanguagePicker",
+    "TimezonePicker",
+    "DateFormatPicker",
+    "TimeFormatPicker",
+    "ThemePicker",
+    "DensityPicker"
+  ],
   "example": "{`// Uncontrolled — AppProvider manages and persists every setting\nimport { AppProvider } from \"@godxjp/ui/app\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function SettingsPanel() {\n  return (\n    <AppProvider defaultLocale=\"ja\" defaultTimezone=\"Asia/Tokyo\">\n      <AppSettingPicker kind=\"locale\" />\n      <AppSettingPicker kind=\"timezone\" />\n      <AppSettingPicker kind=\"dateFormat\" />\n      <AppSettingPicker kind=\"timeFormat\" />\n    </AppProvider>\n  );\n}\n\n// Controlled — no AppProvider required\nimport { useState } from \"react\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function LocaleField() {\n  const [locale, setLocale] = useState(\"en\");\n  return <AppSettingPicker kind=\"locale\" value={locale} onValueChange={setLocale} />;\n}\n\n// Topbar locale switcher (globe) — a cell OF the bar, no CSS overrides\nimport { Topbar } from \"@godxjp/ui/layout\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function TopbarLocale() {\n  // \"bar\" inside a Topbar slot; \"icon\" everywhere else.\n  return <Topbar end={<AppSettingPicker kind=\"locale\" appearance=\"bar\" />} />;\n}`}",
   "group": "navigation",
   "importPath": "@godxjp/ui/navigation",

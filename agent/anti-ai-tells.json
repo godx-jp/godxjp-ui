@@ -1,0 +1,158 @@
+[
+  {
+    "body": "The default LLM color palette — purple → blue → cyan radial /\nlinear gradient as hero background. Looks like every AI-generated\nSaaS landing page from 2023.",
+    "category": "visual",
+    "fix": "Use the framework's accent palette (`data-accent=\"blue\"` /\n\"violet\" / \"cyan\" / \"green\" / \"orange\" / \"rose\"). Solid surface\ncolors with semantic meaning. If you want depth, use a SINGLE\nsubtle gradient that supports brand (not decoration).",
+    "name": "Purple-blue gradient hero"
+  },
+  {
+    "body": "Frosted-glass cards stacked on a colorful blurry background.\nLooked novel in 2020 — now a tell that the designer reached for\ntrend instead of solving a problem.",
+    "category": "visual",
+    "fix": "Solid surface tiers (Card on background, Popover on Card,\nDialog on backdrop). The framework's elevation system already\nencodes 3 surface tiers — use them.",
+    "name": "Glassmorphism without purpose"
+  },
+  {
+    "body": "Random gradient blobs floating behind content with no narrative\npurpose. The \"creative space-filler\" AI pattern. Reads as\ndistracting noise.",
+    "category": "visual",
+    "fix": "If the page needs visual interest, use a REAL image (product\nphoto, founder photo, branded illustration). If you need\n\"breathing room\", use whitespace. Never use shapes as filler.",
+    "name": "Ambient blobs / floating shapes"
+  },
+  {
+    "body": "Every Card / Button / Input with `border-radius: 24px`. Reads\nas \"I picked one radius and applied it globally\". Premium design\nuses ROLES — small radius on inputs (4-6px), medium on cards\n(8-12px), pill on chips (full).",
+    "category": "visual",
+    "fix": "Use the framework's radius scale (`--radius-sm | -md | -lg | -full`).\nEach primitive defaults to the right role; only override when the\ndesign canon specifically calls for it.",
+    "name": "Oversized border-radius on everything"
+  },
+  {
+    "body": "Row of Tags / Badges each in a different color (red, orange,\nyellow, green, blue, purple) — usually navigation or filter\ncategories. Reads as chaos; eye can't anchor.",
+    "category": "visual",
+    "fix": "Pick ONE accent for the tag row. Use `appearance` (\"soft\" vs\n\"solid\" vs \"outline\") for variety within the same hue. Reserve\nnon-neutral colors (success / warning / destructive) for tags\nthat genuinely carry that meaning.",
+    "name": "Rainbow chip wall"
+  },
+  {
+    "body": "Full-bleed, fully-saturated brand color on buttons, banners and\nnotification bars (the classic loud Slack/Linear/Notion blue) — the\naccent SCREAMS instead of signalling. A bright primary CTA bar across\nthe whole width, vivid send buttons, neon success. It reads as a\nverbatim copy of a SaaS chrome, not a restrained product surface.",
+    "category": "visual",
+    "fix": "渋み (restraint): keep --primary chroma ≤ 0.18 — desaturate so the\naccent BLENDS with the warm-neutral spine and is used sparingly for\nthe ONE primary action. Don't paint a full-width bar in raw blue;\nprefer a quiet Alert (icon + text + a normal-width action). Never\nhard-code a vivid hex — read `bg-primary`/`text-primary` tokens, and\nlet a service retheme via --primary only.",
+    "name": "Oversaturated brand accent"
+  },
+  {
+    "body": "Homepage with a 4x2 grid of \"stat cards\" — each with an icon, a\nnumber, a sparkline, a delta. None of them relate to a real\nbusiness question; they were chosen because \"more cards = more\ndata\". Classic AI dashboard slop.",
+    "category": "layout",
+    "fix": "Show 1-2 hero metrics (the ones executives ASK about), then the\ntop action list (orders waiting, tasks due, alerts). If the user\nneeds more analytics, link to a dedicated Reports page.",
+    "name": "8-card stat dashboard"
+  },
+  {
+    "body": "Mobile screen rendered as a vertical strip with the same density\n+ same layout as desktop — just narrower. Cramped tap targets,\nhorizontal scrolling for overflow, no system bar awareness.",
+    "category": "layout",
+    "fix": "Mobile is its OWN design. Use full-width inputs (`block` Button),\nstacked layout, larger tap targets, Sheet/Drawer for secondary\ncontent, system-bar safe area. The framework's `useBreakpoint`\n+ Tailwind `sm:` variants give you the canvas.",
+    "name": "Phone-shaped website"
+  },
+  {
+    "body": "10+ tabs at the top of a screen, no priority. User has to read all\nof them to find the right one. AI default: \"more tabs = more\nfeatures = better\".",
+    "category": "layout",
+    "fix": "2-4 tabs max. If you have more categories, use a sidebar (Sidebar),\nor a Cascader / Tree picker. Tabs are for switching between PEERS\n(2-4 mutually exclusive views of the same data).",
+    "name": "Wall-of-tabs navigation"
+  },
+  {
+    "body": "5 onboarding steps where every screen has the same headline +\nillustration + 2 buttons layout. Reads as \"I copy-pasted the\ntemplate\" — and devalues the user's time at each step.",
+    "category": "layout",
+    "fix": "Each step has a distinct visual + interactive feel. Step 1 might\nbe a centered question, step 2 a side-by-side comparison, step 3\na multi-field form, step 4 a single yes/no card. Same palette +\ntype system for coherence; different composition for engagement.",
+    "name": "Identical clone screens"
+  },
+  {
+    "body": "A notification / \"enable X\" bar where the pieces are stacked\nVERTICALLY and mis-placed: the icon floats centered ABOVE the text\n(often a SECOND redundant icon on the far left too), the primary\naction is a FULL-WIDTH colored bar UNDER the text, and the dismiss ×\nsits centered at the BOTTOM on its own line. It's a hand-rolled\nbanner that ignores the framework's Alert anatomy.",
+    "category": "layout",
+    "fix": "Use <Alert> and respect its fixed anatomy — ONE leading tone icon\nat the inline-start (top-aligned, auto by `tone`, never two), the\ntext body, an <Alert.Actions> with a NORMAL-WIDTH Button in the\ntrailing-right column, and `onDismiss` to render the × in the\nTOP-RIGHT corner. It is ONE horizontal row, never a vertical stack;\nnever hand-roll the ✕ or a full-bleed action bar.",
+    "name": "Stacked notification banner (misplaced alert controls)"
+  },
+  {
+    "body": "Emoji sprinkled through the product surface — ✅ / 🎉 / 🔥 in chat\nmessages, status lines, toasts, buttons, empty states or success\nbanners (\"All tests green 🎉\", \"done ✅\"). It reads as casual\nconsumer-app slop, breaks on Windows/Linux, and pollutes the\naccessible name. Celebrating with confetti/🎉 is the same tell.",
+    "category": "copy",
+    "fix": "No emoji anywhere in product UI. State the fact quietly in\ni18n-keyed copy (\"承認しました\" / \"All checks passed\"). Use a Lucide\nicon (1.5px) for an affordance and a semantic Badge `tone`\n(success/warning/destructive) for status — color + label carry the\nmeaning, not a glyph. Country names come from `Intl.DisplayNames`,\nnever emoji flags.",
+    "name": "Emoji in product UI"
+  },
+  {
+    "body": "\"Elevate your potential\", \"unlock seamless productivity\",\n\"transform your workflow\", \"next-generation experience\". Reads as\nnothing because it MEANS nothing.",
+    "category": "copy",
+    "fix": "Write what the feature DOES, specifically. \"Sync 1,000 rows in 2\nseconds\" beats \"Lightning-fast performance\". \"Replaces 3 manual\nsteps\" beats \"Streamline your workflow\".",
+    "name": "Filler corporate phrases"
+  },
+  {
+    "body": "Acme, NovaCore, Flowbit, Quantix, VeloPay, Lumen, Apex — the\ngo-to AI brand names that scream \"I couldn't think of one\".",
+    "category": "copy",
+    "fix": "Use believable real-sounding names: 株式会社ABC商事, Tanaka\nTrading, Yokohama Coffee Roasters, Mountain View Bakery. Or use\nyour actual project's brand if known.",
+    "name": "Generic brand placeholders"
+  },
+  {
+    "body": "\"Get started\", \"Begin your journey\", \"No items yet\" — without\nsaying WHAT to do or WHY there's nothing.",
+    "category": "copy",
+    "fix": "Be specific + actionable: \"まだ注文がありません。商品を追加して\n最初の注文を作成しましょう。\" + a clear next-action Button.\nEmpty states are TEACHING MOMENTS — use them to onboard.",
+    "name": "Vague empty-state copy"
+  },
+  {
+    "body": "\"Sorry, something went wrong\" / \"An error has occurred\" — no\ninformation about WHAT, no recovery action.",
+    "category": "copy",
+    "fix": "Specific + actionable: \"メールアドレスの形式が正しくありません\n(例: name@example.com)\". For server errors: \"通信エラー\n(再試行 ボタン)\". Never apologise if you can't say what failed\nor what to do.",
+    "name": "Apologetic / passive-voice error messages"
+  },
+  {
+    "body": "Action buttons that only appear on hover (table row actions\nhidden until mouseover). Breaks on mobile (no hover), inaccessible\n(keyboard users can't discover).",
+    "category": "interaction",
+    "fix": "Show actions inline or in a kebab menu (DropdownMenu) that's\nALWAYS visible. If you must hide on desktop for density, ensure\nthe same actions are reachable via keyboard (Tab to row, Enter to\nexpand a row-actions DropdownMenu).",
+    "name": "Hover-only affordances"
+  },
+  {
+    "body": "Hero carousel that rotates every 3 seconds. Users haven't\nfinished reading slide 1; now slide 2 is gone. Accessibility\nnightmare (cognitive load, motion-sensitive).",
+    "category": "interaction",
+    "fix": "Carousel ONLY rotates on explicit user action (arrow click,\ndot click, swipe). It has no autoplay prop and never rotates on its\nown — that is the default and there is nothing to turn off.",
+    "name": "Auto-advancing carousel"
+  },
+  {
+    "body": "Cards / list items reorderable by long-press anywhere — no\nvisual indicator that they ARE draggable. Users discover it by\naccident or never.",
+    "category": "interaction",
+    "fix": "Show a drag handle icon (`<GripVertical>`) on the left of the\nrow. Users see it, understand \"this row is draggable\", reach for\nit deliberately.",
+    "name": "Drag-without-handle"
+  },
+  {
+    "body": "`outline: none` on focus to \"look cleaner\". Keyboard users\ncan't see where they are; total navigation failure.",
+    "category": "interaction",
+    "fix": "Use `:focus-visible` (Radix primitives do automatically) so the\nring shows on keyboard focus, hides on mouse-click. Don't strip.",
+    "name": "Disappearing focus ring"
+  },
+  {
+    "body": "Empty state / About page with a photo of a \"diverse team in an\nopen office laughing at a laptop\". Reads as 2010 corporate stock.\nNo relationship to your product.",
+    "category": "imagery",
+    "fix": "Real photos of YOUR team / users (with consent), product\nscreenshots, branded illustrations. Avatar's INITIALS fallback is\nbetter than a generic stock person.",
+    "name": "Stock photo of generic smiling team"
+  },
+  {
+    "body": "Empty state with a chrome / pastel 3D icon (coin, key, shield)\nfloating in the center. Looks like every NFT marketplace from\n2021.",
+    "category": "imagery",
+    "fix": "Simple lucide-react line icon (`<Inbox size={48} />`) +\ndescriptive title. Or a flat illustration matching the brand\npalette. Skip the 3D entirely unless your brand IS 3D.",
+    "name": "Floating 3D crypto icon"
+  },
+  {
+    "body": "Page sections with a colorful gradient mesh (\"Stripe-style\")\nbehind text. Looks \"premium\" until you realize every AI design\nuses it. Often hurts text contrast.",
+    "category": "imagery",
+    "fix": "Solid background (`--background`). If you need depth, use a\nsubtle 1px border + `--card` background tint. Reserve high-effort\nbackgrounds for pages where they matter (marketing hero, product\nshowcase) — not every internal screen.",
+    "name": "Decorative gradient mesh background"
+  },
+  {
+    "body": "Settings page with 40 form fields in a single scroll. User\nloses their place, can't find the field they came for.",
+    "category": "structure",
+    "fix": "Section the form with `<Typography.Title size={5}>` subheaders\n+ `<Separator />`. Group by concern (基本情報 / 公開範囲 / 通知 /\nセキュリティ). If 40 fields is still too many, split into Tabs\nor a Sidebar-driven multi-page settings flow.",
+    "name": "Settings as one long form"
+  },
+  {
+    "body": "Click a Button → Dialog opens → click \"Edit\" → another Dialog\nopens → click \"Confirm\" → AlertDialog opens. Triple stack;\nuser loses context.",
+    "category": "structure",
+    "fix": "Use Sheet for the FIRST level (side panel), Dialog for the\nconfirm. Or, redesign the flow so the edit is INLINE in the\nfirst Dialog (no second Dialog needed). AlertDialog for confirm\nis correct — but ONE deep, not three.",
+    "name": "Modal-in-modal-in-modal"
+  },
+  {
+    "body": "Page-level spinner while data loads. User stares at an empty\nshell with a centered spinner. Layout shifts when content\narrives.",
+    "category": "structure",
+    "fix": "Use Skeleton placeholders matching the eventual content shape.\nRender `<Skeleton className=\"h-9 w-full\" />` in place of each control\n— inside the FormField that will hold it, so the labels and grid stay\nput. Height and fill are this screen's measurements; never add a\n`rounded-*`, because Skeleton already carries the radius token. Layout stays stable, perceived speed improves.",
+    "name": "Spinner-only loading state"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "user-chip",
+    "account-menu",
+    "signed-in-user"
+  ],
+  "code": "import { Flex } from \"@godxjp/ui/layout\";\nimport { Avatar, AvatarImage, AvatarFallback } from \"@godxjp/ui/data-display\";\nimport { Button, Text } from \"@godxjp/ui/general\";\nimport { LogOut } from \"lucide-react\";\n\n// ❌ <div className=\"inline-flex items-center gap-1.5 rounded-full border py-0.5\">…</div>\n//    → 38px tall next to 32px controls, and the audit flags every class on it.\n// ✅ a Flex row of real primitives: Avatar (control-sized), Text, an icon Button.\nexport function AccountChip({ user, onSignOut }: { user: { name: string; email: string; avatarUrl?: string }; onSignOut: () => void }) {\n  return (\n    <Flex gap=\"xs\" align=\"center\" title={user.email}>\n      <Avatar>\n        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt=\"\" />}\n        <AvatarFallback>{user.name.slice(0, 1)}</AvatarFallback>\n      </Avatar>\n      <Text>{user.name}</Text>\n      <Button variant=\"ghost\" size=\"icon\" aria-label=\"Sign out\" onClick={onSignOut}><LogOut /></Button>\n    </Flex>\n  );\n}\n\n// In the page header, a language Select takes width=\"auto\" so it does not swallow the row:\n// <PageContainer title=\"…\" extra={<><Select …><SelectTrigger width=\"auto\">…</SelectTrigger>…</Select><AccountChip … /><Button>Send</Button></>}>\n",
+  "name": "topbar-account-chip",
+  "tagline": "Signed-in user in a PageContainer `extra` slot: Avatar + name + sign-out as a Flex row of primitives — same control height as the buttons beside it. Never a hand-rolled rounded-full border div.",
+  "tags": [
+    "auth",
+    "topbar",
+    "avatar",
+    "header",
+    "account",
+    "chip"
+  ]
+}

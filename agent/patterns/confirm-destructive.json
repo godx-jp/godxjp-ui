@@ -1,0 +1,11 @@
+{
+  "code": "import { useState } from \"react\";\nimport { AlertDialogRoot, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from \"@godxjp/ui/feedback\";\nimport { Input } from \"@godxjp/ui/data-entry\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\nimport { toast } from \"sonner\";\n\nexport function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolean; onOpenChange: (v: boolean) => void; slug: string }) {\n  const [confirm, setConfirm] = useState(\"\");\n  return (\n    <AlertDialogRoot open={open} onOpenChange={onOpenChange}>\n      <AlertDialogContent>\n        <AlertDialogHeader>\n          <AlertDialogTitle>プロジェクトを削除</AlertDialogTitle>\n          <AlertDialogDescription>この操作は取り消せません。確認のためプロジェクト名 \"{slug}\" と入力してください。</AlertDialogDescription>\n        </AlertDialogHeader>\n        <Flex direction=\"col\" gap=\"md\">\n          <Input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder={slug} />\n        </Flex>\n        <AlertDialogFooter>\n          <AlertDialogCancel asChild><Button variant=\"outline\">キャンセル</Button></AlertDialogCancel>\n          <AlertDialogAction asChild>\n            <Button variant=\"destructive\" disabled={confirm !== slug} onClick={() => { toast.success(\"削除しました\"); onOpenChange(false); }}>完全に削除</Button>\n          </AlertDialogAction>\n        </AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialogRoot>\n  );\n}",
+  "name": "confirm-destructive",
+  "tagline": "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
+  "tags": [
+    "dialog",
+    "confirm",
+    "destructive",
+    "delete"
+  ]
+}

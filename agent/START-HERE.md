@@ -28,13 +28,22 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
 **You cannot run a process** (ChatGPT web · Claude.ai · anything fetching URLs)
 → These files are for you. Fetch in this order:
 
+0. `patterns-index.json` — 19 whole-task patterns as name + tagline + tags. **If your
+   task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
+   filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
+   copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
 1. `components-index.json` — 42 KB, all 165 components as name + group +
-   tagline. **Start here.** It is small enough to read whole.
+   tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
+   names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
+   `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field
+   first; it exists because that is the mistake.
 2. `components/<Name>.json` — one file per component (1 KB–32 KB, median 5 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
 4. `tokens.json` — 1616 design tokens. Only when you need a specific knob's name.
+5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
+   fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
 **Do not fetch `components.json`.** It is 1.1 MB, and most URL fetchers truncate a
 response that size and return the head without telling you. You get the first few entries, believe
@@ -79,8 +88,13 @@ look like a component, the component exists — search the index.
 ### 4. It is one control, not a family
 
 There is no `Combobox`, `Autocomplete`, `CountrySelect`, `SearchSelect`. There is `Select`, with
-`showSearch` and `loadOptions`. The four i18n pickers are one `AppSettingPicker kind=…`. Eight
-components were deleted for being duplicates; do not add a ninth by hand-rolling.
+`showSearch` and `loadOptions`. The i18n pickers are one `AppSettingPicker kind=…`. Components were
+deleted for being duplicates; do not add another by hand-rolling.
+
+This is not advice you have to remember — it is **data**. Every one of those names is in the
+`absorbed` field of the component that replaced it, in `components-index.json`, and
+`check:absorbed-names` fails the build if any of them ever becomes real. Search the name you were
+about to invent.
 
 ---
 

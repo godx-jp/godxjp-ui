@@ -1,0 +1,13 @@
+{
+  "code": "import { Head, router } from \"@inertiajs/react\"\nimport { PageContainer, ResponsiveGrid, Flex } from \"@godxjp/ui/layout\"\nimport { Card, CardContent, StatCard, EmptyState, Descriptions, Badge } from \"@godxjp/ui/data-display\"\nimport { Button } from \"@godxjp/ui/general\"\nimport { formatDate } from \"@godxjp/ui/datetime\"\nimport { ArrowLeft } from \"lucide-react\"\nimport { withCrmLayout } from \"@/layouts/crm-layout\"\n\n// Detail routes pass the param as an Inertia prop:\n//   Route::get('/members/{id}', fn ($id) => Inertia::render('crm/members/show', ['id' => $id]))\nfunction MemberShow({ id }: { id: string }) {\n  const member = MEMBERS.find((m) => m.id === id)\n\n  if (!member) {\n    return (\n      <>\n        <Head title=\"会員詳細\" />\n        <PageContainer title=\"会員詳細\" subtitle=\"会員が見つかりません\">\n          <EmptyState title=\"会員が見つかりません\" description={`ID「${id}」は存在しません。`} />\n          <Button variant=\"outline\" onClick={() => router.visit(\"/members\")}><ArrowLeft className=\"size-4\" />一覧へ戻る</Button>\n        </PageContainer>\n      </>\n    )\n  }\n\n  return (\n    <>\n      <Head title={member.name} />\n      <PageContainer title={member.name} subtitle={`${member.id} / ${member.rank}`}>\n        <Flex direction=\"col\" gap=\"lg\">\n          <ResponsiveGrid columns={4}>\n            <StatCard label=\"累計購入額\" value={`¥${member.total.toLocaleString()}`} />\n            <StatCard label=\"来店回数\" value={member.visits} />\n            <StatCard label=\"ポイント\" value={member.points.toLocaleString()} />\n            <StatCard label=\"LTV\" value={`¥${member.ltv.toLocaleString()}`} />\n          </ResponsiveGrid>\n          <Card>\n            <CardContent>\n              {/* Descriptions is COMPOUND — value goes in children, not a prop */}\n              <Descriptions columns={2}>\n                <Descriptions.Item label=\"氏名\">{member.name}</Descriptions.Item>\n                <Descriptions.Item label=\"ランク\"><Badge status={member.rank} tone=\"info\" icon={null} /></Descriptions.Item>\n                <Descriptions.Item label=\"ステータス\"><Badge status={member.status} /></Descriptions.Item>\n                <Descriptions.Item label=\"登録日\">{formatDate(member.registeredAt)}</Descriptions.Item>\n              </Descriptions>\n            </CardContent>\n          </Card>\n        </Flex>\n      </PageContainer>\n    </>\n  )\n}\n\nMemberShow.layout = withCrmLayout\nexport default MemberShow",
+  "name": "inertia-detail-page",
+  "tagline": "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+  "tags": [
+    "inertia",
+    "detail",
+    "show",
+    "page",
+    "keyvaluegrid",
+    "crm"
+  ]
+}

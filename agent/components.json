@@ -1164,6 +1164,9 @@
     ]
   },
   {
+    "absorbed": [
+      "OrganizationChoiceList"
+    ],
     "example": "import { AuthShell, AuthIdentity, AuthFooter } from \"@godxjp/ui/layout\";\nimport { Reveal, Logo, Button } from \"@godxjp/ui/general\";\nimport { Card, CardContent, CardHeader, CardTitle } from \"@godxjp/ui/data-display\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function DeviceAuthorizationPage() {\n  return (\n    // 380px card at 1440/1024 · 5px inline gutter at 390 — all token-owned, no page CSS.\n    <AuthShell\n      variant=\"canonical\"\n      preset=\"device-authorization\"\n      brand={<Logo mark=\"godx\" tone=\"success\" />}\n      footer={\n        <AuthFooter\n          product=\"GoDX ID\"\n          terms=\"Terms\"\n          privacy=\"Privacy\"\n          locale={<AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact />}\n        />\n      }\n    >\n      <Reveal>\n        <Card>\n          <CardHeader>\n            <AuthIdentity title=\"デバイスを認証\" requester=\"勤怠管理が認証を要求しています\" />\n            <CardTitle level={2}>確認コードを入力</CardTitle>\n          </CardHeader>\n          <CardContent>\n            {/* InputOTP + actions */}\n            <Button fullWidth>デバイスを承認</Button>\n          </CardContent>\n        </Card>\n      </Reveal>\n    </AuthShell>\n  );\n}",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",
@@ -3231,6 +3234,9 @@
     ]
   },
   {
+    "absorbed": [
+      "DataGrid"
+    ],
     "example": "import { useState } from \"react\";\nimport { Badge, DataTable, type ColumnDef } from \"@godxjp/ui/data-display\";\nimport { EmptyState } from \"@godxjp/ui/data-display\";\n\ntype Invoice = {\n  id: string;\n  customer: string;\n  amount: number;\n  status: \"paid\" | \"pending\" | \"overdue\";\n};\n\nconst columns: ColumnDef<Invoice>[] = [\n  { key: \"id\", header: \"Invoice #\", width: \"w-32\" },\n  { key: \"customer\", header: \"Customer\" },\n  {\n    key: \"status\",\n    header: \"Status\",\n    render: (row) => (\n      <Badge\n        variant={\n          row.status === \"paid\" ? \"success\" : row.status === \"overdue\" ? \"destructive\" : \"secondary\"\n        }\n      >\n        {row.status}\n      </Badge>\n    ),\n  },\n  { key: \"amount\", header: \"Amount\", align: \"right\", sortable: true },\n];\n\nexport default function InvoiceList({\n  invoices,\n  loading,\n}: {\n  invoices: Invoice[];\n  loading: boolean;\n}) {\n  const [selected, setSelected] = useState<Set<string>>(new Set());\n  const [sort, setSort] = useState<{ key: string; direction: \"asc\" | \"desc\" } | undefined>();\n\n  return (\n    <DataTable\n      data={invoices}\n      columns={columns}\n      getRowId={(row) => row.id}\n      selectable\n      selected={selected}\n      onSelectChange={setSelected}\n      sort={sort}\n      onSortChange={setSort}\n      loading={loading}\n      empty={\n        <EmptyState\n          title=\"No invoices found\"\n          description=\"Adjust your filters or create a new invoice.\"\n        />\n      }\n    >\n      <DataTable.Toolbar>\n        <DataTable.BulkActions>\n          <button type=\"button\" onClick={() => setSelected(new Set())}>\n            Mark paid\n          </button>\n        </DataTable.BulkActions>\n        <DataTable.DensityToggle />\n      </DataTable.Toolbar>\n    </DataTable>\n  );\n}",
     "group": "data-display",
     "importPath": "@godxjp/ui/data-display",
@@ -5794,6 +5800,14 @@
     ]
   },
   {
+    "absorbed": [
+      "Combobox",
+      "Autocomplete",
+      "CountrySelect",
+      "SearchSelect",
+      "Typeahead",
+      "AsyncSelect"
+    ],
     "example": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectLabel,\n  SelectSeparator,\n  SelectTrigger,\n  SelectValue,\n} from \"@godxjp/ui/data-entry\";\nimport { Text } from \"@godxjp/ui/general\";\n// as=\"span\" on both: an option row is a phrasing context, so a <div> would be invalid HTML.\nimport { Flex } from \"@godxjp/ui/layout\";\n\n// ── 1. Data-driven (Ant-style) — static list, no search ──────────────────────\nexport function StatusSelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      options={[\n        { value: \"draft\",    label: \"Draft\" },\n        { value: \"sent\",     label: \"Sent\" },\n        { value: \"paid\",     label: \"Paid\" },\n        { value: \"overdue\",  label: \"Overdue\" },\n      ]}\n      placeholder=\"Select status\"\n      name=\"status\"\n      id=\"status\"\n    />\n  );\n}\n\n// ── 2. Data-driven, searchable static list with groups ────────────────────────\nexport function CurrencySelect({ value, onChange }) {\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      showSearch\n      options={[\n        { value: \"JPY\", label: \"Japanese Yen\",  group: \"Asia\" },\n        { value: \"VND\", label: \"Vietnamese Dong\", group: \"Asia\" },\n        { value: \"EUR\", label: \"Euro\",           group: \"Europe\" },\n        { value: \"GBP\", label: \"Pound Sterling\", group: \"Europe\" },\n      ]}\n      placeholder=\"Select currency\"\n      searchPlaceholder=\"Search currencies…\"\n      name=\"currency\"\n    />\n  );\n}\n\n// ── 3. Data-driven, async (loadOptions) ──────────────────────────────────────\nexport function AccountSelect({ value, onChange, selectedLabel }) {\n  async function loadOptions({ query, page }) {\n    const res = await fetch(`/api/accounts?q=${query}&page=${page}`);\n    const json = await res.json();\n    return { options: json.data, hasMore: json.hasMore };\n  }\n  return (\n    <Select\n      value={value}\n      onValueChange={onChange}\n      loadOptions={loadOptions}\n      selectedLabel={selectedLabel}\n      placeholder=\"Search accounts…\"\n      renderOption={(opt) => (\n        <Flex as=\"span\" align=\"center\" gap=\"xs\">\n          <Text as=\"span\" tone=\"muted\" mono>\n            {opt.value}\n          </Text>\n          {opt.label}\n        </Flex>\n      )}\n      name=\"account_id\"\n    />\n  );\n}\n\n// ── 4. Compound API — custom trigger content ──────────────────────────────────\nexport function PrioritySelect({ value, onValueChange }) {\n  return (\n    <Select value={value} onValueChange={onValueChange}>\n      <SelectTrigger size=\"sm\" id=\"priority\">\n        <SelectValue placeholder=\"Priority\" />\n      </SelectTrigger>\n      <SelectContent>\n        <SelectGroup>\n          <SelectLabel>Urgency</SelectLabel>\n          <SelectItem value=\"high\">High</SelectItem>\n          <SelectItem value=\"medium\">Medium</SelectItem>\n        </SelectGroup>\n        <SelectSeparator />\n        <SelectItem value=\"low\">Low</SelectItem>\n      </SelectContent>\n    </Select>\n  );\n}",
     "group": "data-entry",
     "importPath": "@godxjp/ui/data-entry",
@@ -6592,6 +6606,9 @@
     ]
   },
   {
+    "absorbed": [
+      "DateRangePicker"
+    ],
     "example": "import { useState } from \"react\";\nimport { DatePicker, FormField } from \"@godxjp/ui/data-entry\";\nimport { Flex } from \"@godxjp/ui/layout\";\nimport type { DateRange } from \"react-day-picker\";\n\n// One component, three shapes: a day, a month, and a range.\nexport function BillingFields() {\n  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);\n  const [month, setMonth] = useState<Date | undefined>(undefined);\n  const [period, setPeriod] = useState<DateRange | undefined>(undefined);\n\n  return (\n    <Flex direction=\"col\" gap=\"md\">\n      <FormField id=\"due-date\" label=\"支払期日\" required>\n        <DatePicker\n          id=\"due-date\"\n          name=\"due_date\"\n          value={dueDate}\n          onValueChange={setDueDate}\n          minDate={new Date()}\n        />\n      </FormField>\n\n      <FormField id=\"billing-month\" label=\"請求年月\">\n        <DatePicker\n          id=\"billing-month\"\n          name=\"billing_month\"\n          picker=\"month\"\n          value={month}\n          onValueChange={setMonth}\n        />\n      </FormField>\n\n      <FormField id=\"period\" label=\"会計期間\">\n        <DatePicker id=\"period\" name=\"period\" range value={period} onValueChange={setPeriod} />\n      </FormField>\n    </Flex>\n  );\n}",
     "group": "data-entry",
     "importPath": "@godxjp/ui/data-entry",
@@ -12435,6 +12452,15 @@
     ]
   },
   {
+    "absorbed": [
+      "LocalePicker",
+      "LanguagePicker",
+      "TimezonePicker",
+      "DateFormatPicker",
+      "TimeFormatPicker",
+      "ThemePicker",
+      "DensityPicker"
+    ],
     "example": "{`// Uncontrolled — AppProvider manages and persists every setting\nimport { AppProvider } from \"@godxjp/ui/app\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function SettingsPanel() {\n  return (\n    <AppProvider defaultLocale=\"ja\" defaultTimezone=\"Asia/Tokyo\">\n      <AppSettingPicker kind=\"locale\" />\n      <AppSettingPicker kind=\"timezone\" />\n      <AppSettingPicker kind=\"dateFormat\" />\n      <AppSettingPicker kind=\"timeFormat\" />\n    </AppProvider>\n  );\n}\n\n// Controlled — no AppProvider required\nimport { useState } from \"react\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function LocaleField() {\n  const [locale, setLocale] = useState(\"en\");\n  return <AppSettingPicker kind=\"locale\" value={locale} onValueChange={setLocale} />;\n}\n\n// Topbar locale switcher (globe) — a cell OF the bar, no CSS overrides\nimport { Topbar } from \"@godxjp/ui/layout\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function TopbarLocale() {\n  // \"bar\" inside a Topbar slot; \"icon\" everywhere else.\n  return <Topbar end={<AppSettingPicker kind=\"locale\" appearance=\"bar\" />} />;\n}`}",
     "group": "navigation",
     "importPath": "@godxjp/ui/navigation",

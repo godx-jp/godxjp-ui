@@ -1083,6 +1083,11 @@ function getComponent(name: string, verbose = false): string {
     out += `These ship from the same import and have no separate entry. They are real exports: use them, don't rebuild them.\n\n`;
     out += c.subParts.map((p) => `\`${p}\``).join(" · ") + `\n\n`;
   }
+  if (c.absorbed && c.absorbed.length) {
+    out += `## These do NOT exist — this is what you want instead\n\n`;
+    out += `Other libraries ship components by these names. This one does not, and never will: each was folded into \`${c.name}\`. If you were about to build one, stop and read the props above.\n\n`;
+    out += c.absorbed.map((p) => `\`${p}\``).join(" · ") + `\n\n`;
+  }
   if (c.related && c.related.length) {
     out += `## Related — don't confuse / don't reinvent\n\n`;
     for (const r of c.related) out += `- ${r}\n`;
@@ -1330,11 +1335,17 @@ function searchComponents(query: string): string {
     // Sub-part names are SEARCHABLE TEXT of their parent. Someone hunting "status badge" or
     // "card cover" is hunting a real export, and the entry that documents it is the right hit.
     const subParts = (c.subParts ?? []).join(" ").toLowerCase();
+    // ABSORBED names are the strongest signal there is. Someone typing "combobox" is not browsing;
+    // they have decided what they want and are one empty result away from building it themselves.
+    // Ranked above an exact sub-part match for that reason: a wrong answer here costs a component.
+    const absorbed = (c.absorbed ?? []).join(" ").toLowerCase();
     let score = 0;
     if (name === q) score += 100; // exact-name → luôn lên đầu
+    if (absorbed.split(" ").includes(q)) score += 95;
     if (subParts.split(" ").includes(q)) score += 90; // exact sub-part name → its parent, near the top
     for (const t of terms) {
       if (name.includes(t)) score += 5;
+      if (absorbed.includes(t)) score += 5;
       if (subParts.includes(t)) score += 4;
       if (tagline.includes(t)) score += 3;
       if (useCases.includes(t)) score += 2;
