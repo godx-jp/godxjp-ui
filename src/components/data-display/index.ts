@@ -15,6 +15,8 @@ export { Thumbnail } from "./thumbnail";
 export type { ThumbnailProp, ThumbnailProps, ThumbnailSizeProp } from "./thumbnail";
 export { ListRow } from "./list-row";
 export type { ListRowProps, ListRowDensity } from "./list-row";
+export { Marquee } from "./marquee";
+export type { MarqueeDirectionProp, MarqueeProp, MarqueeProps, MarqueeSpeedProp } from "./marquee";
 export { CredentialReveal } from "./credential-reveal";
 export type {
   CredentialRevealProp,

@@ -1,0 +1,26 @@
+/* Marquee component tokens — the geometry of a continuously travelling track.
+ *
+ * TIMING IS NOT HERE. `--marquee-interval` and its two ordinals live in the MOTION tier
+ * (src/tokens/foundation.css, beside `--activity-interval`), because the component-token name
+ * shape this file is checked against — `--{component}-{part}-{property}` — has no property word
+ * for a duration, and a second copy of the motion scale is how the two drift apart. The same note
+ * `activity.css`, `masonry.css` and `float-button.css` carry.
+ *
+ * THE COPY COUNT IS NOT A TOKEN AND NOT A PROP. It is a MEASUREMENT: how many copies of the
+ * content it takes to fill the viewport plus one, re-taken whenever either changes size. That is
+ * the whole reason this is a component — a CSS-only marquee has to guess, and guesses wrong at
+ * every width.
+ */
+:root {
+  /* Space between items inside one copy AND between copies — they are the same rhythm, so they
+   * are one knob. The trailing gap is painted as the copy's own `padding-inline-end`, which is
+   * what makes the seam between two copies indistinguishable from the seam between two items.
+   *
+   * The `gap` prop overrides it per instance; this is the resting value a service sets once. */
+  --marquee-gap-inline: var(--space-inline-lg);
+
+  /* Width of the fade at each edge under `fade`. A MASK, so it reveals whatever the surface
+   * behind it is — the prior art paints an opaque `gradientColor` (default "white"), which is a
+   * white smear on a dark theme. */
+  --marquee-mask-width: var(--space-10);
+}

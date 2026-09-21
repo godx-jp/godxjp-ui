@@ -68,6 +68,7 @@ import type {
   DescriptionsColumnProp,
   DescriptionsSpanProp,
   DescriptionsItemsProp,
+  GapProp,
   SortDirectionProp,
   OnColumnFilterChangeProp,
   OnRowProp,
@@ -1130,4 +1131,104 @@ export type CardTabItemProp = {
   closable?: boolean;
   /** Ant Design `closeIcon` — replaces the default × on this tab's remove button. */
   closeIcon?: React.ReactNode;
+};
+
+/**
+ * @see Marquee — direction of travel, spelled LOGICALLY.
+ *
+ * `react-fast-marquee` says `left | right`; this says `start | end`, the edge the content travels
+ * TOWARDS. `start` is the default because it is the one that follows the reading direction: the
+ * next item arrives from the end edge, exactly as the next word does. Under `dir="rtl"` both
+ * members mirror with the text, so an Arabic page's default marquee travels rightwards with no
+ * prop change at the call site.
+ *
+ * The vertical members of the prior art (`up` / `down`) are NOT ported. A vertical ticker fights
+ * the page scroll and has a different failure mode; porting an axis nobody asked for is how a
+ * single-responsibility component stops being one.
+ */
+export type MarqueeDirectionProp = "start" | "end";
+
+/**
+ * @see Marquee — travel pace, as an ordinal over the `--marquee-interval` motion token rather than
+ * the prior art's raw `speed` in px/s.
+ *
+ * A px/s number is neither themeable nor width-aware: 50px/s reads as a crawl on a 2560px display
+ * and a sprint on a 390px phone. The ordinal resolves to a duration per SCREENFUL, so the
+ * perceived pace is the same at every width, and a service retunes all of them from one token.
+ */
+export type MarqueeSpeedProp = "slow" | "base" | "fast";
+
+/**
+ * @see Marquee — a track of content that travels continuously, carrying the WCAG 2.2.2 pause
+ * control that makes it conformant.
+ *
+ * The clone count is MEASURED (content width against viewport width, re-measured on resize) —
+ * the behaviour no CSS-only marquee can have — and the pause control is why this is a component
+ * rather than a snippet. See `src/components/data-display/marquee.tsx` for the full argument and
+ * for what is deliberately not ported from `react-fast-marquee`.
+ */
+export type MarqueeProp = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onPlay" | "onPause" | "children"
+> & {
+  /**
+   * The row of content — logos, headlines, status chips. Rendered ONCE for real; every further
+   * copy that fills the track is an `aria-hidden` + `inert` clone, so the accessibility tree and
+   * the tab order see the content exactly once however wide the viewport is.
+   */
+  children?: ChildrenProp;
+  /**
+   * Whether the track is moving. The controlled member of the triad — pass it with
+   * `onPlayChange`.
+   *
+   * WCAG 2.2.2 is satisfied by the built-in control whichever way this is driven; a controlled
+   * `play` exists so one "stop all motion" switch can halt every marquee on a page at once.
+   */
+  play?: boolean;
+  /**
+   * Uncontrolled initial state. Default `true`.
+   *
+   * WebAIM recommends animated content be paused by default where the motion is not the point of
+   * the screen (https://webaim.org/techniques/carousels/); `defaultPlay={false}` is that screen,
+   * and it still starts from the built-in control.
+   */
+  defaultPlay?: boolean;
+  /** Fires on every transition, from the built-in control or from a controlled write. */
+  onPlayChange?: (play: boolean) => void;
+  /** Edge the content travels towards. Default `start` — the reading direction. */
+  direction?: MarqueeDirectionProp;
+  /** Pace ordinal over `--marquee-interval`. Default `base`. */
+  speed?: MarqueeSpeedProp;
+  /**
+   * Space between items AND between copies, as a token step. Defaults to the
+   * `--marquee-gap-inline` token, so a service sets the resting rhythm once.
+   */
+  gap?: GapProp;
+  /**
+   * Also pause while the pointer is over the track. Default `false`.
+   *
+   * An ADDITION, never the mechanism: a keyboard user never hovers, so hover-to-pause alone is
+   * exactly the WCAG 2.2.2 failure (technique F16) the prior art ships. Focus inside the track
+   * always pauses it, whatever this says, because a link that is moving cannot be activated.
+   */
+  pauseOnHover?: boolean;
+  /**
+   * Fade both edges over `--marquee-mask-width` so items enter and leave instead of being cut.
+   * Default `false`. A mask, not the prior art's opaque `gradientColor` — a gradient painted in a
+   * fixed colour cannot follow a themed or dark background.
+   */
+  fade?: boolean;
+  /**
+   * Names the CONTENT, not the button: "partner logos", "お知らせ". The control's accessible name
+   * is built from it ("Pause scrolling: partner logos"), so a page with several tracks can tell
+   * them apart by voice as well as by eye.
+   *
+   * It is not the whole button name on purpose. A caller string would read the same in both
+   * states, and a control that says "pause" while it resumes is worse than an unnamed one; the
+   * verb stays the component's, and the catalog composes the two in each locale's own order.
+   * Optional: omitted, the control takes the localized verb alone. A non-string node cannot be an
+   * `aria-label`, so it is ignored.
+   */
+  label?: LabelProp;
+  className?: ClassNameProp;
 };

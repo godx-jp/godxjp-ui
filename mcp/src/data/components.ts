@@ -17357,6 +17357,106 @@ const messages: ChatMessageProp[] = [
     rules: [6, 44, 45],
   },
   {
+    name: "Marquee",
+    group: "data-display",
+    tagline:
+      "A track of content that travels continuously, carrying the WCAG 2.2.2 pause control that makes it conformant. The clone count is MEASURED against the viewport and re-measured on resize; under prefers-reduced-motion it does not move at all.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          "The row of content. Rendered ONCE for real; every further copy that fills the track is an aria-hidden + inert clone, so the accessibility tree and the tab order see it exactly once however wide the viewport is.",
+      },
+      {
+        name: "play",
+        type: "boolean",
+        description:
+          "Controlled motion state; pass with `onPlayChange`. Exists so one page-level 'stop all motion' switch can halt every track at once. The built-in pause control stays either way.",
+      },
+      {
+        name: "defaultPlay",
+        type: "boolean",
+        description:
+          "Uncontrolled initial state. Default true. Set false where the motion is not the point of the screen: WebAIM recommends animated content be paused by default.",
+      },
+      {
+        name: "onPlayChange",
+        type: "(play: boolean) => void",
+        description: "Fires on every transition, from the built-in control or a controlled write.",
+      },
+      {
+        name: "direction",
+        type: '"start" | "end"',
+        description:
+          'The edge the content travels TOWARDS, spelled logically. Default `start`, which follows the reading direction; both members mirror under dir="rtl" with no prop change.',
+      },
+      {
+        name: "speed",
+        type: '"slow" | "base" | "fast"',
+        description:
+          "Pace ordinal over the `--marquee-interval` motion token (a duration per SCREENFUL, so the pace is the same with one item or forty). Default `base`. Not px/s: a raw number is neither themeable nor width-aware.",
+      },
+      {
+        name: "gap",
+        type: "GapProp",
+        description:
+          "Space between items AND between copies, as a token step. Defaults to the `--marquee-gap-inline` token.",
+      },
+      {
+        name: "pauseOnHover",
+        type: "boolean",
+        description:
+          "Also pause under the pointer. Default false. An ADDITION to the pause control, never the mechanism. Focus inside the track always pauses it regardless.",
+      },
+      {
+        name: "fade",
+        type: "boolean",
+        description:
+          "Mask both edges over `--marquee-mask-width`. Default false. A mask, not an opaque gradient colour, so it follows a themed or dark background.",
+      },
+      {
+        name: "label",
+        type: "ReactNode",
+        description:
+          "Names the CONTENT (\"partner logos\"), not the button. The control's accessible name is composed from it and the state verb ('Pause scrolling: partner logos'), so the name still flips when the state does. A non-string node is ignored.",
+      },
+      { name: "className", type: "string", description: "Structural class on the root." },
+    ],
+    usage: [
+      "DO leave the pause control alone. WCAG 2.2 SC 2.2.2 makes it a conformance requirement for anything that moves automatically for more than five seconds beside other content, and technique F16 names 'a scrolling news ticker without a mechanism to pause it' as the failure by example.",
+      "DO ask first whether it should move at all. Nielsen Norman Group and WebAIM both discourage auto-moving content, and no major design system ships a ticker. A static `Flex wrap` or `ResponsiveGrid` logo wall is usually the better screen; `defaultPlay={false}` is the middle ground.",
+      "DO use `play` / `onPlayChange` for a page-level 'reduce motion on this screen' switch across several tracks.",
+      "DON'T reach for `pauseOnHover` as the pause mechanism. A keyboard user never hovers; that is exactly the gap in `react-fast-marquee`, whose clones also carry no `aria-hidden`.",
+      "DON'T put essential, non-duplicated information in it. A reader who looks away misses it, and under prefers-reduced-motion the row becomes a scrollable strip instead.",
+      "DON'T wrap it in your own overflow/animation CSS. The clone count and the lap distance are measured; a second overflow box breaks the measurement and the seam.",
+      'DON\'T add a role. `role="marquee"` is a LIVE REGION for frequently CHANGING content; here nothing changes, only its position. Wrap it in a labelled <section> when the collection needs a name.',
+    ],
+    useCases: [
+      "A partner or customer logo wall on a marketing page, where the row is wider than the viewport.",
+      "An announcement or status strip above an application shell (maintenance windows, release notes) that must stay pausable.",
+      "A 'now processing' rail of job identifiers beside a dashboard, where the motion signals activity rather than carrying the data.",
+    ],
+    related: [
+      "Carousel — the answer whenever the reader should STEP through discrete items. It is user-driven, has prev/next and dots, and does not move on its own.",
+      "Activity — ambient motion with no travel: a pulse or three dots that say something is happening, with no content to read.",
+      "ScrollArea — what a Marquee becomes under prefers-reduced-motion, and what to reach for directly when the row should simply be scrollable.",
+      "Flex / ResponsiveGrid — the static logo wall. Start here; add motion only when something asks for it.",
+    ],
+    example: `import { Marquee } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+
+<Marquee fade pauseOnHover label={t("partners.pauseLogos")}>
+  {partners.map((partner) => (
+    <Text key={partner.id} size="sm" tone="muted">
+      {partner.name}
+    </Text>
+  ))}
+</Marquee>`,
+    docPath: "data-display/marquee.tsx",
+    rules: [2, 44, 45],
+  },
+  {
     name: "Masonry",
     group: "layout",
     tagline:

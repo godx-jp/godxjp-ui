@@ -4789,6 +4789,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas."
   },
   {
+    "name": "--marquee-gap-inline",
+    "value": "var(--space-inline-lg)",
+    "description": "Space between items inside one copy AND between copies — they are the same rhythm, so they * are one knob. The trailing gap is painted as the copy's own `padding-inline-end`, which is * what makes the seam between two copies indistinguishable from the seam between two items. * * The `gap` prop overrides it per instance; this is the resting value a service sets once."
+  },
+  {
+    "name": "--marquee-mask-width",
+    "value": "var(--space-10)",
+    "description": "Width of the fade at each edge under `fade`. A MASK, so it reveals whatever the surface * behind it is — the prior art paints an opaque `gradientColor` (default \"white\"), which is a * white smear on a dark theme."
+  },
+  {
     "name": "--masonry-gap-inline",
     "value": "0px",
     "description": "Resting spacing between tiles, per axis, when the `gap` prop is omitted. Ant Design's * `gutter` defaults to `0` and this ports that default exactly — a service that wants every * masonry in the product to breathe sets these two once in its theme.css, and a per-instance * `gap` still wins. * * The packer READS the resolved `row-gap` back off the container, so this token (or the `gap` * prop that overrides it) is the single source for both the painted spacing and the arithmetic. * There is no second number in the TypeScript."

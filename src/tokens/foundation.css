@@ -749,6 +749,27 @@
    * named to match. In RTL the dots reverse with the row, so the cascade follows the reading
    * direction with no extra rule. */
   --activity-stagger-step: 160ms;
+
+  /* MARQUEE — the TRAVERSAL member of the loop family, and deliberately NOT `--duration-loop`.
+   *
+   * `--duration-loop` is 1400ms because it times a BREATH: a dot rising and falling, a bar
+   * sweeping a small box. A marquee's cycle is a distance being crossed, two orders of magnitude
+   * longer, and the two are not the same knob — binding them would mean a service that calms its
+   * typing indicator to 2s also whips its logo wall across the screen twice a second. Same tier,
+   * same naming, separate value.
+   *
+   * It is a duration PER SCREENFUL, not per cycle: the component measures one copy of the content
+   * and sets `--marquee-cycle-scale` to (copy width ÷ viewport width), so the duration of one lap
+   * is `interval × scale` and the PACE is the same whether the track carries one item or forty.
+   * A per-cycle duration would make forty logos forty times faster than one, which is how every
+   * pure-CSS marquee behaves and why none of them survive real content.
+   *
+   * 20s per screenful ≈ 60px/s at 1200px — the resting pace a logo wall reads at. The two
+   * ordinals are the `speed` prop's `slow` and `fast`; they are tokens rather than multipliers in
+   * the stylesheet so a theme can retune the ladder, not just its middle rung. */
+  --marquee-interval: 20s;
+  --marquee-interval-slow: calc(var(--marquee-interval) * 2);
+  --marquee-interval-fast: calc(var(--marquee-interval) / 2);
 }
 
 /* SCALE-FIXED — pin a subtree to the baseline size (--scaling 1) so persistent

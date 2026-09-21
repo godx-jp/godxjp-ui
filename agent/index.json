@@ -1,21 +1,21 @@
 {
   "counts": {
     "anti-ai-tells": 26,
-    "components": 167,
+    "components": 168,
     "patterns": 19,
     "rules": 47,
-    "tokens": 1671,
+    "tokens": 1673,
     "vocabulary": 14
   },
   "files": [
     {
       "file": "components-index.json",
-      "note": "43 KB — name + group + tagline for all 167. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "44 KB — name + group + tagline for all 168. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
       "file": "components/<Name>.json",
-      "note": "One file per component (1 KB–33 KB, median 5 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.1 MB blob.",
+      "note": "One file per component (1 KB–33 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.1 MB blob.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/<Name>.json"
     },
     {
