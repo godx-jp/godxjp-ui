@@ -2235,13 +2235,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-surface-border-color",
-    "value": "hsl(var(--input))",
-    "description": "── CONTROL SURFACE — the antd `variant` × `status` matrix (antd 6.6.2) ──────────────────── * * The four surfaces and the two statuses are TOKENS, not utilities, and that is the whole point * of this block. The select-family trigger used to state its surface as `border-input * bg-background` — two Tailwind utilities, which live in `@layer utilities` and therefore beat * anything a stylesheet in `@layer components` can say. A `[data-variant=\"filled\"]` rule would * have been dead on arrival, exactly the way `w-full` killed `.ui-app-setting-picker-icon` * (gh#366) and `--control-bounded-width` (gh#375). So the family now withholds those two * utilities and reads the surface from here instead; the DEFAULT values reproduce the previous * rendering byte for byte. * * `--control-surface-*` is the `outlined` default; the other three name themselves."
+    "value": "initial",
+    "description": "── CONTROL SURFACE — the antd `variant` × `status` matrix (antd 6.6.2) ──────────────────── * * The four surfaces and the two statuses are TOKENS, not utilities, and that is the whole point * of this block. The select-family trigger used to state its surface as `border-input * bg-background` — two Tailwind utilities, which live in `@layer utilities` and therefore beat * anything a stylesheet in `@layer components` can say. A `[data-variant=\"filled\"]` rule would * have been dead on arrival, exactly the way `w-full` killed `.ui-app-setting-picker-icon` * (gh#366) and `--control-bounded-width` (gh#375). So the family now withholds those two * utilities and reads the surface from here instead; the DEFAULT values reproduce the previous * rendering byte for byte. * * `--control-surface-*` is the `outlined` default; the other three name themselves. * * THE THREE THAT MIRROR A ROLE ARE `initial` (docs/TOKENS.md, the `:root` freeze rule), and * this block is where that rule was broken. `--control-surface-background: hsl(var(--background))` * SUBSTITUTES at `:root`, so it froze on the light canvas and inherited that answer into every * subtree. It looks fine in product because `.dark` normally lands on `<html>`, where * `:root[data-theme=\"dark\"]` re-declares `--background` on the SAME element the binding is made * on. It breaks the moment a theme is scoped BELOW `<html>` — the `[data-tenant]` route * docs/CUSTOMER-THEMING.md recommends at level 3, and the `.dark` wrapper the docs Theme Editor * uses to show both themes at once. Measured there before this change: a `Select` trigger in a * `.dark` subtree painted `rgb(253,253,252)` under `rgb(247,247,243)` text, 1.05:1, while the * `Input` beside it was correctly dark. The defaults below are unchanged; they simply resolve * where the element paints instead of where the knob is declared. default = hsl(var(--input)) at the call site"
   },
   {
     "name": "--control-surface-background",
-    "value": "hsl(var(--background))",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = hsl(var(--background)) at the call site"
   },
   {
     "name": "--control-filled-border-color",
@@ -2250,8 +2250,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-filled-background",
-    "value": "hsl(var(--muted))",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = hsl(var(--muted)) at the call site"
   },
   {
     "name": "--control-filled-shadow",

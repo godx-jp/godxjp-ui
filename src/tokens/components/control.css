@@ -723,13 +723,25 @@
    * utilities and reads the surface from here instead; the DEFAULT values reproduce the previous
    * rendering byte for byte.
    *
-   * `--control-surface-*` is the `outlined` default; the other three name themselves. */
-  --control-surface-border-color: hsl(var(--input));
-  --control-surface-background: hsl(var(--background));
+   * `--control-surface-*` is the `outlined` default; the other three name themselves.
+   *
+   * THE THREE THAT MIRROR A ROLE ARE `initial` (docs/TOKENS.md, the `:root` freeze rule), and
+   * this block is where that rule was broken. `--control-surface-background: hsl(var(--background))`
+   * SUBSTITUTES at `:root`, so it froze on the light canvas and inherited that answer into every
+   * subtree. It looks fine in product because `.dark` normally lands on `<html>`, where
+   * `:root[data-theme="dark"]` re-declares `--background` on the SAME element the binding is made
+   * on. It breaks the moment a theme is scoped BELOW `<html>` — the `[data-tenant]` route
+   * docs/CUSTOMER-THEMING.md recommends at level 3, and the `.dark` wrapper the docs Theme Editor
+   * uses to show both themes at once. Measured there before this change: a `Select` trigger in a
+   * `.dark` subtree painted `rgb(253,253,252)` under `rgb(247,247,243)` text, 1.05:1, while the
+   * `Input` beside it was correctly dark. The defaults below are unchanged; they simply resolve
+   * where the element paints instead of where the knob is declared. */
+  --control-surface-border-color: initial; /* default = hsl(var(--input)) at the call site */
+  --control-surface-background: initial; /* default = hsl(var(--background)) at the call site */
 
   /* `filled` — antd's grey field: no edge, a muted fill, no resting elevation. */
   --control-filled-border-color: transparent;
-  --control-filled-background: hsl(var(--muted));
+  --control-filled-background: initial; /* default = hsl(var(--muted)) at the call site */
   --control-filled-shadow: none;
 
   /* `borderless` — chrome removed entirely, for a control embedded in a surface that already
