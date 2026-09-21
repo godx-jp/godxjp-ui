@@ -41,7 +41,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 1667 design tokens. Only when you need a specific knob's name.
+4. `tokens.json` — 1669 design tokens. Only when you need a specific knob's name.
 5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
