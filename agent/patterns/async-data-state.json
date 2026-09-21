@@ -1,0 +1,20 @@
+{
+  "aliases": [
+    "loading-states",
+    "data-state",
+    "query-states"
+  ],
+  "code": "import { DataState, classifyQueryError } from \"@godxjp/ui/query\";\nimport { EmptyState } from \"@godxjp/ui/data-display\";\nimport { SkeletonTable } from \"@godxjp/ui/feedback\";\nimport { Building2, Inbox } from \"lucide-react\";\n\n// ONE primary state renders at a time; DataState makes them mutually exclusive:\n//   prerequisite → skeleton(loading) → data → empty → error   (never two at once).\n//\n// enabled:false is PREREQUISITE/idle, NOT loading. TanStack reports isPending while a query is\n// disabled, but fetchStatus stays \"idle\" (no request in flight) — DataState renders the prerequisite\n// slot, so a disabled query shows an instruction, NOT an endless skeleton.\n//   const query = useQuery({ queryKey: [\"members\", orgId], queryFn, enabled: Boolean(orgId) });\n//\n// A background refetch over EXISTING data keeps the content on screen (no skeleton flash) and\n// announces the busy state politely — stale/placeholder refresh is handled for you.\n//\n// Errors are classified by CAUSE, not blanket-retried:\n//   auth (401)         → onAuthError: renew session / sign in again  (NOT a retry)\n//   forbidden (403)    → permission message + access path            (no retry)\n//   notFound (404)     → contextual not-found                        (no retry)\n//   validation (400/422)→ corrective guidance                        (no retry)\n//   transient (408/429/5xx/network) → Retry offered automatically\n//   unknown            → neutral; opt into Retry via showRetry/onRetry only if it can help\nexport function MembersPanel({ query, orgId, onSignIn }: {\n  query: any; orgId?: string; onSignIn: () => void;\n}) {\n  return (\n    <DataState\n      query={query}\n      prerequisite={<EmptyState icon={Building2} variant=\"section\" title=\"組織を選択してください\"\n        description=\"メンバーを表示するには、上のセレクタで組織を選びます。\" />}\n      skeleton={<SkeletonTable rows={8} columns={4} />}\n      empty={<EmptyState icon={Inbox} variant=\"section\" title=\"メンバーがいません\"\n        description=\"この組織にはまだメンバーが登録されていません。\" />}\n      isEmpty={(data) => data.items.length === 0}\n      onAuthError={onSignIn}\n    >\n      {(data) => <MemberTable items={data.items} />}\n    </DataState>\n  );\n}\n\n// Need a bespoke error surface? Pass errorRenderer and branch on the classified category — the\n// default detail is always a localized message (never raw token / endpoint / stack text):\n//   errorRenderer={(error, retry) => {\n//     const { category } = classifyQueryError(error);\n//     if (category === \"auth\") return <SessionExpired onRenew={onSignIn} />;\n//     if (category === \"forbidden\") return <NoAccess />;\n//     if (category === \"transient\") return <Retryable onRetry={retry} />;\n//     return <GenericError />;\n//   }}\n// RULE: pagination/footer chrome NEVER renders outside the populated-data branch (see data-table-page).",
+  "name": "async-data-state",
+  "tagline": "The full async state machine — ONE primary state at a time: prerequisite, disabled-vs-loading, stale refresh, populated, real-empty, and cause-aware error (401/403/404/422/transient) with correct recovery.",
+  "tags": [
+    "async",
+    "loading",
+    "query",
+    "error",
+    "empty",
+    "prerequisite",
+    "retry",
+    "react-query"
+  ]
+}

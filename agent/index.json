@@ -1,6 +1,8 @@
 {
   "counts": {
+    "anti-ai-tells": 26,
     "components": 165,
+    "patterns": 19,
     "rules": 47,
     "tokens": 1616,
     "vocabulary": 14
@@ -31,6 +33,14 @@
     {
       "file": "rules.json",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json"
+    },
+    {
+      "file": "patterns.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/patterns.json"
+    },
+    {
+      "file": "anti-ai-tells.json",
+      "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/anti-ai-tells.json"
     }
   ],
   "generated": "scripts/gen-agent-catalog.mjs",

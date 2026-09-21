@@ -1,0 +1,18 @@
+{
+  "aliases": [
+    "cards-in-page",
+    "page-layout",
+    "stack-cards"
+  ],
+  "code": "import { PageContainer, Flex, ResponsiveGrid } from \"@godxjp/ui/layout\";\nimport { Card, CardHeader, CardTitle, CardContent } from \"@godxjp/ui/data-display\";\nimport { Button } from \"@godxjp/ui/general\";\n\n// Every direct child of PageContainer is a page section — the page owns the gap between them\n// (--page-body-gap, the section step). Do NOT add gap-* / space-y-* / mt-* yourself.\nexport function ReportPage() {\n  return (\n    <PageContainer title=\"Bug report\" subtitle=\"https://app.example.com/orders\" extra={<Button>Send</Button>}>\n      <Card>\n        <CardHeader><CardTitle>Details</CardTitle></CardHeader>\n        <CardContent>…</CardContent>\n      </Card>\n      <Card>\n        <CardHeader><CardTitle>Screenshots</CardTitle></CardHeader>\n        <CardContent>\n          {/* items INSIDE a section: ResponsiveGrid for a grid, Flex for a stack/row */}\n          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>…</ResponsiveGrid>\n        </CardContent>\n      </Card>\n      <Card>\n        <CardContent>\n          <Flex direction=\"col\" gap=\"md\">…</Flex>\n        </CardContent>\n      </Card>\n    </PageContainer>\n  );\n}\n",
+  "name": "page-sections",
+  "tagline": "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
+  "tags": [
+    "layout",
+    "page",
+    "card",
+    "spacing",
+    "flex",
+    "grid"
+  ]
+}

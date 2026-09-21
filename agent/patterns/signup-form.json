@@ -1,0 +1,13 @@
+{
+  "code": "import { useForm } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport { z } from \"zod\";\nimport { Card, CardHeader, CardTitle, CardContent, CardFooter } from \"@godxjp/ui/data-display\";\nimport { FormField, Input } from \"@godxjp/ui/data-entry\";\nimport { Button } from \"@godxjp/ui/general\";\nimport { Flex } from \"@godxjp/ui/layout\";\n\nconst schema = z.object({\n  name: z.string().min(1, \"氏名は必須です\"),\n  email: z.string().email(\"有効なメールアドレスを入力してください\"),\n});\ntype Values = z.infer<typeof schema>;\n\nexport function SignUpCard() {\n  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Values>({ resolver: zodResolver(schema) });\n  const onSubmit = handleSubmit(async (v) => {\n    await fetch(\"/api/signup\", { method: \"POST\", body: JSON.stringify(v) });\n  });\n  return (\n    <Card>\n      <CardHeader><CardTitle>アカウント作成</CardTitle></CardHeader>\n      <CardContent>\n        <form id=\"signup\" onSubmit={onSubmit}>\n          {/* Vertical rhythm comes from Flex direction=\"col\" gap — never space-y-*/gap-* utilities. */}\n          <Flex direction=\"col\" gap=\"md\">\n            <FormField id=\"name\" label=\"氏名\" required error={errors.name?.message}>\n              <Input id=\"name\" {...register(\"name\")} />\n            </FormField>\n            <FormField id=\"email\" label=\"メールアドレス\" required error={errors.email?.message}>\n              <Input id=\"email\" type=\"email\" {...register(\"email\")} />\n            </FormField>\n          </Flex>\n        </form>\n      </CardContent>\n      <CardFooter separated>\n        <Button type=\"submit\" form=\"signup\" loading={isSubmitting}>アカウントを作成</Button>\n      </CardFooter>\n    </Card>\n  );\n}",
+  "name": "signup-form",
+  "tagline": "Card-wrapped sign-up form using react-hook-form + zod with FormField/Input and a CardFooter action bar (real @godxjp/ui API).",
+  "tags": [
+    "form",
+    "auth",
+    "sign-up",
+    "zod",
+    "validation",
+    "react-hook-form"
+  ]
+}

@@ -65,6 +65,9 @@
     "tagline": "Root application shell — composes sidebar, topbar rail, main content area, and optional footer."
   },
   {
+    "absorbed": [
+      "OrganizationChoiceList"
+    ],
     "group": "layout",
     "name": "AuthShell",
     "tagline": "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density."
@@ -190,6 +193,9 @@
     "tagline": "A glyph on the --icon-size-* scale, and the ONLY supported way to render a standalone one. A lucide component ships width=\"24\" height=\"24\"; only four rules in this library override that (.ui-button svg, the menu row, the topbar cell, the ListRow leading slot), so everywhere else a glyph draws at 24px beside 14px text."
   },
   {
+    "absorbed": [
+      "DataGrid"
+    ],
     "group": "data-display",
     "name": "DataTable",
     "tagline": "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack)."
@@ -340,6 +346,14 @@
     "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue)."
   },
   {
+    "absorbed": [
+      "Combobox",
+      "Autocomplete",
+      "CountrySelect",
+      "SearchSelect",
+      "Typeahead",
+      "AsyncSelect"
+    ],
     "group": "data-entry",
     "name": "Select",
     "tagline": "Polymorphic single-select: pass options/loadOptions for the data-driven (Ant-style) API, or compose sub-parts manually — never use a raw <select>."
@@ -370,6 +384,9 @@
     "tagline": "Radio group accepting an options array or RadioItem children."
   },
   {
+    "absorbed": [
+      "DateRangePicker"
+    ],
     "group": "data-entry",
     "name": "DatePicker",
     "tagline": "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance."
@@ -670,6 +687,15 @@
     "tagline": "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API."
   },
   {
+    "absorbed": [
+      "LocalePicker",
+      "LanguagePicker",
+      "TimezonePicker",
+      "DateFormatPicker",
+      "TimeFormatPicker",
+      "ThemePicker",
+      "DensityPicker"
+    ],
     "group": "navigation",
     "name": "AppSettingPicker",
     "tagline": "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange."

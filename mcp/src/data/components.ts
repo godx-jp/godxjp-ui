@@ -47,6 +47,20 @@ export interface ComponentEntry {
    * answer with Card instead of "not found", which is the failure gh#526 was filed for.
    */
   subParts?: string[];
+  /**
+   * Names that DO NOT EXIST and must never be hand-rolled — the components this one absorbed.
+   *
+   * The opposite of `subParts`, and it has to be a separate field for that reason: a subPart is a
+   * real export and `check:mcp-catalog-completeness` demands it resolve, while every name here is
+   * one an agent INVENTS because another library has it. Measured against this repo's own static
+   * index, "async searchable country picker" reached nothing — `Select` carries `showSearch` and
+   * `loadOptions`, but the words a task is phrased in appeared nowhere in its tagline, so an agent
+   * had no path from the intent to the component and wrote its own combobox.
+   *
+   * Knowing this was PROSE ONLY before: START-HERE says it in a sentence, and zero machine-readable
+   * rules named a single one of these. `check:absorbed-names` now holds each one to not existing.
+   */
+  absorbed?: string[];
   /** Deprecated components stay catalogued (so agents are steered to the replacement) but are flagged. */
   deprecated?: boolean;
   example: string;
@@ -1227,6 +1241,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
   },
   {
     name: "AuthShell",
+    absorbed: ["OrganizationChoiceList"],
     group: "layout",
     tagline:
       "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density.",
@@ -3754,6 +3769,7 @@ import { Icon, Text } from "@godxjp/ui/general";
   // ─── data-display ───────────────────────────────────────────────────────
   {
     name: "DataTable",
+    absorbed: ["DataGrid"],
     group: "data-display",
     tagline:
       "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack).",
@@ -6675,6 +6691,14 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
   },
   {
     name: "Select",
+    absorbed: [
+      "Combobox",
+      "Autocomplete",
+      "CountrySelect",
+      "SearchSelect",
+      "Typeahead",
+      "AsyncSelect",
+    ],
     subParts: [
       "SelectContent",
       "SelectGroup",
@@ -7606,6 +7630,7 @@ export function PrioritySelect({ value, onValueChange }) {
   },
   {
     name: "DatePicker",
+    absorbed: ["DateRangePicker"],
     group: "data-entry",
     tagline:
       "ONE date control: `picker` sets the granularity (day · week · month · quarter · year), `range` makes it a two-endpoint field, `multiple` a set. A real typeable input holds the value and submits ISO-8601 at the picker's own precision; the panel is the visual-only affordance.",
@@ -14378,6 +14403,15 @@ export default function PasswordBlock() {
   },
   {
     name: "AppSettingPicker",
+    absorbed: [
+      "LocalePicker",
+      "LanguagePicker",
+      "TimezonePicker",
+      "DateFormatPicker",
+      "TimeFormatPicker",
+      "ThemePicker",
+      "DensityPicker",
+    ],
     group: "navigation",
     tagline:
       "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange.",

@@ -86,18 +86,34 @@ const stable = (value) =>
     2,
   ) + "\n";
 
-const [components, tokens, vocabulary, rules] = await Promise.all([
+const [components, tokens, vocabulary, rules, patterns, tells] = await Promise.all([
   load("components"),
   load("component-tokens.generated"),
   load("prop-vocabulary"),
   load("rules"),
+  load("patterns"),
+  load("anti-ai-tells"),
 ]);
 
+/* PATTERNS ARE THE LAYER A COMPONENT INDEX CANNOT BE.
+ *
+ * An index answers "does a component called X exist". It cannot answer "build a settings page",
+ * because a tagline describes an API SHAPE and a task is stated as an INTENT — measured on this
+ * repo's own index, "confirm a destructive delete" does not reach `AlertDialog` (the word "delete"
+ * appears nowhere in it) and "async searchable country picker" does not reach `Select`, which is
+ * precisely the query that makes an agent hand-roll the combobox we deleted.
+ *
+ * `mcp/src/data/patterns.ts` already maps intent to complete, copy-paste-ready code, and
+ * `anti-ai-tells.ts` already names the generated-looking output to avoid. Both have been MCP-only:
+ * an agent that can spawn a process gets them, an agent on a web URL does not, and the web agent is
+ * the one guessing. This publishes the data that exists rather than inventing a new layer. */
 const data = {
   "components.json": components.COMPONENTS,
   "tokens.json": tokens.COMPONENT_TOKENS,
   "vocabulary.json": vocabulary.PROP_VOCABULARY,
   "rules.json": rules.CARDINAL_RULES,
+  "patterns.json": patterns.PATTERNS,
+  "anti-ai-tells.json": tells.ANTI_AI_TELLS,
 };
 
 /* A catalog that is EMPTY must fail, never publish. An agent cannot tell "this system has no
@@ -229,9 +245,31 @@ const files = {
 for (const entry of data["components.json"]) {
   files[`components/${entry.name}.json`] = stable(entry);
 }
+for (const entry of data["patterns.json"]) {
+  files[`patterns/${entry.name}.json`] = stable(entry);
+}
 
+/* `absorbed` rides in the INDEX, not just the full entry, because it is search bait: the index is
+ * the only file an agent reads whole, and "Combobox" is what it will look for. A name that resolves
+ * to nothing anywhere is the one that gets hand-rolled. */
 files["components-index.json"] = stable(
-  data["components.json"].map(({ name, group, tagline }) => ({ name, group, tagline })),
+  data["components.json"].map(({ name, group, tagline, absorbed }) => ({
+    name,
+    group,
+    tagline,
+    ...(absorbed ? { absorbed } : {}),
+  })),
+);
+
+/* The pattern index carries `tags` and `aliases` as well as the tagline, because this is the file
+ * an agent searches BY INTENT — the thing the component index cannot do. */
+files["patterns-index.json"] = stable(
+  data["patterns.json"].map(({ name, tagline, tags, aliases }) => ({
+    name,
+    tagline,
+    tags,
+    ...(aliases ? { aliases } : {}),
+  })),
 );
 
 /* MEASURED, never estimated. Every size quoted to an agent is read off the bytes just produced:
@@ -290,6 +328,8 @@ const substitutions = {
   components: String(data["components.json"].length),
   tokens: String(data["tokens.json"].length),
   rules: String(data["rules.json"].length),
+  patterns: String(data["patterns.json"].length),
+  tells: String(data["anti-ai-tells.json"].length),
   vocabulary: String(data["vocabulary.json"].length),
   indexSize: size.index,
   componentsSize: size.components,

@@ -1,4 +1,7 @@
 {
+  "absorbed": [
+    "DateRangePicker"
+  ],
   "example": "import { useState } from \"react\";\nimport { DatePicker, FormField } from \"@godxjp/ui/data-entry\";\nimport { Flex } from \"@godxjp/ui/layout\";\nimport type { DateRange } from \"react-day-picker\";\n\n// One component, three shapes: a day, a month, and a range.\nexport function BillingFields() {\n  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);\n  const [month, setMonth] = useState<Date | undefined>(undefined);\n  const [period, setPeriod] = useState<DateRange | undefined>(undefined);\n\n  return (\n    <Flex direction=\"col\" gap=\"md\">\n      <FormField id=\"due-date\" label=\"支払期日\" required>\n        <DatePicker\n          id=\"due-date\"\n          name=\"due_date\"\n          value={dueDate}\n          onValueChange={setDueDate}\n          minDate={new Date()}\n        />\n      </FormField>\n\n      <FormField id=\"billing-month\" label=\"請求年月\">\n        <DatePicker\n          id=\"billing-month\"\n          name=\"billing_month\"\n          picker=\"month\"\n          value={month}\n          onValueChange={setMonth}\n        />\n      </FormField>\n\n      <FormField id=\"period\" label=\"会計期間\">\n        <DatePicker id=\"period\" name=\"period\" range value={period} onValueChange={setPeriod} />\n      </FormField>\n    </Flex>\n  );\n}",
   "group": "data-entry",
   "importPath": "@godxjp/ui/data-entry",

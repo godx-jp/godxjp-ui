@@ -1,4 +1,7 @@
 {
+  "absorbed": [
+    "OrganizationChoiceList"
+  ],
   "example": "import { AuthShell, AuthIdentity, AuthFooter } from \"@godxjp/ui/layout\";\nimport { Reveal, Logo, Button } from \"@godxjp/ui/general\";\nimport { Card, CardContent, CardHeader, CardTitle } from \"@godxjp/ui/data-display\";\nimport { AppSettingPicker } from \"@godxjp/ui/navigation\";\n\nexport function DeviceAuthorizationPage() {\n  return (\n    // 380px card at 1440/1024 · 5px inline gutter at 390 — all token-owned, no page CSS.\n    <AuthShell\n      variant=\"canonical\"\n      preset=\"device-authorization\"\n      brand={<Logo mark=\"godx\" tone=\"success\" />}\n      footer={\n        <AuthFooter\n          product=\"GoDX ID\"\n          terms=\"Terms\"\n          privacy=\"Privacy\"\n          locale={<AppSettingPicker kind=\"locale\" appearance=\"labeled\" compact />}\n        />\n      }\n    >\n      <Reveal>\n        <Card>\n          <CardHeader>\n            <AuthIdentity title=\"デバイスを認証\" requester=\"勤怠管理が認証を要求しています\" />\n            <CardTitle level={2}>確認コードを入力</CardTitle>\n          </CardHeader>\n          <CardContent>\n            {/* InputOTP + actions */}\n            <Button fullWidth>デバイスを承認</Button>\n          </CardContent>\n        </Card>\n      </Reveal>\n    </AuthShell>\n  );\n}",
   "group": "layout",
   "importPath": "@godxjp/ui/layout",

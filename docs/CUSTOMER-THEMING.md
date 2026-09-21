@@ -6,6 +6,32 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 
 ---
 
+## The order to reach for things — read this before anything below
+
+This document lists a lot of ways to change how the system looks. They are not alternatives; they
+are a **priority order**, and the whole point of the order is that you stop at the first level that
+does the job. Ant Design states the same rule for the same reason — _"In most cases, using Seed
+Tokens is sufficient for custom themes"_ — and the cost of skipping down a level is real, not
+stylistic.
+
+| level            | what it is                                                                                                                                          | when                                            | what you give up by going lower                                           |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| **1 · seed**     | `--primary`, `--radius`, `--font-size-base`, `--shadow-color` — the handful everything derives from. `pnpm gen:brand '#RRGGBB'` writes them for you | **almost always**                               | nothing — this is the main road                                           |
+| **2 · role**     | a named semantic token: `--text-link`, `--accent`, `--card-radius`                                                                                  | when the seed is right but ONE role must differ | that role stops following the seed; a later brand change will not move it |
+| **3 · scope**    | the same token under `[data-tenant]` / `.dark` / any subtree                                                                                        | multi-tenant, or one region that differs        | nothing extra, provided you set the token and not a literal               |
+| **4 · instance** | a documented prop, or `style={{ "--x": … }}` on one element                                                                                         | this one element, this one time                 | it is invisible to every audit and every future theme                     |
+
+**Why the order matters more than the count of knobs.** Every level below the first is a value that
+has stopped being derived. A literal at level 4 is not "more control" — it is a pixel that has left
+the system, and nothing will tell you when the brand moves past it. That is why the generator
+writes three tokens and not thirty: the ones it leaves out are not missing, they are _downstream_.
+
+**If you find yourself at level 4 twice for the same reason, the token is missing.** File it —
+`docs/COMPOSITION-VS-COMPONENT.md` has the test for whether it is a token or a composition. Adding
+the knob is how the system absorbs the change; repeating the literal is how it drifts.
+
+---
+
 ## Start from one hex — `pnpm gen:brand`
 
 Everything below this section is the manual route, and it is worth reading because it says what each

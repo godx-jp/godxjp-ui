@@ -1,0 +1,14 @@
+{
+  "code": "import { Badge } from \"@godxjp/ui/data-display\"\n\n// Badge auto-colours a fixed set of English LIFECYCLE keys:\n//   active/completed (success ✓) · draft (neutral ○) · pending/temporary (warning ⏱)\n//   scheduled/sending (info) · cancelled (neutral) · failed/deleted/bounced (destructive ✕)\n// Anything else (localized labels, tiers) falls back to neutral grey ○ unless you override.\n\n// 1) Lifecycle with localized text — map to the key, keep JP via children (icon stays):\n<Badge status=\"active\">公開中</Badge>        // green ✓ 公開中\n\n// 2) Unknown label — set tone explicitly (no icon, since the key is unknown):\n<Badge status=\"公開中\" tone=\"success\" />\n\n// 3) Tier / category — coloured pill, drop the misleading glyph with icon={null}:\n<Badge status=\"プレミアム\" tone=\"success\" icon={null} />\n<Badge status=\"ゴールド\"   tone=\"warning\" icon={null} />\n<Badge status=\"法人共通\"   tone=\"info\"    icon={null} />\n\n// tone: \"success\" | \"warning\" | \"destructive\" | \"info\" | \"neutral\"  (import type ToneProp)\n// RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in\n// narrow table cells. Centralize the domain→tone map in ONE small consumer wrapper and\n// import that instead of the raw Badge across pages.",
+  "name": "badge-coloring",
+  "tagline": "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
+  "tags": [
+    "statusbadge",
+    "badge",
+    "tone",
+    "color",
+    "status",
+    "tier",
+    "table"
+  ]
+}

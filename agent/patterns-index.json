@@ -1,0 +1,323 @@
+[
+  {
+    "name": "common-fixes",
+    "tagline": "Fix the most common @godxjp/ui consumer mistakes & visual bugs (StatCard double-border, grey Badge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
+    "tags": [
+      "fixes",
+      "migration",
+      "bug",
+      "cardstat",
+      "statusbadge",
+      "datatable",
+      "sidebar",
+      "gotcha",
+      "review"
+    ]
+  },
+  {
+    "name": "signup-form",
+    "tagline": "Card-wrapped sign-up form using react-hook-form + zod with FormField/Input and a CardFooter action bar (real @godxjp/ui API).",
+    "tags": [
+      "form",
+      "auth",
+      "sign-up",
+      "zod",
+      "validation",
+      "react-hook-form"
+    ]
+  },
+  {
+    "aliases": [
+      "settings-tabs",
+      "settings-page",
+      "settings-layout"
+    ],
+    "name": "settings-page-responsive",
+    "tagline": "Route-backed settings: persistent desktop local navigation, compact mobile tab strip, deep links + browser history, and bounded form content — NO Card wrapper, NO undefined CSS.",
+    "tags": [
+      "settings",
+      "form",
+      "tabs",
+      "admin",
+      "responsive",
+      "navigation"
+    ]
+  },
+  {
+    "aliases": [
+      "settings-section",
+      "settings-row",
+      "danger-zone",
+      "billing-handoff",
+      "preferences-rows",
+      "account-identity"
+    ],
+    "name": "settings-section-rows",
+    "tagline": "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
+    "tags": [
+      "settings",
+      "account",
+      "billing",
+      "danger",
+      "preferences",
+      "listrow",
+      "card",
+      "admin"
+    ]
+  },
+  {
+    "name": "confirm-destructive",
+    "tagline": "Type-to-confirm destructive dialog — AlertDialogRoot + Input gate + toast (real @godxjp/ui API).",
+    "tags": [
+      "dialog",
+      "confirm",
+      "destructive",
+      "delete"
+    ]
+  },
+  {
+    "name": "deferred-loading",
+    "tagline": "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",
+    "tags": [
+      "loading",
+      "skeleton",
+      "deferred",
+      "inertia",
+      "table"
+    ]
+  },
+  {
+    "name": "inertia-list-page",
+    "tagline": "Inertia + @godxjp/ui list page — PageContainer + Toolbar + DataTable + Badge + Pagination (current primitive API).",
+    "tags": [
+      "inertia",
+      "list",
+      "table",
+      "page",
+      "filter",
+      "pagination",
+      "datatable",
+      "crm"
+    ]
+  },
+  {
+    "name": "inertia-detail-page",
+    "tagline": "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+    "tags": [
+      "inertia",
+      "detail",
+      "show",
+      "page",
+      "keyvaluegrid",
+      "crm"
+    ]
+  },
+  {
+    "name": "inertia-persistent-layout",
+    "tagline": "Inertia persistent layout (AppShell+Sidebar) — the array-form gotcha + the SSR/Math.random gotcha.",
+    "tags": [
+      "inertia",
+      "layout",
+      "appshell",
+      "sidebar",
+      "ssr",
+      "hydration",
+      "gotcha"
+    ]
+  },
+  {
+    "aliases": [
+      "error-surface",
+      "errorsurface",
+      "403",
+      "404",
+      "500",
+      "503",
+      "exception-page"
+    ],
+    "name": "error-pages",
+    "tagline": "400 / 403 / 404 / 500 / 503 exception pages. USE THE COMPONENT: import { ErrorSurface } from \"@godxjp/ui/layout\". `mode=\"application\"` (400/403/404) is the body you put inside the AppShell the route already renders; `mode=\"system\"` (500/503) owns the page via CenteredShell align=\"center\".",
+    "tags": [
+      "error",
+      "errorsurface",
+      "403",
+      "404",
+      "500",
+      "503",
+      "maintenance",
+      "inertia",
+      "ssr",
+      "layout",
+      "emptystate",
+      "centeredshell"
+    ]
+  },
+  {
+    "name": "badge-coloring",
+    "tagline": "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
+    "tags": [
+      "statusbadge",
+      "badge",
+      "tone",
+      "color",
+      "status",
+      "tier",
+      "table"
+    ]
+  },
+  {
+    "aliases": [
+      "loading-states",
+      "data-state",
+      "query-states"
+    ],
+    "name": "async-data-state",
+    "tagline": "The full async state machine — ONE primary state at a time: prerequisite, disabled-vs-loading, stale refresh, populated, real-empty, and cause-aware error (401/403/404/422/transient) with correct recovery.",
+    "tags": [
+      "async",
+      "loading",
+      "query",
+      "error",
+      "empty",
+      "prerequisite",
+      "retry",
+      "react-query"
+    ]
+  },
+  {
+    "aliases": [
+      "filter-bar",
+      "table-state",
+      "list-page"
+    ],
+    "name": "data-table-page",
+    "tagline": "Filter (Toolbar) + table surface + bottom pagination driven by a query state machine — pagination shows ONLY for successful multi-page data; filters/page survive a transient retry.",
+    "tags": [
+      "table",
+      "pagination",
+      "filter",
+      "async",
+      "toolbar",
+      "datatable"
+    ]
+  },
+  {
+    "aliases": [
+      "organization-switcher",
+      "workspace-switcher",
+      "received-invitations",
+      "memberships"
+    ],
+    "name": "organization-memberships",
+    "tagline": "Workspace membership list — recognizable identity, current/active state, role, permission-aware Open/Switch/Manage/Leave row actions, page-level Create, and CONDITIONAL invitations (omit when none).",
+    "tags": [
+      "organization",
+      "workspace",
+      "membership",
+      "invitation",
+      "account",
+      "switcher"
+    ]
+  },
+  {
+    "aliases": [
+      "password-recovery",
+      "forgot-password",
+      "reset-password",
+      "mfa-challenge",
+      "two-factor-challenge",
+      "2fa-challenge",
+      "otp-challenge",
+      "passkey-failure",
+      "scr-008"
+    ],
+    "name": "auth-recovery-panels",
+    "tagline": "Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside AuthShell preset=\"account-recovery\" (the 432px token-owned measure).",
+    "tags": [
+      "auth",
+      "authshell",
+      "recovery",
+      "password",
+      "mfa",
+      "2fa",
+      "otp",
+      "inputotp",
+      "passkey",
+      "layout",
+      "presentation"
+    ]
+  },
+  {
+    "aliases": [
+      "recovery-email",
+      "backup-codes",
+      "security-settings",
+      "recovery-settings"
+    ],
+    "name": "account-recovery-settings",
+    "tagline": "Signed-in recovery: compact method status/action rows (email · phone · backup codes) + a separate password-change destination — capability-aware, risk-appropriate, NO stacked Info Alerts.",
+    "tags": [
+      "account",
+      "recovery",
+      "security",
+      "backup-codes",
+      "password",
+      "settings"
+    ]
+  },
+  {
+    "aliases": [
+      "email-template",
+      "email-tokens",
+      "blade-email",
+      "html-email"
+    ],
+    "name": "transactional-email",
+    "tagline": "Build a transactional HTML email (Blade/Twig/MJML/React) from @godxjp/ui/email — literal hex + px derived from the web tokens, the canonical GoDX brand mark, a bulletproof CTA, legal footer and mobile reflow. NEVER hand-copy hex or hand-draw the logo in a mail template.",
+    "tags": [
+      "email",
+      "transactional",
+      "blade",
+      "laravel",
+      "tokens",
+      "brand",
+      "mark",
+      "mjml",
+      "cta"
+    ]
+  },
+  {
+    "aliases": [
+      "cards-in-page",
+      "page-layout",
+      "stack-cards"
+    ],
+    "name": "page-sections",
+    "tagline": "A page made of several Card sections: PageContainer spaces its direct children by default; group items inside a section with Flex/ResponsiveGrid, never Tailwind gap-*/p-*.",
+    "tags": [
+      "layout",
+      "page",
+      "card",
+      "spacing",
+      "flex",
+      "grid"
+    ]
+  },
+  {
+    "aliases": [
+      "user-chip",
+      "account-menu",
+      "signed-in-user"
+    ],
+    "name": "topbar-account-chip",
+    "tagline": "Signed-in user in a PageContainer `extra` slot: Avatar + name + sign-out as a Flex row of primitives — same control height as the buttons beside it. Never a hand-rolled rounded-full border div.",
+    "tags": [
+      "auth",
+      "topbar",
+      "avatar",
+      "header",
+      "account",
+      "chip"
+    ]
+  }
+]

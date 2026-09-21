@@ -14,12 +14,14 @@ that can only fetch URLs.
 
 ## Catalog
 
-- [components-index.json]({{raw}}/components-index.json): {{indexSize}} — all {{components}} components as name, group, tagline. Fetch this first.
+- [patterns-index.json]({{raw}}/patterns-index.json): {{patterns}} whole-task patterns (name, tagline, tags). Start here when the task is a TASK — "build a settings page" — then fetch `patterns/<name>.json` for complete code.
+- [components-index.json]({{raw}}/components-index.json): {{indexSize}} — all {{components}} components as name, group, tagline, plus `absorbed`: the names that do NOT exist and map to it (`Combobox` → `Select`).
 - [components/&lt;Name&gt;.json]({{raw}}/components/Select.json): one file per component ({{perComponentSize}}). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
 - [components.json]({{raw}}/components.json): {{componentsSize}} — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
 - [tokens.json]({{raw}}/tokens.json): every design token with its value and the reason it exists.
 - [vocabulary.json]({{raw}}/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
 - [rules.json]({{raw}}/rules.json): {{rules}} cardinal rules.
+- [anti-ai-tells.json]({{raw}}/anti-ai-tells.json): {{tells}} shapes that make generated UI look generated, each with its fix.
 
 ## Pinning
 
