@@ -643,5 +643,227 @@
         "error": "thất bại"
       }
     }
+  },
+  "themeShowcase": {
+    "page": {
+      "title": "Tùy biến giao diện linh hoạt",
+      "subtitle": "Một hạt giống làm cả hệ thống đổi màu. Chọn một bảng màu và mọi điều khiển, bề mặt, dấu hiệu và vòng focus trên bảng bên dưới sẽ được vẽ lại tại chỗ."
+    },
+    "bar": {
+      "title": "Giao diện",
+      "description": "Các chip đặt hạt giống --primary trong một phạm vi. Không sửa component, không tách stylesheet, không ghi đè vai trò.",
+      "paletteLabel": "Bảng màu",
+      "cornerLabel": "Bo góc",
+      "customLabel": "Hạt giống tự chọn",
+      "customHint": "Bất kỳ mã hex nào. Các bậc hover, nhấn, viền, focus và liên kết đều suy ra từ đó.",
+      "identityNote": "Màu nhận diện cố ý đứng yên: đổi màu hành động của một tenant không làm nhuộm lại logo của họ."
+    },
+    "palette": {
+      "godx": "GoDX",
+      "indigo": "Chàm",
+      "teal": "Mòng két",
+      "amber": "Hổ phách",
+      "rose": "Hồng đào",
+      "custom": "Tự chọn"
+    },
+    "corner": {
+      "sharp": "Vuông",
+      "default": "Mặc định",
+      "soft": "Mềm"
+    },
+    "tabs": {
+      "components": "Component",
+      "dashboard": "Bảng điều khiển"
+    },
+    "form": {
+      "email": "Email công việc",
+      "emailHint": "Chỉ dùng cho thông báo phát hành.",
+      "emailPlaceholder": "you@ops.example.jp",
+      "handle": "Tên định danh",
+      "regions": "Khu vực",
+      "regionsPlaceholder": "Chọn khu vực",
+      "regionsEmpty": "Chưa chọn khu vực nào.",
+      "labels": "Nhãn",
+      "labelsPlaceholder": "Thêm nhãn",
+      "plan": "Gói",
+      "releaseDate": "Ngày phát hành",
+      "channels": "Kênh thông báo",
+      "cadence": "Tần suất",
+      "density": "Mật độ dòng",
+      "autoDeploy": "Triển khai khi merge",
+      "autoDeployHint": "Pipeline xanh sẽ tự đưa lên staging.",
+      "freeze": "Đóng băng phát hành",
+      "budget": "Ngân sách lỗi · {value}",
+      "syncing": "Đang đồng bộ sổ phát hành"
+    },
+    "plan": {
+      "starter": "Khởi đầu",
+      "standard": "Tiêu chuẩn",
+      "scale": "Mở rộng"
+    },
+    "channel": {
+      "email": "Email",
+      "escalation": "Chuyển lên ca trực khi một bản phát hành nằm ở trạng thái xét duyệt quá một ngày làm việc, tính cả cuối tuần và ngày lễ của khu vực phụ trách",
+      "escalationHint": "Gửi cho ca trực, không gửi cho cá nhân.",
+      "pager": "Máy nhắn tin"
+    },
+    "cadence": {
+      "daily": "Hằng ngày",
+      "weekly": "Hằng tuần",
+      "manual": "Thủ công"
+    },
+    "density": {
+      "compact": "Gọn",
+      "default": "Mặc định",
+      "comfortable": "Thoáng"
+    },
+    "steps": {
+      "caption": "Tiến độ phát hành",
+      "finished": "Hoàn tất",
+      "finishedHint": "Đã ký và lưu trữ hiện vật.",
+      "inProcess": "Đang xử lý",
+      "waiting": "Chờ",
+      "waitingHint": "Đang chờ kiểm tra tương phản cho hạt giống mới."
+    },
+    "progress": {
+      "rollout": "Triển khai · {value}",
+      "quota": "Phút build · {value}",
+      "done": "Xong"
+    },
+    "legend": {
+      "failed": "Thất bại",
+      "review": "Đang xét duyệt",
+      "shipped": "Đã phát hành"
+    },
+    "status": {
+      "caption": "Dấu hiệu trạng thái",
+      "success": "Thành công",
+      "error": "Lỗi",
+      "default": "Mặc định",
+      "processing": "Đang xử lý",
+      "warning": "Cảnh báo",
+      "seed": "Hạt giống"
+    },
+    "action": {
+      "primary": "Triển khai",
+      "secondary": "So sánh",
+      "outline": "Quay lui",
+      "dashed": "Thêm bước",
+      "ghost": "Nhật ký",
+      "deploying": "Đang triển khai",
+      "discard": "Loại bỏ bản ứng viên này"
+    },
+    "confirm": {
+      "trigger": "Xóa bản phát hành",
+      "title": "Xóa bản phát hành này?",
+      "description": "Hiện vật vẫn nằm trong registry. Hồ sơ phát hành và các phê duyệt thì không.",
+      "cancel": "Giữ lại",
+      "ok": "Xóa"
+    },
+    "avatars": {
+      "caption": "12 người duyệt"
+    },
+    "rating": {
+      "1": "Không dùng được",
+      "2": "Còn thô",
+      "3": "Chấp nhận được",
+      "4": "Tốt",
+      "5": "Sẵn sàng phát hành"
+    },
+    "otp": {
+      "title": "Xác minh thiết bị này",
+      "description": "Nhập mã sáu chữ số từ ứng dụng xác thực của bạn.",
+      "field": "Mã xác minh",
+      "verify": "Xác minh"
+    },
+    "signup": {
+      "title": "Tạo tài khoản",
+      "description": "Một tài khoản dùng cho mọi môi trường bạn được cấp quyền.",
+      "email": "Email công việc",
+      "password": "Mật khẩu",
+      "submit": "Tạo tài khoản",
+      "or": "hoặc",
+      "sso": "Tiếp tục bằng đăng nhập một lần",
+      "passkey": "Tiếp tục bằng passkey"
+    },
+    "notify": {
+      "title": "Thông báo",
+      "longTitle": "Lời mời tham gia nhóm công tác về Độ tin cậy nền tảng và Quản trị phát hành đang chờ bạn trả lời",
+      "longMeta": "2026-09-12 09:12 UTC · hết hạn sau 3 ngày",
+      "open": "Mở",
+      "bareTitle": "Đã phát hành hóa đơn"
+    },
+    "qr": {
+      "caption": "Đăng ký ứng dụng xác thực",
+      "label": "Mã thiết lập xác thực hai yếu tố",
+      "manualKey": "Khóa thiết lập thủ công"
+    },
+    "welcome": {
+      "title": "Bắt đầu từ một mã hex",
+      "description": "Đưa cho trình tạo một màu thương hiệu, nó viết tệp hạt giống, đo mọi cặp tương phản và từ chối những giá trị không đạt.",
+      "dismiss": "Đóng"
+    },
+    "chat": {
+      "assistant": "Trợ lý",
+      "sent": "09:41",
+      "answer": "Hạt giống được giới hạn trong bảng, nên phần còn lại của tài liệu vẫn giữ bảng màu của nó.",
+      "bare": "Còn vòng focus thì sao?"
+    },
+    "thought": {
+      "label": "Cách hạt giống được áp dụng",
+      "read": "Đọc phạm vi",
+      "readHint": "[data-godx-theme] trên gốc của bảng",
+      "contrast": "Đo từng cặp",
+      "contrastBody": "Nhãn trên nền tô và nền tô trên canvas, ở cả hai giao diện, theo WCAG 2.2 SC 1.4.3 và SC 1.4.11.",
+      "write": "Viết giá trị dự phòng cho email"
+    },
+    "carousel": {
+      "caption": "Các bảng màu đã phát hành"
+    },
+    "alert": {
+      "title": "Lưu ý",
+      "description": "Hạt giống tự chọn được áp dụng đúng như đã nhập. CSS không có cách nào nâng một hạt giống sáng lên sống lưng tối, nên một thương hiệu cần đọc được trên cả hai canvas phải có giá trị thứ hai được đo trên nền tối.",
+      "okTitle": "Đã kiểm tra tương phản"
+    },
+    "timeline": {
+      "seedApplied": "Đã áp dụng hạt giống",
+      "scope": "Phạm vi bảng",
+      "contrastQueued": "Đã xếp hàng kiểm tra tương phản"
+    },
+    "dashboard": {
+      "releases": "Số bản phát hành",
+      "releasesHint": "30 ngày gần nhất",
+      "revenue": "Doanh thu ghi nhận",
+      "failureRate": "Tỷ lệ thay đổi thất bại",
+      "failureHint": "Càng thấp càng tốt",
+      "seatsLabel": "Khu vực trong phạm vi",
+      "seats": {
+        "other": "{count} khu vực"
+      },
+      "mix": "Cơ cấu phát hành",
+      "activity": "Hoạt động gần đây",
+      "environment": "Môi trường",
+      "owner": "Phụ trách",
+      "ledger": "Tham chiếu sổ",
+      "table": "Danh sách phát hành",
+      "tableHint": "Phụ trách, khu vực và số tiền được định dạng theo ngôn ngữ đang dùng.",
+      "updated": "Cập nhật {date}",
+      "rotate": "Xoay khóa"
+    },
+    "table": {
+      "id": "Bản phát hành",
+      "owner": "Phụ trách",
+      "region": "Khu vực",
+      "ref": "Tham chiếu",
+      "status": "Trạng thái",
+      "amount": "Số tiền",
+      "noRef": "Chưa đặt"
+    },
+    "releaseStatus": {
+      "shipped": "Đã phát hành",
+      "review": "Đang xét duyệt",
+      "draft": "Bản nháp",
+      "failed": "Thất bại"
+    }
   }
 }

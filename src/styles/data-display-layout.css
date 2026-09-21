@@ -2354,14 +2354,23 @@
     vertical-align: text-bottom;
   }
 
+  /* THE TRACK MUST BE ABLE TO GO UNDER ITS CONTENT. The placeholder line below used to declare a
+   * DEFINITE `inline-size: var(--chat-bubble-max-inline-size)` (34rem) inside an implicit `auto`
+   * track, and an `auto` track floors at its item's max-content — so `max-inline-size: 100%` on the
+   * line resolved against a 544px track and did nothing. Measured at 375px on the
+   * theme-customization showcase: a `loading` bubble in a 341px card painted a 544px line, 214px of
+   * it outside the card, with no scrollport anywhere above it to reach the ink. `minmax(0, …)` is
+   * the documented way to let a grid track shrink past its content; the cap stays where the design
+   * put it, and the line now fills whichever of the two is smaller. */
   .ui-chat-bubble-skeleton {
     display: grid;
+    grid-template-columns: minmax(0, var(--chat-bubble-max-inline-size));
     gap: var(--skeleton-row-gap);
   }
 
   .ui-chat-bubble-skeleton-line {
     block-size: var(--skeleton-block-height);
-    inline-size: var(--chat-bubble-max-inline-size);
+    inline-size: auto;
     max-inline-size: 100%;
   }
 
