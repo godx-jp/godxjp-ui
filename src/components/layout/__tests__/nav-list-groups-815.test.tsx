@@ -32,7 +32,12 @@ const SETTINGS: SidebarItemProp[] = [
       { id: "two-factor", label: "二要素認証", badge: "未設定", badgeTone: "destructive" },
     ],
   },
-  { id: "notifications", label: "通知", icon: Bell, children: [{ id: "mail", label: "メール通知" }] },
+  {
+    id: "notifications",
+    label: "通知",
+    icon: Bell,
+    children: [{ id: "mail", label: "メール通知" }],
+  },
   { id: "billing", label: "請求", icon: CreditCard },
 ];
 

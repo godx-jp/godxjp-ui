@@ -1,11 +1,11 @@
 {
-  "example": "<NavList\n  label=\"Settings\"\n  activeId={route}\n  linkComponent={Link}\n  items={[\n    { id: \"profile\", label: \"Profile\", icon: <User />, href: \"/settings/profile\" },\n    { id: \"appearance\", label: \"Appearance\", icon: <Palette />, href: \"/settings/appearance\" },\n  ]}\n/>",
+  "example": "<NavList\n  label=\"Settings\"\n  activeId={route}\n  linkComponent={Link}\n  items={[\n    // A GROUP: one NavList, one <nav>, however many groups (gh#815).\n    {\n      id: \"account\",\n      label: \"Account\",\n      icon: User,\n      children: [\n        { id: \"profile\", label: \"Profile\", href: \"/settings/profile\" },\n        { id: \"organization\", label: \"Organization\", href: \"/settings/organization\" },\n      ],\n    },\n    // A LEAF, at the same level. `icon` takes the COMPONENT, never an element, and is optional.\n    { id: \"appearance\", label: \"Appearance\", icon: Palette, href: \"/settings/appearance\" },\n  ]}\n/>",
   "group": "layout",
   "importPath": "@godxjp/ui/layout",
   "name": "NavList",
   "props": [
     {
-      "description": "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. `icon` is required — the label aligns to the icon column.",
+      "description": "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns.",
       "name": "items",
       "required": true,
       "type": "SidebarItemProp[]"
@@ -47,13 +47,16 @@
   "tagline": "Vertical route navigation for INSIDE a page — the shape a settings nav takes. Renders the same `.sb-nav-item` rows as the Sidebar rail (icon column, label, badge, active tokens, `aria-current=\"page\"`) in a `<nav>` landmark, without the AppShell grid the rail depends on.",
   "usage": [
     "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
+    "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
+    "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",
     "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
     "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
     "DON'T use Tabs: each entry here is a separate ROUTE the router renders, not a panel this component owns. Tabs would mean faking tab state from the URL and never rendering a TabsContent.",
     "DO pass `label` — the <nav> landmark needs a name to be distinguishable from the breadcrumb and the rail.",
-    "There is no collapsed state by design: a page-level navigation has no rail to collapse into. Only the shell rail collapses."
+    "There is no collapsed state by design: a page-level navigation has no rail to collapse into. Only the shell rail collapses. (A GROUP still opens and closes — that is `item.children`, not the rail's collapsed mode.)"
   ],
   "useCases": [
+    "Settings page / settings nav / preferences nav: Account / Security / Notifications / Billing beside the selected settings form — grouped, in ONE <nav> landmark.",
     "Settings screen: Profile / Appearance / Security beside the selected settings form.",
     "Account area: a vertical route nav inside a PageContainer, driving the detail pane."
   ]

@@ -309,9 +309,9 @@ export default function Demo() {
           <CardTitle level={2}>設定ナビゲーション · 正準形</CardTitle>
           <CardDescription>
             これがないと、各アプリが Button を並べて設定ナビを自作し、aria-current=&quot;page&quot;
-            とアイコン列が失われます。グループは item.children
-            です。ページのナビゲーションは 1 つなので、&lt;nav&gt; ランドマークも 1
-            つのまま、NavList も 1 つです。ルートが子に当たったグループは自分で開きます。
+            とアイコン列が失われます。グループは item.children です。ページのナビゲーションは 1
+            つなので、&lt;nav&gt; ランドマークも 1 つのまま、NavList も 1
+            つです。ルートが子に当たったグループは自分で開きます。
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -389,9 +389,8 @@ export default function Demo() {
         <CardHeader>
           <CardTitle level={2}>アイコン列とラベルの極端なケース</CardTitle>
           <CardDescription>
-            これがないと、icon のない行は型が許さないと誤解されます。icon
-            は任意です。無い行も空の .sb-icon
-            箱を保つので、ラベルの列は動きません。だから「2 文字のラベル」も「3
+            これがないと、icon のない行は型が許さないと誤解されます。icon は任意です。無い行も空の
+            .sb-icon 箱を保つので、ラベルの列は動きません。だから「2 文字のラベル」も「3
             行に折り返す日本語のラベル」も同じ列から始まり、行は縮まず、折り返すのはラベルだけです。
           </CardDescription>
         </CardHeader>
