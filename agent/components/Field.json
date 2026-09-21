@@ -15,8 +15,18 @@
       "type": "ReactNode"
     },
     {
-      "description": "Optional helper text rendered under the label.",
+      "description": "Content rendered BESIDE the label and OUTSIDE the <label> element — a help button, a Tooltip trigger, a status chip, a short text action. Same semantics as FormField.labelAddon. It must not go through `label`: Field's label is a real <label htmlFor> pointing at the checkbox/radio/switch, so a browser forwards a click anywhere inside it to that control and an interactive addon placed there TOGGLES the control when pressed (gh#812). A non-interactive mark (Badge as=\"span\") is still fine inside `label`.",
+      "name": "labelAddon",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Muted hint rendered under the label, announced with the control via aria-describedby. Composes with `error` — both lines stack, they do not replace each other.",
       "name": "description",
+      "type": "ReactNode"
+    },
+    {
+      "description": "Validation message under the description (role=alert). The message IS the invalid state: the control is cloned with aria-invalid, and the message id reaches it through aria-errormessage AND aria-describedby (react-aria's hidden input drops the former). This is how a validated boolean stays in Field — FormField must not wrap a bare Switch.",
+      "name": "error",
       "type": "ReactNode"
     },
     {
@@ -31,7 +41,7 @@
     }
   ],
   "related": [
-    "FormField — block label/helper/error/required layout for text inputs; use it instead when those slots are needed.",
+    "FormField — block label/helper/required layout for text inputs; use it instead when the control stacks under its label. Field now carries `labelAddon` and `error` with FormField's semantics, so the two read as one idea (gh#812); what Field still does NOT have is `required`, `helper`, `name`/error-bag binding, layout/width knobs and `staticText`.",
     "Switch / Checkbox / Radio — the controls Field typically wraps."
   ],
   "rules": [
@@ -42,7 +52,9 @@
   "usage": [
     "DO: Use Field to label a single boolean/choice control (Switch, Checkbox, Radio) in a compact two-column row — control beside label + description.",
     "DO: Match the child control's id to Field's id so the label is correctly associated.",
-    "DON'T: Use Field for text inputs needing helper/error/required slots — use FormField (block layout) instead. There is no ChoiceField anymore; Field is the canonical name."
+    "DO: Pass a pressable help affordance (Tooltip trigger, icon Button) through `labelAddon`, never through `label` — inside the <label> a press toggles the control (gh#812).",
+    "DO: Use `error` for a validated boolean instead of hand-wiring aria-invalid / aria-describedby or smuggling the message through `description`. Field wires aria-invalid, aria-errormessage and aria-describedby onto the control itself.",
+    "DON'T: Use Field for text inputs needing the full block label/required/helper layout — use FormField instead. There is no ChoiceField anymore; Field is the canonical name."
   ],
   "useCases": [
     "A settings list of toggle rows (notifications, auto-save) where each Switch has a label + description.",

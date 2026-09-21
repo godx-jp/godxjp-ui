@@ -561,8 +561,28 @@
     font-weight: var(--font-weight-normal);
   }
 
+  /* gh#812 — the label row a `labelAddon` needs. `.ui-choice-content` is a GRID, so an addon
+   * rendered as a plain sibling of the label would take the next row and read as a second line
+   * rather than as something attached to the label. This wraps the two into one flex line, and
+   * it is rendered only when there is an addon: with no addon the label stays the direct grid
+   * item it has always been, so no existing row changes shape. */
+  .ui-choice-label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--control-label-space-gap);
+  }
+
   .ui-choice-description {
     color: hsl(var(--muted-foreground));
+    font-size: var(--choice-description-font-size);
+  }
+
+  /* --text-error is the TEXT tier, not the destructive FILL tier — the same distinction
+   * `.ui-form-field-required` and FormField's error line already make, and for the same reason:
+   * the fill tier does not reach AA as body text on the dark spine (gh#610). */
+  .ui-choice-error {
+    color: hsl(var(--text-error));
     font-size: var(--choice-description-font-size);
   }
 

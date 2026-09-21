@@ -55,7 +55,7 @@
     }
   ],
   "related": [
-    "Field — use this instead of bare Switch whenever the toggle needs a visible label, helper text, error message, or must submit its value inside an HTML <form>. Field composes Label + Switch + hidden input automatically.",
+    "Field — use this instead of a bare Switch whenever the toggle needs a visible label, a description, a pressable help affordance (`labelAddon`) or a validation message (`error`, which wires aria-invalid / aria-errormessage / aria-describedby for you, gh#812). Native submission is the Switch's own job: give it `name` and it renders the hidden input itself.",
     "Checkbox — use Checkbox (or CheckboxGroup) when the user is selecting one or more items from a set, or when the binary choice semantically means 'agree/select' rather than 'enable/disable'. Switch implies an immediate, persistent state change; Checkbox implies a form choice.",
     "Field — use for a binary or small-set choice rendered as radio-style cards with rich descriptions, when the visual weight of a toggle is insufficient for the decision importance.",
     "RadioGroup — use when the user must choose exactly one option from 2–4 mutually exclusive values; Switch is only appropriate for a single on/off boolean."
