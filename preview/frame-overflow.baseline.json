@@ -1,6 +1,5 @@
 {
-  "note": "Text that renders outside its box. The three entries recorded when check:frame-overflow was introduced were TRACKED defects (gh#813), not accepted debt, and all three are fixed — the list is now EMPTY and may only stay that way: the gate fails on anything new. Run with --update-baseline after fixing one (it rewrites this note and drops `tracked`, so put them back).",
+  "note": "Overflowing text recorded when check:frame-overflow was introduced. It may only SHRINK. Run with --update-baseline after fixing entries.",
   "count": 0,
-  "entries": [],
-  "tracked": "https://github.com/godx-jp/godxjp-ui/issues/813"
+  "entries": []
 }

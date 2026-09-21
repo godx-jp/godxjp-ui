@@ -36,6 +36,22 @@ an edge and nobody saw the edges break.
 
 ### Fixed
 
+- **Three elements rendered text outside their box** (gh#813), all found by the new sweep and none
+  previously reported. Both fixes moved UPSTREAM of the symptom:
+
+  `.ui-page-header-extra` carried `min-inline-size: 0` above 640px — a floor of _zero_, so the box
+  shrank past what its content could present. A `.ui-flex[data-direction="row"]` child was rescued
+  by an existing wrap rule; a direct `<Button>`, which is the common `extra`, was not, and painted
+  backwards over the title. It is `auto` now — the flex default, floor = min-content — so ANY child
+  shape is covered rather than one named shape. Checked against the reason the zero floor existed
+  (gh#300): with 4/8/10/13 buttons × 768/1024/1280, the `<h1>` width, line count, box width and row
+  count are identical under `0` and `auto` in all twelve.
+
+  The picker's clipped date format was fixed on `controlTriggerBaseClass`, so every select-family
+  trigger gains a working cross-engine ellipsis instead of one picker getting a wider box.
+  `line-clamp-1` inside `whitespace-nowrap` can never reach a second line, so its ellipsis never
+  fired: Chromium now paints `YYYY-MM-DD…` and Gecko `YYYY-MM-D…`, against `YYYY-MM-DD（全` before.
+
 - **`Field` gains `labelAddon` and `error`** (gh#812). A help affordance in a `Field`'s label was
   not merely missing — it was a TRAP: `Field` renders `label` inside a real `<label htmlFor>`, and
   a browser forwards a click anywhere in a label to the control, so a Tooltip trigger placed there

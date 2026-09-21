@@ -174,18 +174,43 @@ async function main() {
   await browser.close();
   await stopServer?.();
 
+  /* THE KEY MUST NOT CONTAIN A MEASUREMENT.
+   *
+   * It did — `frame · kind · selector · 41.8px · text` — and the first CI run reported all three
+   * KNOWN findings as NEW, because the runner renders them at 41.2px, 5.4px and 58.0px against my
+   * 41.8, 5.5 and 59.0. Font rasterisation differs by machine, so a baseline keyed on magnitude can
+   * only ever match the machine that wrote it.
+   *
+   * The overflow is a fact about the LAYOUT; the exact pixel is a fact about the RENDERER, and only
+   * the first belongs in an identity. The amount is carried alongside, reported on failure and
+   * recorded under `lastMeasured` so a regression that gets WORSE is still visible. */
+  const keyOf = (id, h) => `${id} · ${h.kind} · ${h.sel} · ${h.text}`;
   const flat = Object.entries(found)
-    .flatMap(([id, hits]) => hits.map((h) => `${id} · ${h.kind} · ${h.sel} · ${h.by} · ${h.text}`))
+    .flatMap(([id, hits]) => hits.map((h) => keyOf(id, h)))
     .sort();
+  const amounts = Object.fromEntries(
+    Object.entries(found).flatMap(([id, hits]) => hits.map((h) => [keyOf(id, h), h.by])),
+  );
 
   if (UPDATE) {
+    /* PRESERVE WHAT A HUMAN WROTE. The first version overwrote `note` and dropped `tracked` on
+     * every regeneration, so whoever fixed an entry had to restore the issue link by hand and
+     * discovered it only by reading the diff. A baseline that forgets why its entries exist is a
+     * list of accepted debt, which is the opposite of the point. */
+    const existing = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, "utf8")) : {};
     writeFileSync(
       BASELINE,
       JSON.stringify(
         {
-          note: "Overflowing text recorded when check:frame-overflow was introduced. It may only SHRINK. Run with --update-baseline after fixing entries.",
+          note:
+            existing.note ??
+            "Text that renders outside its box. Every entry is a TRACKED defect, not accepted " +
+              "debt. The list may only SHRINK: the gate fails on anything new. Entries are keyed " +
+              "on frame/kind/selector/text and NOT on the pixel amount, which varies by renderer.",
+          ...(existing.tracked ? { tracked: existing.tracked } : {}),
           count: flat.length,
           entries: flat,
+          lastMeasured: amounts,
         },
         null,
         2,
@@ -206,7 +231,7 @@ async function main() {
     console.error(
       `✗ check:frame-overflow — ${added.length} NEW element(s) whose text does not fit:\n`,
     );
-    for (const a of added) console.error(`  ${a}`);
+    for (const a of added) console.error(`  ${a}  (${amounts[a]})`);
     console.error(
       `\nEither give the text room, or let it wrap/ellipsize. ${routes.length} frames swept, ${missing} route(s) did not resolve.`,
     );
