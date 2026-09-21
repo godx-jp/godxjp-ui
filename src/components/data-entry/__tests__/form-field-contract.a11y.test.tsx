@@ -174,23 +174,44 @@ const GROUP_CASES: Array<{ name: string; render: (id: string) => React.ReactElem
   },
 ];
 
+/**
+ * ASK FOR THE GROUP FORMFIELD WIRED, NOT "the group".
+ *
+ * `getByRole("group")` was unique only by accident, and gh#821 ended the accident: `Transfer`'s
+ * two panes are `ScrollArea`s, and a scroll viewport that is a tab stop now carries
+ * `role="group"` plus a name, so the render holds three groups and the query throws
+ * `Found multiple elements`. Nesting a group inside a group is valid ARIA and the inner ones are
+ * the point of gh#821 — the ambiguity is in the QUESTION.
+ *
+ * `#id` is the element FormField was pointed at, so this asks the contract exactly: the control
+ * FormField wired must itself compute the name. It stays non-vacuous because the assertion is on
+ * the computed NAME, not on the selector — and it is now immune to any descendant that later
+ * earns a role of its own.
+ */
+const wiredGroup = (container: HTMLElement) => {
+  const el = container.querySelector("#f");
+  expect(el, "FormField's control child must render the id it was given").not.toBeNull();
+  expect(el).toHaveAttribute("role", "group");
+  return el as HTMLElement;
+};
+
 describe.each(GROUP_CASES)("FormField contract → $name (group)", ({ render }) => {
   it("names the group from the FormField label", () => {
-    const { getByRole } = renderWithUi(
+    const { container } = renderWithUi(
       <FormField id="f" label={LABEL}>
         {render("f")}
       </FormField>,
     );
-    expect(getByRole("group")).toHaveAccessibleName(LABEL);
+    expect(wiredGroup(container)).toHaveAccessibleName(LABEL);
   });
 
   it("folds helper AND error into the group description", () => {
-    const { getByRole } = renderWithUi(
+    const { container } = renderWithUi(
       <FormField id="f" label={LABEL} helper={HELPER} error={ERROR}>
         {render("f")}
       </FormField>,
     );
-    const group = getByRole("group");
+    const group = wiredGroup(container);
     expect(group).toHaveAccessibleDescription(new RegExp(`${HELPER}.*${ERROR}`));
     // aria-invalid / aria-errormessage are widget-only — never leak onto a role="group".
     expect(group).not.toHaveAttribute("aria-invalid");
