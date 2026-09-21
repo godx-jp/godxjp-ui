@@ -656,5 +656,228 @@
         "error": "failed"
       }
     }
+  },
+  "themeShowcase": {
+    "page": {
+      "title": "Flexible theme customization",
+      "subtitle": "One seed moves the whole system. Pick a palette and every control, surface, mark and focus ring on the board below repaints in place."
+    },
+    "bar": {
+      "title": "Theme",
+      "description": "The chips set the --primary seed inside a scope. Nothing here edits a component, forks a stylesheet or overrides a role.",
+      "paletteLabel": "Palette",
+      "cornerLabel": "Corner radius",
+      "customLabel": "Custom seed",
+      "customHint": "Any hex. The hover, pressed, border, focus and link steps all derive from it.",
+      "identityNote": "The identity colour deliberately stays where it is: a tenant that changes its action colour does not retint its logo."
+    },
+    "palette": {
+      "godx": "GoDX",
+      "indigo": "Indigo",
+      "teal": "Teal",
+      "amber": "Amber",
+      "rose": "Rose",
+      "custom": "Custom"
+    },
+    "corner": {
+      "sharp": "Sharp",
+      "default": "Default",
+      "soft": "Soft"
+    },
+    "tabs": {
+      "components": "Components",
+      "dashboard": "Dashboard"
+    },
+    "form": {
+      "email": "Work email",
+      "emailHint": "Release notices only.",
+      "emailPlaceholder": "you@ops.example.jp",
+      "handle": "Handle",
+      "regions": "Regions",
+      "regionsPlaceholder": "Select regions",
+      "regionsEmpty": "No region selected yet.",
+      "labels": "Labels",
+      "labelsPlaceholder": "Add a label",
+      "plan": "Plan",
+      "releaseDate": "Release date",
+      "channels": "Notification channels",
+      "cadence": "Cadence",
+      "density": "Row density",
+      "autoDeploy": "Deploy on merge",
+      "autoDeployHint": "A green pipeline promotes to staging without asking.",
+      "freeze": "Release freeze",
+      "budget": "Error budget · {value}",
+      "syncing": "Syncing the release ledger"
+    },
+    "plan": {
+      "starter": "Starter",
+      "standard": "Standard",
+      "scale": "Scale"
+    },
+    "channel": {
+      "email": "Email",
+      "escalation": "Escalate to the on-call rotation when a release stays in review for longer than one working day, including weekends and public holidays in the owning region",
+      "escalationHint": "Sent to the rotation, never to an individual.",
+      "pager": "Pager"
+    },
+    "cadence": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "manual": "Manual"
+    },
+    "density": {
+      "compact": "Compact",
+      "default": "Default",
+      "comfortable": "Comfortable"
+    },
+    "steps": {
+      "caption": "Release progress",
+      "finished": "Finished",
+      "finishedHint": "Artefacts signed and archived.",
+      "inProcess": "In process",
+      "waiting": "Waiting",
+      "waitingHint": "Blocked on the contrast audit for the new seed."
+    },
+    "progress": {
+      "rollout": "Rollout · {value}",
+      "quota": "Build minutes · {value}",
+      "done": "Done"
+    },
+    "legend": {
+      "failed": "Failed",
+      "review": "In review",
+      "shipped": "Shipped"
+    },
+    "status": {
+      "caption": "Status marks",
+      "success": "Success",
+      "error": "Error",
+      "default": "Default",
+      "processing": "Processing",
+      "warning": "Warning",
+      "seed": "Seed"
+    },
+    "action": {
+      "primary": "Deploy",
+      "secondary": "Compare",
+      "outline": "Roll back",
+      "dashed": "Add stage",
+      "ghost": "Logs",
+      "deploying": "Deploying",
+      "discard": "Discard this release candidate"
+    },
+    "confirm": {
+      "trigger": "Delete release",
+      "title": "Delete this release?",
+      "description": "The artefacts stay in the registry. The release record and its approvals do not.",
+      "cancel": "Keep",
+      "ok": "Delete"
+    },
+    "avatars": {
+      "caption": "12 reviewers"
+    },
+    "rating": {
+      "1": "Unusable",
+      "2": "Rough",
+      "3": "Acceptable",
+      "4": "Good",
+      "5": "Shippable"
+    },
+    "otp": {
+      "title": "Verify this device",
+      "description": "Enter the six-digit code from your authenticator app.",
+      "field": "Verification code",
+      "verify": "Verify"
+    },
+    "signup": {
+      "title": "Create an account",
+      "description": "One account covers every environment you have been granted.",
+      "email": "Work email",
+      "password": "Password",
+      "submit": "Create account",
+      "or": "or",
+      "sso": "Continue with single sign-on",
+      "passkey": "Continue with a passkey"
+    },
+    "notify": {
+      "title": "Notifications",
+      "longTitle": "Your invitation to the Platform Reliability and Release Governance working group is waiting for a response",
+      "longMeta": "2026-09-12 09:12 UTC · expires in 3 days",
+      "open": "Open",
+      "bareTitle": "Invoice issued"
+    },
+    "qr": {
+      "caption": "Authenticator enrolment",
+      "label": "Two-factor authentication setup code",
+      "manualKey": "Manual setup key"
+    },
+    "welcome": {
+      "title": "Start from one hex",
+      "description": "Give the generator a brand colour and it writes the seed file, measures every contrast pair and refuses the ones that miss.",
+      "dismiss": "Dismiss"
+    },
+    "chat": {
+      "assistant": "Assistant",
+      "sent": "09:41",
+      "answer": "The seed is scoped to the board, so the rest of the document keeps its own palette.",
+      "bare": "And the focus ring?"
+    },
+    "thought": {
+      "label": "How the seed was applied",
+      "read": "Read the scope",
+      "readHint": "[data-godx-theme] on the board root",
+      "contrast": "Measure the pair",
+      "contrastBody": "Label on fill and fill on canvas, both themes, against WCAG 2.2 SC 1.4.3 and SC 1.4.11.",
+      "write": "Write the email fallback"
+    },
+    "carousel": {
+      "caption": "Shipped palettes"
+    },
+    "alert": {
+      "title": "Check",
+      "description": "The custom seed is applied as authored. Nothing lifts a light seed onto the dark spine, so a brand that has to read on both canvases needs a second value measured against the dark one.",
+      "okTitle": "Contrast verified"
+    },
+    "timeline": {
+      "seedApplied": "Seed applied",
+      "scope": "Board scope",
+      "contrastQueued": "Contrast sweep queued"
+    },
+    "dashboard": {
+      "releases": "Releases",
+      "releasesHint": "Rolling 30 days",
+      "revenue": "Recognised revenue",
+      "failureRate": "Change failure rate",
+      "failureHint": "Lower is better",
+      "seatsLabel": "Regions in scope",
+      "seats": {
+        "one": "{count} region",
+        "other": "{count} regions"
+      },
+      "mix": "Release mix",
+      "activity": "Recent activity",
+      "environment": "Environment",
+      "owner": "Owner",
+      "ledger": "Ledger reference",
+      "table": "Releases",
+      "tableHint": "Owners, regions and amounts are formatted for the active locale.",
+      "updated": "Updated {date}",
+      "rotate": "Rotate key"
+    },
+    "table": {
+      "id": "Release",
+      "owner": "Owner",
+      "region": "Region",
+      "ref": "Reference",
+      "status": "Status",
+      "amount": "Amount",
+      "noRef": "Not set"
+    },
+    "releaseStatus": {
+      "shipped": "Shipped",
+      "review": "In review",
+      "draft": "Draft",
+      "failed": "Failed"
+    }
   }
 }

@@ -642,5 +642,227 @@
         "error": "失敗"
       }
     }
+  },
+  "themeShowcase": {
+    "page": {
+      "title": "テーマの自由な調整",
+      "subtitle": "シード1つで全体が動きます。パレットを選ぶと、下のボードにあるコントロール・面・マーク・フォーカスリングがその場で塗り替わります。"
+    },
+    "bar": {
+      "title": "テーマ",
+      "description": "チップはスコープ内で --primary シードを設定します。コンポーネントの改変も、スタイルシートの分岐も、ロールの上書きもありません。",
+      "paletteLabel": "パレット",
+      "cornerLabel": "角丸",
+      "customLabel": "カスタムシード",
+      "customHint": "任意の16進値。ホバー・押下・境界・フォーカス・リンクの各段はここから導出されます。",
+      "identityNote": "アイデンティティ色は意図的に動きません。アクション色を変えたテナントのロゴが染まらないようにするためです。"
+    },
+    "palette": {
+      "godx": "GoDX",
+      "indigo": "インディゴ",
+      "teal": "ティール",
+      "amber": "アンバー",
+      "rose": "ローズ",
+      "custom": "カスタム"
+    },
+    "corner": {
+      "sharp": "角",
+      "default": "既定",
+      "soft": "丸"
+    },
+    "tabs": {
+      "components": "コンポーネント",
+      "dashboard": "ダッシュボード"
+    },
+    "form": {
+      "email": "業務用メール",
+      "emailHint": "リリース通知にのみ使用します。",
+      "emailPlaceholder": "you@ops.example.jp",
+      "handle": "ハンドル名",
+      "regions": "対象地域",
+      "regionsPlaceholder": "地域を選択",
+      "regionsEmpty": "地域が未選択です。",
+      "labels": "ラベル",
+      "labelsPlaceholder": "ラベルを追加",
+      "plan": "プラン",
+      "releaseDate": "リリース日",
+      "channels": "通知チャネル",
+      "cadence": "頻度",
+      "density": "行の密度",
+      "autoDeploy": "マージ時にデプロイ",
+      "autoDeployHint": "パイプラインが緑ならステージングへ自動昇格します。",
+      "freeze": "リリース凍結",
+      "budget": "エラーバジェット · {value}",
+      "syncing": "リリース台帳を同期しています"
+    },
+    "plan": {
+      "starter": "スターター",
+      "standard": "スタンダード",
+      "scale": "スケール"
+    },
+    "channel": {
+      "email": "メール",
+      "escalation": "レビュー滞留が1営業日を超えた場合、担当地域の週末および祝日も含めてオンコール輪番へエスカレーションする",
+      "escalationHint": "個人ではなく輪番宛てに送信されます。",
+      "pager": "ページャー"
+    },
+    "cadence": {
+      "daily": "毎日",
+      "weekly": "毎週",
+      "manual": "手動"
+    },
+    "density": {
+      "compact": "高密度",
+      "default": "既定",
+      "comfortable": "ゆったり"
+    },
+    "steps": {
+      "caption": "リリースの進行",
+      "finished": "完了",
+      "finishedHint": "成果物に署名し保管しました。",
+      "inProcess": "進行中",
+      "waiting": "待機",
+      "waitingHint": "新しいシードのコントラスト監査待ちです。"
+    },
+    "progress": {
+      "rollout": "展開 · {value}",
+      "quota": "ビルド時間 · {value}",
+      "done": "完了"
+    },
+    "legend": {
+      "failed": "失敗",
+      "review": "レビュー中",
+      "shipped": "出荷済"
+    },
+    "status": {
+      "caption": "ステータス表示",
+      "success": "成功",
+      "error": "エラー",
+      "default": "既定",
+      "processing": "処理中",
+      "warning": "警告",
+      "seed": "シード"
+    },
+    "action": {
+      "primary": "デプロイ",
+      "secondary": "比較",
+      "outline": "ロールバック",
+      "dashed": "ステージ追加",
+      "ghost": "ログ",
+      "deploying": "デプロイ中",
+      "discard": "このリリース候補を破棄"
+    },
+    "confirm": {
+      "trigger": "リリースを削除",
+      "title": "このリリースを削除しますか。",
+      "description": "成果物はレジストリに残ります。リリース記録と承認は残りません。",
+      "cancel": "残す",
+      "ok": "削除"
+    },
+    "avatars": {
+      "caption": "レビュアー12名"
+    },
+    "rating": {
+      "1": "使用不可",
+      "2": "粗い",
+      "3": "可",
+      "4": "良",
+      "5": "出荷可"
+    },
+    "otp": {
+      "title": "この端末を確認",
+      "description": "認証アプリに表示された6桁のコードを入力してください。",
+      "field": "確認コード",
+      "verify": "確認"
+    },
+    "signup": {
+      "title": "アカウントを作成",
+      "description": "1つのアカウントで、権限のある全環境を利用できます。",
+      "email": "業務用メール",
+      "password": "パスワード",
+      "submit": "アカウントを作成",
+      "or": "または",
+      "sso": "シングルサインオンで続行",
+      "passkey": "パスキーで続行"
+    },
+    "notify": {
+      "title": "通知",
+      "longTitle": "プラットフォーム信頼性およびリリースガバナンス作業部会への招待が返答待ちです",
+      "longMeta": "2026-09-12 09:12 UTC · 3日後に失効",
+      "open": "開く",
+      "bareTitle": "請求書を発行しました"
+    },
+    "qr": {
+      "caption": "認証アプリの登録",
+      "label": "二要素認証の登録用コード",
+      "manualKey": "手動設定キー"
+    },
+    "welcome": {
+      "title": "16進値1つから始める",
+      "description": "ブランド色を渡すとシードファイルを生成し、全コントラスト対を測定し、基準を満たさない値は拒否します。",
+      "dismiss": "閉じる"
+    },
+    "chat": {
+      "assistant": "アシスタント",
+      "sent": "09:41",
+      "answer": "シードはボードにスコープされるため、文書の他の部分は自分のパレットを保ちます。",
+      "bare": "フォーカスリングは。"
+    },
+    "thought": {
+      "label": "シードの適用手順",
+      "read": "スコープを読む",
+      "readHint": "ボード直下の [data-godx-theme]",
+      "contrast": "対を測定する",
+      "contrastBody": "塗り上のラベルと、キャンバス上の塗り。両テーマで WCAG 2.2 SC 1.4.3 と SC 1.4.11 に照らします。",
+      "write": "メール用の代替値を書く"
+    },
+    "carousel": {
+      "caption": "出荷済のパレット"
+    },
+    "alert": {
+      "title": "確認",
+      "description": "カスタムシードは指定どおりに適用されます。明るいシードを暗い背骨へ持ち上げる仕組みはCSSにないため、両方のキャンバスで読ませたいブランドは暗い側で測定した2つ目の値が必要です。",
+      "okTitle": "コントラスト検証済"
+    },
+    "timeline": {
+      "seedApplied": "シードを適用",
+      "scope": "ボードスコープ",
+      "contrastQueued": "コントラスト検査を予約"
+    },
+    "dashboard": {
+      "releases": "リリース数",
+      "releasesHint": "直近30日",
+      "revenue": "認識売上",
+      "failureRate": "変更失敗率",
+      "failureHint": "低いほど良い",
+      "seatsLabel": "対象地域",
+      "seats": {
+        "other": "{count} 地域"
+      },
+      "mix": "リリース内訳",
+      "activity": "最近の動き",
+      "environment": "環境",
+      "owner": "担当",
+      "ledger": "台帳参照",
+      "table": "リリース一覧",
+      "tableHint": "担当・地域・金額は現在のロケールで整形されます。",
+      "updated": "更新 {date}",
+      "rotate": "鍵をローテーション"
+    },
+    "table": {
+      "id": "リリース",
+      "owner": "担当",
+      "region": "地域",
+      "ref": "参照",
+      "status": "状態",
+      "amount": "金額",
+      "noRef": "未設定"
+    },
+    "releaseStatus": {
+      "shipped": "出荷済",
+      "review": "レビュー中",
+      "draft": "下書き",
+      "failed": "失敗"
+    }
   }
 }

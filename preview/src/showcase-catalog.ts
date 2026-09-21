@@ -32,6 +32,14 @@ export type ShowcaseEntry = {
 
 export const SHOWCASES: ShowcaseEntry[] = [
   {
+    id: "theme-customization",
+    title: "Flexible theme customization",
+    description:
+      "Một bảng dày đặc component thật + thanh chọn theme: chip đổi SEED (--primary) trong một scope, cả bảng repaint tại chỗ. Kèm hai bẫy freeze rule đã gặp thật (--ring và thang --radius) và dữ liệu cố tình chạm mép (nhãn ba dòng, chuỗi 71 ký tự không ngắt được, ô rỗng cạnh ô đầy, CJK cạnh Latin).",
+    tag: "Theme",
+    load: () => import("../../docs/showcase/theme-customization"),
+  },
+  {
     id: "acme-portal",
     title: "ACME — Cổng khách hàng (token re-theme)",
     description:
