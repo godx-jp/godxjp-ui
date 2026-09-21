@@ -8,6 +8,7 @@ import {
   ListRow,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -20,6 +21,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Flex"
@@ -401,19 +403,8 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>measure · 全幅の外、測度の内（gh#839）</CardTitle>
-            <CardDescription>
-              フルブリードの帯は
-              <Text as="code" chip>
-                &lt;section&gt;
-              </Text>
-              が塗り、その内側の一列を measure が中央寄せして
-              <Text as="code" chip>
-                --page-measure-*
-              </Text>
-              で止める。余白は pad が持つ（measure はガターを足さない）。narrow 42rem / medium 48rem
-              は読み物の測度、wide 72rem はマーケティングの測度。
-            </CardDescription>
+            <CardTitle level={2}>{t("showcase.flexMeasure.title")}</CardTitle>
+            <CardDescription>{t("showcase.flexMeasure.lead")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">

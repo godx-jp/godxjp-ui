@@ -1165,6 +1165,10 @@
       "loadMore": {
         "other": "さらに {count} 件を読み込む"
       }
+    },
+    "flexMeasure": {
+      "title": "measure · 全幅の外、測度の内",
+      "lead": "帯は塗りを持つ <section> で、その内側の一列を measure が中央寄せし --page-measure-* で止める。余白は pad の担当で measure は足さない。narrow（42rem）と medium（48rem）は読み物の測度、wide（72rem）はマーケティングの測度。"
     }
   }
 }

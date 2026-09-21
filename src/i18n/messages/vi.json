@@ -1166,6 +1166,10 @@
       "loadMore": {
         "other": "Tải thêm {count}"
       }
+    },
+    "flexMeasure": {
+      "title": "measure — tràn viền bên ngoài, cột đo bên trong",
+      "lead": "Một dải là <section> mang phần nền tràn viền, bao quanh một Flex được measure canh giữa và chặn ở --page-measure-*. Lề vẫn do pad giữ: measure không thêm lề. narrow (42rem) và medium (48rem) là measure cho nội dung đọc; wide (72rem) là measure cho trang marketing."
     }
   }
 }
