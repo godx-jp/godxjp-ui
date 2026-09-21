@@ -611,6 +611,18 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Reveal entrance-stagger ordinal (0..6) — an index into the motion ladder, never a raw ms",
   },
+  RevealTriggerProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "What starts a Reveal entrance — mount (default, historical) | view (reaches the viewport)",
+  },
+  InViewAmountProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "How much of an element must be visible to count as in view — some | all | a 0..1 ratio (Motion's useInView `amount`)",
+  },
   ActivityVariantProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -1540,12 +1552,30 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "ChildrenProp",
       "RevealDelayProp",
+      "RevealTriggerProp",
+      "InViewAmountProp",
       "AsChildProp",
       "ClassNameProp",
       {
         field: "delay",
         local: true,
         reason: "Reveal stagger ordinal — RevealDelayProp vocabulary.",
+      },
+      {
+        field: "on",
+        local: true,
+        reason: "Entrance trigger — RevealTriggerProp vocabulary (mount | view).",
+      },
+      {
+        field: "once",
+        local: true,
+        reason:
+          "Reveal-once latch for on='view' — Motion's useInView `once`, borrowed by name and type.",
+      },
+      {
+        field: "amount",
+        local: true,
+        reason: "Visibility threshold for on='view' — InViewAmountProp vocabulary.",
       },
     ],
   },

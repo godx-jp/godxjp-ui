@@ -3579,15 +3579,39 @@ import { Trash2 } from "lucide-react";
           "Stagger ordinal — an INDEX into the motion ladder, never a raw ms. Each step adds one `--reveal-stagger-step` of delay so a column of reveals cascades. 0 = enter immediately.",
       },
       {
+        name: "on",
+        type: '"mount" | "view"',
+        defaultValue: '"mount"',
+        description:
+          "What STARTS the entrance. `mount` is the historical behaviour (plays as soon as the element renders), so existing call sites are unchanged. `view` holds the entrance until the element reaches the viewport. A trigger, not a second component — same keyframes, same tokens, same reduced-motion contract, which is why there is no `ScrollReveal` here.",
+      },
+      {
+        name: "once",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          'on="view" only. Reveal once and never re-hide. Default `true` because a Reveal is a ONE-SHOT entrance under either trigger — this keeps `view` semantically identical to `mount`. (Motion\'s useInView, where the prop comes from, defaults it to `false`; that is the neutral reading for a general-purpose observer, not for an entrance primitive.) `false` replays the entrance on every re-entry.',
+      },
+      {
+        name: "amount",
+        type: '"some" | "all" | number',
+        defaultValue: '"some"',
+        description:
+          "on=\"view\" only. How much of the element must be visible before it reveals — Motion's `amount`, name and type unchanged, mapped to IntersectionObserver `threshold` the same way (`some` → 0, `all` → 1, a number passes through). `all` is clamped to the most the element's own box can attain inside the viewport, because the ratio is measured against the TARGET's box: without the clamp a section taller than the viewport could never reach 1 and would stay hidden forever.",
+      },
+      {
         name: "asChild",
         type: "boolean",
         defaultValue: "false",
         description:
-          "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout.",
+          'Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout. Under `on="view"` the observed box is that child\'s own.',
       },
     ],
     usage: [
       "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
+      'DO use `on="view"` for a scroll reveal INSTEAD of adding a scroll listener or a second component. It is the same primitive with the trigger moved; the library deliberately ships no ScrollReveal/AnimateOnScroll, and no animation runtime.',
+      'DO NOT gate your own visibility on an observer. `on="view"` never does: the stylesheet\'s resting state is the finished, fully visible one, and only a mounted component holding a live IntersectionObserver writes the hidden state. A server render, jsdom, a browser without the API, and `prefers-reduced-motion: reduce` (under which NO observer is attached at all) therefore all show the content.',
+      'DO reach for `amount` rather than a margin when a reveal should wait — the default `"some"` fires on the first visible pixel (threshold 0), which is the earliest and never reads as late. There is deliberately no `margin`/`rootMargin` prop: it accepts px/% only, so it could not read a design token.',
       "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
       "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
       "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
@@ -3598,6 +3622,8 @@ import { Trash2 } from "lucide-react";
       "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
       "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
       "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in.",
+      'Long marketing/landing page: `<Reveal on="view">` per section so each band enters as the reader reaches it, instead of all of them firing above the fold on load.',
+      'A long feed or report where only the first screen should animate on load: `<Reveal on="view" amount={0.25}>` — a quarter visible before the entrance starts.',
     ],
     related: [
       "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
@@ -3617,15 +3643,30 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
   <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>
     <Card><CardContent>{item.label}</CardContent></Card>
   </Reveal>
-))}`,
+))}
+
+// scroll reveal — same component, the trigger moved to the viewport
+<Reveal on="view">
+  <Card><CardContent>…</CardContent></Card>
+</Reveal>
+
+// wait until a quarter of the section is visible, and replay on every re-entry
+<Reveal on="view" amount={0.25} once={false}>
+  <Card><CardContent>…</CardContent></Card>
+</Reveal>`,
     storyPath: "general/Reveal.stories.tsx",
     rules: [],
   },
   {
     name: "Activity",
+    // gh#830 — "there is no standalone spinner in 165 components". There is: this is it, and the
+    // reason nobody found it is that the catalog never said the word. antd's `Spin` is FOUR
+    // components here, deliberately (parity-backlog.md ruled it COVERED-ELSEWHERE twice), so the
+    // name lands on the standalone indicator and `related` forks to the other three readings.
+    absorbed: ["Spin", "Spinner", "Loading", "LoadingIndicator"],
     group: "general",
     tagline:
-      "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live).",
+      "The official AMBIENT-motion primitive and the standalone indeterminate indicator (antd `Spin`) — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). Loading a REGION is Skeleton; an in-flight ACTION is Button loading; a known percentage is Progress.",
     props: [
       {
         name: "variant",
@@ -3668,6 +3709,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       },
     ],
     usage: [
+      "DO read this first if you came looking for a Spin/Spinner (gh#830). antd's `Spin` is ONE component with a `spinning` boolean covering four different situations; here those are four components, because the accessible semantics of each are genuinely different: (1) something is happening ELSEWHERE, indefinitely → Activity, no live region by default; (2) the CONTENT of this region is loading → Skeleton (aria-busy + aria-live, shaped placeholders) or DataState (the whole skeleton → prerequisite → empty → error lifecycle); (3) THIS action is in flight → Button `loading` (aria-busy + activation blocked on the control itself); (4) a percentage is known → Progress. Picking by shape ('I want the round one') is how a persistent indicator ends up telling a screen reader the page is busy forever.",
+      "DO use `variant='bar'` for the indeterminate case — that IS this library's indeterminate indicator, and the mark being a sweeping bar rather than a rotating circle is a system-level decision, not a gap. antd's `Spin percent='auto'` (a synthesized percentage that never reaches 100) is deliberately NOT ported: a fabricated number over an unknown wait is a determinate-looking lie, and Progress is there for when the number is real.",
       "DO use <Activity> INSTEAD of hand-rolling `@keyframes typing-bounce` in a consumer app CSS. That re-derives interval/amplitude/stagger the DS owns as tokens (`--duration-loop`, `--activity-interval`, `--activity-stagger-step`, `--activity-mark-offset`) and needs its own prefers-reduced-motion guard — the guard consumers forget.",
       "DO NOT reuse Skeleton for an ambient indicator. Skeleton hard-codes `aria-busy='true'` + `aria-live='polite'` because it means CONTENT IS LOADING; a persistent typing indicator built on it tells every screen reader the region is busy for as long as anyone is typing, and re-announces. Activity emits neither by default.",
       "DO NOT reuse Button `loading`. That is a spinner bound to an in-flight action, on a control. Activity means something is happening indefinitely, ELSEWHERE.",
@@ -3691,6 +3734,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Skeleton — content is LOADING (aria-busy + a shaped placeholder). Use Skeleton when the content itself has not arrived; use Activity when content is present and something is happening elsewhere.",
       "Button (loading) — THIS action is in flight, on a control. Not an ambient state.",
       "Progress — a DETERMINATE amount is done. Activity's `bar` variant is the indeterminate case, where no percentage exists.",
+      "DataState — antd `Spin`'s wrapper form (`<Spin spinning>{children}</Spin>`) over a query: skeleton → prerequisite → empty → error, with cause-aware retry. This is what to reach for when the REGION is loading.",
+      "antd `Spin` — no such component here, by a ruling recorded twice in docs/roadmap/parity-backlog.md and docs/roadmap/parity-audit-data-display-feedback.md §2.20. Its four jobs are Activity / Skeleton / DataState / Button `loading`. Its `delay` (flicker guard) is tracked separately against Button as `loadingDelay`; its `fullscreen` is a Dialog/app-shell concern, not an indicator one.",
     ],
     example: `import { Activity } from "@godxjp/ui/general";
 

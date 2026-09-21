@@ -195,6 +195,71 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/*
+         * gh#830 — "there is no standalone spinner". There is; this is it. What was missing was
+         * the signpost, so it lives here, on the page someone lands on.
+         */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>スピナーを探して来た場合（antd Spin との対応）</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Text tone="muted">
+                antd の Spin は spinning という真偽値ひとつで 4
+                つの異なる状況を兼ねている。ここではそれが 4
+                つの別コンポーネントになっている。見た目ではなく、支援技術に対する意味が
+                それぞれ違うからで、形（「丸いやつが欲しい」）で選ぶと、常駐インジケータが
+                スクリーンリーダーに「このページはずっと処理中です」と言い続けることになる。
+              </Text>
+
+              <Flex direction="col" gap="sm">
+                <Flex direction="col" gap="xs">
+                  <Text weight="medium">1 · どこか別の場所で、無期限に、何かが起きている</Text>
+                  <Text size="xs" tone="muted">
+                    → この Activity。既定ではライブリージョンを一切出さない。
+                  </Text>
+                  <Activity variant="bar" tone="info" label="同期中…" />
+                </Flex>
+
+                <Separator />
+
+                <Flex direction="col" gap="xs">
+                  <Text weight="medium">2 · この領域の「中身」が読み込み中</Text>
+                  <Text size="xs" tone="muted">
+                    → Skeleton（aria-busy + aria-live と、形のあるプレースホルダ）。これが antd Spin
+                    の ラッパー形態（&lt;Spin spinning&gt;{"{children}"}&lt;/Spin&gt;）に当たる。
+                    クエリのライフサイクル全体（skeleton → 前提未充足 → 空 →
+                    エラー、原因別の再試行つき）なら DataState。
+                  </Text>
+                </Flex>
+
+                <Separator />
+
+                <Flex direction="col" gap="xs">
+                  <Text weight="medium">3 · 「この操作」が実行中</Text>
+                  <Text size="xs" tone="muted">
+                    → Button の loading。aria-busy はコントロール自身に付き、起動もブロックされる。
+                  </Text>
+                </Flex>
+
+                <Separator />
+
+                <Flex direction="col" gap="xs">
+                  <Text weight="medium">4 · 進捗の数値が分かっている</Text>
+                  <Text size="xs" tone="muted">
+                    → Progress。数値が分からないときが Activity の bar
+                    で、それがこの体系の不確定インジケータ。円が回る形ではなく走るバーなのは、
+                    システムとして決めたことであって、欠落ではない。antd の percent=&quot;auto&quot;
+                    （100% に決して到達しない合成の進捗率）は意図的に移植していない。
+                    分からない待ち時間に作った数字を被せるのは、確定に見える嘘だから。
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>prefers-reduced-motion</CardTitle>
