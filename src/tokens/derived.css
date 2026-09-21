@@ -1,4 +1,10 @@
-/* DERIVED COLOUR — the interaction states that hang off the five authored seeds.
+/* DERIVED COLOUR — the interaction states that hang off the authored seeds.
+ *
+ * WHAT ACTUALLY DERIVES, so nothing here has to be inferred: the PRIMARY family and the brand TEXT
+ * family follow `--primary` at runtime, from the scope that paints them. The error / success /
+ * warning / info states below are AUTHORED per theme and do NOT follow their seeds — changing
+ * `--destructive` alone does not retheme its hover and pressed steps. That is a tested limitation
+ * (destructive-contrast.test.ts holds those authored values to a threshold), not an oversight.
  *
  * THE PRIMARY FAMILY FOLLOWS `--primary` AT RUNTIME (gh#678). `--primary-hover`, `--primary-active`,
  * `--primary-border` and `--control-outline` are KNOBS declared `initial`; their default is

@@ -1,8 +1,9 @@
 /* Foundation tokens: color, typography, raw spacing, ratio, radius, shadow. */
 
 :root {
-  /* Color system (HSL components) — the reference design: warm hue-60 neutral spine,
-   * SmartHR blue primary, 和色/wa-iro semantics. */
+  /* Color system (HSL components) — the reference design: warm hue-60 neutral spine, GoDX violet
+   * primary (identity v2.3), 和色/wa-iro semantics. The neutral spine still carries SmartHR's
+   * values and says so per line; the PRIMARY has not been SmartHR blue since v2.3. */
   --background: 60 33% 99%; /* #fdfdfb warm off-white */
   --foreground: 48 8% 13%; /* #23221e SmartHR TEXT_BLACK */
   --card: 60 33% 99%;
@@ -113,20 +114,20 @@
   --attention: 25 99% 46%; /* 朱 #eb6101 */
   --attention-foreground: 48 8% 13%; /* 4.68:1 on the fill — near-white was 3.32:1 (gh#643) */
 
-  /* IDENTITY role — the canonical GoDX emerald. This is the PRODUCT MARK colour (Logo `mark="godx"`
-   * / `tone="success"`, its wordmark, the email brand capsule), and it is deliberately THREE-WAY
-   * distinct:
-   *   · from --primary   — a service re-theming its action colour must never recolour the mark;
+  /* IDENTITY role — the GoDX violet, identity v2.3. This is the PRODUCT MARK colour (Logo
+   * `mark="godx"` / `tone="success"`, its wordmark, the email brand capsule), and it is
+   * deliberately distinct from two neighbours it keeps being confused with:
+   *   · from --primary   — a service re-theming its action colour must never recolour the mark.
+   *                        They hold the SAME VALUE today and are still separate declarations;
+   *                        `brand-identity-role.test.ts` asserts on the DECLARATION, not the value,
+   *                        that this one never reads `var(--primary)` (gh#250).
    *   · from --success   — 若竹 #68be8d is the STATUS green (badges, progress, "saved" text) and
-   *                        stays exactly as it is. The mark previously borrowed it, which rendered
-   *                        the identity at #69bf8e instead of the canonical emerald — ΔE76 ≈ 17.5,
-   *                        a plainly wrong brand colour (gh#250/#214);
-   *   · from --text-brand / --color-brand — those are the BLUE brand-numeral TEXT slot and the
-   *                        Tailwind `text-brand` utility it feeds; unrelated, and not renamed here.
-   * Canonical value: oklch(0.595 0.137 162.94) = #009766, "kept distinct from SmartHR primary".
-   * The triplet is carried at one decimal so hsl() lands on that exact hex (an integer 160 100% 30%
-   * would drift to #009966). Dark lifts lightness only — same hue, same full chroma — so the mark
-   * stays the same emerald while clearing AA against the dark spine.
+   *                        stays exactly as it is. The mark borrowed it once, rendering the
+   *                        identity at #69bf8e — ΔE76 ≈ 17.5 from the identity of the day, a
+   *                        plainly wrong brand colour (gh#250/#214).
+   * Until v2.3 this role was 翠 emerald #009766, and the prose here described that emerald for
+   * several releases after the declaration moved to violet — an agent reading the file was told
+   * one colour and shown another. If the identity moves again, THIS COMMENT MOVES WITH IT.
    * There is no Tailwind `bg-brand` utility on purpose: `--color-brand` is already taken by
    * --text-brand, so identity surfaces read `hsl(var(--brand))` directly in component CSS. */
   --brand: 268.7 100% 50%; /* GoDX violet #7A00FF — brand identity v2.3. Same value as --primary
