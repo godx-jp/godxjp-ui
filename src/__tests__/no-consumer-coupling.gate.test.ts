@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 // Self-test for the CI gate `check:no-consumer-coupling`. Proves the matcher catches
 // consumer/product coupling and locale literals, while NEVER flagging the library's
 // own identity (@godxjp/ui). Mirrors how the gate scans a file's text.
-import { scanText, scanLocale } from "../../scripts/check-no-consumer-coupling.mjs";
+import { scanText, scanLocale, scanDocsChrome } from "../../scripts/check-no-consumer-coupling.mjs";
 
 describe("check:no-consumer-coupling — matcher", () => {
   it("flags consumer/product identifiers", () => {
@@ -41,5 +41,67 @@ describe("check:no-consumer-coupling — matcher", () => {
   it("does NOT flag Intl/CLDR-driven locale usage", () => {
     const src = `new Intl.NumberFormat(locale, { style: "currency", currency }).format(v)`;
     expect(scanLocale(src)).toEqual([]);
+  });
+});
+
+// gh#846 — the locale rule used to stop at src/components/**, so the EXAMPLES the MCP quotes were
+// the one place it did not apply. These pin the three judgement calls the docs pass makes.
+describe("check:no-consumer-coupling — docs chrome matcher (gh#846)", () => {
+  it("flags hard-coded CJK rendered as JSX text", () => {
+    // the reported defect: `全 {n} 件` beside a Select the library renders as `10 / trang`
+    const hits = scanDocsChrome(`<Text size="sm">全 {total} 件</Text>`);
+    expect(hits).toHaveLength(1);
+    expect(hits[0].token).toBe("CJK in JSX text");
+  });
+
+  it("flags hard-coded CJK passed to props that render as text", () => {
+    const src = [
+      `<PageContainer title="ページネーション" subtitle="三つの方式" />`,
+      `const cols = [{ key: "employee", header: "従業員" }];`,
+      `<Select aria-label="期間を選択" />`,
+    ].join("\n");
+    expect(scanDocsChrome(src).map((h) => h.match)).toEqual([
+      "ページネーション",
+      "三つの方式",
+      "従業員",
+      "期間を選択",
+    ]);
+  });
+
+  it("does NOT flag DOMAIN DATA — a name or a company in a row is content, not chrome", () => {
+    const src = [
+      `const NAMES = ["鈴木 一郎", "佐藤 花子"];`,
+      `const ORGS = [{ id: 1, name: "株式会社アクメ商事", category: "製造" }];`,
+    ].join("\n");
+    expect(scanDocsChrome(src)).toEqual([]);
+  });
+
+  it("does NOT flag Japanese in comments — author documentation is never rendered", () => {
+    const src = [
+      `// 勤怠テーブルのページネーション`,
+      `/* 全 3 方式をカードごとに分けて見せる */`,
+      `export const rows = [];`,
+    ].join("\n");
+    expect(scanDocsChrome(src)).toEqual([]);
+  });
+
+  it("does NOT mistake a TS generic followed by a data array for JSX text", () => {
+    const src = `const [rows] = React.useState<Row[]>([{ name: "鈴木 一郎" }]);`;
+    expect(scanDocsChrome(src)).toEqual([]);
+  });
+
+  it("does NOT flag localized chrome — the shape table-pagination.tsx was converted to", () => {
+    const src = [
+      `<Text size="sm">{t("showcase.pagination.recordCount", { count })}</Text>`,
+      `<Text tabular>{new Intl.NumberFormat(locale).format(total)}</Text>`,
+    ].join("\n");
+    expect(scanDocsChrome(src)).toEqual([]);
+  });
+
+  it("reports a line number for the hit, but the BASELINE is keyed on the file path only", () => {
+    // A line number moves when someone adds an import; keying a baseline on one makes every
+    // known entry read as new. It is output, never identity.
+    const hits = scanDocsChrome(`\n\n<CardTitle>勤怠一覧</CardTitle>`);
+    expect(hits[0].line).toBe(3);
   });
 });

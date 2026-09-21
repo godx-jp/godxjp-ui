@@ -3,6 +3,14 @@
  * check:no-consumer-coupling — keeps @godxjp/ui an INTERNATIONAL, consumer-agnostic library. It
  * FAILS (non-zero exit, printing file:line for each violation) when the library source references
  * a SPECIFIC downstream consumer/product or consumer infrastructure.
+ *
+ * Three passes, three severities:
+ *   consumer identifiers/domains  src+mcp+docs+preview   baselined  (no-consumer-coupling.baseline.json)
+ *   locale/currency/tz literals   src/components only    STRICT     (no baseline, 0 allowed)
+ *   docs locale content (gh#846)  docs/**                baselined  (docs-locale-literals.baseline.json)
+ *
+ * Flags: --all (also list baselined debt) · --json · --update-baseline (rewrites both baselines;
+ * the docs one shrink-only — it refuses to raise or add an entry).
  */
 import { readFileSync, writeFileSync, globSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -11,6 +19,7 @@ import { dirname, join, relative } from "node:path";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const BASELINE_PATH = join(HERE, "no-consumer-coupling.baseline.json");
+const DOCS_BASELINE_PATH = join(HERE, "docs-locale-literals.baseline.json");
 
 // ── DENYLIST — maintainable, one array per category ─────────────────────────
 // Downstream product / app / deployment names + consumer infrastructure. Extend
@@ -64,6 +73,51 @@ const SCAN_GLOBS = [
 const COMPONENT_GLOBS = ["src/components/**/*.{ts,tsx}"];
 const COMPONENT_EXCLUDE = /(?:__tests__|\.test\.|\.stories\.|\/examples\/)/;
 
+// ── docs/** locale literals (gh#846) ────────────────────────────────────────
+// The locale rule above stopped at `src/components/**`, so it was strict exactly where the
+// library lives and absent exactly where the EXAMPLES live — the surface the MCP catalog,
+// agent/patterns.json and every copy-pasting consumer read from. 28 showcase files (221 across
+// docs/**) hard-code Japanese next to chrome the library localises, which is how /showcase/
+// table-pagination rendered `11–20 / 83 件` beside a Select saying `10 / trang`.
+//
+// THREE DECISIONS, each measured rather than assumed:
+//
+// 1. WHAT COUNTS. "Only files that ALSO render localized components" was the narrowing that
+//    looked right — and it is very nearly empty. Of the 221 docs/**/*.{ts,tsx} files containing
+//    CJK, 220 import at least one component that calls useTranslation() internally; the single
+//    exception is a plain data module (docs/layout/legal-document-shell/_data.ts). A page built
+//    from this library IS mixed the moment it renders a control, so "a showcase written entirely
+//    in Japanese" does not exist here, and gating on the mix would gate on 220/221 anyway while
+//    adding a component-import graph to a text scanner. The rule therefore targets CJK — but only
+//    where CJK is CHROME, see (2) — and the reason is that measurement, not a language preference.
+//
+// 2. DOMAIN DATA vs UI CHROME. A regex cannot look at "鈴木 一郎" and "氏名" and tell you which
+//    one is content. So this does not try. It identifies chrome POSITIVELY — text rendered as a
+//    JSX child, and strings passed to props that render as human-readable text — and leaves
+//    everything else unscanned. Roughly 1900 CJK string literals (company names, 1月…6月 chart
+//    categories, 給与/家賃 expense rows) sit in that residue and this gate deliberately never
+//    reports them. The cost is a known blind spot in both directions: a hand-written
+//    `<Text>鈴木 一郎</Text>` is flagged though it is data, and a `header: "氏名"` moved into a
+//    generated column array escapes. It is a heuristic with a stated error, not a classifier.
+//
+// 3. SEVERITY. godx-corebooks#114 is the recorded cost of getting this wrong: 1189 errors on day
+//    one made a documented rule unenforceable and the consumer opened an issue about the rule.
+//    So: a per-file BASELINE, zero errors on day one, and the list may only SHRINK
+//    (`--update-baseline` refuses to raise or add). Baselined debt is reported under `--all`, not
+//    as a failure. New or increased chrome in a docs file is the only error this can produce.
+const DOCS_GLOBS = ["docs/**/*.{ts,tsx}"];
+// Hiragana · Katakana · CJK Unified Ideographs. Built from a string so the code points stay
+// readable as escapes — prettier rewrites `\uXXXX` inside a regex LITERAL to the glyph itself.
+const CJK = new RegExp("[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FFF]");
+// Props whose value RENDERS as human-readable text. Anything not in this list (name, value, id,
+// category, …) is treated as domain data and never scanned — see decision (2).
+const CHROME_PROP =
+  /\b(label|placeholder|title|subtitle|heading|description|header|caption|tooltip|emptyMessage|emptyTitle|emptyDescription|alt|aria-label|ariaLabel|helperText|hint|actionLabel|confirmLabel|cancelLabel|legend)\s*[:=]\s*\{?\s*(['"])((?:(?!\2)[^\n])*)\2/g;
+// A `>…<` run is JSX text only if it carries none of the characters that mean "this is code":
+// quotes, `;`, `=`, ASCII parens. That is what keeps `useState<Row[]>([{ name: "鈴木" }])` —
+// a generic followed by a data array — out of the JSX-text bucket.
+const NOT_JSX_TEXT = /["'`;=()]/;
+
 // ── matchers ────────────────────────────────────────────────────────────────
 const WORD = "[A-Za-z0-9]";
 function boundaried(token) {
@@ -107,6 +161,37 @@ export function scanLocale(text) {
   return out;
 }
 
+/** Blank out line and block comments, preserving newlines so line numbers survive. Japanese in a
+ * comment is author documentation for a Japanese-reading maintainer — it is never rendered, and
+ * flagging it would make the gate noise. */
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+    .replace(/(^|[^:"'`\\])\/\/[^\n]*/gm, (m, p) => p + m.slice(p.length).replace(/[^\n]/g, " "));
+}
+
+const lineAt = (src, index) => src.slice(0, index).split("\n").length;
+
+/**
+ * Scan a docs example for hard-coded locale content in CHROME positions. Returns
+ * [{ token, match, line }] — the same shape as scanText/scanLocale. Exported for the self-test.
+ */
+export function scanDocsChrome(text) {
+  const src = stripComments(text);
+  const out = [];
+  for (const m of src.matchAll(/>([^<>]*)</g)) {
+    if (NOT_JSX_TEXT.test(m[1])) continue;
+    const cleaned = m[1].replace(/\{[^{}]*\}/g, "").trim();
+    if (!CJK.test(cleaned)) continue;
+    out.push({ token: "CJK in JSX text", match: cleaned, line: lineAt(src, m.index) });
+  }
+  for (const m of src.matchAll(CHROME_PROP)) {
+    if (!CJK.test(m[3])) continue;
+    out.push({ token: `CJK in \`${m[1]}\``, match: m[3], line: lineAt(src, m.index) });
+  }
+  return out.sort((a, b) => a.line - b.line);
+}
+
 function collect(globs) {
   const files = new Set();
   for (const g of globs) {
@@ -118,6 +203,72 @@ function collect(globs) {
     }
   }
   return [...files].sort();
+}
+
+/** docs/** hard-coded locale content, grouped by file. rel -> [{ token, match, line }] */
+function collectDocsHits() {
+  const out = new Map();
+  for (const rel of collect(DOCS_GLOBS)) {
+    const text = readFileSync(join(ROOT, rel), "utf8");
+    const hits = [...scanLocale(text), ...scanDocsChrome(text)].sort((a, b) => a.line - b.line);
+    if (hits.length) out.set(rel, hits);
+  }
+  return out;
+}
+
+const DOCS_BASELINE_NOTE =
+  "Hard-coded locale content in the EXAMPLES — the surface the MCP catalog, agent/patterns.json " +
+  "and every copy-pasting consumer read from. Keyed on the FILE PATH (identity) and never on a " +
+  "line number, which moves the moment someone adds an import; the value is that file's remaining " +
+  "allowance. This list is DEBT and may only SHRINK: the gate fails on a file whose count rises " +
+  "above its allowance, and `--update-baseline` REFUSES to raise or add an entry. The way past " +
+  "the gate is useTranslation() + a message key — see docs/showcase/table-pagination.tsx, which " +
+  "does exactly that for its pagination chrome.";
+
+/** Rewrite the docs baseline. Shrink-only: refuses to raise or add. Returns an exit code. */
+function writeDocsBaseline(docsByFile) {
+  const live = {};
+  for (const rel of [...docsByFile.keys()].sort()) live[rel] = docsByFile.get(rel).length;
+
+  const seeding = !existsSync(DOCS_BASELINE_PATH);
+  const allowed = seeding ? {} : (JSON.parse(readFileSync(DOCS_BASELINE_PATH, "utf8")).files ?? {});
+
+  if (!seeding) {
+    const raised = Object.entries(live).filter(([rel, n]) => n > (allowed[rel] ?? 0));
+    if (raised.length) {
+      console.error(`✗ the docs locale baseline may only SHRINK — refusing to record:\n`);
+      for (const [rel, n] of raised) console.error(`  ${rel}: ${allowed[rel] ?? 0} → ${n}`);
+      console.error(
+        "\nLocalise the new string (useTranslation() + a message key) instead of raising the number.\n",
+      );
+      return 1;
+    }
+  }
+
+  const files = {};
+  for (const rel of Object.keys(seeding ? live : allowed).sort()) {
+    if (live[rel]) files[rel] = live[rel]; // a file that is now clean drops out entirely
+  }
+  const occurrences = Object.values(files).reduce((a, b) => a + b, 0);
+  writeFileSync(
+    DOCS_BASELINE_PATH,
+    JSON.stringify(
+      {
+        note: DOCS_BASELINE_NOTE,
+        tracked: "gh#846",
+        count: Object.keys(files).length,
+        occurrences,
+        files,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  console.log(
+    `✓ ${seeding ? "seeded" : "shrank"} docs locale baseline: ${Object.keys(files).length} file(s), ` +
+      `${occurrences} occurrence(s) → ${relative(ROOT, DOCS_BASELINE_PATH)}`,
+  );
+  return 0;
 }
 
 function main() {
@@ -138,7 +289,7 @@ function main() {
     console.log(
       `✓ wrote baseline for ${Object.keys(baseline).length} file(s) → ${relative(ROOT, BASELINE_PATH)}`,
     );
-    return 0;
+    return writeDocsBaseline(collectDocsHits());
   }
 
   const baseline = existsSync(BASELINE_PATH) ? JSON.parse(readFileSync(BASELINE_PATH, "utf8")) : {};
@@ -172,23 +323,53 @@ function main() {
     }
   }
 
+  // docs/** locale content — BASELINED (gh#846). A file fails only when it exceeds its allowance.
+  const docsBaseline = existsSync(DOCS_BASELINE_PATH)
+    ? (JSON.parse(readFileSync(DOCS_BASELINE_PATH, "utf8")).files ?? {})
+    : {};
+  const docsViolations = [];
+  const docsDebt = [];
+  let docsDebtCount = 0;
+  const docsByFile = collectDocsHits();
+  for (const rel of [...docsByFile.keys()].sort()) {
+    const hits = docsByFile.get(rel);
+    const allowed = docsBaseline[rel] ?? 0;
+    docsDebtCount += Math.min(hits.length, allowed);
+    if (hits.length > allowed) {
+      // The gate COUNTS; it cannot say which of these is the new one, so it shows them all
+      // (capped) rather than pointing at a line it only guessed at.
+      for (const h of hits.slice(0, 12)) {
+        docsViolations.push(`  ${rel}:${h.line}  ${h.match}  [${h.token}]`);
+      }
+      if (hits.length > 12) docsViolations.push(`  … and ${hits.length - 12} more in this file`);
+      docsViolations.push(
+        `    ↳ ${rel}: ${hits.length} hard-coded string(s) but baseline allows ${allowed} — localise one of them.`,
+      );
+    } else if (hits.length) {
+      docsDebt.push(`  ${rel}: ${hits.length} (baselined)`);
+    }
+  }
+
   if (argv.includes("--json")) {
     process.stdout.write(
       JSON.stringify(
         {
           newViolations,
           localeViolations,
+          docsViolations,
           baselinedFiles: Object.keys(baseline).length,
           baselinedReferences: debtCount,
+          docsBaselinedFiles: Object.keys(docsBaseline).length,
+          docsBaselinedStrings: docsDebtCount,
         },
         null,
         2,
       ) + "\n",
     );
-    return newViolations.length + localeViolations.length > 0 ? 1 : 0;
+    return newViolations.length + localeViolations.length + docsViolations.length > 0 ? 1 : 0;
   }
 
-  const failed = newViolations.length + localeViolations.length > 0;
+  const failed = newViolations.length + localeViolations.length + docsViolations.length > 0;
 
   if (localeViolations.length) {
     console.error(
@@ -212,16 +393,46 @@ function main() {
     );
   }
 
+  if (docsViolations.length) {
+    console.error(
+      `✗ check:no-consumer-coupling — NEW hard-coded locale content in docs/** (beyond the recorded baseline):\n`,
+    );
+    for (const v of docsViolations) console.error(v);
+    console.error(
+      "\nThe examples are what the MCP catalog and every copy-pasting consumer read, so a showcase that",
+    );
+    console.error(
+      "hard-codes chrome teaches the library's own first rule backwards — and renders two languages in",
+    );
+    console.error(
+      "one row, because the library's chrome follows the locale and a literal cannot. Use useTranslation()",
+    );
+    console.error(
+      "+ a message key (docs/showcase/table-pagination.tsx is the worked example) and Intl for numbers/dates.",
+    );
+    console.error(
+      "Domain DATA (a person's name, a company in a table row) is not scanned and does not need this.\n",
+    );
+  }
+
   if (argv.includes("--all") && debt.length) {
     console.error(`ℹ pre-existing consumer references (baselined debt — burn down over time):`);
     for (const d of debt) console.error(d);
+    console.error("");
+  }
+  if (argv.includes("--all") && docsDebt.length) {
+    console.error(
+      `ℹ docs/** hard-coded locale content (baselined debt — burn down as files are touched):`,
+    );
+    for (const d of docsDebt) console.error(d);
     console.error("");
   }
 
   if (!failed) {
     console.log(
       `✓ check:no-consumer-coupling — no NEW consumer coupling ` +
-        `(${files.length} files scanned; ${debtCount} baselined reference(s) across ${debt.length} file(s) tracked as debt; 0 locale literals in component source).`,
+        `(${files.length} files scanned; ${debtCount} baselined reference(s) across ${debt.length} file(s) tracked as debt; 0 locale literals in component source; ` +
+        `${docsDebtCount} baselined docs string(s) across ${docsDebt.length} file(s)).`,
     );
   }
   return failed ? 1 : 0;
