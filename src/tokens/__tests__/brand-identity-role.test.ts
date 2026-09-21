@@ -243,9 +243,9 @@ describe("status surfaces still read --success", () => {
   const statusOwners = {
     "src/styles/alert-layout.css": /hsl\(var\(--success\)/,
     "src/styles/text-layout.css": /color: hsl\(var\(--text-success\)\)/,
-    "src/styles/card-layout.css": /hsl\(var\(--mark-success\)\)/,
+    "src/styles/card-layout.css": /hsl\(\s*var\(\s*--mark-success,\s*var\(\s*--text-success\s*\)\s*\)\s*\)/,
     "src/styles/data-display-layout.css": /hsl\(var\(--success\)\)/,
-    "src/styles/data-entry-layout.css": /hsl\(var\(--mark-success\)\)/,
+    "src/styles/data-entry-layout.css": /hsl\(\s*var\(\s*--mark-success,\s*var\(\s*--text-success\s*\)\s*\)\s*\)/,
   } as const;
 
   for (const [file, pattern] of Object.entries(statusOwners)) {

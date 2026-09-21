@@ -1249,7 +1249,7 @@
   .ui-otp-container:has(.ui-otp-input[data-status="warning"]) .ui-otp-slot,
   .ui-otp-container:has(.ui-otp-input[data-status="warning"])
     .ui-otp-group[data-appearance="grouped"] {
-    border-color: var(--control-status-warning-border-color);
+    border-color: var(--control-status-warning-border-color, hsl(var(--text-warning)));
   }
 
   /* readOnly keeps the tab stop and the value; only the "you may type here" affordance goes. */
@@ -1713,10 +1713,10 @@
   }
 
   .ui-control-surface[data-status="warning"] {
-    border-color: var(--control-status-warning-border-color);
+    border-color: var(--control-status-warning-border-color, hsl(var(--text-warning)));
     --focus-ring-color: var(--warning);
     --focus-outline-color: var(--warning);
-    --focus-ring-glow-color: var(--control-status-warning-outline-color);
+    --focus-ring-glow-color: var(--control-status-warning-outline-color, var(--text-warning));
   }
 
   .ui-number-input[data-size="sm"] {
@@ -3082,7 +3082,7 @@
    * and the major component libraries all converge on. `inset` so it does not enlarge the cell or overlap its neighbour. */
   .ui-calendar .ui-calendar-day.day-today:not(.day-selected) .ui-calendar-day-button {
     box-shadow: inset 0 0 0 1px hsl(var(--primary));
-    color: hsl(var(--text-primary));
+    color: hsl(var(--text-primary, from hsl(var(--primary)) var(--text-primary-channels)));
     font-weight: var(--font-weight-medium);
   }
 
@@ -3129,7 +3129,7 @@
    * no text there. */
   .ui-calendar .ui-calendar-day.day-today:not(:has(button)) {
     box-shadow: inset 0 0 0 1px hsl(var(--primary));
-    color: hsl(var(--text-primary));
+    color: hsl(var(--text-primary, from hsl(var(--primary)) var(--text-primary-channels)));
     font-weight: var(--font-weight-medium);
     border-radius: var(--calendar-day-radius);
   }
@@ -3501,8 +3501,8 @@
    * `[aria-invalid]` rule at the foot of focus-ring.css was written to fix. */
   .ui-control[data-status="warning"],
   .ui-control-multiline[data-status="warning"] {
-    --focus-ring-color: var(--control-status-warning-outline-color);
-    --focus-outline-color: var(--control-status-warning-outline-color);
+    --focus-ring-color: var(--control-status-warning-outline-color, var(--text-warning));
+    --focus-outline-color: var(--control-status-warning-outline-color, var(--text-warning));
     --focus-ring-glow-color: var(--control-status-warning-glow-color);
     --focus-ring-glow-alpha: var(--control-status-warning-glow-alpha);
   }
@@ -3533,7 +3533,7 @@
   }
 
   .ui-control-count[data-exceeded="true"] {
-    color: hsl(var(--control-count-exceeded-color));
+    color: hsl(var(--control-count-exceeded-color, var(--text-error)));
   }
 
   /* A textarea has no single line to sit a counter on, so it parks at the bottom-end corner —

@@ -78,7 +78,10 @@
   /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
   --control-count-font-size: var(--font-size-sm);
   --control-count-color: var(--muted-foreground);
-  --control-count-exceeded-color: var(--text-error);
+  /* `initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a
+   * `[data-tenant]` re-theming the error ink would keep this counter on the root's answer
+   * (docs/TOKENS.md, the freeze rule). The default lives at the rule that paints it. */
+  --control-count-exceeded-color: initial;
   --control-count-space-inline: var(--space-1);
   --textarea-count-inset-block-end: var(--space-1);
   --textarea-count-inset-inline-end: var(--space-2);
@@ -745,7 +748,7 @@
    * (36 100% 28%, the darkened amber this palette keeps for exactly this reason) measures 5.4:1.
    * A service that wants antd's yellow back retunes the knob and owns that trade. */
   --control-status-error-border-color: hsl(var(--destructive));
-  --control-status-warning-border-color: hsl(var(--text-warning));
+  --control-status-warning-border-color: initial; /* default at the call site — freeze rule */
   /* THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour.
    *
    * The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`,
@@ -757,7 +760,7 @@
    * (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1;
    * `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already
    * paints, so the edge and the mark cannot drift apart. */
-  --control-status-warning-outline-color: var(--text-warning);
+  --control-status-warning-outline-color: initial; /* default at the call site — freeze rule */
 }
 
 @media (pointer: coarse) {

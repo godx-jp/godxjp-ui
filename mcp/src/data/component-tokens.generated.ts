@@ -970,8 +970,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-count-exceeded-color",
-    "value": "var(--text-error)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "`initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a * `[data-tenant]` re-theming the error ink would keep this counter on the root's answer * (docs/TOKENS.md, the freeze rule). The default lives at the rule that paints it."
   },
   {
     "name": "--control-count-space-inline",
@@ -2280,13 +2280,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-status-warning-border-color",
-    "value": "hsl(var(--text-warning))",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default at the call site — freeze rule"
   },
   {
     "name": "--control-status-warning-outline-color",
-    "value": "var(--text-warning)",
-    "description": "THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour. * * The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`, * so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the * declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls * back to its initial value. Measured in Chromium on a focused `status=\"warning\"` Textarea * before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial) * — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning` * (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1; * `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already * paints, so the edge and the mark cannot drift apart."
+    "value": "initial",
+    "description": "THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour. * * The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`, * so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the * declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls * back to its initial value. Measured in Chromium on a focused `status=\"warning\"` Textarea * before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial) * — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning` * (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1; * `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already * paints, so the edge and the mark cannot drift apart. default at the call site — freeze rule"
   },
   {
     "name": "--control-height-compact",

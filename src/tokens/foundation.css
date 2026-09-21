@@ -156,7 +156,6 @@
   /* Status TEXT colours — darker than the fill roles so small coloured text (a StatCard delta, an
    * outline status badge label) clears WCAG AA 4.5:1 on white. The fill roles (--success/--warning/
    * --info) stay the brighter wa-iro for badges/bars; only TEXT reads these via text-*-strong. */
-  --text-primary: 268 100% 34.5%; /* #5200B0 — identity v2.3 action.primary.pressed; 8.85:1 on the violet tint */
   --text-success: 152 84% 22%; /* deep 若竹 — AA green text on white */
   --text-warning: 36 100% 28%; /* dark 山吹 amber — yellow can never pass as text */
   --text-info: 221 70% 38%; /* deep 群青 — AA blue text on white */
@@ -182,13 +181,20 @@
    * place and both tiers follow — and because a mark's floor (3:1) is looser than text's (4.5:1),
    * anything legible as text is legible as a mark by construction. `attention` has no text-tier
    * entry and its fill already clears the floor in both themes (3.32 / 6.75), so it stays on the
-   * fill. Raw HSL components, not a finished colour: callers wash them at an alpha. */
-  --mark-primary: var(--text-primary);
-  --mark-success: var(--text-success);
-  --mark-warning: var(--text-warning);
-  --mark-info: var(--text-info);
-  --mark-destructive: var(--text-error);
-  --mark-attention: var(--attention);
+   * fill. Raw HSL components, not a finished colour: callers wash them at an alpha.
+   *
+   * KNOBS, NOT BINDINGS (the gh#687 freeze rule). These read `var(--text-*)` at their CALL SITES,
+   * not here. Written here as `--mark-primary: var(--text-primary)` they computed ONCE at `:root`
+   * and every descendant inherited that answer — measured: a `[data-tenant]` setting
+   * `--text-primary: 140 80% 25%` kept `--mark-primary` at `268 100% 34.5%` and painted a VIOLET
+   * rail on a green brand. The guard did not catch it because its role list never covered the text
+   * tier. Set any of these to pin a mark independently of its text role. */
+  --mark-primary: initial;
+  --mark-success: initial;
+  --mark-warning: initial;
+  --mark-info: initial;
+  --mark-destructive: initial;
+  --mark-attention: initial;
 
   /* Interaction ramp — hover / active steps.
    *
@@ -869,7 +875,6 @@
   --text-tertiary: 44 6% 56%;
   --text-disabled: 45 6% 40%;
   /* Status text on the dark spine reads LIGHT (AA on dark surfaces). */
-  --text-primary: 262.7 100% 92.7%; /* #E8DAFF — identity v2.3 dark action.primary.hover; 11.99:1 on the dark canvas */
   --text-success: 146 55% 64%;
   --text-warning: 44 95% 62%;
   --text-info: 221 70% 72%;

@@ -36,9 +36,13 @@ const themes = [
 
 /** The twelve, and the role each one's CALL SITE falls back to. Read out of the CSS, not retyped. */
 function fallbackRole(token: string): string {
-  const at = anchorIndex(layout, `var(--code-block-token-${token}-color,`);
+  /* A RegExp anchor, because `anchorIndex` only tolerates whitespace where the CALLER wrote some —
+   * and Prettier wraps this one as `var(\n  --code-block-token-link-color,\n  hsl(…)\n)` once the
+   * fallback is long enough, putting a newline where the string anchor had none. Pinning that is
+   * the gh#769 defect: the probe reads "no call-site fallback" and blames the CSS. */
+  const at = anchorIndex(layout, new RegExp(`var\\(\\s*--code-block-token-${token}-color,`));
   expect(at, `${token} must have a call-site fallback`).toBeGreaterThan(-1);
-  const tail = layout.slice(at, at + 200);
+  const tail = layout.slice(at, at + 400);
   const role = tail.match(/hsl\(\s*var\(\s*(--[a-z-]+)/)?.[1];
   expect(role, `${token}'s fallback must resolve a role`).toBeDefined();
   return role!.slice(2);

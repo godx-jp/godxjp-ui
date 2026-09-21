@@ -30,27 +30,30 @@
    * selected-row fill in specificity terms as well as in weight: selection is a stronger claim
    * about the same row, and the two must not fight. */
   .ui-table-row[data-tone="primary"] {
-    --table-row-tone-color: var(--mark-primary);
+    --table-row-tone-color: var(
+      --mark-primary,
+      var(--text-primary, from hsl(var(--primary)) var(--text-primary-channels))
+    );
   }
 
   .ui-table-row[data-tone="success"] {
-    --table-row-tone-color: var(--mark-success);
+    --table-row-tone-color: var(--mark-success, var(--text-success));
   }
 
   .ui-table-row[data-tone="warning"] {
-    --table-row-tone-color: var(--mark-warning);
+    --table-row-tone-color: var(--mark-warning, var(--text-warning));
   }
 
   .ui-table-row[data-tone="info"] {
-    --table-row-tone-color: var(--mark-info);
+    --table-row-tone-color: var(--mark-info, var(--text-info));
   }
 
   .ui-table-row[data-tone="attention"] {
-    --table-row-tone-color: var(--mark-attention);
+    --table-row-tone-color: var(--mark-attention, var(--attention));
   }
 
   .ui-table-row[data-tone="destructive"] {
-    --table-row-tone-color: var(--mark-destructive);
+    --table-row-tone-color: var(--mark-destructive, var(--text-error));
   }
 
   /* An IMAGE layer, not the `background` shorthand: the shorthand reset `background-color`, which

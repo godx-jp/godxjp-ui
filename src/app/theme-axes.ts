@@ -146,6 +146,12 @@ export function applyPrimaryColor(
     "--primary-active": "initial",
     "--primary-border": "initial",
     "--control-outline": "initial",
+    /* The brand TEXT roles derive from the seed too (gh#664), so they are reset for the same
+     * reason: an ancestor theme that pinned a link colour for the previous brand would otherwise
+     * outrank the seed just set, and a re-tinted product would keep the old brand's links. */
+    "--text-link": "initial",
+    "--text-brand": "initial",
+    "--text-primary": "initial",
     "--primary-hover-channels": `var(--primary-hover-${polarity}-channels)`,
     "--primary-active-channels": `var(--primary-active-${polarity}-channels)`,
     "--ring": hsl(rgb),
