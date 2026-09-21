@@ -14,6 +14,7 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
+  NumberInput,
   PasswordInput,
   Rating,
   RadioGroup,
@@ -83,6 +84,29 @@ const ACCOUNT_TREE = [
   },
 ];
 
+/** 都道府県 — 住所の複合行の先頭。value は ISO 3166-2:JP のサブディビジョンコード。 */
+const PREFECTURES = [
+  { value: "JP-13", label: "東京都" },
+  { value: "JP-14", label: "神奈川県" },
+  { value: "JP-27", label: "大阪府" },
+  { value: "JP-23", label: "愛知県" },
+  { value: "JP-01", label: "北海道" },
+];
+
+/** 生年月日の 年/月/日 3連 Select — 日本の業務フォームで最も多い複合フィールド。 */
+const BIRTH_YEARS = Array.from({ length: 60 }, (_, index) => {
+  const year = 2006 - index;
+  return { value: String(year), label: `${year}年` };
+});
+const MONTHS = Array.from({ length: 12 }, (_, index) => ({
+  value: String(index + 1),
+  label: `${index + 1}月`,
+}));
+const DAYS = Array.from({ length: 31 }, (_, index) => ({
+  value: String(index + 1),
+  label: `${index + 1}日`,
+}));
+
 /**
  * Form — the comprehensive catalogue. One page proving (1) EVERY data-entry field type wired in a
  * FormField, (2) every Form LAYOUT (vertical / horizontal / inline / multi-column / responsive
@@ -114,6 +138,22 @@ export default function Demo() {
   const [otp, setOtp] = useState("");
   const [files, setFiles] = useState<UploadFileItem[]>([]);
   const [period2, setPeriod2] = useState("monthly");
+
+  // ── 複合フィールド（1ラベル × 複数入力）の状態 ─────────────────────────────
+  const [lastName, setLastName] = useState("山田");
+  const [firstName, setFirstName] = useState("太郎");
+  const [kanaLast, setKanaLast] = useState("ヤマダ");
+  const [kanaFirst, setKanaFirst] = useState("タロウ");
+  const [zip1, setZip1] = useState("100");
+  const [zip2, setZip2] = useState("0005");
+  const [prefecture, setPrefecture] = useState("JP-13");
+  const [birthYear, setBirthYear] = useState("1988");
+  const [birthMonth, setBirthMonth] = useState("4");
+  const [birthDay, setBirthDay] = useState("");
+
+  // ── Textarea 系の状態（文字数カウンタ・自動伸長） ──────────────────────────
+  const [remarks, setRemarks] = useState("初回取引のため与信枠は50万円で開始する。");
+  const [thread, setThread] = useState("");
 
   return (
     <PageContainer
@@ -154,8 +194,334 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ════════════════════ 1. EVERY FIELD TYPE ════════════════════ */}
-        <Heading level={2}>1. 全フィールド型 · すべての入力コントロール</Heading>
+        {/* ════════════════════ 1. COMPOUND FIELDS ════════════════════ */}
+        <Heading level={2}>1. 複合フィールド · 1つのラベルに複数の入力欄</Heading>
+        <Text tone="muted" size="sm">
+          日本の業務フォームでは氏名・郵便番号・電話番号・生年月日がいずれも「1項目 ×
+          複数入力欄」になる。FormField は直下の 1 要素にしか属性を注入できないので、直下が Flex
+          のときはラベルを FieldNameContext で配り、Flex 自身を role=group にする。これが無いと中の
+          Input / Select は全て無名になり、axe の label · button-name が一気に赤くなる（gh#303）。
+        </Text>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>氏名 · フリガナ（1ラベル × 2入力）</CardTitle>
+            <CardDescription>
+              「氏名」は 1 項目・2 欄。Flex でくるんでも姓と名の両方にラベルが届く。ただし各欄の
+              aria-label を省くと両方が「氏名」と読み上げられ、どちらが姓か分からなくなる。
+              複合フィールドで最初に壊れるのがここ。data-field は各 Input 自身の id から解決され、
+              cmp-name-last / cmp-name-first として別々に自動テストから掴める。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField id="cmp-name" label="氏名" required helper="戸籍上の表記で入力">
+                <Flex direction="row" gap="sm" align="center">
+                  <Input
+                    id="cmp-name-last"
+                    aria-label="姓"
+                    value={lastName}
+                    onValueChange={setLastName}
+                    placeholder="山田"
+                  />
+                  <Input
+                    id="cmp-name-first"
+                    aria-label="名"
+                    value={firstName}
+                    onValueChange={setFirstName}
+                    placeholder="太郎"
+                  />
+                </Flex>
+              </FormField>
+              <FormField id="cmp-kana" label="フリガナ" required helper="全角カタカナ">
+                <Flex direction="row" gap="sm" align="center">
+                  <Input
+                    id="cmp-kana-last"
+                    aria-label="セイ"
+                    value={kanaLast}
+                    onValueChange={setKanaLast}
+                    placeholder="ヤマダ"
+                  />
+                  <Input
+                    id="cmp-kana-first"
+                    aria-label="メイ"
+                    value={kanaFirst}
+                    onValueChange={setKanaFirst}
+                    placeholder="タロウ"
+                  />
+                </Flex>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>郵便番号 · 住所（狭い欄と広い欄が同じ行に並ぶ）</CardTitle>
+            <CardDescription>
+              郵便番号は 3桁 + 4桁 の固定幅、住所は残り全部。幅を Input
+              に持たせる方法は無いので、狭い欄だけを Flex width で囲み shrink={false}
+              で潰れないようにする。区切りの「-」は Text aria-hidden で、読み上げには混ぜない。
+              住所行は都道府県 Select（width=auto）＋市区町村＋番地で、grow が効かないと番地欄が
+              3文字幅に潰れるのが見える。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField
+                id="cmp-zip"
+                label="郵便番号"
+                required
+                helper="ハイフンなしの7桁でも可"
+                labelAddon={
+                  <Button type="button" variant="link" size="xs">
+                    住所を自動入力
+                  </Button>
+                }
+              >
+                <Flex direction="row" gap="sm" align="center">
+                  <Text aria-hidden tone="muted">
+                    〒
+                  </Text>
+                  <Flex width="5.5rem" shrink={false}>
+                    <Input
+                      id="cmp-zip-head"
+                      aria-label="郵便番号 上3桁"
+                      inputMode="numeric"
+                      maxLength={3}
+                      value={zip1}
+                      onValueChange={setZip1}
+                      placeholder="100"
+                    />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="6.5rem" shrink={false}>
+                    <Input
+                      id="cmp-zip-tail"
+                      aria-label="郵便番号 下4桁"
+                      inputMode="numeric"
+                      maxLength={4}
+                      value={zip2}
+                      onValueChange={setZip2}
+                      placeholder="0005"
+                    />
+                  </Flex>
+                </Flex>
+              </FormField>
+              <FormField id="cmp-address" label="住所" required>
+                <Flex direction="row" gap="sm" align="center" wrap>
+                  <Flex width="9rem" shrink={false}>
+                    <Select
+                      id="cmp-address-pref"
+                      aria-label="都道府県"
+                      name="prefecture"
+                      value={prefecture}
+                      onValueChange={setPrefecture}
+                      options={PREFECTURES}
+                      placeholder="都道府県"
+                    />
+                  </Flex>
+                  <Flex width="11rem" shrink={false}>
+                    <Input
+                      id="cmp-address-city"
+                      aria-label="市区町村"
+                      defaultValue="千代田区丸の内"
+                    />
+                  </Flex>
+                  <Flex grow>
+                    <Input
+                      id="cmp-address-street"
+                      aria-label="番地・建物名"
+                      defaultValue="1-9-1 グラントウキョウノースタワー 18F"
+                    />
+                  </Flex>
+                </Flex>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>電話番号 3分割 · 生年月日 年/月/日 Select</CardTitle>
+            <CardDescription>
+              桁数の決まった 3 分割と、型の違うコントロールを 1 ラベル下に混ぜる場合。生年月日は
+              Select × 3（年は60件、月日は固定）で、どれか一つでも未選択なら値として不完全になる。
+              その「部分入力」をどう検証するかが複合フィールドの本題。DatePicker
+              で足りる画面ではこのパターンを使わない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField id="cmp-tel" label="電話番号" helper="市外局番から">
+                <Flex direction="row" gap="sm" align="center">
+                  <Flex width="5rem" shrink={false}>
+                    <Input
+                      id="cmp-tel-area"
+                      aria-label="市外局番"
+                      inputMode="numeric"
+                      maxLength={4}
+                      defaultValue="03"
+                    />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="5rem" shrink={false}>
+                    <Input
+                      id="cmp-tel-city"
+                      aria-label="市内局番"
+                      inputMode="numeric"
+                      maxLength={4}
+                      defaultValue="6273"
+                    />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="5rem" shrink={false}>
+                    <Input
+                      id="cmp-tel-line"
+                      aria-label="加入者番号"
+                      inputMode="numeric"
+                      maxLength={4}
+                      defaultValue="0001"
+                    />
+                  </Flex>
+                  <Flex width="6rem" shrink={false}>
+                    <NumberInput
+                      id="cmp-tel-ext"
+                      aria-label="内線番号"
+                      controls={false}
+                      min={0}
+                      max={9999}
+                      defaultValue={281}
+                    />
+                  </Flex>
+                </Flex>
+              </FormField>
+              <FormField
+                id="cmp-birth"
+                label="生年月日"
+                required
+                error={birthDay === "" ? "日を選択してください。" : undefined}
+              >
+                <Flex direction="row" gap="sm" align="center" wrap>
+                  <Flex width="8rem" shrink={false}>
+                    <Select
+                      id="cmp-birth-year"
+                      aria-label="生年"
+                      name="birth_year"
+                      value={birthYear}
+                      onValueChange={setBirthYear}
+                      options={BIRTH_YEARS}
+                      placeholder="年"
+                      showSearch
+                    />
+                  </Flex>
+                  <Flex width="6rem" shrink={false}>
+                    <Select
+                      id="cmp-birth-month"
+                      aria-label="生月"
+                      name="birth_month"
+                      value={birthMonth}
+                      onValueChange={setBirthMonth}
+                      options={MONTHS}
+                      placeholder="月"
+                    />
+                  </Flex>
+                  <Flex width="6rem" shrink={false}>
+                    <Select
+                      id="cmp-birth-day"
+                      aria-label="生日"
+                      name="birth_day"
+                      value={birthDay}
+                      onValueChange={setBirthDay}
+                      options={DAYS}
+                      placeholder="日"
+                      status={birthDay === "" ? "error" : undefined}
+                    />
+                  </Flex>
+                </Flex>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>複合フィールドのエラー · どちらの欄が悪いのか</CardTitle>
+            <CardDescription>
+              FormField のエラーは 1 行しか出ない。欄が 3 つある行で「形式が正しくありません」
+              だけ出しても、利用者はどこを直せばいいか分からない。行のメッセージは FormField の
+              error に、犯人の特定は各コントロールの status="error" に分担させる。status
+              は塗るだけ（aria-invalid は error の側）なので二重に読み上げられない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField
+                id="cmp-err-zip"
+                label="郵便番号"
+                required
+                error="下4桁が数字ではありません。"
+              >
+                <Flex direction="row" gap="sm" align="center">
+                  <Flex width="5.5rem" shrink={false}>
+                    <Input id="cmp-err-zip-head" aria-label="郵便番号 上3桁" defaultValue="100" />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="6.5rem" shrink={false}>
+                    <Input
+                      id="cmp-err-zip-tail"
+                      aria-label="郵便番号 下4桁"
+                      status="error"
+                      defaultValue="00O5"
+                    />
+                  </Flex>
+                </Flex>
+              </FormField>
+              <FormField
+                id="cmp-warn-name"
+                label="氏名"
+                validateStatus="warning"
+                hasFeedback
+                helper="フリガナと姓が一致しません。登録は可能です。"
+              >
+                <Flex direction="row" gap="sm" align="center">
+                  <Input id="cmp-warn-name-last" aria-label="姓" defaultValue="山田" />
+                  <Input id="cmp-warn-name-first" aria-label="名" defaultValue="太郎" />
+                </Flex>
+              </FormField>
+              <FormField id="cmp-ok-tel" label="電話番号" validateStatus="success" hasFeedback>
+                <Flex direction="row" gap="sm" align="center">
+                  <Flex width="5rem" shrink={false}>
+                    <Input id="cmp-ok-tel-area" aria-label="市外局番" defaultValue="03" />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="5rem" shrink={false}>
+                    <Input id="cmp-ok-tel-city" aria-label="市内局番" defaultValue="6273" />
+                  </Flex>
+                  <Text aria-hidden tone="muted">
+                    -
+                  </Text>
+                  <Flex width="5rem" shrink={false}>
+                    <Input id="cmp-ok-tel-line" aria-label="加入者番号" defaultValue="0001" />
+                  </Flex>
+                </Flex>
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        {/* ════════════════════ 2. EVERY FIELD TYPE ════════════════════ */}
+        <Heading level={2}>2. 全フィールド型 · すべての入力コントロール</Heading>
         <Text tone="muted" size="sm">
           ライブラリが提供するデータ入力コンポーネントを 1 つずつ FormField
           でラップ。ラベル・ヘルパー・必須マークを付与し、aria-* は自動配線される。
@@ -202,6 +568,62 @@ export default function Demo() {
                   onChange={(e) => setMemo(e.target.value)}
                   placeholder="例: 4月分から取引開始"
                 />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Textarea · 固定行数 / 文字数カウンタ / 自動伸長</CardTitle>
+            <CardDescription>
+              複数行欄は 3 種類しかない。行数固定（rows）・上限付きカウンタ（count）・内容に合わせて
+              伸びる（autoGrow minRows/maxRows）。カウンタはコードポイント単位で数え、超過を
+              報告するだけで値を切らない。IME 変換中に切ると日本語が途中で壊れるため。autoGrow は
+              CSS で測るので貼り付け・IME 確定・プログラムからの代入でも追従し、maxRows
+              を超えたらページを押し広げずに内部スクロールする。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form>
+              <FormField id="ta-remarks" label="備考" helper="取引条件の申し送り事項">
+                <Textarea
+                  id="ta-remarks"
+                  rows={3}
+                  value={remarks}
+                  onValueChange={setRemarks}
+                  count={{ max: 200, show: true }}
+                  allowClear
+                  placeholder="例: 初回取引のため与信枠は50万円で開始する。"
+                />
+              </FormField>
+              <FormField
+                id="ta-thread"
+                label="社内コメント"
+                helper="1行から始まり、8行まで伸びてから内部スクロールに切り替わる"
+              >
+                <Textarea
+                  id="ta-thread"
+                  autoGrow
+                  minRows={1}
+                  maxRows={8}
+                  value={thread}
+                  onValueChange={setThread}
+                  placeholder="承認者への申し送りを入力…"
+                />
+              </FormField>
+              <FormField id="ta-template" label="請求メール定型文（read-only）">
+                <Textarea
+                  id="ta-template"
+                  rows={4}
+                  readOnly
+                  defaultValue={
+                    "いつもお世話になっております。\n2026年1月度のご請求書を添付いたします。\nお支払期限は2026年2月28日です。\nご不明点はご返信ください。"
+                  }
+                />
+              </FormField>
+              <FormField id="ta-disabled" label="監査コメント（権限なし · disabled）">
+                <Textarea id="ta-disabled" rows={2} disabled defaultValue="監査部門のみ編集可能" />
               </FormField>
             </Form>
           </CardContent>
@@ -553,8 +975,8 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ════════════════════ 2. EVERY LAYOUT ════════════════════ */}
-        <Heading level={2}>2. レイアウト · vertical / horizontal / inline / columns</Heading>
+        {/* ════════════════════ 3. EVERY LAYOUT ════════════════════ */}
+        <Heading level={2}>3. レイアウト · vertical / horizontal / inline / columns / 混在</Heading>
 
         <Card>
           <CardHeader>
@@ -677,8 +1099,170 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ════════════════════ 3. EVERY STATE ════════════════════ */}
-        <Heading level={2}>3. 状態 · pristine / filled / error / disabled / read-only</Heading>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ラベル長 · 2文字のラベルと3行に折り返すラベルが同じ列に</CardTitle>
+            <CardDescription>
+              ラベル列の幅は1つしか無いので、「氏名」と「適格請求書発行事業者登録番号…」は必ず
+              同じ列に入る。長い方が折り返したとき、1行の入力欄がラベルの1行目に揃うか、
+              ブロックの中央に落ちるかでフォーム全体の読みやすさが決まる。labelAlign は end と start
+              の両方を並べて比較できるようにした。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Form layout="horizontal" labelWidth="14rem" labelAlign="end" collapseBelow={false}>
+                <FormField id="len-e-name" label="氏名" required>
+                  <Input id="len-e-name" defaultValue="山田 太郎" />
+                </FormField>
+                <FormField
+                  id="len-e-invoice"
+                  label="適格請求書発行事業者 登録番号（インボイス制度・国税庁公表サイトと突合）"
+                  required
+                  helper="T + 13桁"
+                >
+                  <Input id="len-e-invoice" defaultValue="T1234567890123" />
+                </FormField>
+                <FormField id="len-e-note" label="略称">
+                  <Input id="len-e-note" defaultValue="ゴドー商事" />
+                </FormField>
+              </Form>
+              <Form layout="horizontal" labelWidth="14rem" labelAlign="start" collapseBelow={false}>
+                <FormField id="len-s-name" label="氏名" required>
+                  <Input id="len-s-name" defaultValue="山田 太郎" />
+                </FormField>
+                <FormField
+                  id="len-s-invoice"
+                  label="適格請求書発行事業者 登録番号（インボイス制度・国税庁公表サイトと突合）"
+                  required
+                  helper="T + 13桁"
+                >
+                  <Input id="len-s-invoice" defaultValue="T1234567890123" />
+                </FormField>
+                <FormField id="len-s-note" label="略称">
+                  <Input id="len-s-note" defaultValue="ゴドー商事" />
+                </FormField>
+              </Form>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>混在レイアウト · 1つのフォームに horizontal と vertical</CardTitle>
+            <CardDescription>
+              実画面はどれか1つでは足りない。短い項目は horizontal
+              でラベル列に揃え、複合行と自由記述だけは幅いっぱいの vertical に落とす。layout は Form
+              に1度書き、はみ出す行だけ FormField 側で上書きする。ここを className
+              で殴ると、密度変更やテナントの再テーマでその行だけ取り残される。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField id="mix-code" label="取引先コード" required helper="発番後は変更不可">
+                <Input id="mix-code" defaultValue="BTY-0012" />
+              </FormField>
+              <FormField id="mix-name" label="取引先名" required>
+                <Input id="mix-name" defaultValue="株式会社ゴドー商事" />
+              </FormField>
+              <FormField id="mix-pay" label="支払条件">
+                <Select
+                  id="mix-pay"
+                  name="payment_terms"
+                  defaultValue="eom30"
+                  options={[
+                    { value: "eom30", label: "月末締め翌月末払い" },
+                    { value: "eom60", label: "月末締め翌々月末払い" },
+                    { value: "prepaid", label: "前払い" },
+                  ]}
+                />
+              </FormField>
+              {/* 複合行: ラベル列に収めると3欄が潰れるので、この行だけ vertical で幅を取る。 */}
+              <FormField id="mix-addr" label="請求書送付先" layout="vertical">
+                <Flex direction="row" gap="sm" align="center" wrap>
+                  <Flex width="9rem" shrink={false}>
+                    <Select
+                      id="mix-addr-pref"
+                      aria-label="都道府県"
+                      defaultValue="JP-13"
+                      options={PREFECTURES}
+                    />
+                  </Flex>
+                  <Flex width="11rem" shrink={false}>
+                    <Input id="mix-addr-city" aria-label="市区町村" defaultValue="千代田区丸の内" />
+                  </Flex>
+                  <Flex grow>
+                    <Input id="mix-addr-street" aria-label="番地・建物名" defaultValue="1-9-1" />
+                  </Flex>
+                </Flex>
+              </FormField>
+              {/* 自由記述も vertical。9rem のラベル列の右に押し込むと1行が短すぎる。 */}
+              <FormField
+                id="mix-memo"
+                label="社内申し送り"
+                layout="vertical"
+                helper="与信・取引条件の背景を残す"
+              >
+                <Textarea
+                  id="mix-memo"
+                  autoGrow
+                  minRows={3}
+                  maxRows={10}
+                  defaultValue="代表者の交代に伴い、2026年4月から請求先部署が経理部に変更。"
+                />
+              </FormField>
+              <FormField id="mix-owner" label="担当者">
+                <Input id="mix-owner" defaultValue="佐藤 花子" />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              幅 · 狭い項目と広い項目を同じ行に（controlWidth / colSpan）
+            </CardTitle>
+            <CardDescription>
+              郵便番号の欄が住所と同じ幅で伸びていると、7桁しか入らない欄だと見て分からない。
+              controlWidth はラベル行の幅を保ったままコントロールだけを狭める（FormField 自体を
+              width で縛ると、ラベルとエラー行まで一緒に縮む）。columns グリッドでは広い項目を
+              colSpan で跨がせ、スマホ幅では 1 列に畳んで全ての欄が全幅に戻る。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Form layout="horizontal" labelWidth="9rem">
+                <FormField id="w-zip" label="郵便番号" controlWidth="10rem" helper="7桁">
+                  <Input id="w-zip" inputMode="numeric" defaultValue="1000005" />
+                </FormField>
+                <FormField id="w-qty" label="数量" controlWidth="7rem">
+                  <NumberInput id="w-qty" defaultValue={12} min={1} max={999} />
+                </FormField>
+                <FormField id="w-rate" label="適用税率" controlWidth="7rem">
+                  <NumberInput id="w-rate" defaultValue={10} min={0} max={100} suffix="%" />
+                </FormField>
+                <FormField id="w-addr" label="住所">
+                  <Input id="w-addr" defaultValue="東京都千代田区丸の内1-9-1" />
+                </FormField>
+              </Form>
+              <Form columns={2}>
+                <FormField id="w-g-zip" label="郵便番号" controlWidth="10rem">
+                  <Input id="w-g-zip" inputMode="numeric" defaultValue="1000005" />
+                </FormField>
+                <FormField id="w-g-pref" label="都道府県" controlWidth="10rem">
+                  <Select id="w-g-pref" defaultValue="JP-13" options={PREFECTURES} />
+                </FormField>
+                <FormField id="w-g-addr" label="住所（2列を跨ぐ）" colSpan={2}>
+                  <Input id="w-g-addr" defaultValue="東京都千代田区丸の内1-9-1 18F" />
+                </FormField>
+              </Form>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* ════════════════════ 4. EVERY STATE ════════════════════ */}
+        <Heading level={2}>4. 状態 · pristine / filled / error / disabled / read-only</Heading>
 
         <Card>
           <CardHeader>
@@ -706,6 +1290,116 @@ export default function Demo() {
                 <Input id="s-readonly" readOnly defaultValue="2026-01-15 09:32" />
               </FormField>
             </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>ヘルパーの位置 · 答える前に要る注記は label の下へ</CardTitle>
+            <CardDescription>
+              書式や単位の注記は、入力した後に読んでも遅い。helperPlacement="before"
+              はラベルと入力欄の間に置くだけで、id も aria-describedby も変わらない。ラベルを
+              ReactNode にして2行目を足すと string ラベルの aria フォールバックを失い、labelAddon
+              に押し込むとラベル行が2段に膨らむ。どちらも同じ見た目で壊れ方だけが違う。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem">
+              <FormField
+                id="hp-before"
+                label="振込予定日"
+                helper="YYYY/MM/DD · 銀行営業日のみ指定できます"
+                helperPlacement="before"
+                required
+              >
+                <Input id="hp-before" defaultValue="2026/02/27" />
+              </FormField>
+              <FormField
+                id="hp-after"
+                label="振込手数料"
+                helper="当社負担の場合は0を入力"
+                controlWidth="9rem"
+              >
+                <NumberInput id="hp-after" defaultValue={330} min={0} prefix="¥" />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>staticText · 編集できない値を同じフォームの同じ列に</CardTitle>
+            <CardDescription>
+              発番済みのコードや作成者は入力欄ですらない。readOnly の Input
+              で見せると「押せば直せそう」に見え、別の Descriptions
+              ブロックに逃がすとラベル列の幅と行間を手で合わせ直すことになる。staticText
+              は制御要素を持たない FormField で、同じ Form の layout · labelAlign · 行間を
+              そのまま引き継ぐ。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form layout="horizontal" labelWidth="9rem" requiredMark="optional">
+              <FormField id="st-code" label="伝票番号" staticText="INV-2026-0001" />
+              <FormField id="st-created" label="作成日時" staticText="2026年1月15日 09:32" />
+              <FormField id="st-author" label="作成者" staticText="佐藤 花子（経理部）" />
+              <FormField id="st-status" label="ステータス" staticText="承認待ち" />
+              <FormField id="st-owner" label="承認者" required>
+                <Select
+                  id="st-owner"
+                  name="approver"
+                  placeholder="選択してください"
+                  options={[
+                    { value: "tanaka", label: "田中 一郎（経理部長）" },
+                    { value: "suzuki", label: "鈴木 次郎（管理本部長）" },
+                  ]}
+                />
+              </FormField>
+              <FormField id="st-memo" label="承認コメント" layout="vertical">
+                <Textarea id="st-memo" autoGrow minRows={2} maxRows={6} />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>フォーム全体の無効化 · 送信中と閲覧権限</CardTitle>
+            <CardDescription>
+              送信中や閲覧のみの権限では、フィールドを1つずつ disabled にして回る必要はない。Form の
+              disabled が中のコントロール（ネイティブ要素まで）を まとめて止める。requiredMark を
+              false にすると全項目必須の申請フォームでアスタリスクの列が消え、"optional"
+              にすると逆に任意項目だけに印が付く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Form layout="horizontal" labelWidth="9rem" disabled>
+                <FormField id="dis-name" label="取引先名" required>
+                  <Input id="dis-name" defaultValue="株式会社ゴドー商事" />
+                </FormField>
+                <FormField id="dis-pay" label="支払条件" required>
+                  <Select
+                    id="dis-pay"
+                    defaultValue="eom30"
+                    options={[{ value: "eom30", label: "月末締め翌月末払い" }]}
+                  />
+                </FormField>
+                <FormField id="dis-memo" label="社内申し送り" layout="vertical">
+                  <Textarea id="dis-memo" rows={2} defaultValue="送信中は編集できません。" />
+                </FormField>
+              </Form>
+              <Form layout="horizontal" labelWidth="9rem" requiredMark={false}>
+                <FormField id="nm-name" label="申請者" required>
+                  <Input id="nm-name" defaultValue="山田 太郎" />
+                </FormField>
+                <FormField id="nm-dept" label="所属部署" required>
+                  <Input id="nm-dept" defaultValue="営業第一部" />
+                </FormField>
+                <FormField id="nm-note" label="備考">
+                  <Input id="nm-note" placeholder="全項目必須のため印を出さない" />
+                </FormField>
+              </Form>
+            </Flex>
           </CardContent>
         </Card>
 

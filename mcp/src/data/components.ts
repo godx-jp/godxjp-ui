@@ -6244,7 +6244,7 @@ import remarkGfm from "remark-gfm";
     ],
     related: [
       "Label — the bare Radix label component. Use directly only when you are building a fully custom layout that cannot accept FormField's stack wrapper, and you will manage aria-describedby/aria-invalid yourself. FormField is always preferred for standard form controls.",
-      "Field — a self-contained field for boolean toggles: it already includes its own label, hidden `<input name>` for HTML form submission, helper, and error. Never wrap a bare `Switch` in FormField.",
+      "Field — the inline row for a boolean control: label and control side by side, plus an optional `description`. It does NOT carry helper, error or a hidden `<input name>` — `FieldProp` is exactly { id, label, description, className, children }, and this line claimed all three for a long time, which is worse than saying nothing: an agent that believed it shipped a toggle with no error state at all. For a validated boolean you wire `aria-invalid` + `aria-describedby` yourself (gh#812). Still: never wrap a bare `Switch` in FormField.",
       "Field — pairs a single checkbox or radio with a label and optional description in a horizontal layout (control beside text). Use Field instead of FormField when the control and its label sit side-by-side rather than stacked.",
       "CheckboxGroup / RadioGroup — for groups of options where FormField is not needed per-item; the group component handles its own legend/label and option layout.",
     ],

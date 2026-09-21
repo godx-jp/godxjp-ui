@@ -251,7 +251,7 @@ function withAddons(
   field: React.ReactNode,
   addonBefore: React.ReactNode,
   addonAfter: React.ReactNode,
-  size: "sm" | "md" | "lg" | undefined,
+  size: InputProp["size"],
   appearance: { "data-status"?: string; "data-variant"?: string },
 ) {
   return (
