@@ -64,6 +64,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/futurelastic-web"),
   },
   {
+    id: "marketing-page",
+    title: "Marketing page — the composition doctrine's deliverable (gh#833)",
+    description:
+      "Trang marketing đầy đủ (navbar kính dính · hero display type + .ui-brand-glow · logo wall Marquee · feature grid · testimonial carousel · pricing FeatureList + Card accent + Segmented · CTA band · footer 12 cột) với 0 class CSS tự chế và 0 literal px/rem: mọi độ dài là token. Dữ liệu cố tình chạm mép (tiêu đề 3 dòng, chuỗi 71 ký tự không ngắt được, CJK cạnh Latin, ô rỗng cạnh ô đầy, giá không có số cạnh giá 3 badge).",
+    tag: "Website",
+    load: () => import("../../docs/showcase/marketing-page"),
+  },
+  {
     id: "case1-warehouse-dashboard",
     title: "Tổng quan kho (Warehouse Dashboard)",
     description:
