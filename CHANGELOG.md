@@ -4,6 +4,30 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.9.1] - 2026-09-22
+
+PATCH. One reachability fix, no behaviour change.
+
+### Fixed
+
+- **The `agent/` catalog was unreachable by the audience it was built for.** It exists for an
+  assistant in a browser tab — no process, no tools, no MCP, only a URL. Measured after 28.9.0:
+  the docs site returned **404**, the npm tarball did not carry it (`agent` was not in `files`),
+  and the only source that answered was a raw GitHub URL at `main` — the one version the file's own
+  header warns against, because a catalog newer than the installed package describes props that do
+  not exist and neither failure announces itself.
+
+  `agent` now ships in the tarball (200 files, version-locked to the installed package **by
+  construction**, which no URL can give) and `preview:build` publishes it to `/agent/` beside the
+  shadcn registry. `START-HERE.md` gained a table saying which of the three sources to prefer and
+  why. The copy step asserts the files landed rather than trusting `cpSync`: an empty publish reads
+  exactly like a successful one.
+
+  Same shape as `.ui-brand-glow`, which shipped with tokens, a test and **zero call sites** for
+  months because nothing in the catalogue pointed at it. A thing that exists, is catalogued, and
+  cannot be reached is the defect 28.8.0 and 28.9.0 spent their whole scope naming — this time it
+  was the catalogue itself.
+
 ## [28.9.0] - 2026-09-21
 
 MINOR. Six defects, five of them the same one wearing different clothes: **a knob that resolves
