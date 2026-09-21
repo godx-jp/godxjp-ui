@@ -1581,9 +1581,9 @@
      * `status` from that one block instead of restating four surfaces of its own. The defaults
      * resolve to the `hsl(var(--input))` / `hsl(var(--background))` pair this rule used to name
      * literally, so nothing about the resting TagInput changes. */
-    border: var(--control-border-width) solid var(--control-surface-border-color);
+    border: var(--control-border-width) solid var(--control-surface-border-color, hsl(var(--input)));
     border-radius: var(--control-radius);
-    background: var(--control-surface-background);
+    background: var(--control-surface-background, hsl(var(--background)));
     box-shadow: var(--control-shadow);
   }
   .ui-tag-input-disabled {
@@ -1724,15 +1724,18 @@
    *
    * `status` is placed AFTER `variant` so an error edge survives a borderless surface — a control
    * that hides its chrome must still be able to show that it is wrong. */
+  /* The three role-mirror knobs carry their default HERE, not at `:root`, so a theme scoped below
+   * `<html>` re-resolves them (docs/TOKENS.md, the freeze rule — the note in
+   * tokens/components/control.css has the measurement). An explicit knob still wins. */
   .ui-control-surface {
-    border-color: var(--control-surface-border-color);
-    background: var(--control-surface-background);
+    border-color: var(--control-surface-border-color, hsl(var(--input)));
+    background: var(--control-surface-background, hsl(var(--background)));
   }
 
   .ui-control-surface[data-variant="filled"] {
     --control-shadow: var(--control-filled-shadow);
     border-color: var(--control-filled-border-color);
-    background: var(--control-filled-background);
+    background: var(--control-filled-background, hsl(var(--muted)));
   }
 
   .ui-control-surface[data-variant="borderless"] {

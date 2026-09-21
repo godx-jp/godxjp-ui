@@ -865,5 +865,155 @@
       "draft": "Bản nháp",
       "failed": "Thất bại"
     }
+  },
+  "themeEditor": {
+    "title": "Trình sửa theme",
+    "subtitle": "Một màu hạt giống vào, cả bộ thương hiệu ra, được đo chứ không phải khẳng định.",
+    "unreadable": {
+      "title": "Không đọc được stylesheet token",
+      "description": "Trang này suy ra thương hiệu từ màu nền và các bậc ramp mà tài liệu đang vẽ, đọc trực tiếp từ stylesheet. Ở đây không đọc được cả hai, nên mọi số bên dưới sẽ không còn là phép đo."
+    },
+    "order": {
+      "title": "Hạt giống, rồi vai trò, rồi phạm vi, rồi từng phần tử",
+      "description": "Hãy dừng ở mức đầu tiên giải quyết được việc. Mọi mức dưới hạt giống là một giá trị đã thôi suy ra, và không gì báo cho bạn khi thương hiệu đi tiếp."
+    },
+    "seed": {
+      "title": "1. Hạt giống",
+      "description": "Màu hành động của thương hiệu: màu tô của nút chính. Phần lớn trường hợp, chừng này là đủ cho cả theme.",
+      "label": "Hạt giống thương hiệu",
+      "helper": "Một mã hex sáu chữ số. Mọi thứ bên dưới suy ra từ nó và được đo theo WCAG 2.2 AA.",
+      "presetLabel": "Các ca biên",
+      "presetHelper": "Mỗi ca cho một câu trả lời mà một màu xanh ngoan ngoãn sẽ giấu đi.",
+      "presetPlaceholder": "Một hạt giống của bạn",
+      "preset": {
+        "godx": "Hạt giống của chính gói này",
+        "blue": "Một màu xanh thương hiệu thông thường",
+        "very-light": "Gần trắng: màu tô không đạt ngưỡng trên nền sáng",
+        "very-dark": "Gần đen: hạt giống tối chạy tới trắng",
+        "sunflower": "Hướng dương: đảo hướng bậc trạng thái ở cả hai theme"
+      },
+      "announce": "Hạt giống {hex}. Sáng {light}, tối {dark}. {pass} trên {count} cặp đo được đạt AA.",
+      "announceNoDark": "Hạt giống {hex}. Với sắc và độ bão hoà này, không độ sáng nào cho một màu tô đọc được trên nền tối, nên không có theme tối để đo."
+    },
+    "derived": {
+      "title": "2. Hạt giống sinh ra những gì",
+      "description": "Chỉ đọc, vì đây là kết quả. Mỗi theme chỉ ghi ba vai trò vào bản xuất; phần còn lại suy ra từ primary trong phạm vi của chính phần tử đang vẽ, nên ghi ra sẽ ghim chúng vào hạt giống này.",
+      "tableLabel": "Các vai trò suy ra từ hạt giống",
+      "column": {
+        "token": "Token",
+        "light": "Sáng",
+        "dark": "Tối",
+        "emitted": "Trong bản xuất"
+      },
+      "written": "Được ghi",
+      "derivedOnly": "Suy ra"
+    },
+    "contrast": {
+      "title": "3. Tương phản",
+      "description": "Mọi cặp hạt giống sinh ra, đo bằng chính helper WCAG của gói. Nhãn trên nền tô cần 4.5:1 (SC 1.4.3); màu tô trên nền phía sau cần 3:1 (SC 1.4.11).",
+      "tableLabel": "Các cặp tương phản đã đo",
+      "column": {
+        "pair": "Cặp",
+        "measured": "Đo được",
+        "threshold": "Cần",
+        "result": "Kết quả"
+      },
+      "pair": {
+        "label-on-fill-light": "Nhãn trên nền tô, sáng",
+        "label-on-fill-dark": "Nhãn trên nền tô, tối",
+        "fill-on-canvas-light": "Màu tô trên nền trang, sáng",
+        "fill-on-canvas-dark": "Màu tô trên nền trang, tối",
+        "link-on-canvas-light": "Màu liên kết trên nền trang, sáng",
+        "link-on-canvas-dark": "Màu liên kết trên nền trang, tối"
+      },
+      "ratio": "{value}:1",
+      "pass": "Đạt AA",
+      "fail": "Dưới AA"
+    },
+    "overrides": {
+      "title": "4. Ghi đè từng token",
+      "description": "Đặt dưới hạt giống là có chủ ý. Chỉ dùng khi hạt giống đã đúng và duy nhất một token cần khác đi.",
+      "costTitle": "Cái giá của một lần ghi đè",
+      "costDescription": "Một token đặt tay sẽ thôi bám theo hạt giống. Lần đổi thương hiệu sau, mọi thứ suy ra đều dịch chuyển và riêng giá trị này ở lại, không bản kiểm nào báo.",
+      "labelTitle": "Màu nhãn trên nền tô",
+      "labelHelper": "Mặc định, nhãn do chính độ chói của hạt giống chọn, cùng ngưỡng 0.179 mà lần đổi theme lúc chạy dùng. Ép nhãn là ghi đè duy nhất trình sinh có cờ cho nó.",
+      "labelAuto": "Tự động",
+      "labelLight": "Nhãn sáng",
+      "labelDark": "Nhãn tối",
+      "darkTitle": "Độ sáng của hạt giống tối",
+      "darkHelper": "Tương phản ngang bằng với theme sáng đặt nó ở {parity}. Sắc và độ bão hoà luôn giữ nguyên; chỉ độ sáng dịch chuyển. Một giá trị đặt tay được phép trượt ngưỡng, và bảng trên là nơi nó nói ra.",
+      "darkNoParity": "Với sắc và độ bão hoà này, không độ sáng nào đạt cả hai ngưỡng, nên không có giá trị ngang bằng để rời khỏi.",
+      "darkReset": "Về giá trị ngang bằng",
+      "darkAuthored": "Đặt tay",
+      "darkParity": "Ngang bằng"
+    },
+    "export": {
+      "title": "5. Bản xuất",
+      "description": "Dán khối đầu vào file theme của bạn, và khối thứ hai đè lên bảng màu email đã nướng sẵn, nơi không stylesheet nào với tới.",
+      "nameLabel": "Tên theme",
+      "nameHelper": "Ghi ra {name}.service.css và {name}.email.ts.",
+      "matches": "Trùng khớp gen:brand",
+      "diverges": "Không lệnh nào sinh ra bản này",
+      "divergesWhy": "Độ sáng của hạt giống tối được đặt tay ở đây. Trình sinh tìm giá trị ngang bằng và không có cờ cho nó, nên không lệnh nào tái tạo được file này.",
+      "cssLabel": "CSS theme cho {name}",
+      "emailLabel": "Bảng màu email cho {name}",
+      "noDarkTitle": "Hạt giống này không có màu tô tối đọc được",
+      "noDarkDescription": "Với sắc và độ bão hoà này, không độ sáng nào đạt đồng thời 4.5:1 với nhãn của nó và 3:1 với nền tối. Hãy giảm bão hoà, hoặc ép nhãn ở trên rồi xem lại."
+    },
+    "preview": {
+      "lightTitle": "Sáng",
+      "darkTitle": "Tối",
+      "seedIs": "Phạm vi {hex}",
+      "tableLabel": "Dòng hoá đơn",
+      "column": {
+        "id": "Dòng",
+        "item": "Hạng mục",
+        "owner": "Phụ trách",
+        "state": "Trạng thái"
+      },
+      "state": {
+        "active": "Đang chạy",
+        "pending": "Chờ"
+      },
+      "line": {
+        "licence": "Bản quyền",
+        "support": "Bảo trì",
+        "setup": "Triển khai"
+      },
+      "action": {
+        "save": "Lưu",
+        "duplicate": "Nhân bản",
+        "export": "Xuất",
+        "add": "Thêm dòng",
+        "dismiss": "Bỏ qua",
+        "delete": "Xoá",
+        "details": "Chi tiết"
+      },
+      "badge": {
+        "brand": "Thương hiệu",
+        "success": "Đã thu",
+        "warning": "Sắp đến hạn",
+        "destructive": "Quá hạn",
+        "info": "Nháp",
+        "neutral": "Lưu trữ"
+      },
+      "alert": {
+        "title": "Địa chỉ xuất hoá đơn chưa đủ",
+        "description": "Chưa thể phát hành hoá đơn cho tới khi điền xong.",
+        "link": "Về phần hạt giống"
+      },
+      "field": {
+        "org": "Tổ chức",
+        "orgHelper": "Hiện trên mọi chứng từ phát hành.",
+        "plan": "Gói",
+        "tax": "Gồm thuế",
+        "mail": "Gửi tự động"
+      },
+      "plan": {
+        "starter": "Khởi đầu",
+        "pro": "Chuyên nghiệp",
+        "scale": "Mở rộng"
+      }
+    }
   }
 }
