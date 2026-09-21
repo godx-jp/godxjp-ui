@@ -352,27 +352,27 @@
    * The card face itself needs no mirror — `CARD_FACE` uses `rounded-s/-e` and `border-s/-e`,
    * which are logical already. */
   [data-slot="tabs"][data-variant="card"][data-placement="start"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
-    [data-slot="tabs-list"] {
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="start"] [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
 
   [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
-  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
+  [data-slot="tabs"][data-variant="editable-card"][data-placement="end"] [data-slot="tabs-list"] {
+    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
+  }
+
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="card"][data-placement="start"]
+    [data-slot="tabs-list"],
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
     [data-slot="tabs-list"] {
     box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
   }
 
-  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="start"]
-    [data-slot="tabs-list"],
-  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
-    [data-slot="tabs-list"] {
-    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
-  }
-
-  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"]
-    [data-slot="tabs-list"],
-  [dir="rtl"] [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
+  [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
+  [dir="rtl"]
+    [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
     [data-slot="tabs-list"] {
     box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
   }
@@ -475,7 +475,7 @@
     margin-inline-start: calc(var(--tabs-panel-space-inset) + var(--tabs-panel-border-width));
   }
 
-    [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
+  [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
     border: var(--tabs-panel-border-width) solid hsl(var(--border));
     border-radius: var(--tabs-panel-radius);
@@ -1312,9 +1312,15 @@
   }
 
   /* Structurally icon-only: square to the density-aware --control-height tap target and drop the
-   * form-input chrome so it sits among the topbar's ghost icon buttons. */
+   * form-input chrome so it sits among the topbar's ghost icon buttons.
+   *
+   * The WIDTH is not declared here. `inline-size: var(--control-height)` sat in this rule and lost
+   * to the `w-full` the trigger emits — that was gh#366, whose fix moved the value onto a utility
+   * reading the same token (`w-[length:var(--control-height)]`, app-setting-picker.tsx). The
+   * overridden declaration was left behind, so this rule went on stating a width it did not own.
+   * Keeping it is not harmless: it is the shape check:token-width-wins now refuses, and it is what
+   * let gh#819 read as "the token is applied" when nothing applied it. */
   .ui-app-setting-picker-icon {
-    inline-size: var(--control-height);
     justify-content: center;
     border-color: transparent;
     background: transparent;
@@ -1343,38 +1349,55 @@
   }
 
   /* Each kind is sized to the longest value it can show — a timezone name is far wider than a
-   * theme name. */
+   * theme name.
+   *
+   * These rules SELECT the per-kind token; they do not APPLY it. Every one of them used to say
+   * `inline-size: var(--app-setting-picker-<kind>-width)` and every one was dead: the trigger
+   * emits a `w-*` utility, @layer utilities is ordered after @layer components, so the utility
+   * won and the eight tokens changed nothing (gh#819 — measured: the `density` trigger rendered
+   * at its column's width against a 10rem token). That is the same trap as gh#366 and gh#375,
+   * and the house answer from gh#366 is the one used here: the width is emitted FROM the token,
+   * as a utility, in app-setting-picker.tsx.
+   *
+   * What a rule in this layer CAN still own is the choice of which token that utility reads —
+   * a custom property is not a width declaration, so no utility competes with it. Hence the one
+   * indirection: `--app-setting-picker-trigger-width` resolves per `data-kind` here (and only
+   * above the breakpoint), and the trigger carries the single utility that consumes it. Setting
+   * `--app-setting-picker-<kind>-width` in a theme now moves the rendered box.
+   *
+   * The 40rem stays a literal because a media query cannot read a custom property;
+   * --app-setting-picker-width-breakpoint documents the number for a consumer's own query. */
   @media (min-width: 40rem) {
     .ui-app-setting-picker-trigger[data-kind="locale"] {
-      inline-size: var(--app-setting-picker-locale-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-locale-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="timezone"] {
-      inline-size: var(--app-setting-picker-timezone-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-timezone-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="dateFormat"] {
-      inline-size: var(--app-setting-picker-date-format-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-date-format-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="timeFormat"] {
-      inline-size: var(--app-setting-picker-time-format-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-time-format-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="theme"] {
-      inline-size: var(--app-setting-picker-theme-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-theme-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="brand"] {
-      inline-size: var(--app-setting-picker-brand-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-brand-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="density"] {
-      inline-size: var(--app-setting-picker-density-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-density-width);
     }
 
     .ui-app-setting-picker-trigger[data-kind="fontSize"] {
-      inline-size: var(--app-setting-picker-font-size-width);
+      --app-setting-picker-trigger-width: var(--app-setting-picker-font-size-width);
     }
   }
 }

@@ -227,10 +227,27 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                       "h-auto min-h-[length:var(--control-height)] self-stretch rounded-[var(--topbar-item-radius)]",
                   )
                 : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
-                  // A form field that wants a full-width control passes
-                  // `className="w-full"`, which wins over `w-auto`.
                   // `compact` drops the per-kind width entirely so the trigger hugs its value.
-                  cn("w-auto max-w-full", !isCompact && "ui-app-setting-picker-trigger"),
+                  //
+                  // The width is a UTILITY READING A TOKEN, for the third time in this file's
+                  // history and for the same reason (gh#366 icon, gh#375 Select, gh#819 here):
+                  // @layer utilities is ordered after @layer components, so the `w-auto` that
+                  // stood here outranked `.ui-app-setting-picker-trigger[data-kind]`'s
+                  // `inline-size` and every one of the eight per-kind tokens was inert — a
+                  // consumer who retuned --app-setting-picker-density-width saw nothing move.
+                  // `--app-setting-picker-trigger-width` is what `data-kind` resolves in
+                  // navigation-layout.css (a custom property, which no utility competes with);
+                  // it defaults to `auto`, so below the breakpoint and under `compact` this is
+                  // byte-for-byte the old `w-auto` behaviour.
+                  //
+                  // It stays a SINGLE unprefixed `w-*` (not `sm:w-[…]` per kind): `cn` is
+                  // tailwind-merge, so a form field that wants a full-width control still passes
+                  // `className="w-full"` and REPLACES this one. A `sm:`-variant utility would
+                  // survive that merge and quietly ignore the consumer above 40rem.
+                  cn(
+                    "w-[length:var(--app-setting-picker-trigger-width)] max-w-full",
+                    !isCompact && "ui-app-setting-picker-trigger",
+                  ),
             // Compact re-tiers the box through tokens (--app-setting-picker-compact-*); the height
             // still comes from the official --control-height-sm tier, never a literal. The gap is a
             // utility (not the class rule) so it beats SelectTrigger's own `gap-2`.

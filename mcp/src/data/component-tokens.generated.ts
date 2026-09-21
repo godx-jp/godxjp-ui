@@ -5514,6 +5514,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--app-setting-picker-trigger-width",
+    "value": "auto",
+    "description": "The width the labelled trigger actually RENDERS at — the one above that `data-kind` selected, * or `auto` when no per-kind width applies (below the breakpoint, or `compact`). The trigger * consumes this through a single `w-*` utility, because a width declared in @layer components * loses to the utilities the Select trigger emits and the eight tokens above were therefore * inert (gh#819). Set a per-kind token to retune one picker; set this one to override the axis * at a call site."
+  },
+  {
     "name": "--app-setting-picker-width-breakpoint",
     "value": "40rem",
     "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."

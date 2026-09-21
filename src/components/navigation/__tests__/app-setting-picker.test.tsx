@@ -18,10 +18,13 @@ const navigationCss = readFileSync(
  * The shipped rule that gives a locale picker its OWNED per-kind width — selector extracted from
  * the stylesheet, never retyped. "Hugs its value" means precisely that this rule stops selecting
  * the trigger, which is a thing `.matches()` can settle and a class name cannot.
+ *
+ * The rule resolves `--app-setting-picker-trigger-width`; it does NOT declare `inline-size`. It
+ * used to, and the declaration was inert — see the gh#819 block at the bottom of this file.
  */
 const perKindWidthSelector = ruleSelector(
   navigationCss,
-  /\.ui-app-setting-picker-trigger\[data-kind="locale"\] \{\s*\n\s*inline-size:/,
+  /\.ui-app-setting-picker-trigger\[data-kind="locale"\] \{\s*\n\s*--app-setting-picker-trigger-width:/,
 );
 
 describe("AppSettingPicker", () => {
@@ -356,9 +359,106 @@ describe('appearance="icon" giữ được ô vuông (gh#366)', () => {
     expect(owner.className).toContain("consumer-class");
   });
 
-  it("luật CSS vẫn khai bề ngang theo token, để service retune một chỗ", () => {
+  it("bề ngang đọc token, và đọc ở NƠI THẮNG — utility, không phải luật class", () => {
+    // Bản trước của phép kiểm này canh `.ui-app-setting-picker-icon { … var(--control-height) }`
+    // trong CSS, tức canh đúng cái khai báo đã thua từ gh#366 — nó xanh trong khi ô vuông do
+    // utility vẽ. Hợp đồng thật: luật class KHÔNG khai bề ngang, utility đọc token thì có.
     const css = readFileSync(resolve(process.cwd(), "src/styles/navigation-layout.css"), "utf8");
     const rule = css.match(/\.ui-app-setting-picker-icon\s*\{[^}]*\}/)?.[0] ?? "";
-    expect(rule).toContain("var(--control-height)");
+    expect(rule).not.toMatch(/(?:^|[;{\s])(?:inline-size|width)\s*:/);
+
+    const { container } = renderWithUi(
+      <AppSettingPicker kind="theme" appearance="icon" value="light" onValueChange={vi.fn()} />,
+    );
+    expect(
+      container.querySelector<HTMLElement>(".ui-app-setting-picker-icon")!.className,
+    ).toContain("w-[length:var(--control-height)]");
+  });
+});
+
+/*
+ * gh#819 — mỗi token bề ngang theo `kind` đều VÔ TÁC DỤNG.
+ *
+ * Nhánh CÓ NHÃN phát `w-auto`, còn bề ngang khai ở `.ui-app-setting-picker-trigger[data-kind]`
+ * trong @layer components. Utility nằm sau components trong thứ tự layer nên utility thắng: đo
+ * trên /isolate/navigation-app-setting-picker ở 1440px TRƯỚC khi sửa, trigger `density` ra 177px
+ * với token 10rem (160px), `theme` ra 177px với token 9rem (144px) — tức là bề ngang của cột chứa
+ * nó, không phải của token. SAU khi sửa: 160px và 144px, và khi đổi
+ * --app-setting-picker-density-width sang 6rem thì hộp đi theo, 160px → 96px.
+ *
+ * jsdom không tính bố cục, nên ở đây canh HAI đầu của sợi dây mà con số đó đi qua — utility đọc
+ * biến nào, và luật nào phân giải biến đó — chứ không canh pixel.
+ */
+describe("gh#819: token bề ngang phải THẮNG, không chỉ resolve", () => {
+  it("trigger có nhãn phát bề ngang bằng utility đọc token, không phải `w-auto`", () => {
+    const { container } = renderWithUi(
+      <AppSettingPicker
+        kind="density"
+        appearance="labeled"
+        value="comfortable"
+        onValueChange={vi.fn()}
+      />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-app-setting-picker-trigger")!;
+    // Đúng MỘT utility trên trục ngang, và nó đọc token. `w-auto` — chính cái đã giết token —
+    // phải biến mất, không được quay lại; `toEqual` nói cả hai điều trong một câu.
+    const widthUtilities = trigger.className.split(/\s+/).filter((cls) => /^w-/.test(cls));
+    expect(widthUtilities).toEqual(["w-[length:var(--app-setting-picker-trigger-width)]"]);
+  });
+
+  it("luật theo data-kind phân giải biến đó, và KHÔNG còn khai inline-size", () => {
+    // Một luật ở @layer components không thể sở hữu `inline-size` trên phần tử này — nó thua.
+    // Nhưng nó vẫn sở hữu được VIỆC CHỌN token, vì không utility nào khai custom property.
+    const perKind =
+      navigationCss.match(
+        /\.ui-app-setting-picker-trigger\[data-kind="density"\]\s*\{[^}]*\}/,
+      )?.[0] ?? "";
+    expect(perKind).toContain(
+      "--app-setting-picker-trigger-width: var(--app-setting-picker-density-width)",
+    );
+    expect(perKind).not.toMatch(/(?:^|[;{\s])(?:inline-size|width)\s*:/);
+  });
+
+  it("mỗi kind nối vào đúng token của nó — tám sợi dây, không sợi nào đứt", () => {
+    const wiring: [string, string][] = [
+      ["locale", "locale"],
+      ["timezone", "timezone"],
+      ["dateFormat", "date-format"],
+      ["timeFormat", "time-format"],
+      ["theme", "theme"],
+      ["brand", "brand"],
+      ["density", "density"],
+      ["fontSize", "font-size"],
+    ];
+    for (const [kind, token] of wiring) {
+      const rule =
+        navigationCss.match(
+          new RegExp(`\\.ui-app-setting-picker-trigger\\[data-kind="${kind}"\\]\\s*\\{[^}]*\\}`),
+        )?.[0] ?? "";
+      expect(rule, `no rule for data-kind="${kind}"`).not.toBe("");
+      expect(rule).toContain(
+        `--app-setting-picker-trigger-width: var(--app-setting-picker-${token}-width)`,
+      );
+    }
+  });
+
+  it("consumer truyền `w-full` vẫn thắng — tailwind-merge, nên chỉ được MỘT `w-*` không biến thể", () => {
+    // Đây là lý do không dùng `sm:w-[…]` theo từng kind: biến thể `sm:` sống sót qua tailwind-merge
+    // nên `className="w-full"` của một form field sẽ bị lờ đi từ 40rem trở lên.
+    const { container } = renderWithUi(
+      <AppSettingPicker
+        kind="density"
+        appearance="labeled"
+        className="w-full"
+        value="comfortable"
+        onValueChange={vi.fn()}
+      />,
+    );
+    const trigger = container.querySelector<HTMLElement>(".ui-app-setting-picker-trigger")!;
+    const classes = trigger.className.split(/\s+/);
+    expect(classes).toContain("w-full");
+    expect(classes.filter((c) => /^(?:[\w@[\]-]+:)*w-/.test(c) && !c.startsWith("max-w-"))).toEqual(
+      ["w-full"],
+    );
   });
 });

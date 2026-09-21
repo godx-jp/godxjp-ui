@@ -1265,8 +1265,15 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* NO `width` here. `--pagination-size-width` is a FLOOR, as pagination.tsx has always said, and
+   * the trigger applies it itself with `w-max min-w-[var(--pagination-size-width)]`. The `width:
+   * var(--pagination-size-width)` this rule used to carry was inert — `w-max` is a utility, and
+   * @layer utilities is ordered after @layer components — so it read as a fixed width the token
+   * owned while the box was really content-sized against the floor. Measured on
+   * /isolate/navigation-pagination before and after removing it: 88px either way, min-inline-size
+   * 88px, which is the floor doing the work. Same trap as gh#366/#375/#819; check:token-width-wins
+   * is what found it. */
   .ui-pagination-size-trigger {
-    width: var(--pagination-size-width);
     /* Default control height — primitive never picks a sub-default tier; the app overrides via
      * className if it wants smaller. */
     height: var(--control-height);
