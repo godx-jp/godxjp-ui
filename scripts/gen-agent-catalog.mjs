@@ -26,11 +26,11 @@
  * that looks complete and has lost fields, which is the exact class of silent-wrong this repo
  * keeps paying for. esbuild gives the real values or throws.
  */
-import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
+import { build } from "esbuild";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
@@ -46,21 +46,24 @@ const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 const REPO = "godx-jp/godxjp-ui";
 const rawBase = (ref) => `https://raw.githubusercontent.com/${REPO}/${ref}/agent`;
 
+/* esbuild via its JS API, not `node_modules/.bin/esbuild`.
+ *
+ * The bin path shipped once and failed on every CI runner with `spawnSync … esbuild ENOENT`, while
+ * passing locally — esbuild was an undeclared TRANSITIVE peer of vite, so the bin link existed on
+ * one machine's hoist and nowhere else. It is a declared devDependency now, and this imports the
+ * package rather than guessing a path into node_modules, so "resolvable" is the same question npm
+ * already answers. */
 /** Bundle one `mcp/src/data` module and hand back its exports. */
 async function load(module) {
   const out = join(tmpdir(), `godx-agent-${module}-${process.pid}.mjs`);
-  execFileSync(
-    join(ROOT, "node_modules/.bin/esbuild"),
-    [
-      join(ROOT, "mcp/src/data", `${module}.ts`),
-      "--bundle",
-      "--format=esm",
-      "--platform=node",
-      "--log-level=error",
-      `--outfile=${out}`,
-    ],
-    { stdio: "pipe" },
-  );
+  await build({
+    entryPoints: [join(ROOT, "mcp/src/data", `${module}.ts`)],
+    bundle: true,
+    format: "esm",
+    platform: "node",
+    logLevel: "error",
+    outfile: out,
+  });
   try {
     return await import(`file://${out}`);
   } finally {
@@ -119,7 +122,6 @@ for (const [file, rows] of Object.entries(data)) {
  * public entry point declared in package.json `exports` and reports what it actually exports.
  * Only 13 of 165 entries carry a hand-written `importPath`; the rest are resolved here. */
 async function resolveImportPaths(names) {
-  const metafile = join(tmpdir(), `godx-agent-exports-${process.pid}.json`);
   const found = new Map();
   for (const [subpath, target] of Object.entries(pkg.exports)) {
     if (subpath.includes("*")) continue;
@@ -128,32 +130,28 @@ async function resolveImportPaths(names) {
     const base = js.replace(/^\.\/dist\//, "src/").replace(/\.js$/, "");
     const entry = [`${base}.ts`, `${base}.tsx`].map((f) => join(ROOT, f)).find(existsSync);
     if (!entry) continue;
+    let result;
     try {
-      execFileSync(
-        join(ROOT, "node_modules/.bin/esbuild"),
-        [
-          entry,
-          "--bundle",
-          "--format=esm",
-          "--platform=node",
-          "--packages=external",
-          "--log-level=error",
-          `--metafile=${metafile}`,
-          "--outfile=/dev/null",
-        ],
-        { stdio: "pipe" },
-      );
+      result = await build({
+        entryPoints: [entry],
+        bundle: true,
+        format: "esm",
+        platform: "node",
+        packages: "external",
+        logLevel: "silent",
+        metafile: true,
+        write: false,
+      });
     } catch {
       continue; /* an entry point that does not bundle standalone exports nothing we can claim */
     }
-    const outputs = JSON.parse(readFileSync(metafile, "utf8")).outputs;
+    const outputs = result.metafile.outputs;
     for (const out of Object.values(outputs))
       for (const name of out.exports ?? []) {
         if (!found.has(name)) found.set(name, new Set());
         found.get(name).add(`${pkg.name}${subpath.slice(1)}`);
       }
   }
-  rmSync(metafile, { force: true });
 
   /* Several subpaths can export the same name (`Select` is in data-entry, ui and ui/select). Pick
    * the one a docs page would write: the group subpath if it exists, else the shortest that is not

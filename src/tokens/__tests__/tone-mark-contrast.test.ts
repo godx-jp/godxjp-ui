@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { anchorIndex } from "../../test/css-selector";
 
-import { contrast, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
+import { contrast, derivedRole, hsl, hslToRgb, NON_TEXT, over } from "./wcag-contrast";
 
 /**
  * A tone MARK is a thin shape that carries meaning with nothing written on it — the `Card accent`
@@ -42,10 +42,41 @@ const THEMES = {
  * than restated here. That matters: if the map were a literal in this file, repointing
  * `--mark-warning` back at the fill tier would leave every ratio below still measuring
  * `--text-warning` and the suite would stay green while the browser painted 1.74:1.
+ *
+ * The map moved. `--mark-*` used to be `--mark-x: var(--text-x)` on `:root`, which FROZE there —
+ * measured: a `[data-tenant]` setting `--text-primary` green kept the rail violet. They are knobs
+ * now and the alias lives in the FALLBACK at each call site, so that is where it is read from.
  */
+/* Collapsed, because Prettier wraps a long `var()` across four lines the moment it crosses the
+ * print width — `var(\n  --mark-primary,\n  var(--text-primary, …)\n)`. A probe that matched the
+ * unwrapped spelling would read "not found" and blame the CSS (gh#769, one level down). */
+const collapse = (css: string) => css.replace(/\s+/g, " ");
+const LAYOUT = collapse(
+  ["card-layout", "data-display-layout", "table-layout", "data-entry-layout"]
+    .map((f) => readFileSync(join(process.cwd(), `src/styles/${f}.css`), "utf8"))
+    .join("\n"),
+);
 const MARK_SOURCE = Object.fromEntries(
-  [...CSS.matchAll(/--mark-([a-z]+):\s*var\(--([a-z-]+)\)/g)].map((m) => [m[1], m[2]]),
+  [...LAYOUT.matchAll(/var\( ?--mark-([a-z]+), ?var\( ?--([a-z-]+)[,) ]/g)].map((m) => [m[1], m[2]]),
 ) as Record<string, string>;
+
+/** `--text-primary` is itself a derived knob (gh#664), so its value is a ramp step off the seed;
+ * every other mark source is an authored literal in the theme block. */
+type Theme = keyof typeof THEMES;
+const DERIVED = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+const derivedBlock = (selector: string) => {
+  const at = anchorIndex(DERIVED, selector);
+  const open = DERIVED.indexOf("{", at);
+  return DERIVED.slice(open + 1, DERIVED.indexOf("\n}", open));
+};
+const derivedScopes = (theme: Theme) =>
+  theme === "light"
+    ? [derivedBlock(":root {")]
+    : [derivedBlock('.dark, :root[data-theme="dark"] {'), derivedBlock(":root {")];
+const resolve = (theme: Theme, role: string) =>
+  role === "text-primary"
+    ? derivedRole(role, hsl(THEMES[theme], "primary"), THEMES[theme], ...derivedScopes(theme))
+    : hsl(THEMES[theme], role);
 
 /** The six tones `Card accent` and `DataTable rowTone` share. */
 const TONES = ["primary", "success", "warning", "info", "attention", "destructive"] as const;
@@ -65,8 +96,8 @@ describe("tone marks meet WCAG 1.4.11 against their own surface", () => {
       for (const ground of GROUNDS) {
         it(`${theme}: --mark-${tone} on --${ground} is >= ${NON_TEXT}:1`, () => {
           const source = MARK_SOURCE[tone];
-          expect(source, `--mark-${tone} is not declared`).toBeTruthy();
-          const mark = hslToRgb(hsl(body, source));
+          expect(source, `--mark-${tone} has no call-site fallback`).toBeTruthy();
+          const mark = hslToRgb(resolve(theme as Theme, source));
           const base = hslToRgb(hsl(body, ground));
           const washed = over(mark, base, WASH_ALPHA);
           expect(contrast(mark, base)).toBeGreaterThanOrEqual(NON_TEXT);
@@ -100,7 +131,7 @@ describe("progress marks meet WCAG 1.4.11 against the track", () => {
   for (const [theme, body] of Object.entries(THEMES)) {
     for (const tone of PROGRESS_TONES) {
       it(`${theme}: --mark-${tone} on the --secondary track is >= ${NON_TEXT}:1`, () => {
-        const mark = hslToRgb(hsl(body, MARK_SOURCE[tone]));
+        const mark = hslToRgb(resolve(theme as Theme, MARK_SOURCE[tone]));
         expect(contrast(mark, hslToRgb(hsl(body, "secondary")))).toBeGreaterThanOrEqual(NON_TEXT);
       });
     }
@@ -141,8 +172,11 @@ describe("the mark-tier surfaces read the mark tier", () => {
 
   for (const [selector, token] of SURFACES) {
     it(`${selector.trim()} paints --${token}`, () => {
-      const body = declaration(selector);
-      expect(body).toContain(`var(--${token})`);
+      const body = collapse(declaration(selector));
+      /* WITH its fallback. A bare `var(--mark-success)` now resolves to nothing — the knob is
+       * `initial` — so the rule would paint no colour at all, silently. Asserting the opening
+       * `var(--mark-x,` catches both a repoint to the fill tier and a dropped fallback. */
+      expect(body).toMatch(new RegExp(`var\\( ?--${token}, ?var\\( ?--`));
     });
   }
 

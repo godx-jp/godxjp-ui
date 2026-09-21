@@ -5,6 +5,8 @@ import { join } from "node:path";
 
 import { afterAll, describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../test/css-selector";
+
 import { channelsOf, contrast, hslToRgb, relative, triplet } from "./wcag-contrast";
 
 /**
@@ -34,8 +36,11 @@ execFileSync(
 );
 const generated = readFileSync(join(out, "seed.service.css"), "utf8");
 
+/* `anchorIndex`, not `indexOf` (gh#769): a hand-wrapped selector literal pins PRETTIER'S line
+ * breaks, so the probe reads "rule not found" the next time the selector crosses the print width
+ * and the failure blames the CSS. Written on one line here whatever the stylesheet does. */
 const blockOf = (css: string, selector: string) => {
-  const at = css.indexOf(selector);
+  const at = anchorIndex(css, selector);
   if (at === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", at);
   return css.slice(open + 1, css.indexOf("\n}", open));
@@ -46,7 +51,7 @@ const role = (body: string, name: string) => {
   return triplet(m[1]);
 };
 
-const DARK = '.dark,\n:root[data-theme="dark"]';
+const DARK = '.dark, :root[data-theme="dark"]';
 const authored = {
   light: blockOf(foundation, ":root {"),
   dark: blockOf(foundation, `${DARK} {`),
@@ -66,52 +71,31 @@ describe("gen:brand reproduces foundation.css on foundation.css's own seed", () 
     expect(role(emitted.light, "primary")).toEqual(role(authored.light, "primary"));
   });
 
-  /* `--text-primary` is still AUTHORED in foundation.css (it feeds `--mark-primary`, which is
-   * contracted to a RAW triple that CSS relative colour cannot produce), so it is compared against
-   * the literal. Lightness, not the whole triplet: the generator hue-LOCKS every derived role to
-   * the seed and the authored value drifts 0.7° off it — the gh#648 class of defect, so the
-   * generator being stricter is the correct direction. */
-  it("puts light --text-primary on the ramp step foundation.css authored", () => {
-    expect(role(emitted.light, "text-primary")[2]).toBeCloseTo(
-      role(authored.light, "text-primary")[2],
-      1,
+  /* THE GENERATOR WRITES THREE TOKENS PER THEME AND NOTHING ELSE. Everything a brand needs beyond
+   * the seed, its label and the ring DERIVES from the `--primary` in scope — the interaction
+   * states (gh#678) and the brand text roles (gh#664) alike. A literal for any of them would pin
+   * it to this seed and stop it following the next change, which is the regression the derived
+   * tier exists to prevent. Asserting the ABSENCE is what keeps a future edit from "helpfully"
+   * emitting them back. */
+  it.each([":root", DARK])("writes exactly seed + label + ring in %s", (selector) => {
+    const declared = [...blockOf(generated, `${selector} {`).matchAll(/^\s*(--[\w-]+):/gm)].map(
+      (m) => m[1],
     );
+    expect(declared.sort()).toEqual(["--primary", "--primary-foreground", "--ring"]);
   });
 
-  /* `--text-link` and `--text-brand` DERIVE now (gh#664), so there is no literal to compare to —
-   * the thing worth asserting is that the generator lands on the value the CSS would paint. A
-   * generator that agreed with an old literal but not with the live formula would be the same
-   * class of bug one layer out. */
-  it.each([
-    ["light", "text-link"],
-    ["light", "text-brand"],
-    ["dark", "text-link"],
-    ["dark", "text-brand"],
-  ] as const)("puts %s --%s exactly where derived.css would paint it", (theme, name) => {
-    const seed = role(emitted[theme], "primary");
-    const expected = relative(seed, channelsOf(name, ...derivedScopes[theme]));
-    expect(role(emitted[theme], name)).toEqual(expected.map((n) => Number(n.toFixed(1))));
-  });
-
-  it.each(["text-link", "text-brand", "text-primary"])(
-    "holds light --%s on the seed's hue",
-    (name) => {
-      expect(role(emitted.light, name)[0]).toBeCloseTo(role(emitted.light, "primary")[0], 1);
-    },
-  );
-
-  /* The dark seed is the one value a generator cannot reproduce: foundation.css took #DCBCFF from
-   * the published identity kit, not from a formula. What IS reproducible is how the dark text roles
-   * sit relative to whatever the dark seed is — the link ink IS the seed, and the pressed ink is
-   * one hover step above it — and that is the rule foundation.css follows too. */
-  it("puts the dark link ink ON the dark seed, as derived.css does", () => {
-    expect(role(emitted.dark, "text-link")).toEqual(role(emitted.dark, "primary"));
+  /* The dark link ink IS the dark seed — the dark ramp's bright end is already the anchor, so the
+   * step is zero. foundation.css authored them equal here and one step apart in light. */
+  it("keeps the dark link ink ON the seed", () => {
     expect(channelsOf("text-link", ...derivedScopes.dark)).toBe("h s l");
   });
 
-  it("puts the dark pressed ink one hover step above the seed, as foundation.css does", () => {
-    const step = (body: string) => role(body, "text-primary")[2] - role(body, "primary")[2];
-    expect(step(emitted.dark)).toBeCloseTo(step(authored.dark), 1);
+  /* The dark ramp runs UPWARD, so the pressed ink is brighter than the seed, not darker — the
+   * relationship foundation.css authored (#DCBCFF seed, #E8DAFF pressed). */
+  it("puts the dark pressed ink one hover step ABOVE the seed", () => {
+    expect(channelsOf("text-primary", ...derivedScopes.dark)).toBe(
+      channelsOf("primary-hover", ...derivedScopes.dark),
+    );
   });
 
   /* The generator prints these ratios and exits non-zero when one misses. Re-measuring them here

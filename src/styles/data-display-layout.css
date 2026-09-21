@@ -212,21 +212,21 @@
   .ui-progress-bar {
     height: 100%;
     border-radius: inherit;
-    background: var(--progress-fill-background, hsl(var(--mark-success)));
+    background: var(--progress-fill-background, hsl(var(--mark-success, var(--text-success))));
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-bar {
-    background: hsl(var(--mark-warning));
+    background: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   .ui-progress[data-tone="destructive"] .ui-progress-bar {
-    background: hsl(var(--mark-destructive));
+    background: hsl(var(--mark-destructive, var(--text-error)));
   }
 
   /* Over-capacity: keep the destructive fill but lay a diagonal hatch over it so an over-limit bar
    * (value > 100, width still capped at 100%) is visually distinct from a full one. */
   .ui-progress[data-over] .ui-progress-bar {
-    background-color: hsl(var(--mark-destructive));
+    background-color: hsl(var(--mark-destructive, var(--text-error)));
     background-image: repeating-linear-gradient(
       45deg,
       hsl(var(--destructive-foreground) / 0.4) 0,
@@ -265,15 +265,15 @@
    * share of the whole with no label on it. It also has to keep matching the `Legend` swatch that
    * names it — the key and the thing it is a key TO move together or the key stops being one. */
   .ui-progress-segment[data-tone="success"] {
-    background: hsl(var(--mark-success));
+    background: hsl(var(--mark-success, var(--text-success)));
   }
 
   .ui-progress-segment[data-tone="warning"] {
-    background: hsl(var(--mark-warning));
+    background: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   .ui-progress-segment[data-tone="destructive"] {
-    background: hsl(var(--mark-destructive));
+    background: hsl(var(--mark-destructive, var(--text-error)));
   }
 
   .ui-progress-label {
@@ -326,18 +326,18 @@
   }
 
   .ui-progress-ring-indicator {
-    stroke: var(--progress-fill-background, hsl(var(--mark-success)));
+    stroke: var(--progress-fill-background, hsl(var(--mark-success, var(--text-success))));
     /* A zero-length arc still paints a dot with a round cap, which reads as "a little" when the
      * answer is "none". Butt caps make 0% genuinely empty. */
     stroke-linecap: butt;
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-ring-indicator {
-    stroke: hsl(var(--mark-warning));
+    stroke: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   .ui-progress[data-tone="destructive"] .ui-progress-ring-indicator {
-    stroke: hsl(var(--mark-destructive));
+    stroke: hsl(var(--mark-destructive, var(--text-error)));
   }
 
   /* The readout sits INSIDE the ring rather than under it, which is the whole reason a ring beats
@@ -386,23 +386,28 @@
    * light card and 2.95:1 (destructive) on a dark one, all below the 3:1 non-text floor.
    * `muted`/`neutral` already read a text-tier neutral and stay where they are. */
   .ui-legend-swatch[data-tone="default"] {
-    background: hsl(var(--mark-primary));
+    background: hsl(
+      var(
+        --mark-primary,
+        var(--text-primary, from hsl(var(--primary)) var(--text-primary-channels))
+      )
+    );
   }
 
   .ui-legend-swatch[data-tone="success"] {
-    background: hsl(var(--mark-success));
+    background: hsl(var(--mark-success, var(--text-success)));
   }
 
   .ui-legend-swatch[data-tone="warning"] {
-    background: hsl(var(--mark-warning));
+    background: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   .ui-legend-swatch[data-tone="destructive"] {
-    background: hsl(var(--mark-destructive));
+    background: hsl(var(--mark-destructive, var(--text-error)));
   }
 
   .ui-legend-swatch[data-tone="info"] {
-    background: hsl(var(--mark-info));
+    background: hsl(var(--mark-info, var(--text-info)));
   }
 
   .ui-legend-swatch[data-tone="muted"],
@@ -498,13 +503,13 @@
   /* The MARK tier (3:1 non-text, foundation.css), not the FILL tier — a glyph with nothing
    * written on it is exactly what that tier was added for. */
   .ui-feature-list-item[data-state="included"] .ui-feature-list-mark {
-    color: hsl(var(--mark-success));
+    color: hsl(var(--mark-success, var(--text-success)));
   }
 
   /* `limited` takes the amber of a partial answer — the same green/amber/grey reading a
    * compatibility table gives a feature that is supported "with caveats". */
   .ui-feature-list-item[data-state="limited"] .ui-feature-list-mark {
-    color: hsl(var(--mark-warning));
+    color: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   /* `excluded` deliberately stays on `--muted-foreground` rather than taking the destructive
@@ -1380,7 +1385,10 @@
    * colour is the rule here anyway (WCAG 1.4.1), and underlining a link in code is conventional. */
   .ui-code-block [data-code-token="link"],
   .ui-prose pre [data-code-token="link"] {
-    color: var(--code-block-token-link-color, hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels))));
+    color: var(
+      --code-block-token-link-color,
+      hsl(var(--text-link, from hsl(var(--primary)) var(--text-link-channels)))
+    );
     text-decoration-line: underline;
     /* The house link treatment, not a bare underline (`--text-link-underline-offset`,
      * tokens/components/text.css).

@@ -115,15 +115,15 @@
   }
 
   .ui-password-strength-segment[data-tone="destructive"] {
-    background: hsl(var(--mark-destructive));
+    background: hsl(var(--mark-destructive, var(--text-error)));
   }
 
   .ui-password-strength-segment[data-tone="warning"] {
-    background: hsl(var(--mark-warning));
+    background: hsl(var(--mark-warning, var(--text-warning)));
   }
 
   .ui-password-strength-segment[data-tone="success"] {
-    background: hsl(var(--mark-success));
+    background: hsl(var(--mark-success, var(--text-success)));
   }
 
   .ui-password-strength-meta {

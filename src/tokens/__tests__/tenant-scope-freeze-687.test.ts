@@ -18,6 +18,12 @@ import { describe, expect, it } from "vitest";
  * knob; nested scopes set it alongside --primary (CHANGELOG 26.0.0).
  */
 const TOKENS = join(process.cwd(), "src/tokens");
+/* WHY THE TEXT TIER IS IN THIS LIST. It was not, and that is exactly how `--mark-primary:
+ * var(--text-primary)` sat on `:root` unnoticed: the binding is the same defect gh#687 names, in a
+ * family the list did not name. Measured before the fix — a `[data-tenant]` setting
+ * `--text-primary: 140 80% 25%` kept `--mark-primary` at `268 100% 34.5%` and painted a violet rail
+ * on a green brand. A role belongs here the moment a consumer is told they may re-theme it, and
+ * CUSTOMER-THEMING tells them they may re-theme all of these. */
 const ROLES = [
   "primary",
   "primary-foreground",
@@ -25,6 +31,13 @@ const ROLES = [
   "accent",
   "accent-foreground",
   "focus-ring-color",
+  "text-primary",
+  "text-link",
+  "text-brand",
+  "text-success",
+  "text-warning",
+  "text-info",
+  "text-error",
 ];
 const ALLOWED = new Set(["derived.css --ring"]);
 

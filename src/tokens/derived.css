@@ -110,17 +110,22 @@
    * tier, one tier up, and invisible to that issue's hue lock because the lock only guards
    * `--primary-*`. Declared as knobs, the step follows the seed and cannot be left behind.
    *
-   * NOT `--text-primary`, deliberately. It feeds `--mark-primary`, which is contracted to carry a
-   * RAW `H S% L%` triple that callers wash at an alpha (`hsl(var(--mark-primary) / .2)`). CSS
-   * relative colour only yields a colour inside `hsl()`, never a bare triple, so a derived
-   * `--text-primary` cannot satisfy that contract — converting it means converting `--mark-primary`
-   * and its three consumers too, which is a change of its own. */
+   * `--text-primary` is the PRESSED step of the same ramp, and the MARK tier hangs off it. It was
+   * held back once on the belief that `--mark-primary` could not follow, because that token is
+   * contracted to a RAW `H S% L%` triple washed at an alpha and CSS relative colour yields a colour
+   * only inside `hsl()`. Measured in Chrome, that reasoning was wrong: the alpha goes after the
+   * slash INSIDE the same `hsl()`, so a call site writes
+   * `hsl(var(--mark-primary, var(--text-primary, from hsl(var(--primary)) …)) / .2)` and every
+   * level still overrides. The mark tier follows with it. */
   --text-link: initial;
   --text-brand: initial;
+  --text-primary: initial;
   /* Light: one step DOWN the ramp from the action colour — the same step `--primary-hover` takes,
    * so the link sits where identity v2.3 puts it and moves when the seed does. */
   --text-link-channels: var(--primary-hover-channels);
   --text-brand-channels: var(--primary-hover-channels);
+  /* The pressed ink is two steps down — identity v2.3 action.primary.pressed (#5200B0). */
+  --text-primary-channels: var(--primary-active-channels);
 
   --destructive-hover: 359 50.6% 53.1%; /* #c44b4d */
   --destructive-active: 355 70.6% 33.3%; /* #911923 */
@@ -155,6 +160,9 @@
    * — which is why foundation.css authored them equal here and one step apart in light. */
   --text-link-channels: h s l;
   --text-brand-channels: h s l;
+  /* Dark: the pressed ink is one hover step ABOVE the seed (#E8DAFF), the way foundation.css
+   * authored it — the dark ramp runs upward, so "pressed" is brighter, not darker. */
+  --text-primary-channels: var(--primary-hover-channels);
 
   --destructive-hover: 358.8 42.3% 53.1%; /* #ba5557 */
   --destructive-active: 357.3 50.6% 34.1%; /* #832b2f */
@@ -179,6 +187,7 @@
     --control-outline: 268.7 100% 44.7%;
     --text-link: 268.7 100% 41.6%;
     --text-brand: 268.7 100% 41.6%;
+    --text-primary: 268.7 100% 34.5%;
   }
 
   .dark,
@@ -189,5 +198,6 @@
     --control-outline: 268.7 99% 61.8%;
     --text-link: 268.7 100% 86.9%;
     --text-brand: 268.7 100% 86.9%;
+    --text-primary: 268.7 100% 92.7%;
   }
 }
