@@ -43,10 +43,16 @@ import { Segmented } from "../../ui/segmented";
 const controlCss = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8")
   .replace(/\s+/g, " ")
   .trim();
+/* Normalised for the same reason `avatar-size-716` is: these assertions compare declaration TEXT,
+ * and a declaration long enough to wrap is written `var(\n  --token,\n  calc(…)\n)`. The wiring
+ * does not change; the line width does. */
 const segmentedTokens = readFileSync(
   resolve(process.cwd(), "src/tokens/components/segmented.css"),
   "utf8",
-);
+)
+  .replace(/\s+/g, " ")
+  .replace(/\(\s+/g, "(")
+  .replace(/\s+\)/g, ")");
 const controlTokens = readFileSync(
   resolve(process.cwd(), "src/tokens/components/control.css"),
   "utf8",

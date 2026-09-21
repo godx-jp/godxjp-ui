@@ -46,10 +46,17 @@ const dataDisplayCss = readFileSync(
 )
   .replace(/\s+/g, " ")
   .trim();
+/* Read with prettier's wrapping normalised away: a declaration long enough to wrap is written
+ * `var(\n  --token,\n  calc(…)\n)`, and these assertions compare the TEXT. The wiring is the same
+ * either way — letting the line width decide whether a test passes is how gh#834's call-site
+ * fallbacks broke three unrelated suites in one commit. */
 const dataDisplayTokens = readFileSync(
   resolve(process.cwd(), "src/tokens/components/data-display.css"),
   "utf8",
-);
+)
+  .replace(/\s+/g, " ")
+  .replace(/\(\s+/g, "(")
+  .replace(/\s+\)/g, ")");
 
 /** A consumer-supplied utility, hoisted so the literal appears once as a FIXTURE. */
 const CONSUMER_CLASS = "size-12";
