@@ -28,6 +28,34 @@
     font-size: var(--font-size-2xl);
   }
 
+  /* DISPLAY steps — the marketing ramp (≈28 / 42 / 54px), derived from --font-size-display.
+   *
+   * These three did NOT exist before gh#826: the scan stopped at `2xl` and the four display tokens
+   * had no selector reading them, which is why every marketing page hand-wrote a `font-size` class.
+   * (Checked first, per the `Input size="xs"` precedent where the CSS was already there and only
+   * the TypeScript union was missing — here it genuinely was not.)
+   *
+   * The leading is part of the step, not a second decision. Body copy sits on `--line-height-body`
+   * (1.7, the 間 the dense scale is tuned for); at 54px that same ratio opens a 92px gap between
+   * two lines of one headline, so a consumer would be straight back to a bespoke class for the
+   * thing this step exists to remove. `--line-height-tight` is the token the heading tiers already
+   * read, and it is what both showcases approximated by hand. */
+  [data-slot="text"][data-size="3xl"],
+  [data-slot="text"][data-size="4xl"],
+  [data-slot="text"][data-size="5xl"] {
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+  [data-slot="text"][data-size="3xl"] {
+    font-size: var(--font-size-3xl);
+  }
+  [data-slot="text"][data-size="4xl"] {
+    font-size: var(--font-size-4xl);
+  }
+  [data-slot="text"][data-size="5xl"] {
+    font-size: var(--font-size-5xl);
+  }
+
   /* Weight — the reference-design canon (400 body · 500 heading/label · 700 emphasis). */
   [data-slot="text"][data-weight="regular"],
   [data-slot="heading"][data-weight="regular"] {
@@ -209,17 +237,63 @@
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
   }
-  [data-slot="heading"][data-level="1"] {
+  /* `:not([data-size])` is what makes `size` OUTRANK `level`, and it is written into the selector
+   * rather than left to source order on purpose: the antd-parity block further down re-opens
+   * `@layer components` to declare level 5, and a cascade that depended on which block came last
+   * would be decided by an edit in a different section of this file. With the guard, the two
+   * branches are mutually exclusive and the order stops mattering. */
+  [data-slot="heading"][data-level="1"]:not([data-size]) {
     font-size: var(--heading-h1);
   }
-  [data-slot="heading"][data-level="2"] {
+  [data-slot="heading"][data-level="2"]:not([data-size]) {
     font-size: var(--heading-h2);
   }
-  [data-slot="heading"][data-level="3"] {
+  [data-slot="heading"][data-level="3"]:not([data-size]) {
     font-size: var(--heading-h3);
   }
-  [data-slot="heading"][data-level="4"] {
+  [data-slot="heading"][data-level="4"]:not([data-size]) {
     font-size: var(--heading-h4);
+  }
+
+  /* Heading `size` — the SAME ten-step ladder `Text size` reads (gh#826).
+   *
+   * `level` keeps owning the document outline and the enterprise size that goes with it; `size`
+   * overrides the size ALONE, so a marketing hero is `<Heading level={1} size="5xl">` — a real
+   * <h1> at 54px — without the h1 of every admin screen in the library moving with it. That
+   * separation is the one thing every system in the prior art agrees on (Radix `as` + `size`,
+   * Polaris `as` + `variant`, Spectrum `level` + `font`); antd is the lone outlier that makes
+   * `level` both axes, and it is also the only one with no display range at all — 38px is its
+   * ceiling precisely BECAUSE a seventh size would need an `<h7>`. DESIGN-AUTHORITY asks for
+   * antd's answer first; on this axis antd has none to port. */
+  [data-slot="heading"][data-size="2xs"] {
+    font-size: var(--font-size-2xs);
+  }
+  [data-slot="heading"][data-size="xs"] {
+    font-size: var(--font-size-xs);
+  }
+  [data-slot="heading"][data-size="sm"] {
+    font-size: var(--font-size-sm);
+  }
+  [data-slot="heading"][data-size="md"] {
+    font-size: var(--font-size-base);
+  }
+  [data-slot="heading"][data-size="lg"] {
+    font-size: var(--font-size-lg);
+  }
+  [data-slot="heading"][data-size="xl"] {
+    font-size: var(--font-size-xl);
+  }
+  [data-slot="heading"][data-size="2xl"] {
+    font-size: var(--font-size-2xl);
+  }
+  [data-slot="heading"][data-size="3xl"] {
+    font-size: var(--font-size-3xl);
+  }
+  [data-slot="heading"][data-size="4xl"] {
+    font-size: var(--font-size-4xl);
+  }
+  [data-slot="heading"][data-size="5xl"] {
+    font-size: var(--font-size-5xl);
   }
 }
 

@@ -3055,10 +3055,10 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "size",
-        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl"',
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl"',
         defaultValue: '"sm"',
         description:
-          "Golden-ratio type-scale step (2xs…2xl). NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
+          "Type-scale step. NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step. Ten steps in two ramps: 2xs…2xl is the golden-ratio UI ramp (≈11…22px, the dense enterprise scale); 3xl…5xl is the DISPLAY ramp (≈28/42/54px, derived from --font-size-display) for a marketing hero, CTA headline or stat figure. The same ladder `Heading size` reads, so a headline and the figure beside it are one step name apart.",
       },
       {
         name: "tone",
@@ -3237,7 +3237,7 @@ import { Trash2 } from "lucide-react";
     name: "Heading",
     group: "general",
     tagline:
-      "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
+      "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs.",
     props: [
       {
         name: "weight",
@@ -3249,7 +3249,14 @@ import { Trash2 } from "lucide-react";
         name: "level",
         type: "1 | 2 | 3 | 4",
         defaultValue: "2",
-        description: "Heading level — sizes from --heading-h{1..4} and renders the matching <h*>.",
+        description:
+          "Heading level — renders the matching <h*> and, unless `size` overrides it, sizes from --heading-h{1..4}.",
+      },
+      {
+        name: "size",
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl"',
+        description:
+          'Visual size, overriding the step `level` would have taken — the SAME ladder `Text size` reads. `level` still owns the document outline, so a marketing hero is `<Heading level={1} size="5xl">`: a real <h1> at 54px, with no admin screen\'s <h1> moving. Omit it and `level` decides, exactly as before. Use this INSTEAD of a bespoke `.display` class with a raw font-size.',
       },
       {
         name: "as",
@@ -3272,13 +3279,15 @@ import { Trash2 } from "lucide-react";
     useCases: [
       "A section heading on a dashboard: `<Heading level={3}>今月のKPI</Heading>`.",
       'A visually-smaller heading that must stay an <h1> for a11y: `<Heading level={1} as="h1">…</Heading>`.',
+      'A marketing hero headline: `<Heading level={1} size="5xl">` — a real <h1> on the display ramp, instead of a page-local `.display` class.',
     ],
     storyPath: "general/typography.tsx",
     rules: [6, 23],
     example: `import { Heading } from "@godxjp/ui/general";
 
 <Heading level={2}>請求書一覧</Heading>
-<Heading level={3} tone="muted">補足セクション</Heading>`,
+<Heading level={3} tone="muted">補足セクション</Heading>
+<Heading level={1} size="5xl" align="center">Ship it everywhere</Heading>`,
   },
   {
     name: "Typography",

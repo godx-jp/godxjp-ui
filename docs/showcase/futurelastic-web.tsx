@@ -23,7 +23,7 @@ import {
   AtSign,
 } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback, Card, CardContent } from "@godxjp/ui/data-display";
 import { Flex } from "@godxjp/ui/layout";
 
@@ -46,6 +46,7 @@ const THEME = `
      a card, 3.21 on --muted. It was 36 18% 22% = 1.52:1. --border is decorative chrome; it stays. */
   --border: 36 22% 14%; --input: 36 18% 40%;
   --success: 145 63% 49%; --warning: 33 90% 44%; --destructive: 0 84% 60%; --info: 213 94% 68%;
+  --letter-spacing-tight: -0.03em; /* the display tracking .fl-display/.fl-h2 hand-wrote, once */
   --radius: 1rem; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 24px;
   --card-radius: var(--radius-2xl); --control-radius: var(--radius-lg);
   --shadow-color: 0 0 0;
@@ -54,7 +55,16 @@ const THEME = `
   --font-family-display: "Sora", system-ui, sans-serif;
   --font-family-body: "Be Vietnam Pro", system-ui, "Noto Sans JP", sans-serif;
   --font-family-sans: var(--font-family-body);
-  --font-size-display: 5rem;         /* 80px hero via text-5xl */
+  /* 80px hero. --font-size-display is the display ramp's BASE KNOB, but overriding it HERE does
+     not move the derived steps: --font-size-5xl is declared at :root as var(--font-size-display),
+     so it computes on :root and merely INHERITS down — the freeze docs/TOKENS.md names, and the
+     reason its role-mirror knobs are declared initial. The whole --font-size-* scale is built this way
+     (--font-size-lg freezes on --font-size-base identically), so it is a systemic token-tier
+     defect, not this ramp's, and not gh#826's to fix. Measured, not assumed: with only the line
+     below, <Heading size="5xl"> painted 54px here, the :root value. Setting the STEP works,
+     because this declaration is on an ancestor of the heading. */
+  --font-size-display: 5rem;
+  --font-size-5xl: 5rem;
   color-scheme: dark;
 }
 /* Marketing surface (consumer section stylesheet) */
@@ -80,15 +90,14 @@ const THEME = `
   font-size: 0.8125rem; font-weight: 500; color: hsl(var(--foreground)); }
 [data-tenant="futurelastic"] .fl-badge .dot { width: 6px; height: 6px; border-radius: 999px; background: hsl(var(--primary)); }
 [data-tenant="futurelastic"] .fl-hero { position: relative; overflow: hidden; padding-block: clamp(5rem, 3rem + 9vw, 10rem); }
-[data-tenant="futurelastic"] .fl-hero-glow { position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(60% 50% at 70% 0%, hsl(42 54% 54% / 0.12), transparent 70%); }
 [data-tenant="futurelastic"] .fl-hero-inner { position: relative; max-width: 860px; }
-[data-tenant="futurelastic"] .fl-display { font-family: var(--font-family-display); font-weight: 700; font-size: 5rem;
-  line-height: 1.05; letter-spacing: -0.03em; color: hsl(var(--foreground)); margin: 1.25rem 0; }
-[data-tenant="futurelastic"] .fl-h2 { font-family: var(--font-family-display); font-weight: 700; font-size: 2.5rem;
-  line-height: 1.1; letter-spacing: -0.02em; color: hsl(var(--foreground)); margin: 0.75rem 0; }
+/* .fl-display / .fl-h2 / .fl-lead / .fl-hero-glow / .fl-cta-glow are GONE (gh#826) — and the fact
+   that this file and acme-website.tsx, two unrelated brands, had independently written the SAME
+   five is what made them a missing API rather than brand styling. They are now
+   Heading size="5xl", Heading size="4xl", Text size="xl" and two .ui-brand-glow
+   layers. The display face still arrives through --font-family-display (base.css points every
+   <h1>-<h6> at it); the tracking is a token, set once above. */
 [data-tenant="futurelastic"] .fl-gold { color: hsl(var(--primary)); }
-[data-tenant="futurelastic"] .fl-lead { font-size: 1.25rem; line-height: 1.65; color: hsl(var(--muted-foreground)); max-width: 620px; }
 [data-tenant="futurelastic"] .fl-note { font-size: 0.9375rem; color: hsl(var(--muted-foreground)); margin-top: 2.5rem; }
 [data-tenant="futurelastic"] .fl-head { max-width: 640px; margin-inline: auto; text-align: center; }
 [data-tenant="futurelastic"] .fl-hero-actions { margin-top: 1.75rem; }
@@ -111,8 +120,6 @@ const THEME = `
 [data-tenant="futurelastic"] .fl-stat-num { font-family: var(--font-family-display); font-weight: 700; font-size: 3rem; color: hsl(var(--primary)); line-height: 1; }
 [data-tenant="futurelastic"] .fl-cta { position: relative; overflow: hidden; text-align: center; border: 1px solid hsl(var(--primary) / 0.2);
   border-radius: var(--radius-2xl); background: hsl(var(--card)); padding: 4rem 2rem; }
-[data-tenant="futurelastic"] .fl-cta-glow { position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(60% 80% at 50% 0%, hsl(42 54% 54% / 0.14), transparent 70%); }
 [data-tenant="futurelastic"] .fl-footer { border-top: 1px solid hsl(var(--border)); padding-block: 3.5rem 2rem; }
 [data-tenant="futurelastic"] .fl-footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-footer-grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; } }
@@ -151,18 +158,26 @@ function Navbar() {
 function Hero() {
   return (
     <header className="fl-hero">
-      <div className="fl-hero-glow" />
+      <div
+        className="ui-brand-glow absolute inset-0"
+        style={
+          {
+            "--brand-glow-alpha": "0.12",
+            "--brand-glow-position": "70% 0%",
+          } as React.CSSProperties
+        }
+      />
       <div className={`${SHELL} fl-hero-inner`}>
         <span className="fl-badge">
           <span className="dot" /> Tech · AI · Holdings
         </span>
-        <h1 className="fl-display">
+        <Heading level={1} size="5xl" weight="bold">
           Building the <span className="fl-gold">elastic</span> infrastructure of the future.
-        </h1>
-        <p className="fl-lead">
+        </Heading>
+        <Text as="p" size="xl" tone="muted">
           Futurelastic là pháp nhân holding của nhóm công ty công nghệ &amp; AI vận hành xuyên Nhật
           Bản và Việt Nam, từ logistics, fintech đến F&amp;B và thương mại.
-        </p>
+        </Text>
         <Flex direction="row" gap="md" className="fl-hero-actions">
           <Button size="lg">Khám phá hệ sinh thái</Button>
           <Button variant="outline" size="lg">
@@ -247,10 +262,12 @@ function Bento() {
       <Flex direction="col" gap="xl" className={SHELL}>
         <div className="fl-head">
           <div className="fl-eyebrow">Hệ sinh thái</div>
-          <h2 className="fl-h2">Một mái nhà, nhiều mũi nhọn</h2>
-          <p className="fl-lead mx-auto">
+          <Heading level={2} size="4xl" weight="bold">
+            Một mái nhà, nhiều mũi nhọn
+          </Heading>
+          <Text as="p" size="xl" tone="muted" className="mx-auto">
             Mỗi entity tự chủ vận hành; Futurelastic cung cấp vốn, công nghệ nền và quản trị chung.
-          </p>
+          </Text>
         </div>
         <div className="fl-bento">
           {cells.map((c) => (
@@ -304,13 +321,23 @@ function Cta() {
     <section className="fl-section">
       <div className={SHELL}>
         <div className="fl-cta">
-          <div className="fl-cta-glow" />
+          <div
+            className="ui-brand-glow absolute inset-0"
+            style={
+              {
+                "--brand-glow-alpha": "0.14",
+                "--brand-glow-size": "60% 80%",
+              } as React.CSSProperties
+            }
+          />
           <Flex direction="col" gap="xl" className="fl-cta-inner">
-            <h2 className="fl-h2">Cùng xây điều mới?</h2>
-            <p className="fl-lead mx-auto">
+            <Heading level={2} size="4xl" weight="bold">
+              Cùng xây điều mới?
+            </Heading>
+            <Text as="p" size="xl" tone="muted" className="mx-auto">
               Chúng tôi tìm đối tác, nhân tài và cơ hội M&amp;A trong công nghệ, logistics và
               F&amp;B tại Nhật Bản &amp; Việt Nam.
-            </p>
+            </Text>
             <Flex direction="row" gap="md" className="justify-center">
               <Button size="lg">Đặt lịch trao đổi</Button>
               <Button variant="ghost" size="lg">

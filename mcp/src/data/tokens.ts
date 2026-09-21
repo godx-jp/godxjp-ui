@@ -198,6 +198,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Opt-in decorative gradient fills, default `none`. --gradient-hero paints the PageContainer header (hero banner); --gradient-glow paints the AppShell .app-main (ambient brand wash); --gradient-brand is a spare. A service sets the full gradient, e.g. `--gradient-glow: radial-gradient(60% 80% at 50% 0%, hsl(var(--primary) / .25), transparent)`.",
   },
   {
+    name: "--brand-glow{,-color,-alpha,-size,-position}",
+    category: "primitive",
+    tier: "primitive",
+    role: 'The decorative brand SPOTLIGHT — a radial brand halo behind a hero, a CTA band or an auth card, painted by the `.ui-brand-glow` utility class. USE THE CLASS; do not hand-write `radial-gradient(… hsl(var(--primary) / .18) …)` on a page-local `.glow` div, which is what four separate marketing sections did while this shipped unreferenced (gh#826). Markup is one absolutely-positioned sibling inside a `position: relative` section: `<div className="ui-brand-glow absolute inset-0" />`; the class sets `pointer-events: none` itself, so it never steals a click from the copy above it. Tune without touching markup: `--brand-glow-color` (default `var(--primary)`), `--brand-glow-alpha` (0.18), `--brand-glow-size` (`60% 50%`) and `--brand-glow-position` (`50% 0%`, i.e. top-centre — set `88% -10%` to push the halo off the top-right corner). Override `--brand-glow` itself for a wholly bespoke gradient. Distinct from --gradient-{brand,hero,glow}, which are whole-fill values consumed by PageContainer and AppShell; this one is a standalone decorative layer you place.',
+  },
+  {
     name: "--primary",
     category: "semantic",
     tier: "semantic",

@@ -469,7 +469,8 @@ export const VOCABULARY_REGISTRY = {
   TextSizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Text size — golden-ratio type-scale steps (2xs…2xl), never an arbitrary px",
+    description:
+      "Text size — ten type-scale steps shared by Text and Heading, never an arbitrary px: the golden-ratio UI ramp 2xs…2xl (≈11…22px) plus the display ramp 3xl…5xl (≈28/42/54px, derived from --font-size-display) that a marketing hero needs",
   },
   IconSizeProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -490,7 +491,8 @@ export const VOCABULARY_REGISTRY = {
   HeadingLevelProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Heading level 1-4 — sizes from --heading-h* and the semantic element",
+    description:
+      "Heading level 1-4 — the semantic element, and the --heading-h* size it takes unless `size` (TextSizeProp) overrides it",
   },
   TextAlignProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -1729,7 +1731,13 @@ export const COMPONENT_PROP_REGISTRY = {
   HeadingProp: {
     group: "general",
     file: "components/general.prop.ts",
-    vocabulary: ["HeadingLevelProp", "TextToneProp", "TextAlignProp", "ClassNameProp"],
+    vocabulary: [
+      "HeadingLevelProp",
+      "TextSizeProp",
+      "TextToneProp",
+      "TextAlignProp",
+      "ClassNameProp",
+    ],
   },
   TypographyProp: {
     group: "general",

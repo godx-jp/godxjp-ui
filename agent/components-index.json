@@ -150,7 +150,7 @@
   {
     "group": "general",
     "name": "Heading",
-    "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>."
+    "tagline": "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>; `size` overrides the size alone, and its top three steps are the display ramp a marketing hero needs."
   },
   {
     "group": "general",

@@ -8337,6 +8337,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "TextSizeProp | undefined",
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,
@@ -9499,7 +9507,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -10970,7 +10978,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -16279,7 +16287,7 @@
           "origin": "owned",
           "required": false,
           "type": "TextSizeProp | undefined",
-          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "values": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl", "3xl", "4xl", "5xl"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

@@ -32,7 +32,7 @@ import {
   Warehouse,
 } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback, Card, CardContent, CardCover } from "@godxjp/ui/data-display";
 import { Flex, ResponsiveGrid } from "@godxjp/ui/layout";
 
@@ -52,6 +52,7 @@ const THEME = `
      3.18 on --muted. It was 216 16% 80% = 1.46:1. --border is decorative chrome; it stays. */
   --border: 214 27% 90%; --input: 216 16% 55%;
   --success: 152 100% 25%; --warning: 41 73% 53%; --destructive: 11 82% 56%; --info: 203 100% 37%;
+  --letter-spacing-tight: -0.02em; /* the display tracking .tx-display/.tx-h2 hand-wrote, once */
   --radius: 0.875rem; --radius-md: 10px; --radius-lg: 14px;
   --card-radius: var(--radius); --control-radius: var(--radius);
   --shadow-color: 38 79 145;
@@ -75,20 +76,21 @@ const THEME = `
 [data-tenant="acme-web"] .tx-brand { font-family: var(--font-family-display); font-weight: 800; font-size: 1.375rem; letter-spacing: -0.01em; color: hsl(var(--foreground)); }
 [data-tenant="acme-web"] .tx-eyebrow { font-family: var(--font-family-display); font-weight: 700; font-size: 0.8125rem;
   letter-spacing: 0.12em; text-transform: uppercase; color: hsl(var(--text-brand)); }
-[data-tenant="acme-web"] .tx-display { font-family: var(--font-family-display); font-weight: 900; font-size: 3.5rem;
-  line-height: 1.05; letter-spacing: -0.02em; margin: 1rem 0; color: hsl(var(--foreground)); }
-[data-tenant="acme-web"] .tx-h2 { font-family: var(--font-family-display); font-weight: 800; font-size: 2.25rem;
-  line-height: 1.15; letter-spacing: -0.02em; margin: 0.75rem 0 0.625rem; color: hsl(var(--foreground)); }
-[data-tenant="acme-web"] .tx-lead { font-size: 1.1875rem; line-height: 1.6; color: hsl(var(--muted-foreground)); max-width: 480px; }
+/* .tx-display / .tx-h2 / .tx-lead are GONE (gh#826). They existed only because the display type
+   ramp had tokens and no prop, so all three were a raw font-size plus the leading that has to come
+   with it. They are now Heading size="5xl", Heading size="4xl" and Text size="xl". The
+   brand face is not lost with them: base.css already points every <h1>-<h6> at
+   --font-family-display, which the token block above sets. The one knob those classes carried that
+   is genuinely brand and not scale is the display tracking, and it IS a token — set once, below. */
 /* --text-brand, not --primary (gh#643): --primary is a FILL role, and as ink it measured
    2.01:1 here. The AA-safe text tier already exists and .tx-eyebrow above already reads it. */
 [data-tenant="acme-web"] .tx-gold { color: hsl(var(--text-brand)); }
 [data-tenant="acme-web"] .tx-stat { font-family: var(--font-family-display); font-weight: 800; font-size: 1.75rem; color: hsl(var(--primary)); }
 [data-tenant="acme-web"] .tx-hero-grid { display: grid; gap: 3rem; align-items: center; padding-block: 6rem; }
 @media (min-width: 1024px) { [data-tenant="acme-web"] .tx-hero-grid { grid-template-columns: 1.1fr 0.9fr; } }
-[data-tenant="acme-web"] .tx-glow { position: absolute; inset: 0; pointer-events: none; }
-[data-tenant="acme-web"] .tx-glow-tr { background: radial-gradient(40% 50% at 88% -10%, hsl(41 73% 53% / 0.22), transparent 70%); }
-[data-tenant="acme-web"] .tx-glow-bl { background: radial-gradient(40% 50% at 12% 120%, hsl(41 73% 53% / 0.18), transparent 70%); }
+/* .tx-glow* are GONE too: .ui-brand-glow shipped with exactly this gradient and these four
+   knobs, and nothing in the repo referenced it while four sections hand-wrote it (gh#826). The
+   halo's position/size/alpha are now per-instance token overrides at the call site. */
 [data-tenant="acme-web"] .tx-field { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem;
   background: hsl(0 0% 100% / 0.08); border-radius: var(--radius-md); }
 [data-tenant="acme-web"] .tx-quote-total { display: flex; align-items: center; justify-content: space-between;
@@ -156,19 +158,28 @@ function Hero() {
   ];
   return (
     <section className="tx-navy relative overflow-hidden">
-      <div className="tx-glow tx-glow-tr" />
+      <div
+        className="ui-brand-glow absolute inset-0"
+        style={
+          {
+            "--brand-glow-size": "40% 50%",
+            "--brand-glow-position": "88% -10%",
+            "--brand-glow-alpha": "0.22",
+          } as React.CSSProperties
+        }
+      />
       <div className={`${SHELL} tx-hero-grid relative`}>
         <Flex direction="col" gap="xl">
           <div className="tx-eyebrow">Mua hộ &amp; vận chuyển quốc tế</div>
-          <h1 className="tx-display">
+          <Heading level={1} size="5xl" weight="bold">
             Mua sắm toàn cầu,
             <br />
             <span className="tx-gold">ACME</span> lo phần còn lại.
-          </h1>
-          <p className="tx-lead">
+          </Heading>
+          <Text as="p" size="xl" tone="muted">
             Đặt mua, thanh toán và vận chuyển hàng từ Nhật, Hàn, Indonesia và Mỹ về tận nhà. Minh
             bạch chi phí, theo dõi từng bước.
-          </p>
+          </Text>
           <Flex direction="row" gap="md">
             <Button size="lg">
               Nhận báo giá miễn phí
@@ -241,8 +252,14 @@ function SectionHead({
   return (
     <div className={center ? "mx-auto text-center" : undefined}>
       <div className="tx-eyebrow">{eyebrow}</div>
-      <h2 className="tx-h2">{title}</h2>
-      {sub ? <p className="tx-lead mx-auto">{sub}</p> : null}
+      <Heading level={2} size="4xl" weight="bold">
+        {title}
+      </Heading>
+      {sub ? (
+        <Text as="p" size="xl" tone="muted" className="mx-auto">
+          {sub}
+        </Text>
+      ) : null}
     </div>
   );
 }
@@ -380,10 +397,22 @@ function Routes() {
 function CtaBanner() {
   return (
     <section className="tx-navy tx-section relative overflow-hidden">
-      <div className="tx-glow tx-glow-bl" />
+      <div
+        className="ui-brand-glow absolute inset-0"
+        style={
+          {
+            "--brand-glow-size": "40% 50%",
+            "--brand-glow-position": "12% 120%",
+          } as React.CSSProperties
+        }
+      />
       <div className={`${SHELL} relative text-center`}>
-        <h2 className="tx-h2">Sẵn sàng cho đơn hàng đầu tiên?</h2>
-        <p className="tx-lead mx-auto">Tạo tài khoản miễn phí và nhận báo giá trong 5 phút.</p>
+        <Heading level={2} size="4xl" weight="bold">
+          Sẵn sàng cho đơn hàng đầu tiên?
+        </Heading>
+        <Text as="p" size="xl" tone="muted" className="mx-auto">
+          Tạo tài khoản miễn phí và nhận báo giá trong 5 phút.
+        </Text>
         <Flex direction="row" gap="md" justify="center">
           <Button size="lg">
             <UserPlus aria-hidden="true" />
