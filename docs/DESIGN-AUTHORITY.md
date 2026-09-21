@@ -12,17 +12,17 @@ It changes no code by itself. It is the tie-breaker a reviewer points at.
 
 ## The layers, and who owns each
 
-| Layer                                                              | Authority                                       | Status in this repo                                                                                                                                  |
-| ------------------------------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Interaction semantics, keyboard, ARIA                              | **WAI-ARIA APG**                                | already followed — 33 references in `src/`                                                                                                           |
-| Behaviour primitives                                               | **Radix**                                       | already the implementation — 193 references                                                                                                          |
-| Component composition shape                                        | **shadcn**                                      | already the structural convention — 23 references                                                                                                    |
-| Component taxonomy / grouping                                      | **Ant Design** groups                           | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed    |
+| Layer                                                              | Authority                                       | Status in this repo                                                                                                                                                                                        |
+| ------------------------------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interaction semantics, keyboard, ARIA                              | **WAI-ARIA APG**                                | already followed — 33 references in `src/`                                                                                                                                                                 |
+| Behaviour primitives                                               | **Radix**                                       | already the implementation — 193 references                                                                                                                                                                |
+| Component composition shape                                        | **shadcn**                                      | already the structural convention — 23 references                                                                                                                                                          |
+| Component taxonomy / grouping                                      | **Ant Design** groups                           | already the catalog shape: `data-entry`, `data-display`, `layout`, `feedback`, `navigation`, `general` — a naming precedent, nothing is installed                                                          |
 | Colour foundation                                                  | **SmartHR**, brand roles aside                  | the NEUTRAL spine is SmartHR's — `--foreground` = TEXT_BLACK, `--border` = BORDER. `--primary` was SmartHR MAIN `#0071bd` until identity v2.3 took the brand roles back: it is GoDX violet `#7A00FF` today |
-| **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold, and a fifth holds it to the seed's HUE (gh#648) — see below |
-| **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                     | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves                    |
-| **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency)   | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                                          |
-| **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                  | **NEW — this decision**                                                                                                                              |
+| **Derived colour — the interaction states hanging off each seed**  | **Measured contrast (WCAG 2.2 / JIS X 8341-3)** | Authored in `src/tokens/derived.css`; no algorithm derives them. Four contrast suites read that file and hold every value to a threshold, and a fifth holds it to the seed's HUE (gh#648) — see below      |
+| **Japanese UI convention — density, JP typography, form patterns** | **SmartHR**                                     | **NEW — this decision.** Extends SmartHR from "where the colours came from" to the authority for how a JP business screen behaves                                                                          |
+| **Japanese accessibility / public-sector convention**              | **デジタル庁 Design System** (Digital Agency)   | **NEW — this decision.** The reference when a JP customer asks which standard a screen meets (JIS X 8341-3)                                                                                                |
+| **Spacing, density, type scale, information architecture**         | **IBM Carbon**                                  | **NEW — this decision**                                                                                                                                                                                    |
 
 The first five were already true and merely unwritten. The last three are the choices being made
 here. Carbon fills the one layer that had no outside answer at all: page rhythm, table density, form layout,
@@ -282,6 +282,42 @@ bottomEnd | none` (`TablePaginationPositionProp`, default `['bottomEnd']`), the 
   rows, so an expanded detail row shifts every stripe after it, and `ui-audit` blocks the
   utilities it would need.
 
+- **`Masonry.gap` is antd `gutter`, and its breakpoint steps are this library's (gh-masonry
+  port).** Three divergences on one component, each for a reason already written down elsewhere in
+  this file:
+
+  1. **`gutter` → `gap`.** antd's `gutter` takes a raw pixel number (or a per-breakpoint map of
+     them). This library already owns that axis under the name `gap` on `Flex`, `ResponsiveGrid`
+     and `AuthStack`, `check:prop-vocabulary` maps a field called `gap` to `GapProp`, and a token
+     step is what makes spacing follow `--scaling` (density) and a tenant theme. "This library's
+     controlled vocabulary wins on values" is the rule; here it wins on the name too, because the
+     name and the value type move together. antd's tuple `[Gap, Gap]` survives as
+     `[GapProp, GapProp]` = `[inline, block]`. **`gutter` is not silently absent**: it is declared
+     on the prop type as `never`, so a consumer arriving from antd's docs gets a compile error and
+     a `@deprecated` hint naming `gap`, plus a development-time `console.warn`.
+  2. **`columns` steps are `base sm md lg xl`, not antd's `xs sm md lg xl xxl`.** antd's `xs` IS
+     this library's `base` (the mobile-first floor), and a second spelling of one axis is what
+     `check:prop-vocabulary` exists to prevent; `xxl` has no step here at all. `Flex direction`
+     is the precedent shape and the media queries are literally the `--flex-direction-*` cascade's
+     (sm 40rem · md 48rem · lg 64rem · xl 80rem). Both antd spellings FAIL LOUDLY — TypeScript
+     rejects them as excess properties and the component names them in a development warning —
+     because a silently-ignored `xs` is the worst outcome of the three.
+  3. **`MasonryItem.height` is HONOURED, where antd declares it and never reads it.** Verified in
+     antd `master`: `Masonry.tsx` builds every `ItemHeightData` from `getBoundingClientRect()`
+     alone, and all six demos carry their heights in `data`. Porting the field as inert would ship
+     a documented prop that does nothing. Here a finite `height` sizes the tile and replaces its
+     measurement, which is also what lets a first paint and an SSR render land in the right place.
+
+  Not ported, each under a rule that already exists: `classNames` / `styles` (a knob only a fork
+  could reach — `src/tokens/components/masonry.css` is the answer), `prefixCls` / `rootClassName`
+  (no `prefixCls` layer here), and rc-motion's tile-REMOVAL animation (the arrival fade and the
+  re-flow slide are ported in CSS and both snap under `prefers-reduced-motion`). `fresh` keeps
+  antd's name and antd's `false` default even though `docs/roadmap/list-masonry.md` (2026-09-10)
+  proposed renaming it `observeItems` and defaulting it on — that proposal predates the
+  2026-09-12 restatement above, and "the antd name says nothing" is exactly the reasoning the
+  restatement rejects. The same roadmap's invented `sequential` prop is not ported for the same
+  reason: antd has no such knob, and improvements come after parity, not instead of it.
+
 - **`Command.split` is antd `List.split`, with this library's default.** Same name, same meaning:
   a divider between rows and none after the last (gh#699). antd's `List` defaults it to `true`;
   `Command` defaults it to `false`, because its resting home is a command palette, where inset
@@ -501,11 +537,11 @@ snapped to the seed's hue (1.008:1 / 1.010:1 from the kit value, i.e. the same c
 the kit's `action.primary.hover` and then reflects the pressed step, because the dark seed sits at
 86.9% L and the conventional step runs out of LIGHTNESS rather than out of contrast:
 
-| token                    | conventional step        | shipped                            |
-| ------------------------ | ------------------------ | ---------------------------------- |
-| light `--primary-hover`  | kit #6400D4              | #6500d4 · 8.23:1                   |
-| light `--primary-active` | kit #5200B0              | #5400b0 · 10.31:1                  |
-| dark `--primary-hover`   | kit #E8DAFF              | #ecdaff · 13.51:1                  |
+| token                    | conventional step            | shipped                         |
+| ------------------------ | ---------------------------- | ------------------------------- |
+| light `--primary-hover`  | kit #6400D4                  | #6500d4 · 8.23:1                |
+| light `--primary-active` | kit #5200B0                  | #5400b0 · 10.31:1               |
+| dark `--primary-hover`   | kit #E8DAFF                  | #ecdaff · 13.51:1               |
 | dark `--primary-active`  | #fbf7ff · 1.056:1 from white | #cd9fff · 8.41:1 (sign flipped) |
 
 **The ratio is blind to hue, and that cost a release (gh#648).** Identity v2.3 moved the seed 63
@@ -604,10 +640,10 @@ the **field** indicator on every control — one hairline (1px) in the focus hue
 `--control-outline` halo — rather than the heavy 3px outline form. Measured, in Chromium, on
 `ql.test` after the transition settles:
 
-| control                    | switch off                                           | switch on                                                      |
-| -------------------------- | ---------------------------------------------------- | -------------------------------------------------------------- |
+| control                    | switch off                                           | switch on                                                       |
+| -------------------------- | ---------------------------------------------------- | --------------------------------------------------------------- |
 | Input / Select trigger     | border `1px rgb(144,135,127)`, resting shadow intact | border `1px` of `--ring` + `--control-outline` halo `0 0 0 2px` |
-| Button (primary)           | outline `0px`, resting shadow intact                 | `outline: 1px solid` `--ring` @ `0px` + same halo              |
+| Button (primary)           | outline `0px`, resting shadow intact                 | `outline: 1px solid` `--ring` @ `0px` + same halo               |
 | Sidebar nav row / list row | outline `0px`                                        | `outline: 1px solid` `--ring` @ **`-1px`** (inset into the row) |
 
 The GEOMETRY above is the Chromium measurement; the COLOUR is named by token rather than pinned as

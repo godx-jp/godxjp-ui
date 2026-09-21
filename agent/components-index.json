@@ -849,5 +849,10 @@
     "group": "data-entry",
     "name": "Attachments",
     "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`."
+  },
+  {
+    "group": "layout",
+    "name": "Masonry",
+    "tagline": "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing."
   }
 ]

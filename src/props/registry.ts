@@ -886,6 +886,98 @@ export const COMPONENT_PROP_REGISTRY = {
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridPresetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  MasonryColumnsProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["BreakpointProp"],
+  },
+  MasonryGapProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["GapProp"] },
+  MasonryItemProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "key",
+        local: true,
+        reason:
+          "Ant Design `MasonryItem.key` — the tile's identity across re-orders and re-measures, a DATA field on the item descriptor, not React's reserved element key.",
+      },
+      {
+        field: "column",
+        local: true,
+        reason:
+          "Ant Design `MasonryItem.column` — pin to a 0-based column index instead of the shortest-column fill.",
+      },
+      {
+        field: "height",
+        local: true,
+        reason:
+          "Ant Design `MasonryItem.height` — a declared block size that replaces the measurement for this tile.",
+      },
+      {
+        field: "data",
+        local: true,
+        reason:
+          "Ant Design `MasonryItem.data` — arbitrary payload handed back to itemRender/onLayoutChange.",
+      },
+    ],
+  },
+  MasonryLayoutEntryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      {
+        field: "column",
+        local: true,
+        reason:
+          "The 0-based column the item landed in — the whole payload of Ant Design `onLayoutChange`.",
+      },
+    ],
+  },
+  MasonryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "GapProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "items",
+        local: true,
+        reason: "Ant Design `Masonry.items` — the tile descriptors, in reading order.",
+      },
+      {
+        field: "itemRender",
+        local: true,
+        reason: "Ant Design `Masonry.itemRender` — renders a tile that carries no children.",
+      },
+      {
+        field: "columns",
+        local: true,
+        reason:
+          "Ant Design `Masonry.columns` — fixed count or a per-breakpoint map (MasonryColumnsProp).",
+      },
+      {
+        field: "gutter",
+        local: true,
+        reason:
+          "NOT a prop: typed `never` so antd's spelling of `gap` is a compile error that names the replacement instead of a silently-unspaced grid (docs/DESIGN-AUTHORITY.md).",
+      },
+      {
+        field: "fresh",
+        local: true,
+        reason:
+          "Ant Design `Masonry.fresh` — observe every tile's own size, not just the container's.",
+      },
+      {
+        field: "onLayoutChange",
+        local: true,
+        reason:
+          "Ant Design `Masonry.onLayoutChange` — reports column assignment; not a controlled-value callback, so it is not OnValueChangeProp.",
+      },
+    ],
+  },
   MasterDetailRailWidthProp: {
     group: "layout",
     file: "components/layout.prop.ts",

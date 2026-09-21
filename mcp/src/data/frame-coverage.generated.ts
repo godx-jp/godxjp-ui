@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 291,
-    dimensionCells: 4074,
+    exports: 292,
+    dimensionCells: 4088,
     covered: 90,
-    untested: 2236,
-    notApplicable: 1748,
+    untested: 2243,
+    notApplicable: 1755,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -248,6 +248,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Link","group":"general","frame":"docs/general/typography.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes","states","tones"],"notApplicable":["density","ownership","shapes","variants"]},
   {"name":"ListRow","group":"data-display","frame":"docs/data-display/list-row.tsx","covered":["density"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Logo","group":"general","frame":"docs/general/logo.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","states","variants"]},
+  {"name":"Masonry","group":"layout","frame":"docs/layout/masonry.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"MasterDetail","group":"layout","frame":"docs/layout/master-detail.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"MobileShell","group":"layout","frame":"docs/layout/mobile-shell.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NavList","group":"layout","frame":"docs/layout/nav-list.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
