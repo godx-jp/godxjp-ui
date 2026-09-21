@@ -3769,6 +3769,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Close button rest opacity — quiet at rest, full on hover (rule #44). Was a hard 0.7 baked into * dialog-layout.css with no way for a theme to make the ✕ louder. Mirrors * --sheet-close-rest-alpha so the two overlay siblings retune together."
   },
   {
+    "name": "--dialog-close-size",
+    "value": "var(--touch-target-min)",
+    "description": "THE CLOSE BUTTON'S TARGET, WHICH IS NOT ITS PAINT (gh#806 · WCAG 2.2 SC 2.5.8 AA). * * The ✕ glyph is --control-affix-icon-size (16px) and the button had nothing around it, so the * button measured 16x16 and all four +-11px probes MISSED — measured on the real Dialog frame, * not a fixture. A consumer's a11y gate had to exclude the selector, and rule #47 forbids them * re-sizing it themselves. * * The paint must NOT grow: the ✕ sits at a fixed offset from the panel corner and enlarging the * glyph moves the optical weight of every overlay in the system. So the hit area is carried by a * centred pseudo-element, the same answer `.ui-data-table-sort-button::after` already ships — * verified there the same way (paint 53.1x17.8, all four probes HIT). * * Raisable because SC 2.5.8 is a floor, not a target: a touch-first service sets this higher."
+  },
+  {
     "name": "--dialog-step-up-error-font-size",
     "value": "var(--font-size-sm)",
     "description": "Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were * `text-sm text-destructive` on the component, i.e. unreachable from a theme."
