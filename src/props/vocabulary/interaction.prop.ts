@@ -329,6 +329,21 @@ export type SortStateProp = { key: string; direction: SortDirectionProp };
 export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
+ * What STARTS a `Reveal` — `mount` (default, the historical behaviour: the entrance plays as soon
+ * as the element renders) or `view` (the entrance waits until the element reaches the viewport).
+ * A trigger, never a second component: the animation, the tokens and the reduced-motion contract
+ * are identical either way.
+ */
+export type RevealTriggerProp = "mount" | "view";
+
+/**
+ * How much of an element must be inside the viewport to count as in view — Motion's `useInView`
+ * `amount`, name and type unchanged. `"some"` (default) is any pixel, `"all"` is the whole box, a
+ * number is an explicit 0..1 ratio.
+ */
+export type InViewAmountProp = "some" | "all" | number;
+
+/**
  * Ambient-activity mark for `Activity` — the LOOP counterpart to `RevealDelayProp`'s one-shot
  * ladder. `dots` (default) is the three-dot ellipsis convention (someone is typing); `pulse` a
  * single breathing mark (live / recording); `bar` an indeterminate sweep (syncing).

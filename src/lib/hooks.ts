@@ -1,4 +1,5 @@
 // Shared hooks for admin components.
+import { useLayoutEffect } from "@react-aria/utils";
 import { type RefObject, useEffect, useState } from "react";
 
 /**
@@ -224,4 +225,98 @@ export function useScrollsHorizontally(
   enabled: boolean,
 ): boolean {
   return useScrollsOnAxis(ref, enabled, "horizontal");
+}
+
+/**
+ * Has this element entered the viewport (or `root`) yet?
+ *
+ * The ONE `IntersectionObserver` wrapper in the library. `Reveal on="view"` is its first caller
+ * (gh#829); `PageContainer`'s private `useFooterReveal` is the second, and `root` exists here
+ * because that caller measures against its nearest scrolling ancestor rather than the viewport.
+ *
+ * Borrowed from Motion's `useInView` (https://motion.dev/docs/react-use-in-view): `once` and
+ * `amount` keep their names, their types and their defaults, including `amount`'s
+ * `"some" | "all" | number` and Motion's own `{ some: 0, all: 1 }` threshold mapping.
+ *
+ * ## Unobservable counts as IN VIEW
+ *
+ * The server render, jsdom, a browser without `IntersectionObserver`, and `enabled: false` all
+ * report `true`. A caller that hides content until this returns `true` therefore shows it — the
+ * only safe direction, because the alternative is content that is never revealed at all. Callers
+ * MUST keep it that way: visibility is never gated on an observer that might not exist.
+ *
+ * ## `amount` is clamped to what the element can actually reach
+ *
+ * `threshold` is the ratio of the intersection to the TARGET's own box
+ * (https://www.w3.org/TR/intersection-observer/#dom-intersectionobserverentry-intersectionratio), so
+ * an element taller than the root can never reach `1`: `amount: "all"` on a full-height section
+ * would hide it forever. The requested ratio is clamped at observe time to the largest ratio the
+ * element's measured box can attain inside the root.
+ */
+export function useInView(
+  ref: RefObject<Element | null>,
+  {
+    enabled = true,
+    once = false,
+    amount = "some",
+    root = null,
+  }: {
+    /** `false` skips the observer entirely and reports `true`. */
+    enabled?: boolean;
+    /** Stop observing after the first entry, so the element never reports out-of-view again. */
+    once?: boolean;
+    /** How much must be visible — `"some"` (any pixel) | `"all"` | a 0..1 ratio. */
+    amount?: "some" | "all" | number;
+    /** Scroll container to measure against. `null` → the document viewport. */
+    root?: Element | null;
+  } = {},
+): boolean {
+  const [inView, setInView] = useState(true);
+
+  // A LAYOUT effect, not a passive one: the first paint after mount must already carry the hidden
+  // state, or a caller that hides on `false` flashes its content in before taking it away again.
+  // `@react-aria/utils`' copy is the SSR-safe one (a no-op on the server, where `true` stands).
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!enabled || !el || typeof IntersectionObserver === "undefined") return undefined;
+
+    const requested = typeof amount === "number" ? amount : amount === "all" ? 1 : 0;
+    const box = el.getBoundingClientRect();
+    const rootBox = root?.getBoundingClientRect();
+    const rootWidth = rootBox?.width ?? window.innerWidth;
+    const rootHeight = rootBox?.height ?? window.innerHeight;
+    const reachable =
+      box.width > 0 && box.height > 0
+        ? (Math.min(box.width, rootWidth) * Math.min(box.height, rootHeight)) /
+          (box.width * box.height)
+        : 1;
+    const threshold = Math.min(requested, reachable);
+
+    // Only now — with a live observer in hand — may the answer become `false`.
+    setInView(false);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (!entry) return;
+        // Compared against the clamped ratio rather than trusting `isIntersecting`, which flips at
+        // the first pixel and is only the right answer when `amount` is `"some"`.
+        if (entry.isIntersecting && entry.intersectionRatio >= threshold) {
+          setInView(true);
+          // Motion unobserves the target rather than disconnecting; with one target per hook the
+          // effect is the same, and the observer is still disconnected on cleanup.
+          if (once) observer.unobserve(entry.target);
+        } else if (!once) {
+          setInView(false);
+        }
+      },
+      { root, threshold },
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref, enabled, once, amount, root]);
+
+  return !enabled || inView;
 }

@@ -6,6 +6,31 @@
     will-change: transform, opacity;
   }
 
+  /* `on="view"` (gh#829) — the observer gates the ANIMATION, never the VISIBILITY.
+   *
+   * The resting state below is the FINISHED one: `animation: none` on a fully opaque, untranslated
+   * box. A server render, a browser with no `IntersectionObserver`, and `prefers-reduced-motion:
+   * reduce` (under which the component attaches no observer at all) therefore paint the content
+   * exactly as it will finally look. `opacity: 0` is never the stylesheet's resting state — a
+   * reveal that never reveals is the one failure this component may not have.
+   *
+   * `data-reveal-state` is written ONLY by a mounted component holding a live observer: `out` is
+   * the pre-entry state it measured, `in` is the entrance. Longhands, not the `animation`
+   * shorthand, so the `data-reveal-delay` stagger below survives regardless of source order. */
+  .ui-reveal[data-reveal-on="view"] {
+    animation: none;
+  }
+  .ui-reveal[data-reveal-state="out"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  .ui-reveal[data-reveal-state="in"] {
+    animation-name: ui-reveal-in;
+    animation-duration: var(--duration-slow);
+    animation-timing-function: var(--ease-emphasized);
+    animation-fill-mode: both;
+  }
+
   .ui-reveal[data-reveal-delay="1"] {
     animation-delay: calc(var(--reveal-stagger-step) * 1);
   }
@@ -36,11 +61,21 @@
     }
   }
 
-  /* Accessibility: no motion → no animation, content stays visible (WCAG 2.3.3 / 2.2.2). */
+  /* Accessibility: no motion → no animation, content stays visible (WCAG 2.3.3 / 2.2.2).
+   *
+   * The `data-reveal-state="out"` reset is belt AND braces: the component already drops the
+   * observer under `reduce`, so the attribute should not exist — but if the OS setting is flipped
+   * mid-session the stylesheet answers before React re-renders, and the content is never left
+   * hidden for even one frame. */
   @media (prefers-reduced-motion: reduce) {
     .ui-reveal,
-    .ui-reveal[data-reveal-delay] {
+    .ui-reveal[data-reveal-delay],
+    .ui-reveal[data-reveal-state] {
       animation: none;
+    }
+    .ui-reveal[data-reveal-state="out"] {
+      opacity: 1;
+      transform: none;
     }
   }
 }

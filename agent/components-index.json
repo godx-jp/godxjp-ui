@@ -183,9 +183,15 @@
     "tagline": "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes."
   },
   {
+    "absorbed": [
+      "Spin",
+      "Spinner",
+      "Loading",
+      "LoadingIndicator"
+    ],
     "group": "general",
     "name": "Activity",
-    "tagline": "The official AMBIENT-motion primitive — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live)."
+    "tagline": "The official AMBIENT-motion primitive and the standalone indeterminate indicator (antd `Spin`) — a continuous, unbounded 'something is happening right now, elsewhere' mark (someone typing, a sync running, a response streaming, a recording live). Loading a REGION is Skeleton; an in-flight ACTION is Button loading; a known percentage is Progress."
   },
   {
     "group": "general",
