@@ -123,7 +123,12 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="lg" align="start" wrap>
+            {/* A STACK ON A PHONE, said with `direction` rather than left to `wrap`.
+                `wrap` never fired here: each column carries `min-w-0 flex-1`, and an item that
+                may shrink to nothing never reaches the wrap threshold — so at 375px this was
+                three 92px columns, and the unbreakable `density="comfortable"` label painted
+                36px over its neighbour with no scrollport to reach it. */}
+            <Flex direction={{ base: "col", md: "row" }} gap="lg" align="start" wrap>
               {density.map((d) => (
                 <Flex key={d.cls} direction="col" gap="sm" className="min-w-0 flex-1 sm:min-w-72">
                   <Flex direction="row" align="center" justify="between" gap="sm">
@@ -154,7 +159,12 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="lg" align="start" wrap>
+            {/* A STACK ON A PHONE, said with `direction` rather than left to `wrap`.
+                `wrap` never fired here: each column carries `min-w-0 flex-1`, and an item that
+                may shrink to nothing never reaches the wrap threshold — so at 375px this was
+                three 92px columns, and the unbreakable `density="comfortable"` label painted
+                36px over its neighbour with no scrollport to reach it. */}
+            <Flex direction={{ base: "col", md: "row" }} gap="lg" align="start" wrap>
               <Flex direction="col" gap="sm" className="min-w-0 flex-1 sm:min-w-72">
                 <Text size="xs" mono>
                   density=&quot;compact&quot;

@@ -50,6 +50,29 @@ const base = process.argv.find((a) => a.startsWith("http")) ?? DEFAULT_BASE;
 const UPDATE = process.argv.includes("--update-baseline");
 const BASELINE = path.join(REPO_ROOT, "preview/frame-overflow.baseline.json");
 
+/**
+ * TWO WIDTHS, because one width was measuring one sixth of the problem.
+ *
+ * Every browser gate in this repo ran at 1280 and only at 1280. At 1280 this gate reports 0. The
+ * first sweep at a phone width reported 24 elements across 3 frames — and after the reachability
+ * rule above dismissed the two `ScrollArea`/`Tabs` demos that were simply scrolling, one was real:
+ * `foundation-density` put 128px of unbreakable mono text into a 92px box with `overflow: visible`
+ * and no scrollport anywhere above it, so 36px of ink painted over the neighbouring column with
+ * no way to reach it.
+ *
+ * The cause is the kind that only exists narrow: three columns carrying `min-w-0 flex-1`, so
+ * `wrap` can never fire — items that may shrink to nothing never reach the wrap threshold — and
+ * at 375px you get three 92px columns instead of a stack. `Flex` has taken a responsive
+ * `direction` the whole time; the page simply did not use it.
+ *
+ * 375 is the narrow rung because it is the iPhone SE / mini class and the narrowest width this
+ * library claims to support. Anything that survives 375 survives 390 and 414.
+ */
+const VIEWPORTS = [
+  { name: "w1280", width: 1280, height: 1000 },
+  { name: "w375", width: 375, height: 800, mobile: true },
+];
+
 /** Every docs frame, derived the way the preview derives its route id — never a hand-kept list. */
 function frameRoutes() {
   const walk = (dir) =>
@@ -83,6 +106,26 @@ const PROBE = () => {
     /inset\(\s*50%/.test(cs.clipPath || "") ||
     /(^|\s)sr-only(\s|$)/.test(el.className?.toString() || "");
 
+  /* REACHABLE IS NOT OVERFLOWING EITHER, and this one cost a false report before it was written.
+   *
+   * A `ScrollArea` demo at phone width puts 3008px of table inside a 309px viewport, and a
+   * `Tabs overflow="scroll"` list puts 480px of tabs inside 131px. Both look exactly like a spill
+   * — a child wider than its parent — and both are the component doing its job: the ink is one
+   * swipe away. The thing that separates them from a real defect is not the amount, it is whether
+   * ANY ancestor is a scrollport on that axis. So walk up and ask.
+   *
+   * Only `auto`/`scroll` counts. `hidden` is a clip, not a route: it hides the ink with no way to
+   * reach it, which is the defect this gate is named after. */
+  const reachableBy = (el, axis) => {
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      const acs = getComputedStyle(a);
+      const over = axis === "x" ? acs.overflowX : acs.overflowY;
+      const room = axis === "x" ? a.scrollWidth - a.clientWidth : a.scrollHeight - a.clientHeight;
+      if (/auto|scroll/.test(over) && room > 1) return true;
+    }
+    return false;
+  };
+
   for (const el of document.querySelectorAll("body *")) {
     if (!hasText(el)) continue;
     const cs = getComputedStyle(el);
@@ -93,7 +136,12 @@ const PROBE = () => {
 
     // CLIPPED — this element clips its own overflowing text.
     const clips = /hidden|clip/.test(cs.overflowX) || /hidden|clip/.test(cs.overflowY);
-    if (clips && el.scrollWidth > el.clientWidth + TOLERANCE && cs.textOverflow !== "ellipsis") {
+    if (
+      clips &&
+      el.scrollWidth > el.clientWidth + TOLERANCE &&
+      cs.textOverflow !== "ellipsis" &&
+      !/auto|scroll/.test(cs.overflowX)
+    ) {
       out.push({
         kind: "clipped",
         text,
@@ -113,7 +161,7 @@ const PROBE = () => {
     const r = el.getBoundingClientRect();
     const pr = parent.getBoundingClientRect();
     if (pr.width === 0 || pr.height === 0) continue;
-    if (r.width > pr.width + TOLERANCE) {
+    if (r.width > pr.width + TOLERANCE && !reachableBy(el, "x")) {
       out.push({
         kind: "spilled",
         text,
@@ -122,7 +170,13 @@ const PROBE = () => {
       });
     }
   }
-  return out;
+
+  /* THE LOUDEST RESPONSIVE DEFECT THERE IS, and nothing in this repo looked for it: a page that
+   * scrolls SIDEWAYS on a phone. It is one number, it is free once Chromium is already here, and
+   * it is 0 across all 192 frames today — so it gates at 0 from the first run rather than
+   * arriving with debt. */
+  const doc = document.documentElement;
+  return { hits: out, pageOverflowX: +(doc.scrollWidth - doc.clientWidth).toFixed(1) };
 };
 
 async function main() {
@@ -146,30 +200,44 @@ async function main() {
 
   const exec = resolveChromiumExecutable();
   const browser = await chromium.launch(exec && existsSync(exec) ? { executablePath: exec } : {});
-  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   const routes = frameRoutes();
   const found = {};
   let missing = 0;
 
-  for (const id of routes) {
-    try {
-      await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });
-      await page.waitForTimeout(250);
-      /* A route that does not resolve renders a four-word "not found" card, which overflows
-       * nothing and would be reported as clean — the exact way check:contrast once swept two
-       * showcases that were never there. */
-      const notFound = await page.evaluate(() =>
-        /Preview not found/.test(document.body.innerText) ? true : false,
-      );
-      if (notFound) {
-        missing += 1;
-        continue;
+  for (const vp of VIEWPORTS) {
+    const page = await browser.newPage({
+      viewport: { width: vp.width, height: vp.height },
+      ...(vp.mobile ? { deviceScaleFactor: 2, isMobile: true, hasTouch: true } : {}),
+    });
+    for (const id of routes) {
+      try {
+        await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });
+        await page.waitForTimeout(250);
+        /* A route that does not resolve renders a four-word "not found" card, which overflows
+         * nothing and would be reported as clean — the exact way check:contrast once swept two
+         * showcases that were never there. */
+        const notFound = await page.evaluate(() =>
+          /Preview not found/.test(document.body.innerText) ? true : false,
+        );
+        if (notFound) {
+          missing += 1;
+          continue;
+        }
+        const { hits, pageOverflowX } = await page.evaluate(PROBE);
+        const all = [...hits];
+        if (pageOverflowX > 1)
+          all.push({
+            kind: "sideways",
+            text: "(the page itself)",
+            by: `${pageOverflowX}px`,
+            sel: "html",
+          });
+        if (all.length) found[`${vp.name} ${id}`] = all;
+      } catch (e) {
+        console.warn(`  ! ${vp.name} ${id}: ${e.message.slice(0, 80)}`);
       }
-      const hits = await page.evaluate(PROBE);
-      if (hits.length) found[id] = hits;
-    } catch (e) {
-      console.warn(`  ! ${id}: ${e.message.slice(0, 80)}`);
     }
+    await page.close();
   }
   await browser.close();
   await stopServer?.();
@@ -185,6 +253,9 @@ async function main() {
    * the first belongs in an identity. The amount is carried alongside, reported on failure and
    * recorded under `lastMeasured` so a regression that gets WORSE is still visible. */
   const keyOf = (id, h) => `${id} · ${h.kind} · ${h.sel} · ${h.text}`;
+  // `id` already carries the viewport name, so the same element at two widths is two identities —
+  // which is right: a box that fits at 1280 and spills at 375 is a different fact from one that
+  // spills at both, and fixing one must not silently bank the other.
   const flat = Object.entries(found)
     .flatMap(([id, hits]) => hits.map((h) => keyOf(id, h)))
     .sort();

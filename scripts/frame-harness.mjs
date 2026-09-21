@@ -5,19 +5,44 @@
  * component inventory. Keeping this in one place means the axe gate, the geometry sweep
  * and the coverage tracker can never drift on which frames exist.
  */
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-// Port có thể override qua env PREVIEW_BASE — BẮT BUỘC trên runner self-hosted chung host:
-// nhiều job (axe/coverage/geometry) dùng chung harness; nếu cùng port 6008 thì
-// ensurePreviewServer thấy "reachable" sẽ TÁI DÙNG server của job khác, job đó xong gọi
-// cleanup() giết server → job đang chạy mất server giữa chừng (CONNECTION_REFUSED). Mỗi job
-// 1 port riêng → mỗi job tự sở hữu server của mình.
-export const DEFAULT_BASE = process.env.PREVIEW_BASE || "http://localhost:6008";
-
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(HERE, "..");
+
+/**
+ * THE PORT IS DERIVED FROM THIS CHECKOUT, and that is a correctness requirement, not tidiness.
+ *
+ * `ensurePreviewServer` reuses anything that answers on the base URL. It asks whether the port is
+ * ANSWERING; it has never asked whose code is on the other end. With one checkout that is fine.
+ * With worktree-isolated subagents — which exist precisely so two pieces of work cannot contaminate
+ * each other — it is silently wrong: a `vite` left running by an agent in
+ * `.claude/worktrees/agent-…` keeps port 6008, and every browser gate in the MAIN checkout then
+ * measures the agent's source tree instead of its own.
+ *
+ * That is not hypothetical. A fix to `docs/foundation/density.tsx` was verified as not working,
+ * three times, against a server another worktree had started ninety minutes earlier; the element
+ * kept reporting `data-direction="row"` while the checkout on disk said `{ base: "col" }`. Killing
+ * that process changed the answer with no code change at all. A measurement that can be wrong
+ * without saying so is worse than no measurement, because it is believed.
+ *
+ * The comment this replaced knew a cousin of the bug — self-hosted CI jobs stealing each other's
+ * server on a shared host — and answered it with a convention: every job sets `PREVIEW_BASE`. A
+ * convention is enforced by whoever remembers it, and nothing remembered it for worktrees.
+ * Deriving the port from `REPO_ROOT` makes "same port" mean "same code" by construction: reuse
+ * across runs in ONE checkout still works, which is what the reuse is for, and reuse across two
+ * checkouts becomes impossible.
+ *
+ * 1000 ports from 6008, keyed on the absolute path. An explicit `PREVIEW_BASE` still wins, so CI
+ * jobs that already pin one are unaffected.
+ */
+const checkoutPort = () =>
+  6008 + (parseInt(createHash("sha1").update(REPO_ROOT).digest("hex").slice(0, 8), 16) % 1000);
+
+export const DEFAULT_BASE = process.env.PREVIEW_BASE || `http://localhost:${checkoutPort()}`;
 
 export const VIEWPORT_MATRIX = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 
@@ -86,12 +111,14 @@ function run(cmd, args) {
 
 /**
  * Ensure a preview server answers at `base`. If one is already up (a running `pnpm preview` dev
- * server, or a remote base) it is reused.
+ * server, or a remote base) it is reused — which is safe because `DEFAULT_BASE`'s port is derived
+ * from this checkout, so anything answering there was started from this same tree. See the note on
+ * `checkoutPort` for what went wrong when that was not true.
  */
 export async function ensurePreviewServer(base = DEFAULT_BASE) {
   if (await reachable(base)) return () => {};
   if (!base.includes("localhost")) return () => {};
-  const port = new URL(base).port || "6008";
+  const port = new URL(base).port || String(checkoutPort());
 
   console.log("· building static preview (pnpm preview:build)…");
   await run("pnpm", ["preview:build"]);
