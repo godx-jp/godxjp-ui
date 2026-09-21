@@ -2,8 +2,18 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
-/** Fail fast when a single test hangs (infinite loop, missing await, etc.). */
-vi.setConfig({ testTimeout: 8_000 });
+/* THE TIMEOUT LIVES IN vitest.config.ts, AND THIS LINE USED TO MAKE THAT A LIE.
+ *
+ * `vi.setConfig({ testTimeout: 8_000 })` here overrides the config file at runtime, so the number
+ * a reader finds in `vitest.config.ts` — the file whose whole job is to hold it — did nothing. I
+ * raised that number to 20s to fix five CI timeouts, pushed it, and CI reported "Test timed out in
+ * 8000ms" on the very next run. Two sources for one value, and the authoritative-looking one was
+ * the dead one.
+ *
+ * The intent was right and is kept: fail fast when a test hangs, rather than letting a missing
+ * `await` burn the job's whole budget. It is expressed once now, in the config, where it is
+ * discoverable — with the measurement of why 8s was not enough recorded beside it.
+ */
 
 afterEach(() => {
   cleanup();
