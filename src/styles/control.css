@@ -1536,7 +1536,12 @@
 
   .ui-segmented-item[data-state="checked"] {
     background: hsl(var(--segmented-item-selected-background));
-    box-shadow: var(--segmented-item-selected-shadow);
+    /* The elevation, plus the hairline that carries the state across the 3:1 floor. The ring is
+     * INSET so it costs no layout; the fill/track pair is 1.09:1 in light and 1.33:1 in dark and
+     * cannot be fixed by moving either colour — see the token's own note (gh#843). */
+    box-shadow:
+      var(--segmented-item-selected-shadow),
+      inset 0 0 0 1px hsl(var(--segmented-item-selected-border-color, var(--input)));
     color: hsl(var(--segmented-item-selected-color));
     /* The signal that does not depend on the canvas (gh#843) — see the token's own note. */
     font-weight: var(--segmented-item-selected-font-weight);

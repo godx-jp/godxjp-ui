@@ -14323,6 +14323,12 @@ export default function PasswordBlock() {
           "antd `maxCount` — a hard ceiling on how many tags may be held. A tag past the limit is refused, so the value handed to onValueChange is never over it.",
       },
       {
+        name: "maxTagTextLength",
+        type: "number",
+        description:
+          "antd `maxTagTextLength` — cut each chip's TEXT to this many characters (an ellipsis marks the cut). The value is untouched and stays in the chip's title and in the remover's accessible name, so a long identifier is never silently swallowed. Without it one unbroken token sets the chip's width and the chip sets the row's (gh#840).",
+      },
+      {
         name: "tagRender",
         type: "(props: { value: string; label: React.ReactNode; onClose: () => void; index: number; disabled: boolean }) => React.ReactNode",
         description:

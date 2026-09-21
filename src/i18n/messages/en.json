@@ -1185,6 +1185,11 @@
         "one": "Load {count} more",
         "other": "Load {count} more"
       }
+    },
+    "tagInput": {
+      "longIdTitle": "Long identifiers and +N",
+      "ledgerLabel": "Ledger ID",
+      "ledgerHelper": "A 71-character identifier still stays inside the control"
     }
   }
 }

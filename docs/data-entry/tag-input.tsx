@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, TagInput } from "@godxjp/ui/data-entry";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -11,9 +12,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   const [invoiceTags, setInvoiceTags] = useState<string[]>(["営業部", "Q1"]);
   const [skillTags, setSkillTags] = useState<string[]>(["経理", "仕訳入力"]);
   const [recipientEmails, setRecipientEmails] = useState<string[]>([]);
+  /* The reporter's exact 71-character string, held FIRST so the truncated chip is one of the two
+     that render rather than one of the ones `+N` hides (gh#840). */
+  const [ledgerTags, setLedgerTags] = useState<string[]>([
+    "THEME_SEED_LEDGER_0007_CONTRAST_VERIFIED_AGAINST_CANVAS_AND_LABEL_00042",
+    "本番",
+    "ổn định",
+  ]);
 
   return (
     <PageContainer
@@ -82,6 +91,34 @@ export default function Demo() {
                 onValueChange={setRecipientEmails}
                 placeholder="メールアドレスを追加..."
                 name="cc_emails"
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.tagInput.longIdTitle")}</CardTitle>
+            <CardDescription>
+              maxTagTextLength cuts the chip TEXT only — the whole value stays in the chip&apos;s
+              title and in the remove button&apos;s accessible name. maxTagCount collapses the rest
+              into a +N that names, in its own title and aria-label, exactly which tags it hides.
+              Neither may swallow a value silently (gh#840).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="ledger-tags"
+              label={t("showcase.tagInput.ledgerLabel")}
+              helper={t("showcase.tagInput.ledgerHelper")}
+            >
+              <TagInput
+                id="ledger-tags"
+                value={ledgerTags}
+                onValueChange={setLedgerTags}
+                maxTagCount={2}
+                maxTagTextLength={16}
+                aria-label={t("showcase.tagInput.ledgerLabel")}
               />
             </FormField>
           </CardContent>

@@ -302,7 +302,13 @@ export default function ThemeCustomizationShowcase() {
   const [corner, setCorner] = React.useState("default");
   const [custom, setCustom] = React.useState("#0F62FE");
   const [regions, setRegions] = React.useState<string[]>(["JP", "VN"]);
-  const [labels, setLabels] = React.useState<string[]>(["本番", "ổn định", UNBREAKABLE]);
+  /* UNBREAKABLE FIRST, ON PURPOSE (gh#840). With `maxTagCount={2}` the tag in third place is the
+   * one that collapses into `+N` — so while the 71-character id sat last, the chip that painted
+   * outside the control was never actually drawn on this page, and `maxTagTextLength` had nothing
+   * to demonstrate. Held first, the row now draws all three of the issue's answers at once: the
+   * long id truncated to its ceiling (full value in `title` and in the remover's name), a normal
+   * chip beside it, and a `+1` that names the tag behind it. */
+  const [labels, setLabels] = React.useState<string[]>([UNBREAKABLE, "本番", "ổn định"]);
   const [plan, setPlan] = React.useState("standard");
   const [channels, setChannels] = React.useState<string[]>(["email"]);
   const [cadence, setCadence] = React.useState("weekly");
@@ -630,6 +636,11 @@ function ComponentsBoard(props: {
             value={labels}
             onValueChange={setLabels}
             maxTagCount={2}
+            /* The ceiling the 71-character id is measured against (gh#840). 16 is the widest cut
+               that still leaves room for a second chip and the `+1` on one row at 375px; the value
+               is untouched — it stays in the chip's `title` and in the remover's accessible name,
+               which is the only reason truncating an identifier is allowed at all. */
+            maxTagTextLength={16}
             placeholder={t("themeShowcase.form.labelsPlaceholder")}
           />
         </FormField>

@@ -1165,6 +1165,11 @@
       "loadMore": {
         "other": "さらに {count} 件を読み込む"
       }
+    },
+    "tagInput": {
+      "longIdTitle": "長い識別子と「+N」",
+      "ledgerLabel": "台帳ID",
+      "ledgerHelper": "71文字の識別子でも行からはみ出さない"
     }
   }
 }

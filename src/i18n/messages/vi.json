@@ -1166,6 +1166,11 @@
       "loadMore": {
         "other": "Tải thêm {count}"
       }
+    },
+    "tagInput": {
+      "longIdTitle": "Định danh dài và +N",
+      "ledgerLabel": "Mã sổ cái",
+      "ledgerHelper": "Định danh 71 ký tự vẫn nằm trong khung"
     }
   }
 }

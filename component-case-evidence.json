@@ -3634,6 +3634,17 @@
             "src/components/data-entry/__tests__/antd-parity-selection.test.tsx"
           ]
         },
+        "maxTagTextLength": {
+          "cases": [
+            12,
+            16
+          ],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "docs/showcase/theme-customization.tsx",
+            "src/components/data-entry/__tests__/tag-input-840.test.tsx"
+          ]
+        },
         "name": {
           "cases": [
             "cc_emails",
