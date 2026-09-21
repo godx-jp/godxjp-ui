@@ -92,6 +92,17 @@
  * not a new defect; an arbitrary value (`.rounded-[var(--radius-pill)]`) names a token, not a
  * magnitude, and is kept whole.
  *
+ * A CHAIN IS NOT A LOSS (gh#824). The first version compared the winner's declaration TEXT to the
+ * loser's token, so `--form-label-font-size: var(--control-label-font-size, …)` — the whole point
+ * of the "chain it" verdict — still read as inert, and the one repair the gate's own failure
+ * message recommends could never clear an entry. `ROOT_CHAINS` reads the `:root` tier from the
+ * CSSOM (a custom property's COMPUTED value has already substituted its `var()`s, so the chain is
+ * only visible in the declaration text) and `reaches()` follows it transitively. `:root` only: a
+ * scoped re-pointing is one component borrowing another's variable on its own elements, not a
+ * statement about the token's documented default.
+ *
+ * AND `entries` IS DEBT, `intentional` IS NOT — see the comment on `intentional` below.
+ *
  * Usage: node scripts/check-frame-token-wins.mjs [--update-baseline] [--report]
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
@@ -259,15 +270,74 @@ function losers(matched) {
   return losses;
 }
 
+/**
+ * Runs INSIDE the page. The `:root` token tier as DECLARED, `--token` -> its declaration text.
+ *
+ * Not `getComputedStyle`: a custom property's computed value has already had its `var()`s
+ * substituted, so `--form-label-font-size` computes to `.875rem` and the fact that it READS
+ * `--control-label-font-size` is gone. The CSSOM still has the text.
+ *
+ * `:root` only, deliberately. A chain is a statement about a token's documented DEFAULT, which is
+ * what the tier files declare and what the MCP hands a consumer. A scoped re-pointing
+ * (`.ui-conversations-row { --button-radius: var(--conversations-item-radius) }`) is one
+ * component borrowing another's variable on its own elements, and must not forgive that pair
+ * everywhere else in the library.
+ */
+const ROOT_CHAINS = () => {
+  const out = {};
+  const flatten = (list, acc) => {
+    for (const r of list) {
+      if (r.cssRules) flatten(r.cssRules, acc);
+      if (r.selectorText && r.style) acc.push(r);
+    }
+    return acc;
+  };
+  for (const sheet of document.styleSheets) {
+    let rules;
+    try {
+      rules = sheet.cssRules;
+    } catch {
+      continue;
+    }
+    for (const rule of flatten(rules, [])) {
+      if (!/(^|[\s,])(:root|html)\b/.test(rule.selectorText)) continue;
+      for (let i = 0; i < rule.style.length; i += 1) {
+        const p = rule.style[i];
+        if (!p.startsWith("--")) continue;
+        const v = rule.style.getPropertyValue(p);
+        if (v.includes("var(--")) out[p] = v; // later declaration wins, same as the cascade
+      }
+    }
+  }
+  return out;
+};
+
+/**
+ * Every token the winner's value reaches, following `:root` chains. A winner that reads
+ * `--form-label-font-size`, declared `var(--control-label-font-size, …)`, still delivers
+ * `--control-label-font-size` to the element — the knob arrives, one hop later.
+ */
+function reaches(value, chains) {
+  const seen = new Set();
+  const queue = [...tokensIn(value)];
+  while (queue.length) {
+    const t = queue.pop();
+    if (seen.has(t)) continue;
+    seen.add(t);
+    for (const next of tokensIn(chains[t])) queue.push(next);
+  }
+  return seen;
+}
+
 /** The subset that is a broken promise — see the header for the measurement behind each clause. */
-function findings(losses, known) {
+function findings(losses, known, chains) {
   const out = [];
   for (const { prop, loser, winner } of losses) {
     if (loser.layer !== "components") continue;
     if (winner.layer === "components") continue;
     const lost = [...tokensIn(loser.value)].filter((t) => known.has(t));
     if (!lost.length) continue;
-    const kept = tokensIn(winner.value);
+    const kept = reaches(winner.value, chains);
     const dead = lost.filter((t) => !kept.has(t));
     if (!dead.length) continue;
     out.push({ prop, token: dead[0], loser: loser.selector, winner: winner.selector });
@@ -309,6 +379,8 @@ async function main() {
   const found = {};
   let missing = 0;
   let nominated = 0;
+  /* Read once: the token tier is the same stylesheet on every frame. */
+  let chains = {};
 
   for (const id of routes) {
     try {
@@ -321,6 +393,7 @@ async function main() {
         missing += 1;
         continue;
       }
+      if (!Object.keys(chains).length) chains = await page.evaluate(ROOT_CHAINS);
       const count = await page.evaluate(NOMINATE, catalogue);
       nominated += count;
       if (!count) continue;
@@ -338,7 +411,7 @@ async function main() {
         } catch {
           continue;
         }
-        const dead = findings(losers(matched), known);
+        const dead = findings(losers(matched), known, chains);
         if (!dead.length) continue;
         let el = "?";
         try {
@@ -398,10 +471,26 @@ async function main() {
       if (!seenOn[k] || where < seenOn[k]) seenOn[k] = where;
     }
   }
-  const flat = Object.keys(seenOn).sort();
+  /* INTENTIONAL — the third verdict, and the only permanent one.
+   *
+   * `entries` is DEBT: every line is a defect someone still owes, and it may only shrink. But
+   * some of what this gate sees is a component overriding another's knob ON PURPOSE through a
+   * second documented token, and that arrangement will never be "fixed" — left in `entries` it
+   * would be a debt nobody can ever pay, and stripped out silently it could come back as a real
+   * defect unnoticed. `intentional` is keyed exactly like `entries` and carries the REASON, so
+   * the gate keeps watching the arrangement while the list of owed work stays honest. Adding a
+   * line here is a judgement a human writes down; the script never invents one. */
+  const intentional = existsSync(BASELINE)
+    ? (JSON.parse(readFileSync(BASELINE, "utf8")).intentional ?? {})
+    : {};
+  const flat = Object.keys(seenOn)
+    .filter((k) => !(k in intentional))
+    .sort();
 
   if (REPORT) {
     for (const f of flat) console.log(`${f}\n    first seen: ${seenOn[f]}`);
+    for (const [k, why] of Object.entries(intentional))
+      console.log(`${k}\n    INTENTIONAL: ${why}`);
     console.log(
       `\n${routes.length} frame(s), ${nominated} element(s) asked, ${flat.length} inert token(s).`,
     );
@@ -427,6 +516,7 @@ async function main() {
           ...(existing.tracked ? { tracked: existing.tracked } : {}),
           count: flat.length,
           entries: flat,
+          ...(Object.keys(intentional).length ? { intentional } : {}),
           seenOn,
         },
         null,
@@ -448,9 +538,12 @@ async function main() {
     console.error(`✗ check:frame-token-wins — ${added.length} NEW inert component token(s):\n`);
     for (const a of added) console.error(`  ${a}\n      seen on: ${seenOn[a]}`);
     console.error(
-      `\nOne of the two has to go: either the components-layer rule keeps the token and the ` +
-        `winning declaration is dropped, or the winner reads the token itself. ` +
-        `${routes.length} frames swept, ${nominated} element(s) asked, ${missing} route(s) did not resolve.`,
+      `\nThree ways out, and one of them has to be chosen (gh#824): DROP the losing declaration ` +
+        `(and the token from the catalogue, if that was its only use); CHAIN it, by making the ` +
+        `winning token's own ':root' default read the losing one — only free when both resolve ` +
+        `alike today, so measure both before you do; or DECLARE IT INTENTIONAL, writing the ` +
+        `reason beside the declaration and the same reason into the baseline's 'intentional' ` +
+        `map. ${routes.length} frames swept, ${nominated} element(s) asked, ${missing} route(s) did not resolve.`,
     );
     process.exit(1);
   }

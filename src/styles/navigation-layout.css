@@ -1439,13 +1439,29 @@
     align-items: center;
   }
 
+  /* THE RADIUS IS SET THROUGH `--button-radius`, NOT `border-radius` (gh#824) — the same move,
+   * and for the same reason, as the ruled Calendar day button in control.css. The row IS a
+   * `<Button variant="ghost">`, so it carries `rounded-[var(--button-radius)]` as a Tailwind
+   * utility, and a utility is a later layer than `components`. A `border-radius` here therefore
+   * lost every time: measured at 1280px, `--conversations-item-radius: 37px` on `:root` moved 13
+   * rows from 3.70828px to 3.70828px. Re-pointing the variable the utility reads is the only
+   * move that works from this layer.
+   *
+   * THIS CHANGES THE PAINT, on purpose: 3.71px -> 6px. 3.71px was `--button-radius`
+   * (`var(--radius-md)`) leaking in through the Button the row happens to be built from;
+   * --conversations-item-radius has advertised `var(--radius)` (6px) all along, and the file
+   * header says these defaults are the SIDEBAR's row rhythm, whose own
+   * --sidebar-nav-item-radius is `calc(var(--radius) - 1px)` = 5px. So the rail moves from 2.3px
+   * sharper than the nav rail beside it to 1px rounder — toward the rhythm it was drawn from, and
+   * off a coupling to Button that #124 created --button-radius to avoid. */
   .ui-conversations-row {
+    --button-radius: var(--conversations-item-radius);
+
     min-inline-size: 0;
     height: var(--conversations-item-height);
     flex: 1 1 auto;
     gap: var(--conversations-item-gap);
     padding-inline: var(--conversations-item-padding-inline);
-    border-radius: var(--conversations-item-radius);
     color: var(--conversations-item-color, hsl(var(--muted-foreground)));
     font-size: var(--conversations-item-font-size);
   }

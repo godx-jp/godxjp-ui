@@ -56,8 +56,18 @@ describe("--form-label-font-size", () => {
    * The token has to reach Label's OWN element — Label sets `text-sm` on itself, so a
    * font-size inherited from the wrapper never applies.
    */
-  it("is declared with the body size as its default", () => {
-    expect(formTokens).toMatch(/--form-label-font-size:\s*var\(--text-sm\)/);
+  it("is declared with the Label primitive's own knob as its default (gh#824)", () => {
+    /* It used to read `var(--text-sm)` directly, and that made it a SHADOW rather than an
+     * override: the utility below outranks `.ui-label { font-size: var(--control-label-font-size) }`
+     * in `@layer components`, so a service that set the Label knob moved its standalone labels and
+     * not one of its FormField labels (measured at 1280px: --control-label-font-size set to 37px
+     * on :root left all 21 FormField labels at 14px while the 4 standalone ones went to 37px).
+     * Reading the broad knob first costs nothing — base.css declares `--text-sm` as
+     * `var(--font-size-sm)`, which is exactly what --control-label-font-size already read — and
+     * the fallback keeps the old default if the Label knob is ever withdrawn. */
+    expect(formTokens).toMatch(
+      /--form-label-font-size:\s*var\(--control-label-font-size,\s*var\(--text-sm\)\)/,
+    );
   });
 
   it("is applied on the label element itself, not an ancestor", () => {
