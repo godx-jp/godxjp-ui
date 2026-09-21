@@ -36,6 +36,25 @@ an edge and nobody saw the edges break.
 
 ### Fixed
 
+- **`NavList` silently dropped `item.children`** (gh#815). `SidebarItemProp` declares `children`
+  and documents it as "renders a collapsible submenu group", but the `NavGroup` path that consumes
+  it was `Sidebar`-only — so a nested group in a `NavList` type-checked, rendered as ONE flat row,
+  and its children vanished with no error and no warning. A grouped settings nav could not be built
+  from the component whose tagline is "the shape a settings nav takes"; the documented workaround
+  was one `NavList` per group, i.e. N `<nav>` landmarks instead of one.
+
+  `NavList` now routes a group through the rail's own `NavGroup`: same trigger, same dot-marked sub
+  rows, same route-synchronised expansion. Collapsible rather than a static heading, because a
+  group parent is a ROW — it keeps its icon, badge and active tint, and a heading would have fixed
+  one silent drop by creating another. Zero new API, zero new CSS. Consequence, documented rather
+  than hidden: a nested row draws the rail's dot marker, so a child's `icon` is not rendered.
+
+  Two type-level restrictions went with it: `SidebarItemProp` is now exported under the name the
+  catalog and its own JSDoc already used (only the `SidebarItemData` alias was reachable), and
+  `icon` is optional — the runtime always supported it, `SidebarIcon` renders an empty `.sb-icon`
+  box to hold alignment. Row-level `tone` was deliberately NOT added: it needs a vocabulary field
+  plus destructive token pairs across two components, which is wider than this fix earns.
+
 - **The Progress ring label could be wider than its ring.** `--progress-ring-label-font-size` was
   one fixed step for every diameter, so a 32px `sm` ring carried the same 12.47px label as the 44px
   default and `18/42` measured **32.6px**, painting over the arc. `0/42` fits, which is why the demo
