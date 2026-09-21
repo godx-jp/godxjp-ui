@@ -36,6 +36,25 @@ an edge and nobody saw the edges break.
 
 ### Fixed
 
+- **`Field` gains `labelAddon` and `error`** (gh#812). A help affordance in a `Field`'s label was
+  not merely missing — it was a TRAP: `Field` renders `label` inside a real `<label htmlFor>`, and
+  a browser forwards a click anywhere in a label to the control, so a Tooltip trigger placed there
+  **toggled the switch**. A consumer shipped 8 of 155 fields without their help button because of
+  it. `labelAddon` renders as a SIBLING of the label, inside a row wrapper that only exists when
+  there is an addon, so no current field's box or click target moves.
+
+  `error` composes with `description` rather than replacing it — `.ui-choice-content` was already a
+  vertical grid — and wires `aria-invalid`, `aria-errormessage` AND `aria-describedby` on the
+  control. The last of those is not belt-and-braces: react-aria builds the hidden `<input>` a
+  Switch focuses and forwards only the aria props its own model knows, which excludes
+  `aria-errormessage`, so on a Switch the message would have reached nothing. `description` is now
+  on `aria-describedby` too; it never was, having been rendered as an un-`id`'d `<p>` that no
+  screen reader connected to anything — which also reaches every `RadioGroup` option, since those
+  rows are built from `Field`.
+
+  Three more catalog lines claiming `Field` renders a hidden `<input name>` were corrected. It
+  never has; `Switch name="…"` renders that itself.
+
 - **`NavList` silently dropped `item.children`** (gh#815). `SidebarItemProp` declares `children`
   and documents it as "renders a collapsible submenu group", but the `NavGroup` path that consumes
   it was `Sidebar`-only — so a nested group in a `NavList` type-checked, rendered as ONE flat row,
