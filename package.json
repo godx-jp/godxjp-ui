@@ -20,7 +20,7 @@
     }
   },
   "sideEffects": false,
-  "description": "@godxjp/ui \u2014 shared React UI framework (shadcn + Radix + Tailwind v4).",
+  "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
     "LICENSE",
     "dist",
@@ -417,7 +417,8 @@
     "verify:static": "pnpm build && pnpm check:packed-public-contract && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:token-scale-bypass && pnpm check:radix-surface && pnpm check:dist-tokens-resolve && pnpm check:no-hardcoded-geometry && pnpm check:no-hardcoded-css-values && pnpm check:disclosure-duplication && pnpm check:no-inline-magic-numbers && pnpm check:no-tailwind-class-assertions && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:doc-prop-existence && pnpm check:mcp-catalog-coverage && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm check:visual-audit && pnpm test",
     "visual-audit": "node scripts/visual-audit.mjs",
     "gen:brand": "node scripts/gen-brand.mjs",
-    "check:absorbed-names": "node scripts/check-absorbed-names.mjs"
+    "check:absorbed-names": "node scripts/check-absorbed-names.mjs",
+    "check:frame-overflow": "node scripts/check-frame-overflow.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",
