@@ -4789,6 +4789,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "The kit's dark text colour — #F7FAF8, 16.87:1 on the dark canvas."
   },
   {
+    "name": "--masonry-gap-inline",
+    "value": "0px",
+    "description": "Resting spacing between tiles, per axis, when the `gap` prop is omitted. Ant Design's * `gutter` defaults to `0` and this ports that default exactly — a service that wants every * masonry in the product to breathe sets these two once in its theme.css, and a per-instance * `gap` still wins. * * The packer READS the resolved `row-gap` back off the container, so this token (or the `gap` * prop that overrides it) is the single source for both the painted spacing and the arithmetic. * There is no second number in the TypeScript."
+  },
+  {
+    "name": "--masonry-gap-block",
+    "value": "0px",
+    "description": "Masonry component tokens — Ant Design `Masonry` (6.0.0): tiles of unequal height packed into * columns. * * antd retunes this surface through `classNames` / `styles` semantic maps. Those are deliberately * not ported (cardinal rules #44/#45, docs/DESIGN-AUTHORITY.md — \"a knob that only a fork could * reach is not parity either\"); this file is the answer instead. * * TIMING IS NOT HERE. The re-flow and the appear fade read `--duration-base` / `--ease-standard` * from the motion tier (src/tokens/foundation.css), because the component-token name shape * (`--{component}-{part}-{property}`) has no property word for a duration and a second copy of the * motion scale is how the two drift apart — the same note `float-button.css` and `activity.css` * carry. * * The COLUMN COUNT is not a token. It is `columns`, a prop, because a masonry's column count is * the call site's decision about that collection and not a global design knob."
+  },
+  {
     "name": "--pagination-gap",
     "value": "var(--space-inline-sm)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."

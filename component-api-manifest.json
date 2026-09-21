@@ -9747,6 +9747,83 @@
         }
       ]
     },
+    "Masonry": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "columns",
+          "origin": "owned",
+          "required": false,
+          "type": "MasonryColumnsProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "fresh",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "gap",
+          "origin": "owned",
+          "required": false,
+          "type": "MasonryGapProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "gutter",
+          "origin": "owned",
+          "required": false,
+          "type": "undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "itemRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((item: MasonryItemProp<TData> & { index: number; column: number; }) => ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "items",
+          "origin": "owned",
+          "required": false,
+          "type": "MasonryItemProp<TData>[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        },
+        {
+          "name": "onLayoutChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((layout: MasonryLayoutEntryProp<TData>[]) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/layout.prop.ts"]
+        }
+      ]
+    },
     "MasterDetail": {
       "group": "layout",
       "props": [

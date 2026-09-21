@@ -2306,3 +2306,62 @@
     transition: none;
   }
 }
+
+@layer components {
+  /* Masonry — Ant Design `Masonry` (6.0.0).
+   *
+   * The whole layout is two custom properties and one `calc`. The component owns the PACKING (it
+   * must: only JavaScript can read a tile's measured height and decide which column is shortest),
+   * and CSS owns every LENGTH — the track width, the inline offset and the spacing all derive
+   * from `--masonry-gap-*` and `--masonry-column-count`, so nothing here is a pixel the
+   * TypeScript invented.
+   *
+   * Why not `column-count` / CSS masonry: neither can express antd's surface. `column-count`
+   * fills column 1 to the bottom BEFORE starting column 2, so the DOM order a screen reader
+   * follows and the visual order diverge completely (item 2 of 30 appears at the BOTTOM of the
+   * first column); it also has no way to pin a tile to a column (`MasonryItem.column`) and no way
+   * to report where a tile landed (`onLayoutChange`). Absolute placement keeps DOM order === the
+   * `items` order at every width, which is the reading-order property this layout has to hold on
+   * to — see the header comment of src/components/layout/masonry.tsx. */
+  .ui-masonry {
+    position: relative;
+    box-sizing: border-box;
+    /* Real `column-gap` / `row-gap` on the container, even though the children are out of flow:
+     * it is what the packer reads back with `getComputedStyle`, so the token is the ONLY place
+     * the spacing is written down. */
+    column-gap: var(--masonry-gap-inline);
+    row-gap: var(--masonry-gap-block);
+  }
+
+  .ui-masonry-item {
+    position: absolute;
+    box-sizing: border-box;
+    /* One column track, gap included, so the last column ends flush with the container edge. */
+    --masonry-item-track: calc((100% + var(--masonry-gap-inline)) / var(--masonry-column-count));
+    inline-size: calc(var(--masonry-item-track) - var(--masonry-gap-inline));
+    /* LOGICAL, so a masonry mirrors under `dir="rtl"` with no second rule — antd needs an
+     * `-rtl` class for the same effect. */
+    inset-inline-start: calc(var(--masonry-item-track) * var(--masonry-item-column));
+    inset-block-start: 0;
+    /* Hidden until it has a real position: the first paint is the one frame before the tiles
+     * have been measured, where every tile sits at 0,0. antd covers the same frame with
+     * rc-motion's `motionAppear`. */
+    opacity: 0;
+    transition:
+      opacity var(--duration-base) var(--ease-standard),
+      inset-block-start var(--duration-base) var(--ease-standard),
+      inset-inline-start var(--duration-base) var(--ease-standard);
+  }
+
+  .ui-masonry-item[data-positioned] {
+    opacity: 1;
+  }
+
+  /* Reflow SNAPS instead of sliding. The tile still arrives — `data-positioned` is an attribute,
+   * not an animation — it simply arrives in place. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-masonry-item {
+      transition: none;
+    }
+  }
+}

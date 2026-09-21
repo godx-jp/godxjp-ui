@@ -1741,3 +1741,124 @@ export type DraggablePanelProp = Omit<
   disabled?: DisabledProp;
   className?: ClassNameProp;
 };
+
+/**
+ * Masonry column count — Ant Design `Masonry columns`, in this library's responsive shape.
+ *
+ * A plain number is that many columns at every width. The object form is the step map
+ * `Flex direction` already uses — `base` plus `sm` 40rem · `md` 48rem · `lg` 64rem · `xl` 80rem —
+ * and each omitted step falls back to the widest one below it, exactly as the `--flex-direction-*`
+ * cascade does in CSS.
+ *
+ * **antd spells the steps `xs sm md lg xl xxl` and this does not.** The two ends are the
+ * divergence: antd's `xs` is its mobile-first floor, which is this library's `base` (a second
+ * spelling of one axis is what `check:prop-vocabulary` exists to prevent), and `xxl` has no step
+ * here at all. An `xs` or `xxl` key is therefore never silently dropped — TypeScript rejects it as
+ * an excess property, and a value that reaches the component anyway (a plain-JS caller, a widened
+ * object) is named in a development-only warning. See docs/DESIGN-AUTHORITY.md.
+ * @see Masonry
+ */
+export type MasonryColumnsProp = number | Partial<Record<"base" | BreakpointProp, number>>;
+
+/**
+ * Masonry spacing — Ant Design `Masonry gutter`, on this library's `GapProp` scale.
+ *
+ * One step applies to both axes; the tuple is antd's `[Gap, Gap]`, i.e. `[inline, block]`.
+ * The value is a TOKEN STEP rather than antd's raw pixel number, so a masonry breathes with
+ * `--scaling` (density) like every other gap in the package.
+ * @see Masonry
+ */
+export type MasonryGapProp = GapProp | [GapProp, GapProp];
+
+/**
+ * One tile handed to `Masonry items` — Ant Design `MasonryItem`, field for field.
+ * @see Masonry
+ */
+export type MasonryItemProp<TData = unknown> = {
+  /** Identity of the tile across re-orders and re-measures. Ant Design `MasonryItem.key`. */
+  key: React.Key;
+  /** The tile itself. Wins over `itemRender`, as in Ant Design. */
+  children?: ReactNode;
+  /**
+   * Pin the tile to a column INDEX (0-based) instead of letting it fall into the shortest one.
+   * Ant Design `MasonryItem.column`, clamped to the live column count.
+   */
+  column?: number;
+  /**
+   * Declared block size, in pixels, used INSTEAD of measuring the tile.
+   *
+   * antd declares and documents this field and then never reads it — its layout is measured from
+   * `getBoundingClientRect()` alone, and all six of its demos carry their heights in `data`. A
+   * prop that does nothing is worse than an absent one, so here the documented meaning is the
+   * real one: a finite `height` sizes the tile and skips its measurement, which is what makes a
+   * first paint (and an SSR render) land in the right place.
+   */
+  height?: number;
+  /** Arbitrary payload handed back to `itemRender` and `onLayoutChange`. Ant Design `MasonryItem.data`. */
+  data?: TData;
+};
+
+/** One row of the `onLayoutChange` payload: the item, plus the column it landed in. @see Masonry */
+export type MasonryLayoutEntryProp<TData = unknown> = MasonryItemProp<TData> & {
+  /** 0-based column index the item occupies. */
+  column: number;
+};
+
+/**
+ * @see Masonry — Ant Design's `Masonry` (6.0.0): tiles of unequal height packed into columns.
+ *
+ * Ant's own surface, field for field: `items`, `itemRender`, `columns`, `fresh`, `onLayoutChange`.
+ * The three named divergences (`gap` for `gutter`, the breakpoint step names, and the absence of
+ * `classNames`/`styles`) each carry their reason at the field, and all three are recorded in
+ * docs/DESIGN-AUTHORITY.md.
+ */
+export type MasonryProp<TData = unknown> = {
+  /** The tiles, in READING order — which is also DOM order. Ant Design `items`. */
+  items?: MasonryItemProp<TData>[];
+  /**
+   * Renders a tile that carries no `children`. Receives the item plus its live `index` and
+   * `column`, exactly as Ant Design does. Ant Design `itemRender`.
+   */
+  itemRender?: (item: MasonryItemProp<TData> & { index: number; column: number }) => ReactNode;
+  /** Column count, fixed or per step. Ant Design `columns`, default `3`. */
+  columns?: MasonryColumnsProp;
+  /**
+   * Spacing between tiles, on the `GapProp` scale. Ant Design calls this `gutter` and defaults it
+   * to `0`; the name here is `gap` because this package already owns that axis under that name
+   * (`Flex`, `ResponsiveGrid`, `AuthStack`, …) and `check:prop-vocabulary` maps a field called
+   * `gap` to `GapProp`. The antd default is kept: omitted means `"none"`.
+   */
+  gap?: MasonryGapProp;
+  /**
+   * NOT A PROP — Ant Design's name for `gap`, kept in the type so that arriving from antd's docs
+   * is a compile error that says where to go, rather than a tile grid with no spacing and no
+   * complaint. Passing it also warns in development.
+   *
+   * @deprecated Ant Design spells this `gutter`; in `@godxjp/ui` it is `gap`, and it takes a
+   * `GapProp` token step (`"sm"`, `4`, `["md", "lg"]`) rather than antd's raw pixel number.
+   */
+  gutter?: never;
+  /**
+   * Keep watching every tile's own size, not just the container's.
+   *
+   * Ant Design `fresh`, and it means exactly one thing in Ant's source: each tile is wrapped in
+   * its own `ResizeObserver` so a tile that changes height on its own — an image decoding, a
+   * "show more" expanding, a chart settling — re-packs the columns. Off (the default), the layout
+   * is re-measured only when the CONTAINER resizes or a descendant `load`/`error` event fires, so
+   * a tile that grows in place leaves a gap or overlaps its neighbour until something else moves.
+   */
+  fresh?: boolean;
+  /**
+   * Fires when the column assignment changes. Ant Design `onLayoutChange`.
+   *
+   * Ant's own documented type is `({ key, column }[]) => void`, but its implementation hands back
+   * the WHOLE item spread with `column` added — so `data` and `children` come with it. This ports
+   * the implementation (a superset of the documented payload) rather than the narrower doc.
+   *
+   * It fires only once every tile has a resolved position and the count matches `items`, and is
+   * deduped: an identical [item, column] list does not call it again.
+   */
+  onLayoutChange?: (layout: MasonryLayoutEntryProp<TData>[]) => void;
+  id?: IdProp;
+  className?: ClassNameProp;
+};

@@ -112,3 +112,12 @@ export type {
 } from "./service-role-panel";
 
 export { useAppShellNavigationMode } from "./app-shell";
+export { Masonry } from "./masonry";
+export type {
+  MasonryColumnsProp,
+  MasonryGapProp,
+  MasonryItemProp,
+  MasonryLayoutEntryProp,
+  MasonryProp,
+  MasonryProps,
+} from "./masonry";

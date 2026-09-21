@@ -17151,6 +17151,97 @@ const messages: ChatMessageProp[] = [
     storyPath: "data-entry/Attachments.stories.tsx",
     rules: [6, 44, 45],
   },
+  {
+    name: "Masonry",
+    group: "layout",
+    tagline:
+      "Ant Design `Masonry` (6.0.0): tiles of UNEQUAL height packed into columns, each tile dropped into whichever column is shortest when its turn comes. DOM order stays `items` order at every width, so the reading order never follows the packing.",
+    props: [
+      {
+        name: "items",
+        type: "MasonryItemProp<TData>[]",
+        description:
+          "The tiles, in READING order — which is also DOM order. Each is { key, children?, column?, height?, data? }, antd's MasonryItem field for field.",
+      },
+      {
+        name: "itemRender",
+        type: "(item: MasonryItemProp<TData> & { index: number; column: number }) => ReactNode",
+        description:
+          "Renders a tile that carries no `children`. antd's rule is ported exactly: `children` wins over `itemRender`, and the callback receives the live index and column.",
+      },
+      {
+        name: "columns",
+        type: "number | { base?: number; sm?: number; md?: number; lg?: number; xl?: number }",
+        defaultValue: "3",
+        description:
+          "Column count, fixed or per VIEWPORT breakpoint (sm 40rem · md 48rem · lg 64rem · xl 80rem), taking the widest matching declared step and falling back to `base`. antd's 3 is kept. antd spells the steps xs..xxl; `xs` IS `base` here and there is no `xxl` — both are a TypeScript error and a dev-time warning, never a silent drop.",
+      },
+      {
+        name: "gap",
+        type: "GapProp | [GapProp, GapProp]",
+        defaultValue: "(none — the --masonry-gap-* tokens, which default to 0 like antd)",
+        description:
+          "Spacing between tiles. THIS IS ANT DESIGN'S `gutter`, renamed: this package already owns the axis as `gap` (Flex, ResponsiveGrid, AuthStack) and takes a GapProp token step rather than a pixel number, so a masonry breathes with --scaling. The tuple is antd's [Gap, Gap] = [inline, block]. Passing `gutter` is a compile error that names `gap`.",
+      },
+      {
+        name: "fresh",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "antd `fresh`. Wraps EVERY tile in its own ResizeObserver so a tile that changes height in place — a chart settling, a 'show more', a late image — re-packs the columns. Off, only the container's own resize and a descendant load/error re-measure.",
+      },
+      {
+        name: "onLayoutChange",
+        type: "(layout: (MasonryItemProp<TData> & { column: number })[]) => void",
+        description:
+          "Fires once every tile has a resolved position and the count matches `items`, and is deduped on an unchanged assignment. antd DOCUMENTS `{ key, column }[]` but its implementation spreads the whole item; the implementation is what is ported, so `data` comes back with it.",
+      },
+      { name: "id", type: "string", description: "DOM id of the container." },
+      { name: "className", type: "string", description: "Structural class on the container." },
+    ],
+    usage: [
+      "DO order `items` by IMPORTANCE, never by height. The tiles are absolutely positioned, so DOM order — what a screen reader reads and what Tab visits — is always the `items` order, while the visual order is the packing. A later tile can sit visually above an earlier one; that is the form, not a bug.",
+      "DO give every tile a stable `key`. It is the identity the measurement cache and `onLayoutChange` are keyed on, not React's element key alone.",
+      "DO pass `height` when you already know it (a fixed-ratio thumbnail, a server-rendered feed). It skips the measurement pass, so the first paint lands in the right place instead of settling a frame later.",
+      "DO reach for `fresh` only when tiles change height ON THEIR OWN. It is one ResizeObserver per tile; a static feed does not need it.",
+      'DON\'T use `gutter` — that is antd\'s name for `gap` here, and it is typed `never` so the compiler says so. `gap` takes a token step: gap="md", gap={4}, gap={["sm", "md"]}.',
+      "DON'T write `columns={{ xs: 1 }}`. The mobile-first floor is `base`, and `xxl` does not exist here; both spellings are rejected at compile time and warned about at runtime.",
+      "DON'T add a role. A masonry is a layout and WAI-ARIA 1.2 has no role for one; `region` would collide with landmark-unique, `list` would announce structure the tiles already carry. Wrap it in a labelled <section> when the COLLECTION needs a name.",
+      "DON'T use it for equal-height tiles — that is ResponsiveGrid, which needs no measurement and no JavaScript.",
+    ],
+    useCases: [
+      "A media or document gallery where thumbnails have different aspect ratios and a fixed-row grid would leave a ragged band of whitespace under every row.",
+      "A feed of notes, comments or activity cards whose text length varies wildly — a one-line entry beside a twelve-line one.",
+      "A dashboard of report cards of different depth (a two-row summary beside a ten-row table) that should still fill the page evenly.",
+      "A pinned-column layout: one tile held in the first column with `column: 0` (a filter panel, a promoted card) while the rest of the feed packs around it.",
+    ],
+    related: [
+      "ResponsiveGrid — the answer whenever the tiles are or can be EQUAL height. It is pure CSS grid with container queries, needs no measurement, and keeps DOM order and visual order identical. Reach for Masonry only when the heights genuinely differ.",
+      "Flex — a single row or column of mixed-width content; no columns, no packing.",
+      "Card / CardContent — the usual tile. Masonry positions the tile box and never styles what is inside it.",
+      "AspectRatio — pair it with `height` when the tiles are images of a known ratio; the layout then settles with no measurement pass at all.",
+    ],
+    example: `import { Masonry } from "@godxjp/ui/layout";
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
+
+<Masonry
+  columns={{ base: 1, sm: 2, lg: 3 }}
+  gap="md"
+  items={notes.map((note) => ({ key: note.id, data: note }))}
+  itemRender={({ data }) => (
+    <Card>
+      <CardContent>
+        <Text>{data.body}</Text>
+      </CardContent>
+    </Card>
+  )}
+  onLayoutChange={(layout) => console.log(layout.length, "tiles placed")}
+/>`,
+    docPath: "layout/masonry.tsx",
+    storyPath: "layout/Masonry.stories.tsx",
+    rules: [2, 40, 44, 45],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {
