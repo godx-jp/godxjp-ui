@@ -300,6 +300,12 @@
       "unread": "Chưa đọc",
       "read": "Đã đọc"
     },
+    "marquee": {
+      "pause": "Tạm dừng cuộn",
+      "play": "Tiếp tục cuộn",
+      "pauseNamed": "Tạm dừng cuộn: {label}",
+      "playNamed": "Tiếp tục cuộn: {label}"
+    },
     "permissionMatrix": {
       "caption": "Ma trận vai trò và quyền",
       "permissionColumn": "Quyền",

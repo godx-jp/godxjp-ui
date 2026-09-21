@@ -299,6 +299,12 @@
       "unread": "未読",
       "read": "既読"
     },
+    "marquee": {
+      "pause": "スクロールを一時停止",
+      "play": "スクロールを再開",
+      "pauseNamed": "スクロールを一時停止: {label}",
+      "playNamed": "スクロールを再開: {label}"
+    },
     "permissionMatrix": {
       "caption": "ロールと権限のマトリクス",
       "permissionColumn": "権限",

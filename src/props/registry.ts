@@ -2388,6 +2388,68 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  MarqueeDirectionProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "direction",
+        local: true,
+        reason:
+          "LOGICAL travel direction (start | end) — the edge the track moves towards, so it flips with `dir` instead of naming a physical side the way the prior art's `left | right | up | down` does.",
+      },
+    ],
+  },
+  MarqueeSpeedProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      {
+        field: "speed",
+        local: true,
+        reason:
+          "Pace ordinal (slow | base | fast) over the `--marquee-interval` motion token. Not SizeProp: it names a DURATION rung, not a control box, and `xs|sm|md|lg` would read as a size on something that has none.",
+      },
+    ],
+  },
+  MarqueeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "GapProp",
+      "LabelProp",
+      "ClassNameProp",
+      {
+        field: "play",
+        local: true,
+        reason:
+          "Controlled motion state. The boolean triad spelled for this surface (play / defaultPlay / onPlayChange), the same shape `open`/`defaultOpen`/`onOpenChange` takes for an overlay — `value` would say nothing about what is being valued.",
+      },
+      {
+        field: "defaultPlay",
+        local: true,
+        reason: "Uncontrolled member of the play triad.",
+      },
+      {
+        field: "onPlayChange",
+        local: true,
+        reason: "Change member of the play triad; value-first, like every other On*Change here.",
+      },
+      {
+        field: "pauseOnHover",
+        local: true,
+        reason:
+          "Positive boolean, default false. An ADDITION to the pause control, never the mechanism — hover-only pause is the WCAG 2.2.2 failure (F16) the prior art ships.",
+      },
+      {
+        field: "fade",
+        local: true,
+        reason:
+          "Positive boolean, default false. Masks both edges over `--marquee-mask-width`; the prior art's `gradient`/`gradientColor`/`gradientWidth` trio is one boolean and one token here.",
+      },
+    ],
+  },
   CredentialRevealProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
