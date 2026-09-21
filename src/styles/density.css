@@ -44,6 +44,8 @@
   --space-8: calc(2rem * var(--scaling));
   --space-10: calc(2.5rem * var(--scaling));
   --space-12: calc(3rem * var(--scaling));
+  --space-20: calc(5rem * var(--scaling));
+  --space-24: calc(6rem * var(--scaling));
   --radius: calc(0.375rem * var(--scaling));
   --control-height: calc(var(--control-height-default) * var(--scaling));
   --control-height-sm: calc(var(--control-height) - calc(0.25rem * var(--scaling)));
@@ -65,6 +67,8 @@
   --space-page-x: var(--space-6);
   --space-page-y: var(--space-6);
   --space-section: var(--space-4);
+  --space-section-band: var(--space-20);
+  --space-section-hero: var(--space-24);
   --space-stack-xs: var(--space-1);
   --space-stack-sm: var(--space-2);
   --space-stack-md: var(--space-4);

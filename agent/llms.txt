@@ -1,6 +1,6 @@
 # @godxjp/ui
 
-> A Japanese-enterprise React design system: 167 components, 1669 design tokens,
+> A Japanese-enterprise React design system: 167 components, 1671 design tokens,
 > 47 cardinal rules. This file is the entry point for AI agents. Catalog version 28.7.0.
 
 If your client can run a process, do not read these files — run the MCP server instead

@@ -23,7 +23,7 @@ import {
   AtSign,
 } from "lucide-react";
 
-import { Button, Heading, Text } from "@godxjp/ui/general";
+import { Button, Heading, Icon, Text } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback, Card, CardContent } from "@godxjp/ui/data-display";
 import { Flex } from "@godxjp/ui/layout";
 
@@ -65,14 +65,22 @@ const THEME = `
      because this declaration is on an ancestor of the heading. */
   --font-size-display: 5rem;
   --font-size-5xl: 5rem;
+  /* The glass bar, opted into once (gh#831). acme-website.tsx hand-wrote the identical pair,
+     which is why these are framework knobs now and not two literals on .fl-navbar. */
+  --topbar-background-alpha: 80%;
+  --topbar-backdrop-blur-size: 12px;
   color-scheme: dark;
 }
 /* Marketing surface (consumer section stylesheet) */
 [data-tenant="futurelastic"] { background: hsl(var(--background)); color: hsl(var(--foreground)); min-height: 100vh; }
-[data-tenant="futurelastic"] .fl-shell { margin-inline: auto; width: 100%; max-width: 1140px; padding-inline: 2rem; container-type: inline-size; }
-[data-tenant="futurelastic"] .fl-section { padding-block: 5.5rem; }
-[data-tenant="futurelastic"] .fl-navbar { position: sticky; top: 0; z-index: 30; background: hsl(var(--background) / 0.8);
-  backdrop-filter: blur(12px); border-bottom: 1px solid hsl(var(--border)); }
+[data-tenant="futurelastic"] .fl-shell { margin-inline: auto; width: 100%; max-inline-size: var(--page-measure-wide); padding-inline: var(--space-8); container-type: inline-size; }
+[data-tenant="futurelastic"] .fl-section { padding-block: var(--space-section-band); }
+/* The sticky header IS this page's bar region, so it reads the --topbar-* glass knobs. See the
+   matching note in acme-website.tsx for why it is not a <Topbar>. */
+[data-tenant="futurelastic"] .fl-navbar { position: sticky; inset-block-start: 0; z-index: 30;
+  background-color: hsl(var(--background) / var(--topbar-background-alpha));
+  backdrop-filter: blur(var(--topbar-backdrop-blur-size));
+  border-block-end: var(--stroke-hairline) solid hsl(var(--border)); }
 /* REFLOW, NOT DECORATION (gh#643). This row was a fixed 68px flex line with no wrap, so at 320 its
    content ran to x=569.6 inside a 320px nav: every link painted OUTSIDE the navbar's own
    translucent box, over the page behind it, and axe read the white labels against the light
@@ -81,15 +89,21 @@ const THEME = `
    element looks like from the outside. min-height rather than height, so a wrapped row may be
    taller than one line and the language cluster stops overflowing the bar vertically (measured at
    320: it was 148.3px tall, starting at y=-40.2). */
-[data-tenant="futurelastic"] .fl-navbar-inner { min-height: 68px; display: flex; align-items: center; flex-wrap: wrap; column-gap: 2rem; row-gap: 0.75rem; padding-block: 0.75rem; }
+[data-tenant="futurelastic"] .fl-navbar-inner { min-block-size: 68px; display: flex; align-items: center; flex-wrap: wrap; column-gap: var(--space-8); row-gap: var(--space-3); padding-block: var(--space-3); }
 [data-tenant="futurelastic"] .fl-brand { font-family: var(--font-family-display); font-weight: 700; font-size: 1.25rem; color: hsl(var(--foreground)); }
 [data-tenant="futurelastic"] .fl-eyebrow { font-family: var(--font-family-body); font-weight: 600; font-size: 0.75rem;
   letter-spacing: 0.18em; text-transform: uppercase; color: hsl(var(--primary)); }
-[data-tenant="futurelastic"] .fl-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.875rem;
-  border: 1px solid hsl(var(--primary) / 0.3); background: hsl(var(--primary) / 0.08); border-radius: 999px;
+[data-tenant="futurelastic"] .fl-badge { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0.375rem 0.875rem;
+  border: var(--stroke-hairline) solid hsl(var(--primary) / 0.3); background: hsl(var(--primary) / 0.08); border-radius: var(--radius-pill);
   font-size: 0.8125rem; font-weight: 500; color: hsl(var(--foreground)); }
-[data-tenant="futurelastic"] .fl-badge .dot { width: 6px; height: 6px; border-radius: 999px; background: hsl(var(--primary)); }
-[data-tenant="futurelastic"] .fl-hero { position: relative; overflow: hidden; padding-block: clamp(5rem, 3rem + 9vw, 10rem); }
+[data-tenant="futurelastic"] .fl-badge .dot { inline-size: 6px; block-size: 6px; border-radius: var(--radius-pill); background: hsl(var(--primary)); }
+/* The hero band still breathes with the viewport, but both ends of the clamp are now the band/hero
+   steps rather than an eyeballed 5rem…10rem (gh#831). */
+[data-tenant="futurelastic"] .fl-hero { position: relative; overflow: hidden; padding-block: clamp(var(--space-section-band), 3rem + 9vw, var(--space-section-hero)); }
+/* The halo is .ui-brand-glow (src/styles/layout.css), which ships and was going unused. This
+   class and .fl-cta-glow now only place it and set its documented knobs. */
+[data-tenant="futurelastic"] .fl-hero-glow { position: absolute; inset: 0;
+  --brand-glow-color: 42 54% 54%; --brand-glow-size: 60% 50%; --brand-glow-position: 70% 0%; --brand-glow-alpha: 0.12; }
 [data-tenant="futurelastic"] .fl-hero-inner { position: relative; max-width: 860px; }
 /* .fl-display / .fl-h2 / .fl-lead / .fl-hero-glow / .fl-cta-glow are GONE (gh#826) — and the fact
    that this file and acme-website.tsx, two unrelated brands, had independently written the SAME
@@ -98,33 +112,34 @@ const THEME = `
    layers. The display face still arrives through --font-family-display (base.css points every
    <h1>-<h6> at it); the tracking is a token, set once above. */
 [data-tenant="futurelastic"] .fl-gold { color: hsl(var(--primary)); }
-[data-tenant="futurelastic"] .fl-note { font-size: 0.9375rem; color: hsl(var(--muted-foreground)); margin-top: 2.5rem; }
+[data-tenant="futurelastic"] .fl-note { font-size: 0.9375rem; color: hsl(var(--muted-foreground)); margin-block-start: var(--space-10); }
 [data-tenant="futurelastic"] .fl-head { max-width: 640px; margin-inline: auto; text-align: center; }
-[data-tenant="futurelastic"] .fl-hero-actions { margin-top: 1.75rem; }
+[data-tenant="futurelastic"] .fl-hero-actions { margin-block-start: 1.75rem; }
 [data-tenant="futurelastic"] .fl-cta-inner { position: relative; max-width: 680px; margin-inline: auto; }
 [data-tenant="futurelastic"] .fl-footer-tagline { max-width: 260px; }
-[data-tenant="futurelastic"] .fl-logocloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2.5rem; }
-[data-tenant="futurelastic"] .fl-logo-item { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-family-display);
+[data-tenant="futurelastic"] .fl-logocloud { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-4) var(--space-10); }
+[data-tenant="futurelastic"] .fl-logo-item { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-family-display);
   font-weight: 600; font-size: 1.0625rem; color: hsl(var(--foreground) / 0.85); }
 [data-tenant="futurelastic"] .fl-logo-item .tag { font-family: var(--font-family-body); font-weight: 500; font-size: 0.6875rem;
   letter-spacing: 0.06em; text-transform: uppercase; color: hsl(var(--primary)); }
-[data-tenant="futurelastic"] .fl-section-tint { background: hsl(var(--card) / 0.5); border-block: 1px solid hsl(var(--border)); padding-block: 3rem; }
-[data-tenant="futurelastic"] .fl-bento { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+[data-tenant="futurelastic"] .fl-section-tint { background: hsl(var(--card) / 0.5); border-block: var(--stroke-hairline) solid hsl(var(--border)); padding-block: var(--space-12); }
+[data-tenant="futurelastic"] .fl-bento { display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-bento { grid-template-columns: repeat(6, 1fr); } }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-bento > .fl-cell { grid-column: span 2; } }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-bento > .fl-cell.wide { grid-column: span 4; } }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-bento > .fl-cell.half { grid-column: span 3; } }
-[data-tenant="futurelastic"] .fl-medallion svg { width: 1.5rem; height: 1.5rem; }
-[data-tenant="futurelastic"] .fl-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+[data-tenant="futurelastic"] .fl-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-8); }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-stats { grid-template-columns: repeat(4, 1fr); } }
 [data-tenant="futurelastic"] .fl-stat-num { font-family: var(--font-family-display); font-weight: 700; font-size: 3rem; color: hsl(var(--primary)); line-height: 1; }
-[data-tenant="futurelastic"] .fl-cta { position: relative; overflow: hidden; text-align: center; border: 1px solid hsl(var(--primary) / 0.2);
-  border-radius: var(--radius-2xl); background: hsl(var(--card)); padding: 4rem 2rem; }
-[data-tenant="futurelastic"] .fl-footer { border-top: 1px solid hsl(var(--border)); padding-block: 3.5rem 2rem; }
-[data-tenant="futurelastic"] .fl-footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+[data-tenant="futurelastic"] .fl-cta { position: relative; overflow: hidden; text-align: center; border: var(--stroke-hairline) solid hsl(var(--primary) / 0.2);
+  border-radius: var(--radius-2xl); background: hsl(var(--card)); padding: 4rem var(--space-8); }
+[data-tenant="futurelastic"] .fl-cta-glow { position: absolute; inset: 0;
+  --brand-glow-color: 42 54% 54%; --brand-glow-size: 60% 80%; --brand-glow-position: 50% 0%; --brand-glow-alpha: 0.14; }
+[data-tenant="futurelastic"] .fl-footer { border-block-start: var(--stroke-hairline) solid hsl(var(--border)); padding-block: 3.5rem var(--space-8); }
+[data-tenant="futurelastic"] .fl-footer-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-10); }
 @container (min-width: 768px) { [data-tenant="futurelastic"] .fl-footer-grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; } }
-[data-tenant="futurelastic"] .fl-footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
-  margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid hsl(var(--border)); }
+[data-tenant="futurelastic"] .fl-footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);
+  margin-block-start: var(--space-10); padding-block-start: var(--space-6); border-block-start: var(--stroke-hairline) solid hsl(var(--border)); }
 `;
 
 const SHELL = "fl-shell";
@@ -216,11 +231,11 @@ function LogoCloud() {
   );
 }
 
-function Medallion({ icon: Icon }: { icon: typeof Boxes }) {
+function Medallion({ icon: Glyph }: { icon: typeof Boxes }) {
   return (
     <Avatar className="rounded-lg">
-      <AvatarFallback className="bg-primary/10 text-primary fl-medallion rounded-lg">
-        <Icon aria-hidden="true" />
+      <AvatarFallback className="bg-primary/10 text-primary rounded-lg">
+        <Icon as={Glyph} size="xl" />
       </AvatarFallback>
     </Avatar>
   );

@@ -2627,6 +2627,15 @@
     align-items: center;
     gap: var(--topbar-gap);
     padding-inline: var(--topbar-inset);
+    /* GLASS, AND OFF UNLESS ASKED FOR (gh#831). Both knobs default to `initial`, so each of these
+     * two declarations is invalid-at-computed-value-time and the property takes its OWN initial
+     * value — `transparent` and `none`. That matters for the blur in particular: a literal
+     * `blur(0px)` would still promote the bar to a backdrop root and make it the containing block
+     * for its fixed descendants, the trap documented on the app-launcher scrim below.
+     * `--background` is read HERE rather than frozen into a knob at `:root`, so the glass re-tints
+     * under a dark or `[data-tenant]` subtree (docs/TOKENS.md · the freeze rule). */
+    background-color: hsl(var(--background) / var(--topbar-background-alpha));
+    backdrop-filter: blur(var(--topbar-backdrop-blur-size));
     /* So: clip BOTH axes and let the margin carry the ring on every side. */
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
