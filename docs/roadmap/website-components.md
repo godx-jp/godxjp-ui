@@ -604,6 +604,51 @@ rhythm (`padding-block: 5rem` / `5.5rem` / `6rem`).
 > that collision worries the reviewer, `--space-section-band` / `--space-section-hero` are the
 > conflict-free spellings.
 
+**RESOLVED in gh#831 — and the φ half of the proposal above was REFUSED, on measurement.** What
+shipped:
+
+| token                                                       | tier / file                       | value                                              |
+| ----------------------------------------------------------- | --------------------------------- | -------------------------------------------------- |
+| `--space-20` · `--space-24`                                 | `src/tokens/foundation.css`       | 80px · 96px — Carbon `$spacing-11` / `$spacing-12` |
+| `--space-section-band` · `--space-section-hero`             | `src/tokens/semantic/layout.css`  | `var(--space-20)` · `var(--space-24)`              |
+| `--page-measure-wide`                                       | `src/tokens/semantic/layout.css`  | `72rem` (1152px outer → 1104px surface)            |
+| `--topbar-background-alpha` · `--topbar-backdrop-blur-size` | `src/tokens/components/shell.css` | `initial` · `initial` — read by `.ui-topbar`       |
+
+`--phi-p3` / `--phi-p4` were NOT minted. Three pieces of evidence, all of them already inside this
+repository, say the φ ladder is not the generator of this scale and must not become one:
+
+1. `docs/DESIGN-AUTHORITY.md` (accepted 2026-09-07) assigns **spacing** to **IBM Carbon**, and says
+   in as many words that "Carbon keeps geometry (the spacing steps, the 4px grid)".
+2. `src/tokens/__tests__/carbon-scale-alignment.test.ts` **enforces** it: every `--space-*` step
+   must be a Carbon step or a recorded divergence, and must sit on the 4px grid. Carbon's scale
+   already contains 64 / 80 / 96 / 160 — the whole marketing band range. φ³ = 67.8px and
+   φ⁴ = 109.7px are on neither the 4px nor the 8px grid, and at `--scaling: 0.92` they are 62.4px
+   and 100.9px.
+3. `src/tokens/semantic/layout.css` has said since it was written that the semantic steps read the
+   linear scale and **not** φ, "because mixing the two left an incoherent density rhythm". That
+   experiment was already run here once.
+
+The φ ladder also has **zero** consumers in `src/` — `--phi-p1` / `--phi-p2` appear only in
+`docs/`, and `docs/foundation/spacing.tsx` labels `--space-stack-lg` as "= `--phi-p1`" when it is
+`var(--space-6)` = 24px against φ¹ = 25.9px. It is a description of the scale, not its generator,
+so extending it would have extended a label.
+
+Industry prior art agrees and was checked before the refusal: Tailwind v4 replaced its ladder with
+`calc(var(--spacing) * N)`, purely additive; Primer (`--base-size-96/112/128`) and Polaris
+(`--p-space-2400/2800/3200`) both end their scales with **+16px flat** steps, the _smallest_ ratios
+anywhere in those scales; Atlassian states "every space token is a multiple of this base unit" and
+caps layout spacing at 80px; Material 3 does not scale section spacing at all (a flat 24dp pane
+spacer from Expanded through Extra-large); and `utopia-core` computes type with
+`Math.pow(scale, step)` and space with `base * multiplier` **in the same file**. No system in the
+sample generates spacing from φ. Geometric ratios are a TYPE-scale tool.
+
+`PageContainer measure="wide"` was deliberately NOT added with the token. A marketing page is
+full-bleed `<section>`s with a centred inner column; `PageContainer` owns page padding and a
+header/toolbar/footer scaffold, so neither showcase can consume it — the prop would have shipped
+with no call site in the two pages that are its proof, which is the tier-2 mistake `docs/TOKENS.md`
+warns about. The token stands on its own as the vocabulary a composition caps its shell with, the
+way `--gradient-hero` does.
+
 ---
 
 ## 6. The animation and motion story

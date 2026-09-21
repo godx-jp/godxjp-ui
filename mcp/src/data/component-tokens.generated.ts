@@ -6159,6 +6159,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--topbar-background-alpha",
+    "value": "initial",
+    "description": "THE GLASS BAR (gh#831) — the same two declarations two unrelated website showcases each * hand-wrote on their own sticky header: a translucent page fill plus a backdrop blur. Both knobs * are `initial`, i.e. QUIET by default in exactly the sense the paragraph above describes: a * guaranteed-invalid value makes the whole declaration at the call site invalid-at-computed-value * time, so `background-color` falls back to its own initial `transparent` and `backdrop-filter` * to `none`. The shipped bar therefore paints nothing, creates no backdrop root, and is * byte-identical to the pure slot bar it was. A service opts in with * `--topbar-background-alpha: 85%` / `--topbar-backdrop-blur-size: 10px`. * The TINT is NOT a knob: `.ui-topbar` reads `--background` directly at the call site, so a dark * or tenant-scoped subtree re-tints the glass instead of inheriting :root's answer * (docs/TOKENS.md · the `:root` freeze rule). Precedent for the blur name: * --app-launcher-launchpad-backdrop-blur-size. default = none — the bar paints no fill"
+  },
+  {
+    "name": "--topbar-backdrop-blur-size",
+    "value": "initial",
+    "description": "default = none — the bar blurs nothing"
+  },
+  {
     "name": "--topbar-center-compact-display",
     "value": "none",
     "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."

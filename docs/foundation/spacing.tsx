@@ -22,6 +22,9 @@ const rawScale = [
   "--space-8",
   "--space-10",
   "--space-12",
+  // The DISPLAY end of the grid (gh#831) — Carbon $spacing-11 / $spacing-12, for marketing bands.
+  "--space-20",
+  "--space-24",
 ];
 
 const phiScale = [
@@ -36,6 +39,8 @@ const layoutScale = [
   { token: "--space-page-x", role: "page gutter X (PageContainer)" },
   { token: "--space-page-y", role: "page gutter Y (PageContainer)" },
   { token: "--space-section", role: "section gap (= --phi-0)" },
+  { token: "--space-section-band", role: "marketing band padding-block (= --space-20)" },
+  { token: "--space-section-hero", role: "hero band padding-block (= --space-24)" },
   { token: "--space-stack-xs", role: "Flex gap='xs'" },
   { token: "--space-stack-sm", role: "Flex gap='sm'" },
   { token: "--space-stack-md", role: "Flex gap='md' (default · = --phi-0)" },

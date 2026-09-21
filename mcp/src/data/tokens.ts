@@ -22,7 +22,12 @@ export const TOKENS: TokenEntry[] = [
     tier: "primitive",
     role: "Neutral decorative chart series palette. The @godxjp/ui/charts components (LineChart/BarChart/AreaChart/PieChart) read these by series index automatically — a service rethemes every chart at once by overriding --chart-1..6; per-series/per-slice overrides go through the component's series.color / colors props.",
   },
-  { name: "--space-0..12", category: "primitive", tier: "primitive", role: "Raw spacing scale." },
+  {
+    name: "--space-0..12 / --space-20 / --space-24",
+    category: "primitive",
+    tier: "primitive",
+    role: "Raw spacing scale, on the 4px grid and multiplied by --scaling. 0/4/8/12/16/20/24/32/40/48px, then the DISPLAY end: --space-20 (80px) and --space-24 (96px), named `n = px / 4` like every step below them. The scale used to stop at 48px, which is the ceiling of an admin screen and the floor of a marketing section, so website authors typed `padding-block: 5rem` instead. The two display steps are Carbon $spacing-11 and $spacing-12 exactly — docs/DESIGN-AUTHORITY.md makes Carbon the authority for spacing and carbon-scale-alignment.test.ts enforces it, so the scale grows TOWARD its authority. They are NOT generated from the golden ratio: the φ ladder (--phi-n2..--phi-p2) is an optional modular-SIZE utility, and semantic/layout.css has said since it was written that the spacing grid is linear because mixing the two left an incoherent density rhythm. Every --scaling-derived step is re-declared in styles/density.css and in `.ui-scale-fixed`; a new one that is not would FREEZE at :root.",
+  },
   {
     name: "--icon-size-{2xs,xs,sm,md,lg,xl,2xl,3xl,4xl}",
     category: "primitive",
@@ -333,10 +338,16 @@ export const TOKENS: TokenEntry[] = [
     role: 'Inline measure of the PageContainer header `extra` region while `headerLayout="responsive-inline"` and the page is below the 640px step (default 11rem / 176px). The default `headerLayout="stack"` never reads it — `extra` keeps wrapping onto its own full-width line under the subtitle. At >=640px both arrangements are identical, so this token only governs the compact range.',
   },
   {
-    name: "--page-measure-{narrow,medium}",
+    name: "--space-section-{band,hero}",
     category: "semantic",
     tier: "semantic",
-    role: 'Bounded PageContainer MEASURE presets — 42rem (672px) / 48rem (768px), selected by the semantic `measure` prop. They are OUTER measures: the package-owned page gutters (--space-page-active-x, 24px each side) sit INSIDE the cap, so the VISIBLE surface is 624px / 720px, and at 390px nothing binds (358px surface at the 16px compact gutter). Unlike variant="narrow" — which caps only .ui-page-body — the measure caps the page HEADER and the BODY together, so a header `extra` action ends flush with the body surface. `measure="default"` (the default) reads NEITHER token and matches no rule, so existing pages are unchanged. Retune the presets in a service theme; never author a page-local max-width.',
+    role: 'The MARKETING BAND rhythm — the block-axis padding of a full-bleed section band (--space-section-band, 80px = --space-20) and of the hero band that opens the page (--space-section-hero, 96px = --space-24). Not to be confused with --space-section (16px), which is the gap BETWEEN the blocks of one admin page. Named --space-section-* and NOT --space-band-*: `band` already means "the vertical extent of a control or row" in this library (--band-height-*, rule #24), and a second meaning for the same word is the drift check:prop-vocabulary exists to stop. Both alias the linear --space-* grid rather than the φ ladder, for the reason semantic/layout.css states at the top of the block, and both are re-declared in styles/density.css because a knob that aliases a --scaling-derived step and is not re-derived in a descendant density scope freezes at :root (docs/TOKENS.md). A fluid band clamps BETWEEN the two rather than inventing a third value.',
+  },
+  {
+    name: "--page-measure-{narrow,medium,wide}",
+    category: "semantic",
+    tier: "semantic",
+    role: 'Bounded PageContainer MEASURE presets — 42rem (672px) / 48rem (768px), selected by the semantic `measure` prop. `--page-measure-wide` (72rem / 1152px outer, 1104px surface) is the MARKETING measure and is the one member with NO `measure` branch yet: it is the vocabulary a full-bleed landing composition caps its own shell with, added because two unrelated website showcases each hand-wrote 1200px / 1140px when the widest name here was 768px. The industry wide-container cluster runs 1136-1320px (Radix Container 4 = 1136, Tailwind max-w-7xl and Primer .container-xl = 1280, Bootstrap = 1320); 72rem is Tailwind --container-6xl and sits between the two measured showcase values. Do not give a reading column a wide measure — prose stays at narrow/medium, which bracket Bringhurst\'s 45-75 character band. They are OUTER measures: the package-owned page gutters (--space-page-active-x, 24px each side) sit INSIDE the cap, so the VISIBLE surface is 624px / 720px, and at 390px nothing binds (358px surface at the 16px compact gutter). Unlike variant="narrow" — which caps only .ui-page-body — the measure caps the page HEADER and the BODY together, so a header `extra` action ends flush with the body surface. `measure="default"` (the default) reads NEITHER token and matches no rule, so existing pages are unchanged. Retune the presets in a service theme; never author a page-local max-width.',
   },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
