@@ -79,7 +79,26 @@ describe("PageContainer header extra · desktop wrap geometry (gh#300)", () => {
     expect(desktop).toMatch(/flex-shrink:\s*1;/);
     // The exact regression: a non-shrinkable box has no narrower width to wrap into.
     expect(desktop).not.toMatch(/flex-shrink:\s*0;/);
-    expect(desktop).toMatch(/min-inline-size:\s*0;/);
+  });
+
+  it("stops shrinking at what its content can present, whatever shape that child is (gh#813)", () => {
+    // This assertion used to require `min-inline-size: 0` — a floor of ZERO, which is how a
+    // DIRECT-child `<Button>` (no wrap of its own) came to paint outside the box. Measured at 1280
+    // on `/isolate/layout-page-container`: box 82.6px around a 124.4px button, spilling 41.8px
+    // backwards over the title, and 82.9 / 88.3 / 5.5 on the narrow header below it.
+    //
+    // `auto` is the flex-item default: the floor becomes min-content, i.e. the narrowest width the
+    // CHILD can present itself at — one button, or one button per row for the `.ui-flex` group,
+    // which the rule outside this media query lets wrap. Both spills went to 0 and the guarantee
+    // now covers any child shape instead of naming one.
+    //
+    // It does not give back gh#300: with the group wrapping at every width, the shrink no longer
+    // needs a zero floor. Re-measured on `/isolate/layout-app-shell` with 4/8/10/13 JA buttons at
+    // 768/1024/1280 — <h1> width and line count, box width, rows and elements outside the viewport
+    // are IDENTICAL under `0` and under `auto` in all twelve.
+    const desktop = desktopRule(".ui-page-header-extra");
+    expect(desktop).toMatch(/min-inline-size:\s*auto;/);
+    expect(desktop).not.toMatch(/min-inline-size:\s*0;/);
   });
 
   it("still sizes to its content, so a header that already fits does not move", () => {

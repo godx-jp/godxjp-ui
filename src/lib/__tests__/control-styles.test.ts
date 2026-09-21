@@ -92,3 +92,20 @@ it("clamps only SelectValue, preserving compound custom trigger content", () => 
   expect(controlTriggerClass).toContain("[&>[data-slot=select-value]]:line-clamp-1");
   expect(controlTriggerClass).not.toContain("[&>span]:line-clamp-1");
 });
+
+/*
+ * gh#813: `YYYY-MM-DD（年-月-日）` was clipped by 59px in a 101px value box and showed
+ * `YYYY-MM-DD（全` — a format string cut through a glyph with nothing saying it had been cut.
+ * jsdom lays nothing out, so what this file can hold is the pair of declarations that produce the
+ * ellipsis; the pixels were measured in Chromium AND Firefox on
+ * `/isolate/navigation-app-setting-picker`.
+ */
+it("ellipsizes a SelectValue that does not fit, in both engines", () => {
+  // Blink paints the ellipsis from `text-overflow` on the clamped box…
+  expect(controlTriggerClass).toContain("[&>[data-slot=select-value]]:text-ellipsis");
+  // …Gecko ignores `text-overflow` there and paints `-webkit-line-clamp`'s own ellipsis instead,
+  // which only engages if the value may break. The trigger's own `whitespace-nowrap` forbids that,
+  // so the VALUE opts back out of it. The clamp keeps it to one line either way.
+  expect(controlTriggerClass).toContain("[&>[data-slot=select-value]]:whitespace-normal");
+  expect(controlTriggerClass).toContain("whitespace-nowrap");
+});
