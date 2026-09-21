@@ -319,6 +319,9 @@
       "ariaLabel": "Tiến độ",
       "breakdownSeparator": ", "
     },
+    "scrollArea": {
+      "region": "Vùng có thể cuộn"
+    },
     "tree": {
       "expand": "Mở rộng",
       "collapse": "Thu gọn",

@@ -403,11 +403,10 @@ describe("ScrollArea viewportRef", () => {
 
   it("keeps the viewport keyboard-reachable (WCAG 2.1.1) alongside the new handle", () => {
     const viewportRef = React.createRef<HTMLDivElement>();
-    render(
-      <ScrollArea anchor="bottom" viewportRef={viewportRef}>
-        <div>msg-1</div>
-      </ScrollArea>,
-    );
+    // Enough rows to overflow this file's modelled viewport: since gh#821 the stop exists only
+    // while there IS something to scroll to, so a one-line stream is the wrong sample — a single
+    // `msg-1` measures 20px inside a 100px box and correctly gets no stop at all.
+    render(<Stream rows={rowsFrom(1, 10)} anchor="bottom" viewportRef={viewportRef} />);
 
     expect(viewportRef.current).toHaveAttribute("tabindex", "0");
   });

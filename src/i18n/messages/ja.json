@@ -318,6 +318,9 @@
       "ariaLabel": "進捗",
       "breakdownSeparator": "、"
     },
+    "scrollArea": {
+      "region": "スクロール可能な領域"
+    },
     "tree": {
       "expand": "展開",
       "collapse": "折りたたむ",

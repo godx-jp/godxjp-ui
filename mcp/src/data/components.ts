@@ -12298,6 +12298,13 @@ export function ControlledPopover() {
         description:
           "Fires when the pinned state flips — false when the reader scrolls away from the bottom, true when they return inside anchorOffset. Render a real focusable 'jump to newest' Button from it: anchoring must never be the only route back to new content.",
       },
+      {
+        name: "label",
+        type: "React.ReactNode",
+        defaultValue: 'the localized "Scrollable region"',
+        description:
+          "Accessible name for the scroll REGION — the tabindex=\"0\" element a keyboard user lands on to scroll content bigger than the box. Optional: left out it takes the localized dataDisplay.scrollArea.region default, so no consumer has to invent a name merely to stop shipping an anonymous focus stop (gh#821). Pass a plain string when the screen can say WHICH region ('Activity log'); a non-string node cannot be an aria-label and falls back to the default. The role, the name and the stop are all emitted only while there IS overflow on the axes `orientation` opens.",
+      },
     ],
     usage: [
       'DO set an explicit height or max-height on ScrollArea via className (e.g. `className="h-64"` or `className="max-h-[min(300px,50vh)]"`). Without a height constraint the viewport grows to fit content and the scrollbar is never rendered.',
@@ -12309,7 +12316,8 @@ export function ControlledPopover() {
       "DO use `viewportRef` (or plain `ref`) when you need the scrolling element, never a `querySelector` for an internal attribute — `[data-radix-scroll-area-viewport]` is gone with Radix, and any selector matches the wrong node the moment two ScrollAreas nest.",
       'DO build a live stream (chat, log tail, streaming response, activity feed) with `anchor="bottom"` instead of writing `viewport.scrollTop = viewport.scrollHeight` in an effect. That naive version is the BUG, not the feature: it yanks a reader who has scrolled up back to the bottom on every arriving message (WCAG 3.2.5).',
       'DO pair `anchor="bottom"` with `onAnchoredChange` and a real Button ("jump to newest"). A keyboard user who has scrolled up needs a focusable route back to new content — the anchor alone is a pointer affordance.',
-      "DON'T remove the viewport's `tabIndex={0}`, and don't wrap the scrolling content in something that swallows arrow keys: the region must stay keyboard-scrollable (WCAG 2.1.1 / axe scrollable-region-focusable).",
+      "DON'T remove the viewport's `tabIndex={0}`, and don't wrap the scrolling content in something that swallows arrow keys: the region must stay keyboard-scrollable (WCAG 2.1.1 / axe scrollable-region-focusable). The component measures its own overflow and emits the stop only while there is something to scroll, so you never have to withhold it yourself.",
+      "DO pass `label` on a scroll area the screen can NAME ('Activity log', 'Board'). The stop the keyboard user lands on carries role=\"group\" plus that name; without one it still announces the localized 'Scrollable region', never the anonymous stop it used to be (gh#821). `group`, not a landmark `region` — several named regions on one page collide under axe landmark-unique.",
       "DON'T add an `aria-live` region to the ScrollArea to announce arriving items — a live region on a scroll container re-announces on reflow. Announce from your own small status region next to it.",
       "Retune the stickiness once per service with the `--scroll-area-anchor-offset` token rather than passing `anchorOffset` on every instance.",
     ],

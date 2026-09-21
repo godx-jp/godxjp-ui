@@ -325,6 +325,9 @@
       "ariaLabel": "Progress",
       "breakdownSeparator": ", "
     },
+    "scrollArea": {
+      "region": "Scrollable region"
+    },
     "tree": {
       "expand": "Expand",
       "collapse": "Collapse",
