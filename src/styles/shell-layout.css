@@ -2365,10 +2365,17 @@
     padding: var(--space-2);
   }
 
-  /* Collapsible group trigger chevron (rotates when open). */
+  /* Collapsible group trigger chevron (rotates when open).
+   *
+   * The size is not decoration: without it the chevron painted at Lucide's own `width="24"` inside
+   * a 32px nav row — 0.75 of the row — while `.sb-trailing-icon svg` two rules above was already
+   * drawing its mark at `--sidebar-nav-icon-size`. Same rail, same token, one slot forgotten;
+   * gh#845's shape, found by `check:control-glyph-tier` across 14 frames. */
   .sb-nav-group-trigger .sb-chevron {
     margin-inline-start: auto;
     flex: 0 0 auto;
+    inline-size: var(--sidebar-nav-icon-size);
+    block-size: var(--sidebar-nav-icon-size);
     opacity: 0.6;
     transition: transform 150ms ease;
   }
