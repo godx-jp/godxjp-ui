@@ -8,14 +8,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 MINOR. The library was 55% form-and-table — 90 of 165 components — with navigation the smallest
 functional group at 9 and **no site navigation in any of them**. This release is the first half of
-closing that, and the more useful finding is what the attempt uncovered: `grep -rln
-IntersectionObserver src/components/` returned **one non-test file**, whose hook was private. A
-website is scroll-position behaviour, and the library had one instance of it and exported none.
+closing that.
+
+**A correction, because the number that framed this release was wrong.** The plan and the first
+draft of this entry both said `grep -rln IntersectionObserver src/components/` returned **one**
+non-test file, and concluded the library had a single instance of scroll-position behaviour. It
+returned one because **`legal-document-shell.tsx` contained three literal NUL bytes**, used as a
+join separator: `file` reported it as `data`, and grep skipped a binary file **in silence**. There
+were two scrollspies, not one, and the second has a live flicker bug — it never suppressed its
+observer during programmatic scroll. The NUL bytes are now a named `\u0000` escape constant,
+identical at runtime and visible to grep.
+
+The corrected claim is narrower and still the point: the library had two private scroll observers,
+welded to the two components that happened to need them, and **exported neither**. A website is
+scroll-position behaviour. What was missing was not the technique but the export.
 
 The other thread runs through almost every fix below: **a thing that resolves, is catalogued, and
 does nothing.** Four more instances shipped today, and the two gates that close them are here.
 
 ### Added
+
+- **`Affix` and `Anchor`**, ported from antd — `offsetTop`/`offsetBottom`/`target`/`onChange`, and
+  `items`/`direction`/`affix`/`bounds`/`getCurrentAnchor`/`targetOffset`/`showInkInFixed`. `position:
+sticky` cannot report _"am I pinned"_, which is why both website showcases wrote one and got no
+  state out of it, and the placeholder that stops the page jumping is a measurement, not a style:
+  measured, it removes exactly **62px** of jump, and `onChange` flipped **twice across 122 driven
+  scroll frames**.
+
+  **The scrollspy rule is antd's single decision line, and the popular alternative was rejected on
+  measurement.** Bootstrap's `rootMargin`-band approach — and this repo's own private one in
+  `LegalDocumentShell` — has two failure modes no numbers fix: a section taller than the band
+  reports _nothing_, so every band implementation falls back to "keep the last one", which is a
+  guess and is wrong after a jump; and with several short sections in the band at once, "first
+  intersecting" and "last intersecting" disagree, with the right answer depending on scroll
+  _direction_. Measured: a section 776px taller than its 384px scrollport stays current at +10,
+  +400 and +900 into it, where a band reports nothing. antd's line is a pure function of scroll
+  position, so it cannot oscillate and needs no hysteresis.
+
+  `Affix` also writes `scroll-padding-block-start` on the scroll box while pinned and restores the
+  previous inline value — WCAG 2.4.11, measured at 70px = 8 + 62. `--affix-z-index` was **not**
+  shipped: `check:token-tiers` has no property word for a stacking order, and `semantic/layout.css`
+  already argues in prose that stacking is a system decision. It reads `--sticky-z-index`.
 
 - **`Masonry`**, ported from Ant Design 6.0.0 — `columns`, `gap`, `items`, `itemRender`, `fresh`,
   `onLayoutChange`. Reading antd's source rather than its docs found three things its own table does
@@ -27,7 +60,7 @@ does nothing.** Four more instances shipped today, and the two gates that close 
   implementation spreads the whole item — we ported the implementation.
 
   `fresh` turned out to mean one ResizeObserver **per tile** rather than only on the container, and
-  the docs page needs it: at 390px a long English tile re-wraps *after* the pass that measured it,
+  the docs page needs it: at 390px a long English tile re-wraps _after_ the pass that measured it,
   and the container reported 2472.2px while its content ended at 2489.7px. With `fresh`: 2489.7
   against 2489.7.
 
@@ -57,7 +90,7 @@ does nothing.** Four more instances shipped today, and the two gates that close 
 
 - **`Text` and `Heading` reach the display ramp.** `--font-size-display/3xl/4xl/5xl` (28–54px) had
   shipped with **no public API able to reach them** — `Heading level` topped out near 20px, `Text
-  size` near 22px — so every marketing page wrote its own class. Radix, Polaris, Spectrum and Primer
+size` near 22px — so every marketing page wrote its own class. Radix, Polaris, Spectrum and Primer
   all separate semantics from size; **antd is the lone outlier that makes `level` both, and the only
   one with no display range at all**. `DESIGN-AUTHORITY` asks for antd's answer first; on this axis
   antd has none to port, and the deviation is recorded at the prop.
@@ -79,6 +112,14 @@ does nothing.** Four more instances shipped today, and the two gates that close 
   said since it was written that the semantic steps read the linear scale and not φ "because mixing
   the two left an incoherent density rhythm" — that experiment already ran here. `--phi-p1` and
   `--phi-p2` have zero consumers: the ladder describes the scale, it does not generate it.
+
+- **Three observers became one.** gh#829 landed a `useInView` calling itself "the ONE wrapper" and
+  naming `useFooterReveal` as its second caller — which was never converted; a fourth was about to
+  arrive with `Affix`. They are now a single hook with `rootMargin` and `assumeInView`, the latter
+  because the right way to be wrong for one frame differs per caller: `Reveal` hides on `false`,
+  `PageContainer` and `Affix` act on it. `PageContainer`'s 63 tests and `LegalDocumentShell`'s 11
+  pass unchanged; the one edit was to a test fake that sent `isIntersecting: true` with no
+  `intersectionRatio`, which no real observer does.
 
 - **Two gates for the inert-token family.** `check:frame-token-wins` asks the browser, through CDP
   `CSS.getMatchedStylesForNode`, which catalogued component tokens the cascade threw away — 276,448
@@ -204,16 +245,16 @@ passed every gate this repo had, which is why three new gates ship with the fixe
   won: all eight tokens resolved, were catalogued, and moved nothing. Measured at 1440px, the
   `fontSize` trigger painted **1358px** where its token says 9rem.
 
-  | kind | token | before | after |
-  | --- | --- | --- | --- |
-  | locale | 10rem | 177px | 160px |
-  | timezone | 14rem | 224px | 224px |
-  | dateFormat | 11rem | 177px | 176px |
-  | timeFormat | 11rem | 177px | 176px |
-  | theme | 9rem | 177px | 144px |
-  | brand | 11rem | 177px | 176px |
-  | density | 10rem | 177px | 160px |
-  | fontSize | 9rem | **1358px** | 144px |
+  | kind       | token | before     | after |
+  | ---------- | ----- | ---------- | ----- |
+  | locale     | 10rem | 177px      | 160px |
+  | timezone   | 14rem | 224px      | 224px |
+  | dateFormat | 11rem | 177px      | 176px |
+  | timeFormat | 11rem | 177px      | 176px |
+  | theme      | 9rem  | 177px      | 144px |
+  | brand      | 11rem | 177px      | 176px |
+  | density    | 10rem | 177px      | 160px |
+  | fontSize   | 9rem  | **1358px** | 144px |
 
   The fix takes gh#366's precedent, not gh#375's: the width is emitted FROM the token as a utility
   (`w-[length:var(--app-setting-picker-trigger-width)]`). What a components-layer rule can still
