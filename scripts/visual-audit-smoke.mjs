@@ -26,6 +26,16 @@ const EXPECTED = [
   "sibling-card-gap",
   "row-content-starved",
 ];
+/**
+ * gh#818 — text that must appear in NO finding. The fixture also carries the shape every
+ * `<Select>` renders: react-aria's native `<select>` form-submit fallback inside a 1x1 clipped,
+ * aria-hidden container. It is painted nowhere and hit-tested nowhere, but its own box is full
+ * size, so `target-size-min` used to report one per Select on every consumer page. Asserting a
+ * rule FIRES cannot catch that; only asserting this one does not.
+ */
+const FORBIDDEN = [
+  { needle: "HIDDEN-FALLBACK-", why: "a visually-hidden native <select> (gh#818)" },
+];
 
 async function peersAvailable() {
   try {
@@ -130,8 +140,12 @@ async function main() {
       problems.push(
         `status="${result.status}" (expected "ok"); infra errors: ${JSON.stringify(result.errors)}`,
       );
-    const fired = new Set((result.findings ?? []).map((f) => f.rule));
+    const findings = result.findings ?? [];
+    const fired = new Set(findings.map((f) => f.rule));
     for (const id of EXPECTED) if (!fired.has(id)) problems.push(`rule "${id}" did not fire`);
+    for (const { needle, why } of FORBIDDEN)
+      for (const f of findings.filter((x) => (x.message ?? "").includes(needle)))
+        problems.push(`"${f.rule}" reported ${why}: ${f.message}`);
 
     if (problems.length) {
       console.error("✗ check:visual-audit — the runtime audit did not behave as expected:");
