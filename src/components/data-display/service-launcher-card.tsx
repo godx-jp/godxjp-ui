@@ -1,3 +1,28 @@
+/**
+ * RECORDED EXCEPTION to the Framework-Component Test (gh#814).
+ *
+ * `docs/COMPOSITION-VS-COMPONENT.md` §2 says all seven criteria must PASS and any FAIL makes a
+ * thing a composition pattern. This file FAILS two of them, and stays anyway:
+ *
+ *   C2 (encapsulates reusable BEHAVIOR) — FAIL. It owns no state, no keyboard handling and no
+ *      focus management; its only ARIA is three static attributes. §2 calls this "pure static
+ *      layout/visual arrangement".
+ *   C3 (not expressible by composing primitives) — FAIL. Its own imports are the answer: this is
+ *      `Card` + `CardContent` + `Badge` + one Lucide glyph, and §2's heuristic — "could I build
+ *      this right now from existing primitives + token overrides?" — is answered yes.
+ *
+ * It is RETAINED because `src/components/layout/app-launcher.tsx` consumes it: it is an internal
+ * building block of a component that does pass the test, so deleting it is not on the table, and
+ * removing a public export is breaking. Keeping it public was the cheaper call.
+ *
+ * SO: a consumer reaching for a service tile should compose `Card` + `CardContent` + `Badge`
+ * themselves, which is what C3 says. Reach for `ServiceLauncherCard` only to match `AppLauncher`'s
+ * own tiles. Do not cite it as precedent for adding another static tile to `src/components/` —
+ * the test still means what it says, and this is the exception that was argued and written down
+ * rather than the rule.
+ *
+ * Ledger, options considered and the decision: gh#814.
+ */
 import * as React from "react";
 import type { LucideIcon } from "lucide-react";
 import { Plus } from "lucide-react";
