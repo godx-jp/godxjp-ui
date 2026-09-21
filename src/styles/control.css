@@ -122,6 +122,25 @@
     flex-wrap: wrap;
   }
 
+  /* NO `border-radius` HERE, AND THAT IS THE FIX, NOT AN OMISSION (gh#824).
+   *
+   * This rule used to say `border-radius: var(--control-radius)`. It had not painted a corner
+   * since #124 gave Button its own `--button-radius`: `buttonVariants.shape` puts
+   * `rounded-[var(--button-radius)]` (or `--radius-pill` / `--radius-sharp`) on EVERY Button as a
+   * Tailwind utility, and utilities are a later layer than `components`. Measured in Chromium at
+   * 1280px the way a consumer would: `--control-radius: 37px` on `:root` moved 37 buttons from
+   * 3.70828px to 3.70828px. Worse than inert, it was untrue — the declaration named
+   * `--control-radius` (`var(--radius)`, 6px) while every button painted `--button-radius`
+   * (`var(--radius-md)`, 3.70px), so the stylesheet promised a corner the library does not draw.
+   *
+   * It is DELETED rather than chained. Chaining `--button-radius: var(--control-radius, …)` is
+   * only free when the two resolve alike, and they do not: 6px vs 3.70px measured, so every
+   * button in the library would have gained 2.3px of corner. #124 also created `--button-radius`
+   * precisely so a theme could retune button corners INDEPENDENTLY of input corners.
+   *
+   * `--control-radius` itself stays and stays catalogued — it is live on Input, the control
+   * trigger, Command and the colour-picker preview (measured 6px -> 37px on all of them). The
+   * dead thing was this declaration, not the knob. To round a Button, set `--button-radius`. */
   .ui-button {
     display: inline-flex;
     align-items: center;
@@ -129,7 +148,6 @@
     cursor: pointer;
     gap: var(--control-gap);
     white-space: nowrap;
-    border-radius: var(--control-radius);
     font-weight: var(--font-weight-medium);
     transition-property: color, background-color, border-color, box-shadow;
     transition-duration: 150ms;

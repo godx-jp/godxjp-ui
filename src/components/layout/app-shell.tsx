@@ -287,7 +287,19 @@ export function AppShell({
                  * reading the knob, not as a `.app-mobile-nav-trigger svg` rule, for the same reason
                  * as --app-shell-mobile-nav-inset below: shell-layout.css is imported BEFORE
                  * control.css and both live in `@layer components`, so a rule at the identical
-                 * (0,1,1) specificity would silently LOSE and the glyph would shrink back. */}
+                 * (0,1,1) specificity would silently LOSE and the glyph would shrink back.
+                 *
+                 * THIS IS THE `--topbar-icon-size` ENTRY IN `frame-token-wins.baseline.json`, and it
+                 * is INTENTIONAL — do not "fix" it (gh#824). The gate is right that on THIS svg the
+                 * cell's knob loses; gh#824 read that as "--topbar-icon-size says 16px while the bar
+                 * paints 20px, so the token is wrong", and re-measuring at 1280px says otherwise:
+                 * `--topbar-icon-size: 37px` on `:root` moves every OTHER `.ui-topbar-item > svg`
+                 * 16px -> 37px (2 on /isolate/layout-topbar-item, 1 on /isolate/layout-topbar) and
+                 * all 4 glyphs in the `.ui-topbar-item-icon` slot. The knob is live and it draws
+                 * exactly the 16px it claims. The 20px the issue measured is THIS element, and it
+                 * comes from --app-shell-mobile-nav-icon-size, a second catalogued token whose own
+                 * description already says it is bigger on purpose. One cell overriding the bar's
+                 * step through a documented knob is the knob working, not a broken promise. */}
                 <Menu className="size-[var(--app-shell-mobile-nav-icon-size)]" aria-hidden="true" />
               </TopbarItem>
             </SheetTrigger>

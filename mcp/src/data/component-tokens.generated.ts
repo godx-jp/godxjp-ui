@@ -4310,8 +4310,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--form-label-font-size",
-    "value": "var(--text-sm)",
-    "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a * service opts in. It is a knob because the label column already is one: --form-label-width * lets a service align forms to its grid, and a service whose grid was drawn around a * smaller label had no way to say so — leaving it to hand-write font-size per label, which * is exactly what the width token exists to prevent. 14px"
+    "value": "var(--control-label-font-size, var(--text-sm))",
+    "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a * service opts in. It is a knob because the label column already is one: --form-label-width * lets a service align forms to its grid, and a service whose grid was drawn around a * smaller label had no way to say so — leaving it to hand-write font-size per label, which * is exactly what the width token exists to prevent. * * CHAINED to the Label primitive's own knob (gh#824), where it used to read var(--text-sm) * directly. FormField passes `text-[length:var(--form-label-font-size)]` on its Label, and a * utility outranks `.ui-label { font-size: var(--control-label-font-size) }` in * `@layer components` — so this was not an override of the broad knob, it was a SHADOW of it: a * service that set --control-label-font-size moved its 4 standalone labels and none of its 21 * FormField ones (measured at 1280px, 37px on :root -> 37px vs 14px). Reading the broad knob as * the default makes this one an override again, which is what \"a per-instance escape\" meant. * FREE: base.css declares --text-sm AS var(--font-size-sm), the step * --control-label-font-size already read, so both sides are 0.875rem and nothing moves. 14px"
   },
   {
     "name": "--form-block-gap",
