@@ -173,7 +173,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Carousel | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | AppSettingPicker | ✓ | N/A | · | · | · | · | · | · | · | · |
 | AppSettingToggle | ✓ | N/A | · | · | · | · | · | · | · | · |
-| Field | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Field | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | LineChart | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | BarChart | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | CompactBarTrend | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
