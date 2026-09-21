@@ -681,7 +681,11 @@
   }
 
   .ui-pagination .ui-button svg,
-  .ui-pagination .ui-pagination-link svg {
+  .ui-pagination .ui-pagination-link svg,
+  /* The ellipsis was the one slot this rule did not list, so its glyph painted at Lucide's own
+   * `width="24"` inside a 32px box while the chevrons beside it were 16px — gh#845's shape
+   * exactly, found by `check:control-glyph-tier` rather than by anyone looking. */
+  .ui-pagination .ui-pagination-ellipsis svg {
     inline-size: var(--pagination-icon-size);
     block-size: var(--pagination-icon-size);
   }

@@ -421,6 +421,7 @@
     "visual-audit": "node scripts/visual-audit.mjs",
     "gen:brand": "node scripts/gen-brand.mjs",
     "check:absorbed-names": "node scripts/check-absorbed-names.mjs",
+    "check:control-glyph-tier": "node scripts/check-control-glyph-tier.mjs",
     "check:frame-overflow": "node scripts/check-frame-overflow.mjs",
     "check:frame-token-wins": "node scripts/check-frame-token-wins.mjs",
     "check:frame-token-scope": "node scripts/check-frame-token-scope.mjs"

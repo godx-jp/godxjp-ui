@@ -6,7 +6,7 @@
  * and the coverage tracker can never drift on which frames exist.
  */
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -50,6 +50,51 @@ export const AXE_VIEWPORTS = [
   { id: "desktop", width: 1440, height: 900 },
   { id: "mobile", width: 375, height: 667 },
 ];
+
+/**
+ * Every component frame's `/isolate/**` route id, DERIVED from `docs/` the way the preview derives
+ * it — never a hand-kept list, so a new example page is swept the moment it exists.
+ *
+ * It lived inside `check-frame-overflow.mjs` and was copied out of it the first time a second
+ * sweeping gate needed the same routes, which is the point at which a copy starts to drift. This
+ * module already calls itself "one source of truth for … which frames exist"; the list belongs
+ * here rather than in whichever gate happened to need it first.
+ *
+ * `showcase/**` is excluded for the reason `componentFrames()` gives: a showcase is a standalone
+ * product page, a different surface from a component contract frame — and it is served at its own
+ * URL, `/showcase/<id>`, not under `/isolate/**` at all. `showcaseRoutes()` below returns those.
+ */
+export function isolateRoutes() {
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) return walk(full);
+      return e.name.endsWith(".tsx") && !e.name.startsWith("_") ? [full] : [];
+    });
+  return walk(path.join(REPO_ROOT, "docs"))
+    .map((f) => path.relative(path.join(REPO_ROOT, "docs"), f).replace(/\.tsx$/, ""))
+    .filter((rel) => !rel.startsWith("showcase/"))
+    .map((rel) => rel.replace(/\//g, "-").toLowerCase())
+    .sort();
+}
+
+/**
+ * The standalone showcase pages, served at `/showcase/<id>` — a DIFFERENT url shape from
+ * `/isolate/**`, which is why they cannot simply be un-filtered out of `isolateRoutes()`. The id
+ * is the file's basename, exactly as `preview/src/showcase-catalog.ts` documents it.
+ *
+ * Most frame gates want nothing to do with these; a showcase is a product page, not a component
+ * contract. A gate whose DEFECT was reported from one does: gh#845 came in with a screenshot of
+ * `/showcase/case4-login`, and gh#840–843 the week before from `/showcase/theme-customization`.
+ */
+export function showcaseRoutes() {
+  const dir = path.join(REPO_ROOT, "docs/showcase");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".tsx") && !f.startsWith("_"))
+    .map((f) => f.replace(/\.tsx$/, ""))
+    .sort();
+}
 
 const EXEC =
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ||

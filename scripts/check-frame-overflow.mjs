@@ -41,10 +41,15 @@
  * there, the gate fails on anything NEW, and the number may only go down. That is the same shape
  * `check:no-hardcoded-css-values` uses for its 75 literals.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
-import { DEFAULT_BASE, REPO_ROOT, resolveChromiumExecutable } from "./frame-harness.mjs";
+import {
+  DEFAULT_BASE,
+  REPO_ROOT,
+  isolateRoutes,
+  resolveChromiumExecutable,
+} from "./frame-harness.mjs";
 
 const base = process.argv.find((a) => a.startsWith("http")) ?? DEFAULT_BASE;
 const UPDATE = process.argv.includes("--update-baseline");
@@ -72,21 +77,6 @@ const VIEWPORTS = [
   { name: "w1280", width: 1280, height: 1000 },
   { name: "w375", width: 375, height: 800, mobile: true },
 ];
-
-/** Every docs frame, derived the way the preview derives its route id — never a hand-kept list. */
-function frameRoutes() {
-  const walk = (dir) =>
-    readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
-      const full = path.join(dir, e.name);
-      if (e.isDirectory()) return walk(full);
-      return e.name.endsWith(".tsx") && !e.name.startsWith("_") ? [full] : [];
-    });
-  return walk(path.join(REPO_ROOT, "docs"))
-    .map((f) => path.relative(path.join(REPO_ROOT, "docs"), f).replace(/\.tsx$/, ""))
-    .filter((rel) => !rel.startsWith("showcase/"))
-    .map((rel) => rel.replace(/\//g, "-").toLowerCase())
-    .sort();
-}
 
 /* Runs INSIDE the page. Kept as one string so there is no build step between what is reviewed and
  * what is measured. */
@@ -200,7 +190,7 @@ async function main() {
 
   const exec = resolveChromiumExecutable();
   const browser = await chromium.launch(exec && existsSync(exec) ? { executablePath: exec } : {});
-  const routes = frameRoutes();
+  const routes = isolateRoutes();
   const found = {};
   let missing = 0;
 

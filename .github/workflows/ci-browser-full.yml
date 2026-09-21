@@ -7,6 +7,8 @@ name: CI · browser (full sweep)
 #   • token-wins       — CDP cascade sweep for component tokens the browser throws away.
 #   • token-scope      — the neighbouring defect: tokens declared where the scope that needs them
 #                        cannot reach (frozen at :root, or declared under an unreachable selector).
+#   • control-glyph-tier — glyphs inside control-sized boxes that nothing in CSS ever sized, so
+#                        they ship at their source library's `width="24"` (gh#820/#841/#845).
 #   • rendered-runtime — five shards of per-frame data-entry / layout / provider runtime contracts.
 #
 # Measured on run 33976207776 (a normal, uncongested merge): the five rendered-runtime shards cost
@@ -133,6 +135,39 @@ jobs:
           chromium: "true"
       - name: unreachable + frozen tokens
         run: pnpm check:frame-token-scope
+
+  control-glyph-tier:
+    name: Unsized control glyphs (icon-tier sweep)
+    # HERE AND NOT ci-browser.yml, on the same arithmetic as `token-wins` and `token-scope`. The
+    # sweep is 231 navigations — 199 `/isolate/**` frames plus the 32 standalone showcases, which
+    # it takes because gh#845 was REPORTED from /showcase/case4-login and the `.ui-control-trigger`
+    # half of that defect appears on no contract frame at all. Measured 2m55s locally; ci-browser.yml
+    # has a 5-minute budget (CONTRACT.md L4) that `verify:browser` already spends.
+    #
+    # It carries NO baseline and gates at 0: every finding has the same one-line fix (size the
+    # glyph from the icon tier), and the numbers are integers out of a style sheet rather than font
+    # rasterisation, so unlike check:frame-overflow it cannot report a known finding as new on a
+    # different renderer.
+    #
+    # Nightly is soon enough for what it protects against — a NEW unsized glyph arrives with a
+    # commit, not with a minute — and this lane still guards the release: a red run on main's HEAD
+    # blocks a tag cut at that SHA through npm-publish.yml's `collateral` rule.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'run-browser'))
+    runs-on: [self-hosted, swarm-pool]
+    env:
+      # Own port, for the reason token-scope's note gives: self-hosted jobs share a host and two
+      # previews on one port collide.
+      PREVIEW_BASE: http://localhost:6068
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+        with:
+          chromium: "true"
+      - name: unsized control glyphs
+        run: pnpm check:control-glyph-tier
 
   rendered-runtime:
     name: rendered-runtime (${{ matrix.name }})

@@ -1688,6 +1688,34 @@
     cursor: pointer;
   }
 
+  /* THE CONTROL GLYPH FLOOR (gh#845). A glyph inside a box that IS a control is a control glyph,
+   * and this says so once instead of every component remembering to.
+   *
+   * Measured on /showcase/case4-login at 1280px: `ui-toggle-sm` painted its mark at 24x24 inside a
+   * 42x28 button — 0.86 of the button's own height — and the locale picker carried TWO glyph sizes
+   * in ONE control, 24px for the 語/A mark beside 16px for its chevron. Neither component sized its
+   * SVG, so Lucide's own `width="24"` stood. That is the same failure as gh#820's form-feedback
+   * icon and gh#841's input addon: five instances in one week of one missing rule, and every
+   * static gate in this repo passed all five, because there is no token name to read and no
+   * `var()` to resolve — there is simply nothing.
+   *
+   * IT IS A FLOOR, NOT A CEILING, and the distinction is the whole design. `Button` already solved
+   * this for itself with `[&_svg:not([class*='size-'])]:size-[var(--button-xs-icon-size)]`, a
+   * UTILITY — and Tailwind orders utilities after `@layer components`, so Button's ladder and any
+   * author's `size-5` still win over this rule exactly as they did before. A component writes its
+   * own rule when it wants a DIFFERENT step, never to avoid a broken default.
+   *
+   * `check:control-glyph-tier` is what keeps this selector list honest: it sweeps every frame in a
+   * browser and fails on any glyph inside a control-sized box that nothing in CSS sized. The list
+   * below is hand-kept — that is unavoidable, CSS cannot select "a box that is a control" — but it
+   * is no longer hand-REMEMBERED. */
+  .ui-toggle > svg,
+  .ui-control-trigger > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    flex-shrink: 0;
+  }
+
   .ui-control-trigger:disabled,
   .ui-control-trigger[data-disabled] {
     cursor: not-allowed;
@@ -2621,6 +2649,16 @@
 
   .ui-input-trailing {
     inset-inline-end: var(--control-inline-affix-inset-inline);
+  }
+
+  /* The affix slots take the same floor as the addon beside them (gh#841/gh#845) — `.ui-control-
+   * affix` was already 16px and these two were not, which is precisely how the defect hid: two of
+   * three affix slots correct reads as "handled" at a glance. See the floor's note above. */
+  .ui-input-leading > svg,
+  .ui-input-trailing > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    flex-shrink: 0;
   }
 
   /* A textarea has no single line to centre an affix on, so its clear control parks at the top-end
