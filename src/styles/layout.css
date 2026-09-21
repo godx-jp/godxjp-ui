@@ -2336,12 +2336,23 @@
   .ui-masonry-item {
     position: absolute;
     box-sizing: border-box;
-    /* One column track, gap included, so the last column ends flush with the container edge. */
-    --masonry-item-track: calc((100% + var(--masonry-gap-inline)) / var(--masonry-column-count));
+    /* One column track, gap included, so the last column ends flush with the container edge.
+     *
+     * FALLBACKS ARE NOT DECORATION HERE. `--masonry-column-count` and `--masonry-item-column`
+     * are written INLINE by the component, so on the server render and on the frame before the
+     * packer has run they do not exist — and a `var()` with no declaration and no fallback makes
+     * the whole property INVALID AT COMPUTED-VALUE TIME, so `inline-size` and `inset-inline-start`
+     * are dropped rather than approximated. `check:dist-tokens-resolve` says it plainly: a token
+     * that does not resolve does not exist, and it has no baseline for exactly this reason.
+     *
+     * The fallbacks are the component's own defaults — `columns` defaults to 3, the way antd's
+     * does, and an unplaced tile belongs in column 0 — so the pre-measurement frame lays out as a
+     * plain three-column grid instead of collapsing. */
+    --masonry-item-track: calc((100% + var(--masonry-gap-inline)) / var(--masonry-column-count, 3));
     inline-size: calc(var(--masonry-item-track) - var(--masonry-gap-inline));
     /* LOGICAL, so a masonry mirrors under `dir="rtl"` with no second rule — antd needs an
      * `-rtl` class for the same effect. */
-    inset-inline-start: calc(var(--masonry-item-track) * var(--masonry-item-column));
+    inset-inline-start: calc(var(--masonry-item-track) * var(--masonry-item-column, 0));
     inset-block-start: 0;
     /* Hidden until it has a real position: the first paint is the one frame before the tiles
      * have been measured, where every tile sits at 0,0. antd covers the same frame with
