@@ -58,9 +58,12 @@ an edge and nobody saw the edges break.
 - **The Progress ring label could be wider than its ring.** `--progress-ring-label-font-size` was
   one fixed step for every diameter, so a 32px `sm` ring carried the same 12.47px label as the 44px
   default and `18/42` measured **32.6px**, painting over the arc. `0/42` fits, which is why the demo
-  looked correct. It derives from `--progress-ring-size` now, and since `[data-size="sm"]` already
-  rebinds that variable one line fixes every size including any added later — 44 × 0.28 = 12.3px, so
-  the default ring does not move. `max-inline-size` pins it to the inner circle, so longer content
+  looked correct. It is a KNOB now, with the derivation at the element that paints it —
+  `calc(var(--progress-ring-size) * 0.28)`, read where `[data-size="sm"]` has already rebound the
+  diameter. Declaring that calc on `:root` was the first attempt and it FROZE, exactly as this
+  repo's freeze rule says it must: measured afterwards, both the 44px and the 32px ring rendered a
+  12.32px label and only `max-inline-size` was hiding it. Measured after the real fix: 12.32px on
+  the 44px ring, 8.96px on the 32px, neither spilling and neither truncated. `max-inline-size` pins it to the inner circle, so longer content
   clips INSIDE the ring instead of over it.
 
 - **`Legend` counts did not line up.** Four shrink-to-fit `Text` in a `Flex justify="end"`:

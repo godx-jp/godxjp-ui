@@ -2825,8 +2825,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-ring-label-font-size",
-    "value": "calc(var(--progress-ring-size) * 0.28)",
-    "description": "DERIVED FROM THE DIAMETER, not a fixed step (reported on the live docs site). * It was `--font-size-xs`, one value for every ring, so a 32px `sm` ring carried the same * 12.47px label as the 44px default — and \"18/42\" measures 32.6px, wider than the ring itself, * painting over the stroke. \"0/42\" fits, which is why the demo looked correct. * `.ui-progress[data-size=\"sm\"]` rebinds --progress-ring-size, so deriving from it fixes every * size at once and any size added later. 0.28 reproduces the current default (44 × 0.28 = * 12.3px ≈ the 12.47 it replaces), so the `md` ring does not move."
+    "value": "initial",
+    "description": "A KNOB, with the derivation at the CALL SITE — and the first attempt got this wrong. * * It was `--font-size-xs`, one value for every diameter, so a 32px `sm` ring carried the same * 12.47px label as the 44px default and \"18/42\" measured 32.6px — wider than the ring, painting * over the arc. \"0/42\" fits, which is why the demo looked correct. * * The fix was `calc(var(--progress-ring-size) * 0.28)` HERE, and that does not work: a custom * property substitutes its var() where it is DECLARED, so this reads the `:root` diameter and * freezes. Measured after that change — both the 44px and the 32px ring rendered a 12.32px * label, i.e. the sm ring was not scaled at all and only `max-inline-size` was saving it. The * same freeze rule this repo documents for `--ring` and the primary family, walked into while * fixing something else. * * So it is `initial`, and the formula lives at the element that PAINTS it, where * `--progress-ring-size` is whatever `[data-size=\"sm\"]` last said. 0.28 reproduces the previous * default (44 × 0.28 = 12.3px ≈ the 12.47 it replaces), so the md ring does not move."
   },
   {
     "name": "--legend-gap",

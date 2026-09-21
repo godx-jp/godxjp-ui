@@ -346,9 +346,15 @@
   .ui-progress-ring-label {
     position: relative;
     color: hsl(var(--foreground));
-    font-size: var(--progress-ring-label-font-size);
+    font-size: var(--progress-ring-label-font-size, calc(var(--progress-ring-size) * 0.28));
     font-variant-numeric: tabular-nums;
-    line-height: 1;
+    /* NOT `line-height: 1`, which is what this carried before it started clipping.
+     * `overflow: hidden` below makes the line box the CLIPPING BOUNDARY, and a box sized for Latin
+     * cuts the dot-below of a Vietnamese `ị` or a stacked Japanese diacritic at the baseline edge
+     * — `auth-shell-preset-geometry.test.ts` sweeps every rule in src/styles for exactly that pair
+     * and caught this one the moment the clip was added. The ring centres with `place-items`, so a
+     * taller line box costs no layout: 12.3px × 1.5 = 18.5px inside a 44px ring. */
+    line-height: var(--line-height-normal);
     /* The INNER circle is the whole box this may use. Deriving the font size makes the label fit
      * for the content we ship; this makes it impossible to spill for content we do not — a longer
      * string clips INSIDE the ring instead of painting over the arc, which is the difference
