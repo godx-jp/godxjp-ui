@@ -95,6 +95,32 @@ function collectInPage() {
     const cs = getComputedStyle(el);
     return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none";
   };
+  // `visible` above is ELEMENT-LOCAL — it reads the node's own box and its own visibility/display,
+  // and an ancestor can still clip the node out of the rendered page entirely. The visually-hidden
+  // idiom (Tailwind `sr-only`, react-aria `<VisuallyHidden>`) is exactly that: a 1x1 container with
+  // `overflow: hidden` + `clip: rect(0 0 0 0)` wrapping a FULL-SIZE child. The child's own
+  // getBoundingClientRect stays full size, so an element-local test calls it visible.
+  //
+  // gh#818: every `<Select>` carries react-aria's native `<select>` in one of those containers —
+  // the form-submit + browser-autofill fallback, `aria-hidden`, `tabindex="-1"`, painted nowhere.
+  // Its box is the width of its concatenated option labels (85x22 for a locale picker), so
+  // `target-size-min` reported one per Select on every consumer page, and the consumer read it as
+  // a second, undersized language control sitting beside the styled trigger. Measured in Chromium:
+  // `document.elementFromPoint` at that `<select>`'s own centre never returns the select, and at
+  // the trigger's centre +/-11px it returns the trigger — there is one target, not two.
+  //
+  // SC 2.5.8 bounds TARGETS: "the region of the display that will accept a pointer action". A node
+  // clipped to a 1px sliver accepts none at any size, so it is not a target and must not be
+  // measured as one — enlarging it would be the wrong fix twice over.
+  const clippedAway = (el) => {
+    for (let a = el.parentElement; a; a = a.parentElement) {
+      const cs = getComputedStyle(a);
+      if (cs.overflow === "visible" && cs.clip === "auto" && cs.clipPath === "none") continue;
+      const r = a.getBoundingClientRect();
+      if (r.width <= 1 || r.height <= 1) return true;
+    }
+    return false;
+  };
 
   // Accent surfaces — buttons / primary CTAs / banners whose background carries colour.
   const accents = [];
@@ -116,7 +142,9 @@ function collectInPage() {
   for (const el of document.querySelectorAll(
     "a[href], button, [role=button], input:not([type=hidden]), select, [tabindex]:not([tabindex='-1'])",
   )) {
-    if (!visible(el)) continue;
+    // Dropped BEFORE the list is built, not filtered after: a node nobody can point at must not
+    // count as a neighbour either, or it spends the Spacing exception of the real target it sits on.
+    if (!visible(el) || clippedAway(el)) continue;
     const r = el.getBoundingClientRect();
     const name = (el.getAttribute("aria-label") || el.textContent || "").trim().slice(0, 40);
     rawTargets.push({

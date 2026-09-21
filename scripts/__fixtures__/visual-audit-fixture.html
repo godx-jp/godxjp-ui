@@ -57,6 +57,47 @@
         </button>
       </span>
 
+      <!--
+        (2b) target-size-min MUST NOT fire here — gh#818. This is react-aria's native <select>
+        form-submit/autofill fallback, the shape every @godxjp/ui <Select> renders: a full-size
+        control inside a 1x1 `overflow: hidden` + `clip` container, aria-hidden and tabindex="-1".
+        Its OWN box is 80-ish x 20-ish (the width of its concatenated option labels), so an
+        element-local visibility test measured it and reported one undersized "target" per Select
+        on every consumer page. Nothing about it is a pointer target. The smoke test asserts by
+        name that this select produces no finding.
+      -->
+      <div style="display: flex; align-items: center">
+        <!--
+          Out of flow at its STATIC position, so the clipped box lands on the trigger that follows
+          and the select's own 80-ish x 20-ish box overlaps it — the real geometry, and the reason
+          neither SC 2.5.8 exception rescues it: it is crowded by the trigger, and not `display:
+          inline`. Without the ancestor-clip guard this select IS reported.
+        -->
+        <div
+          aria-hidden="true"
+          data-react-aria-prevent-focus="true"
+          style="
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+            white-space: nowrap;
+          "
+        >
+          <label>
+            <select tabindex="-1" name="hidden-fallback-locale">
+              <option value="vi">HIDDEN-FALLBACK-Vi</option>
+              <option value="en">HIDDEN-FALLBACK-En</option>
+            </select>
+          </label>
+        </div>
+        <button style="height: 32px; width: 120px">日本語</button>
+      </div>
+
       <!-- (4) emoji-rendered: an emoji that survived into product text (UTS #51). -->
       <p>Deploy complete 🎉 all systems nominal.</p>
 
