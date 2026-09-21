@@ -838,3 +838,101 @@ describe("a glyph in a component-owned icon slot is not unsized", function () {
     expect(lucideLines(source)).toEqual([5]);
   });
 });
+
+/*
+ * gh#825 — `no-hand-rolled-scrollport`.
+ *
+ * The rule exists because `scrollable-region-focusable` is CONTENT-dependent: axe passes a scroll
+ * container that CONTAINS a focusable element, so eleven identical `overflow-auto` divs in these
+ * docs produced exactly one violation — the one whose table was read-only. Which half of that you
+ * land in depends on the data, not the markup, so both directions have to be asserted here. A
+ * fixture that only proves a rule FIRES could not have caught gh#818; one that only proves it goes
+ * quiet is worth just as little.
+ */
+describe("a scrollport is a component, not an overflow utility (gh#825)", () => {
+  const scrollportLines = (source: string): number[] =>
+    (JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }).findings
+      .filter((finding) => finding.rule === "no-hand-rolled-scrollport")
+      .map((finding) => finding.line);
+
+  it("fires on every scrolling spelling, including under a variant prefix", () => {
+    const source = [
+      '<div className="max-h-80 overflow-auto">', //                        1
+      '<div className="overflow-y-auto">', //                               2
+      '<div className="overflow-x-auto">', //                               3
+      '<div className="overflow-scroll">', //                               4
+      '<div className="overflow-y-scroll">', //                             5
+      '<div className="overflow-x-scroll">', //                             6
+      '<div className="md:overflow-y-auto">', //                            7  conditional…
+      '<div className="data-[orientation=horizontal]:overflow-x-auto">', // 8  …is still one
+      "<div", //                                                            9  prettier-wrapped:
+      '  className="h-80 overflow-auto rounded-md border"', //             10  the class is here
+      "  style={TOKENS}", //                                               11
+      ">", //                                                              12
+      '<CardContent solo className="h-full overflow-auto">', //            13  a slot is no excuse
+      "<div className={cn(", //                                            14
+      '  "overflow-auto",', //                                             15  cn() is a class expr
+      ")} />", //                                                          16
+    ].join("\n");
+
+    expect(scrollportLines(source)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 10, 13, 15]);
+  });
+
+  it("does not fire on ScrollArea, on a clipping box, or on the word outside a class", () => {
+    const source = [
+      '<ScrollArea className="max-h-80" label="勤怠集計表">', //            1  the primitive
+      '<ScrollArea orientation="horizontal">', //                           2
+      '<div className="overflow-hidden">', //                               3  clipping ≠ scrolling
+      '<div className="overflow-y-hidden truncate">', //                    4
+      '<div className="overflow-x-hidden overflow-clip">', //               5
+      '<div className="overflow-visible">', //                              6
+      '<Tabs id="antd-overflow-scroll" />', //                              7  an id, not a class
+      "<Text>overflow-auto is what this page is about</Text>", //           8  product copy
+      '<Input placeholder="overflow-y-auto" />', //                         9  a prop value
+      'const note = "use overflow-scroll here";', //                       10  prose
+      '// was <div className="overflow-auto"> before gh#825', //           11  a comment
+    ].join("\n");
+
+    expect(scrollportLines(source)).toEqual([]);
+  });
+
+  /*
+   * A scrollport that HAS a focusable child is the case axe forgives, and it must still be
+   * reported. `focusable-content-evaluate` reads `vNode.tabbableElements` off the RENDERED tree;
+   * a lint pass has no tree, so "there is a Button in the JSX" is a claim about data it has never
+   * seen. Ten of the eleven call sites in gh#825 were this shape, and every one of them becomes a
+   * real failure the day its rows arrive without a link.
+   */
+  it("still fires when the box holds a focusable child, which is what axe forgives", () => {
+    const source = [
+      '<div className="max-h-80 overflow-auto">', //  1
+      "  <Button>Save</Button>", //                   2
+      "</div>", //                                    3
+    ].join("\n");
+
+    expect(scrollportLines(source)).toEqual([1]);
+  });
+
+  /*
+   * `warn`, not `error`. Ten existing call sites pass the browser gate today, and a rule that
+   * opens by turning an audit red against markup with no measured defect is a rule that gets
+   * deleted (godx-corebooks#114 — 1189 errors made a documented rule unenforceable). The
+   * `--changed` ratchet is what collects the backlog, one touched file at a time.
+   */
+  it("warns rather than failing the run", () => {
+    const result = audit('<div className="overflow-auto" />');
+    const finding = (
+      JSON.parse(result.output) as { findings: { rule: string; severity: string }[] }
+    ).findings.find((f) => f.rule === "no-hand-rolled-scrollport");
+
+    expect(finding?.severity).toBe("warn");
+    expect(result.status).toBe(0);
+  });
+
+  /* `scope: "consumer"` — inside this package the utilities ARE the design system. */
+  it("is a consumer rule, so the library's own components are not flagged", () => {
+    expect(
+      audit('<div className="overflow-y-auto" />', true, "src/components/feedback").output,
+    ).not.toContain('"no-hand-rolled-scrollport"');
+  });
+});

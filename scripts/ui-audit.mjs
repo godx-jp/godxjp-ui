@@ -722,6 +722,72 @@ const RULES = [
     message:
       'Hand-rolled list — a raw <ul>/<ol>, an ARIA role="list"/"listitem", or a <li> wrapped around a library row. Build it from <Flex as="ul" marker="none"> (keeps the element, the <li> semantics and the gap token; no bullet, no indent) with <ListRow as="li"> as the rows. A row inside a wrapper of its own is an only child, so its :not(:last-child) divider never matches and every divider disappears silently (docs/CONSUMER-RULES.md §4, gh#714).',
   },
+  {
+    id: "no-hand-rolled-scrollport",
+    replacement: "ScrollArea (label, orientation)",
+    classOnly: true,
+    scope: "consumer",
+    severity: "warn",
+    /*
+     * A scroll container built from an `overflow-*` utility instead of the primitive that exists
+     * for one.
+     *
+     * This is the only "hand-rolled X" rule here that is NOT about consistency. A scrollport with
+     * no tab stop is content a mouse can reach and a keyboard cannot — WCAG 2.2 SC 2.1.1 — and
+     * `ScrollArea` is what supplies the stop, the `role="group"` and a localized accessible name,
+     * withholding all three while there is nothing to scroll (gh#817/gh#821).
+     *
+     * WHY A LINT RULE AND NOT THE AXE RUN. `overflow-auto` on a hand-written `div` appeared ELEVEN
+     * times in this repo's docs. `check:frame-axe` flagged exactly ONE — `/showcase/table-footer-
+     * totals`, 125px of totals below the fold — because axe's `scrollable-region-focusable` PASSES
+     * a scroll container that CONTAINS a focusable element: tabbing to the link inside scrolls the
+     * box. The other ten hold links, buttons or inputs. The one that failed held a read-only totals
+     * table, so there was nothing to tab to.
+     *
+     * So the same markup is clean or broken depending on the DATA, and one link added to that
+     * totals table would have hidden it again. A runtime audit can only ever see the instance whose
+     * content happened to expose the defect; the MARKUP is what is wrong, and markup is what lint
+     * reads. That is also why this rule deliberately does NOT copy axe's focusable-descendant
+     * exemption. Read axe's own source and the reason is plain: EVERY gate it uses is a rendered
+     * measurement. The rule does not even apply unless `getScroll(node, 13)` finds real overflow
+     * and a child's `getBoundingClientRect()` falls outside the container's; the exemption is
+     * `focusable-content-evaluate`, which filters `vNode.tabbableElements` — resolved against
+     * `disabled`, `hidden` and computed style. A lint pass has none of that. Copying the exemption
+     * without the applicability test keeps all of its unsoundness and none of its precision: the
+     * `items.map()` a rule would see may render empty, conditionally, disabled, or with
+     * `tabIndex={-1}` under a roving-focus pattern.
+     *
+     * Prior art says the same. eslint-plugin-jsx-a11y has NO rule for scrollable regions and
+     * declined to add reasoning about them (jsx-eslint/eslint-plugin-jsx-a11y#717: "there isn't
+     * really anything to key off of" — closed as docs); its `no-noninteractive-tabindex` in fact
+     * FLAGS the bare `tabIndex={0}` remedy. Deque's own guidance for this rule says to put a
+     * `tabindex` of 0 on the region rather than rely on a focusable child, "because the browser may
+     * intercept the keyboard events". What this package has that jsx-a11y did not is the thing to
+     * key off: a primitive that makes the guarantee at runtime, where the guarantee lives.
+     *
+     * WARN, not error, and the measurement says why: those ten call sites are not accessibility
+     * failures TODAY, and a rule that opens with a wall of errors against markup that passes the
+     * browser gate is a rule someone deletes (godx-corebooks#114 — 1189 errors made a documented
+     * rule unenforceable). `warn` plus the `--changed` ratchet catches every scrollport an author
+     * touches from here on, and a deliberate one takes an `ui-audit-disable-line` that says why.
+     *
+     * BOUNDARIES. `overflow-hidden` / `overflow-y-hidden` / `overflow-clip` are NOT scrollports —
+     * a clipping box with `text-overflow: ellipsis` is a different and correct pattern — so the
+     * alternation names `auto|scroll` explicitly instead of matching `overflow-` and subtracting.
+     * `(?<![\w-])` keeps the match off the middle of a longer word, which this file has already
+     * paid for once elsewhere: `check-frame-overflow`'s bare /arrow/ matched inside `--n-arrow-`
+     * and reported a page container as an oversized icon. Here the same shape is one line away —
+     * the tabs example carries `id="antd-overflow-scroll"`. `classOnly` is the second guard: an
+     * `id`, a prop or product copy is blanked before this pattern ever sees it. A variant prefix
+     * (`md:overflow-y-auto`, `data-[orientation=horizontal]:overflow-x-auto`) still matches,
+     * because a conditional scrollport is still a scrollport.
+     */
+    test: /(?<![\w-])overflow-(?:[xy]-)?(?:auto|scroll)(?![\w-])/,
+    standard:
+      "WCAG 2.2 SC 2.1.1 (Keyboard) · WAI-ARIA 1.2 (group) · Deque axe-core scrollable-region-focusable",
+    message:
+      'Hand-rolled scrollport (overflow-auto / -scroll on your own element) — use <ScrollArea label={t("…")} orientation> so the box that scrolls is a tab stop with a role and a localized name, and stops being one when there is nothing to scroll (gh#821). Without it, anything below the fold is reachable by mouse and by nothing else (WCAG 2.2 SC 2.1.1). axe only catches the instances whose content happens to have no focusable child, so this checks the markup rather than one render (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged.',
+  },
 ];
 
 /**
