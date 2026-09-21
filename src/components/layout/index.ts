@@ -66,6 +66,7 @@ export type { BreadcrumbProps } from "./breadcrumb";
 export { createSidebarLink, Sidebar, SidebarHeader, SidebarItem, SidebarSection } from "./sidebar";
 export type {
   SidebarItemData,
+  SidebarItemProp,
   SidebarLinkComponentProp,
   SidebarLinkProp,
   SidebarProductProp as SidebarProduct,

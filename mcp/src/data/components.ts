@@ -1692,7 +1692,7 @@ export function HandyInbound() {
     ],
     usage: [
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
-      "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
+      "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The group auto-opens and highlights when activeId matches any descendant. The SAME field drives NavList (gh#815), so one grouped settings nav is one NavList and one <nav> landmark.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away. Pass a FUNCTION `(collapsed) => node` whenever that content has to shrink on the rail: it is called with the EFFECTIVE collapsed value, so ONE Sidebar serves both the docked rail and AppShell's drawer. Returning null for a surface draws no footer chrome at all (no top border, no padding).",
       "DO: Put a row's trailing disclosure mark in `item.trailingIcon`, never in `item.badge`. `badge` wraps whatever it is given in the `.sb-badge` count capsule — a chevron passed there measures 36x24 with a 24x24 SVG inside, beside a 16x16 leading icon in the same 32px row. `trailingIcon` takes the component (`trailingIcon: ChevronsUpDown`) and the rail pins it to the leading icon's 16px box with no surface of its own.",
@@ -1701,7 +1701,7 @@ export function HandyInbound() {
       "DON'T: Use `renderItem` in new code — it is DEPRECATED. It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <RouterLink href={…}>{item.label}</RouterLink>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DO: Theme the nav ICON and the row/label SEPARATELY with tokens — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Resting defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover = `hsl(var(--foreground))`; the ACTIVE row is its own group, see below), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
-      "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
+      "DO: Give every RAIL item an `icon`. It is OPTIONAL on SidebarItemProp (gh#815 — NavList has no collapsed rail and routinely mixes rows), but the canonical rail collapses to icon-only, so a row without one renders an EMPTY 16px slot: the geometry and the label column survive, and the collapsed rail reads as a hole.",
       "DO: Distinguish an UNREAD count from one ADDRESSED TO THE USER with `item.badgeTone` — 'neutral' (the default, the pill unchanged) versus 'destructive' for an @mention, a direct message or a failure awaiting them. It emits `data-tone=\"destructive\"` on the existing `.sb-badge` and swaps two colour tokens (`--sidebar-badge-destructive-background` / `-foreground`); the pill's min-width, radius, inline pad and font size are shared by both tones, so mention rows and unread rows stay aligned in the same column. Retune all four `--sidebar-badge-*` knobs in your theme rather than styling the pill.",
       "DON'T: Reach for `item.badge` to place a GLYPH (a chevron, an arrow, a status dot). That slot is a COUNT capsule — 9999px radius, `hsl(var(--secondary))` fill, sized for digits — and it does not pin the SVG, so a lucide glyph renders at its 24px default inside a 36x24 grey pill. The row's trailing glyph slot is `item.trailingIcon`.",
       "DON'T: Put a `<Badge>` (or anything else that draws its own pill) inside `item.badge` to colour a count — the row ALREADY wraps whatever you pass in a `.sb-badge` pill, so you get two nested pills with two borders (measured: a 37.11x19.14 `.sb-badge` wrapping a 25.11x19.14 `<Badge>`). Pass the CONTENT only (`badge: 3`, `badge: '9+'`) and say what it MEANS with `badgeTone`.",
@@ -2033,7 +2033,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
         type: "SidebarItemProp[]",
         required: true,
         description:
-          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. `icon` is required — the label aligns to the icon column.",
+          "Rows in reading order. Same shape as the rail's items, deliberately: one item vocabulary for both navigations. An item carrying `children` renders as a collapsible GROUP — the rail's own `.sb-nav-group`, opened by the route whenever a descendant is active (gh#815). `icon` is optional; a row without one keeps an empty 16px slot so the label column still aligns.",
       },
       {
         name: "activeId",
@@ -2062,13 +2062,16 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
     ],
     usage: [
       "DO use NavList for a settings / account / preferences sub-navigation beside the pane it drives — typically as MasterDetail's `master`.",
+      "DO group with `item.children` — one NavList, one `<nav>` landmark, however many groups. Before gh#815 NavList dropped `children` silently (it type-checked, rendered one flat row, and the subtree vanished), so the workaround was one NavList per group wrapped in SidebarSection, i.e. N landmarks for one navigation. Don't write that any more.",
+      "DON'T repeat a group's icons on its children: a nested row draws the rail's dot marker instead of the 16px icon column, exactly like the rail's submenu. Icons belong on the rows that sit at the top level.",
       "DON'T reach for Sidebar here: it is the app's primary rail and lays into AppShell's grid area, so nested in a page it has no grid to lay into.",
       "DON'T hand-roll the rows out of Buttons with the current one encoded as a variant swap. That loses aria-current, loses the icon column the labels align to, and invents a different nav in every app.",
       "DON'T use Tabs: each entry here is a separate ROUTE the router renders, not a panel this component owns. Tabs would mean faking tab state from the URL and never rendering a TabsContent.",
       "DO pass `label` — the <nav> landmark needs a name to be distinguishable from the breadcrumb and the rail.",
-      "There is no collapsed state by design: a page-level navigation has no rail to collapse into. Only the shell rail collapses.",
+      "There is no collapsed state by design: a page-level navigation has no rail to collapse into. Only the shell rail collapses. (A GROUP still opens and closes — that is `item.children`, not the rail's collapsed mode.)",
     ],
     useCases: [
+      "Settings page / settings nav / preferences nav: Account / Security / Notifications / Billing beside the selected settings form — grouped, in ONE <nav> landmark.",
       "Settings screen: Profile / Appearance / Security beside the selected settings form.",
       "Account area: a vertical route nav inside a PageContainer, driving the detail pane.",
     ],
@@ -2078,8 +2081,18 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
   activeId={route}
   linkComponent={Link}
   items={[
-    { id: "profile", label: "Profile", icon: <User />, href: "/settings/profile" },
-    { id: "appearance", label: "Appearance", icon: <Palette />, href: "/settings/appearance" },
+    // A GROUP: one NavList, one <nav>, however many groups (gh#815).
+    {
+      id: "account",
+      label: "Account",
+      icon: User,
+      children: [
+        { id: "profile", label: "Profile", href: "/settings/profile" },
+        { id: "organization", label: "Organization", href: "/settings/organization" },
+      ],
+    },
+    // A LEAF, at the same level. \`icon\` takes the COMPONENT, never an element, and is optional.
+    { id: "appearance", label: "Appearance", icon: Palette, href: "/settings/appearance" },
   ]}
 />`,
     storyPath: "layout/NavList.stories.tsx",
