@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
 import { ruleSelector } from "@/test/css-selector";
 import { DataTable } from "../data-table";
+import type { TableColumnPriorityProp } from "@/props/vocabulary";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../table";
 
 /**
@@ -81,7 +82,7 @@ describe("table-layout.css structural selectors select the rendered DOM", () => 
     (bp) => {
       const selector = ruleSelector(
         css,
-        `[data-collapse-below="${bp}"] [data-slot="table"]:has([data-slot="table-head"]:nth-child(7))`,
+        `[data-collapse-below="${bp}"] [data-slot="table"]:has(`,
       );
       const header = (count: number) => (
         <TableHeader>
@@ -110,6 +111,66 @@ describe("table-layout.css structural selectors select the rendered DOM", () => 
       const table = (id: string) => container.querySelector(`[data-testid="${id}"] table`)!;
       expect(table("seven").matches(selector)).toBe(true);
       expect(table("six").matches(selector)).toBe(false);
+    },
+  );
+
+  /**
+   * gh#844 — the column count was never the variable. The compact measures are PER-COLUMN
+   * percentages, so a five-column queue that repeats one tier over-subscribes the budget exactly
+   * as a ten-column one does, and the surplus comes out of the `auto` free-text column: measured
+   * at 390 in a 340px card, 1.9 CJK characters per line. The floor tier has to engage on the
+   * repetition, not on the count — and a budget-shaped queue must still not match, or the gh#253
+   * canonical queue loses its scroll-free frame.
+   */
+  it.each(["sm", "md", "lg", "xl"] as const)(
+    "action-collection floor tier engages on a REPEATED tier at five columns (collapseBelow=%s)",
+    (bp) => {
+      const selector = ruleSelector(
+        css,
+        `[data-collapse-below="${bp}"] [data-slot="table"]:has(`,
+      );
+      const queue = (priorities: (TableColumnPriorityProp | undefined)[]) => (
+        <Table preset="action-collection" collapseBelow={bp}>
+          <TableHeader>
+            <TableRow>
+              {priorities.map((priority, i) => (
+                <TableHead key={i} priority={priority} scope="col">
+                  c{i}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+        </Table>
+      );
+      const { container } = renderWithUi(
+        <>
+          {/* The reporter's queue: 時刻 · 実行者 · 操作 · 対象 · 結果 — `meta` twice. */}
+          <div data-testid="repeat-meta">
+            {queue(["meta", "primary", undefined, "secondary", "meta"])}
+          </div>
+          <div data-testid="repeat-secondary">
+            {queue(["secondary", "primary", undefined, "secondary", "meta"])}
+          </div>
+          <div data-testid="repeat-primary">
+            {queue(["primary", "primary", undefined, "secondary", "meta"])}
+          </div>
+          {/* The gh#253 canonical queue — one column per tier, one free-text column. */}
+          <div data-testid="budget-shaped">
+            {queue(["primary", "secondary", undefined, "meta", "actions"])}
+          </div>
+          {/* `actions` is already an absolute measure, so repeating it is not over-subscription. */}
+          <div data-testid="repeat-actions">
+            {queue(["actions", "primary", undefined, "meta", "actions"])}
+          </div>
+        </>,
+      );
+
+      const table = (id: string) => container.querySelector(`[data-testid="${id}"] table`)!;
+      expect(table("repeat-meta").matches(selector)).toBe(true);
+      expect(table("repeat-secondary").matches(selector)).toBe(true);
+      expect(table("repeat-primary").matches(selector)).toBe(true);
+      expect(table("budget-shaped").matches(selector)).toBe(false);
+      expect(table("repeat-actions").matches(selector)).toBe(false);
     },
   );
 

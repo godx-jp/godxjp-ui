@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T21:29:47.658Z",
+  "generatedAt": "2026-09-21T23:11:11.715Z",
   "queue10": {
     "clientWidth": 390,
     "scrollWidth": 768,
@@ -364,6 +364,82 @@
         "priority": "actions",
         "text": "…",
         "width": 44,
+        "lines": 1
+      }
+    ]
+  },
+  "queue5repeat": {
+    "clientWidth": 322,
+    "scrollWidth": 424,
+    "cells": [
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "時刻",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "primary",
+        "text": "実行者",
+        "width": 96,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": null,
+        "text": "操作",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "secondary",
+        "text": "対象",
+        "width": 88,
+        "lines": 1
+      },
+      {
+        "tag": "th",
+        "priority": "meta",
+        "text": "結果",
+        "width": 80,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "2026/08/03 9:12",
+        "width": 80,
+        "lines": 2
+      },
+      {
+        "tag": "td",
+        "priority": "primary",
+        "text": "長谷川 健太郎",
+        "width": 96,
+        "lines": 1
+      },
+      {
+        "tag": "td",
+        "priority": null,
+        "text": "組織プロファイルを更新しました",
+        "width": 80,
+        "lines": 3
+      },
+      {
+        "tag": "td",
+        "priority": "secondary",
+        "text": "医療法人社団みなとみらい総合ヘルスケア",
+        "width": 88,
+        "lines": 4
+      },
+      {
+        "tag": "td",
+        "priority": "meta",
+        "text": "成功",
+        "width": 80,
         "lines": 1
       }
     ]

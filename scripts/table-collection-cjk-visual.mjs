@@ -15,7 +15,8 @@ const tableLayout = readFileSync(path.join(REPO_ROOT, "src/styles/table-layout.c
 
 const rem = 16;
 /** The wide-collection rem floors from tokens/components/table.css, in px at the 16px root.
- * They apply from SEVEN columns up; within the budget the compact tier stays percentages. */
+ * They apply wherever the priority budget is over-subscribed — seven columns, OR a repeated
+ * percent tier at any count (gh#844); within the budget the compact tier stays percentages. */
 const FLOORS_PX = {
   primary: 6 * rem,
   secondary: 5.5 * rem,
@@ -23,8 +24,8 @@ const FLOORS_PX = {
   actions: 2.75 * rem,
   flex: 5 * rem, // unmarked free-text column
 };
-/** Fixtures past the column budget — these must hold the floors and scroll. */
-const WIDE_IDS = ["queue10", "queue10flex", "dt10"];
+/** Fixtures that over-subscribe the budget — these must hold the floors and scroll. */
+const WIDE_IDS = ["queue10", "queue10flex", "dt10", "queue5repeat"];
 
 /** Primitive-token fallbacks the two component stylesheets read (normally supplied by the theme). */
 const baseVars = `
@@ -85,6 +86,20 @@ const queue5 = [
   ["actions", "操作", "…"],
 ];
 
+/**
+ * gh#844 — FIVE columns, but the `meta` tier REPEATS, so the per-column percentages over-subscribe
+ * the budget and the `auto` free-text column takes the whole surplus. On the percent tier this
+ * rendered 組織プロファイルを更新しました in a 47.6px column: 15 glyphs over 8 line boxes, 1.9
+ * characters per line, at a 340px card content box. Three columns BELOW the old seven-column gate.
+ */
+const queue5Repeat = [
+  ["meta", "時刻", "2026/08/03 9:12"],
+  ["primary", "実行者", "長谷川 健太郎"],
+  [null, "操作", "組織プロファイルを更新しました"],
+  ["secondary", "対象", "医療法人社団みなとみらい総合ヘルスケア"],
+  ["meta", "結果", "成功"],
+];
+
 const renderQueue = (id, columns) => `
   <div id="${id}" class="ui-table-collection relative w-full overflow-auto"
        data-preset="action-collection" data-collapse-below="sm" tabindex="0">
@@ -104,6 +119,9 @@ const html = `<!doctype html><html lang="ja"><head><meta charset="utf-8">
   ${renderQueue("queue10flex", queue10Flex)}
   <hr>
   ${renderQueue("queue5", queue5)}
+  <hr>
+  <!-- gh#844, at the 322px card content box the consumer actually measured. -->
+  <div style="width:322px">${renderQueue("queue5repeat", queue5Repeat)}</div>
   <hr>
   <!-- DataTable markup at the 322px geometry content box: scroll region > overflow-hidden
        surface > the primitive's wrapper (the preset's scroll owner) > table. The surface used
@@ -156,7 +174,7 @@ try {
     }, id);
 
   const measured = {};
-  for (const id of ["queue10", "queue10flex", "queue5", "dt10", "dt5"]) {
+  for (const id of ["queue10", "queue10flex", "queue5", "queue5repeat", "dt10", "dt5"]) {
     measured[id] = await measure(id);
 
     // 1. Past the budget, every column holds its token floor (0.5px layout tolerance) —
@@ -209,7 +227,7 @@ try {
     `${JSON.stringify({ generatedAt: new Date().toISOString(), ...measured }, null, 2)}\n`,
   );
   console.log(
-    `PASS table action-collection CJK floors: 10-col JA queue scrolls at floors (bare ${measured.queue10.scrollWidth}px in ${measured.queue10.clientWidth}px · DataTable ${measured.dt10.scrollWidth}px in ${measured.dt10.clientWidth}px), no vertical shredding; 5-col canonical queue scroll-free at 390 and 322; evidence -> ${path.relative(REPO_ROOT, evidenceDirectory)}`,
+    `PASS table action-collection CJK floors: 10-col JA queue scrolls at floors (bare ${measured.queue10.scrollWidth}px in ${measured.queue10.clientWidth}px · DataTable ${measured.dt10.scrollWidth}px in ${measured.dt10.clientWidth}px), no vertical shredding; 5-col REPEATED-tier queue scrolls at floors too (${measured.queue5repeat.scrollWidth}px in ${measured.queue5repeat.clientWidth}px, gh#844); 5-col canonical queue scroll-free at 390 and 322; evidence -> ${path.relative(REPO_ROOT, evidenceDirectory)}`,
   );
 } finally {
   await browser.close();
