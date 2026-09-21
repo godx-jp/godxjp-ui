@@ -179,6 +179,19 @@
     opacity: var(--dialog-close-rest-alpha);
   }
 
+  /* The TARGET, not the paint (gh#806). See --dialog-close-size for why the glyph stays 16px. */
+  :is([data-slot="dialog-close"], [data-slot="sheet-close"])::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    min-inline-size: var(--dialog-close-size);
+    min-block-size: var(--dialog-close-size);
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
   [data-slot="dialog-close"]:hover {
     opacity: 1;
   }
