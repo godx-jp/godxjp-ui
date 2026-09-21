@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [28.5.0] - 2026-09-21
 
-MINOR. Two new surfaces for people outside this repo — a static catalog for agents that cannot run
-a process, and a brand generator — plus one token that stops being a literal. Nothing existing
-changes shape; the one behavioural change measures identical on this package's own theme.
+MINOR. Everything in this release is for the people OUTSIDE this repo — a static catalog for agents
+that cannot run a process, a brand generator, and the layer that answers a task rather than a name.
+Nothing existing changes shape; the one behavioural change measures identical on this package's own
+theme.
 
 ### Added
 
@@ -50,6 +51,30 @@ changes shape; the one behavioural change measures identical on this package's o
   It refuses to write `--primary-hover/-active/-border`, `--control-outline` (they derive, gh#678)
   and `--brand` (independent of the action colour on purpose, gh#250).
 
+- **`agent/patterns.json` + `agent/anti-ai-tells.json`** — the layer a component index cannot be.
+  An index answers "does a component called X exist"; it cannot answer "build a settings page",
+  because a tagline states an API SHAPE and a task is stated as an INTENT. Measured against our own
+  index: _"confirm a destructive delete"_ reached nothing (the word "delete" appears nowhere),
+  _"async searchable country picker"_ reached nothing, which is the query that makes an agent
+  hand-roll the `Combobox` we deleted. 19 whole-task patterns and 26 anti-AI-tells were already
+  written and had never left the MCP. Published index-then-one-file, so retrieval stays selective.
+
+- **`absorbed` — the names that DO NOT exist, as data.** Before this, zero machine-readable rules
+  named a single invented component; it was one sentence of prose. 16 names now sit on the 5 entries
+  that replaced them (`Combobox`/`Autocomplete`/`CountrySelect`/`SearchSelect` → `Select`,
+  `DataGrid` → `DataTable`, the seven pickers → `AppSettingPicker`, …), each verified against the
+  real export surface. It rides in `components-index.json` — the one file an agent reads whole —
+  for 486 bytes, and `search_components` ranks an exact hit at 95, above an exact sub-part match:
+  someone typing "combobox" has already decided, and is one empty result away from building it.
+  `check:absorbed-names` is the inverse of `check:mcp-catalog-completeness` and fails the build if
+  any of those names ever becomes real.
+
+- **`docs/CUSTOMER-THEMING.md` states the ORDER to reach for things.** It listed many ways to
+  re-theme and never said which is the main road, so "more ways" read as "more decisions". Now:
+  seed → role → scope → instance, with what each lower level costs, following the rule antd states
+  for the same reason (_"In most cases, using Seed Tokens is sufficient"_). Every level below the
+  first is a value that has stopped being derived.
+
 ### Fixed
 
 - **`--text-link` and `--text-brand` follow the `--primary` in scope** (#805, gh#664). They were
@@ -75,6 +100,28 @@ changes shape; the one behavioural change measures identical on this package's o
 - **`src/theme/famgia.service.css` hand-wrote `--primary-hover` / `--primary-active`** (#803). They
   derive, and the literals had drifted to hue 224/226 under a 221 seed.
 
+- **The MARK tier was frozen at `:root`** (#807, gh#687). `--mark-primary: var(--text-primary)` is a
+  binding, so every descendant inherited the root's answer: a `[data-tenant]` setting
+  `--text-primary` green kept the rail **violet** (`rgb(82,0,176)` in both), measured in Chrome. The
+  guard's role list never covered the text tier; extending it immediately found three more of the
+  same defect in `control.css`. All are knobs now, defaults at the call site.
+
+- **`--text-primary` derives too** (#807). It had been held back on the belief that `--mark-primary`
+  could not follow, because that token carries a RAW `H S% L%` triple washed at an alpha. The
+  premise was right and the conclusion wrong: the alpha goes after the slash INSIDE the same
+  `hsl()`, and the relative-colour fallback survives an onward `var()` assignment.
+
+- **The token prose contradicted the token values** (#808). `foundation.css` described the identity
+  role as "the canonical GoDX emerald `#009766`" directly above a violet declaration, and the header
+  said "SmartHR blue primary". The catalog and the MCP both derive from these files, so a stale
+  sentence was served to every consumer as fact beside the value contradicting it.
+
+- **The generators depended on a bin nobody declared** (#807). `gen-agent-catalog` and `gen-brand`
+  spawned `node_modules/.bin/esbuild`, which exists only where a transitive peer of vite happens to
+  be hoisted — `spawnSync … ENOENT` on every runner, four jobs at once. esbuild is a declared
+  devDependency now (at the specifier `pnpm.overrides` already pinned) and both use its JS API;
+  `scripts-spawn-no-hoisted-bin.test.ts` forbids the class.
+
 ### Changed
 
 - **`check:agent-catalog` runs in `verify:ci:static`** (#802), so `agent/` cannot drift from
@@ -85,7 +132,7 @@ changes shape; the one behavioural change measures identical on this package's o
 - **Upgrading is documented as TWO steps** (#804). `.mcp.json` launches the server by
   `npx @godxjp/ui-mcp@<pin>`, so a package upgrade alone leaves the pin where it was — measured in
   gh#794 as a project on 28.3.0 taking every answer from a 27.6.0 catalog. `npx @godxjp/ui
-  sync-rules` is the second half.
+sync-rules` is the second half.
 
 ## [28.4.0] - 2026-09-21
 
