@@ -4319,6 +4319,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN * direct children (no Card framing). Unchanged from the historical value. 16px"
   },
   {
+    "name": "--form-feedback-icon-size",
+    "value": "var(--icon-size-sm)",
+    "description": "THE VALIDATION FEEDBACK GLYPH. It was `controlIconClass`, which is * `size-[length:var(--control-height)]` — the height of a whole CONTROL, meant for something * that fills a control-sized box like the ColorPicker swatch. On a `text-xs` feedback line that * rendered a ~32px icon beside ~12px text, which is what a reader actually saw and reported. * A glyph that sits inline with text belongs on the ICON scale, one step above the text it * accompanies so it reads as a mark rather than a letter. 14px beside 12px text"
+  },
+  {
     "name": "--form-field-row-gap",
     "value": "var(--space-3)",
     "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px"
