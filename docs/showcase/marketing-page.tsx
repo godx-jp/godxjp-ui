@@ -50,12 +50,11 @@
  *     here (`docs/roadmap/website-components.md` §5.2 proposed `--affix-inset-block-start` and
  *     `--affix-z-index`; neither shipped) and `Topbar` has no `sticky` prop.
  *  4. THE GLASS — `--topbar-background-alpha` / `--topbar-backdrop-blur-size` as inline custom
- *     properties. They are `initial` by design, so a call site MUST set them, and that part is
- *     correct. The blur is the gap: this library has no blur SCALE (no `--blur-*` tier), so the
- *     only sources for a length are a raw literal or another component's private knob
- *     (`--app-launcher-launchpad-backdrop-blur-size`). It reads `--space-2` here, which keeps the
- *     literal count at zero by borrowing a token that means something else. A `--blur-sm|md|lg`
- *     foundation tier would close it properly. Measured result: `blur(8px)`.
+ *     properties. They are `initial` by design, so a call site MUST set them, and that is correct.
+ *     This used to read `--space-2`, borrowing a token that means something else, because the
+ *     library had no blur SCALE at all. gh#837 closed that: `--blur-sm|md|lg` now exists in
+ *     `foundation.css`, deliberately NOT `--scaling`-multiplied, because a backdrop blur is an
+ *     optical effect and compact density does not mean thinner glass. Measured: `blur(8px)`.
  *  5. THE HALO — `position: relative` / `overflow: hidden` on the band and `position: absolute` /
  *     `inset: 0` on the `.ui-brand-glow` layer. This is the package's own idiom (both siblings
  *     write `className="ui-brand-glow absolute inset-0"`), spelled as logical inline style so
@@ -189,7 +188,7 @@ const GLASS_BAR: CSSProperties = {
      package writes for CenteredShell's landing preset, so no page-local media query. */
   "--topbar-inset": "max(var(--space-6), calc((100% - var(--page-measure-wide)) / 2))",
   "--topbar-background-alpha": "85%",
-  "--topbar-backdrop-blur-size": "var(--space-2)",
+  "--topbar-backdrop-blur-size": "var(--blur-md)",
 } as CSSProperties;
 
 /** Per-instance halo shaping — the four `--brand-glow-*` knobs, at the call site. */

@@ -94,7 +94,7 @@ describe("DXS hi-fi visual contract", () => {
     // rhythm and stayed behind whenever a service retuned --font-size-base. The row's own rhythm —
     // the 2rem height this test is really about — is unchanged, and 1.5 × 12.47 = 18.7px keeps the
     // same headroom inside it.
-    expect(tokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(--font-size-xs[,)]/);
+    expect(tokens).toMatch(/--sidebar-nav-item-font-size:\s*var\(\s*--font-size-xs[,)]/);
     expect(tokens).not.toMatch(/--sidebar-nav-item-font-size:\s*[\d.]/);
     expect(shell).toMatch(/@media \(width <= 56\.25rem\)/);
     expect(shell).toMatch(/\.sb-section \+ \.sb-section\s*\{[^}]*margin-top:/s);

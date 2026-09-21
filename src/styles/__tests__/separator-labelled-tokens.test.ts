@@ -30,7 +30,10 @@ const declarations = (css: string): Record<string, string> =>
   Object.fromEntries(
     [...stripComments(css).matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)].map(([, k, v]) => [
       k,
-      v.replace(/\s+/g, " ").trim(),
+      // Collapse the padding prettier inserts just inside `var(` / `calc(` when a declaration grows
+      // long enough to wrap. The value is the same wiring either way, and a formatter deciding
+      // whether a test passes is how five tests here broke at once (gh#834's call-site fallbacks).
+      v.replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")").trim(),
     ]),
   );
 

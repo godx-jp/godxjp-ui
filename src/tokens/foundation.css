@@ -687,6 +687,33 @@
   --stroke-xl: 4px;
   --stroke-2xl: 6px;
 
+  /* ── BACKDROP BLUR — the optical depth of a translucent surface (gh#837).
+   *
+   * The fourth axis to be named, and it was named because a token shipped with nothing legal to
+   * feed it. `--topbar-backdrop-blur-size` arrived in 28.8.0 so the glass bar two showcases had
+   * hand-written became a framework knob — and then the marketing page found that the only values
+   * available were a raw literal, another component's private knob
+   * (`--app-launcher-launchpad-backdrop-blur-size`), or a token from the WRONG AXIS. It borrowed
+   * `--space-2` and said so at the call site, which is honest and is not a solution.
+   *
+   * Borrowing spacing here is the same category error `check:token-scale-bypass` and the icon tier
+   * (gh#328) already police: `--space-*` is `calc(<n> * var(--scaling))`, so a blur taken from it
+   * moves whenever density is retuned, along an axis nobody chose.
+   *
+   * NOT `--scaling`-MULTIPLIED, unlike spacing and unlike the control tier. A backdrop blur is an
+   * OPTICAL effect — how far the material scatters what is behind it — not a measurement of
+   * layout. Compact density means more information per screen; it does not mean thinner glass.
+   * Tailwind's own `blur-*` scale is fixed for the same reason, as are Material 3's scrim
+   * treatments and Apple HIG's materials, none of which scale with content density.
+   *
+   * Three steps, from the two real call sites: 8px is the bar (measured on the marketing page),
+   * 16px is the launchpad's full-page scrim, and 4px is the step below for a surface that wants
+   * to separate without obscuring. TIER 2 applies as everywhere else: a blur used in exactly one
+   * place sets that component's own `--*-backdrop-blur-size` at the call site. */
+  --blur-sm: 4px;
+  --blur-md: 8px; /* the glass bar — translucent chrome over scrolling content */
+  --blur-lg: 16px; /* a full-page scrim, where the content behind must stop competing */
+
   /* ── BAND HEIGHT — the vertical extent of a horizontal band that content is centred in
    * (gh#324, the third axis to be named).
    *

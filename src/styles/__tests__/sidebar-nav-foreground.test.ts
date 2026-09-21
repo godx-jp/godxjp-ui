@@ -39,7 +39,10 @@ function rule(selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = styles.match(new RegExp(`(?:^|\\n)\\s*${escaped}\\s*\\{([^}]*)\\}`));
   if (!match) throw new Error(`rule not found: ${selector}`);
-  return match[1].replace(/\s+/g, " ");
+  // Collapse the padding prettier inserts just inside `var(` / `calc(` when a declaration wraps.
+  // The wiring is identical either way, and letting the formatter decide is how five tests in this
+  // directory broke at once when gh#834 added call-site fallbacks.
+  return match[1].replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
 }
 
 const ICON_TOKENS = [
@@ -93,7 +96,7 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
     // is gone); the KNOBS did not, which is the contract this case has always guarded. Their
     // measured floor lives in src/tokens/__tests__/sidebar-active-contrast.test.ts.
     const active = rule('.sb-nav-item[data-active="true"]');
-    expect(active).toContain("background: var( --sidebar-item-active-background,");
+    expect(active).toContain("background: var(--sidebar-item-active-background,");
     // The label's DEFAULT moved again in gh#678 — to the derived active tier — and the knob did not.
     expect(active).toContain(
       "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))))",

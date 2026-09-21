@@ -514,7 +514,7 @@
   /* Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site
    * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below. */
   --app-launcher-launchpad-backdrop-background: initial;
-  --app-launcher-launchpad-backdrop-blur-size: 16px;
+  --app-launcher-launchpad-backdrop-blur-size: var(--blur-lg); /* 16px — gh#837 */
   --app-launcher-launchpad-backdrop-alpha: 55%;
   /* THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its
    * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a

@@ -12,7 +12,15 @@ const toggleTokens = readFileSync(join(root, "tokens/components/toggle.css"), "u
 const tabsSource = readFileSync(join(root, "components/navigation/tabs.tsx"), "utf8");
 
 function tokenValue(css: string, token: string): string | undefined {
-  return css.match(new RegExp(`^\\s*${token}:\\s*([^;]+);`, "m"))?.[1].trim();
+  // Normalised, because this compares two files' values for equality and prettier wraps whichever
+  // declaration happens to be longer. `--tabs-count-font-size` and `--toggle-count-font-size` are
+  // the same wiring; only one of them was long enough to wrap after gh#834's call-site fallbacks.
+  return css
+    .match(new RegExp(`^\\s*${token}:\\s*([^;]+);`, "m"))?.[1]
+    .replace(/\s+/g, " ")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+\)/g, ")")
+    .trim();
 }
 
 /**

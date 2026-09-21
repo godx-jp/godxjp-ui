@@ -6750,8 +6750,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-backdrop-blur-size",
-    "value": "16px",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "value": "var(--blur-lg)",
+    "description": "16px — gh#837"
   },
   {
     "name": "--app-launcher-launchpad-backdrop-alpha",
