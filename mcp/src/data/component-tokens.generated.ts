@@ -2825,8 +2825,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-ring-label-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "calc(var(--progress-ring-size) * 0.28)",
+    "description": "DERIVED FROM THE DIAMETER, not a fixed step (reported on the live docs site). * It was `--font-size-xs`, one value for every ring, so a 32px `sm` ring carried the same * 12.47px label as the 44px default — and \"18/42\" measures 32.6px, wider than the ring itself, * painting over the stroke. \"0/42\" fits, which is why the demo looked correct. * `.ui-progress[data-size=\"sm\"]` rebinds --progress-ring-size, so deriving from it fixes every * size at once and any size added later. 0.28 reproduces the current default (44 × 0.28 = * 12.3px ≈ the 12.47 it replaces), so the `md` ring does not move."
   },
   {
     "name": "--legend-gap",

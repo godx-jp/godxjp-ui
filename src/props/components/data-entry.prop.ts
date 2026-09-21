@@ -169,8 +169,18 @@ export type CommandProp = {
 
 export type InputProp = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> & {
   onValueChange?: (value: string) => void;
-  /** Control height tier: `md` (default), `sm` or `lg` — the same tiers as SelectTrigger. */
-  size?: "sm" | "md" | "lg";
+  /**
+   * Control height tier: `md` (default), plus `xs`, `sm` and `lg` — the same tiers as
+   * SelectTrigger and NumberInput.
+   *
+   * `xs` was missing from this union alone. Everything underneath it already worked: `Input`
+   * renders `ui-control` and emits `data-size={size}`, and `.ui-control[data-size="xs"]`
+   * (src/styles/control.css:1674) binds `--control-height-xs`. That rule was added for the
+   * select family — its comment says the token "existed with nothing reading it" — and this
+   * union was never widened to match, so the most-used control in the package was the one
+   * control missing the bottom rung, for a reason no user could have guessed from behaviour.
+   */
+  size?: "xs" | "sm" | "md" | "lg";
   /** Validation state the field paints — antd `status`. `error` also reports `aria-invalid`. */
   status?: ControlStatusProp;
   /** Chrome level — antd `variant`. Default `outlined`. */

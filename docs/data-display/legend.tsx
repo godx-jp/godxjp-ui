@@ -61,7 +61,20 @@ export default function Demo() {
                       aria-label={row.name}
                     />
                   </Flex>
-                  <Flex width={150} justify="end" align="center" gapRaw={12}>
+                  {/* A COLUMN OF NUMBERS NEEDS COLUMNS, not a row of shrink-to-fit boxes.
+                      `tabular` makes DIGITS equal-width inside one Text; it cannot align two Texts
+                      with different digit COUNTS. Laid out as a flex row and right-aligned as a
+                      group, a row ending in "9" sat 8px right of one ending in "21" — measured on
+                      the published site, and the reason this readout looked crooked. Fixed tracks
+                      give each value its own cell, so every row lines up whatever the digits. */}
+                  <div
+                    className="grid items-center"
+                    style={{
+                      gridTemplateColumns: "2.5rem 2.5rem 2.5rem 4.5rem",
+                      justifyItems: "end",
+                      columnGap: "var(--space-2)",
+                    }}
+                  >
                     <Text tone="destructive" weight="semibold" tabular>
                       {row.over}
                     </Text>
@@ -74,7 +87,7 @@ export default function Demo() {
                     <Text tone="muted" tabular>
                       計 {row.over + row.near + row.done}
                     </Text>
-                  </Flex>
+                  </div>
                 </Flex>
               ))}
             </Flex>
@@ -108,8 +121,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Named legend</CardTitle>
             <CardDescription>
-              aria-label を渡すと、その凡例が「何のキーか」を読み上げます。項目は list /
-              listitem として並びます。
+              aria-label を渡すと、その凡例が「何のキーか」を読み上げます。項目は list / listitem
+              として並びます。
             </CardDescription>
           </CardHeader>
           <CardContent>

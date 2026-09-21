@@ -102,7 +102,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Form | ✓ | ✓ | · | N/A | · | · | · | · | · | · |
 | FormField | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | FormErrors | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| Input | ✓ | ✓ | · | · | · | · | · | · | · | · |
+| Input | ✓ | · | · | · | · | · | · | · | · | · |
 | NumberInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | SearchInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
 | Select | ✓ | · | · | · | · | · | · | · | · | · |
@@ -163,7 +163,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | AspectRatio | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Accordion | ✓ | N/A | · | · | · | · | · | · | · | · |
 | HoverCard | ✓ | N/A | N/A | · | · | · | · | · | · | · |
-| PasswordInput | ✓ | ✓ | · | · | · | · | · | · | · | · |
+| PasswordInput | ✓ | · | · | · | · | · | · | · | · | · |
 | PasswordStrength | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | InputOTP | ✓ | · | N/A | · | · | · | · | · | · | · |
 | Rating | ✓ | N/A | · | · | · | · | · | · | · | · |

@@ -1,0 +1,10 @@
+{
+  "note": "Text that renders outside its box, recorded when check:frame-overflow was introduced. Every entry is a TRACKED defect (gh#813), not accepted debt. The list may only SHRINK: the gate fails on anything new. Run with --update-baseline after fixing one.",
+  "count": 3,
+  "entries": [
+    "layout-page-container \u00b7 spilled \u00b7 ui-page-header-extra \u00b7 41.8px \u00b7 \u3059\u3079\u3066\u65e2\u8aad\u306b\u3059\u308b",
+    "layout-page-container \u00b7 spilled \u00b7 ui-page-header-extra \u00b7 5.5px \u00b7 \u62db\u5f85\u3092\u9001\u308b",
+    "navigation-app-setting-picker \u00b7 clipped \u00b7 span \u00b7 59.0px \u00b7 YYYY-MM-DD\uff08\u5e74-\u6708-\u65e5\uff09"
+  ],
+  "tracked": "https://github.com/godx-jp/godxjp-ui/issues/813"
+}

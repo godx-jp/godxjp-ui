@@ -349,6 +349,45 @@
     font-size: var(--progress-ring-label-font-size);
     font-variant-numeric: tabular-nums;
     line-height: 1;
+    /* The INNER circle is the whole box this may use. Deriving the font size makes the label fit
+     * for the content we ship; this makes it impossible to spill for content we do not — a longer
+     * string clips INSIDE the ring instead of painting over the arc, which is the difference
+     * between "this number is truncated" and "this component is broken". */
+    max-inline-size: calc(
+      var(--progress-ring-size) - 2 * var(--progress-ring-border-width) - var(--space-1)
+    );
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* THE DISCLOSURE INDICATOR, OWNED HERE (reported on the live docs site).
+   *
+   * `Collapsible` emits `data-state="open" | "closed"` on its trigger and shipped no indicator, so
+   * every consumer picked their own glyph — and the docs example picked `ChevronsUpDown`, which
+   * draws an up AND a down chevron and is therefore IDENTICAL in both states. Measured on the
+   * published site: the same two path strings at `aria-expanded="true"` and `"false"`. The state
+   * reached a screen reader through `aria-expanded` and reached a sighted reader not at all.
+   *
+   * A disclosure glyph must point. This rotates one, so direction IS the state, and it lives here
+   * rather than in an example because leaving it to the example is exactly how it went wrong. Any
+   * disclosure surface can use it: put `ui-disclosure-chevron` on a single-direction icon inside
+   * anything that emits `data-state`. */
+  .ui-disclosure-chevron {
+    transition: rotate var(--duration-fast) var(--ease-standard);
+  }
+
+  :is([data-state="open"], [aria-expanded="true"]) > .ui-disclosure-chevron,
+  :is([data-state="open"], [aria-expanded="true"]) .ui-disclosure-chevron {
+    rotate: 180deg;
+  }
+
+  /* A reader who has switched motion off still needs the direction — it is the only visual state
+   * signal there is, so it snaps rather than disappearing. */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-disclosure-chevron {
+      transition: none;
+    }
   }
 
   /* Legend — a wrapping row of keys. It wraps rather than scrolls: a key that scrolled out of

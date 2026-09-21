@@ -238,7 +238,14 @@
   --progress-ring-size: 2.75rem;
   --progress-ring-size-sm: 2rem;
   --progress-ring-border-width: var(--stroke-lg);
-  --progress-ring-label-font-size: var(--font-size-xs);
+  /* DERIVED FROM THE DIAMETER, not a fixed step (reported on the live docs site).
+   * It was `--font-size-xs`, one value for every ring, so a 32px `sm` ring carried the same
+   * 12.47px label as the 44px default — and "18/42" measures 32.6px, wider than the ring itself,
+   * painting over the stroke. "0/42" fits, which is why the demo looked correct.
+   * `.ui-progress[data-size="sm"]` rebinds --progress-ring-size, so deriving from it fixes every
+   * size at once and any size added later. 0.28 reproduces the current default (44 × 0.28 =
+   * 12.3px ≈ the 12.47 it replaces), so the `md` ring does not move. */
+  --progress-ring-label-font-size: calc(var(--progress-ring-size) * 0.28);
 
   /* Legend — the key for a colour-coded surface. Small chrome, so it carries its own rhythm
      rather than the stack scale: the swatch is a MARK the size of a character, not a control, and

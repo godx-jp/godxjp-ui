@@ -116,6 +116,7 @@ export default function Demo() {
             <Card variant="outline" className="h-64 w-full">
               <CardContent flush>
                 <ScrollArea
+                  className="h-72"
                   anchor="bottom"
                   viewportRef={streamViewport}
                   onAnchoredChange={setAnchored}
@@ -176,7 +177,7 @@ export default function Demo() {
           <CardContent>
             <Card variant="outline" className="h-40 w-full">
               <CardContent flush>
-                <ScrollArea anchor="bottom" anchorOffset={0}>
+                <ScrollArea className="h-40" anchor="bottom" anchorOffset={0}>
                   <CardContent>
                     <Flex direction="col" gap="xs">
                       {entries.map((e) => (
@@ -194,15 +195,81 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>
+              scrollbar=&quot;always&quot; — 「スクロールバーが見えない」の答え
+            </CardTitle>
+            <CardDescription>
+              既定の <code>auto</code> はプラットフォームに任せます。macOS / iPadOS
+              のシステム既定「スクロール中にのみ表示」では、それは
+              <strong>オーバーレイのバー</strong>
+              です。つまり、すでにスクロールしている間しか存在しません。止まっている状態では、
+              この面がスクロールできることが一切わかりません（gh#798）。
+              下の2つは中身も高さも同一で、違うのは <code>scrollbar</code> だけです。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+              <Flex direction="col" gap="xs">
+                <Text size="sm" tone="muted">
+                  scrollbar=&quot;auto&quot;（既定）— macOS では静止時にバーが出ない
+                </Text>
+                <Card variant="outline" className="w-full">
+                  <CardContent flush>
+                    <ScrollArea className="h-40">
+                      <CardContent>
+                        <Flex direction="col" gap="xs">
+                          {entries.map((e) => (
+                            <div key={`auto-${e}`} className="text-sm tabular-nums">
+                              {e}
+                            </div>
+                          ))}
+                        </Flex>
+                      </CardContent>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              </Flex>
+
+              <Flex direction="col" gap="xs">
+                <Text size="sm" tone="muted">
+                  scrollbar=&quot;always&quot; — レイアウトを占める古典的なバー
+                </Text>
+                <Card variant="outline" className="w-full">
+                  <CardContent flush>
+                    <ScrollArea className="h-40" scrollbar="always">
+                      <CardContent>
+                        <Flex direction="col" gap="xs">
+                          {entries.map((e) => (
+                            <div key={`always-${e}`} className="text-sm tabular-nums">
+                              {e}
+                            </div>
+                          ))}
+                        </Flex>
+                      </CardContent>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              </Flex>
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>固定高さのリスト（縦スクロール）</CardTitle>
             <CardDescription>
               ラッパーに h-56 を指定すると、その高さがスクロール領域のビューポートになります。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Card variant="outline" className="h-56 w-full">
+            {/* THE HEIGHT GOES ON THE SCROLLAREA, not on an ancestor. It was on the outer Card,
+                and neither CardContent nor ScrollArea inherits a height from it — so the
+                ScrollArea grew to its content, `scrollHeight === clientHeight`, and the demo for
+                a scrolling component did not scroll. Measured on the published site before this
+                change. The page header says this rule outright; the example broke it. */}
+            <Card variant="outline" className="w-full">
               <CardContent flush>
-                <ScrollArea>
+                <ScrollArea className="h-56">
                   <CardContent>
                     <Flex direction="col" gap="xs">
                       {entries.map((e) => (
@@ -296,9 +363,12 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Card variant="outline" className="h-56 w-full">
+            {/* Same h-56 as above, DELIBERATELY not overflowing: `shortEntries` fits, so no bar
+                appears. This is the control case — it is only meaningful next to one that does
+                overflow, which is why the demo above had to be fixed first. */}
+            <Card variant="outline" className="w-full">
               <CardContent flush>
-                <ScrollArea>
+                <ScrollArea className="h-56">
                   <CardContent>
                     <Flex direction="col" gap="xs">
                       {shortEntries.map((e) => (

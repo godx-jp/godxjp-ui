@@ -10,7 +10,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 /**
@@ -43,7 +43,7 @@ export default function Demo() {
                       aria-label="開閉"
                       className="transition-transform data-[state=open]:rotate-180"
                     >
-                      <ChevronsUpDown />
+                      <ChevronDown className="ui-disclosure-chevron" />
                     </Button>
                   </CollapsibleTrigger>
                 </Flex>
@@ -74,7 +74,7 @@ export default function Demo() {
                       aria-label="開閉"
                       className="transition-transform data-[state=open]:rotate-180"
                     >
-                      <ChevronsUpDown />
+                      <ChevronDown className="ui-disclosure-chevron" />
                     </Button>
                   </CollapsibleTrigger>
                 </Flex>
@@ -112,7 +112,7 @@ export default function Demo() {
                       aria-label="開閉"
                       className="transition-transform data-[state=open]:rotate-180"
                     >
-                      <ChevronsUpDown />
+                      <ChevronDown className="ui-disclosure-chevron" />
                     </Button>
                   </CollapsibleTrigger>
                 </Flex>
@@ -144,7 +144,7 @@ export default function Demo() {
                     aria-label="開閉"
                     className="transition-transform data-[state=open]:rotate-180"
                   >
-                    <ChevronsUpDown />
+                    <ChevronDown className="ui-disclosure-chevron" />
                   </Button>
                 </CollapsibleTrigger>
               </Flex>
