@@ -229,7 +229,13 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
               return (
                 <TableRow
                   key={permission.id}
-                  className={cn(isDiffRow && "bg-warning/[0.07] hover:bg-warning/10")}
+                  // The row's warning ground is the PRIMITIVE's, not this file's: `data-tone` is
+                  // the same hand-off `DataTable rowTone` emits, and `styles/table-layout.css`
+                  // owns the wash, its leading rail and its hover step. It reads `--surface-warning`
+                  // first (gh#866), so a brand's chosen pale ground reaches the diff row — which a
+                  // local `bg-warning/[0.07]` could not, and which left the row disagreeing with
+                  // the `Badge tone="warning"` beside it under a scoped theme (gh#872).
+                  data-tone={isDiffRow ? "warning" : undefined}
                 >
                   <TableCell className={cn(PIN_START, "align-middle")}>
                     <div className="flex flex-col leading-tight">

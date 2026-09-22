@@ -263,7 +263,12 @@ export default function Demo() {
                     return (
                       <TableRow
                         key={perm.id}
-                        className={cn(isDiffRow && "bg-warning/[0.07] hover:bg-warning/10")}
+                        // Same hand-off the PermissionMatrix component uses (gh#872): the wash,
+                        // the leading rail and the hover step belong to `styles/table-layout.css`,
+                        // which reads `--surface-warning` first — so this hand-composed table is
+                        // re-groundable by a tenant theme exactly like the packaged one. A local
+                        // `bg-warning/[0.07]` here would be a second, private warning surface.
+                        data-tone={isDiffRow ? "warning" : undefined}
                         aria-label={isDiffRow ? `${perm.name} · 比較ロール間で差分あり` : undefined}
                       >
                         <TableCell className={cn(PIN_START, "w-64 min-w-64 align-middle")}>
