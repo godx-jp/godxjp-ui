@@ -248,6 +248,12 @@ export const TOKENS: TokenEntry[] = [
   { name: "--info", category: "semantic", tier: "semantic", role: "Information status role." },
   { name: "--attention", category: "semantic", tier: "semantic", role: "Attention status role." },
   {
+    name: "--surface-{success,warning,info,destructive}",
+    category: "semantic",
+    tier: "semantic",
+    role: "The status SURFACE tier (gh#866) — the pale GROUND a toned surface paints, as a FINISHED colour (`#E8F5EF`), not HSL components. The other three status tiers are ink: FILL (--success), TEXT (--text-success), MARK (--mark-success); this is the ground they sit on. UNSET BY DEFAULT (`initial`) and it has no default of its own, because there is no single derived value it could carry: Alert washes its hue at 5%, Badge at 10%, the DataTable row tone at 6%, the EmptyState medallion at 12%, the toast color-mixes into --popover. Each surface keeps its own formula AT ITS CALL SITE behind the role — `var(--surface-success, hsl(var(--success) / var(--alert-bg-alpha)))` — so unset, everything paints exactly what it painted before (measured: 30/30 computed values byte-identical), and set on a scope, all nine consumers follow: Alert/Banner/Callout, Badge tone, Dialog/AlertDialog/Sheet header band, Toast, ChatBubble, DataTable row tone, EmptyState medallion, Flex surface=\"warning\", the Upload draft-undo strip. SET THIS WHEN A BRAND SHIPS INDEPENDENT PAIRS: `--success #126342` with `--success-soft #E8F5EF` is not a derivation — the mint is not that green at any alpha — and before this tier the only move was to lighten the success TEXT until its wash matched, damaging the ink to fix the ground. Declared `initial` rather than bound at :root so a scoped `[data-tenant]` reaches the component instead of freezing on <html> (docs/TOKENS.md · 'Role-mirror knobs MUST be initial'). NO primary/attention entry (a brand ships soft pairs for the four statuses only) and NO border role — --alert-border-alpha and --chat-bubble-tone-border-alpha keep deriving the edge. CONTRAST: this library paints the TEXT tier on these grounds, which clears AA on the reference kit (6.22 / 5.48 / 6.64 / 7.34:1); the Callout RAIL is the FILL tier and measures 1.99:1 (success) and 1.62:1 (warning) there, under SC 1.4.11 — inherited, not introduced (2.12 / 1.69:1 on the derived tint), and repaired through --mark-*.",
+  },
+  {
     name: "--border / --input",
     category: "semantic",
     tier: "semantic",

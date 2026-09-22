@@ -189,6 +189,15 @@ const TENANT_ONLY_SEEDS = [
   "--text-primary",
   "--text-link",
   "--text-brand",
+  // The status SURFACE tier (gh#866). The dark block has no opinion on them — they are `initial`
+  // in both themes and exist only to be set by a brand on a scope — so `darkThemeRoles()` alone
+  // would drop them, and the nine surfaces that read them are exactly the shape of the freeze this
+  // gate exists to catch. Zero findings today (no `:root` token reads one); listed so the first
+  // one that does is caught the day it is written.
+  "--surface-success",
+  "--surface-warning",
+  "--surface-info",
+  "--surface-destructive",
 ];
 
 export const COLOUR_SEEDS = [...new Set([...darkThemeRoles(), ...TENANT_ONLY_SEEDS])].sort();

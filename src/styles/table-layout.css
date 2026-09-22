@@ -38,14 +38,17 @@
 
   .ui-table-row[data-tone="success"] {
     --table-row-tone-color: var(--mark-success, var(--text-success));
+    --table-row-tone-surface: var(--surface-success);
   }
 
   .ui-table-row[data-tone="warning"] {
     --table-row-tone-color: var(--mark-warning, var(--text-warning));
+    --table-row-tone-surface: var(--surface-warning);
   }
 
   .ui-table-row[data-tone="info"] {
     --table-row-tone-color: var(--mark-info, var(--text-info));
+    --table-row-tone-surface: var(--surface-info);
   }
 
   .ui-table-row[data-tone="attention"] {
@@ -54,7 +57,16 @@
 
   .ui-table-row[data-tone="destructive"] {
     --table-row-tone-color: var(--mark-destructive, var(--text-error));
+    --table-row-tone-surface: var(--surface-destructive);
   }
+
+  /* `--table-row-tone-surface` is the gh#866 hand-off, and it is a SECOND property rather than a
+   * value for `--table-row-tone-color` because the two hold different things: the tone colour is
+   * raw HSL components (the rail washes them at an alpha), a brand surface is a finished colour.
+   * Each status tone points it at its `--surface-*` role; `primary` and `attention` deliberately
+   * do not (no brand ships a "soft" pair for those), so they keep deriving. When the role is unset
+   * the declaration is invalid at computed-value time — exactly what `var(--mark-*, …)` above
+   * relies on — so the wash below falls through to today's derived formula, byte for byte. */
 
   /* An IMAGE layer, not the `background` shorthand: the shorthand reset `background-color`, which
    * is where the zebra stripe below paints, so a toned even row lost its stripe and the parity
@@ -62,8 +74,14 @@
    * or the hover / selected fill — at the same weak weight, and the rail still carries the mark. */
   .ui-table-row[data-tone] {
     background-image: linear-gradient(
-      hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha)),
-      hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+      var(
+        --table-row-tone-surface,
+        hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+      ),
+      var(
+        --table-row-tone-surface,
+        hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+      )
     );
   }
 

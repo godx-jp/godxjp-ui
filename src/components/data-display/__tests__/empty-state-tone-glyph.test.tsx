@@ -112,7 +112,12 @@ describe("EmptyState tone → glyph colour", () => {
         layoutCss.indexOf(`.ui-empty-state[data-tone="${tone}"]`) + 260,
       );
       expect(rule).toContain(`--empty-state-icon-foreground: hsl(var(--${role}))`);
-      expect(rule).toContain(`--empty-state-icon-tint: hsl(var(--${role}) / 0.12)`);
+      // The medallion is one of the nine status SURFACES that read `--surface-*` first (gh#866),
+      // so a brand's independently chosen pale ground reaches it too. Unset — the default — the
+      // fallback is the identical 12% wash, which is what the second half of this assertion pins.
+      expect(rule).toContain(
+        `--empty-state-icon-tint: var(--surface-${role}, hsl(var(--${role}) / 0.12))`,
+      );
     }
   });
 });

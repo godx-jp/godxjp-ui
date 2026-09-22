@@ -88,6 +88,14 @@ const ALPHAS = {
  * Anything else is a value this test does not understand, and it says so rather than passing.
  */
 function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb {
+  /* gh#866 — the surface is now `var(--surface-<hue>, <the expression below>)`, so a brand can
+   * hand the toast a pale ground it chose independently of the ink. The role is `initial` by
+   * default, which is exactly what makes the DEFAULT contract measurable here: strip the wrapper
+   * and the fallback is what a consumer who sets nothing actually paints. A brand that DOES set it
+   * owns the ratio on its own colour — docs/TOKENS.md carries the four the reference kit measures. */
+  const role = value.match(/^var\(\s*--surface-[\w-]+,\s*([\s\S]+)\)$/);
+  if (role) return resolve(role[1].trim(), theme, over);
+
   const mix = value.match(
     /^color-mix\(in srgb, hsl\(var\(\s*--([\w-]+)\)\) calc\(var\(\s*--([\w-]+)\) \* 100%\), hsl\(var\(\s*--([\w-]+)\)\)\)$/,
   );
