@@ -129,8 +129,8 @@ export default function LoginShowcase() {
       /* Page-level controls, pinned to the banner's inline end. */
       actions={
         <>
-          <Select value={locale} onValueChange={setLocale}>
-            <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
+          <Select aria-label="言語を選択" value={locale} onValueChange={setLocale}>
+            <SelectTrigger size="sm" className="w-32">
               <Languages aria-hidden="true" className="text-muted-foreground" />
               <SelectValue />
             </SelectTrigger>

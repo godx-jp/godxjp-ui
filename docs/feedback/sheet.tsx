@@ -141,8 +141,8 @@ export default function Demo() {
                 <SheetBody>
                   <Flex direction="col" gap="md">
                     <FormField id="filter-account" label="勘定科目">
-                      <Select value={account} onValueChange={setAccount}>
-                        <SelectTrigger id="filter-account" aria-label="勘定科目">
+                      <Select aria-label="勘定科目" value={account} onValueChange={setAccount}>
+                        <SelectTrigger id="filter-account">
                           <SelectValue placeholder="すべての勘定科目" />
                         </SelectTrigger>
                         <SelectContent>
@@ -154,8 +154,8 @@ export default function Demo() {
                       </Select>
                     </FormField>
                     <FormField id="filter-status" label="ステータス">
-                      <Select value={status} onValueChange={setStatus}>
-                        <SelectTrigger id="filter-status" aria-label="ステータス">
+                      <Select aria-label="ステータス" value={status} onValueChange={setStatus}>
+                        <SelectTrigger id="filter-status">
                           <SelectValue placeholder="すべてのステータス" />
                         </SelectTrigger>
                         <SelectContent>
@@ -166,8 +166,8 @@ export default function Demo() {
                       </Select>
                     </FormField>
                     <FormField id="filter-source" label="ソース">
-                      <Select value={source} onValueChange={setSource}>
-                        <SelectTrigger id="filter-source" aria-label="ソース">
+                      <Select aria-label="ソース" value={source} onValueChange={setSource}>
+                        <SelectTrigger id="filter-source">
                           <SelectValue placeholder="すべてのソース" />
                         </SelectTrigger>
                         <SelectContent>
@@ -444,10 +444,10 @@ export default function Demo() {
               modal=&#123;false&#125; on Sheet renders a non-modal panel, a pattern WAI-ARIA APG
               allows. The page behind keeps working: no scrim, no scroll lock, nothing hidden from
               assistive tech, and a press outside does not close the panel. Open the order summary
-              (side=&quot;left&quot;, so the quantity controls stay uncovered), then change a quantity
-              below. The total inside the panel follows. Focus moves into the
-              panel on open, Tab can leave it, Escape closes it while focus is inside, and focus
-              returns to the trigger.
+              (side=&quot;left&quot;, so the quantity controls stay uncovered), then change a
+              quantity below. The total inside the panel follows. Focus moves into the panel on
+              open, Tab can leave it, Escape closes it while focus is inside, and focus returns to
+              the trigger.
             </CardDescription>
           </CardHeader>
           <CardContent>

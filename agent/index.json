@@ -15,7 +15,7 @@
     },
     {
       "file": "components/<Name>.json",
-      "note": "One file per component (1 KB–34 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.1 MB blob.",
+      "note": "One file per component (1 KB–34 KB, median 6 KB), each carrying its importPath. This is the selective route: read the index, then fetch only what you need instead of the 1.2 MB blob.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/<Name>.json"
     },
     {

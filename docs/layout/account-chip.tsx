@@ -20,8 +20,8 @@ export default function Demo() {
       subtitle="サインイン中のユーザー（アバター・名前・1 アクション）"
       extra={
         <>
-          <Select defaultValue="ja">
-            <SelectTrigger width="auto" aria-label="言語">
+          <Select aria-label="言語" defaultValue="ja">
+            <SelectTrigger width="auto">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

@@ -78,7 +78,7 @@ export default function Demo() {
               </PopoverTrigger>
               <PopoverContent aria-label="ワークスペース">
                 <Select aria-label="ワークスペース" defaultOpen defaultValue="tokyo">
-                  <SelectTrigger aria-label="ワークスペース" data-picker-trigger="">
+                  <SelectTrigger data-picker-trigger="">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

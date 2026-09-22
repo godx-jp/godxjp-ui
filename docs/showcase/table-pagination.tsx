@@ -312,13 +312,14 @@ function CursorPeriodCard() {
         <CardTitle level={2}>カーソル / 期間ジャンプ</CardTitle>
         <CardAction>
           <Select
+            aria-label="期間を選択"
             value={period}
             onValueChange={(v: string) => {
               setPeriod(v);
               setCursor(undefined); // jumping period resets the cursor to the first page
             }}
           >
-            <SelectTrigger size="sm" aria-label="期間を選択" className="w-36">
+            <SelectTrigger size="sm" className="w-36">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

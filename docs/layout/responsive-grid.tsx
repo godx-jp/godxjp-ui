@@ -333,7 +333,7 @@ export default function Demo() {
                                     name={`priority-${task.id}`}
                                     defaultValue={task.priority}
                                   >
-                                    <SelectTrigger aria-label={`${task.id} 優先度`} size="sm">
+                                    <SelectTrigger size="sm">
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>

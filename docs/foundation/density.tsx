@@ -56,8 +56,8 @@ function DensitySample({ idPrefix }: { idPrefix: string }) {
   return (
     <Flex direction="col" gap="md">
       <Input defaultValue="株式会社ベトヤ" aria-label="取引先名" />
-      <Select defaultValue="paid" name={`${idPrefix}-status`}>
-        <SelectTrigger id={`${idPrefix}-status`} aria-label="状態">
+      <Select aria-label="状態" defaultValue="paid" name={`${idPrefix}-status`}>
+        <SelectTrigger id={`${idPrefix}-status`}>
           <SelectValue placeholder="状態を選択" />
         </SelectTrigger>
         <SelectContent>
@@ -216,8 +216,8 @@ export default function Demo() {
             >
               <Flex direction="col" gap="md">
                 <Input defaultValue="2024-04-12" aria-label="発行日" />
-                <Select defaultValue="JPY" name="page-currency">
-                  <SelectTrigger id="page-currency" aria-label="通貨">
+                <Select aria-label="通貨" defaultValue="JPY" name="page-currency">
+                  <SelectTrigger id="page-currency">
                     <SelectValue placeholder="通貨を選択" />
                   </SelectTrigger>
                   <SelectContent>

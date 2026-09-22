@@ -122,8 +122,12 @@ export default function Demo() {
                   className="w-full sm:w-56"
                 />
                 <ToolbarGroup label="ステータス">
-                  <Select value={memberStatus} onValueChange={setMemberStatus}>
-                    <SelectTrigger aria-label="ステータス">
+                  <Select
+                    aria-label="ステータス"
+                    value={memberStatus}
+                    onValueChange={setMemberStatus}
+                  >
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -135,8 +139,8 @@ export default function Demo() {
                   </Select>
                 </ToolbarGroup>
                 <ToolbarGroup label="権限">
-                  <Select value={memberRole} onValueChange={setMemberRole}>
-                    <SelectTrigger aria-label="権限">
+                  <Select aria-label="権限" value={memberRole} onValueChange={setMemberRole}>
+                    <SelectTrigger>
                       <SelectValue placeholder="すべて" />
                     </SelectTrigger>
                     <SelectContent>
@@ -238,8 +242,8 @@ export default function Demo() {
                   onSearch={setSearch}
                 />
                 <ToolbarGroup label="ステータス">
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger aria-label="ステータス">
+                  <Select aria-label="ステータス" value={status} onValueChange={setStatus}>
+                    <SelectTrigger>
                       <SelectValue placeholder="すべて" />
                     </SelectTrigger>
                     <SelectContent>
@@ -251,8 +255,12 @@ export default function Demo() {
                   </Select>
                 </ToolbarGroup>
                 <ToolbarGroup label="会計期間">
-                  <Select value={fiscalPeriod} onValueChange={setFiscalPeriod}>
-                    <SelectTrigger aria-label="会計期間">
+                  <Select
+                    aria-label="会計期間"
+                    value={fiscalPeriod}
+                    onValueChange={setFiscalPeriod}
+                  >
+                    <SelectTrigger>
                       <SelectValue placeholder="期間を選択" />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,8 +311,8 @@ export default function Demo() {
           <CardContent>
             <Toolbar hasActiveFilters={department !== "all"} onClear={() => setDepartment("all")}>
               <ToolbarGroup label="部門">
-                <Select value={department} onValueChange={setDepartment}>
-                  <SelectTrigger aria-label="部門">
+                <Select aria-label="部門" value={department} onValueChange={setDepartment}>
+                  <SelectTrigger>
                     <SelectValue placeholder="部門を選択" />
                   </SelectTrigger>
                   <SelectContent>
@@ -317,8 +325,8 @@ export default function Demo() {
                 </Select>
               </ToolbarGroup>
               <ToolbarGroup label="勘定科目">
-                <Select defaultValue="all">
-                  <SelectTrigger aria-label="勘定科目">
+                <Select aria-label="勘定科目" defaultValue="all">
+                  <SelectTrigger>
                     <SelectValue placeholder="科目を選択" />
                   </SelectTrigger>
                   <SelectContent>
