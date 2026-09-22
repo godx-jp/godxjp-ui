@@ -4,6 +4,77 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.10.0] - 2026-09-22
+
+MINOR. One new prop, and a batch of defects the owner found on the running showcase — plus a
+spacing relationship that was wrong on every card-with-a-table in the library.
+
+### ⚠ Every table's cell inset changes from 12px to 16px
+
+`--table-cell-space-x` read the CONTROL step while a card reads the SECTION step, so a table
+inside a card sat **4px inboard of its own card's header and footer**, on both edges. Measured at
+1440px as a gap from the card's inner edge: header 17px, columns **13px**, footer 17px.
+
+It could not be settled in the footer, because `--table-pagination-padding-x` defaults to the cell
+token *by design* — the footer follows the columns so "rows per page" lands on the first column's
+text axis. Either the cells move to the card's inset, or a card disagrees with its own content
+forever. Both 12 and 16 are legal IBM Carbon steps (this repo's spacing authority) and Carbon gives
+DataTable and Tile the same 16px inline inset for exactly this reason: **the relationship was
+wrong, not the number.**
+
+If you have compensated for the old 12px with a local override, remove it. `--table-cell-space-x`
+is now `initial` with the default resolved at the call site, so a scoped override finally reaches
+the cell — it did not before (see Fixed).
+
+### Added
+
+- **`Flex measure="narrow" | "medium" | "wide"`** — centre a box and cap it at a page measure, the
+  inner half of "full-bleed outside, measured column inside". `--page-measure-wide` shipped in
+  28.8.0 with no prop that read it, and three unrelated showcases each hand-wrote the same four
+  declarations in two spellings. Omitting the prop emits no attribute, so an existing `Flex` is
+  byte-identical; an explicit `width` still wins, because it rides in the style attribute.
+- **`check:control-glyph-tier`** — a browser gate that fails on any glyph inside a control-sized
+  box that nothing in CSS ever sized. It proves "control-sized" by measurement (shrink the glyph
+  and see whether the box follows), which removed 22 of its first run's 52 findings as artwork, and
+  reports **0** of the 17 off-tier shapes that are meant to be off-tier.
+- **`check:frame-overflow --only <slug>`** — sweep the frames a diff can reach (~18s) instead of
+  all 199. It refuses `--update-baseline` and labels its own output `PARTIAL, not a release gate`.
+
+### Fixed
+
+- **Icons shipped at Lucide's own `width="24"` wherever a component forgot to size its SVG.**
+  Measured on `/showcase/case4-login`: a 24px mark in a 28px button (ratio 0.86), and a locale
+  picker carrying **two** glyph sizes inside one control. Not five mistakes — one missing floor,
+  which now sits beneath `Button`'s existing utility so an explicit size still wins. Also caught
+  two nobody had reported: the sidebar group chevron (24px in a 32px row, 14 frames) and the
+  pagination ellipsis (24px in 32px, 8 frames).
+- **A `CardAction` in the header stripped the top padding from *every* body in the card**, not just
+  the one below it. A pagination band two siblings and a whole flush table away from the header
+  read `padding-block: 0 / 16px` — one band, two different insets on its two block edges. The rule
+  is now adjacent (`+`) instead of descendant.
+- **`--table-cell-space-x` was a `:root` binding and froze.** Probed: setting `--control-padding-x`
+  on a card left the cell padding unmoved, and under `--scaling: .92` the control step resolved to
+  11.04px while the cell still used the root's unscaled 12px. A token that claims to track another
+  and silently does not.
+- **TagInput**: `maxTagTextLength` was declared and never read, so a 71-character tag painted
+  outside the control; the `+N` chip revealed nothing and was not reachable by keyboard; and a
+  press on the control's own box did not focus the field.
+- **Input `addonBefore`**: a 24px glyph in a 32px control, and a doubled seam — the affix slots
+  now take the same floor as the addon beside them, and the field squares the corners it shares.
+- **Switch `loading`**: the spinner sat at the thumb's top-left corner because the thumb was a
+  block box. It is a one-cell centring grid now.
+- **Segmented**: the selected option was near-invisible — fill against track is 1.09:1 in light and
+  1.33:1 in dark, and neither can reach 3:1 without re-seeding `--muted` for the whole system. The
+  indicator moved to a boundary instead: an inset hairline on `--input`, measured at 3.18:1 against
+  the track and 3.47:1 against the slab.
+- **The action-collection width floor engaged on column COUNT**, but the count was never the
+  variable: the compact measures are per-column percentages, so a five-column queue repeating one
+  tier over-subscribes the budget exactly as a ten-column one does. Measured, the reporter's queue
+  left its free-text column at **1.9 CJK characters per line**, three columns below the ceiling
+  that was supposed to make it impossible.
+- **The locale-literal rule stopped at `src/components/`** and never reached the examples — the
+  surface the MCP catalog and every copy-pasting consumer read from.
+
 ## [28.9.1] - 2026-09-22
 
 PATCH. One reachability fix, no behaviour change.
