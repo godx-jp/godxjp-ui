@@ -4,10 +4,38 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [28.11.0] - 2026-09-22
+## [28.12.0] - 2026-09-22
 
-MINOR. One new prop, one theme defect a scoped dark region made visible, and two gates that were
-lying about their own coverage.
+MINOR. A component that had no stylesheet, a new prop, a theme surface frozen on the light theme,
+and three gates that could not see what they were built to find.
+
+> **28.11.0 was tagged and never published.** Its publish was refused because CI went red on that
+> commit — correctly: two of its own changes had broken a test and a gate. The fixes and this
+> release's work ship together rather than leaving a version number that exists as a tag and
+> nowhere else.
+
+### Attachments had one CSS rule, and it was on the control nobody should see
+
+15 slot classes emitted, **1** with a rule, and all **12** of its tokens declared and read by
+nothing. Measured on the isolate frame:
+
+| | before | after |
+| --- | --- | --- |
+| `.ui-attachments-card` | `display: list-item`, 976×72.6 | `display: flex`, 268×68 |
+| `.ui-attachments-list` | `display: block` | `flex` + wrap + 8px gap |
+| raw `<input type="file">` | **9 × 265×24, visible** | 9 × 1×1, `clip-path: inset(50%)` |
+| file names painted on a card | **0** | 24 |
+| the drop layer | **0 elements rendered** | 9 |
+| tokens declared / read | 12 / **0** | **13 / 13** |
+
+Three defects found while fixing it, each measured: the card never showed the file name at all
+(`item.name` existed only inside the remove button's accessible name, so a tray of six attachments
+was six identical chips); the drop layer had **never rendered**, gated on a ref that is null on the
+render that reads it; and `flex: none` on the items turned out load-bearing — without it
+`overflow="scrollX"` never scrolled, because the cards squeezed to 44px instead.
+
+Ant's hover-only remove `✕` is deliberately **not** ported: `opacity: 0` is still hit-testable, so a
+tablet user taps a control they cannot see. Divergences are in `docs/DESIGN-AUTHORITY.md`.
 
 ### Added
 
