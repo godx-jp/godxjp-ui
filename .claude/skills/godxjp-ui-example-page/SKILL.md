@@ -63,7 +63,7 @@ AUDIT LEDGER — <group>-<name>  (paste filled-in; one line of real evidence per
 [ ] Stateful checks (if the control holds state): held value visible on open ✓ ·
       re-pickable from a complete state ✓ · controlled value mirrors type↔click ✓
 [ ] Screenshots at 390 / 768 / 1280 ✓
-[ ] Cheap gates green: typecheck · lint · audit — then ONLY this page's tests
+[ ] Gates matched to the diff, not a fixed chain: a docs page is `typecheck:docs` (NOT `typecheck`, which covers `src/`) · `audit` · `check:example-imports` — then ONLY this page's tests. See godxjp-ui-component §5.
       (`pnpm vitest run <path> --maxWorkers=2`). NEVER `pnpm test`; the full suite is CI's.
 ```
 

@@ -189,13 +189,41 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
   - canonical primitives), composed of real `@godxjp/ui` only. Flat file for Overview-only; folder +
     `examples/` for real use-cases. Example pages are full screens, never bare Card snippets.
 
-## 5. Verify before you call it done — ALL must be green
+## 5. Verify what the DIFF touched — not a fixed list
+
+> **This section used to read "ALL must be green" above a chain of nine `&&`-joined commands
+> labelled "run freely", with no condition attached to any of them.** So a one-line CSS change and
+> a brand-new component got the identical nine. The owner caught it: *"tao chỉ yêu cầu sửa mỗi 1
+> cái padding mày run đủ thứ là thế lồn nào???"* He is right. A fixed checklist is not diligence,
+> it is not reading the diff.
+
+**Rule: a gate runs when the diff contains a file it can have an opinion about. Otherwise it does
+not run.** Not "it is cheap so why not" — a check that cannot fail is not evidence, it is noise,
+and nine of them is a minute you spend on every edit forever.
+
+| you changed | run exactly this |
+| --- | --- |
+| **`.css` only** | `pnpm run audit` · `check:token-tiers` · `check:control-sizing` · that component's tests |
+| **`.tsx`/`.ts` in `src/`** | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that group's tests |
+| **a public prop / export** | + `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `pnpm ship:surface` |
+| **a token in `src/tokens/`** | + `check:token-tiers` · `pnpm vitest run src/tokens/__tests__` · `pnpm regen` TWICE (gh#847) |
+| **a file in `docs/`** | `pnpm typecheck:docs` · `pnpm run audit` · `check:example-imports` |
+| **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep once, pre-PR |
+
+`pnpm typecheck` covers `src/`, NOT `docs/`; a `docs/`-only change needs `typecheck:docs` and
+gets nothing from `typecheck`. `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the
+public export list — a CSS change cannot move either, so they cannot fail, so do not run them.
+
+**Cost, measured, so you argue with numbers and not with feelings** (`docs/DEVELOPMENT.md` §5.0):
+
+    check:token-tiers 0.2s · audit 0.5s · typecheck:docs 0.7s · typecheck 1.3s
+    build 1.5s · preview:build 1.9s · lint 12.9s · check:frame-overflow 52s (199 frames)
+
+Note what this kills: "typecheck the whole repo" is **1.3 seconds** and was never the problem.
+`lint` at 12.9s and the browser sweep are. Never call a gate slow before timing it:
+`st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`
 
 ```
-pnpm typecheck && pnpm lint && pnpm run audit \
-  && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans \
-  && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports
-
 # then ONLY your own component's tests:
 pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
 ```
@@ -236,7 +264,7 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
 - [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
 - [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
-- [ ] **Cheap gates green**: `pnpm typecheck && pnpm lint && pnpm run audit && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports`, then **your component's tests only** — `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. NEVER `pnpm test`; the full suite is CI's.
+- [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
 
 ## References (read when unsure)
 
