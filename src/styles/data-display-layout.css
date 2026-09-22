@@ -1603,7 +1603,7 @@
 
   .ui-prose :is(th, td) {
     border: var(--stroke-hairline) solid hsl(var(--border));
-    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active));
     text-align: start;
     vertical-align: top;
   }

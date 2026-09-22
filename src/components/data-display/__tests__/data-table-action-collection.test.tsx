@@ -335,8 +335,11 @@ describe("DataTable action-collection preset (gh#253)", () => {
     expect(tableCssFlat).toContain(
       "padding-block:var(--table-pagination-padding-y,var(--space-stack-sm));",
     );
-    expect(tableCssFlat).toContain(
-      "padding-inline:var(--table-pagination-padding-x,var(--table-cell-space-x));",
+    // Asserted as a PATTERN, not a flattened literal. The literal broke the moment prettier
+    // wrapped the declaration across lines (gh#849 widened the fallback chain) — a formatter
+    // deciding whether a test passes, which is not a test.
+    expect(tableCssFlat).toMatch(
+      /padding-inline:var\(--table-pagination-padding-x,var\(--table-cell-space-x[,)]/,
     );
   });
 });

@@ -75,7 +75,10 @@ describe("TableCell indent (gh#354 · item 5)", () => {
 
   it("derives the measure from tokens on the logical inline axis (RTL-safe)", () => {
     expect(css).toContain('[data-slot="table-cell"][data-indent]');
-    expect(css).toMatch(/padding-inline-start:\s*calc\(\s*var\(\s*--table-cell-space-x\)/);
+    // The cell token now carries its own call-site default (gh#849), so it reads
+    // `var(--table-cell-space-x, var(--space-section-active))`. This test pins the AXIS
+    // and the base term, not the length of the fallback chain.
+    expect(css).toMatch(/padding-inline-start:\s*calc\(\s*var\(\s*--table-cell-space-x[,)]/);
     expect(css).toContain("var(--table-cell-indent-level, 0)");
     expect(css).toContain("var(--table-cell-indent-space-step)");
     // The step is a named step of the spacing scale, never a raw length.

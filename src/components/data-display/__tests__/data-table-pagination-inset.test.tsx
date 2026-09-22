@@ -59,9 +59,12 @@ describe("DataTable.Pagination footer inset (gh#236)", () => {
     expect(paginationRule).toMatch(
       /padding-block:\s*var\(\s*--table-pagination-padding-y,\s*var\(\s*--space-stack-sm\)\)/,
     );
-    // inline default = the table's own cell inline padding
+    // Inline default = the table's own cell inline padding — which itself now carries a
+    // call-site default (gh#849), so the spelling is `var(--table-cell-space-x, var(--space-
+    // section-active))`. Matched loosely on purpose: what this test pins is that the footer
+    // follows the CELL token, not how many characters the fallback chain happens to be.
     expect(paginationRule).toMatch(
-      /padding-inline:\s*var\(\s*--table-pagination-padding-x,\s*var\(\s*--table-cell-space-x\)\)/,
+      /padding-inline:\s*var\(\s*--table-pagination-padding-x,\s*var\(\s*--table-cell-space-x[,)]/,
     );
   });
 

@@ -311,7 +311,16 @@ function CursorPeriodCard() {
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
       </CardContent>
-      <CardContent className="border-t">
+      {/* `DataTable.Pagination` owns its own inline inset, because it is normally the lone child
+       * of a FLUSH container. Here it shares a padded `CardContent` with the period label, so the
+       * two insets stack — measured 28px against the columns' 16px before this. Zeroing the slot's
+       * own knob hands the inset to the container that already supplies it; that is what
+       * `--table-pagination-padding-x` is for, and an instance override is the right tier for one
+       * element in one arrangement (docs/CUSTOMER-THEMING.md, tier 4). */}
+      <CardContent
+        className="border-t"
+        style={{ "--table-pagination-padding-x": "0" } as React.CSSProperties}
+      >
         <Flex direction="row" align="center" justify="between" wrap gap="sm">
           <Text size="xs" tone="muted" tabular>
             {fmt.month(period)} · {t("showcase.pagination.recordCount", { count: all.length })}

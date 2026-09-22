@@ -7510,8 +7510,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-cell-space-x",
-    "value": "var(--control-padding-x)",
-    "description": "Table component tokens: row height, cell padding."
+    "value": "initial",
+    "description": "THE CELL'S INLINE INSET — and it is the CARD'S inset, not the control's (gh#849). * * Measured on /showcase/table-pagination at 1440px, gap from the card's inner edge: * * card header (title / count) 17px * table th/td (column text) 13px <- the odd one out * pagination footer 17px * * One card, three horizontal bands, two optical axes. The table read the CONTROL step * (--control-padding-x, 12px) while the card read the SECTION step (--card-space-inset -> * --space-section-active, 16px), and a table is the flush body of a card more often than it * is anything else — so the two steps meet at the same edge on the most common composition * this library ships, and the table sits 4px inboard of the header above it and the footer * below it, on BOTH edges. * * It cannot be settled in the footer: --table-pagination-padding-x defaults to THIS token so * the \"rows per page\" label lands on the first column's text axis, so the footer follows the * columns by design. Either the cells move to the card's inset or the card's own chrome * disagrees with its content forever. IBM Carbon — this repo's spacing authority * (docs/DESIGN-AUTHORITY.md) — gives DataTable and Tile the same 16px inline inset for * exactly this reason. Both 12 and 16 are legal Carbon steps; the RELATIONSHIP is what was * wrong, not the number. * * `initial`, not `var(--space-section-active)`, per docs/TOKENS.md - \"Role-mirror knobs MUST * be `initial`\". The old binding was a :root var() and it FROZE: probed in Chromium, setting * --control-padding-x on the card left the cell padding at 12px, and on a subtree with * --scaling .92 the control step resolved to 11.04px while the cell still used the root's * unscaled 12px. A token that claims to track another and silently does not is worse than * one that never claimed it. default = var(--space-section-active)"
   },
   {
     "name": "--table-cell-indent-space-step",

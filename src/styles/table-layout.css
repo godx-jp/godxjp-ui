@@ -128,12 +128,14 @@
 
   .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
     border-inline-start: var(--table-row-tone-rail-width) solid hsl(var(--table-row-tone-color));
-    padding-inline-start: calc(var(--table-cell-space-x) - var(--table-row-tone-rail-width));
+    padding-inline-start: calc(
+      var(--table-cell-space-x, var(--space-section-active)) - var(--table-row-tone-rail-width)
+    );
   }
 
   [data-slot="table-head"] {
     height: var(--table-row-height);
-    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active));
     text-align: start;
     vertical-align: middle;
     background: var(--table-header-background, hsl(var(--muted)));
@@ -157,7 +159,7 @@
   }
 
   [data-slot="table-cell"] {
-    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active));
     vertical-align: middle;
     /* Don't let a narrow column crush cell text — in CJK this collapses to one character per line.
  */
@@ -207,7 +209,7 @@
    * tree indents from the right. */
   [data-slot="table-cell"][data-indent] {
     padding-inline-start: calc(
-      var(--table-cell-space-x) + var(--table-cell-indent-level, 0) *
+      var(--table-cell-space-x, var(--space-section-active)) + var(--table-cell-indent-level, 0) *
         var(--table-cell-indent-space-step)
     );
   }
@@ -289,7 +291,10 @@
     justify-content: flex-end;
     gap: var(--space-inline-sm);
     padding-block: var(--table-pagination-padding-y, var(--space-stack-sm));
-    padding-inline: var(--table-pagination-padding-x, var(--table-cell-space-x));
+    padding-inline: var(
+      --table-pagination-padding-x,
+      var(--table-cell-space-x, var(--space-section-active))
+    );
   }
 
   /* Numbered footer may wrap only between its two semantic groups. */
