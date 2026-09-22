@@ -238,6 +238,52 @@ writing this: **50** — under the threshold, so ask-mode.
 
 **Over 100 ⇒ the batch run is due automatically. At or under 100 ⇒ you ASK and wait.**
 
+> #### ⚠ The counter's ACTION is contested — the threshold is not
+>
+> The `dxs-product` session's objection, which I could not answer and am recording rather than
+> burying:
+>
+> ```
+> problem : 100 commits NOT REVIEWED
+> action  : run the full suite
+> ```
+>
+> **Running tests reviews nothing.** A hundred unreviewed commits, after a green full suite, are
+> still a hundred unreviewed commits — they merely *look* checked. Calling the threshold a "backlog
+> ceiling" defends the **trigger** and says nothing about the **action**.
+>
+> Its proposal: keep the threshold, change the action to **"stop taking new issues into this batch
+> and go review"** — which gates **phase 1** rather than firing phase 4, and stops the counter
+> competing with the SHA-bound evidence.
+>
+> **The owner specified the current action, so it stands until he rules.** What is adopted now,
+> because it is true either way:
+>
+> 1. **At >100, ALSO stop intake.** Whatever else happens, do not pull more issues into a batch
+>    nobody has reviewed. This is additive and contradicts nothing.
+> 2. **A run fired by this counter is NOT release evidence**, and must never be reported as such.
+
+#### Why "we just ran the full suite" is never evidence — verified in BOTH repos
+
+The peer's release `v0.11.59` had **two** backend CI runs on the tagged SHA: one with `pest =
+success`, and a newer **cancelled** one. The gate refused:
+
+```
+::error::Product CI has not passed: CI · [backend] tests: completed/cancelled
+```
+
+It takes the **latest run per workflow**, not "was there ever a green one". I checked whether ours
+differs — it does not. `scripts/release-core.mjs:316`:
+
+```js
+// Keep the newest attempt per check-run name, so a re-run that turned a job green is what counts.
+```
+
+So a newer cancelled run refuses here too. **Evidence is the concluded status of the required
+check, on the exact SHA, in the latest attempt** — never the memory of having run something. A
+counter that fires a full suite at an arbitrary SHA teaches the opposite, and the lesson arrives
+when someone is trying to ship.
+
 To see where the backlog sits, which is usually more useful than the total:
 
 ```bash
@@ -357,16 +403,25 @@ Confirmed in BOTH repos, so it belongs in any agent's rules:
 4. **`git diff --name-only` is not the diff** — it misses staged and untracked files. Add
    `git status --porcelain`.
 5. **The full suite is release evidence bound to a SHA**, not a ritual on a counter.
-6. **Measure the cost of a SKIPPED job, not just a running one — and put the scope decision BEFORE
+6. **A ban enforced by regex must not block the GOOD narrow forms.** Their first hook matched
+   `\bpest\b` and blocked `ls .../skills/pest-testing/` — a directory name, not a command; a guard
+   that blocks reading files gets switched off the same day. Two design rules from it: **match at
+   command position**, and prefer letting a few odd forms through over one false block. And the
+   reverse failure to avoid when writing ours: `vitest run --changed` and `vitest related <file>`
+   are *valid narrow forms with no path*. A rule demanding a path blocks the two best narrow forms,
+   and the blocked agent switches to `pnpm test` — which is wider — because that one is not caught.
+   Finally, **name the escape hatch inside the block message**: someone blocked without a visible
+   door goes around it, and you lose the trace too.
+7. **Measure the cost of a SKIPPED job, not just a running one — and put the scope decision BEFORE
    the expensive step.** Their `[web] web/pos` job spent **225s to decide to skip**: 218s of
    `actions/checkout`, 2s of decision. Wherever scope is decided *after* the expensive step, every
    skipped job still pays in full. That is universal; the cure (a scope job before the matrix, a
    local mirror, `fetch-depth`) is per-repo — and `fetch-depth: 1` in particular breaks
    `git describe`, `...` diffs and tag provenance, so it is not general advice.
-7. **Enforce the ban with a MECHANISM, not prose.** Their rule existed in writing for weeks and was
+8. **Enforce the ban with a MECHANISM, not prose.** Their rule existed in writing for weeks and was
    violated twice in a single session; a hook that refuses an unscoped test command is what actually
    held.
-8. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+9. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
    that run, and an index that checks *wiring* cannot see it. (Theirs: 249 declared, 31 observed.
    Ours: no `continue-on-error`, but `verify:ci:static` is a 46-command `&&` chain — gh#853.)
 
@@ -406,3 +461,75 @@ Confirmed in BOTH repos, so it belongs in any agent's rules:
 return type; it turned one test red (visible) and another **falsely green** — a `toHaveCount(1)`
 quietly shifted from counting override rows to counting state transitions. Fixing only the red one
 leaves a test that will answer "yes" to a question nobody asked.
+
+
+---
+
+## The second axis: IRREVERSIBILITY (classes F and G)
+
+A–E classify by **surface** — how much of the system a change can touch. That is the wrong axis for
+two kinds of change, and the `dxs-product` session supplied both from a production POS. They are
+not more of A–E; they are a different question: **what happens if this is wrong, and would anyone
+find out?**
+
+### F · migration / seeder — *a deploy WRITES this into a live database*
+
+**Definition:** a change a deploy will write into the database of a shop that is trading, with
+nobody watching, at whatever hour someone pushes a tag. Their deploy path carries **19** such
+writes.
+
+**The incident:** a seeder switched off four time-slot menus at one shop at `06:08:01`, then again
+at `07:35:06`. The shop served ~50 minutes on the wrong menu, fixed it by hand, and the next deploy
+overwrote it again. The near miss is worse: another seeder upserts `tables` with `status='free',
+current_order_id=null`. That deploy happened to land at 15:08, between shifts. **Mid-service it
+would have returned every occupied table to empty and severed it from the order the customer was
+sitting at.**
+
+**The rules, which are the part worth carrying to any repo:**
+
+- A seeder may re-apply **system catalogue** — things the operator cannot edit and without which
+  the product will not run.
+- A seeder must **never** re-apply **operator-owned** state. The moment a human can change a value
+  in the UI, a deploy that re-applies it is **silently overruling their decision**.
+- Three questions before anything joins the deploy path:
+  1. Which table does it write? If that table has a screen the operator edits, **it does not belong
+     here**.
+  2. Is it a **one-off correction** or an invariant that must be re-applied forever? One-off ⇒ run
+     it by hand, watched.
+  3. **Is it safe at 14:30 on a busy Saturday?** If the answer depends on when you deploy, it is
+     not safe.
+
+Their guard locks the **call tree**, not the behaviour — a seeder can be perfectly correct and
+still be wrong *here*. And it asserts **both directions**: every production seeder reaches deploy,
+**and** everything reaching deploy is on the allowlist. The second direction was missing at first
+and missing **silently**: a new seeder touching operator-owned state could join the workflow with
+324 architecture tests still green.
+
+### G · money path — *a number that will later be BELIEVED without being re-checked*
+
+**Definition:** a write that produces a figure someone will trust without re-deriving it.
+
+Core rule: **a device never states its own price.** Offline workstations sign each order; the cloud
+verifies, then **re-prices from an immutable snapshot**. Exactly one verifier may seal a trusted
+snapshot, and that allowlist is **fail-closed** — a new writer outside the aggregate boundary turns
+the gate red.
+
+The design consequence worth stealing: **a fabricated snapshot is worse than a missing one, because
+it will be believed.** They keep `price_source` nullable *on purpose* — two write paths take price
+from the device payload and the cloud cannot resolve it, so stamping an enum there would be an
+invention. That NULL is permanent semantics, not a migration debt.
+
+**Why G is not D.** A layout defect is seen and reported. A money defect reports *healthy*: a
+¥3,160 completed payment failed to attach to its order, the order read `total = paid = 3160`,
+closed cleanly, and **neither the overpayment warning nor the ledger drift scanner fired** — the
+order matched no predicate either owned. The customer was most likely charged twice and no surface
+knew.
+
+**So the rule for class G: every money write needs a surface that ACTIVELY WAKES A PERSON.** Not a
+log line, not a dashboard somebody could open. In their architecture that cost a dedicated event
+and listener, because calling the notifier from the lower layer would have violated a layer
+boundary.
+
+> **Neither class exists in this repo, and that is the point of recording them.** A design system
+> has no irreversible write path. If your repo has one, A–E will not find it, because A–E asks how
+> much you touched and these ask whether you can take it back.
