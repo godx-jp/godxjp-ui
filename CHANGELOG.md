@@ -4,6 +4,63 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.11.0] - 2026-09-22
+
+MINOR. One new prop, one theme defect a scoped dark region made visible, and two gates that were
+lying about their own coverage.
+
+### Added
+
+- **`ServiceLauncherCard.logo`** — a URL to a service's own uploaded mark, which takes the
+  medallion when it loads and hands it back to `icon` when it does not. `icon` stays required on
+  purpose: `Service.logo_path` outlives the file it points at, so a URL whose object is gone is the
+  state that always reaches production, and **one prop cannot be both the thing that fails and the
+  thing you fall back to**. Measured at the tile's own size: the image and the glyph it replaces are
+  both 20.00 × 20.00 with the same optical centre, because the rule reads the glyph's own token
+  rather than a second one that happens to match today. The load probe is `Avatar`'s, lifted to
+  `src/lib/` rather than reimplemented — one implementation, one failure path, and a broken `<img>`
+  never enters the DOM at all.
+
+### Fixed
+
+- **Segmented's track and selected slab were frozen on the root's light theme.** Both were `:root`
+  bindings, so the `var()` substituted on `<html>` and every scope beneath inherited that answer.
+  Invisible until now only because `.dark` also lands on `<html>`. Measured in Chromium with `.dark`
+  on a `<div>` — a `[data-tenant]` block, a dark panel on a light page, the theme editor's own
+  preview pane — the track painted **rgb(244,243,240)**, the light neutral, byte-identical to the
+  light page, **under dark ink**. Now `initial` with the formulas at the call site: **rgb(49,47,43)**,
+  byte-identical to `.dark` on `<html>`.
+- **A pagination band inside a padded container was padded twice on the block axis.** The inline
+  half was fixed in 28.10.0 and the block half was not — 16px from the container plus 7.36px of the
+  slot's own, so that footer sat 27px off the last row where its siblings sat at 20px. A two-axis
+  defect fixed on one axis looks fixed from the side you were measuring.
+
+### Tooling — two gates that could not see what they were built to find
+
+- **`check:frame-token-scope` was blind to 18 of the 36 roles the dark theme re-declares.** Its
+  colour seeds were a hand-kept array of 18 names, so anything bound to `--muted-foreground`,
+  `--secondary`, `--secondary-foreground`, `--popover-foreground` or `--warning` was filtered out
+  and had never reached the baseline — **21 real freeze instances**, four of them in `segmented.css`
+  itself. The seeds are now **derived** from `foundation.css`'s dark block, so a role added there
+  seeds the gate for free. The file's own header had already recorded that a hand-kept list is how
+  the `--font-size-*` ramp went unseen for three releases.
+- **That baseline said "may only SHRINK" and nothing enforced it** — `--update-baseline` rewrote it
+  unconditionally, so it would have absorbed a genuine regression without a word. It now refuses to
+  grow, prints every added entry, and accepts growth only behind `--accept-growth`, whose one
+  legitimate use is a widened gate that says so.
+- **`verify:ci:static` was 46 commands joined with `&&`**, so a failure at command 3 meant 4…46
+  never ran and you learned one defect per CI round trip. The chain is now the declaration and the
+  name is a runner that executes every entry and reports the complete list. Prerequisites still
+  abort, and only those.
+- **`pnpm regen` needed two runs after a token change**, because one generator reads what another
+  writes and the order was the order of keys in `package.json`. It now runs to a **fixed point** —
+  a settled tree still costs one pass; a cycle cannot converge, so passes are capped and a cap hit
+  fails with the still-moving files named.
+- **`check:frame-overflow` ran 398 navigations down a single page, in series** (339s). Pooled one
+  page per core: **52s**, byte-identical output. `--only <slug>` narrows a diff-scoped run to ~18s
+  and refuses to touch the baseline. Capped to 2 under CI, because `availableParallelism()` on a
+  shared self-hosted runner reports the whole box and the neighbours pay for the difference.
+
 ## [28.10.0] - 2026-09-22
 
 MINOR. One new prop, and a batch of defects the owner found on the running showcase — plus a
