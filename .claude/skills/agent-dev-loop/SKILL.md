@@ -214,61 +214,61 @@ how, and which you deferred. A review nobody can read is a review nobody can che
 
 ### The trigger — and what a full run IS and IS NOT
 
-**A full suite run is RELEASE EVIDENCE, bound to the SHA being tagged. It is not a periodic
-ritual, and it is not debt collection.** The `dxs-product` session made this point and it is
-right: *"một lượt full suite ở commit thứ 100 không cấp bằng chứng cho commit thứ 101."* A run at
-commit 100 proves nothing about commit 101.
+**A full suite run is RELEASE EVIDENCE, bound to the SHA being tagged. It is not a periodic ritual
+and it is not debt collection.** The `dxs-product` session put it best: *"một lượt full suite ở
+commit thứ 100 không cấp bằng chứng cho commit thứ 101."* A run at commit 100 proves nothing about
+commit 101.
 
 This repo already enforces the SHA-bound half **mechanically**, so it is not up for debate:
 `release-core.mjs` REQUIRED_CI_CHECK_RUNS + `VerifyCommitProvenance` refuse to publish unless every
 CI check has CONCLUDED green **on the exact tagged commit**. That, not a counter, is the evidence.
 
-So the counter is a **backlog ceiling, not evidence** — a batch-size guard in DORA's sense, there
-to stop unreviewed work piling into a batch nobody can review:
+So the counter is a **backlog ceiling** — a batch-size guard in DORA's sense, there to stop
+unmerged work piling up into a batch nobody can review.
 
-**Automatic only when unreviewed commits exceed 100.** Otherwise you ASK, and you do not run it
-until he says yes.
-
-> ### ⛔ THE COUNTER FAILS CLOSED. The first draft of this section failed OPEN.
->
-> It said `git describe --tags --match 'verified/*' || git rev-list --max-parents=0 HEAD`. There
-> was no `verified/*` tag, so the fallback resolved to the **root commit** and the count came back
-> **1888** — over the threshold, so the document authorised running the full suite **without
-> asking**, from the first read, which is the exact behaviour it exists to forbid. Worse, it was
-> circular: the watermark is only created *after* a successful batch run, so escaping auto mode
-> required doing the auto thing first.
->
-> Caught by the `dxs-product` session reading the draft. It is the same family as §universal #2 —
-> **missing data made the system pick the loudest option instead of stopping to ask.**
+### What is counted: commits NOT YET MERGED. Not commits since some marker.
 
 ```bash
-base=$(git describe --tags --match 'verified/*' --abbrev=0 2>/dev/null) || {
-  echo "No verified/* watermark — ASK. Do not run."; exit 1; }
-git rev-list --count "${base}..HEAD"
+git fetch origin --quiet
+git rev-list --count --all --not origin/main
 ```
 
-**Unresolvable watermark ⇒ ASK.** Never fall back to anything, least of all the root commit.
+Everything reachable from any ref that is **not yet in `origin/main`**. Measured on this repo while
+writing this: **50** — under the threshold, so ask-mode.
 
-The **first** watermark is created once, by a person, deliberately, at a commit they know CI
-verified green. An agent must not create it: a tag that claims verification that did not happen is
-worse than no tag.
+**Over 100 ⇒ the batch run is due automatically. At or under 100 ⇒ you ASK and wait.**
 
-After a batch run that really passed:
+To see where the backlog sits, which is usually more useful than the total:
 
 ```bash
-tag="verified/$(date +%Y%m%d-%H%M)"
-git tag "$tag" && git push origin "refs/tags/$tag"    # ONE tag. No -f. No --tags.
+for b in $(git branch -r --no-merged origin/main | grep -v HEAD); do
+  echo "$(git rev-list --count origin/main..$b) $b"
+done | sort -rn
 ```
 
-> The first draft wrote `git tag -f … && git push -f origin --tags`. The `-f` was pointless (the
-> name carries a timestamp, so it never collides) and `push -f --tags` **force-pushes every local
-> tag**, overwriting any remote tag that differs. This repo publishes from tags and
-> `VerifyCommitProvenance` reads them, so one stale local tag could move a release tag onto another
-> commit. Push the single ref you just made.
+> #### Why not a `verified/*` watermark tag — the first draft of this section, and why it was wrong
+>
+> It counted from a `verified/*` tag, falling back to `git rev-list --max-parents=0 HEAD` when none
+> existed. There was no such tag, so the fallback resolved to the **root commit**, the count came
+> back **1888**, and the document therefore authorised running the full suite **without asking**,
+> from the first read — the exact behaviour it exists to forbid. It was also circular: the tag was
+> only created after a successful batch run, so escaping auto-mode required doing the auto thing
+> first.
+>
+> The `dxs-product` session caught it by running the command. It is the same family as §universal
+> #2 — **missing data made the system pick the loudest option instead of stopping to ask** — a rule
+> stated two sections earlier in this very file and then broken.
+>
+> Counting unmerged commits removes the failure rather than patching it: there is no marker to
+> create, nothing to keep in sync, and no fallback branch to get wrong. Merging is what reduces the
+> number, which is also the behaviour you want rewarded.
 
-> **The counter is a proxy for risk, not a measure of it** — 100 docs commits are not 10 token
-> commits. It is deliberately crude because a negotiable threshold is not a threshold. If the batch
-> is class B/C/E heavy, ask earlier; never use the count to justify waiting longer.
+**If `origin/main` cannot be resolved, ASK. Never fall back to anything.**
+
+```bash
+git rev-parse --verify origin/main >/dev/null 2>&1 || {
+  echo "cannot resolve origin/main — ASK. Do not run."; exit 1; }
+```
 
 ### The ask
 

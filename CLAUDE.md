@@ -48,9 +48,20 @@ before writing anything. It owns the four-phase loop and the bans:
 | **3 · review** the diff and the requirement flow, audit the TESTS not just the code | opus / fable | only tests the change reaches | same |
 | **4 · batch run** — once, for the whole batch | any | everything | running it **unasked** |
 
-**Phase 4 triggers automatically only when unreviewed commits exceed 100.** Below that you ASK and
-wait. The count is `git rev-list --count $(git describe --tags --match 'verified/*' --abbrev=0)..HEAD`;
-move the `verified/*` tag after each batch run or the counter means nothing.
+**Phase 4 triggers automatically only when UNMERGED commits exceed 100.** Below that you ASK and
+wait — measured on this repo today: **50**.
+
+```bash
+git fetch origin --quiet
+git rev-list --count --all --not origin/main     # everything not yet in main
+git rev-parse --verify origin/main >/dev/null || { echo "cannot resolve — ASK"; exit 1; }
+```
+
+Unmerged, not "since some marker": merging is what reduces it, there is nothing to keep in sync,
+and there is no fallback to get wrong. The first draft counted from a `verified/*` tag with a
+fallback to the root commit — no tag existed, so it returned **1888** and authorised the full suite
+**without asking**, which is the one thing this rule forbids. If the base cannot be resolved, ASK;
+never fall back.
 
 ## The batch run — the ONLY time "run everything" is allowed, and the owner triggers it
 
