@@ -161,6 +161,11 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
         onValueChange={handleChange ?? (() => {})}
         disabled={disabled || unbound}
         name={name}
+        // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
+        // value text, so this is its only accessible name; it can never ship nameless. Declared on
+        // the FIELD, not on the trigger: `Select` forwards it down to the trigger unchanged, and a
+        // name the root cannot see is a name react-aria warns about once per render (gh#869).
+        aria-label={t(ARIA_KEY[kind])}
       >
         <SelectTrigger
           ref={ref}
@@ -262,9 +267,6 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           // reach; this attribute is the contract those assertions target instead of the utilities
           // that happen to paint it today.
           data-appearance={resolvedAppearance}
-          // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
-          // value text, so this is its only accessible name; it can never ship nameless.
-          aria-label={t(ARIA_KEY[kind])}
         >
           {inline ? null : (
             <Icon
