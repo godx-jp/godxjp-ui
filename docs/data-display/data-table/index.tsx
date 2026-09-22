@@ -166,6 +166,34 @@ export default function Demo() {
             getRowId={(row) => row.id}
           />
         </Flex>
+        {/* The RECORD collection — a wide, heterogeneous record set. The fold is a CONTAINER
+            query, not a viewport one, so the same table folds by the width it is GIVEN: the two
+            blocks below are one component and one column list, rendered wide and narrow.
+
+            Below `collapseBelow` the header row hides and every `<tr>` becomes a bordered
+            key-value card. The per-cell labels are DERIVED from the same `ColumnDef.header` the
+            `<th>` uses (gh#864) — one declaration, so the card can never drift from the table it
+            collapsed out of, and the value that loses its header keeps its name. */}
+        <Flex direction="col" gap="sm" id="stacked-record-collection">
+          <Text weight="medium">レコードコレクション（広い幅：表のまま）</Text>
+          <DataTable
+            preset="stacked-record-collection"
+            collapseBelow="sm"
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+          />
+        </Flex>
+        <Flex direction="col" gap="sm" id="stacked-record-collection-folded" className="max-w-xs">
+          <Text weight="medium">同じ表・同じ列定義（狭い幅：カードに畳む）</Text>
+          <DataTable
+            preset="stacked-record-collection"
+            collapseBelow="sm"
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+          />
+        </Flex>
         {/* Row TONE — the leading-edge rail + wash for a row in a named state. The status Badge
             stays in its own cell: the rail makes the row findable, it does not carry the meaning
             (WCAG 1.4.1). */}

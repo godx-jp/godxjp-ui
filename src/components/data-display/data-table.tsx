@@ -158,6 +158,28 @@ function columnHideBelowProps(col: ColumnDef<unknown>) {
   return step ? { "data-hide-below": step } : {};
 }
 
+/**
+ * The stacked card's per-cell label (gh#864).
+ *
+ * `preset="stacked-record-collection"` hides `<thead>` below `collapseBelow` and turns each row
+ * into a card; `src/styles/table-layout.css` says what follows — the cell's own `label` "takes
+ * over the accessible-name role" once the `<th>` association is gone. So the label is not
+ * decoration, it is the only thing left saying which value is the price and which is the date.
+ *
+ * It is DERIVED from `ColumnDef`, never declared a second time: the header a consumer already
+ * wrote stays the single source, so the card cannot drift from the table it collapsed out of.
+ * A column whose header is deliberately empty (row actions, selection) names itself with
+ * `ariaLabel`, the same field the `<th>` uses for that case.
+ *
+ * Returns `undefined` for every other preset, so an ordinary table gains no extra markup —
+ * `TableCell` renders the span only when a label is passed.
+ */
+function stackedCellLabel(col: ColumnDef<unknown>): React.ReactNode | undefined {
+  const header = col.header;
+  const headerIsEmpty = header == null || header === "" || header === false;
+  return headerIsEmpty ? col.ariaLabel : header;
+}
+
 // ── lean ColumnDef → TanStack column adapter ───────────────────────────────
 // We keep the lean ColumnDef as the public column shape and translate it into a
 interface DataTableColumnMeta<T> {
@@ -1392,6 +1414,8 @@ DataTable.Content = function DataTableContent() {
   const { t } = useTranslation();
   // `"default"` must be provably inert: no attribute is emitted, so no preset selector can match
   const presetAttr = preset === "default" ? undefined : preset;
+  // gh#864 — only this preset collapses a row into a card, so only it needs the per-cell label.
+  const stacked = preset === "stacked-record-collection";
 
   // A slot is "raised" when it carries content OR the sentinel `true` (built-in copy). `false` /
   // `error={isError}` / `denied={status === 403}` straight from a query result.
@@ -2054,6 +2078,7 @@ DataTable.Content = function DataTableContent() {
                             priority={col.priority}
                             data-align={col.align}
                             title={title}
+                            label={stacked ? stackedCellLabel(col) : undefined}
                             {...fixedCellProps(col.key, fixedEdge(col))}
                             {...columnHideBelowProps(col)}
                             style={columnCellStyle(col)}

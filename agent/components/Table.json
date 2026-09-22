@@ -58,13 +58,13 @@
     },
     {
       "defaultValue": "\"default\"",
-      "description": "Named collection contract. \"default\" emits no attribute and keeps the plain table. \"action-collection\" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440.",
+      "description": "Named collection contract. \"default\" emits no attribute and keeps the plain table. \"action-collection\" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. \"stacked-record-collection\" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.",
       "name": "preset",
-      "type": "\"default\" | \"action-collection\""
+      "type": "\"default\" | \"action-collection\" | \"stacked-record-collection\""
     },
     {
       "defaultValue": "\"sm\"",
-      "description": "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is \"default\".",
+      "description": "Step at which preset=\"action-collection\" switches to the compact priority measures, or preset=\"stacked-record-collection\" folds its rows into cards. Measured against the TABLE'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is \"default\".",
       "name": "collapseBelow",
       "type": "\"sm\" | \"md\" | \"lg\" | \"xl\""
     },

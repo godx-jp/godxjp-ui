@@ -3946,17 +3946,17 @@ import { Icon, Text } from "@godxjp/ui/general";
       },
       {
         name: "preset",
-        type: "'default' | 'action-collection'",
+        type: "'default' | 'action-collection' | 'stacked-record-collection'",
         defaultValue: "'default'",
         description:
-          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL.",
+          "Named collection contract — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL. 'stacked-record-collection' is the other direction, for a WIDE, HETEROGENEOUS record set that has no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Each cell then carries its column's header inline above the value, DERIVED from the same ColumnDef.header the <th> uses — so the card cannot drift from the table, and a column with a deliberately empty header names itself with ariaLabel (gh#864). The labels are aria-hidden: the real <th> is still in the DOM and remains the accessible-name source, so screen-reader table navigation is unchanged at every width. Reach for this instead of building a parallel Card tree beside the table; two trees for one dataset means two sets of labels to keep in sync.",
       },
       {
         name: "collapseBelow",
         type: "'sm' | 'md' | 'lg' | 'xl'",
         defaultValue: "'sm'",
         description:
-          "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query on sm 40rem · md 48rem · lg 64rem · xl 80rem), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is 'default'.",
+          'Step at which preset="action-collection" switches to the compact priority measures, or preset="stacked-record-collection" folds its rows into cards. Measured against the TABLE\'S OWN container (a container query on sm 40rem · md 48rem · lg 64rem · xl 80rem), not the viewport — a table inside a master rail collapses before the page does, and the same table folds by the width it is GIVEN. Ignored while preset is \'default\'.',
       },
       {
         name: "label",
@@ -5216,7 +5216,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "acknowledgeLabel",
         type: "React.ReactNode",
         description:
-          "Copy on the button `onAcknowledge` creates. Defaults to a localized \"I've saved it\" — override it when the confirmation claims something more specific than having read the secret (\"保管しました\", \"Stored in 1Password\"). Consumer-owned wording: route it through t().",
+          'Copy on the button `onAcknowledge` creates. Defaults to a localized "I\'ve saved it" — override it when the confirmation claims something more specific than having read the secret ("保管しました", "Stored in 1Password"). Consumer-owned wording: route it through t().',
       },
       {
         name: "downloadable",
@@ -5959,17 +5959,17 @@ import remarkGfm from "remark-gfm";
       },
       {
         name: "preset",
-        type: '"default" | "action-collection"',
+        type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',
         description:
-          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440.',
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. "stacked-record-collection" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.',
       },
       {
         name: "collapseBelow",
         type: '"sm" | "md" | "lg" | "xl"',
         defaultValue: '"sm"',
         description:
-          'Step at which preset="action-collection" switches to the compact priority measures, measured against the TABLE\'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is "default".',
+          'Step at which preset="action-collection" switches to the compact priority measures, or preset="stacked-record-collection" folds its rows into cards. Measured against the TABLE\'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is "default".',
       },
       {
         name: "label",
@@ -7408,7 +7408,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "false",
         description:
-          "ANNOUNCES the requirement; it does not enforce it. react-aria's Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required=\"true\"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.",
+          'ANNOUNCES the requirement; it does not enforce it. react-aria\'s Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required="true"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.',
       },
       {
         name: "disabled",
@@ -14176,7 +14176,7 @@ export default function PasswordBlock() {
         name: "pasteTransformer",
         type: "(pasted: string) => string",
         description:
-          "Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `\"123 456\"`, `\"code: 123456\"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.",
+          'Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `"123 456"`, `"code: 123456"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.',
       },
       {
         name: "containerClassName",
