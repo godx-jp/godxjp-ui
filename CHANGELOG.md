@@ -4,6 +4,60 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [28.13.0] - 2026-09-22
+
+MINOR. **Every consumer's i18n bundle shrinks by 68.9% gzip**, and the catalogue stops under-reporting
+the props it documents.
+
+### ⚡ Showcase copy leaves the runtime message catalogue
+
+`src/i18n/translate.ts` statically imports all three locales at module scope, and JSON has no named
+exports — so any component calling `useTranslation()` (`ScrollArea` does, for its default region
+label) dragged **every** namespace into a consumer's bundle, with nothing for a bundler to shake.
+
+**60.2% of it was showcase and theme-editor demo copy.** A consumer session pulled strings like
+*"A wide 240×96 wordmark logo. Because of contain it's never cropped…"* out of its **production**
+build.
+
+| | before | after |
+| --- | --- | --- |
+| three locales, raw | 160,715 B | **63,941 B** (−60.2%) |
+| three locales, one gzip stream | 48,869 B | **15,183 B** (−68.9%) |
+
+Six namespaces moved to a docs-owned catalogue the preview registers explicitly:
+`serviceLauncherShowcase`, `themeShowcase`, `themeEditor`, `marketingShowcase`, `showcase`,
+`textExamples`. `themeEditor` was ruled docs-only on evidence — zero references in `src/`, `mcp/`,
+`preview/` or `docs/CUSTOMER-THEMING.md`; its only reader is `docs/foundation/theme-editor.tsx`.
+
+**Nothing changes for a consumer's own code.** `registerMessages()` was already public and already
+refuses to collide with a library namespace.
+
+**And the hole that created this is closed.** `check:no-consumer-coupling` correctly forbids
+hard-coded locale literals in `docs/**` — but had no opinion about *which* catalogue received the
+keys, which is how a docs page localised on 2026-09-22 added 18% to every consumer's bundle. A
+namespace in the runtime catalogue that only `docs/**` reads is now a hard failure, un-baselined.
+
+### Fixed
+
+- **`check:mcp-prop-sync` was blind to 541 declared props across 65 prop types.** Its member split
+  counted `{([<` as opening and `})]>` as closing, so an arrow in a function type — `(v: string) =>
+  void` — drove the depth to −1 and nothing split again: **every prop declared after any
+  arrow-returning prop was invisible**, in a gate whose success line reads *"catalog documents every
+  declared component prop"*. Verified against a TypeScript-compiler ground truth: 1751 of 1751
+  declared props now found, zero spurious.
+
+  It surfaced **35 genuinely undocumented props across 16 components**. 31 are now documented;
+  4 are excluded with the argument in code — three `aria-*` members of the cross-cutting
+  `FieldA11yProps` contract (two of the seven were already excluded, and excluding five of seven was
+  the accident), and `Masonry.gutter`, a `never`-typed tombstone that a catalog entry would advertise
+  as passable API.
+
+- **`Attachments` forwarded antd's `classNames`/`styles`/`rootClassName`** while
+  `docs/DESIGN-AUTHORITY.md` records those as deliberately not adopted, and the catalog told readers
+  *"DON'T expect `styles`/`classNames` from Ant X"* — so an agent reading the catalog and an agent
+  reading autocomplete got opposite answers. Documented as shipped and recorded in the divergence
+  ledger; removing them is a breaking change and needs its own decision.
+
 ## [28.12.0] - 2026-09-22
 
 MINOR. A component that had no stylesheet, a new prop, a theme surface frozen on the light theme,
