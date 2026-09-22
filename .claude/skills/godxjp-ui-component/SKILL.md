@@ -205,7 +205,7 @@ and nine of them is a minute you spend on every edit forever.
 | --- | --- |
 | **`.css` only** | `pnpm run audit` · `check:token-tiers` · `check:control-sizing` · that component's tests |
 | **`.tsx`/`.ts` in `src/`** | `pnpm typecheck` · `pnpm lint` · `pnpm run audit` · that group's tests |
-| **a public prop / export** | + `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `pnpm ship:surface` |
+| **a public prop / export** | + `pnpm regen` (4s) · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **NOT `ship:surface`**, which is `regen && verify:ci:static && frame-contracts` ≈ 70s and belongs to the batch run |
 | **a token in `src/tokens/`** | + `check:token-tiers` · `pnpm vitest run src/tokens/__tests__` · `pnpm regen` TWICE (gh#847) |
 | **a file in `docs/`** | `pnpm typecheck:docs` · `pnpm run audit` · `check:example-imports` |
 | **anything that moves layout** | `pnpm check:frame-overflow --only <slug>` (~18s) — the full sweep once, pre-PR |
@@ -225,7 +225,10 @@ Note what this kills: "typecheck the whole repo" is **1.3 seconds** and was neve
 
 ```
 # then ONLY your own component's tests:
-pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2
+pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2   # the COMPONENT, not the group:
+#   data-entry/__tests__ is 231 files (3-4 min); .../__tests__/select is 19 files (22.6s).
+#   `vitest related <file>` is useless here — measured 250s / 251 files, because the style
+#   tests readFileSync their CSS and the import graph cannot see it.
 ```
 
 **`pnpm test` and a bare `pnpm vitest run` are FORBIDDEN here.** That is 506 files /
@@ -264,7 +267,10 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
 - [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
 - [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
-- [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
+- [ ] **Gates matched to the DIFF** — §5's table, not a fixed chain. Name the files you changed, then run only the gates that can have an opinion about them, then **your component's tests only** (`pnpm vitest run src/components/<group>/__tests__/<name> --maxWorkers=2   # the COMPONENT, not the group:
+#   data-entry/__tests__ is 231 files (3-4 min); .../__tests__/select is 19 files (22.6s).
+#   `vitest related <file>` is useless here — measured 250s / 251 files, because the style
+#   tests readFileSync their CSS and the import graph cannot see it.`). NEVER `pnpm test`; the full suite is CI's, and the owner decides when it runs.
 
 ## References (read when unsure)
 

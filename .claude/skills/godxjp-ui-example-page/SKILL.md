@@ -89,7 +89,7 @@ The 9 worst pages didn't _render_ what their copy promised. Non-negotiable:
 - **State-object keys must match the prop type**; mount any **Provider/Router the component needs**
   or it throws at render (`query-prefetch-link` had no Router).
 
-→ If `pnpm typecheck` isn't clean for the demo, stop. It's a bug, not a showcase.
+→ If `pnpm typecheck:docs` isn't clean for the demo, stop. It's a bug, not a showcase.
 
 ## Rule #1 — Demonstrate every non-default STATE (the #1 gap — 50 / 87 pages)
 
@@ -164,7 +164,7 @@ container at a wide viewport**, not only by shrinking the window.)
 ## Pre-commit checklist (run before calling an example page done)
 
 - [ ] **🔒 Audit Evidence Ledger filled in with real evidence (top of this skill) — every card driven, console opened, every mode exercised. This is the blocking gate; a partial pass is a FAIL.**
-- [ ] `pnpm typecheck` clean — `tone` not `variant`, no invented union values, installed-version prop names, Provider/Router mounted
+- [ ] `pnpm typecheck:docs` clean — `tone` not `variant`, no invented union values, installed-version prop names, Provider/Router mounted
 - [ ] Every non-default **state** the component supports is rendered (Rule #1)
 - [ ] Interaction/async behaviour staged **visible at rest** (open/active/fetching) — Rule #2
 - [ ] Every **union value** shown · controlled + uncontrolled · headline prop explicit · sub-parts/dark-mode — Rule #3

@@ -33,3 +33,4 @@ ds-bundle/
 # Agent worktrees — created by the Agent tool with isolation:"worktree".
 # They are real git checkouts; committing them embeds a repo inside this one.
 .claude/worktrees/
+.eslintcache

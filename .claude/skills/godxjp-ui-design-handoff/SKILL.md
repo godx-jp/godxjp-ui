@@ -65,7 +65,7 @@ _visual + interaction skeleton_, and **rebuild it with REAL `@godxjp/ui` compone
      bespoke one-off baked into the showcase page.
 5. **Build the showcase** in `docs/<group-or-recipes>/<screen>.tsx` per the **`godxjp-ui-example-page`**
    skill (completeness, real states, tokens, a11y). Recreate the _look_, not the prototype's DOM.
-6. **Verify** at `:6008/isolate/<id>` (390/768/1280), console clean, `pnpm typecheck` + `pnpm audit`.
+6. **Verify** at `:6008/isolate/<id>` (390/768/1280), console clean, `pnpm typecheck:docs` + `pnpm audit`.
 7. **Make it MCP-discoverable** — register the showcase so `godxjp_ui_guide` can serve it as a
    pattern (so future consumers get "here's how a real kintai dashboard is built", not just atoms).
 

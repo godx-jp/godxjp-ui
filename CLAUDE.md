@@ -34,16 +34,64 @@ Skills are split by audience (see **`.claude/skills/README.md`** for the full ma
 
 Before creating OR changing **any** component, recipe, doc, or example, you MUST activate and follow the **`godxjp-ui-component`** skill (`.claude/skills/godxjp-ui-component/SKILL.md`). It is a hard contract — do not skip a gate. In short:
 
-1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run exactly those: `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is 506 files / 3700+ tests, and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). **Gates are matched to the DIFF, never run as a fixed chain** — this line used to list nine `&&`-joined commands as "run freely", so a one-line CSS change got the same nine as a new component. Run only the gates that can have an opinion about the files you changed; the table is in the skill's §5 and `docs/DEVELOPMENT.md` §5.1. (`typecheck` covers `src/` and says nothing about `docs/`; `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the export list and cannot move on a CSS edit.) This is Test Impact Analysis, the industry norm — running everything on every change is what TIA and Meta's Predictive Test Selection exist to stop. Run `pnpm preview:build` / `pnpm verify:ci:static` AT MOST ONCE, immediately before opening the PR.
+1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run exactly those: `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is 506 files / 3700+ tests, and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). **Gates are matched to the DIFF, never run as a fixed chain** — this line used to list nine `&&`-joined commands as "run freely", so a one-line CSS change got the same nine as a new component. Run only the gates that can have an opinion about the files you changed; the table is in the skill's §5 and `docs/DEVELOPMENT.md` §5.1. (`typecheck` covers `src/` and says nothing about `docs/`; `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the export list and cannot move on a CSS edit.) This is Test Impact Analysis, the industry norm — running everything on every change is what TIA and Meta's Predictive Test Selection exist to stop. **`pnpm verify:ci:static`, `pnpm ship:surface`, the full `check:frame-overflow`, `check:contrast` and `pnpm test` are THE BATCH RUN** — never per issue, never "to be safe", never on your own initiative. See "The batch run" below.
+
+## The batch run — the ONLY time "run everything" is allowed, and the owner triggers it
+
+The owner, after asking for one padding fix and watching six minutes of gates:
+
+> *"việc code là mày cứ code mà thôi!! ko phải lúc đéo nào cũng run test full thế này! code xong chỉ
+> review diff thôi chứ?! rồi khi hoàn thiện nhiều issue xong rồi mới được phép hỏi user run test cho
+> toàn bộ issue 1 lần duy nhất chứ đéo phải mỗi lần đều run fulltest! tốn token mà đéo cần thiết tốn
+> thời gian!"*
+
+**Per issue: code, run the T1 rows the diff maps to, review the diff, move on.** That is it.
+
+**After SEVERAL issues are finished** — a batch, aim for a few issues over a few days (DORA
+small-batch guidance; a batch you cannot check is itself a defect) — post ONE message: the issues,
+the rows you ran per issue with their times, and the question:
+
+> *Chạy batch run một lần cho cả N issue này không? (`ship:surface` ~70s [+ `check:frame-overflow`
+> 52s vì có layout] [+ `pnpm test` ~375s])*
+
+- **Yes** → run it ONCE for the whole batch. `pnpm ship:surface` already contains `regen` +
+  `verify:ci:static` + `check:frame-contracts` — do not also run those separately. Add the full
+  frame sweep only if the batch moved layout, and `pnpm test` only if he says *"full"*. Record the
+  results in the issues, open the PR.
+- **No** → open the PR anyway. `pr-lane` is the merge gate and `ci.yml` on `main` is the verdict; a
+  red `main` is fixed forward with priority. **Never report a skipped batch run as passed.**
+- **axe / VoiceOver are NOT in the bundle.** A yes to the batch run is not a yes to axe — he must
+  name it. (Codex forced this distinction: *"'owner said yes' is not the same as 'owner
+  specifically requested axe'; your own instruction says 'never an agent'."*)
+
+A T1 failure is never waived by the batch run being optional.
+
+### `ship:surface` is a BATCH command, not a per-change one
+
+It expands to `pnpm regen && pnpm verify:ci:static && pnpm check:frame-contracts` ≈ **70s**. Any
+doc or memory that says to run it "at the first public export" is wrong and is the single biggest
+hidden cost in this repo's loop. For a public prop, run: `pnpm regen` (4s) · `check:prop-vocabulary`
+· `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry`.
+
+### The test unit is the COMPONENT, not the group
+
+`src/components/data-entry/__tests__` is **231 files** (3–4 minutes). The unit is the component
+prefix: `pnpm vitest run src/components/data-entry/__tests__/select --maxWorkers=2` — 19 files,
+22.6s. `vitest related <file>` is useless here: measured **250s across 251 files**, because the
+style tests `readFileSync` their CSS and the import graph cannot see it.
 
 ## Scope the checks to the DIFF — and never argue about a cost you have not timed
 
 Measured on this repo (`docs/DEVELOPMENT.md` §5.0 carries the full table and the method):
 
-    check:token-tiers  0.2s      build           1.5s
-    audit              0.5s      preview:build   1.9s
-    typecheck:docs     0.7s      lint           12.9s
-    typecheck          1.3s      check:frame-overflow    52s  <- 199 frames, pooled (was 339s)
+    check:token-tiers  0.2s   build             1.5s   eslint <changed files>   1.0s
+    typecheck:mcp      0.3s   preview:build     1.9s   lint (warm, --cache)     1.8s
+    audit              0.5s   lint (cold)      16.1s   one component's tests  2-23s
+    typecheck:docs     0.7s   regen             4.0s   packed-public-contract  22.2s
+    typecheck          1.3s   frame-contracts   5.5s   check:contrast            91s
+                              frame-overflow     52s   verify:ci:static          60s
+                                                       ship:surface            ~70s
+                                                       full vitest suite       ~375s
 
 **The intuition is backwards.** "Typecheck the whole system" costs **1.3 seconds** — there is
 nothing to save by scoping it. The one command that cost real time was the browser sweep, at

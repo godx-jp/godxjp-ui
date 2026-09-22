@@ -388,7 +388,7 @@
     "gen:frame-coverage-ledger": "node scripts/gen-frame-coverage-ledger.mjs",
     "gen:registry": "node scripts/gen-registry.mjs",
     "init-agent": "node scripts/init-agent-kit.mjs",
-    "lint": "eslint .",
+    "lint": "eslint . --cache --cache-strategy content",
     "lint:fix": "eslint . --fix",
     "postinstall": "node scripts/postinstall.mjs",
     "prepublishOnly": "pnpm run build",
