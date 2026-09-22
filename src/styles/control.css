@@ -1483,6 +1483,19 @@
      * arrived. See the note in `tokens/components/segmented.css`. */
     --segmented-item-height: calc(var(--control-height) - var(--segmented-track-padding) * 2);
     display: inline-flex;
+    /* HUG THE OPTIONS. `inline-flex` is not enough and never was: a flex item is BLOCKIFIED
+     * (CSS Display 3 §2.7), so `inline-flex` computes to `flex`, and the parent's default
+     * `align-items: stretch` then makes the bar fill its container. Put a Segmented in a
+     * `Flex direction="col"`, a `FormField` or any grid cell — the ordinary way it is used — and a
+     * two-option bar spanned 659px of a 659px card (gh#877).
+     *
+     * `block` is the documented way to ask for full width (`inline-size: 100%` below), and a knob
+     * that opts IN to a behaviour the default already has is not a knob. So the default hugs, and
+     * `[data-block="true"]` still wins: later rule, higher specificity.
+     *
+     * `fit-content` and not `max-content`: the cap below still applies, so a bar wider than its
+     * track keeps wrapping exactly as before. */
+    inline-size: fit-content;
     max-width: 100%;
     /* WRAP, NEVER TRUNCATE. A multi-line flex container places its items by their natural width
      * BEFORE it shrinks any, so options that cannot share one row move to the next row whole — a

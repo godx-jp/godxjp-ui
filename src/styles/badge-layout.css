@@ -3,6 +3,16 @@
 @layer components {
   [data-slot="badge"] {
     display: inline-flex;
+    /* A CHIP'S WIDTH IS ITS CONTENT, in every container. `inline-flex` does not guarantee that:
+     * a flex item is BLOCKIFIED (CSS Display 3 §2.7) to `flex`, and the parent's default
+     * `align-items: stretch` then fills the cross axis. In a `Flex direction="col"` — a DataTable
+     * cell, a Card body, a stat block — a 96px "Tổng thấp nhất" badge stretched to the full 354px
+     * column and read as a filled bar rather than a chip (gh#877).
+     *
+     * `fit-content`, not `align-self: start`: the cross axis of a ROW container is vertical, and
+     * `align-self` there would top-align the chip instead of centring it on the text. This
+     * constrains the width and leaves alignment alone. */
+    inline-size: fit-content;
     align-items: center;
     /* Center on the text x-height when the badge sits INLINE with running text (an inline-flex box
      * defaults to baseline → it rides high / "valign top" next to a label). */
