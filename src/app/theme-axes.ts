@@ -4,6 +4,7 @@
  * the CSS in tokens/axes.css + density.css + foundation.css binds each attribute to tokens.
  */
 import type { PageDensityProp } from "../props/vocabulary/layout.prop";
+import { relativeLuminance, tenantTheme } from "./tenant-theme";
 
 /**
  * Theme spine — `data-theme` (alias of the legacy `.dark` class). `"system"` is a CHOICE, not a
@@ -92,69 +93,44 @@ export function applyThemeAxes(el: HTMLElement, axes: Partial<AppThemeAxes>): vo
   }
 }
 
-/** Apply an entity's action palette, including portals. Call the returned cleanup on scope exit. */
+/**
+ * Apply an entity's action palette to an existing themed tree, including portals. Call the returned
+ * cleanup on scope exit.
+ *
+ * The arithmetic — hex → HSL triplet, and the WCAG 2.2 label choice — is {@link tenantTheme}'s, so
+ * there is one formula rather than two. This entry point adds what a RE-SEED needs and a fresh
+ * region does not: the knobs an ancestor service theme may have pinned to the PREVIOUS brand are
+ * reset to `initial`, so the new seed cannot be outranked by a stale literal (gh#678, gh#664).
+ *
+ * Use {@link tenantTheme} instead when you are painting a region with a customer's colour — it
+ * returns declarations to put in `style`, with no effect, no unmount restore and no SSR flash.
+ */
 export function applyPrimaryColor(
   root: HTMLElement,
   color: string,
   foreground?: string | null,
 ): () => void {
-  const parse = (value: string): number[] | null => {
-    if (!/^#[\da-f]{6}$/i.test(value)) return null;
-    return [1, 3, 5].map((offset) => parseInt(value.slice(offset, offset + 2), 16) / 255);
-  };
-  const rgb = parse(color);
-  if (!rgb) return () => {};
-  const luminance = (channels: number[]) =>
-    channels.reduce(
-      (sum, value, index) =>
-        sum +
-        (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4) *
-          [0.2126, 0.7152, 0.0722][index],
-      0,
-    );
-  const text =
-    (foreground && parse(foreground)) || (luminance(rgb) > 0.179 ? [0, 0, 0] : [1, 1, 1]);
-  const hsl = (channels: number[]) => {
-    const [r, g, b] = channels;
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b);
-    const delta = max - min,
-      lightness = (max + min) / 2;
-    const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1));
-    const hue =
-      delta === 0
-        ? 0
-        : 60 *
-          (max === r
-            ? ((g - b) / delta + 6) % 6
-            : max === g
-              ? (b - r) / delta + 2
-              : (r - g) / delta + 4);
-    return `${hue} ${saturation * 100}% ${lightness * 100}%`;
-  };
-  // The hover / pressed / focus states are NOT computed here any more (gh#678). They derive in CSS
-  // from the `--primary` in scope (src/tokens/derived.css), so this path and a stylesheet re-theme
-  // cannot disagree. What JS knows that CSS does not is the LABEL it just chose: the states must
-  // step AWAY from that label, so the step pair follows the label's polarity rather than the theme
-  // (a mid-luminance seed with WHITE text in a dark theme would otherwise lighten towards it). The
-  // four knobs are reset to `initial` so an ancestor theme's literal cannot outrank the new seed.
-  const polarity = luminance(text) > 0.5 ? "darken" : "lighten";
+  const seed = tenantTheme(color, { foreground });
+  if (seed.primary === null) return () => {};
+  // What JS knows that CSS does not is the LABEL it just chose: a state must step AWAY from that
+  // label, so the pair follows the label's polarity rather than the theme (a mid-luminance seed
+  // with WHITE text in a dark theme would otherwise lighten towards it). `tenantTheme` has already
+  // applied that polarity to the two literal steps in `vars`; the `-channels` pointers below carry
+  // it to the brand TEXT family, which reads them (`--text-link-channels`, src/tokens/derived.css).
+  const polarity = (relativeLuminance(seed.foreground!) ?? 0) > 0.5 ? "darken" : "lighten";
   const palette: Record<string, string> = {
-    "--primary": hsl(rgb),
-    "--primary-foreground": hsl(text),
-    "--primary-hover": "initial",
-    "--primary-active": "initial",
+    ...seed.vars,
+    /* `--primary-border` / `--control-outline` keep deriving in CSS from the `--primary` in scope;
+     * they are reset here only so an ancestor's literal cannot outrank the new seed. The brand TEXT
+     * roles derive from the seed too (gh#664) and are reset for the same reason: a theme that
+     * pinned a link colour for the previous brand would keep it on a re-tinted product. */
     "--primary-border": "initial",
     "--control-outline": "initial",
-    /* The brand TEXT roles derive from the seed too (gh#664), so they are reset for the same
-     * reason: an ancestor theme that pinned a link colour for the previous brand would otherwise
-     * outrank the seed just set, and a re-tinted product would keep the old brand's links. */
     "--text-link": "initial",
     "--text-brand": "initial",
     "--text-primary": "initial",
     "--primary-hover-channels": `var(--primary-hover-${polarity}-channels)`,
     "--primary-active-channels": `var(--primary-active-${polarity}-channels)`,
-    "--ring": hsl(rgb),
   };
   const previous = Object.keys(palette).map((key) => [
     key,

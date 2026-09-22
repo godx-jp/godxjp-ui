@@ -319,5 +319,32 @@
       "account",
       "chip"
     ]
+  },
+  {
+    "aliases": [
+      "tenanttheme",
+      "customer-brand-color",
+      "runtime-theme",
+      "brand-color"
+    ],
+    "name": "tenant-brand-color",
+    "tagline": "Wear a CUSTOMER's own hex at runtime, scoped to one region — tenantTheme(hex) returns the token declarations plus the WCAG 2.2 AA label, so you never hand-roll hex→HSL or guess a foreground. There is no <TenantTheme> component and there should not be one.",
+    "tags": [
+      "theme",
+      "tenant",
+      "multi-tenant",
+      "brand",
+      "color",
+      "colour",
+      "contrast",
+      "wcag",
+      "a11y",
+      "runtime",
+      "scoped",
+      "hex",
+      "hsl",
+      "white-label",
+      "launcher"
+    ]
   }
 ]

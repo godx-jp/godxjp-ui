@@ -85,6 +85,7 @@ new UI need
 | Dashboard **page layout**                               | ❌  | ❌  | ❌  | ❌  | ➖  | ❌  | ❌  | **Composition** — `AppShell` + `PageContainer` + `ResponsiveGrid`        |
 | "Icon medallion"                                        | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `Avatar` (square) + a Lucide glyph                     |
 | **Section** / **Band** (full-bleed + measured column)   | ❌  | ❌  | ❌  | ❌  | ✅  | ❌  | ❌  | **Composition** — `<section>` + `Flex measure` + `pad`; see §3.1         |
+| `TenantTheme` (customer hex at runtime)                 | ✅  | ➖  | ❌  | ❌  | ✅  | ❌  | ➖  | **Composition + a published FUNCTION** — `tenantTheme()`; see §3.2       |
 
 `✅ pass · ❌ fail · ➖ borderline`. **StatCard** is the instructive borderline: C2 is weak (it owns little behavior), but it is a universal KPI tile with a controlled API, fully tokenized, broadly reused — so it earns its place. A **Hero** fails six of seven; it is unambiguously a composition.
 
@@ -146,6 +147,36 @@ rather than a reversal of it.
 primitive is missing ONE AXIS before you ask whether a new component is missing. A component that
 fails C1–C7 and a prop that closes the same gap are not the same proposal, and the test above is
 only asking about the first.
+
+### 3.2 `<TenantTheme>` — the case that was answered with a FUNCTION (gh#861, gh#868)
+
+Two consumer repos asked for the same wrapper, in the same words: `<TenantTheme primary={hex}>`,
+so that one region of a page can wear a **customer's** brand colour at runtime. One repo had
+already hand-rolled it and shipped it to production; the other deliberately had not, because
+copying it would have been the third private version of the same thing.
+
+| #                                                    | verdict                                          | why                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **C1** universal                                     | **PASS**                                         | Multi-tenant branding is not one design's block; two unrelated repos hit it independently, and a third (`AppSettingPicker kind="brand"`) already covers the PRESET axis, which is what makes the arbitrary-hex axis missing rather than duplicated.                                                                                                                                                                                                                                                 |
+| **C2** owns reusable behaviour                       | ➖ **borderline, and it is the interesting one** | There IS behaviour that must not be re-derived per consumer — hex → HSL triplet, and the WCAG contrast rule that picks the label. But it is arithmetic, not interaction: no state, no keyboard, no focus, no ARIA, nothing a `<div>` does. C2 asks for behaviour a COMPONENT must own; a pure function owns this better, because it is then callable from a server (Platform already computes its pair at write time), from a `<style>` block with no hydration flash, and from a test with no DOM. |
+| **C3** not expressible from primitives + tokens      | **FAIL**                                         | Once the arithmetic is published, the wrapper is `<div data-tenant={slug} style={tenantTheme(hex).vars}>` — a scoped token override, which §4.3 of this document names as the remedy for a composition. `docs/showcase/theme-customization.tsx` had already recorded the same verdict for the same shape.                                                                                                                                                                                           |
+| **C4** single responsibility + controlled vocabulary | **FAIL**                                         | The requested API is `primary` / `secondary` / `primaryForeground` / `tenant`. There is no `value`/`defaultValue`/`onValueChange`, no `size`, no `tone` — it is a configuration carrier with a screen-shaped API, which is the shape C4 names by name.                                                                                                                                                                                                                                              |
+| **C5** token-themeable, zero baked brand             | **PASS** (vacuously)                             | It IS the theming mechanism; it bakes nothing.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **C6** earns the international contract              | **FAIL**                                         | It renders no text, has no role, no keyboard and no ARIA, so there is nothing for `t()` or the APG to say. The accessibility content of this feature is CONTRAST, and that lives in the computation and its tests — not in a component contract.                                                                                                                                                                                                                                                    |
+| **C7** earns its bundle cost                         | ➖                                               | The arithmetic is ~60 lines and every consumer that stores a customer colour needs it. A React wrapper around a `<div>` is not what earns that.                                                                                                                                                                                                                                                                                                                                                     |
+
+**Three hard FAILs. Verdict: composition pattern — plus a published function.** `tenantTheme(hex)`
+in `@godxjp/ui/app` returns the declarations (`--primary`, `--primary-foreground`, `--ring`, and
+the hover / pressed steps), the label it chose, the WCAG 2.2 ratio it achieves and whether that
+clears AA. `hexToHsl` / `contrastRatio` / `relativeLuminance` ship beside it. The `<div>` lives in
+the consumer app; `docs/showcase/tenant-brand-color.tsx` is the worked screen.
+
+**The rule this leaves behind, and it is the twin of §3.1.** §3.1 says: when a composition repeats
+a SHAPE, ask whether a primitive is missing one axis before you ask whether a component is missing.
+This says: when a composition repeats a CALCULATION, ask whether the package is missing a FUNCTION.
+A wrapper component and a published function are not the same proposal, and C1–C7 is only asking
+about the first. The tell is C6 — if there is no text, no role and no keyboard for the
+international contract to apply to, the thing you are holding is probably not a component.
 
 ---
 

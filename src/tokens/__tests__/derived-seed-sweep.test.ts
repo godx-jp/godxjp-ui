@@ -306,10 +306,46 @@ describe("AA by construction — every seed on a dense grid", { timeout: 60_000 
  * 4. THE JS PATH IS THE SAME FORMULA.
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("applyPrimaryColor lands on the CSS formula, not a second one", () => {
-  it("writes no colour of its own for the family — it resets the knobs to the live default", () => {
+  /*
+   * THE TWO STATES A READER SEES ARE LITERALS NOW, AND THAT IS NOT A RETURN TO gh#648 (gh#868).
+   *
+   * gh#648's defect was a literal on `:root`, ABOVE every scope that re-seeds — so a consumer's
+   * `--primary` could not reach it. These are written by the same call that writes `--primary`, on
+   * the SAME element, so a nested scope that re-seeds re-emits its own pair and nothing freezes.
+   *
+   * What it buys is the half-application gh#868 reports from a consumer repo: the CSS default needs
+   * relative colour, and an engine without it (Chrome/Edge 111–118) falls back to the `:root`
+   * literals of the PACKAGE seed — tenant colour at rest, default violet on hover, silently. A
+   * literal computed from the same formula applies on every engine.
+   *
+   * `--primary-border` / `--control-outline` stay `initial`: their channels are per-THEME, not
+   * per-label, so JS cannot compute them without being told the theme, and they are a hairline and
+   * an 11% halo rather than a state a reader tracks.
+   */
+  it("un-pins the two per-theme knobs so they derive from the seed in scope", () => {
     const root = document.createElement("div");
     applyPrimaryColor(root, "#0071bd");
-    for (const name of FAMILY) expect(root.style.getPropertyValue(`--${name}`)).toBe("initial");
+    for (const name of ["primary-border", "control-outline"]) {
+      expect(root.style.getPropertyValue(`--${name}`)).toBe("initial");
+    }
+  });
+
+  it("writes hover and pressed as the CSS formula's OWN answer, not a second formula", () => {
+    for (const color of ["#0071bd", "#ffd400", "#0a1f44", "#767676", "#fffbe6"]) {
+      const root = document.createElement("div");
+      applyPrimaryColor(root, color);
+      const seed = triplet(root.style.getPropertyValue("--primary"));
+      const label = hslToRgb(triplet(root.style.getPropertyValue("--primary-foreground")));
+      const pair =
+        contrast(label, [255, 255, 255]) < contrast(label, [0, 0, 0]) ? "darken" : "lighten";
+      for (const name of ["primary-hover", "primary-active"] as const) {
+        const written = triplet(root.style.getPropertyValue(`--${name}`));
+        const formula = stepped(name, pair, seed);
+        for (const channel of [0, 1, 2]) {
+          expect(written[channel], `${color} --${name}`).toBeCloseTo(formula[channel], 2);
+        }
+      }
+    }
   });
 
   it("picks the step pair from the label it chose, and that pair keeps the label at AA", () => {
