@@ -1,0 +1,693 @@
+{
+  "textExamples": {
+    "preservedText": "Văn bản thuần",
+    "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối"
+  },
+  "themeShowcase": {
+    "page": {
+      "title": "Tùy biến giao diện linh hoạt",
+      "subtitle": "Một hạt giống làm cả hệ thống đổi màu. Chọn một bảng màu và mọi điều khiển, bề mặt, dấu hiệu và vòng focus trên bảng bên dưới sẽ được vẽ lại tại chỗ."
+    },
+    "bar": {
+      "title": "Giao diện",
+      "description": "Các chip đặt hạt giống --primary trong một phạm vi. Không sửa component, không tách stylesheet, không ghi đè vai trò.",
+      "paletteLabel": "Bảng màu",
+      "cornerLabel": "Bo góc",
+      "customLabel": "Hạt giống tự chọn",
+      "customHint": "Bất kỳ mã hex nào. Các bậc hover, nhấn, viền, focus và liên kết đều suy ra từ đó.",
+      "identityNote": "Màu nhận diện cố ý đứng yên: đổi màu hành động của một tenant không làm nhuộm lại logo của họ."
+    },
+    "palette": {
+      "godx": "GoDX",
+      "indigo": "Chàm",
+      "teal": "Mòng két",
+      "amber": "Hổ phách",
+      "rose": "Hồng đào",
+      "custom": "Tự chọn"
+    },
+    "corner": {
+      "sharp": "Vuông",
+      "default": "Mặc định",
+      "soft": "Mềm"
+    },
+    "tabs": {
+      "components": "Component",
+      "dashboard": "Bảng điều khiển"
+    },
+    "form": {
+      "email": "Email công việc",
+      "emailHint": "Chỉ dùng cho thông báo phát hành.",
+      "emailPlaceholder": "you@ops.example.jp",
+      "handle": "Tên định danh",
+      "regions": "Khu vực",
+      "regionsPlaceholder": "Chọn khu vực",
+      "regionsEmpty": "Chưa chọn khu vực nào.",
+      "labels": "Nhãn",
+      "labelsPlaceholder": "Thêm nhãn",
+      "plan": "Gói",
+      "releaseDate": "Ngày phát hành",
+      "channels": "Kênh thông báo",
+      "cadence": "Tần suất",
+      "density": "Mật độ dòng",
+      "autoDeploy": "Triển khai khi merge",
+      "autoDeployHint": "Pipeline xanh sẽ tự đưa lên staging.",
+      "freeze": "Đóng băng phát hành",
+      "budget": "Ngân sách lỗi · {value}",
+      "syncing": "Đang đồng bộ sổ phát hành"
+    },
+    "plan": {
+      "starter": "Khởi đầu",
+      "standard": "Tiêu chuẩn",
+      "scale": "Mở rộng"
+    },
+    "channel": {
+      "email": "Email",
+      "escalation": "Chuyển lên ca trực khi một bản phát hành nằm ở trạng thái xét duyệt quá một ngày làm việc, tính cả cuối tuần và ngày lễ của khu vực phụ trách",
+      "escalationHint": "Gửi cho ca trực, không gửi cho cá nhân.",
+      "pager": "Máy nhắn tin"
+    },
+    "cadence": {
+      "daily": "Hằng ngày",
+      "weekly": "Hằng tuần",
+      "manual": "Thủ công"
+    },
+    "density": {
+      "compact": "Gọn",
+      "default": "Mặc định",
+      "comfortable": "Thoáng"
+    },
+    "steps": {
+      "caption": "Tiến độ phát hành",
+      "finished": "Hoàn tất",
+      "finishedHint": "Đã ký và lưu trữ hiện vật.",
+      "inProcess": "Đang xử lý",
+      "waiting": "Chờ",
+      "waitingHint": "Đang chờ kiểm tra tương phản cho hạt giống mới."
+    },
+    "progress": {
+      "rollout": "Triển khai · {value}",
+      "quota": "Phút build · {value}",
+      "done": "Xong"
+    },
+    "legend": {
+      "failed": "Thất bại",
+      "review": "Đang xét duyệt",
+      "shipped": "Đã phát hành"
+    },
+    "status": {
+      "caption": "Dấu hiệu trạng thái",
+      "success": "Thành công",
+      "error": "Lỗi",
+      "default": "Mặc định",
+      "processing": "Đang xử lý",
+      "warning": "Cảnh báo",
+      "seed": "Hạt giống"
+    },
+    "action": {
+      "primary": "Triển khai",
+      "secondary": "So sánh",
+      "outline": "Quay lui",
+      "dashed": "Thêm bước",
+      "ghost": "Nhật ký",
+      "deploying": "Đang triển khai",
+      "discard": "Loại bỏ bản ứng viên này"
+    },
+    "confirm": {
+      "trigger": "Xóa bản phát hành",
+      "title": "Xóa bản phát hành này?",
+      "description": "Hiện vật vẫn nằm trong registry. Hồ sơ phát hành và các phê duyệt thì không.",
+      "cancel": "Giữ lại",
+      "ok": "Xóa"
+    },
+    "avatars": {
+      "caption": "12 người duyệt"
+    },
+    "rating": {
+      "1": "Không dùng được",
+      "2": "Còn thô",
+      "3": "Chấp nhận được",
+      "4": "Tốt",
+      "5": "Sẵn sàng phát hành"
+    },
+    "otp": {
+      "title": "Xác minh thiết bị này",
+      "description": "Nhập mã sáu chữ số từ ứng dụng xác thực của bạn.",
+      "field": "Mã xác minh",
+      "verify": "Xác minh"
+    },
+    "signup": {
+      "title": "Tạo tài khoản",
+      "description": "Một tài khoản dùng cho mọi môi trường bạn được cấp quyền.",
+      "email": "Email công việc",
+      "password": "Mật khẩu",
+      "submit": "Tạo tài khoản",
+      "or": "hoặc",
+      "sso": "Tiếp tục bằng đăng nhập một lần",
+      "passkey": "Tiếp tục bằng passkey"
+    },
+    "notify": {
+      "title": "Thông báo",
+      "longTitle": "Lời mời tham gia nhóm công tác về Độ tin cậy nền tảng và Quản trị phát hành đang chờ bạn trả lời",
+      "longMeta": "2026-09-12 09:12 UTC · hết hạn sau 3 ngày",
+      "open": "Mở",
+      "bareTitle": "Đã phát hành hóa đơn"
+    },
+    "qr": {
+      "caption": "Đăng ký ứng dụng xác thực",
+      "label": "Mã thiết lập xác thực hai yếu tố",
+      "manualKey": "Khóa thiết lập thủ công"
+    },
+    "welcome": {
+      "title": "Bắt đầu từ một mã hex",
+      "description": "Đưa cho trình tạo một màu thương hiệu, nó viết tệp hạt giống, đo mọi cặp tương phản và từ chối những giá trị không đạt.",
+      "dismiss": "Đóng"
+    },
+    "chat": {
+      "assistant": "Trợ lý",
+      "sent": "09:41",
+      "answer": "Hạt giống được giới hạn trong bảng, nên phần còn lại của tài liệu vẫn giữ bảng màu của nó.",
+      "bare": "Còn vòng focus thì sao?"
+    },
+    "thought": {
+      "label": "Cách hạt giống được áp dụng",
+      "read": "Đọc phạm vi",
+      "readHint": "[data-godx-theme] trên gốc của bảng",
+      "contrast": "Đo từng cặp",
+      "contrastBody": "Nhãn trên nền tô và nền tô trên canvas, ở cả hai giao diện, theo WCAG 2.2 SC 1.4.3 và SC 1.4.11.",
+      "write": "Viết giá trị dự phòng cho email"
+    },
+    "carousel": {
+      "caption": "Các bảng màu đã phát hành"
+    },
+    "alert": {
+      "title": "Lưu ý",
+      "description": "Hạt giống tự chọn được áp dụng đúng như đã nhập. CSS không có cách nào nâng một hạt giống sáng lên sống lưng tối, nên một thương hiệu cần đọc được trên cả hai canvas phải có giá trị thứ hai được đo trên nền tối.",
+      "okTitle": "Đã kiểm tra tương phản"
+    },
+    "timeline": {
+      "seedApplied": "Đã áp dụng hạt giống",
+      "scope": "Phạm vi bảng",
+      "contrastQueued": "Đã xếp hàng kiểm tra tương phản"
+    },
+    "dashboard": {
+      "releases": "Số bản phát hành",
+      "releasesHint": "30 ngày gần nhất",
+      "revenue": "Doanh thu ghi nhận",
+      "failureRate": "Tỷ lệ thay đổi thất bại",
+      "failureHint": "Càng thấp càng tốt",
+      "seatsLabel": "Khu vực trong phạm vi",
+      "seats": {
+        "other": "{count} khu vực"
+      },
+      "mix": "Cơ cấu phát hành",
+      "activity": "Hoạt động gần đây",
+      "environment": "Môi trường",
+      "owner": "Phụ trách",
+      "ledger": "Tham chiếu sổ",
+      "table": "Danh sách phát hành",
+      "tableHint": "Phụ trách, khu vực và số tiền được định dạng theo ngôn ngữ đang dùng.",
+      "updated": "Cập nhật {date}",
+      "rotate": "Xoay khóa"
+    },
+    "table": {
+      "id": "Bản phát hành",
+      "owner": "Phụ trách",
+      "region": "Khu vực",
+      "ref": "Tham chiếu",
+      "status": "Trạng thái",
+      "amount": "Số tiền",
+      "noRef": "Chưa đặt"
+    },
+    "releaseStatus": {
+      "shipped": "Đã phát hành",
+      "review": "Đang xét duyệt",
+      "draft": "Bản nháp",
+      "failed": "Thất bại"
+    }
+  },
+  "themeEditor": {
+    "title": "Trình sửa theme",
+    "subtitle": "Một màu hạt giống vào, cả bộ thương hiệu ra, được đo chứ không phải khẳng định.",
+    "unreadable": {
+      "title": "Không đọc được stylesheet token",
+      "description": "Trang này suy ra thương hiệu từ màu nền và các bậc ramp mà tài liệu đang vẽ, đọc trực tiếp từ stylesheet. Ở đây không đọc được cả hai, nên mọi số bên dưới sẽ không còn là phép đo."
+    },
+    "order": {
+      "title": "Hạt giống, rồi vai trò, rồi phạm vi, rồi từng phần tử",
+      "description": "Hãy dừng ở mức đầu tiên giải quyết được việc. Mọi mức dưới hạt giống là một giá trị đã thôi suy ra, và không gì báo cho bạn khi thương hiệu đi tiếp."
+    },
+    "seed": {
+      "title": "1. Hạt giống",
+      "description": "Màu hành động của thương hiệu: màu tô của nút chính. Phần lớn trường hợp, chừng này là đủ cho cả theme.",
+      "label": "Hạt giống thương hiệu",
+      "helper": "Một mã hex sáu chữ số. Mọi thứ bên dưới suy ra từ nó và được đo theo WCAG 2.2 AA.",
+      "presetLabel": "Các ca biên",
+      "presetHelper": "Mỗi ca cho một câu trả lời mà một màu xanh ngoan ngoãn sẽ giấu đi.",
+      "presetPlaceholder": "Một hạt giống của bạn",
+      "preset": {
+        "godx": "Hạt giống của chính gói này",
+        "blue": "Một màu xanh thương hiệu thông thường",
+        "very-light": "Gần trắng: màu tô không đạt ngưỡng trên nền sáng",
+        "very-dark": "Gần đen: hạt giống tối chạy tới trắng",
+        "sunflower": "Hướng dương: đảo hướng bậc trạng thái ở cả hai theme"
+      },
+      "announce": "Hạt giống {hex}. Sáng {light}, tối {dark}. {pass} trên {count} cặp đo được đạt AA.",
+      "announceNoDark": "Hạt giống {hex}. Với sắc và độ bão hoà này, không độ sáng nào cho một màu tô đọc được trên nền tối, nên không có theme tối để đo."
+    },
+    "derived": {
+      "title": "2. Hạt giống sinh ra những gì",
+      "description": "Chỉ đọc, vì đây là kết quả. Mỗi theme chỉ ghi ba vai trò vào bản xuất; phần còn lại suy ra từ primary trong phạm vi của chính phần tử đang vẽ, nên ghi ra sẽ ghim chúng vào hạt giống này.",
+      "tableLabel": "Các vai trò suy ra từ hạt giống",
+      "column": {
+        "token": "Token",
+        "light": "Sáng",
+        "dark": "Tối",
+        "emitted": "Trong bản xuất"
+      },
+      "written": "Được ghi",
+      "derivedOnly": "Suy ra"
+    },
+    "contrast": {
+      "title": "3. Tương phản",
+      "description": "Mọi cặp hạt giống sinh ra, đo bằng chính helper WCAG của gói. Nhãn trên nền tô cần 4.5:1 (SC 1.4.3); màu tô trên nền phía sau cần 3:1 (SC 1.4.11).",
+      "tableLabel": "Các cặp tương phản đã đo",
+      "column": {
+        "pair": "Cặp",
+        "measured": "Đo được",
+        "threshold": "Cần",
+        "result": "Kết quả"
+      },
+      "pair": {
+        "label-on-fill-light": "Nhãn trên nền tô, sáng",
+        "label-on-fill-dark": "Nhãn trên nền tô, tối",
+        "fill-on-canvas-light": "Màu tô trên nền trang, sáng",
+        "fill-on-canvas-dark": "Màu tô trên nền trang, tối",
+        "link-on-canvas-light": "Màu liên kết trên nền trang, sáng",
+        "link-on-canvas-dark": "Màu liên kết trên nền trang, tối"
+      },
+      "ratio": "{value}:1",
+      "pass": "Đạt AA",
+      "fail": "Dưới AA"
+    },
+    "overrides": {
+      "title": "4. Ghi đè từng token",
+      "description": "Đặt dưới hạt giống là có chủ ý. Chỉ dùng khi hạt giống đã đúng và duy nhất một token cần khác đi.",
+      "costTitle": "Cái giá của một lần ghi đè",
+      "costDescription": "Một token đặt tay sẽ thôi bám theo hạt giống. Lần đổi thương hiệu sau, mọi thứ suy ra đều dịch chuyển và riêng giá trị này ở lại, không bản kiểm nào báo.",
+      "labelTitle": "Màu nhãn trên nền tô",
+      "labelHelper": "Mặc định, nhãn do chính độ chói của hạt giống chọn, cùng ngưỡng 0.179 mà lần đổi theme lúc chạy dùng. Ép nhãn là ghi đè duy nhất trình sinh có cờ cho nó.",
+      "labelAuto": "Tự động",
+      "labelLight": "Nhãn sáng",
+      "labelDark": "Nhãn tối",
+      "darkTitle": "Độ sáng của hạt giống tối",
+      "darkHelper": "Tương phản ngang bằng với theme sáng đặt nó ở {parity}. Sắc và độ bão hoà luôn giữ nguyên; chỉ độ sáng dịch chuyển. Một giá trị đặt tay được phép trượt ngưỡng, và bảng trên là nơi nó nói ra.",
+      "darkNoParity": "Với sắc và độ bão hoà này, không độ sáng nào đạt cả hai ngưỡng, nên không có giá trị ngang bằng để rời khỏi.",
+      "darkReset": "Về giá trị ngang bằng",
+      "darkAuthored": "Đặt tay",
+      "darkParity": "Ngang bằng"
+    },
+    "export": {
+      "title": "5. Bản xuất",
+      "description": "Dán khối đầu vào file theme của bạn, và khối thứ hai đè lên bảng màu email đã nướng sẵn, nơi không stylesheet nào với tới.",
+      "nameLabel": "Tên theme",
+      "nameHelper": "Ghi ra {name}.service.css và {name}.email.ts.",
+      "matches": "Trùng khớp gen:brand",
+      "diverges": "Không lệnh nào sinh ra bản này",
+      "divergesWhy": "Độ sáng của hạt giống tối được đặt tay ở đây. Trình sinh tìm giá trị ngang bằng và không có cờ cho nó, nên không lệnh nào tái tạo được file này.",
+      "cssLabel": "CSS theme cho {name}",
+      "emailLabel": "Bảng màu email cho {name}",
+      "noDarkTitle": "Hạt giống này không có màu tô tối đọc được",
+      "noDarkDescription": "Với sắc và độ bão hoà này, không độ sáng nào đạt đồng thời 4.5:1 với nhãn của nó và 3:1 với nền tối. Hãy giảm bão hoà, hoặc ép nhãn ở trên rồi xem lại."
+    },
+    "preview": {
+      "lightTitle": "Sáng",
+      "darkTitle": "Tối",
+      "seedIs": "Phạm vi {hex}",
+      "tableLabel": "Dòng hoá đơn",
+      "column": {
+        "id": "Dòng",
+        "item": "Hạng mục",
+        "owner": "Phụ trách",
+        "state": "Trạng thái"
+      },
+      "state": {
+        "active": "Đang chạy",
+        "pending": "Chờ"
+      },
+      "line": {
+        "licence": "Bản quyền",
+        "support": "Bảo trì",
+        "setup": "Triển khai"
+      },
+      "action": {
+        "save": "Lưu",
+        "duplicate": "Nhân bản",
+        "export": "Xuất",
+        "add": "Thêm dòng",
+        "dismiss": "Bỏ qua",
+        "delete": "Xoá",
+        "details": "Chi tiết"
+      },
+      "badge": {
+        "brand": "Thương hiệu",
+        "success": "Đã thu",
+        "warning": "Sắp đến hạn",
+        "destructive": "Quá hạn",
+        "info": "Nháp",
+        "neutral": "Lưu trữ"
+      },
+      "alert": {
+        "title": "Địa chỉ xuất hoá đơn chưa đủ",
+        "description": "Chưa thể phát hành hoá đơn cho tới khi điền xong.",
+        "link": "Về phần hạt giống"
+      },
+      "field": {
+        "org": "Tổ chức",
+        "orgHelper": "Hiện trên mọi chứng từ phát hành.",
+        "plan": "Gói",
+        "tax": "Gồm thuế",
+        "mail": "Gửi tự động"
+      },
+      "plan": {
+        "starter": "Khởi đầu",
+        "pro": "Chuyên nghiệp",
+        "scale": "Mở rộng"
+      }
+    }
+  },
+  "marketingShowcase": {
+    "brand": {
+      "name": "Example Works",
+      "suffix": "Phê duyệt"
+    },
+    "nav": {
+      "label": "Điều hướng chính",
+      "product": "Sản phẩm",
+      "solutions": "Giải pháp",
+      "pricing": "Bảng giá",
+      "docs": "Tài liệu",
+      "signIn": "Đăng nhập",
+      "getStarted": "Dùng thử miễn phí",
+      "open": "Mở điều hướng",
+      "title": "Điều hướng",
+      "description": "Mọi điểm đến trên thanh tiêu đề, gồm cả hai mục bị ẩn ở khổ điện thoại.",
+      "close": "Đóng điều hướng"
+    },
+    "hero": {
+      "eyebrow": "Quy trình phê duyệt",
+      "title": "Mọi phê duyệt, trong một dấu vết.",
+      "lead": "Chuyển hoá đơn, đơn mua hàng hay hợp đồng tới đúng người chịu trách nhiệm, giữ chứng cứ ngay cạnh quyết định, và xuất cả năm trong một tệp.",
+      "primary": "Dùng thử miễn phí",
+      "secondary": "Đặt lịch xem demo",
+      "trust": "Không cần thẻ. 14 ngày. Huỷ ngay trong sản phẩm.",
+      "panelTitle": "Hàng đợi hôm nay",
+      "panelNote": "Số liệu thật của một tenant, cập nhật sau mỗi lần duyệt.",
+      "pending": "Đang chờ bạn",
+      "cleared": "Đã xong hôm nay",
+      "median": "Trung vị thời gian quyết định",
+      "medianValue": "4 giờ 12 phút",
+      "endpointLabel": "Endpoint webhook",
+      "endpointNote": "Dán nguyên văn vào gateway. Chuỗi này không có chỗ để ngắt dòng."
+    },
+    "logos": {
+      "title": "Những đội đã bỏ phê duyệt qua email",
+      "caption": "Băng chạy được giao ở trạng thái DỪNG, và nút cạnh nó là một nút thật, có trong thứ tự tab.",
+      "marqueeLabel": "Logo khách hàng"
+    },
+    "features": {
+      "title": "Sản phẩm làm gì",
+      "lead": "Sáu năng lực, và không cái nào là một component mới.",
+      "routingTitle": "Định tuyến",
+      "routingBody": "Một quy tắc đọc số tiền, trung tâm chi phí và nhà cung cấp, rồi chọn người duyệt phụ trách tổ hợp đó.",
+      "auditTitle": "Dấu vết kiểm toán mà kế toán đọc được mà không phải hỏi ai mã trạng thái nghĩa là gì",
+      "residencyTitle": "Nơi lưu trữ dữ liệu",
+      "residencyBody": "Mọi tài liệu và chỉ mục dẫn xuất đều ở lại vùng Tokyo.",
+      "evidenceTitle": "承認の証跡",
+      "evidenceBody": "決裁の理由と添付を同じ行に残します。Chứng cứ và quyết định là một bản ghi, không phải hai hệ thống.",
+      "webhookTitle": "Webhook",
+      "webhookBody": "Mỗi endpoint mang một định danh không có chỗ ngắt dòng, và thẻ này chứa được nó:",
+      "ssoTitle": "SSO",
+      "ssoBody": "SAML và OIDC, ánh xạ nhóm sang vai trò phê duyệt."
+    },
+    "testimonials": {
+      "title": "Năm đầu tiên trông như thế nào",
+      "label": "Trích dẫn khách hàng",
+      "ratingLabel": "Đánh giá",
+      "q1": "Chúng tôi đóng quý mà không còn phê duyệt nào nằm lại trong hộp thư của ai đó, kiểm toán chỉ hỏi một bản xuất thay vì mười một, và bộ phận tài chính bỏ hẳn bảng tính riêng dùng để theo dõi thứ đã thực sự được ký.",
+      "a1": "山口 佳奈",
+      "r1": "Kế toán trưởng, Aoba Foods",
+      "q2": "Nó chấm dứt tranh cãi.",
+      "a2": "Dana Whitfield",
+      "r2": "Trưởng bộ phận Mua hàng, Meridian Health",
+      "q3": "Chúng tôi chuyển 240 quy trình phê duyệt sang đây trong sáu tuần, và không mất một chứng từ nào.",
+      "a3": "Trần Minh Khoa",
+      "r3": "Phụ trách Tài chính, Truong An"
+    },
+    "pricing": {
+      "title": "Bảng giá",
+      "lead": "Tính theo mỗi người duyệt, mỗi tháng. Chu kỳ năm chỉ xuất hoá đơn một lần.",
+      "cycleLabel": "Chu kỳ thanh toán",
+      "monthly": "Theo tháng",
+      "yearly": "Theo năm",
+      "perMonth": "mỗi người duyệt / tháng",
+      "billedYearly": "xuất hoá đơn một lần mỗi năm",
+      "popular": "Được chọn nhiều nhất",
+      "saving": "Miễn phí 2 tháng",
+      "fresh": "Mới",
+      "quoted": "Báo giá riêng",
+      "quotedNote": "Báo giá theo số người duyệt và vùng lưu trữ của bạn.",
+      "starterName": "Starter",
+      "starterNote": "Một luồng phê duyệt, một vùng.",
+      "teamName": "Team",
+      "teamNote": "Luồng song song, uỷ quyền, và bản xuất chứng cứ.",
+      "enterpriseName": "エンタープライズ",
+      "enterpriseNote": "専用テナント · SSO · 監査窓口。Tenant riêng, SSO, đầu mối kiểm toán.",
+      "cta": "Dùng thử miễn phí",
+      "ctaQuote": "Liên hệ với chúng tôi",
+      "featChains": "Luồng phê duyệt",
+      "featDelegation": "Uỷ quyền và vắng mặt",
+      "featExport": "Xuất kiểm toán một tệp",
+      "featSso": "SAML và OIDC",
+      "featResidency": "Chọn vùng lưu trữ",
+      "featSupport": "Đầu mối hỗ trợ riêng",
+      "limitedChains": "Chỉ một luồng",
+      "limitedSupport": "Giờ hành chính"
+    },
+    "cta": {
+      "title": "Tuần này hãy cho một luồng phê duyệt chạy thử",
+      "lead": "Nhập một luồng từ bảng tính, cho ba phê duyệt thật chạy qua, và giữ lại bản xuất.",
+      "primary": "Dùng thử miễn phí",
+      "secondary": "Đặt lịch xem demo",
+      "note": "Bộ phận kinh doanh trả lời trong một ngày làm việc, giờ Tokyo."
+    },
+    "footer": {
+      "label": "Chân trang",
+      "product": "Sản phẩm",
+      "company": "Công ty",
+      "legal": "Pháp lý",
+      "contact": "Liên hệ",
+      "featuresLink": "Tính năng",
+      "pricingLink": "Bảng giá",
+      "changelog": "Nhật ký thay đổi",
+      "status": "Tình trạng hệ thống",
+      "about": "Giới thiệu",
+      "careers": "Tuyển dụng",
+      "terms": "Điều khoản",
+      "privacy": "Quyền riêng tư",
+      "security": "Bảo mật",
+      "subprocessors": "Bên xử lý phụ",
+      "accessibility": "Tuyên bố về khả năng tiếp cận",
+      "salesLine": "Kinh doanh",
+      "supportLine": "Hỗ trợ",
+      "addressLabel": "Trụ sở đăng ký",
+      "address": "Chiyoda, Tokyo",
+      "rights": "Example Works. Một công ty hư cấu, chỉ dùng cho tài liệu."
+    }
+  },
+  "showcase": {
+    "pagination": {
+      "recordCount": {
+        "other": "{count} bản ghi"
+      },
+      "loadMore": {
+        "other": "Tải thêm {count}"
+      }
+    },
+    "flexMeasure": {
+      "title": "measure — tràn viền bên ngoài, cột đo bên trong",
+      "lead": "Một dải là <section> mang phần nền tràn viền, bao quanh một Flex được measure canh giữa và chặn ở --page-measure-*. Lề vẫn do pad giữ: measure không thêm lề. narrow (42rem) và medium (48rem) là measure cho nội dung đọc; wide (72rem) là measure cho trang marketing."
+    },
+    "tagInput": {
+      "longIdTitle": "Định danh dài và +N",
+      "ledgerLabel": "Mã sổ cái",
+      "ledgerHelper": "Định danh 71 ký tự vẫn nằm trong khung"
+    }
+  },
+  "serviceLauncherShowcase": {
+    "page": {
+      "title": "ServiceLauncherCard",
+      "subtitle": "Các ô cho danh sách ứng dụng nội bộ của tổ chức — khả dụng, hạn chế, tạm dừng, lưu trữ, đang tải và lối vào danh mục."
+    },
+    "status": {
+      "available": "Khả dụng",
+      "active": "Đang hoạt động",
+      "maintenance": "Đang bảo trì",
+      "stopped": "Đã dừng",
+      "adminOnly": "Chỉ dành cho quản trị viên",
+      "preparing": "Đang chuẩn bị",
+      "archived": "Đã lưu trữ",
+      "unapplied": "Chưa đăng ký",
+      "noPermission": "Không có quyền",
+      "attentionRequired": "Attention required"
+    },
+    "action": {
+      "openService": "Mở dịch vụ",
+      "open": "Mở",
+      "viewStatus": "Xem tình trạng",
+      "viewHistory": "Xem lịch sử",
+      "checkPermissions": "Kiểm tra quyền",
+      "openSettings": "Mở cài đặt",
+      "viewArchive": "Xem lưu trữ",
+      "openRequestForm": "Mở biểu mẫu yêu cầu",
+      "openList": "Mở danh sách",
+      "openServiceEnglish": "Open service"
+    },
+    "sections": {
+      "basics": {
+        "heading": "1 · Cơ bản · các dịch vụ có thể sử dụng",
+        "why": "Biểu tượng, tên, trạng thái, mô tả, định danh, thao tác. Nội dung trạng thái luôn do phía sử dụng cung cấp — component chỉ quyết định ý nghĩa của tone trên Badge.",
+        "attendance": {
+          "title": "Quản lý chấm công",
+          "description": "Quản lý chấm công, ca làm việc và đơn xin nghỉ phép trong một không gian làm việc duy nhất."
+        },
+        "expense": {
+          "title": "Quyết toán chi phí",
+          "description": "Xử lý từ nộp hóa đơn, phê duyệt cho đến đồng bộ với sổ kế toán."
+        },
+        "meetingRoom": {
+          "title": "Đặt phòng họp",
+          "description": "Đặt phòng họp và thiết bị theo từng cơ sở."
+        }
+      },
+      "statusTones": {
+        "heading": "2 · Toàn bộ 6 giá trị statusTone",
+        "why": "success / warning / destructive / info / neutral / muted. Tone chỉ quyết định ý nghĩa của Badge — nội dung, phán đoán và việc thao tác có được phép hay không đều do phía sử dụng cung cấp.",
+        "mail": {
+          "title": "Email nội bộ",
+          "description": "Quản lý hộp thư, danh sách phân phối và chữ ký dùng chung."
+        },
+        "fileShare": {
+          "title": "Chia sẻ tệp",
+          "description": "Xử lý thư mục phòng ban và liên kết chia sẻ ra bên ngoài."
+        },
+        "dataSync": {
+          "title": "Nền tảng tích hợp dữ liệu",
+          "description": "Quản lý các tác vụ đồng bộ dữ liệu với hệ thống bên ngoài."
+        },
+        "iam": {
+          "title": "Quản lý quyền truy cập",
+          "description": "Xem vai trò, chính sách xác thực hai yếu tố và các sự kiện kiểm toán."
+        },
+        "integrations": {
+          "title": "Ứng dụng liên kết",
+          "description": "Cấu hình kết nối và phạm vi cho các tích hợp bên thứ ba."
+        },
+        "legacyKb": {
+          "title": "Cơ sở tri thức cũ",
+          "description": "Lưu trữ ở chế độ chỉ đọc các quy trình vận hành đến hết năm tài chính 2024."
+        }
+      },
+      "disabledReason": {
+        "heading": "3 · disabledReason · lý do thao tác không thực hiện được được đặt trước thao tác",
+        "why": "Một nút bị vô hiệu hóa không truyền tải bất kỳ lý do 'tại sao' nào. Vì vậy lý do được đặt trước thao tác theo thứ tự DOM (WCAG 2.2 · 1.3.2), và ô mang thuộc tính data-unavailable khiến huy hiệu mờ đi. disabledReason không vô hiệu hóa nút — đó vẫn là prop Button do phía sử dụng kiểm soát.",
+        "inventory": {
+          "title": "Quản lý tồn kho",
+          "description": "Quản lý tồn kho, nhập xuất kho và kiểm kê theo từng cơ sở.",
+          "reason": "Yêu cầu sử dụng của phòng ban này vẫn chưa được phê duyệt."
+        },
+        "contracts": {
+          "title": "Quản lý hợp đồng",
+          "description": "Xử lý lưu trữ hợp đồng, thông báo hạn và yêu cầu ký điện tử.",
+          "reason": "Cần có vai trò của bộ phận pháp chế để xem. Vui lòng đăng ký qua bộ phận hỗ trợ IT."
+        },
+        "analytics": {
+          "title": "Nền tảng phân tích",
+          "description": "Cung cấp bảng điều khiển và kho dữ liệu cho toàn công ty.",
+          "reason": "Dịch vụ này đã bị quản trị viên của tổ chức tạm dừng."
+        }
+      },
+      "loadingCatalog": {
+        "heading": "4 · Trạng thái đang tải và lối vào danh mục",
+        "why": "ServiceLauncherCardSkeleton là placeholder ban đầu có cùng khung xương, bắt buộc phải có label, mang aria-busy, và cố ý không mở live region. ServiceCatalogCta là ô đồng hành chỉ đặt cạnh khi thực sự có thêm lối vào, và nó nhận một glyph khác ngoài Plus mặc định.",
+        "skeletonLabel": "Đang tải dịch vụ",
+        "addApp": {
+          "title": "Thêm ứng dụng"
+        },
+        "allApps": {
+          "title": "Xem tất cả ứng dụng nội bộ"
+        }
+      },
+      "edgeCases": {
+        "heading": "5 · Chạm tới giới hạn · tên 3 dòng, không có mô tả, tên máy chủ dài không thể ngắt",
+        "why": "Một ví dụ gọn gàng không bao giờ cho thấy nơi ô bị vỡ. Đây là mặt vỡ đó: một tên phải xuống 3 dòng nằm cạnh một tên chỉ 2 từ trên cùng một hàng, một ô không có mô tả đặt cạnh một ô có mô tả, và một tên máy chủ không có khoảng trắng cố kéo giãn cột. Nếu trông có vẻ xấu xí, tức là phần này đang làm đúng việc của nó — thứ phải chịu được áp lực là component, chứ không phải dữ liệu mẫu.",
+        "hrPortal": {
+          "title": "Nền tảng thông tin nhân sự toàn cầu · Cổng tự phục vụ nhân viên (khu vực châu Á - Thái Bình Dương)",
+          "description": "Không gian làm việc tích hợp quản lý tập trung dữ liệu nhân sự gốc, chấm công, lương và đánh giá."
+        },
+        "dailyReport": {
+          "title": "Báo cáo hằng ngày"
+        },
+        "warningConsole": {
+          "title": "Global Workforce Identity & Entitlement Administration Console",
+          "description": "Review pending entitlement requests before the next access certification.",
+          "reason": "Your organization has no approved request for this service yet."
+        }
+      },
+      "minimalTiles": {
+        "heading": "6 · Ô tối giản",
+        "why": "Chỉ có icon, title và action là bắt buộc. Bỏ statusLabel thì cả hàng Badge biến mất; bỏ cả description và metadata thì khung vẫn được giữ nguyên — hãy so sánh chiều cao với ô đầy đủ bên cạnh.",
+        "wiki": {
+          "title": "Wiki nội bộ"
+        },
+        "contact": {
+          "title": "Đầu mối liên hệ hỗ trợ",
+          "description": "Nơi tiếp nhận các thắc mắc về hệ thống nội bộ."
+        },
+        "calendar": {
+          "title": "Lịch toàn công ty",
+          "description": "Chia sẻ sự kiện toàn công ty, ngày nghỉ và lịch theo từng cơ sở.",
+          "reason": "Được công khai ở chế độ chỉ đọc."
+        }
+      },
+      "logo": {
+        "heading": "7 · logo · logo đã tải lên, và những dịch vụ chưa có logo",
+        "why": "logo là URL của một hình ảnh do quản trị viên tải lên, và nó chỉ thay thế icon khi tải thành công. icon vẫn là bắt buộc — một dịch vụ vừa tạo chưa có logo, và một dịch vụ có URL trả về 404 cũng không có logo. Một hình ảnh bị lỗi sẽ không bao giờ vào DOM. Khung hình ảnh có cùng kích thước 20px với glyph (--card-service-launcher-icon-glyph-size), và tỉ lệ khung hình được giữ nguyên nhờ object-fit: contain.",
+        "uploaded": {
+          "title": "Quản lý chấm công",
+          "description": "Dịch vụ đã tải lên logo. Huy hiệu hiển thị logo thay vì icon."
+        },
+        "missing": {
+          "title": "Quản lý chấm công (chưa đặt logo)",
+          "description": "Cùng một ô nhưng không truyền logo. icon vẫn giữ nguyên, và kích thước huy hiệu cũng không đổi."
+        },
+        "broken": {
+          "title": "Nền tảng tích hợp dữ liệu (logo lỗi 404)",
+          "description": "logo_url đã được đặt nhưng tệp không tồn tại. Ô không bị trống mà quay về dùng icon."
+        },
+        "wideMark": {
+          "title": "Quyết toán chi phí",
+          "description": "Logo dạng chữ nằm ngang 240×96. Vì dùng contain nên không bị cắt xén, và chiều rộng khung vẫn giữ nguyên như glyph."
+        },
+        "withReason": {
+          "title": "Quản lý quyền truy cập",
+          "description": "logo và disabledReason là hai trục độc lập. Trạng thái được truyền tải qua Badge và văn bản lý do — chúng ta không tự ý để màu thương hiệu của bên khác gánh vai trò đó.",
+          "reason": "Cần có vai trò quản trị viên để xem."
+        },
+        "emptyString": {
+          "title": "Email nội bộ",
+          "description": "logo là chuỗi rỗng. Được xử lý giống như chưa đặt, và cũng không phát sinh yêu cầu thừa."
+        }
+      }
+    }
+  }
+}

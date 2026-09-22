@@ -92,6 +92,11 @@ your reply for any new `src/components/**` addition; a reviewer rejects addition
 
 - **Every user-facing string AND every `aria-label`/`sr-only` text goes through `t("…")`** with keys
   in `src/i18n/messages/{en,vi,ja}.json`. Zero hardcoded English/Japanese in components.
+- **A key for a `docs/**` page goes in `docs/i18n/messages/{en,vi,ja}.json` instead** — the docs
+  catalogue `preview/src/docs-messages.ts` registers at startup. `translate.ts` imports the RUNTIME
+  files statically and JSON has no named exports, so a showcase namespace in there ships to every
+  consumer in three languages and nothing can tree-shake it (gh#858 — that was 60.7% of `en.json`).
+  `check:no-consumer-coupling` fails on a runtime namespace only `docs/**` reads.
 - **Format via `Intl` with the active locale** (`getSyncedLocale()` / `useTranslation().locale`),
   never hand-built: numbers/currency → `Intl.NumberFormat` (currency = ISO 4217, minor units from
   `resolvedOptions()`, NOT a hardcoded list); bytes → `Intl.NumberFormat` `unit` style; dates/times

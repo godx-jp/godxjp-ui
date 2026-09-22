@@ -112,8 +112,9 @@
  * elements cross the inline edge. The two boxes that do scroll are the `Marquee` viewport and the
  * `Carousel` viewport, which is what both components are.
  *
- * Every string and every `aria-label` comes from `t()` (`src/i18n/messages/{en,ja,vi}.json`,
- * namespace `marketingShowcase`), and the locale picker in the bar switches all three live. Money
+ * Every string and every `aria-label` comes from `t()` (`docs/i18n/messages/{en,ja,vi}.json`,
+ * namespace `marketingShowcase` — demo copy the preview registers at startup, never shipped to a
+ * consumer; gh#858), and the locale picker in the bar switches all three live. Money
  * is `Intl.NumberFormat` with the ACTIVE locale and an ISO 4217 code that lives in data, never a
  * symbol in the copy. The year is `Intl.DateTimeFormat`. Domains are RFC 2606 reserved
  * (`*.example.jp`), the company is fictional, and every wordmark in the logo wall is invented.
