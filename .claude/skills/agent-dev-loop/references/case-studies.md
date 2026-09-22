@@ -138,3 +138,31 @@ It takes the latest attempt per workflow, not *"was there ever a green one"*. Th
 provenance does the same by design (`release-core.mjs:316`).
 
 → phase 4's definition of evidence.
+
+
+---
+
+## 11. The list that told a repo it was exempt
+
+Phase 3 step 5 once read: *"Unit-level tooling cannot see paint, contrast, hit-target size,
+overflow, cascade resolution or focus geometry."* Every item is an interface concern, presented as
+universal.
+
+A PHP point-of-sale repo read it and reported the failure in **both** directions.
+
+**Missing** — its largest unprovable classes were not on the list: business time (shops at UTC+7
+and UTC+9 on one UTC backend, so *"today"* is not global and a test in one timezone proves the
+wrong thing), the bytes reaching a thermal printer (encoding, and the regex library version that
+decides which characters fold — two minor versions produce different bytes), cryptographic
+signatures, and database constraints under real concurrency.
+
+**Backwards** — those classes *are* testable, but only when the test pins its conditions. An agent
+reading a list with nothing on it that applies concludes the step is **skippable**, when it in fact
+owes more: freeze the clock, assert across at least three timezones, compare a golden fixture, pin
+the library version to production's.
+
+The fix was not a longer list. **A list invites you to check whether you are on it; a question does
+not.** Step 5 is now two questions — what can your test layer not observe, and what can it observe
+only if pinned — with both families as examples underneath.
+
+→ phase 3 step 5, and a caution for anything written as an enumeration in a portable document.

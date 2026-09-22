@@ -173,8 +173,31 @@ only the red one leaves a test that will answer "yes" to a question nobody asked
 
 ### 5. Name what the diff CANNOT prove, and probe exactly that
 
-Unit-level tooling cannot see paint, contrast, hit-target size, overflow, cascade resolution or
-focus geometry. For each such class present in the batch, run **one targeted probe**, not a sweep.
+Two questions, not one list:
+
+1. **What can your test layer not observe at all?**
+2. **What can it observe only if the test is PINNED to the right conditions?**
+
+The second question is the one that gets skipped, and skipping it is silent.
+
+| family | (1) cannot observe | (2) observable only when pinned |
+| --- | --- | --- |
+| **interface** | paint · contrast · hit-target size · overflow · cascade resolution · focus geometry | text metrics under a fallback font; layout at a width nobody runs |
+| **product / service** | — | **business time** (one timezone proves nothing when "today" is not global) · **bytes reaching a physical device** (encoding, and the library version that decides them) · **cryptographic signatures** (golden fixtures) · **database constraints under real concurrency** |
+
+> #### A list that does not match your repo reads as "not applicable". It is not.
+>
+> This section used to be the interface row alone, presented as universal. In a repo with no UI an
+> agent reads it, finds nothing that applies, and concludes step 5 is **skippable** — when in fact
+> it owes *more*: freeze the clock and assert across **at least three timezones**; compare against a
+> golden fixture; pin the library version to the one production runs, because a minor version can
+> change which characters fold and therefore which bytes a printer receives.
+>
+> Reported by a PHP point-of-sale repo reading this file. The failure was not that the list was
+> incomplete — it was that a list invites you to check whether you are on it, and a question does
+> not.
+
+For each class present in the batch, run **one targeted probe**, not a sweep.
 
 **Deferring one to phase 4 in writing is a valid outcome. Claiming it was verified is not.**
 

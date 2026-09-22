@@ -15,8 +15,12 @@ not copied from another repo.
 t() { s=$(date +%s); "$@" >/dev/null 2>&1; echo "$(( $(date +%s) - s ))s  $*"; }
 ```
 
-Run it over **every** check the repo declares — the type checker, the linter, each named gate, the
-build, the packaging step, each test grouping. Sort by cost.
+Run it over **every** check the repo declares — **whatever cheap static checks exist** (a type
+checker, a linter, a formatter, architecture tests — not every language has all four), each named
+gate, the build, the packaging step, each test grouping. Sort by cost.
+
+Do not assume the rows of another repo's map. A repo with no type checker should not have a
+type-checker row it fills in with something that is not one.
 
 Expect the result to contradict your intuition. In the originating repo the check that *looked*
 wasteful — type-checking the entire program — was **1.3 seconds**, and the real cost was a browser
