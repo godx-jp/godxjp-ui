@@ -26,7 +26,7 @@ function resolvesToComponent(resolved) {
  * Does a relative specifier resolve to a committed STATIC ASSET? An image is not the `./_kit`
  * anti-pattern this guard exists to stop.
  */
-const ASSET_EXTENSIONS = /\.(?:svg|png|jpe?g|webp|avif|gif|woff2?)$/;
+const ASSET_EXTENSIONS = /\.(?:svg|png|jpe?g|webp|avif|gif|woff2?|css)$/;
 function resolvesToAsset(resolved) {
   return ASSET_EXTENSIONS.test(resolved) && existsSync(resolved);
 }

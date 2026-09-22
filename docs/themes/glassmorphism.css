@@ -1,0 +1,263 @@
+/**
+ * glassmorphism theme — a CONSUMER-SURFACE experiment, not a framework change.
+ *
+ * Everything below is a `--custom-property` declaration inside `[data-theme-style="glass"]`.
+ * No selector here targets a `.ui-*` internal class, no `backdrop-filter`/`background`/
+ * `box-shadow` is written directly — every visual effect below is produced by EXISTING
+ * `src/styles/**` rules that already read the token being set. That is the whole point of the
+ * exercise: find out what a consumer can reach through the published theme API alone, the way an
+ * Ant Design consumer is limited to `theme.token` / `theme.components`.
+ *
+ * Where a component has no such hook, this file does not fake one — see the gap report in
+ * docs/showcase/glassmorphism.tsx's file docblock for the exact file:line evidence per component.
+ *
+ * ── The one trick this file leans on: an alpha suffix inside an HSL-triplet token ────────────
+ * Most colour tokens in this system are declared as a bare "H S% L%" triplet and consumed as
+ * `hsl(var(--token))` at the call site (src/styles/**). CSS Color 4's `hsl()` also accepts a
+ * `/ A` alpha component in that same string, so a token can carry `"H S% L% / A%"` and the
+ * existing `hsl(var(--token))` call becomes `hsl(H S% L% / A%)` — a real translucent colour —
+ * with ZERO change to the consuming stylesheet. This works ONLY where the token is the sole
+ * content of an `hsl()` call; several tokens below are consumed as a COMPLETE value instead
+ * (`background-color: var(--token, hsl(...)))`), so those are written as a full `hsl(...)` string
+ * instead of a bare triplet. Each declaration below says which form the consumer expects.
+ *
+ * ── The shadow seed — and the freeze trap it hits, measured, not assumed ─────────────────────
+ * `--shadow-color` (src/tokens/foundation.css:290) is the documented brand-shadow seed —
+ * `--shadow-xs` … `--shadow-2xl` all derive `rgb(var(--shadow-color) / <fixed alpha>)`, and Select/
+ * DropdownMenu/Dialog/`.ui-button--outline` read one of those steps DIRECTLY, so retinting
+ * `--shadow-color` (plus restating the one or two steps actually used — see below) was all they
+ * needed. Card/Sheet/Popover/Tooltip/Segmented instead go through a component-tier MIRROR
+ * (`--card-shadow: var(--shadow-sm)`, declared once in src/tokens/components/*.css) — the exact
+ * two-hop shape `docs/showcase/theme-customization.tsx` already documents for `--ring: var(
+ * --primary)`: a `var()` resolves at the element that DECLARES the referencing property, and
+ * since `--card-shadow` is declared only at `:root`, it resolved once against `:root`'s original
+ * `--shadow-sm` and inherits that frozen result — restating `--shadow-sm` alone left every one of
+ * these five surfaces' shadow at `rgba(0, 0, 0, …)`, confirmed with `getComputedStyle`. Closing it
+ * costs one more line per mirror, each just re-pointing at the (now-scoped) step it already named.
+ */
+[data-theme-style="glass"] {
+  /* ── Seed: seven surfaces' elevation, retinted at once — BUT ONLY once the freeze trap below is
+   *    also closed (see docblock above and the note here; this is the SAME trap
+   *    docs/showcase/theme-customization.tsx documents for `--ring` and `--radius`).
+   *    `--shadow-sm` / `--shadow-md` / `--shadow-lg` are declared at `:root`
+   *    (src/tokens/foundation.css:291-296) as `rgb(var(--shadow-color) / <fixed alpha>)`. A `var()`
+   *    substitutes where the CONSUMING property is declared, and `--shadow-sm` etc. are declared
+   *    ONLY at `:root` — never re-declared inside this scope — so they resolve once against
+   *    `:root`'s `--shadow-color` and inherit that already-resolved value down. Measured: setting
+   *    `--shadow-color` here alone left Card/Popover/Tooltip/Segmented/Select/DropdownMenu's shadow
+   *    at `rgba(0, 0, 0, …)`, unchanged. Closing it costs one restatement per step actually consumed
+   *    by this component set (sm/md/lg) — the exact fix `[data-godx-theme] { --ring: var(--primary);
+   *    }` already uses for the same class of bug. */
+  --shadow-color: 30 27 75; /* cool indigo, instead of the default neutral black */
+  --shadow-sm: 0 1px 2px 0 rgb(var(--shadow-color) / 0.05);
+  --shadow-md:
+    0 4px 6px -1px rgb(var(--shadow-color) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(var(--shadow-color) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  /* The trap is TWO LAYERS deep for anything that goes through a component-tier "shadow" MIRROR
+   * (Card/Sheet/Popover/Tooltip/Segmented all do; Select/DropdownMenu/Dialog/`.ui-button--outline`
+   * read `--shadow-md`/`--shadow-lg`/`--shadow-sm` DIRECTLY and needed nothing further, confirmed
+   * by measurement). `--card-shadow: var(--shadow-sm)` (src/tokens/components/card.css) is ITSELF
+   * declared only at `:root`, so restating the foundation step above was not enough — measured:
+   * Card/Popover/Tooltip/Segmented's shadow stayed `rgba(0, 0, 0, …)` until these five mirrors were
+   * ALSO restated here, each one line, each just pointing at the (now-scoped) step it already
+   * named. */
+  --card-shadow: var(--shadow-sm);
+  --card-hover-shadow: var(--shadow-md);
+  --sheet-shadow: var(--shadow-lg);
+  --popover-shadow: var(--shadow-md);
+  --tooltip-shadow: var(--shadow-md);
+  --segmented-item-selected-shadow: var(--shadow-md);
+
+  /* ── Border — the SAME shared-role shape as `--card`/`--popover` below: no dedicated token
+   *    exists for Select/DropdownMenu/Sidebar/Tabs-panel/AppShell's `.app-topbar`, or — the one
+   *    that matters most — Dialog's own panel (dialog-layout.css:55 hard-codes
+   *    `border: 1px solid hsl(var(--border))`). Verified no consumer composes a SECOND alpha after
+   *    it (unlike `--background`, see below), so a bare triplet + alpha is safe here and reaches
+   *    all of the above at once — the widest-reaching single line in this file. */
+  --border: 0 0% 100% / 32%;
+
+  /* ── `--background` — deliberately NOT touched, and that is the finding. It is consumed BOTH
+   *    bare (`hsl(var(--background))` — Dialog's panel, Sheet's `bg-background` utility, the page
+   *    canvas itself, base.css:260) AND pre-composed with its OWN alpha elsewhere
+   *    (`hsl(var(--background) / var(--topbar-background-alpha))`, shell-layout.css:2648, THE
+   *    Topbar glass rule this file relies on below). Giving `--background` its own alpha suffix
+   *    here would make Topbar's rule read `hsl(H S% L% / A% / var(--topbar-background-alpha))` —
+   *    invalid CSS (two `/`), which drops `background-color` to its property-initial
+   *    `transparent` — confirmed by trying it: Topbar's fill vanished and the PAGE CANVAS itself
+   *    (every bare consumer) went fully see-through to the browser's own white. So Dialog's panel
+   *    and Sheet's panel are the two surfaces in this set with NO safe lever at all: the only
+   *    token that reaches them is shared with a consumer that would break first. ──────────────── */
+
+  /* ── Ambient backdrop — .app-main already exposes this as an opt-in hook
+   *    (src/styles/shell-layout.css: "background-image: var(--gradient-glow)"; default `none`).
+   *    A vivid gradient ground is what makes translucency legible at all — glass is invisible on
+   *    a flat canvas. `--app-shell-main-background` (also consumed as a complete value, not
+   *    wrapped in hsl()) is the solid floor underneath it. ────────────────────────────────── */
+  --gradient-glow:
+    radial-gradient(circle at 12% 18%, hsl(262 83% 58% / 0.55), transparent 42%),
+    radial-gradient(circle at 88% 12%, hsl(199 89% 48% / 0.5), transparent 48%),
+    radial-gradient(circle at 55% 92%, hsl(330 81% 60% / 0.42), transparent 52%),
+    linear-gradient(160deg, hsl(230 55% 11%), hsl(210 45% 16%));
+  --app-shell-main-background: hsl(222 47% 9%);
+
+  /* ── Gradient is not only a PAGE-backdrop thing — three more surfaces have a real, CLEAN
+   *    single-slot `background-image: var(--token)` hook (verified with `getComputedStyle`, not
+   *    assumed): AppShell's `.app-topbar` (shell-layout.css:389, `--topbar-gradient`), `.app-sidebar`
+   *    (shell-layout.css:230, `--sidebar-gradient`), and `PageContainer`'s own header band
+   *    (layout.css:892, `.ui-page-header { background-image: var(--gradient-hero) }` — rendered
+   *    here because this page passes `title`/`subtitle`). All three take an arbitrary
+   *    `linear-gradient(...)` string with NO artifact, because the call site assigns the token
+   *    ONCE, unlike Card below. ──────────────────────────────────────────────────────────────── */
+  --topbar-gradient: linear-gradient(120deg, hsl(262 83% 58% / 0.35) 0%, hsl(199 89% 48% / 0.2) 100%);
+  --sidebar-gradient: linear-gradient(160deg, hsl(330 81% 60% / 0.22) 0%, hsl(262 83% 58% / 0.16) 100%);
+  --gradient-hero: linear-gradient(100deg, hsl(330 81% 60% / 0.25) 0%, hsl(262 83% 58% / 0.15) 100%);
+
+  /* ── Card's gradient hook is a DEAD END — measured, this is the finding, not an oversight.
+   *    card-layout.css:49 paints the fill as `linear-gradient(var(--card-tint), var(--card-tint))`
+   *    — the SAME token substituted as BOTH gradient stops, a trick that only works to fake a flat
+   *    solid wash (both stops identical). Feeding it a real two-colour stop list produces
+   *    `linear-gradient(colorA 0%, colorB 100%, colorA 0%, colorB 100%)`: CSS gradient stops must
+   *    be monotonically non-decreasing, so the browser clamps the repeated `0%` up to the previous
+   *    `100%` and the whole second half collapses to solid colorB — confirmed with
+   *    `getComputedStyle` (`background-image` came back as that exact four-stop, clamped list, and
+   *    it painted as a hard two-tone split, not a blend). There is no token on Card that accepts a
+   *    real multi-stop gradient; `--card-tint` is a single-colour wash, full stop. */
+
+  /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
+   *    src/styles/card-layout.css:44 (border), :49 (background). ────────────────────────────── */
+  --card-background: 0 0% 100% / 55%;
+  --card-border: 0 0% 100% / 35%;
+
+  /* ── Dialog — the panel BACKGROUND is the one true dead end in this set. dialog-layout.css:56
+   *    hard-codes `background-color: hsl(var(--background))` with NO `--dialog-background` token
+   *    to redirect, and `--background` cannot safely take an alpha suffix here (see the note on
+   *    it below) — so the fill stays opaque no matter what this file does. The BORDER (line 55,
+   *    `hsl(var(--border))`) is the shared role restated above, so it DOES pick up the translucent
+   *    hairline. `--dialog-content-glow` is a real, dedicated, additive box-shadow LAYER (not the
+   *    panel fill) — used here for a glass edge highlight, on top of the (now-retinted)
+   *    elevation. ─────────────────────────────────────────────────────────────────────────── */
+  --dialog-content-glow: inset 0 1px 0 hsl(0 0% 100% / 0.5);
+
+  /* ── Sheet — panel background is the Tailwind utility `bg-background` baked into sheet.tsx's
+   *    className (no `--sheet-background` token exists), same dead end as Dialog's background.
+   *    Its border (`border-l`/`border-r`, sheet.tsx:235-236 — a physical utility, not `border-s`/
+   *    `border-e`, the file's own "rtl-ignore" comment already flags that as pre-existing) DOES
+   *    exist, though, and rides the `--border` restatement above — measured, not assumed: an
+   *    earlier draft of this file claimed Sheet drew no border at all, and `getComputedStyle`
+   *    said otherwise (`border-width: 0 0 0 1px`, translucent). `--sheet-shadow` (retinted via the
+   *    seed above) is the third reachable axis. ─────────────────────────────────────────────── */
+
+  /* ── Popover — the only overlay with FULL dedicated surface tokens (background AND border),
+   *    both consumed as a COMPLETE value (dialog-layout.css:362-363), so each needs its own
+   *    hsl(...) wrapper here, not a bare triplet. ──────────────────────────────────────────── */
+  --popover-surface-background: hsl(0 0% 100% / 62%);
+  --popover-surface-border-color: hsl(0 0% 100% / 40%);
+
+  /* ── Tooltip — same shape as Popover, its own dedicated background + border tokens
+   *    (dialog-layout.css:342-343), also consumed as a complete value. Dark frosted chip, the
+   *    conventional tooltip treatment even inside an otherwise light-glass page. ─────────────── */
+  --tooltip-background: hsl(230 45% 12% / 78%);
+  --tooltip-border-color: hsl(0 0% 100% / 14%);
+
+  /* ── DropdownMenu + Select — NEITHER exposes a background/border token of its own; both
+   *    hard-code `hsl(var(--border))` / `hsl(var(--popover))`
+   *    (src/styles/navigation-layout.css:936-937, src/styles/control.css:2315-2316). Border is
+   *    already covered by the `--border` restatement above; `--popover` is the matching
+   *    FOUNDATION-tier role for the fill, always consumed as `hsl(var(--popover))`, so a bare
+   *    triplet + alpha reaches both Select and DropdownMenu at once — shared, not scoped to
+   *    either component individually. */
+  --popover: 0 0% 100% / 60%;
+
+  /* ── Table — three different levers for three different lines, verified individually:
+   *      · The OUTER frame (`.ui-data-table-surface`, what a reader actually sees around a plain
+   *        DataTable) hard-codes `border: 1px solid hsl(var(--border))` (table-layout.css:372) —
+   *        bare role, already covered by the `--border` restatement above. `--table-border-color`
+   *        does NOT reach it (measured: the rendered alpha was 32%, `--border`'s, not this
+   *        token's 30% — confirms which one actually wins before trusting the doc comment).
+   *      · `--table-border-color` is real, but scoped to internal cell/row dividers under
+   *        `<Table bordered>` (table-layout.css:685,689) — not exercised by this page's plain
+   *        DataTable, kept here for completeness.
+   *      · The header BAND is its own dedicated token, consumed as a complete value
+   *        (table-layout.css:159) — confirmed applying (measured 18% alpha, exact match).
+   *      · The table's own SURFACE re-uses `--card-background` (table-layout.css:540), already
+   *        set above: DataTable in a Card gets the Card's glass for free, by design ("Card +
+   *        CardContent flush + DataTable" is the documented composition). ─────────────────────── */
+  --table-border-color: hsl(0 0% 100% / 30%);
+  --table-header-background: hsl(0 0% 100% / 18%);
+
+  /* ── Input / Select trigger / TagInput — the SHARED `.ui-control-surface` base
+   *    (src/lib/control-styles.ts:1791-1792), both consumed as a complete value. This is the one
+   *    component-tier knob pair the form-control family has; there is no per-control override. */
+  --control-surface-background: hsl(0 0% 100% / 35%);
+  --control-surface-border-color: hsl(0 0% 100% / 45%);
+
+  /* ── Button — NO surface token at any tier. `variant="default"` paints `bg-primary`
+   *    (a Tailwind utility reading the foundation `--primary` role directly); `outline`/`dashed`
+   *    paint `bg-background`; `secondary` paints `bg-secondary`. Retinting any of those roles
+   *    here would recolour every other consumer of that same role in scope (the page canvas
+   *    itself, for `--background`), which is exactly the collateral-damage trade the theme
+   *    hierarchy in docs/CUSTOMER-THEMING.md warns against — so this file deliberately leaves
+   *    Button's FILL alone; it stays a solid, opaque chip. Its BORDER (`outline`/`dashed`
+   *    variants, the plain `border` Tailwind utility) and its SHADOW (`.ui-button--outline` reads
+   *    `var(--shadow-sm)`) both ride the `--border` and `--shadow-sm` restatements above for free —
+   *    the two axes Button gets without a dedicated token. */
+
+  /* ── Badge — the only knobs are the two MIX PERCENTAGES color-mix reads
+   *    (badge-layout.css:64-70), not colours themselves; no shadow property exists on a badge at
+   *    all (flat chip by design). ──────────────────────────────────────────────────────────── */
+  --badge-tint-fill: 22%;
+  --badge-tint-edge: 45%;
+
+  /* ── Tabs — the "card" tab-list and its panel are the only two backgrounds with tokens
+   *    (navigation-layout.css:482,653), both consumed as hsl(var(--token)). The default
+   *    (underline) tab list paints nothing, so it is already "glass" by having no surface. ───── */
+  --tabs-panel-background: 0 0% 100% / 18%;
+  --tabs-card-background: 0 0% 100% / 30%;
+
+  /* ── Alert — only the FOUR TONED variants (destructive/warning/success/info) resolve their
+   *    SURFACE through `--alert-bg-alpha` / `--alert-border-alpha` (alert-layout.css:25-44). The
+   *    default/neutral tone's border is `hsl(var(--border))` bare — covered by the restatement
+   *    above — but its background is a literal `hsl(var(--muted) / 0.4)` (alert-layout.css:20):
+   *    the SAME double-alpha dead end as `--background`, since `--muted` would need its own suffix
+   *    added to an already-alpha'd call site. That one surface cannot be reached at all. */
+  --alert-bg-alpha: 16%;
+  --alert-border-alpha: 35%;
+
+  /* ── Toast (Sonner) — sonner.tsx sets `--normal-bg: hsl(var(--popover))` /
+   *    `--normal-border: hsl(var(--border))` inline on the Toaster; both resolve through the same
+   *    shared `--popover` role already set above, so the toast picks it up for free. There is no
+   *    `--toast-background`/`--toast-shadow` token of its own. */
+
+  /* ── Avatar — its own dedicated token (data-display-layout.css:14), consumed as a complete
+   *    value. No border or shadow property exists on `.ui-avatar` at all (flat fill by design). */
+  --avatar-background: hsl(0 0% 100% / 40%);
+
+  /* ── Progress — track has a dedicated token, consumed as a complete value
+   *    (data-display-layout.css:203); the FILL is deliberately left alone — it is the data
+   *    (WCAG 2.2 SC 1.4.11 contrast mark), not a decorative surface. */
+  --progress-track-background: hsl(0 0% 100% / 25%);
+
+  /* ── Sidebar — Sidebar itself is `display: contents` (no box of its own); the surface a
+   *    consumer actually sees is AppShell's `.app-sidebar`, which hard-codes
+   *    `border-inline-end: 1px solid hsl(var(--border)); background: hsl(var(--card));`
+   *    (shell-layout.css:216-229) — bare foundation roles, no `--sidebar-background` token. Border
+   *    is covered by the `--border` restatement above; `--card` is only otherwise read as Card's
+   *    OWN fallback (moot once `--card-background` is set directly above), so retinting it here
+   *    reaches Sidebar (and AppShell's `.app-topbar` chrome, see below) with no other collateral
+   *    found in this codebase. NO `backdrop-filter` exists on `.app-sidebar` at all — see the real
+   *    `<Topbar>` component below for the one surface in this whole list that actually has one —
+   *    and NEITHER `.app-sidebar` nor `.app-topbar` sits inside `.app-main`, so even where they
+   *    ARE translucent there is no part of the `--gradient-glow` backdrop behind them to show
+   *    through: measured in the browser, both render as a flat, near-opaque-looking wash over the
+   *    page's own light canvas, not over the vivid gradient. Glass needs a busy ground BEHIND the
+   *    element wearing it, and AppShell's chrome grid sits outside the one region that has one. */
+  --card: 0 0% 100% / 42%;
+
+  /* ── Topbar — the ONE surface in this entire list with a REAL backdrop-filter wired to a
+   *    token (shell-layout.css:2648-2649): `background-color: hsl(var(--background) /
+   *    var(--topbar-background-alpha)); backdrop-filter: blur(var(--topbar-backdrop-blur-size));`
+   *    Both default to `initial` (off) precisely so a service opts in with these two lines. */
+  --topbar-background-alpha: 55%;
+  --topbar-backdrop-blur-size: var(--blur-lg);
+}
