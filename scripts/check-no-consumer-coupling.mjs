@@ -289,7 +289,7 @@ function collectDocsHits() {
   const out = new Map();
   for (const rel of collect(DOCS_GLOBS)) {
     const text = readFileSync(join(ROOT, rel), "utf8");
-    const hits = [...scanLocale(text), ...scanDocsChrome(text)].sort((a, b) => a.line - b.line);
+    const hits = scanDocsChrome(text).sort((a, b) => a.line - b.line);
     if (hits.length) out.set(rel, hits);
   }
   return out;
