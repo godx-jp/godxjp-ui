@@ -1,4 +1,4 @@
-import "./preload-recovery";
+import { installPreloadRecovery } from "./preload-recovery";
 import "./preview-tailwind.css";
 import "./preview.css";
 
@@ -8,6 +8,8 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { registerDocsMessages } from "./docs-messages";
 import { STORY_ENTRIES } from "./preview-catalog";
+
+installPreloadRecovery();
 
 // Docs-page copy lives in a docs-owned catalogue, not the shipped one (gh#858). CALLED, not
 // imported for effect: `"sideEffects": false` lets Rollup drop a module nothing takes a binding from.
