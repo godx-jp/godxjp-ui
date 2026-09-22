@@ -85,6 +85,21 @@ const badgeVariants = cva(
          * reachable (a utility beats a components-layer rule whatever the
          * specificity). Selected by the `color` prop, never by hand. */
         tinted: "",
+        /* A STATUS TONE owns the whole chip — fill, border and ink — so the variant contributes
+         * none of them. Selected automatically whenever `tone` is not `default`, never by hand.
+         *
+         * This used to be left to `cn` (tailwind-merge): `default` painted `bg-primary`, the tone
+         * added `bg-success/10`, twMerge saw one conflict group and deleted the first. gh#866
+         * respelled the tone fill as `[background-color:var(--surface-success, …)]` so a brand's
+         * own pale ground could reach it — and an ARBITRARY PROPERTY is a different twMerge group,
+         * so nothing was deleted, both survived, and plain CSS source order handed the chip to
+         * `bg-primary`. Every toned Badge painted violet under tone-coloured ink: measured 1.07:1
+         * (warning) to 1.30:1 (info), against 4.5:1 for AA.
+         *
+         * The classes were "correct" before and after; only the cascade moved. So the fix is to
+         * stop emitting the conflict at all rather than to restore a spelling that happened to
+         * collide — a fill deleted by a class-merging library is a fill nobody declared. */
+        toned: "",
       },
       // Corner shape — default inherits the badge radius token; pill/sharp override via the tokens.
       shape: {
@@ -271,7 +286,12 @@ export function Badge({
       data-removable={onRemove ? "" : undefined}
       className={cn(
         badgeVariants({
-          variant: tinted ? "tinted" : (variant ?? "default"),
+          // A status tone paints the chip itself (`badgeToneClass` below), so the variant must not
+          // also paint one — see the `toned` variant. An EXPLICIT `variant` still wins, which is
+          // how `<Badge variant="outline" tone="success">` keeps its border treatment.
+          variant: tinted
+            ? "tinted"
+            : (variant ?? (resolvedTone === "default" ? "default" : "toned")),
           shape: shape ?? "default",
         }),
         tinted ? undefined : badgeToneClass[resolvedTone],
