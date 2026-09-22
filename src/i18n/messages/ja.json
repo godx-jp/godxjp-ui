@@ -1175,5 +1175,172 @@
       "ledgerLabel": "台帳ID",
       "ledgerHelper": "71文字の識別子でも行からはみ出さない"
     }
+  },
+  "serviceLauncherShowcase": {
+    "page": {
+      "title": "ServiceLauncherCard",
+      "subtitle": "社内アプリケーション一覧のタイル — 利用可能・制限・停止・アーカイブ・読み込み中・カタログ導線"
+    },
+    "status": {
+      "available": "利用可能",
+      "active": "稼働中",
+      "maintenance": "メンテナンス中",
+      "stopped": "停止中",
+      "adminOnly": "管理者限定",
+      "preparing": "準備中",
+      "archived": "アーカイブ",
+      "unapplied": "未申請",
+      "noPermission": "権限なし",
+      "attentionRequired": "Attention required"
+    },
+    "action": {
+      "openService": "サービスを開く",
+      "open": "開く",
+      "viewStatus": "状況を見る",
+      "viewHistory": "履歴を見る",
+      "checkPermissions": "権限を確認",
+      "openSettings": "設定を開く",
+      "viewArchive": "アーカイブを見る",
+      "openRequestForm": "申請フォームを開く",
+      "openList": "一覧を開く",
+      "openServiceEnglish": "Open service"
+    },
+    "sections": {
+      "basics": {
+        "heading": "1 · 基本 · 利用できるサービス",
+        "why": "アイコン・名称・ステータス・説明・識別子・操作。ステータスの文言は常に利用側のコピーで、コンポーネントが決めるのは tone に対応する Badge の意味づけだけです。",
+        "attendance": {
+          "title": "勤怠管理",
+          "description": "打刻、シフト、休暇申請を一つのワークスペースで管理します。"
+        },
+        "expense": {
+          "title": "経費精算",
+          "description": "領収書の提出から承認、仕訳連携までを扱います。"
+        },
+        "meetingRoom": {
+          "title": "会議室予約",
+          "description": "拠点ごとの会議室と備品を予約します。"
+        }
+      },
+      "statusTones": {
+        "heading": "2 · statusTone の 6 値すべて",
+        "why": "success / warning / destructive / info / neutral / muted。tone は Badge の意味づけだけを決め、文言・判定・操作の可否はすべて利用側が渡します。",
+        "mail": {
+          "title": "社内メール",
+          "description": "メールボックス、配布リスト、共有署名を管理します。"
+        },
+        "fileShare": {
+          "title": "ファイル共有",
+          "description": "部門フォルダと外部共有リンクを扱います。"
+        },
+        "dataSync": {
+          "title": "データ連携基盤",
+          "description": "外部システムとのデータ同期ジョブを管理します。"
+        },
+        "iam": {
+          "title": "権限管理",
+          "description": "ロール、二要素認証ポリシー、監査イベントを確認します。"
+        },
+        "integrations": {
+          "title": "連携アプリ",
+          "description": "サードパーティ連携の接続とスコープを設定します。"
+        },
+        "legacyKb": {
+          "title": "旧ナレッジベース",
+          "description": "2024 年度までの運用手順を読み取り専用で保管しています。"
+        }
+      },
+      "disabledReason": {
+        "heading": "3 · disabledReason · 操作が効かない理由は操作より先に置かれる",
+        "why": "無効化されたボタンは「なぜ」を一切伝えません。だから理由は DOM 順で操作より先に置かれ（WCAG 2.2 · 1.3.2）、タイルは data-unavailable を帯びてメダリオンが沈みます。disabledReason はボタンを無効化しません — それは利用側の Button prop のままです。",
+        "inventory": {
+          "title": "在庫管理",
+          "description": "拠点別の在庫、入出庫、棚卸を管理します。",
+          "reason": "この部門ではまだ利用申請が承認されていません。"
+        },
+        "contracts": {
+          "title": "契約書管理",
+          "description": "契約書の保管、期限通知、電子署名の依頼を扱います。",
+          "reason": "閲覧には法務部門のロールが必要です。IT ヘルプデスクへ申請してください。"
+        },
+        "analytics": {
+          "title": "分析基盤",
+          "description": "全社ダッシュボードとデータマートを提供します。",
+          "reason": "このサービスは組織の管理者によって停止されています。"
+        }
+      },
+      "loadingCatalog": {
+        "heading": "4 · 読み込み中とカタログ導線",
+        "why": "ServiceLauncherCardSkeleton は同じ骨格の初期プレースホルダーで、label が必須・aria-busy を持ち、ライブリージョンは意図的に開きません。ServiceCatalogCta は実在する追加導線がある場合にだけ並べる相棒タイルで、既定の Plus 以外のグリフも受け取ります。",
+        "skeletonLabel": "サービスを読み込み中",
+        "addApp": {
+          "title": "アプリを追加"
+        },
+        "allApps": {
+          "title": "すべての社内アプリを見る"
+        }
+      },
+      "edgeCases": {
+        "heading": "5 · 端に触れる · 3 行の名称、説明なし、切れない長いホスト名",
+        "why": "整った例はタイルが崩れる場所を何も見せません。ここは崩れる側です：3 行になる名称と 2 語の名称が同じ行に並び、説明のないタイルが説明のあるタイルの隣に置かれ、空白のないホスト名が列幅を広げようとします。見苦しく見えるなら、このセクションは仕事をしています — 耐えるのはサンプルデータではなくコンポーネントの側です。",
+        "hrPortal": {
+          "title": "グローバル人事情報基盤・従業員セルフサービスポータル（アジア太平洋地域）",
+          "description": "人事マスタ、勤怠、給与、評価を一元管理する統合ワークスペースです。"
+        },
+        "dailyReport": {
+          "title": "日報"
+        },
+        "warningConsole": {
+          "title": "Global Workforce Identity & Entitlement Administration Console",
+          "description": "Review pending entitlement requests before the next access certification.",
+          "reason": "Your organization has no approved request for this service yet."
+        }
+      },
+      "minimalTiles": {
+        "heading": "6 · 最小のタイル",
+        "why": "必須は icon・title・action の 3 つだけです。statusLabel を省けば Badge の行ごと消え、description と metadata を省いても骨格は保たれます — 隣の満載のタイルと高さを比べてください。",
+        "wiki": {
+          "title": "社内 Wiki"
+        },
+        "contact": {
+          "title": "問い合わせ窓口",
+          "description": "社内のシステム相談はこちらで受け付けています。"
+        },
+        "calendar": {
+          "title": "全社カレンダー",
+          "description": "全社行事、休業日、拠点別の予定を共有します。",
+          "reason": "読み取り専用で公開されています。"
+        }
+      },
+      "logo": {
+        "heading": "7 · logo · アップロードされたロゴと、それがないサービス",
+        "why": "logo は管理者がアップロードした画像の URL で、読み込めたときだけ icon を置き換えます。icon は必須のままです — 作ったばかりのサービスにはロゴがなく、URL が 404 になったサービスにもロゴはありません。壊れた画像は DOM に入りません。画像の箱はグリフと同じ 20px（--card-service-launcher-icon-glyph-size）で、縦横比は object-fit: contain で保たれます。",
+        "uploaded": {
+          "title": "勤怠管理",
+          "description": "ロゴをアップロード済みのサービス。メダリオンには icon ではなくロゴが出ます。"
+        },
+        "missing": {
+          "title": "勤怠管理（ロゴ未設定）",
+          "description": "同じタイルで logo を渡さない場合。icon がそのまま残り、メダリオンの大きさも変わりません。"
+        },
+        "broken": {
+          "title": "データ連携基盤（ロゴ 404）",
+          "description": "logo_url は入っているのにファイルがない状態。タイルは空にならず icon に戻ります。"
+        },
+        "wideMark": {
+          "title": "経費精算",
+          "description": "240×96 の横長ロゴ。contain なので切り抜かれず、箱の幅もグリフと同じままです。"
+        },
+        "withReason": {
+          "title": "権限管理",
+          "description": "ロゴと disabledReason は直交します。状態を伝えるのは Badge と理由文であって、他社のブランド色をこちらで勝手に転ばしはしません。",
+          "reason": "閲覧には管理者ロールが必要です。"
+        },
+        "emptyString": {
+          "title": "社内メール",
+          "description": "空文字列の logo。未設定と同じ扱いで、無駄なリクエストも発行しません。"
+        }
+      }
+    }
   }
 }

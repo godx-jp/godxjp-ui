@@ -1176,5 +1176,172 @@
       "ledgerLabel": "Mã sổ cái",
       "ledgerHelper": "Định danh 71 ký tự vẫn nằm trong khung"
     }
+  },
+  "serviceLauncherShowcase": {
+    "page": {
+      "title": "ServiceLauncherCard",
+      "subtitle": "Các ô cho danh sách ứng dụng nội bộ của tổ chức — khả dụng, hạn chế, tạm dừng, lưu trữ, đang tải và lối vào danh mục."
+    },
+    "status": {
+      "available": "Khả dụng",
+      "active": "Đang hoạt động",
+      "maintenance": "Đang bảo trì",
+      "stopped": "Đã dừng",
+      "adminOnly": "Chỉ dành cho quản trị viên",
+      "preparing": "Đang chuẩn bị",
+      "archived": "Đã lưu trữ",
+      "unapplied": "Chưa đăng ký",
+      "noPermission": "Không có quyền",
+      "attentionRequired": "Attention required"
+    },
+    "action": {
+      "openService": "Mở dịch vụ",
+      "open": "Mở",
+      "viewStatus": "Xem tình trạng",
+      "viewHistory": "Xem lịch sử",
+      "checkPermissions": "Kiểm tra quyền",
+      "openSettings": "Mở cài đặt",
+      "viewArchive": "Xem lưu trữ",
+      "openRequestForm": "Mở biểu mẫu yêu cầu",
+      "openList": "Mở danh sách",
+      "openServiceEnglish": "Open service"
+    },
+    "sections": {
+      "basics": {
+        "heading": "1 · Cơ bản · các dịch vụ có thể sử dụng",
+        "why": "Biểu tượng, tên, trạng thái, mô tả, định danh, thao tác. Nội dung trạng thái luôn do phía sử dụng cung cấp — component chỉ quyết định ý nghĩa của tone trên Badge.",
+        "attendance": {
+          "title": "Quản lý chấm công",
+          "description": "Quản lý chấm công, ca làm việc và đơn xin nghỉ phép trong một không gian làm việc duy nhất."
+        },
+        "expense": {
+          "title": "Quyết toán chi phí",
+          "description": "Xử lý từ nộp hóa đơn, phê duyệt cho đến đồng bộ với sổ kế toán."
+        },
+        "meetingRoom": {
+          "title": "Đặt phòng họp",
+          "description": "Đặt phòng họp và thiết bị theo từng cơ sở."
+        }
+      },
+      "statusTones": {
+        "heading": "2 · Toàn bộ 6 giá trị statusTone",
+        "why": "success / warning / destructive / info / neutral / muted. Tone chỉ quyết định ý nghĩa của Badge — nội dung, phán đoán và việc thao tác có được phép hay không đều do phía sử dụng cung cấp.",
+        "mail": {
+          "title": "Email nội bộ",
+          "description": "Quản lý hộp thư, danh sách phân phối và chữ ký dùng chung."
+        },
+        "fileShare": {
+          "title": "Chia sẻ tệp",
+          "description": "Xử lý thư mục phòng ban và liên kết chia sẻ ra bên ngoài."
+        },
+        "dataSync": {
+          "title": "Nền tảng tích hợp dữ liệu",
+          "description": "Quản lý các tác vụ đồng bộ dữ liệu với hệ thống bên ngoài."
+        },
+        "iam": {
+          "title": "Quản lý quyền truy cập",
+          "description": "Xem vai trò, chính sách xác thực hai yếu tố và các sự kiện kiểm toán."
+        },
+        "integrations": {
+          "title": "Ứng dụng liên kết",
+          "description": "Cấu hình kết nối và phạm vi cho các tích hợp bên thứ ba."
+        },
+        "legacyKb": {
+          "title": "Cơ sở tri thức cũ",
+          "description": "Lưu trữ ở chế độ chỉ đọc các quy trình vận hành đến hết năm tài chính 2024."
+        }
+      },
+      "disabledReason": {
+        "heading": "3 · disabledReason · lý do thao tác không thực hiện được được đặt trước thao tác",
+        "why": "Một nút bị vô hiệu hóa không truyền tải bất kỳ lý do 'tại sao' nào. Vì vậy lý do được đặt trước thao tác theo thứ tự DOM (WCAG 2.2 · 1.3.2), và ô mang thuộc tính data-unavailable khiến huy hiệu mờ đi. disabledReason không vô hiệu hóa nút — đó vẫn là prop Button do phía sử dụng kiểm soát.",
+        "inventory": {
+          "title": "Quản lý tồn kho",
+          "description": "Quản lý tồn kho, nhập xuất kho và kiểm kê theo từng cơ sở.",
+          "reason": "Yêu cầu sử dụng của phòng ban này vẫn chưa được phê duyệt."
+        },
+        "contracts": {
+          "title": "Quản lý hợp đồng",
+          "description": "Xử lý lưu trữ hợp đồng, thông báo hạn và yêu cầu ký điện tử.",
+          "reason": "Cần có vai trò của bộ phận pháp chế để xem. Vui lòng đăng ký qua bộ phận hỗ trợ IT."
+        },
+        "analytics": {
+          "title": "Nền tảng phân tích",
+          "description": "Cung cấp bảng điều khiển và kho dữ liệu cho toàn công ty.",
+          "reason": "Dịch vụ này đã bị quản trị viên của tổ chức tạm dừng."
+        }
+      },
+      "loadingCatalog": {
+        "heading": "4 · Trạng thái đang tải và lối vào danh mục",
+        "why": "ServiceLauncherCardSkeleton là placeholder ban đầu có cùng khung xương, bắt buộc phải có label, mang aria-busy, và cố ý không mở live region. ServiceCatalogCta là ô đồng hành chỉ đặt cạnh khi thực sự có thêm lối vào, và nó nhận một glyph khác ngoài Plus mặc định.",
+        "skeletonLabel": "Đang tải dịch vụ",
+        "addApp": {
+          "title": "Thêm ứng dụng"
+        },
+        "allApps": {
+          "title": "Xem tất cả ứng dụng nội bộ"
+        }
+      },
+      "edgeCases": {
+        "heading": "5 · Chạm tới giới hạn · tên 3 dòng, không có mô tả, tên máy chủ dài không thể ngắt",
+        "why": "Một ví dụ gọn gàng không bao giờ cho thấy nơi ô bị vỡ. Đây là mặt vỡ đó: một tên phải xuống 3 dòng nằm cạnh một tên chỉ 2 từ trên cùng một hàng, một ô không có mô tả đặt cạnh một ô có mô tả, và một tên máy chủ không có khoảng trắng cố kéo giãn cột. Nếu trông có vẻ xấu xí, tức là phần này đang làm đúng việc của nó — thứ phải chịu được áp lực là component, chứ không phải dữ liệu mẫu.",
+        "hrPortal": {
+          "title": "Nền tảng thông tin nhân sự toàn cầu · Cổng tự phục vụ nhân viên (khu vực châu Á - Thái Bình Dương)",
+          "description": "Không gian làm việc tích hợp quản lý tập trung dữ liệu nhân sự gốc, chấm công, lương và đánh giá."
+        },
+        "dailyReport": {
+          "title": "Báo cáo hằng ngày"
+        },
+        "warningConsole": {
+          "title": "Global Workforce Identity & Entitlement Administration Console",
+          "description": "Review pending entitlement requests before the next access certification.",
+          "reason": "Your organization has no approved request for this service yet."
+        }
+      },
+      "minimalTiles": {
+        "heading": "6 · Ô tối giản",
+        "why": "Chỉ có icon, title và action là bắt buộc. Bỏ statusLabel thì cả hàng Badge biến mất; bỏ cả description và metadata thì khung vẫn được giữ nguyên — hãy so sánh chiều cao với ô đầy đủ bên cạnh.",
+        "wiki": {
+          "title": "Wiki nội bộ"
+        },
+        "contact": {
+          "title": "Đầu mối liên hệ hỗ trợ",
+          "description": "Nơi tiếp nhận các thắc mắc về hệ thống nội bộ."
+        },
+        "calendar": {
+          "title": "Lịch toàn công ty",
+          "description": "Chia sẻ sự kiện toàn công ty, ngày nghỉ và lịch theo từng cơ sở.",
+          "reason": "Được công khai ở chế độ chỉ đọc."
+        }
+      },
+      "logo": {
+        "heading": "7 · logo · logo đã tải lên, và những dịch vụ chưa có logo",
+        "why": "logo là URL của một hình ảnh do quản trị viên tải lên, và nó chỉ thay thế icon khi tải thành công. icon vẫn là bắt buộc — một dịch vụ vừa tạo chưa có logo, và một dịch vụ có URL trả về 404 cũng không có logo. Một hình ảnh bị lỗi sẽ không bao giờ vào DOM. Khung hình ảnh có cùng kích thước 20px với glyph (--card-service-launcher-icon-glyph-size), và tỉ lệ khung hình được giữ nguyên nhờ object-fit: contain.",
+        "uploaded": {
+          "title": "Quản lý chấm công",
+          "description": "Dịch vụ đã tải lên logo. Huy hiệu hiển thị logo thay vì icon."
+        },
+        "missing": {
+          "title": "Quản lý chấm công (chưa đặt logo)",
+          "description": "Cùng một ô nhưng không truyền logo. icon vẫn giữ nguyên, và kích thước huy hiệu cũng không đổi."
+        },
+        "broken": {
+          "title": "Nền tảng tích hợp dữ liệu (logo lỗi 404)",
+          "description": "logo_url đã được đặt nhưng tệp không tồn tại. Ô không bị trống mà quay về dùng icon."
+        },
+        "wideMark": {
+          "title": "Quyết toán chi phí",
+          "description": "Logo dạng chữ nằm ngang 240×96. Vì dùng contain nên không bị cắt xén, và chiều rộng khung vẫn giữ nguyên như glyph."
+        },
+        "withReason": {
+          "title": "Quản lý quyền truy cập",
+          "description": "logo và disabledReason là hai trục độc lập. Trạng thái được truyền tải qua Badge và văn bản lý do — chúng ta không tự ý để màu thương hiệu của bên khác gánh vai trò đó.",
+          "reason": "Cần có vai trò quản trị viên để xem."
+        },
+        "emptyString": {
+          "title": "Email nội bộ",
+          "description": "logo là chuỗi rỗng. Được xử lý giống như chưa đặt, và cũng không phát sinh yêu cầu thừa."
+        }
+      }
+    }
   }
 }

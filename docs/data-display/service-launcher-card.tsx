@@ -19,6 +19,7 @@ import {
   ServiceLauncherCardSkeleton,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /* Committed SVGs, imported so the bundler rewrites each URL against PREVIEW_BASE. A docs page must
@@ -47,6 +48,10 @@ const BROKEN_LOGO_URL = "data:image/svg+xml,not-an-image";
  * own entitlement contract. There is no `href`, no `available`, no `entitlement` prop to find.
  *
  * ResponsiveGrid owns the 3 → 2 → 1 ladder. The page writes no grid tracks and no page-local CSS.
+ *
+ * All copy is localized through useTranslation() — see docs/showcase/table-pagination.tsx for the
+ * pattern this follows. `metadata` (hostnames, version strings, pixel dimensions) is domain DATA
+ * and stays literal; it is what the gate does not scan and what localizing would be wrong for.
  */
 
 /** A section heading. Headings are headings, not Cards — a Card here would nest borders. */
@@ -73,247 +78,291 @@ function Section({
 }
 
 export default function Demo() {
+  const { t } = useTranslation();
+
+  // Status-tone labels are consumer copy, not the component's — shared across the tiles that
+  // reuse the same real-world status (e.g. "stopped" appears on both the data-sync and analytics
+  // tiles). `attentionRequired` / `openServiceEnglish` stay identical across locales on purpose:
+  // section 5's third tile is deliberately an English-named service in a JP admin portal.
+  const status = {
+    available: t("serviceLauncherShowcase.status.available"),
+    active: t("serviceLauncherShowcase.status.active"),
+    maintenance: t("serviceLauncherShowcase.status.maintenance"),
+    stopped: t("serviceLauncherShowcase.status.stopped"),
+    adminOnly: t("serviceLauncherShowcase.status.adminOnly"),
+    preparing: t("serviceLauncherShowcase.status.preparing"),
+    archived: t("serviceLauncherShowcase.status.archived"),
+    unapplied: t("serviceLauncherShowcase.status.unapplied"),
+    noPermission: t("serviceLauncherShowcase.status.noPermission"),
+    attentionRequired: t("serviceLauncherShowcase.status.attentionRequired"),
+  };
+
+  const action = {
+    openService: t("serviceLauncherShowcase.action.openService"),
+    open: t("serviceLauncherShowcase.action.open"),
+    viewStatus: t("serviceLauncherShowcase.action.viewStatus"),
+    viewHistory: t("serviceLauncherShowcase.action.viewHistory"),
+    checkPermissions: t("serviceLauncherShowcase.action.checkPermissions"),
+    openSettings: t("serviceLauncherShowcase.action.openSettings"),
+    viewArchive: t("serviceLauncherShowcase.action.viewArchive"),
+    openRequestForm: t("serviceLauncherShowcase.action.openRequestForm"),
+    openList: t("serviceLauncherShowcase.action.openList"),
+    openServiceEnglish: t("serviceLauncherShowcase.action.openServiceEnglish"),
+  };
+
   return (
     <PageContainer
-      title="ServiceLauncherCard"
-      subtitle="社内アプリケーション一覧のタイル — 利用可能・制限・停止・アーカイブ・読み込み中・カタログ導線"
+      title={t("serviceLauncherShowcase.page.title")}
+      subtitle={t("serviceLauncherShowcase.page.subtitle")}
     >
       <Flex direction="col" gap="lg">
         <Section
-          title="1 · 基本 · 利用できるサービス"
-          why="アイコン・名称・ステータス・説明・識別子・操作。ステータスの文言は常に利用側のコピーで、コンポーネントが決めるのは tone に対応する Badge の意味づけだけです。"
+          title={t("serviceLauncherShowcase.sections.basics.heading")}
+          why={t("serviceLauncherShowcase.sections.basics.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <ServiceLauncherCard
               icon={Clock3}
-              title="勤怠管理"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.basics.attendance.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="打刻、シフト、休暇申請を一つのワークスペースで管理します。"
+              description={t("serviceLauncherShowcase.sections.basics.attendance.description")}
               metadata="attend.corp.example.jp · v4.2"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={ReceiptText}
-              title="経費精算"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.basics.expense.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="領収書の提出から承認、仕訳連携までを扱います。"
+              description={t("serviceLauncherShowcase.sections.basics.expense.description")}
               metadata="keihi.corp.example.jp · v2.8"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={Calendar}
-              title="会議室予約"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.basics.meetingRoom.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="拠点ごとの会議室と備品を予約します。"
+              description={t("serviceLauncherShowcase.sections.basics.meetingRoom.description")}
               metadata="rooms.corp.example.jp · v1.9"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="2 · statusTone の 6 値すべて"
-          why="success / warning / destructive / info / neutral / muted。tone は Badge の意味づけだけを決め、文言・判定・操作の可否はすべて利用側が渡します。"
+          title={t("serviceLauncherShowcase.sections.statusTones.heading")}
+          why={t("serviceLauncherShowcase.sections.statusTones.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <ServiceLauncherCard
               icon={Mail}
               titleLevel={3}
-              title="社内メール"
-              statusLabel="稼働中"
+              title={t("serviceLauncherShowcase.sections.statusTones.mail.title")}
+              statusLabel={status.active}
               statusTone="success"
-              description="メールボックス、配布リスト、共有署名を管理します。"
+              description={t("serviceLauncherShowcase.sections.statusTones.mail.description")}
               metadata="mail.corp.example.jp"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={Server}
               titleLevel={3}
-              title="ファイル共有"
-              statusLabel="メンテナンス中"
+              title={t("serviceLauncherShowcase.sections.statusTones.fileShare.title")}
+              statusLabel={status.maintenance}
               statusTone="warning"
-              description="部門フォルダと外部共有リンクを扱います。"
+              description={t("serviceLauncherShowcase.sections.statusTones.fileShare.description")}
               metadata="files.corp.example.jp"
-              action={<Button variant="outline">状況を見る</Button>}
+              action={<Button variant="outline">{action.viewStatus}</Button>}
             />
             <ServiceLauncherCard
               icon={Database}
               titleLevel={3}
-              title="データ連携基盤"
-              statusLabel="停止中"
+              title={t("serviceLauncherShowcase.sections.statusTones.dataSync.title")}
+              statusLabel={status.stopped}
               statusTone="destructive"
-              description="外部システムとのデータ同期ジョブを管理します。"
+              description={t("serviceLauncherShowcase.sections.statusTones.dataSync.description")}
               metadata="sync.corp.example.jp"
-              action={<Button variant="outline">履歴を見る</Button>}
+              action={<Button variant="outline">{action.viewHistory}</Button>}
             />
             <ServiceLauncherCard
               icon={ShieldCheck}
               titleLevel={3}
-              title="権限管理"
-              statusLabel="管理者限定"
+              title={t("serviceLauncherShowcase.sections.statusTones.iam.title")}
+              statusLabel={status.adminOnly}
               statusTone="info"
-              description="ロール、二要素認証ポリシー、監査イベントを確認します。"
+              description={t("serviceLauncherShowcase.sections.statusTones.iam.description")}
               metadata="iam.corp.example.jp"
-              action={<Button variant="outline">権限を確認</Button>}
+              action={<Button variant="outline">{action.checkPermissions}</Button>}
             />
             <ServiceLauncherCard
               icon={PlugZap}
               titleLevel={3}
-              title="連携アプリ"
-              statusLabel="準備中"
+              title={t("serviceLauncherShowcase.sections.statusTones.integrations.title")}
+              statusLabel={status.preparing}
               statusTone="neutral"
-              description="サードパーティ連携の接続とスコープを設定します。"
+              description={t(
+                "serviceLauncherShowcase.sections.statusTones.integrations.description",
+              )}
               metadata="connect.corp.example.jp"
-              action={<Button variant="outline">設定を開く</Button>}
+              action={<Button variant="outline">{action.openSettings}</Button>}
             />
             <ServiceLauncherCard
               icon={BookOpen}
               titleLevel={3}
-              title="旧ナレッジベース"
-              statusLabel="アーカイブ"
+              title={t("serviceLauncherShowcase.sections.statusTones.legacyKb.title")}
+              statusLabel={status.archived}
               statusTone="muted"
-              description="2024 年度までの運用手順を読み取り専用で保管しています。"
+              description={t("serviceLauncherShowcase.sections.statusTones.legacyKb.description")}
               metadata="kb-archive.corp.example.jp"
-              action={<Button variant="outline">アーカイブを見る</Button>}
+              action={<Button variant="outline">{action.viewArchive}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="3 · disabledReason · 操作が効かない理由は操作より先に置かれる"
-          why="無効化されたボタンは「なぜ」を一切伝えません。だから理由は DOM 順で操作より先に置かれ（WCAG 2.2 · 1.3.2）、タイルは data-unavailable を帯びてメダリオンが沈みます。disabledReason はボタンを無効化しません — それは利用側の Button prop のままです。"
+          title={t("serviceLauncherShowcase.sections.disabledReason.heading")}
+          why={t("serviceLauncherShowcase.sections.disabledReason.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <ServiceLauncherCard
               icon={Boxes}
               titleLevel={3}
-              title="在庫管理"
-              statusLabel="未申請"
+              title={t("serviceLauncherShowcase.sections.disabledReason.inventory.title")}
+              statusLabel={status.unapplied}
               statusTone="warning"
-              description="拠点別の在庫、入出庫、棚卸を管理します。"
+              description={t(
+                "serviceLauncherShowcase.sections.disabledReason.inventory.description",
+              )}
               metadata="zaiko.corp.example.jp"
-              disabledReason="この部門ではまだ利用申請が承認されていません。"
-              action={<Button disabled>サービスを開く</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.disabledReason.inventory.reason")}
+              action={<Button disabled>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={FileText}
               titleLevel={3}
-              title="契約書管理"
-              statusLabel="権限なし"
+              title={t("serviceLauncherShowcase.sections.disabledReason.contracts.title")}
+              statusLabel={status.noPermission}
               statusTone="info"
-              description="契約書の保管、期限通知、電子署名の依頼を扱います。"
+              description={t(
+                "serviceLauncherShowcase.sections.disabledReason.contracts.description",
+              )}
               metadata="keiyaku.corp.example.jp"
-              disabledReason="閲覧には法務部門のロールが必要です。IT ヘルプデスクへ申請してください。"
-              action={<Button disabled>サービスを開く</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.disabledReason.contracts.reason")}
+              action={<Button disabled>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={Database}
               titleLevel={3}
-              title="分析基盤"
-              statusLabel="停止中"
+              title={t("serviceLauncherShowcase.sections.disabledReason.analytics.title")}
+              statusLabel={status.stopped}
               statusTone="destructive"
-              description="全社ダッシュボードとデータマートを提供します。"
+              description={t(
+                "serviceLauncherShowcase.sections.disabledReason.analytics.description",
+              )}
               metadata="bi.corp.example.jp"
-              disabledReason="このサービスは組織の管理者によって停止されています。"
-              action={<Button disabled>サービスを開く</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.disabledReason.analytics.reason")}
+              action={<Button disabled>{action.openService}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="4 · 読み込み中とカタログ導線"
-          why="ServiceLauncherCardSkeleton は同じ骨格の初期プレースホルダーで、label が必須・aria-busy を持ち、ライブリージョンは意図的に開きません。ServiceCatalogCta は実在する追加導線がある場合にだけ並べる相棒タイルで、既定の Plus 以外のグリフも受け取ります。"
+          title={t("serviceLauncherShowcase.sections.loadingCatalog.heading")}
+          why={t("serviceLauncherShowcase.sections.loadingCatalog.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
-            <ServiceLauncherCardSkeleton label="サービスを読み込み中" />
+            <ServiceLauncherCardSkeleton
+              label={t("serviceLauncherShowcase.sections.loadingCatalog.skeletonLabel")}
+            />
             <ServiceCatalogCta
-              title="アプリを追加"
-              action={<Button variant="outline">申請フォームを開く</Button>}
+              title={t("serviceLauncherShowcase.sections.loadingCatalog.addApp.title")}
+              action={<Button variant="outline">{action.openRequestForm}</Button>}
             />
             <ServiceCatalogCta
               icon={LayoutGrid}
-              title="すべての社内アプリを見る"
-              action={<Button variant="ghost">一覧を開く</Button>}
+              title={t("serviceLauncherShowcase.sections.loadingCatalog.allApps.title")}
+              action={<Button variant="ghost">{action.openList}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="5 · 端に触れる · 3 行の名称、説明なし、切れない長いホスト名"
-          why="整った例はタイルが崩れる場所を何も見せません。ここは崩れる側です：3 行になる名称と 2 語の名称が同じ行に並び、説明のないタイルが説明のあるタイルの隣に置かれ、空白のないホスト名が列幅を広げようとします。見苦しく見えるなら、このセクションは仕事をしています — 耐えるのはサンプルデータではなくコンポーネントの側です。"
+          title={t("serviceLauncherShowcase.sections.edgeCases.heading")}
+          why={t("serviceLauncherShowcase.sections.edgeCases.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <ServiceLauncherCard
               icon={ShieldCheck}
               titleLevel={3}
-              title="グローバル人事情報基盤・従業員セルフサービスポータル（アジア太平洋地域）"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.edgeCases.hrPortal.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="人事マスタ、勤怠、給与、評価を一元管理する統合ワークスペースです。"
+              description={t("serviceLauncherShowcase.sections.edgeCases.hrPortal.description")}
               metadata="workforce-identity-administration.ap-northeast-1.corp.example.jp · v11.0"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={Clock3}
               titleLevel={3}
-              title="日報"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.edgeCases.dailyReport.title")}
+              statusLabel={status.available}
               statusTone="success"
               metadata="nippo.corp.example.jp"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             <ServiceLauncherCard
               icon={Server}
               titleLevel={3}
-              title="Global Workforce Identity & Entitlement Administration Console"
-              statusLabel="Attention required"
+              title={t("serviceLauncherShowcase.sections.edgeCases.warningConsole.title")}
+              statusLabel={status.attentionRequired}
               statusTone="warning"
-              description="Review pending entitlement requests before the next access certification."
+              description={t(
+                "serviceLauncherShowcase.sections.edgeCases.warningConsole.description",
+              )}
               metadata="workforce-identity-administration.ap-southeast-1.corp.example.com"
-              disabledReason="Your organization has no approved request for this service yet."
-              action={<Button disabled>Open service</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.edgeCases.warningConsole.reason")}
+              action={<Button disabled>{action.openServiceEnglish}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="6 · 最小のタイル"
-          why="必須は icon・title・action の 3 つだけです。statusLabel を省けば Badge の行ごと消え、description と metadata を省いても骨格は保たれます — 隣の満載のタイルと高さを比べてください。"
+          title={t("serviceLauncherShowcase.sections.minimalTiles.heading")}
+          why={t("serviceLauncherShowcase.sections.minimalTiles.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <ServiceLauncherCard
               icon={BookOpen}
               titleLevel={3}
-              title="社内 Wiki"
-              action={<Button variant="outline">開く</Button>}
+              title={t("serviceLauncherShowcase.sections.minimalTiles.wiki.title")}
+              action={<Button variant="outline">{action.open}</Button>}
             />
             <ServiceLauncherCard
               icon={Mail}
               titleLevel={3}
-              title="問い合わせ窓口"
-              description="社内のシステム相談はこちらで受け付けています。"
-              action={<Button variant="outline">開く</Button>}
+              title={t("serviceLauncherShowcase.sections.minimalTiles.contact.title")}
+              description={t("serviceLauncherShowcase.sections.minimalTiles.contact.description")}
+              action={<Button variant="outline">{action.open}</Button>}
             />
             <ServiceLauncherCard
               icon={Calendar}
               titleLevel={3}
-              title="全社カレンダー"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.minimalTiles.calendar.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="全社行事、休業日、拠点別の予定を共有します。"
+              description={t("serviceLauncherShowcase.sections.minimalTiles.calendar.description")}
               metadata="calendar.corp.example.jp · v3.1"
-              disabledReason="読み取り専用で公開されています。"
-              action={<Button variant="outline">開く</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.minimalTiles.calendar.reason")}
+              action={<Button variant="outline">{action.open}</Button>}
             />
           </ResponsiveGrid>
         </Section>
 
         <Section
-          title="7 · logo · アップロードされたロゴと、それがないサービス"
-          why="logo は管理者がアップロードした画像の URL で、読み込めたときだけ icon を置き換えます。icon は必須のままです — 作ったばかりのサービスにはロゴがなく、URL が 404 になったサービスにもロゴはありません。壊れた画像は DOM に入りません。画像の箱はグリフと同じ 20px（--card-service-launcher-icon-glyph-size）で、縦横比は object-fit: contain で保たれます。"
+          title={t("serviceLauncherShowcase.sections.logo.heading")}
+          why={t("serviceLauncherShowcase.sections.logo.why")}
         >
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             {/* 1 · a real uploaded mark, square */}
@@ -321,72 +370,72 @@ export default function Demo() {
               icon={Clock3}
               logo={serviceMarkTeal}
               titleLevel={3}
-              title="勤怠管理"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.logo.uploaded.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="ロゴをアップロード済みのサービス。メダリオンには icon ではなくロゴが出ます。"
+              description={t("serviceLauncherShowcase.sections.logo.uploaded.description")}
               metadata="attend.corp.example.jp · v4.2"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             {/* 2 · the SAME tile with no upload yet — the fallback, side by side */}
             <ServiceLauncherCard
               icon={Clock3}
               titleLevel={3}
-              title="勤怠管理（ロゴ未設定）"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.logo.missing.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="同じタイルで logo を渡さない場合。icon がそのまま残り、メダリオンの大きさも変わりません。"
+              description={t("serviceLauncherShowcase.sections.logo.missing.description")}
               metadata="attend.corp.example.jp · v4.2"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             {/* 3 · the URL is set but the file is gone — the state that reaches production */}
             <ServiceLauncherCard
               icon={Database}
               logo={BROKEN_LOGO_URL}
               titleLevel={3}
-              title="データ連携基盤（ロゴ 404）"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.logo.broken.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="logo_url は入っているのにファイルがない状態。タイルは空にならず icon に戻ります。"
+              description={t("serviceLauncherShowcase.sections.logo.broken.description")}
               metadata="sync.corp.example.jp"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             {/* 4 · a WIDE wordmark — contain letterboxes it, never crops it */}
             <ServiceLauncherCard
               icon={ReceiptText}
               logo={serviceMarkRose}
               titleLevel={3}
-              title="経費精算"
-              statusLabel="利用可能"
+              title={t("serviceLauncherShowcase.sections.logo.wideMark.title")}
+              statusLabel={status.available}
               statusTone="success"
-              description="240×96 の横長ロゴ。contain なので切り抜かれず、箱の幅もグリフと同じままです。"
+              description={t("serviceLauncherShowcase.sections.logo.wideMark.description")}
               metadata="keihi.corp.example.jp · v2.8"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
             {/* 5 · logo + disabledReason — the medallion mutes, the mark stays the mark */}
             <ServiceLauncherCard
               icon={ShieldCheck}
               logo={serviceMarkTeal}
               titleLevel={3}
-              title="権限管理"
-              statusLabel="権限なし"
+              title={t("serviceLauncherShowcase.sections.logo.withReason.title")}
+              statusLabel={status.noPermission}
               statusTone="info"
-              description="ロゴと disabledReason は直交します。状態を伝えるのは Badge と理由文であって、他社のブランド色をこちらで勝手に転ばしはしません。"
+              description={t("serviceLauncherShowcase.sections.logo.withReason.description")}
               metadata="iam.corp.example.jp"
-              disabledReason="閲覧には管理者ロールが必要です。"
-              action={<Button disabled>サービスを開く</Button>}
+              disabledReason={t("serviceLauncherShowcase.sections.logo.withReason.reason")}
+              action={<Button disabled>{action.openService}</Button>}
             />
             {/* 6 · logo="" — an empty projection value is the same as no logo */}
             <ServiceLauncherCard
               icon={Mail}
               logo=""
               titleLevel={3}
-              title="社内メール"
-              statusLabel="稼働中"
+              title={t("serviceLauncherShowcase.sections.logo.emptyString.title")}
+              statusLabel={status.active}
               statusTone="success"
-              description="空文字列の logo。未設定と同じ扱いで、無駄なリクエストも発行しません。"
+              description={t("serviceLauncherShowcase.sections.logo.emptyString.description")}
               metadata="mail.corp.example.jp"
-              action={<Button>サービスを開く</Button>}
+              action={<Button>{action.openService}</Button>}
             />
           </ResponsiveGrid>
         </Section>

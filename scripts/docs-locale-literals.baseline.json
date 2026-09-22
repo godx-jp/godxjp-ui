@@ -1,8 +1,8 @@
 {
   "note": "Hard-coded locale content in the EXAMPLES — the surface the MCP catalog, agent/patterns.json and every copy-pasting consumer read from. Keyed on the FILE PATH (identity) and never on a line number, which moves the moment someone adds an import; the value is that file's remaining allowance. This list is DEBT and may only SHRINK: the gate fails on a file whose count rises above its allowance, and `--update-baseline` REFUSES to raise or add an entry. The way past the gate is useTranslation() + a message key — see docs/showcase/table-pagination.tsx, which does exactly that for its pagination chrome.",
   "tracked": "gh#846",
-  "count": 218,
-  "occurrences": 6073,
+  "count": 217,
+  "occurrences": 6012,
   "files": {
     "docs/charts/cjk-category-axis.tsx": 8,
     "docs/charts/compact-bar-trend.tsx": 36,
@@ -40,7 +40,6 @@
     "docs/data-display/prose.tsx": 34,
     "docs/data-display/qr-code.tsx": 6,
     "docs/data-display/scroll-area.tsx": 21,
-    "docs/data-display/service-launcher-card.tsx": 61,
     "docs/data-display/stat-card.tsx": 77,
     "docs/data-display/swatch.tsx": 6,
     "docs/data-display/table.tsx": 52,
