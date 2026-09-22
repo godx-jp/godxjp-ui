@@ -54,6 +54,11 @@
       "description": "Accessible table name (localized default).",
       "name": "label",
       "type": "string"
+    },
+    {
+      "description": "DOM id on the grid root. Worth setting on a permissions page that also renders a summary or a legend elsewhere: it is the anchor those can point at, and the stable handle for an E2E selector that must not depend on the localized `label`.",
+      "name": "id",
+      "type": "string"
     }
   ],
   "related": [

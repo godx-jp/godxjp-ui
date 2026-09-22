@@ -76,9 +76,31 @@ const IGNORED_FIELDS = new Set([
   "ref",
   "data-testid",
   "asChild",
-  // a11y pass-through plumbing (forwarded to the native control, not a catalog concept)
+  /*
+   * THE `FieldA11yProps` CONTRACT (src/lib/field-a11y.ts) — a cross-cutting form contract, not a
+   * per-component catalog concept. `FormField` INJECTS these onto its control child by
+   * `cloneElement`; every form-capable component accepts them and forwards them to its semantic
+   * focus target. Thirteen prop types intersect the interface, and a component that also spells
+   * the members out inline (CascaderProp does) would otherwise owe the catalog the same six rows
+   * as the other twelve — 78 entries restating one contract that is documented once, in
+   * `mcp/src/data/rules.ts` rule 227 and in the interface itself.
+   *
+   * `aria-labelledby` / `aria-describedby` were already excluded on exactly this reasoning; this
+   * completes the set rather than leaving five of seven members to surface at random depending on
+   * which component re-declares them. (gh#857)
+   *
+   * `aria-label` is DELIBERATELY NOT HERE. It is the one member that is a per-component decision
+   * and not plumbing: on a bare control outside a FormField it is the only accessible name the
+   * thing has (rule 227), and the catalog already documents it as a real prop on Swatch,
+   * TopbarItem and Breadcrumb. Excluding it would take the gate's teeth off the single aria
+   * attribute a consumer has to be told about.
+   */
   "aria-labelledby",
   "aria-describedby",
+  "aria-errormessage",
+  "aria-invalid",
+  "aria-required",
+  "data-field",
   // callback PARAM that the field-splitter can leak from a nested signature
   "targetSelectedKeys",
 ]);
@@ -121,15 +143,35 @@ function literalFields(rawSrc, typeName) {
       if (depth === 0) break;
     }
     const body = src.slice(brace + 1, end);
-    // Split into TOP-LEVEL members (a `;`/`,` at nesting depth 0), so keys inside a nested
-    // function-param list `(file: …)`, a return-type literal `{ mediaId: … }`, or a nested
-    // object prop are NOT mistaken for top-level props.
+    /*
+     * Split into TOP-LEVEL members (a `;`/`,` at nesting depth 0), so keys inside a nested
+     * function-param list `(file: …)`, a return-type literal `{ mediaId: … }`, or a nested
+     * object prop are NOT mistaken for top-level props.
+     *
+     * THE `=>` CLAUSE BELOW IS LOAD-BEARING — do not "simplify" this loop back to `for…of`.
+     *
+     * `>` closes a generic (`React.Ref<HTMLDivElement>`), so it has to decrement. But it is also
+     * the second half of an ARROW. In `onAnchoredChange?: (anchored: boolean) => void;` the `(`
+     * takes depth to 1, the `)` returns it to 0, and then the arrow's `>` drives it to −1. From
+     * there no `;` ever sits at depth 0 again, so the split stops and EVERY member declared after
+     * the first arrow-returning prop is invisible. In `ScrollAreaProp` that member is `label`.
+     *
+     * Measured across the six prop files this gate reads: 541 declared props in 65 of 210 prop
+     * types were invisible to the extractor before this clause. Checked against a TypeScript-AST
+     * ground truth, the clause closes the gap exactly — 1751/1751 props, 0 missed, 0 spurious
+     * (gh#857). The loop is indexed rather than `for…of` for one reason only: it must be able to
+     * look at the PREVIOUS character.
+     */
     let depthN = 0;
     let member = "";
     const members = [];
-    for (const ch of body) {
+    for (let n = 0; n < body.length; n++) {
+      const ch = body[n];
       if ("{([<".includes(ch)) depthN++;
-      else if ("})]>".includes(ch)) depthN--;
+      else if ("})]>".includes(ch)) {
+        // `=>` is an arrow, not a closing generic bracket.
+        if (!(ch === ">" && body[n - 1] === "=")) depthN--;
+      }
       if ((ch === ";" || ch === ",") && depthN === 0) {
         members.push(member);
         member = "";
@@ -140,7 +182,13 @@ function literalFields(rawSrc, typeName) {
     members.push(member);
     for (const m of members) {
       const key = m.match(/^\s*(?:"([^"]+)"|([A-Za-z_$][A-Za-z0-9_$]*))\??\s*:/);
-      if (key) fields.add(key[1] ?? key[2]);
+      if (!key) continue;
+      // A member typed `never` is a TOMBSTONE, not a prop. `MasonryProp.gutter?: never` exists so
+      // that arriving from antd's docs is a compile error naming `gap` (docs/DESIGN-AUTHORITY.md)
+      // rather than a silently unspaced grid. Nothing can ever be passed for it, so documenting it
+      // in the catalog would advertise an API that does not exist. (gh#857)
+      if (/^\s*(?:"[^"]+"|[A-Za-z_$][A-Za-z0-9_$]*)\??\s*:\s*never\s*$/.test(m)) continue;
+      fields.add(key[1] ?? key[2]);
     }
     i = end + 1;
   }

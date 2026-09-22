@@ -61,6 +61,16 @@
       "type": "\"bar\" | \"icon\""
     },
     {
+      "description": "Which way the panel opens. DERIVED from `appearance` when unset — `bottom` in a bar (the panel drops below the trigger, the only direction that does not cover the bar itself), `right` otherwise, because a rail is vertical and its panel goes beside it. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is NOT in a bar, and it cannot say which way is out — a rail pinned to the top edge is not a bar and still opens downward. Measured without it, an embedded bar trigger at (2,50) put its panel at (12,90), lying over the host application's sidebar. Not used by `responsive=\"fullscreen\"`, which has no side.",
+      "name": "side",
+      "type": "\"top\" | \"right\" | \"bottom\" | \"left\""
+    },
+    {
+      "description": "Where the panel sits along the `side` edge — the cross-axis half of the same decision, and derived the same way: `end` in a bar (the Workspace shape, flush with the bar's end), `start` otherwise (aligned to the rail trigger's own start). State it alongside `side` when you state either.",
+      "name": "align",
+      "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
       "description": "Controlled open state.",
       "name": "open",
       "type": "boolean"

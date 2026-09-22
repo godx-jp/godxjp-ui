@@ -506,6 +506,19 @@ expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mappe
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so
 those are deliberately NOT adopted — adopting them would re-open the hole the token tiers close.
 
+**Except on `Attachments`, which carries them — recorded, not blessed (gh#857).**
+`AttachmentsProp` declares `classNames`, `styles` and `rootClassName`, and `attachments.tsx`
+forwards all three onto root, list, card, upload and placeholder. It is the ONLY semantic part map
+in the package: `grep '^  classNames?:' src/props/components/*.prop.ts` matches this component and
+nothing else. So the paragraph above is the standing ruling and this is a single-component
+departure from it, surfaced when `check:mcp-prop-sync` stopped being blind to props declared after
+a function type. The catalog said the opposite — "DON'T expect `styles`/`classNames` from Ant X" —
+while the published `.d.ts` offered them, which is the worst of the three states: an agent reading
+the catalog and an agent reading autocomplete got different answers. The catalog now states what
+ships. Removing them is a breaking change to a public type and belongs to its own issue; until
+then, `--attachments-*` is the supported route and this is not a pattern to copy onto a second
+component.
+
 ## One `Dialog`, not two families — and the rule a consumer picks by
 
 **Status:** accepted · 2026-09-12 · gh#567

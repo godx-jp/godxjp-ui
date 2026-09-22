@@ -31,6 +31,11 @@
       "type": "[boolean,boolean]"
     },
     {
+      "description": "A PAIR, one per endpoint — TimePicker's single-string `placeholder` is omitted from this type on purpose, because a range has two empty fields and one string would label both of them the same. Route both through t().",
+      "name": "placeholder",
+      "type": "[string,string]"
+    },
+    {
       "description": "Native names are name_from and name_to.",
       "name": "name",
       "type": "string"

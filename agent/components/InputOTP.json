@@ -70,6 +70,41 @@
       "description": "Main-axis alignment of the whole code row (groups + separators) inside the field. `center` is the canonical auth challenge. Before this existed, every consumer wrapped the OTP in their own flex-centring div — do not. A service that wants all code fields centred sets `--otp-container-align` once instead.",
       "name": "align",
       "type": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "description": "Fires ONCE the last slot fills, whether the user typed it or pasted the whole code. This is the auto-submit hook: a 2FA challenge with a visible submit button is a step nobody wants, and the alternative — watching `value.length === maxLength` in an effect — re-fires on every re-render. Keep the submit button anyway for the paste-then-correct case.",
+      "name": "onComplete",
+      "type": "(value: string) => void"
+    },
+    {
+      "description": "Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `\"123 456\"`, `\"code: 123456\"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.",
+      "name": "pasteTransformer",
+      "type": "(pasted: string) => string"
+    },
+    {
+      "description": "Class on the ROW container `input-otp` renders (the slots' flex parent), which `className` cannot reach — `className` lands on the hidden input, because that is the real field. Prefer `align` and the `--otp-*` tokens; this is the vendored escape hatch underneath them.",
+      "name": "containerClassName",
+      "type": "string"
+    },
+    {
+      "description": "`input-otp`'s answer to the 1Password / LastPass badge that browsers float over a code field and that covers the last slot. `increase-width` (its default) reserves room so the badge sits beside the row; `none` turns the accommodation off, which is what a row already centred by `align` usually wants. Pure layout — it changes no value and no keyboard behaviour.",
+      "name": "pushPasswordManagerStrategy",
+      "type": "\"increase-width\" | \"none\""
+    },
+    {
+      "description": "The `<noscript>` stylesheet `input-otp` injects so the slots are still visible with JS disabled. Pass `null` to suppress it — the one real reason being a CSP that forbids inline styles and that `nonce` cannot satisfy. Leave it alone otherwise.",
+      "name": "noScriptCSSFallback",
+      "type": "string | null"
+    },
+    {
+      "description": "CSP nonce stamped on the stylesheet `input-otp` injects. Required only under a `style-src 'nonce-…'` policy, where the field otherwise renders unstyled and the console reports a blocked inline style. Pass the same nonce the document was served with.",
+      "name": "nonce",
+      "type": "string"
+    },
+    {
+      "description": "`input-otp`'s headless mode: you draw the entire row from the slot state instead of composing InputOTPGroup / InputOTPSlot. It is mutually exclusive with `children` — the vendor types the two as a union and this component keeps that union. Reaching for it means giving up the slot styling, the group outline and the separator this package owns, so it is the last resort, not a customisation point.",
+      "name": "render",
+      "type": "(props: InputOTPRenderProps) => React.ReactNode"
     }
   ],
   "related": [
