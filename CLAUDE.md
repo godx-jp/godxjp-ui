@@ -36,6 +36,22 @@ Before creating OR changing **any** component, recipe, doc, or example, you MUST
 
 1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run exactly those: `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is 506 files / 3700+ tests, and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). **Gates are matched to the DIFF, never run as a fixed chain** — this line used to list nine `&&`-joined commands as "run freely", so a one-line CSS change got the same nine as a new component. Run only the gates that can have an opinion about the files you changed; the table is in the skill's §5 and `docs/DEVELOPMENT.md` §5.1. (`typecheck` covers `src/` and says nothing about `docs/`; `check:mcp-sync`/`check:mcp-orphans` compare the catalog to the export list and cannot move on a CSS edit.) This is Test Impact Analysis, the industry norm — running everything on every change is what TIA and Meta's Predictive Test Selection exist to stop. **`pnpm verify:ci:static`, `pnpm ship:surface`, the full `check:frame-overflow`, `check:contrast` and `pnpm test` are THE BATCH RUN** — never per issue, never "to be safe", never on your own initiative. See "The batch run" below.
 
+## MANDATORY for a BATCH of work: read `agent-dev-loop` first
+
+Handed more than one issue? Activate **`agent-dev-loop`** (`.claude/skills/agent-dev-loop/SKILL.md`)
+before writing anything. It owns the four-phase loop and the bans:
+
+| phase | model | may run | banned |
+| --- | --- | --- | --- |
+| **1 · classify** — read every issue, group by blast radius A–E, build the tracking list | any | nothing | everything |
+| **2 · implement** many at once, write the tests + every edge case | sonnet is fine | only the tests you just wrote | full suite · `verify:ci:static` · `ship:surface` · any browser sweep |
+| **3 · review** the diff and the requirement flow, audit the TESTS not just the code | opus / fable | only tests the change reaches | same |
+| **4 · batch run** — once, for the whole batch | any | everything | running it **unasked** |
+
+**Phase 4 triggers automatically only when unreviewed commits exceed 100.** Below that you ASK and
+wait. The count is `git rev-list --count $(git describe --tags --match 'verified/*' --abbrev=0)..HEAD`;
+move the `verified/*` tag after each batch run or the counter means nothing.
+
 ## The batch run — the ONLY time "run everything" is allowed, and the owner triggers it
 
 The owner, after asking for one padding fix and watching six minutes of gates:
