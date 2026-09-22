@@ -20,3 +20,19 @@ export function scanLocale(text: string): CouplingHit[];
  * the rationale block in the gate script (gh#846).
  */
 export function scanDocsChrome(text: string): CouplingHit[];
+
+/** Which of `namespaces` this text reads a message key from (`"ns.x"` / `` `ns.${x}` ``). */
+export function referencedNamespaces(text: string, namespaces: readonly string[]): string[];
+
+/** A runtime-catalogue namespace no shipping `src/**` module reads, and the docs files that do. */
+export interface DocsOnlyNamespace {
+  namespace: string;
+  readers: string[];
+}
+
+/**
+ * Namespaces `src/i18n/messages/*.json` ships that only `docs/**` reads — demo copy in every
+ * consumer's bundle, because `translate.ts` imports those JSON files statically and JSON has no
+ * named exports to tree-shake (gh#858). Empty is the passing state.
+ */
+export function findDocsOnlyRuntimeNamespaces(): DocsOnlyNamespace[];

@@ -8,9 +8,14 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import { AppProvider } from "../../src/app/app-provider";
+import { registerDocsMessages } from "./docs-messages";
 import { LandmarkRoot } from "./landmark-root";
 import { STORY_MAP } from "./preview-catalog";
 import { queryClient, StoryErrorBoundary, useLazyStory } from "./preview-runtime";
+
+// Docs-page copy lives in a docs-owned catalogue, not the shipped one (gh#858). CALLED, not
+// imported for effect: `"sideEffects": false` lets Rollup drop a module nothing takes a binding from.
+registerDocsMessages();
 
 function parseStoryId(): string {
   const match = window.location.pathname.match(/\/isolate\/(.+?)\/?$/);

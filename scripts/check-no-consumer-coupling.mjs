@@ -4,10 +4,12 @@
  * FAILS (non-zero exit, printing file:line for each violation) when the library source references
  * a SPECIFIC downstream consumer/product or consumer infrastructure.
  *
- * Three passes, three severities:
+ * Four passes, four severities:
  *   consumer identifiers/domains  src+mcp+docs+preview   baselined  (no-consumer-coupling.baseline.json)
  *   locale/currency/tz literals   src/components only    STRICT     (no baseline, 0 allowed)
  *   docs locale content (gh#846)  docs/**                baselined  (docs-locale-literals.baseline.json)
+ *   docs copy in the RUNTIME      src/i18n/messages/*    STRICT     (gh#858, no baseline)
+ *   message catalogue
  *
  * Flags: --all (also list baselined debt) · --json · --update-baseline (rewrites both baselines;
  * the docs one shrink-only — it refuses to raise or add an entry).
@@ -113,6 +115,37 @@ const CJK = new RegExp("[\\u3040-\\u309F\\u30A0-\\u30FF\\u4E00-\\u9FFF]");
 // category, …) is treated as domain data and never scanned — see decision (2).
 const CHROME_PROP =
   /\b(label|placeholder|title|subtitle|heading|description|header|caption|tooltip|emptyMessage|emptyTitle|emptyDescription|alt|aria-label|ariaLabel|helperText|hint|actionLabel|confirmLabel|cancelLabel|legend)\s*[:=]\s*\{?\s*(['"])((?:(?!\2)[^\n])*)\2/g;
+
+// ── docs copy in the runtime message catalogue (gh#858) ─────────────────────
+// The pass above pushes a docs author towards `useTranslation()` + a message key, and has no
+// opinion about WHICH catalogue receives the key. Both existing message files were reachable, so
+// the keys went into `src/i18n/messages/*.json` — the catalogue `src/i18n/translate.ts` imports
+// statically. JSON has no named exports, so a bundler cannot shake an unused namespace out of it:
+// one `useTranslation()` anywhere in a consumer's tree (ScrollArea's default region label is
+// enough) pulls all three locales in whole. By 28.12.0 that was 60.7% of en.json — 68.5 kB raw
+// across three locales — of showcase and theme-editor demo copy in every consumer's bundle, and
+// a consumer read those exact strings out of its PRODUCTION build.
+//
+// So the rule is mechanical and about OWNERSHIP, not about size: a top-level namespace in the
+// runtime catalogue that NO shipping `src/**` module reads is docs copy, and belongs in
+// `docs/i18n/messages/*.json`, which `preview/src/docs-messages.ts` registers at startup through
+// the `registerMessages` extension point.
+//
+// DETECTION is a literal prefix — `"ns.` / `'ns.` / `` `ns. `` — which covers the computed keys
+// too, because every one of them is built from a template whose constant head is the namespace
+// (`` `timezone.${tz}` ``, `` `locale.${code}` ``). A namespace assembled with NO literal head
+// would read as unused; the remedy is the same either way — name it once in the module that
+// reads it, or move it to the docs catalogue.
+//
+// STRICT, no baseline: the split starts clean, and a baseline here would only record the next
+// regression rather than stop it.
+const RUNTIME_MESSAGE_GLOBS = ["src/i18n/messages/*.json"];
+const DOCS_MESSAGE_DIR = "docs/i18n/messages";
+// The shipping library surface. Tests and stories are excluded: a gate fixture quoting
+// `t("showcase.pagination.recordCount")` is a string ABOUT a key, not a component reading one.
+const RUNTIME_SOURCE_GLOBS = ["src/**/*.{ts,tsx}"];
+const RUNTIME_SOURCE_EXCLUDE = /(?:__tests__|\.test\.|\.stories\.|\/i18n\/messages\/)/;
+
 // A `>…<` run is JSX text only if it carries none of the characters that mean "this is code":
 // quotes, `;`, `=`, ASCII parens. That is what keeps `useState<Row[]>([{ name: "鈴木" }])` —
 // a generic followed by a data array — out of the JSX-text bucket.
@@ -203,6 +236,52 @@ function collect(globs) {
     }
   }
   return [...files].sort();
+}
+
+/**
+ * Which of `namespaces` does this text read a message key from? Matches the literal head of a
+ * dotted key in any string form — `"ns.x"`, `'ns.x'`, `` `ns.${x}` ``. Pure/exported for the
+ * self-test. (gh#858)
+ */
+export function referencedNamespaces(text, namespaces) {
+  return namespaces.filter((ns) =>
+    new RegExp(`["'\`]${ns.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.`).test(text),
+  );
+}
+
+/** Top-level namespaces present in a set of message JSON files. */
+function namespacesIn(globs) {
+  const out = new Set();
+  for (const rel of collect(globs)) {
+    for (const key of Object.keys(JSON.parse(readFileSync(join(ROOT, rel), "utf8")))) out.add(key);
+  }
+  return [...out].sort();
+}
+
+/**
+ * Namespaces the RUNTIME catalogue ships that no shipping `src/**` module reads — docs copy in
+ * the consumer's bundle. Returns [{ namespace, readers }], readers being the docs files that do
+ * read it (empty when nothing reads it at all — dead copy either way). (gh#858)
+ */
+export function findDocsOnlyRuntimeNamespaces() {
+  const namespaces = namespacesIn(RUNTIME_MESSAGE_GLOBS);
+
+  const read = new Set();
+  for (const rel of collect(RUNTIME_SOURCE_GLOBS)) {
+    if (RUNTIME_SOURCE_EXCLUDE.test(rel)) continue;
+    const text = readFileSync(join(ROOT, rel), "utf8");
+    for (const ns of referencedNamespaces(text, namespaces)) read.add(ns);
+  }
+
+  const orphans = namespaces.filter((ns) => !read.has(ns));
+  if (orphans.length === 0) return [];
+
+  const readers = new Map(orphans.map((ns) => [ns, []]));
+  for (const rel of collect(DOCS_GLOBS)) {
+    const text = readFileSync(join(ROOT, rel), "utf8");
+    for (const ns of referencedNamespaces(text, orphans)) readers.get(ns).push(rel);
+  }
+  return orphans.map((namespace) => ({ namespace, readers: readers.get(namespace) }));
 }
 
 /** docs/** hard-coded locale content, grouped by file. rel -> [{ token, match, line }] */
@@ -350,6 +429,13 @@ function main() {
     }
   }
 
+  // runtime message catalogue carrying docs-only copy — STRICT (gh#858).
+  const catalogueViolations = [];
+  for (const { namespace, readers } of findDocsOnlyRuntimeNamespaces()) {
+    const who = readers.length ? readers.join(", ") : "nothing — dead copy";
+    catalogueViolations.push(`  src/i18n/messages/*.json  "${namespace}"  [read only by: ${who}]`);
+  }
+
   if (argv.includes("--json")) {
     process.stdout.write(
       JSON.stringify(
@@ -357,6 +443,7 @@ function main() {
           newViolations,
           localeViolations,
           docsViolations,
+          catalogueViolations,
           baselinedFiles: Object.keys(baseline).length,
           baselinedReferences: debtCount,
           docsBaselinedFiles: Object.keys(docsBaseline).length,
@@ -366,10 +453,21 @@ function main() {
         2,
       ) + "\n",
     );
-    return newViolations.length + localeViolations.length + docsViolations.length > 0 ? 1 : 0;
+    return newViolations.length +
+      localeViolations.length +
+      docsViolations.length +
+      catalogueViolations.length >
+      0
+      ? 1
+      : 0;
   }
 
-  const failed = newViolations.length + localeViolations.length + docsViolations.length > 0;
+  const failed =
+    newViolations.length +
+      localeViolations.length +
+      docsViolations.length +
+      catalogueViolations.length >
+    0;
 
   if (localeViolations.length) {
     console.error(
@@ -415,6 +513,29 @@ function main() {
     );
   }
 
+  if (catalogueViolations.length) {
+    console.error(
+      `✗ check:no-consumer-coupling — ${catalogueViolations.length} docs-only namespace(s) in the RUNTIME message catalogue:\n`,
+    );
+    for (const v of catalogueViolations) console.error(v);
+    console.error(
+      `\n\`src/i18n/translate.ts\` imports src/i18n/messages/{en,ja,vi}.json statically, and JSON has no`,
+    );
+    console.error(
+      `named exports — so a namespace no component reads still ships, in all three locales, to every`,
+    );
+    console.error(
+      `consumer that renders one component calling useTranslation(). Move it to ${DOCS_MESSAGE_DIR}/*.json`,
+    );
+    console.error(
+      `(preview/src/docs-messages.ts registers those at startup via registerMessages) and the docs pages`,
+    );
+    console.error(
+      `keep working unchanged. If a SHIPPING component really does read it, reference the key from that`,
+    );
+    console.error(`component rather than assembling the namespace name at runtime.\n`);
+  }
+
   if (argv.includes("--all") && debt.length) {
     console.error(`ℹ pre-existing consumer references (baselined debt — burn down over time):`);
     for (const d of debt) console.error(d);
@@ -432,7 +553,8 @@ function main() {
     console.log(
       `✓ check:no-consumer-coupling — no NEW consumer coupling ` +
         `(${files.length} files scanned; ${debtCount} baselined reference(s) across ${debt.length} file(s) tracked as debt; 0 locale literals in component source; ` +
-        `${docsDebtCount} baselined docs string(s) across ${docsDebt.length} file(s)).`,
+        `${docsDebtCount} baselined docs string(s) across ${docsDebt.length} file(s); ` +
+        `0 docs-only namespace(s) in the runtime message catalogue).`,
     );
   }
   return failed ? 1 : 0;

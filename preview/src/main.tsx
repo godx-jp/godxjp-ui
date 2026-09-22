@@ -6,7 +6,12 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 
 import { App } from "./App";
+import { registerDocsMessages } from "./docs-messages";
 import { STORY_ENTRIES } from "./preview-catalog";
+
+// Docs-page copy lives in a docs-owned catalogue, not the shipped one (gh#858). CALLED, not
+// imported for effect: `"sideEffects": false` lets Rollup drop a module nothing takes a binding from.
+registerDocsMessages();
 
 // Machine-readable frame manifest for the headless harness (scripts/frame-*.mjs).
 // Reused as the single source of truth so the axe/geometry/coverage gates never

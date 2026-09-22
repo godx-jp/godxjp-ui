@@ -68,7 +68,8 @@
  *
  * ── i18n / a11y / RTL ────────────────────────────────────────────────────────────────────────
  * Every string and every `aria-label` comes from `t()` (`themeShowcase.*` in
- * src/i18n/messages/{en,ja,vi}.json); the locale picker drives the SAME `AppProvider` locale the
+ * docs/i18n/messages/{en,ja,vi}.json — demo copy the preview registers at startup rather than
+ * ship to consumers; gh#858); the locale picker drives the SAME `AppProvider` locale the
  * library's own chrome reads, so the page and its components switch together. Numbers, currency,
  * dates, lists, regions and plurals go through `Intl` with that locale — no hand-built formats, no
  * emoji flags. Logical CSS only; no Tailwind spacing or layout utilities on this page's own
