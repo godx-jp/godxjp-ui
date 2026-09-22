@@ -15134,7 +15134,8 @@
     "usage": [
       "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",
       "DO use `ref.select({ accept, multiple })` to open the picker programmatically (Ant X 2.0).",
-      "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens."
+      "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens.",
+      "The card is a FIXED box — 268x68 (Ant X's own), from `--attachments-card-size` (inline) and `--attachments-card-block-size`. The block size is also the `+` tile's square and the `overflow=\"scrollY\"` one-row viewport, so retune it once and all three follow. The file input is `sr-only`: never style it visible."
     ],
     "useCases": [
       "The attachment tray above a ChatComposer in an assistant surface.",

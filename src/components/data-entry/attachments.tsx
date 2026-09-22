@@ -7,7 +7,6 @@ import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
-import { Text } from "../general/typography";
 import { Progress } from "../data-display/progress";
 import { createUploadItem, type UploadFileItem } from "./upload-types";
 import { readDroppedFiles } from "./upload-files";
@@ -63,6 +62,16 @@ function resolvePlaceholder(
   return typeof placeholder === "function" ? placeholder(type) : placeholder;
 }
 
+/**
+ * Ant X splits a file name in two so the EXTENSION never truncates: the stem ellipsises, `.pdf`
+ * stays. Same regex as `@ant-design/x@2.9.0` `file-card/FileCard.js` — everything before the last
+ * dot, then the dot and what follows. A dotless name keeps an empty suffix.
+ */
+function splitFileName(name: string): [string, string] {
+  const match = /^(.*)\.[^.]+$/.exec(name ?? "");
+  return match ? [match[1], (name ?? "").slice(match[1].length)] : [name ?? "", ""];
+}
+
 function fileMatchesAccept(file: File, accept?: string): boolean {
   if (!accept) return true;
   return accept.split(",").some((rule) => {
@@ -109,6 +118,7 @@ function PlaceholderUploader({
       className={cn("ui-attachments-placeholder", className)}
       style={style}
       data-drag-active={dragActive ? "true" : undefined}
+      data-disabled={disabled ? "true" : undefined}
       aria-hidden={disabled ? true : undefined}
       onDragEnter={(event) => {
         event.preventDefault();
@@ -120,6 +130,10 @@ function PlaceholderUploader({
       }}
       onDrop={async (event) => {
         event.preventDefault();
+        // The root is a drop target too (the list area accepts files once the placeholder is
+        // gone). Without this the drop would be handled here AND again on the way up, adding
+        // every file twice.
+        event.stopPropagation();
         setDragActive(false);
         if (disabled) return;
         const files = await readDroppedFiles(event.dataTransfer, false);
@@ -163,6 +177,7 @@ function AttachmentCard({
   const { t } = useTranslation();
   const { disabled } = React.useContext(AttachmentContext);
   const preview = item.thumbUrl ?? item.url;
+  const [namePrefix, nameSuffix] = splitFileName(item.name);
   const desc =
     description ??
     item.description ??
@@ -177,7 +192,10 @@ function AttachmentCard({
           : "");
 
   return (
-    <li className={cn("ui-attachments-card", classNames?.card, classNames?.file)}>
+    <li
+      className={cn("ui-attachments-card", classNames?.card, classNames?.file)}
+      data-status={item.status}
+    >
       {preview ? (
         <img src={preview} alt="" className="ui-attachments-card-preview" aria-hidden="true" />
       ) : (
@@ -185,17 +203,32 @@ function AttachmentCard({
           <FileIcon />
         </span>
       )}
-      {(item.status === "uploading" || item.status === "error") && (
-        <div className="ui-attachments-card-overlay">
-          {item.status === "uploading" && item.percent != null ? (
-            <Progress value={item.percent} aria-label={t("dataEntry.attachments.uploading")} />
-          ) : (
-            <Text size="xs">{String(desc)}</Text>
-          )}
-        </div>
-      )}
-      {desc && item.status !== "uploading" && item.status !== "error" ? (
-        <div className="ui-attachments-card-meta">{desc}</div>
+      {/* THE NAME IS THE CARD (gh#855). Before this the card drew a glyph and a byte count and
+          never the file name — the only place `item.name` appeared was the remove button's
+          accessible name, so a sighted user reading a tray of attachments could not tell which
+          file was which. Ant X's overview card is glyph · name · description, and so is this. */}
+      <span className="ui-attachments-card-content">
+        <span className="ui-attachments-card-name" title={item.name}>
+          <span className="ui-attachments-card-name-prefix">{namePrefix}</span>
+          <span className="ui-attachments-card-name-suffix">{nameSuffix}</span>
+        </span>
+        {desc ? (
+          <span
+            className="ui-attachments-card-meta"
+            title={typeof desc === "string" ? desc : undefined}
+          >
+            {desc}
+          </span>
+        ) : null}
+      </span>
+      {item.status === "uploading" && item.percent != null ? (
+        <span className="ui-attachments-card-progress">
+          <Progress
+            size="sm"
+            value={item.percent}
+            aria-label={t("dataEntry.attachments.uploading")}
+          />
+        </span>
       ) : null}
       {!disabled && onRemove ? (
         <Button
@@ -241,6 +274,7 @@ export const Attachments = React.forwardRef<AttachmentsRefProp, AttachmentsProp>
     const containerRef = React.useRef<HTMLDivElement>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [internalItems, setInternalItems] = React.useState<AttachmentsItemProp[]>([]);
+    const [dropActive, setDropActive] = React.useState(false);
     const items = controlledItems ?? internalItems;
     const setItems = React.useCallback(
       (next: AttachmentsItemProp[], file: AttachmentsItemProp) => {
@@ -303,7 +337,15 @@ export const Attachments = React.forwardRef<AttachmentsRefProp, AttachmentsProp>
       <input
         ref={inputRef}
         type="file"
-        className="ui-attachments-input"
+        // NEVER PAINTED, ALWAYS REACHABLE (gh#855). This was a bare, visible `<input type="file">`
+        // — nine of them on the docs page, 265x24 each, drawing the platform's own
+        // "ファイル選択 / 選択されていません" chrome straight through the design. `Upload` in this
+        // group solved it first and this reuses its mechanism verbatim: `sr-only`, which clips the
+        // control to 1px WITHOUT `display: none`, so it keeps its tab stop and its `aria-label`.
+        // It supersedes gh#643's `min-block-size: var(--touch-target-min)` floor — WCAG 2.2
+        // SC 2.5.8 sizes POINTER targets, and this one is no longer a pointer target; the visible
+        // target is the placeholder / `+` tile, both of which are on the tier.
+        className={cn("ui-attachments-input", "sr-only")}
         accept={accept}
         multiple={multiple ?? (maxCount == null || maxCount > 1)}
         disabled={disabled}
@@ -339,7 +381,12 @@ export const Attachments = React.forwardRef<AttachmentsRefProp, AttachmentsProp>
       );
     }
 
-    const dropHost = getDropContainer?.() ?? containerRef.current;
+    // Ant X's drop area is `position: absolute; inset: 0` over the control, and `position: fixed`
+    // when `getDropContainer` hands it the body. The layer used to be gated on
+    // `getDropContainer?.() ?? containerRef.current` — a ref that is null on the render that
+    // decides, so with no `getDropContainer` prop the layer NEVER rendered at all (measured: 0
+    // elements on the docs page) and `--attachments-drop-overlay-background` had nothing to paint.
+    const dropScope = getDropContainer?.() ? "viewport" : "control";
 
     return (
       <AttachmentContext.Provider value={{ disabled }}>
@@ -348,6 +395,21 @@ export const Attachments = React.forwardRef<AttachmentsRefProp, AttachmentsProp>
           className={cn("ui-attachments", className, rootClassName, classNames.root)}
           style={styles.root}
           dir="auto"
+          onDragEnter={(event) => {
+            event.preventDefault();
+            if (!disabled) setDropActive(true);
+          }}
+          onDragOver={(event) => event.preventDefault()}
+          onDragLeave={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node)) setDropActive(false);
+          }}
+          onDrop={async (event) => {
+            event.preventDefault();
+            setDropActive(false);
+            if (disabled) return;
+            const files = await readDroppedFiles(event.dataTransfer, false);
+            if (files.length) dispatchFiles(files);
+          }}
         >
           {fileInput}
           {hasFiles ? (
@@ -389,19 +451,14 @@ export const Attachments = React.forwardRef<AttachmentsRefProp, AttachmentsProp>
             style={hasFiles ? { display: "none" } : styles.placeholder}
             hidden={hasFiles}
           />
-          {dropHost ? (
-            <div
-              className="ui-attachments-drop-layer"
-              data-active={undefined}
-              aria-hidden="true"
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={async (event) => {
-                event.preventDefault();
-                const files = await readDroppedFiles(event.dataTransfer, false);
-                dispatchFiles(files);
-              }}
-            />
-          ) : null}
+          {/* Decorative and inert: `pointer-events: none` so it never intercepts the drop the
+              root above is listening for, which is also why it cannot double-dispatch. */}
+          <div
+            className="ui-attachments-drop-layer"
+            data-scope={dropScope}
+            data-active={dropActive ? "true" : undefined}
+            aria-hidden="true"
+          />
         </div>
       </AttachmentContext.Provider>
     );

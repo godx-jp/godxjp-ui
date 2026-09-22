@@ -166,62 +166,67 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--attachments-gap",
     "value": "var(--space-2)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "description": "Gap between cards in the list. Ant X: `marginXS` = 8px."
   },
   {
     "name": "--attachments-card-size",
-    "value": "var(--upload-tile-size)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "16.75rem",
+    "description": "THE CARD BOX. Ant X's file card is a fixed 268x68 chip: wide enough for a name plus one line * of description, short enough that a row of them reads as a tray and not as a list. Both axes * are fixed there and fixed here — the block size is what the `+` tile and the `scrollY` * one-row viewport are measured against, so it has three readers, not one. Ant X `width: 268`"
+  },
+  {
+    "name": "--attachments-card-block-size",
+    "value": "4.25rem",
+    "description": "Ant X `cardHeight` = 14 * 1.5714 * 2 + 12 + 12 = 68"
   },
   {
     "name": "--attachments-card-radius",
-    "value": "var(--upload-tile-radius)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--radius-lg)",
+    "description": "Ant X `token.borderRadius` = 6 ≡ --radius"
   },
   {
     "name": "--attachments-card-gap",
-    "value": "var(--upload-tile-space-gap)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--space-3)",
+    "description": "Ant X `marginSM` — glyph to name"
   },
   {
     "name": "--attachments-placeholder-space-inset",
-    "value": "var(--upload-dropzone-space-inset)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--space-4)",
+    "description": "THE PLACEHOLDER — the whole control while the list is empty, and the drop target. Ant X `token.padding` = 16"
   },
   {
     "name": "--attachments-placeholder-radius",
-    "value": "var(--upload-dropzone-radius)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var( --radius-lg )",
+    "description": "Ant X `token.borderRadius` = 6 ≡ --radius"
   },
   {
     "name": "--attachments-placeholder-icon-size",
-    "value": "var(--upload-dropzone-icon-size)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--icon-size-3xl)",
+    "description": "Ant X's placeholder mark is `fontSizeHeading2` = 30px, which is not a step of this repo's * nine-value icon scale (gh#326) and whose neighbours are 24 and 36. It stays on the step the * frozen table in `src/tokens/__tests__/icon-size-scale.test.ts` already records for it — the * same mark Upload's dropzone draws, which is the surface a reader meets this one beside."
   },
   {
     "name": "--attachments-placeholder-title-font-size",
-    "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--font-size-base)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-placeholder-description-font-size",
-    "value": "var(--upload-dropzone-meta-font-size)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--font-size-sm, var(--font-size-base))",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-placeholder-gap",
-    "value": "var(--space-2)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "value": "var(--space-1)",
+    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-drop-overlay-background",
     "value": "initial",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "description": "The scrim the drop layer paints over the whole control while a file is dragged across it. * Role-mirror knob, so `initial` and the role resolved at the CALL SITE (docs/TOKENS.md) — * a `[data-tenant]`/`.dark` scope that re-seeds `--background` must reach this. Documented * default = `color-mix(in srgb, hsl(var(--background)) 85%, transparent)`, which is Ant X's * `colorBgPlaceholderHover` (`colorBgContainer` at alpha .85)."
   },
   {
     "name": "--attachments-remove-icon-size",
     "value": "var(--upload-remove-icon-size)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css."
+    "description": "The ✕ at the end of a card's row. Ant X draws it at `fontSizeLG` = 16; it stays at the 14px * step the frozen icon table records, which is also `--upload-remove-icon-size`. Two remove * affordances in one group drawing two different sizes is the defect, not the saving."
   },
   {
     "name": "--badge-space-gap",
