@@ -23,6 +23,8 @@
  * to it" cost the last time it was tried.
  */
 
+import { commentText } from "./css-comment-text.mjs";
+
 /**
  * The byte ranges of every TOP-LEVEL `:root { … }` body, plus the file's opening comment.
  *
@@ -58,7 +60,7 @@ function rootBodies(text) {
   }
   const firstBrace = blank.indexOf("{");
   const preamble = text.slice(0, firstBrace === -1 ? text.length : firstBrace);
-  const opening = (preamble.match(/\/\*([\s\S]*?)\*\//)?.[1] ?? "").replace(/\s+/g, " ").trim();
+  const opening = commentText(preamble.match(/\/\*([\s\S]*?)\*\//)?.[1] ?? "");
   // THE FIRST SENTENCE, not the whole opening comment. Each component-tier file opens with one
   // line (`Badge component tokens.`), so taking the block whole costs nothing there — these three
   // open with an essay. derived.css's is 4 KB and would be repeated verbatim as the fallback
@@ -86,7 +88,7 @@ export function parseThemeTokens(text) {
       const gap = body.slice(previousEnd, m.index);
       previousEnd = m.index + m[0].length;
       if (m[1] !== undefined) {
-        const comment = m[1].replace(/\s+/g, " ").trim();
+        const comment = commentText(m[1]);
         const trailing = items.length > 0 && !gap.includes("\n");
         if (trailing) {
           const owner = items[items.length - 1];

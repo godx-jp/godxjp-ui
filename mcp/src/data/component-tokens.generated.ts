@@ -21,47 +21,47 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--actions-padding-inline",
     "value": "var(--space-1)",
-    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+    "description": "Actions component tokens — the strip of actions under an assistant message (Ant Design X `Actions`). Every action is a `Button`, so NOTHING here sets a control height: that comes from the `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
   },
   {
     "name": "--actions-radius",
     "value": "var(--radius)",
-    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+    "description": "Actions component tokens — the strip of actions under an assistant message (Ant Design X `Actions`). Every action is a `Button`, so NOTHING here sets a control height: that comes from the `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
   },
   {
     "name": "--actions-filled-background",
     "value": "initial",
-    "description": "Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each * documented default resolves at the CALL SITE. * Default filled ground = hsl(var(--muted)) * Default outlined stroke = var(--stroke-hairline) solid hsl(var(--border))"
+    "description": "Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each documented default resolves at the CALL SITE. Default filled ground = hsl(var(--muted)) Default outlined stroke = var(--stroke-hairline) solid hsl(var(--border))"
   },
   {
     "name": "--actions-outlined-border",
     "value": "initial",
-    "description": "Actions component tokens — the strip of actions under an assistant message * (Ant Design X `Actions`). * * Every action is a `Button`, so NOTHING here sets a control height: that comes from the * `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would * re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+    "description": "Actions component tokens — the strip of actions under an assistant message (Ant Design X `Actions`). Every action is a `Button`, so NOTHING here sets a control height: that comes from the `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
   },
   {
     "name": "--actions-fade-offset-inline",
     "value": "var(--space-2)",
-    "description": "`fadeIn` / `fadeInLeft` — the distance the strip travels along the inline axis. * * The DURATION is deliberately not a knob here. Timing belongs to the motion tier, for the same * reason `src/tokens/components/activity.css` records: `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration, and a service * retunes arrival motion once through `--duration-base` rather than per component. The * animation reads that token directly, and drops to nothing under `prefers-reduced-motion`."
+    "description": "`fadeIn` / `fadeInLeft` — the distance the strip travels along the inline axis. The DURATION is deliberately not a knob here. Timing belongs to the motion tier, for the same reason `src/tokens/components/activity.css` records: `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration, and a service retunes arrival motion once through `--duration-base` rather than per component. The animation reads that token directly, and drops to nothing under `prefers-reduced-motion`."
   },
   {
     "name": "--activity-mark-size",
     "value": "0.25em",
-    "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore * `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
+    "description": "Mark geometry. `em`-based so the whole mark tracks `--activity-font-size-*` (and therefore `--font-size-base` and the density axis) instead of pinning a px diameter per size step."
   },
   {
     "name": "--activity-mark-offset",
     "value": "0.25em",
-    "description": "Travel of one `dots` step — the loop counterpart to `--reveal-distance`, named to match. * It is ALSO the height the mark row reserves, so the indicator appearing under a composer * never shifts the row."
+    "description": "Travel of one `dots` step — the loop counterpart to `--reveal-distance`, named to match. It is ALSO the height the mark row reserves, so the indicator appearing under a composer never shifts the row."
   },
   {
     "name": "--activity-mark-rest-alpha",
     "value": "0.35",
-    "description": "Resting opacity of a dot at the bottom of its cycle. Never 0: a dot that vanishes reads as a * rendering bug at the trough, and the reduced-motion resting state must stay fully legible."
+    "description": "Resting opacity of a dot at the bottom of its cycle. Never 0: a dot that vanishes reads as a rendering bug at the trough, and the reduced-motion resting state must stay fully legible."
   },
   {
     "name": "--activity-pulse-mark-size",
     "value": "0.5em",
-    "description": "The single `pulse` mark — a breathing dot (live / recording), bigger than one `dots` dot * because it carries the whole affordance alone."
+    "description": "The single `pulse` mark — a breathing dot (live / recording), bigger than one `dots` dot because it carries the whole affordance alone."
   },
   {
     "name": "--activity-gap",
@@ -71,42 +71,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--activity-font-size-xs",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. * Steps mirror the `Text` size the label is rendered at, so mark and label stay optically * paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
+    "description": "Root size ladder — the mark is `em`-based, so this ONE value scales the whole indicator. Steps mirror the `Text` size the label is rendered at, so mark and label stay optically paired (`--font-size-sm` IS `--font-size-base`; the ladder skips the alias)."
   },
   {
     "name": "--activity-font-size-sm",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-font-size-md",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-font-size-lg",
     "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-bar-width",
     "value": "4rem",
-    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a * label in a row, so `100%` would eat the label's space."
+    "description": "Indeterminate `bar` (syncing). Width is an inline measure, not a fill: the bar sits beside a label in a row, so `100%` would eat the label's space."
   },
   {
     "name": "--activity-bar-radius",
     "value": "var(--radius-pill)",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-bar-segment-width",
     "value": "40%",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-bar-track-alpha",
     "value": "0.2",
-    "description": "* ACTIVITY — the ambient/looping motion primitive (gh#313). * * The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while * something is happening elsewhere (someone typing, a sync in flight, a response streaming, a * recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme * retunes the whole ambient feel in one place instead of forking a `@keyframes`. * * TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and * `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` * and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next * to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name * shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour * and alpha — everything the shape rule DOES cover — live here. * * Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
+    "description": "ACTIVITY — the ambient/looping motion primitive (gh#313). The loop counterpart to `Reveal`: `Reveal` runs ONCE on mount, `Activity` runs FOREVER while something is happening elsewhere (someone typing, a sync in flight, a response streaming, a recording running). Every value the loop reads is a knob (cardinal rule #45) so a service theme retunes the whole ambient feel in one place instead of forking a `@keyframes`. TIMING LIVES IN THE MOTION TIER, NOT HERE. `--duration-loop`, `--activity-interval` and `--activity-stagger-step` are declared in `src/tokens/foundation.css` beside `--duration-slow` and `--reveal-stagger-step`: they are the cycle members of the motion tier, they must sit next to their one-shot siblings to stay comparable, and `check-token-tiers`' component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration. Geometry, colour and alpha — everything the shape rule DOES cover — live here. Defaults are the QUIETEST ambient state (cardinal rule #44): muted ink, a small mark, low travel."
   },
   {
     "name": "--activity-bar-height",
@@ -116,37 +116,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--activity-color",
     "value": "initial",
-    "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE * (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as * `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a * scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". * Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
+    "description": "Mark colour. ROLE-MIRROR KNOB ⇒ declared `initial` here with the role default at the CALL SITE (`hsl(var(--activity-color, var(--muted-foreground)))` in styles/motion.css). Written as `--activity-color: var(--muted-foreground)` it would freeze at the `:root` role value and a scoped `[data-tenant]` / `.dark` override of `--muted-foreground` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\". Documented default: --activity-color = var(--muted-foreground) (tone=\"muted\")."
   },
   {
     "name": "--affix-inset-block-start",
     "value": "0px",
-    "description": "Distance from the scrollport's BLOCK-START edge at which an Affix pins, and the distance it * sits at once pinned. Ant Design `offsetTop`, whose default is `0`; ported as that default."
+    "description": "Distance from the scrollport's BLOCK-START edge at which an Affix pins, and the distance it sits at once pinned. Ant Design `offsetTop`, whose default is `0`; ported as that default."
   },
   {
     "name": "--affix-inset-block-end",
     "value": "0px",
-    "description": "The same, from the BLOCK-END edge — the sticky form footer rather than the sticky header. * Ant Design `offsetBottom` has no default at all, because in antd the PRESENCE of the prop is * what selects bottom pinning. That selection is still the prop's here; this is only the * length it pins at."
+    "description": "The same, from the BLOCK-END edge — the sticky form footer rather than the sticky header. Ant Design `offsetBottom` has no default at all, because in antd the PRESENCE of the prop is what selects bottom pinning. That selection is still the prop's here; this is only the length it pins at."
   },
   {
     "name": "--anchor-ink-width",
     "value": "2px",
-    "description": "Thickness of the ink rail — its inline size in a vertical anchor, its block size in a * horizontal one. A hairline by default, matching the list's own leading rule."
+    "description": "Thickness of the ink rail — its inline size in a vertical anchor, its block size in a horizontal one. A hairline by default, matching the list's own leading rule."
   },
   {
     "name": "--anchor-ink-color",
     "value": "initial",
-    "description": "Paint of the ink rail, and of the active row's label. * * `initial` + a call-site fallback, NOT `var(--primary)` here, because `--primary` is exactly * the role a tenant re-scopes: a `[data-tenant] { --primary: … }` would override the role and * never reach a knob that had already frozen against `:root`'s copy of it, so the rail would * keep the default brand's colour under the tenant's. docs/TOKENS.md · \"Role-mirror knobs MUST * be `initial`\", and src/tokens/__tests__/tenant-scope-freeze-687.test.ts is the guard. * Documented default: `hsl(var(--primary))`."
+    "description": "Paint of the ink rail, and of the active row's label. `initial` + a call-site fallback, NOT `var(--primary)` here, because `--primary` is exactly the role a tenant re-scopes: a `[data-tenant] { --primary: … }` would override the role and never reach a knob that had already frozen against `:root`'s copy of it, so the rail would keep the default brand's colour under the tenant's. docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\", and src/tokens/__tests__/tenant-scope-freeze-687.test.ts is the guard. Documented default: `hsl(var(--primary))`."
   },
   {
     "name": "--anchor-track-color",
     "value": "initial",
-    "description": "Paint of the rail's TRACK — the full-length rule the ink slides along. Same freeze rule, same * shape. Documented default: `hsl(var(--border))`."
+    "description": "Paint of the rail's TRACK — the full-length rule the ink slides along. Same freeze rule, same shape. Documented default: `hsl(var(--border))`."
   },
   {
     "name": "--anchor-item-padding-block",
     "value": "var(--space-1)",
-    "description": "Vertical rhythm of one row: the block padding above and below a label. The row's HEIGHT is * this plus the label's own line box, deliberately — an anchor row is a line of running text, * not a control, so it must not be pinned to the `--control-height` tier (which is also * re-scoped by AuthShell, and would freeze if mirrored)."
+    "description": "Vertical rhythm of one row: the block padding above and below a label. The row's HEIGHT is this plus the label's own line box, deliberately — an anchor row is a line of running text, not a control, so it must not be pinned to the `--control-height` tier (which is also re-scoped by AuthShell, and would freeze if mirrored)."
   },
   {
     "name": "--anchor-item-padding-inline",
@@ -161,7 +161,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--anchor-gap",
     "value": "var(--space-inline-lg)",
-    "description": "Gap between rows on the HORIZONTAL axis. The vertical axis has none: its rows sit flush so * the ink rail reads as one continuous rule."
+    "description": "Gap between rows on the HORIZONTAL axis. The vertical axis has none: its rows sit flush so the ink rail reads as one continuous rule."
   },
   {
     "name": "--attachments-gap",
@@ -171,7 +171,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--attachments-card-size",
     "value": "16.75rem",
-    "description": "THE CARD BOX. Ant X's file card is a fixed 268x68 chip: wide enough for a name plus one line * of description, short enough that a row of them reads as a tray and not as a list. Both axes * are fixed there and fixed here — the block size is what the `+` tile and the `scrollY` * one-row viewport are measured against, so it has three readers, not one. Ant X `width: 268`"
+    "description": "THE CARD BOX. Ant X's file card is a fixed 268x68 chip: wide enough for a name plus one line of description, short enough that a row of them reads as a tray and not as a list. Both axes are fixed there and fixed here — the block size is what the `+` tile and the `scrollY` one-row viewport are measured against, so it has three readers, not one. Ant X `width: 268`"
   },
   {
     "name": "--attachments-card-block-size",
@@ -201,32 +201,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--attachments-placeholder-icon-size",
     "value": "var(--icon-size-3xl)",
-    "description": "Ant X's placeholder mark is `fontSizeHeading2` = 30px, which is not a step of this repo's * nine-value icon scale (gh#326) and whose neighbours are 24 and 36. It stays on the step the * frozen table in `src/tokens/__tests__/icon-size-scale.test.ts` already records for it — the * same mark Upload's dropzone draws, which is the surface a reader meets this one beside."
+    "description": "Ant X's placeholder mark is `fontSizeHeading2` = 30px, which is not a step of this repo's nine-value icon scale (gh#326) and whose neighbours are 24 and 36. It stays on the step the frozen table in `src/tokens/__tests__/icon-size-scale.test.ts` already records for it — the same mark Upload's dropzone draws, which is the surface a reader meets this one beside."
   },
   {
     "name": "--attachments-placeholder-title-font-size",
     "value": "var(--font-size-base)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
+    "description": "Attachments — Ant Design X chat-surface file collection. Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not always so: all twelve of these resolved, were generated into the MCP catalog, were described to every consumer — and nothing anywhere read one of them, because the component had no stylesheet at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-placeholder-description-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
+    "description": "Attachments — Ant Design X chat-surface file collection. Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not always so: all twelve of these resolved, were generated into the MCP catalog, were described to every consumer — and nothing anywhere read one of them, because the component had no stylesheet at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-placeholder-gap",
     "value": "var(--space-1)",
-    "description": "Attachments — Ant Design X chat-surface file collection. * * Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and * tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. * * EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not * always so: all twelve of these resolved, were generated into the MCP catalog, were described to * every consumer — and nothing anywhere read one of them, because the component had no stylesheet * at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` * (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and * mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
+    "description": "Attachments — Ant Design X chat-surface file collection. Ant X retunes this through `styles={{ list, placeholder, upload, … }}`. Here every length and tint is a named knob (rules #44/#45) so a service sets the rail once in theme.css. EVERY KNOB BELOW IS READ BY A RULE IN `src/styles/data-entry-layout.css` (gh#855). It was not always so: all twelve of these resolved, were generated into the MCP catalog, were described to every consumer — and nothing anywhere read one of them, because the component had no stylesheet at all. The defaults are Ant X's own numbers, taken from `@ant-design/x@2.9.0` (`es/attachments/style/index.js` + `es/file-card/style/index.js`) rather than invented, and mapped onto this repo's scales; `docs/DESIGN-AUTHORITY.md` carries the divergences."
   },
   {
     "name": "--attachments-drop-overlay-background",
     "value": "initial",
-    "description": "The scrim the drop layer paints over the whole control while a file is dragged across it. * Role-mirror knob, so `initial` and the role resolved at the CALL SITE (docs/TOKENS.md) — * a `[data-tenant]`/`.dark` scope that re-seeds `--background` must reach this. Documented * default = `color-mix(in srgb, hsl(var(--background)) 85%, transparent)`, which is Ant X's * `colorBgPlaceholderHover` (`colorBgContainer` at alpha .85)."
+    "description": "The scrim the drop layer paints over the whole control while a file is dragged across it. Role-mirror knob, so `initial` and the role resolved at the CALL SITE (docs/TOKENS.md) — a `[data-tenant]`/`.dark` scope that re-seeds `--background` must reach this. Documented default = `color-mix(in srgb, hsl(var(--background)) 85%, transparent)`, which is Ant X's `colorBgPlaceholderHover` (`colorBgContainer` at alpha .85)."
   },
   {
     "name": "--attachments-remove-icon-size",
     "value": "var(--upload-remove-icon-size)",
-    "description": "The ✕ at the end of a card's row. Ant X draws it at `fontSizeLG` = 16; it stays at the 14px * step the frozen icon table records, which is also `--upload-remove-icon-size`. Two remove * affordances in one group drawing two different sizes is the defect, not the saving."
+    "description": "The ✕ at the end of a card's row. Ant X draws it at `fontSizeLG` = 16; it stays at the 14px step the frozen icon table records, which is also `--upload-remove-icon-size`. Two remove affordances in one group drawing two different sizes is the defect, not the saving."
   },
   {
     "name": "--badge-space-gap",
@@ -246,7 +246,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--badge-radius",
     "value": "var(--radius-md)",
-    "description": "Corner of the chip (gh#404). Default = the historical literal `--radius-md`, so nothing moves; * it exists so a NESTING context can restate it through the cascade (a Badge inside a bordered * Button squares down to --radius-sm) and a call site can restate it back."
+    "description": "Corner of the chip (gh#404). Default = the historical literal `--radius-md`, so nothing moves; it exists so a NESTING context can restate it through the cascade (a Badge inside a bordered Button squares down to --radius-sm) and a call site can restate it back."
   },
   {
     "name": "--badge-font-size",
@@ -256,12 +256,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--badge-line-height",
     "value": "calc(1 / 0.75)",
-    "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set * line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme * remaps --text-xs but never that companion). Same unitless ratio here keeps the default * badge pixel-identical now that badge-layout.css owns the type metrics."
+    "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme remaps --text-xs but never that companion). Same unitless ratio here keeps the default badge pixel-identical now that badge-layout.css owns the type metrics."
   },
   {
     "name": "--badge-icon-size",
     "value": "var(--icon-size-xs)",
-    "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no * token at all, so a service could only resize it with `!important` or a forked stylesheet — * the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing * moves. Matches --badge-font-size's step by design: the glyph reads as a character in the * label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal * it replaces did not track density."
+    "description": "Leading/trailing glyph inside the pill. It was a bare `0.75rem` in badge-layout.css with no token at all, so a service could only resize it with `!important` or a forked stylesheet — the two routes the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing moves. Matches --badge-font-size's step by design: the glyph reads as a character in the label's run, so the two retune together. Deliberately NOT --scaling-multiplied — the literal it replaces did not track density."
   },
   {
     "name": "--badge-space-x-removable",
@@ -291,7 +291,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--badge-tint-fill",
     "value": "18%",
-    "description": "DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone. * * A caller colour is DATA: a project administrator picks it for a status, an * issue type, a tag, a label. Solid, no foreground clears WCAG AA for every * colour they can pick — near-black and white measure equal at luminance * 0.2029, where both land on 4.15:1, under the 4.5 that badge-sized text * needs, and a real picker can produce that. So the GROUND moves instead: * the colour is washed into the surface and the label stays the surface's * own foreground, which makes the ratio a function of these two knobs rather * than of the colour somebody chose. * * The fill is where the label sits, so it is quiet; the edge carries no text, * so it is free to be four times as saturated — it is what keeps a pale tint * from dissolving into the surface, and where the colour still says WHICH * status at a glance. At these defaults the worst case across the sRGB cube * measures 8.52:1 (both themes), against 4.15 for a solid chip."
+    "description": "DATA COLOUR (`color` prop) — the entity's own colour, not a semantic tone. A caller colour is DATA: a project administrator picks it for a status, an issue type, a tag, a label. Solid, no foreground clears WCAG AA for every colour they can pick — near-black and white measure equal at luminance 0.2029, where both land on 4.15:1, under the 4.5 that badge-sized text needs, and a real picker can produce that. So the GROUND moves instead: the colour is washed into the surface and the label stays the surface's own foreground, which makes the ratio a function of these two knobs rather than of the colour somebody chose. The fill is where the label sits, so it is quiet; the edge carries no text, so it is free to be four times as saturated — it is what keeps a pale tint from dissolving into the surface, and where the colour still says WHICH status at a glance. At these defaults the worst case across the sRGB cube measures 8.52:1 (both themes), against 4.15 for a solid chip."
   },
   {
     "name": "--badge-tint-edge",
@@ -301,7 +301,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--badge-tint-surface",
     "value": "hsl(var(--card))",
-    "description": "The surface the chip is washed into, and the label it then carries. A * service whose chips sit on the page ground rather than on a card retunes * the pair together — they are one decision."
+    "description": "The surface the chip is washed into, and the label it then carries. A service whose chips sit on the page ground rather than on a card retunes the pair together — they are one decision."
   },
   {
     "name": "--badge-tint-foreground",
@@ -311,7 +311,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--badge-color",
     "value": "var(--badge-tint-surface)",
-    "description": "The caller's colour — the only knob here that is PER-INSTANCE. badge.tsx * writes it inline on the element whenever `color` is given, and an inline * declaration outranks this one, so this is the value only when the prop is * absent. * * It has to be declared somewhere all the same. An undeclared custom property * makes both color-mix() calls in badge-layout.css invalid at computed-value * time, which drops the background AND the border rather than falling back to * anything — the failure check-dist-tokens-resolve.mjs exists to catch, and * which it did catch the moment 19.3.0 shipped the wash without it. * * The surface is the right default because mixing a colour into itself returns * that colour: an untinted chip is then exactly the card it sits on — the same * quiet degradation 19.3.1 chose for browsers without color-mix, rather than a * transparent hole."
+    "description": "The caller's colour — the only knob here that is PER-INSTANCE. badge.tsx writes it inline on the element whenever `color` is given, and an inline declaration outranks this one, so this is the value only when the prop is absent. It has to be declared somewhere all the same. An undeclared custom property makes both color-mix() calls in badge-layout.css invalid at computed-value time, which drops the background AND the border rather than falling back to anything — the failure check-dist-tokens-resolve.mjs exists to catch, and which it did catch the moment 19.3.0 shipped the wash without it. The surface is the right default because mixing a colour into itself returns that colour: an untinted chip is then exactly the card it sits on — the same quiet degradation 19.3.1 chose for browsers without color-mix, rather than a transparent hole."
   },
   {
     "name": "--banner-radius",
@@ -321,22 +321,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--banner-border-width",
     "value": "1px",
-    "description": "The strip keeps a single hairline block-end rule (tone-coloured via the alert * border rules); inline/block-start edges are open so it reads as part of the frame."
+    "description": "The strip keeps a single hairline block-end rule (tone-coloured via the alert border rules); inline/block-start edges are open so it reads as part of the frame."
   },
   {
     "name": "--banner-space-inset-block",
     "value": "var(--space-3)",
-    "description": "Strip inset. Block is denser than the inline Alert card; inline defaults to the * page gutter so banner text aligns with page content under AppShell/PageContainer."
+    "description": "Strip inset. Block is denser than the inline Alert card; inline defaults to the page gutter so banner text aligns with page content under AppShell/PageContainer."
   },
   {
     "name": "--banner-space-inset-inline",
     "value": "var(--space-page-active-x, var(--space-6))",
-    "description": "Banner — the full-bleed attention strip (<Banner> = Alert variant=\"banner\"). * Colour stays with the alert tone rules; these tokens own ONLY the strip geometry, * so a service retunes the banner once here instead of forking alert-layout.css * (rule #45 — every service-tunable constant gets a knob)."
+    "description": "Banner — the full-bleed attention strip (<Banner> = Alert variant=\"banner\"). Colour stays with the alert tone rules; these tokens own ONLY the strip geometry, so a service retunes the banner once here instead of forking alert-layout.css (rule #45 — every service-tunable constant gets a knob)."
   },
   {
     "name": "--callout-rail-width",
     "value": "var(--space-1)",
-    "description": "A leading RAIL, not a frame: an aside inside prose reads as an annotation of the * column it sits in, and four borders make it a card that interrupts the column."
+    "description": "A leading RAIL, not a frame: an aside inside prose reads as an annotation of the column it sits in, and four borders make it a card that interrupts the column."
   },
   {
     "name": "--callout-radius",
@@ -346,12 +346,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--callout-space-inset-block",
     "value": "var(--space-3)",
-    "description": "Prose insets. Block matches the paragraph rhythm around it rather than the * denser banner strip; inline leaves room for the rail without shifting the text."
+    "description": "Prose insets. Block matches the paragraph rhythm around it rather than the denser banner strip; inline leaves room for the rail without shifting the text."
   },
   {
     "name": "--callout-space-inset-inline",
     "value": "var(--space-4)",
-    "description": "Callout — the in-prose aside (<Callout> = Alert variant=\"callout\"). * Colour stays with the alert tone rules; these tokens own ONLY the aside geometry, * so a service retunes every callout once here instead of forking alert-layout.css * (rule #45 — every service-tunable constant gets a knob)."
+    "description": "Callout — the in-prose aside (<Callout> = Alert variant=\"callout\"). Colour stays with the alert tone rules; these tokens own ONLY the aside geometry, so a service retunes every callout once here instead of forking alert-layout.css (rule #45 — every service-tunable constant gets a knob)."
   },
   {
     "name": "--callout-space-stack",
@@ -361,12 +361,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-space-inset",
     "value": "var(--space-section-active)",
-    "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom * shell padding. This is the column the title, body and footer all align to."
+    "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom shell padding. This is the column the title, body and footer all align to."
   },
   {
     "name": "--card-space-shell-y",
     "value": "initial",
-    "description": "BLOCK-axis (top/bottom) shell padding of the slotted card rhythm — a plain header's top, a * `solo` body's top, and the terminal slot's bottom (gh#232). Split off --card-space-inset so a * shell (AuthShell compact) can retune the card's height WITHOUT moving the inline column. * Declared `initial` — NOT `var(--card-space-inset)` — so the default resolves at the CALL SITE: * a :root binding would freeze at the :root inset and `[data-density=\"tight\"|\"cozy\"]` (which * override --card-space-inset on the card element) would stop reaching it. See docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — the same call-site rule applies to derived knobs. default = var(--card-space-inset)"
+    "description": "BLOCK-axis (top/bottom) shell padding of the slotted card rhythm — a plain header's top, a `solo` body's top, and the terminal slot's bottom (gh#232). Split off --card-space-inset so a shell (AuthShell compact) can retune the card's height WITHOUT moving the inline column. Declared `initial` — NOT `var(--card-space-inset)` — so the default resolves at the CALL SITE: a :root binding would freeze at the :root inset and `[data-density=\"tight\"|\"cozy\"]` (which override --card-space-inset on the card element) would stop reaching it. See docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — the same call-site rule applies to derived knobs. default = var(--card-space-inset)"
   },
   {
     "name": "--card-space-header-y",
@@ -376,12 +376,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-space-body-y",
     "value": "var(--space-section-active)",
-    "description": "Gap between the header and the body, and the body's own top padding — the breathing * room under a title before content begins."
+    "description": "Gap between the header and the body, and the body's own top padding — the breathing room under a title before content begins."
   },
   {
     "name": "--card-space-solo-y",
     "value": "initial",
-    "description": "Symmetric block padding for a SOLO content slot, so a composed shell can tune block and * inline spacing independently without targeting CardContent. * Declared `initial` for the SAME reason as --card-space-shell-y above: written as * `var(--card-space-inset)` here it would freeze at the :root inset, and a card carrying * [data-density=\"tight\"|\"cozy\"] (which override --card-space-inset ON THE CARD) would keep the * :root value. The default now resolves at the call site through the chain * solo-y → shell-y → inset, so a solo body follows the general block knob when only that is * set, and an explicit solo-y still wins. default = var(--card-space-shell-y, var(--card-space-inset))"
+    "description": "Symmetric block padding for a SOLO content slot, so a composed shell can tune block and inline spacing independently without targeting CardContent. Declared `initial` for the SAME reason as --card-space-shell-y above: written as `var(--card-space-inset)` here it would freeze at the :root inset, and a card carrying [data-density=\"tight\"|\"cozy\"] (which override --card-space-inset ON THE CARD) would keep the :root value. The default now resolves at the call site through the chain solo-y → shell-y → inset, so a solo body follows the general block knob when only that is set, and an explicit solo-y still wins. default = var(--card-space-shell-y, var(--card-space-inset))"
   },
   {
     "name": "--card-space-footer-y",
@@ -391,7 +391,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-space-divided-y",
     "value": "var(--card-space-header-y)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a divider * border (banded header, separated footer) reads as its own band, so it pads SYMMETRICALLY * top+bottom — distinct from a plain header that flows into the body (top inset, no bottom). * One themeable knob keeps the header- and footer-band rhythm in sync; a service theme tunes * the band density here instead of forking per-slot CSS."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a divider border (banded header, separated footer) reads as its own band, so it pads SYMMETRICALLY top+bottom — distinct from a plain header that flows into the body (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-space-gap",
@@ -426,7 +426,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-background",
     "value": "initial",
-    "description": "Card fill + edge — opt-in knobs that DEFAULT to the live --card / --border roles. Declared * `initial` (not `var(--card)`) so the default re-resolves at the call site under a scoped theme: * a :root binding to a role var freezes at the :root value and a scoped `[data-tenant]` override of * the role never reaches it (see docs/STANDARDS-vocabulary-tokens.md · \"role-mirror knobs\"). A * service still overrides the knob directly (--card-background: …) to win over the role default. default = hsl(var(--card))"
+    "description": "Card fill + edge — opt-in knobs that DEFAULT to the live --card / --border roles. Declared `initial` (not `var(--card)`) so the default re-resolves at the call site under a scoped theme: a :root binding to a role var freezes at the :root value and a scoped `[data-tenant]` override of the role never reaches it (see docs/STANDARDS-vocabulary-tokens.md · \"role-mirror knobs\"). A service still overrides the knob directly (--card-background: …) to win over the role default. default = hsl(var(--card))"
   },
   {
     "name": "--card-border",
@@ -436,7 +436,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-header-background",
     "value": "initial",
-    "description": "Banded-header fill — role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. Default = the live --muted role (resolved at the call site). default = hsl(var(--muted))"
+    "description": "Banded-header fill — role-tintable (rule #45): a service points this at any role, e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for the wash strength. Default = the live --muted role (resolved at the call site). default = hsl(var(--muted))"
   },
   {
     "name": "--card-header-background-alpha",
@@ -446,7 +446,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-header-border-bottom",
     "value": "initial",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header. * Default = 1px solid hsl(var(--card-border)) (resolved at the call site)."
+    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it dashed / heavier / none without forking CSS. Pair with --card-header-background-alpha: 0 for a quiet borderless-band header. Default = 1px solid hsl(var(--card-border)) (resolved at the call site)."
   },
   {
     "name": "--card-radius",
@@ -456,32 +456,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-shadow",
     "value": "var(--shadow-sm)",
-    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm * elevation layer. Consumers can still flatten or lift cards through this knob."
+    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm elevation layer. Consumers can still flatten or lift cards through this knob."
   },
   {
     "name": "--card-glow",
     "value": "0 0 0 0 transparent",
-    "description": "Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the * surface box-shadow so a service can wash every card with the global glow, e.g. * --card-glow: var(--shadow-glow), with no markup change."
+    "description": "Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the surface box-shadow so a service can wash every card with the global glow, e.g. --card-glow: var(--shadow-glow), with no markup change."
   },
   {
     "name": "--card-hover-shadow",
     "value": "var(--shadow-md)",
-    "description": "`hoverable` (antd `hoverable`) — the elevation a pointer-interactive card steps UP to on * hover. One step above the resting `--card-shadow` on the same ramp, so a service that has * already flattened or lifted every card keeps a proportional lift instead of a fixed one."
+    "description": "`hoverable` (antd `hoverable`) — the elevation a pointer-interactive card steps UP to on hover. One step above the resting `--card-shadow` on the same ramp, so a service that has already flattened or lifted every card keeps a proportional lift instead of a fixed one."
   },
   {
     "name": "--card-tint",
     "value": "transparent",
-    "description": "Fill tint — subtle role wash over the card background (default transparent = invisible). * Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once."
+    "description": "Fill tint — subtle role wash over the card background (default transparent = invisible). Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once."
   },
   {
     "name": "--card-accent-rail-width",
     "value": "var(--stroke-2xl)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). Tokenised (rule #44) so a service theme can re-tune it without forking CSS. The slot padding compensation in card-layout.css subtracts the same token, so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--card-accent-perimeter-width",
     "value": "var(--stroke-hairline)",
-    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can * tune the edge weight and the outer ring independently; the defaults reproduce the optical * weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone * instead of --primary. Structural 1px literals, like the base card hairline."
+    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can tune the edge weight and the outer ring independently; the defaults reproduce the optical weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone instead of --primary. Structural 1px literals, like the base card hairline."
   },
   {
     "name": "--card-accent-perimeter-ring-width",
@@ -491,7 +491,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-featured-border-color",
     "value": "initial",
-    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card * at once. Default = hsl(var(--primary))."
+    "description": "`variant=\"featured\"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card at once. Default = hsl(var(--primary))."
   },
   {
     "name": "--card-featured-ring-width",
@@ -556,7 +556,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--stat-card-icon-background",
     "value": "initial",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding --primary or these tokens directly (rule #44/#45). `initial` so the --primary default re-resolves at the call site under a scoped theme (no :root freeze). Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--stat-card-icon-foreground",
@@ -571,12 +571,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-service-launcher-space-gap",
     "value": "var(--space-stack-sm)",
-    "description": "── ServiceLauncherCard (gh#219) ─────────────────────────────────────────────────── * Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the * icon↔title↔status row, so a service theme retunes the whole tile density once."
+    "description": "── ServiceLauncherCard (gh#219) ─────────────────────────────────────────────────── Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the icon↔title↔status row, so a service theme retunes the whole tile density once."
   },
   {
     "name": "--card-service-launcher-icon-size",
     "value": "calc(var(--icon-size-2xl) * var(--scaling))",
-    "description": "Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the * medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants * density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is * the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts * the control ladder to the 44px tap floor, so on every touch device the medallion silently * inflated to 48px while the glyph inside it stayed 20px."
+    "description": "Semantic icon surface — 36px, the `--icon-size-2xl` step, multiplied by --scaling so the medallion still breathes with its sibling controls (the gh#328 rule: an icon that wants density says so itself). It read `var(--control-height-lg)` until gh#324: a CONTROL tier is the wrong axis for an icon box, and the bug was visible — `@media (pointer: coarse)` lifts the control ladder to the 44px tap floor, so on every touch device the medallion silently inflated to 48px while the glyph inside it stayed 20px."
   },
   {
     "name": "--card-service-launcher-icon-glyph-size",
@@ -591,7 +591,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-service-launcher-icon-background",
     "value": "initial",
-    "description": "Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them. * Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph."
+    "description": "Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them. Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--card-service-launcher-icon-foreground",
@@ -601,7 +601,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-service-launcher-unavailable-icon-background",
     "value": "initial",
-    "description": "Unavailable medallion tint — applied when the consumer supplies `disabledReason`, so an * un-launchable service never reads as brand-live. `initial` for the same role-mirror reason. * Defaults = hsl(var(--muted)) fill · hsl(var(--muted-foreground)) glyph."
+    "description": "Unavailable medallion tint — applied when the consumer supplies `disabledReason`, so an un-launchable service never reads as brand-live. `initial` for the same role-mirror reason. Defaults = hsl(var(--muted)) fill · hsl(var(--muted-foreground)) glyph."
   },
   {
     "name": "--card-service-launcher-unavailable-icon-foreground",
@@ -631,7 +631,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-service-launcher-cta-min-height",
     "value": "calc(var(--control-height-lg) * 4)",
-    "description": "Dashed catalog/add companion tile: kept tall enough to sit level with a populated launcher * tile in the same grid row. Four control tiers ≈ medallion + title + description + action."
+    "description": "Dashed catalog/add companion tile: kept tall enough to sit level with a populated launcher tile in the same grid row. Four control tiers ≈ medallion + title + description + action."
   },
   {
     "name": "--card-service-launcher-skeleton-title-width",
@@ -646,37 +646,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-plot-height-xs",
     "value": "3.5rem",
-    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale * here; a screen picks a step with the `size` prop."
+    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under a KPI headline without stealing its vertical rhythm. A service retunes the whole scale here; a screen picks a step with the `size` prop."
   },
   {
     "name": "--chart-trend-plot-height-sm",
     "value": "5rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-plot-height-md",
     "value": "7.5rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-plot-height-lg",
     "value": "10rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-plot-height",
     "value": "var(--chart-trend-plot-height-xs)",
-    "description": "Active tier — chart-layout.css re-points this per `data-size`; overriding it directly * pins one height for every trend regardless of `size`."
+    "description": "Active tier — chart-layout.css re-points this per `data-size`; overriding it directly pins one height for every trend regardless of `size`."
   },
   {
     "name": "--chart-trend-bar-gap",
     "value": "var(--space-2)",
-    "description": "── Bar marks ──────────────────────────────────────────────────────────────────────── * Thin marks, a surface gap between neighbours and a rounded data-end anchored to the * baseline (the data-visualization mark spec)."
+    "description": "── Bar marks ──────────────────────────────────────────────────────────────────────── Thin marks, a surface gap between neighbours and a rounded data-end anchored to the baseline (the data-visualization mark spec)."
   },
   {
     "name": "--chart-trend-bar-radius",
     "value": "var(--radius-sm)",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-bar-max-width",
@@ -691,7 +691,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-bar-background",
     "value": "initial",
-    "description": "Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves * at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · \"Role-mirror knobs * MUST be `initial`\"). Default = hsl(var(--muted-foreground) / 0.75), which clears the * 3:1 non-text contrast floor (WCAG 1.4.11) against the card surface."
+    "description": "Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Default = hsl(var(--muted-foreground) / 0.75), which clears the 3:1 non-text contrast floor (WCAG 1.4.11) against the card surface."
   },
   {
     "name": "--chart-trend-bar-background-alpha",
@@ -706,17 +706,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-baseline-border",
     "value": "initial",
-    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
+    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
   },
   {
     "name": "--chart-trend-tick-gap",
     "value": "var(--space-1)",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-tick-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the foundation `--chart-1..6` palette."
   },
   {
     "name": "--chart-trend-footer-gap",
@@ -726,17 +726,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-category-axis-gap",
     "value": "var(--space-2)",
-    "description": "── Category axis (horizontal BarChart) ──────────────────────────────────────────────── * The category axis of a horizontal bar chart holds free text, and in Japanese that text is a * company name of 8–10 full-width glyphs (100–125px at the tick size). recharts reserves a flat * 60px whatever the ticks say, which painted those names OUTSIDE the plot box where the SVG clip * cut them from the START — losing exactly the identifying `株式会社` (gh#409 · 1). * * The chart now measures its widest tick and sizes the axis from it. These two knobs own the * limits of that: how much air sits between the tick and the plot, and how much of the canvas a * category axis may take before labels are truncated at their END instead. A service that runs * longer names raises the fraction; one that wants the bars to dominate lowers it."
+    "description": "── Category axis (horizontal BarChart) ──────────────────────────────────────────────── The category axis of a horizontal bar chart holds free text, and in Japanese that text is a company name of 8–10 full-width glyphs (100–125px at the tick size). recharts reserves a flat 60px whatever the ticks say, which painted those names OUTSIDE the plot box where the SVG clip cut them from the START — losing exactly the identifying `株式会社` (gh#409 · 1). The chart now measures its widest tick and sizes the axis from it. These two knobs own the limits of that: how much air sits between the tick and the plot, and how much of the canvas a category axis may take before labels are truncated at their END instead. A service that runs longer names raises the fraction; one that wants the bars to dominate lowers it."
   },
   {
     "name": "--chart-category-axis-max-fraction",
     "value": "0.4",
-    "description": "Share of the canvas the category axis may occupy, 0..1. At the 1102px dashboard column this * is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule, * while a pathological label still cannot squeeze the bars out of their own chart."
+    "description": "Share of the canvas the category axis may occupy, 0..1. At the 1102px dashboard column this is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule, while a pathological label still cannot squeeze the bars out of their own chart."
   },
   {
     "name": "--chat-bubble-background",
     "value": "initial",
-    "description": "Bubble fill. `initial` so the --muted default re-resolves at the CALL SITE under a scoped * theme; a :root binding to a role var freezes at :root (docs/TOKENS.md — the :root freeze * rule). Documented default = hsl(var(--muted))."
+    "description": "Bubble fill. `initial` so the --muted default re-resolves at the CALL SITE under a scoped theme; a :root binding to a role var freezes at :root (docs/TOKENS.md — the :root freeze rule). Documented default = hsl(var(--muted))."
   },
   {
     "name": "--chat-bubble-foreground",
@@ -746,12 +746,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-border-color",
     "value": "initial",
-    "description": "The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input * (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border))."
+    "description": "The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border))."
   },
   {
     "name": "--chat-bubble-radius",
     "value": "var(--radius-lg)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it * lives in (docs/roadmap/ai-chat-components.md §2/§3). * * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` * shape, so the knob ships as `--chat-bubble-background` — the same word every other component * tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-gap",
@@ -761,22 +761,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-max-inline-size",
     "value": "34rem",
-    "description": "The measure a bubble never exceeds. Long-form assistant prose past ~70 characters per line * stops being readable, and a chat pane is as wide as the window (#45 — a service retunes the * measure to its own column)."
+    "description": "The measure a bubble never exceeds. Long-form assistant prose past ~70 characters per line stops being readable, and a chat pane is as wide as the window (#45 — a service retunes the measure to its own column)."
   },
   {
     "name": "--chat-bubble-avatar-size",
     "value": "initial",
-    "description": "Avatar box. Role-mirror of a RE-SCOPED tier (--control-height is re-declared per density and * by the auth shell), so it is `initial` + a call-site fallback for the same reason a colour * knob is. Documented default = var(--control-height)."
+    "description": "Avatar box. Role-mirror of a RE-SCOPED tier (--control-height is re-declared per density and by the auth shell), so it is `initial` + a call-site fallback for the same reason a colour knob is. Documented default = var(--control-height)."
   },
   {
     "name": "--chat-bubble-padding-block",
     "value": "var(--space-2)",
-    "description": "Inner inset of the bubble body, at the default `md` step. The xs/sm/lg steps re-declare these * two on the element itself (styles/data-display-layout.css)."
+    "description": "Inner inset of the bubble body, at the default `md` step. The xs/sm/lg steps re-declare these two on the element itself (styles/data-display-layout.css)."
   },
   {
     "name": "--chat-bubble-padding-inline",
     "value": "var(--space-3)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it * lives in (docs/roadmap/ai-chat-components.md §2/§3). * * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` * shape, so the knob ships as `--chat-bubble-background` — the same word every other component * tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-list-gap",
@@ -791,12 +791,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-typing-caret-color",
     "value": "initial",
-    "description": "The typed-so-far caret drawn while `typing` animates. Role-mirror knob, documented default = * hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy` * and a localized sr-only \"typing\" string."
+    "description": "The typed-so-far caret drawn while `typing` animates. Role-mirror knob, documented default = hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy` and a localized sr-only \"typing\" string."
   },
   {
     "name": "--chat-bubble-typing-caret-width",
     "value": "var(--stroke-md)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it * lives in (docs/roadmap/ai-chat-components.md §2/§3). * * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` * shape, so the knob ships as `--chat-bubble-background` — the same word every other component * tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-typing-caret-height",
@@ -811,32 +811,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-bubble-tone-background-alpha",
     "value": "0.08",
-    "description": "Status-tinted bubbles (`tone`) wash the role colour exactly like Alert does, so an error * bubble and an error banner agree. Never colour alone — the bubble also renders a localized * sr-only tone word."
+    "description": "Status-tinted bubbles (`tone`) wash the role colour exactly like Alert does, so an error bubble and an error banner agree. Never colour alone — the bubble also renders a localized sr-only tone word."
   },
   {
     "name": "--chat-bubble-tone-border-alpha",
     "value": "0.35",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it * lives in (docs/roadmap/ai-chat-components.md §2/§3). * * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` * shape, so the knob ships as `--chat-bubble-background` — the same word every other component * tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-bubble-end-background",
     "value": "initial",
-    "description": "The message column of an `end`-placed (own) bubble. Role-mirror knobs so a service can tint * \"my\" messages without touching the assistant's. Documented defaults = * hsl(var(--primary) / 0.1) and hsl(var(--foreground))."
+    "description": "The message column of an `end`-placed (own) bubble. Role-mirror knobs so a service can tint \"my\" messages without touching the assistant's. Documented defaults = hsl(var(--primary) / 0.1) and hsl(var(--foreground))."
   },
   {
     "name": "--chat-bubble-end-foreground",
     "value": "initial",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it * lives in (docs/roadmap/ai-chat-components.md §2/§3). * * NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one * of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` * shape, so the knob ships as `--chat-bubble-background` — the same word every other component * tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
   },
   {
     "name": "--chat-composer-min-height",
     "value": "initial",
-    "description": "Floor and ceiling of the draft box, both `initial` — and that is load-bearing, not tidiness. * * Their defaults READ `--control-height`, which is re-declared per size step on the composer * itself (`.ui-control-surface[data-size=\"sm\"]` and friends). Bound here at `:root`, each one * would resolve ONCE against the root tier and freeze: measured in Chromium, all four of * `size=\"xs|sm|md|lg\"` rendered at an identical 55px box. `initial` sends the fallback chain in * `data-entry-layout.css` back to the CALL SITE, where the step's own `--control-height` is in * scope. Same rule as ListRow's dividers and the compact-row knobs (docs/TOKENS.md — the :root * freeze rule). * * Default floor = var(--control-height) — exactly one control row. * Default ceiling = calc(var(--control-height) * 5) — past it the draft scrolls itself instead * of pushing the page. A MULTIPLIER, never `calc(var(--control-height) ± …)`, * which silently re-derives a tier (check:control-sizing)."
+    "description": "Floor and ceiling of the draft box, both `initial` — and that is load-bearing, not tidiness. Their defaults READ `--control-height`, which is re-declared per size step on the composer itself (`.ui-control-surface[data-size=\"sm\"]` and friends). Bound here at `:root`, each one would resolve ONCE against the root tier and freeze: measured in Chromium, all four of `size=\"xs|sm|md|lg\"` rendered at an identical 55px box. `initial` sends the fallback chain in `data-entry-layout.css` back to the CALL SITE, where the step's own `--control-height` is in scope. Same rule as ListRow's dividers and the compact-row knobs (docs/TOKENS.md — the :root freeze rule). Default floor = var(--control-height) — exactly one control row. Default ceiling = calc(var(--control-height) * 5) — past it the draft scrolls itself instead of pushing the page. A MULTIPLIER, never `calc(var(--control-height) ± …)`, which silently re-derives a tier (check:control-sizing)."
   },
   {
     "name": "--chat-composer-max-height",
     "value": "initial",
-    "description": "ChatComposer component tokens — the message input of a conversation (Ant Design X `Sender`). * * The composer is a CONTROL, so its box height is not its own decision: both bounds below are * expressed in the `--control-height` tier, which is density-aware. A resting one-line composer * therefore lines up with the Button beside it, and every size step (`data-size`) moves both * bounds together. Never restate either as a literal length — see docs/TOKENS.md and * `pnpm check:control-sizing`."
+    "description": "ChatComposer component tokens — the message input of a conversation (Ant Design X `Sender`). The composer is a CONTROL, so its box height is not its own decision: both bounds below are expressed in the `--control-height` tier, which is density-aware. A resting one-line composer therefore lines up with the Button beside it, and every size step (`data-size`) moves both bounds together. Never restate either as a literal length — see docs/TOKENS.md and `pnpm check:control-sizing`."
   },
   {
     "name": "--chat-composer-gap",
@@ -846,12 +846,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-composer-padding-block",
     "value": "var(--space-2)",
-    "description": "Inset of the composer frame. The draft box itself is borderless — the frame IS the boundary, * so two nested rounded borders never appear."
+    "description": "Inset of the composer frame. The draft box itself is borderless — the frame IS the boundary, so two nested rounded borders never appear."
   },
   {
     "name": "--chat-composer-padding-inline",
     "value": "var(--space-2)",
-    "description": "ChatComposer component tokens — the message input of a conversation (Ant Design X `Sender`). * * The composer is a CONTROL, so its box height is not its own decision: both bounds below are * expressed in the `--control-height` tier, which is density-aware. A resting one-line composer * therefore lines up with the Button beside it, and every size step (`data-size`) moves both * bounds together. Never restate either as a literal length — see docs/TOKENS.md and * `pnpm check:control-sizing`."
+    "description": "ChatComposer component tokens — the message input of a conversation (Ant Design X `Sender`). The composer is a CONTROL, so its box height is not its own decision: both bounds below are expressed in the `--control-height` tier, which is density-aware. A resting one-line composer therefore lines up with the Button beside it, and every size step (`data-size`) moves both bounds together. Never restate either as a literal length — see docs/TOKENS.md and `pnpm check:control-sizing`."
   },
   {
     "name": "--chat-composer-row-gap",
@@ -861,12 +861,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chat-composer-radius",
     "value": "initial",
-    "description": "Corner shape — `initial` so the control default re-resolves at the call site under a scoped * theme (a :root binding to a role var freezes at :root). Default = var(--control-radius)."
+    "description": "Corner shape — `initial` so the control default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root). Default = var(--control-radius)."
   },
   {
     "name": "--chat-composer-header-border",
     "value": "initial",
-    "description": "Divider under the `header` slot — `initial`, documented default = 1px solid hsl(var(--border)), * so a service retunes the chrome once instead of per composer."
+    "description": "Divider under the `header` slot — `initial`, documented default = 1px solid hsl(var(--border)), so a service retunes the chrome once instead of per composer."
   },
   {
     "name": "--chat-composer-footer-font-size",
@@ -906,7 +906,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-bounded-width",
     "value": "min(15rem, 48vw)",
-    "description": "Held width for `width=\"bounded\"` controls (gh#375). `min()` so the value is a ceiling on a * desktop bar and a share of the viewport on a phone, never a fixed rem that overflows it."
+    "description": "Held width for `width=\"bounded\"` controls (gh#375). `min()` so the value is a ceiling on a desktop bar and a share of the viewport on a phone, never a fixed rem that overflows it."
   },
   {
     "name": "--control-height",
@@ -916,7 +916,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-height-sm",
     "value": "calc(var(--control-height) - calc(0.25rem * var(--scaling)))",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-height-lg",
@@ -951,12 +951,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-radius",
     "value": "var(--radius-md)",
-    "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing * changes by default, but is its OWN knob so a service theme can retune the button * radius INDEPENDENTLY of input/control radius (issue #124)."
+    "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing changes by default, but is its OWN knob so a service theme can retune the button radius INDEPENDENTLY of input/control radius (issue #124)."
   },
   {
     "name": "--control-font-size",
     "value": "var(--font-size-base)",
-    "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
+    "description": "Control surface knobs — font-size, border width and resting shadow of every `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them once instead of each component hard-coding Tailwind utilities. Defaults preserve the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
     "name": "--control-border-width",
@@ -981,7 +981,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-status-warning-border-color",
     "value": "var(--warning)",
-    "description": "VALIDATION STATUS — antd's `status` axis (docs/DESIGN-AUTHORITY.md names Ant Design the * taxonomy authority). Only the FOCUS half is a knob: the boundary itself has to be painted from * a Tailwind utility, because `border-input` sits in a later cascade layer than this file's * component rules and would win over any of them (measured in Chromium — see * components/data-entry/control-appearance.ts). The error boundary therefore reuses the role * `aria-invalid:border-destructive` already paints, and cannot drift into a second red. * * The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd * derives both from one `colorXxxOutline` recipe and the generated file carries only the error * one (scripts/gen-antd-tokens.mjs)."
+    "description": "VALIDATION STATUS — antd's `status` axis (docs/DESIGN-AUTHORITY.md names Ant Design the taxonomy authority). Only the FOCUS half is a knob: the boundary itself has to be painted from a Tailwind utility, because `border-input` sits in a later cascade layer than this file's component rules and would win over any of them (measured in Chromium — see components/data-entry/control-appearance.ts). The error boundary therefore reuses the role `aria-invalid:border-destructive` already paints, and cannot drift into a second red. The warning halo borrows the ERROR halo's alpha rather than inventing a second opacity: antd derives both from one `colorXxxOutline` recipe and the generated file carries only the error one (scripts/gen-antd-tokens.mjs)."
   },
   {
     "name": "--control-status-warning-glow-color",
@@ -996,12 +996,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--number-input-touch-height",
     "value": "var(--band-height-2xl)",
-    "description": "THE BAND A NumberInput TAKES ON A COARSE POINTER, and the one control in this package that * needs a taller one than rule #24's 44px floor. * * Its two steppers are STACKED inside the field, so each can only ever be half the band. Measured * in Chromium (Playwright touch emulation, `(pointer: coarse)` matching) before this token: the * default NumberInput was 44px and each stepper **24×19px**, with their centres 20px apart. WCAG * 2.2 SC 2.5.8 wants 24×24, and the Spacing exception does not rescue it either — that needs * 24px-diameter circles centred on each box NOT to intersect, and at 20px apart they do. * * 44px cannot be made to work: half of it is 22px whatever the inset and gap. 48px can, exactly — * two 24px halves, no inset, no gap — so the band moves up one step for this control alone, and * only where a coarse pointer says it matters. `size=\"lg\"` already lands on 48px there, so it * gains the same 24×24 for free; `xs` and `sm` stay where the consumer put them (a deliberately * smaller control is the consumer's trade, the same way rule #24 already treats them). * * A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px * targets with it."
+    "description": "THE BAND A NumberInput TAKES ON A COARSE POINTER, and the one control in this package that needs a taller one than rule #24's 44px floor. Its two steppers are STACKED inside the field, so each can only ever be half the band. Measured in Chromium (Playwright touch emulation, `(pointer: coarse)` matching) before this token: the default NumberInput was 44px and each stepper **24×19px**, with their centres 20px apart. WCAG 2.2 SC 2.5.8 wants 24×24, and the Spacing exception does not rescue it either — that needs 24px-diameter circles centred on each box NOT to intersect, and at 20px apart they do. 44px cannot be made to work: half of it is 22px whatever the inset and gap. 48px can, exactly — two 24px halves, no inset, no gap — so the band moves up one step for this control alone, and only where a coarse pointer says it matters. `size=\"lg\"` already lands on 48px there, so it gains the same 24×24 for free; `xs` and `sm` stay where the consumer put them (a deliberately smaller control is the consumer's trade, the same way rule #24 already treats them). A service that wants the 44px row back sets this to `var(--band-height-xl)` and takes 22px targets with it."
   },
   {
     "name": "--control-variant-filled-background",
     "value": "var(--muted)",
-    "description": "CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already * draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as * knobs so a service theme can retune the dense-form treatment once, globally."
+    "description": "CHROME VARIANT — antd's `variant` axis. `outlined` needs no token: it is what a field already draws. `filled` swaps the boundary for a tinted surface; `borderless` drops both. Kept as knobs so a service theme can retune the dense-form treatment once, globally."
   },
   {
     "name": "--control-variant-filled-hover-background",
@@ -1021,7 +1021,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-count-exceeded-color",
     "value": "initial",
-    "description": "`initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a * `[data-tenant]` re-theming the error ink would keep this counter on the root's answer * (docs/TOKENS.md, the freeze rule). The default lives at the rule that paints it."
+    "description": "`initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a `[data-tenant]` re-theming the error ink would keep this counter on the root's answer (docs/TOKENS.md, the freeze rule). The default lives at the rule that paints it."
   },
   {
     "name": "--control-count-space-inline",
@@ -1151,7 +1151,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--choice-button-selected-color",
     "value": "initial",
-    "description": "The four brand-coloured knobs default at the call site — a `:root` binding would freeze on the * root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). default = var(--primary)"
+    "description": "The four brand-coloured knobs default at the call site — a `:root` binding would freeze on the root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). default = var(--primary)"
   },
   {
     "name": "--choice-button-selected-border-color",
@@ -1171,7 +1171,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--toggle-focus-ring-width",
     "value": "var(--stroke-lg)",
-    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global * default — both are filled surfaces where the ring was felt to read as a second border. * * THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between * the focused and unfocused states of the pixels that mark focus, and colour is the whole of * that bar. Measured against this palette, the focus hue at alpha 0.35 * composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant * indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes * from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a * service can still trade the criterion away deliberately — but the shipped default no longer * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
   },
   {
     "name": "--toggle-focus-ring-alpha",
@@ -1181,7 +1181,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-focus-ring-width",
     "value": "var(--stroke-hairline)",
-    "description": "Mark width for a BORDERED FIELD. * * This knob exists because a field is the one control that already owns a boundary, so it is * the one place the mark could plausibly be dropped and the recoloured border left to carry the * state — which is the established treatment for a bordered field: a primary border plus a * translucent halo, nothing in between. * * It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a * button carry the same weight. A gate asserts the two stay equal, because this token cannot * literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). * * It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is * `weight × --focus-outline`, so a field's mark is still switched off with everything else — a * knob that bypassed the switch would be a hole in it. * * If a service sets this, note the unit: the halo's spread is summed with a length in * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
+    "description": "Mark width for a BORDERED FIELD. This knob exists because a field is the one control that already owns a boundary, so it is the one place the mark could plausibly be dropped and the recoloured border left to carry the state — which is the established treatment for a bordered field: a primary border plus a translucent halo, nothing in between. It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a button carry the same weight. A gate asserts the two stay equal, because this token cannot literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is `weight × --focus-outline`, so a field's mark is still switched off with everything else — a knob that bypassed the switch would be a hole in it. If a service sets this, note the unit: the halo's spread is summed with a length in `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
   },
   {
     "name": "--rating-focus-ring-offset",
@@ -1191,7 +1191,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--rating-star-filled-color",
     "value": "initial",
-    "description": "Star paint (gh#694). HSL components, `initial` so the default resolves at the star — a `:root` * binding would freeze on the root's role and ignore a scoped [data-tenant] theme (the freeze * rule). Filled default = var(--warning); empty default = var(--muted-foreground) at the alpha."
+    "description": "Star paint (gh#694). HSL components, `initial` so the default resolves at the star — a `:root` binding would freeze on the root's role and ignore a scoped [data-tenant] theme (the freeze rule). Filled default = var(--warning); empty default = var(--muted-foreground) at the alpha."
   },
   {
     "name": "--rating-star-empty-color",
@@ -1321,17 +1321,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--slider-vertical-min-block-size",
     "value": "10rem",
-    "description": "A vertical slider fills its container's block size; this keeps one visible in a container * that has none (antd leaves it at 0 and relies on the page to size it)."
+    "description": "A vertical slider fills its container's block size; this keeps one visible in a container that has none (antd leaves it at 0 and relies on the page to size it)."
   },
   {
     "name": "--otp-slot-size",
     "value": "initial",
-    "description": "InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other * control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in * docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size, * var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at * the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant=\"canonical\"]`, which * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc. default = var(--control-height) at the call site"
+    "description": "InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size, var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant=\"canonical\"]`, which re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc. default = var(--control-height) at the call site"
   },
   {
     "name": "--otp-slot-inline-size",
     "value": "initial",
-    "description": "Per-AXIS overrides of the slot box (gh#12). --otp-slot-size stays the square shorthand; these * two win over it when set, so a code field can be WIDER-than-tall or TALLER-than-wide without * abandoning the token. A canonical device-grant code field is 27.5x52 per slot (a 4-slot * `appearance=\"grouped\"` box of 112x54 with its 1px group border) — not expressible with one * square knob, which is why grouped OTP measured 146x38 against that artboard. `initial` for the * same tier-mirror reason as --otp-slot-size: the whole fallback chain * (axis → square → --control-height) must resolve at the CALL SITE so a shell that re-scopes * --control-height still reaches an OTP row that sets neither axis. default = var(--otp-slot-size, var(--control-height))"
+    "description": "Per-AXIS overrides of the slot box (gh#12). --otp-slot-size stays the square shorthand; these two win over it when set, so a code field can be WIDER-than-tall or TALLER-than-wide without abandoning the token. A canonical device-grant code field is 27.5x52 per slot (a 4-slot `appearance=\"grouped\"` box of 112x54 with its 1px group border) — not expressible with one square knob, which is why grouped OTP measured 146x38 against that artboard. `initial` for the same tier-mirror reason as --otp-slot-size: the whole fallback chain (axis → square → --control-height) must resolve at the CALL SITE so a shell that re-scopes --control-height still reaches an OTP row that sets neither axis. default = var(--otp-slot-size, var(--control-height))"
   },
   {
     "name": "--otp-slot-block-size",
@@ -1341,12 +1341,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--otp-container-align",
     "value": "flex-start",
-    "description": "Main-axis alignment of the whole OTP row (rule #44/#45 — chrome is a token, default quiet). * `flex-start` is the historical behaviour, so an existing field is byte-identical; a centred * code field is `align=\"center\"` on InputOTP (which wins over this knob) or this token set once * in a service theme. It exists because EVERY consumer was wrapping .ui-otp-container in a * flex-centring div to get a centred challenge."
+    "description": "Main-axis alignment of the whole OTP row (rule #44/#45 — chrome is a token, default quiet). `flex-start` is the historical behaviour, so an existing field is byte-identical; a centred code field is `align=\"center\"` on InputOTP (which wins over this knob) or this token set once in a service theme. It exists because EVERY consumer was wrapping .ui-otp-container in a flex-centring div to get a centred challenge."
   },
   {
     "name": "--checkbox-checked-background",
     "value": "initial",
-    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--switch-checked-background",
@@ -1371,12 +1371,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--switch-unchecked-background",
     "value": "initial",
-    "description": "Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a * service can quieten the off-track without dragging the --input control-boundary role back * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page * and against the thumb (--background), or \"off\" stops being a visible state."
+    "description": "Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a service can quieten the off-track without dragging the --input control-boundary role back below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page and against the thumb (--background), or \"off\" stops being a visible state."
   },
   {
     "name": "--switch-content-unchecked-foreground",
     "value": "initial",
-    "description": "A labelled OFF track defaults to muted-foreground rather than the input boundary role: * text needs 4.5:1, not the 3:1 required of an empty track. Pair custom track fills with this * foreground; the default background role contrasts in both light and dark themes."
+    "description": "A labelled OFF track defaults to muted-foreground rather than the input boundary role: text needs 4.5:1, not the 3:1 required of an empty track. Pair custom track fills with this foreground; the default background role contrasts in both light and dark themes."
   },
   {
     "name": "--color-picker-input-width",
@@ -1411,12 +1411,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--command-item-gap",
     "value": "var(--control-gap)",
-    "description": "The gap between a row's leading mark and its label. `.ui-command-item` is a flex row and had * NO gap at all, so every command/palette/picker row with an icon rendered its glyph flush * against the text — measured at 0px between an organization mark and its name. It reads * --control-gap because a command row is a control row: the same distance the trigger it opened * from already puts between its own icon and label."
+    "description": "The gap between a row's leading mark and its label. `.ui-command-item` is a flex row and had NO gap at all, so every command/palette/picker row with an icon rendered its glyph flush against the text — measured at 0px between an organization mark and its name. It reads --control-gap because a command row is a control row: the same distance the trigger it opened from already puts between its own icon and label."
   },
   {
     "name": "--command-list-split-padding",
     "value": "0",
-    "description": "`Command split` (antd List `split`, gh#699) — a list drawn as ONE ruled box. * --command-list-split-padding the group/list padding under split: 0, so no inner frame * separates the rows from the panel edge. * --command-list-split-inset the inline inset the SURFACE puts between the panel edge and * the list, which a split row cancels (negative margin) and pays * back as padding so its fill and rule still meet both edges. * 0 for a bare Command; OrgSwitcher sets its column inset. * --command-item-divider-width the hairline between rows. * --command-item-divider-color ROLE-MIRROR KNOB — `initial` here, default resolved at the * call site = var(--border) (HSL channels; docs/TOKENS.md)."
+    "description": "`Command split` (antd List `split`, gh#699) — a list drawn as ONE ruled box. --command-list-split-padding the group/list padding under split: 0, so no inner frame separates the rows from the panel edge. --command-list-split-inset the inline inset the SURFACE puts between the panel edge and the list, which a split row cancels (negative margin) and pays back as padding so its fill and rule still meet both edges. 0 for a bare Command; OrgSwitcher sets its column inset. --command-item-divider-width the hairline between rows. --command-item-divider-color ROLE-MIRROR KNOB — `initial` here, default resolved at the call site = var(--border) (HSL channels; docs/TOKENS.md)."
   },
   {
     "name": "--command-list-split-inset",
@@ -1466,7 +1466,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived * from it so the text never runs under an icon."
+    "description": "SearchInput — the inset the leading/trailing icons sit at, and the field padding derived from it so the text never runs under an icon."
   },
   {
     "name": "--search-input-start-padding",
@@ -1481,7 +1481,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--choice-description-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a * single one of them without moving the whole scale."
+    "description": "The --font-size-xs tier, spelled once per control that reads it, so a service can retune a single one of them without moving the whole scale."
   },
   {
     "name": "--color-picker-hex-font-size",
@@ -1521,7 +1521,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-affix-inset-inline-end",
     "value": "var(--space-2)",
-    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline * end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm * opacity-50` stack independently (#319), so a service retuning affix weight had to chase the * literal through several components. One shared set of knobs instead — this is a CONTROL-level * concern, not a per-component one."
+    "description": "TRAILING AFFIX — the clear ✕ / chevron overlay a select-family trigger parks at its inline end. Select, SearchSelect and TagInput each hard-coded the same `end-2 size-6 rounded-sm opacity-50` stack independently (#319), so a service retuning affix weight had to chase the literal through several components. One shared set of knobs instead — this is a CONTROL-level concern, not a per-component one."
   },
   {
     "name": "--control-affix-action-size",
@@ -1546,12 +1546,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-trigger-space-inline-end",
     "value": "2.25rem",
-    "description": "2.25rem — the room a single trailing affix needs. Written as a raw rem because the * literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one."
+    "description": "2.25rem — the room a single trailing affix needs. Written as a raw rem because the literal it replaced (`pe-9`) is a flat Tailwind step, not a density-scaled one."
   },
   {
     "name": "--control-inline-affix-size",
     "value": "1.25rem",
-    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the * field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect * park on top of a trigger. Both carried the identical literal stack (#319). Because these sit * on the field's own surface rather than over it, they rest a touch heavier than the overlay * pair — that difference is the reason the two sets stay separate."
+    "description": "INSIDE-FIELD AFFIX — the leading/trailing controls Input and TimePicker render WITHIN the field box, as opposed to the overlay affix (--control-affix-*) that Select and SearchSelect park on top of a trigger. Both carried the identical literal stack (#319). Because these sit on the field's own surface rather than over it, they rest a touch heavier than the overlay pair — that difference is the reason the two sets stay separate."
   },
   {
     "name": "--control-inline-affix-icon-size",
@@ -1581,42 +1581,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--textarea-clear-inset-block-start",
     "value": "var(--space-2)",
-    "description": "Input centres its affix on the field's single line; a textarea has no single line to centre * on, so its clear control parks at the top-end corner instead."
+    "description": "Input centres its affix on the field's single line; a textarea has no single line to centre on, so its clear control parks at the top-end corner instead."
   },
   {
     "name": "--control-multiline-padding-block",
     "value": "var(--space-2)",
-    "description": "MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare * `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a * denser composer, AND it is the constant the auto-grow row maths has to add back, so the two * had to read the same knob or drift (#45)."
+    "description": "MULTILINE BOX — the block padding of `.ui-control-multiline` (Textarea). It was a bare `--space-2` inside the padding shorthand, which made it unreachable for a service that runs a denser composer, AND it is the constant the auto-grow row maths has to add back, so the two had to read the same knob or drift (#45)."
   },
   {
     "name": "--textarea-autogrow-line-height",
     "value": "initial",
-    "description": "The unit a \"row\" is measured in. `initial` on purpose: the call site reads * `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes * the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless — * it is multiplied by `--control-font-size`."
+    "description": "The unit a \"row\" is measured in. `initial` on purpose: the call site reads `var(--textarea-autogrow-line-height, var(--line-height-normal))`, so a service that retunes the multiline line-height for CJK legibility retunes the ceiling with it (#46). Unitless — it is multiplied by `--control-font-size`."
   },
   {
     "name": "--textarea-autogrow-min-height-rows",
     "value": "1",
-    "description": "Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same * theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is * additionally clamped up to `--control-height` so a resting one-row composer still lines up * with the Input / Button beside it instead of undercutting the control tier."
+    "description": "Floor of the grown box, in text rows. The `minRows` prop overrides per instance — the same theme-global / prop-local priority as `--form-label-width` vs `labelWidth`. The floor is additionally clamped up to `--control-height` so a resting one-row composer still lines up with the Input / Button beside it instead of undercutting the control tier."
   },
   {
     "name": "--textarea-autogrow-max-height-rows",
     "value": "8",
-    "description": "Ceiling of the grown box, in text rows; past it the control scrolls internally instead of * pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box."
+    "description": "Ceiling of the grown box, in text rows; past it the control scrolls internally instead of pushing the page. `maxRows={0}` sets this to `infinity` for an unbounded box."
   },
   {
     "name": "--textarea-autogrow-box-inset",
     "value": "calc( (var(--control-multiline-padding-block) + var(--control-border-width)) * 2 )",
-    "description": "The non-text part of the box the row maths must add back: block padding + border, both * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost * variant drops its own chrome."
+    "description": "The non-text part of the box the row maths must add back: block padding + border, both edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost variant drops its own chrome."
   },
   {
     "name": "--control-composite-field-space-gap",
     "value": "var(--space-2)",
-    "description": "COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot * drift into four slightly different boxes."
+    "description": "COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month range pickers) or one input plus affixes. Shared so the four range/picker fields cannot drift into four slightly different boxes."
   },
   {
     "name": "--input-file-button-height",
     "value": "var(--band-height-sm)",
-    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the * field so it reads as a control INSIDE the control."
+    "description": "The <input type=file> button is a browser-owned box we restyle; it sits one tier below the field so it reads as a control INSIDE the control."
   },
   {
     "name": "--input-file-button-font-size",
@@ -1626,12 +1626,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--search-select-panel-max-width",
     "value": "32rem",
-    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the * component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could * not widen the panel or change the viewport gutter without forking."
+    "description": "SEARCH-SELECT — the Popover+Command combobox. Its panel geometry was baked onto the component as arbitrary values (`max-w-[min(32rem,calc(100vw-1.5rem))]`), so a service could not widen the panel or change the viewport gutter without forking."
   },
   {
     "name": "--search-select-panel-inline-size",
     "value": "auto",
-    "description": "Seat for a NUMERIC `popupMatchSelectWidth`. `auto` is the inert default — the knob only does * anything once a call site sets it, and then the value is that consumer's own measurement."
+    "description": "Seat for a NUMERIC `popupMatchSelectWidth`. `auto` is the inert default — the knob only does anything once a call site sets it, and then the value is that consumer's own measurement."
   },
   {
     "name": "--search-select-panel-viewport-inset",
@@ -1696,7 +1696,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--cascader-column-min-width",
     "value": "9rem",
-    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel * paddings were literals on the component (#319), so a service could not widen a column to fit * longer JA labels or tighten the row rhythm without forking."
+    "description": "CASCADER — column browser + flat search list. Its option rows, column widths and panel paddings were literals on the component (#319), so a service could not widen a column to fit longer JA labels or tighten the row rhythm without forking."
   },
   {
     "name": "--cascader-columns-max-height",
@@ -1766,7 +1766,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--select-content-max-height",
     "value": "24rem",
-    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), * so only what is genuinely its own lives here (#319)."
+    "description": "SELECT — the Radix listbox surface. Its popup shares the menu row rhythm (--menu-item-*), so only what is genuinely its own lives here (#319)."
   },
   {
     "name": "--select-content-inline-size",
@@ -1776,7 +1776,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--select-empty-space-block",
     "value": "var(--search-select-placeholder-space-block)",
-    "description": "Vertical room around the `notFoundContent` row — the same breathing space the SearchSelect * panel gives its own empty state, so the two empties read as one affordance."
+    "description": "Vertical room around the `notFoundContent` row — the same breathing space the SearchSelect panel gives its own empty state, so the two empties read as one affordance."
   },
   {
     "name": "--select-scroll-button-space-block",
@@ -1786,12 +1786,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--select-item-space-inline",
     "value": "0.625rem",
-    "description": "Select rows sit slightly wider than a menu row: a listbox has no leading icon column to * absorb the optical inset, so 2.5 reads level with a menu's 2 + icon."
+    "description": "Select rows sit slightly wider than a menu row: a listbox has no leading icon column to absorb the optical inset, so 2.5 reads level with a menu's 2 + icon."
   },
   {
     "name": "--time-picker-column-height",
     "value": "13rem",
-    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its * geometry was literal on the component (#319): a service could not shorten the column, widen * the panel for a 12-hour layout, or retune the row rhythm without forking."
+    "description": "TIME PICKER — scroll columns of hour/minute/second plus an inline affix pair. All of its geometry was literal on the component (#319): a service could not shorten the column, widen the panel for a 12-hour layout, or retune the row rhythm without forking."
   },
   {
     "name": "--time-picker-panel-width",
@@ -1856,7 +1856,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tree-select-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal * on the component, and the depth indent was a magic expression in JSX * (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
+    "description": "TREE SELECT — a Select whose panel holds a tree. Its rows, indent and toggle were literal on the component, and the depth indent was a magic expression in JSX (`depth * 1.25 + 0.5` rem) that no theme could reach at all (#319)."
   },
   {
     "name": "--tree-select-row-space-block",
@@ -1911,12 +1911,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-space-inset",
     "value": "var(--space-3)",
-    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height * (the system control tier), but the frame around them — root inset, month gaps, nav offset, * grid rhythm — was literal on the component (#319), so a service could not tighten the * calendar to its own density without forking the classNames map."
+    "description": "CALENDAR — the react-day-picker grid. Day/weekday cells already size from --control-height (the system control tier), but the frame around them — root inset, month gaps, nav offset, grid rhythm — was literal on the component (#319), so a service could not tighten the calendar to its own density without forking the classNames map."
   },
   {
     "name": "--calendar-month-space-gap",
     "value": "var(--space-4)",
-    "description": "Gap BETWEEN side-by-side months (a range picker's two panels) — not the caption→grid step. * Until gh#730 `.ui-calendar-month` carried it too, and a month has exactly two children, so it * stacked with --calendar-grid-space-block-start into one 32px void under 「2026年9月」 that a * screenshot read as a missing week row. One gap, one token: the month column no longer sets a * gap and --calendar-grid-space-block-start is the whole caption→weekday step."
+    "description": "Gap BETWEEN side-by-side months (a range picker's two panels) — not the caption→grid step. Until gh#730 `.ui-calendar-month` carried it too, and a month has exactly two children, so it stacked with --calendar-grid-space-block-start into one 32px void under 「2026年9月」 that a screenshot read as a missing week row. One gap, one token: the month column no longer sets a gap and --calendar-grid-space-block-start is the whole caption→weekday step."
   },
   {
     "name": "--calendar-caption-space-inline",
@@ -1936,7 +1936,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-nav-space-inline",
     "value": "var(--calendar-space-inset)",
-    "description": "THE SAME INSET AS THE GRID, by construction rather than by coincidence (gh#730 item 5). * `.ui-calendar-nav` is `position: absolute; inset-inline: 0`, and an absolutely positioned box * resolves its insets against the PADDING box — so the nav escapes the calendar's own * --calendar-space-inset and its padding is the whole inset the chevrons get. At space-1 the `‹` * button's outer edge measured 4px from the popover content edge while the weekday row and every * day column started at 12px: an 8px split, reported as 「lề của button và calendar ko bằng * nhau」. Pointing this at --calendar-space-inset makes the two ONE value — retuning the * calendar's inset moves the chevrons with the grid, in LTR and RTL alike."
+    "description": "THE SAME INSET AS THE GRID, by construction rather than by coincidence (gh#730 item 5). `.ui-calendar-nav` is `position: absolute; inset-inline: 0`, and an absolutely positioned box resolves its insets against the PADDING box — so the nav escapes the calendar's own --calendar-space-inset and its padding is the whole inset the chevrons get. At space-1 the `‹` button's outer edge measured 4px from the popover content edge while the weekday row and every day column started at 12px: an 8px split, reported as 「lề của button và calendar ko bằng nhau」. Pointing this at --calendar-space-inset makes the two ONE value — retuning the calendar's inset moves the chevrons with the grid, in LTR and RTL alike."
   },
   {
     "name": "--calendar-nav-rest-alpha",
@@ -1946,7 +1946,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-grid-space-block-start",
     "value": "var(--space-3)",
-    "description": "THE caption→weekday-row step, the only one now (gh#730): measured 32px before, 12px after. * space-3 rather than space-2 because the unruled grid's own row rhythm is * --calendar-week-space-block-start (space-2, 8px) — at 8px the caption would read as one more * week row, at 12px it still reads as the boundary of a group."
+    "description": "THE caption→weekday-row step, the only one now (gh#730): measured 32px before, 12px after. space-3 rather than space-2 because the unruled grid's own row rhythm is --calendar-week-space-block-start (space-2, 8px) — at 8px the caption would read as one more week row, at 12px it still reads as the boundary of a group."
   },
   {
     "name": "--calendar-week-space-block-start",
@@ -1996,17 +1996,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--calendar-bordered-weekday-padding-block",
     "value": "var(--space-1)",
-    "description": "Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for * its text to sit against, so it needs none; ruled, the line box started right at the 1px rule — * measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named * step. The smallest step, not a literal, so a service retuning the spacing grid moves it too."
+    "description": "Block inset of a header cell once the grid is RULED. Unruled, the header row has no edge for its text to sit against, so it needs none; ruled, the line box started right at the 1px rule — measured 1px from the top border and 2.19px from the bottom, an inset below the smallest named step. The smallest step, not a literal, so a service retuning the spacing grid moves it too."
   },
   {
     "name": "--calendar-grid-border-color",
     "value": "initial",
-    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the * role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--border)))` * so it follows a scoped theme. The --border tier: L* 93.80 / 1.149:1 on the popover in light, * L* 20.76 / 1.270:1 in dark — a rule exactly as heavy as a Card edge or a DataTable row rule. * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47 / * 3.88) to --input/0.5 (1.74 / 1.95, L* 78.67), and gh#730 measured that still darker than the * --border every card and table uses and asked for the --border tier itself. Same tier as the * RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 * weight or `hsl(var(--input))` for the heavy line."
+    "description": "Colour of the day-grid ruling (`Calendar bordered`, on by default). `initial` on purpose: the role default is read at the call site as `var(--calendar-grid-border-color, hsl(var(--border)))` so it follows a scoped theme. The --border tier: L* 93.80 / 1.149:1 on the popover in light, L* 20.76 / 1.270:1 in dark — a rule exactly as heavy as a Card edge or a DataTable row rule. Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47 / 3.88) to --input/0.5 (1.74 / 1.95, L* 78.67), and gh#730 measured that still darker than the --border every card and table uses and asked for the --border tier itself. Same tier as the RangeTimeline grid. Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight or `hsl(var(--input))` for the heavy line."
   },
   {
     "name": "--transfer-pane-min-height",
     "value": "14rem",
-    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal * on the component (#319), so a service could not fit the panes to its own page grid or * tighten the row for a dense admin table without forking."
+    "description": "TRANSFER — the two-pane list mover. Pane height, header rhythm and row density were literal on the component (#319), so a service could not fit the panes to its own page grid or tighten the row for a dense admin table without forking."
   },
   {
     "name": "--transfer-pane-radius",
@@ -2076,7 +2076,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--transfer-row-check-space-block-start",
     "value": "0.125rem",
-    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to * sit level with the first line's cap height rather than its box."
+    "description": "The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to sit level with the first line's cap height rather than its box."
   },
   {
     "name": "--transfer-row-description-font-size",
@@ -2101,7 +2101,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--month-picker-panel-space-inset",
     "value": "var(--space-3)",
-    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse * `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from * when this panel lived in a separate MonthPicker; one set of knobs has always driven every * copy of it, which is why merging the four pickers changed no measurement here."
+    "description": "PERIOD GRID — the year-nav header over a 3-column grid that DatePicker shows for a coarse `picker` (month / quarter / year), single or `range`. The `--month-picker-*` names date from when this panel lived in a separate MonthPicker; one set of knobs has always driven every copy of it, which is why merging the four pickers changed no measurement here."
   },
   {
     "name": "--month-picker-grid-space-block-start",
@@ -2126,7 +2126,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--month-picker-nav-rest-alpha",
     "value": "var(--calendar-nav-rest-alpha)",
-    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so * the two panels stay visually consistent when either is retuned."
+    "description": "Year-nav chevrons read as secondary until hovered — same treatment as the Calendar nav, so the two panels stay visually consistent when either is retuned."
   },
   {
     "name": "--month-picker-icon-size",
@@ -2141,12 +2141,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-xs-height",
     "value": "initial",
-    "description": "`initial`, NOT `var(--control-height-xs)`: an alias of a ladder step declared here is * substituted against :root's 24px and inherits frozen, so a scope that moves the ladder (a * `MobileShell` scopes it to 44 / 40 / 48 / 36px) never reached it — measured, `size=\"xs\"` stayed * 24px inside the shell while every other size moved. `.ui-button--xs` reads it with the live * ladder step as fallback, so the default re-resolves at the button and an override still wins."
+    "description": "`initial`, NOT `var(--control-height-xs)`: an alias of a ladder step declared here is substituted against :root's 24px and inherits frozen, so a scope that moves the ladder (a `MobileShell` scopes it to 44 / 40 / 48 / 36px) never reached it — measured, `size=\"xs\"` stayed 24px inside the shell while every other size moved. `.ui-button--xs` reads it with the live ladder step as fallback, so the default re-resolves at the button and an override still wins."
   },
   {
     "name": "--button-bare-target-size",
     "value": "initial",
-    "description": "Minimum TARGET of `variant=\"bare\"` (gh#404) — the pseudo-element hit area, not a box height, * so it never shows up as geometry. The measure is the same xs tier the note above settled on as * this package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and it moves with that tier and with * density. * * `initial`, NOT `var(--control-height-xs)`, for the reason `--button-xs-height` above carries: * an alias of a ladder step written HERE is substituted against :root's value and inherits * frozen, so a scope that moves the ladder never reaches it. Measured in Chromium at 393px * inside `MobileShell`, which scopes `--control-height` to 2.75rem: `--control-height-xs` * correctly re-resolved to 36px while the bare button's `::after` stayed **24×24** — the one * touch target in a touch-first shell that did not move. `.ui-button--bare::after` reads the * live step as its fallback, so the default re-resolves at the button and a service override * still wins."
+    "description": "Minimum TARGET of `variant=\"bare\"` (gh#404) — the pseudo-element hit area, not a box height, so it never shows up as geometry. The measure is the same xs tier the note above settled on as this package's WCAG 2.2 SC 2.5.8 floor (1.5rem = 24px), and it moves with that tier and with density. `initial`, NOT `var(--control-height-xs)`, for the reason `--button-xs-height` above carries: an alias of a ladder step written HERE is substituted against :root's value and inherits frozen, so a scope that moves the ladder never reaches it. Measured in Chromium at 393px inside `MobileShell`, which scopes `--control-height` to 2.75rem: `--control-height-xs` correctly re-resolved to 36px while the bare button's `::after` stayed **24×24** — the one touch target in a touch-first shell that did not move. `.ui-button--bare::after` reads the live step as its fallback, so the default re-resolves at the button and a service override still wins."
   },
   {
     "name": "--button-xs-space-inline",
@@ -2171,7 +2171,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-icon-space-inline-md",
     "value": "var(--space-3)",
-    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one * carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
+    "description": "Icon-adjacent padding: a button whose only child is an icon needs less inline room than one carrying a label, or the glyph floats in a too-wide box. One knob per size tier."
   },
   {
     "name": "--button-icon-space-inline-sm",
@@ -2196,7 +2196,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--otp-caret-block-size",
     "value": "1rem",
-    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a * text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to * the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared * rather than forced onto one. * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
+    "description": "The OTP blinking caret. The ratchet catches it because the selector says \"caret\", but it is a text CURSOR, not a chevron: a 1px bar as tall as the digit's line box. Its width belongs to the stroke scale; its height belongs to neither the icon nor the band scale, so it is declared rather than forced onto one. scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band"
   },
   {
     "name": "--otp-caret-inline-size",
@@ -2226,7 +2226,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--button-count-background",
     "value": "initial",
-    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the * button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means * its contrast was a FUNCTION of that surface — and five of those combinations measured below * the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: * * default (light) 3.88 · destructive (dark) 4.29 * outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 * outline family (dark, hover) 3.68 * * The hover rows are the reason a static sweep never caught this: `--accent` only appears under * the cursor, so no screenshot of a resting page contains the failing state. Same shape as * gh#299 and gh#315 — a value that passes on the surface someone happened to check. * * The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's * contrast independent of the button's variant AND of hover. Each filled variant uses its own * label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less * legible under any theme that keeps that button readable at all: * * default --primary on --primary-foreground 5.04 light · 7.07 dark * destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark * secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark * outline family --foreground on --muted 14.25 light · 12.40 dark * * The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the * counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS * that went up, not loudness of the pill. * * All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so * a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\")."
+    "description": "Count pill · COLOUR (gh#320). The pill used to tint itself translucently over whatever the button's surface happened to be (`bg-primary-foreground/15`, `bg-foreground/8`), which means its contrast was a FUNCTION of that surface — and five of those combinations measured below the 4.5:1 that WCAG 2.2 SC 1.4.3 requires of small text: default (light) 3.88 · destructive (dark) 4.29 outline family (light, at rest) 4.32 · outline family (light, hover) 3.64 outline family (dark, hover) 3.68 The hover rows are the reason a static sweep never caught this: `--accent` only appears under the cursor, so no screenshot of a resting page contains the failing state. Same shape as gh#299 and gh#315 — a value that passes on the surface someone happened to check. The fix is the one gh#312 already validated on Toggle: OPAQUE role fills, which make the pill's contrast independent of the button's variant AND of hover. Each filled variant uses its own label pair SWAPPED, so the pill is exactly as legible as the label beside it and cannot be less legible under any theme that keeps that button readable at all: default --primary on --primary-foreground 5.04 light · 7.07 dark destructive --destructive on --destructive-foreground 6.10 light · 5.53 dark secondary --secondary on --secondary-foreground 14.25 light · 12.40 dark outline family --foreground on --muted 14.25 light · 12.40 dark The outline family's `--muted` fill is 1.09:1 against the button's own ground, so at rest the counter still reads as quiet text rather than a badge (#44) — it is legibility of the DIGITS that went up, not loudness of the pill. All eight are role-mirror knobs: `initial` at :root with the role default at the CALL SITE, so a scoped [data-tenant]/.dark override of the role still reaches them (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\")."
   },
   {
     "name": "--button-count-color",
@@ -2266,27 +2266,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-label-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind * literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service * whose form grid wanted a smaller/denser label had to hand-write font-size on every call site * (which is exactly why --form-label-font-size had to be invented as a per-instance escape). * They live under the `control` prefix because Label is a control-family primitive and * src/tokens/components/ has no `label` file of its own. * * Defaults reproduce today's rendering exactly: * font-size ← `text-sm` → --text-sm → var(--font-size-sm) * line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
+    "description": "LABEL — the Label primitive's own box and type (#319). Every one of these was a Tailwind literal baked into label.tsx (`text-sm leading-none flex items-center gap-2`), so a service whose form grid wanted a smaller/denser label had to hand-write font-size on every call site (which is exactly why --form-label-font-size had to be invented as a per-instance escape). They live under the `control` prefix because Label is a control-family primitive and src/tokens/components/ has no `label` file of its own. Defaults reproduce today's rendering exactly: font-size ← `text-sm` → --text-sm → var(--font-size-sm) line-height ← `leading-none` → 1 (leading-none beats text-sm's companion line-height)"
   },
   {
     "name": "--control-label-line-height",
     "value": "var(--line-height-normal)",
-    "description": "A LABEL WRAPS, so its line box cannot be 1. * * This was a literal `1`, which is right for the one case it was chosen for — a single-line * label beside a checkbox, where a cap-height box aligns cleanly — and wrong for every other. * The moment the text takes two lines they collide: measured on the hosted sign-up consent * label at 520px, font-size 14px with line-height 14px produced a 28px box of two touching * lines. Long copy, a narrow column, and ja/vi wrapping all reach that case routinely. * * This package has already paid for this exact mistake once: `--auth-shell-divider-label-line- * height` carries the note that a hardcoded `line-height: 1` rendered an 11px row and sat the * lower half of the canonical Login card 8px high (gh#263). Same literal, same failure, one * token over. * * `--line-height-normal` (1.5), not `--line-height-tight`: 1.25 clears the collision but two * wrapped lines still read as one block, and a label that has wrapped IS prose at that point. * 1.5 is also what this package already decided for the same job one layer up — * `--auth-shell-field-label-line-height` — so the two agree instead of drifting. * * Alignment is unaffected: `.ui-label` is `display: flex; align-items: center`, so the control * centres against the label box whatever its height."
+    "description": "A LABEL WRAPS, so its line box cannot be 1. This was a literal `1`, which is right for the one case it was chosen for — a single-line label beside a checkbox, where a cap-height box aligns cleanly — and wrong for every other. The moment the text takes two lines they collide: measured on the hosted sign-up consent label at 520px, font-size 14px with line-height 14px produced a 28px box of two touching lines. Long copy, a narrow column, and ja/vi wrapping all reach that case routinely. This package has already paid for this exact mistake once: `--auth-shell-divider-label-line- height` carries the note that a hardcoded `line-height: 1` rendered an 11px row and sat the lower half of the canonical Login card 8px high (gh#263). Same literal, same failure, one token over. `--line-height-normal` (1.5), not `--line-height-tight`: 1.25 clears the collision but two wrapped lines still read as one block, and a label that has wrapped IS prose at that point. 1.5 is also what this package already decided for the same job one layer up — `--auth-shell-field-label-line-height` — so the two agree instead of drifting. Alignment is unaffected: `.ui-label` is `display: flex; align-items: center`, so the control centres against the label box whatever its height."
   },
   {
     "name": "--control-label-space-gap",
     "value": "0.5rem",
-    "description": "Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it * replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a * --space-* default would silently resize every label row under a compact/comfortable density. * A service that WANTS it to follow density points the knob at var(--space-2) itself."
+    "description": "Label → addon/required-marker gap. A RAW rem, deliberately NOT var(--space-2): the `gap-2` it replaces reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a --space-* default would silently resize every label row under a compact/comfortable density. A service that WANTS it to follow density points the knob at var(--space-2) itself."
   },
   {
     "name": "--control-label-disabled-alpha",
     "value": "0.7",
-    "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the * global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is * still the field's accessible name — so it rests one step heavier than the control it names. * Default = the historical `peer-disabled:opacity-70`."
+    "description": "Weight of a label whose `peer` control is disabled. Deliberately its OWN knob rather than the global --disabled-opacity (0.5): a label must stay READABLE next to a disabled control — it is still the field's accessible name — so it rests one step heavier than the control it names. Default = the historical `peer-disabled:opacity-70`."
   },
   {
     "name": "--control-surface-border-color",
     "value": "initial",
-    "description": "── CONTROL SURFACE — the antd `variant` × `status` matrix (antd 6.6.2) ──────────────────── * * The four surfaces and the two statuses are TOKENS, not utilities, and that is the whole point * of this block. The select-family trigger used to state its surface as `border-input * bg-background` — two Tailwind utilities, which live in `@layer utilities` and therefore beat * anything a stylesheet in `@layer components` can say. A `[data-variant=\"filled\"]` rule would * have been dead on arrival, exactly the way `w-full` killed `.ui-app-setting-picker-icon` * (gh#366) and `--control-bounded-width` (gh#375). So the family now withholds those two * utilities and reads the surface from here instead; the DEFAULT values reproduce the previous * rendering byte for byte. * * `--control-surface-*` is the `outlined` default; the other three name themselves. * * THE THREE THAT MIRROR A ROLE ARE `initial` (docs/TOKENS.md, the `:root` freeze rule), and * this block is where that rule was broken. `--control-surface-background: hsl(var(--background))` * SUBSTITUTES at `:root`, so it froze on the light canvas and inherited that answer into every * subtree. It looks fine in product because `.dark` normally lands on `<html>`, where * `:root[data-theme=\"dark\"]` re-declares `--background` on the SAME element the binding is made * on. It breaks the moment a theme is scoped BELOW `<html>` — the `[data-tenant]` route * docs/CUSTOMER-THEMING.md recommends at level 3, and the `.dark` wrapper the docs Theme Editor * uses to show both themes at once. Measured there before this change: a `Select` trigger in a * `.dark` subtree painted `rgb(253,253,252)` under `rgb(247,247,243)` text, 1.05:1, while the * `Input` beside it was correctly dark. The defaults below are unchanged; they simply resolve * where the element paints instead of where the knob is declared. default = hsl(var(--input)) at the call site"
+    "description": "── CONTROL SURFACE — the antd `variant` × `status` matrix (antd 6.6.2) ──────────────────── The four surfaces and the two statuses are TOKENS, not utilities, and that is the whole point of this block. The select-family trigger used to state its surface as `border-input bg-background` — two Tailwind utilities, which live in `@layer utilities` and therefore beat anything a stylesheet in `@layer components` can say. A `[data-variant=\"filled\"]` rule would have been dead on arrival, exactly the way `w-full` killed `.ui-app-setting-picker-icon` (gh#366) and `--control-bounded-width` (gh#375). So the family now withholds those two utilities and reads the surface from here instead; the DEFAULT values reproduce the previous rendering byte for byte. `--control-surface-*` is the `outlined` default; the other three name themselves. THE THREE THAT MIRROR A ROLE ARE `initial` (docs/TOKENS.md, the `:root` freeze rule), and this block is where that rule was broken. `--control-surface-background: hsl(var(--background))` SUBSTITUTES at `:root`, so it froze on the light canvas and inherited that answer into every subtree. It looks fine in product because `.dark` normally lands on `<html>`, where `:root[data-theme=\"dark\"]` re-declares `--background` on the SAME element the binding is made on. It breaks the moment a theme is scoped BELOW `<html>` — the `[data-tenant]` route docs/CUSTOMER-THEMING.md recommends at level 3, and the `.dark` wrapper the docs Theme Editor uses to show both themes at once. Measured there before this change: a `Select` trigger in a `.dark` subtree painted `rgb(253,253,252)` under `rgb(247,247,243)` text, 1.05:1, while the `Input` beside it was correctly dark. The defaults below are unchanged; they simply resolve where the element paints instead of where the knob is declared. default = hsl(var(--input)) at the call site"
   },
   {
     "name": "--control-surface-background",
@@ -2311,7 +2311,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-borderless-border-color",
     "value": "transparent",
-    "description": "`borderless` — chrome removed entirely, for a control embedded in a surface that already * draws the box (a toolbar cell, an inline edit)."
+    "description": "`borderless` — chrome removed entirely, for a control embedded in a surface that already draws the box (a toolbar cell, an inline edit)."
   },
   {
     "name": "--control-borderless-background",
@@ -2326,7 +2326,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-status-error-border-color",
     "value": "hsl(var(--destructive))",
-    "description": "STATUS. `error` reuses the destructive role already wired to the focus halo through the * `[aria-invalid=\"true\"]` rule in focus-ring.css. * * `warning` deliberately does NOT use `--warning` (山吹 #f8b500). Measured against * `--background` (#fdfdfb) that hue is 1.85:1 — a boundary that marks a state has to clear 3:1 * under WCAG 2.2 SC 1.4.11, so shipping the brand yellow as the edge would have been a * colour that only looks like a warning to people who can already see it. `--text-warning` * (36 100% 28%, the darkened amber this palette keeps for exactly this reason) measures 5.4:1. * A service that wants antd's yellow back retunes the knob and owns that trade."
+    "description": "STATUS. `error` reuses the destructive role already wired to the focus halo through the `[aria-invalid=\"true\"]` rule in focus-ring.css. `warning` deliberately does NOT use `--warning` (山吹 #f8b500). Measured against `--background` (#fdfdfb) that hue is 1.85:1 — a boundary that marks a state has to clear 3:1 under WCAG 2.2 SC 1.4.11, so shipping the brand yellow as the edge would have been a colour that only looks like a warning to people who can already see it. `--text-warning` (36 100% 28%, the darkened amber this palette keeps for exactly this reason) measures 5.4:1. A service that wants antd's yellow back retunes the knob and owns that trade."
   },
   {
     "name": "--control-status-warning-border-color",
@@ -2336,7 +2336,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-status-warning-outline-color",
     "value": "initial",
-    "description": "THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour. * * The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`, * so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the * declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls * back to its initial value. Measured in Chromium on a focused `status=\"warning\"` Textarea * before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial) * — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning` * (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1; * `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already * paints, so the edge and the mark cannot drift apart. default at the call site — freeze rule"
+    "description": "THE SAME AMBER, AS A TRIPLET — and it has to be a triplet, not a colour. The focus mark is composed as `hsl(var(--focus-outline-color) / var(--focus-ring-opacity))`, so a token that already resolves to `hsl(...)` nests one `hsl()` inside another: the declaration is then invalid at computed-value time and the WHOLE `outline` shorthand falls back to its initial value. Measured in Chromium on a focused `status=\"warning\"` Textarea before this line existed: `outline-style: none`, `outline-width: 3px` (`medium`, the initial) — i.e. a warned field had no focus mark at all while the switch was on. It carried `--warning` (山吹 #f8b500) before, which is the hue the note above rejects for a state edge at 1.85:1; `--text-warning` is the darkened amber that measures 5.4:1 and is what the boundary already paints, so the edge and the mark cannot drift apart. default at the call site — freeze rule"
   },
   {
     "name": "--control-height-compact",
@@ -2381,47 +2381,47 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--conversations-item-height",
     "value": "var(--band-height-md)",
-    "description": "ROW BOX. The row is a CONTROL, so its height is the band tier, never a literal (rule #24 and * `pnpm check:control-sizing`)."
+    "description": "ROW BOX. The row is a CONTROL, so its height is the band tier, never a literal (rule #24 and `pnpm check:control-sizing`)."
   },
   {
     "name": "--conversations-item-gap",
     "value": "var(--space-inline-sm)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-padding-inline",
     "value": "var(--space-inline-sm)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-radius",
     "value": "var(--radius)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-color",
     "value": "initial",
-    "description": "ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at * the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a * value here at `:root` each one would resolve once, against the root palette, and freeze. * Default resting ink = hsl(var(--muted-foreground)) * Default active ground = hsl(var(--accent)) * Default active ink = hsl(var(--foreground))"
+    "description": "ROW STATE. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Bound to a value here at `:root` each one would resolve once, against the root palette, and freeze. Default resting ink = hsl(var(--muted-foreground)) Default active ground = hsl(var(--accent)) Default active ink = hsl(var(--foreground))"
   },
   {
     "name": "--conversations-item-active-background",
     "value": "initial",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-active-color",
     "value": "initial",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-item-active-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-icon-size",
@@ -2431,7 +2431,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--conversations-line-gap",
     "value": "var(--space-stack-xs)",
-    "description": "Gap between a row's label and its timestamp. The TIGHTEST stack step, because the two lines * are one thing being read, not two stacked items — anything larger and the row reads as two * rows in a rail that is already narrow."
+    "description": "Gap between a row's label and its timestamp. The TIGHTEST stack step, because the two lines are one thing being read, not two stacked items — anything larger and the row reads as two rows in a rail that is already narrow."
   },
   {
     "name": "--conversations-group-gap",
@@ -2441,12 +2441,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--conversations-group-padding-inline",
     "value": "var(--space-inline-sm)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-group-chevron-size",
     "value": "var(--icon-size-sm)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X * `Conversations`). * * Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a * free-form style hole that freezes its internal slot names into public API. This file is the * answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob * a service sets once in its own theme.css. * * THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by * reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is * partly a complaint that the two halves of one surface were drawn by two different hands. Reading * the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail * too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. * row band --band-height-md (32px) = --sidebar-nav-item-height * row type --font-size-xs = --sidebar-nav-item-font-size * icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
   },
   {
     "name": "--conversations-separator-space-block",
@@ -2456,7 +2456,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--accordion-chevron-size",
     "value": "var(--icon-size-md)",
-    "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in * data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because * neither selector contains the word \"icon\"."
+    "description": "Accordion chevron and Carousel arrow. Both were bare 1rem literals in data-display-layout.css — glyphs with no tier-2 route, invisible to the icon ratchet because neither selector contains the word \"icon\"."
   },
   {
     "name": "--carousel-arrow-icon-size",
@@ -2466,7 +2466,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
-    "description": "Outline-form ring gaps — a hugging ring would touch these marks * (styles/focus-ring.css)."
+    "description": "Outline-form ring gaps — a hugging ring would touch these marks (styles/focus-ring.css)."
   },
   {
     "name": "--carousel-dot-focus-ring-offset",
@@ -2521,7 +2521,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--code-block-foreground",
     "value": "initial",
-    "description": "SYNTAX COLOURS (gh#784). Twelve knobs, named for Shiki's `createCssVariablesTheme` output so a * highlighter's own vocabulary maps onto them one-for-one with no translation layer. * * WHY THE PACKAGE OWNS THESE AT ALL. `CodeBlock` is a surface and does not highlight — its own * prop docs tell a consumer to bring a highlighter and pass its spans. But the consumer rules * then close every route those spans could take colour from: `style` and `className` are both * visual overrides, and an app stylesheet may declare no custom properties. So the documented * path was unbuildable, which is a contradiction in this package's docs rather than a missing * feature on the consumer's side. * * Every one is `initial` with its role default at the CALL SITE (docs/TOKENS.md — the `:root` * freeze rule), so light and dark come from the roles rather than from a second palette here, * and a service that wants its own scheme overrides the knob without touching the roles."
+    "description": "SYNTAX COLOURS (gh#784). Twelve knobs, named for Shiki's `createCssVariablesTheme` output so a highlighter's own vocabulary maps onto them one-for-one with no translation layer. WHY THE PACKAGE OWNS THESE AT ALL. `CodeBlock` is a surface and does not highlight — its own prop docs tell a consumer to bring a highlighter and pass its spans. But the consumer rules then close every route those spans could take colour from: `style` and `className` are both visual overrides, and an app stylesheet may declare no custom properties. So the documented path was unbuildable, which is a contradiction in this package's docs rather than a missing feature on the consumer's side. Every one is `initial` with its role default at the CALL SITE (docs/TOKENS.md — the `:root` freeze rule), so light and dark come from the roles rather than from a second palette here, and a service that wants its own scheme overrides the knob without touching the roles."
   },
   {
     "name": "--code-block-token-comment-color",
@@ -2581,12 +2581,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--code-block-token-changed-color",
     "value": "initial",
-    "description": "`changed` is the TWELFTH name and it was missed on the first pass: gh#784's own list had * eleven, I copied the list instead of the source, and shiki's theme-css-variables.ts emits * twelve. It is reachable only through a CONTEXT diff (`diff -c`, `markup.changed.diff` = * `^(!).*$`), which is why a unified-diff sample never produced it — a silent wrong answer * rather than a missing nicety: a changed line rendered as ordinary foreground, losing the * distinction the `!` marker exists to make. Reported by the consumer that tokenised all 17 * grammars (gh#793)."
+    "description": "`changed` is the TWELFTH name and it was missed on the first pass: gh#784's own list had eleven, I copied the list instead of the source, and shiki's theme-css-variables.ts emits twelve. It is reachable only through a CONTEXT diff (`diff -c`, `markup.changed.diff` = `^(!).*$`), which is why a unified-diff sample never produced it — a silent wrong answer rather than a missing nicety: a changed line rendered as ordinary foreground, losing the distinction the `!` marker exists to make. Reported by the consumer that tokenised all 17 grammars (gh#793)."
   },
   {
     "name": "--prose-font-size",
     "value": "var(--font-size-base)",
-    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell * measures from --table-cell-padding-*; these are the rhythm knobs."
+    "description": "Prose — typography of rendered content. Heading sizes come from --heading-h1..h4, table cell measures from --table-cell-padding-*; these are the rhythm knobs."
   },
   {
     "name": "--prose-font-size-sm",
@@ -2646,12 +2646,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--prose-link-color",
     "value": "initial",
-    "description": "The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role: * a `:root` binding computes against the root's --primary and inherits that frozen value down, so * a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The * default lives at the call site in styles/data-display-layout.css and re-resolves there. Until * gh#717 `a` was the ONE styled descendant family in Prose with no knob at all — headings, lists, * quote, code and image each had one — which left the most common element in a wiki body * un-theme-able (#45). default = hsl(var(--primary))"
+    "description": "The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role: a `:root` binding computes against the root's --primary and inherits that frozen value down, so a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The default lives at the call site in styles/data-display-layout.css and re-resolves there. Until gh#717 `a` was the ONE styled descendant family in Prose with no knob at all — headings, lists, quote, code and image each had one — which left the most common element in a wiki body un-theme-able (#45). default = hsl(var(--primary))"
   },
   {
     "name": "--prose-link-decoration-line",
     "value": "underline",
-    "description": "Underlined at rest, same vocabulary as `--text-link-decoration-line`, and deliberately a * SEPARATE knob rather than a mirror of it: `none` is legal for a link in a nav row or a card * title, which is what that token governs, but Prose is running text — at the shipped inks the * link differs from body copy by hue alone (1.87:1 light, 1.54:1 dark), and WCAG 1.4.1 · G183 * needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome * must not drop it here by accident."
+    "description": "Underlined at rest, same vocabulary as `--text-link-decoration-line`, and deliberately a SEPARATE knob rather than a mirror of it: `none` is legal for a link in a nav row or a card title, which is what that token governs, but Prose is running text — at the shipped inks the link differs from body copy by hue alone (1.87:1 light, 1.54:1 dark), and WCAG 1.4.1 · G183 needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome must not drop it here by accident."
   },
   {
     "name": "--prose-image-radius",
@@ -2876,7 +2876,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--progress-ring-label-font-size",
     "value": "initial",
-    "description": "A KNOB, with the derivation at the CALL SITE — and the first attempt got this wrong. * * It was `--font-size-xs`, one value for every diameter, so a 32px `sm` ring carried the same * 12.47px label as the 44px default and \"18/42\" measured 32.6px — wider than the ring, painting * over the arc. \"0/42\" fits, which is why the demo looked correct. * * The fix was `calc(var(--progress-ring-size) * 0.28)` HERE, and that does not work: a custom * property substitutes its var() where it is DECLARED, so this reads the `:root` diameter and * freezes. Measured after that change — both the 44px and the 32px ring rendered a 12.32px * label, i.e. the sm ring was not scaled at all and only `max-inline-size` was saving it. The * same freeze rule this repo documents for `--ring` and the primary family, walked into while * fixing something else. * * So it is `initial`, and the formula lives at the element that PAINTS it, where * `--progress-ring-size` is whatever `[data-size=\"sm\"]` last said. 0.28 reproduces the previous * default (44 × 0.28 = 12.3px ≈ the 12.47 it replaces), so the md ring does not move."
+    "description": "A KNOB, with the derivation at the CALL SITE — and the first attempt got this wrong. It was `--font-size-xs`, one value for every diameter, so a 32px `sm` ring carried the same 12.47px label as the 44px default and \"18/42\" measured 32.6px — wider than the ring, painting over the arc. \"0/42\" fits, which is why the demo looked correct. The fix was `calc(var(--progress-ring-size) * 0.28)` HERE, and that does not work: a custom property substitutes its var() where it is DECLARED, so this reads the `:root` diameter and freezes. Measured after that change — both the 44px and the 32px ring rendered a 12.32px label, i.e. the sm ring was not scaled at all and only `max-inline-size` was saving it. The same freeze rule this repo documents for `--ring` and the primary family, walked into while fixing something else. So it is `initial`, and the formula lives at the element that PAINTS it, where `--progress-ring-size` is whatever `[data-size=\"sm\"]` last said. 0.28 reproduces the previous default (44 × 0.28 = 12.3px ≈ the 12.47 it replaces), so the md ring does not move."
   },
   {
     "name": "--legend-gap",
@@ -3041,7 +3041,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--timeline-grid-hour-height",
     "value": "2.5rem",
-    "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the * hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one * hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor * is what decides when the grid scrolls instead of collapsing into slivers. * --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the * consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), * not a step of the spacing scale."
+    "description": "TIMELINE GRID — the time-axis half of the Timeline family (#354 item 7). Every measure the hand-rolled week grids in docs/showcase baked as a literal is a knob here: the height of one hour is what a service tunes when a 24-hour axis has to fit one screen, and the column floor is what decides when the grid scrolls instead of collapsing into slivers. --timeline-grid-hour-height is a RAW rem on the unenforced height axis: it is a rhythm the consumer picks per surface (a 6-hour shift board wants a taller hour than a 24-hour one), not a step of the spacing scale."
   },
   {
     "name": "--timeline-grid-axis-width",
@@ -3101,7 +3101,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--timeline-grid-line-color",
     "value": "initial",
-    "description": "Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and * a scoped [data-tenant]/.dark override of the role still reaches them. * Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent · * hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash."
+    "description": "Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and a scoped [data-tenant]/.dark override of the role still reaches them. Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent · hsl(var(--destructive)) now marker · hsl(var(--primary)) current-column wash."
   },
   {
     "name": "--timeline-grid-event-color",
@@ -3126,7 +3126,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--permission-matrix-label-width",
     "value": "16rem",
-    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class * `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant * lived on the component (#319). A JA/VI service whose role names run longer than the English * ones could not widen the label column without forking."
+    "description": "PERMISSION MATRIX — the sticky-first-column grid. Nothing here was themeable: the class `.ui-permission-matrix` existed as a bare hook with no CSS rule at all, so every constant lived on the component (#319). A JA/VI service whose role names run longer than the English ones could not widen the label column without forking."
   },
   {
     "name": "--permission-matrix-role-space-gap",
@@ -3146,7 +3146,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--permission-matrix-min-width",
     "value": "48rem",
-    "description": "Floor for the scrolling body — below this the columns collapse into unreadable slivers, so * the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable."
+    "description": "Floor for the scrolling body — below this the columns collapse into unreadable slivers, so the table scrolls instead. Mirrors --table-surface-min-inline-size on DataTable."
   },
   {
     "name": "--range-timeline-label-width",
@@ -3156,12 +3156,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--range-timeline-unit-width",
     "value": "var(--range-timeline-unit-width-default)",
-    "description": "Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads. * `density` re-points it per instance at the three steps below — set THIS one in a theme to * move every step's baseline, set a step to retune one density."
+    "description": "Floor for ONE axis unit, so a day column never collapses; the live knob the canvas reads. `density` re-points it per instance at the three steps below — set THIS one in a theme to move every step's baseline, set a step to retune one density."
   },
   {
     "name": "--range-timeline-unit-width-compact",
     "value": "calc(var(--control-height-sm) * 1.5)",
-    "description": "Day-column steps on the `density` axis (gh#730). `default` is the shipped 56px, unchanged, so * no existing Gantt moves; `compact` is 1.5 control-sm (42px), which leaves a 24px content box — * measured, the widest two-digit day label across the ja/en/vi/ar/fa/hi/th/bn numbering systems * is 19.86px (Thai ๒๗), so the tick still fits; `comfortable` is 2.5 (70px) for a wide screen. * Multiples of --control-height-sm, never literals, so the axis follows the global * density/scaling factor too."
+    "description": "Day-column steps on the `density` axis (gh#730). `default` is the shipped 56px, unchanged, so no existing Gantt moves; `compact` is 1.5 control-sm (42px), which leaves a 24px content box — measured, the widest two-digit day label across the ja/en/vi/ar/fa/hi/th/bn numbering systems is 19.86px (Thai ๒๗), so the tick still fits; `comfortable` is 2.5 (70px) for a wide screen. Multiples of --control-height-sm, never literals, so the axis follows the global density/scaling factor too."
   },
   {
     "name": "--range-timeline-unit-width-default",
@@ -3186,12 +3186,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--range-timeline-border-color",
     "value": "var(--border)",
-    "description": "The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same * rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier * (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be * heavier than the frame around it, and at one tier it cannot become so under any theme."
+    "description": "The OUTER FRAME of the timeline and its label-column divider — the --border tier, the same rule weight a Card edge and a DataTable row use. The grid INSIDE it now reads the same tier (see --range-timeline-grid-color), which is the point of gh#730: the day grid may never be heavier than the frame around it, and at one tier it cannot become so under any theme."
   },
   {
     "name": "--range-timeline-grid-color",
     "value": "initial",
-    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical * rule per column down the whole body. Colour `initial` on purpose — the role default is read at * the call site as `var(--range-timeline-grid-color, hsl(var(--border)))` so it follows a scoped * theme. The --border tier: L* 93.80 / contrast 1.149 on the card in light, L* 20.76 / 1.270 in * dark — identical to the outer frame and to a DataTable row rule, which is the whole point. * Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47) * to --input/0.5 (1.74, L* 78.67), and gh#730 reported that still darker than the --border (L* * 93.80) every card and table uses, so the eye followed the grid instead of the bars. * Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight."
+    "description": "Body grid (`RangeTimeline bordered`, on by default): row rules, the header rule and a vertical rule per column down the whole body. Colour `initial` on purpose — the role default is read at the call site as `var(--range-timeline-grid-color, hsl(var(--border)))` so it follows a scoped theme. The --border tier: L* 93.80 / contrast 1.149 on the card in light, L* 20.76 / 1.270 in dark — identical to the outer frame and to a DataTable row rule, which is the whole point. Asked for three times: 25.3.0 drew the grid at all, 27.6.0 lightened the full --input (3.47) to --input/0.5 (1.74, L* 78.67), and gh#730 reported that still darker than the --border (L* 93.80) every card and table uses, so the eye followed the grid instead of the bars. Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight."
   },
   {
     "name": "--range-timeline-grid-width",
@@ -3201,7 +3201,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--range-timeline-muted-column-background",
     "value": "initial",
-    "description": "Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis."
+    "description": "Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis."
   },
   {
     "name": "--range-timeline-indent-width",
@@ -3231,7 +3231,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--branch-scope-picker-subset-gap",
     "value": "0.5rem",
-    "description": "The `mode=\"selected\"` subset box — its inner stack rhythm and the inset that clears its * indent rule (was `gap-2` / `ps-4`)."
+    "description": "The `mode=\"selected\"` subset box — its inner stack rhythm and the inset that clears its indent rule (was `gap-2` / `ps-4`)."
   },
   {
     "name": "--branch-scope-picker-subset-padding-inline",
@@ -3241,57 +3241,57 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--branch-scope-picker-subset-border-width",
     "value": "var(--stroke-md)",
-    "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat * treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`."
+    "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`."
   },
   {
     "name": "--branch-scope-picker-list-max-height",
     "value": "16rem",
-    "description": "Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a * keyboard-reachable scroll region whose job is to cap the control's measure, so it must not * grow with density and push the surrounding form off a 390px frame."
+    "description": "Bounded height of the scrollable branch list (was `max-h-64`). Flat by design: the box is a keyboard-reachable scroll region whose job is to cap the control's measure, so it must not grow with density and push the surrounding form off a 390px frame."
   },
   {
     "name": "--descriptions-label-width",
     "value": "8rem",
-    "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
+    "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). A rem value gives a fixed aligned column; set `max-content` to size each label to its text. (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
   },
   {
     "name": "--descriptions-row-gap",
     "value": "var(--space-3)",
-    "description": "Row-to-row gap (gh#294). Default = the historical hardcoded `gap-y-3`, so nothing changes * visually by default. A consumer composing Descriptions beside a Form/FormField (a read-only * block above an editable field on the same card) retunes this to `var(--space-4)` to match * Form's own field-to-field rhythm instead of the two blocks reading as visually unrelated."
+    "description": "Row-to-row gap (gh#294). Default = the historical hardcoded `gap-y-3`, so nothing changes visually by default. A consumer composing Descriptions beside a Form/FormField (a read-only block above an editable field on the same card) retunes this to `var(--space-4)` to match Form's own field-to-field rhythm instead of the two blocks reading as visually unrelated."
   },
   {
     "name": "--descriptions-column-gap",
     "value": "1.5rem",
-    "description": "Column-to-column gap of the <dl> grid (#319). Was a hardcoded `gap-x-6`, the one axis of the * grid rhythm a service could NOT reach while --descriptions-row-gap was already a knob — so a * 2/3-column detail block could be retuned vertically but never horizontally. * A RAW rem, deliberately NOT var(--space-6): `gap-x-6` reads Tailwind's own --spacing grid, * which this repo does NOT density-scale, so a --space-* default would silently rescale the * column gap under a compact/comfortable density. Point it at var(--space-6) to opt in."
+    "description": "Column-to-column gap of the <dl> grid (#319). Was a hardcoded `gap-x-6`, the one axis of the grid rhythm a service could NOT reach while --descriptions-row-gap was already a knob — so a 2/3-column detail block could be retuned vertically but never horizontally. A RAW rem, deliberately NOT var(--space-6): `gap-x-6` reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a --space-* default would silently rescale the column gap under a compact/comfortable density. Point it at var(--space-6) to opt in."
   },
   {
     "name": "--descriptions-label-gap",
     "value": "0.75rem",
-    "description": "Label → value gap inside ONE item when layout=\"horizontal\" (was `gap-x-3`). Pairs with * --descriptions-label-width: a service that narrows the label column usually wants to close * this gap in the same step. Raw rem for the same --spacing reason as above."
+    "description": "Label → value gap inside ONE item when layout=\"horizontal\" (was `gap-x-3`). Pairs with --descriptions-label-width: a service that narrows the label column usually wants to close this gap in the same step. Raw rem for the same --spacing reason as above."
   },
   {
     "name": "--descriptions-value-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "VALUE TYPOGRAPHY (gh#294 + #319). `FormField staticText` renders its read-only value with the * SAME typography as a <dd> so a static Form row and a Descriptions value are indistinguishable * when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a * comment asking future editors to keep them in sync; both call sites now read these tokens, so * the mirror is mechanical and a service retunes BOTH from one place."
+    "description": "VALUE TYPOGRAPHY (gh#294 + #319). `FormField staticText` renders its read-only value with the SAME typography as a <dd> so a static Form row and a Descriptions value are indistinguishable when mixed on one card. That contract used to be two copies of the literal `text-sm` plus a comment asking future editors to keep them in sync; both call sites now read these tokens, so the mirror is mechanical and a service retunes BOTH from one place."
   },
   {
     "name": "--descriptions-value-line-height",
     "value": "calc(1.25 / 0.875)",
-    "description": "Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this * replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height` * (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the * value would silently inherit ambient leading instead of its own 20px line box."
+    "description": "Companion to --descriptions-value-font-size (the gh#260 bug). The `text-sm` utility this replaces ALSO set a line-height, via Tailwind's default `--text-sm--line-height` (= calc(1.25 / 0.875)); the theme remaps --text-sm but never that companion. Without this the value would silently inherit ambient leading instead of its own 20px line box."
   },
   {
     "name": "--descriptions-label-font-size",
     "value": "var(--descriptions-value-font-size)",
-    "description": "LABEL TYPOGRAPHY. The label was a hard-coded `text-xs` utility while the value beside it read a * token, so the pair sat ONE TYPE STEP APART (`--font-size-xs` ≈12.5px against `--font-size-sm`, * which IS `--font-size-base` at 14px) and every row rendered its value BIGGER than its own * label. What separates a label from its value is COLOUR, not size. The LABEL is raised to the * value's step rather than the value shrunk to the label's: the value is the DATA, and shrinking * it would move every consumer's field panel and `FormField staticText` with it. Defaulting to * the value token locks the pair together by construction while leaving each side reachable. * Measured by check:descriptions-label-value-step."
+    "description": "LABEL TYPOGRAPHY. The label was a hard-coded `text-xs` utility while the value beside it read a token, so the pair sat ONE TYPE STEP APART (`--font-size-xs` ≈12.5px against `--font-size-sm`, which IS `--font-size-base` at 14px) and every row rendered its value BIGGER than its own label. What separates a label from its value is COLOUR, not size. The LABEL is raised to the value's step rather than the value shrunk to the label's: the value is the DATA, and shrinking it would move every consumer's field panel and `FormField staticText` with it. Defaulting to the value token locks the pair together by construction while leaving each side reachable. Measured by check:descriptions-label-value-step."
   },
   {
     "name": "--descriptions-label-line-height",
     "value": "var(--descriptions-value-line-height)",
-    "description": "Companion, for the same reason the value has one (gh#260): the `text-xs` utility this replaces * ALSO carried a line-height, so dropping it without a replacement would leave the label * inheriting ambient leading instead of its own line box."
+    "description": "Companion, for the same reason the value has one (gh#260): the `text-xs` utility this replaces ALSO carried a line-height, so dropping it without a replacement would leave the label inheriting ambient leading instead of its own line box."
   },
   {
     "name": "--descriptions-row-border",
     "value": "none",
-    "description": "ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so * an existing Descriptions is byte-identical: no rule, no band height. * * Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on * PageContainer: a `border` shorthand a service opts into with ONE declaration * (`--descriptions-row-border: 1px solid hsl(var(--border))`), read at the call site. Bound at * :root rather than `initial` because the default is a plain CSS keyword, not another role * token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the * keyword is worth reading here (the same reasoning --page-toolbar-background records). * * The rule is drawn only on an UNBORDERED grid: `bordered` already draws a rule between every * cell, and a second block-end border would double every line it owns. * * --descriptions-row-min-height gives the ruled variant its band height — a ruled row whose * value is one short line otherwise reads as a hairline sandwich. `auto` = today. * * A continuously ruled panel sets --descriptions-row-gap to `0` in the same declaration block: * the row gap is the space BETWEEN rules, so leaving it at the default 12px draws a ladder of * detached hairlines rather than a ruled list."
+    "description": "ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so an existing Descriptions is byte-identical: no rule, no band height. Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on PageContainer: a `border` shorthand a service opts into with ONE declaration (`--descriptions-row-border: 1px solid hsl(var(--border))`), read at the call site. Bound at :root rather than `initial` because the default is a plain CSS keyword, not another role token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the keyword is worth reading here (the same reasoning --page-toolbar-background records). The rule is drawn only on an UNBORDERED grid: `bordered` already draws a rule between every cell, and a second block-end border would double every line it owns. --descriptions-row-min-height gives the ruled variant its band height — a ruled row whose value is one short line otherwise reads as a hairline sandwich. `auto` = today. A continuously ruled panel sets --descriptions-row-gap to `0` in the same declaration block: the row gap is the space BETWEEN rules, so leaving it at the default 12px draws a ladder of detached hairlines rather than a ruled list."
   },
   {
     "name": "--descriptions-row-min-height",
@@ -3301,7 +3301,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--descriptions-border-width",
     "value": "var(--stroke-hairline)",
-    "description": "BORDERED grid (antd `bordered`). The rule between cells and the frame around them. Width is a * stroke step so a service that thickens every hairline gets this one with it; colour is * deliberately left to the global `border-color` role so a scoped [data-tenant] override still * reaches it."
+    "description": "BORDERED grid (antd `bordered`). The rule between cells and the frame around them. Width is a stroke step so a service that thickens every hairline gets this one with it; colour is deliberately left to the global `border-color` role so a scoped [data-tenant] override still reaches it."
   },
   {
     "name": "--descriptions-border-radius",
@@ -3311,7 +3311,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--descriptions-cell-padding-y",
     "value": "var(--space-2)",
-    "description": "Inset inside one bordered cell. Only read while `bordered` is set — an unbordered * Descriptions has no cell box to pad, and gains nothing."
+    "description": "Inset inside one bordered cell. Only read while `bordered` is set — an unbordered Descriptions has no cell box to pad, and gains nothing."
   },
   {
     "name": "--descriptions-cell-padding-x",
@@ -3321,7 +3321,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--descriptions-label-background",
     "value": "initial",
-    "description": "Shaded label cell, the half of antd's bordered table that makes the pairs readable at a * glance. `initial` so the --muted default re-resolves under a scoped theme. * Default = hsl(var(--muted))."
+    "description": "Shaded label cell, the half of antd's bordered table that makes the pairs readable at a glance. `initial` so the --muted default re-resolves under a scoped theme. Default = hsl(var(--muted))."
   },
   {
     "name": "--draggable-panel-inset",
@@ -3336,7 +3336,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--draggable-panel-offset-y",
     "value": "0",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-step-offset",
@@ -3346,7 +3346,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--draggable-panel-step-offset-lg",
     "value": "var(--space-10)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-width-sm",
@@ -3356,12 +3356,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--draggable-panel-width",
     "value": "22rem",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-width-lg",
     "value": "28rem",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-width-xl",
@@ -3376,42 +3376,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--draggable-panel-max-block-size",
     "value": "70vh",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-radius",
     "value": "var(--radius-lg)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-shadow",
     "value": "var(--shadow-lg)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-border-width",
     "value": "var(--stroke-hairline)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-bar-padding",
     "value": "var(--space-2) var(--space-3)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-bar-gap",
     "value": "var(--space-2)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-body-padding",
     "value": "var(--space-4)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--draggable-panel-handle-size",
     "value": "var(--control-affix-icon-size)",
-    "description": "* DRAGGABLE PANEL — a floating, movable surface (gh#560). * * Geometry only. The two offset knobs are written by the component as UNITLESS numbers and * multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS * without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
   },
   {
     "name": "--email-shell-width",
@@ -3456,12 +3456,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--email-mark-width",
     "value": "22px",
-    "description": "The mark ARTWORK is the same 32×32 capsule + glyph `<Logo mark=\"godx\" />` paints; only the * RENDERED BOX differs. The canonical SCR-302 header sets it at 22px next to a 13px/700 \"GoDX\" * wordmark, which is smaller than the web --logo-godx-size (2rem) — an email header carries the * identity, not the navigation, so the lockup sits quieter (gh#250). canonical SCR-302 header lockup mark box"
+    "description": "The mark ARTWORK is the same 32×32 capsule + glyph `<Logo mark=\"godx\" />` paints; only the RENDERED BOX differs. The canonical SCR-302 header sets it at 22px next to a 13px/700 \"GoDX\" wordmark, which is smaller than the web --logo-godx-size (2rem) — an email header carries the identity, not the navigation, so the lockup sits quieter (gh#250). canonical SCR-302 header lockup mark box"
   },
   {
     "name": "--email-mark-height",
     "value": "22px",
-    "description": "EMAIL component tokens — the geometry/typography half of the transactional-email contract * (`@godxjp/ui/email`). HTML email cannot read CSS custom properties: Outlook/Gmail strip <style> * blocks and require LITERAL inline values, so a Blade/Twig/MJML template can never `var()` these. * They still live in the component tier because this is the ONE source a maintainer edits — the * `@godxjp/ui/email` export is GENERATED from this file plus the colour roles in foundation.css * (scripts/gen-email-tokens.mjs), so an email template and a web screen can never drift apart. * * Every value is a LITERAL px/number (never rem, never calc, never var): email clients resolve * neither the cascade nor relative units reliably, and the export must serialise to a plain hex/px * string. Where a value mirrors a web token the comment names it, so a retune stays traceable. * * Colours are deliberately NOT redeclared here — they derive from the semantic roles * (--card/--background/--foreground/--muted/--border/--primary/--ring/--brand) and are converted * HSL→hex at module load, so a re-themed role re-tints the email with zero copy-paste. * The identity mark reads --brand, NOT --success: --success is the wakatake status green, and the * two are deliberately distinct roles (gh#250)."
+    "description": "EMAIL component tokens — the geometry/typography half of the transactional-email contract (`@godxjp/ui/email`). HTML email cannot read CSS custom properties: Outlook/Gmail strip <style> blocks and require LITERAL inline values, so a Blade/Twig/MJML template can never `var()` these. They still live in the component tier because this is the ONE source a maintainer edits — the `@godxjp/ui/email` export is GENERATED from this file plus the colour roles in foundation.css (scripts/gen-email-tokens.mjs), so an email template and a web screen can never drift apart. Every value is a LITERAL px/number (never rem, never calc, never var): email clients resolve neither the cascade nor relative units reliably, and the export must serialise to a plain hex/px string. Where a value mirrors a web token the comment names it, so a retune stays traceable. Colours are deliberately NOT redeclared here — they derive from the semantic roles (--card/--background/--foreground/--muted/--border/--primary/--ring/--brand) and are converted HSL→hex at module load, so a re-themed role re-tints the email with zero copy-paste. The identity mark reads --brand, NOT --success: --success is the wakatake status green, and the two are deliberately distinct roles (gh#250)."
   },
   {
     "name": "--email-mark-gap",
@@ -3481,12 +3481,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--email-font-family-sans",
     "value": "\"Noto Sans JP\", \"Hiragino Sans\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic Medium\", YuGothic, \"M PLUS 2\", Meiryo, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, system-ui, Arial, sans-serif",
-    "description": "The DXS canonical face is Noto Sans JP (see src/styles/fonts.css; product override, direct * instruction). Email clients honour NO @font-face, so the stack ships the face NAME first and * degrades through the platform JP faces to a generic — a client with Noto Sans JP installed (or * a webmail that already loaded it, which is common — it is a widely preinstalled/CDN-cached * Google face, more likely to actually render than the niche M PLUS 2 ever was) renders the * canonical face, everything else lands on Hiragino (macOS/iOS) → Yu Gothic (Windows) → * M PLUS 2 → Meiryo → the system UI face → Arial → sans-serif. Family names are SINGLE-quoted * on export (the generator normalises) because an inline `style=\"…\"` attribute is double-quoted; * only ASCII aliases are listed, since a non-ASCII family name does not survive every transfer * encoding."
+    "description": "The DXS canonical face is Noto Sans JP (see src/styles/fonts.css; product override, direct instruction). Email clients honour NO @font-face, so the stack ships the face NAME first and degrades through the platform JP faces to a generic — a client with Noto Sans JP installed (or a webmail that already loaded it, which is common — it is a widely preinstalled/CDN-cached Google face, more likely to actually render than the niche M PLUS 2 ever was) renders the canonical face, everything else lands on Hiragino (macOS/iOS) → Yu Gothic (Windows) → M PLUS 2 → Meiryo → the system UI face → Arial → sans-serif. Family names are SINGLE-quoted on export (the generator normalises) because an inline `style=\"…\"` attribute is double-quoted; only ASCII aliases are listed, since a non-ASCII family name does not survive every transfer encoding."
   },
   {
     "name": "--email-font-family-mono",
     "value": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-    "description": "Tabular/reference strings — invoice ids, masked card numbers, ISO dates, amounts — are set in * the mono face in the canonical card. Mirrors --font-family-mono."
+    "description": "Tabular/reference strings — invoice ids, masked card numbers, ISO dates, amounts — are set in the mono face in the canonical card. Mirrors --font-family-mono."
   },
   {
     "name": "--email-body-font-size",
@@ -3496,7 +3496,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--email-body-line-height",
     "value": "1.9",
-    "description": "1.9, NOT the web --line-height-body (1.7) — the canonical email card runs its JP body copy * looser than a screen, because a mail client gives the reader no density control."
+    "description": "1.9, NOT the web --line-height-body (1.7) — the canonical email card runs its JP body copy looser than a screen, because a mail client gives the reader no density control."
   },
   {
     "name": "--email-body-font-weight",
@@ -3521,7 +3521,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--email-cta-height",
     "value": "44px",
-    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep * the old box sets --email-cta-height + --email-cta-line-height in its own theme."
+    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep the old box sets --email-cta-height + --email-cta-line-height in its own theme."
   },
   {
     "name": "--email-cta-line-height",
@@ -3601,7 +3601,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--email-mobile-heading-font-size",
     "value": "16px",
-    "description": "One step below the 17px desktop title. The canonical 390px reference raster is unusable (it is * 435px wide and already clips the card — dxs-platform/platform#496), so this is the library's * documented contract rather than a measured canonical value."
+    "description": "One step below the 17px desktop title. The canonical 390px reference raster is unusable (it is 435px wide and already clips the card — dxs-platform/platform#496), so this is the library's documented contract rather than a measured canonical value."
   },
   {
     "name": "--email-mobile-cta-width",
@@ -3611,7 +3611,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--error-surface-max-width",
     "value": "32rem",
-    "description": "Measure of the surface block. Caps the status code + body + metadata column so a long ja/vi * headline wraps at a readable width in BOTH shells, including the application shell where * PageContainer is much wider than the copy wants to be."
+    "description": "Measure of the surface block. Caps the status code + body + metadata column so a long ja/vi headline wraps at a readable width in BOTH shells, including the application shell where PageContainer is much wider than the copy wants to be."
   },
   {
     "name": "--error-surface-gap",
@@ -3621,12 +3621,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--error-surface-padding-block",
     "value": "var(--space-10)",
-    "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the * 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
+    "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
   },
   {
     "name": "--error-surface-padding-block-compact",
     "value": "var(--space-6)",
-    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). * * Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of * forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET * (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
+    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
   },
   {
     "name": "--error-surface-brand-gap",
@@ -3641,22 +3641,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--error-surface-meta-row-gap",
     "value": "var(--space-2)",
-    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). * * Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of * forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET * (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
+    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
   },
   {
     "name": "--error-surface-meta-border",
     "value": "none",
-    "description": "Chrome, default quiet (#44). A service opts in with * `--error-surface-meta-border: 1px solid hsl(var(--border));`."
+    "description": "Chrome, default quiet (#44). A service opts in with `--error-surface-meta-border: 1px solid hsl(var(--border));`."
   },
   {
     "name": "--error-surface-meta-padding-block",
     "value": "0",
-    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). * * Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of * forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET * (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
+    "description": "ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251). Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET (cardinal rule #44): the metadata block ships with no divider — a service opts IN."
   },
   {
     "name": "--error-surface-progress-max-width",
     "value": "18rem",
-    "description": "Width of the maintenance progress meter — narrower than the measure, so it reads as metadata * rather than as the primary content of the page."
+    "description": "Width of the maintenance progress meter — narrower than the measure, so it reads as metadata rather than as the primary content of the page."
   },
   {
     "name": "--sheet-width-default",
@@ -3666,7 +3666,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sheet-overlay-background",
     "value": "initial",
-    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather than a private literal, so a service retints every backdrop with one --overlay-background while the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
     "name": "--sheet-overlay-alpha",
@@ -3676,7 +3676,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sheet-shadow",
     "value": "var(--shadow-lg)",
-    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so * a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
   },
   {
     "name": "--sheet-header-space-gap",
@@ -3716,12 +3716,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sheet-body-space-block",
     "value": "var(--space-1)",
-    "description": "The scroll region keeps a sliver of padding so a focused control's ring is never clipped at * the scroll edges — retune together with --focus-ring-width."
+    "description": "The scroll region keeps a sliver of padding so a focused control's ring is never clipped at the scroll edges — retune together with --focus-ring-width."
   },
   {
     "name": "--sheet-close-offset",
     "value": "var(--space-4)",
-    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a * title never runs under it."
+    "description": "Close button: offset from the panel corner, and the inline room the header reserves so a title never runs under it."
   },
   {
     "name": "--sheet-close-rest-alpha",
@@ -3756,7 +3756,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-space-x",
     "value": "var(--space-chrome-x)",
-    "description": "Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the * whole system, or --dialog-space-x/-y for dialogs only)."
+    "description": "Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the whole system, or --dialog-space-x/-y for dialogs only)."
   },
   {
     "name": "--dialog-space-y",
@@ -3781,7 +3781,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-header-space-gap",
     "value": "var(--space-stack-xs)",
-    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's * header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel * inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) * was a literal on the component, so a service could retune the outer padding and still be stuck * with the inner rhythm. Defaults are the values the literals resolved to."
+    "description": "Dialog chrome rhythm (#319) — the exact mirror of the --sheet-* set above, because Dialog's header markup is byte-identical to Sheet's. --dialog-space-x/-y already governed the panel inset, but every gap INSIDE the chrome (header stack, title/subtitle pair, the extra-slot row) was a literal on the component, so a service could retune the outer padding and still be stuck with the inner rhythm. Defaults are the values the literals resolved to."
   },
   {
     "name": "--dialog-title-row-space-gap",
@@ -3801,7 +3801,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-confirm-icon-size",
     "value": "var(--icon-size-xl)",
-    "description": "Confirm/alert leading icon (antd `Modal.confirm` parity). antd paints a 22px status glyph to * the inline-start of the title and leaves the surface untinted; the icon IS the danger signal. * 22px is not a step on the icon scale, so this rides --icon-size-xl (24px) — the nearest named * step, and no new value enters the scale. The gap mirrors antd's 12px margin on the glyph."
+    "description": "Confirm/alert leading icon (antd `Modal.confirm` parity). antd paints a 22px status glyph to the inline-start of the title and leaves the surface untinted; the icon IS the danger signal. 22px is not a step on the icon scale, so this rides --icon-size-xl (24px) — the nearest named step, and no new value enters the scale. The gap mirrors antd's 12px margin on the glyph."
   },
   {
     "name": "--dialog-confirm-space-gap",
@@ -3811,27 +3811,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-header-close-space-inline-end",
     "value": "var(--space-8)",
-    "description": "Inline room the header reserves so a long title or the extra slot never runs under the * absolutely-positioned close button; retune together with --dialog-close-space-offset. * Mirrors --sheet-header-close-space-inline-end."
+    "description": "Inline room the header reserves so a long title or the extra slot never runs under the absolutely-positioned close button; retune together with --dialog-close-space-offset. Mirrors --sheet-header-close-space-inline-end."
   },
   {
     "name": "--dialog-close-rest-alpha",
     "value": "0.7",
-    "description": "Close button rest opacity — quiet at rest, full on hover (rule #44). Was a hard 0.7 baked into * dialog-layout.css with no way for a theme to make the ✕ louder. Mirrors * --sheet-close-rest-alpha so the two overlay siblings retune together."
+    "description": "Close button rest opacity — quiet at rest, full on hover (rule #44). Was a hard 0.7 baked into dialog-layout.css with no way for a theme to make the ✕ louder. Mirrors --sheet-close-rest-alpha so the two overlay siblings retune together."
   },
   {
     "name": "--dialog-close-size",
     "value": "var(--touch-target-min)",
-    "description": "THE CLOSE BUTTON'S TARGET, WHICH IS NOT ITS PAINT (gh#806 · WCAG 2.2 SC 2.5.8 AA). * * The ✕ glyph is --control-affix-icon-size (16px) and the button had nothing around it, so the * button measured 16x16 and all four +-11px probes MISSED — measured on the real Dialog frame, * not a fixture. A consumer's a11y gate had to exclude the selector, and rule #47 forbids them * re-sizing it themselves. * * The paint must NOT grow: the ✕ sits at a fixed offset from the panel corner and enlarging the * glyph moves the optical weight of every overlay in the system. So the hit area is carried by a * centred pseudo-element, the same answer `.ui-data-table-sort-button::after` already ships — * verified there the same way (paint 53.1x17.8, all four probes HIT). * * Raisable because SC 2.5.8 is a floor, not a target: a touch-first service sets this higher."
+    "description": "THE CLOSE BUTTON'S TARGET, WHICH IS NOT ITS PAINT (gh#806 · WCAG 2.2 SC 2.5.8 AA). The ✕ glyph is --control-affix-icon-size (16px) and the button had nothing around it, so the button measured 16x16 and all four +-11px probes MISSED — measured on the real Dialog frame, not a fixture. A consumer's a11y gate had to exclude the selector, and rule #47 forbids them re-sizing it themselves. The paint must NOT grow: the ✕ sits at a fixed offset from the panel corner and enlarging the glyph moves the optical weight of every overlay in the system. So the hit area is carried by a centred pseudo-element, the same answer `.ui-data-table-sort-button::after` already ships — verified there the same way (paint 53.1x17.8, all four probes HIT). Raisable because SC 2.5.8 is a floor, not a target: a touch-first service sets this higher."
   },
   {
     "name": "--dialog-step-up-error-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were * `text-sm text-destructive` on the component, i.e. unreachable from a theme."
+    "description": "Type-to-confirm challenge: the step-up failure line under the input. Its size + ink were `text-sm text-destructive` on the component, i.e. unreachable from a theme."
   },
   {
     "name": "--alert-radius",
     "value": "var(--card-radius)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the * same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by * overriding this once. Default keeps the historical --radius-md."
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by overriding this once. Default keeps the historical --radius-md."
   },
   {
     "name": "--alert-space-inset",
@@ -3856,12 +3856,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--alert-icon-size",
     "value": "var(--icon-size-lg)",
-    "description": "Leading tone glyph (the ⚠/✓/ⓘ at the start of the strip). It was a bare `1.25rem` in * alert-layout.css with no token at all, so the ONLY ways to resize it were `!important` or a * forked stylesheet — the two things the icon axis's tier 2 exists to abolish (gh#326). Same * step, so nothing moves; a service now scopes `--alert-icon-size` to one Alert instead. * Deliberately NOT --scaling-multiplied: the literal it replaces did not track density."
+    "description": "Leading tone glyph (the ⚠/✓/ⓘ at the start of the strip). It was a bare `1.25rem` in alert-layout.css with no token at all, so the ONLY ways to resize it were `!important` or a forked stylesheet — the two things the icon axis's tier 2 exists to abolish (gh#326). Same step, so nothing moves; a service now scopes `--alert-icon-size` to one Alert instead. Deliberately NOT --scaling-multiplied: the literal it replaces did not track density."
   },
   {
     "name": "--alert-dismiss-rest-alpha",
     "value": "0.7",
-    "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest * alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as * `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was * themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not * var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the * density axis."
+    "description": "Dismiss ✕ — rest opacity (quiet at rest, full on hover, rule #44) and glyph size. The rest alpha was a hard 0.7 in alert-layout.css whose `:hover` companion lived on the COMPONENT as `hover:opacity-100`, so the two halves of one affordance sat in two files and neither was themeable. Mirrors --sheet-close-rest-alpha. The icon size carries a raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step and must not start tracking the density axis."
   },
   {
     "name": "--alert-dismiss-icon-size",
@@ -3871,7 +3871,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--alert-bg-alpha",
     "value": "0.05",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
   },
   {
     "name": "--alert-border-alpha",
@@ -3881,7 +3881,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--banner-border-block-end-width",
     "value": "1px",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45). * * --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, * and both copies were dead: components/banner.css declares the same two names at the same * `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at * `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is * what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read * THIS file for the default was told the strip has no rule when it has one, and the MCP token * catalog carried both entries with the two conflicting values. banner.css owns the strip * geometry; these two live there and only there. * * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to match to its page grid is a knob (rule #45). --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, and both copies were dead: components/banner.css declares the same two names at the same `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read THIS file for the default was told the strip has no rule when it has one, and the MCP token catalog carried both entries with the two conflicting values. banner.css owns the strip geometry; these two live there and only there. The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines its text up with the page title instead of sitting at a second, unrelated margin."
   },
   {
     "name": "--banner-space-block",
@@ -3891,7 +3891,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--banner-space-inline",
     "value": "var(--space-page-active-x)",
-    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and * custom properties inherit — so a banner rendered INSIDE the container picks the compact value * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps * the two aligned; retune it rather than hard-coding a mobile inset at the call site."
+    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and custom properties inherit — so a banner rendered INSIDE the container picks the compact value up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps the two aligned; retune it rather than hard-coding a mobile inset at the call site."
   },
   {
     "name": "--banner-space-inline-compact",
@@ -3901,12 +3901,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--banner-dismiss-space-offset",
     "value": "var(--space-2)",
-    "description": "Dismiss offset is measured from the banner's own (shorter) block inset, so the ✕ stays * optically centred on a one-line strip instead of floating at the inline-alert offset."
+    "description": "Dismiss offset is measured from the banner's own (shorter) block inset, so the ✕ stays optically centred on a one-line strip instead of floating at the inline-alert offset."
   },
   {
     "name": "--dialog-content-glow",
     "value": "0 0 0 0 transparent",
-    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
   },
   {
     "name": "--empty-state-space-y",
@@ -3921,7 +3921,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--empty-state-description-max-width",
     "value": "28rem",
-    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
   },
   {
     "name": "--empty-state-section-space-y",
@@ -3946,7 +3946,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--empty-state-icon-foreground",
     "value": "initial",
-    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) or washes the medallion fill (--empty-state-icon-tint) without forking. Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--empty-state-icon-tint",
@@ -3956,7 +3956,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--empty-state-icon-size",
     "value": "var(--icon-size-4xl)",
-    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a * `size-6` utility on the icon), so a service could not scale the empty-state mark to its own * page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its * circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
+    "description": "Medallion box + the glyph inside it. Both were literal (`width: 3rem` in the stylesheet, a `size-6` utility on the icon), so a service could not scale the empty-state mark to its own page rhythm — and the two must move TOGETHER or the glyph stops sitting centred in its circle, which is exactly the kind of pair rule #45 exists to keep tunable as one."
   },
   {
     "name": "--empty-state-icon-glyph-size",
@@ -3986,12 +3986,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--skeleton-background",
     "value": "initial",
-    "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
+    "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
   },
   {
     "name": "--skeleton-block-height",
     "value": "1rem",
-    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals * they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them * through the spacing scale would silently make the loading state track the density axis while * the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a * service retuning its type scale knows which one to move."
+    "description": "Skeleton bar heights + widths (#319). These carry RAW rem, not var(--space-N): the literals they replace were plain Tailwind steps, which are not multiplied by --scaling. Routing them through the spacing scale would silently make the loading state track the density axis while the loaded content it stands in for does not. Names say what each bar STANDS IN FOR, so a service retuning its type scale knows which one to move."
   },
   {
     "name": "--skeleton-caption-height",
@@ -4026,7 +4026,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--skeleton-element-radius",
     "value": "var(--radius-sm)",
-    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every * element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` * tier, so a skeleton button is exactly as tall as the Button it stands in for and follows * density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); * they are unitless on purpose — a service widens the stand-in without leaving the height tier."
+    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` tier, so a skeleton button is exactly as tall as the Button it stands in for and follows density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); they are unitless on purpose — a service widens the stand-in without leaving the height tier."
   },
   {
     "name": "--skeleton-button-width-ratio",
@@ -4051,12 +4051,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--skeleton-image-glyph-color",
     "value": "initial",
-    "description": "Role-mirror (#44): `initial` so the glyph re-resolves under a scoped theme. * Default = hsl(var(--muted-foreground) / 0.4)."
+    "description": "Role-mirror (#44): `initial` so the glyph re-resolves under a scoped theme. Default = hsl(var(--muted-foreground) / 0.4)."
   },
   {
     "name": "--skeleton-article-avatar-gap",
     "value": "var(--space-inline-lg)",
-    "description": "ARTICLE rhythm. antd: avatar gutter = `padding` (16), title offset beside an avatar = * `marginSM` (12), title→paragraph = `controlHeightSM` (24), line→line = `controlHeightXS` (16). * antd's fourth value — 28px (`marginLG + marginXXS`) for title→paragraph WITH an avatar — is not * a step of this repo's spacing scale (it goes 24 → 32), and docs/DESIGN-AUTHORITY.md says take a * step or leave it rather than invent a number, so both cases take the 24px step."
+    "description": "ARTICLE rhythm. antd: avatar gutter = `padding` (16), title offset beside an avatar = `marginSM` (12), title→paragraph = `controlHeightSM` (24), line→line = `controlHeightXS` (16). antd's fourth value — 28px (`marginLG + marginXXS`) for title→paragraph WITH an avatar — is not a step of this repo's spacing scale (it goes 24 → 32), and docs/DESIGN-AUTHORITY.md says take a step or leave it rather than invent a number, so both cases take the 24px step."
   },
   {
     "name": "--skeleton-article-avatar-title-offset",
@@ -4081,12 +4081,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--skeleton-sweep-gradient",
     "value": "initial",
-    "description": "The `active` sheen. One knob, not a from/to pair, so a service retunes the whole sweep once * (#45); `initial` keeps the default resolving at the call site under a scoped theme (#44). * Default = linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 37%, * hsl(var(--muted)) 63%) — antd's three stops, on this library's neutral surfaces."
+    "description": "The `active` sheen. One knob, not a from/to pair, so a service retunes the whole sweep once (#45); `initial` keeps the default resolving at the call site under a scoped theme (#44). Default = linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 37%, hsl(var(--muted)) 63%) — antd's three stops, on this library's neutral surfaces."
   },
   {
     "name": "--query-load-more-space-block-start",
     "value": "var(--space-stack-md)",
-    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: * the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals * on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not * align them to its own vertical rhythm without forking the component (rule #45). They live in * the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. * Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
+    "description": "QUERY LIFECYCLE FOOTERS — the two rows `<InfiniteQueryState>` appends under a paginated feed: the \"load more\" button row and the \"loading more…\" caption. Both gaps were Tailwind literals on the component (`pt-4` / `pt-2`), so a service running a denser (or airier) feed could not align them to its own vertical rhythm without forking the component (rule #45). They live in the feedback tier because these ARE query feedback surfaces and there is no query stylesheet. Defaults = var(--space-stack-md) (16px) and var(--space-stack-sm) (8px) — the exact values the Tailwind steps resolved to, so adopting this changes nothing until a theme opts in."
   },
   {
     "name": "--query-loading-more-space-block-start",
@@ -4096,7 +4096,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tooltip-max-width",
     "value": "20rem",
-    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not * retune tooltip density or measure without forking the component (rule #45). Defaults reproduce * the previous look exactly, so adopting this changes nothing until a theme opts in."
+    "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not retune tooltip density or measure without forking the component (rule #45). Defaults reproduce the previous look exactly, so adopting this changes nothing until a theme opts in."
   },
   {
     "name": "--tooltip-space-inline",
@@ -4126,7 +4126,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tooltip-background",
     "value": "initial",
-    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped * [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
+    "description": "Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text."
   },
   {
     "name": "--tooltip-foreground",
@@ -4141,7 +4141,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--popover-width",
     "value": "18rem",
-    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` * were literals, so a service could not align the panel to its own grid or width scale."
+    "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` were literals, so a service could not align the panel to its own grid or width scale."
   },
   {
     "name": "--popover-space-inset",
@@ -4186,42 +4186,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--popover-surface-inline-size",
     "value": "initial",
-    "description": "Width knob, for a panel that owns its own box — a time column pair, a calendar. The three * colour knobs above already existed and padding already read `--popover-space-inset`; width was * the one surface property left absolute, so a modifier could only reach it by re-declaring the * property — which loses to import order (styles/__tests__/popover-surface-knob-cascade)."
+    "description": "Width knob, for a panel that owns its own box — a time column pair, a calendar. The three colour knobs above already existed and padding already read `--popover-space-inset`; width was the one surface property left absolute, so a modifier could only reach it by re-declaring the property — which loses to import order (styles/__tests__/popover-surface-knob-cascade)."
   },
   {
     "name": "--toast-icon-size",
     "value": "var(--icon-size-md)",
-    "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. * * WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status * glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop * is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, * re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it * a one-line theme override instead (rule #45). * * Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner * gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. * * NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below * collides with those; keep it that way when adding to this group."
+    "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it a one-line theme override instead (rule #45). Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below collides with those; keep it that way when adding to this group."
   },
   {
     "name": "--toast-mobile-offset",
     "value": "16px",
-    "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline * CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the * device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
+    "description": "Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the device edge (thumb reach / safe area), not a density-scaled gap inside a surface."
   },
   {
     "name": "--flex-surface-background",
     "value": "initial",
-    "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-surface-warning-alpha",
     "value": "0.04",
-    "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-surface-radius",
     "value": "initial",
-    "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-actions-offset-block",
     "value": "initial",
-    "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--flex-actions-offset-inline",
     "value": "initial",
-    "description": "* Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
+    "description": "Lightweight row surfaces and hover actions; theme overrides remain scoped component knobs."
   },
   {
     "name": "--float-button-offset-block-end",
@@ -4351,7 +4351,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--form-label-width",
     "value": "8rem",
-    "description": "Fixed aligned label column by default (gh#284) — `max-content` sized each field's label * column to its own label, so horizontal forms (especially columns={2} grids) had controls * starting at ragged x positions. 8rem mirrors --descriptions-label-width so edit forms and * show pages share the same optical grid; the Form/FormField `labelWidth` prop overrides."
+    "description": "Fixed aligned label column by default (gh#284) — `max-content` sized each field's label column to its own label, so horizontal forms (especially columns={2} grids) had controls starting at ragged x positions. 8rem mirrors --descriptions-label-width so edit forms and show pages share the same optical grid; the Form/FormField `labelWidth` prop overrides."
   },
   {
     "name": "--form-label-gap",
@@ -4361,37 +4361,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--form-label-font-size",
     "value": "var(--control-label-font-size, var(--text-sm))",
-    "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a * service opts in. It is a knob because the label column already is one: --form-label-width * lets a service align forms to its grid, and a service whose grid was drawn around a * smaller label had no way to say so — leaving it to hand-write font-size per label, which * is exactly what the width token exists to prevent. * * CHAINED to the Label primitive's own knob (gh#824), where it used to read var(--text-sm) * directly. FormField passes `text-[length:var(--form-label-font-size)]` on its Label, and a * utility outranks `.ui-label { font-size: var(--control-label-font-size) }` in * `@layer components` — so this was not an override of the broad knob, it was a SHADOW of it: a * service that set --control-label-font-size moved its 4 standalone labels and none of its 21 * FormField ones (measured at 1280px, 37px on :root -> 37px vs 14px). Reading the broad knob as * the default makes this one an override again, which is what \"a per-instance escape\" meant. * FREE: base.css declares --text-sm AS var(--font-size-sm), the step * --control-label-font-size already read, so both sides are 0.875rem and nothing moves. 14px"
+    "description": "Type in the label column. Inherits the body size by default, so nothing moves unless a service opts in. It is a knob because the label column already is one: --form-label-width lets a service align forms to its grid, and a service whose grid was drawn around a smaller label had no way to say so — leaving it to hand-write font-size per label, which is exactly what the width token exists to prevent. CHAINED to the Label primitive's own knob (gh#824), where it used to read var(--text-sm) directly. FormField passes `text-[length:var(--form-label-font-size)]` on its Label, and a utility outranks `.ui-label { font-size: var(--control-label-font-size) }` in `@layer components` — so this was not an override of the broad knob, it was a SHADOW of it: a service that set --control-label-font-size moved its 4 standalone labels and none of its 21 FormField ones (measured at 1280px, 37px on :root -> 37px vs 14px). Reading the broad knob as the default makes this one an override again, which is what \"a per-instance escape\" meant. FREE: base.css declares --text-sm AS var(--font-size-sm), the step --control-label-font-size already read, so both sides are 0.875rem and nothing moves. 14px"
   },
   {
     "name": "--form-block-gap",
     "value": "var(--space-4)",
-    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's * CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN * direct children (no Card framing). Unchanged from the historical value. 16px"
+    "description": "Row rhythm between a Form's own top-level blocks (gh#295) — e.g. the field group's CardContent and its CardFooter action row, or two FormFields that happen to be Form's OWN direct children (no Card framing). Unchanged from the historical value. 16px"
   },
   {
     "name": "--form-feedback-icon-size",
     "value": "var(--icon-size-sm)",
-    "description": "THE VALIDATION FEEDBACK GLYPH. It was `controlIconClass`, which is * `size-[length:var(--control-height)]` — the height of a whole CONTROL, meant for something * that fills a control-sized box like the ColorPicker swatch. On a `text-xs` feedback line that * rendered a ~32px icon beside ~12px text, which is what a reader actually saw and reported. * A glyph that sits inline with text belongs on the ICON scale, one step above the text it * accompanies so it reads as a mark rather than a letter. 14px beside 12px text"
+    "description": "THE VALIDATION FEEDBACK GLYPH. It was `controlIconClass`, which is `size-[length:var(--control-height)]` — the height of a whole CONTROL, meant for something that fills a control-sized box like the ColorPicker swatch. On a `text-xs` feedback line that rendered a ~32px icon beside ~12px text, which is what a reader actually saw and reported. A glyph that sits inline with text belongs on the ICON scale, one step above the text it accompanies so it reads as a mark rather than a letter. 14px beside 12px text"
   },
   {
     "name": "--form-field-row-gap",
     "value": "var(--space-3)",
-    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value * mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical * rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, * which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` * composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px"
+    "description": "Field-to-field row rhythm (gh#295) — mirrors --descriptions-row-gap so a read-only value mixed in via `FormField.staticText` (gh#294) and a real Descriptions block share ONE canonical rhythm. Applied via margin-based sibling spacing on FormField itself (not Form's flex `gap`, which only reaches DIRECT children — dead in the common `Form > CardContent > FormField*` composition every real Save-button form needs), so it holds at any DOM depth relative to Form. 12px"
   },
   {
     "name": "--form-grid-row-gap",
     "value": "var(--form-field-row-gap)",
-    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use * the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the * first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. * The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME * --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once * it collapses to one column on a narrow container — is pixel-identical to a Form with no * `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than * stacked ones; retune --form-field-row-gap to move both together. 12px"
+    "description": "Row rhythm between the ROWS of a `<Form columns={n}>` grid (gh#304). The grid path cannot use the margin above — a per-item margin inside a grid double-counts the track gap AND leaves the first item of row 1 unshifted while its row-mates drop, so row 1's columns end up misaligned. The rhythm therefore rides the grid's own `row-gap`, and it DEFAULTS TO THE SAME --form-field-row-gap the stacked path uses so `columns={1}` — and every `columns={n}` form once it collapses to one column on a narrow container — is pixel-identical to a Form with no `columns` at all. Retune this alone only to give multi-column forms a looser row rhythm than stacked ones; retune --form-field-row-gap to move both together. 12px"
   },
   {
     "name": "--form-grid-column-gap",
     "value": "var(--space-4)",
-    "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's * generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a * service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the * historical 16px, so nothing moves unless a theme opts in. 16px"
+    "description": "Gutter between the COLUMNS of a `<Form columns={n}>` grid (gh#304). Was ResponsiveGrid's generic 16px stack gap with no way to say otherwise; it is a form's inter-field gutter and a service aligning forms to its design grid needs it as a knob (rule #45). The default keeps the historical 16px, so nothing moves unless a theme opts in. 16px"
   },
   {
     "name": "--legal-document-measure-max-width",
     "value": "46rem",
-    "description": "Readable document measure. Caps the header, the section column and the footer so * a 1440px viewport still reads at ~75-90 characters per line."
+    "description": "Readable document measure. Caps the header, the section column and the footer so a 1440px viewport still reads at ~75-90 characters per line."
   },
   {
     "name": "--legal-document-column-gap",
@@ -4416,32 +4416,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-toc-gap",
     "value": "var(--space-1)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-item-padding",
     "value": "var(--space-1) var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-item-radius",
     "value": "var(--radius)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-title-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-marker-width",
     "value": "var(--stroke-md)",
-    "description": "Leading marker on the active contents entry — a non-colour affordance so the * active state is never colour-only (WCAG 1.4.1)."
+    "description": "Leading marker on the active contents entry — a non-colour affordance so the active state is never colour-only (WCAG 1.4.1)."
   },
   {
     "name": "--legal-document-nav-gap",
@@ -4451,27 +4451,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-header-gap",
     "value": "var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-gap",
     "value": "var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-section-gap",
     "value": "var(--space-10)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-section-title-gap",
     "value": "var(--space-3)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-body-line-height",
@@ -4481,12 +4481,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-scroll-offset",
     "value": "var(--space-6)",
-    "description": "`scroll-margin-block-start` on every section: the offset a hash jump / anchor * activation leaves above the heading so it is not hidden under sticky chrome."
+    "description": "`scroll-margin-block-start` on every section: the offset a hash jump / anchor activation leaves above the heading so it is not hidden under sticky chrome."
   },
   {
     "name": "--legal-document-footer-gap",
     "value": "var(--space-4)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-border",
@@ -4496,12 +4496,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-header-border",
     "value": "none",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-footer-border",
     "value": "none",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky * table-of-contents rail. * * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail * width/offset, the section rhythm and the body leading are exactly the values a service * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in * `src/styles/layout.css`. * * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to * `none`. A service opts IN via theme, e.g. * --legal-document-toc-border: 1px solid hsl(var(--border)); * * Colour knobs whose default is a ROLE token are declared `initial` here with the role * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` * override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-foreground",
@@ -4536,27 +4536,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--list-row-padding-y",
     "value": "var(--space-3)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
   },
   {
     "name": "--list-row-padding-x",
     "value": "var(--space-4)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
   },
   {
     "name": "--list-row-gap",
     "value": "var(--space-3)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
   },
   {
     "name": "--list-row-border",
     "value": "initial",
-    "description": "Row divider — `initial` so the --border default re-resolves at the call site under a scoped * theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border))."
+    "description": "Row divider — `initial` so the --border default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border))."
   },
   {
     "name": "--list-row-body-min-width",
     "value": "12rem",
-    "description": "Inline size the content column keeps before the trailing actions wrap onto their own line * (#45 — a service retunes the stack threshold to its grid). Clamped with min(…, 100%) at the * call site, so a container narrower than the knob can never force page-root overflow (#224)."
+    "description": "Inline size the content column keeps before the trailing actions wrap onto their own line (#45 — a service retunes the stack threshold to its grid). Clamped with min(…, 100%) at the call site, so a container narrower than the knob can never force page-root overflow (#224)."
   },
   {
     "name": "--list-row-trailing-gap",
@@ -4566,267 +4566,267 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--list-row-compact-padding-y",
     "value": "initial",
-    "description": "── Compact inline-actions geometry (`density=\"compact\"`, #246) ────────────────────────── * The canonical invitation / history row: a 36px leading avatar, a shrinkable title + * description body and one or two small trailing Buttons, all on ONE line inside the canonical * 358px card (326px content after the row's own inline inset) at a 390px viewport. These knobs * only LOWER the geometry — the #224 wrap contract (row + trailing cluster wrap, body clamped * with min(…, 100%)) is untouched, so a cluster that genuinely cannot fit still wraps instead of * widening the page root. * Declared `initial` so the spacing defaults re-resolve at the CALL SITE — --space-2 is * density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would * freeze compact rows at the :root density (docs/TOKENS.md — the :root freeze rule). * Defaults = var(--space-2) block padding · var(--list-row-padding-x) inline padding · * var(--space-2) gap."
+    "description": "── Compact inline-actions geometry (`density=\"compact\"`, #246) ────────────────────────── The canonical invitation / history row: a 36px leading avatar, a shrinkable title + description body and one or two small trailing Buttons, all on ONE line inside the canonical 358px card (326px content after the row's own inline inset) at a 390px viewport. These knobs only LOWER the geometry — the #224 wrap contract (row + trailing cluster wrap, body clamped with min(…, 100%)) is untouched, so a cluster that genuinely cannot fit still wraps instead of widening the page root. Declared `initial` so the spacing defaults re-resolve at the CALL SITE — --space-2 is density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would freeze compact rows at the :root density (docs/TOKENS.md — the :root freeze rule). Defaults = var(--space-2) block padding · var(--list-row-padding-x) inline padding · var(--space-2) gap."
   },
   {
     "name": "--list-row-compact-padding-x",
     "value": "initial",
-    "description": "Inline inset defaults to the default row axis so compact and default rows in the same Card keep * one optical axis; a service retunes it to its own grid (#45)."
+    "description": "Inline inset defaults to the default row axis so compact and default rows in the same Card keep one optical axis; a service retunes it to its own grid (#45)."
   },
   {
     "name": "--list-row-compact-gap",
     "value": "initial",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
   },
   {
     "name": "--list-row-compact-body-min-width",
     "value": "6rem",
-    "description": "Compact body threshold — small enough that avatar + body + two compact Buttons fit the * canonical column (36 + 8 + 96 + 8 + 146 = 294 ≤ 326), and still a readable measure."
+    "description": "Compact body threshold — small enough that avatar + body + two compact Buttons fit the canonical column (36 + 8 + 96 + 8 + 146 = 294 ≤ 326), and still a readable measure."
   },
   {
     "name": "--list-row-read-background",
     "value": "initial",
-    "description": "Read (default) row surface — `initial`, documented default = transparent, i.e. the Card * surface shows through untouched (#44 — chrome defaults to the quietest state)."
+    "description": "Read (default) row surface — `initial`, documented default = transparent, i.e. the Card surface shows through untouched (#44 — chrome defaults to the quietest state)."
   },
   {
     "name": "--list-row-unread-background",
     "value": "initial",
-    "description": "Unread emphasis surface (`unread` rows) — `initial` so the --muted default re-resolves at the * call site under a scoped theme. Documented default = hsl(var(--muted)), the same quiet * emphasis role the table header uses; it keeps the xs muted description line at WCAG AA * (4.63:1 light / 5.47:1 dark), which hsl(var(--accent)) would not (4.23:1 light)."
+    "description": "Unread emphasis surface (`unread` rows) — `initial` so the --muted default re-resolves at the call site under a scoped theme. Documented default = hsl(var(--muted)), the same quiet emphasis role the table header uses; it keeps the xs muted description line at WCAG AA (4.63:1 light / 5.47:1 dark), which hsl(var(--accent)) would not (4.23:1 light)."
   },
   {
     "name": "--list-row-indicator-color",
     "value": "initial",
-    "description": "Unread indicator dot fill — `initial` so the --primary default re-resolves at the call site * under a scoped theme. Documented default = hsl(var(--primary))."
+    "description": "Unread indicator dot fill — `initial` so the --primary default re-resolves at the call site under a scoped theme. Documented default = hsl(var(--primary))."
   },
   {
     "name": "--list-row-indicator-size",
     "value": "var(--space-2)",
-    "description": "Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the * titles of a mixed list stay on one optical axis."
+    "description": "Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the titles of a mixed list stay on one optical axis."
   },
   {
     "name": "--logo-radius",
     "value": "var(--radius)",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-size-xs",
     "value": "1.25rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-size-sm",
     "value": "1.5rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-size-md",
     "value": "1.75rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-size-lg",
     "value": "2.25rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-xs",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-sm",
     "value": "var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)))",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-md",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-font-size-lg",
     "value": "var(--font-size-base)",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-success-background",
     "value": "initial",
-    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on * badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the * canonical emerald, gh#250). Services retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--brand)) * --logo-success-foreground = hsl(var(--logo-identity-foreground)) * --logo-godx-color = hsl(var(--brand))"
+    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the canonical emerald, gh#250). Services retune the role once for every Logo. ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually reaches the mark instead of freezing at the :root value (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Documented defaults: --logo-success-background = hsl(var(--brand)) --logo-success-foreground = hsl(var(--logo-identity-foreground)) --logo-godx-color = hsl(var(--brand))"
   },
   {
     "name": "--logo-success-foreground",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-godx-color",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-identity-foreground",
     "value": "60 33% 99%",
-    "description": "Identity-fill INK — the ink `mark=\"glyph\"` sets its (caller-supplied) TEXT in when it sits on * the --brand identity fill. This is deliberately NOT --brand-foreground. * * --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks * --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background) * because `<Logo mark=\"godx\">` punches its inner bar as an evenodd HOLE and the email mark has to * paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11 * (3:1, non-text) — and at 3.67:1 on the emerald it does. * * The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px * bold is NOT \"large text\" — that needs 18.66px bold / 24px). * * THIS INK USED TO BE THEME-INVARIANT, AND THE VIOLET IDENTITY ENDED THAT. While --brand was * 翠 emerald the fill was light in BOTH themes, so one near-black ink cleared AA on both. Brand * identity v2.3 makes the fill #7A00FF in light and #DCBCFF in dark — dark and light * respectively — so a single ink cannot serve both: measured, near-black on the light-theme * violet is 2.77:1, a real AA failure, while the same ink on the dark-theme violet is 10.72:1. * * So the ink now FLIPS with the theme, and each side is measured: * * light ink 60 33% 99% (#fdfdfb) on #7A00FF = 6.30:1 * dark ink 48 9% 9% (#191815) on #DCBCFF = 10.72:1 * * The dark override lives HERE and not in foundation.css on purpose: `:root` and `.dark` have * equal specificity, and tokens/base.css imports this file AFTER foundation.css — so a `.dark` * rule there would lose to the `:root` rule here. Same file, later block, no ambiguity. * * A service that re-themes --brand to a fill of the opposite lightness overrides * --logo-success-foreground (the public knob) to re-invert the ink. * * NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it."
+    "description": "Identity-fill INK — the ink `mark=\"glyph\"` sets its (caller-supplied) TEXT in when it sits on the --brand identity fill. This is deliberately NOT --brand-foreground. --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background) because `<Logo mark=\"godx\">` punches its inner bar as an evenodd HOLE and the email mark has to paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11 (3:1, non-text) — and at 3.67:1 on the emerald it does. The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px bold is NOT \"large text\" — that needs 18.66px bold / 24px). THIS INK USED TO BE THEME-INVARIANT, AND THE VIOLET IDENTITY ENDED THAT. While --brand was 翠 emerald the fill was light in BOTH themes, so one near-black ink cleared AA on both. Brand identity v2.3 makes the fill #7A00FF in light and #DCBCFF in dark — dark and light respectively — so a single ink cannot serve both: measured, near-black on the light-theme violet is 2.77:1, a real AA failure, while the same ink on the dark-theme violet is 10.72:1. So the ink now FLIPS with the theme, and each side is measured: light ink 60 33% 99% (#fdfdfb) on #7A00FF = 6.30:1 dark ink 48 9% 9% (#191815) on #DCBCFF = 10.72:1 The dark override lives HERE and not in foundation.css on purpose: `:root` and `.dark` have equal specificity, and tokens/base.css imports this file AFTER foundation.css — so a `.dark` rule there would lose to the `:root` rule here. Same file, later block, no ambiguity. A service that re-themes --brand to a fill of the opposite lightness overrides --logo-success-foreground (the public knob) to re-invert the ink. NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it."
   },
   {
     "name": "--logo-godx-ink-color",
     "value": "235 68.6% 13.7%",
-    "description": "── The LOGOTYPE ink (`<Logo mark=\"godx-lockup\" />`, identity v2.3) ──────────────────────── * The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the * brand identity colour and read --logo-godx-color instead. They are two ROLES, not a * decorative split, so they get two knobs. * * A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1 * on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text * colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way * the boxed glyph's ink is."
+    "description": "── The LOGOTYPE ink (`<Logo mark=\"godx-lockup\" />`, identity v2.3) ──────────────────────── The lockup's letters G, o and D are the kit's indigo #0B0F3B; the mark and the X are the brand identity colour and read --logo-godx-color instead. They are two ROLES, not a decorative split, so they get two knobs. A TOKEN AND NOT THE LITERAL, because the literal only works in one theme: #0B0F3B is 18.00:1 on the light canvas and 1.03:1 on the dark one — invisible. Dark takes the kit's own dark text colour instead (#F7FAF8, 16.87:1), flipped in the block at the end of this file the same way the boxed glyph's ink is."
   },
   {
     "name": "--logo-glyph-cap-baseline-optical-offset",
     "value": "-0.01em",
-    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── * A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every * tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are * untouched, only the letterform moves. * * WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a * letterform. Every CSS rule available is ONE constant shift that cannot see which character it * is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, * M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. * So the COMPONENT classifies the glyph string it was handed — the only layer that can — and * emits `data-ink`; these are the per-band constants it selects between. * * The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is * cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height * top: the em box overshoots the cap band above the baseline and below it by about the same * amount, so it centres where a capital does (measured -0.001em against -0.008em). * * MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: * cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ * cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y * x-baseline -0.11em 0.88px x o xo ae s * x-descender -0.21em 0.94px g y p q go * Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex * alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation * — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser * snaps a line box by; no classifier can remove either."
+    "description": "── Optical centring of the boxed GLYPH (`<Logo glyph=\"…\" />`, gh#370) ───────────────────── A vertical nudge of the glyph's INK inside the mark box, in `em` so one value holds at every tier. Applied with `translate` (styles/logo-layout.css): the box, the fill and the layout are untouched, only the letterform moves. WHY THERE ARE FOUR. `place-items: center` centres a LINE BOX, and a line box is not a letterform. Every CSS rule available is ONE constant shift that cannot see which character it is moving, and the glyph classes do not share an optical centre: measured over Noto Sans JP, M PLUS 2, Hiragino Sans and the system stack × xs/sm/md/lg, their ink centres lie 0.21em apart. So the COMPONENT classifies the glyph string it was handed — the only layer that can — and emits `data-ink`; these are the per-band constants it selects between. The band is the (top edge, bottom edge) of the UNION of the string's ink, so `\"gX\"` is cap→descender, not `\"g\"`'s x-height→descender. Every CJK and kana form counts as a cap-height top: the em box overshoots the cap band above the baseline and below it by about the same amount, so it centres where a capital does (measured -0.001em against -0.008em). MEASURED — worst |ink offset| from the box centre over 4 faces × 4 tiers × the sample listed: cap-baseline -0.01em 1.38px G GX TH A 8 b kt J 神 あ ン ゴ 神A Aあ cap-descender -0.09em 1.25px gX Gy Bp hy 神g gあ 東y x-baseline -0.11em 0.88px x o xo ae s x-descender -0.21em 0.94px g y p q go Worst case 1.38px, against 2.25px for the best glyph-blind rule (`text-box: trim-both ex alphabetic`) and 3.94px untreated, on that same sample. The residual is within-band variation — kana do not all fill the em box (ゴ sits 0.04em above 神) — plus the half-pixel the browser snaps a line box by; no classifier can remove either."
   },
   {
     "name": "--logo-glyph-cap-descender-optical-offset",
     "value": "-0.09em",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-x-baseline-optical-offset",
     "value": "-0.11em",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-x-descender-optical-offset",
     "value": "-0.21em",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-optical-offset",
     "value": "initial",
-    "description": "The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a * glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose). * Set once and it PINS every band to that value. * * Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at * the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md). * Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the * band the glyph was classified into, or 0 when it was not classified."
+    "description": "The escape hatch, for a mark none of the four bands fits — a face with unusual metrics, or a glyph the classifier cannot see (an inline `<svg>`, which is left unclassified on purpose). Set once and it PINS every band to that value. Declared `initial` (guaranteed-invalid) so it is inert by default and the per-band default at the CALL SITE wins — the same pattern as --logo-godx-size (docs/TOKENS.md). Documented default: --logo-glyph-optical-offset = the --logo-glyph-*-optical-offset for the band the glyph was classified into, or 0 when it was not classified."
   },
   {
     "name": "--logo-glyph-fullwidth-width",
     "value": "1",
-    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── * `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing * related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a * whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two * kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never * showed this because a Latin word has no interior break opportunity: it silently spilled * instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four * tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already * inside the gh#370 sample — 神A and Aあ on Hiragino at xs. * * THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance * to make room for; the COMPONENT can. It counts the string's characters in four classes and * emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count * / --logo-glyph-space-count (pure, no measurement, * no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance * and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose * advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today * moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. * * EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an * advance sets the mark a little smaller than it had to be; under-stating it puts the mark * OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut * carried one constant for every proportional form and dropped white space from the count, and * both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). * * THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled * face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant * bounds its class in isolation\" — see the recorded slack below. * * MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, * never a canvas `fillText`: that substitutes a fallback face for a webfont): * full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 * em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans * other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · * X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 * collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · * system 0.1978 * * `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at * 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every * other Latin mark to fit. With them out of the way the narrow class stays at 0.81. * * RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, * above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at * its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to * 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that * a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin * from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than * inheriting this conclusion. * * --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. * 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each * side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, * against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not * a target: it only binds on the marks that do not fit."
+    "description": "── Fitting the glyph to the mark box (`<Logo glyph=\"東京\" size=\"xs\" />`, gh#377) ─────────── `.ui-logo` is a fixed square and the glyph was set at a fixed per-tier font-size, so nothing related the string's INLINE ADVANCE to the box it had to fit in. A full-width form occupies a whole em, and CJK offers a line-break opportunity between EVERY pair of ideographs — so two kanji in the 20px `xs` box did not overflow, they WRAPPED into a two-line mark. Latin never showed this because a Latin word has no interior break opportunity: it silently spilled instead. Measured across Noto Sans JP / M PLUS 2 / Hiragino Sans / the system stack × the four tiers, the wrap hit 東京 神戸 ゴジ 株式 at xs and sm, 東京都 at every tier, and — already inside the gh#370 sample — 神A and Aあ on Hiragino at xs. THE FIX IS THE SAME SHAPE AS gh#370. CSS cannot see the string, so it cannot know what advance to make room for; the COMPONENT can. It counts the string's characters in four classes and emits them as --logo-glyph-fullwidth-count / --logo-glyph-wide-count / --logo-glyph-narrow-count / --logo-glyph-space-count (pure, no measurement, no layout read, SSR-safe). styles/logo-layout.css turns those counts into a modelled advance and caps the glyph's font-size at the size that advance fits in — `min()`, so a mark whose advance already fits keeps its tier font-size EXACTLY and nothing that renders correctly today moves. `white-space: nowrap` sits under it as the invariant: a brand mark is one line. EACH CONSTANT IS AN UPPER BOUND OF ITS CLASS — that is the entire contract. Over-stating an advance sets the mark a little smaller than it had to be; under-stating it puts the mark OUTSIDE the box, which is the defect this whole mechanism exists to remove. The first cut carried one constant for every proportional form and dropped white space from the count, and both under-states shipped as spill (`WW` 3.50px, `東 京` 2.63px — see below). THE INVARIANT, stated as the gate asserts it: for every mark, at every tier, on every bundled face, the FITTED font-size times the PAINTED advance stays inside the box. Not \"each constant bounds its class in isolation\" — see the recorded slack below. MEASURED advance in em, per character, max over the four faces (a DOM advance read at 200px, never a canvas `fillText`: that substitutes a fallback face for a webfont): full-width form 1 ← 1.000 神 · 東 · あ · ゴ · 株 · 「 · 、 · Ｇ, every one 1.0000 em-wide Latin 1.06 ← 1.058 W 1.0580 · m 1.0100 · M 0.9870 — all Hiragino Sans other Latin/digit 0.81 ← 0.863 w 0.8630 · O/Q 0.8380 · U 0.8291 · H 0.8260 · N 0.8210 · X 0.8110 · 8 0.7120 · k/t 0.5435 · l 0.3150 collapsible space 0.34 ← 0.333 Hiragino 0.3330 · M PLUS 2 0.2730 · Noto 0.2270 · system 0.1978 `M W m` get a class of their own because they REACH the full-width em — `W` passes it, at 1.058em WIDER than a kanji — so no proportional constant holds them without shrinking every other Latin mark to fit. With them out of the way the narrow class stays at 0.81. RECORDED SLACK, not an oversight: six forms (w · O · Q · U · H · N · X) measure 0.811–0.863em, above the 0.81 constant, by at most 0.053em. Measured, none of them reaches the box edge at its tier's font-size — `ww` at xs paints 19.2px of a 20px box — so raising the constant to 0.87 would shrink 120 of 480 measured cells to buy nothing, against this file's own rule that a mark which already fits keeps its tier font-size to the byte. The gate re-derives the margin from the shipped tokens, so a change to the type scale or the box ramp re-tests it rather than inheriting this conclusion. --logo-glyph-fit-max-width is the share of the box a FITTED glyph's modelled advance may take. 0.95 leaves 0.50px (xs) / 0.60px (sm) / 0.70px (md) of fill clear of the modelled ink on each side of a two-kanji mark — measured on the paint, 0.50–1.50px at xs across the four faces, against the 0.5px minimum the library already ships (神A on M PLUS 2 at xs). It is a CAP, not a target: it only binds on the marks that do not fit."
   },
   {
     "name": "--logo-glyph-wide-width",
     "value": "1.06",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-narrow-width",
     "value": "0.81",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-space-width",
     "value": "0.34",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-glyph-fit-max-width",
     "value": "0.95",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-godx-size-xs",
     "value": "1.5rem",
-    "description": "── Identity-mark box (`<Logo mark=\"godx\" />`) ────────────────────────────────────────────── * The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public * prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already * scaled its wordmark per tier, so a fixed mark broke the mark↔wordmark proportion at * `size=\"lg\"` (gh#163 follow-up). The godx artwork is a horizontal capsule inside a square * viewBox, so it carries less optical weight than the fully-filled glyph box: each tier sits * +0.25rem above its --logo-size-* sibling. `md` is 2rem — the historical fixed value — so * every existing default-size identity surface renders byte-identically. * * --logo-godx-size is the PIN: declared `initial` (guaranteed-invalid) here with the per-tier * default at the CALL SITE (logo-layout.css), so it is inert by default and a service that * sets it once freezes the mark at that box on EVERY tier — the same call-site pattern the * role-mirror colour knobs use (docs/TOKENS.md). Retune a single tier via --logo-godx-size-*. * Documented default: --logo-godx-size = unset (tiers apply)."
+    "description": "── Identity-mark box (`<Logo mark=\"godx\" />`) ────────────────────────────────────────────── The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already scaled its wordmark per tier, so a fixed mark broke the mark↔wordmark proportion at `size=\"lg\"` (gh#163 follow-up). The godx artwork is a horizontal capsule inside a square viewBox, so it carries less optical weight than the fully-filled glyph box: each tier sits +0.25rem above its --logo-size-* sibling. `md` is 2rem — the historical fixed value — so every existing default-size identity surface renders byte-identically. --logo-godx-size is the PIN: declared `initial` (guaranteed-invalid) here with the per-tier default at the CALL SITE (logo-layout.css), so it is inert by default and a service that sets it once freezes the mark at that box on EVERY tier — the same call-site pattern the role-mirror colour knobs use (docs/TOKENS.md). Retune a single tier via --logo-godx-size-*. Documented default: --logo-godx-size = unset (tiers apply)."
   },
   {
     "name": "--logo-godx-size-sm",
     "value": "1.75rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-godx-size-md",
     "value": "2rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-godx-size-lg",
     "value": "2.5rem",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-godx-size",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-gap",
     "value": "var(--space-2)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── The readable product name set beside the mark. The package ships NO wordmark artwork: the wordmark is typeset in the design-system display face, so a service retunes face, weight, tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and every other lockup reads --foreground. Documented defaults: --logo-wordmark-font-family = var(--font-family-display); --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-size-xs",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-size-sm",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-size-md",
     "value": "var(--font-size-base)",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-size-lg",
     "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-weight",
     "value": "700",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-letter-spacing",
     "value": "-0.01em",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-font-family",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-wordmark-color",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-divider-width",
     "value": "var(--stroke-hairline)",
-    "description": "── The PRODUCT SUFFIX (`<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`, gh#649) ────────── * \"GoDX | ID\" — the brand lockup followed by a rule and the name of ONE product. Later also * \"GoDX | Console\", \"GoDX | Admin\", and each of those localized. * * WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over \"GoDX | ID\" as a single flattened * lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`), * so shipping it would put a SECOND master next to the one above — different box, different * gradients, its own `id=\"title\"`/`id=\"desc\"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6` * rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives * the next product: a drawn suffix means one more master, one more release and one more dark * variant for every name that is ever added, and it cannot be localized at all. So the suffix is * TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The * brand's own construction (the G, the arrow, the \"GoDX\" logotype, the golden ratio between * them) stays untouched inside the master; a PRODUCT NAME is not part of that construction. * * SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline, * in the same lockup, at the same optical level as the wordmark, so it reads * --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing * rather than growing a parallel ramp a service would then have to keep in step. Only the two * knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is * set in UI ink (--foreground) at a lighter weight, and \"GoDX\" stays the dominant word. * * THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as * tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px * against a 24 / 28 / 32 / 40px lockup box. * * ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the * shipped tokens: * light #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1 * the kit's hardcoded rule #c5c8d6 → 1.64:1 (ΔRGB ≤ 11, no dark counterpart) * --border (the table-grid hairline) → 1.15:1 (its own note above records this) * dark #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1 * So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal * — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already * flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured * topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name. * * ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md). * Documented defaults: * --logo-divider-color = var(--logo-godx-ink-color) * --logo-product-suffix-color = hsl(var(--foreground))"
+    "description": "── The PRODUCT SUFFIX (`<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`, gh#649) ────────── \"GoDX | ID\" — the brand lockup followed by a rule and the name of ONE product. Later also \"GoDX | Console\", \"GoDX | Admin\", and each of those localized. WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over \"GoDX | ID\" as a single flattened lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`), so shipping it would put a SECOND master next to the one above — different box, different gradients, its own `id=\"title\"`/`id=\"desc\"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6` rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives the next product: a drawn suffix means one more master, one more release and one more dark variant for every name that is ever added, and it cannot be localized at all. So the suffix is TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The brand's own construction (the G, the arrow, the \"GoDX\" logotype, the golden ratio between them) stays untouched inside the master; a PRODUCT NAME is not part of that construction. SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline, in the same lockup, at the same optical level as the wordmark, so it reads --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing rather than growing a parallel ramp a service would then have to keep in step. Only the two knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is set in UI ink (--foreground) at a lighter weight, and \"GoDX\" stays the dominant word. THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px against a 24 / 28 / 32 / 40px lockup box. ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the shipped tokens: light #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1 the kit's hardcoded rule #c5c8d6 → 1.64:1 (ΔRGB ≤ 11, no dark counterpart) --border (the table-grid hairline) → 1.15:1 (its own note above records this) dark #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1 So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name. ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md). Documented defaults: --logo-divider-color = var(--logo-godx-ink-color) --logo-product-suffix-color = hsl(var(--foreground))"
   },
   {
     "name": "--logo-divider-height",
     "value": "1em",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-divider-alpha",
     "value": "0.25",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-divider-color",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-product-suffix-gap",
     "value": "var(--space-2)",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-product-suffix-font-weight",
     "value": "500",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-product-suffix-color",
     "value": "initial",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
     "name": "--logo-identity-foreground",
@@ -4841,22 +4841,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--marquee-gap-inline",
     "value": "var(--space-inline-lg)",
-    "description": "Space between items inside one copy AND between copies — they are the same rhythm, so they * are one knob. The trailing gap is painted as the copy's own `padding-inline-end`, which is * what makes the seam between two copies indistinguishable from the seam between two items. * * The `gap` prop overrides it per instance; this is the resting value a service sets once."
+    "description": "Space between items inside one copy AND between copies — they are the same rhythm, so they are one knob. The trailing gap is painted as the copy's own `padding-inline-end`, which is what makes the seam between two copies indistinguishable from the seam between two items. The `gap` prop overrides it per instance; this is the resting value a service sets once."
   },
   {
     "name": "--marquee-mask-width",
     "value": "var(--space-10)",
-    "description": "Width of the fade at each edge under `fade`. A MASK, so it reveals whatever the surface * behind it is — the prior art paints an opaque `gradientColor` (default \"white\"), which is a * white smear on a dark theme."
+    "description": "Width of the fade at each edge under `fade`. A MASK, so it reveals whatever the surface behind it is — the prior art paints an opaque `gradientColor` (default \"white\"), which is a white smear on a dark theme."
   },
   {
     "name": "--masonry-gap-inline",
     "value": "0px",
-    "description": "Resting spacing between tiles, per axis, when the `gap` prop is omitted. Ant Design's * `gutter` defaults to `0` and this ports that default exactly — a service that wants every * masonry in the product to breathe sets these two once in its theme.css, and a per-instance * `gap` still wins. * * The packer READS the resolved `row-gap` back off the container, so this token (or the `gap` * prop that overrides it) is the single source for both the painted spacing and the arithmetic. * There is no second number in the TypeScript."
+    "description": "Resting spacing between tiles, per axis, when the `gap` prop is omitted. Ant Design's `gutter` defaults to `0` and this ports that default exactly — a service that wants every masonry in the product to breathe sets these two once in its theme.css, and a per-instance `gap` still wins. The packer READS the resolved `row-gap` back off the container, so this token (or the `gap` prop that overrides it) is the single source for both the painted spacing and the arithmetic. There is no second number in the TypeScript."
   },
   {
     "name": "--masonry-gap-block",
     "value": "0px",
-    "description": "Masonry component tokens — Ant Design `Masonry` (6.0.0): tiles of unequal height packed into * columns. * * antd retunes this surface through `classNames` / `styles` semantic maps. Those are deliberately * not ported (cardinal rules #44/#45, docs/DESIGN-AUTHORITY.md — \"a knob that only a fork could * reach is not parity either\"); this file is the answer instead. * * TIMING IS NOT HERE. The re-flow and the appear fade read `--duration-base` / `--ease-standard` * from the motion tier (src/tokens/foundation.css), because the component-token name shape * (`--{component}-{part}-{property}`) has no property word for a duration and a second copy of the * motion scale is how the two drift apart — the same note `float-button.css` and `activity.css` * carry. * * The COLUMN COUNT is not a token. It is `columns`, a prop, because a masonry's column count is * the call site's decision about that collection and not a global design knob."
+    "description": "Masonry component tokens — Ant Design `Masonry` (6.0.0): tiles of unequal height packed into columns. antd retunes this surface through `classNames` / `styles` semantic maps. Those are deliberately not ported (cardinal rules #44/#45, docs/DESIGN-AUTHORITY.md — \"a knob that only a fork could reach is not parity either\"); this file is the answer instead. TIMING IS NOT HERE. The re-flow and the appear fade read `--duration-base` / `--ease-standard` from the motion tier (src/tokens/foundation.css), because the component-token name shape (`--{component}-{part}-{property}`) has no property word for a duration and a second copy of the motion scale is how the two drift apart — the same note `float-button.css` and `activity.css` carry. The COLUMN COUNT is not a token. It is `columns`, a prop, because a masonry's column count is the call site's decision about that collection and not a global design knob."
   },
   {
     "name": "--mega-menu-bar-gap",
@@ -4866,72 +4866,72 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--mega-menu-trigger-height",
     "value": "var(--control-height)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-padding-x",
     "value": "var(--space-3)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-gap",
     "value": "var(--space-inline-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-radius",
     "value": "var(--radius-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-foreground",
     "value": "hsl(var(--foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-background",
     "value": "transparent",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-hover-background",
     "value": "initial",
-    "description": "ROLE-MIRROR KNOBS — `initial`, NOT `hsl(var(--accent))` (gh#687, docs/TOKENS.md). * A tier that binds to a tenant-scoped role computes ONCE at `:root` and every descendant * inherits that computed colour, so a `[data-tenant]` block redefining `--accent` would leave * this bar on the root brand while its neighbours followed. The knob stays empty here and the * role is the FALLBACK at the call site in styles/navigation-layout.css, which re-resolves per * scope. Documented defaults: hover/open = accent on accent-foreground, current = primary."
+    "description": "ROLE-MIRROR KNOBS — `initial`, NOT `hsl(var(--accent))` (gh#687, docs/TOKENS.md). A tier that binds to a tenant-scoped role computes ONCE at `:root` and every descendant inherits that computed colour, so a `[data-tenant]` block redefining `--accent` would leave this bar on the root brand while its neighbours followed. The knob stays empty here and the role is the FALLBACK at the call site in styles/navigation-layout.css, which re-resolves per scope. Documented defaults: hover/open = accent on accent-foreground, current = primary."
   },
   {
     "name": "--mega-menu-trigger-hover-foreground",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-open-background",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-open-foreground",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-current-foreground",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-trigger-disabled-alpha",
     "value": "0.5",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-expand-icon-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-background",
@@ -4941,47 +4941,47 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--mega-menu-panel-foreground",
     "value": "hsl(var(--popover-foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-border-color",
     "value": "hsl(var(--border))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-border-width",
     "value": "1px",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-radius",
     "value": "var(--radius-md)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-padding",
     "value": "var(--space-6)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-shadow",
     "value": "var(--shadow-md)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-offset",
     "value": "0px",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-max-height",
     "value": "70vh",
-    "description": "A forty-link panel must not run off the bottom of a laptop; past this it scrolls in the * block axis and nothing is unreachable."
+    "description": "A forty-link panel must not run off the bottom of a laptop; past this it scrolls in the block axis and nothing is unreachable."
   },
   {
     "name": "--mega-menu-panel-translate",
     "value": "var(--space-1)",
-    "description": "Travel of the open animation. Zeroed under prefers-reduced-motion, where the panel SNAPS * into place — it is never removed, only un-animated."
+    "description": "Travel of the open animation. Zeroed under prefers-reduced-motion, where the panel SNAPS into place — it is never removed, only un-animated."
   },
   {
     "name": "--mega-menu-groups-gap",
@@ -4991,37 +4991,37 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--mega-menu-group-gap",
     "value": "var(--space-inline-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-group-min-width",
     "value": "12rem",
-    "description": "A column may not get narrower than this before the grid drops to fewer columns; this is what * keeps a 40-link panel readable instead of pouring it into one ribbon."
+    "description": "A column may not get narrower than this before the grid drops to fewer columns; this is what keeps a 40-link panel readable instead of pouring it into one ribbon."
   },
   {
     "name": "--mega-menu-group-label-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-group-label-foreground",
     "value": "hsl(var(--muted-foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-group-description-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-group-description-foreground",
     "value": "hsl(var(--muted-foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-group-icon-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-gap",
@@ -5031,57 +5031,57 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--mega-menu-link-padding-x",
     "value": "var(--space-2)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-padding-y",
     "value": "var(--space-2)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-radius",
     "value": "var(--radius-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-foreground",
     "value": "hsl(var(--foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-hover-background",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-hover-foreground",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-current-foreground",
     "value": "initial",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-description-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-description-foreground",
     "value": "hsl(var(--muted-foreground))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-icon-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-link-min-height",
@@ -5091,12 +5091,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--mega-menu-panel-footer-gap",
     "value": "var(--space-4)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--mega-menu-panel-footer-border-color",
     "value": "hsl(var(--border))",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. * * Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a * literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the * `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — * a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step * is density-aware."
+    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
   },
   {
     "name": "--pagination-gap",
@@ -5111,12 +5111,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--pagination-size-width",
     "value": "5.5rem",
-    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so * localized labels (ja 100/ページ) never clip; this token only keeps short labels from * collapsing below the control rhythm."
+    "description": "Size-changer trigger MIN width (gh#286) - the trigger sizes to its content (w-max) so localized labels (ja 100/ページ) never clip; this token only keeps short labels from collapsing below the control rhythm."
   },
   {
     "name": "--pagination-page-padding-x",
     "value": "var(--space-1)",
-    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this * only takes effect once a number outgrows that box. Deliberately --space-1 rather than * --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came * to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
+    "description": "Inline padding on a page button. The button keeps min-width: var(--control-height), so this only takes effect once a number outgrows that box. Deliberately --space-1 rather than --space-2: at the wider value a two-digit label (14.8px of text + 2 * 8px + 2px border) came to 32.8px and pushed the common 1–2 digit buttons off square by 0.8px."
   },
   {
     "name": "--pagination-total-font-size",
@@ -5126,17 +5126,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--pagination-icon-size",
     "value": "var(--control-icon-size)",
-    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" * Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component * pinned them larger with a literal `size-4` class instead, because in simple mode the chevron * IS the control — there is no label beside it to carry the affordance. The knob keeps that * deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now * follows density like every other control glyph instead of staying a flat 1rem."
+    "description": "Chevron glyph inside the `simple` form's Prev/Next Buttons (#319). Those are size=\"sm\" Buttons, so `.ui-button--sm svg` would draw them at --control-icon-size-sm; the component pinned them larger with a literal `size-4` class instead, because in simple mode the chevron IS the control — there is no label beside it to carry the affordance. The knob keeps that deliberate override themeable (rule #45) and tracks the default control-icon tier, so it now follows density like every other control glyph instead of staying a flat 1rem."
   },
   {
     "name": "--pagination-control-height-sm",
     "value": "initial",
-    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page * buttons, the size-changer trigger and the quick-jumper field shrink together instead of each * carrying its own tier — exactly how a service would retune the whole footer. * Declared `initial` (gh#705): the documented default is `var(--control-height-sm)`, resolved at * the bar, so a small pager inside a density scope (a compact DataTable, whose toolbar Buttons * are 25.76px) sits on the same step as its neighbours instead of a frozen 28px band."
+    "description": "Ant Design `size=\"small\"`. Retuned as ONE local --control-height on the bar, so the page buttons, the size-changer trigger and the quick-jumper field shrink together instead of each carrying its own tier — exactly how a service would retune the whole footer. Declared `initial` (gh#705): the documented default is `var(--control-height-sm)`, resolved at the bar, so a small pager inside a density scope (a compact DataTable, whose toolbar Buttons are 25.76px) sits on the same step as its neighbours instead of a frozen 28px band."
   },
   {
     "name": "--pagination-jumper-gap",
     "value": "var(--space-inline-xs)",
-    "description": "Ant Design `showQuickJumper`. The field is sized to a page NUMBER, not to a sentence, so it * gets its own width rather than the shared control measure."
+    "description": "Ant Design `showQuickJumper`. The field is sized to a page NUMBER, not to a sentence, so it gets its own width rather than the shared control measure."
   },
   {
     "name": "--pagination-jumper-width",
@@ -5196,7 +5196,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-inline-index-font-weight",
     "value": "var(--font-weight-bold)",
-    "description": "Inline-step emphasis (gh#12). The step number's weight and tint are separate knobs so a * service can express progression the canonical way — an accent TINT at normal weight — instead * of the original bold. --steps-inline-index-color / --steps-inline-separator-color are * role-mirror knobs (docs/TOKENS.md): `initial` so their defaults (the inherited step colour and * the --muted-foreground role) resolve at the CALL SITE and a scoped [data-tenant]/.dark * override still reaches them. Defaults reproduce today's row byte for byte."
+    "description": "Inline-step emphasis (gh#12). The step number's weight and tint are separate knobs so a service can express progression the canonical way — an accent TINT at normal weight — instead of the original bold. --steps-inline-index-color / --steps-inline-separator-color are role-mirror knobs (docs/TOKENS.md): `initial` so their defaults (the inherited step colour and the --muted-foreground role) resolve at the CALL SITE and a scoped [data-tenant]/.dark override still reaches them. Defaults reproduce today's row byte for byte."
   },
   {
     "name": "--steps-inline-index-color",
@@ -5211,7 +5211,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-setting-picker-compact-control-height",
     "value": "var(--control-height-sm)",
-    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an auth/legal footer, where the square icon-only default reads as a stray button and the full labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
   },
   {
     "name": "--app-setting-picker-compact-padding-x",
@@ -5236,7 +5236,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--breadcrumb-menu-trigger-gap",
     "value": "var(--space-inline-xs)",
-    "description": "Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is * the segment's own text plus a disclosure chevron, so it only needs the gap between them."
+    "description": "Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is the segment's own text plus a disclosure chevron, so it only needs the gap between them."
   },
   {
     "name": "--menu-shortcut-font-size",
@@ -5256,12 +5256,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-placement-responsive-breakpoint-width",
     "value": "48rem",
-    "description": "Width at or below which `tabPlacement=\"start\"`/`\"end\"` folds to `top`/`bottom` (gh#502) — a * vertical strip and its panel share one inline axis and a phone has room for one of them. Same * line `--sheet-responsive-breakpoint-width` draws; `0px` (which no viewport matches) turns the * fold off. Read in JS (src/lib/breakpoint-token.ts) because the fold also swaps which arrow keys * move the roving focus — see the note on `foldVerticalPlacement` in navigation/tabs.tsx."
+    "description": "Width at or below which `tabPlacement=\"start\"`/`\"end\"` folds to `top`/`bottom` (gh#502) — a vertical strip and its panel share one inline axis and a phone has room for one of them. Same line `--sheet-responsive-breakpoint-width` draws; `0px` (which no viewport matches) turns the fold off. Read in JS (src/lib/breakpoint-token.ts) because the fold also swaps which arrow keys move the roving focus — see the note on `foldVerticalPlacement` in navigation/tabs.tsx."
   },
   {
     "name": "--tabs-indicator-background",
     "value": "initial",
-    "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
+    "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, rule #44); a service raises the offset to park the bar on a thicker strip hairline."
   },
   {
     "name": "--tabs-indicator-size",
@@ -5276,7 +5276,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-indicator-inset",
     "value": "0px",
-    "description": "Ant Design `indicator.size` — the bar's LENGTH along the strip, as the inset it leaves at EACH * end of the trigger. `0px` = antd's own default (`getLength` returns `origin`, the tab's whole * offset width), so the default paint does not move. `indicator={{ size: \"label\" }}` on the * component repoints this at the trigger's own inline/block padding, which is what * `size: (origin) => origin - 2 * padding` is written to produce upstream * (@rc-component/tabs src/hooks/useIndicator.ts)."
+    "description": "Ant Design `indicator.size` — the bar's LENGTH along the strip, as the inset it leaves at EACH end of the trigger. `0px` = antd's own default (`getLength` returns `origin`, the tab's whole offset width), so the default paint does not move. `indicator={{ size: \"label\" }}` on the component repoints this at the trigger's own inline/block padding, which is what `size: (origin) => origin - 2 * padding` is written to produce upstream (@rc-component/tabs src/hooks/useIndicator.ts)."
   },
   {
     "name": "--tabs-root-gap",
@@ -5286,22 +5286,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-list-line-space-inset",
     "value": "0px",
-    "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is * a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to * give the rail breathing room above its hairline."
+    "description": "Inset of the `line` strip. The default/pill strip keeps its own padding box; the line strip is a flat underlined rail, so its default is the quietest value — none (rule #44). Raise it to give the rail breathing room above its hairline."
   },
   {
     "name": "--tabs-list-line-space-gap",
     "value": "0.25rem",
-    "description": "GUTTER BETWEEN TRIGGERS on the `line` strip — Ant Design's `tabBarGutter`, which is declined * as a PROP and lives here instead (cardinal rules #44/#45): a number of pixels handed straight * to the caller is not a semantic axis, it is a constant, and a constant belongs to the theme. * * A RAW rem, not `var(--space-1)` — the same rule the block above states and for the same * reason: `gap-1` reads Tailwind's own --spacing grid, which this repo does NOT density-scale, * so a --space-* default would silently widen the gutter under a comfortable density. 0.25rem * is byte for byte what `gap-1` resolved to, so no strip moves. A service that wants the gutter * to follow density points this at var(--space-1) itself. * * The other two strips already had their knob: the card strip reads * `--tabs-card-list-space-gap`, and the pill strip has no gutter at all by design (its triggers * are `flex-1` inside one padded box). This was the one strip a service could only retune by * forking the class list. scale-exempt: it must equal what the `gap-1` it replaces painted. --space-1 is 0.25rem at the default density but calc(0.25rem * var(--scaling)) under any other, and Tailwind's own --spacing grid — which this repo does not density-scale — is what the strip was drawn against. Binding it to the step would move a gutter this commit exists not to move."
+    "description": "GUTTER BETWEEN TRIGGERS on the `line` strip — Ant Design's `tabBarGutter`, which is declined as a PROP and lives here instead (cardinal rules #44/#45): a number of pixels handed straight to the caller is not a semantic axis, it is a constant, and a constant belongs to the theme. A RAW rem, not `var(--space-1)` — the same rule the block above states and for the same reason: `gap-1` reads Tailwind's own --spacing grid, which this repo does NOT density-scale, so a --space-* default would silently widen the gutter under a comfortable density. 0.25rem is byte for byte what `gap-1` resolved to, so no strip moves. A service that wants the gutter to follow density points this at var(--space-1) itself. The other two strips already had their knob: the card strip reads `--tabs-card-list-space-gap`, and the pill strip has no gutter at all by design (its triggers are `flex-1` inside one padded box). This was the one strip a service could only retune by forking the class list. scale-exempt: it must equal what the `gap-1` it replaces painted. --space-1 is 0.25rem at the default density but calc(0.25rem * var(--scaling)) under any other, and Tailwind's own --spacing grid — which this repo does not density-scale — is what the strip was drawn against. Binding it to the step would move a gutter this commit exists not to move."
   },
   {
     "name": "--tabs-list-focus-ring-space-inset",
     "value": "initial",
-    "description": "BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container * (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger * paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of * block headroom, so the entire focus ring was cut off top and bottom. The headroom has to come * from LAYOUT, not from relaxing the clip: `overflow-y: visible` beside `overflow-x: auto` * computes back to `auto` per spec (a second scroll container, not a ring), and Chromium honours * `overflow-clip-margin` only when BOTH axes are `clip`, so a single-axis clip silently drops it. * The strip therefore pads its block axis by the ring's outer reach and pulls the same amount * back with a negative block margin, so the ring paints INSIDE the scrollport while the strip * occupies exactly the space it did before. * * `initial` (the role-mirror rule in docs/TOKENS.md, not a :root binding) because the default is * derived from `--focus-ring-*`, which components and tenants DO re-scope; binding it at :root * would freeze the headroom while the ring it is sized from moved. Documented default = * `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))` — the ring's outer reach, read * at the call site so the two can never disagree."
+    "description": "BLOCK HEADROOM FOR THE FOCUS RING (gh#376). The horizontal strip is a scroll container (`overflow-x: auto` + `overflow-y: hidden`), and a block-axis clip shaves whatever a trigger paints outside its own box — measured in Chromium, the `line` strip gives its triggers 0px of block headroom, so the entire focus ring was cut off top and bottom. The headroom has to come from LAYOUT, not from relaxing the clip: `overflow-y: visible` beside `overflow-x: auto` computes back to `auto` per spec (a second scroll container, not a ring), and Chromium honours `overflow-clip-margin` only when BOTH axes are `clip`, so a single-axis clip silently drops it. The strip therefore pads its block axis by the ring's outer reach and pulls the same amount back with a negative block margin, so the ring paints INSIDE the scrollport while the strip occupies exactly the space it did before. `initial` (the role-mirror rule in docs/TOKENS.md, not a :root binding) because the default is derived from `--focus-ring-*`, which components and tenants DO re-scope; binding it at :root would freeze the headroom while the ring it is sized from moved. Documented default = `calc(var(--focus-ring-width) + var(--focus-ring-glow-width))` — the ring's outer reach, read at the call site so the two can never disagree."
   },
   {
     "name": "--tabs-trigger-line-radius",
     "value": "0px",
-    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, * never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real * column of the rail."
+    "description": "`line` trigger box. Square corners because the selected state is the token-owned ::after bar, never a pill; the hit box is wider/taller than the pill trigger so the underline spans a real column of the rail."
   },
   {
     "name": "--tabs-trigger-line-padding-x",
@@ -5316,7 +5316,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-trigger-height-sm",
     "value": "var(--band-height-sm)",
-    "description": "TABS SIZE TIERS — Ant Design's `size` (`small`/`middle`/`large`) expressed as this library's * own control bands, so a tab strip and the Buttons beside it land on the same rhythm instead of * on antd's 24/32/40 ladder. `md` reproduces today's trigger exactly: `--band-height-md` is the * default control band and `--font-size-base` is what the `text-sm` step already resolved to."
+    "description": "TABS SIZE TIERS — Ant Design's `size` (`small`/`middle`/`large`) expressed as this library's own control bands, so a tab strip and the Buttons beside it land on the same rhythm instead of on antd's 24/32/40 ladder. `md` reproduces today's trigger exactly: `--band-height-md` is the default control band and `--font-size-base` is what the `text-sm` step already resolved to."
   },
   {
     "name": "--tabs-trigger-height-md",
@@ -5361,7 +5361,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-card-list-radius",
     "value": "0px",
-    "description": "TABS CARD FACE (`variant=\"card\"` / `\"editable-card\"`). The strip loses the pill container — * transparent, no inset, no radius — and gains a rail its tabs sit on; each tab becomes a boxed * face rounded on the leading block edge only, and the ACTIVE one drops its block-end edge so it * reads as joined to the panel. `--tabs-card-background` is a role-mirror knob (docs/TOKENS.md): * `initial` so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant] or * .dark theme instead of freezing at :root."
+    "description": "TABS CARD FACE (`variant=\"card\"` / `\"editable-card\"`). The strip loses the pill container — transparent, no inset, no radius — and gains a rail its tabs sit on; each tab becomes a boxed face rounded on the leading block edge only, and the ACTIVE one drops its block-end edge so it reads as joined to the panel. `--tabs-card-background` is a role-mirror knob (docs/TOKENS.md): `initial` so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant] or .dark theme instead of freezing at :root."
   },
   {
     "name": "--tabs-card-list-space-inset",
@@ -5391,7 +5391,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-panel-background",
     "value": "initial",
-    "description": "TABS JOINED BODY (`bodied`, gh#762). The card strip alone is half an object: antd's active * face repaints the edge FACING the panel in the surface colour, which only reads as \"opened * into\" when there IS a surface under it — and the package shipped no such body, so every * consumer picked a box and every box was wrong (measured on 28.0.0: `<Card>` 8px gap + a second * 1px border at a 9.7px radius, `<Card variant=\"borderless\">` 8px gap, no box 8px gap). * * `--tabs-panel-background` is a role-mirror knob (docs/TOKENS.md): `initial` so the * --background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. * It is read BOTH by the body and by the active card face's merged edge, so the two can never * disagree — a theme that retints the body retints the tab that opens into it. * * The radius mirrors the tab's own (`--tabs-card-radius`), because the body and the faces are * two halves of one outline; the border width mirrors the rail's, for the same reason. default = var(--background) at the call site"
+    "description": "TABS JOINED BODY (`bodied`, gh#762). The card strip alone is half an object: antd's active face repaints the edge FACING the panel in the surface colour, which only reads as \"opened into\" when there IS a surface under it — and the package shipped no such body, so every consumer picked a box and every box was wrong (measured on 28.0.0: `<Card>` 8px gap + a second 1px border at a 9.7px radius, `<Card variant=\"borderless\">` 8px gap, no box 8px gap). `--tabs-panel-background` is a role-mirror knob (docs/TOKENS.md): `initial` so the --background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. It is read BOTH by the body and by the active card face's merged edge, so the two can never disagree — a theme that retints the body retints the tab that opens into it. The radius mirrors the tab's own (`--tabs-card-radius`), because the body and the faces are two halves of one outline; the border width mirrors the rail's, for the same reason. default = var(--background) at the call site"
   },
   {
     "name": "--tabs-panel-border-width",
@@ -5411,7 +5411,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-count-min-width",
     "value": "var(--space-4)",
-    "description": "TAB COUNTER PILL (`TabItemProp.count`, gh#762) — the SAME counter Button and Toggle already * draw, so 「未対応 12」 on a tab and on a filter chip are one thing at one size. Values mirror * `--toggle-count-*` verbatim; the two tints are role-mirror knobs (`initial` + a call-site * fallback) so a scoped theme re-resolves them."
+    "description": "TAB COUNTER PILL (`TabItemProp.count`, gh#762) — the SAME counter Button and Toggle already draw, so 「未対応 12」 on a tab and on a filter chip are one thing at one size. Values mirror `--toggle-count-*` verbatim; the two tints are role-mirror knobs (`initial` + a call-site fallback) so a scoped theme re-resolves them."
   },
   {
     "name": "--tabs-count-space-inline",
@@ -5441,7 +5441,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-count-card-background",
     "value": "initial",
-    "description": "…and on a CARD tab, whose own resting fill is already `--muted`, the pill would land on its * own colour (measured 1.00:1 — invisible; the gh#602 failure on a third control). It takes the * page surface there, exactly as `.ui-toggle-soft .ui-toggle-count` does. default = hsl(var(--background)) at the call site"
+    "description": "…and on a CARD tab, whose own resting fill is already `--muted`, the pill would land on its own colour (measured 1.00:1 — invisible; the gh#602 failure on a third control). It takes the page surface there, exactly as `.ui-toggle-soft .ui-toggle-count` does. default = hsl(var(--background)) at the call site"
   },
   {
     "name": "--tabs-count-color",
@@ -5466,7 +5466,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-bar-gap",
     "value": "var(--space-2)",
-    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the * `extra` (antd `tabBarExtraContent`) slots."
+    "description": "TABS BAR ROW — the one inline run that holds the strip, the `editable-card` add button and the `extra` (antd `tabBarExtraContent`) slots."
   },
   {
     "name": "--tabs-extra-gap",
@@ -5476,7 +5476,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tabs-overflow-size",
     "value": "var(--band-height-md)",
-    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as * the add button so the two affordances that flank the strip land on one rhythm; unlike the add * button it draws no card face, because it is bar chrome rather than a tab."
+    "description": "OVERFLOW MENU TRIGGER (`overflow=\"menu\"`, antd `more`). Sized off the same control band as the add button so the two affordances that flank the strip land on one rhythm; unlike the add button it draws no card face, because it is bar chrome rather than a tab."
   },
   {
     "name": "--tabs-overflow-radius",
@@ -5531,7 +5531,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-item-hover-background",
     "value": "initial",
-    "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
+    "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root). Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
   {
     "name": "--menu-item-hover-foreground",
@@ -5541,22 +5541,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--filter-bar-sticky-offset",
     "value": "0px",
-    "description": "Sticky offset for the pinned filter strip (Toolbar `sticky`, #197). Default 0 (chrome, * rule #44); raise it so the strip parks below a fixed topbar."
+    "description": "Sticky offset for the pinned filter strip (Toolbar `sticky`, #197). Default 0 (chrome, rule #44); raise it so the strip parks below a fixed topbar."
   },
   {
     "name": "--filter-bar-sticky-background",
     "value": "initial",
-    "description": "Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial` * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme."
+    "description": "Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial` so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme."
   },
   {
     "name": "--filter-bar-scroll-padding-y",
     "value": "var(--space-1)",
-    "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid * (0 on an overlay-scrollbar platform)."
+    "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid (0 on an overlay-scrollbar platform)."
   },
   {
     "name": "--filter-bar-search-width",
     "value": "20rem",
-    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME search width, filter width, chip rhythm and section stacking without page-local CSS. All are rule-#45 knobs: a service theme retunes them once, props/className override per instance. Below 640px the strip stacks (search/filters full-width); the widths apply from the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never overflows at 390px with long JA/EN/VI labels."
   },
   {
     "name": "--filter-bar-filter-width",
@@ -5576,7 +5576,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-item-height",
     "value": "var(--band-height-md)",
-    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was * a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once * here instead of once per surface."
+    "description": "MENU SURFACES — one row rhythm shared by DropdownMenu and Select's listbox. The row height was a literal `2rem` in the CSS and DropdownMenu had not been converted at all, so it carried the whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once here instead of once per surface."
   },
   {
     "name": "--menu-item-radius",
@@ -5601,7 +5601,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-item-inset-space-inline-start",
     "value": "var(--space-8)",
-    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so * labels stay aligned with their checked siblings."
+    "description": "Inset rows (a checkbox/radio row without its own indicator) reserve the indicator column so labels stay aligned with their checked siblings."
   },
   {
     "name": "--menu-indicator-size",
@@ -5636,7 +5636,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--menu-content-width-sm",
     "value": "12rem",
-    "description": "MENU WIDTH LADDER (gh#396) — the measures `<DropdownMenuContent width=\"sm|md|lg\">` selects. * Read ONLY when the prop is set, so an untouched menu keeps --dropdown-content-min-width above * and moves by nothing. They exist because a menu wider than its trigger — a user menu, a * project switcher, a notification panel — had exactly one mechanism left at the call site * (`className=\"min-w-56\"`), which put the width of every menu in the app beyond a theme's reach. * A regular ladder, not the three literals one app happened to write: a service that wants * 22.5rem notification panels retunes --menu-content-width-lg once."
+    "description": "MENU WIDTH LADDER (gh#396) — the measures `<DropdownMenuContent width=\"sm|md|lg\">` selects. Read ONLY when the prop is set, so an untouched menu keeps --dropdown-content-min-width above and moves by nothing. They exist because a menu wider than its trigger — a user menu, a project switcher, a notification panel — had exactly one mechanism left at the call site (`className=\"min-w-56\"`), which put the width of every menu in the app beyond a theme's reach. A regular ladder, not the three literals one app happened to write: a service that wants 22.5rem notification panels retunes --menu-content-width-lg once."
   },
   {
     "name": "--menu-content-width-md",
@@ -5651,7 +5651,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dropdown-arrow-width",
     "value": "var(--space-3)",
-    "description": "Ant Design `arrow` — the pointer at the anchored edge. Radix stamps a 10×5 svg; these two * knobs override it so the pointer scales with a service theme's menu chrome. `--dropdown-arrow- * background` is a role-mirror knob: `initial`, so --popover re-resolves at the CALL SITE."
+    "description": "Ant Design `arrow` — the pointer at the anchored edge. Radix stamps a 10×5 svg; these two knobs override it so the pointer scales with a service theme's menu chrome. `--dropdown-arrow- background` is a role-mirror knob: `initial`, so --popover re-resolves at the CALL SITE."
   },
   {
     "name": "--dropdown-arrow-height",
@@ -5676,7 +5676,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-dot-size",
     "value": "0.625rem",
-    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline * form; the marker, connector and text rhythm of the main variant were still literal on the * component (#319), so a service could not resize the dot, retighten the vertical run, or move * the horizontal connector to match its own grid."
+    "description": "STEPS — the full (non-inline) variant. `--steps-inline-*` already covers the compact inline form; the marker, connector and text rhythm of the main variant were still literal on the component (#319), so a service could not resize the dot, retighten the vertical run, or move the horizontal connector to match its own grid."
   },
   {
     "name": "--steps-dot-process-ring-width",
@@ -5736,7 +5736,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-horizontal-text-space-block-start",
     "value": "var(--space-2)",
-    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between * two markers — inset by the marker radius on each side so it never runs under a marker."
+    "description": "Horizontal run: the text sits under the marker, and the connector spans the gap between two markers — inset by the marker radius on each side so it never runs under a marker."
   },
   {
     "name": "--steps-horizontal-text-space-inline",
@@ -5756,7 +5756,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-nav-space-gap",
     "value": "var(--space-2)",
-    "description": "STEPS `navigation` (Ant Design `type=\"navigation\"`) — each step becomes a slab that points at * the next one. The rail's hairline connector is switched OFF for this type, so the join is the * chevron plus this gap; the slab tint is the same `--muted` / `--accent` pair every other quiet * surface in the library uses, so a service retunes it once at the role."
+    "description": "STEPS `navigation` (Ant Design `type=\"navigation\"`) — each step becomes a slab that points at the next one. The rail's hairline connector is switched OFF for this type, so the join is the chevron plus this gap; the slab tint is the same `--muted` / `--accent` pair every other quiet surface in the library uses, so a service retunes it once at the role."
   },
   {
     "name": "--steps-nav-space-inline",
@@ -5781,7 +5781,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--steps-progress-ring-width",
     "value": "var(--stroke-md)",
-    "description": "STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring * drawn in a padding box AROUND the existing marker, so no status face changes geometry. * `--steps-progress-track-color` is a role-mirror knob (docs/TOKENS.md): `initial`, so the * --muted default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme."
+    "description": "STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring drawn in a padding box AROUND the existing marker, so no status face changes geometry. `--steps-progress-track-color` is a role-mirror knob (docs/TOKENS.md): `initial`, so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme."
   },
   {
     "name": "--steps-progress-track-color",
@@ -5791,7 +5791,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-setting-picker-locale-width",
     "value": "10rem",
-    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest * value it can show: a timezone name is far wider than a theme name. These were literal * `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German * timezone list, a Japanese density label) could not widen just the one that overflows."
+    "description": "APP SETTING PICKER — per-kind trigger widths (#319). Each picker is sized to the longest value it can show: a timezone name is far wider than a theme name. These were literal `sm:w-*` steps in a lookup table, so a service whose locale renders longer labels (a German timezone list, a Japanese density label) could not widen just the one that overflows."
   },
   {
     "name": "--app-setting-picker-timezone-width",
@@ -5831,12 +5831,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-setting-picker-trigger-width",
     "value": "auto",
-    "description": "The width the labelled trigger actually RENDERS at — the one above that `data-kind` selected, * or `auto` when no per-kind width applies (below the breakpoint, or `compact`). The trigger * consumes this through a single `w-*` utility, because a width declared in @layer components * loses to the utilities the Select trigger emits and the eight tokens above were therefore * inert (gh#819). Set a per-kind token to retune one picker; set this one to override the axis * at a call site."
+    "description": "The width the labelled trigger actually RENDERS at — the one above that `data-kind` selected, or `auto` when no per-kind width applies (below the breakpoint, or `compact`). The trigger consumes this through a single `w-*` utility, because a width declared in @layer components loses to the utilities the Select trigger emits and the eight tokens above were therefore inert (gh#819). Set a per-kind token to retune one picker; set this one to override the axis at a call site."
   },
   {
     "name": "--app-setting-picker-width-breakpoint",
     "value": "40rem",
-    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker * dropped into a narrow topbar never stretches the bar (gh#165)."
+    "description": "Below this the trigger hugs its content instead of taking the per-kind width, so a picker dropped into a narrow topbar never stretches the bar (gh#165)."
   },
   {
     "name": "--app-setting-picker-bar-border-width",
@@ -5861,42 +5861,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--scroll-area-scrollbar-width",
     "value": "thin",
-    "description": "`thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar; * `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants. * Only `auto | thin | none` are valid — a length is not (that is the standard property's whole * bargain, and the reason `--scroll-area-bar-size` could not survive as a rem)."
+    "description": "`thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar; `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants. Only `auto | thin | none` are valid — a length is not (that is the standard property's whole bargain, and the reason `--scroll-area-bar-size` could not survive as a rem)."
   },
   {
     "name": "--scroll-area-thumb-color",
     "value": "initial",
-    "description": "Role-mirror knobs: `initial` so the defaults re-resolve at the CALL SITE under a scoped * [data-tenant] / .dark theme. Defaults = hsl(var(--border)) thumb on a transparent track."
+    "description": "Role-mirror knobs: `initial` so the defaults re-resolve at the CALL SITE under a scoped [data-tenant] / .dark theme. Defaults = hsl(var(--border)) thumb on a transparent track."
   },
   {
     "name": "--scroll-area-track-color",
     "value": "initial",
-    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). * * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a * service can retune about it is the three standard scrollbar properties below. They live here, * beside the anchoring constant, so every ScrollArea knob is in one file."
+    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a service can retune about it is the three standard scrollbar properties below. They live here, beside the anchoring constant, so every ScrollArea knob is in one file."
   },
   {
     "name": "--scroll-area-scrollbar-space",
     "value": "auto",
-    "description": "`scrollbar-gutter`: `auto` (reflow when a bar appears) | `stable` | `stable both-edges`. * Reach for `stable` where content starting to overflow must not shift the layout under the * reader."
+    "description": "`scrollbar-gutter`: `auto` (reflow when a bar appears) | `stable` | `stable both-edges`. Reach for `stable` where content starting to overflow must not shift the layout under the reader."
   },
   {
     "name": "--scroll-area-always-bar-size",
     "value": "0.625rem",
-    "description": "`scrollbar=\"always\"` geometry (gh#798). Only these two, and only for that value: the * always-on bar is DRAWN by this package via `::-webkit-scrollbar`, so unlike the platform bar * it has a size this package must name. The colours are NOT duplicated — the always-on rules * read the same `--scroll-area-thumb-color` / `-track-color` role-mirrors as the standard ones."
+    "description": "`scrollbar=\"always\"` geometry (gh#798). Only these two, and only for that value: the always-on bar is DRAWN by this package via `::-webkit-scrollbar`, so unlike the platform bar it has a size this package must name. The colours are NOT duplicated — the always-on rules read the same `--scroll-area-thumb-color` / `-track-color` role-mirrors as the standard ones."
   },
   {
     "name": "--scroll-area-always-thumb-radius",
     "value": "var(--radius-pill)",
-    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). * * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a * service can retune about it is the three standard scrollbar properties below. They live here, * beside the anchoring constant, so every ScrollArea knob is in one file."
+    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a service can retune about it is the three standard scrollbar properties below. They live here, beside the anchoring constant, so every ScrollArea knob is in one file."
   },
   {
     "name": "--scroll-area-anchor-offset",
     "value": "3rem",
-    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). * * The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) * are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a * service can retune about it is the three standard scrollbar properties below. They live here, * beside the anchoring constant, so every ScrollArea knob is in one file."
+    "description": "SCROLL AREA — the scrollbar, and the bottom-anchoring contract (gh#311). The hand-drawn rail knobs (--scroll-area-bar-size / -bar-padding / --scroll-area-thumb-radius) are GONE with the Radix rail they sized (v23): the browser draws the scrollbar now, and what a service can retune about it is the three standard scrollbar properties below. They live here, beside the anchoring constant, so every ScrollArea knob is in one file."
   },
   {
     "name": "--segmented-track-padding",
     "value": "calc(var(--space-1) / 2)",
-    "description": "track padding = the bold line width = 2px. Half the base spacing step rather than a raw length, * so it rides `--scaling` with everything else."
+    "description": "track padding = the bold line width = 2px. Half the base spacing step rather than a raw length, so it rides `--scaling` with everything else."
   },
   {
     "name": "--segmented-track-background",
@@ -5906,12 +5906,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--segmented-track-radius",
     "value": "var(--radius)",
-    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). * This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against * the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other * track-and-slab control."
+    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other track-and-slab control."
   },
   {
     "name": "--segmented-item-radius",
     "value": "var(--radius-md)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-padding-inline",
@@ -5921,12 +5921,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--segmented-xs-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row * carry the same label size. One step of the existing scale, not a new constant."
+    "description": "xs type step = the step Button xs already reads, so an xs bar and an xs Button on one row carry the same label size. One step of the existing scale, not a new constant."
   },
   {
     "name": "--segmented-xs-item-padding-inline",
     "value": "calc(var(--control-padding-x-compact) - 1px)",
-    "description": "xs item padding-inline = the SAME derivation as the md step (control padding-x − one border * width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px * around a 12.47px label a three-option bar no longer reads as dense."
+    "description": "xs item padding-inline = the SAME derivation as the md step (control padding-x − one border width), taken one rung down the control padding scale: 8 − 1 = 7 against 12 − 1 = 11. At 11px around a 12.47px label a three-option bar no longer reads as dense."
   },
   {
     "name": "--segmented-item-gap",
@@ -5941,12 +5941,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--segmented-item-hover-color",
     "value": "var(--foreground)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-selected-color",
     "value": "var(--foreground)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-hover-background",
@@ -5956,62 +5956,62 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--segmented-item-active-background",
     "value": "var(--secondary)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-selected-background",
     "value": "initial",
-    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted * off the recessed track, which is the whole affordance. default = var(--background), resolved at the call site"
+    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted off the recessed track, which is the whole affordance. default = var(--background), resolved at the call site"
   },
   {
     "name": "--segmented-item-selected-shadow",
     "value": "var(--shadow-md)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-selected-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "A SECOND SIGNAL, because the first one is nearly invisible on a light canvas (gh#843). * * The lifted-slab idea is right and the tokens express it, but measured on * /showcase/theme-customization the slab is `rgb(253,253,252)` on a `rgb(244,243,240)` track — * **1.09:1**, against the 3:1 floor WCAG 2.2 SC 1.4.11 sets for a non-text indicator. The * reporter's words were \"chọn thì đéo thấy có thay đổi gì\", and the ratio says why: selection * was carried by fill and shadow alone, and both are near-zero here. * * Weight does not depend on the canvas at all, which is the point — a 500 label reads as chosen * on white, on near-white and in dark. antd's Segmented does the same; this is not a new idea, * it is the one signal this port left out. The shadow steps `sm` → `md` alongside it so the * elevation is doing visible work rather than nominal work."
+    "description": "A SECOND SIGNAL, because the first one is nearly invisible on a light canvas (gh#843). The lifted-slab idea is right and the tokens express it, but measured on /showcase/theme-customization the slab is `rgb(253,253,252)` on a `rgb(244,243,240)` track — **1.09:1**, against the 3:1 floor WCAG 2.2 SC 1.4.11 sets for a non-text indicator. The reporter's words were \"chọn thì đéo thấy có thay đổi gì\", and the ratio says why: selection was carried by fill and shadow alone, and both are near-zero here. Weight does not depend on the canvas at all, which is the point — a 500 label reads as chosen on white, on near-white and in dark. antd's Segmented does the same; this is not a new idea, it is the one signal this port left out. The shadow steps `sm` → `md` alongside it so the elevation is doing visible work rather than nominal work."
   },
   {
     "name": "--segmented-item-selected-border-color",
     "value": "initial",
-    "description": "THE SIGNAL THAT ACTUALLY CLEARS THE FLOOR (gh#843, second pass). * * Weight above is a second signal; it is not a fix for the first one, because SC 1.4.11 is about * the NON-TEXT indicator and a font weight is text. Measured from foundation.css: * * light slab rgb(253,253,252) on track rgb(244,243,240) → 1.09:1 * dark slab rgb(25,24,21) on track rgb(49,47,43) → 1.33:1 * * Neither is fixable by moving the FILL. The slab is `--background` and the track is `--muted`; * for the pair to reach 3:1 on a near-white canvas one of them has to become a mid grey * (relative luminance ≈ 0.26, about #8a8a88), which either inverts the lifted-white-slab idea * this control shares with TabsList/TabsTrigger, or re-seeds `--muted` for the whole system — * a repaint of every recessed surface in the library to fix one control. Both are far larger * than the defect. * * So the indicator moves to a BOUNDARY, which is what SC 1.4.11 asks for and what costs one * hairline: `--input` is this palette's documented control-boundary role, already held at ≥3:1 * in both themes for exactly this purpose. Measured against both of its neighbours: * * light vs track 3.18:1 · vs slab 3.47:1 * dark vs track 3.17:1 · vs slab 4.22:1 * * It is painted as an INSET shadow next to the elevation shadow, so the selected item gains a * ring without gaining a border box — no reflow, and `--segmented-item-padding-inline` (which * already subtracts one border width) stays honest. * * `initial` + a call-site fallback, per docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\": * a `:root` binding to `var(--input)` would freeze at the root's light value and a scoped dark * region would keep the light ring. default = var(--input), resolved at the call site"
+    "description": "THE SIGNAL THAT ACTUALLY CLEARS THE FLOOR (gh#843, second pass). Weight above is a second signal; it is not a fix for the first one, because SC 1.4.11 is about the NON-TEXT indicator and a font weight is text. Measured from foundation.css: light slab rgb(253,253,252) on track rgb(244,243,240) → 1.09:1 dark slab rgb(25,24,21) on track rgb(49,47,43) → 1.33:1 Neither is fixable by moving the FILL. The slab is `--background` and the track is `--muted`; for the pair to reach 3:1 on a near-white canvas one of them has to become a mid grey (relative luminance ≈ 0.26, about #8a8a88), which either inverts the lifted-white-slab idea this control shares with TabsList/TabsTrigger, or re-seeds `--muted` for the whole system — a repaint of every recessed surface in the library to fix one control. Both are far larger than the defect. So the indicator moves to a BOUNDARY, which is what SC 1.4.11 asks for and what costs one hairline: `--input` is this palette's documented control-boundary role, already held at ≥3:1 in both themes for exactly this purpose. Measured against both of its neighbours: light vs track 3.18:1 · vs slab 3.47:1 dark vs track 3.17:1 · vs slab 4.22:1 It is painted as an INSET shadow next to the elevation shadow, so the selected item gains a ring without gaining a border box — no reflow, and `--segmented-item-padding-inline` (which already subtracts one border width) stays honest. `initial` + a call-site fallback, per docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\": a `:root` binding to `var(--input)` would freeze at the root's light value and a scoped dark region would keep the light ring. default = var(--input), resolved at the call site"
   },
   {
     "name": "--segmented-count-min-width",
     "value": "var(--button-count-min-width)",
-    "description": "Counter pill beside the label (gh#602). Geometry matches Button/Toggle count pills; colour does * not. A Badge `secondary` fill is `--muted`, which is byte-identical to * `--segmented-track-background`, so a consumer-nested Badge is 1.00:1 on unselected items. The * pill therefore wears an opaque `--primary` / `--primary-foreground` pair that clears WCAG 2.2 * SC 1.4.11 against both the recessed track (`--muted`) and the lifted slab (`--background`) in * light and dark — measured in segmented-count-contrast.test.ts. antd has no `count` on * SegmentedItemType; this knob exists because every faceted filter in the wild needs one and * nesting Badge in `label` was the only API until now."
+    "description": "Counter pill beside the label (gh#602). Geometry matches Button/Toggle count pills; colour does not. A Badge `secondary` fill is `--muted`, which is byte-identical to `--segmented-track-background`, so a consumer-nested Badge is 1.00:1 on unselected items. The pill therefore wears an opaque `--primary` / `--primary-foreground` pair that clears WCAG 2.2 SC 1.4.11 against both the recessed track (`--muted`) and the lifted slab (`--background`) in light and dark — measured in segmented-count-contrast.test.ts. antd has no `count` on SegmentedItemType; this knob exists because every faceted filter in the wild needs one and nesting Badge in `label` was the only API until now."
   },
   {
     "name": "--segmented-count-space-inline",
     "value": "var(--button-count-space-inline)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-count-font-size",
     "value": "var(--button-count-font-size)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-count-radius",
     "value": "var(--radius-pill)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-count-gap",
     "value": "var(--space-1)",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-count-background",
     "value": "initial",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-count-color",
     "value": "initial",
-    "description": "Segmented (one-of-N control) component tokens. * * EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the * role assignments come from the widely-implemented enterprise Segmented control, transcribed as * ratios rather than as pixels: * * track padding: the bold line width → 2px * track background: the page's recessed neutral * item colour: the label ink · hover / selected colour: the body ink * item hover fill: the lighter neutral · item active fill: the heavier neutral * item selected fill: the elevated surface * label height = control height − track padding × 2 → 32 − 4 = 28 * label padding-inline = control padding-x − border width → 12 − 1 = 11 * icon gap = the small margin step / 2 → 6 * * THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active * TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a * default Tabs strip read as one control family in both themes rather than two near-misses. That * matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK * with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a * literal port would invert the pairing relative to every Tabs strip on the same page. * * NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented * values for its default seed and for this system's `#0071bd` — the control is neutral by * construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css * owns. So the ports below are ROLE references (the same neutrals this system already names), * never copied hex. * * The disabled state is the ONE place this departs. The source recolours to a disabled ink and * changes nothing else; this system disables every control with the one `--disabled-opacity` knob, * and a single library-wide answer outranks a per-component one. * * The other thing NOT ported is the sliding thumb: it exists to animate between items, and the * implementations that have one remove the `-item-selected` class while it runs, which means the * selected state lives in two places at once. A static selected slab reads identically at rest and * cannot desynchronise."
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--separator-rule-size",
@@ -6021,32 +6021,32 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--separator-rule-color",
     "value": "initial",
-    "description": "Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the * CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule). * Documented default = hsl(var(--border))."
+    "description": "Rule colour. Role-mirror knob → declared `initial` so the --border default re-resolves at the CALL SITE under a scoped [data-tenant] / .dark theme (docs/TOKENS.md — the :root freeze rule). Documented default = hsl(var(--border))."
   },
   {
     "name": "--separator-label-gap",
     "value": "initial",
-    "description": "Gap between the label and each rule half. `initial` so the default re-resolves at the call * site: --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree, so a * :root binding would freeze the gap at the :root density. Documented default = var(--space-3)."
+    "description": "Gap between the label and each rule half. `initial` so the default re-resolves at the call site: --space-* is density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would freeze the gap at the :root density. Documented default = var(--space-3)."
   },
   {
     "name": "--separator-label-inset",
     "value": "initial",
-    "description": "Length of the SHORT rule half when labelAlign is `start` / `end` — the label's inset from the * inline edge (the Slack/Mattermost stream convention). It is a grid track on the INLINE axis, * so it flips with the writing direction under dir=\"rtl\" with no extra rule. `initial` for the * same density reason as the gap. Documented default = var(--space-6)."
+    "description": "Length of the SHORT rule half when labelAlign is `start` / `end` — the label's inset from the inline edge (the Slack/Mattermost stream convention). It is a grid track on the INLINE axis, so it flips with the writing direction under dir=\"rtl\" with no extra rule. `initial` for the same density reason as the gap. Documented default = var(--space-6)."
   },
   {
     "name": "--separator-label-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet * stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks * intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark * without touching the day divider."
+    "description": "Label type ramp (#46) — steps of the modular scale, never a literal. `xs` is the quiet stream/divider voice; --separator-label-line-height keeps ja/vi descenders and tone marks intact (cf. #254); --separator-label-font-weight lets a service raise an unread watermark without touching the day divider."
   },
   {
     "name": "--separator-label-line-height",
     "value": "var(--line-height-normal)",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-label-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-label-color",
@@ -6056,122 +6056,122 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--separator-tone-muted-rule-color",
     "value": "initial",
-    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule * alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and * survives forced-colors. All role-mirror → `initial`; documented defaults are the matching * semantic role. `muted` deliberately mirrors the quiet default so a service can still split the * two voices later without a breaking change."
+    "description": "Per-tone rule + label colours. `tone` re-points BOTH the rule and the label — never the rule alone — so an attention rule such as an unread watermark is not colour-only (WCAG 1.4.1) and survives forced-colors. All role-mirror → `initial`; documented defaults are the matching semantic role. `muted` deliberately mirrors the quiet default so a service can still split the two voices later without a breaking change."
   },
   {
     "name": "--separator-tone-muted-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-primary-rule-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-primary-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-success-rule-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-success-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-warning-rule-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-warning-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-destructive-rule-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-destructive-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-info-rule-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--separator-tone-info-label-color",
     "value": "initial",
-    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` * interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth * conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, * whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the * `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned * every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. * * Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding * padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
+    "description": "Separator component tokens (gh#308) — the tokenized rule AND the LABELLED rule that a `label` interrupts: a message stream's day divider, an unread \"new messages\" watermark, an auth conjunction. Before #308 the only labelled rule in the library was the auth-scoped AuthDivider, whose rule baked `height: 1px` into shell-layout.css and whose type ramp lived on the `--auth-shell-divider-*` layer — so a service that retuned its login divider silently retuned every day divider in its chat. These knobs are the generic layer; AuthDivider now re-points them. Chrome defaults to the QUIETEST state (rule #44): one hairline, a muted xs label, no surrounding padding. A service opts IN to a louder watermark from its theme, never by forking CSS."
   },
   {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
-    "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."
+    "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."
   },
   {
     "name": "--sheet-bottom-max-height",
     "value": "85dvh",
-    "description": "Block size cap for the responsive BOTTOM presentation only (never for a plain * `side=\"bottom\"` sheet, which stays content-sized). Keeps the sheet below the viewport so the * SheetBody scrolls and the page behind it stays visible/dismissable."
+    "description": "Block size cap for the responsive BOTTOM presentation only (never for a plain `side=\"bottom\"` sheet, which stays content-sized). Keeps the sheet below the viewport so the SheetBody scrolls and the page behind it stays visible/dismissable."
   },
   {
     "name": "--responsive-grid-column-width",
     "value": "20rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-section-label-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-product-tenant-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-badge-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-badge-background",
     "value": "initial",
-    "description": "Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail * that needed to tell \"unread\" from \"mentions you\" had to nest a <Badge> inside `badge` and got * two pills, one inside the other. `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--secondary)) fill · hsl(var(--muted-foreground)) text."
+    "description": "Sidebar nav count pill colours — the pill had a font-size knob and NO colour knob, so a rail that needed to tell \"unread\" from \"mentions you\" had to nest a <Badge> inside `badge` and got two pills, one inside the other. `initial` so the role defaults re-resolve at the call site under a scoped theme (a :root binding to a role var freezes at :root). Defaults = hsl(var(--secondary)) fill · hsl(var(--muted-foreground)) text."
   },
   {
     "name": "--sidebar-badge-foreground",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-badge-destructive-background",
     "value": "initial",
-    "description": "The EMPHASIS pair, read only by `SidebarItemProp.badgeTone=\"destructive\"` (rule #44 — a * neutral row never resolves them). Defaults = hsl(var(--destructive)) fill · * hsl(var(--destructive-foreground)) text, the canonical AA-checked pair."
+    "description": "The EMPHASIS pair, read only by `SidebarItemProp.badgeTone=\"destructive\"` (rule #44 — a neutral row never resolves them). Defaults = hsl(var(--destructive)) fill · hsl(var(--destructive-foreground)) text, the canonical AA-checked pair."
   },
   {
     "name": "--sidebar-badge-destructive-foreground",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-user-focus-ring-alpha",
     "value": "1",
-    "description": "Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a * SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1 * against the page, so it answered it by making the indicator non-compliant with WCAG 2.2 * SC 1.4.11 — colour IS the criterion for a focus indicator, so a translucent mark fails it * whatever its area. The mark is opaque and the quieting comes from the halo outside it * (`--focus-ring-glow-*`), which carries no criterion, and from the mark's light weight * (one `lineWidth`, inset into the row). \"Focused\" is kept distinct from \"selected\" by the * halo's shape, not by weakening the mark (styles/focus-ring.css)."
+    "description": "Focus-ring alpha on the tinted shell grounds. It was 0.45, to stop the ring reading as a SELECTED item rather than a focused one — a real concern, but 0.45 composites to ≈1.90:1 against the page, so it answered it by making the indicator non-compliant with WCAG 2.2 SC 1.4.11 — colour IS the criterion for a focus indicator, so a translucent mark fails it whatever its area. The mark is opaque and the quieting comes from the halo outside it (`--focus-ring-glow-*`), which carries no criterion, and from the mark's light weight (one `lineWidth`, inset into the row). \"Focused\" is kept distinct from \"selected\" by the halo's shape, not by weakening the mark (styles/focus-ring.css)."
   },
   {
     "name": "--topbar-chip-icon-size",
     "value": "1.125rem",
-    "description": "Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css. * * --topbar-chip-icon-size is off the SCALE but on the pixel GRID, and those are different * findings. Read the rule it styles: `display: grid; place-items: center; font-weight: 700` — * it is a letter MEDALLION, not a glyph, so the half-pixel-stroke argument that made the * NavigationMenu chevron snap from 14.4px to 14px does not apply here. 18px is a whole pixel * sitting between --icon-size-md (16) and -lg (20); snapping it would be a visible 2px box * change bought for nothing. Declared, not silently tolerated. * scale-exempt: 18px letter medallion, a whole pixel between two icon steps, not a glyph"
+    "description": "Topbar glyphs. Three separate sizes, all previously baked as literals in shell-layout.css. --topbar-chip-icon-size is off the SCALE but on the pixel GRID, and those are different findings. Read the rule it styles: `display: grid; place-items: center; font-weight: 700` — it is a letter MEDALLION, not a glyph, so the half-pixel-stroke argument that made the NavigationMenu chevron snap from 14.4px to 14px does not apply here. 18px is a whole pixel sitting between --icon-size-md (16) and -lg (20); snapping it would be a visible 2px box change bought for nothing. Declared, not silently tolerated. scale-exempt: 18px letter medallion, a whole pixel between two icon steps, not a glyph"
   },
   {
     "name": "--sidebar-product-caret-icon-size",
@@ -6181,12 +6181,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--topbar-icon-size",
     "value": "var(--icon-size-md)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-caret-icon-size",
     "value": "var(--icon-size-xs)",
-    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because * its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been * taught the wider vocabulary."
+    "description": "The caret is the eighth literal-sized icon rule in this file. The ratchet missed it because its selector says `caret` while the pattern looked for `icon|glyph` — the guard has been taught the wider vocabulary."
   },
   {
     "name": "--topbar-icon-focus-ring-alpha",
@@ -6196,162 +6196,162 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sidebar-user-role-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-meta-foreground",
     "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-sub-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-flyout-title-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-chip-icon-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--kbd-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-logo-mark-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-avatar-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-user-name-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-gradient",
     "value": "none",
-    "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints * the sidebar/topbar surface by setting these to a gradient (no-op = none)."
+    "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints the sidebar/topbar surface by setting these to a gradient (no-op = none)."
   },
   {
     "name": "--topbar-gradient",
     "value": "none",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-viewport-inset",
     "value": "0px",
-    "description": "HOW MUCH OF THE VIEWPORT IS NOT THIS APPLICATION'S — 0 unless something says otherwise, which * is every ordinary page. A platform bar docked to a viewport edge sets it to the band it took, * and the shell sizes itself to what is left instead of overflowing the window by that much."
+    "description": "HOW MUCH OF THE VIEWPORT IS NOT THIS APPLICATION'S — 0 unless something says otherwise, which is every ordinary page. A platform bar docked to a viewport edge sets it to the band it took, and the shell sizes itself to what is left instead of overflowing the window by that much."
   },
   {
     "name": "--app-shell-bar-height",
     "value": "var(--band-height-2xl)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-bar-inset",
     "value": "var(--space-page-x)",
-    "description": "Inline inset and slot gap of the AppShell top bar. * * ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as * `.app-main`, directly above the page, so its first control and the page title are on one * vertical edge — or they are supposed to be. These two knobs used to name their own values * (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and * nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's * content started at x=80 while the page header's started at x=88 (1512px), and because the two * sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even * constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a * drift that changes with the viewport. * * The page gutter WINS the axis, for three reasons: it is read by seven regions (page header, * toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner) * against this knob's one element; the bar is the region that must line up with the page, not * the other way round (the rail is a different track with its own inset); and moving the bar * moves exactly one element in one composition, while moving --space-page-x would move every * page in every consumer app. * * The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar * that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS * now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px * restructure), so both sides tighten on the same line — see styles/shell-layout.css."
+    "description": "Inline inset and slot gap of the AppShell top bar. ONE OWNER FOR THE HORIZONTAL PAGE-INSET AXIS (gh#330). The bar sits in the SAME grid track as `.app-main`, directly above the page, so its first control and the page title are on one vertical edge — or they are supposed to be. These two knobs used to name their own values (--space-4 / --space-3) while the page named --space-page-x / --space-page-compact-x, and nothing reconciled them: measured in Chromium on /isolate/layout-app-shell the topbar's content started at x=80 while the page header's started at x=88 (1512px), and because the two sides also stepped at DIFFERENT breakpoints (shell 900px, page 720px) the error was not even constant — 8px at 1512, 12px between 720 and 900, 4px below 720. A consumer cannot correct a drift that changes with the viewport. The page gutter WINS the axis, for three reasons: it is read by seven regions (page header, toolbar, body, footer, PageContainer.Inset, the DataTable full-bleed compensation, Banner) against this knob's one element; the bar is the region that must line up with the page, not the other way round (the rail is a different track with its own inset); and moving the bar moves exactly one element in one composition, while moving --space-page-x would move every page in every consumer app. The NAMES stay — a theme that already sets `--app-shell-bar-inset` keeps working, and a bar that genuinely wants to sit tighter than its page still has its own knob. Only the DEFAULTS now point at the owner. `-compact` applies below the PAGE's 720px step (not the shell's 900px restructure), so both sides tighten on the same line — see styles/shell-layout.css."
   },
   {
     "name": "--app-shell-bar-inset-compact",
     "value": "var(--space-page-compact-x)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-bar-gap",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-brand-max-inline-size",
     "value": "none",
-    "description": "HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is * `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and * everything past that is cropped from the inline-end — which is the half a lockup can lose, * because a lockup leads with its mark in both directions. A theme that wants the wordmark to * survive on a phone raises the compact cap; a theme with a very wide lockup lowers the other. * Choosing WHAT the narrow bar shows, rather than how much of it, is `AppShell logoCompact`: * `viewBox` is an attribute and no stylesheet can set one."
+    "description": "HOW MUCH OF THE BAR THE BRAND MAY KEEP (gh#728). A wide bar is not the problem, so the cap is `none` there; below the `sm` step the brand keeps at most a square of the row it sits in, and everything past that is cropped from the inline-end — which is the half a lockup can lose, because a lockup leads with its mark in both directions. A theme that wants the wordmark to survive on a phone raises the compact cap; a theme with a very wide lockup lowers the other. Choosing WHAT the narrow bar shows, rather than how much of it, is `AppShell logoCompact`: `viewBox` is an attribute and no stylesheet can set one."
   },
   {
     "name": "--app-shell-brand-compact-max-inline-size",
     "value": "var(--app-shell-bar-height)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-sidebar-width",
     "value": "16rem",
-    "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. * * THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": * * - `--app-shell-sidebar-width` the sidebar track, expanded. * - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. * - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the * `navRail` slot is filled (the Slack/Teams shape). * * The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of * the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both * 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias * would resolve to a plausible width in either reading and break silently, which is precisely the * failure class this package gates against everywhere else."
+    "description": "Docked navigation TRACK widths — the SINGLE most-retuned shell constant (rule #45). A service that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once instead of forking `.app-root`. THREE WIDTHS, THREE DIFFERENT QUESTIONS — and two of them used to share the word \"rail\": - `--app-shell-sidebar-width` the sidebar track, expanded. - `--app-shell-sidebar-collapsed-width` the SAME track at `<AppShell sidebarCollapsed>`. - `--app-shell-nav-rail-width` a SECOND, separate track that only exists when the `navRail` slot is filled (the Slack/Teams shape). The middle one shipped as `--app-shell-rail-width` through 19.x, which read as \"the width of the rail\" and therefore collided head-on with the real rail added in 20.0.0 — two tokens, both 4rem, both spelled \"rail\", meaning entirely different things. Renamed with NO alias: an alias would resolve to a plausible width in either reading and break silently, which is precisely the failure class this package gates against everywhere else."
   },
   {
     "name": "--app-shell-sidebar-collapsed-width",
     "value": "4rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-nav-rail-width",
     "value": "2.5rem",
-    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default * moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide * column rather than a rail; and a rail that happened to be exactly as wide as the collapsed * sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar * collapsed. 3rem (48px) still clears the coarse-pointer 44px tap target, with 2px either side * of a 44px control. It is a token precisely so a service that wants Slack's wider rail sets * this one line — never a forked `.app-nav-rail`."
+    "description": "3.5rem, not the 4rem the collapsed sidebar uses. Two reasons, and both are why the default moved: at 4rem the rail's 32px controls sat in 16px of air on each side and read as a wide column rather than a rail; and a rail that happened to be exactly as wide as the collapsed sidebar made the two adjacent nav tracks fuse into one 8rem block the moment the sidebar collapsed. 3rem (48px) still clears the coarse-pointer 44px tap target, with 2px either side of a 44px control. It is a token precisely so a service that wants Slack's wider rail sets this one line — never a forked `.app-nav-rail`."
   },
   {
     "name": "--app-shell-nav-rail-item-size",
     "value": "var(--band-height-lg)",
-    "description": "The SIZE OF A RAIL CELL, and the reason the rail can be this narrow. The controls the rail * hosts carry their own band token (`OrgSwitcher`'s collapsed trigger is a square of * `--org-switcher-trigger-height`), so a narrower TRACK alone does not narrow them — it clips * them, because the rail clips. The rail therefore sizes its own cells, exactly as the bar sizes * a `TopbarItem` by stretching it to `--app-shell-bar-height`: chrome decides how big its cells * are, the cell does not decide how big the chrome is. * * 2.25rem (36px) on a mouse — comfortably over the 24x24 of WCAG 2.2 SC 2.5.8 — and the coarse * block below lifts it back to the 44px tap floor of rule #24, together with the track."
+    "description": "The SIZE OF A RAIL CELL, and the reason the rail can be this narrow. The controls the rail hosts carry their own band token (`OrgSwitcher`'s collapsed trigger is a square of `--org-switcher-trigger-height`), so a narrower TRACK alone does not narrow them — it clips them, because the rail clips. The rail therefore sizes its own cells, exactly as the bar sizes a `TopbarItem` by stretching it to `--app-shell-bar-height`: chrome decides how big its cells are, the cell does not decide how big the chrome is. 2.25rem (36px) on a mouse — comfortably over the 24x24 of WCAG 2.2 SC 2.5.8 — and the coarse block below lifts it back to the 44px tap floor of rule #24, together with the track."
   },
   {
     "name": "--app-shell-nav-rail-height",
     "value": "var(--app-shell-nav-rail-width)",
-    "description": "The SAME rail turned 90°: its thickness when `navRailPosition` is a block edge (top/bottom) * and the column becomes a full-measure strip. A separate token rather than one \"size\", because * a width read as a height is the kind of name that survives review and then confuses every * later override. * * A strip is THINNER than the column, and 2.75rem is where thinner stops: `--band-height-xl` is * 44px, the WCAG 2.2 AA touch floor this library states as rule #24 and enforces on every * consumer, and it is also exactly `--org-switcher-trigger-height`. Below it the shell's own * platform bar would be the one control on the page under the floor — and with the rail's * `overflow: clip`, a control taller than the strip is clipped rather than shrunk. * * ONE THICKNESS, TWO AXES: it resolves to the width, so the rail is the same measure whichever * edge it is docked to and a service retunes both with one line. It briefly carried a `+ 1px` * for the strip's own separator — needed only while the cell was exactly as tall as the track; * with `--app-shell-nav-rail-item-size` smaller than the track the border has room, and two * different numbers for one rail is a worse defect than the pixel it bought."
+    "description": "The SAME rail turned 90°: its thickness when `navRailPosition` is a block edge (top/bottom) and the column becomes a full-measure strip. A separate token rather than one \"size\", because a width read as a height is the kind of name that survives review and then confuses every later override. A strip is THINNER than the column, and 2.75rem is where thinner stops: `--band-height-xl` is 44px, the WCAG 2.2 AA touch floor this library states as rule #24 and enforces on every consumer, and it is also exactly `--org-switcher-trigger-height`. Below it the shell's own platform bar would be the one control on the page under the floor — and with the rail's `overflow: clip`, a control taller than the strip is clipped rather than shrunk. ONE THICKNESS, TWO AXES: it resolves to the width, so the rail is the same measure whichever edge it is docked to and a service retunes both with one line. It briefly carried a `+ 1px` for the strip's own separator — needed only while the cell was exactly as tall as the track; with `--app-shell-nav-rail-item-size` smaller than the track the border has room, and two different numbers for one rail is a worse defect than the pixel it bought."
   },
   {
     "name": "--app-shell-nav-rail-inset",
     "value": "var(--space-3)",
-    "description": "Block inset of the rail's own content — the counterpart of the sidebar's * `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same * line under `topbarSpan=\"full\"`. It is deliberately NOT applied to the top edge under * `topbarSpan=\"content\"`: there the rail runs to y=0 and its first row IS the shell's top row, * so it takes the bar's band instead and the three columns share one centre line."
+    "description": "Block inset of the rail's own content — the counterpart of the sidebar's `--sidebar-nav-scroll-padding`, so the two navigation columns start their content on the same line under `topbarSpan=\"full\"`. It is deliberately NOT applied to the top edge under `topbarSpan=\"content\"`: there the rail runs to y=0 and its first row IS the shell's top row, so it takes the bar's band instead and the three columns share one centre line."
   },
   {
     "name": "--app-shell-page-max-width",
     "value": "none",
-    "description": "Optional shell-wide CONTENT cap (gh#672). Default `none`: inside AppShell the page is FLUID * and spans the whole main column at every sidebar state (antd Pro Layout `contentWidth: * \"Fluid\"`). It used to be 80rem on `.ui-page-container` as a whole, which left a 168px dead * strip at a 1512px viewport once the sidebar was collapsed and cut a sticky footer short. * A service that wants one bounded column sets it ONCE; it caps the page HEADER, TOOLBAR and * BODY (the same bands `measure` caps) and NEVER the footer band, which is page chrome — only * the footer's CONTENT follows it, ending on the body's end edge (gh#682). A page-level * `measure` / `variant=\"narrow\"` overrides it on that page. Never a page-local max-width."
+    "description": "Optional shell-wide CONTENT cap (gh#672). Default `none`: inside AppShell the page is FLUID and spans the whole main column at every sidebar state (antd Pro Layout `contentWidth: \"Fluid\"`). It used to be 80rem on `.ui-page-container` as a whole, which left a 168px dead strip at a 1512px viewport once the sidebar was collapsed and cut a sticky footer short. A service that wants one bounded column sets it ONCE; it caps the page HEADER, TOOLBAR and BODY (the same bands `measure` caps) and NEVER the footer band, which is page chrome — only the footer's CONTENT follows it, ending on the body's end edge (gh#682). A page-level `measure` / `variant=\"narrow\"` overrides it on that page. Never a page-local max-width."
   },
   {
     "name": "--app-shell-main-background",
     "value": "initial",
-    "description": "Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the * default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE * theme: `--surface-recessed` is re-stated by the dark arm in tokens/semantic/layout.css, and a * `:root` binding here would freeze it at the light value for any SCOPED dark subtree * (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * It used to bind `hsl(var(--muted) / 0.4)` directly, which inverted the page/card elevation on * dark (the page composited 1.015:1 LIGHTER than the cards standing on it) — see the * --surface-recessed comment for the measurement. Light is byte-identical; dark now sits behind * the card at 1.089:1. A service that wants its own ground still sets this token. * Default = var(--surface-recessed)."
+    "description": "Page ground behind `.app-main` (gh#399). Declared `initial` so the CALL SITE resolves the default — `var(--app-shell-main-background, var(--surface-recessed))` — against the LIVE theme: `--surface-recessed` is re-stated by the dark arm in tokens/semantic/layout.css, and a `:root` binding here would freeze it at the light value for any SCOPED dark subtree (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). It used to bind `hsl(var(--muted) / 0.4)` directly, which inverted the page/card elevation on dark (the page composited 1.015:1 LIGHTER than the cards standing on it) — see the --surface-recessed comment for the measurement. Light is byte-identical; dark now sits behind the card at 1.089:1. A service that wants its own ground still sets this token. Default = var(--surface-recessed)."
   },
   {
     "name": "--app-shell-mobile-nav-width",
     "value": "22.5rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-shell-mobile-nav-background",
     "value": "initial",
-    "description": "Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default = * var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.2) out of the box."
+    "description": "Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default = var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.2) out of the box."
   },
   {
     "name": "--app-shell-mobile-nav-alpha",
     "value": "40%",
-    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the * page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole * system with one --overlay-background and every overlay keeps its calibrated depth."
+    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole system with one --overlay-background and every overlay keeps its calibrated depth."
   },
   {
     "name": "--app-shell-mobile-nav-inset",
     "value": "var(--space-1)",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--app-shell-mobile-nav-icon-size",
     "value": "var(--icon-size-lg)",
-    "description": "Hamburger glyph in the drawer trigger. Bigger ON PURPOSE than the trigger Button's own * `size=\"sm\"` icon step (--control-icon-size-sm, 0.875rem) — it is the ONLY navigation * affordance on a phone, so it reads at the 1.25rem step. A flat rem, not a density-scaled * alias: it must not move with the density axis, or the one tap target that opens navigation * shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks * `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx)."
+    "description": "Hamburger glyph in the drawer trigger. Bigger ON PURPOSE than the trigger Button's own `size=\"sm\"` icon step (--control-icon-size-sm, 0.875rem) — it is the ONLY navigation affordance on a phone, so it reads at the 1.25rem step. A flat rem, not a density-scaled alias: it must not move with the density axis, or the one tap target that opens navigation shrinks on a compact page. Consumed as a `size-[var(...)]` utility so it outranks `.ui-button--sm svg` (see the comment at the call site in app-shell.tsx)."
   },
   {
     "name": "--service-role-panel-list-gap",
     "value": "0.25rem",
-    "description": "ServiceRolePanel (gh#319). `.ui-service-role-panel` shipped as a bare hook — the class was on * the root but no rule existed anywhere, so the role rail's rhythm lived entirely as Tailwind * literals inside the component and no theme could reach it (#45). The panel is a thin * composition over MasterDetail, which still owns ALL the two-track geometry; these knobs cover * only the role LIST inside the master rail. * * Flat rems, not `--space-*`: the literals they replace read Tailwind's own `--spacing` grid, * which this package never remaps and which does not follow the density axis. Aliasing them * would start scaling the rail inside a `.ui-density-*` subtree — a visual change, not a * refactor. between role rows (was `gap-1`)"
+    "description": "ServiceRolePanel (gh#319). `.ui-service-role-panel` shipped as a bare hook — the class was on the root but no rule existed anywhere, so the role rail's rhythm lived entirely as Tailwind literals inside the component and no theme could reach it (#45). The panel is a thin composition over MasterDetail, which still owns ALL the two-track geometry; these knobs cover only the role LIST inside the master rail. Flat rems, not `--space-*`: the literals they replace read Tailwind's own `--spacing` grid, which this package never remaps and which does not follow the density axis. Aliasing them would start scaling the rail inside a `.ui-density-*` subtree — a visual change, not a refactor. between role rows (was `gap-1`)"
   },
   {
     "name": "--service-role-panel-row-gap",
@@ -6366,112 +6366,112 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--service-role-panel-item-padding-block",
     "value": "0.5rem",
-    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts * out of the control height grid (`h-auto`) and sets its own block padding — that is what the * `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity * (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): * layout.css is imported BEFORE control.css and both are `@layer components`, so an equal * (0,1,0) rule here would silently lose."
+    "description": "The role row is a MULTI-LINE button (name over a description/member-count line), so it opts out of the control height grid (`h-auto`) and sets its own block padding — that is what the `py-2` literal was doing. It needs the raised `.ui-service-role-panel` ancestor specificity (0,2,0) to beat `.ui-button--md { padding-block: var(--button-space-block) }` (0,1,0): layout.css is imported BEFORE control.css and both are `@layer components`, so an equal (0,1,0) rule here would silently lose."
   },
   {
     "name": "--sidebar-brand-mark-size",
     "value": "1.375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-height",
     "value": "var(--band-height-md)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale * runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row * in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the * auth field label below, which is pinned to an artboard y-coordinate and keeps its literal with * a declared `scale-exempt` — only the checked-in hi-fi source's number. * * GEOMETRY MOVES, by 0.53px: 13px → --font-size-xs (≈12.47px), the step the sub-row * (--sidebar-nav-sub-font-size) and the flyout title already take. Nothing reflows — the row is a * fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same * headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the * rail's labels with the rest of its type, instead of leaving one constant behind."
+    "description": "ON the type scale (gh#329). This was `0.8125rem` — 13px, which is not a step: the golden scale runs …/ratio² ≈ 11.1 · /ratio ≈ 12.5 · base 14…, so 13 sat BETWEEN two steps and every nav row in the rail read off the system's type rhythm. It had no mechanical anchor either — unlike the auth field label below, which is pinned to an artboard y-coordinate and keeps its literal with a declared `scale-exempt` — only the checked-in hi-fi source's number. GEOMETRY MOVES, by 0.53px: 13px → --font-size-xs (≈12.47px), the step the sub-row (--sidebar-nav-sub-font-size) and the flyout title already take. Nothing reflows — the row is a fixed 2rem with `align-items: center`, and 1.5 × 12.47 = 18.7px sits inside it with the same headroom 19.5px had. What is gained is that a service overriding --font-size-base now moves the rail's labels with the rest of its type, instead of leaving one constant behind."
   },
   {
     "name": "--sidebar-nav-item-line-height",
     "value": "1.5",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--auth-account-summary-email-line-height",
     "value": "1.5",
-    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--topbar-start-truncate-line-height",
     "value": "1.5",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-icon-size",
     "value": "var(--icon-size-md)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-gap",
     "value": "0.625rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-padding-x",
     "value": "0.625rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-gap",
     "value": "2px",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-radius",
     "value": "calc(var(--radius) - 1px)",
-    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill * wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its * rows full-bleed bands flush with both edges, and a band wants square corners. Every other * geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so * the only way to square a band was a consumer selector against a DS internal class — the exact * coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
+    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its rows full-bleed bands flush with both edges, and a band wants square corners. Every other geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so the only way to square a band was a consumer selector against a DS internal class — the exact coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
   },
   {
     "name": "--sidebar-nav-scroll-padding",
     "value": "var(--space-3) var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-section-label-padding-x",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-section-label-padding-bottom",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-search-width",
     "value": "16rem",
-    "description": "The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum. * * `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start` * (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower * than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse: * the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger * pushed the start cluster into the end cluster — the collision that contract exists to prevent. * As a BASIS it holds this width where there is room and yields where there is not."
+    "description": "The trigger's PREFERRED width, consumed as a flex BASIS — deliberately not a minimum. `.tb-search` is `width: 100%`, written for the `center` slot (flex: 1 1 0); in `start` (flex: 0 1 auto) that collapses to content width, so the trigger came out at 186px, narrower than the placeholder it holds. A hard `min-inline-size` fixed that and broke something worse: the bar's shrink contract. Measured at 1024 with a long account name, an unshrinkable trigger pushed the start cluster into the end cluster — the collision that contract exists to prevent. As a BASIS it holds this width where there is room and yields where there is not."
   },
   {
     "name": "--topbar-search-max-width",
     "value": "none",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-height",
     "value": "auto",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--topbar-inset",
     "value": "0px",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-gap",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-background-alpha",
     "value": "initial",
-    "description": "THE GLASS BAR (gh#831) — the same two declarations two unrelated website showcases each * hand-wrote on their own sticky header: a translucent page fill plus a backdrop blur. Both knobs * are `initial`, i.e. QUIET by default in exactly the sense the paragraph above describes: a * guaranteed-invalid value makes the whole declaration at the call site invalid-at-computed-value * time, so `background-color` falls back to its own initial `transparent` and `backdrop-filter` * to `none`. The shipped bar therefore paints nothing, creates no backdrop root, and is * byte-identical to the pure slot bar it was. A service opts in with * `--topbar-background-alpha: 85%` / `--topbar-backdrop-blur-size: 10px`. * The TINT is NOT a knob: `.ui-topbar` reads `--background` directly at the call site, so a dark * or tenant-scoped subtree re-tints the glass instead of inheriting :root's answer * (docs/TOKENS.md · the `:root` freeze rule). Precedent for the blur name: * --app-launcher-launchpad-backdrop-blur-size. default = none — the bar paints no fill"
+    "description": "THE GLASS BAR (gh#831) — the same two declarations two unrelated website showcases each hand-wrote on their own sticky header: a translucent page fill plus a backdrop blur. Both knobs are `initial`, i.e. QUIET by default in exactly the sense the paragraph above describes: a guaranteed-invalid value makes the whole declaration at the call site invalid-at-computed-value time, so `background-color` falls back to its own initial `transparent` and `backdrop-filter` to `none`. The shipped bar therefore paints nothing, creates no backdrop root, and is byte-identical to the pure slot bar it was. A service opts in with `--topbar-background-alpha: 85%` / `--topbar-backdrop-blur-size: 10px`. The TINT is NOT a knob: `.ui-topbar` reads `--background` directly at the call site, so a dark or tenant-scoped subtree re-tints the glass instead of inheriting :root's answer (docs/TOKENS.md · the `:root` freeze rule). Precedent for the blur name: --app-launcher-launchpad-backdrop-blur-size. default = none — the bar paints no fill"
   },
   {
     "name": "--topbar-backdrop-blur-size",
@@ -6481,42 +6481,42 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--topbar-center-compact-display",
     "value": "none",
-    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. * At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters, so the package hides the optional center slot before it can * cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a * global search trigger placed in `center` is INVISIBLE from 1100px down — including on every * phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot * for consumers who never changed a line of their own code (gh#12); it stays because the * overlap it prevents is a real defect and flipping a shipped default twice is worse than * documenting it once, but it is a DECISION, not an accident: * * :root { --topbar-center-compact-display: flex; } ← restore the slot at every width * * Opt back in only once the center content has a compact presentation of its own (an icon-only * search trigger, a collapsing field). A page-local media query is the anti-pattern this knob * replaces."
+    "description": "⚠ THIS KNOB DELETES CONTENT AT 1100px AND BELOW — read before you ship a center slot. At compact desktop/tablet widths the docked sidebar leaves too little inline room for three intrinsically-sized clusters, so the package hides the optional center slot before it can cover the breadcrumb/title or end utilities (gh#244). The default is `none`, which means a global search trigger placed in `center` is INVISIBLE from 1100px down — including on every phone — unless the consumer opts back in. That default arrived in 18.6.0 and removed the slot for consumers who never changed a line of their own code (gh#12); it stays because the overlap it prevents is a real defect and flipping a shipped default twice is worse than documenting it once, but it is a DECISION, not an accident: :root { --topbar-center-compact-display: flex; } ← restore the slot at every width Opt back in only once the center content has a compact presentation of its own (an icon-only search trigger, a collapsing field). A page-local media query is the anti-pattern this knob replaces."
   },
   {
     "name": "--topbar-item-padding-inline",
     "value": "var(--space-3)",
-    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped * into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's * navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a * trigger as a full-height cell whose * hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its * own hover fill and its own ring, floating inside a taller strip. * * NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — * `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the * coarse-pointer override on a touch device. A knob here would be a second answer that goes * stale the moment either of those moves."
+    "description": "TOPBAR BAR ITEM — the shape of an interactive cell IN the bar, as opposed to a control dropped into it. The bar's own chrome (Fluent's command bar, SLDS's global header, Atlassian's navigation, and the right-hand action slot of enterprise pro-layouts generally) draws a trigger as a full-height cell whose hover is the bar's surface; a `Button` in the same slot draws a --control-height pill with its own hover fill and its own ring, floating inside a taller strip. NO HEIGHT KNOB, DELIBERATELY. The cell's height IS the bar's, whatever the bar's is — `--app-shell-bar-height` inside AppShell, `--topbar-height` for a standalone Topbar, the coarse-pointer override on a touch device. A knob here would be a second answer that goes stale the moment either of those moves."
   },
   {
     "name": "--topbar-item-padding-inline-compact",
     "value": "var(--space-2)",
-    "description": "THE CELL'S PHONE-WIDTH INSET (godx-jp/id#639). A second value rather than a media query on the * first, for the same reason `--app-shell-bar-inset-compact` is a second value: the compact * number is its own design decision, and a theme has to be able to retune the two independently. * * Measured at 320px on a bar carrying the shipped shape (drawer trigger · logo · search trigger · * four end cells): the cells alone spent 120px of a 320px viewport on padding, the bar overflowed * by 44px, `.ui-topbar-start` collapsed to 0 and the search trigger was left painting 8px of * itself from under the theme cell — a target axe scores at 8×28. At --space-2 the same bar fits * with every cell whole."
+    "description": "THE CELL'S PHONE-WIDTH INSET (godx-jp/id#639). A second value rather than a media query on the first, for the same reason `--app-shell-bar-inset-compact` is a second value: the compact number is its own design decision, and a theme has to be able to retune the two independently. Measured at 320px on a bar carrying the shipped shape (drawer trigger · logo · search trigger · four end cells): the cells alone spent 120px of a 320px viewport on padding, the bar overflowed by 44px, `.ui-topbar-start` collapsed to 0 and the search trigger was left painting 8px of itself from under the theme cell — a target axe scores at 8×28. At --space-2 the same bar fits with every cell whole."
   },
   {
     "name": "--topbar-item-gap",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-min-width",
     "value": "var(--control-height)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-radius",
     "value": "var(--radius-sharp)",
-    "description": "Square by default: a cell that meets both bar edges has no corner to round. A service that * wants the softer read sets this to var(--radius)."
+    "description": "Square by default: a cell that meets both bar edges has no corner to round. A service that wants the softer read sets this to var(--radius)."
   },
   {
     "name": "--topbar-item-color",
     "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-hover-background",
     "value": "initial",
-    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. default = var(--accent), resolved at the call site (the freeze rule)"
+    "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
     "name": "--topbar-item-hover-color",
@@ -6526,72 +6526,72 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--topbar-item-active-background",
     "value": "var(--secondary)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-offset-block",
     "value": "var(--space-1)",
-    "description": "COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The * offsets are what a call site used to hand-write as `relative` + `absolute -end-0.5 -top-0.5`, * i.e. a position the cell owns and no theme could retune; they are measured from the GLYPH box * (the pill is centred on the cell, then pushed out by these), so a bar that retunes * --topbar-icon-size keeps the pill on the glyph's corner. * Colour mirrors `.sb-badge`: quiet by default, `badgeTone=\"destructive\"` for a count addressed * to the user. The two role-mirror knobs stay `initial` so a scoped [data-tenant]/.dark override * of --secondary/--destructive still reaches the pill (docs/TOKENS.md). * Defaults = hsl(var(--secondary)) · hsl(var(--muted-foreground)) · * hsl(var(--destructive)) · hsl(var(--destructive-foreground))."
+    "description": "COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The offsets are what a call site used to hand-write as `relative` + `absolute -end-0.5 -top-0.5`, i.e. a position the cell owns and no theme could retune; they are measured from the GLYPH box (the pill is centred on the cell, then pushed out by these), so a bar that retunes --topbar-icon-size keeps the pill on the glyph's corner. Colour mirrors `.sb-badge`: quiet by default, `badgeTone=\"destructive\"` for a count addressed to the user. The two role-mirror knobs stay `initial` so a scoped [data-tenant]/.dark override of --secondary/--destructive still reaches the pill (docs/TOKENS.md). Defaults = hsl(var(--secondary)) · hsl(var(--muted-foreground)) · hsl(var(--destructive)) · hsl(var(--destructive-foreground))."
   },
   {
     "name": "--topbar-item-badge-offset-inline",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-size",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-padding-inline",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-background",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-foreground",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-destructive-background",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-badge-destructive-foreground",
     "value": "initial",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--topbar-item-focus-ring-offset",
     "value": "calc(-1 * var(--focus-ring-width))",
-    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar * family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an * outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the * same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The * offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the * `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS * AUTHORED HERE; the cell only says where the mark sits."
+    "description": "The mark is hosted INSIDE the cell. A full-bleed cell has no room outside itself — the bar family clips both axes (`overflow: clip` + `--focus-ring-clip-margin`) precisely because an outset ring on a flush control gets shaved — and an inset mark is also the lighter read, the same reasoning `a.ui-list-row` / `.sb-nav-item` already record in styles/focus-ring.css. The offset TRACKS the mark's own width, so the two cannot drift apart, and it multiplies by the `--focus-outline` switch through that width: switch off → width 0 → offset 0. NO GEOMETRY IS AUTHORED HERE; the cell only says where the mark sits."
   },
   {
     "name": "--org-switcher-trigger-height",
     "value": "var(--band-height-xl)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-trigger-padding-x",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-avatar-size",
     "value": "var(--control-height-sm)",
-    "description": "1.75rem was the literal; --control-height-sm IS 1.75rem and is the tier this mark belongs to, * so a service that re-tiers its controls moves the mark with them instead of leaving it behind."
+    "description": "1.75rem was the literal; --control-height-sm IS 1.75rem and is the tier this mark belongs to, so a service that re-tiers its controls moves the mark with them instead of leaving it behind."
   },
   {
     "name": "--org-switcher-sheet-inset",
@@ -6606,7 +6606,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--org-switcher-list-offset",
     "value": "0px",
-    "description": "What the SURROUNDING SURFACE insets the list by, which a row cancels so its fill and its rule * reach both edges. Zero by default: the popover publishes --popover-space-inset: 0, so there is * nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its * text on the border. The sheet, which does inset its body, overrides this."
+    "description": "What the SURROUNDING SURFACE insets the list by, which a row cancels so its fill and its rule reach both edges. Zero by default: the popover publishes --popover-space-inset: 0, so there is nothing to cancel there, and cancelling anyway drags the row outside the panel and puts its text on the border. The sheet, which does inset its body, overrides this."
   },
   {
     "name": "--org-switcher-legend-space-gap",
@@ -6616,87 +6616,87 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--org-switcher-legend-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-hint-space-gap",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-dialog-width",
     "value": "26rem",
-    "description": "The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to * reach for the dialog is that a row carries more than a name; narrower than the generic * --dialog-width-default because it is still a list of choices, not a form."
+    "description": "The dialog surface's measure. Wider than --org-switcher-menu-width because the whole reason to reach for the dialog is that a row carries more than a name; narrower than the generic --dialog-width-default because it is still a list of choices, not a form."
   },
   {
     "name": "--org-switcher-search-space-block",
     "value": "var(--space-3)",
-    "description": "Breathing room above and below the search field. The INLINE side is deliberately not here: * it depends on --org-switcher-list-offset, which each surface sets on itself, and a composite * declared at `:root` substitutes its vars AT `:root` — it would bake in the default 0 and never * see the dialog's or the sheet's value. That is the same trap --dialog-space-inset set, and it * caught this rule too on the first attempt, so the inline half is computed in the rule."
+    "description": "Breathing room above and below the search field. The INLINE side is deliberately not here: it depends on --org-switcher-list-offset, which each surface sets on itself, and a composite declared at `:root` substitutes its vars AT `:root` — it would bake in the default 0 and never see the dialog's or the sheet's value. That is the same trap --dialog-space-inset set, and it caught this rule too on the first attempt, so the inline half is computed in the rule."
   },
   {
     "name": "--org-switcher-menu-width",
     "value": "16rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-sheet-max-height",
     "value": "75dvh",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--org-switcher-state-min-height",
     "value": "8rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-panel-width",
     "value": "20rem",
-    "description": "APP LAUNCHER — the nine-dot platform app grid in the topbar. * * NO TRIGGER GEOMETRY KNOB, deliberately, for exactly the reason `--topbar-item-*` declares no * height: the trigger IS a `TopbarItem`, so the bar's own height and the bar's own hover surface * are already its answer, and a second answer here would go stale the moment either moves. * * NO COLUMN-COUNT TOKEN EITHER, and that one is a GAP, not a choice: the component-token name * vocabulary (scripts/check-token-tiers.mjs) has words for every length and colour and none for * a count, so `--app-launcher-columns` cannot be spelled legally here. It is declared on * `.ui-app-launcher-panel` in styles/shell-layout.css instead, which keeps it themeable but out * of this tier. Give the vocabulary a `count` word and it moves here with the rest."
+    "description": "APP LAUNCHER — the nine-dot platform app grid in the topbar. NO TRIGGER GEOMETRY KNOB, deliberately, for exactly the reason `--topbar-item-*` declares no height: the trigger IS a `TopbarItem`, so the bar's own height and the bar's own hover surface are already its answer, and a second answer here would go stale the moment either moves. NO COLUMN-COUNT TOKEN EITHER, and that one is a GAP, not a choice: the component-token name vocabulary (scripts/check-token-tiers.mjs) has words for every length and colour and none for a count, so `--app-launcher-columns` cannot be spelled legally here. It is declared on `.ui-app-launcher-panel` in styles/shell-layout.css instead, which keeps it themeable but out of this tier. Give the vocabulary a `count` word and it moves here with the rest."
   },
   {
     "name": "--app-launcher-panel-max-height",
     "value": "26rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-panel-gap",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-sheet-max-height",
     "value": "75dvh",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-grid-gap",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-tile-gap",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-tile-padding",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-tile-min-height",
     "value": "var(--control-height-comfortable)",
-    "description": "The tap floor (rule #24, WCAG 2.2 AA 2.5.8) — a tile is a link on a phone before it is a tile * on a desktop, and the comfortable control tier IS that floor."
+    "description": "The tap floor (rule #24, WCAG 2.2 AA 2.5.8) — a tile is a link on a phone before it is a tile on a desktop, and the comfortable control tier IS that floor."
   },
   {
     "name": "--app-launcher-tile-radius",
     "value": "var(--radius)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-tile-color",
     "value": "var(--foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-tile-hover-background",
@@ -6711,57 +6711,57 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-launcher-tile-current-background",
     "value": "initial",
-    "description": "The app you are already in. `initial` so the role default re-resolves at the call site under a * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary))."
+    "description": "The app you are already in. `initial` so the role default re-resolves at the call site under a scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary))."
   },
   {
     "name": "--app-launcher-mark-size",
     "value": "2.5rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-mark-radius",
     "value": "var(--radius)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-mark-background",
     "value": "var(--secondary)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-mark-foreground",
     "value": "var(--secondary-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-mark-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-name-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-group-label-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-group-label-color",
     "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-state-min-height",
     "value": "8rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-backdrop-background",
     "value": "initial",
-    "description": "Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site * (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below."
+    "description": "Role-mirror knob: `initial` so a scoped theme's --background re-resolves at the call site (docs/TOKENS.md). Default = a veil of the theme's OWN background at the alpha below."
   },
   {
     "name": "--app-launcher-launchpad-backdrop-blur-size",
@@ -6771,212 +6771,212 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-launcher-launchpad-backdrop-alpha",
     "value": "55%",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-backdrop-color-saturate",
     "value": "180%",
-    "description": "THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its * mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a * featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is * what a physical frosted pane does: it scatters direction, not colour."
+    "description": "THE INGREDIENT THAT MAKES IT GLASS RATHER THAN FOG. Blur alone averages a page towards its mean, and the mean of any real screen is a mid grey — 28px of it turned a dashboard into a featureless haze with the tiles floating in nothing. Pushing chroma back up after the blur is what a physical frosted pane does: it scatters direction, not colour."
   },
   {
     "name": "--app-launcher-launchpad-space-inset",
     "value": "var(--space-8)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-space-safe-area",
     "value": "0",
-    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that * owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked * platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much * so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on * the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the * bar. A length or a 2/3/4-value box, exactly like `padding`."
+    "description": "THE PART OF THE VIEWPORT THE HOST HAS ALREADY SPOKEN FOR — 0 by default, because a page that owns its whole viewport has nothing to declare. A host with fixed chrome of its own (a docked platform bar, a persistent player) sets it to a padding box, and the scrim insets by that much so neither the grid nor the dismiss lands underneath. Measured without it, with a 40px rail on the inline-start edge: the first tile and the title both began at x=32 and ran 8px under the bar. A length or a 2/3/4-value box, exactly like `padding`."
   },
   {
     "name": "--app-launcher-launchpad-panel-max-width",
     "value": "60rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-panel-gap",
     "value": "var(--space-8)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-grid-gap",
     "value": "var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-tile-inline-size",
     "value": "7.5rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-tile-padding",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-tile-radius",
     "value": "var(--radius-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-tile-gap",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-tile-hover-background",
     "value": "color-mix( in srgb, hsl(var(--foreground)) 10%, transparent )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-mark-size",
     "value": "4rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-mark-radius",
     "value": "var(--radius-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-mark-background",
     "value": "color-mix(in srgb, hsl(var(--card)) 78%, transparent)",
-    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the * theme and stays legible on a light page and a dark one."
+    "description": "The glass itself: a wash of the surface colour, not a colour of its own, so it inherits the theme and stays legible on a light page and a dark one."
   },
   {
     "name": "--app-launcher-launchpad-mark-border-color",
     "value": "color-mix( in srgb, hsl(var(--foreground)) 14%, transparent )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-mark-font-size",
     "value": "var( --font-size-lg, calc(var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-mark-shadow",
     "value": "var(--shadow-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-name-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-title-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-title-letter-spacing",
     "value": "0.08em",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--app-launcher-launchpad-close-space-padding",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-item-active-background",
     "value": "initial",
-    "description": "ONE ACTIVE LOOK FOR BOTH NAV LEVELS (gh#651) — the label knob is `-foreground` at every depth. * * The defect: the two levels of one nav column signalled the same meaning in two colour * languages. `.sb-nav-item[data-active=\"true\"]` painted `hsl(var(--accent))` + `hsl(var(-- * foreground))` — neutral grey — while `.sb-nav-item--sub[data-active=\"true\"]` painted * `hsl(var(--primary))`. A reader saw the open CHILD in the brand colour and its open PARENT in * grey. Both defaults are now the brand, measured (see the ceiling note below and * src/tokens/__tests__/sidebar-active-contrast.test.ts) — a DEFAULT change, not a hardcode: all * four knobs still override. * * AND THE LABEL HAD TWO NAMES: `--sidebar-item-active-foreground` at level 1, * `--sidebar-item-active-color` at level 2, each used exactly ONCE in shell-layout.css — naming * drift, not two roles, so a service that wanted to tint the whole column had to discover both. * `-color` is GONE with NO deprecation alias, which was the one judgement call here. Considered * and rejected: `var(--sidebar-item-active-foreground, var(--sidebar-item-active-color, …))`. It * would have kept the very ambiguity being removed (two names on one declaration, with the * winner decided by which one a theme happened to set), and it is not buying compatibility for * anyone — grepped before deleting: the old name had ZERO consumers outside its own call site. * Not in docs/CUSTOMER-THEMING.md, not in a docs/ showcase, not pinned by a test, not in * component-api-manifest.json; only the generated MCP catalog (regenerated from this file) and * one historical CHANGELOG line, which stays true as history. `-tint` keeps its own name: it is * the level-2 dot marker, a different part from the label. * * ROLE-MIRROR KNOBS — `initial` here with the role default at the CALL SITE, so a scoped * `[data-tenant]` / `.dark` re-tint of `--primary` reaches them (a `:root` binding to a role var * freezes at `:root` — docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). * Defaults = a `--primary` tint fill · the primary ACTIVE tier as label · `hsl(var(--primary))` dot."
+    "description": "ONE ACTIVE LOOK FOR BOTH NAV LEVELS (gh#651) — the label knob is `-foreground` at every depth. The defect: the two levels of one nav column signalled the same meaning in two colour languages. `.sb-nav-item[data-active=\"true\"]` painted `hsl(var(--accent))` + `hsl(var(-- foreground))` — neutral grey — while `.sb-nav-item--sub[data-active=\"true\"]` painted `hsl(var(--primary))`. A reader saw the open CHILD in the brand colour and its open PARENT in grey. Both defaults are now the brand, measured (see the ceiling note below and src/tokens/__tests__/sidebar-active-contrast.test.ts) — a DEFAULT change, not a hardcode: all four knobs still override. AND THE LABEL HAD TWO NAMES: `--sidebar-item-active-foreground` at level 1, `--sidebar-item-active-color` at level 2, each used exactly ONCE in shell-layout.css — naming drift, not two roles, so a service that wanted to tint the whole column had to discover both. `-color` is GONE with NO deprecation alias, which was the one judgement call here. Considered and rejected: `var(--sidebar-item-active-foreground, var(--sidebar-item-active-color, …))`. It would have kept the very ambiguity being removed (two names on one declaration, with the winner decided by which one a theme happened to set), and it is not buying compatibility for anyone — grepped before deleting: the old name had ZERO consumers outside its own call site. Not in docs/CUSTOMER-THEMING.md, not in a docs/ showcase, not pinned by a test, not in component-api-manifest.json; only the generated MCP catalog (regenerated from this file) and one historical CHANGELOG line, which stays true as history. `-tint` keeps its own name: it is the level-2 dot marker, a different part from the label. ROLE-MIRROR KNOBS — `initial` here with the role default at the CALL SITE, so a scoped `[data-tenant]` / `.dark` re-tint of `--primary` reaches them (a `:root` binding to a role var freezes at `:root` — docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Defaults = a `--primary` tint fill · the primary ACTIVE tier as label · `hsl(var(--primary))` dot."
   },
   {
     "name": "--sidebar-item-active-foreground",
     "value": "initial",
-    "description": "The open row's LABEL, at BOTH nav depths — one name since gh#651 (level 2 used to spell it * `--sidebar-item-active-color`). Default = the primary ACTIVE tier, derived at the call site from * the live `--primary` (gh#678). It was `--primary` itself, which clears AA on the tint only for our * own seed: 4.25:1 for `204 100% 37%`, 4.00:1 for `173 80% 28%`, 4.15:1 for a dark `262 83% 70%`. * The active tier steps AWAY from the ground, and measured over every seed that is legible as text * on the ground at all it never lands under 4.5:1 (sidebar-active-contrast.test.ts)."
+    "description": "The open row's LABEL, at BOTH nav depths — one name since gh#651 (level 2 used to spell it `--sidebar-item-active-color`). Default = the primary ACTIVE tier, derived at the call site from the live `--primary` (gh#678). It was `--primary` itself, which clears AA on the tint only for our own seed: 4.25:1 for `204 100% 37%`, 4.00:1 for `173 80% 28%`, 4.15:1 for a dark `262 83% 70%`. The active tier steps AWAY from the ground, and measured over every seed that is legible as text on the ground at all it never lands under 4.5:1 (sidebar-active-contrast.test.ts)."
   },
   {
     "name": "--sidebar-item-active-tint",
     "value": "initial",
-    "description": "The level-2 dot marker (`.sb-nav-item--sub[data-active=\"true\"]::before`) — its own knob because * it is a different PART, not a second name for the label. Default = hsl(var(--primary))."
+    "description": "The level-2 dot marker (`.sb-nav-item--sub[data-active=\"true\"]::before`) — its own knob because it is a different PART, not a second name for the label. Default = hsl(var(--primary))."
   },
   {
     "name": "--sidebar-item-active-background-alpha",
     "value": "12%",
-    "description": "THE TINT STRENGTH, AND IT HAS A CEILING — rule #45, and the reason this is a knob at all. * * The fill is the brand at this alpha over whatever the nav sits on, so raising it walks the * fill TOWARDS the label that rides on it and contrast falls monotonically. Measured on the * package seed (GoDX violet #7a00ff light / #dcbcff dark, identity v2.3), with the label as the * primary ACTIVE tier since gh#678 (#5400b0 light / #cd9fff dark), against the composited fill: * * alpha light on --card dark on --card dark on --background * 0.12 8.26:1 5.89:1 6.51:1 ← shipped * 0.16 7.65:1 5.32:1 5.88:1 ← the cap below * 0.22 4.55:1 ← last step still AA, dark card * 0.23 4.43:1 ← under SC 1.4.3 * * 16% is a CAP WITH HEADROOM on our seed, not the cliff edge — and it is a cap on OUR seed only: * over a dense grid of consumer seeds a handful of legible dark-theme seeds dip under 4.5:1 on * `--card` at 16% (worst 4.27:1), while at the shipped 12% none does. A service raising the tint * on its own seed owns that measurement. `sidebar-active-contrast.test.ts` fails if this rises * past the cap, and names the consumer-seed exception rather than hiding it."
+    "description": "THE TINT STRENGTH, AND IT HAS A CEILING — rule #45, and the reason this is a knob at all. The fill is the brand at this alpha over whatever the nav sits on, so raising it walks the fill TOWARDS the label that rides on it and contrast falls monotonically. Measured on the package seed (GoDX violet #7a00ff light / #dcbcff dark, identity v2.3), with the label as the primary ACTIVE tier since gh#678 (#5400b0 light / #cd9fff dark), against the composited fill: alpha light on --card dark on --card dark on --background 0.12 8.26:1 5.89:1 6.51:1 ← shipped 0.16 7.65:1 5.32:1 5.88:1 ← the cap below 0.22 4.55:1 ← last step still AA, dark card 0.23 4.43:1 ← under SC 1.4.3 16% is a CAP WITH HEADROOM on our seed, not the cliff edge — and it is a cap on OUR seed only: over a dense grid of consumer seeds a handful of legible dark-theme seeds dip under 4.5:1 on `--card` at 16% (worst 4.27:1), while at the shipped 12% none does. A service raising the tint on its own seed owns that measurement. `sidebar-active-contrast.test.ts` fails if this rises past the cap, and names the consumer-seed exception rather than hiding it."
   },
   {
     "name": "--auth-shell-control-height",
     "value": "var(--control-height-comfortable)",
-    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets and heading size without forking."
   },
   {
     "name": "--auth-shell-heading-size",
     "value": "var( --font-size-2xl, calc( var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio) ) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-card-max-width",
     "value": "24rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-bar-padding",
     "value": "var(--space-5) var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-main-padding",
     "value": "var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-footer-padding",
     "value": "var(--space-3) var(--space-6) var(--space-4)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-bar-gap",
     "value": "var(--space-inline-sm)",
-    "description": "Gap between the items of the brand bar: brand to a wrapped `actions` row, and between the * page-level controls inside that row (locale · theme · help)."
+    "description": "Gap between the items of the brand bar: brand to a wrapped `actions` row, and between the page-level controls inside that row (locale · theme · help)."
   },
   {
     "name": "--auth-shell-wide-card-max-width",
     "value": "64rem",
-    "description": "Content-slot measure for `measure=\"wide\"` — the SPLIT login (brand panel beside the auth card). * Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read * at one page measure. Only `measure=\"wide\"` reads it; the default 24rem card is untouched."
+    "description": "Content-slot measure for `measure=\"wide\"` — the SPLIT login (brand panel beside the auth card). Same width as the widest CenteredShell tier, so a product's login and its signed-in pages read at one page measure. Only `measure=\"wide\"` reads it; the default 24rem card is untouched."
   },
   {
     "name": "--auth-shell-canonical-control-height",
     "value": "var(--band-height-lg)",
-    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on AuthShell and may retune the product theme here rather than overriding individual fields."
   },
   {
     "name": "--auth-shell-canonical-card-max-width",
     "value": "22.5rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-canonical-heading-size",
     "value": "var(--font-size-base)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-canonical-main-padding",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-canonical-main-padding-mobile",
     "value": "0.9375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-compact-card-inset",
     "value": "var(--space-6)",
-    "description": "INLINE (start/end) inset of the compact auth card — the column the title, fields and actions * align to. Independent of the block axis below (gh#232)."
+    "description": "INLINE (start/end) inset of the compact auth card — the column the title, fields and actions align to. Independent of the block axis below (gh#232)."
   },
   {
     "name": "--auth-shell-card-padding-block-compact",
     "value": "initial",
-    "description": "BLOCK (top/bottom) padding of the compact auth card — the knob that tunes canonical Login card * HEIGHT without narrowing the column. Bound to the card's --card-space-shell-y, so it really * reaches CardContent's block edges (before gh#232 it was wired only to --card-space-body-y and * the rendered body kept the inset on both block edges — the documented token did nothing). * Declared `initial` so the default mirrors the LIVE --auth-shell-compact-card-inset resolved at * the CALL SITE: the canonical card renders exactly as before (24px block = 24px inline), and a * service that re-tunes the inset inside a scoped `[data-tenant]` still drags the block default * with it (a :root binding would freeze at the :root inset — docs/TOKENS.md). default = var(--auth-shell-compact-card-inset)"
+    "description": "BLOCK (top/bottom) padding of the compact auth card — the knob that tunes canonical Login card HEIGHT without narrowing the column. Bound to the card's --card-space-shell-y, so it really reaches CardContent's block edges (before gh#232 it was wired only to --card-space-body-y and the rendered body kept the inset on both block edges — the documented token did nothing). Declared `initial` so the default mirrors the LIVE --auth-shell-compact-card-inset resolved at the CALL SITE: the canonical card renders exactly as before (24px block = 24px inline), and a service that re-tunes the inset inside a scoped `[data-tenant]` still drags the block default with it (a :root binding would freeze at the :root inset — docs/TOKENS.md). default = var(--auth-shell-compact-card-inset)"
   },
   {
     "name": "--auth-shell-card-body-gap-compact",
     "value": "var(--space-3)",
-    "description": "Header↔body gap inside the compact auth card (the breathing room under the title before the * first field). Its own knob since gh#232 — it used to ride on * --auth-shell-card-padding-block-compact, which conflated the section gap with the card's block * padding and made the block knob un-tunable. Default is the pre-gh#232 12px rhythm."
+    "description": "Header↔body gap inside the compact auth card (the breathing room under the title before the first field). Its own knob since gh#232 — it used to ride on --auth-shell-card-padding-block-compact, which conflated the section gap with the card's block padding and made the block knob un-tunable. Default is the pre-gh#232 12px rhythm."
   },
   {
     "name": "--auth-shell-card-gap-compact",
@@ -6986,142 +6986,142 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-main-align",
     "value": "center",
-    "description": "Main-axis alignment of the auth column. Default `center` = today's vertically-centred card; * a flow whose intro + card + footnote stack is tall opts into `start` via this knob."
+    "description": "Main-axis alignment of the auth column. Default `center` = today's vertically-centred card; a flow whose intro + card + footnote stack is tall opts into `start` via this knob."
   },
   {
     "name": "--auth-shell-card-stack-gap",
     "value": "0px",
-    "description": "Gap between the direct sections of the auth column (intro · card · remember row). Default 0 * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in."
+    "description": "Gap between the direct sections of the auth column (intro · card · remember row). Default 0 (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in."
   },
   {
     "name": "--auth-shell-login-card-max-width",
     "value": "22.5rem",
-    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. The 112px identity slot is deliberately taller than a two-line real requester. Identity content aligns to the slot end, so missing/one-line/two-line requester data changes only the empty space above it, never the card or footer position. The flow starts at y=231 desktop and y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, not in a consumer selector, and do not drift with --scaling."
   },
   {
     "name": "--auth-shell-login-flow-offset-block",
     "value": "14.4375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-flow-offset-block-mobile",
     "value": "13.8125rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-main-padding-inline",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-main-padding-inline-mobile",
     "value": "0.9375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-main-padding-block-end",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-identity-slot-block-size",
     "value": "7rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-card-stack-gap",
     "value": "1.25rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-login-card-padding-block-compact",
     "value": "var(--auth-shell-compact-card-inset)",
-    "description": "Canonical SCR-001 block inset is a FLAT 24px — the same measure as the inline inset. The card * draws its own 1px border and a border-box rect already contains it, so the former * `+ 2 x --control-border-width` double-counted the border and pushed the passkey CTA to y=390 * instead of the canonical y=388 (gh#263)."
+    "description": "Canonical SCR-001 block inset is a FLAT 24px — the same measure as the inline inset. The card draws its own 1px border and a border-box rect already contains it, so the former `+ 2 x --control-border-width` double-counted the border and pushed the passkey CTA to y=390 instead of the canonical y=388 (gh#263)."
   },
   {
     "name": "--auth-shell-device-card-max-width",
     "value": "23.75rem",
-    "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
+    "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter (at a 390px viewport the card is x=5px, width=380px)."
   },
   {
     "name": "--auth-shell-device-main-padding",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-device-main-padding-mobile",
     "value": "0.9375rem 0.3125rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-device-otp-slot-inline-size",
     "value": "1.71875rem",
-    "description": "CODE FIELD measure — the preset owns it (gh#12). A device grant is the one canonical flow whose * PRIMARY control is the code field, so leaving it on the generic square --otp-slot-size made the * preset own the page but not its own subject: two 4-slot `appearance=\"grouped\"` boxes rendered * 146x38 (4 x the canonical 36px control tier + the 1px group border) against a 112x54 artboard. * These are the per-slot boxes that ADD UP to that artboard group: * inline 27.5px x 4 + 2 x 1px group border = 112px * block 52px + 2 x 1px group border = 54px * Literal artboard lengths, like every other preset measure here — they must not drift with * --scaling. A service that groups its code differently overrides --otp-slot-inline-size / * --otp-slot-block-size on its own field; the generic square knob is untouched everywhere else."
+    "description": "CODE FIELD measure — the preset owns it (gh#12). A device grant is the one canonical flow whose PRIMARY control is the code field, so leaving it on the generic square --otp-slot-size made the preset own the page but not its own subject: two 4-slot `appearance=\"grouped\"` boxes rendered 146x38 (4 x the canonical 36px control tier + the 1px group border) against a 112x54 artboard. These are the per-slot boxes that ADD UP to that artboard group: inline 27.5px x 4 + 2 x 1px group border = 112px block 52px + 2 x 1px group border = 54px Literal artboard lengths, like every other preset measure here — they must not drift with --scaling. A service that groups its code differently overrides --otp-slot-inline-size / --otp-slot-block-size on its own field; the generic square knob is untouched everywhere else."
   },
   {
     "name": "--auth-shell-device-otp-slot-block-size",
     "value": "3.25rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-context-card-max-width",
     "value": "25rem",
-    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
   },
   {
     "name": "--auth-shell-context-main-padding",
     "value": "var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-context-main-padding-mobile",
     "value": "var(--space-6) 0",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-context-card-stack-gap",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-recovery-card-max-width",
     "value": "27rem",
-    "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
+    "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE preset owns them; the 360px canonical Login measure is untouched. The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving from Login to Recovery on a phone never sees the surface jump."
   },
   {
     "name": "--auth-shell-recovery-main-padding",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-recovery-main-padding-mobile",
     "value": "0.9375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-card-max-width",
     "value": "22.5rem",
-    "description": "Registration preset (gh#256) — the canonical sign-up measure. Two things make it structurally * different from every preset above, and both are the reason it could not be expressed by * re-using `login`: * * 1. LONG-FORM SCROLLING. A registration card is the tallest surface in the hosted-identity set * (name · email · password · confirm · strength meter · consent · submit · provider row), and * a vertically CENTRED tall card clips its own top on a short viewport — the top overflows * above the scroll origin and becomes unreachable. So the column is start-aligned and the * block-start inset becomes ordinary page padding the user can scroll past. * 2. FOOTER CLEARANCE. The legal/consent footer must never be flush against the submit button * at the end of a long scroll, so the block-end inset is a knob of its own rather than * mirroring the block-start one. * * The 360px form measure and the 15px mobile inline gutter match the canonical Login flow exactly * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never * sees the surface jump."
+    "description": "Registration preset (gh#256) — the canonical sign-up measure. Two things make it structurally different from every preset above, and both are the reason it could not be expressed by re-using `login`: 1. LONG-FORM SCROLLING. A registration card is the tallest surface in the hosted-identity set (name · email · password · confirm · strength meter · consent · submit · provider row), and a vertically CENTRED tall card clips its own top on a short viewport — the top overflows above the scroll origin and becomes unreachable. So the column is start-aligned and the block-start inset becomes ordinary page padding the user can scroll past. 2. FOOTER CLEARANCE. The legal/consent footer must never be flush against the submit button at the end of a long scroll, so the block-end inset is a knob of its own rather than mirroring the block-start one. The 360px form measure and the 15px mobile inline gutter match the canonical Login flow exactly (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never sees the surface jump."
   },
   {
     "name": "--auth-shell-registration-main-padding-block-start",
     "value": "1rem",
-    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto * margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any * more. * * It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at * 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px * stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of * nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. * 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A * sign-up form whose first field sits below the fold because of decoration is a worse failure * than a lost artboard anchor, so the anchor yields. * * Both values are still public knobs: a product that wants the literal artboard back sets this * to 9.5rem and accepts the overflow on a short viewport."
+    "description": "Block-start PAGE GUTTER — the floor the column keeps against the viewport edge once the auto margins in shell-layout.css have placed it. It is deliberately NOT the artboard offset any more. It used to be 9.5rem / 8.875rem, derived from the canonical SCR-002 anchor (card y=284 at 1440x900 and y=274 at 390x844, each the offset plus the 112px identity slot plus the 20px stack gap). Held as unconditional padding, that constant manufactured a scrollbar out of nothing: at 1440x900 the column measured 152px of EMPTY SPACE + 793px of content + 48px, i.e. 993px in a 900px viewport, so the page scrolled 93px and the scrolled region was blank. A sign-up form whose first field sits below the fold because of decoration is a worse failure than a lost artboard anchor, so the anchor yields. Both values are still public knobs: a product that wants the literal artboard back sets this to 9.5rem and accepts the overflow on a short viewport."
   },
   {
     "name": "--auth-shell-registration-main-padding-block-start-mobile",
     "value": "0.9375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-main-padding-inline",
     "value": "1rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-main-padding-inline-mobile",
     "value": "0.9375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-main-padding-block-end",
@@ -7131,122 +7131,122 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-registration-main-padding-block-end-mobile",
     "value": "2rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-card-stack-gap",
     "value": "1.25rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-registration-identity-slot-block-size",
     "value": "7rem",
-    "description": "Fixed identity track, the same 112px `login` proved (gh#237). Without it the card anchor moves * with the title/requester line count, so the canonical y above would hold for exactly one copy * length and drift for every other. The slot absorbs absent / one-line / two-line identity * content instead."
+    "description": "Fixed identity track, the same 112px `login` proved (gh#237). Without it the card anchor moves with the title/requester line count, so the canonical y above would hold for exactly one copy length and drift for every other. The slot absorbs absent / one-line / two-line identity content instead."
   },
   {
     "name": "--auth-shell-divider-gap",
     "value": "0.625rem",
-    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step * moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` * rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). * * ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now * --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section * label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the * label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth * micro-scale finally rides the service's --font-size-base like everything else. 11 was never a * step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at an 11px label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line box). 19/11 is that RATIO, not a pin: it holds the row proportional when the label's step moves, which is exactly what gh#329 did to it. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the whole lower half of the Login card 8px high (gh#263). ON the type scale (gh#329): the label was the literal `0.6875rem` (11px) and is now --font-size-2xs, the scale's ratio⁻² step ≈ 11.107px — the same step the sidebar section label, the kbd cap and the chrome page subtitle already take. GEOMETRY MOVES by 0.11px on the label and 0.19px on the row (19 → 19.19px), i.e. a fifth of a pixel, and in exchange the auth micro-scale finally rides the service's --font-size-base like everything else. 11 was never a step; it was 2xs rounded to the nearest whole pixel and then written down as if it were."
   },
   {
     "name": "--auth-shell-divider-label-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-divider-label-line-height",
     "value": "calc(19 / 11)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-divider-rule-color",
     "value": "var(--border)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-divider-label-color",
     "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-identity-gap",
     "value": "0.375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-requester-gap",
     "value": "0.375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-requester-icon-size",
     "value": "var(--icon-size-md)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-requester-glyph-size",
     "value": "var(--icon-size-2xs)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-min-height",
     "value": "var(--control-height-comfortable)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-gap",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-padding",
     "value": "var(--space-1) var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-identity-min-width",
     "value": "12rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-avatar-size",
     "value": "var(--control-height-sm)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-avatar-glyph-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-account-summary-email-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-footer-content-gap",
     "value": "0.375rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-footer-text-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard * anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
+    "description": "The same 11px → 2xs snap as the divider label above (gh#329); this one carried no artboard anchor at all, only the literal. GEOMETRY MOVES by 0.11px."
   },
   {
     "name": "--auth-footer-target-min-size",
     "value": "var(--touch-target-min)",
-    "description": "The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page * failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the * link BOX rather than a ::after hit area: the target a user (and an audit) measures is the * element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics * are untouched — only the box grows."
+    "description": "The legal links sit at --font-size-2xs, so their line box alone is ~19px and every auth page failed WCAG 2.2 SC 2.5.8 on Terms / Privacy / the locale trigger. The floor is applied to the link BOX rather than a ::after hit area: the target a user (and an audit) measures is the element itself, and an invisible overlay that still reports 19px is not a fix. Text metrics are untouched — only the box grows."
   },
   {
     "name": "--auth-stack-gap",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-field-label-gap",
     "value": "var(--space-1)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--auth-shell-field-label-font-size",
@@ -7256,67 +7256,67 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-field-label-line-height",
     "value": "1.5",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-bar-height",
     "value": "var(--app-shell-bar-height)",
-    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar`: the same fixed height, * and now the same HORIZONTAL PAGE-INSET AXIS (gh#330) — bar, main and footer all read the page * gutter and all step to the compact gutter on the page's own `(max-width: 720px)` line, so the * bar's content and the column beneath it share one content edge at every width. * * The comment here used to claim the bar mirrored `.app-topbar`'s inline padding. It did not, and * had not since gh#330 moved that side onto --space-page-x: the bar was left hard-coding * --space-4 (16px) while main and footer used --space-6 (24px). Measured in Chromium on * /isolate/layout-centered-shell BEFORE this fix, the bar's content sat at x=16 and the column at * x=24 — a constant 8px misalignment at every width from 784px down to 390px. 784 is not * arbitrary: it is the md tier (46rem) plus the two 24px main gutters, the width below which the * column stops being centred and pins to the gutter, which is what makes the error visible. * AFTER: 24/24 at 784 and 760, 16/16 at 700 and 390. * * The column max-width has three tiers, all wider than the 24rem auth card. A service retunes the * inset, block padding and each width tier without forking CSS."
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", account, standalone settings). The bar mirrors AppShell's `.app-topbar`: the same fixed height, and now the same HORIZONTAL PAGE-INSET AXIS (gh#330) — bar, main and footer all read the page gutter and all step to the compact gutter on the page's own `(max-width: 720px)` line, so the bar's content and the column beneath it share one content edge at every width. The comment here used to claim the bar mirrored `.app-topbar`'s inline padding. It did not, and had not since gh#330 moved that side onto --space-page-x: the bar was left hard-coding --space-4 (16px) while main and footer used --space-6 (24px). Measured in Chromium on /isolate/layout-centered-shell BEFORE this fix, the bar's content sat at x=16 and the column at x=24 — a constant 8px misalignment at every width from 784px down to 390px. 784 is not arbitrary: it is the md tier (46rem) plus the two 24px main gutters, the width below which the column stops being centred and pins to the gutter, which is what makes the error visible. AFTER: 24/24 at 784 and 760, 16/16 at 700 and 390. The column max-width has three tiers, all wider than the 24rem auth card. A service retunes the inset, block padding and each width tier without forking CSS."
   },
   {
     "name": "--centered-shell-bar-padding-x",
     "value": "var(--space-page-x)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-bar-padding-x-compact",
     "value": "var(--space-page-compact-x)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-main-padding",
     "value": "var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-main-padding-inline-compact",
     "value": "var(--space-page-compact-x)",
-    "description": "Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the * shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service * that already sets it is not broken by this fix."
+    "description": "Inline-only compact steps. They exist as their own knobs rather than as a redefinition of the shorthands above, so `--centered-shell-main-padding` keeps meaning all four sides and a service that already sets it is not broken by this fix."
   },
   {
     "name": "--centered-shell-footer-padding",
     "value": "var(--space-3) var(--space-6) var(--space-4)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-footer-padding-inline-compact",
     "value": "var(--space-page-compact-x)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-column-offset-block",
     "value": "0",
-    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
+    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller than the viewport, so a long localized message scrolls from the top instead of clipping."
   },
   {
     "name": "--centered-shell-width-sm",
     "value": "32rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-width-md",
     "value": "46rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-width-lg",
     "value": "64rem",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-landing-max-width",
     "value": "67.5rem",
-    "description": "CenteredShell · public-landing preset (gh#252) — the token-owned geometry of a PUBLIC marketing * / product landing page: one content measure shared by header, main column and footer, the * section rhythm between page sections, the flat (chrome-quiet) card presentation and the hero * heading tier. Every value is a service-themeable knob (rule #45): a landing composition is a * COMPOSITION of real primitives (docs/COMPOSITION-VS-COMPONENT.md — Hero/Navbar/Footer FAIL the * Framework-Component Test), so the consumer must never own geometry or a media query. These * knobs are read ONLY under `.ui-centered-shell[data-preset=\"public-landing\"]`, so the default * shell — which emits no `data-preset` at all — is byte-identical to before. 1080px — header/main/footer share ONE measure"
+    "description": "CenteredShell · public-landing preset (gh#252) — the token-owned geometry of a PUBLIC marketing / product landing page: one content measure shared by header, main column and footer, the section rhythm between page sections, the flat (chrome-quiet) card presentation and the hero heading tier. Every value is a service-themeable knob (rule #45): a landing composition is a COMPOSITION of real primitives (docs/COMPOSITION-VS-COMPONENT.md — Hero/Navbar/Footer FAIL the Framework-Component Test), so the consumer must never own geometry or a media query. These knobs are read ONLY under `.ui-centered-shell[data-preset=\"public-landing\"]`, so the default shell — which emits no `data-preset` at all — is byte-identical to before. 1080px — header/main/footer share ONE measure"
   },
   {
     "name": "--centered-shell-landing-inset-inline",
@@ -7346,112 +7346,112 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--centered-shell-landing-section-gap-compact",
     "value": "var(--space-6)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-landing-footer-padding-block",
     "value": "var(--space-8)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-landing-card-shadow",
     "value": "none",
-    "description": "Chrome is a token, default quiet (rule #44): a landing surface is FLAT — no card elevation — * so a service opts back IN with `--centered-shell-landing-card-shadow: var(--card-shadow)`."
+    "description": "Chrome is a token, default quiet (rule #44): a landing surface is FLAT — no card elevation — so a service opts back IN with `--centered-shell-landing-card-shadow: var(--card-shadow)`."
   },
   {
     "name": "--centered-shell-landing-heading-size",
     "value": "var(--font-size-display)",
-    "description": "Hero heading tier. The preset re-points `--heading-h1` (same mechanism as * `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}` * and never a consumer font-size."
+    "description": "Hero heading tier. The preset re-points `--heading-h1` (same mechanism as `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}` and never a consumer font-size."
   },
   {
     "name": "--centered-shell-landing-heading-size-compact",
     "value": "var( --font-size-3xl, calc(var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)) )",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--centered-shell-landing-background",
     "value": "initial",
-    "description": "Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE * (`var(--centered-shell-landing-background, var(--background))`), so a scoped * `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented default = hsl(var(--background)) — a public * page is the plain page canvas, not the app's `--muted` chrome."
+    "description": "Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE (`var(--centered-shell-landing-background, var(--background))`), so a scoped `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Documented default = hsl(var(--background)) — a public page is the plain page canvas, not the app's `--muted` chrome."
   },
   {
     "name": "--app-shell-bar-height",
     "value": "var(--band-height-3xl)",
-    "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem * (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar * leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no * overflow setting can recover. 3.5rem gives 6px of breathing per side."
+    "description": "Rule #24 companion (gh#291): on coarse pointers --control-height grows to 2.75rem (44px tap floor), and the shell bar sits flush with the viewport top — a 3rem bar leaves the control's 3px focus ring painting ABOVE y=0, off-screen, which no overflow setting can recover. 3.5rem gives 6px of breathing per side."
   },
   {
     "name": "--app-shell-nav-rail-width",
     "value": "3rem",
-    "description": "Same rule #24 companion for the second navigation track: a finger gets the 44px floor back, * and the track widens with the cell so the cell is not clipped by the rail it sits in."
+    "description": "Same rule #24 companion for the second navigation track: a finger gets the 44px floor back, and the track widens with the cell so the cell is not clipped by the rail it sits in."
   },
   {
     "name": "--app-shell-nav-rail-item-size",
     "value": "var(--band-height-xl)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-block-size",
     "value": "100dvh",
-    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, * a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which * is why they belong to the shell and not to the page: * * 1. The shell is the only scroll container. The root is exactly one viewport tall * (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands * never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a * real phone, where the URL bar collapses under the page. * 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the * home indicator never covers the primary verb. * * The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets * (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes * `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding * it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both * writing directions and costs at most a few px on the non-notch side in landscape. * * A service retunes the page gutter, the three band heights and the block padding from its theme; * nothing here is reachable only through a consumer selector."
+    "description": "MobileShell (gh#354 §6) — the handheld app shell: a status band, an app bar, ONE scroll region, a sticky action bar and a bottom tab bar. Two facts here cannot be reached by composition, which is why they belong to the shell and not to the page: 1. The shell is the only scroll container. The root is exactly one viewport tall (`--mobile-shell-block-size`), so the document itself never scrolls and the chrome bands never leave the screen — the reason a composed `Card` + `overflow-y-auto` stack drifts on a real phone, where the URL bar collapses under the page. 2. Every band absorbs the device safe-area insets, so a notch never covers the app bar and the home indicator never covers the primary verb. The safe-area knobs are `env()` values and are therefore ZERO on every surface with no insets (desktop, jsdom, the docs frames) — the geometry below is unchanged there. The INLINE knob takes `max()` of BOTH physical insets on purpose: `env(safe-area-inset-left)` is physical, so binding it to the inline START would be wrong under `dir=\"rtl\"`. A symmetric inset is correct in both writing directions and costs at most a few px on the non-notch side in landscape. A service retunes the page gutter, the three band heights and the block padding from its theme; nothing here is reachable only through a consumer selector."
   },
   {
     "name": "--mobile-shell-max-inline-size",
     "value": "26.875rem",
-    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel * Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant * to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. * Only `width=\"phone\"` reads it; the default `fill` never does."
+    "description": "430px — the widest logical width the current handheld class reports (iPhone Pro Max / Pixel Pro XL). It is a CAP, so it has to sit at or above every real device width the shell is meant to be read at; below that, `width=\"phone\"` would squeeze the very screens it exists to serve. Only `width=\"phone\"` reads it; the default `fill` never does."
   },
   {
     "name": "--mobile-shell-safe-inset-block-start",
     "value": "env(safe-area-inset-top)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-safe-inset-block-end",
     "value": "env(safe-area-inset-bottom)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-safe-inset-inline",
     "value": "max(env(safe-area-inset-left), env(safe-area-inset-right))",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-inset-inline",
     "value": "var(--space-4)",
-    "description": "Page gutter shared by every band AND by the scroll region, so the app-bar title, the list rows * and the sticky action bar sit on ONE content edge — the axis gh#330 had to repair for * CenteredShell after the bar and the column drifted 8px apart."
+    "description": "Page gutter shared by every band AND by the scroll region, so the app-bar title, the list rows and the sticky action bar sit on ONE content edge — the axis gh#330 had to repair for CenteredShell after the bar and the column drifted 8px apart."
   },
   {
     "name": "--mobile-shell-control-height",
     "value": "var(--control-height-comfortable)",
-    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's * 44px floor is already reached on a coarse pointer through --control-height, but a handheld app * is touch-first BY DEFINITION — it must not render 32px targets merely because it is being * previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
+    "description": "Touch tier for the WHOLE shell subtree, the same technique `.ui-auth-shell` uses. Rule #24's 44px floor is already reached on a coarse pointer through --control-height, but a handheld app is touch-first BY DEFINITION — it must not render 32px targets merely because it is being previewed with a mouse, or because a service ships it in an Electron/desktop wrapper."
   },
   {
     "name": "--mobile-shell-region-gap",
     "value": "var(--space-2)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-status-bar-height",
     "value": "var(--band-height-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-header-bar-height",
     "value": "var(--band-height-3xl)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-tab-bar-height",
     "value": "calc(var(--band-height-3xl) + var(--space-2))",
-    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; * there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
+    "description": "4rem. A tab bar is an icon stacked over a label, so it is one step TALLER than the app bar; there is no 64px band step, so it derives from the 3.5rem one (tier 2a)."
   },
   {
     "name": "--mobile-shell-main-padding-block",
     "value": "var(--space-4)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--mobile-shell-actions-padding-block",
     "value": "var(--space-3)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
     "name": "--sidebar-nav-item-foreground",
@@ -7471,22 +7471,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sidebar-nav-icon-foreground",
     "value": "initial",
-    "description": "Nav ICON (`.sb-icon`, incl. the collapsed rail and group triggers). Default = currentColor, * i.e. the row colour — the pre-gh#228 look. Set this alone to get canonical dark icons next to * muted labels."
+    "description": "Nav ICON (`.sb-icon`, incl. the collapsed rail and group triggers). Default = currentColor, i.e. the row colour — the pre-gh#228 look. Set this alone to get canonical dark icons next to muted labels."
   },
   {
     "name": "--sidebar-nav-icon-hover-foreground",
     "value": "initial",
-    "description": "Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground, * then to currentColor, so setting the base icon knob alone themes every state."
+    "description": "Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground, then to currentColor, so setting the base icon knob alone themes every state."
   },
   {
     "name": "--sidebar-nav-icon-active-foreground",
     "value": "initial",
-    "description": "Sidebar nav-row COLOUR knobs (gh#228). The row/label and its icon are separately themeable: * before this, `.sb-nav-item` painted one `--muted-foreground` that the Lucide SVG inherited, so a * service could only darken its 16px nav icons by writing page-local CSS or by re-tinting every * muted text globally. Geometry knobs (--sidebar-nav-icon-size, --sidebar-nav-item-height/-gap/ * -padding-x) live in components/shell.css and are untouched by these. * * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (`var(--knob, hsl(var(--role)))`), so a scoped `[data-tenant]` / `.dark` role override * re-resolves live instead of freezing at :root (docs/TOKENS.md · \"Role-mirror knobs MUST be * `initial`\"). Every default is byte-identical to the pre-gh#228 rendering. * * The ACTIVE row's own background/foreground keep their existing knobs * (--sidebar-item-active-background / --sidebar-item-active-foreground, components/shell.css); * only the active ICON gets a new one."
+    "description": "Sidebar nav-row COLOUR knobs (gh#228). The row/label and its icon are separately themeable: before this, `.sb-nav-item` painted one `--muted-foreground` that the Lucide SVG inherited, so a service could only darken its 16px nav icons by writing page-local CSS or by re-tinting every muted text globally. Geometry knobs (--sidebar-nav-icon-size, --sidebar-nav-item-height/-gap/ -padding-x) live in components/shell.css and are untouched by these. ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE (`var(--knob, hsl(var(--role)))`), so a scoped `[data-tenant]` / `.dark` role override re-resolves live instead of freezing at :root (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Every default is byte-identical to the pre-gh#228 rendering. The ACTIVE row's own background/foreground keep their existing knobs (--sidebar-item-active-background / --sidebar-item-active-foreground, components/shell.css); only the active ICON gets a new one."
   },
   {
     "name": "--sidebar-nav-icon-disabled-foreground",
     "value": "initial",
-    "description": "Sidebar nav-row COLOUR knobs (gh#228). The row/label and its icon are separately themeable: * before this, `.sb-nav-item` painted one `--muted-foreground` that the Lucide SVG inherited, so a * service could only darken its 16px nav icons by writing page-local CSS or by re-tinting every * muted text globally. Geometry knobs (--sidebar-nav-icon-size, --sidebar-nav-item-height/-gap/ * -padding-x) live in components/shell.css and are untouched by these. * * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (`var(--knob, hsl(var(--role)))`), so a scoped `[data-tenant]` / `.dark` role override * re-resolves live instead of freezing at :root (docs/TOKENS.md · \"Role-mirror knobs MUST be * `initial`\"). Every default is byte-identical to the pre-gh#228 rendering. * * The ACTIVE row's own background/foreground keep their existing knobs * (--sidebar-item-active-background / --sidebar-item-active-foreground, components/shell.css); * only the active ICON gets a new one."
+    "description": "Sidebar nav-row COLOUR knobs (gh#228). The row/label and its icon are separately themeable: before this, `.sb-nav-item` painted one `--muted-foreground` that the Lucide SVG inherited, so a service could only darken its 16px nav icons by writing page-local CSS or by re-tinting every muted text globally. Geometry knobs (--sidebar-nav-icon-size, --sidebar-nav-item-height/-gap/ -padding-x) live in components/shell.css and are untouched by these. ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE (`var(--knob, hsl(var(--role)))`), so a scoped `[data-tenant]` / `.dark` role override re-resolves live instead of freezing at :root (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). Every default is byte-identical to the pre-gh#228 rendering. The ACTIVE row's own background/foreground keep their existing knobs (--sidebar-item-active-background / --sidebar-item-active-foreground, components/shell.css); only the active ICON gets a new one."
   },
   {
     "name": "--table-row-height-compact",
@@ -7516,17 +7516,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-cell-space-x",
     "value": "initial",
-    "description": "THE CELL'S INLINE INSET — and it is the CARD'S inset, not the control's (gh#849). * * Measured on /showcase/table-pagination at 1440px, gap from the card's inner edge: * * card header (title / count) 17px * table th/td (column text) 13px <- the odd one out * pagination footer 17px * * One card, three horizontal bands, two optical axes. The table read the CONTROL step * (--control-padding-x, 12px) while the card read the SECTION step (--card-space-inset -> * --space-section-active, 16px), and a table is the flush body of a card more often than it * is anything else — so the two steps meet at the same edge on the most common composition * this library ships, and the table sits 4px inboard of the header above it and the footer * below it, on BOTH edges. * * It cannot be settled in the footer: --table-pagination-padding-x defaults to THIS token so * the \"rows per page\" label lands on the first column's text axis, so the footer follows the * columns by design. Either the cells move to the card's inset or the card's own chrome * disagrees with its content forever. IBM Carbon — this repo's spacing authority * (docs/DESIGN-AUTHORITY.md) — gives DataTable and Tile the same 16px inline inset for * exactly this reason. Both 12 and 16 are legal Carbon steps; the RELATIONSHIP is what was * wrong, not the number. * * `initial`, not `var(--space-section-active)`, per docs/TOKENS.md - \"Role-mirror knobs MUST * be `initial`\". The old binding was a :root var() and it FROZE: probed in Chromium, setting * --control-padding-x on the card left the cell padding at 12px, and on a subtree with * --scaling .92 the control step resolved to 11.04px while the cell still used the root's * unscaled 12px. A token that claims to track another and silently does not is worse than * one that never claimed it. default = var(--space-section-active)"
+    "description": "THE CELL'S INLINE INSET — and it is the CARD'S inset, not the control's (gh#849). Measured on /showcase/table-pagination at 1440px, gap from the card's inner edge: card header (title / count) 17px table th/td (column text) 13px <- the odd one out pagination footer 17px One card, three horizontal bands, two optical axes. The table read the CONTROL step (--control-padding-x, 12px) while the card read the SECTION step (--card-space-inset -> --space-section-active, 16px), and a table is the flush body of a card more often than it is anything else — so the two steps meet at the same edge on the most common composition this library ships, and the table sits 4px inboard of the header above it and the footer below it, on BOTH edges. It cannot be settled in the footer: --table-pagination-padding-x defaults to THIS token so the \"rows per page\" label lands on the first column's text axis, so the footer follows the columns by design. Either the cells move to the card's inset or the card's own chrome disagrees with its content forever. IBM Carbon — this repo's spacing authority (docs/DESIGN-AUTHORITY.md) — gives DataTable and Tile the same 16px inline inset for exactly this reason. Both 12 and 16 are legal Carbon steps; the RELATIONSHIP is what was wrong, not the number. `initial`, not `var(--space-section-active)`, per docs/TOKENS.md - \"Role-mirror knobs MUST be `initial`\". The old binding was a :root var() and it FROZE: probed in Chromium, setting --control-padding-x on the card left the cell padding at 12px, and on a subtree with --scaling .92 the control step resolved to 11.04px while the cell still used the root's unscaled 12px. A token that claims to track another and silently does not is worse than one that never claimed it. default = var(--space-section-active)"
   },
   {
     "name": "--table-cell-indent-space-step",
     "value": "var(--space-4)",
-    "description": "Hierarchy indent step for `<TableCell indent={depth}>` (gh#354). The cell's inset is * `--table-cell-space-x + depth × this step`, so level 0 sits exactly on the column's own text * axis and every further level is one step in. Owned here rather than as a magic expression in * JSX (the trap `--tree-select-depth-space-step` was pulled out of), so a denser service dials * the step down — or to `0` for a flat table — without touching a call site."
+    "description": "Hierarchy indent step for `<TableCell indent={depth}>` (gh#354). The cell's inset is `--table-cell-space-x + depth × this step`, so level 0 sits exactly on the column's own text axis and every further level is one step in. Owned here rather than as a magic expression in JSX (the trap `--tree-select-depth-space-step` was pulled out of), so a denser service dials the step down — or to `0` for a flat table — without touching a call site."
   },
   {
     "name": "--table-border-color",
     "value": "initial",
-    "description": "Cell-grid rule colour for `<Table bordered>` (gh#274) — the outer frame and the vertical * rules between columns. Declared `initial` so the default re-resolves to the LIVE --border * role at the call site (a :root binding to hsl(var(--border)) freezes at the :root value and * a scoped [data-tenant] override of --border would never reach it — docs/TOKENS.md). * Default = hsl(var(--border))."
+    "description": "Cell-grid rule colour for `<Table bordered>` (gh#274) — the outer frame and the vertical rules between columns. Declared `initial` so the default re-resolves to the LIVE --border role at the call site (a :root binding to hsl(var(--border)) freezes at the :root value and a scoped [data-tenant] override of --border would never reach it — docs/TOKENS.md). Default = hsl(var(--border))."
   },
   {
     "name": "--table-pagination-padding-y",
@@ -7541,7 +7541,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-surface-min-inline-size",
     "value": "640px",
-    "description": "DataTable surface — narrow-viewport legibility FLOOR (gh#253). Below the `sm` viewport step a * multi-column admin grid whose columns are `white-space: nowrap` would otherwise be crushed, so * the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead. * This shipped as a hard-coded `min-w-[640px]` utility on the surface element, which left a * service that wants a narrower (or no) floor with no route but forking the component (#45). * Default = the previous literal, in px so the floor releases at EXACTLY the same width as the * px-based `sm` media query that clears it (a rem value would drift under a non-16px root and * re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is * what `preset=\"action-collection\"` does, because there the priority measures own the width."
+    "description": "DataTable surface — narrow-viewport legibility FLOOR (gh#253). Below the `sm` viewport step a multi-column admin grid whose columns are `white-space: nowrap` would otherwise be crushed, so the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead. This shipped as a hard-coded `min-w-[640px]` utility on the surface element, which left a service that wants a narrower (or no) floor with no route but forking the component (#45). Default = the previous literal, in px so the floor releases at EXACTLY the same width as the px-based `sm` media query that clears it (a rem value would drift under a non-16px root and re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is what `preset=\"action-collection\"` does, because there the priority measures own the width."
   },
   {
     "name": "--table-head-font-size",
@@ -7551,12 +7551,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-head-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "Header WEIGHT (gh#410). Was the literal `var(--font-weight-medium)` in table-layout.css, which * left a service that wants a quiet header row writing `font-normal` on every `<TableHead>` — 18 * of them in the app that reported this. Default is byte-identical; a quiet header is now one * declaration (`--table-head-font-weight: var(--font-weight-normal)`)."
+    "description": "Header WEIGHT (gh#410). Was the literal `var(--font-weight-medium)` in table-layout.css, which left a service that wants a quiet header row writing `font-normal` on every `<TableHead>` — 18 of them in the app that reported this. Default is byte-identical; a quiet header is now one declaration (`--table-head-font-weight: var(--font-weight-normal)`)."
   },
   {
     "name": "--table-header-background",
     "value": "initial",
-    "description": "Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root * binding to a role var freezes at the :root value and a scoped [data-tenant] role override never * reaches it. A brand sets both header tokens together to keep band/text contrast. * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text."
+    "description": "Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root binding to a role var freezes at the :root value and a scoped [data-tenant] role override never reaches it. A brand sets both header tokens together to keep band/text contrast. Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text."
   },
   {
     "name": "--table-header-foreground",
@@ -7571,7 +7571,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-fixed-shadow-start",
     "value": "6px 0 6px -5px hsl(var(--foreground) / 0.12)",
-    "description": "The same lift for a column frozen to the inline START (antd `fixed: \"start\"`), pointing the * other way. `box-shadow` has no logical offset, so the writing direction needs its own value — * the RTL companion is a token rather than a literal in the stylesheet so a service that retunes * one edge cannot leave the other behind."
+    "description": "The same lift for a column frozen to the inline START (antd `fixed: \"start\"`), pointing the other way. `box-shadow` has no logical offset, so the writing direction needs its own value — the RTL companion is a token rather than a literal in the stylesheet so a service that retunes one edge cannot leave the other behind."
   },
   {
     "name": "--table-fixed-shadow-start-rtl",
@@ -7581,12 +7581,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-expand-column-width",
     "value": "2.5rem",
-    "description": "Leading column that carries the expand affordance (antd `expandable`). Sized like the * selection column beside it so the two leading columns read as one gutter."
+    "description": "Leading column that carries the expand affordance (antd `expandable`). Sized like the selection column beside it so the two leading columns read as one gutter."
   },
   {
     "name": "--table-summary-background",
     "value": "initial",
-    "description": "Footer totals row (antd `summary`). `initial` so the --muted default re-resolves under a * scoped theme, exactly like the row-state washes above. * Default = hsl(var(--muted))."
+    "description": "Footer totals row (antd `summary`). `initial` so the --muted default re-resolves under a scoped theme, exactly like the row-state washes above. Default = hsl(var(--muted))."
   },
   {
     "name": "--table-summary-border-width",
@@ -7596,7 +7596,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-expanded-background",
     "value": "initial",
-    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as * --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row."
+    "description": "Wash behind an expanded detail row, so the panel reads as belonging to the row above it. Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row."
   },
   {
     "name": "--table-selection-menu-gap",
@@ -7606,12 +7606,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-striped-background",
     "value": "initial",
-    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.8) striped · hsl(var(--accent) / 0.7) hover · * hsl(var(--muted) / 0.3) selected. * The stripe was --muted / 0.4 until gh#700 measured it: 1.02:1 against the plain row in light, * i.e. not a stripe. 0.8 is the strongest --muted step that keeps every text role on it at AA * with the control boundary still at 3:1 (muted-foreground 5.29 light / 5.71 dark, --input 3.24 / * 3.31) and leaves the --accent hover a visible step beyond it in both themes — * src/tokens/__tests__/table-stripe-contrast.test.ts recomputes all of it."
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted default re-resolves under a scoped theme; a service retints by reading another role (e.g. --primary). Defaults = hsl(var(--muted) / 0.8) striped · hsl(var(--accent) / 0.7) hover · hsl(var(--muted) / 0.3) selected. The stripe was --muted / 0.4 until gh#700 measured it: 1.02:1 against the plain row in light, i.e. not a stripe. 0.8 is the strongest --muted step that keeps every text role on it at AA with the control boundary still at 3:1 (muted-foreground 5.29 light / 5.71 dark, --input 3.24 / 3.31) and leaves the --accent hover a visible step beyond it in both themes — src/tokens/__tests__/table-stripe-contrast.test.ts recomputes all of it."
   },
   {
     "name": "--table-row-striped-alpha",
     "value": "0%",
-    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row * paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full * stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real * alpha, not a flag: a theme may also dial a lighter stripe (`60%`). * * THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes * every Table and DataTable. The `striped` prop is the per-instance override on top of it — * `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out * inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root * without the freeze rule (docs/TOKENS.md)."
+    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real alpha, not a flag: a theme may also dial a lighter stripe (`60%`). THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes every Table and DataTable. The `striped` prop is the per-instance override on top of it — `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root without the freeze rule (docs/TOKENS.md)."
   },
   {
     "name": "--table-row-hover-background",
@@ -7626,7 +7626,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-primary-width",
     "value": "18%",
-    "description": "Table · action-collection preset (gh#253) — the canonical dense approval / action queue. * Column PRIORITY measures replace the desktop intrinsic widths (a nowrap free-text column is * what makes a five-column queue wider than its card and forces a horizontal scroll). Nothing * here is read unless `preset=\"action-collection\"` is set, so every existing table is untouched. * Percentages so the ratio holds at any card width; the action affordance is an absolute measure * because it must never be squeezed below its touch target. requester / subject"
+    "description": "Table · action-collection preset (gh#253) — the canonical dense approval / action queue. Column PRIORITY measures replace the desktop intrinsic widths (a nowrap free-text column is what makes a five-column queue wider than its card and forces a horizontal scroll). Nothing here is read unless `preset=\"action-collection\"` is set, so every existing table is untouched. Percentages so the ratio holds at any card width; the action affordance is an absolute measure because it must never be squeezed below its touch target. requester / subject"
   },
   {
     "name": "--table-action-collection-secondary-width",
@@ -7646,7 +7646,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-primary-width-compact",
     "value": "24%",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). Percentages, * like the desktop tier: while the priority ratios FIT (the canonical queues up to the * six-column budget below), they keep the table filling its container edge-to-edge with no * horizontal scroll — the gh#253 acceptance."
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). Percentages, like the desktop tier: while the priority ratios FIT (the canonical queues up to the six-column budget below), they keep the table filling its container edge-to-edge with no horizontal scroll — the gh#253 acceptance."
   },
   {
     "name": "--table-action-collection-secondary-width-compact",
@@ -7666,7 +7666,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-primary-width-floor",
     "value": "6rem",
-    "description": "Wide-collection FLOORS — the compact measures wherever the priority budget is * OVER-SUBSCRIBED (gh#262, gh#844). * * Percentage measures stop working once a queue carries enough columns for the shares to sum * past 100%: `table-layout: fixed` NORMALIZES them back into the table's specified width, so at * ~10 columns on a 390px frame a \"24%\" column really renders at a tenth of the frame, every * column drops below one CJK glyph, and JA headers shred into a vertical one-character-per-line * column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). Cell `min-inline-size` * is inert in the fixed algorithm, `max(%, length)` resolves to neither operand (below), and * the intrinsic (max-content) size of a fixed-layout table is degenerate — all in Chromium — so a * LENGTH is the only floor an engine respects: length columns are never squeezed, and when * their sum outgrows the container the table's used width grows past its specified 100% * (CSS 2.1 §17.5.2.1) into the keyboard-reachable overflow-x wrapper, which scrolls. * ONE-dimensional scrolling of a data table is explicitly permitted by SC 1.4.10; * one-character-per-line is not readable at all. * * The stylesheet switches tiers on the BUDGET, not on width. The budget is one column per * priority tier plus one free-text column; the floors engage wherever a queue asks for more * than that, and a queue that fits it keeps its scroll-free percent tier byte-for-byte. * * Two ways to ask for more, and gh#262 only saw the first: * SEVEN COLUMNS. With five distinct column kinds, seven columns must repeat something, so * the shares are guaranteed to over-sum (gh#262 expectation 3). * A REPEATED TIER, at ANY column count (gh#844). The compact measures are per-column * percentages, NOT shares of a sum: a `primary` column is 24% of the table whether the * table has three columns or six. So the column count does not predict readability at all * — what over-subscribes the budget is repeating a tier, and the surplus comes out of the * `auto` free-text column. Measured at 390 with a 340px card content box, a FIVE-column JA * queue carrying two `meta` columns left its free-text column 47.6px wide: 15 glyphs over * 8 line boxes, 1.9 characters per line — the same shred gh#262 fixed at ten columns, * three columns below the ceiling that was supposed to make it impossible. The same queue * on the floors is 4.75 characters per line and scrolls, which is the trade SC 1.4.10 * already sanctions above. * * `max(%, length)` is not an alternative to the switch. It is not merely ignored: in the * fixed algorithm Chromium resolves `max(24%, 6rem)` on a 340px table to 113px — neither the * 81.6px percentage nor the 96px floor — so it cannot express \"this column, floored\". * * Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor * would silently halve for the JA copy these floors exist to protect. At the compact type tier * (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem * text measure = 5 full-width glyphs per line — a JA header wraps to two readable lines, never * a character column."
+    "description": "Wide-collection FLOORS — the compact measures wherever the priority budget is OVER-SUBSCRIBED (gh#262, gh#844). Percentage measures stop working once a queue carries enough columns for the shares to sum past 100%: `table-layout: fixed` NORMALIZES them back into the table's specified width, so at ~10 columns on a 390px frame a \"24%\" column really renders at a tenth of the frame, every column drops below one CJK glyph, and JA headers shred into a vertical one-character-per-line column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). Cell `min-inline-size` is inert in the fixed algorithm, `max(%, length)` resolves to neither operand (below), and the intrinsic (max-content) size of a fixed-layout table is degenerate — all in Chromium — so a LENGTH is the only floor an engine respects: length columns are never squeezed, and when their sum outgrows the container the table's used width grows past its specified 100% (CSS 2.1 §17.5.2.1) into the keyboard-reachable overflow-x wrapper, which scrolls. ONE-dimensional scrolling of a data table is explicitly permitted by SC 1.4.10; one-character-per-line is not readable at all. The stylesheet switches tiers on the BUDGET, not on width. The budget is one column per priority tier plus one free-text column; the floors engage wherever a queue asks for more than that, and a queue that fits it keeps its scroll-free percent tier byte-for-byte. Two ways to ask for more, and gh#262 only saw the first: SEVEN COLUMNS. With five distinct column kinds, seven columns must repeat something, so the shares are guaranteed to over-sum (gh#262 expectation 3). A REPEATED TIER, at ANY column count (gh#844). The compact measures are per-column percentages, NOT shares of a sum: a `primary` column is 24% of the table whether the table has three columns or six. So the column count does not predict readability at all — what over-subscribes the budget is repeating a tier, and the surplus comes out of the `auto` free-text column. Measured at 390 with a 340px card content box, a FIVE-column JA queue carrying two `meta` columns left its free-text column 47.6px wide: 15 glyphs over 8 line boxes, 1.9 characters per line — the same shred gh#262 fixed at ten columns, three columns below the ceiling that was supposed to make it impossible. The same queue on the floors is 4.75 characters per line and scrolls, which is the trade SC 1.4.10 already sanctions above. `max(%, length)` is not an alternative to the switch. It is not merely ignored: in the fixed algorithm Chromium resolves `max(24%, 6rem)` on a 340px table to 113px — neither the 81.6px percentage nor the 96px floor — so it cannot express \"this column, floored\". Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor would silently halve for the JA copy these floors exist to protect. At the compact type tier (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem text measure = 5 full-width glyphs per line — a JA header wraps to two readable lines, never a character column."
   },
   {
     "name": "--table-action-collection-secondary-width-floor",
@@ -7681,7 +7681,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-flex-width-floor",
     "value": "5rem",
-    "description": "Floor for a column with NO `priority` (the free-text column, `auto` up to the budget). It * cannot stay `auto` past the budget: once the marked columns over-constrain the table, the * fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the same * shredding, moved to the free-text column. The actions floor is simply * `--table-action-collection-actions-width-compact`, already an absolute measure."
+    "description": "Floor for a column with NO `priority` (the free-text column, `auto` up to the budget). It cannot stay `auto` past the budget: once the marked columns over-constrain the table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the same shredding, moved to the free-text column. The actions floor is simply `--table-action-collection-actions-width-compact`, already an absolute measure."
   },
   {
     "name": "--table-action-collection-font-size-compact",
@@ -7706,12 +7706,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-action-collection-min-inline-size-compact",
     "value": "0",
-    "description": "Compact-tier LEGIBILITY FLOOR — the measure below which the preset stops fitting the table * to its container and lets the scroll region it already owns take over. * * The percentage budget above is sized for ONE column per priority tier plus one free-text * column. A queue that repeats a tier — two `secondary` columns, three `meta` columns, or an * unmarked column beside them — asks for more than 100%, and under `table-layout: fixed` the * surplus is taken out of the columns rather than out of the table: measured on a seven-column * Japanese admin queue at 390, every column landed at 44–59px and CJK labels wrapped at ONE to * TWO characters per line (dxs-platform/platform#680). That is a WCAG 2.2 SC 1.4.10 Reflow (AA) * failure, and it is the failure mode this floor removes. * * Scrolling is the correct escape, not a concession: SC 1.4.10 exempts \"parts of the content * which require two-dimensional layout for usage or meaning\", and its own note names data * tables as the example. A table that scrolls horizontally inside its card conforms; a table * whose cells are one character wide does not. * * Default `0` so nothing changes for any existing consumer: a queue that fits its priority * budget keeps fitting. A consumer whose queue carries more columns than the budget sets this * to the measure at which its narrowest column is still readable (roughly 5rem per column for * Japanese at the compact type tier) and the table scrolls instead of crushing."
+    "description": "Compact-tier LEGIBILITY FLOOR — the measure below which the preset stops fitting the table to its container and lets the scroll region it already owns take over. The percentage budget above is sized for ONE column per priority tier plus one free-text column. A queue that repeats a tier — two `secondary` columns, three `meta` columns, or an unmarked column beside them — asks for more than 100%, and under `table-layout: fixed` the surplus is taken out of the columns rather than out of the table: measured on a seven-column Japanese admin queue at 390, every column landed at 44–59px and CJK labels wrapped at ONE to TWO characters per line (dxs-platform/platform#680). That is a WCAG 2.2 SC 1.4.10 Reflow (AA) failure, and it is the failure mode this floor removes. Scrolling is the correct escape, not a concession: SC 1.4.10 exempts \"parts of the content which require two-dimensional layout for usage or meaning\", and its own note names data tables as the example. A table that scrolls horizontally inside its card conforms; a table whose cells are one character wide does not. Default `0` so nothing changes for any existing consumer: a queue that fits its priority budget keeps fitting. A consumer whose queue carries more columns than the budget sets this to the measure at which its narrowest column is still readable (roughly 5rem per column for Japanese at the compact type tier) and the table scrolls instead of crushing."
   },
   {
     "name": "--table-stacked-collection-card-padding-y",
     "value": "var(--space-stack-sm)",
-    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, * heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered * key-value card; these tokens own the card's own geometry (unlike action-collection, there is no * column-priority measure to retune — the whole row becomes one block)."
+    "description": "Table · stacked-record-collection preset (gh#293 restore — SCR-215) — the canonical WIDE, heterogeneous record collection. Below the collapse step every `<tr>` becomes a bordered key-value card; these tokens own the card's own geometry (unlike action-collection, there is no column-priority measure to retune — the whole row becomes one block)."
   },
   {
     "name": "--table-stacked-collection-card-padding-x",
@@ -7736,7 +7736,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-select-column-width",
     "value": "2.5rem",
-    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell * rhythm, widths and action-collection tiers were already tokenized; these are the pieces * around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
+    "description": "DATA TABLE odds and ends that were still literal on the component (#319). The table's cell rhythm, widths and action-collection tiers were already tokenized; these are the pieces around them — the select column, sort glyphs, sticky header layer and skeleton shapes."
   },
   {
     "name": "--table-sort-icon-size",
@@ -7761,12 +7761,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-skeleton-check-size",
     "value": "1rem",
-    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a * text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading * state the same height as the loaded one."
+    "description": "Skeleton placeholders mimic the real content they stand in for: a checkbox square and a text line at the row's cap height. Retune with --table-cell-padding-y to keep the loading state the same height as the loaded one."
   },
   {
     "name": "--table-skeleton-line-block-size",
     "value": "1rem",
-    "description": "The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the * line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the * only raw value on that axis, which is what kept the axis ungated. Renamed rather than * left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer * theme may already override, and styles/table-layout.css still reads the old name, so an * override of either spelling keeps working. Prefer the new name; the alias may be removed * in a future major."
+    "description": "The skeleton bar's BLOCK SIZE. `--table-skeleton-line-height` was a length on the line-height axis, whose scale is unitless ratios (gh#324) — a mis-named height, and the only raw value on that axis, which is what kept the axis ungated. Renamed rather than left, with the old name kept as a DEPRECATED ALIAS: it is a published token a consumer theme may already override, and styles/table-layout.css still reads the old name, so an override of either spelling keeps working. Prefer the new name; the alias may be removed in a future major."
   },
   {
     "name": "--table-skeleton-line-height",
@@ -7781,27 +7781,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical."
+    "description": "The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical."
   },
   {
     "name": "--table-line-height",
     "value": "calc(1.25 / 0.875)",
-    "description": "MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set * line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm` * but NOT that companion. Without this the table would silently inherit ambient page leading * the moment the font-size moved into CSS. Same unitless ratio Tailwind ships."
+    "description": "MANDATORY companion to --table-font-size — the gh#260 trap, again. `text-sm` also set line-height from Tailwind's `--text-sm--line-height`, and styles/base.css remaps `--text-sm` but NOT that companion. Without this the table would silently inherit ambient page leading the moment the font-size moved into CSS. Same unitless ratio Tailwind ships."
   },
   {
     "name": "--table-row-border-width",
     "value": "var(--stroke-hairline)",
-    "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. * Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" * rule in `@layer components` can actually zero it; a utility would outrank it by layer. * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` * so a scoped [data-tenant]/.dark override of --border still reaches every row."
+    "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" rule in `@layer components` can actually zero it; a utility would outrank it by layer. Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of --border still reaches every row."
   },
   {
     "name": "--table-flush-divider-width",
     "value": "var(--table-row-border-width)",
-    "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind * it, so without it the header band floats (gh#306). Scoped by construction to the case that * needs it — a BANDED header, a CardBar or a headerless card already draw their own line there * and never reach this token — so a service tunes only the plain-header divider: `0` for a * borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: * only the width is restored, so the surface's own border declaration still owns them and a * scoped [data-tenant]/.dark override of --border reaches it. * Default = the same hairline the table's other rules draw."
+    "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind it, so without it the header band floats (gh#306). Scoped by construction to the case that needs it — a BANDED header, a CardBar or a headerless card already draw their own line there and never reach this token — so a service tunes only the plain-header divider: `0` for a borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: only the width is restored, so the surface's own border declaration still owns them and a scoped [data-tenant]/.dark override of --border reaches it. Default = the same hairline the table's other rules draw."
   },
   {
     "name": "--table-row-tone-rail-width",
     "value": "var(--stroke-2xl)",
-    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. * The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card * read as the same mark at the same weight; it is spelled out rather than referenced because a * service that thins its card rails should not silently thin its table rails too. * The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger * statement about the same row) and must not carry meaning on its own — that is what the rail * and the row's own status cell are for."
+    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card read as the same mark at the same weight; it is spelled out rather than referenced because a service that thins its card rails should not silently thin its table rails too. The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger statement about the same row) and must not carry meaning on its own — that is what the rail and the row's own status cell are for."
   },
   {
     "name": "--table-row-tone-wash-alpha",
@@ -7811,7 +7811,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--text-link-underline-offset",
     "value": "0.18em",
-    "description": "Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay * proportional across the seven type steps, and a px value that reads right at `lg` crowds the * descenders at `2xs`. GoDX v2.3 guideline: `.gx a { text-underline-offset: .18em }`"
+    "description": "Distance from the text baseline to the underline. In `em` on purpose: the rule has to stay proportional across the seven type steps, and a px value that reads right at `lg` crowds the descenders at `2xs`. GoDX v2.3 guideline: `.gx a { text-underline-offset: .18em }`"
   },
   {
     "name": "--text-link-underline-width",
@@ -7821,7 +7821,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--text-link-decoration-line",
     "value": "underline",
-    "description": "THE LINK IS UNDERLINED AT REST, and the default is a measurement, not a taste (gh#664). * * It was `none` with the rule added only on hover/focus, so a link inside a sentence differed from * the words around it by hue alone — and that hue is 1.87:1 against body ink in light, 1.54:1 in * dark. WCAG 1.4.1 lets colour carry a link on its own only at 3:1 (technique G183), so the old * default failed it everywhere a link sat in running text. The consumer met it for real: \"97 * người đang dùng\" read as plain copy and nobody clicked it (godx-jp/id#1419). The v2.3 guideline * agrees: `.gx a` never removes the UA underline, and its prose says \"Chữ link có gạch chân\". * * `none` is still a legal value, because a link in a nav row or a card title carries its affordance * some other way. It is NOT a style knob for running text: at the shipped colours it re-opens the * 1.4.1 failure this default closes."
+    "description": "THE LINK IS UNDERLINED AT REST, and the default is a measurement, not a taste (gh#664). It was `none` with the rule added only on hover/focus, so a link inside a sentence differed from the words around it by hue alone — and that hue is 1.87:1 against body ink in light, 1.54:1 in dark. WCAG 1.4.1 lets colour carry a link on its own only at 3:1 (technique G183), so the old default failed it everywhere a link sat in running text. The consumer met it for real: \"97 người đang dùng\" read as plain copy and nobody clicked it (godx-jp/id#1419). The v2.3 guideline agrees: `.gx a` never removes the UA underline, and its prose says \"Chữ link có gạch chân\". `none` is still a legal value, because a link in a nav row or a card title carries its affordance some other way. It is NOT a style knob for running text: at the shipped colours it re-opens the 1.4.1 failure this default closes."
   },
   {
     "name": "--text-action-gap",
@@ -7831,27 +7831,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--text-action-color",
     "value": "initial",
-    "description": "The operation reads as a link, because that is what it is — an affordance inside running text, * not a control box. Same reasoning as `Text`'s own `link` prop. default = hsl(var(--primary)), resolved at the call site"
+    "description": "The operation reads as a link, because that is what it is — an affordance inside running text, not a control box. Same reasoning as `Text`'s own `link` prop. default = hsl(var(--primary)), resolved at the call site"
   },
   {
     "name": "--text-action-color-hover",
     "value": "initial",
-    "description": "default = the live primary hover, resolved at the call site — a `:root` binding would freeze on * the root's primary and ignore a scoped re-theme (docs/TOKENS.md, the freeze rule; gh#678)"
+    "description": "default = the live primary hover, resolved at the call site — a `:root` binding would freeze on the root's primary and ignore a scoped re-theme (docs/TOKENS.md, the freeze rule; gh#678)"
   },
   {
     "name": "--text-action-size",
     "value": "1em",
-    "description": "The icon box tracks the run it sits in: `em`, so a copy button beside `size=\"2xs\"` shrinks * with it instead of towering over the text."
+    "description": "The icon box tracks the run it sits in: `em`, so a copy button beside `size=\"2xs\"` shrinks with it instead of towering over the text."
   },
   {
     "name": "--text-mark-background",
     "value": "hsl(var(--warning))",
-    "description": "`<mark>` is a FILL plus the label measured against it — `--warning` / `--warning-foreground` * are exactly that pair. NOT `--text-warning`, which is the AA-safe INK tier and would paint a * dark yellow highlight with dark text on it."
+    "description": "`<mark>` is a FILL plus the label measured against it — `--warning` / `--warning-foreground` are exactly that pair. NOT `--text-warning`, which is the AA-safe INK tier and would paint a dark yellow highlight with dark text on it."
   },
   {
     "name": "--text-mark-foreground",
     "value": "hsl(var(--warning-foreground))",
-    "description": "TEXT — knobs for the typographic primitive's link affordance. * * Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`, * `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`. * A link adds two things those tiers do not describe — how far the rule sits from the baseline, * and how heavy it is."
+    "description": "TEXT — knobs for the typographic primitive's link affordance. Size, weight and tone are NOT here: they are the foundation's own `--font-size-*`, `--font-weight-*` and the semantic foreground roles, read directly by `styles/text-layout.css`. A link adds two things those tiers do not describe — how far the rule sits from the baseline, and how heavy it is."
   },
   {
     "name": "--thought-chain-gap",
@@ -7861,7 +7861,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-node-gap",
     "value": "var(--space-3)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-body-gap",
@@ -7871,27 +7871,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-icon-size",
     "value": "var(--band-height-sm)",
-    "description": "The glyph column. A square, so an ordinal, an icon and a status mark share one track and the * connector below stays centred under all three. It reads the BAND height, not an icon step, so * the circle matches the title band it sits beside; 24px and 36px are the nearest steps and both * would break that alignment to buy nothing. * scale-exempt: 28px ordinal medallion sized to the title band, not a glyph"
+    "description": "The glyph column. A square, so an ordinal, an icon and a status mark share one track and the connector below stays centred under all three. It reads the BAND height, not an icon step, so the circle matches the title band it sits beside; 24px and 36px are the nearest steps and both would break that alignment to buy nothing. scale-exempt: 28px ordinal medallion sized to the title band, not a glyph"
   },
   {
     "name": "--thought-chain-icon-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-icon-radius",
     "value": "var(--radius-pill)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-icon-background",
     "value": "initial",
-    "description": "Role-mirror knobs (docs/TOKENS.md): `initial`, so each documented default resolves at the CALL * SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. * Default ground = hsl(var(--muted)) · default ink = hsl(var(--muted-foreground))"
+    "description": "Role-mirror knobs (docs/TOKENS.md): `initial`, so each documented default resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Default ground = hsl(var(--muted)) · default ink = hsl(var(--muted-foreground))"
   },
   {
     "name": "--thought-chain-icon-color",
     "value": "initial",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-icon-success-color",
@@ -7901,12 +7901,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-icon-error-color",
     "value": "initial",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-line-width",
     "value": "var(--stroke-hairline)",
-    "description": "The connector. Its inline position tracks HALF the glyph column so it stays centred whatever * the column's size becomes — never a literal offset."
+    "description": "The connector. Its inline position tracks HALF the glyph column so it stays centred whatever the column's size becomes — never a literal offset."
   },
   {
     "name": "--thought-chain-line-color",
@@ -7921,7 +7921,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-content-space-block",
     "value": "var(--space-2)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-item-gap",
@@ -7931,17 +7931,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--thought-chain-item-padding-block",
     "value": "var(--space-2)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-item-padding-inline",
     "value": "var(--space-3)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-item-radius",
     "value": "var(--radius)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X * `ThoughtChain`). * * Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. * This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as * `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that * happened, one for a run in progress — and two rails on one screen that disagree by two pixels is * the complaint gh#559 opens with."
+    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
   },
   {
     "name": "--thought-chain-item-solid-background",
@@ -7956,117 +7956,117 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--toggle-count-min-width",
     "value": "var(--space-4)",
-    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: * --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs * off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read * the same primitive tokens, so the two pills render the same size and a Toggle count set beside * a Button count is indistinguishable — asserted by * src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. * * (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` * fallback because check:typography requires a bare `var(--token)` for every font-size, and a * split shape across the five geometry knobs would be worse than a consistent one.)"
+    "description": "── Counter pill · geometry. One knob per component (rule #45, and the repo's existing shape: --button-count-*, --tag-input-chip-font-size, --toggle-sm-font-size are all independent knobs off the same primitive scale). The VALUES are byte-identical to Button's counter pill and read the same primitive tokens, so the two pills render the same size and a Toggle count set beside a Button count is indistinguishable — asserted by src/styles/__tests__/toggle-count-token-parity.test.ts so it cannot drift silently. (They are concrete here rather than `initial` + a call-site `var(--toggle-…, var(--button-…))` fallback because check:typography requires a bare `var(--token)` for every font-size, and a split shape across the five geometry knobs would be worse than a consistent one.)"
   },
   {
     "name": "--toggle-count-space-inline",
     "value": "var(--space-1)",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-count-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-count-radius",
     "value": "var(--radius-pill)",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-count-gap",
     "value": "0",
-    "description": "Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob * ADDS to it for a service whose design grid wants the counter pushed further out."
+    "description": "Quiet default (#44) — the toggle's own flex gap already separates label from pill; this knob ADDS to it for a service whose design grid wants the counter pushed further out."
   },
   {
     "name": "--toggle-count-background",
     "value": "initial",
-    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against * the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) * text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast * from whatever surface the chip currently has, and lose ~0.7 on hover."
+    "description": "── Counter pill · unpressed colours. Defaults = hsl(var(--muted)) fill (quiet: 1.09:1 against the chip's own surface, so at rest the count reads as text, #44) and hsl(var(--foreground)) text (14.25:1 on that fill). Opaque on purpose — a translucent fill would take its contrast from whatever surface the chip currently has, and lose ~0.7 on hover."
   },
   {
     "name": "--toggle-count-color",
     "value": "initial",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-soft-background",
     "value": "initial",
-    "description": "── `soft` · the REST surface (gh#734). Defaults = hsl(var(--secondary)) fill with * hsl(var(--secondary-foreground)) text — the pair `Badge variant=\"secondary\"` and * `.ui-button--secondary` already paint, so a chip, a badge and a button on one row are one * family and a service that re-themes `--secondary` moves all three at once. The hover step is * the OPAQUE `--secondary-hover`, not a translucent tint, because a chip row sits on the page * and inside a Card and a translucent hover would read differently on each. * * Role-mirror knobs — `initial` here with the role at the call site (docs/TOKENS.md)."
+    "description": "── `soft` · the REST surface (gh#734). Defaults = hsl(var(--secondary)) fill with hsl(var(--secondary-foreground)) text — the pair `Badge variant=\"secondary\"` and `.ui-button--secondary` already paint, so a chip, a badge and a button on one row are one family and a service that re-themes `--secondary` moves all three at once. The hover step is the OPAQUE `--secondary-hover`, not a translucent tint, because a chip row sits on the page and inside a Card and a translucent hover would read differently on each. Role-mirror knobs — `initial` here with the role at the call site (docs/TOKENS.md)."
   },
   {
     "name": "--toggle-soft-color",
     "value": "initial",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-soft-hover-background",
     "value": "initial",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-soft-count-background",
     "value": "initial",
-    "description": "The `soft` chip's own counter pill. Defaults = hsl(var(--background)) fill, * hsl(var(--foreground)) text. It cannot inherit the generic `--muted` fill above: `--muted` * and `--secondary` are the same value in the shipped theme, so that pill would measure 1.00:1 * on a soft chip and vanish."
+    "description": "The `soft` chip's own counter pill. Defaults = hsl(var(--background)) fill, hsl(var(--foreground)) text. It cannot inherit the generic `--muted` fill above: `--muted` and `--secondary` are the same value in the shipped theme, so that pill would measure 1.00:1 on a soft chip and vanish."
   },
   {
     "name": "--toggle-soft-count-color",
     "value": "initial",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-pressed-count-background",
     "value": "initial",
-    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, * hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on * `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be * invisible on it. The swap also flips the pill from near-invisible to solid, which is one of * the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
+    "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be invisible on it. The swap also flips the pill from near-invisible to solid, which is one of the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
   },
   {
     "name": "--toggle-pressed-count-color",
     "value": "initial",
-    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). * * Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / * `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a * reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it * grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). * * SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: * * • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle * keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same * primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside * a Button count is indistinguishable and cannot drift unnoticed, while a service can still * move one without the other. * * • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant * surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, * `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a * translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, * `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in * light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can * only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping * to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship * a known #299-class failure. * * So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's * variant and hover surface, and inverts them with the state: * unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark * pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark * The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as * the label it sits next to, never worse, under any theme that keeps that pair legible. * * Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call * site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to * `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override * of the role would never reach it."
+    "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
   },
   {
     "name": "--toggle-pressed-border-color",
     "value": "initial",
-    "description": "── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the * box this border is quiet (#44) and the pressed state is carried by the fill inversion + the * pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint * (where those inversions get weak) opts into a visible outline by overriding this."
+    "description": "── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the box this border is quiet (#44) and the pressed state is carried by the fill inversion + the pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint (where those inversions get weak) opts into a visible outline by overriding this."
   },
   {
     "name": "--toggle-count-forced-outline-width",
     "value": "var(--stroke-hairline)",
-    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes * anything any more. This outline is the state's structural fallback there — drawn on the * PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
+    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes anything any more. This outline is the state's structural fallback there — drawn on the PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
   },
   {
     "name": "--tree-node-height",
     "value": "initial",
-    "description": "Row box height. MIRRORS THE `--control-height` TIER — the row is a control-sized hit target, * and the tier is density-aware, so the height is never a literal and never an ad-hoc * `calc(var(--control-height) ± …)` (that re-derives a tier and drifts out of step with the * controls beside it). `size` picks a NAMED step (`--control-height-{xs,sm,lg}`) at the call * site; the tier is re-scoped by the auth shells, hence `initial` here. * Documented default: --tree-node-height = var(--control-height)."
+    "description": "Row box height. MIRRORS THE `--control-height` TIER — the row is a control-sized hit target, and the tier is density-aware, so the height is never a literal and never an ad-hoc `calc(var(--control-height) ± …)` (that re-derives a tier and drifts out of step with the controls beside it). `size` picks a NAMED step (`--control-height-{xs,sm,lg}`) at the call site; the tier is re-scoped by the auth shells, hence `initial` here. Documented default: --tree-node-height = var(--control-height)."
   },
   {
     "name": "--tree-indent-width",
     "value": "var(--space-5)",
-    "description": "Indent per level. Drives `padding-inline-start` on the row — a LOGICAL property, so the * outline flips under `dir=\"rtl\"` with no second rule."
+    "description": "Indent per level. Drives `padding-inline-start` on the row — a LOGICAL property, so the outline flips under `dir=\"rtl\"` with no second rule."
   },
   {
     "name": "--tree-node-padding-inline",
     "value": "var(--space-2)",
-    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's * corner. Pure geometry — no role to freeze, so these bind directly."
+    "description": "Inline padding inside a row, the gap between switcher / checkbox / icon / label, and the row's corner. Pure geometry — no role to freeze, so these bind directly."
   },
   {
     "name": "--tree-node-gap",
     "value": "var(--space-2)",
-    "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
     "name": "--tree-node-radius",
     "value": "var(--radius-sm)",
-    "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
     "name": "--tree-node-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
     "name": "--tree-switcher-size",
     "value": "1.25rem",
-    "description": "The disclosure triangle (NameThatUI: \"disclosure triangle\"; an indented tree that expands is * an \"Outline View\"). Its box is what makes the switcher a real 24px-class target inside the * row, so it is a knob, not a hardcoded icon size."
+    "description": "The disclosure triangle (NameThatUI: \"disclosure triangle\"; an indented tree that expands is an \"Outline View\"). Its box is what makes the switcher a real 24px-class target inside the row, so it is a knob, not a hardcoded icon size."
   },
   {
     "name": "--tree-switcher-color",
@@ -8091,17 +8091,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tree-node-hover-background",
     "value": "initial",
-    "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. * Documented defaults: --tree-node-hover-background = hsl(var(--accent)); * --tree-node-selected-background = hsl(var(--accent)); * --tree-node-selected-foreground = hsl(var(--accent-foreground))."
+    "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. Documented defaults: --tree-node-hover-background = hsl(var(--accent)); --tree-node-selected-background = hsl(var(--accent)); --tree-node-selected-foreground = hsl(var(--accent-foreground))."
   },
   {
     "name": "--tree-node-selected-background",
     "value": "initial",
-    "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
     "name": "--tree-node-selected-foreground",
     "value": "initial",
-    "description": "* TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). * * Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST * reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than * inverts. A service retunes the whole outline in one place instead of forking a row. * * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a * role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it * is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a * shell that re-scopes `--control-height` would never reach it. * @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
   },
   {
     "name": "--tree-loading-bar-inline-size",
@@ -8111,87 +8111,87 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-dropzone-space-inset",
     "value": "var(--space-10)",
-    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service * dials it back with one override instead of forking the variant."
+    "description": "DROPZONE — the large drag target. Its inset is deliberately generous; a dense service dials it back with one override instead of forking the variant."
   },
   {
     "name": "--upload-dropzone-radius",
     "value": "var(--radius-lg)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-border-width",
     "value": "var(--stroke-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-icon-size",
     "value": "var(--icon-size-3xl)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-hint-space-block-start",
     "value": "var(--space-3)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-hint-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-meta-space-block-start",
     "value": "var(--space-1)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-dropzone-meta-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-size",
     "value": "6rem",
-    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. * One knob resizes the whole gallery; picture-card grids are the most common thing a service * re-grids to match its own column rhythm."
+    "description": "TILE — the 96px square shared by picture-card thumbnails and the \"add image\" button. One knob resizes the whole gallery; picture-card grids are the most common thing a service re-grids to match its own column rhythm."
   },
   {
     "name": "--upload-tile-radius",
     "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-space-gap",
     "value": "var(--space-3)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-icon-size",
     "value": "var(--icon-size-xl)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-label-space-block-start",
     "value": "var(--space-1)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-label-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-tile-overlay-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-overlay-background",
     "value": "initial",
-    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
+    "description": "Busy scrim over a tile/frame — role-mirror knob, `initial` so --background re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. Default = hsl(var(--background) / 0.7)."
   },
   {
     "name": "--upload-overlay-alpha",
     "value": "70%",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-remove-space-inset",
@@ -8201,12 +8201,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-remove-offset",
     "value": "var(--space-1)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-remove-icon-size",
     "value": "var(--icon-size-sm)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-max-width",
@@ -8216,62 +8216,62 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-picture-radius",
     "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-preview-max-height",
     "value": "12rem",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-empty-height",
     "value": "8rem",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-icon-size",
     "value": "var(--icon-size-2xl)",
-    "description": "The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media * placeholder, and 32 is not a step of the icon scale at all. The 128px-tall empty box sits * between the 96px tile (24) and the 185px dropzone (40), so its mark does too."
+    "description": "The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media placeholder, and 32 is not a step of the icon scale at all. The 128px-tall empty box sits between the 96px tile (24) and the 185px dropzone (40), so its mark does too."
   },
   {
     "name": "--upload-picture-empty-label-space-block-start",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-empty-label-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-overlay-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-badge-radius",
     "value": "var(--radius-md)",
-    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. * It now follows the tile radius like every other chip in the component."
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. It now follows the tile radius like every other chip in the component."
   },
   {
     "name": "--upload-picture-badge-offset",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-badge-space-inline",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-badge-space-block",
     "value": "0.125rem",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-picture-badge-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-avatar-size",
@@ -8281,27 +8281,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-avatar-icon-size",
     "value": "var(--icon-size-xl)",
-    "description": "The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the * avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24."
+    "description": "The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24."
   },
   {
     "name": "--upload-avatar-border-width",
     "value": "var(--stroke-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-avatar-change-space-block",
     "value": "var(--space-1)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-avatar-change-background",
     "value": "rgb(0 0 0 / 0.7)",
-    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather * than a surface role — it must stay legible over an arbitrary user image in either theme."
+    "description": "The \"change\" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather than a surface role — it must stay legible over an arbitrary user image in either theme."
   },
   {
     "name": "--upload-avatar-change-foreground",
     "value": "#fff",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-avatar-pending-delete-alpha",
@@ -8316,27 +8316,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-draft-space-block",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-draft-space-gap",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-draft-radius",
     "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-draft-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-draft-icon-size",
     "value": "var(--icon-size-sm)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-row-space-inline",
@@ -8346,47 +8346,47 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--upload-row-space-block",
     "value": "var(--space-2)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-row-space-gap",
     "value": "var(--space-3)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-row-radius",
     "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-row-font-size",
     "value": "var(--font-size-sm, var(--font-size-base))",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-row-icon-size",
     "value": "var(--icon-size-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-crop-dialog-max-width",
     "value": "24rem",
-    "description": "CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above * never reached this file, so the whole cropper was still baked on the component: the dialog was * pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one * of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage * than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size — * which is exactly the pair rule #45 exists to keep tunable together. * * The dialog width intentionally stays a knob of its own rather than reading * --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round * stage reads as the subject, not as a small element in a wide box."
+    "description": "CROP DIALOG — the 1:1 avatar cropper (`UploadCropDialog`). The 66-literal upload pass above never reached this file, so the whole cropper was still baked on the component: the dialog was pinned to `max-w-sm`, the round preview to `size-48`, the zoom row to `px-2`. An avatar is one of the most service-specific sizes there is (a 96px tile service wants a smaller crop stage than a 200px one), and the crop stage must stay in proportion with --upload-avatar-size — which is exactly the pair rule #45 exists to keep tunable together. The dialog width intentionally stays a knob of its own rather than reading --dialog-width-default: the cropper is deliberately NARROWER than a normal dialog so the round stage reads as the subject, not as a small element in a wide box."
   },
   {
     "name": "--upload-crop-preview-size",
     "value": "12rem",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-crop-preview-radius",
     "value": "var(--radius-pill)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. * * Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library * (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and * EVERY one of them baked its box straight onto the component: a service could not resize the * avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid * without forking. That is precisely the gap cardinal rule #45 exists to close. * * Radius defaults mirror the utilities they replace, verified against the built CSS: * rounded-lg = var(--radius) → --radius-lg * rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md * rounded-full → --radius-pill"
+    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
   },
   {
     "name": "--upload-crop-zoom-space-inline",
     "value": "var(--space-2)",
-    "description": "Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never * flush against the dialog padding."
+    "description": "Zoom row inset — the slider is inset from the dialog edge so its thumb's focus ring is never flush against the dialog padding."
   },
   {
     "name": "--welcome-gap",
@@ -8411,12 +8411,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--welcome-padding-inline",
     "value": "var(--space-4)",
-    "description": "Welcome component tokens — the greeting block at the head of an empty conversation * (Ant Design X `Welcome`). * * Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file * is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every * Welcome on every surface follows."
+    "description": "Welcome component tokens — the greeting block at the head of an empty conversation (Ant Design X `Welcome`). Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every Welcome on every surface follows."
   },
   {
     "name": "--welcome-radius",
     "value": "var(--radius-lg)",
-    "description": "Welcome component tokens — the greeting block at the head of an empty conversation * (Ant Design X `Welcome`). * * Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file * is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every * Welcome on every surface follows."
+    "description": "Welcome component tokens — the greeting block at the head of an empty conversation (Ant Design X `Welcome`). Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every Welcome on every surface follows."
   },
   {
     "name": "--welcome-icon-size",
@@ -8426,7 +8426,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--welcome-filled-background",
     "value": "initial",
-    "description": "`filled` chrome. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default * resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. * Default ground = hsl(var(--muted))"
+    "description": "`filled` chrome. Role-mirror knobs (docs/TOKENS.md): `initial` so the documented default resolves at the CALL SITE and a scoped `[data-tenant]` / `.dark` override still reaches it. Default ground = hsl(var(--muted))"
   },
   {
     "name": "--welcome-filled-border",

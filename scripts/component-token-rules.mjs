@@ -49,6 +49,8 @@
  * comment of its own is described at the level that is still true of it.
  */
 
+import { commentText } from "./css-comment-text.mjs";
+
 /**
  * @param {string} text one component-token stylesheet
  * @returns {{name: string, value: string, description: string}[]}
@@ -62,7 +64,7 @@ export function parseComponentTokens(text) {
   // files with an empty description.
   const firstBrace = text.replace(/\/\*[\s\S]*?\*\//g, (c) => " ".repeat(c.length)).indexOf("{");
   const preamble = text.slice(0, firstBrace === -1 ? text.length : firstBrace);
-  const header = (preamble.match(/\/\*([\s\S]*?)\*\//)?.[1] ?? "").replace(/\s+/g, " ").trim();
+  const header = commentText(preamble.match(/\/\*([\s\S]*?)\*\//)?.[1] ?? "");
 
   const items = [];
   /** The comment that has not yet been claimed by a declaration. Cleared the moment one does. */
@@ -74,7 +76,7 @@ export function parseComponentTokens(text) {
     previousEnd = m.index + m[0].length;
 
     if (m[1] !== undefined) {
-      const body = m[1].replace(/\s+/g, " ").trim();
+      const body = commentText(m[1]);
       // A TRAILING comment — `--x: initial; /* default = … */` — is about the declaration on its
       // OWN line, not the next one. legal-document.css writes five in a row that way, and handing
       // each to the token below it moves every one of them exactly one line down.
