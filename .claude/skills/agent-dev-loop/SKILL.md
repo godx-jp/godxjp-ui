@@ -72,10 +72,39 @@ Take the whole batch (20 issues is a normal size; more is fine). Before writing 
 **Cheaper models are correct here.** Implementation against a clear issue is not where the
 judgement is; review is. Use sonnet for the writing and spend the strong model on phase 3.
 
-### What you may run: the tests you just wrote. Nothing else.
+### What you may run
 
 ```bash
 pnpm vitest run <the file you just wrote> --maxWorkers=2
+```
+
+…plus the **path→gate rows** the diff hits (table below), plus **every source-scanning gate,
+unconditionally**. That third term is not optional and it is the one people drop.
+
+> **SOURCE-SCANNING GATES ARE INVISIBLE TO EVERY IMPORT-GRAPH SELECTOR — and they fail GREEN.**
+>
+> The `dxs-product` session proved this with a measurement, and it is the same defect class we hit
+> from the other side. On a file that *does* render `<Badge>`:
+>
+> ```
+> $ vitest related --run .../inbox/page.tsx
+> No test files found, exiting with code 0
+> ```
+>
+> The gate that catches a dead `<Badge color=>` prop — the one that lost badge colour on production
+> — scans SOURCE with `readFileSync` and imports nothing. So the selector cannot see it and **exits
+> 0**. It does not fail silently; it emits a green signal, which is worse.
+>
+> Ours is the same shape: `src/styles/__tests__` reads its CSS with `readFileSync`, so `vitest
+> related` here is both useless (250s / 251 files) and blind to exactly the tests that matter.
+>
+> **A selector that answers "no tests found → exit 0" is a trap.** When scope cannot be derived,
+> fail closed and say so.
+
+The minimum honest signal, then, is:
+
+```
+related(diff)  ∪  glob-mapping(diff)  ∪  ALL source-scanning gates, unconditionally
 ```
 
 ### And you must write every relevant edge case
@@ -175,7 +204,19 @@ how, and which you deferred. A review nobody can read is a review nobody can che
 
 ## Phase 4 — the batch run
 
-### The trigger
+### The trigger — and what a full run IS and IS NOT
+
+**A full suite run is RELEASE EVIDENCE, bound to the SHA being tagged. It is not a periodic
+ritual, and it is not debt collection.** The `dxs-product` session made this point and it is
+right: *"một lượt full suite ở commit thứ 100 không cấp bằng chứng cho commit thứ 101."* A run at
+commit 100 proves nothing about commit 101.
+
+This repo already enforces the SHA-bound half **mechanically**, so it is not up for debate:
+`release-core.mjs` REQUIRED_CI_CHECK_RUNS + `VerifyCommitProvenance` refuse to publish unless every
+CI check has CONCLUDED green **on the exact tagged commit**. That, not a counter, is the evidence.
+
+So the counter is a **backlog ceiling, not evidence** — a batch-size guard in DORA's sense, there
+to stop unreviewed work piling into a batch nobody can review:
 
 **Automatic only when unreviewed commits exceed 100.** Otherwise you ASK, and you do not run it
 until he says yes.
@@ -264,3 +305,52 @@ them.
 - [ ] Each "jsdom cannot see this" class either probed once or explicitly deferred **in writing**
 - [ ] Unreviewed-commit count checked; if under 100, the owner was **asked** and answered
 - [ ] Nothing skipped is reported as passed
+
+
+---
+
+## Universal vs per-repo — reconciled with the `dxs-product` session
+
+Confirmed in BOTH repos, so it belongs in any agent's rules:
+
+1. **Source-scanning gates are invisible to import-graph selectors.** Select them by path glob, and
+   run them unconditionally.
+2. **A selector that reports "nothing to run → exit 0" is a false green.** Fail closed when scope
+   cannot be derived.
+3. **Expand and TIME an alias before running it.** Never trust a name. (`ship:surface` was 70s and
+   nobody here had expanded it; their `docs-lane` was 56 commands in one step.)
+4. **`git diff --name-only` is not the diff** — it misses staged and untracked files. Add
+   `git status --porcelain`.
+5. **The full suite is release evidence bound to a SHA**, not a ritual on a counter.
+6. **Enforce the ban with a MECHANISM, not prose.** Their rule existed in writing for weeks and was
+   violated twice in a single session; a hook that refuses an unscoped test command is what actually
+   held.
+7. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+   that run, and an index that checks *wiring* cannot see it. Compare gates **declared** against
+   gates **observed executing in the log**. (Theirs: 249 declared, 31 observed. Ours: no
+   `continue-on-error`, but `verify:ci:static` is a 46-command `&&` chain — gh#853.)
+
+**Per-repo — measure, never copy:**
+
+- **`lint --cache`.** Safe only if no rule is type-aware or cross-file. Verified here:
+  `tseslint.configs.recommended`, no `project`/`projectService`, no import-resolution rules → safe,
+  12.9s → 1.8s. Their `backend/eslint.config.mjs` sets `projectService: true` for
+  `consistent-type-imports`, which is cross-file: changing `export const X` to `export type X` in B
+  does not change A's content hash, so a cached A returns a stale result. They use it locally and
+  **not** in CI.
+- **Whether `vitest related` works at all.** Here: no (250s / 251 files). There: yes (5.3s / 2
+  files), because their tests mostly import what they check.
+- **What the time budget is measuring.** DORA's 10 minutes is a budget for the *wait*. Theirs waits
+  8–11 minutes while spending 81–107 runner-minutes. Say which one you are budgeting.
+- **The definition of "unit".** Here a directory group is 231 files; theirs is one Pest file at
+  1.47s. Measure, then take the smallest grain that still means something.
+- **Where the money actually goes.** Theirs: `actions/checkout` at **218–281s** on jobs that then
+  decide to skip, because `.git` is 666 MB with no `fetch-depth`. A handbook that only tiers tests
+  would have missed their single largest cost.
+
+### One line phase 3 owes them
+
+**Read the whole red CI run, do not just fix the red thing.** They changed a public function's
+return type; it turned one test red (visible) and another **falsely green** — a `toHaveCount(1)`
+quietly shifted from counting override rows to counting state transitions. Fixing only the red one
+leaves a test that will answer "yes" to a question nobody asked.
