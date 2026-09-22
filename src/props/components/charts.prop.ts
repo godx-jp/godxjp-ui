@@ -22,6 +22,15 @@ export type ChartSeriesProp = {
   label?: string;
   /** CSS colour or token var. Defaults to the `--chart-1..6` palette by index. */
   color?: string;
+  /**
+   * AreaChart only — the filled band's colour, independent of the line's `color`. Defaults to
+   * `color`, which is the single-hue shape every other chart draws. A line has no fill and a bar's
+   * fill IS its `color`, so this is ignored there.
+   *
+   * The band's OPACITY is the `--chart-area-fill-alpha` theme knob, not a prop: density is a
+   * house style, while the hue carries meaning and belongs to the screen.
+   */
+  fillColor?: string;
 };
 
 /** Shared base for the cartesian charts (Line / Bar / Area). */
@@ -51,6 +60,23 @@ type ChartCartesianBase = {
   showLegend?: boolean;
   /** Show the cartesian background grid. */
   showGrid?: boolean;
+  /**
+   * Explicit `[min, max]` for the VALUE axis — y on a vertical chart, x on a horizontal bar.
+   * Omitted, the data sets it (recharts' default, which is zero-based for bars).
+   *
+   * A NON-ZERO BASELINE IS A CHARTING-ETHICS DECISION, not a layout one. Cropping the axis to the
+   * data's own range magnifies every wobble, and the reader has no way to tell a 2% drift from a
+   * collapse. It is legitimate where the SHAPE is the message and zero is not a meaningful
+   * reference — a price, a temperature, an index, a latency percentile — and it is misleading
+   * wherever the reader will compare MAGNITUDES, which is every bar chart and every "is this big"
+   * question. If you crop, say the range on the axis and keep `showGrid`.
+   */
+  valueDomain?: [number, number];
+  /**
+   * Explicit tick positions on the value axis, in data units. Values outside `valueDomain` are not
+   * drawn. Omitted, the axis picks its own.
+   */
+  valueTicks?: number[];
   /** `Intl.NumberFormat` options for axis ticks + tooltip values (locale is automatic). */
   numberFormat?: Intl.NumberFormatOptions;
   /** Message shown when `data` is empty. Defaults to a localized "no data". */
@@ -63,6 +89,8 @@ type ChartCartesianBase = {
 export type LineChartProp = ChartCartesianBase & {
   /** Render smooth (monotone) lines instead of straight segments. */
   curved?: boolean;
+  /** Draw a marker at every data point. Off by default — markers crowd a dense series. */
+  showDots?: boolean;
 };
 
 /** @see BarChart */
@@ -124,6 +152,8 @@ export type AreaChartProp = ChartCartesianBase & {
   stacked?: boolean;
   /** Render smooth (monotone) areas instead of straight segments. */
   curved?: boolean;
+  /** Draw a marker at every data point. Off by default — markers crowd a dense series. */
+  showDots?: boolean;
 };
 
 /** @see PieChart */

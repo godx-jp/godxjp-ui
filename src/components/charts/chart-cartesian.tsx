@@ -43,12 +43,16 @@ type CartesianChartProps = {
   height?: number;
   showLegend?: boolean;
   showGrid?: boolean;
+  valueDomain?: [number, number];
+  valueTicks?: number[];
   numberFormat?: Intl.NumberFormatOptions;
   emptyMessage?: string;
   className?: string;
   id?: string;
   /** line/area */
   curved?: boolean;
+  /** line/area */
+  showDots?: boolean;
   /** bar/area */
   stacked?: boolean;
   /** bar */
@@ -67,11 +71,14 @@ export function CartesianChart({
   height,
   showLegend = true,
   showGrid = true,
+  valueDomain,
+  valueTicks,
   numberFormat,
   emptyMessage,
   className,
   id,
   curved = false,
+  showDots = false,
   stacked = false,
   horizontal = false,
 }: CartesianChartProps) {
@@ -88,6 +95,16 @@ export function CartesianChart({
   const resolvedHeight = chartHeight(size, height);
   const tickFormatter = (value: number) => fmt.format(value);
   const curve = curved ? "monotone" : "linear";
+
+  /**
+   * The VALUE axis is y on a vertical chart and x on a horizontal bar, which is why these knobs
+   * are spread onto whichever axis is the numeric one instead of being named `yDomain` (gh#865).
+   * Each key is omitted entirely when unset, so recharts' own auto-scaling is untouched by default.
+   */
+  const valueAxisScale = {
+    ...(valueDomain ? { domain: valueDomain } : null),
+    ...(valueTicks ? { ticks: valueTicks } : null),
+  };
 
   /**
    * The category axis of a horizontal bar chart is the only axis whose ticks are free text, so it
@@ -135,7 +152,9 @@ export function CartesianChart({
 
   const axes = (numberAxisVertical: boolean) => (
     <>
-      {showGrid ? <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" /> : null}
+      {/* No `strokeDasharray` here: `--chart-grid-line-dash` owns the dash from
+          chart-layout.css, where a service theme can reach it (gh#865). */}
+      {showGrid ? <CartesianGrid stroke="hsl(var(--border))" /> : null}
       {numberAxisVertical ? (
         <>
           <XAxis
@@ -149,6 +168,7 @@ export function CartesianChart({
             tickLine={false}
             stroke="hsl(var(--muted-foreground))"
             fontSize={12}
+            {...valueAxisScale}
           />
         </>
       ) : (
@@ -159,6 +179,7 @@ export function CartesianChart({
             tickLine={false}
             stroke="hsl(var(--muted-foreground))"
             fontSize={12}
+            {...valueAxisScale}
           />
           <YAxis
             type="category"
@@ -188,8 +209,7 @@ export function CartesianChart({
               dataKey={s.dataKey}
               name={s.label ?? s.dataKey}
               stroke={chartColor(i, s.color)}
-              strokeWidth={2}
-              dot={false}
+              dot={showDots}
             />
           ))}
         </RLineChart>
@@ -207,9 +227,8 @@ export function CartesianChart({
               name={s.label ?? s.dataKey}
               stackId={stacked ? "stack" : undefined}
               stroke={chartColor(i, s.color)}
-              fill={chartColor(i, s.color)}
-              fillOpacity={0.2}
-              strokeWidth={2}
+              fill={s.fillColor ?? chartColor(i, s.color)}
+              dot={showDots}
             />
           ))}
         </RAreaChart>

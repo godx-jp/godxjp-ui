@@ -2641,6 +2641,11 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Per-series colour override (defaults to --chart-N).",
       },
+      {
+        field: "fillColor",
+        local: true,
+        reason: "AreaChart band colour, independent of the line's `color`.",
+      },
     ],
   },
   LineChartProp: {
@@ -2669,7 +2674,14 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Intl.NumberFormat options for ticks/tooltips.",
       },
+      {
+        field: "valueDomain",
+        local: true,
+        reason: "Explicit [min, max] on the value axis (y vertical, x horizontal).",
+      },
+      { field: "valueTicks", local: true, reason: "Explicit tick positions on the value axis." },
       { field: "curved", local: true, reason: "Smooth (monotone) line rendering." },
+      { field: "showDots", local: true, reason: "Chart-specific point-marker toggle." },
     ],
   },
   BarChartProp: {
@@ -2698,6 +2710,12 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Intl.NumberFormat options for ticks/tooltips.",
       },
+      {
+        field: "valueDomain",
+        local: true,
+        reason: "Explicit [min, max] on the value axis (y vertical, x horizontal).",
+      },
+      { field: "valueTicks", local: true, reason: "Explicit tick positions on the value axis." },
       { field: "stacked", local: true, reason: "Stack series into one bar." },
       { field: "horizontal", local: true, reason: "Category axis on the left." },
     ],
@@ -2765,8 +2783,15 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Intl.NumberFormat options for ticks/tooltips.",
       },
+      {
+        field: "valueDomain",
+        local: true,
+        reason: "Explicit [min, max] on the value axis (y vertical, x horizontal).",
+      },
+      { field: "valueTicks", local: true, reason: "Explicit tick positions on the value axis." },
       { field: "stacked", local: true, reason: "Stack series areas." },
       { field: "curved", local: true, reason: "Smooth (monotone) area rendering." },
+      { field: "showDots", local: true, reason: "Chart-specific point-marker toggle." },
     ],
   },
   PieChartProp: {

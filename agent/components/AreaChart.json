@@ -74,9 +74,25 @@
       "type": "boolean"
     },
     {
+      "description": "Explicit [min, max] for the VALUE axis (y vertical, x on a horizontal bar). Omit to let the data set it. A non-zero baseline is a charting-ETHICS call: legitimate where the SHAPE is the message and zero is not a reference (price, temperature, an index, a latency percentile), misleading wherever the reader compares magnitudes — which is every bar chart.",
+      "name": "valueDomain",
+      "type": "[number, number]"
+    },
+    {
+      "description": "Explicit tick positions on the value axis, in data units. Values outside valueDomain are not drawn.",
+      "name": "valueTicks",
+      "type": "number[]"
+    },
+    {
       "defaultValue": "false",
       "description": "Render smooth (monotone) areas instead of straight segments.",
       "name": "curved",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
+      "description": "Draw a marker at every data point. Off by default — markers crowd a dense series.",
+      "name": "showDots",
       "type": "boolean"
     },
     {
@@ -96,7 +112,9 @@
     "DO import from the charts entry: `import { AreaChart } from \"@godxjp/ui/charts\";` (recharts optional peer required).",
     "DO import only the chart a screen uses — `import { AreaChart } from \"@godxjp/ui/charts/area-chart\";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.",
     "DO use `stacked` to show how parts accumulate into a total over time.",
-    "DON'T overlay more than 2-3 unstacked areas — fill opacity makes dense overlays unreadable; switch to LineChart."
+    "DON'T overlay more than 2-3 unstacked areas — fill opacity makes dense overlays unreadable; switch to LineChart.",
+    "DO split the band's hue from the line's with `series[].fillColor` when a brand specifies both (a dark line over a lighter wash). The band's DENSITY is the `--chart-area-fill-alpha` theme token, not a prop.",
+    "DON'T tune the band by dropping a page-local CSS rule on `.recharts-area-area` — `--chart-area-fill-alpha` is the supported knob and it follows a scoped [data-tenant] region."
   ],
   "useCases": [
     "Cumulative volume over time (e.g. total transactions per day).",
