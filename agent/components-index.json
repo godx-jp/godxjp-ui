@@ -224,7 +224,7 @@
   {
     "group": "data-display",
     "name": "ServiceLauncherCard",
-    "tagline": "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA."
+    "tagline": "Token-owned downstream-service launcher tile with an uploaded service logo (falling back to a semantic icon), status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA."
   },
   {
     "group": "data-display",

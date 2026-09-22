@@ -790,6 +790,24 @@
   }
 
   /*
+   * AN UPLOADED LOGO TAKES THE GLYPH'S BOX — the SAME token, not a second size (gh#850).
+   *
+   * The medallion is 36px and the glyph inside it is 20px; a logo that claimed the plate instead
+   * would be 16px bigger than the mark it replaces, so a launcher grid where some services have a
+   * logo and some do not would have two different optical weights in one row. Sharing
+   * `--card-service-launcher-icon-glyph-size` makes that impossible by construction — retune the
+   * token and both move together.
+   *
+   * `contain`, not `cover`: an administrator's upload is any ratio, and a wordmark cropped to a
+   * square is no longer the brand. Letterboxing inside a fixed square box is the honest answer.
+   */
+  [data-slot="service-launcher-logo"] {
+    width: var(--card-service-launcher-icon-glyph-size);
+    height: var(--card-service-launcher-icon-glyph-size);
+    object-fit: contain;
+  }
+
+  /*
    * The medallion and the name, as ONE flex item. `auto` basis, not `0`: the group's own content
    * decides whether the status still fits beside it. With a `0` basis every group is the same
    * hypothetical size, the row never overflows, and the status simply keeps taking its width off

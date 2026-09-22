@@ -66,6 +66,21 @@ describe("ServiceLauncherCard public type contract (gh#219)", () => {
     expectTypeOf<Has<"disabledReason">>().toEqualTypeOf<true>();
   });
 
+  it("takes an uploaded logo as a URL beside the glyph, never instead of it (gh#850)", () => {
+    expectTypeOf<ServiceLauncherCardProps["logo"]>().toEqualTypeOf<string | undefined>();
+    // OPTIONAL: a service with no upload yet is the normal case, not an error.
+    const minimal = {} as Omit<ServiceLauncherCardProps, "icon" | "title" | "action">;
+    expectTypeOf(minimal.logo).toMatchTypeOf<string | undefined>();
+    // And `icon` stayed a REQUIRED LucideIcon — the rejected alternative was widening it to
+    // `LucideIcon | ReactNode`, which would have left the tile with nothing to fall back to when
+    // the upload 404s. The assertion above (`icon` toEqualTypeOf<LucideIcon>) is what forbids it.
+    type Has<K extends string> = K extends keyof ServiceLauncherCardProps ? true : false;
+    expectTypeOf<Has<"logo">>().toEqualTypeOf<true>();
+    // No companion alt prop: the medallion is aria-hidden and the service name is beside it, so an
+    // alt would make a screen reader say the name twice.
+    expectTypeOf<Has<"logoAlt">>().toEqualTypeOf<false>();
+  });
+
   it("uses the shared heading-level vocabulary rather than a bespoke union", () => {
     expectTypeOf<ServiceLauncherCardProps["titleLevel"]>().toEqualTypeOf<
       HeadingLevelProp | undefined

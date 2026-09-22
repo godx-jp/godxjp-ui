@@ -4480,13 +4480,20 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     subParts: ["ServiceLauncherCardSkeleton"],
     group: "data-display",
     tagline:
-      "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA.",
+      "Token-owned downstream-service launcher tile with an uploaded service logo (falling back to a semantic icon), status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA.",
     props: [
       {
         name: "icon",
         type: "LucideIcon",
         required: true,
-        description: "Decorative service glyph rendered in the canonical semantic icon surface.",
+        description:
+          "Decorative glyph for the KIND of service, rendered in the canonical semantic icon surface. Stays required because it is also what `logo` falls back to when an upload is missing or broken.",
+      },
+      {
+        name: "logo",
+        type: "string",
+        description:
+          "URL of the service's OWN uploaded mark (the PNG/WebP an administrator uploaded). When it loads it replaces `icon` in the medallion, in the glyph's exact box (--card-service-launcher-icon-glyph-size, object-fit: contain). It is a fallback chain, not a switch: the tile renders `icon` while the URL is in flight and KEEPS rendering `icon` if the URL 404s or is empty — a broken logo never reaches the DOM as an <img>. Decorative (alt=\"\", medallion aria-hidden), so there is no logoAlt prop: the service name is already beside it.",
       },
       {
         name: "title",
@@ -4540,6 +4547,8 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DO render ServiceLauncherCard directly as a grid child; it already owns its Card shell, its 36px medallion (--control-height-lg tier) and the canonical internal rhythm.",
       "DO replace it with ServiceLauncherCardSkeleton while loading (it carries a required `label` and aria-busy, and deliberately opens no live region). Use ServiceCatalogCta as the peer tile only when a real catalog/add route exists.",
       "DO keep `metadata` to machine identifiers (hostname · plan) — it is the only mono line. Sentences belong in `description` / `disabledReason`.",
+      "DO pass BOTH `logo` and `icon` when a service may have an uploaded mark: `logo={s.logoUrl ?? undefined}` with `icon` as the kind glyph. `icon` is not optional and must not be treated as redundant — it is the tile a freshly created service, and a service whose logo file has been deleted, actually shows.",
+      "DON'T wrap an <img> in a component to squeeze it through `icon`, and DON'T style the medallion to fit a picture. `logo` sizes the image to the glyph's own token, so a grid mixing logo tiles and glyph tiles keeps one optical weight.",
       "DON'T recreate launcher geometry with page-local CSS, utility padding, grid tracks, or a hand-built Card hierarchy. Retune it with the --card-service-launcher-* tokens instead.",
       "DON'T show LIVE, a hostname, subscribed plan, or launch action merely because a service is active in the global catalog.",
     ],
@@ -4571,6 +4580,9 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         <ServiceLauncherCard
           key={s.id}
           icon={Clock}
+          // The uploaded mark when there is one; the tile falls back to \`icon\` when there is not,
+          // and again if the file behind the URL has gone away.
+          logo={s.logoUrl ?? undefined}
           title={s.name}
           statusLabel={s.accessLabel}
           statusTone={s.accessTone}
