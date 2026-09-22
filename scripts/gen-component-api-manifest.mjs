@@ -270,6 +270,33 @@ export function buildComponentApiManifest(rootDir = root) {
     return marker === -1 ? relative : relative.slice(marker);
   }
 
+  /**
+   * The same truncation, applied to the `import("…")` specifiers INSIDE a stringified type.
+   *
+   * `checker.typeToString` spells an external type as `import("<specifier>").Name`, and that
+   * specifier is resolved RELATIVE TO THE FILE, so its `../` depth is a fact about where the
+   * checkout happens to sit — not about the API. Generated from the repo root it reads
+   * `../../../node_modules/…`; generated from `.claude/worktrees/agent-<id>/`, where every writing
+   * agent works by standing rule, it reads `../../../../../../node_modules/…`. Same source, same
+   * types, different file, and `check:component-api-manifest` red for whoever committed last
+   * (gh#870).
+   *
+   * `declaredPathForRoot` above has always been immune because it truncates at the last
+   * `node_modules/`; the type string simply never got the same treatment. Truncating here makes
+   * the two agree and, incidentally, collapses the two spellings TypeScript emits for one package
+   * (`.pnpm/embla-carousel@8.6.0/node_modules/embla-carousel` and `../../../node_modules/.pnpm/…`)
+   * onto one.
+   *
+   * The separator is `/`, not `path.sep`: TypeScript normalises specifiers, so this is not a
+   * filesystem path even on Windows.
+   */
+  function stableTypeText(text) {
+    return text.replace(/import\("([^"]*)"\)/g, (whole, specifier) => {
+      const marker = specifier.lastIndexOf("node_modules/");
+      return marker === -1 ? whole : `import("${specifier.slice(marker)}")`;
+    });
+  }
+
   function literalValues(type) {
     const parts = (type.isUnion() ? type.types : [type]).filter(
       (part) => !(part.flags & (ts.TypeFlags.Undefined | ts.TypeFlags.Null | ts.TypeFlags.Void)),
@@ -373,7 +400,9 @@ export function buildComponentApiManifest(rootDir = root) {
           name: prop.name,
           origin: isOwned ? "owned" : "inherited-behavioral",
           required: !(prop.flags & ts.SymbolFlags.Optional),
-          type: checker.typeToString(propType, declaration, ts.TypeFormatFlags.NoTruncation),
+          type: stableTypeText(
+            checker.typeToString(propType, declaration, ts.TypeFormatFlags.NoTruncation),
+          ),
           values: literalValues(propType),
           declaredIn: [
             ...new Set(
