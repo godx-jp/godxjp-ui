@@ -209,3 +209,41 @@ The optimisation was real; its blast radius was another repository's test suite.
 `CI` is set, fast pool kept for the developer machine.
 
 → rule 8.
+
+---
+
+## 14. The cause that fit, and the discipline of not accepting it
+
+A pooled browser sweep landed at 10:56. A consumer repo on the same shared runner went red at 11:44
+with `database is locked`. Forty-eight minutes, and the mechanism fits precisely: eight browser
+pages is exactly the load that makes the winning process's commit slow, and under `DEFERRED` the
+loser spins through its retry budget instead of waiting at `BEGIN`.
+
+The peer recorded it as **a dated external contributing cause with the mechanism written out, and
+explicitly not as proof** — one sample inside a 48-minute window is a coincidence with a plausible
+story attached.
+
+Then it checked what the new cause could **not** explain: its lane had already grown 22 → 35 → >60
+minutes on the two preceding nights, before the pool existed. So the self-inflicted mechanism — a
+cap sized on the green path is the wrong cap for a lane living on the red path — stood for those
+nights unchanged, and both causes were kept separate.
+
+Had it accepted the tidier explanation, a real problem inside its own repository would have been
+closed as someone else's fault, and the fix would have been a cap that was never the whole story.
+
+→ phase 3 step 4.
+
+## 15. Two decisions, two commits, so the history stays separable
+
+The same lane carried a comment justifying its timeout: *"60 minutes is more than double the
+slowest run"* — measured across four **green** nights, and still read as current on the sixth
+**red** one.
+
+The peer fixed the **reasoning** in one PR and left both numbers alone, then changed the number in
+a second. Not ceremony: the budget was the owner's call, and separating them lets the history
+answer *"why is it 90?"* and *"who decided the old justification was false?"* independently.
+
+Same shape as a generated catalogue here that claimed `Affix` did not exist, stale since 28.8.0 and
+still read as true. **A justification outlives the thing it justified, and nothing announces it.**
+
+→ rule 7.

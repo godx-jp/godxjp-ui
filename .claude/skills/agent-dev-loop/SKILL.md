@@ -165,13 +165,32 @@ This is the step that is usually skipped, and it is why a batch can be green and
 - **Can its baseline only shrink?** A baseline that can be raised to silence a failure is not a
   gate.
 
-### 4. Read the WHOLE red run, do not just fix the red thing
+### 4. When you find a cause, check what it does NOT explain
+
+A newly named cause is the most dangerous moment in a diagnosis: it is the moment everything
+currently broken becomes tempting to attribute to it. **List what the new cause cannot account for
+before you accept it.**
+
+Worked example, and it was aimed at me. A peer found that a change of mine landed **48 minutes**
+before its build went red, with a mechanism that fits precisely. It recorded that as a *dated
+external contributing cause with the mechanism spelled out* and explicitly **not as proof** — one
+sample inside a 48-minute window is a coincidence with a plausible story attached. Then it checked
+the two nights *before* my change existed, found the same degradation there, and kept both
+mechanisms separate.
+
+Had it accepted the tidier explanation, a real problem inside its own repository would have been
+closed as someone else's fault.
+
+The same applies to your own fixes: a fix that explains the symptom is not yet a fix that explains
+**all** of it.
+
+### 5. Read the WHOLE red run, do not just fix the red thing
 
 A change can turn one test red (visible) and another **falsely green** at the same time — an
 assertion that quietly starts counting something else and still reports the same number. Fixing
 only the red one leaves a test that will answer "yes" to a question nobody asked.
 
-### 5. Name what the diff CANNOT prove, and probe exactly that
+### 6. Name what the diff CANNOT prove, and probe exactly that
 
 Two questions, not one list:
 
@@ -201,7 +220,7 @@ For each class present in the batch, run **one targeted probe**, not a sweep.
 
 **Deferring one to phase 4 in writing is a valid outcome. Claiming it was verified is not.**
 
-### 6. Write the review down
+### 7. Write the review down
 
 Per item: the diff stat, what you ran and how long it took, which "cannot prove" class you probed
 and how, and which you deferred. A review nobody can read is a review nobody can check.
@@ -276,6 +295,13 @@ portable core; everything else is measurement.
    being pushed over its cap **by its own failures** destroys the evidence needed to fix them, and
    the word reads as though a human pressed cancel. Fail closed whenever scope cannot be derived,
    and never trust a status word without the summary behind it.
+
+   **The third one CONVERGES, and that is why it is the worst.** The first two are stable: they
+   misreport identically forever, so you can find them whenever you happen to look. A lane pushed
+   over its cap by its own failures gets **worse at reporting exactly as it gets worse** — the
+   window in which you can still read what is wrong closes while you are not looking. So the signal
+   is the growing duration, not the eventual timeout: **the slope is the finding; the cap is only
+   where it becomes visible.** One measured slope: 22, 26, 23, 21, 35, >60 minutes.
 3. **Expand and TIME an alias before running it.** Never trust a name. Aggregate aliases hide
    minutes behind one word, and nobody had expanded ours for months.
 4. **The diff is not the diff command alone** — include staged and untracked files.
