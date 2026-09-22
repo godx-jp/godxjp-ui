@@ -4,7 +4,7 @@
     "components": 170,
     "patterns": 19,
     "rules": 47,
-    "tokens": 1685,
+    "tokens": 1974,
     "vocabulary": 14
   },
   "files": [
@@ -50,7 +50,17 @@
     "live": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/index.json",
     "pinned": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/v28.13.0/agent/index.json"
   },
-  "source": "mcp/src/data — the same data @godxjp/ui-mcp serves",
+  "source": "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token tiers, read from src/tokens/*.css",
   "start": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/START-HERE.md",
+  "tokenTiers": {
+    "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
+    "counts": {
+      "component": 1685,
+      "foundation": 197,
+      "semantic": 92
+    },
+    "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
+    "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
+  },
   "version": "28.13.0"
 }

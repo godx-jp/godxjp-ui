@@ -56,7 +56,11 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 1685 design tokens. Only when you need a specific knob's name.
+4. `tokens.json` — 1974 design tokens, each tagged with its `tier`. **If you were handed a
+   brand, read the 197 `foundation` entries first** — `--primary`, `--background`,
+   `--radius`, `--font-size-base` are the handful everything else derives from. The
+   1685 `component` entries are per-part knobs; reach for one only when a role is
+   right everywhere except one component.
 5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
 
@@ -131,9 +135,24 @@ So: **build any layout you like out of primitives, and express every visual deci
 a documented prop.** You keep full freedom of composition and lose none of the theming. The moment
 you write a literal, that pixel stops following the theme and the tenant override silently skips it.
 
-A knob you want to retheme globally is a **component token** (`--{component}-{part}-{property}`).
-Most are declared `initial` with the real default at the call site — that is deliberate, so a
-scoped override re-resolves instead of freezing at `:root`.
+### Which token do you actually set — the `tier` field answers it
+
+Every entry in `tokens.json` carries a `tier`, and the tier tells you whether you are invited to set
+it. Start at the top and **stop at the first tier that does the job**; each step down is a value that
+has stopped following the brand.
+
+| `tier` | count | what it is | set it? |
+|---|---|---|---|
+| `foundation` | 197 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
+| `semantic` | 92 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
+| `component` | 1685 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
+
+A token whose `value` is `initial` is not empty and not broken: `initial` is the guaranteed-invalid
+value, so the real default is computed where the element paints it. Set it and yours wins.
+
+**There is no fourth option.** If a colour, radius or size you need is not in this file, the answer
+is not a hand-written CSS rule — say the token is missing and ask. A literal is invisible to every
+theme, every tenant scope and every audit in this package.
 
 ---
 
