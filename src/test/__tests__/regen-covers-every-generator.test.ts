@@ -61,7 +61,19 @@ describe("pnpm regen (gh#801)", () => {
     { timeout: SPAWNS_EVERY_GENERATOR },
     () => {
       const out = execFileSync("node", ["scripts/regen-generated.mjs"], { encoding: "utf8" });
-      const reached = [...out.matchAll(/\((check:[\w-]+)\)/g)].map((m) => m[1]).sort();
+      /* A SET, not a multiset — regen runs to a FIXED POINT since gh#847, so it prints its
+       * generator list once PER PASS. A settled tree costs one pass and a tree with a stale
+       * artifact costs two or three, which is the whole point of that change: one generator reads
+       * what another writes, and the order is the order of keys in package.json.
+       *
+       * This assertion is about REACHABILITY — "a generator with a --check counterpart must be
+       * reachable by regen" — and how many times each was reached is not part of that claim. It
+       * read as one only because regen used to run exactly one pass; CI caught it on a fresh
+       * checkout, where three passes made 8 labels into 23 and the test compared 23 against 8.
+       * The COUNT is still pinned, by the `finds EIGHT today` case below. */
+      const reached = [
+        ...new Set([...out.matchAll(/\((check:[\w-]+)\)/g)].map((m) => m[1])),
+      ].sort();
       expect(reached, "a generator reachable by --check must be reachable by regen").toEqual(
         checkersWithGenerators().sort(),
       );

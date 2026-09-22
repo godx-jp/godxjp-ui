@@ -463,6 +463,44 @@ expandable.expandedRowKeys` / `onExpandedRowsChange`. This library already mappe
   (`src/props/components/data-entry.prop.ts`) and in the MCP catalog. Revisit if a `Space`/compact
   primitive is ever ported — then antd's steer is followable and this becomes a migration.
 
+- **`Attachments` is Ant Design X's card and tray, with five measured departures (gh#855).** The
+  component had shipped with NO stylesheet at all — fifteen slot classes, one rule, twelve tokens
+  read by nothing — so the port below is the first time it followed anything. Geometry was taken
+  from `@ant-design/x@2.9.0` (`es/attachments/style/index.js` for root/placeholder/drop-area,
+  `es/file-card/style/index.js` for list/card/overflow/remove), not from a screenshot. What was
+  NOT followed, and why:
+
+  1. **The card's 268px is a CEILING, not a fixed width.** Ant X writes `width: 268` flat. At the
+     320px viewport this repo sweeps, 268 plus the page gutter spills, and `check:frame-overflow`
+     is the gate that would have to be baselined around it. `inline-size` + `max-inline-size: 100%`
+     keeps Ant's box everywhere it fits and gives ground only where the alternative is a clip.
+  2. **One leading box for a thumbnail AND a glyph.** Ant X has two card types — a 268x68 overview
+     card and a separate 68x68 image card — so a tray mixing a `.png` with a `.pdf` gets two
+     shapes. This library already decided that question for `Upload` (gh#720: "the image rows draw
+     their previewUrl as a thumbnail and every other row draws the glyph for its kind, on one row
+     height"), and a second answer in the same group would be the defect.
+  3. **The remove ✕ is always visible, and in flow.** Ant X pins it absolutely outside the card
+     corner at `opacity: 0` until the card is hovered. A hover-only control has no touch
+     equivalent — worse, an `opacity: 0` button is still hit-testable, so a tablet user taps a
+     control they cannot see. `.ui-upload-tile-remove` already made this call. Always-visible in
+     turn removes the reason to position it outside the box, so it is the row's trailing item.
+  4. **The placeholder mark is the icon scale's 40px step, not `fontSizeHeading2` (30px).** 30 is
+     not one of the nine steps gh#326 fixed, and its neighbours are 24 and 36 — equidistant. The
+     token keeps the value the frozen table in `src/tokens/__tests__/icon-size-scale.test.ts`
+     already records for it, which is `--upload-dropzone-icon-size`: the mark a reader meets this
+     surface beside. Same reasoning holds `--attachments-remove-icon-size` at 14px against Ant's
+     `fontSizeLG` = 16.
+  5. **The placeholder carries a dashed border at rest; Ant X's is `transparent`.** Ant X's
+     placeholder sits INSIDE a `Sender`, which already draws the boundary. Here `Attachments` is
+     also used standalone, where a target with no edge is not a target — so it takes
+     `.ui-upload-dropzone`'s dashed edge.
+
+  Not ported, and named here so the gap is a decision rather than an oversight: Ant X's 8px
+  `::before`/`::after` scroll-edge gradients and their `ping-start`/`ping-end` state (they need a
+  scroll listener, and the clipped card already reads as "more this way"), and its full-screen
+  drop area — `getDropContainer` positions the layer `fixed`, but activation is still the
+  control's own dragenter, not the document's.
+
 **A knob that only a fork could reach is not parity either.** antd's `components`,
 `filterDropdown`, `classNames`/`styles` semantic maps and `prefixCls` all exist to let a consumer
 replace the rendered markup. This library answers that layer with tokens (cardinal rule #45), so

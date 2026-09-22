@@ -1,17 +1,291 @@
 @layer components {
-  /*
-   * A NATIVE FILE INPUT IS 0.2px SHORT OF THE FLOOR (gh#643, found by check:frame-axe).
+  /* ── ATTACHMENTS — the Ant Design X chat file tray, which shipped with no stylesheet (gh#855) ──
    *
-   * `Attachments` renders a bare `<input type="file">` and lets the platform draw it. Chromium
-   * lays that out at 23.8px tall at this package's base font — measured, and under WCAG 2.2
-   * SC 2.5.8's 24px by a fifth of a pixel. There is nothing for a consumer to override: the class
-   * carried no rule at all, which is why nothing here had ever put a number on it.
+   * The component emitted fifteen slot classes and exactly ONE of them had a rule: a
+   * `min-block-size` floor on the raw `<input type="file">` (gh#643) — which was itself VISIBLE,
+   * nine of them at 265x24 on the docs page, drawing the platform's own file-picker chrome
+   * straight through the design. Everything else fell through to the browser's defaults, so
+   * `.ui-attachments-list` computed `display: block` and `.ui-attachments-card` computed
+   * `display: list-item`. The page looked like raw HTML because it WAS raw HTML. Meanwhile all
+   * twelve `--attachments-*` tokens resolved, were generated into the MCP catalog, were described
+   * to every consumer — and were read by nothing at all.
    *
-   * The floor, not a height: the control keeps whatever the platform gives it the moment that is
-   * already 24px or more.
+   * gh#643's floor is GONE, not moved: the input is `sr-only` now (Upload's mechanism, reused —
+   * see the comment on it in `attachments.tsx`), and WCAG 2.2 SC 2.5.8 sizes POINTER targets. A
+   * control that is never painted is not one; the visible targets are the placeholder and the `+`
+   * tile, and both are measured below.
+   *
+   * PORTED, not invented — `@ant-design/x@2.9.0`, `es/attachments/style/index.js` (root,
+   * placeholder, drop area) and `es/file-card/style/index.js` (list, card, overflow, remove).
+   * Every divergence is recorded in `docs/DESIGN-AUTHORITY.md`.
    */
-  .ui-attachments-input {
-    min-block-size: var(--touch-target-min);
+  .ui-attachments {
+    position: relative;
+    inline-size: 100%;
+  }
+
+  /* `.ui-attachments-input` has no rule of its own on purpose: the hiding is `sr-only`, shared
+   * with Upload, and a second mechanism here is exactly what gh#855 asked us not to write. */
+
+  .ui-attachments-list {
+    display: flex;
+    align-items: stretch;
+    gap: var(--attachments-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Both children of the list are `<li>`: a card, or the `+` tile. Neither is a list marker.
+   * `flex: none` is Ant X's `flex: 'none'` on the card and it is load-bearing, not tidiness —
+   * without it `overflow: scrollX` never scrolls, because the cards give ground instead: measured
+   * at 320px, six cards reported `scrollWidth` 312 against `clientWidth` 288 (they had squeezed
+   * to 44px each) where the true track is 1648. */
+  .ui-attachments-list > li {
+    position: relative;
+    display: flex;
+    flex: none;
+    min-inline-size: 0;
+  }
+
+  .ui-attachments-list[data-overflow="wrap"] {
+    flex-wrap: wrap;
+  }
+
+  .ui-attachments-list[data-overflow="scrollX"] {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  /* Ant X clamps the scrolling column to exactly one card (`maxHeight: 68`), which is what makes
+   * it read as a tray with more below rather than as a truncated list. */
+  .ui-attachments-list[data-overflow="scrollY"] {
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-block-size: var(--attachments-card-block-size);
+  }
+
+  .ui-attachments-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--attachments-card-gap);
+    inline-size: var(--attachments-card-size);
+    /* Ant X pins the card at a flat 268px. On a 320px frame that plus the page gutter spills, so
+     * the fixed width becomes a CEILING here — see the divergence ledger. */
+    max-inline-size: 100%;
+    block-size: var(--attachments-card-block-size);
+    padding-block: var(--space-3);
+    padding-inline: var(--space-4);
+    border: var(--stroke-hairline) solid transparent;
+    border-radius: var(--attachments-card-radius);
+    background-color: hsl(var(--muted));
+    overflow: hidden;
+  }
+
+  /* The leading box: a thumbnail when the item has one, the file glyph when it does not. ONE box
+   * for both, so a list mixing a .png with a .pdf keeps a single row rhythm — the same call
+   * `.ui-upload-list-thumb` / `.ui-upload-list-glyph` already make for Upload (gh#720). */
+  .ui-attachments-card-preview,
+  .ui-attachments-card-placeholder {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--icon-size-2xl);
+    block-size: var(--icon-size-2xl);
+  }
+
+  .ui-attachments-card-preview {
+    border-radius: var(--radius-md);
+    object-fit: cover;
+  }
+
+  .ui-attachments-card-placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-attachments-card-placeholder > svg {
+    inline-size: var(--icon-size-2xl);
+    block-size: var(--icon-size-2xl);
+  }
+
+  .ui-attachments-card-content {
+    display: flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* The stem ellipsises; the extension never does. Ant X splits the name for exactly this. */
+  .ui-attachments-card-name {
+    display: flex;
+    max-inline-size: 100%;
+    font-size: var(--font-size-base);
+    color: hsl(var(--foreground));
+  }
+
+  .ui-attachments-card-name-prefix {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-attachments-card-name-suffix {
+    flex: none;
+  }
+
+  .ui-attachments-card-meta {
+    overflow: hidden;
+    font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
+    color: hsl(var(--muted-foreground));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* A failed upload says so in WORDS in the meta line (`dataEntry.attachments.error`); the red
+   * border and red text are the second channel, never the only one (WCAG 1.4.1). */
+  .ui-attachments-card[data-status="error"] {
+    border-color: hsl(var(--text-error));
+  }
+
+  .ui-attachments-card[data-status="error"] .ui-attachments-card-meta {
+    color: hsl(var(--text-error));
+  }
+
+  .ui-attachments-card-progress {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    display: block;
+  }
+
+  /* In flow, at the end of the row, ALWAYS visible — Ant X keeps its ✕ at `opacity: 0` until the
+   * card is hovered, and a hover-only control has no touch equivalent and taps blind. Upload's
+   * `.ui-upload-tile-remove` already made the same call. */
+  .ui-attachments-card-remove {
+    flex: none;
+  }
+
+  .ui-attachments-card-remove > svg {
+    inline-size: var(--attachments-remove-icon-size);
+    block-size: var(--attachments-remove-icon-size);
+  }
+
+  .ui-attachments-upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Ant X's `+` is a square of the card's own height. */
+    inline-size: var(--attachments-card-block-size);
+    block-size: var(--attachments-card-block-size);
+    border: var(--stroke-hairline) dashed hsl(var(--border));
+    border-radius: var(--attachments-card-radius);
+    background-color: transparent;
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .ui-attachments-upload-btn:hover:not(:disabled) {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .ui-attachments-upload-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .ui-attachments-upload-btn > svg {
+    inline-size: var(--icon-size-xl);
+    block-size: var(--icon-size-xl);
+  }
+
+  .ui-attachments-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--attachments-placeholder-gap);
+    padding: var(--attachments-placeholder-space-inset);
+    border: var(--stroke-md) dashed hsl(var(--border));
+    border-radius: var(--attachments-placeholder-radius);
+    background-color: hsl(var(--muted) / 0.4);
+    text-align: center;
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease;
+  }
+
+  .ui-attachments-placeholder[data-drag-active="true"] {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.05);
+  }
+
+  .ui-attachments-placeholder:not([data-drag-active="true"]):hover {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .ui-attachments-placeholder[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .ui-attachments-placeholder-icon {
+    display: flex;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-attachments-placeholder-icon > svg {
+    inline-size: var(--attachments-placeholder-icon-size);
+    block-size: var(--attachments-placeholder-icon-size);
+  }
+
+  .ui-attachments-placeholder-title {
+    font-size: var(--attachments-placeholder-title-font-size);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--foreground));
+  }
+
+  .ui-attachments-placeholder-description {
+    font-size: var(--attachments-placeholder-description-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* The wash over the whole control while a file is dragged across it. Inert by construction —
+   * `pointer-events: none` — so the drop still lands on the root that is listening for it. */
+  .ui-attachments-drop-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: var(--stroke-md) dashed hsl(var(--primary));
+    border-radius: var(--attachments-placeholder-radius);
+    background: var(
+      --attachments-drop-overlay-background,
+      color-mix(in srgb, hsl(var(--background)) 85%, transparent)
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+
+  .ui-attachments-drop-layer[data-active="true"] {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+
+  .ui-attachments-drop-layer[data-scope="viewport"] {
+    position: fixed;
   }
 
   .ui-combobox-content {
