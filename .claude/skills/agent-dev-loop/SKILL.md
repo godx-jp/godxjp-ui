@@ -319,6 +319,14 @@ portable core; everything else is measurement.
    have not checked the lens against something you already know the answer to.** Point it at a case
    you are certain of first: if it cannot find what you know is there, nothing else it says counts.
 
+   **And re-reading will not find these — a CONTROL will.** One session counted five claims it had
+   to withdraw in a single afternoon (a wrong audit table, a wrong role-coverage claim, a wrong
+   claim that a version bump defeats scoping, a wrong "the menu still offers a hidden topping", and
+   a green-but-vacuous assertion whose helper took a second needle where its author thought it took
+   a message). **Every one was caught by a control case, none by looking again.** So a predicate
+   ships with a case that makes it return `false`, and a sweep ships with a case whose answer you
+   already know. A predicate nobody has seen fail is not a predicate.
+
    And the counterpart, from a fifth sweep the same afternoon: one lens returned **98 of 122** as
    defects, including two the author had personally wired up thirty minutes earlier — the repo's
    dominant shape was a positional argument (`record($user, 'passkey_added', $request)`) that no
