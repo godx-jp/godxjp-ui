@@ -56,8 +56,8 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 1974 design tokens, each tagged with its `tier`. **If you were handed a
-   brand, read the 197 `foundation` entries first** — `--primary`, `--background`,
+4. `tokens.json` — 1978 design tokens, each tagged with its `tier`. **If you were handed a
+   brand, read the 201 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
    1685 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
@@ -143,7 +143,7 @@ has stopped following the brand.
 
 | `tier` | count | what it is | set it? |
 |---|---|---|---|
-| `foundation` | 197 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
+| `foundation` | 201 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
 | `semantic` | 92 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
 | `component` | 1685 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
