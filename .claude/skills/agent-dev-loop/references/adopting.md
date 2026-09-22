@@ -89,11 +89,16 @@ Find a CI job that decides it has nothing to do, and time it end to end. If the 
 happens *after* the expensive step, every skipped job pays in full. One repo's skip cost 225
 seconds, of which 218 was checkout and 2 was the decision.
 
-## Step 9 — choose the integration counter and its threshold
+## Step 9 — write down who may start a full run
 
-Count what is not yet in the integration branch. **If the base cannot be resolved, ASK — never fall
-back.** Record which action your project attaches to the threshold, and note the open argument in
-`SKILL.md` about whether that action should be "run the suite" or "stop intake and review".
+**A person asks, or it does not happen.** Record the exact wording your project uses for the ask,
+and what is deliberately excluded from the bundle (accessibility sweeps, manual capture — anything
+the owner must name separately).
+
+Do not invent a threshold that starts one automatically. The originating repo tried; the counter
+fell back to the root commit and authorised an unasked run on its first read, and the corrected
+version still needed a paragraph to explain itself. A rule needing a paragraph gets applied
+wrongly, and this one fails **open** when it is.
 
 ## Step 10 — write the mechanism, not just the document
 
@@ -126,7 +131,7 @@ Measured on: <machine>, <date>. Re-measure after any toolchain change.
 ## Lint cache: safe / unsafe — <the rule that decides it>
 ## Path → gate map
 ## Blast-radius classes present: A B C D E [F G]
-## Integration counter: <command> · threshold <n> · action <...>
+## Batch-run trigger: the owner asks — record the wording, and what is excluded from the bundle
 ## Fail-fast chains / silent-success traps: <findings>
 ## Enforcement mechanism: <hook path, what it refuses, the escape hatch>
 ```

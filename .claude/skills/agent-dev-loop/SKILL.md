@@ -190,47 +190,37 @@ and how, and which you deferred. A review nobody can read is a review nobody can
 ### What a full run IS and IS NOT
 
 **A full suite run is RELEASE EVIDENCE, bound to the exact commit being shipped.** It is not a
-ritual and it is not debt collection. *A run at commit 100 proves nothing about commit 101.*
+ritual and it is not debt collection. *A run at one commit proves nothing about the next one.*
 
 And *"we just ran the full suite"* is **never** the evidence. Release gates take the **latest
 attempt of the required check on the exact commit** — a newer cancelled run beats an older green
 one. Verified independently in both repositories that debated this file.
 
-### The trigger
+### The trigger — there is only one
 
-**Count work not yet integrated** — everything reachable from any ref that is not yet in the
-integration branch. Not "commits since a marker": there is nothing to create, nothing to keep in
-sync, and no fallback to get wrong, and **merging** is what reduces it, which is the behaviour you
-want rewarded.
+**The owner asks for it, or it does not happen.** There is no counter, no threshold and no
+automatic case.
 
-**Over the threshold ⇒ due automatically. At or under ⇒ ASK, and wait.**
+This used to be a threshold on un-integrated work, and removing it is the conclusion of getting it
+wrong twice: first it fell back to the root commit and **authorised an unasked full-suite run from
+the first read** — the one behaviour it forbids — and then, once fixed, it still needed a paragraph
+explaining what it counted and what it did not. A rule that needs a paragraph is a rule that will
+be applied wrongly, and this one fails **open** when applied wrongly.
 
-> **If the base cannot be resolved, ASK. Never fall back to anything.**
->
-> The first version of this rule counted from a marker tag and fell back to the root commit when
-> none existed. No marker existed, so it counted the entire history, cleared the threshold, and
-> **authorised an unasked full-suite run from the first read** — the one behaviour it forbids. It
-> was also circular: the marker was only created after a successful run.
->
-> Same family as the selector rule above: **missing data made the system pick the loudest option
-> instead of stopping to ask.** Make every "I don't know" fail closed.
+The argument that killed it is also the simplest one:
 
-> #### ⚠ The ACTION on this threshold is contested; record where your project stands
->
-> ```
-> problem : N items NOT REVIEWED
-> action  : run the full suite
-> ```
->
-> Running tests reviews nothing. N unreviewed commits, after a green suite, are still N unreviewed
-> commits — they merely **look** checked. The threshold is defensible as a batch-size ceiling; the
-> **action** attached to it is what does not follow.
->
-> The alternative: keep the threshold, make the action **"stop taking new work into this batch and
-> go review"** — gating phase 1 instead of firing phase 4.
->
-> Whichever your project chooses, two things hold: at the threshold **stop intake**, and a run
-> fired by a counter is **never reportable as release evidence**.
+```
+problem : work that has not been REVIEWED
+action  : run the full suite
+```
+
+Running tests reviews nothing. Unreviewed work, after a green suite, is still unreviewed — it
+merely **looks** checked. There was never an amount of un-integrated work that made a full suite
+the right answer; what a growing backlog calls for is **reviewing it**, or not taking more on.
+
+So: **phase 3 is the answer to a large batch, and phase 4 is the answer to a question the owner
+asked.** If the batch feels too big to review, stop taking work into it — do not reach for the
+suite instead.
 
 ### The ask
 
@@ -239,6 +229,7 @@ item with times, and the price of the batch run. Then:
 
 - **Yes** → run once, for the whole batch. **Expand your aggregate aliases first** so you do not
   run their contents twice. Record every result.
+- **Not asked** → it does not run. Silence is not a yes.
 - **No** → open the PR. CI is the verdict; a red integration branch is fixed forward with priority.
   **Never report a skipped batch run as passed.**
 - **Anything the owner must request by name** (accessibility sweeps, manual capture) is **not** in
@@ -259,8 +250,8 @@ portable core; everything else is measurement.
 3. **Expand and TIME an alias before running it.** Never trust a name. Aggregate aliases hide
    minutes behind one word, and nobody had expanded ours for months.
 4. **The diff is not the diff command alone** — include staged and untracked files.
-5. **The full suite is release evidence bound to a commit**, not a ritual on a counter, and not the
-   memory of having run it.
+5. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
+   the memory of having run it. Nothing but a person asking should start one.
 6. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
    not anywhere in the string — a guard that blocks reading a file whose name contains the tool is
    switched off the same day. Watch the reverse failure too: narrow forms like `--changed` or
@@ -306,5 +297,5 @@ Measure these per repository; copying them is how a handbook becomes wrong.
 - [ ] Every file in the working tree traces to an item
 - [ ] Tests audited for non-vacuity, not just for green
 - [ ] Each "cannot prove" class either probed once or **deferred in writing**
-- [ ] Threshold checked; if under it, the owner was **asked** and answered
+- [ ] The batch run happened only because the owner **asked** for it
 - [ ] Nothing skipped is reported as passed

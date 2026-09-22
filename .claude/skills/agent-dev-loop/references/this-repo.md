@@ -72,16 +72,10 @@ files** (3–4 min); the `select` prefix is 19 files (22.6s).
 **A–E.** No F (no deploy writes to live data) and no G (no believed-number path) — this is a
 library. Their absence is why they are documented in `SKILL.md` rather than here.
 
-## Integration counter
+## Batch-run trigger
 
-```bash
-git fetch origin --quiet
-git rev-list --count --all --not origin/main        # 50 at time of writing, across 12 branches
-git rev-parse --verify origin/main >/dev/null || { echo "cannot resolve — ASK"; exit 1; }
-```
-
-Threshold **100**. Action: **the owner's rule — the batch run is due**; the contested alternative
-is recorded in `SKILL.md`. At the threshold, **also stop intake**.
+**The owner asks, or it does not run.** No counter, no threshold — see `SKILL.md`. A batch too
+large to review is a signal to stop taking work into it, not to run the suite.
 
 ## Fail-fast chains and silent-success traps
 
