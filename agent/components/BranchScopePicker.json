@@ -63,6 +63,16 @@
       "description": "Override the localized radio labels (e.g. domain wording like 全店舗).",
       "name": "allLabel / selectedLabel",
       "type": "ReactNode"
+    },
+    {
+      "description": "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "description": "DOM id on the picker root, and the SEED for the ids beneath it — the validation message is `${id}-error`, which is what `aria-errormessage` points at. Left out, a `useId`-based id is generated, so the association still holds; set it when a server-rendered page needs those ids to be stable.",
+      "name": "id",
+      "type": "string"
     }
   ],
   "related": [

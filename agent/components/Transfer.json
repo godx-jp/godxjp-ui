@@ -95,6 +95,11 @@
       "type": "string"
     },
     {
+      "description": "Lands on the `role=\"group\"` shuttle container, not on any one input — a two-pane shuttle has no single labelable control, so this is what a FormField label points at. FormField injects it; pass it yourself only for a bare Transfer.",
+      "name": "id",
+      "type": "string"
+    },
+    {
       "description": "Controlled selection state as a tuple: index 0 = keys checked in the source panel, index 1 = keys checked in the target panel. Omit to use internal (uncontrolled) selection state. Must be paired with `onSelectChange` when provided.",
       "name": "selectedKeys",
       "type": "[string[], string[]]"

@@ -116,6 +116,16 @@
       "description": "Ant Design `onTabScroll`, fired whenever the trigger strip's own scrollport moves — a swipe, a wheel, or the component re-pinning the active trigger (antd reports its own re-pins too). LOGICAL VALUES instead of antd's `left | right | top | bottom`: two of those four are just the other axis of the same event, and upstream's pair is read off the sign of an inner transform, so in an RTL strip its `left` means the opposite of what it means in LTR. `start`/`end` say the same thing on whichever axis and in whichever direction the strip is written. Only fires for the `items` API, which is the path that owns the strip element.",
       "name": "onTabScroll",
       "type": "(info: { direction: \"start\" | \"end\" }) => void"
+    },
+    {
+      "description": "Class on the TRIGGER STRIP (`TabsList`) under the `items` API — the handle that composing the tree manually gives you as `<TabsList className>`. `className` reaches only the root, which holds the strip AND the panels, so anything meant for the bar alone belongs here. Almost always unnecessary: placement, size, centring and the card rail are props and `--tabs-*` tokens.",
+      "name": "listClassName",
+      "type": "string"
+    },
+    {
+      "description": "Class on EVERY panel (`TabsContent`) under the `items` API. It is written so it can WIN: the joined card body travels to CSS as `data-bodied` on the root rather than as a class, precisely so a consumer class on the panel is not fighting a utility the component already claimed (gh#762). Reach for the `bodied` prop and the `--tabs-panel-*` tokens first — this is for the geometry no token exposes.",
+      "name": "contentClassName",
+      "type": "string"
     }
   ],
   "related": [

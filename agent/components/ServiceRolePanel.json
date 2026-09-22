@@ -56,6 +56,11 @@
       "description": "Forwarded to MasterDetail (localized region labels by default). Never re-derive tracks or breakpoints in the app.",
       "name": "railWidth / masterViewport / collapseBelow / masterLabel / detailLabel",
       "type": "MasterDetail geometry + region labels"
+    },
+    {
+      "description": "DOM id on the panel root — the two-region MasterDetail wrapper, not the rail or the detail. It is the handle for a deep link onto the roles panel of a settings page, and for an E2E selector that must survive `masterLabel` being localized.",
+      "name": "id",
+      "type": "string"
     }
   ],
   "related": [

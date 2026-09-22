@@ -68,6 +68,11 @@
       "type": "string"
     },
     {
+      "description": "Lands on the native `<input type=\"file\">`, NOT on the wrapper — the hidden input is the semantic focus target, so this is what makes a `<label htmlFor>` (or FormField, which injects it) actually focus the picker. Putting it on the visible dropzone instead is the usual reason a label click does nothing.",
+      "name": "id",
+      "type": "string"
+    },
+    {
       "description": "Custom button label for variant='button'. Falls back to the i18n 'Upload file' string.",
       "name": "children",
       "type": "React.ReactNode"

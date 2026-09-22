@@ -30,6 +30,12 @@
       "type": "string"
     },
     {
+      "defaultValue": "false",
+      "description": "Keeps its HTML spelling here and becomes react-aria's `isRequired`, so unlike Switch — where the same prop only ANNOUNCES the requirement — this is real constraint validation on the underlying input: an unchecked box blocks native form submission. The consent checkbox is the case it exists for. It does not render an asterisk; the required MARK belongs to FormField's label.",
+      "name": "required",
+      "type": "boolean"
+    },
+    {
       "description": "antd `<Checkbox>label</Checkbox>` — the INLINE label: box first, label at inline-end on the same line, the same markup as a `Checkbox.Group` option. A real `<label for>`: clicking the text toggles the box and the text is its accessible name. `className` then styles the labelled row.",
       "name": "children",
       "type": "React.ReactNode"

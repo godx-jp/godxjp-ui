@@ -456,6 +456,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Permitted empty endpoints, default [true,true].",
       },
       {
+        name: "placeholder",
+        type: "[string,string]",
+        description:
+          "A PAIR, one per endpoint — TimePicker's single-string `placeholder` is omitted from this type on purpose, because a range has two empty fields and one string would label both of them the same. Route both through t().",
+      },
+      {
         name: "name",
         type: "string",
         description: "Native names are name_from and name_to.",
@@ -5207,10 +5213,23 @@ import { Flex } from "@godxjp/ui/layout";
         description: "Renders a confirm button; wire it to the Dialog's onOpenChange(false).",
       },
       {
+        name: "acknowledgeLabel",
+        type: "React.ReactNode",
+        description:
+          "Copy on the button `onAcknowledge` creates. Defaults to a localized \"I've saved it\" — override it when the confirmation claims something more specific than having read the secret (\"保管しました\", \"Stored in 1Password\"). Consumer-owned wording: route it through t().",
+      },
+      {
         name: "downloadable",
         type: "boolean",
         defaultValue: "false",
         description: "Offer a download-as-file button.",
+      },
+      {
+        name: "downloadFileName",
+        type: "string",
+        defaultValue: '"credential.txt"',
+        description:
+          "Name of the file `downloadable` writes. The default is deliberately anonymous; set it when the user will hold several at once (`api-key-prod.txt`) so the saved files are still telling apart in a downloads folder.",
       },
       {
         name: "size",
@@ -5223,6 +5242,18 @@ import { Flex } from "@godxjp/ui/layout";
         type: '"warning" | "destructive" | "info"',
         defaultValue: '"warning"',
         description: "Caution banner severity.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id on the root. Useful here because the surface is usually inside a Dialog: it is what a `aria-describedby` on the dialog, or a deep link back to the issued credential, can point at.",
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          "Accessible name for the credential region when `label` is not set or is a non-string node. `label` is the VISIBLE caption and already names the region when it is a plain string, so reach for this only when the caption is rich content or when the surrounding dialog title is the only thing saying which secret this is.",
       },
     ],
     usage: [
@@ -6760,6 +6791,12 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         defaultValue: "false",
         description: "Disable search input and clearing.",
       },
+      {
+        name: "inputClassName",
+        type: "string",
+        description:
+          "Class on the `<input>` itself. SearchInput renders a WRAPPER (label, icon, clear button, input), so `className` lands on that wrapper and never reaches the field — this is the second handle, for the case where the field and its chrome need different treatment. Layout and colour still belong to tokens; use it for the rare geometry a token cannot reach.",
+      },
     ],
     usage: [
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
@@ -7367,6 +7404,13 @@ export function PrioritySelect({ value, onValueChange }) {
       },
       { name: "id", type: "string", description: "Links to a <Label htmlFor>." },
       {
+        name: "required",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "ANNOUNCES the requirement; it does not enforce it. react-aria's Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required=\"true\"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.",
+      },
+      {
         name: "disabled",
         type: "boolean",
         defaultValue: "false",
@@ -7597,6 +7641,13 @@ export function PrioritySelect({ value, onValueChange }) {
         description: "Fires when checked state changes.",
       },
       { name: "id", type: "string", description: "Links to a <Label htmlFor>." },
+      {
+        name: "required",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Keeps its HTML spelling here and becomes react-aria's `isRequired`, so unlike Switch — where the same prop only ANNOUNCES the requirement — this is real constraint validation on the underlying input: an unchecked box blocks native form submission. The consent checkbox is the case it exists for. It does not render an asterisk; the required MARK belongs to FormField's label.",
+      },
       {
         name: "children",
         type: "React.ReactNode",
@@ -8880,6 +8931,18 @@ toast.error("保存に失敗しました");`,
         description:
           "Ant Design `onTabScroll`, fired whenever the trigger strip's own scrollport moves — a swipe, a wheel, or the component re-pinning the active trigger (antd reports its own re-pins too). LOGICAL VALUES instead of antd's `left | right | top | bottom`: two of those four are just the other axis of the same event, and upstream's pair is read off the sign of an inner transform, so in an RTL strip its `left` means the opposite of what it means in LTR. `start`/`end` say the same thing on whichever axis and in whichever direction the strip is written. Only fires for the `items` API, which is the path that owns the strip element.",
       },
+      {
+        name: "listClassName",
+        type: "string",
+        description:
+          "Class on the TRIGGER STRIP (`TabsList`) under the `items` API — the handle that composing the tree manually gives you as `<TabsList className>`. `className` reaches only the root, which holds the strip AND the panels, so anything meant for the bar alone belongs here. Almost always unnecessary: placement, size, centring and the card rail are props and `--tabs-*` tokens.",
+      },
+      {
+        name: "contentClassName",
+        type: "string",
+        description:
+          "Class on EVERY panel (`TabsContent`) under the `items` API. It is written so it can WIN: the joined card body travels to CSS as `data-bodied` on the root rather than as a class, precisely so a consumer class on the panel is not fighting a utility the component already claimed (gh#762). Reach for the `bodied` prop and the `--tabs-panel-*` tokens first — this is for the geometry no token exposes.",
+      },
     ],
     usage: [
       "DO pass `items` when all tab content is known up front — each item needs a unique `value`, trigger `label`, and panel `content`.",
@@ -10050,6 +10113,12 @@ export function CutoffTimeForm() {
         type: "(query: string) => void",
         description: "Search query change (antd `showSearch.onSearch`).",
       },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          "Accessible name for the COMBOBOX TRIGGER — the element a keyboard user lands on, not the panel. Inside a FormField it is injected for you and you do not pass it; on a bare Cascader (a toolbar scope filter, a compact drilldown with no label row) it is the only name the control has, and cardinal rule 227 requires one. Route it through t(). The rest of the field-a11y contract — aria-labelledby / describedby / errormessage / invalid / required — is accepted on every form-capable component here and is FormField's to wire.",
+      },
     ],
     usage: [
       "DO pass a string[] path as value in single mode (e.g. ['country','region','city']). DON'T pass a flat string ID — the component treats value as an ordered path array and will render nothing if you pass a bare string.",
@@ -10561,6 +10630,12 @@ export function DepartmentFilter() {
           "Extra Tailwind classes applied to the outer flex wrapper. Use to constrain width or add margin.",
       },
       {
+        name: "id",
+        type: "string",
+        description:
+          'Lands on the `role="group"` shuttle container, not on any one input — a two-pane shuttle has no single labelable control, so this is what a FormField label points at. FormField injects it; pass it yourself only for a bare Transfer.',
+      },
+      {
         name: "selectedKeys",
         type: "[string[], string[]]",
         description:
@@ -10706,6 +10781,12 @@ export function AccountMapping() {
         name: "className",
         type: "string",
         description: "Extra CSS class applied to the outer wrapper div.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          'Lands on the native `<input type="file">`, NOT on the wrapper — the hidden input is the semantic focus target, so this is what makes a `<label htmlFor>` (or FormField, which injects it) actually focus the picker. Putting it on the visible dropzone instead is the usual reason a label click does nothing.',
       },
       {
         name: "children",
@@ -14085,6 +14166,48 @@ export default function PasswordBlock() {
         description:
           "Main-axis alignment of the whole code row (groups + separators) inside the field. `center` is the canonical auth challenge. Before this existed, every consumer wrapped the OTP in their own flex-centring div — do not. A service that wants all code fields centred sets `--otp-container-align` once instead.",
       },
+      {
+        name: "onComplete",
+        type: "(value: string) => void",
+        description:
+          "Fires ONCE the last slot fills, whether the user typed it or pasted the whole code. This is the auto-submit hook: a 2FA challenge with a visible submit button is a step nobody wants, and the alternative — watching `value.length === maxLength` in an effect — re-fires on every re-render. Keep the submit button anyway for the paste-then-correct case.",
+      },
+      {
+        name: "pasteTransformer",
+        type: "(pasted: string) => string",
+        description:
+          "Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `\"123 456\"`, `\"code: 123456\"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.",
+      },
+      {
+        name: "containerClassName",
+        type: "string",
+        description:
+          "Class on the ROW container `input-otp` renders (the slots' flex parent), which `className` cannot reach — `className` lands on the hidden input, because that is the real field. Prefer `align` and the `--otp-*` tokens; this is the vendored escape hatch underneath them.",
+      },
+      {
+        name: "pushPasswordManagerStrategy",
+        type: '"increase-width" | "none"',
+        description:
+          "`input-otp`'s answer to the 1Password / LastPass badge that browsers float over a code field and that covers the last slot. `increase-width` (its default) reserves room so the badge sits beside the row; `none` turns the accommodation off, which is what a row already centred by `align` usually wants. Pure layout — it changes no value and no keyboard behaviour.",
+      },
+      {
+        name: "noScriptCSSFallback",
+        type: "string | null",
+        description:
+          "The `<noscript>` stylesheet `input-otp` injects so the slots are still visible with JS disabled. Pass `null` to suppress it — the one real reason being a CSP that forbids inline styles and that `nonce` cannot satisfy. Leave it alone otherwise.",
+      },
+      {
+        name: "nonce",
+        type: "string",
+        description:
+          "CSP nonce stamped on the stylesheet `input-otp` injects. Required only under a `style-src 'nonce-…'` policy, where the field otherwise renders unstyled and the console reports a blocked inline style. Pass the same nonce the document was served with.",
+      },
+      {
+        name: "render",
+        type: "(props: InputOTPRenderProps) => React.ReactNode",
+        description:
+          "`input-otp`'s headless mode: you draw the entire row from the slot state instead of composing InputOTPGroup / InputOTPSlot. It is mutually exclusive with `children` — the vendor types the two as a union and this component keeps that union. Reaching for it means giving up the slot styling, the group outline and the separator this package owns, so it is the last resort, not a customisation point.",
+      },
     ],
     usage: [
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
@@ -15896,6 +16019,18 @@ import { Badge } from "@godxjp/ui/data-display";
         description:
           "The BOX the trigger takes — the same split AppSettingToggle draws, for the same reason. `bar` (default) is a TopbarItem: a cell as tall as the bar, whose hover IS the bar's surface. `icon` is a square ghost Button, for chrome that is NOT a bar — a nav rail (GoDX Dock puts it there), a card header, a toolbar. A TopbarItem outside a bar has nothing to bleed to: it stretches to a container that never set a band height, and its squared corners and full-bleed hover read as a broken cell rather than a control. The panel, the grid, the labels and the responsive contract are identical in both.",
       },
+      {
+        name: "side",
+        type: '"top" | "right" | "bottom" | "left"',
+        description:
+          'Which way the panel opens. DERIVED from `appearance` when unset — `bottom` in a bar (the panel drops below the trigger, the only direction that does not cover the bar itself), `right` otherwise, because a rail is vertical and its panel goes beside it. State it when the chrome can be RE-DOCKED: `appearance` says the trigger is NOT in a bar, and it cannot say which way is out — a rail pinned to the top edge is not a bar and still opens downward. Measured without it, an embedded bar trigger at (2,50) put its panel at (12,90), lying over the host application\'s sidebar. Not used by `responsive="fullscreen"`, which has no side.',
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        description:
+          "Where the panel sits along the `side` edge — the cross-axis half of the same decision, and derived the same way: `end` in a bar (the Workspace shape, flush with the bar's end), `start` otherwise (aligned to the rail trigger's own start). State it alongside `side` when you state either.",
+      },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
         name: "onOpenChange",
@@ -16117,6 +16252,12 @@ import { Badge } from "@godxjp/ui/data-display";
           "`true` renders the built-in localized surface; a node replaces it; onRetry adds Retry to the built-in error only.",
       },
       { name: "label", type: "string", description: "Accessible table name (localized default)." },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id on the grid root. Worth setting on a permissions page that also renders a summary or a legend elsewhere: it is the anchor those can point at, and the stable handle for an E2E selector that must not depend on the localized `label`.",
+      },
     ],
     usage: [
       "DO import it — it is a real export from @godxjp/ui/data-display (the lesson: a docs page is not importable). Never hand-compose the sticky-column grid per app.",
@@ -16220,6 +16361,18 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
         type: "ReactNode",
         description: "Override the localized radio labels (e.g. domain wording like 全店舗).",
       },
+      {
+        name: "name",
+        type: "string",
+        description:
+          "Native form name, forwarded to the MODE radio group — the all / selected choice is what submits under it. The checked branch ids are not native fields; they live in the single `{ mode, branchIds }` value and are yours to serialise.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id on the picker root, and the SEED for the ids beneath it — the validation message is `${id}-error`, which is what `aria-errormessage` points at. Left out, a `useId`-based id is generated, so the association still holds; set it when a server-rendered page needs those ids to be stable.",
+      },
     ],
     usage: [
       "DO treat scope as ONE form field: the single { mode, branchIds } value goes through FormField like any other control.",
@@ -16312,6 +16465,12 @@ const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permis
         type: "MasterDetail geometry + region labels",
         description:
           "Forwarded to MasterDetail (localized region labels by default). Never re-derive tracks or breakpoints in the app.",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "DOM id on the panel root — the two-region MasterDetail wrapper, not the rail or the detail. It is the handle for a deep link onto the roles panel of a settings page, and for an E2E selector that must survive `masterLabel` being localized.",
       },
     ],
     usage: [
@@ -17359,11 +17518,41 @@ const messages: ChatMessageProp[] = [
         type: "ReactElement",
         description: "Child mode: visible trigger; upload runs through a hidden input beside it.",
       },
+      {
+        name: "onRemove",
+        type: "(item: AttachmentsItemProp) => boolean | void | Promise<boolean | void>",
+        description:
+          "antd Upload `onRemove`, narrowed to the attachment row. RETURNING `false` (or a promise of it) VETOES the removal and the card stays — anything else, including `undefined`, lets it go. That is how you gate a removal behind a confirm dialog without owning `items` yourself. It is awaited, so an async guard works.",
+      },
+      {
+        name: "classNames",
+        type: "Partial<Record<AttachmentsSemanticProp, string>>",
+        description:
+          "Ant Design X `classNames` — per-part classes (root, list, card, file, upload, placeholder). DECLARED AND FORWARDED, and the only semantic part map in this package: docs/DESIGN-AUTHORITY.md rules that antd's `classNames`/`styles` maps are NOT adopted because this library answers that layer with tokens (cardinal rule #45), and Attachments is the one component that carries them anyway. Recorded there as a contradiction, not a pattern — do not copy it onto another component, and retune through `--attachments-*` instead.",
+      },
+      {
+        name: "styles",
+        type: "Partial<Record<AttachmentsSemanticProp, React.CSSProperties>>",
+        description:
+          "Ant Design X `styles` — the same part map as `classNames`, as inline styles, and under the same standing ruling against it. Inline styles beat every stylesheet rule, so this is the one handle in the package that can take a part off the design system entirely. The `--attachments-*` tokens are the supported route.",
+      },
+      {
+        name: "rootClassName",
+        type: "string",
+        description:
+          "Ant Design X `rootClassName` — the outermost node. It is not a duplicate of `className`: in the full-screen-drop mode (`getDropContainer`) the outermost node is the OVERLAY rather than the inline tray, which is why antd separates the two. Both are applied.",
+      },
+      {
+        name: "imageProps",
+        type: "Record<string, unknown>",
+        description:
+          "ACCEPTED AND INERT. Ant Design X forwards it to its own Image preview; this package has no Image primitive yet, so the prop exists only so an Ant X call site type-checks, and passing it changes nothing on screen. Do not reach for it expecting a preview knob.",
+      },
     ],
     usage: [
       "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",
       "DO use `ref.select({ accept, multiple })` to open the picker programmatically (Ant X 2.0).",
-      "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens.",
+      "Ant X's `classNames` / `styles` / `rootClassName` ARE declared and forwarded, although docs/DESIGN-AUTHORITY.md rules that antd's semantic part maps are not adopted here. The older note in this slot said not to expect them at all; the type has never agreed with it, so an agent reading only the catalog was told the opposite of what autocomplete offered. Retune through the `--attachments-*` tokens, and treat the maps as a recorded contradiction on this one component rather than a pattern to reuse.",
       "The card is a FIXED box — 268x68 (Ant X's own), from `--attachments-card-size` (inline) and `--attachments-card-block-size`. The block size is also the `+` tile's square and the `overflow=\"scrollY\"` one-row viewport, so retune it once and all three follow. The file input is `sr-only`: never style it visible.",
     ],
     useCases: [

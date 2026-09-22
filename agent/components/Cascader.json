@@ -175,6 +175,11 @@
       "description": "Search query change (antd `showSearch.onSearch`).",
       "name": "onSearchChange",
       "type": "(query: string) => void"
+    },
+    {
+      "description": "Accessible name for the COMBOBOX TRIGGER — the element a keyboard user lands on, not the panel. Inside a FormField it is injected for you and you do not pass it; on a bare Cascader (a toolbar scope filter, a compact drilldown with no label row) it is the only name the control has, and cardinal rule 227 requires one. Route it through t(). The rest of the field-a11y contract — aria-labelledby / describedby / errormessage / invalid / required — is accepted on every form-capable component here and is FormField's to wire.",
+      "name": "aria-label",
+      "type": "string"
     }
   ],
   "related": [

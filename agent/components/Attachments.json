@@ -50,6 +50,31 @@
       "description": "Child mode: visible trigger; upload runs through a hidden input beside it.",
       "name": "children",
       "type": "ReactElement"
+    },
+    {
+      "description": "antd Upload `onRemove`, narrowed to the attachment row. RETURNING `false` (or a promise of it) VETOES the removal and the card stays — anything else, including `undefined`, lets it go. That is how you gate a removal behind a confirm dialog without owning `items` yourself. It is awaited, so an async guard works.",
+      "name": "onRemove",
+      "type": "(item: AttachmentsItemProp) => boolean | void | Promise<boolean | void>"
+    },
+    {
+      "description": "Ant Design X `classNames` — per-part classes (root, list, card, file, upload, placeholder). DECLARED AND FORWARDED, and the only semantic part map in this package: docs/DESIGN-AUTHORITY.md rules that antd's `classNames`/`styles` maps are NOT adopted because this library answers that layer with tokens (cardinal rule #45), and Attachments is the one component that carries them anyway. Recorded there as a contradiction, not a pattern — do not copy it onto another component, and retune through `--attachments-*` instead.",
+      "name": "classNames",
+      "type": "Partial<Record<AttachmentsSemanticProp, string>>"
+    },
+    {
+      "description": "Ant Design X `styles` — the same part map as `classNames`, as inline styles, and under the same standing ruling against it. Inline styles beat every stylesheet rule, so this is the one handle in the package that can take a part off the design system entirely. The `--attachments-*` tokens are the supported route.",
+      "name": "styles",
+      "type": "Partial<Record<AttachmentsSemanticProp, React.CSSProperties>>"
+    },
+    {
+      "description": "Ant Design X `rootClassName` — the outermost node. It is not a duplicate of `className`: in the full-screen-drop mode (`getDropContainer`) the outermost node is the OVERLAY rather than the inline tray, which is why antd separates the two. Both are applied.",
+      "name": "rootClassName",
+      "type": "string"
+    },
+    {
+      "description": "ACCEPTED AND INERT. Ant Design X forwards it to its own Image preview; this package has no Image primitive yet, so the prop exists only so an Ant X call site type-checks, and passing it changes nothing on screen. Do not reach for it expecting a preview knob.",
+      "name": "imageProps",
+      "type": "Record<string, unknown>"
     }
   ],
   "related": [
@@ -67,7 +92,7 @@
   "usage": [
     "DO keep antd field names on each item (`thumbUrl`, `originFileObj`, `uid`) — an Ant X call site should compile unchanged.",
     "DO use `ref.select({ accept, multiple })` to open the picker programmatically (Ant X 2.0).",
-    "DON'T expect `styles`/`classNames` from Ant X — retune through `--attachments-*` tokens.",
+    "Ant X's `classNames` / `styles` / `rootClassName` ARE declared and forwarded, although docs/DESIGN-AUTHORITY.md rules that antd's semantic part maps are not adopted here. The older note in this slot said not to expect them at all; the type has never agreed with it, so an agent reading only the catalog was told the opposite of what autocomplete offered. Retune through the `--attachments-*` tokens, and treat the maps as a recorded contradiction on this one component rather than a pattern to reuse.",
     "The card is a FIXED box — 268x68 (Ant X's own), from `--attachments-card-size` (inline) and `--attachments-card-block-size`. The block size is also the `+` tile's square and the `overflow=\"scrollY\"` one-row viewport, so retune it once and all three follow. The file input is `sr-only`: never style it visible."
   ],
   "useCases": [

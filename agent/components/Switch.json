@@ -49,6 +49,12 @@
     },
     {
       "defaultValue": "false",
+      "description": "ANNOUNCES the requirement; it does not enforce it. react-aria's Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required=\"true\"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.",
+      "name": "required",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "false",
       "description": "Disable the toggle.",
       "name": "disabled",
       "type": "boolean"

@@ -67,6 +67,11 @@
       "description": "Disable search input and clearing.",
       "name": "disabled",
       "type": "boolean"
+    },
+    {
+      "description": "Class on the `<input>` itself. SearchInput renders a WRAPPER (label, icon, clear button, input), so `className` lands on that wrapper and never reaches the field — this is the second handle, for the case where the field and its chrome need different treatment. Layout and colour still belong to tokens; use it for the rare geometry a token cannot reach.",
+      "name": "inputClassName",
+      "type": "string"
     }
   ],
   "related": [
