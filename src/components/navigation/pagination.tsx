@@ -288,11 +288,13 @@ export function Pagination({
           value={String(pageSize)}
           onValueChange={(v: string) => go(1, Number(v))}
           disabled={disabled}
+          // On the FIELD, not on the trigger: `Select` forwards it to the trigger unchanged, and a
+          // name the root cannot see is one react-aria warns about once per render (gh#869).
+          aria-label={t("navigation.pagination.pageSize")}
         >
           <SelectTrigger
             // ラベル (ja「100 件/ページ」) を切り詰める。token は下限のみ。
             className="ui-pagination-size-trigger w-max min-w-[var(--pagination-size-width)]"
-            aria-label={t("navigation.pagination.pageSize")}
           >
             {}
             <SelectValue>

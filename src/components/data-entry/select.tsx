@@ -401,6 +401,10 @@ function LabelInValueSelect({
 function CompoundSelect({ id, name, ...props }: SelectCompoundProp) {
   // `id`, `data-field` and the aria-* contract are NOT root props — they belong to the trigger.
   const fieldA11y = pickFieldA11y(props);
+  // gh#869. The SAME name the trigger will resolve for itself, so react-aria's `useLabel` on the
+  // root sees one too. `{}` unless the trigger's name comes from the enclosing FormField and from
+  // no prop at all — which is exactly the case the root could not see, and warned about.
+  const nameFallback = useFieldNameFallback(fieldA11y);
   // Resolved HERE, not on the trigger: `name` belongs on the root, which is what renders the
   // native <select> a form submit reads; only `data-field` continues on to the trigger.
   const identity = useFieldIdentity({ id, name, "data-field": fieldA11y["data-field"] });
@@ -417,7 +421,7 @@ function CompoundSelect({ id, name, ...props }: SelectCompoundProp) {
         id={id}
         name={name ?? identity.name}
         aria-label={fieldA11y["aria-label"]}
-        aria-labelledby={fieldA11y["aria-labelledby"]}
+        aria-labelledby={fieldA11y["aria-labelledby"] ?? nameFallback["aria-labelledby"]}
       />
     </SelectFieldA11yContext.Provider>
   );
@@ -1251,8 +1255,18 @@ function DataSelect(props: PlainDataSelectProp) {
       }}
       disabled={disabled || (!hasOptions && !showEmptyPopup)}
       allowsEmptyCollection={showEmptyPopup}
-      aria-label={ariaProps["aria-label"] as string | undefined}
-      aria-labelledby={ariaProps["aria-labelledby"] as string | undefined}
+      // gh#869. The root is handed the name the TRIGGER resolved, not just the one a consumer
+      // passed as a prop: react-aria's `useLabel` warns once per render when the root has neither
+      // `aria-label` nor `aria-labelledby`, and the two names this component resolves for itself —
+      // the FormField label reaching a nested select through context, and the placeholder fallback
+      // below — arrive through no prop, so a correctly labelled Select was the loud case. Both are
+      // plain render-time values (the label id comes from `FieldNameContext`, which FormField
+      // publishes on ITS render), so nothing here changes after mount. The trigger's own name is
+      // untouched: `SelectTrigger` writes it last, over anything react-aria hands down.
+      aria-label={(ariaProps["aria-label"] as string | undefined) ?? nameFromPlaceholder}
+      aria-labelledby={
+        (ariaProps["aria-labelledby"] as string | undefined) ?? inheritedName["aria-labelledby"]
+      }
       name={resolvedName}
       open={open}
       defaultOpen={defaultOpen}

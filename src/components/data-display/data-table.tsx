@@ -2208,10 +2208,12 @@ function NumberedPagination({ pageSizeOptions, className }: NumberedPaginationPr
           <Select
             value={String(pageSize)}
             onValueChange={(v: string) => table.setPageSize(Number(v))}
+            // On the FIELD, not on the trigger: `Select` forwards it to the trigger unchanged, and
+            // a name the root cannot see is one react-aria warns about once per render (gh#869).
+            aria-label={t("dataGrid.rowsPerPage")}
           >
             <SelectTrigger
               size="sm"
-              aria-label={t("dataGrid.rowsPerPage")}
               className="ui-data-table-page-size-trigger w-auto shrink-0 tabular-nums"
             >
               <SelectValue />
