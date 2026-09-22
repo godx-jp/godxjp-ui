@@ -43,7 +43,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
 **You cannot run a process** (ChatGPT web · Claude.ai · anything fetching URLs)
 → These files are for you. Fetch in this order:
 
-0. `patterns-index.json` — 19 whole-task patterns as name + tagline + tags. **If your
+0. `patterns-index.json` — 20 whole-task patterns as name + tagline + tags. **If your
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".

@@ -32,6 +32,14 @@ export type ShowcaseEntry = {
 
 export const SHOWCASES: ShowcaseEntry[] = [
   {
+    id: "tenant-brand-color",
+    title: "Màu thương hiệu của KHÁCH (một vùng, lúc chạy)",
+    description:
+      "tenantTheme(hex) biến hex của khách thành khai báo token cho MỘT vùng: --primary + --primary-foreground chọn bằng WCAG 2.2 SC 1.4.3, --ring khai lại vì freeze rule, hover/pressed là triplet thật nên không im lặng trên engine thiếu relative colour. Kèm bảng tương phản màu khách thật và ba ca đã chạy (hex hỏng, cặp máy chủ dưới AA, mực thương hiệu cố tình không đổi). gh#861 · gh#868.",
+    tag: "Theme",
+    load: () => import("../../docs/showcase/tenant-brand-color"),
+  },
+  {
     id: "theme-customization",
     title: "Flexible theme customization",
     description:

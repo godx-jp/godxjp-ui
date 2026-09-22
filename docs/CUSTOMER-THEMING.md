@@ -379,3 +379,118 @@ Two more CSS-inheritance caveats for the **scoped** case (a single `:root` brand
 
 - **Radius & shadow-tint don't cascade from a scoped anchor.** `--radius-{xs…2xl}`, `--card-radius`, `--control-radius` and the `--shadow-{xs…2xl}` ramp are computed at their declaring element, so a scoped `--radius` / `--shadow-color` override won't reach them. For a scoped re-theme, re-declare the derived tokens you need (e.g. `--card-radius: var(--radius)`, or set `--card-shadow` to a literal value).
 ````
+
+---
+
+## A CUSTOMER's colour, at runtime — `tenantTheme()` (gh#861, gh#868)
+
+Everything above is a colour **you** author, in a stylesheet. This section is the other case: a hex
+your customer picked in a settings screen, which reaches the page as data and must paint one region
+of it — an app launcher, a partner portal, a tenant switcher showing two tenants at once.
+
+There is no `<TenantTheme>` component, and `docs/COMPOSITION-VS-COMPONENT.md` §3.2 records why (it
+fails C3, C4 and C6: a `<div>` with a `style`, a screen-shaped API, and no text or role for the
+international contract to apply to). What ships instead is the part two consumer repos each
+hand-rolled — the arithmetic:
+
+```tsx
+import { tenantTheme } from "@godxjp/ui/app";
+
+const brand = tenantTheme(tenant.primary_color); // "#0071bd", 3- or 6-digit
+
+<div data-tenant={tenant.slug} style={brand.vars}>
+  <Topbar … />
+</div>;
+```
+
+`brand.vars` is exactly five declarations, and each one is there for a stated reason:
+
+| declaration            | why                                                                                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--primary`            | the seed, as an `H S% L%` triplet — `hexToHsl()` is the same conversion, exported separately                                                                                        |
+| `--primary-foreground` | **does not follow the seed** (see the table above): the label is chosen by contrast, here                                                                                           |
+| `--ring`               | `derived.css` binds `--ring: var(--primary)` at `:root`, where a `var()` substitutes ONCE — a scope below `<html>` inherits the root's ring unless it restates it (the freeze rule) |
+| `--primary-hover`      | a LITERAL, not `initial` — see "no silent half-application" below                                                                                                                   |
+| `--primary-active`     | the same                                                                                                                                                                            |
+
+It never throws and never returns null. An unusable hex yields **empty `vars`**, so the region
+falls back to the app's own theme instead of breaking the page — the same contract `ColorPicker`
+already has.
+
+### The contrast rule, stated
+
+**WCAG 2.2 SC 1.4.3 Contrast (Minimum), normal text, 4.5:1.** Relative luminance is WCAG's own
+definition (`c′ = c ≤ 0.03928 ? c/12.92 : ((c+0.055)/1.055)^2.4`, then
+`L = 0.2126·R′ + 0.7152·G′ + 0.0722·B′`), and the ratio is `(L_lighter + 0.05) / (L_darker + 0.05)`.
+
+The label is whichever of `#ffffff` / `#000000` scores higher, i.e. the pivot at **L = 0.179**. That
+is not "usually fine": at the pivot BOTH candidates measure 4.58:1, and away from it the winner only
+rises — so the chosen label clears AA for **every** sRGB seed, by construction. The claim is swept
+over the whole cube in `src/app/__tests__/tenant-theme.test.ts`; the worst seed in it measures
+4.58:1.
+
+Measured, for the two shapes where a naive rule fails:
+
+| customer hex | label chosen | ratio   | what "always white" would have given |
+| ------------ | ------------ | ------- | ------------------------------------ |
+| `#0071bd`    | `#ffffff`    | 5.13:1  | 5.13:1                               |
+| `#7a00ff`    | `#ffffff`    | 6.42:1  | 6.42:1                               |
+| `#FFD400`    | `#000000`    | 14.67:1 | **1.29:1**                           |
+| `#0A1F44`    | `#ffffff`    | 16.25:1 | 16.25:1                              |
+| `#E30613`    | `#ffffff`    | 4.88:1  | 4.88:1                               |
+| `#00A86B`    | `#000000`    | 6.81:1  | **2.34:1**                           |
+| `#767676`    | `#000000`    | 4.62:1  | 4.54:1                               |
+
+**If you already computed the pair server-side, pass it and it is used as given** — it is not
+silently second-guessed — but the result reports what it actually achieves, and a dev build warns
+under 4.5:1:
+
+```ts
+const brand = tenantTheme(hex, { foreground: tenant.theme_tokens.foreground });
+if (!brand.meetsAA) {
+  // brand.contrast is the number. The API SAYS no rather than quietly returning white.
+}
+```
+
+`contrastRatio(a, b)` and `relativeLuminance(hex)` are exported for the same reason: so the
+arithmetic can be checked rather than trusted.
+
+### No silent half-application
+
+The derived family (`--primary-hover` & co.) resolves at the painting element with CSS relative
+colour. An engine without it (Chrome/Edge 111–118) gets the `:root` literals of the PACKAGE seed
+instead — so a tenant colour set as a bare `--primary` applies at REST and not on HOVER, with no
+error and no warning. That is the shape a consumer repo was guarding by hand with
+`CSS.supports("color", "hsl(from red h s l)")`, and it is worse than not applying at all.
+
+`tenantTheme` therefore computes the two steps in JS, from the same channel formulas, and emits
+them as literal triplets on the same element that carries the seed. **No feature detection, every
+engine, both states.** It is not a return to the gh#648 defect, because that was a literal on
+`:root` — ABOVE every scope that re-seeds. These are written by the same call that writes
+`--primary`, so a nested region that re-seeds re-emits its own pair and nothing freezes.
+`src/app/__tests__/tenant-theme.test.ts` holds the literals EQUAL to the CSS formula, evaluated the
+way the browser would, over a sweep of seeds and both label polarities.
+
+`--primary-border` and `--control-outline` are left to derive: their channels are per-THEME rather
+than per-label, so JS cannot compute them without being told the theme, and they are a hairline and
+an 11%-alpha halo rather than a state a reader tracks.
+
+### What it deliberately does NOT retint
+
+`--text-link` / `--text-brand` / `--text-primary` are brand INK on the page surface. Their
+legibility depends on `--background`, which a customer's fill colour does not control, and their
+step direction is per-theme. A pale seed such as `#FFD400` derives a link at about **1.4:1** on a
+white page. `tenantTheme` leaves those three alone; if you want brand links, set them yourself
+after measuring with `contrastRatio()`.
+
+Worked screen: `docs/showcase/tenant-brand-color.tsx` (`/showcase/tenant-brand-color`) — scope
+proof inside vs outside, the contrast table above, and three run cases (an invalid hex, a
+server-supplied pair below AA, and the brand-ink boundary).
+
+### `applyPrimaryColor` vs `tenantTheme`
+
+Both land on the same arithmetic. Use `tenantTheme` when you are painting a region declaratively —
+no effect, no unmount restore, no SSR flash. Use `applyPrimaryColor(el, hex)` when you are
+RE-SEEDING a tree that is already themed (a project switcher, a service theme): it additionally
+resets `--primary-border` / `--control-outline` / the brand ink roles to `initial`, so a literal an
+ancestor pinned for the previous brand cannot outrank the new seed, and it returns a cleanup.
