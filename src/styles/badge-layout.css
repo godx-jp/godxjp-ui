@@ -61,15 +61,15 @@
      * color-mix is supported: `A, B p%` gives B exactly p. */
     background-color: color-mix(
       in srgb,
-      var(--badge-tint-surface),
-      var(--badge-color) var(--badge-tint-fill)
+      var(--badge-tint-surface, hsl(var(--card))),
+      var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-fill)
     );
     border-color: color-mix(
       in srgb,
-      var(--badge-tint-surface),
-      var(--badge-color) var(--badge-tint-edge)
+      var(--badge-tint-surface, hsl(var(--card))),
+      var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-edge)
     );
-    color: var(--badge-tint-foreground);
+    color: var(--badge-tint-foreground, hsl(var(--card-foreground)));
   }
 
   [data-slot="badge-icon"] {

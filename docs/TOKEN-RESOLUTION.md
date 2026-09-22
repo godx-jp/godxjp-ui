@@ -42,15 +42,23 @@ Ant Design v5: **Seed → Map → Alias → Component**. This package:
 | **Alias Token**                      | semantic    | `src/tokens/semantic/*.css`   | 92    |
 | **Component Token**                  | component   | `src/tokens/components/*.css` | 1688  |
 
-**The Map layer is the one we do not really have.** Ant Design derives a whole gradient
-(`colorPrimaryBg`, `colorPrimaryHover`, `colorPrimaryActive`, …) from one seed by a documented
-_algorithm_, so a brand sets one colour and ten follow. Here, `derived.css` does a little of that —
-`--ring`, `--primary-hover`, `--primary-active` hang off `--primary` — and everything else is
-declared by hand. That is why `tenantTheme()` (gh#868) had to compute hover/pressed in JavaScript:
-there was no algorithm layer to ask.
+**The Map layer is PARTIAL, not missing** — an earlier draft of this page said "missing" and Codex
+was right to reject it. `derived.css` really is a Map layer for the brand ramp: `--ring`,
+`--primary-hover` and `--primary-active` are computed from `--primary` with relative colour, which
+is derivation by algorithm in the sense Ant Design means. Foundation mixes seed and derived too —
+the spacing steps are `calc(<n> * var(--scaling))` (`foundation.css:673`) and the shadows derive
+from `--shadow-color` (`foundation.css:290`).
 
-This is worth naming as a gap rather than a design. A missing Map layer is why the component tier
-is **1688 tokens**: without derivation, every variation must be declared.
+What is genuinely thin is its **reach**: the hover knobs are themselves `initial`, the destructive
+states are authored literals (`derived.css:136`), and the `@supports not (color: hsl(from …))`
+branch hands older engines literals that stop following the seed altogether (`derived.css:188`).
+That last one is why `tenantTheme()` (gh#868) computes hover/pressed in JavaScript — not because
+there was no algorithm layer, but because the one that exists does not survive an engine without
+relative colour.
+
+A previous draft also claimed the thin Map layer is _why_ the component tier needs 1688 tokens.
+That is unsupported and has been removed: deriving defaults does not remove the need for
+independently overridable component knobs, which is what most of those 1688 are.
 
 ## 3. The rule that makes the order work — and silently breaks it
 
@@ -94,23 +102,34 @@ node scripts/explain-token.mjs --table           # a whole family
 node scripts/explain-token.mjs --audit           # every freeze, orphan and unpublished token
 ```
 
-For one token it prints each declaration site with its **rank** (1–4 above), the selector, the
-value, and whether that site is a freeze; then every place the token is read and whether the read
-carries a call-site fallback. That is the trace: if two components move together, run it on the
-token they share and the shared declaration is on the screen.
+For one token it prints every declaration site — marked `root-only` or `below root` — with its
+selector, its value, and whether it is a freeze; then every read and whether that read carries a
+call-site fallback. If two components move together, run it on the token they share and the shared
+declaration is on the screen.
+
+**It does not compute a winner, and says so.** The first version ranked selectors into four
+"cascade" buckets by regex and printed them strongest-last. Codex found that `@theme inline` and
+`[dir="rtl"] .ui-actions[data-fade-in-inline]` both scored top precedence on the substring
+`inline`, that `:root[data-brand="crm"]` was filed as a descendant scope, and that "strongest last"
+sorted by alphabetical filename. A tool meant to settle override disputes that invents precedence
+is worse than no tool. `root-only` is the one property it can prove, and it is the only one the
+freeze test needs. `--audit` ends with the four things it cannot see; read them before treating a
+clean run as proof.
 
 ### What `--audit` reports today
 
 ```
-2090 declared · 1973 published · 580 frozen · 6 orphan reads
-118 tokens are restated in some scope below root
+2090 declared · 1973 published · 641 frozen · 6 orphan reads
 ```
 
-- **frozen (580)** — a `:root` binding whose source _is_ restated in some scope. The naive test
-  ("any `:root` binding") reports **1028**, and a finding list that long is one nobody reads;
-  `--actions-gap: var(--space-1)` only matters because `--space-1` really is restated by the scale
-  scope. The intersection is the signal, and it is derived on every run, never hand-listed — a
-  hand-kept list is what went blind in gh#854.
+- **frozen (641)** — a root-only binding whose source is restated somewhere below root. The naive
+  test ("any `:root` binding that reads a token") reports **1028**, and a list that long is one
+  nobody reads; `--actions-gap: var(--space-1)` only matters because `--space-1` really is
+  restated. The scoped set is derived on every run, never hand-listed — a hand-kept list is what
+  went blind in gh#854. It counts **any** declaration below root, not just theme-looking scopes:
+  `.ui-page-container` inside `@media (max-width: 720px)` restates `--space-section-active`
+  (`layout.css:992`) while `--card-space-inset` binds it at `:root` (`card.css:6`), so below 720px
+  a Card keeps the root's inset. An earlier, narrower version of this test missed exactly that.
 - **orphan reads (6)** — `var(--x)` where `--x` is declared nowhere and no fallback is given.
 - **unpublished (117)** — declared in CSS but absent from `agent/tokens.json`, so a consumer cannot
   discover them. From the consumer's point of view these are hard-coded. `--card-accent-color` is
@@ -123,10 +142,22 @@ token they share and the shared declaration is on the screen.
 2. **A knob that mirrors a role is `initial` + a call-site fallback.** Never a `:root` binding.
    See §3. If you are unsure whether it mirrors a role, run `explain-token.mjs` on the role and see
    whether any scope restates it.
-3. **Never write a component's token from another component's rule.** That is the literal shape of
-   "changing one component moves another." A component owns the tokens with its own prefix; if two
-   need to agree, they share a _semantic_ token, and the agreement is declared in the semantic tier
-   where both can see it.
+3. **Do not write another component's token from your own rule — with one qualified exception.**
+   Writing `--badge-*` from a Card rule is the literal shape of "changing one component moves
+   another," and that is the default answer.
+
+   The exception is a **composition default**: a child whose geometry legitimately differs when it
+   sits inside a particular parent. `control.css:313` does exactly this — a count Badge inside a
+   boxed Button gets `--badge-space-y: 0` and a tighter radius, because a chip in a button is not a
+   standalone status chip. That is correct, and an earlier draft of this rule would have forbidden
+   it.
+
+   To qualify, all three must hold: the boundary is **documented** at the rule; the child's tokens
+   are **public**, so the relationship is inspectable; and a per-instance override on the child
+   still **wins**. The descendant selector deserves scrutiny of its own — `control.css:313` reaches
+   every nested Badge, not just a direct child — but that is a scoping question, not grounds to ban
+   composition.
+
 4. **Publish it.** A token absent from `agent/tokens.json` is not part of the API, whatever the
    stylesheet says. `pnpm regen` does this; `check:agent-catalog` verifies it.
 5. **A consumer sets tokens, never selectors.** App CSS targeting `[data-slot]`, `[data-priority]`

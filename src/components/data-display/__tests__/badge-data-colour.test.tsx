@@ -82,10 +82,19 @@ describe("Badge color (the record's own colour)", () => {
 
     // The fill is where the label sits; the edge carries no text and is free to
     // be the louder of the two.
-    expect(body).toContain("var(--badge-color) var(--badge-tint-fill)");
-    expect(body).toContain("var(--badge-color) var(--badge-tint-edge)");
-    expect(body).toContain("var(--badge-tint-surface)");
-    expect(body).toContain("color: var(--badge-tint-foreground)");
+    // The CALL SITE carries the whole fallback chain, and that is the point rather than a detail:
+    // the knobs are `initial` at :root so a scope below root can move them (gh#877 / the :root
+    // freeze rule). This test used to pin the bare `var(--badge-color)` reads, which is the shape
+    // that FROZE — measured in a `.dark` region, the chip painted the light card at
+    // `color(srgb 0.9933 …)` while the region's own `--card` was the dark one.
+    expect(body).toContain(
+      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-fill)",
+    );
+    expect(body).toContain(
+      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-edge)",
+    );
+    expect(body).toContain("var(--badge-tint-surface, hsl(var(--card)))");
+    expect(body).toContain("color: var(--badge-tint-foreground, hsl(var(--card-foreground)))");
 
     // Surface first in BOTH mixes. A build targeting a browser without
     // color-mix synthesises a fallback from the first colour, and colour-first
@@ -105,7 +114,12 @@ describe("Badge color (the record's own colour)", () => {
     // the numbers are pinned where the reason for them is written down.
     expect(tokens).toContain("--badge-tint-fill: 18%");
     expect(tokens).toContain("--badge-tint-edge: 45%");
-    expect(tokens).toContain("--badge-tint-surface: hsl(var(--card))");
-    expect(tokens).toContain("--badge-tint-foreground: hsl(var(--card-foreground))");
+    // `initial`, NOT a :root binding — see the note at the call-site assertion above. A binding
+    // here resolves against the ROOT's `--card` once, so every scope below inherits root's answer.
+    expect(tokens).toContain("--badge-tint-surface: initial");
+    expect(tokens).toContain("--badge-tint-foreground: initial");
+    expect(tokens).toContain("--badge-color: initial");
+    // And the shape that caused it must not come back, in any spelling.
+    expect(tokens).not.toMatch(/--badge-(tint-surface|tint-foreground|color):\s*(?!initial)[^;]*var\(/);
   });
 });

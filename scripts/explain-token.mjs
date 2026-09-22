@@ -159,27 +159,50 @@ function contextAt(blank, at) {
   return chain.map((c) => c.sel).filter(Boolean);
 }
 
-/** Cascade rank — higher wins, matching docs/TOKEN-RESOLUTION.md's numbered chain. */
-function rank(context) {
-  const sel = context.join(" ");
-  if (/\[style|inline/.test(sel)) return 4;
-  if (/\[data-tenant|\[data-brand|\.dark|\[data-theme|\.ui-scale|\[data-density/.test(sel))
-    return 2;
-  if (/(^|\s):root(\s|$|,)/.test(sel) || context.some((c) => /:root/.test(c))) return 1;
-  return 3; // a component-scoped rule: `.ui-card`, `[data-slot="badge"]` — the CALL SITE
+/**
+ * IS THIS DECLARATION ON THE ROOT ELEMENT? — the one thing here that is mechanically decidable,
+ * and the only thing the freeze test needs.
+ *
+ * An earlier version of this file ranked every selector into four "cascade" buckets by regex and
+ * printed them "strongest last". Codex took it apart and was right: `@theme inline` and
+ * `[dir="rtl"] .ui-actions[data-fade-in-inline]` both scored TOP precedence because their text
+ * contains the substring `inline`; `:root[data-brand="crm"]` scored "descendant scope" although it
+ * matches only the root; `[data-slot="card"][data-density="tight"]` — a declaration on the
+ * component itself — scored "ambient scope". And "strongest last" sorted by ALPHABETICAL FILE
+ * ORDER, not import order, so the ordering was decoration.
+ *
+ * A tool meant to settle override disputes that manufactures precedence from substrings is worse
+ * than no tool: it sends the reader to the wrong fix with confidence. So the ranking is gone. This
+ * prints WHERE a token is declared and read, and computes only the one property it can prove.
+ */
+function isRootOnly(context) {
+  if (!context.length) return false;
+  return context.every((sel) =>
+    sel
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .every((s) =>
+        // `:root`, `:root[data-theme="dark"]`, `html` — matches the root element and nothing
+        // below it. A descendant combinator, or any selector that can match an element deeper in
+        // the tree, is NOT root-only.
+        /^(:root|html)(\[[^\]]*\]|:[a-z-]+(\([^)]*\))?)*$/.test(s),
+      ),
+  );
 }
 
-/** Every token some scope BELOW root restates — `.dark`, `[data-tenant]`, a density/scale region. */
+/**
+ * Every token some declaration BELOW the root can move.
+ *
+ * Deliberately wider than "a theme scope": `.ui-page-container` inside `@media (max-width: 720px)`
+ * restates `--space-section-active` (src/styles/layout.css:992), and `--card-space-inset` binds it
+ * at `:root` (src/tokens/components/card.css:6) — so below 720px a Card keeps the root's inset. The
+ * previous version missed that because it only accepted selectors that LOOKED like theme scopes.
+ * Anything not root-only counts now.
+ */
 function scopedTokenNames(decls) {
-  return new Set(decls.filter((d) => rank(d.context) === 2).map((d) => d.name));
+  return new Set(decls.filter((d) => !isRootOnly(d.context)).map((d) => d.name));
 }
-
-const RANK_LABEL = {
-  4: "instance   (inline style)",
-  3: "call site  (component rule)",
-  2: "scope      (tenant/theme/density region)",
-  1: "root       (package or app default)",
-};
 
 function collect() {
   const decls = [];
@@ -207,7 +230,7 @@ function collect() {
  * stylesheets on every run rather than hand-listed: a hand-kept list is what went blind in gh#854.
  */
 function isFrozen(d, scopedNames) {
-  if (rank(d.context) !== 1) return false;
+  if (!isRootOnly(d.context)) return false;
   if (d.value.trim() === "initial") return false;
   const reads = [...d.value.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)].map((m) => m[1]);
   return reads.some((r) => scopedNames.has(r));
@@ -226,12 +249,21 @@ function trace(name, { decls, reads }, published, scopedNames) {
   if (!mine.length) {
     console.log("  declared:  nowhere — every read falls to its inline fallback, or to nothing");
   } else {
-    console.log(`  declared:  ${mine.length} site(s), strongest last`);
-    for (const d of mine.sort((a, b) => rank(a.context) - rank(b.context))) {
+    console.log(
+      `  declared:  ${mine.length} site(s) — DECLARATION SITES, not a cascade ranking; which one`,
+    );
+    console.log(
+      "             wins at a given element depends on the DOM, and is not computed here.",
+    );
+    for (const d of mine.sort(
+      (a, b) => Number(isRootOnly(b.context)) - Number(isRootOnly(a.context)),
+    )) {
       const frozen = isFrozen(d, scopedNames)
         ? "  ← FREEZE: binds at :root against a token a scope below DOES restate"
         : "";
-      console.log(`    [${rank(d.context)}] ${RANK_LABEL[rank(d.context)]}  ${d.file}:${d.line}`);
+      console.log(
+        `    ${isRootOnly(d.context) ? "root-only " : "below root"}  ${d.file}:${d.line}`,
+      );
       console.log(`         ${d.context.join(" ") || ":root"} { ${name}: ${d.value} }${frozen}`);
     }
   }
@@ -277,6 +309,31 @@ function audit({ decls, reads }, published) {
   console.log("  A consumer cannot discover these, so they are not part of the theme API.");
   for (const n of unpublished.slice(0, 20)) console.log(`  ${n}`);
   if (unpublished.length > 20) console.log(`  … and ${unpublished.length - 20} more`);
+
+  console.log("\nWHAT THIS CANNOT SEE — do not read a clean run as proof of no freeze:");
+  console.log(
+    "  1. CONSUMER CSS. Only src/tokens and src/styles are scanned, so a token this package never",
+  );
+  console.log(
+    "     restates below root looks safe. `--shadow-md` binds `--shadow-color` at :root; a",
+  );
+  console.log(
+    "     consumer's `[data-tenant] { --shadow-color: … }` cannot recolour it, and nothing here says so.",
+  );
+  console.log("  2. `@supports` FALLBACKS. src/tokens/derived.css gives engines without relative");
+  console.log(
+    "     colour LITERAL hover/active values, so a tenant seed stops propagating — a lost derivation,",
+  );
+  console.log("     not a var() freeze, and invisible to a test that requires a var() reference.");
+  console.log(
+    "  3. CONDITIONS ARE NOT EVALUATED. A declaration inside @media/@container is counted as if it",
+  );
+  console.log(
+    "     always applies. That widens the scoped set deliberately, but it is not the cascade.",
+  );
+  console.log(
+    "  4. NO WINNER IS COMPUTED. Which declaration applies at an element depends on the DOM.",
+  );
 
   console.log(
     `\nsummary: ${declaredNames.size} declared · ${published.size} published · ${frozen.length} frozen · ${orphanReads.length} orphan read(s)`,

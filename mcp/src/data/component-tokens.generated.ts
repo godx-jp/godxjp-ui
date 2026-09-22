@@ -300,18 +300,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--badge-tint-surface",
-    "value": "hsl(var(--card))",
-    "description": "The surface the chip is washed into, and the label it then carries. A service whose chips sit on the page ground rather than on a card retunes the pair together — they are one decision."
+    "value": "initial",
+    "description": "`initial`, NOT `hsl(var(--card))` — the :root freeze rule (docs/TOKEN-RESOLUTION.md §3). Bound here, `var(--card)` substitutes against the ROOT's card once, so a `.dark` REGION below root moved `--card` and the chip kept the light one. Measured: in a `.dark` region the scope reported `--card: 48 8% 12%` while the chip still painted `color(srgb 0.9933 0.9933 0.9867)` — a white chip in a dark panel. `.dark` on `<html>` was always right, which is why it survived: the freeze only shows where the scope sits BELOW the binding. Same shape as gh#848 and gh#866; found by `scripts/explain-token.mjs`. The formula now lives at the call site in badge-layout.css, where the scope is in effect."
   },
   {
     "name": "--badge-tint-foreground",
-    "value": "hsl(var(--card-foreground))",
+    "value": "initial",
     "description": "Badge component tokens."
   },
   {
     "name": "--badge-color",
-    "value": "var(--badge-tint-surface)",
-    "description": "The caller's colour — the only knob here that is PER-INSTANCE. badge.tsx writes it inline on the element whenever `color` is given, and an inline declaration outranks this one, so this is the value only when the prop is absent. It has to be declared somewhere all the same. An undeclared custom property makes both color-mix() calls in badge-layout.css invalid at computed-value time, which drops the background AND the border rather than falling back to anything — the failure check-dist-tokens-resolve.mjs exists to catch, and which it did catch the moment 19.3.0 shipped the wash without it. The surface is the right default because mixing a colour into itself returns that colour: an untinted chip is then exactly the card it sits on — the same quiet degradation 19.3.1 chose for browsers without color-mix, rather than a transparent hole."
+    "value": "initial",
+    "description": "`initial` FOR THE SAME REASON, and getting this wrong once is how I learned to measure twice: the first fix moved `--badge-tint-surface` to the call site but left this one bound here as `var(--badge-tint-surface, hsl(var(--card)))`. That still substitutes at :root, so in a `.dark` region the chip mixed the LIGHT card into the dark surface and painted `color(srgb 0.285…)` where `.dark` on `<html>` painted `0.1296` — a fix that moved the defect instead of removing it, and one a screenshot would have called correct. The whole chain is now resolved at the call site. The old warning still holds — an UNSET custom property makes color-mix() invalid at computed-value time and drops the background AND the border — which is exactly why every read below carries the full fallback rather than relying on this declaration."
   },
   {
     "name": "--banner-radius",
