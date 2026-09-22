@@ -43,6 +43,9 @@
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import { availableParallelism, cpus } from "node:os";
+
+const cpuCount = () => (availableParallelism ? availableParallelism() : cpus().length) || 4;
 
 import {
   DEFAULT_BASE,
@@ -237,40 +240,74 @@ async function main() {
   const found = {};
   let missing = 0;
 
-  for (const vp of VIEWPORTS) {
-    const page = await browser.newPage({
-      viewport: { width: vp.width, height: vp.height },
-      ...(vp.mobile ? { deviceScaleFactor: 2, isMobile: true, hasTouch: true } : {}),
-    });
-    for (const id of routes) {
-      try {
-        await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });
-        await page.waitForTimeout(250);
-        /* A route that does not resolve renders a four-word "not found" card, which overflows
-         * nothing and would be reported as clean — the exact way check:contrast once swept two
-         * showcases that were never there. */
-        const notFound = await page.evaluate(() =>
-          /Preview not found/.test(document.body.innerText) ? true : false,
-        );
-        if (notFound) {
-          missing += 1;
-          continue;
-        }
-        const { hits, pageOverflowX } = await page.evaluate(PROBE);
-        const all = [...hits];
-        if (pageOverflowX > 1)
-          all.push({
-            kind: "sideways",
-            text: "(the page itself)",
-            by: `${pageOverflowX}px`,
-            sel: "html",
-          });
-        if (all.length) found[`${vp.name} ${id}`] = all;
-      } catch (e) {
-        console.warn(`  ! ${vp.name} ${id}: ${e.message.slice(0, 80)}`);
-      }
+  /* ONE PAGE AT A TIME WAS THE WHOLE COST (gh#851 follow-up).
+   *
+   * The sweep is 199 frames x 2 viewports = 398 navigations, and it ran them down a single page:
+   * goto(networkidle) + a 250ms settle + two evaluates, ~0.85s each, strictly in series. 339s.
+   *
+   * None of it is CPU-bound on our side — it is a browser waiting for a dev server over
+   * localhost, which is exactly the shape a pool fixes. Each worker owns its own page, pulls the
+   * next route off a shared queue, and writes into `found` keyed by `viewport + route`, so the
+   * result is identical regardless of who finishes first (and `flat` is sorted before it is
+   * compared to the baseline, as it already was).
+   *
+   * The pool is PER VIEWPORT rather than across all 398 pairs, because `isMobile`, `hasTouch` and
+   * `deviceScaleFactor` are context options in Playwright — they are fixed when the page is
+   * created and cannot be changed per navigation. Mixing them in one pool would silently sweep
+   * the mobile rung at desktop settings, which is the failure this gate exists to catch.
+   *
+   * Default is the core count capped at 8: past that the pages start contending for the same CPU
+   * and the dev server, and the curve flattens. FRAME_CONCURRENCY=1 restores the old serial run
+   * for debugging an interleaved failure. */
+  const CONCURRENCY = Math.max(1, Number(process.env.FRAME_CONCURRENCY) || Math.min(8, cpuCount()));
+
+  const sweepOne = async (page, vp, id) => {
+    await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });
+    await page.waitForTimeout(250);
+    /* A route that does not resolve renders a four-word "not found" card, which overflows
+     * nothing and would be reported as clean — the exact way check:contrast once swept two
+     * showcases that were never there. */
+    const notFound = await page.evaluate(() =>
+      /Preview not found/.test(document.body.innerText) ? true : false,
+    );
+    if (notFound) {
+      missing += 1;
+      return;
     }
-    await page.close();
+    const { hits, pageOverflowX } = await page.evaluate(PROBE);
+    const all = [...hits];
+    if (pageOverflowX > 1)
+      all.push({
+        kind: "sideways",
+        text: "(the page itself)",
+        by: `${pageOverflowX}px`,
+        sel: "html",
+      });
+    if (all.length) found[`${vp.name} ${id}`] = all;
+  };
+
+  for (const vp of VIEWPORTS) {
+    const queue = [...routes];
+    const workers = Array.from({ length: Math.min(CONCURRENCY, queue.length) }, async () => {
+      const page = await browser.newPage({
+        viewport: { width: vp.width, height: vp.height },
+        ...(vp.mobile ? { deviceScaleFactor: 2, isMobile: true, hasTouch: true } : {}),
+      });
+      try {
+        for (;;) {
+          const id = queue.shift();
+          if (id === undefined) break;
+          try {
+            await sweepOne(page, vp, id);
+          } catch (e) {
+            console.warn(`  ! ${vp.name} ${id}: ${e.message.slice(0, 80)}`);
+          }
+        }
+      } finally {
+        await page.close();
+      }
+    });
+    await Promise.all(workers);
   }
   await browser.close();
   await stopServer?.();

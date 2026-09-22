@@ -43,11 +43,12 @@ Measured on this repo (`docs/DEVELOPMENT.md` §5.0 carries the full table and th
     check:token-tiers  0.2s      build           1.5s
     audit              0.5s      preview:build   1.9s
     typecheck:docs     0.7s      lint           12.9s
-    typecheck          1.3s      check:frame-overflow   339s  <- 199 frames in a browser
+    typecheck          1.3s      check:frame-overflow    52s  <- 199 frames, pooled (was 339s)
 
 **The intuition is backwards.** "Typecheck the whole system" costs **1.3 seconds** — there is
-nothing to save by scoping it. The one command that costs real time is the browser sweep, and it
-is **~96% of the wall clock** of a local pass. Running it for a two-file change is not
+nothing to save by scoping it. The one command that cost real time was the browser sweep, at
+**~96% of the wall clock** of a local pass: 398 navigations down a single page, in series. Pooled
+one page per core it is **52s, 6.5x faster**, with byte-identical output. Running it for a two-file change is not
 thoroughness; it is why a small fix takes six minutes, and a gate that expensive gets skipped,
 which is how the baseline it guards goes stale.
 
@@ -56,7 +57,7 @@ type). A CSS-only diff does not need `typecheck`. A `docs/` diff does not need `
 — it needs `typecheck:docs`. Only a PR or a release earns "run everything".
 
 For layout work use the diff-scoped sweep: `pnpm check:frame-overflow --only <slug>` — 9 frames in
-**17.5s** against the full **339s**, 19x. It refuses `--update-baseline` and labels its own output
+**17.5s** against the full **52s**. It refuses `--update-baseline` and labels its own output
 `PARTIAL, not a release gate`, so a filtered green can never be passed off as the real one. Run the
 full sweep once, before the PR.
 

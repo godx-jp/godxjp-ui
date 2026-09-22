@@ -133,7 +133,7 @@ believe them; a cost you assumed is how you end up optimising the wrong thing.**
 | `build`                    | **1.5s**        | whole package                              |
 | `preview:build`            | **1.9s**        | whole preview                              |
 | `lint`                     | **12.9s**       | whole repo                                 |
-| **`check:frame-overflow`** | **339s (5m39)** | **199 frames x 2 viewports, in a browser** |
+| **`check:frame-overflow`** | **52s** (was 339s before it was parallelised, gh#851) | **199 frames x 2 viewports, in a browser** |
 
 **The lesson is the opposite of the intuition.** "Typecheck the whole system" sounds wasteful and
 costs **1.3 seconds** — typescript-7 is the native compiler, there is nothing to save there, and
@@ -141,8 +141,10 @@ scoping it to changed files would cost more in ceremony than it saves in wall cl
 one command that _does_ cost real time is the browser sweep, and it is the one that looks innocent
 in a shell script.
 
-`check:frame-overflow` alone is **~96% of the wall clock** of a full local pass. Everything else in
-the list put together is under 20 seconds.
+`check:frame-overflow` alone was **~96% of the wall clock** of a full local pass. It ran all 398
+navigations down a SINGLE page, in series. It now runs a pool of one page per core (capped at 8):
+**339s -> 52.3s, 6.5x**, byte-identical output, and a planted overflow is still caught at both
+viewports by both. `FRAME_CONCURRENCY=1` restores the serial run for debugging.
 
 > **Never argue about the cost of a gate you have not timed.** Time it:
 > `st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`
@@ -168,10 +170,11 @@ Added in gh#851 for exactly this. The sweep had no filter at all: 199 frames or 
 ```bash
 pnpm check:frame-overflow --only table                       # 9 frames,  17.5s
 pnpm check:frame-overflow --only '/^data-entry-(switch|segmented)/'   # 3 frames
-pnpm check:frame-overflow                                    # all 199,  339s
+pnpm check:frame-overflow                                    # all 199,   52s
 ```
 
-Measured: `--only table` is **17.5s against the full sweep's 339.1s — 19x**.
+Measured: `--only table` is **17.5s against the full sweep's 52.3s**. Both matter — the pool cut
+the full sweep 6.5x, and `--only` cuts what is left to the frames a diff can actually reach.
 
 Two guards, both deliberate:
 
@@ -191,7 +194,7 @@ pnpm audit                # godxjp-ui-audit — 0 errors for touched files      
 pnpm check:mcp-sync       # MCP registry <-> library export drift guard
 pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2   # ONLY what you touched
 pnpm check:frame-overflow --only <slug>   # the frames your change can reach       ~18s
-pnpm check:frame-overflow                 # all 199 — pre-PR and CI only            339s
+pnpm check:frame-overflow                 # all 199 — pre-PR and CI only             52s
 pnpm preview:build        # integration test: examples + docs must build            1.9s
 pnpm test                 # FULL suite — CI only, never from an agent loop
 pnpm check:frame-axe      # WCAG 2.2 AA over every frame — LOCAL ONLY, never in CI (FRAME-A11Y-CI.md)
