@@ -22,11 +22,20 @@ import { describe, expect, it } from "vitest";
 const pkg = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf8"));
 
 describe("the ui-audit rule engine is enforced, not just documented", () => {
-  it("runs inside verify:ci:static", () => {
+  it("runs inside the static gate list", () => {
+    /* The list lives in `verify:ci:static:gates` since gh#853; `verify:ci:static` is now the
+     * RUNNER over it (`run-gate-list.mjs`), which executes every entry instead of stopping at the
+     * first failure. Assert against the declaration, and assert the indirection too — if someone
+     * inlines the chain back into `verify:ci:static`, the first assertion would still pass while
+     * the short-circuit returns, so both halves are needed. */
     expect(
-      pkg.scripts["verify:ci:static"],
+      pkg.scripts["verify:ci:static:gates"],
       "add `&& pnpm run audit` — check:audit-sync only checks the catalog, not the code",
     ).toMatch(/&&\s*pnpm run audit(\s|$|&)/);
+    expect(
+      pkg.scripts["verify:ci:static"],
+      "verify:ci:static must RUN the list, not be it — a && chain hides every failure after the first (gh#853)",
+    ).toBe("node scripts/run-gate-list.mjs verify:ci:static:gates");
   });
 
   it("is still its own script, so it stays runnable on its own", () => {

@@ -93,6 +93,13 @@ function childrenOf(name) {
   for (const m of body.matchAll(/pnpm\s+(?:run\s+|-s\s+)?([\w:.-]+)/g)) {
     if (m[1] !== name && scripts[m[1]]) out.add(m[1]);
   }
+  /* `run-gate-list.mjs <script>` is an INDIRECTION, not a leaf (gh#853). It executes another
+   * script's `&&` chain one entry at a time so every failure is reported instead of only the
+   * first — but to this index it looks like a plain `node` call with no children, which would
+   * silently drop 44 gates from the closure and report them uncovered. Follow it. */
+  for (const m of body.matchAll(/run-gate-list\.mjs\s+([\w:.-]+)/g)) {
+    if (m[1] !== name && scripts[m[1]]) out.add(m[1]);
+  }
   return [...out];
 }
 
