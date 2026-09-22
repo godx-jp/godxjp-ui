@@ -56,6 +56,43 @@ const UPDATE = process.argv.includes("--update-baseline");
 const BASELINE = path.join(REPO_ROOT, "preview/frame-overflow.baseline.json");
 
 /**
+ * `--only <substring|/regex/>` — sweep the frames a DIFF could have moved, not all 199 (gh#851).
+ *
+ * Measured: the full sweep is 199 frames x 2 viewports and costs 339s. Every other check in the
+ * fast loop is under 2s (typecheck 1.3 · build 1.5 · preview:build 1.9 · audit 0.5), so this one
+ * gate is ~96% of the wall clock of a "did I break anything" pass. Paying it for a two-file change
+ * is not thoroughness, it is the reason a small fix takes six minutes — and a check that expensive
+ * gets skipped, which is how the baseline it guards goes stale.
+ *
+ * A filtered run is NOT a substitute for the full one and deliberately refuses to touch the
+ * baseline: it cannot know that a frame it never opened is still clean, so `--update-baseline`
+ * with `--only` is rejected rather than silently recording a partial truth. The full sweep is what
+ * runs in CI and before a release; `--only` is what you run while you work.
+ */
+const onlyFlag = process.argv.indexOf("--only");
+const ONLY = onlyFlag === -1 ? null : process.argv[onlyFlag + 1];
+if (onlyFlag !== -1 && !ONLY) {
+  console.error("✗ --only needs a pattern, e.g. --only table  or  --only /^data-display/");
+  process.exit(2);
+}
+if (ONLY && UPDATE) {
+  console.error(
+    "✗ --only cannot be combined with --update-baseline: a partial sweep does not know whether\n" +
+      "  the frames it skipped are still clean, and recording that as the whole truth is how a\n" +
+      "  baseline stops meaning anything. Run the full sweep to rebaseline.",
+  );
+  process.exit(2);
+}
+const matchesOnly = (id) => {
+  if (!ONLY) return true;
+  const re =
+    ONLY.startsWith("/") && ONLY.lastIndexOf("/") > 0
+      ? new RegExp(ONLY.slice(1, ONLY.lastIndexOf("/")), ONLY.slice(ONLY.lastIndexOf("/") + 1))
+      : null;
+  return re ? re.test(id) : id.includes(ONLY);
+};
+
+/**
  * TWO WIDTHS, because one width was measuring one sixth of the problem.
  *
  * Every browser gate in this repo ran at 1280 and only at 1280. At 1280 this gate reports 0. The
@@ -190,7 +227,13 @@ async function main() {
 
   const exec = resolveChromiumExecutable();
   const browser = await chromium.launch(exec && existsSync(exec) ? { executablePath: exec } : {});
-  const routes = isolateRoutes();
+  const allRoutes = isolateRoutes();
+  const routes = allRoutes.filter(matchesOnly);
+  if (ONLY && routes.length === 0) {
+    console.error(`✗ --only ${ONLY} matched none of ${allRoutes.length} frame(s).`);
+    await browser.close();
+    process.exit(2);
+  }
   const found = {};
   let missing = 0;
 
@@ -299,7 +342,7 @@ async function main() {
     process.exit(1);
   }
   console.log(
-    `✓ check:frame-overflow — ${routes.length} frame(s) swept, ${flat.length} known overflow(s)` +
+    `✓ check:frame-overflow — ${routes.length} frame(s) swept${ONLY ? ` (--only ${ONLY}; ${allRoutes.length - routes.length} skipped — PARTIAL, not a release gate)` : ""}, ${flat.length} known overflow(s)` +
       `${fixed.length ? `, ${fixed.length} FIXED since the baseline (run --update-baseline to bank it)` : ""}.`,
   );
 }

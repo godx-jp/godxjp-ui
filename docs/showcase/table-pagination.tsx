@@ -108,20 +108,38 @@ function makeRows(count: number, prefix = "ATT"): Attendance[] {
 const minutesFmt = (m: number) => (m === 0 ? "—" : `${m}分`);
 
 // Columns are shared between the cards (pure data — no per-card state inside).
+/* EVERY column declares a width, not just the first (gh#849).
+ *
+ * Measured at 2000px before this, as empty pixels between one cell's ink and the next's:
+ *
+ *   部署 → 出勤   521      残業 → 状態    57
+ *   従業員 → 部署 411      勤務日 → 従業員 40
+ *   退勤 → 残業   280
+ *
+ * A 521px hole beside a 40px seam, in one row. Only `勤務日` carried a width, so
+ * `table-layout: auto` sized the rest from content and dumped ALL the slack of a 1952px card
+ * into the two free-text columns — and because those are start-aligned while the measures are
+ * end-aligned, the slack opened as craters BETWEEN columns rather than inside them.
+ *
+ * With a width on every column the engine distributes the excess proportionally instead, so the
+ * gaps scale together and no single one dominates. The numbers are a ratio, not a measurement:
+ * the two free-text columns get the larger share because they are the ones that actually wrap. */
 const columns: ColumnDef<Attendance>[] = [
   { key: "date", header: "勤務日", width: "w-28" },
-  { key: "employee", header: "従業員" },
-  { key: "dept", header: "部署", hiddenOnMobile: true },
+  { key: "employee", header: "従業員", width: "w-44" },
+  { key: "dept", header: "部署", hiddenOnMobile: true, width: "w-36" },
   {
     key: "clockIn",
     header: "出勤",
     align: "right",
+    width: "w-24",
     render: (row) => <Text tabular>{row.clockIn}</Text>,
   },
   {
     key: "clockOut",
     header: "退勤",
     align: "right",
+    width: "w-24",
     render: (row) => <Text tabular>{row.clockOut}</Text>,
   },
   {
@@ -129,12 +147,17 @@ const columns: ColumnDef<Attendance>[] = [
     header: "残業",
     align: "right",
     hiddenOnMobile: true,
+    width: "w-24",
     render: (row) => <Text tabular>{minutesFmt(row.overtime)}</Text>,
   },
   {
     key: "status",
     header: "状態",
-    align: "center",
+    /* END, not CENTER (gh#849). The status column carries the table's right edge; centring a
+     * ~90px pill in it put the badges 102px inboard while the header count, the column headers
+     * and the pagination all landed on 17px. */
+    align: "right",
+    width: "w-32",
     render: (row) => <Badge status={row.status}>{STATUS_LABEL[row.status]}</Badge>,
   },
 ];

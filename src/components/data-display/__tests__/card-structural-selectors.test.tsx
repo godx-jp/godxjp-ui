@@ -272,11 +272,11 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
      * header, not a toolbar — takes the gap back in the rule after it. */
     const zero = ruleSelector(
       css,
-      /:has\(\[data-slot="card-header"\] \[data-slot="card-action"\]\)\s*\[data-slot="card-content"\]/,
+      /\[data-slot="card-header"\]:has\(\[data-slot="card-action"\]\)\s*\+\s*\[data-slot="card-content"\]/,
     );
     const restore = ruleSelector(
       css,
-      /:has\(\[data-slot="card-header"\] \[data-slot="card-description"\]\)\s*\[data-slot="card-content"\]/,
+      /\[data-slot="card-header"\]:has\(\[data-slot="card-description"\]\)\s*\+\s*\[data-slot="card-content"\]/,
     );
     const { container } = renderWithUi(
       <>
@@ -313,6 +313,37 @@ describe("card-layout.css structural selectors select the rendered DOM", () => {
     expect(q(container, "after-described").matches(zero)).toBe(true);
     expect(q(container, "after-described").matches(restore)).toBe(true);
     expect(q(container, "after-toolbar-tight").matches(zero)).toBe(false);
+  });
+
+  it("a body the header does NOT touch keeps its own top edge (gh#850)", () => {
+    /*
+     * The shipped defect: the zero rule was a DESCENDANT selector, so one CardAction in the
+     * header stripped the top padding off every non-flush body in the card — including a footer
+     * two siblings and a whole flush table away, which the header's own bottom padding cannot
+     * possibly be serving. Measured on /showcase/table-pagination: the pagination band read
+     * `padding-block: 0px / 16px` and sat flush against the last table row, with 16px of air
+     * underneath it. One band, two different insets on its two block edges.
+     */
+    const zero = ruleSelector(
+      css,
+      /\[data-slot="card-header"\]:has\(\[data-slot="card-action"\]\)\s*\+\s*\[data-slot="card-content"\]/,
+    );
+    const { container } = renderWithUi(
+      <Card>
+        <CardHeader>
+          <CardTitle>t</CardTitle>
+          <CardAction>83</CardAction>
+        </CardHeader>
+        <CardContent flush data-testid="table-body">
+          table
+        </CardContent>
+        <CardContent data-testid="footer-body">pagination</CardContent>
+      </Card>,
+    );
+    // The flush body is excluded outright, as it always was.
+    expect(q(container, "table-body").matches(zero)).toBe(false);
+    // And the footer is NOT the header's neighbour, so the header has nothing to say about it.
+    expect(q(container, "footer-body").matches(zero)).toBe(false);
   });
 
   it("a header-only card hands the bottom shell to the header", () => {
@@ -542,7 +573,7 @@ describe("flush content owns its block axis (gh#307)", () => {
   it("the describedBody selector skips flush content and still matches padded content", () => {
     const selector = ruleSelector(
       css,
-      /\[data-slot="card"\]:has\(\[data-slot="card-header"\] \[data-slot="card-description"\]\)/,
+      /\[data-slot="card-header"\]:has\(\[data-slot="card-description"\]\)\s*\+/,
     );
     expect(selector).toContain(":not([data-flush])");
     renderWithUi(

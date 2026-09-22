@@ -374,13 +374,26 @@
    * header restores the gap in the equal-specificity rule after this one. */
   /* Both halves of the pair exclude [data-flush]: a flush body owns its block axis outright in the
    * flush rule below, so neither half has anything to say about it. */
-  [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-action"])
-    [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
+  /* ADJACENT, not descendant (gh#850). Both halves say something about the body the HEADER pads —
+   * a toolbar header already carries `padding-bottom: var(--card-space-body-y)`, so the body right
+   * under it must not double the gap. Written as a descendant selector it reached EVERY non-flush
+   * body in the card, including ones the header cannot possibly be padding. Measured on
+   * /showcase/table-pagination: `<CardHeader>` with a CardAction, `<CardContent flush>` with the
+   * table, then `<CardContent>` with the pagination — the footer sits two siblings and a whole
+   * table away from the header and was handed `padding-top: 0`, so it read 0 on top and 16px
+   * underneath. One card, one band, two different insets on the two block edges.
+   *
+   * `+` restores the intent exactly: a single-body card is unchanged (the header IS the previous
+   * sibling), and a body that the header does not touch keeps its own edge. Specificity drops
+   * from (0,6,0) to (0,5,0) and still beats the generic body rule at (0,3,0); the two halves stay
+   * equal to each other, so the later one still wins for a described header, as before. */
+  [data-slot="card-header"]:has([data-slot="card-action"])
+    + [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: 0;
   }
 
-  [data-slot="card"]:has([data-slot="card-header"] [data-slot="card-description"])
-    [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
+  [data-slot="card-header"]:has([data-slot="card-description"])
+    + [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: var(--card-space-body-y);
   }
 

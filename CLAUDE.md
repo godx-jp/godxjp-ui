@@ -36,6 +36,32 @@ Before creating OR changing **any** component, recipe, doc, or example, you MUST
 
 1. **MCP-first** — consult the `godxjp-ui` MCP (`get_component`, `search_components`, `get_rule`, `list_anti_ai_tells`, `get_vocab`, `get_tokens`) before writing; never guess a prop. Check that the thing doesn't already exist (no duplication — `Select` covers searchable/async select). 2. **Real primitives only** — no invented/hand-rolled/faked components, no raw HTML controls, compose primitives fully (`CardContent` for padding; `Card` + `CardContent flush` + `DataTable`). 3. **International standards on every component** — i18n via `t()` + `Intl`/CLDR (ISO 3166/4217/8601, IANA, BCP-47, `Intl.DisplayNames`/`PluralRules`); WAI-ARIA APG + WCAG 2.2 AA (measured by `pnpm check:frame-axe` on the component's own `/isolate/**` frame — `vitest-axe` was removed in #492 and no longer exists here; see docs/FRAME-A11Y-CI.md); RTL logical CSS; controlled-vocabulary API (`value`/`defaultValue`/ `onValueChange`, `size` ∈ xs|sm|md|lg, forward `ref`, register the prop type). 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page. 5. **Verify what you touched — NEVER the full suite.** A component's tests live beside it in `src/components/<group>/__tests__/`, so run exactly those: `pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2`. **`pnpm test` (and a bare `pnpm vitest run`) is FORBIDDEN outside CI** — it is 506 files / 3700+ tests, and with several agents on one machine it puts 70 workers on the box and takes load past 90. The full suite is CI's job on the PR (`tal --help`: "FULL SUITE KHÔNG THUỘC VỀ VÒNG LẶP"). Cheap gates you may run freely: `pnpm typecheck && pnpm lint && pnpm run audit && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports`. Run `pnpm preview:build` / `pnpm verify:ci:static` AT MOST ONCE, immediately before opening the PR.
 
+## Scope the checks to the DIFF — and never argue about a cost you have not timed
+
+Measured on this repo (`docs/DEVELOPMENT.md` §5.0 carries the full table and the method):
+
+    check:token-tiers  0.2s      build           1.5s
+    audit              0.5s      preview:build   1.9s
+    typecheck:docs     0.7s      lint           12.9s
+    typecheck          1.3s      check:frame-overflow   339s  <- 199 frames in a browser
+
+**The intuition is backwards.** "Typecheck the whole system" costs **1.3 seconds** — there is
+nothing to save by scoping it. The one command that costs real time is the browser sweep, and it
+is **~96% of the wall clock** of a local pass. Running it for a two-file change is not
+thoroughness; it is why a small fix takes six minutes, and a gate that expensive gets skipped,
+which is how the baseline it guards goes stale.
+
+So: **match the checks to what you touched** (`docs/DEVELOPMENT.md` §5.1 has the table by file
+type). A CSS-only diff does not need `typecheck`. A `docs/` diff does not need `typecheck` either
+— it needs `typecheck:docs`. Only a PR or a release earns "run everything".
+
+For layout work use the diff-scoped sweep: `pnpm check:frame-overflow --only <slug>` — 9 frames in
+**17.5s** against the full **339s**, 19x. It refuses `--update-baseline` and labels its own output
+`PARTIAL, not a release gate`, so a filtered green can never be passed off as the real one. Run the
+full sweep once, before the PR.
+
+**Time it before you claim it is slow:** `st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`.
+
 See `docs/STANDARDS-vocabulary-tokens.md`, `docs/PROPS-VOCABULARY.md` for the full rules and the i18n/a11y/vocab audit.
 
 ## Design-knob discipline (cardinal rules #44/#45)

@@ -112,16 +112,88 @@ A change isn't done until its documentation reflects it:
 
 ---
 
-## 5. Verify before finishing
+## 5. Verify before finishing — scope the checks to the DIFF
+
+> **Read §5.0 before you run anything.** This section was rewritten after the owner watched a
+> two-file change take six minutes of gates and asked, correctly, _"bản chất chỉ sửa rất ít, check
+> diff đéo được hay sao? có phải release đâu mà run hết thế?"_ — it is not a release, so stop
+> running a release's worth of checks.
+
+### 5.0 MEASURE FIRST, THEN COMPLAIN — the real cost table
+
+Every number below was measured on this repo, on an M-series Mac, warm. **Measure again before you
+believe them; a cost you assumed is how you end up optimising the wrong thing.**
+
+| command                    | cost            | scope                                      |
+| -------------------------- | --------------- | ------------------------------------------ |
+| `check:token-tiers`        | **0.2s**        | whole repo                                 |
+| `audit`                    | **0.5s**        | whole repo (~600 files)                    |
+| `typecheck:docs`           | **0.7s**        | whole `docs/` program                      |
+| `typecheck`                | **1.3s**        | whole `src/` program                       |
+| `build`                    | **1.5s**        | whole package                              |
+| `preview:build`            | **1.9s**        | whole preview                              |
+| `lint`                     | **12.9s**       | whole repo                                 |
+| **`check:frame-overflow`** | **339s (5m39)** | **199 frames x 2 viewports, in a browser** |
+
+**The lesson is the opposite of the intuition.** "Typecheck the whole system" sounds wasteful and
+costs **1.3 seconds** — typescript-7 is the native compiler, there is nothing to save there, and
+scoping it to changed files would cost more in ceremony than it saves in wall clock. Meanwhile the
+one command that _does_ cost real time is the browser sweep, and it is the one that looks innocent
+in a shell script.
+
+`check:frame-overflow` alone is **~96% of the wall clock** of a full local pass. Everything else in
+the list put together is under 20 seconds.
+
+> **Never argue about the cost of a gate you have not timed.** Time it:
+> `st=$(date +%s); pnpm <gate> >/dev/null 2>&1; echo $(( $(date +%s) - st ))s`
+
+### 5.1 What to run, by what you touched
+
+Find the row that matches your diff. Run that row. Do not run the rows below it.
+
+| you changed                        | run                                                                                              | why                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| a `.css` file only                 | `audit` · `check:token-tiers` · the component's own tests · `check:frame-overflow --only <slug>` | no TS changed, so `typecheck` has nothing to say          |
+| a `.tsx`/`.ts` in `src/`           | `typecheck` · `lint` · `audit` · that group's tests                                              | 1.3s + 12.9s, both worth it                               |
+| a file in `docs/`                  | `typecheck:docs` · `audit` · `check:example-imports`                                             | `typecheck` covers `src/`, not `docs/`                    |
+| a token in `src/tokens/`           | + `check:token-tiers` · `src/tokens/__tests__` · `pnpm regen` twice (gh#847)                     | frozen tier tables go stale instantly                     |
+| a public export / prop             | + `pnpm ship:surface`                                                                            | 8 stacked generators; the list is derived, not remembered |
+| anything that moves LAYOUT         | `check:frame-overflow --only <slug>` while you work; the FULL sweep once, before the PR          | 17.5s vs 339s                                             |
+| opening the PR / cutting a release | the full sweep, `verify:ci:static`, the full suite in CI                                         | the only place "run everything" is right                  |
+
+### 5.2 `--only` — the diff-scoped browser sweep
+
+Added in gh#851 for exactly this. The sweep had no filter at all: 199 frames or nothing.
 
 ```bash
-pnpm lint                 # eslint — self-contained flat config
-pnpm typecheck            # tsc --noEmit
+pnpm check:frame-overflow --only table                       # 9 frames,  17.5s
+pnpm check:frame-overflow --only '/^data-entry-(switch|segmented)/'   # 3 frames
+pnpm check:frame-overflow                                    # all 199,  339s
+```
+
+Measured: `--only table` is **17.5s against the full sweep's 339.1s — 19x**.
+
+Two guards, both deliberate:
+
+- **`--only` refuses `--update-baseline`.** A partial sweep does not know whether the frames it
+  skipped are still clean, and recording that as the whole truth is how a baseline stops meaning
+  anything. Rebaselining needs the full sweep.
+- **Its success line says `PARTIAL, not a release gate`** and prints how many frames it skipped, so
+  a filtered green can never be pasted into a PR as if it were the real thing.
+
+### 5.3 The commands, for reference
+
+```bash
+pnpm lint                 # eslint — self-contained flat config                    12.9s
+pnpm typecheck            # tsc --noEmit over src/                                  1.3s
+pnpm typecheck:docs       # tsc --noEmit over docs/                                 0.7s
+pnpm audit                # godxjp-ui-audit — 0 errors for touched files            0.5s
+pnpm check:mcp-sync       # MCP registry <-> library export drift guard
 pnpm vitest run src/components/<group>/__tests__ --maxWorkers=2   # ONLY what you touched
+pnpm check:frame-overflow --only <slug>   # the frames your change can reach       ~18s
+pnpm check:frame-overflow                 # all 199 — pre-PR and CI only            339s
+pnpm preview:build        # integration test: examples + docs must build            1.9s
 pnpm test                 # FULL suite — CI only, never from an agent loop
-pnpm preview:build        # integration test: examples + docs must build — at most once, pre-PR
-pnpm audit                # godxjp-ui-audit — 0 errors for touched files
-pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 pnpm check:frame-axe      # WCAG 2.2 AA over every frame — LOCAL ONLY, never in CI (FRAME-A11Y-CI.md)
 ```
 
