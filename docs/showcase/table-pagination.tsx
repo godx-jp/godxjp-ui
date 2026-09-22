@@ -334,15 +334,26 @@ function CursorPeriodCard() {
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
       </CardContent>
-      {/* `DataTable.Pagination` owns its own inline inset, because it is normally the lone child
-       * of a FLUSH container. Here it shares a padded `CardContent` with the period label, so the
-       * two insets stack — measured 28px against the columns' 16px before this. Zeroing the slot's
-       * own knob hands the inset to the container that already supplies it; that is what
-       * `--table-pagination-padding-x` is for, and an instance override is the right tier for one
-       * element in one arrangement (docs/CUSTOMER-THEMING.md, tier 4). */}
+      {/* `DataTable.Pagination` owns its own insets ON BOTH AXES, because it is normally the lone
+       * child of a FLUSH container. Here it shares a padded `CardContent` with the period label,
+       * so both stack.
+       *
+       * The first pass at this zeroed only the INLINE knob and declared it done — a two-axis
+       * defect fixed on one axis, which looks fixed from the side you were measuring. The block
+       * one kept stacking: 16px from the CardContent plus 7.36px of the slot's own, so this
+       * footer sat 27px off the last row while the other two cards sat at 20px.
+       *
+       * Zeroing both hands the insets to the container that already supplies them; that is what
+       * these knobs are for, and an instance override is the right tier for one element in one
+       * arrangement (docs/CUSTOMER-THEMING.md, tier 4). */}
       <CardContent
         className="border-t"
-        style={{ "--table-pagination-padding-x": "0" } as React.CSSProperties}
+        style={
+          {
+            "--table-pagination-padding-x": "0",
+            "--table-pagination-padding-y": "0",
+          } as React.CSSProperties
+        }
       >
         <Flex direction="row" align="center" justify="between" wrap gap="sm">
           <Text size="xs" tone="muted" tabular>
