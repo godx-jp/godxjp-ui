@@ -259,7 +259,27 @@ async function main() {
    * Default is the core count capped at 8: past that the pages start contending for the same CPU
    * and the dev server, and the curve flattens. FRAME_CONCURRENCY=1 restores the old serial run
    * for debugging an interleaved failure. */
-  const CONCURRENCY = Math.max(1, Number(process.env.FRAME_CONCURRENCY) || Math.min(8, cpuCount()));
+  /* ON A SHARED RUNNER, `availableParallelism()` IS A LIE ABOUT WHAT IS OURS.
+   *
+   * Every workflow here is `runs-on: [self-hosted, swarm-pool]`, and `verify:browser` — which
+   * contains this gate — runs on it. `availableParallelism()` reports the whole box (14 on the
+   * dev machine), not the slice allotted to this job, so pooling to 8 takes 8 browser pages while
+   * other repositories' jobs run beside us.
+   *
+   * Not hypothetical: the Platform session flagged it after reading this change. It has 84
+   * two-process concurrency tests spawning real processes against SQLite, and under a loaded
+   * runner the losing process exhausts its retry budget and dies with `database is locked` —
+   * which `busy_timeout` cannot rescue, because a lock UPGRADE returns SQLITE_BUSY immediately
+   * without calling the busy handler. Speeding our gate up by tipping someone else's over is not
+   * a win; it moves the cost somewhere harder to diagnose, in another repository.
+   *
+   * So CI gets a floor-level pool and the developer machine keeps the fast one. Set
+   * FRAME_CONCURRENCY explicitly to override either. */
+  const SHARED_RUNNER = Boolean(process.env.CI);
+  const CONCURRENCY = Math.max(
+    1,
+    Number(process.env.FRAME_CONCURRENCY) || Math.min(SHARED_RUNNER ? 2 : 8, cpuCount()),
+  );
 
   const sweepOne = async (page, vp, id) => {
     await page.goto(`${base}/isolate/${id}`, { waitUntil: "networkidle", timeout: 30000 });

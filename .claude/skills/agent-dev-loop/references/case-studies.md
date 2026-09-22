@@ -166,3 +166,46 @@ not.** Step 5 is now two questions — what can your test layer not observe, and
 only if pinned — with both families as examples underneath.
 
 → phase 3 step 5, and a caution for anything written as an enumeration in a portable document.
+
+
+---
+
+## 12. The lane that fails with no verdict
+
+A browser-journeys job carries `timeout-minutes: 60`. The step inside it carries
+`timeout-minutes: 90`. **The job dies first, so the larger number is dead configuration** — and the
+step's own comment ("402 specs with two retries per failure fit well inside 90") has never once
+applied. A justification can outlive the thing it justified and still be read as true.
+
+Then the failure mode compounds. A job that hits its cap reports **`cancelled`** and prints **no
+test summary at all**. Measured across six nights the lane ran 22, 26, 23, 21, 35, then >60
+minutes: it is being pushed over its cap **by its own failures**, because each failing spec burns
+its full timeout and then retries.
+
+So it fails in a way that **destroys the evidence needed to fix it**, and the word `cancelled`
+reads as though a human pressed cancel.
+
+Concrete cost: a fix for one of those specs landed on 09-21. The next night was the first chance to
+confirm it — and that run timed out. Two days later the fix is still unverified.
+
+Same family as case 1 and case 3, third shape: *fails green* · *fails green from the outside* ·
+**fails with no verdict**. In all three the CI platform's own reporting is the thing lying.
+
+→ rules 2 and 7.
+
+## 13. Speeding up my gate by tipping over someone else's
+
+Pooling the frame sweep one page per core took it from 339s to 52s. Every workflow in that repo is
+`runs-on: [self-hosted, swarm-pool]`, and `availableParallelism()` on a self-hosted runner reports
+**the whole machine** — 14 cores — not the slice allotted to the job.
+
+A consumer repo on the same pool reported the hazard after reading the change: it has 84
+two-process concurrency tests that spawn real processes against SQLite, and under a loaded runner
+the losing process exhausts its retry budget and dies with `database is locked`. `busy_timeout`
+cannot rescue it, because a lock **upgrade** returns `SQLITE_BUSY` immediately without calling the
+busy handler.
+
+The optimisation was real; its blast radius was another repository's test suite. Capped to 2 when
+`CI` is set, fast pool kept for the developer machine.
+
+→ rule 8.

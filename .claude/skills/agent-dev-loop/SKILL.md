@@ -262,14 +262,20 @@ A phase-2/3 failure is never waived by the batch run being optional.
 
 ---
 
-## Nine rules that survived being attacked
+## Eleven rules that survived being attacked
 
 Confirmed in two unrelated repositories (a TS design system and a PHP product). These are the
 portable core; everything else is measurement.
 
 1. **Source-scanning gates are invisible to import-graph selectors.** Select them by path glob and
    run them unconditionally.
-2. **"Nothing to run → exit 0" is a false green.** Fail closed whenever scope cannot be derived.
+2. **The reporting layer is the thing that lies — in three shapes, and you must check for all
+   three.** *Fails green*: a selector answers "nothing to run → exit 0". *Fails green from the
+   outside*: `continue-on-error` makes a red job report a green run. *Fails with no verdict*: a job
+   that hits its timeout reports **`cancelled`** and prints no summary at all — so the lane that is
+   being pushed over its cap **by its own failures** destroys the evidence needed to fix them, and
+   the word reads as though a human pressed cancel. Fail closed whenever scope cannot be derived,
+   and never trust a status word without the summary behind it.
 3. **Expand and TIME an alias before running it.** Never trust a name. Aggregate aliases hide
    minutes behind one word, and nobody had expanded ours for months.
 4. **The diff is not the diff command alone** — include staged and untracked files.
@@ -281,12 +287,20 @@ portable core; everything else is measurement.
    `related <file>` carry no path, so a rule demanding a path blocks the best options and pushes
    people to the *wider* command that is not caught. And **name the escape hatch inside the block
    message**: someone blocked without a visible door goes around it, and you lose the trace.
-7. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
+7. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
+   wins and the larger is dead configuration — with its justifying comment still attached, still
+   read as true. Check that the numbers agree, and prefer a shape where one slow unit cannot
+   consume the whole budget: a per-unit or matrix shape survives where one long job does not.
+8. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
+   box, not your job's slice, so a pool sized from it competes with every other repository on that
+   pool. Speeding your own gate up by tipping someone else's over is a cost moved somewhere harder
+   to diagnose. Cap parallelism when `CI` is set, and keep the fast pool for the developer machine.
+9. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
    One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
    scope is decided after the expensive step, every skipped job pays in full.
-8. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
+10. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
-9. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+11. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
    that run, and an index that checks *wiring* cannot see it. **The fix is neither a log-scanner
    nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
    matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
