@@ -274,6 +274,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     tag: "Shell",
     load: () => import("../../docs/showcase/org-switcher"),
   },
+  {
+    id: "caimono-price-comparison",
+    title: "カイモノ 価格比較 (Caimono)",
+    description:
+      "Marketplace so sánh giá theo brand kit ngoài: hero, bảng so sánh cửa hàng, thẻ khuyến mãi, trạng thái tồn kho. Dựng 100% từ primitive + token @godxjp/ui để đo xem theming ngoài còn thiếu knob nào (gh#864..#867).",
+    tag: "Thương mại",
+    load: () => import("../../docs/showcase/caimono-price-comparison"),
+  },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));
