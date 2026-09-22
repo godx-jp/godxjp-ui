@@ -34,9 +34,17 @@ and prescribes splitting what exceeds it into a separate build.
 | phase | what you do | model | **may run** | **BANNED** |
 | --- | --- | --- | --- | --- |
 | **1 · Classify** | read every issue, group them, build the tracking list | any | nothing | everything |
-| **2 · Implement** | build many issues at once, write the tests | **sonnet is fine** | only the tests you just wrote | full suite · `verify:ci:static` · `ship:surface` · any browser sweep · `check:contrast` |
-| **3 · Review** | read the diff and the requirement flow | **opus / fable** | only tests the change reaches | same bans as phase 2 |
+| **2 · Implement** | build many issues at once, write the tests | a cheaper model is fine | the tests you wrote **+ the three-term set below** | full suite · `verify:ci:static` · `ship:surface` · any browser sweep · `check:contrast` |
+| **3 · Review** | read the diff and the requirement flow, audit the tests | judgement-heavy (see below) | the **same three-term set as phase 2** — never "the tests the change reaches", which is precisely what no selector can compute | same bans as phase 2 |
 | **4 · Verify the batch** | one pass for the whole batch | any | everything, once | running it **unasked** |
+
+> **The `model` column is ADVISORY, not a control.** Phase 3 carries more judgement than phase 2,
+> which is why a stronger model is worth spending there — but a strong model is **not** what catches
+> the defects. The `dxs-product` session *was* the strong model and still let a falsely-green
+> `toHaveCount(1)` through; CI caught it, not the model. What catches things is the **procedure**:
+> read the whole red run, and revert-the-hunk-and-confirm-red. Treat this column as prescriptive and
+> a reader will believe that choosing opus means phase 3 was done. In a repo whose hardest reading is
+> a migration or a money path, the column means nothing at all.
 
 **The ban in phases 2 and 3 is absolute.** Not "prefer not to". A check you run there is a check
 you will run again in phase 4, and the only thing it bought is the wall clock.
@@ -221,15 +229,42 @@ to stop unreviewed work piling into a batch nobody can review:
 **Automatic only when unreviewed commits exceed 100.** Otherwise you ASK, and you do not run it
 until he says yes.
 
+> ### ⛔ THE COUNTER FAILS CLOSED. The first draft of this section failed OPEN.
+>
+> It said `git describe --tags --match 'verified/*' || git rev-list --max-parents=0 HEAD`. There
+> was no `verified/*` tag, so the fallback resolved to the **root commit** and the count came back
+> **1888** — over the threshold, so the document authorised running the full suite **without
+> asking**, from the first read, which is the exact behaviour it exists to forbid. Worse, it was
+> circular: the watermark is only created *after* a successful batch run, so escaping auto mode
+> required doing the auto thing first.
+>
+> Caught by the `dxs-product` session reading the draft. It is the same family as §universal #2 —
+> **missing data made the system pick the loudest option instead of stopping to ask.**
+
 ```bash
-git rev-list --count $(git describe --tags --match 'verified/*' --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD
+base=$(git describe --tags --match 'verified/*' --abbrev=0 2>/dev/null) || {
+  echo "No verified/* watermark — ASK. Do not run."; exit 1; }
+git rev-list --count "${base}..HEAD"
 ```
 
-Move the watermark after a successful batch run, so the counter means something:
+**Unresolvable watermark ⇒ ASK.** Never fall back to anything, least of all the root commit.
+
+The **first** watermark is created once, by a person, deliberately, at a commit they know CI
+verified green. An agent must not create it: a tag that claims verification that did not happen is
+worse than no tag.
+
+After a batch run that really passed:
 
 ```bash
-git tag -f verified/$(date +%Y%m%d-%H%M) && git push -f origin --tags
+tag="verified/$(date +%Y%m%d-%H%M)"
+git tag "$tag" && git push origin "refs/tags/$tag"    # ONE tag. No -f. No --tags.
 ```
+
+> The first draft wrote `git tag -f … && git push -f origin --tags`. The `-f` was pointless (the
+> name carries a timestamp, so it never collides) and `push -f --tags` **force-pushes every local
+> tag**, overwriting any remote tag that differs. This repo publishes from tags and
+> `VerifyCommitProvenance` reads them, so one stale local tag could move a release tag onto another
+> commit. Push the single ref you just made.
 
 > **The counter is a proxy for risk, not a measure of it** — 100 docs commits are not 10 token
 > commits. It is deliberately crude because a negotiable threshold is not a threshold. If the batch
@@ -322,13 +357,30 @@ Confirmed in BOTH repos, so it belongs in any agent's rules:
 4. **`git diff --name-only` is not the diff** — it misses staged and untracked files. Add
    `git status --porcelain`.
 5. **The full suite is release evidence bound to a SHA**, not a ritual on a counter.
-6. **Enforce the ban with a MECHANISM, not prose.** Their rule existed in writing for weeks and was
+6. **Measure the cost of a SKIPPED job, not just a running one — and put the scope decision BEFORE
+   the expensive step.** Their `[web] web/pos` job spent **225s to decide to skip**: 218s of
+   `actions/checkout`, 2s of decision. Wherever scope is decided *after* the expensive step, every
+   skipped job still pays in full. That is universal; the cure (a scope job before the matrix, a
+   local mirror, `fetch-depth`) is per-repo — and `fetch-depth: 1` in particular breaks
+   `git describe`, `...` diffs and tag provenance, so it is not general advice.
+7. **Enforce the ban with a MECHANISM, not prose.** Their rule existed in writing for weeks and was
    violated twice in a single session; a hook that refuses an unscoped test command is what actually
    held.
-7. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
-   that run, and an index that checks *wiring* cannot see it. Compare gates **declared** against
-   gates **observed executing in the log**. (Theirs: 249 declared, 31 observed. Ours: no
-   `continue-on-error`, but `verify:ci:static` is a 46-command `&&` chain — gh#853.)
+8. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+   that run, and an index that checks *wiring* cannot see it. (Theirs: 249 declared, 31 observed.
+   Ours: no `continue-on-error`, but `verify:ci:static` is a 46-command `&&` chain — gh#853.)
+
+   **The fix is neither a log-scanner nor "stop writing chains" — it is to change the SHAPE so the
+   CI platform counts for you.** One gate per `step` (or per `matrix` entry): the run UI then shows
+   N results, so declared-vs-observed becomes *visible* with no parser, one red gate stops killing
+   the rest, and there is no index to drift. The `dxs-product` session's argument for why a
+   log-scanner cannot work is the decisive one: a scanner must know the gate **names** to look for,
+   so it needs an index — and the index is the very thing that drifted. A detector that depends on
+   the index cannot close the loop.
+
+   The only gate worth writing is **structural, not behavioural**: *"no `run:` step may contain more
+   than one gate command"* — greppable, ~0.1s, and it stops the chain growing back. Chains are not
+   written on purpose; ours reached 46 commands and theirs 56 without anyone deciding to.
 
 **Per-repo — measure, never copy:**
 
@@ -344,9 +396,9 @@ Confirmed in BOTH repos, so it belongs in any agent's rules:
   8–11 minutes while spending 81–107 runner-minutes. Say which one you are budgeting.
 - **The definition of "unit".** Here a directory group is 231 files; theirs is one Pest file at
   1.47s. Measure, then take the smallest grain that still means something.
-- **Where the money actually goes.** Theirs: `actions/checkout` at **218–281s** on jobs that then
-  decide to skip, because `.git` is 666 MB with no `fetch-depth`. A handbook that only tiers tests
-  would have missed their single largest cost.
+- **How to make scope cheap.** Their fix was about `fetch-depth`; ours cannot be, because
+  `git describe`, `...` diffs and tag-based provenance all need history. The implementation is
+  per-repo — but see the universal rule it generalises to, below.
 
 ### One line phase 3 owes them
 
