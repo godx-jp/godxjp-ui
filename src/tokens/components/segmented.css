@@ -39,8 +39,17 @@
   /* track padding = the bold line width = 2px. Half the base spacing step rather than a raw length,
    * so it rides `--scaling` with everything else. */
   --segmented-track-padding: calc(var(--space-1) / 2);
+  /* THE TWO SURFACES ARE `initial`, WITH THEIR FORMULAS AT THE CALL SITE (gh#848), for the reason
+   * `--segmented-item-selected-border-color` below spells out: written `var(--muted)` here the
+   * binding substitutes on the element that DECLARES it — `<html>` — and every scope beneath
+   * inherits root's answer. It read as correct only because `.dark` also lands on `<html>`.
+   * Measured in Chromium with `.dark` on a `<div>` instead (a `[data-tenant]` block, a dark panel
+   * on a light page, the theme editor's own preview pane): the track painted rgb(244,243,240) —
+   * the LIGHT neutral, byte-identical to the light page, under dark ink — and the slab
+   * rgb(253,253,252). Both now follow the scope; segmented-scope-freeze-848.test.ts holds the
+   * numbers. docs/TOKENS.md · "Role-mirror knobs MUST be `initial`". */
   /* track background — the recessed ground a control group sits in. */
-  --segmented-track-background: var(--muted);
+  --segmented-track-background: initial; /* default = var(--muted), resolved at the call site */
   /* track radius = the base radius; item radius = one step DOWN the radius scale, not
    * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2).
    * This scale is φ-spaced, so "one step down" from --radius is --radius-md (6px → 3.71px, against
@@ -93,7 +102,7 @@
   --segmented-item-active-background: var(--secondary);
   /* selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted
    * off the recessed track, which is the whole affordance. */
-  --segmented-item-selected-background: var(--background);
+  --segmented-item-selected-background: initial; /* default = var(--background), resolved at the call site */
   --segmented-item-selected-shadow: var(--shadow-md);
   /* A SECOND SIGNAL, because the first one is nearly invisible on a light canvas (gh#843).
    *

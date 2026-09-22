@@ -1496,7 +1496,7 @@
     align-items: stretch;
     padding: var(--segmented-track-padding);
     border-radius: var(--segmented-track-radius);
-    background: hsl(var(--segmented-track-background));
+    background: hsl(var(--segmented-track-background, var(--muted)));
     color: hsl(var(--segmented-item-color));
     font-size: var(--font-size-base);
   }
@@ -1535,7 +1535,7 @@
   }
 
   .ui-segmented-item[data-state="checked"] {
-    background: hsl(var(--segmented-item-selected-background));
+    background: hsl(var(--segmented-item-selected-background, var(--background)));
     /* The elevation, plus the hairline that carries the state across the 3:1 floor. The ring is
      * INSET so it costs no layout; the fill/track pair is 1.09:1 in light and 1.33:1 in dark and
      * cannot be fixed by moving either colour — see the token's own note (gh#843). */
