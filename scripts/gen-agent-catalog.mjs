@@ -9,9 +9,10 @@
  * Claude.ai cannot, and today they have nothing: they guess prop names from memory and invent
  * components that were deleted two majors ago.
  *
- * So this writes the SAME data — one source, `mcp/src/data/*` — as plain files the repo already
- * serves publicly over raw.githubusercontent.com. No hosting, no deploy step, and two URL shapes
- * for free:
+ * So this writes the SAME data — `mcp/src/data/*`, plus the two theme token tiers read straight
+ * from `src/tokens/*.css` because no module in `mcp/src/data` carries them (gh#862) — as files the
+ * repo already serves publicly over raw.githubusercontent.com. No hosting, no deploy step, and two
+ * URL shapes for free:
  *
  *   …/main/agent/…        corrections are live the moment they merge
  *   …/v28.4.0/agent/…     immutable, pinned to the release a consumer actually installed
@@ -26,11 +27,13 @@
  * that looks complete and has lost fields, which is the exact class of silent-wrong this repo
  * keeps paying for. esbuild gives the real values or throws.
  */
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, globSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { build } from "esbuild";
+
+import { parseThemeTokens } from "./theme-token-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
@@ -107,9 +110,51 @@ const [components, tokens, vocabulary, rules, patterns, tells] = await Promise.a
  * `anti-ai-tells.ts` already names the generated-looking output to avoid. Both have been MCP-only:
  * an agent that can spawn a process gets them, an agent on a web URL does not, and the web agent is
  * the one guessing. This publishes the data that exists rather than inventing a new layer. */
+/* THE TOKEN CATALOG IS THREE TIERS, AND IT USED TO PUBLISH ONE (gh#862).
+ *
+ * `tokens.json` carried 1685 entries and every one of them was a COMPONENT knob, because
+ * `mcp/src/data/component-tokens.generated.ts` is — by its name and its purpose — the component
+ * tier alone. The foundation and semantic tiers appeared in NO file under `agent/`: `--primary`,
+ * `--background`, `--radius`, `--ring` were absent from a catalog whose stated audience is an
+ * assistant handed a brand kit, whose first question is which token carries the brand colour. The
+ * answer that catalog supported was "this system has none", which sends a reader to the bespoke
+ * CSS that docs/CUSTOMER-THEMING.md exists to prevent. Measured by an external assistant doing
+ * exactly that task.
+ *
+ * DERIVED, NOT HAND-LISTED. The tiers are read from the stylesheets that declare them, the same way
+ * the component tier is read from `src/tokens/components/*.css`. A hand-kept list of theme roles is
+ * how `check:frame-token-scope`'s colour seeds went blind to 18 of 36 roles (gh#854): the list was
+ * right when it was written and nothing re-derived it.
+ *
+ * WHY `tier` IS ON EVERY ENTRY, INCLUDING THE 1685. The point of publishing all three is that a
+ * reader can tell a re-scopable theme role from a component knob — `--primary` is one a consumer is
+ * INVITED to set, `--card-space-inset` is one they usually should not. A tag present on two tiers
+ * and absent on the third makes that distinction an inference, and an agent that infers it wrong
+ * silently rethemes nothing. Gzipped (which is how the tarball and every HTTP fetch carry it) 1685
+ * repeats of the same short string cost almost nothing.
+ */
+const THEME_TIERS = [
+  ["foundation", ["src/tokens/foundation.css"]],
+  /* derived.css is the SEMANTIC half of colour, not a primitive one: it declares the roles that
+   * follow the seeds — `--primary-hover`, `--ring`, `--text-link` — which is exactly what
+   * CUSTOMER-THEMING calls a "level 2 · role" override. base.css imports it between foundation and
+   * semantic/ for the same reason. */
+  ["semantic", ["src/tokens/derived.css", ...globSync("src/tokens/semantic/*.css").sort()]],
+];
+const themeTokens = THEME_TIERS.flatMap(([tier, files]) =>
+  files.flatMap((file) =>
+    parseThemeTokens(readFileSync(join(ROOT, file), "utf8")).map((t) => ({ ...t, tier })),
+  ),
+);
+
 const data = {
   "components.json": components.COMPONENTS,
-  "tokens.json": tokens.COMPONENT_TOKENS,
+  /* Theme tiers FIRST. A reader who fetches this file and stops at the top should land on
+   * `--background` / `--primary` / `--radius`, not on the alphabetically-first component knob. */
+  "tokens.json": [
+    ...themeTokens,
+    ...tokens.COMPONENT_TOKENS.map((t) => ({ ...t, tier: "component" })),
+  ],
   "vocabulary.json": vocabulary.PROP_VOCABULARY,
   "rules.json": rules.CARDINAL_RULES,
   "patterns.json": patterns.PATTERNS,
@@ -127,6 +172,56 @@ for (const [file, rows] of Object.entries(data)) {
     );
     process.exit(1);
   }
+}
+
+/* THE GATE: EVERY TOKEN docs/CUSTOMER-THEMING.md TELLS A CONSUMER TO SET MUST BE IN THE CATALOG.
+ *
+ * This is the falsifiable form of "the catalog serves its audience", and it is the check that was
+ * missing when gh#862 shipped: the theming guide and the agent catalog are written from different
+ * sources — one by hand, one generated — and NOTHING compared them. The guide named `--primary` 24
+ * times while the catalog contained no such token, for as long as both existed, and every gate in
+ * this repo passed the whole time.
+ *
+ * WHAT COUNTS AS "NAMED BY THE DOC": a token the doc writes as a DECLARATION — `--primary: …`. That
+ * is precisely the set the doc instructs a reader to put in their own `theme.css`, and it is the
+ * set whose absence from the catalog is a defect. It deliberately excludes the three other shapes
+ * the doc uses a `--name` in, none of which are a promise about this library:
+ *
+ *   · placeholders the doc INVENTS for the reader's own font — `var(--my-face)`, `var(--brand-sans)`,
+ *     `var(--font-kr)` — which appear only on the right-hand side;
+ *   · CLI flags — `pnpm gen:brand '#2563EB' --name acme --out src/theme`;
+ *   · brace shorthand in the reference tables — `--gradient-{hero,glow,brand}`, which names three
+ *     tokens with a string that is none of them.
+ *
+ * A wider rule was measured first and it is a trap: matching every `--word` in the prose demands
+ * `--my-face` and `--out` exist, and the only way to keep it green is a hand-kept exemption list —
+ * the same shape of hand-kept list this catalog was just fixed for trusting.
+ */
+const themingDoc = readFileSync(join(ROOT, "docs/CUSTOMER-THEMING.md"), "utf8");
+const promised = [
+  ...new Set([...themingDoc.matchAll(/(--[a-z][a-z0-9-]*)\s*:/g)].map((m) => m[1])),
+].sort();
+const catalogued = new Set(data["tokens.json"].map((t) => t.name));
+const unlisted = promised.filter((name) => !catalogued.has(name));
+if (unlisted.length) {
+  const byTier = Object.fromEntries(
+    ["foundation", "semantic", "component"].map((tier) => [
+      tier,
+      data["tokens.json"].filter((t) => t.tier === tier).length,
+    ]),
+  );
+  console.error(
+    `✗ gen-agent-catalog — docs/CUSTOMER-THEMING.md tells a consumer to set ${unlisted.length} ` +
+      `token(s) that agent/tokens.json does not contain: ${unlisted.join(", ")}.\n` +
+      `    The catalog currently carries ${Object.entries(byTier)
+        .map(([tier, n]) => `${n} ${tier}`)
+        .join(" · ")}. A theming guide that names a token the catalog omits is how gh#862 ` +
+      `happened: an agent reading only the catalog concludes the token does not exist and writes ` +
+      `bespoke CSS instead.\n` +
+      `    Fix it at whichever end is wrong — declare the token in its tier file under a top-level ` +
+      `\`:root\` (scripts/theme-token-rules.mjs reads those), or stop naming it in the guide.`,
+  );
+  process.exit(1);
 }
 
 /* WHICH SUBPATH DOES THIS COMPONENT COME FROM.
@@ -290,7 +385,9 @@ files["index.json"] = stable({
   name: pkg.name,
   version: pkg.version,
   generated: "scripts/gen-agent-catalog.mjs",
-  source: "mcp/src/data — the same data @godxjp/ui-mcp serves",
+  source:
+    "mcp/src/data — the same data @godxjp/ui-mcp serves — plus the foundation and semantic token " +
+    "tiers, read from src/tokens/*.css",
   read: {
     live: `${rawBase("main")}/index.json`,
     pinned: `${rawBase(`v${pkg.version}`)}/index.json`,
@@ -299,6 +396,19 @@ files["index.json"] = stable({
   counts: Object.fromEntries(
     Object.entries(data).map(([f, rows]) => [f.replace(".json", ""), rows.length]),
   ),
+  /* The token count alone hid gh#862: 1685 looks like a complete design system and was one tier of
+   * three. Split here so the omission of a tier is visible in the smallest file in the catalog. */
+  tokenTiers: {
+    foundation: "the seeds a consumer is invited to set — --primary, --background, --radius",
+    semantic: "named roles that follow the seeds — --ring, --text-link, --overlay-background",
+    component: "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
+    counts: Object.fromEntries(
+      ["foundation", "semantic", "component"].map((tier) => [
+        tier,
+        data["tokens.json"].filter((t) => t.tier === tier).length,
+      ]),
+    ),
+  },
   start: `${rawBase("main")}/START-HERE.md`,
   files: [
     {
@@ -327,6 +437,12 @@ const substitutions = {
   raw: rawBase("main"),
   components: String(data["components.json"].length),
   tokens: String(data["tokens.json"].length),
+  ...Object.fromEntries(
+    ["foundation", "semantic", "component"].map((tier) => [
+      `tokens${tier[0].toUpperCase()}${tier.slice(1)}`,
+      String(data["tokens.json"].filter((t) => t.tier === tier).length),
+    ]),
+  ),
   rules: String(data["rules.json"].length),
   patterns: String(data["patterns.json"].length),
   tells: String(data["anti-ai-tells.json"].length),
@@ -387,6 +503,7 @@ const counts = Object.entries(data)
   .join(" · ");
 console.log(
   CHECK
-    ? `✓ check:agent-catalog — the published catalog matches mcp/src/data (${counts}).`
+    ? `✓ check:agent-catalog — the published catalog matches mcp/src/data + src/tokens, and ` +
+      `contains every token docs/CUSTOMER-THEMING.md tells a consumer to set (${counts}).`
     : `✓ gen:agent-catalog — ${Object.keys(files).length} file(s) in agent/ (${counts}).`,
 );

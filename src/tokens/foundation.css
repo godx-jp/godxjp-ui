@@ -478,6 +478,18 @@
   --font-sans-base:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui,
     sans-serif;
+  /* The five per-language SLOTS, DECLARED — `initial`, which is the guaranteed-invalid value, so
+   * `var(--font-sans-ja, var(--font-sans-base))` in styles/base.css falls back exactly as it did
+   * when they were undeclared. Nothing about the cascade changes; what changes is that they are
+   * now VISIBLE. Declared nowhere, they existed only as prose in the comment above and in
+   * docs/CUSTOMER-THEMING.md, so every tool that reads this tier — the agent catalog, the MCP
+   * token list, any audit that enumerates the theme surface — reported a public theming knob as
+   * not existing (gh#862). A token nobody can look up is a token nobody has. */
+  --font-sans-ja: initial;
+  --font-sans-ko: initial;
+  --font-sans-vi: initial;
+  --font-sans-zh-hans: initial;
+  --font-sans-zh-hant: initial;
   --font-family-sans: var(--font-sans-base);
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* Dual-font split (opt-in) — many brand designs pair a DISPLAY face for headings with a separate
