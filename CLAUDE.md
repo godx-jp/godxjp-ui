@@ -39,7 +39,12 @@ Before creating OR changing **any** component, recipe, doc, or example, you MUST
 ## MANDATORY for a BATCH of work: read `agent-dev-loop` first
 
 Handed more than one issue? Activate **`agent-dev-loop`** (`.claude/skills/agent-dev-loop/SKILL.md`)
-before writing anything. It owns the four-phase loop and the bans:
+before writing anything. It owns the four-phase loop and the bans.
+
+**It is PORTABLE** — no command, gate name or measurement of this repo is in it, so it copies to
+any repository in any language. This repo's numbers live in `references/this-repo.md`; a new repo
+generates its own with the ten-step protocol in `references/adopting.md`; the incidents that
+justify the rules are in `references/case-studies.md`.
 
 | phase | model | may run | banned |
 | --- | --- | --- | --- |
