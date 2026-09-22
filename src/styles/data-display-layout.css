@@ -2336,23 +2336,32 @@
    * banner agree. The colour is never alone: the bubble also renders a localized sr-only word. */
   .ui-chat-bubble[data-tone="info"] .ui-chat-bubble-body {
     border: var(--stroke-hairline) solid hsl(var(--info) / var(--chat-bubble-tone-border-alpha));
-    background: hsl(var(--info) / var(--chat-bubble-tone-background-alpha));
+    background: var(--surface-info, hsl(var(--info) / var(--chat-bubble-tone-background-alpha)));
   }
 
   .ui-chat-bubble[data-tone="success"] .ui-chat-bubble-body {
     border: var(--stroke-hairline) solid hsl(var(--success) / var(--chat-bubble-tone-border-alpha));
-    background: hsl(var(--success) / var(--chat-bubble-tone-background-alpha));
+    background: var(
+      --surface-success,
+      hsl(var(--success) / var(--chat-bubble-tone-background-alpha))
+    );
   }
 
   .ui-chat-bubble[data-tone="warning"] .ui-chat-bubble-body {
     border: var(--stroke-hairline) solid hsl(var(--warning) / var(--chat-bubble-tone-border-alpha));
-    background: hsl(var(--warning) / var(--chat-bubble-tone-background-alpha));
+    background: var(
+      --surface-warning,
+      hsl(var(--warning) / var(--chat-bubble-tone-background-alpha))
+    );
   }
 
   .ui-chat-bubble[data-tone="destructive"] .ui-chat-bubble-body {
     border: var(--stroke-hairline) solid
       hsl(var(--destructive) / var(--chat-bubble-tone-border-alpha));
-    background: hsl(var(--destructive) / var(--chat-bubble-tone-background-alpha));
+    background: var(
+      --surface-destructive,
+      hsl(var(--destructive) / var(--chat-bubble-tone-background-alpha))
+    );
   }
 
   /* The typed-so-far caret. DELIBERATELY not animated: this is a low-motion system, and a caret

@@ -68,7 +68,11 @@ const toneVars = Object.fromEntries(
   TOAST_TONES.flatMap(({ type, hue, ink }) => [
     [
       `--${type}-bg`,
-      `color-mix(in srgb, hsl(var(--${hue})) calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover)))`,
+      // gh#866 — the surface reads its `--surface-*` role first, with the composite above as the
+      // call-site fallback. Without it the toast was the fourth of eight status surfaces that
+      // could only ever be a derivation of its own ink, so a brand's chosen pale ground reached
+      // the Alert and not the toast that says the same sentence.
+      `var(--surface-${hue}, color-mix(in srgb, hsl(var(--${hue})) calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover))))`,
     ],
     [`--${type}-border`, `hsl(var(--${hue}) / var(--alert-border-alpha))`],
     [`--${type}-text`, `hsl(var(--${ink}))`],

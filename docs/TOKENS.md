@@ -44,17 +44,18 @@ src/styles/
 
 Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange focus/accent, warm neutral surfaces. App or customer identity colors belong in the consuming app theme, not in package tokens.
 
-#### The three tone tiers — FILL, TEXT, MARK
+#### The four tone tiers — FILL, TEXT, MARK, SURFACE
 
-A status tone can be painted three ways, and each way is judged against a different thing. Reading
+A status tone can be painted four ways, and each way is judged against a different thing. Reading
 the wrong tier is this palette's most expensive recurring bug, because nothing about it looks wrong
 in the source.
 
-| Tier     | Tokens                                      | What it paints                                                     | Contrast bar                                              |
-| -------- | ------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
-| **FILL** | `--success`, `--warning`, `--info`, `--destructive` | A solid chip, band or bar with a label ON it                        | AA **4.5:1** against its own `*-foreground` label          |
-| **TEXT** | `--text-success`, `--text-warning`, `--text-info`, `--text-error` | Small coloured type — a StatCard delta, an outline badge label, a field's error line | AA **4.5:1** against the surface BEHIND it                 |
-| **MARK** | `--mark-success`, `--mark-warning`, `--mark-info`, `--mark-destructive`, `--mark-primary`, `--mark-attention` | A thin shape carrying meaning with nothing written on it — a `Card accent` rail, a `DataTable rowTone` rail | SC 1.4.11 **3:1** against the surface it sits on |
+| Tier        | Tokens                                                                                                        | What it paints                                                                                                                                                                            | Contrast bar                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **FILL**    | `--success`, `--warning`, `--info`, `--destructive`                                                           | A solid chip, band or bar with a label ON it                                                                                                                                              | AA **4.5:1** against its own `*-foreground` label       |
+| **TEXT**    | `--text-success`, `--text-warning`, `--text-info`, `--text-error`                                             | Small coloured type — a StatCard delta, an outline badge label, a field's error line                                                                                                      | AA **4.5:1** against the surface BEHIND it              |
+| **MARK**    | `--mark-success`, `--mark-warning`, `--mark-info`, `--mark-destructive`, `--mark-primary`, `--mark-attention` | A thin shape carrying meaning with nothing written on it — a `Card accent` rail, a `DataTable rowTone` rail                                                                               | SC 1.4.11 **3:1** against the surface it sits on        |
+| **SURFACE** | `--surface-success`, `--surface-warning`, `--surface-info`, `--surface-destructive`                           | The pale GROUND a toned surface paints — an `Alert` tint, a status `Badge` chip, a toned `DataTable` row, a toast, a `ChatBubble`, a toned Dialog/Sheet header, an `EmptyState` medallion | whatever sits ON it must clear AA **4.5:1** — see below |
 
 The MARK tier exists because both rails were reading FILL, and two of them were effectively
 invisible. Measured in Chromium on the light card: `Card accent="warning"` drew its 6px rail at
@@ -66,6 +67,44 @@ place and both follow — and since 3:1 is looser than 4.5:1, anything legible a
 a mark by construction. `--mark-attention` is the exception: there is no `--text-attention`, and
 the fill already clears the floor in both themes (3.32 / 6.75).
 
+**The SURFACE tier is `initial` and has no default of its own (gh#866).** The other three tiers
+hold a colour; this one holds a brand's ANSWER, and there is no single derived value it could
+carry — Alert washes at 5%, Badge at 10%, the row tone at 6%, the medallion at 12%, the toast
+`color-mix`es into `--popover`. So each surface keeps its own formula AT ITS CALL SITE, behind the
+role:
+
+```css
+background-color: var(--surface-success, hsl(var(--success) / var(--alert-bg-alpha)));
+```
+
+Unset, every surface paints exactly what it painted before (measured in Chromium: 30/30 computed
+values byte-identical). Set on a scope — `[data-tenant] { --surface-success: #E8F5EF }` — all nine
+follow, because the formula lives where the paint happens rather than at `:root`; the same probe
+measured 0/30 before the roles existed and 30/30 after.
+
+The tier exists because DERIVATION TIES THE GROUND'S HUE TO THE INK. A brand kit that pairs
+`--success #126342` with `--success-soft #E8F5EF` is not describing a derivation: #E8F5EF is a
+separately chosen mint, not that green at any alpha, and the only move the system offered was to
+lighten the success TEXT until its wash matched — damaging the ink's contrast to fix the colour of
+the ground.
+
+**A brand's ground is the brand's contrast problem, and these are the numbers to check.** Everything
+this library paints ON a status surface reads the TEXT tier — the Alert icon and title, the Badge
+label (`text-*-strong`), the toast ink — and on the kit's four grounds that measures success
+**6.22:1** · warning **5.48:1** · error **6.64:1** · info **7.34:1**, with body ink
+(`--foreground`) at 13.9–14.4:1. All four clear AA, so the role is safe to hand a brand.
+
+The one thing that does NOT is the Callout RAIL, which is the FILL tier by design (a 4px rail at
+the border alpha reads as a smudge): against the brand grounds it measures success **1.99:1** and
+warning **1.62:1**, under SC 1.4.11's 3:1. That is inherited, not introduced — on today's derived
+tint the same rail measures **2.12:1** and **1.69:1** — and the repair is the MARK tier, not a
+lighter ground.
+
+`primary` and `attention` have no SURFACE entry on purpose: a brand ships "soft" pairs for the four
+statuses, and two more roles nobody asked for make the vocabulary harder to learn. Borders stay
+derived too (`--alert-border-alpha`, `--chat-bubble-tone-border-alpha`) — the kit supplies no border
+colours.
+
 Two guards, because one was not enough:
 `src/tokens/__tests__/tone-mark-contrast.test.ts` recomputes every tone × ground × theme off the
 committed tokens and reads the alias out of the CSS (so repointing a mark back at FILL fails the
@@ -75,20 +114,20 @@ gate had ever looked at one.
 
 **Progress and Legend joined the tier, and the wa-iro question is settled.** `.ui-legend-swatch`,
 `.ui-progress-bar` and `.ui-progress-segment` all read FILL as standalone graphics and all failed
-the same floor. The floor applies: nothing is written on a progress fill, so *where the colour
-stops* is the entire datum, and a slice of a partition carries its share of the whole with no words
+the same floor. The floor applies: nothing is written on a progress fill, so _where the colour
+stops_ is the entire datum, and a slice of a partition carries its share of the whole with no words
 on it — that is precisely a "graphical object required to understand the content". The hue loses.
 The two moved together because a swatch is a SAMPLE of the bar beside it; a key that is not the
 colour it is a key to is not a key.
 
-| surface | tone | ground | FILL (before) | MARK (after) |
-| --- | --- | --- | --- | --- |
-| `.ui-legend-swatch` | warning | light card | **1.74** | **5.90** |
-| `.ui-legend-swatch` | success | light card | **2.18** | **6.84** |
-| `.ui-legend-swatch` | destructive | dark card | **2.95** | **5.52** |
-| `.ui-progress-segment` | warning | light track | **1.60** | **5.41** |
-| `.ui-progress-segment` | success | light track | **2.00** | **6.28** |
-| `.ui-progress-segment` | destructive | dark track | **2.42** | **4.52** |
+| surface                | tone        | ground      | FILL (before) | MARK (after) |
+| ---------------------- | ----------- | ----------- | ------------- | ------------ |
+| `.ui-legend-swatch`    | warning     | light card  | **1.74**      | **5.90**     |
+| `.ui-legend-swatch`    | success     | light card  | **2.18**      | **6.84**     |
+| `.ui-legend-swatch`    | destructive | dark card   | **2.95**      | **5.52**     |
+| `.ui-progress-segment` | warning     | light track | **1.60**      | **5.41**     |
+| `.ui-progress-segment` | success     | light track | **2.00**      | **6.28**     |
+| `.ui-progress-segment` | destructive | dark track  | **2.42**      | **4.52**     |
 
 Worst case anywhere on the two routes after the move: **4.52:1**. `.ui-progress-bar` (meter and
 over-capacity) reads the same tokens as the slice, so a `tone="warning"` meter and a `warning`
@@ -101,10 +140,10 @@ failure — was on `text-destructive`, the FILL utility. So the same `tone` was 
 `Alert` and near-invisible one line below it, in the field that caused it. Measured in Chromium on
 `/isolate/layout-auth-recovery-examples-mfa-challenge`:
 
-| surface | ground | FILL (before) | TEXT (after) |
-| --- | --- | --- | --- |
-| `.ui-form-field-note[role="alert"]` | dark card | **2.95** | **5.52** |
-| `.ui-form-field-note[role="alert"]` | light card | 6.16 | **7.21** |
+| surface                             | ground     | FILL (before) | TEXT (after) |
+| ----------------------------------- | ---------- | ------------- | ------------ |
+| `.ui-form-field-note[role="alert"]` | dark card  | **2.95**      | **5.52**     |
+| `.ui-form-field-note[role="alert"]` | light card | 6.16          | **7.21**     |
 
 Only the DARK branch failed, and the light one passing is why it survived: the fill is tuned for a
 white label ON it, so it darkens on light grounds and lightens on dark ones — the opposite of what
@@ -114,13 +153,13 @@ two `ui-auth-shell` routes it had never loaded.
 
 **A theme that repoints `--secondary` owes `--progress-track-background`.** The track defaults to
 `hsl(var(--secondary))`, which is a pale neutral in the stock palette. `docs/showcase/acme-portal`
-repurposes `--secondary` as a navy *button* colour, so its bars were drawn on a near-black track
+repurposes `--secondary` as a navy _button_ colour, so its bars were drawn on a near-black track
 and the mark fills measured 2.50 (success) / 2.90 (warning) on it. Naming the track explicitly is
 the fix — 6.49 / 5.59 after — not dragging the tier back.
 
 Three guards now, and each sees something the others cannot: the ratio tests in
 `tone-mark-contrast.test.ts` (rails against card/background, progress marks against the track);
-the *same file's* CSS-alias assertions, which fail if a rule is repointed at the fill tier and
+the _same file's_ CSS-alias assertions, which fail if a rule is repointed at the fill tier and
 which also pin the swatch and the slice to the **same** token per tone; and `check:contrast`'s
 **thin fill** pass — added because adding `/isolate/data-display-progress` to that gate's route
 list on its own changed nothing at all. The graphic pass wants ≤24px on both axes and the rail

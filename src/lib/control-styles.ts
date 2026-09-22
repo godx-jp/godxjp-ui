@@ -76,12 +76,27 @@ export const tableCellPaddingClass = "py-[length:var(--table-cell-padding-y)]";
 
 /** Semantic status / badge tones — always use tokens, never raw Tailwind palette. The TEXT uses the
  * AA-strong status colours (text-*-strong, darker than the fill) so a small status label clears
- * WCAG AA on the soft tint; the border/fill keep the brighter wa-iro role. */
-export const toneSuccessClass = "border-success/30 bg-success/10 text-success-strong";
+ * WCAG AA on the soft tint; the border keeps the brighter wa-iro role.
+ *
+ * THE FILL IS AN ARBITRARY PROPERTY, NOT `bg-success/10`, AND THAT IS THE WHOLE OF gh#866 HERE.
+ * `bg-<role>/10` can only ever be the role at 10% — a derivation — so a brand that ships an
+ * independently chosen pale surface (`--success #126342` with `--success-soft #E8F5EF`, a mint
+ * that is not that green at any alpha) could not reach the chip. `[background-color:…]` is the
+ * same utility layer and the same specificity as the class it replaces, so nothing about the
+ * cascade moves; it just reads `--surface-<role>` first and falls back to the wash Tailwind itself emits,
+ * `color-mix(in oklab, … 10%, transparent)` — the verbose spelling is deliberate, because
+ * `hsl(var(--success) / 0.1)` rasterises one 8-bit step off it on `warning` (252,245,225 vs
+ * 252,246,225 over the page ground) and "near enough" is not a default this repo ships.
+ * Written at the CALL SITE rather than bound at `:root`, per docs/TOKENS.md · "Role-mirror knobs
+ * MUST be `initial`", so a scoped `[data-tenant]` reaches it instead of freezing on `<html>`. */
+export const toneSuccessClass =
+  "border-success/30 [background-color:var(--surface-success,color-mix(in_oklab,hsl(var(--success))_10%,transparent))] text-success-strong";
 
-export const toneWarningClass = "border-warning/30 bg-warning/10 text-warning-strong";
+export const toneWarningClass =
+  "border-warning/30 [background-color:var(--surface-warning,color-mix(in_oklab,hsl(var(--warning))_10%,transparent))] text-warning-strong";
 
-export const toneInfoClass = "border-info/30 bg-info/10 text-info-strong";
+export const toneInfoClass =
+  "border-info/30 [background-color:var(--surface-info,color-mix(in_oklab,hsl(var(--info))_10%,transparent))] text-info-strong";
 
 /** Soft BRAND pill — a tinted primary tone (border/fill keep the brand role; the TEXT uses the
  * AA-strong brand colour `text-primary-strong`, darker than the fill, so a small brand label clears
@@ -89,7 +104,8 @@ export const toneInfoClass = "border-info/30 bg-info/10 text-info-strong";
  * use the Badge `default` variant instead. */
 export const tonePrimaryClass = "border-primary/30 bg-primary/10 text-primary-strong";
 
-export const toneDestructiveClass = "border-destructive/30 bg-destructive/10 text-error-strong";
+export const toneDestructiveClass =
+  "border-destructive/30 [background-color:var(--surface-destructive,color-mix(in_oklab,hsl(var(--destructive))_10%,transparent))] text-error-strong";
 
 export const toneMutedClass = "border-border bg-muted text-muted-foreground";
 
