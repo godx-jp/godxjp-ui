@@ -1,8 +1,8 @@
 /* Chart component tokens — the dependency-free `CompactBarTrend` primitive
  * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a
  * service theme can match its own design grid WITHOUT page-local CSS or inline heights
- * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the
- * foundation `--chart-1..6` palette. */
+ * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation
+ * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file. */
 
 :root {
   /* ── Plot height tiers (size = xs|sm|md|lg) ───────────────────────────────────────────
@@ -65,4 +65,27 @@
    * is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule,
    * while a pathological label still cannot squeeze the bars out of their own chart. */
   --chart-category-axis-max-fraction: 0.4;
+}
+
+/* ── Cartesian series marks (LineChart / AreaChart / BarChart) ──────────────────────────
+ * gh#865: the line weight, the area's fill density and the grid's dash were written as recharts
+ * PRESENTATION ATTRIBUTES inside chart-cartesian.tsx — constants a service theme could not reach
+ * without page-local CSS or raw recharts, which is exactly what cardinal rules #44/#45 forbid.
+ * They are now read from here at the call sites in `src/styles/chart-layout.css`; CSS beats a
+ * presentation attribute, so a theme retunes the marks with no re-render.
+ *
+ * These are NOT role-mirror knobs — each default is a literal constant, not a `var(--role)` — so
+ * docs/TOKENS.md · "Role-mirror knobs MUST be `initial`" does not apply and there is nothing to
+ * freeze at `:root`. What DOES follow a scope is the series COLOUR, and it always did: the palette
+ * arrives as `fill="var(--chart-1)"` on the mark itself, which substitutes at that element.
+ * The per-instance half of the pair is the `series[].color` / `series[].fillColor` props — a fill
+ * that carries MEANING belongs to the screen, not to the theme. */
+:root {
+  /* Stroke weight of the line, and of an area's top edge. */
+  --chart-series-stroke-width: 2;
+  /* Opacity of an area's filled band. Low by design: an area overlaps its neighbours, and the
+   * line above it is what carries the value. */
+  --chart-area-fill-alpha: 0.2;
+  /* Dash pattern of the cartesian background grid (any `stroke-dasharray` value; `none` = solid). */
+  --chart-grid-line-dash: 3 3;
 }

@@ -5216,7 +5216,7 @@ import { Flex } from "@godxjp/ui/layout";
         name: "acknowledgeLabel",
         type: "React.ReactNode",
         description:
-          "Copy on the button `onAcknowledge` creates. Defaults to a localized \"I've saved it\" — override it when the confirmation claims something more specific than having read the secret (\"保管しました\", \"Stored in 1Password\"). Consumer-owned wording: route it through t().",
+          'Copy on the button `onAcknowledge` creates. Defaults to a localized "I\'ve saved it" — override it when the confirmation claims something more specific than having read the secret ("保管しました", "Stored in 1Password"). Consumer-owned wording: route it through t().',
       },
       {
         name: "downloadable",
@@ -7408,7 +7408,7 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "boolean",
         defaultValue: "false",
         description:
-          "ANNOUNCES the requirement; it does not enforce it. react-aria's Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required=\"true\"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.",
+          'ANNOUNCES the requirement; it does not enforce it. react-aria\'s Switch omits `isRequired`, and a switch is never the target of native constraint validation in this library, so this writes `aria-required="true"` onto the real input and stops there. The form layer (FormField / your schema) still owns whether an unflipped switch blocks submit — pairing this with nothing that validates is how a screen reader ends up promising a check the form never makes.',
       },
       {
         name: "disabled",
@@ -14176,7 +14176,7 @@ export default function PasswordBlock() {
         name: "pasteTransformer",
         type: "(pasted: string) => string",
         description:
-          "Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `\"123 456\"`, `\"code: 123456\"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.",
+          'Rewrites CLIPBOARD text before it reaches the field. Distinct from `formatter`, which normalises every value: this one only sees a paste, which is where the junk arrives — `"123 456"`, `"code: 123456"`, a copied SMS line. Note the order the field applies them: `pattern` is matched against the RAW keystroke first, so a pattern must accept what a user actually types, not only what these two produce.',
       },
       {
         name: "containerClassName",
@@ -14924,7 +14924,7 @@ export function NotifyRow() {
         type: "ChartSeriesProp[]",
         required: true,
         description:
-          "Plotted series: { dataKey, label?, color? }. Colour defaults to the --chart-1..6 palette.",
+          "Plotted series: { dataKey, label?, color?, fillColor? }. Colour defaults to the --chart-1..6 palette; fillColor is the AreaChart band only.",
       },
       {
         name: "categoryKey",
@@ -14979,11 +14979,31 @@ export function NotifyRow() {
         description: "Locale-aware formatting for axis ticks + tooltip values.",
       },
       {
+        name: "valueDomain",
+        type: "[number, number]",
+        description:
+          "Explicit [min, max] for the VALUE axis (y vertical, x on a horizontal bar). Omit to let the data set it. A non-zero baseline is a charting-ETHICS call: legitimate where the SHAPE is the message and zero is not a reference (price, temperature, an index, a latency percentile), misleading wherever the reader compares magnitudes — which is every bar chart.",
+      },
+      {
+        name: "valueTicks",
+        type: "number[]",
+        description:
+          "Explicit tick positions on the value axis, in data units. Values outside valueDomain are not drawn.",
+      },
+      {
         name: "curved",
         type: "boolean",
         defaultValue: "false",
         description: "Render smooth (monotone) lines instead of straight segments.",
       },
+      {
+        name: "showDots",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw a marker at every data point. Off by default — markers crowd a dense series.",
+      },
+
       {
         name: "emptyMessage",
         type: "string",
@@ -14997,6 +15017,8 @@ export function NotifyRow() {
       "DO pass an i18n'd `label` — it is both the visible caption and the accessible name; the component also emits a screen-reader list of the plotted values (WCAG 1.1.1).",
       "DO pre-translate each series' `label`; pass `numberFormat` (e.g. { style: 'currency', currency: 'JPY' }) and the axis/tooltip numbers localize automatically via Intl.",
       "DON'T hand-roll an SVG/canvas chart or drop raw recharts into a page — LineChart owns the colour tokens, locale formatting, empty state, and accessibility wiring.",
+      "DO retune the line weight and the grid dash with the `--chart-series-stroke-width` / `--chart-grid-line-dash` theme tokens, globally or on a scoped [data-tenant] region. They are house style; there is no prop for them.",
+      "DON'T reach for `valueDomain` to make a flat trend look dramatic — cropping the axis magnifies every wobble and the reader cannot tell a 2% drift from a collapse. Crop only where zero is not a meaningful reference, and say the range.",
     ],
     useCases: [
       "Revenue / KPI trend over months in a dashboard.",
@@ -15040,7 +15062,8 @@ export function NotifyRow() {
         name: "series",
         type: "ChartSeriesProp[]",
         required: true,
-        description: "Plotted series: { dataKey, label?, color? }.",
+        description:
+          "Plotted series: { dataKey, label?, color?, fillColor? }. `fillColor` paints the filled band independently of the line's `color`; it defaults to `color`.",
       },
       {
         name: "categoryKey",
@@ -15093,6 +15116,18 @@ export function NotifyRow() {
         name: "numberFormat",
         type: "Intl.NumberFormatOptions",
         description: "Locale-aware formatting for ticks + tooltip values.",
+      },
+      {
+        name: "valueDomain",
+        type: "[number, number]",
+        description:
+          "Explicit [min, max] for the VALUE axis (y vertical, x on a horizontal bar). Omit to let the data set it. A non-zero baseline is a charting-ETHICS call: legitimate where the SHAPE is the message and zero is not a reference (price, temperature, an index, a latency percentile), misleading wherever the reader compares magnitudes — which is every bar chart.",
+      },
+      {
+        name: "valueTicks",
+        type: "number[]",
+        description:
+          "Explicit tick positions on the value axis, in data units. Values outside valueDomain are not drawn.",
       },
       {
         name: "stacked",
@@ -15328,11 +15363,31 @@ export function NotifyRow() {
         description: "Stack series areas instead of overlaying them.",
       },
       {
+        name: "valueDomain",
+        type: "[number, number]",
+        description:
+          "Explicit [min, max] for the VALUE axis (y vertical, x on a horizontal bar). Omit to let the data set it. A non-zero baseline is a charting-ETHICS call: legitimate where the SHAPE is the message and zero is not a reference (price, temperature, an index, a latency percentile), misleading wherever the reader compares magnitudes — which is every bar chart.",
+      },
+      {
+        name: "valueTicks",
+        type: "number[]",
+        description:
+          "Explicit tick positions on the value axis, in data units. Values outside valueDomain are not drawn.",
+      },
+      {
         name: "curved",
         type: "boolean",
         defaultValue: "false",
         description: "Render smooth (monotone) areas instead of straight segments.",
       },
+      {
+        name: "showDots",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Draw a marker at every data point. Off by default — markers crowd a dense series.",
+      },
+
       { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
     ],
     usage: [
@@ -15340,6 +15395,8 @@ export function NotifyRow() {
       'DO import only the chart a screen uses — `import { AreaChart } from "@godxjp/ui/charts/area-chart";` — when the `./charts` barrel should not link the whole chart family. Without the `recharts` peer the build then fails ONCE, naming the package and the fix.',
       "DO use `stacked` to show how parts accumulate into a total over time.",
       "DON'T overlay more than 2-3 unstacked areas — fill opacity makes dense overlays unreadable; switch to LineChart.",
+      "DO split the band's hue from the line's with `series[].fillColor` when a brand specifies both (a dark line over a lighter wash). The band's DENSITY is the `--chart-area-fill-alpha` theme token, not a prop.",
+      "DON'T tune the band by dropping a page-local CSS rule on `.recharts-area-area` — `--chart-area-fill-alpha` is the supported knob and it follows a scoped [data-tenant] region.",
     ],
     useCases: [
       "Cumulative volume over time (e.g. total transactions per day).",

@@ -1872,6 +1872,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "showDots",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "showGrid",
           "origin": "owned",
           "required": false,
@@ -1901,6 +1909,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueDomain",
+          "origin": "owned",
+          "required": false,
+          "type": "[number, number] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueTicks",
+          "origin": "owned",
+          "required": false,
+          "type": "number[] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         }
       ]
@@ -2904,6 +2928,22 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueDomain",
+          "origin": "owned",
+          "required": false,
+          "type": "[number, number] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueTicks",
+          "origin": "owned",
+          "required": false,
+          "type": "number[] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         }
       ]
@@ -9537,6 +9577,14 @@
           "declaredIn": ["src/props/components/charts.prop.ts"]
         },
         {
+          "name": "showDots",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
           "name": "showGrid",
           "origin": "owned",
           "required": false,
@@ -9558,6 +9606,22 @@
           "required": false,
           "type": "SizeProp | undefined",
           "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueDomain",
+          "origin": "owned",
+          "required": false,
+          "type": "[number, number] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/charts.prop.ts"]
+        },
+        {
+          "name": "valueTicks",
+          "origin": "owned",
+          "required": false,
+          "type": "number[] | undefined",
+          "values": [],
           "declaredIn": ["src/props/components/charts.prop.ts"]
         }
       ]

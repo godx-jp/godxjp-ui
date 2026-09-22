@@ -1,6 +1,6 @@
 # @godxjp/ui
 
-> A Japanese-enterprise React design system: 170 components, 1685 design tokens,
+> A Japanese-enterprise React design system: 170 components, 1688 design tokens,
 > 47 cardinal rules. This file is the entry point for AI agents. Catalog version 28.13.0.
 
 If your client can run a process, do not read these files — run the MCP server instead
@@ -17,7 +17,7 @@ that can only fetch URLs.
 - [patterns-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/patterns-index.json): 19 whole-task patterns (name, tagline, tags). Start here when the task is a TASK — "build a settings page" — then fetch `patterns/<name>.json` for complete code.
 - [components-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json): 45 KB — all 170 components as name, group, tagline, plus `absorbed`: the names that do NOT exist and map to it (`Combobox` → `Select`).
 - [components/&lt;Name&gt;.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json): one file per component (1 KB–33 KB, median 6 KB). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
-- [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.1 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
+- [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.2 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
 - [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value and the reason it exists.
 - [vocabulary.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
 - [rules.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json): 47 cardinal rules.

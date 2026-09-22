@@ -651,17 +651,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-plot-height-sm",
     "value": "5rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-plot-height-md",
     "value": "7.5rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-plot-height-lg",
     "value": "10rem",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-plot-height",
@@ -676,7 +676,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-bar-radius",
     "value": "var(--radius-sm)",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-bar-max-width",
@@ -711,12 +711,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-tick-gap",
     "value": "var(--space-1)",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-tick-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the * foundation `--chart-1..6` palette."
+    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a * service theme can match its own design grid WITHOUT page-local CSS or inline heights * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation * `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
   },
   {
     "name": "--chart-trend-footer-gap",
@@ -732,6 +732,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--chart-category-axis-max-fraction",
     "value": "0.4",
     "description": "Share of the canvas the category axis may occupy, 0..1. At the 1102px dashboard column this * is ~440px — four times a 10-glyph 全角 name — so truncation is the exception, not the rule, * while a pathological label still cannot squeeze the bars out of their own chart."
+  },
+  {
+    "name": "--chart-series-stroke-width",
+    "value": "2",
+    "description": "Stroke weight of the line, and of an area's top edge."
+  },
+  {
+    "name": "--chart-area-fill-alpha",
+    "value": "0.2",
+    "description": "Opacity of an area's filled band. Low by design: an area overlaps its neighbours, and the * line above it is what carries the value."
+  },
+  {
+    "name": "--chart-grid-line-dash",
+    "value": "3 3",
+    "description": "Dash pattern of the cartesian background grid (any `stroke-dasharray` value; `none` = solid)."
   },
   {
     "name": "--chat-bubble-background",

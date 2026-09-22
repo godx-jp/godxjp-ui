@@ -11,7 +11,7 @@
       "type": "ChartDatum[]"
     },
     {
-      "description": "Plotted series: { dataKey, label?, color? }.",
+      "description": "Plotted series: { dataKey, label?, color?, fillColor? }. `fillColor` paints the filled band independently of the line's `color`; it defaults to `color`.",
       "name": "series",
       "required": true,
       "type": "ChartSeriesProp[]"
@@ -66,6 +66,16 @@
       "description": "Locale-aware formatting for ticks + tooltip values.",
       "name": "numberFormat",
       "type": "Intl.NumberFormatOptions"
+    },
+    {
+      "description": "Explicit [min, max] for the VALUE axis (y vertical, x on a horizontal bar). Omit to let the data set it. A non-zero baseline is a charting-ETHICS call: legitimate where the SHAPE is the message and zero is not a reference (price, temperature, an index, a latency percentile), misleading wherever the reader compares magnitudes — which is every bar chart.",
+      "name": "valueDomain",
+      "type": "[number, number]"
+    },
+    {
+      "description": "Explicit tick positions on the value axis, in data units. Values outside valueDomain are not drawn.",
+      "name": "valueTicks",
+      "type": "number[]"
     },
     {
       "defaultValue": "false",

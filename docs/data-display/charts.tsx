@@ -1,3 +1,4 @@
+import type * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { AreaChart, BarChart, LineChart, PieChart } from "@godxjp/ui/charts";
@@ -41,6 +42,16 @@ const sparseRevenue = [
 ];
 
 const jpy = { style: "currency", currency: "JPY" } as const;
+
+/** 生鮮品の相場推移 — 値そのものではなく「形」が意味を持つ連続値 (gh#865)。 */
+const priceHistory = [
+  { week: "第1週", price: 25400 },
+  { week: "第2週", price: 26800 },
+  { week: "第3週", price: 26100 },
+  { week: "第4週", price: 28300 },
+  { week: "第5週", price: 27600 },
+  { week: "第6週", price: 29900 },
+];
 
 export default function Demo() {
   return (
@@ -189,6 +200,77 @@ export default function Demo() {
                 height={240}
                 showLegend={false}
               />
+            </CardContent>
+          </Card>
+        </ResponsiveGrid>
+
+        <ResponsiveGrid columns={2}>
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>AreaChart · 塗りと線を分ける / 値軸のクロップ</CardTitle>
+              <CardDescription>
+                series[].fillColor で帯の色を線の color と独立に指定し、valueDomain / valueTicks
+                で値軸を明示します。ゼロ基点でない軸は「形」が主題で、かつゼロが基準にならない量
+                （相場・気温・指数・レイテンシ百分位）に限って正当です。大小を比べさせる図
+                （棒グラフのすべて）では、変動を誇張する誤読を生みます。使うときは軸の範囲を明示し、
+                グリッドを残してください。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AreaChart
+                label="週次相場（24,000〜31,000円にクロップ）"
+                description="ゼロ基点ではありません。軸の範囲は 24,000〜31,000 円です。"
+                data={priceHistory}
+                categoryKey="week"
+                series={[
+                  {
+                    dataKey: "price",
+                    label: "相場",
+                    color: "var(--chart-5)",
+                    fillColor: "var(--chart-3)",
+                  },
+                ]}
+                valueDomain={[24000, 31000]}
+                valueTicks={[24000, 26000, 28000, 30000]}
+                numberFormat={jpy}
+                showLegend={false}
+                showDots
+                curved
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>テーマトークン · 領域スコープ</CardTitle>
+              <CardDescription>
+                線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。
+                下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha /
+                --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex
+                direction="col"
+                style={
+                  {
+                    "--chart-series-stroke-width": "3",
+                    "--chart-area-fill-alpha": "0.07",
+                    "--chart-grid-line-dash": "none",
+                  } as React.CSSProperties
+                }
+              >
+                <AreaChart
+                  label="週次相場（テーマ適用）"
+                  data={priceHistory}
+                  categoryKey="week"
+                  series={[{ dataKey: "price", label: "相場", color: "var(--chart-5)" }]}
+                  valueDomain={[24000, 31000]}
+                  numberFormat={jpy}
+                  showLegend={false}
+                  curved
+                />
+              </Flex>
             </CardContent>
           </Card>
         </ResponsiveGrid>

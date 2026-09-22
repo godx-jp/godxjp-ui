@@ -63,6 +63,28 @@
   font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
 }
 
+/* Cartesian series marks — the call sites for the `--chart-series-*` / `--chart-area-*` /
+ * `--chart-grid-*` knobs (gh#865). recharts writes `stroke-width`, `fill-opacity` and
+ * `stroke-dasharray` as presentation ATTRIBUTES, and CSS beats a presentation attribute — the same
+ * mechanism the `.recharts-text` rule above already relies on. So the theme reaches the marks
+ * without the chart re-rendering and without a screen writing CSS of its own.
+ *
+ * Reading these BARE (no `var(…, default)` fallback) is deliberate and is what
+ * `check:frame-token-scope`'s REACH stage asks for: each knob is declared at `:root` in
+ * src/tokens/components/chart.css with a real literal default, so the token is always there. */
+.ui-chart .recharts-line-curve,
+.ui-chart .recharts-area-curve {
+  stroke-width: var(--chart-series-stroke-width);
+}
+
+.ui-chart .recharts-area-area {
+  fill-opacity: var(--chart-area-fill-alpha);
+}
+
+.ui-chart .recharts-cartesian-grid line {
+  stroke-dasharray: var(--chart-grid-line-dash);
+}
+
 /* Content that sits BELOW the plot (the activity footer slot) — outside the `role="img"` canvas so
  * links/buttons in it stay reachable and announced. */
 .ui-chart-footer {
