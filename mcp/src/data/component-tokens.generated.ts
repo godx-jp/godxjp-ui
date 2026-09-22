@@ -5895,8 +5895,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-track-background",
-    "value": "var(--muted)",
-    "description": "track background — the recessed ground a control group sits in."
+    "value": "initial",
+    "description": "track background — the recessed ground a control group sits in. default = var(--muted), resolved at the call site"
   },
   {
     "name": "--segmented-track-radius",
@@ -5955,8 +5955,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-item-selected-background",
-    "value": "var(--background)",
-    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted * off the recessed track, which is the whole affordance."
+    "value": "initial",
+    "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted * off the recessed track, which is the whole affordance. default = var(--background), resolved at the call site"
   },
   {
     "name": "--segmented-item-selected-shadow",
