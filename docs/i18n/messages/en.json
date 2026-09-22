@@ -831,5 +831,19 @@
       "neko": "Neko Outlet",
       "other": "Other Model Shop"
     }
+  },
+  "dataTableDocs": {
+    "stackedRecordWide": "Record collection (wide — stays a table)",
+    "stackedRecordFolded": "Same table, same column definitions (narrow — folds into cards)"
+  },
+  "chartsDocs": {
+    "areaSplitTitle": "AreaChart · fill apart from stroke / cropped value axis",
+    "areaSplitBody": "series[].fillColor sets the band's colour independently of the line's color, and valueDomain / valueTicks state the value axis outright. A non-zero baseline is legitimate only where the SHAPE is the message and zero is not a meaningful reference — a price, a temperature, an index, a latency percentile. In any figure that asks the reader to compare magnitudes (every bar chart), it exaggerates the wobble and misleads. If you crop, say the range and keep the grid.",
+    "areaSplitLabel": "Weekly price (cropped to ¥24,000–31,000)",
+    "areaSplitDescription": "Not zero-based. The axis runs ¥24,000–31,000.",
+    "priceSeries": "Price",
+    "tokenScopeTitle": "Theme tokens · scoped to a region",
+    "tokenScopeBody": "Stroke weight, band density and grid dash are house style, so they are tokens rather than props. --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash are set on the block below and nowhere else. No page-local CSS, no raw recharts.",
+    "tokenScopeLabel": "Weekly price (themed)"
   }
 }

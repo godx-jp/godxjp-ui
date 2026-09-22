@@ -825,5 +825,19 @@
       "neko": "Neko Outlet",
       "other": "Other Model Shop"
     }
+  },
+  "dataTableDocs": {
+    "stackedRecordWide": "Bộ bản ghi (khổ rộng: vẫn là bảng)",
+    "stackedRecordFolded": "Cùng bảng, cùng định nghĩa cột (khổ hẹp: gập thành thẻ)"
+  },
+  "chartsDocs": {
+    "areaSplitTitle": "AreaChart · tách màu nền khỏi nét / cắt trục giá trị",
+    "areaSplitBody": "series[].fillColor đặt màu dải nền độc lập với color của đường, còn valueDomain / valueTicks nói rõ trục giá trị. Trục không bắt đầu từ 0 chỉ chính đáng khi HÌNH DẠNG mới là thông điệp và số 0 không phải mốc có nghĩa — giá, nhiệt độ, chỉ số, phân vị độ trễ. Ở mọi biểu đồ bắt người đọc so sánh độ lớn (mọi biểu đồ cột), nó phóng đại dao động và gây hiểu sai. Nếu cắt, hãy ghi rõ khoảng và giữ lưới.",
+    "areaSplitLabel": "Giá theo tuần (cắt còn 24.000–31.000 ¥)",
+    "areaSplitDescription": "Không lấy mốc 0. Trục chạy từ 24.000 đến 31.000 ¥.",
+    "priceSeries": "Giá",
+    "tokenScopeTitle": "Token chủ đề · phạm vi một vùng",
+    "tokenScopeBody": "Độ dày nét, độ đậm dải nền và kiểu gạch của lưới là phong cách chung nên là token chứ không phải prop. --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash chỉ đặt trên khối bên dưới. Không cần CSS riêng cho trang, không cần recharts thô.",
+    "tokenScopeLabel": "Giá theo tuần (đã áp chủ đề)"
   }
 }

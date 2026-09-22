@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { AppProvider } from "@godxjp/ui/app";
 import { Badge, Card, CardContent, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -110,6 +111,7 @@ export default function Demo() {
     direction: "desc",
   });
   const [density, setDensity] = useState<DensityProp>("comfortable");
+  const { t } = useTranslation();
 
   const rows = useMemo(() => {
     if (!sort) return invoices;
@@ -175,7 +177,7 @@ export default function Demo() {
             `<th>` uses (gh#864) — one declaration, so the card can never drift from the table it
             collapsed out of, and the value that loses its header keeps its name. */}
         <Flex direction="col" gap="sm" id="stacked-record-collection">
-          <Text weight="medium">レコードコレクション（広い幅：表のまま）</Text>
+          <Text weight="medium">{t("dataTableDocs.stackedRecordWide")}</Text>
           <DataTable
             preset="stacked-record-collection"
             collapseBelow="sm"
@@ -185,7 +187,7 @@ export default function Demo() {
           />
         </Flex>
         <Flex direction="col" gap="sm" id="stacked-record-collection-folded" className="max-w-xs">
-          <Text weight="medium">同じ表・同じ列定義（狭い幅：カードに畳む）</Text>
+          <Text weight="medium">{t("dataTableDocs.stackedRecordFolded")}</Text>
           <DataTable
             preset="stacked-record-collection"
             collapseBelow="sm"

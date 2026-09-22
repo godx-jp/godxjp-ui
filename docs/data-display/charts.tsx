@@ -2,6 +2,7 @@ import type * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { AreaChart, BarChart, LineChart, PieChart } from "@godxjp/ui/charts";
+import { useTranslation } from "@godxjp/ui/i18n";
 
 /**
  * Charts — tree-shaken `@godxjp/ui/charts` entry (needs the `recharts` optional
@@ -54,6 +55,7 @@ const priceHistory = [
 ];
 
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Charts"
@@ -207,25 +209,19 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle level={2}>AreaChart · 塗りと線を分ける / 値軸のクロップ</CardTitle>
-              <CardDescription>
-                series[].fillColor で帯の色を線の color と独立に指定し、valueDomain / valueTicks
-                で値軸を明示します。ゼロ基点でない軸は「形」が主題で、かつゼロが基準にならない量
-                （相場・気温・指数・レイテンシ百分位）に限って正当です。大小を比べさせる図
-                （棒グラフのすべて）では、変動を誇張する誤読を生みます。使うときは軸の範囲を明示し、
-                グリッドを残してください。
-              </CardDescription>
+              <CardTitle level={2}>{t("chartsDocs.areaSplitTitle")}</CardTitle>
+              <CardDescription>{t("chartsDocs.areaSplitBody")}</CardDescription>
             </CardHeader>
             <CardContent>
               <AreaChart
-                label="週次相場（24,000〜31,000円にクロップ）"
-                description="ゼロ基点ではありません。軸の範囲は 24,000〜31,000 円です。"
+                label={t("chartsDocs.areaSplitLabel")}
+                description={t("chartsDocs.areaSplitDescription")}
                 data={priceHistory}
                 categoryKey="week"
                 series={[
                   {
                     dataKey: "price",
-                    label: "相場",
+                    label: t("chartsDocs.priceSeries"),
                     color: "var(--chart-5)",
                     fillColor: "var(--chart-3)",
                   },
@@ -242,12 +238,8 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle level={2}>テーマトークン · 領域スコープ</CardTitle>
-              <CardDescription>
-                線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。
-                下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha /
-                --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。
-              </CardDescription>
+              <CardTitle level={2}>{t("chartsDocs.tokenScopeTitle")}</CardTitle>
+              <CardDescription>{t("chartsDocs.tokenScopeBody")}</CardDescription>
             </CardHeader>
             <CardContent>
               <Flex
@@ -261,10 +253,16 @@ export default function Demo() {
                 }
               >
                 <AreaChart
-                  label="週次相場（テーマ適用）"
+                  label={t("chartsDocs.tokenScopeLabel")}
                   data={priceHistory}
                   categoryKey="week"
-                  series={[{ dataKey: "price", label: "相場", color: "var(--chart-5)" }]}
+                  series={[
+                    {
+                      dataKey: "price",
+                      label: t("chartsDocs.priceSeries"),
+                      color: "var(--chart-5)",
+                    },
+                  ]}
                   valueDomain={[24000, 31000]}
                   numberFormat={jpy}
                   showLegend={false}

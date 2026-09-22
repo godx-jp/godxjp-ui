@@ -825,5 +825,19 @@
       "neko": "Neko Outlet",
       "other": "Other Model Shop"
     }
+  },
+  "dataTableDocs": {
+    "stackedRecordWide": "レコードコレクション（広い幅：表のまま）",
+    "stackedRecordFolded": "同じ表・同じ列定義（狭い幅：カードに畳む）"
+  },
+  "chartsDocs": {
+    "areaSplitTitle": "AreaChart · 塗りと線を分ける / 値軸のクロップ",
+    "areaSplitBody": "series[].fillColor で帯の色を線の color と独立に指定し、valueDomain / valueTicks で値軸を明示します。ゼロ基点でない軸は「形」が主題で、かつゼロが基準にならない量（相場・気温・指数・レイテンシ百分位）に限って正当です。大小を比べさせる図（棒グラフのすべて）では、変動を誇張する誤読を生みます。使うときは軸の範囲を明示し、グリッドを残してください。",
+    "areaSplitLabel": "週次相場（24,000〜31,000円にクロップ）",
+    "areaSplitDescription": "ゼロ基点ではありません。軸の範囲は 24,000〜31,000 円です。",
+    "priceSeries": "相場",
+    "tokenScopeTitle": "テーマトークン · 領域スコープ",
+    "tokenScopeBody": "線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。",
+    "tokenScopeLabel": "週次相場（テーマ適用）"
   }
 }
