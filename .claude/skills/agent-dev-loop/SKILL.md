@@ -281,7 +281,7 @@ A phase-2/3 failure is never waived by the batch run being optional.
 
 ---
 
-## Fourteen rules that survived being attacked
+## Fifteen rules that survived being attacked
 
 Confirmed in two unrelated repositories (a TS design system and a PHP product). These are the
 portable core; everything else is measurement.
@@ -334,34 +334,42 @@ portable core; everything else is measurement.
    mostly false positives is worse than silence: it costs everyone who reads it, and it teaches
    them to ignore the next one. **Two clean sweeps and two abandoned in one afternoon is a healthy
    ratio, not a failure.**
-5. **A gate that reads BUILT output needs the build first, and says so badly when it does not.**
+5. **`sideEffects: false` DELETES a side-effect-only import, and every check stays green.**
+   `import "./thing"` where nothing takes a binding is dropped by the bundler — that declaration is
+   a promise that dropping it is safe. Typecheck, lint and build all pass, and the module is simply
+   absent from the output. Two instances in one repo: a message catalogue that left every docs page
+   rendering raw `namespace.key.path`, caught **only by opening the pages**; and a stale-chunk
+   recovery module that had never shipped at all, where there is no symptom until a real visitor
+   hits it after a deploy. Export a function and call it. And assert the module's identifying string
+   appears in the built output, because that is the only check that would have caught either.
+6. **A gate that reads BUILT output needs the build first, and says so badly when it does not.**
    If the examples/docs program resolves the library through its build artefact, a page consuming a
    prop added in the same batch fails against yesterday's build — with a type error that reads as
    the page's fault rather than the artefact's. Any gate whose input is produced by another step
    belongs after it in your map, explicitly.
-6. **The diff is not the diff command alone** — include staged and untracked files.
-7. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
+7. **The diff is not the diff command alone** — include staged and untracked files.
+8. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
    the memory of having run it. Nothing but a person asking should start one.
-8. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
+9. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
    not anywhere in the string — a guard that blocks reading a file whose name contains the tool is
    switched off the same day. Watch the reverse failure too: narrow forms like `--changed` or
    `related <file>` carry no path, so a rule demanding a path blocks the best options and pushes
    people to the *wider* command that is not caught. And **name the escape hatch inside the block
    message**: someone blocked without a visible door goes around it, and you lose the trace.
-9. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
+10. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
    wins and the larger is dead configuration — with its justifying comment still attached, still
    read as true. Check that the numbers agree, and prefer a shape where one slow unit cannot
    consume the whole budget: a per-unit or matrix shape survives where one long job does not.
-10. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
+11. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
    box, not your job's slice, so a pool sized from it competes with every other repository on that
    pool. Speeding your own gate up by tipping someone else's over is a cost moved somewhere harder
    to diagnose. Cap parallelism when `CI` is set, and keep the fast pool for the developer machine.
-11. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
+12. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
    One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
    scope is decided after the expensive step, every skipped job pays in full.
-12. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
+13. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
-13. **A GUARD THAT READS TEXT TREATS YOUR PROSE AS INPUT.** Its own comments, its fixtures and
+14. **A GUARD THAT READS TEXT TREATS YOUR PROSE AS INPUT.** Its own comments, its fixtures and
    its own error messages are inside the corpus it scans. Four separate instances in one session
    in one repo: a pattern matched a directory name; another matched an explanatory sentence; a
    detector matched its own comment; and a fixture written as a single-line string with an escaped
@@ -375,7 +383,7 @@ portable core; everything else is measurement.
    gate's own comment — it was correctly ignored, because that gate strips comments before it
    matches. That is the property to check, not to assume.
 
-14. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+15. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
    that run, and an index that checks *wiring* cannot see it. **The fix is neither a log-scanner
    nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
    matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
