@@ -2,27 +2,13 @@ import { useEffectEvent, useLayoutEffect } from "@react-aria/utils";
 import * as React from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
+/* The probe that answers "did this URL produce a picture?" lives in `lib/` because it is no longer
+ * Avatar's alone — `ServiceLauncherCard` asks the same question of an uploaded service logo
+ * (gh#850). Shared implementation, one failure path. */
+import { useImageLoadingStatus, type ImageLoadingStatus } from "../../lib/image-loading-status";
 import { Slot } from "../../lib/slot";
 import { cn } from "../../lib/utils";
 import type { AvatarProp } from "../../props/components/data-display.prop";
-
-/**
- * Trạng thái tải của ảnh trong avatar — chia sẻ giữa `AvatarImage` và
- * `AvatarFallback` qua context, đúng như Radix làm.
- *
- * React Aria KHÔNG có avatar, nên đây là việc TỰ DỰNG. Nhưng phần cần dựng lại
- * không phải cái vỏ `<span>` — mà là logic thật mà `@radix-ui/react-avatar` cầm:
- * ảnh chỉ được vẽ khi đã tải XONG, fallback chỉ được vẽ khi ảnh CHƯA xong hoặc
- * HỎNG, và `delayMs` giữ fallback im lặng đủ lâu để mạng nhanh không kịp nháy
- * một khung initials trước khi ảnh về.
- *
- * Phép dò là một `new Image()` RỜI, không phải `onLoad`/`onError` trên chính
- * thẻ được vẽ: thẻ chỉ tồn tại khi đã `loaded`, nên handler trên nó không bao
- * giờ có cơ hội báo "đang tải" hay "hỏng". Đây cũng là lý do một `<img>` hỏng
- * không bao giờ nằm trong DOM để trình duyệt vẽ biểu tượng ảnh vỡ lên trên
- * fallback.
- */
-type ImageLoadingStatus = "idle" | "loading" | "loaded" | "error";
 
 type AvatarContextValue = {
   imageLoadingStatus: ImageLoadingStatus;
@@ -37,61 +23,6 @@ function useAvatarContext(part: string): AvatarContextValue {
     throw new Error(`\`${part}\` must be used within \`Avatar\``);
   }
   return context;
-}
-
-/** `complete` một mình không phân biệt được "xong" với "hỏng" — `naturalWidth` mới phân biệt. */
-function getImageLoadingStatus(image: HTMLImageElement): ImageLoadingStatus {
-  if (!image.complete) {
-    return "loading";
-  }
-  return image.naturalWidth > 0 ? "loaded" : "error";
-}
-
-function useImageLoadingStatus(
-  src: string | undefined,
-  {
-    loadingStatus,
-    setLoadingStatus,
-    referrerPolicy,
-    crossOrigin,
-  }: {
-    loadingStatus: ImageLoadingStatus;
-    setLoadingStatus: AvatarContextValue["setImageLoadingStatus"];
-    referrerPolicy?: React.HTMLAttributeReferrerPolicy;
-    crossOrigin?: "anonymous" | "use-credentials" | "";
-  },
-): ImageLoadingStatus {
-  useLayoutEffect(() => {
-    if (!src) {
-      setLoadingStatus("error");
-      return;
-    }
-
-    const image = new window.Image();
-    const handleLoad = (event: Event) =>
-      setLoadingStatus(getImageLoadingStatus(event.currentTarget as HTMLImageElement));
-    const handleError = () => setLoadingStatus("error");
-
-    image.addEventListener("load", handleLoad);
-    image.addEventListener("error", handleError);
-    if (referrerPolicy) {
-      image.referrerPolicy = referrerPolicy;
-    }
-    image.crossOrigin = crossOrigin ?? null;
-    image.src = src;
-    // Ảnh đã nằm trong cache của trình duyệt thì `complete` đúng NGAY đây và
-    // không sự kiện nào nữa được bắn — bỏ lượt đọc đồng bộ này là avatar đứng
-    // mãi ở fallback trên mọi lượt điều hướng thứ hai.
-    setLoadingStatus(getImageLoadingStatus(image));
-
-    return () => {
-      image.removeEventListener("load", handleLoad);
-      image.removeEventListener("error", handleError);
-      setLoadingStatus("idle");
-    };
-  }, [src, crossOrigin, referrerPolicy, setLoadingStatus]);
-
-  return loadingStatus;
 }
 
 export const Avatar = React.forwardRef<

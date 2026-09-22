@@ -3952,7 +3952,19 @@ export const COMPONENT_PROP_REGISTRY = {
   ServiceLauncherCardProp: {
     group: "data-display",
     file: "components/data-display/service-launcher-card.tsx",
-    vocabulary: ["TitleProp", "ToneProp", "IconProp", "ClassNameProp", "DisabledProp"],
+    vocabulary: [
+      "TitleProp",
+      "ToneProp",
+      "IconProp",
+      "ClassNameProp",
+      "DisabledProp",
+      {
+        field: "logo",
+        local: true,
+        reason:
+          "URL of the service's OWN uploaded mark, distinct from `icon` (the LucideIcon for its kind) and deliberately NOT folded into it: `icon` is the fallback the tile needs when the upload 404s or does not exist yet, so the two cannot be one prop. A `string` URL rather than a ReactNode because the medallion owns the box, the object-fit and the decode hint (gh#850).",
+      },
+    ],
   },
   ServiceCatalogCtaProp: {
     group: "data-display",

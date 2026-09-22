@@ -21,6 +21,17 @@ import {
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
+/* Committed SVGs, imported so the bundler rewrites each URL against PREVIEW_BASE. A docs page must
+ * never fetch a third-party image: offline it cannot render, and on CI the request never settles,
+ * `networkidle` never fires and `page.goto` times out. */
+import serviceMarkRose from "../assets/service-mark-rose.svg";
+import serviceMarkTeal from "../assets/service-mark-teal.svg";
+
+/* A URL that is GUARANTEED to fail, with no network round-trip to hang on: the bytes are not an
+ * image, so the browser's decode fails locally. That is the production case this section exists to
+ * show — `logo_path` in the database outlives the file on disk. */
+const BROKEN_LOGO_URL = "data:image/svg+xml,not-an-image";
+
 /**
  * ServiceLauncherCard — one tile for one application in an organization's launcher.
  *
@@ -296,6 +307,86 @@ export default function Demo() {
               metadata="calendar.corp.example.jp · v3.1"
               disabledReason="読み取り専用で公開されています。"
               action={<Button variant="outline">開く</Button>}
+            />
+          </ResponsiveGrid>
+        </Section>
+
+        <Section
+          title="7 · logo · アップロードされたロゴと、それがないサービス"
+          why="logo は管理者がアップロードした画像の URL で、読み込めたときだけ icon を置き換えます。icon は必須のままです — 作ったばかりのサービスにはロゴがなく、URL が 404 になったサービスにもロゴはありません。壊れた画像は DOM に入りません。画像の箱はグリフと同じ 20px（--card-service-launcher-icon-glyph-size）で、縦横比は object-fit: contain で保たれます。"
+        >
+          <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
+            {/* 1 · a real uploaded mark, square */}
+            <ServiceLauncherCard
+              icon={Clock3}
+              logo={serviceMarkTeal}
+              titleLevel={3}
+              title="勤怠管理"
+              statusLabel="利用可能"
+              statusTone="success"
+              description="ロゴをアップロード済みのサービス。メダリオンには icon ではなくロゴが出ます。"
+              metadata="attend.corp.example.jp · v4.2"
+              action={<Button>サービスを開く</Button>}
+            />
+            {/* 2 · the SAME tile with no upload yet — the fallback, side by side */}
+            <ServiceLauncherCard
+              icon={Clock3}
+              titleLevel={3}
+              title="勤怠管理（ロゴ未設定）"
+              statusLabel="利用可能"
+              statusTone="success"
+              description="同じタイルで logo を渡さない場合。icon がそのまま残り、メダリオンの大きさも変わりません。"
+              metadata="attend.corp.example.jp · v4.2"
+              action={<Button>サービスを開く</Button>}
+            />
+            {/* 3 · the URL is set but the file is gone — the state that reaches production */}
+            <ServiceLauncherCard
+              icon={Database}
+              logo={BROKEN_LOGO_URL}
+              titleLevel={3}
+              title="データ連携基盤（ロゴ 404）"
+              statusLabel="利用可能"
+              statusTone="success"
+              description="logo_url は入っているのにファイルがない状態。タイルは空にならず icon に戻ります。"
+              metadata="sync.corp.example.jp"
+              action={<Button>サービスを開く</Button>}
+            />
+            {/* 4 · a WIDE wordmark — contain letterboxes it, never crops it */}
+            <ServiceLauncherCard
+              icon={ReceiptText}
+              logo={serviceMarkRose}
+              titleLevel={3}
+              title="経費精算"
+              statusLabel="利用可能"
+              statusTone="success"
+              description="240×96 の横長ロゴ。contain なので切り抜かれず、箱の幅もグリフと同じままです。"
+              metadata="keihi.corp.example.jp · v2.8"
+              action={<Button>サービスを開く</Button>}
+            />
+            {/* 5 · logo + disabledReason — the medallion mutes, the mark stays the mark */}
+            <ServiceLauncherCard
+              icon={ShieldCheck}
+              logo={serviceMarkTeal}
+              titleLevel={3}
+              title="権限管理"
+              statusLabel="権限なし"
+              statusTone="info"
+              description="ロゴと disabledReason は直交します。状態を伝えるのは Badge と理由文であって、他社のブランド色をこちらで勝手に転ばしはしません。"
+              metadata="iam.corp.example.jp"
+              disabledReason="閲覧には管理者ロールが必要です。"
+              action={<Button disabled>サービスを開く</Button>}
+            />
+            {/* 6 · logo="" — an empty projection value is the same as no logo */}
+            <ServiceLauncherCard
+              icon={Mail}
+              logo=""
+              titleLevel={3}
+              title="社内メール"
+              statusLabel="稼働中"
+              statusTone="success"
+              description="空文字列の logo。未設定と同じ扱いで、無駄なリクエストも発行しません。"
+              metadata="mail.corp.example.jp"
+              action={<Button>サービスを開く</Button>}
             />
           </ResponsiveGrid>
         </Section>
