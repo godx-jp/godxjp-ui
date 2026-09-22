@@ -61,6 +61,7 @@ cannot find them and drags in everything else. Do not use it here. Select by pat
 | `package.json` exports, a barrel, tsup entries | + `build && check:packed-public-contract` |
 | `mcp/**` | `typecheck:mcp` · `cd mcp && vitest run` |
 | `docs/**` | `typecheck:docs` — **not `typecheck`**, which covers `src/` only — · `audit` · `check:example-imports` |
+| `docs/**` **that uses a prop/export added in the same batch** | `pnpm build` FIRST, then `typecheck:docs`. It resolves `@godxjp/ui/*` through `dist/`, so a docs page consuming a brand-new prop fails against yesterday's build with an error that looks like the page's fault, not the build's |
 | `.github/workflows/**`, `scripts/check-*.mjs` | `check:gate-coverage` · `vitest run src/test/__tests__` |
 | anything that moves layout | `check:frame-overflow --only <slug>` |
 
