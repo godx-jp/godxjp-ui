@@ -281,7 +281,7 @@ A phase-2/3 failure is never waived by the batch run being optional.
 
 ---
 
-## Thirteen rules that survived being attacked
+## Fourteen rules that survived being attacked
 
 Confirmed in two unrelated repositories (a TS design system and a PHP product). These are the
 portable core; everything else is measurement.
@@ -353,7 +353,21 @@ portable core; everything else is measurement.
    scope is decided after the expensive step, every skipped job pays in full.
 12. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
-13. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+13. **A GUARD THAT READS TEXT TREATS YOUR PROSE AS INPUT.** Its own comments, its fixtures and
+   its own error messages are inside the corpus it scans. Four separate instances in one session
+   in one repo: a pattern matched a directory name; another matched an explanatory sentence; a
+   detector matched its own comment; and a fixture written as a single-line string with an escaped
+   newline ended in a word character right before the token being anchored, which slid the match
+   and reported the fixture's own script names as non-existent commands. The first repair
+   reintroduced it, because the docblock explaining the trap **quoted** the escape sequence.
+
+   Three rules: parse the **structure** (the YAML step, the AST, the import statement) rather than
+   grepping raw text; **strip comments before matching**; and in documentation, **describe rather
+   than quote** the thing you are matching on. Verified here by planting a matching string in a
+   gate's own comment — it was correctly ignored, because that gate strips comments before it
+   matches. That is the property to check, not to assume.
+
+14. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
    that run, and an index that checks *wiring* cannot see it. **The fix is neither a log-scanner
    nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
    matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
