@@ -281,7 +281,7 @@ A phase-2/3 failure is never waived by the batch run being optional.
 
 ---
 
-## Twelve rules that survived being attacked
+## Thirteen rules that survived being attacked
 
 Confirmed in two unrelated repositories (a TS design system and a PHP product). These are the
 portable core; everything else is measurement.
@@ -304,34 +304,56 @@ portable core; everything else is measurement.
    where it becomes visible.** One measured slope: 22, 26, 23, 21, 35, >60 minutes.
 3. **Expand and TIME an alias before running it.** Never trust a name. Aggregate aliases hide
    minutes behind one word, and nobody had expanded ours for months.
-4. **A gate that reads BUILT output needs the build first, and says so badly when it does not.**
+4. **A SWEEP IS A MEASUREMENT, so validate the lens on a known-true case before believing its
+   output — and abandon it rather than publish a list you cannot trust.**
+
+   In one afternoon across three repositories, four sweeps were wrong before any code was:
+   a rate-limiter sweep found **0** (it matched a `throttle:` alias while the tool printed class
+   names), then **1** (a literal-string regex cannot see `RateLimiter::for(SomeClass::NAME, …)`),
+   then measured clean at 19/19. A token sweep reported a token unread because a formatter had
+   wrapped `var(` across a line. A padding probe reported 17/42 asymmetry by reading the first
+   child's top against **the same child's** bottom. A log was reported as unavailable for twelve
+   minutes when the tool needed one flag — without it, 99 bytes instead of 294,612.
+
+   Every one of them produced a plausible number. **The tell is not implausibility; it is that you
+   have not checked the lens against something you already know the answer to.** Point it at a case
+   you are certain of first: if it cannot find what you know is there, nothing else it says counts.
+
+   And the counterpart, from a fifth sweep the same afternoon: one lens returned **98 of 122** as
+   defects, including two the author had personally wired up thirty minutes earlier — the repo's
+   dominant shape was a positional argument (`record($user, 'passkey_added', $request)`) that no
+   column-anchored pattern can see. It was **abandoned, not published**. A finding list that is
+   mostly false positives is worse than silence: it costs everyone who reads it, and it teaches
+   them to ignore the next one. **Two clean sweeps and two abandoned in one afternoon is a healthy
+   ratio, not a failure.**
+5. **A gate that reads BUILT output needs the build first, and says so badly when it does not.**
    If the examples/docs program resolves the library through its build artefact, a page consuming a
    prop added in the same batch fails against yesterday's build — with a type error that reads as
    the page's fault rather than the artefact's. Any gate whose input is produced by another step
    belongs after it in your map, explicitly.
-5. **The diff is not the diff command alone** — include staged and untracked files.
-6. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
+6. **The diff is not the diff command alone** — include staged and untracked files.
+7. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
    the memory of having run it. Nothing but a person asking should start one.
-7. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
+8. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
    not anywhere in the string — a guard that blocks reading a file whose name contains the tool is
    switched off the same day. Watch the reverse failure too: narrow forms like `--changed` or
    `related <file>` carry no path, so a rule demanding a path blocks the best options and pushes
    people to the *wider* command that is not caught. And **name the escape hatch inside the block
    message**: someone blocked without a visible door goes around it, and you lose the trace.
-8. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
+9. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
    wins and the larger is dead configuration — with its justifying comment still attached, still
    read as true. Check that the numbers agree, and prefer a shape where one slow unit cannot
    consume the whole budget: a per-unit or matrix shape survives where one long job does not.
-9. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
+10. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
    box, not your job's slice, so a pool sized from it competes with every other repository on that
    pool. Speeding your own gate up by tipping someone else's over is a cost moved somewhere harder
    to diagnose. Cap parallelism when `CI` is set, and keep the fast pool for the developer machine.
-10. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
+11. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
    One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
    scope is decided after the expensive step, every skipped job pays in full.
-11. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
+12. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
-12. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
+13. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
    that run, and an index that checks *wiring* cannot see it. **The fix is neither a log-scanner
    nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
    matrix entry, and declared-vs-observed becomes visible with no parser and no index. A

@@ -247,3 +247,32 @@ Same shape as a generated catalogue here that claimed `Affix` did not exist, sta
 still read as true. **A justification outlives the thing it justified, and nothing announces it.**
 
 → rule 7.
+
+---
+
+## 16. Four lenses wrong before any code was, and the two that were abandoned
+
+One afternoon, three unrelated repositories, five sweeps:
+
+| sweep | first answer | second | truth |
+| --- | --- | --- | --- |
+| rate limiters used but unregistered | **0** — matched a `throttle:` alias while the tool printed class names | **1** — a literal regex cannot see `RateLimiter::for(SomeClass::NAME, …)` | 19 used, 19 registered |
+| component tokens with no reader | one reported unread | — | it was read; a formatter had wrapped `var(` across a line |
+| card footer symmetry | **17 / 42** | — | 17 / 17; the probe read the first child's top against **the same child's** bottom |
+| a failed job's CI log | "unavailable for 12 minutes" | — | available immediately; the tool needed one flag, and without it returned **99 bytes** instead of **294,612** |
+
+Every one produced a **plausible** number. That is the whole difficulty: the tell is never
+implausibility. It is that the lens had not been pointed at something whose answer was already
+known. Point it at a case you are certain of first — if it cannot find what you know is there,
+nothing else it reports counts.
+
+**And the fifth, which is the one worth copying.** A sweep for enum values a schema declares but no
+code assigns returned **98 of 122**, including two the author had wired up thirty minutes earlier.
+The repo's dominant shape was a positional argument — `record($user, 'passkey_added', $request)` —
+that no column-anchored pattern can see, and resolving it properly needs a call graph.
+
+It was **abandoned, not published**. A finding list that is mostly false positives costs everyone
+who reads it and teaches them to ignore the next one, which is a worse outcome than never having
+swept. **Two clean sweeps and two abandoned in one afternoon is a healthy ratio, not a failure.**
+
+→ rule 4.
