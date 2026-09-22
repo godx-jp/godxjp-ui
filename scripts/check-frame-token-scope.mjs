@@ -125,30 +125,73 @@ const FREEZE_ONLY = process.argv.includes("--freeze-only");
 const BASELINE = path.join(REPO_ROOT, "preview/frame-token-scope.baseline.json");
 
 /**
- * The documented re-scopable knobs — `docs/CUSTOMER-THEMING.md` level 1 ("the handful everything
- * derives from") and level 3 ("the same token under `[data-tenant]` / `.dark` / any subtree").
- * A token belongs here the moment the docs tell a consumer they may set it on a subtree.
+ * THE THEME ROLES ARE DERIVED, NOT LISTED (gh#854).
+ *
+ * This was a hand-kept array of 18 names, and it was missing 18 of the 36 roles the dark theme
+ * actually re-declares — among them `--muted-foreground`, `--secondary`, `--secondary-foreground`,
+ * `--popover-foreground` and `--warning`. Anything bound to one of those was filtered out by the
+ * tier clause below (`!COLOUR.has(seed) && componentTier.has(token)`) and never reached the
+ * baseline, so **14 real freeze instances were invisible to the gate that exists to find them** —
+ * including four in `segmented.css`, two of them beside the pair gh#848 had just fixed.
+ *
+ * The header of this file already warned about exactly this shape: a hand-kept list is how the
+ * `--font-size-*` ramp went unseen for three releases. It was the colour half's turn.
+ *
+ * So the theme half is now READ from `foundation.css`'s dark block. A role added there tomorrow
+ * seeds this gate for free and cannot be forgotten by someone who does not know it exists — the
+ * same move `scripts/regen-generated.mjs` makes for generators.
  */
-export const COLOUR_SEEDS = [
-  "--primary",
-  "--primary-foreground",
+function darkThemeRoles() {
+  const css = readFileSync(path.join(REPO_ROOT, "src/tokens/foundation.css"), "utf8");
+  const lines = css.split("\n");
+  const open = lines.findIndex((line) =>
+    /^\s*(\.dark|:root\[data-theme="dark"\])\s*,?\s*$/.test(line),
+  );
+  if (open === -1) {
+    throw new Error(
+      "check:frame-token-scope: could not find the dark theme block in foundation.css.\n" +
+        "  The seeds are derived from it, so an empty set would silently pass everything. Refusing.",
+    );
+  }
+  const roles = new Set();
+  let depth = 0;
+  let started = false;
+  for (let i = open; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (line.includes("{")) {
+      depth += 1;
+      started = true;
+    }
+    if (started && depth > 0) {
+      const match = line.match(/^\s*(--[a-z0-9-]+)\s*:/);
+      if (match) roles.add(match[1]);
+    }
+    if (line.includes("}")) {
+      depth -= 1;
+      if (started && depth <= 0) break;
+    }
+  }
+  if (roles.size === 0) {
+    throw new Error("check:frame-token-scope: the dark theme block declared no roles. Refusing.");
+  }
+  return roles;
+}
+
+/**
+ * Re-scopable but NOT by the theme — a consumer moves these under `[data-tenant]`, and the dark
+ * block has no opinion on them, so deriving alone would drop them. Kept explicit and small, with
+ * the reason, rather than folded into a list that hides which half is which.
+ */
+const TENANT_ONLY_SEEDS = [
   "--ring",
-  "--accent",
-  "--accent-foreground",
-  "--background",
-  "--foreground",
-  "--card",
-  "--popover",
-  "--muted",
-  "--border",
-  "--input",
-  "--destructive",
   "--shadow-color",
   "--focus-ring-color",
   "--text-primary",
   "--text-link",
   "--text-brand",
 ];
+
+export const COLOUR_SEEDS = [...new Set([...darkThemeRoles(), ...TENANT_ONLY_SEEDS])].sort();
 
 /**
  * The non-colour seeds. A RATIO is deliberately absent: `--font-size-ratio` and
@@ -582,6 +625,30 @@ async function main() {
     /* PRESERVE WHAT A HUMAN WROTE — `note` and `tracked` survive regeneration, so whoever fixes an
      * entry does not have to restore the issue link by hand (check:frame-token-wins, same shape). */
     const existing = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, "utf8")) : {};
+
+    /* THE BASELINE SAID "MAY ONLY SHRINK" AND NOTHING ENFORCED IT (gh#854).
+     *
+     * The note has always declared the rule; this path rewrote the file unconditionally, so
+     * `--update-baseline` would happily absorb a regression someone had just introduced. A rule
+     * stated in prose and not in code is a rule until somebody is in a hurry.
+     *
+     * Growth is legitimate in exactly one case — the GATE widened, so defects that already existed
+     * became visible. That is a different act from accepting new debt and should have to say so:
+     * `--accept-growth` with the reason going into `tracked` by hand. Anything else is refused. */
+    const priorEntries = Array.isArray(existing.entries) ? existing.entries : [];
+    const grew = flat.filter((f) => !priorEntries.includes(f));
+    if (grew.length > 0 && !process.argv.includes("--accept-growth")) {
+      console.error(
+        `✗ refusing to grow the baseline: ${priorEntries.length} → ${flat.length} ` +
+          `(+${grew.length}).\n` +
+          "  This list is DEBT and its own note says it may only SHRINK, so a bigger number is\n" +
+          "  either a regression you are about to absorb, or a gate you just widened.\n\n" +
+          grew.map((f) => `    + ${f}`).join("\n") +
+          "\n\n  If you widened the gate, re-run with --accept-growth and record WHY in `tracked`.\n" +
+          "  If you did not, these are new findings: fix them.",
+      );
+      process.exit(1);
+    }
     writeFileSync(
       BASELINE,
       JSON.stringify(
