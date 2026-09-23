@@ -290,6 +290,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     tag: "Thương mại",
     load: () => import("../../docs/showcase/caimono-price-comparison"),
   },
+  {
+    id: "glassmorphism",
+    title: "Glassmorphism — token-only reach across 19 components",
+    description:
+      "Đo xem một theme kính mờ (frosted, backdrop-blur, viền chỉ mảnh, bóng lớp) đi được tới đâu CHỈ bằng custom property trong docs/themes/glassmorphism.css — 0 dòng src/components, 0 className/style trang. Kèm bảng gap surface/blur/border/shadow cho từng component (Card, Dialog, Sheet, Popover, DropdownMenu, Select, Tooltip, Topbar, Sidebar, DataTable, Input, Button, Badge, Tabs, Alert, Toast, Avatar, Progress, Segmented) và phát hiện portal thoát scope.",
+    tag: "Theme",
+    load: () => import("../../docs/showcase/glassmorphism"),
+  },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));

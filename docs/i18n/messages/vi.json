@@ -839,5 +839,115 @@
     "tokenScopeTitle": "Token chủ đề · phạm vi một vùng",
     "tokenScopeBody": "Độ dày nét, độ đậm dải nền và kiểu gạch của lưới là phong cách chung nên là token chứ không phải prop. --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash chỉ đặt trên khối bên dưới. Không cần CSS riêng cho trang, không cần recharts thô.",
     "tokenScopeLabel": "Giá theo tuần (đã áp chủ đề)"
+  },
+  "glassShowcase": {
+    "page": {
+      "title": "Glassmorphism",
+      "subtitle": "Phạm vi token thuần túy của theme “kính mờ” trên bộ component",
+      "refresh": "Làm mới"
+    },
+    "alert": {
+      "title": "Trang này là một phép đo, không phải demo",
+      "description": "Mọi bề mặt bán trong suốt dưới đây đến từ một custom property có tài liệu trong docs/themes/glassmorphism.css — không sửa một dòng source component nào. Nơi bề mặt vẫn đục, nghĩa là không có token nào với tới đó."
+    },
+    "sidebar": {
+      "product": "Northwind",
+      "role": "Workspace vận hành",
+      "sectionLabel": "Workspace",
+      "overview": "Tổng quan",
+      "reports": "Báo cáo",
+      "settings": "Cài đặt"
+    },
+    "topbar": {
+      "brand": "Northwind",
+      "notifications": "Thông báo",
+      "notificationsTitle": "Thông báo",
+      "notificationsBody": "3 yêu cầu đang chờ bạn duyệt.",
+      "account": "Menu tài khoản",
+      "profile": "Hồ sơ",
+      "billing": "Thanh toán",
+      "logout": "Đăng xuất"
+    },
+    "overview": {
+      "title": "Tổng quan nhóm",
+      "description": "Badge, Progress và Avatar trên bề mặt Card kính mờ.",
+      "badgeActive": "Đang hoạt động",
+      "badgeInvited": "Đã mời",
+      "badgePending": "Chờ duyệt",
+      "progressLabel": "Sức chứa sprint",
+      "avatarGroupLabel": "Thành viên nhóm"
+    },
+    "controls": {
+      "title": "Điều khiển",
+      "description": "Segmented và Tabs trên cùng bề mặt.",
+      "period": {
+        "week": "Tuần",
+        "month": "Tháng",
+        "quarter": "Quý"
+      },
+      "tabs": {
+        "overview": "Tổng quan",
+        "activity": "Hoạt động",
+        "overviewBody": "Hiện không có việc gền cần xử lý.",
+        "activityBody": "Mika đã duyệt 2 yêu cầu sáng nay."
+      }
+    },
+    "form": {
+      "title": "Thành viên mới",
+      "description": "Input và Select dùng chung một cặp token control-surface.",
+      "nameLabel": "Tên",
+      "namePlaceholder": "Họ và tên",
+      "roleLabel": "Vai trò",
+      "roleViewer": "Người xem",
+      "roleEditor": "Người chỉnh sửa",
+      "roleAdmin": "Quản trị"
+    },
+    "table": {
+      "title": "Yêu cầu gần đây",
+      "description": "DataTable thừa hưởng nguyên bề mặt Card chứa nó.",
+      "columnName": "Yêu cầu",
+      "columnOwner": "Người phụ trách",
+      "columnStatus": "Trạng thái",
+      "toneSuccess": "Đã duyệt",
+      "toneWarning": "Đang xem xét",
+      "toneDestructive": "Từ chối",
+      "row1Name": "Báo cáo chi phí — tháng 5",
+      "row1Owner": "Mika Sato",
+      "row2Name": "Yêu cầu công tác — Osaka",
+      "row2Owner": "Daniel Cruz",
+      "row3Name": "Mua thiết bị",
+      "row3Owner": "Priya Nair"
+    },
+    "actions": {
+      "title": "Lớp phủ",
+      "openDialog": "Mở dialog",
+      "openSheet": "Mở sheet",
+      "showToast": "Hiện toast",
+      "tooltipTrigger": "Rê chuột để xem tooltip"
+    },
+    "dialog": {
+      "title": "Duyệt yêu cầu",
+      "description": "Bảng của dialog này không thể làm trong suốt — xem báo cáo khoảng trống.",
+      "body": "Dialog đọc thẳng --background/--border, không có token --dialog-background riêng, nên bảng này vẫn đục dù ở trong scope kính.",
+      "cancel": "Hủy",
+      "confirm": "Duyệt"
+    },
+    "sheet": {
+      "title": "Chi tiết yêu cầu",
+      "description": "Bảng của Sheet cũng là ngõ cụt đục giống Dialog.",
+      "body": "sheet.tsx nhúng thẳng utility Tailwind bg-background vào className — không có token --sheet-background nào để thay.",
+      "close": "Đóng"
+    },
+    "tooltip": {
+      "text": "Tooltip có đủ token riêng cho nền, viền và bóng — tiếp cận được hoàn toàn."
+    },
+    "toast": {
+      "message": "Đã đồng bộ 3 duyệt."
+    },
+    "popover": {
+      "title": "Thông báo",
+      "body": "Popover có cả cặp token nền VÀ viền — overlay duy nhất làm được điều này.",
+      "action": "Đánh dấu đã đọc"
+    }
   }
 }

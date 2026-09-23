@@ -845,5 +845,115 @@
     "tokenScopeTitle": "Theme tokens · scoped to a region",
     "tokenScopeBody": "Stroke weight, band density and grid dash are house style, so they are tokens rather than props. --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash are set on the block below and nowhere else. No page-local CSS, no raw recharts.",
     "tokenScopeLabel": "Weekly price (themed)"
+  },
+  "glassShowcase": {
+    "page": {
+      "title": "Glassmorphism",
+      "subtitle": "Token-only reach of a frosted theme across the component set",
+      "refresh": "Refresh"
+    },
+    "alert": {
+      "title": "This page is a measurement, not a demo",
+      "description": "Every translucent surface below comes from a documented custom property inside docs/themes/glassmorphism.css — no component source was touched. Where a surface stayed opaque, no token could reach it."
+    },
+    "sidebar": {
+      "product": "Northwind",
+      "role": "Ops workspace",
+      "sectionLabel": "Workspace",
+      "overview": "Overview",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "topbar": {
+      "brand": "Northwind",
+      "notifications": "Notifications",
+      "notificationsTitle": "Notifications",
+      "notificationsBody": "3 approvals are waiting on you.",
+      "account": "Account menu",
+      "profile": "Profile",
+      "billing": "Billing",
+      "logout": "Log out"
+    },
+    "overview": {
+      "title": "Team overview",
+      "description": "Badge, Progress and Avatar over the frosted card surface.",
+      "badgeActive": "Active",
+      "badgeInvited": "Invited",
+      "badgePending": "Pending",
+      "progressLabel": "Sprint capacity",
+      "avatarGroupLabel": "Team members"
+    },
+    "controls": {
+      "title": "Controls",
+      "description": "Segmented and Tabs panels over the same surface.",
+      "period": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "activity": "Activity",
+        "overviewBody": "Nothing needs your attention right now.",
+        "activityBody": "Mika approved 2 requests this morning."
+      }
+    },
+    "form": {
+      "title": "New member",
+      "description": "Input and Select share one control-surface token pair.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Full name",
+      "roleLabel": "Role",
+      "roleViewer": "Viewer",
+      "roleEditor": "Editor",
+      "roleAdmin": "Admin"
+    },
+    "table": {
+      "title": "Recent requests",
+      "description": "DataTable inherits the Card surface it sits in.",
+      "columnName": "Request",
+      "columnOwner": "Owner",
+      "columnStatus": "Status",
+      "toneSuccess": "Approved",
+      "toneWarning": "In review",
+      "toneDestructive": "Rejected",
+      "row1Name": "Expense report — May",
+      "row1Owner": "Mika Sato",
+      "row2Name": "Travel request — Osaka",
+      "row2Owner": "Daniel Cruz",
+      "row3Name": "Equipment purchase",
+      "row3Owner": "Priya Nair"
+    },
+    "actions": {
+      "title": "Overlays",
+      "openDialog": "Open dialog",
+      "openSheet": "Open sheet",
+      "showToast": "Show toast",
+      "tooltipTrigger": "Hover for tooltip"
+    },
+    "dialog": {
+      "title": "Approve request",
+      "description": "This dialog's panel could not be made translucent — see the gap report.",
+      "body": "Dialog reads --background/--border directly with no --dialog-background token, so this panel stays opaque even inside the glass scope.",
+      "cancel": "Cancel",
+      "confirm": "Approve"
+    },
+    "sheet": {
+      "title": "Request details",
+      "description": "Sheet's panel is the same opaque dead end as Dialog's.",
+      "body": "sheet.tsx bakes the Tailwind utility bg-background into its className — no --sheet-background token exists to redirect it.",
+      "close": "Close"
+    },
+    "tooltip": {
+      "text": "Tooltip has its own dedicated background, border and shadow tokens — fully reachable."
+    },
+    "toast": {
+      "message": "3 approvals synced."
+    },
+    "popover": {
+      "title": "Notifications",
+      "body": "Popover exposes a real background AND border token pair — the only overlay that does.",
+      "action": "Mark all read"
+    }
   }
 }

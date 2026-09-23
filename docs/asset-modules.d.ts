@@ -44,3 +44,10 @@ declare module "*.gif" {
   const src: string;
   export default src;
 }
+
+/**
+ * A docs-owned theme stylesheet, imported for its side effect (e.g. `docs/themes/*.css`) —
+ * exactly like `preview/src/*.css`. There is nothing to type; the import exists only so the
+ * bundler includes the file.
+ */
+declare module "*.css";

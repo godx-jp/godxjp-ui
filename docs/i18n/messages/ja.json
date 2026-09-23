@@ -839,5 +839,115 @@
     "tokenScopeTitle": "テーマトークン · 領域スコープ",
     "tokenScopeBody": "線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。",
     "tokenScopeLabel": "週次相場（テーマ適用）"
+  },
+  "glassShowcase": {
+    "page": {
+      "title": "グラスモーフィズム",
+      "subtitle": "フロストガラステーマがトークンだけで届く範囲",
+      "refresh": "更新"
+    },
+    "alert": {
+      "title": "このページは測定用です（デモではありません）",
+      "description": "以下の半透明な面はすべて docs/themes/glassmorphism.css 内のトークンからです。コンポーネントのソースは一切変更していません。不透明のままの面は、届くトークンが存在しないことを意味します。"
+    },
+    "sidebar": {
+      "product": "Northwind",
+      "role": "運用ワークスペース",
+      "sectionLabel": "ワークスペース",
+      "overview": "概要",
+      "reports": "レポート",
+      "settings": "設定"
+    },
+    "topbar": {
+      "brand": "Northwind",
+      "notifications": "通知",
+      "notificationsTitle": "通知",
+      "notificationsBody": "3件の承認待ちがあります。",
+      "account": "アカウントメニュー",
+      "profile": "プロフィール",
+      "billing": "請求",
+      "logout": "ログアウト"
+    },
+    "overview": {
+      "title": "チーム概要",
+      "description": "フロストガラスカード上の Badge、Progress、Avatar。",
+      "badgeActive": "稼働中",
+      "badgeInvited": "招待中",
+      "badgePending": "保留",
+      "progressLabel": "スプリント容量",
+      "avatarGroupLabel": "チームメンバー"
+    },
+    "controls": {
+      "title": "コントロール",
+      "description": "同じ面上の Segmented と Tabs パネル。",
+      "period": {
+        "week": "週",
+        "month": "月",
+        "quarter": "四半期"
+      },
+      "tabs": {
+        "overview": "概要",
+        "activity": "アクティビティ",
+        "overviewBody": "今は対応事項はありません。",
+        "activityBody": "Mika が今朝2件を承認しました。"
+      }
+    },
+    "form": {
+      "title": "新規メンバー",
+      "description": "Input と Select は同じ control-surface トークンを共有します。",
+      "nameLabel": "名前",
+      "namePlaceholder": "氏名",
+      "roleLabel": "役割",
+      "roleViewer": "閲覧者",
+      "roleEditor": "編集者",
+      "roleAdmin": "管理者"
+    },
+    "table": {
+      "title": "最近の申請",
+      "description": "DataTable は設置先の Card の面をそのまま継承します。",
+      "columnName": "申請",
+      "columnOwner": "担当",
+      "columnStatus": "状態",
+      "toneSuccess": "承認済み",
+      "toneWarning": "宩査中",
+      "toneDestructive": "却下",
+      "row1Name": "経費精算（5月）",
+      "row1Owner": "佐藤 美華",
+      "row2Name": "出張申請（大阪）",
+      "row2Owner": "Daniel Cruz",
+      "row3Name": "機器購入",
+      "row3Owner": "Priya Nair"
+    },
+    "actions": {
+      "title": "オーバーレイ",
+      "openDialog": "ダイアログを開く",
+      "openSheet": "シートを開く",
+      "showToast": "トーストを表示",
+      "tooltipTrigger": "ホバーでツールチップ"
+    },
+    "dialog": {
+      "title": "申請を承認",
+      "description": "このダイアログのパネルは半透明にできませんでした。詳細はギャップレポートを参照。",
+      "body": "Dialog は --background/--border を直接参照し、専用の --dialog-background トークンがないため、ガラススコープ内でも不透明のままです。",
+      "cancel": "キャンセル",
+      "confirm": "承認"
+    },
+    "sheet": {
+      "title": "申請詳細",
+      "description": "Sheet のパネルも Dialog と同じ不透明の行き止まりです。",
+      "body": "sheet.tsx は className に Tailwind の bg-background を埋め込んでおり、代替できる --sheet-background トークンがありません。",
+      "close": "閉じる"
+    },
+    "tooltip": {
+      "text": "Tooltip は背景・枚・影の専用トークンをすべて持ち、完全に到達可能です。"
+    },
+    "toast": {
+      "message": "3件の承認を同期しました。"
+    },
+    "popover": {
+      "title": "通知",
+      "body": "Popover は背景と枚の両方のトークンを持つ唱一のオーバーレイです。",
+      "action": "すべて既読に"
+    }
   }
 }
