@@ -35,6 +35,51 @@ function resolveTarget(target: AffixProp["target"]): HTMLElement | null {
   return node as HTMLElement;
 }
 
+/**
+ * The nearest ancestor that is a CONTAINING BLOCK for `position: fixed`, or `null` for the viewport.
+ *
+ * `position: fixed` is only fixed to the VIEWPORT while nothing above it has opted out. CSS
+ * Transforms 1 §3.2 and Filter Effects 1 §7 say a `filter`, `backdrop-filter`, `transform`,
+ * `perspective` or `will-change` naming one of them makes an element the containing block for its
+ * fixed descendants; CSS Containment adds `contain: paint | layout | strict | content`.
+ *
+ * MEASURED, and this is why the function exists (gh#897). A glass theme sets
+ * `--card-backdrop-blur-size`, so `[data-slot="card"]` computes `backdrop-filter: blur(16px)
+ * saturate(1.7)` — and an Affix inside that Card had its `inset-block-start: 385.5px` resolved from
+ * the CARD's top edge at y=1506 instead of the viewport, painting the bar at y=-157, off-screen and
+ * over unrelated content. The arithmetic was right the whole time and the reference was wrong.
+ *
+ * It is not only a themed case: this package's own `.app-main` carries `contain: paint` as the
+ * page's scroll boundary, so every Affix in page content already had a containing block. It went
+ * unnoticed because that block starts at the top of the content area and the error was one bar
+ * height.
+ *
+ * The trap is documented twice in this repo — at the app-launcher scrim in `shell-layout.css` and
+ * in this component's own docblock — which is the point: knowing about it did not stop it, because
+ * nothing MEASURED it. This does.
+ */
+function fixedContainingBlock(node: HTMLElement | null): HTMLElement | null {
+  if (typeof window === "undefined") return null;
+  for (
+    let n = node?.parentElement ?? null;
+    n && n !== document.documentElement;
+    n = n.parentElement
+  ) {
+    const cs = window.getComputedStyle(n);
+    if (
+      cs.filter !== "none" ||
+      cs.backdropFilter !== "none" ||
+      cs.transform !== "none" ||
+      cs.perspective !== "none" ||
+      /transform|filter|perspective/.test(cs.willChange) ||
+      /paint|layout|strict|content/.test(cs.contain)
+    ) {
+      return n;
+    }
+  }
+  return null;
+}
+
 type AffixStyle = React.CSSProperties & {
   "--affix-inset-block-start"?: string;
   "--affix-inset-block-end"?: string;
@@ -201,7 +246,31 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     // element, and only JavaScript can read where it currently is — antd's `getFixedTop` /
     // `getFixedBottom`, the same arithmetic, handed to CSS as a second addend.
     const rect = targetElement?.getBoundingClientRect();
-    const next = rect ? (pinToEnd ? window.innerHeight - rect.bottom : rect.top) : 0;
+    /* BOTH EDGES OF THE SUM ARE VIEWPORT-RELATIVE AND THE BOX IS NOT (gh#897). `getBoundingClientRect`
+     * is viewport-relative; `position: fixed` resolves against the nearest containing block, which a
+     * blurred, filtered, transformed or paint-contained ancestor silently becomes. Subtracting that
+     * block's own offset puts the two back in the same coordinate space. `null` is the viewport,
+     * where the offset is 0 and this is the arithmetic it always was. */
+    const blockEl = fixedContainingBlock(content);
+    const block = blockEl?.getBoundingClientRect();
+    const viewportInset = rect ? (pinToEnd ? window.innerHeight - rect.bottom : rect.top) : 0;
+    /* THE BLOCK'S ORIGIN, WHICH IS NOT ITS BOX WHEN THE BLOCK IS ALSO A SCROLLER (gh#897).
+     * A Card that merely carries a blur is not scrolled, so its origin IS its box. This package's
+     * own `.app-main` is both — `contain: paint` makes it a containing block AND it is the page's
+     * scrollport — and there a fixed descendant resolves against the CONTENT origin, which has
+     * moved up by `scrollTop`. Measured at a page scroll of 9381: box top 48, origin -9333, and
+     * a bar that should have been at 386 painted at -8947. Subtracting the box alone fixed the Card
+     * and left the scroller exactly as wrong as before. */
+    const blockOffset = block
+      ? pinToEnd
+        ? window.innerHeight -
+          (block.bottom +
+            ((blockEl?.scrollHeight ?? 0) -
+              (blockEl?.clientHeight ?? 0) -
+              (blockEl?.scrollTop ?? 0)))
+        : block.top - (blockEl?.scrollTop ?? 0)
+      : 0;
+    const next = viewportInset - blockOffset;
     setTargetInset((previous) => (previous === next ? previous : next));
   }, [pinToEnd, targetElement]);
 
