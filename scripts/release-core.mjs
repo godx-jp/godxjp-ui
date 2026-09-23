@@ -86,6 +86,32 @@ export function assertPreflightOrder(steps) {
 }
 
 const COORDINATED_MANIFESTS = new Set(["package.json", "mcp/package.json"]);
+
+/**
+ * Generated files that STAMP the version, and therefore move with the manifests.
+ *
+ * These are not manifests and they are not drift either: `apply-target-metadata` bumps
+ * `package.json`, the generators read it back, and these four come out carrying the new number.
+ * The preflight below then saw them as "drift outside manifests" and aborted — so the release
+ * tripped over its own earlier step, every time, and the only way past was to revert files the
+ * release itself had just written.
+ *
+ * Found releasing 29.0.0: the abort named all four, reverting them and re-running produced the
+ * identical abort, because the cause was never residue from a previous run.
+ *
+ * They are listed rather than pattern-matched on purpose. A rule like "any file whose only change
+ * is the version string" would quietly absorb a real edit that happened to sit on the same line,
+ * and this check exists precisely to refuse to publish a tree nobody looked at.
+ *
+ * Generators: `scripts/gen-measurement-contract.mjs`, `scripts/gen-agent-catalog.mjs`.
+ */
+const VERSION_STAMPED_ARTEFACTS = [
+  "agent/START-HERE.md",
+  "agent/index.json",
+  "agent/llms.txt",
+  "src/contracts/measurement.json",
+];
+const COORDINATED_PATHS = new Set([...COORDINATED_MANIFESTS, ...VERSION_STAMPED_ARTEFACTS]);
 const VALID_UI_BUMPS = new Set(["patch", "minor", "major", "skip"]);
 const VALID_MCP_BUMPS = new Set(["sync", "skip"]);
 const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/;
@@ -793,7 +819,7 @@ export function assertOnlyCoordinatedManifestChanges(statusOutput) {
     .filter(Boolean)
     .filter((entry) => {
       const path = entry.length >= 4 && entry[2] === " " ? entry.slice(3) : entry;
-      return !COORDINATED_MANIFESTS.has(path);
+      return !COORDINATED_PATHS.has(path);
     });
   if (unexpected.length)
     throw new Error(`Preflight drift outside manifests:\n- ${unexpected.join("\n- ")}`);
@@ -1142,7 +1168,8 @@ export function createReleaseRuntime({
       ["view", `${packageName}@${version}`, "dist.integrity", "--json", "--prefer-online"],
       true,
     );
-    const tags = npmJson(["view", packageName, "dist-tags", "--json", "--prefer-online"], true) ?? {};
+    const tags =
+      npmJson(["view", packageName, "dist-tags", "--json", "--prefer-online"], true) ?? {};
     return { exists: typeof integrity === "string", integrity, tags };
   };
 
@@ -1157,7 +1184,13 @@ export function createReleaseRuntime({
   };
 
   const commitTargetMetadata = (plan) => {
-    execute({ binary: "git", args: ["add", "package.json", "mcp/package.json"], cwd: "root" });
+    /* The version-stamped artefacts are committed WITH the manifests — they carry the number and
+     * a release that bumps one without the others leaves the tree disagreeing with itself. */
+    execute({
+      binary: "git",
+      args: ["add", "package.json", "mcp/package.json", ...VERSION_STAMPED_ARTEFACTS],
+      cwd: "root",
+    });
     const dirty = capture("git", ["diff", "--cached", "--quiet"], repositoryRoot).status !== 0;
     if (dirty) {
       execute({
