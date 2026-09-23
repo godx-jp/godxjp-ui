@@ -187,7 +187,7 @@ CarouselItem.displayName = "CarouselItem";
 export const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<"button">
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const { t } = useTranslation();
   const { canScrollPrev, scrollPrev } = useCarousel();
   return (
@@ -200,7 +200,13 @@ export const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <ChevronLeft className="ui-carousel-arrow" aria-hidden="true" />
+      {/* The glyph is REPLACEABLE and the accessible name is not. `children` swaps the mark —
+       * a different chevron set, a caret, a brand arrow — while the `sr-only` label stays, so a
+       * consumer cannot accidentally ship a button screen readers cannot name. Decorative by
+       * default: whatever is passed is wrapped `aria-hidden`, exactly as the built-in icon is. */}
+      <span className="ui-carousel-arrow" aria-hidden="true">
+        {children ?? <ChevronLeft />}
+      </span>
       <span className="sr-only">{t("dataDisplay.carousel.previous")}</span>
     </button>
   );
@@ -210,7 +216,7 @@ CarouselPrevious.displayName = "CarouselPrevious";
 export const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<"button">
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const { t } = useTranslation();
   const { canScrollNext, scrollNext } = useCarousel();
   return (
@@ -223,7 +229,13 @@ export const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <ChevronRight className="ui-carousel-arrow" aria-hidden="true" />
+      {/* The glyph is REPLACEABLE and the accessible name is not. `children` swaps the mark —
+       * a different chevron set, a caret, a brand arrow — while the `sr-only` label stays, so a
+       * consumer cannot accidentally ship a button screen readers cannot name. Decorative by
+       * default: whatever is passed is wrapped `aria-hidden`, exactly as the built-in icon is. */}
+      <span className="ui-carousel-arrow" aria-hidden="true">
+        {children ?? <ChevronRight />}
+      </span>
       <span className="sr-only">{t("dataDisplay.carousel.next")}</span>
     </button>
   );

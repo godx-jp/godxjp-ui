@@ -884,10 +884,22 @@
   padding-inline: var(--space-4);
 }
 
+/* The reserve is the dots row's own box — `padding-top` plus the 24px target each dot carries
+ * (see `.ui-carousel-dot`). Only when the dots are actually rendered: a carousel without them has
+ * nothing below the slides and its arrows belong at a plain 50%. */
+.ui-carousel:has(.ui-carousel-dots) {
+  --carousel-dots-block-size: calc(var(--space-4) + var(--touch-target-min));
+}
+
 .ui-carousel-previous,
 .ui-carousel-next {
   position: absolute;
-  top: 50%;
+  /* LOGICAL, not `top` — this file's own contract, and it is what makes the vertical-orientation
+   * rules below able to override the same property instead of fighting a physical one. */
+  inset-block-start: var(
+    --carousel-arrow-inset-block-start,
+    calc(50% - var(--carousel-dots-block-size) / 2)
+  );
   z-index: 20;
   display: grid;
   width: 2rem;
@@ -915,9 +927,19 @@
   color: hsl(var(--accent-foreground));
 }
 
+/* The arrow's BOX is the token; whatever glyph a consumer passes fills it. It used to be the icon
+ * itself, which meant the size only reached the built-in chevron — a replaced mark would have
+ * carried its own dimensions and broken the row. */
 .ui-carousel-arrow {
+  display: grid;
   width: var(--carousel-arrow-icon-size);
   height: var(--carousel-arrow-icon-size);
+  place-items: center;
+}
+
+.ui-carousel-arrow > * {
+  width: 100%;
+  height: 100%;
 }
 
 /* Dot indicators — horizontal, centered row of round dots; the active one fills + widens. */

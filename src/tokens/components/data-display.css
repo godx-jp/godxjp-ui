@@ -6,6 +6,13 @@
    * neither selector contains the word "icon". */
   --accordion-chevron-size: var(--icon-size-md);
   --carousel-arrow-icon-size: var(--icon-size-md);
+  /* WHERE THE ARROWS SIT, AND THE DEFAULT IS THE MIDDLE OF THE CONTENT — NOT OF THE COMPONENT.
+   * `.ui-carousel` is the positioning context and it is as tall as the slides PLUS the dots, so a
+   * plain `50%` centres the arrows on that sum. Measured on a 98px carousel: slides 58px (middle at
+   * -3415), dots 40px, arrows landing at -3395 — exactly half the dots row too low, which is what
+   * "tại sao lại là middle của cả khung thế" is pointing at. The reserve below subtracts it back. */
+  --carousel-arrow-inset-block-start: initial; /* default = the content's middle, at the call site */
+  --carousel-dots-block-size: 0px;
 
   /* Outline-form ring gaps — a hugging ring would touch these marks
    * (styles/focus-ring.css). */
