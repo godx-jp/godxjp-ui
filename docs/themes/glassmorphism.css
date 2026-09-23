@@ -109,9 +109,21 @@
    *    here because this page passes `title`/`subtitle`). All three take an arbitrary
    *    `linear-gradient(...)` string with NO artifact, because the call site assigns the token
    *    ONCE, unlike Card below. ──────────────────────────────────────────────────────────────── */
-  --topbar-gradient: linear-gradient(120deg, hsl(262 83% 58% / 0.35) 0%, hsl(199 89% 48% / 0.2) 100%);
-  --sidebar-gradient: linear-gradient(160deg, hsl(330 81% 60% / 0.22) 0%, hsl(262 83% 58% / 0.16) 100%);
-  --gradient-hero: linear-gradient(100deg, hsl(330 81% 60% / 0.25) 0%, hsl(262 83% 58% / 0.15) 100%);
+  --topbar-gradient: linear-gradient(
+    120deg,
+    hsl(262 83% 58% / 0.35) 0%,
+    hsl(199 89% 48% / 0.2) 100%
+  );
+  --sidebar-gradient: linear-gradient(
+    160deg,
+    hsl(330 81% 60% / 0.22) 0%,
+    hsl(262 83% 58% / 0.16) 100%
+  );
+  --gradient-hero: linear-gradient(
+    100deg,
+    hsl(330 81% 60% / 0.25) 0%,
+    hsl(262 83% 58% / 0.15) 100%
+  );
 
   /* ── Card's gradient hook is a DEAD END — measured, this is the finding, not an oversight.
    *    card-layout.css:49 paints the fill as `linear-gradient(var(--card-tint), var(--card-tint))`
@@ -260,4 +272,59 @@
    *    Both default to `initial` (off) precisely so a service opts in with these two lines. */
   --topbar-background-alpha: 55%;
   --topbar-backdrop-blur-size: var(--blur-lg);
+
+  /* ── ONE INK RAMP, MEASURED ON THE COMPOSITED GLASS (docs/GLASSMORPHISM-STANDARD.md §3)
+   *    The first pass set no text token at all, so every string kept a default tuned for an
+   *    OPAQUE white card. Sampled on the real composited pixel, the lightest glass ground on the
+   *    page is rgb(172,159,172) — and against it the stock `--muted-foreground` rgb(104,102,94)
+   *    measures 2.28:1, against a 4.5:1 floor. Five separate strings on one card failed.
+   *
+   *    THE RULE THE STANDARD STATES: on glass, "muted" cannot mean LOWER CONTRAST. It means
+   *    smaller, or lighter in weight, at the SAME ratio. So the secondary ink is not a lighter
+   *    grey here — it is the same family, and the hierarchy is carried by size and weight, which
+   *    the components already vary on their own.
+   *
+   *    Solved, not guessed: against that worst ground a neutral ink needs L ≤ 22.5% for 4.5:1 and
+   *    L ≤ 9.5% for 7:1. Body sits at 7:1 (AAA) so it keeps a margin when the backdrop shifts
+   *    under it; secondary sits at 20%, comfortably inside the AA bound with room for the
+   *    gradient to move. */
+  --foreground: 40 8% 8%;
+  --card-foreground: 40 8% 8%;
+  --popover-foreground: 40 8% 8%;
+  --muted-foreground: 40 6% 20%;
+  --text-tertiary: 40 6% 24%;
+
+  /* Status ink measured 2.37–3.05:1 over glass, all of it failing. These are the same hues at the
+   * lightness the ground demands — the meaning survives, the contrast arrives. */
+  --text-success: 152 88% 11%;
+  --text-warning: 33 100% 15%;
+  --text-info: 214 84% 20%;
+  --text-error: 0 72% 22%;
+
+  /* ── THE CARD WAS NOT CONSISTENT WITH ITS OWN CONTENTS, which is what the owner spotted by eye:
+   *    a translucent Card whose Segmented track stayed opaque `--muted` (measured
+   *    rgb(244,243,240)). This knob EXISTS and the first pass simply never set it — unlike
+   *    `--tabs-list-background` and `--tabs-trigger-active-background`, which do not exist at all
+   *    and are the library half of gh#880. So Segmented is fixed here and Tabs cannot be. */
+  --segmented-track-background: 0 0% 100% / 26%;
+  --segmented-item-selected-background: 0 0% 100% / 72%;
+  /* The ITEM ink too — an unselected item measured 2.86:1 because only the track had been
+   * retinted and the label kept its own default. Same ramp as everything else. */
+  --segmented-item-color: 40 6% 20%;
+  --segmented-item-selected-color: 40 8% 8%;
+
+  /* ── ONE INK RAMP ONLY WORKS IF EVERY GLASS SURFACE SHARES A POLARITY, and that is the part
+   *    §3 of the standard did not say. Card is LIGHT glass (white at 42–55%), so dark ink is
+   *    right there. Alert was a toned tint — `--surface-*` at 16% over the DARK page backdrop —
+   *    so the same dark ink measured 1.27:1 and 1.35:1. Not a contrast bug in the ink: a
+   *    POLARITY bug, two surfaces of opposite value asking one ramp to serve both.
+   *
+   *    Fixed by making the alert a light pane like every other surface, tinted by hue rather
+   *    than darkened by it. The status still reads — the hue is in the border and the icon —
+   *    and the ink stops fighting its own ground. gh#866 shipped these four roles an hour ago;
+   *    this is the first theme to need them. */
+  --surface-success: hsl(152 60% 97% / 0.62);
+  --surface-warning: hsl(42 80% 96% / 0.62);
+  --surface-info: hsl(214 70% 97% / 0.62);
+  --surface-destructive: hsl(0 70% 97% / 0.62);
 }
