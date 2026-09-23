@@ -278,3 +278,185 @@
     --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
   }
 }
+
+/**
+ * ── FINDING 5 · gh#896 — flat was permanently light, and the cause is the same shape as the
+ * `:root` freeze rule above but the opposite fault: not a value that never re-resolves, but a
+ * value that never gets a CHANCE to. `[data-theme-style="flat"]` is a scope BELOW `:root`
+ * (verified in Chromium: `HTML > BODY > DIV#root > DIV[data-theme-style]`), while the library's
+ * own polarity switch — `.dark, :root[data-theme="dark"]` — is declared ON the root
+ * (src/tokens/foundation.css:1024). A declaration on the element itself always wins over an
+ * inherited one regardless of specificity, so every `--background`/`--card`/`--foreground` line
+ * in the block above shadowed the ENTIRE dark branch: toggling `.dark` on `<html>` changed the
+ * ink and fills the div would have inherited, but the div never consulted them because it had its
+ * own value already. Measured before this block existed: 0/5 of the five core tokens moved.
+ *
+ * The fix mirrors the library's own selector pair exactly — `.dark [data-theme-style="flat"],
+ * [data-theme="dark"] [data-theme-style="flat"]` — so it is the SAME div, matched by TWO
+ * selectors of equal (0,2,0) specificity, each higher than the base rule's (0,1,0). Whichever one
+ * matches wins on every property it restates; every property this block does NOT restate (the
+ * 68-line radius family, the six `none` shadows) is untouched and keeps flowing from the base
+ * rule above, because cascade specificity is resolved PER PROPERTY, not per rule — a polarity
+ * switch does not need to re-declare "flat" a second time.
+ *
+ * ── WHY THE `--primary`-DERIVED BRAND INK IS NOT A SECOND FREEZE PROBLEM HERE ──────────────────
+ * `docs/themes/index.ts`'s `ThemeRow.inkSurface` and `src/app/tenant-theme.ts` walk
+ * `--text-link`/`--text-brand`/`--text-primary` to literal HSL and emit them as an INLINE style —
+ * which outranks any external stylesheet rule on the SAME element, at any specificity. `flat`'s
+ * own `inkSurface` is `null`, so that walk always targets the LIGHT default regardless of this
+ * theme's polarity. Traced rather than assumed: the inline style lands on an ANCESTOR of this
+ * div (not on it), because Finding 1b above already demonstrates the light block's own
+ * `--text-link: 220 80% 34%` beats whatever `tenantTheme()` emits for citron/coral — a fact that
+ * would be impossible if the inline style sat on this same element. So the same "declared on the
+ * element beats inherited from a scope above" rule that CAUSED gh#896 is what already NEUTRALISES
+ * the inline-style hazard for these six roles; restating them below is what closes the gap, same
+ * as it already does for light. `inkSurface` remains a `base`/`glass` concern, not a `flat` one,
+ * because flat sets these tokens directly on both polarities and never falls through to the
+ * seed-walked default.
+ *
+ * ── VALUES: SOLVED AGAINST THE WORST NEUTRAL FILL, NOT GUESSED ──────────────────────────────────
+ * Every ink token below was checked with the same sRGB relative-luminance formula
+ * `measure-glass.mjs` uses, against all five neutral fills this file declares
+ * (`--background` 9% / `--card` 13% / `--muted` 17% / `--secondary` 19% / `--accent` 22%,
+ * hue 220 throughout) — `--accent` at 22% is the brightest of the five and so the worst case for
+ * a light ink. Worst-case ratios: `--foreground` 10.58:1, `--muted-foreground` 5.21:1,
+ * `--text-tertiary` 4.62:1, `--focus-ring-color` 5.71:1, brand ink 6.56–7.50:1 — all clear the
+ * 4.5:1 text floor with margin. The two seed-tinted brand-ink lightnesses (80%/84%) were also
+ * checked against all FIVE `SEEDS` from `docs/themes/index.ts` (violet/azure/coral/citron/navy —
+ * their hue is what `hsl(from var(--primary)) h …` actually keeps): the worst combination, the
+ * violet seed against `--accent`, is 5.73:1, still clear of 4.5:1. Boundary colours
+ * (`--border` 52%, `--input` 58%, `--switch-unchecked-background` 54%) were solved the same way
+ * against the SAME worst fill for the 3:1 non-text floor — `--border` lands at 3.05:1 against
+ * `--accent`, its worst case, and every other pairing is higher.
+ *
+ * ── THE ONE PLACE THE MATRIX STAYS FLAT-CHARACTER RATHER THAN MIRRORING GLASS ───────────────────
+ * No blur, no translucency, no shadow is introduced here — every fill below is a bare `H S% L%`
+ * or `hsl(...)` triplet at full alpha, same constraint as the light block. A hover/active wash
+ * that would be a slightly DARKER neutral on the light canvas is a slightly LIGHTER one here,
+ * because that is what "the same visual weight, the opposite polarity" means; the ink family
+ * never drops below its measured ratio to represent a lower-emphasis state (docs/
+ * GLASSMORPHISM-STANDARD.md §3, restated here because it is a general rule, not a glass-only one).
+ */
+.dark [data-theme-style="flat"],
+[data-theme="dark"] [data-theme-style="flat"] {
+  /* ── Surfaces. Opaque, ink-navy, separated by a line rather than a shadow — same flat rule as
+   *    light, inverted: the card is LIGHTER than the canvas instead of matching it, and the
+   *    border has to be LIGHTER than every surface it can sit against instead of darker. ──────── */
+  --card-background: 220 16% 13%;
+  --card: 220 16% 13%;
+  --popover: 220 16% 13%;
+  --border: 220 13% 52%;
+  --input: 220 13% 58%;
+
+  /* ── Ink. Same "weight carries the hierarchy, not the ratio" rule as the light block — the
+   *    darkest surface here is `--accent` at 22%, and every ink below still clears 4.5:1 against
+   *    it (see the docblock above). ─────────────────────────────────────────────────────────── */
+  --foreground: 220 20% 94%;
+  --card-foreground: 220 20% 94%;
+  --popover-foreground: 220 20% 94%;
+  --muted-foreground: 220 14% 68%;
+  --text-tertiary: 220 12% 64%;
+
+  /* ── The page canvas and the two neutral fills — darkest of the five, so `--accent` (not
+   *    `--background`) is the ink floor's worst case. ─────────────────────────────────────────── */
+  --background: 220 20% 9%;
+  --muted: 220 14% 17%;
+  --accent: 220 14% 22%;
+  --secondary: 220 13% 19%;
+
+  /* ── The brand ink ramp. Bare triplet, read inside `hsl()` at the call site, except the five
+   *    "active"/mega-menu roles which are consumed as a COMPLETE value and so are written as
+   *    `hsl(...)` — same split the light block documents at line 180 above. */
+  --text-link: 220 80% 80%;
+  --text-brand: 220 80% 80%;
+  --text-primary: 220 80% 84%;
+  --anchor-ink-color: 220 80% 80%;
+  --auth-shell-divider-label-color: 220 14% 68%;
+  --org-switcher-meta-foreground: 220 14% 68%;
+  --separator-label-color: 220 14% 68%;
+  --sidebar-item-active-foreground: hsl(220 80% 84%);
+  --sidebar-nav-icon-active-foreground: hsl(220 80% 84%);
+  --mega-menu-trigger-current-foreground: hsl(220 80% 84%);
+  --mega-menu-trigger-open-foreground: hsl(220 80% 84%);
+  --mega-menu-link-current-foreground: hsl(220 80% 84%);
+  --timeline-grid-event-muted-color: hsl(220 14% 68%);
+
+  /* ── INTERACTION STATES. The light block's hover wash is a darker neutral because that canvas
+   *    is light; here every hover/active fill is a LIGHTER wash instead, and the ring stays a
+   *    fixed dark-ink hue rather than following the seed, same reasoning as light: a citron/navy
+   *    seed's `--ring` would be unreadable, or invisible, against this canvas. ────────────────── */
+  --focus-ring-color: 220 80% 76%;
+  --focus-outline-color: 220 80% 76%;
+  --control-outline: 220 80% 76%;
+  --focus-ring-glow-color: 220 80% 76%;
+  --topbar-item-hover-background: 220 14% 22%;
+  --topbar-item-hover-color: 220 20% 94%;
+  --segmented-item-hover-background: 220 14% 22%;
+  --segmented-item-hover-color: 220 20% 94%;
+  --segmented-item-active-background: 220 14% 26%;
+  --app-launcher-tile-hover-background: 220 14% 24%;
+  --app-launcher-tile-hover-color: 220 20% 94%;
+  --control-variant-filled-hover-background: 220 14% 22%;
+  --choice-button-selected-color: 220 20% 94%;
+  --choice-button-selected-border-color: 220 30% 55%;
+  --secondary-hover: 220 13% 23%;
+  --secondary-active: 220 13% 27%;
+
+  --region-focus-ring-color: hsl(220 80% 76%);
+  --menu-item-hover-background: hsl(220 14% 24%);
+  --menu-item-hover-foreground: hsl(220 20% 94%);
+  --table-row-hover-background: hsl(220 14% 18%);
+  --table-row-selected-background: hsl(220 16% 22%);
+  --tree-node-hover-background: hsl(220 14% 18%);
+  --tree-node-selected-background: hsl(220 16% 22%);
+  --tree-node-selected-foreground: hsl(220 20% 94%);
+  --mega-menu-trigger-hover-background: hsl(220 14% 24%);
+  --mega-menu-trigger-hover-foreground: hsl(220 20% 94%);
+  --mega-menu-link-hover-background: hsl(220 14% 24%);
+  --mega-menu-link-hover-foreground: hsl(220 20% 94%);
+  --sidebar-nav-item-hover-foreground: hsl(220 20% 94%);
+  --sidebar-nav-icon-hover-foreground: hsl(220 20% 94%);
+  --conversations-item-active-background: hsl(220 16% 22%);
+  --conversations-item-active-color: hsl(220 20% 94%);
+  --tabs-count-active-background: hsl(220 16% 26%);
+  --tabs-count-active-color: hsl(220 20% 94%);
+  --toggle-soft-hover-background: hsl(220 14% 22%);
+  --toggle-pressed-count-background: hsl(220 16% 26%);
+  --toggle-pressed-count-color: hsl(220 20% 94%);
+  --toggle-pressed-border-color: hsl(220 20% 55%);
+  /* Track fill is a mid-tone (54%) so it reads as a distinct surface at 3:1+ against every
+   * neutral below it; the label riding on top needs to be dark, not light, to hold 4.5:1 against
+   * that same mid-tone — the one ink role in this block that goes DARK rather than light. */
+  --switch-unchecked-background: hsl(220 14% 54%);
+  --switch-content-unchecked-foreground: hsl(220 16% 10%);
+  --text-action-color: hsl(220 20% 90%);
+  --text-action-color-hover: hsl(220 20% 97%);
+
+  --app-shell-main-background: hsl(220 20% 9%);
+}
+
+@supports (color: hsl(from red h s l)) {
+  .dark [data-theme-style="flat"],
+  [data-theme="dark"] [data-theme-style="flat"] {
+    --background: from hsl(var(--primary)) h 20% 9%;
+    --muted: from hsl(var(--primary)) h 14% 17%;
+    --accent: from hsl(var(--primary)) h 14% 22%;
+    --secondary: from hsl(var(--primary)) h 13% 19%;
+    --border: from hsl(var(--primary)) h 13% 52%;
+    --app-shell-main-background: hsl(from hsl(var(--primary)) h 20% 9%);
+
+    /* Same lightness in both the static block above and here — unlike the light `@supports`
+     * branch, which had to drop four points to clear citron, checking all FIVE seeds at these
+     * numbers (see the docblock above) already clears the worst one (violet, 5.73:1 on
+     * `--accent`) with margin, so no further clamp is needed. */
+    --text-link: from hsl(var(--primary)) h 80% 80%;
+    --text-brand: from hsl(var(--primary)) h 80% 80%;
+    --text-primary: from hsl(var(--primary)) h 80% 84%;
+    --anchor-ink-color: from hsl(var(--primary)) h 80% 80%;
+    --sidebar-item-active-foreground: hsl(from hsl(var(--primary)) h 80% 84%);
+    --sidebar-nav-icon-active-foreground: hsl(from hsl(var(--primary)) h 80% 84%);
+    --mega-menu-trigger-current-foreground: hsl(from hsl(var(--primary)) h 80% 84%);
+    --mega-menu-trigger-open-foreground: hsl(from hsl(var(--primary)) h 80% 84%);
+    --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 80% 84%);
+  }
+}
