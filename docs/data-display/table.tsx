@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -22,6 +23,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * for a custom one-off table. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const { t } = useTranslation();
   return (
     <PageContainer
       title="Table"
@@ -297,7 +299,7 @@ export default function Demo() {
             hand keeps working unchanged — this is an addition, not a migration. */}
         <Card>
           <CardHeader>
-            <CardTitle level={2}>入出金明細 · row tone</CardTitle>
+            <CardTitle level={2}>{t("tableDocs.title")}</CardTitle>
             <CardDescription>
               `TableRow tone` writes the same `data-tone` attribute `DataTable`&apos;s `rowTone`
               already writes for you — no more reaching for the raw attribute to discover the row
@@ -308,31 +310,31 @@ export default function Demo() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>項目</TableHead>
-                  <TableHead align="end">金額</TableHead>
-                  <TableHead>状態</TableHead>
+                  <TableHead>{t("tableDocs.item")}</TableHead>
+                  <TableHead align="end">{t("tableDocs.amount")}</TableHead>
+                  <TableHead>{t("tableDocs.status")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell>振込手数料</TableCell>
+                  <TableCell>{t("tableDocs.fee")}</TableCell>
                   <TableCell numeric>¥440</TableCell>
                   <TableCell>
-                    <Badge tone="neutral">処理済</Badge>
+                    <Badge tone="neutral">{t("tableDocs.done")}</Badge>
                   </TableCell>
                 </TableRow>
                 <TableRow tone="warning">
-                  <TableCell>支払期日超過（3日）</TableCell>
+                  <TableCell>{t("tableDocs.overdue")}</TableCell>
                   <TableCell numeric>¥128,000</TableCell>
                   <TableCell>
-                    <Badge tone="warning">要確認</Badge>
+                    <Badge tone="warning">{t("tableDocs.check")}</Badge>
                   </TableCell>
                 </TableRow>
                 <TableRow tone="destructive">
-                  <TableCell>引き落とし失敗</TableCell>
+                  <TableCell>{t("tableDocs.failed")}</TableCell>
                   <TableCell numeric>¥52,300</TableCell>
                   <TableCell>
-                    <Badge tone="destructive">失敗</Badge>
+                    <Badge tone="destructive">{t("tableDocs.failedBadge")}</Badge>
                   </TableCell>
                 </TableRow>
               </TableBody>

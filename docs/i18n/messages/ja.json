@@ -997,5 +997,17 @@
       "dialogDescription": "このパネルが不具合そのもの。開いた領域ではなくパッケージ既定で塗られている。",
       "dialogBody": "開いたボタンと中のボタンを見比べる。領域の色は運ばれていない。"
     }
+  },
+  "tableDocs": {
+    "title": "入出金明細 · row tone",
+    "item": "項目",
+    "amount": "金額",
+    "status": "状態",
+    "fee": "振込手数料",
+    "done": "処理済",
+    "overdue": "支払期日超過（3日）",
+    "check": "要確認",
+    "failed": "引き落とし失敗",
+    "failedBadge": "失敗"
   }
 }

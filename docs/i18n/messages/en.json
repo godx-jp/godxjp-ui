@@ -1003,5 +1003,17 @@
       "dialogDescription": "This panel is the defect: it is painted by the package defaults, not by the region that opened it.",
       "dialogBody": "Compare the button that opened it with the button inside it: the region's colour did not travel."
     }
+  },
+  "tableDocs": {
+    "title": "Cash movements · row tone",
+    "item": "Item",
+    "amount": "Amount",
+    "status": "Status",
+    "fee": "Transfer fee",
+    "done": "Processed",
+    "overdue": "Payment 3 days overdue",
+    "check": "Needs review",
+    "failed": "Direct debit failed",
+    "failedBadge": "Failed"
   }
 }

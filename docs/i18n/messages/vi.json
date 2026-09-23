@@ -997,5 +997,17 @@
       "dialogDescription": "Panel này chính là lỗi: nó được tô bằng mặc định của package, không phải bằng vùng đã mở nó.",
       "dialogBody": "So nút đã mở panel với nút nằm trong panel: màu của vùng đã không đi theo."
     }
+  },
+  "tableDocs": {
+    "title": "Biến động thu chi · row tone",
+    "item": "Khoản mục",
+    "amount": "Số tiền",
+    "status": "Trạng thái",
+    "fee": "Phí chuyển khoản",
+    "done": "Đã xử lý",
+    "overdue": "Quá hạn thanh toán (3 ngày)",
+    "check": "Cần kiểm tra",
+    "failed": "Ghi nợ tự động thất bại",
+    "failedBadge": "Thất bại"
   }
 }
