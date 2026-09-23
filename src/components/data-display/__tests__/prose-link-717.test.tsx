@@ -60,7 +60,12 @@ describe("the Prose link knobs (gh#717)", () => {
   });
 
   it("resolves the ink's default at the call site, so a scope re-tints it", () => {
-    expect(linkRule).toContain("color: hsl(var(--prose-link-color, var(--primary)))");
+    // gh#887 added the brand INK role between the knob and `--primary`. Both are `initial` in the
+    // package, so the un-themed default is still `--primary` resolved AT THE ANCHOR — which is what
+    // this case guards; what the role adds is a 4.5:1 floor under a `tenantTheme()` seed.
+    expect(linkRule).toContain(
+      "color: hsl(var(--prose-link-color, var(--text-link, var(--primary))))",
+    );
   });
 
   it("keeps the resting underline a knob with the same default the rule used to hard-code", () => {
@@ -77,7 +82,7 @@ describe("the Prose link knobs (gh#717)", () => {
       .map((d) => d.trim())
       .filter(Boolean);
     expect(declarations).toEqual([
-      "color: hsl(var(--prose-link-color, var(--primary)))",
+      "color: hsl(var(--prose-link-color, var(--text-link, var(--primary))))",
       "text-decoration-line: var(--prose-link-decoration-line)",
     ]);
   });

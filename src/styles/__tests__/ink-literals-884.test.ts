@@ -60,9 +60,13 @@ describe("gh#884 · .sb-logo-mark — the brand mark's initial", () => {
 describe("gh#884 · .ui-button--link — brand colour used as INK, not as a FILL", () => {
   const link = rule(controlStyles, ".ui-button--link");
 
-  it("reads --button-link-foreground with hsl(var(--primary)) as the call-site fallback", () => {
+  it("reads --button-link-foreground, then the brand INK role, then --primary", () => {
+    // gh#884 gave this ink a knob and kept `hsl(var(--primary))` as the default because moving it
+    // would have moved the shipped look. gh#887 kept that promise and still closed the hole: the
+    // role is `initial` in the package, so an unseeded page resolves through to the same
+    // `--primary`, but `tenantTheme()` emits it clamped to 4.5:1 on the surface.
     expect(link).toMatch(
-      /color:\s*var\(\s*--button-link-foreground,\s*hsl\(\s*var\(\s*--primary\)\s*\)\s*\)/,
+      /color:\s*var\(\s*--button-link-foreground,\s*hsl\(var\(--text-link,\s*var\(--primary\)\)\)\)/,
     );
   });
 
@@ -81,7 +85,10 @@ describe("gh#884 · .ui-button--link — brand colour used as INK, not as a FILL
     // could reach this ink. Measured: with the knob added and the utility still present, setting
     // `--button-link-foreground` moved the computed colour not at all. Same shape as the Sheet's
     // `bg-background` (gh#880) and the Checkbox's `data-[state=checked]:bg-primary`.
-    const button = readFileSync(resolve(process.cwd(), "src/components/general/button.tsx"), "utf8");
+    const button = readFileSync(
+      resolve(process.cwd(), "src/components/general/button.tsx"),
+      "utf8",
+    );
     const linkVariant = button.match(/^\s*link:\s*"([^"]*)"/m)?.[1] ?? "";
     expect(linkVariant).toContain("ui-button--link");
     expect(linkVariant.split(/\s+/)).not.toContain("text-primary");

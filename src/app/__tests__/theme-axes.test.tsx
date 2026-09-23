@@ -10,6 +10,7 @@ import {
   PREFERS_DARK_SCHEME_QUERY,
   resolveAppTheme,
 } from "../theme-axes";
+import { AA_NORMAL_TEXT, contrastRatio } from "../tenant-theme";
 
 /**
  * A controllable `prefers-color-scheme` — the setup file's stub is frozen at `matches: false` and
@@ -225,5 +226,74 @@ describe("temporary primary palette", () => {
     expect(root.style.cssText).toBe("");
     restore();
     expect(root.style.cssText).toBe("");
+  });
+
+  /**
+   * gh#887 — A RE-SEED MUST NOT THROW AWAY THE FLOOR IT JUST COMPUTED.
+   *
+   * The three brand INKS were reset to `initial` AFTER `...seed.vars` was spread, so the same call
+   * that walked each ink to 4.5:1 on the surface deleted the result one line later and a re-seeded
+   * tree fell back to the unclamped ramp step. The reset itself is not the bug and is still there:
+   * it guards against an ancestor theme's literal pinned to the PREVIOUS brand (gh#678, gh#664).
+   * What was wrong was the ORDER.
+   */
+  describe("the brand inks survive the stale-pin reset (gh#887)", () => {
+    // `#FFD400` is the seed the theme lab measured at 1.18-2.06:1 — the whole point of the floor.
+    const CITRON = "#FFD400";
+    // The DARKEST surface brand ink lands on in the package's light theme: `--accent` #ebe9e5.
+    const INK_SURFACE = "#ebe9e5";
+    const INKS = ["--text-link", "--text-brand", "--text-primary"] as const;
+
+    const hexOf = (triplet: string) => {
+      const [h, s, l] = triplet.split(/[\s%]+/).map(Number);
+      const a = (s / 100) * Math.min(l / 100, 1 - l / 100);
+      const channel = (n: number) => {
+        const k = (n + h / 30) % 12;
+        const v = l / 100 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+        return Math.round(255 * v)
+          .toString(16)
+          .padStart(2, "0");
+      };
+      return `#${channel(0)}${channel(8)}${channel(4)}`;
+    };
+
+    it("writes them as real triplets, not as `initial`", () => {
+      const root = document.createElement("div");
+      applyPrimaryColor(root, CITRON);
+      for (const ink of INKS) {
+        const value = root.style.getPropertyValue(ink);
+        expect(value).not.toBe("initial");
+        expect(value).toMatch(/^[\d.]+ [\d.]+% [\d.]+%$/);
+      }
+    });
+
+    it("each one clears WCAG 2.2 AA on the surface it lands on", () => {
+      const root = document.createElement("div");
+      applyPrimaryColor(root, CITRON);
+      for (const ink of INKS) {
+        const ratio = contrastRatio(hexOf(root.style.getPropertyValue(ink)), INK_SURFACE) ?? 0;
+        expect(ratio).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+      }
+      // And the seed itself does NOT — otherwise the assertion above is vacuous.
+      expect(contrastRatio(CITRON, INK_SURFACE) ?? 0).toBeLessThan(AA_NORMAL_TEXT);
+    });
+
+    it("still resets a stale pin an ancestor left behind", () => {
+      // The reason the three resets exist. An ancestor's pin must not outrank the new seed — here
+      // the seed's own literal is what defeats it, which is why the reset may sit before the spread.
+      const ancestor = document.createElement("div");
+      ancestor.style.setProperty("--text-link", "200 100% 20%");
+      const root = document.createElement("div");
+      ancestor.append(root);
+      applyPrimaryColor(root, CITRON);
+      expect(root.style.getPropertyValue("--text-link")).not.toBe("200 100% 20%");
+    });
+
+    it("restores what was there on unmount", () => {
+      const root = document.createElement("div");
+      const restore = applyPrimaryColor(root, CITRON);
+      restore();
+      for (const ink of INKS) expect(root.style.getPropertyValue(ink)).toBe("");
+    });
   });
 });

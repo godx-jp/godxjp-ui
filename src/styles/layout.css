@@ -70,7 +70,10 @@
 
   .ui-separator[data-tone="primary"] {
     --separator-rule-color: var(--separator-tone-primary-rule-color, var(--primary));
-    --separator-label-color: var(--separator-tone-primary-label-color, var(--primary));
+    --separator-label-color: var(
+      --separator-tone-primary-label-color,
+      var(--text-brand, var(--primary))
+    );
   }
 
   .ui-separator[data-tone="success"] {
@@ -2160,7 +2163,7 @@
   /* The recorded opinion is carried by `aria-pressed` first; this is its paint. Both halves are
    * required — `aria-pressed` alone is invisible, a tint alone is WCAG 1.4.1. */
   .ui-actions-feedback [data-pressed] {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   /* `fadeIn` / `fadeInLeft`. The inline offset is a LOGICAL translation, so in an RTL strip the

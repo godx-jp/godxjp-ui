@@ -104,8 +104,11 @@ describe("Avatar appearance=tinted — the capability medallion (gh#12)", () => 
     expect(tinted).toMatch(
       /--avatar-background:\s*var\(\s*--avatar-tinted-background,\s*hsl\(var\(\s*--primary\) \/ 0\.1\)\)/,
     );
+    // gh#887 put the brand INK role inside the fallback. The knob is still first and the default
+    // still resolves to `--primary` (the role is `initial` in the package), so this case's contract
+    // — consumer knob, brand default — is unchanged; only the chain to that default is longer.
     expect(tinted).toMatch(
-      /color:\s*var\(\s*--avatar-tinted-foreground,\s*hsl\(var\(\s*--primary\)\)\)/,
+      /color:\s*var\(\s*--avatar-tinted-foreground,\s*hsl\(var\(--text-brand,\s*var\(--primary\)\)\)\)/,
     );
     // Role-mirror: `initial` at :root so both defaults resolve at the call site above.
     expect(displayTokens).toMatch(/--avatar-tinted-background:\s*initial;/);

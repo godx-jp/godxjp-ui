@@ -138,7 +138,7 @@
   [data-slot="text"][data-tone="primary"],
   [data-slot="heading"][data-tone="primary"],
   [data-slot="icon"][data-tone="primary"] {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
   /* STATUS TONES READ THE TEXT TIER, NOT THE FILL TIER.
    *
@@ -475,7 +475,7 @@
     border: 0;
     background: none;
     padding: 0;
-    color: var(--text-action-color, hsl(var(--primary)));
+    color: var(--text-action-color, hsl(var(--text-brand, var(--primary))));
     font: inherit;
     cursor: pointer;
     vertical-align: baseline;
@@ -484,11 +484,20 @@
   .ui-typography-actions > .ui-typography-action:first-child {
     margin-inline-start: 0;
   }
+  /* The hover/focus STEP reads `--text-primary` first (gh#887). The ink tier publishes no hover
+   * step of its own, and the pressed ink is the next stop down the same ramp — so a seeded page
+   * gets rest and hover as two CLAMPED inks instead of a clamped rest and a 2.06:1 hover. The
+   * fallback is the previous `--primary-hover` chain byte for byte, so the default does not move. */
   .ui-typography-action:hover,
   .ui-typography-action:focus-visible {
     color: var(
       --text-action-color-hover,
-      hsl(var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels)))
+      hsl(
+        var(
+          --text-primary,
+          var(--primary-hover, from hsl(var(--primary)) var(--primary-hover-channels))
+        )
+      )
     );
   }
   /* The confirmed copy takes the AA-safe success INK tier, not the success FILL — the same

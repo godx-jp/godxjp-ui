@@ -669,7 +669,7 @@
 
   /* ── column filter menu (antd `filters`) ──────────────────────────────── */
   .ui-data-table-filter-trigger[data-filtered] {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   /* ── antd `rowSelection.selections` — the header checkbox plus its menu ── */

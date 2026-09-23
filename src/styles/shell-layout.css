@@ -703,7 +703,7 @@
     justify-content: center;
     border-radius: var(--radius-sm);
     background: hsl(var(--accent));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-auth-requester-icon > svg {
@@ -2281,7 +2281,15 @@
    * near-white on violet — a SELECTED look, not an OPEN one, and it would fight the rail's own
    * surface. `color-mix` over `transparent` (not over `--card`) so the tint is correct on whatever
    * ground the nav is dropped on; `--primary` resolves HERE, which is what keeps a scoped
-   * `[data-tenant]` re-tint reaching it. */
+   * `[data-tenant]` re-tint reaching it.
+   *
+   * THE LABEL READS `--text-primary` FIRST (gh#887). It was `--primary-active` alone — the PRESSED
+   * FILL — and a fill role used as ink carries no floor: measured on the theme lab's `base` column
+   * this row's label was 1.25:1 at `#FFD400` and 2.18:1 at `#E2564A`, at rest and hovered.
+   * `--text-primary` is the same step of the ramp for TEXT, and `tenantTheme()` emits it as a
+   * literal walked to 4.5:1 on the surface. It is only PREFERRED, not substituted: the role is
+   * `initial` in the package, so an unseeded page falls through to the identical
+   * `--primary-active` expression and the shipped look does not move. */
   .sb-nav-item[data-active="true"] {
     background: var(
       --sidebar-item-active-background,
@@ -2293,7 +2301,12 @@
     );
     color: var(
       --sidebar-item-active-foreground,
-      hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels)))
+      hsl(
+        var(
+          --text-primary,
+          var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))
+        )
+      )
     );
     font-weight: var(--font-weight-medium);
   }
@@ -2442,7 +2455,12 @@
     background: transparent;
     color: var(
       --sidebar-item-active-foreground,
-      hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels)))
+      hsl(
+        var(
+          --text-primary,
+          var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))
+        )
+      )
     );
     font-weight: var(--font-weight-medium);
   }

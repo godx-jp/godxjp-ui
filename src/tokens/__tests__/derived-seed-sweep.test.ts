@@ -160,8 +160,10 @@ describe("the family is a knob with a live default everywhere it is read", () =>
     expect(all).toContain(
       "var(--control-outline, from hsl(var(--primary)) var(--control-outline-channels))",
     );
+    // gh#887 put the pressed INK in front of the pressed FILL here. The fill tier is still the
+    // live default behind it — which is what this case is about — so the assertion keeps naming it.
     expect(all).toContain(
-      "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from",
+      "color: var(--sidebar-item-active-foreground, hsl(var(--text-primary, var(--primary-active, from",
     );
   });
 });

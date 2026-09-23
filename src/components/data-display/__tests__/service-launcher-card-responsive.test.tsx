@@ -214,7 +214,10 @@ describe("ServiceLauncherCard overflow CSS contract (gh#219)", () => {
       "--card-service-launcher-unavailable-icon-foreground",
     ]) {
       expect(tokenCss, knob).toMatch(new RegExp(`${knob}:\\s*initial;`));
-      expect(cardCss, knob).toMatch(new RegExp(`var\\(${knob},\\s*var\\(\\s*--[a-z-]+\\)\\)`));
+      // The fallback is a ROLE resolved at the call site, not a literal. Its depth is not the
+      // contract — gh#887 put `--text-brand` between the knob and `--primary` on the available
+      // medallion — so the assertion stops at the first role rather than pinning the chain.
+      expect(cardCss, knob).toMatch(new RegExp(`var\\(${knob},\\s*var\\(\\s*--[a-z-]+[,)]`));
     }
   });
 });
