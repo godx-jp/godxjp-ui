@@ -58,7 +58,7 @@
 .ui-chart .recharts-default-tooltip {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border)) !important;
-  background: hsl(var(--popover)) !important;
+  background: hsl(var(--popover) / var(--popover-alpha, 100%)) !important;
   color: hsl(var(--popover-foreground));
   font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
 }

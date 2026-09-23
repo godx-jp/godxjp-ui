@@ -1953,7 +1953,7 @@
     );
   }
   .ui-flex[data-surface="popover"] {
-    background: var(--flex-surface-background, hsl(var(--popover)));
+    background: var(--flex-surface-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
     border: var(--stroke-hairline) solid hsl(var(--border));
     box-shadow: var(--shadow-sm);
   }

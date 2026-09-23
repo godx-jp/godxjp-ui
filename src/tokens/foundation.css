@@ -6,6 +6,30 @@
    * values and says so per line; the PRIMARY has not been SmartHR blue since v2.3. */
   --background: 60 33% 99%; /* #fdfdfb warm off-white */
   --foreground: 48 8% 13%; /* #23221e SmartHR TEXT_BLACK */
+  /* ── THE TRANSLUCENCY AXIS, SEPARATE FROM THE COLOUR AXIS (gh#901) ──────────────────────────
+   * A surface role says WHAT COLOUR; these say HOW OPAQUE. They are two different questions and
+   * conflating them is what made a translucent theme unable to have a polarity.
+   *
+   * Measured before this existed: the glass theme carried 184 declarations, and 50 of them were a
+   * role restated for no reason but to append an alpha — the card role set to a bare white at 12%.
+   * Restating the
+   * COLOUR is what shadows the library's own `.dark` block, because a declaration on the theme's
+   * scope beats an inherited value from `:root` whatever the specificity. So a theme that wanted
+   * frosted panes lost dark mode, and had to hand-author a second polarity it should never have
+   * owned. Of the 139 tokens only that theme declared, 109 are `initial` in their tier and DERIVE
+   * at the call site — they would all have followed the polarity for free if the roles had.
+   *
+   * With the alpha split out, a theme sets `--card-alpha: 12%` and never touches `--card`, so
+   * `--card` goes on flipping light/dark from the block below and every derived token follows.
+   *
+   * A ROLE MUST THEREFORE NOT CARRY ITS OWN ALPHA any more: `hsl(var(--card) / var(--card-alpha))`
+   * with a role that already carries one reads as two slashes — invalid at
+   * computed-value time, and the surface silently keeps the colour it had. That is this repo's
+   * documented number-one silent failure, and it is why the alpha has a home of its own now. */
+  --card-alpha: 100%;
+  --popover-alpha: 100%;
+  --input-alpha: 100%;
+
   --card: 60 33% 99%;
   --card-foreground: 48 8% 13%;
   --popover: 60 33% 99%;

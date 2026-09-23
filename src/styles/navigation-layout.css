@@ -964,7 +964,10 @@
     border: 1px solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). `.ui-popover-content` has had one
      * since gh#354 and this — the same kind of floating panel, portaled the same way — did not. */
-    background: var(--dropdown-content-background, hsl(var(--popover)));
+    background: var(
+      --dropdown-content-background,
+      hsl(var(--popover) / var(--popover-alpha, 100%))
+    );
     color: hsl(var(--popover-foreground));
     padding: var(--menu-content-space-inset);
     /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so no backdrop root and no containing block
@@ -1048,7 +1051,7 @@
   .ui-dropdown-menu-arrow {
     inline-size: var(--dropdown-arrow-width);
     block-size: var(--dropdown-arrow-height);
-    fill: hsl(var(--dropdown-arrow-background, var(--popover)));
+    fill: hsl(var(--dropdown-arrow-background, var(--popover)) / var(--popover-alpha, 100%));
   }
 
   /* The checkbox indicator is absolutely placed in the reserved inset column. */

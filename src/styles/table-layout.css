@@ -545,7 +545,7 @@
     .ui-data-table-surface
     tbody
     :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {
-    background-color: hsl(var(--card-background, var(--card)));
+    background-color: hsl(var(--card-background, var(--card)) / var(--card-alpha, 100%));
   }
 
   th.ui-data-table-pin-end,

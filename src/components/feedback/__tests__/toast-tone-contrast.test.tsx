@@ -102,7 +102,7 @@ function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb
   if (role) return resolve(role[1].trim(), theme, over);
 
   const mix = value.match(
-    /^color-mix\(in srgb, hsl\(var\(\s*--([\w-]+)\)\) calc\(var\(\s*--([\w-]+)\) \* 100%\), hsl\(var\(\s*--([\w-]+)\)\)\)$/,
+    /^color-mix\(in srgb, hsl\(var\(\s*--([\w-]+)\)\) calc\(var\(\s*--([\w-]+)\) \* 100%\), hsl\(var\(\s*--([\w-]+)\)(?: \/ var\(--[\w-]+, 100%\))?\)\)$/,
   );
   if (mix) {
     const tint = hslToken(theme, mix[1]);
@@ -119,6 +119,15 @@ function resolve(value: string, theme: string, over: Rgb = [255, 255, 255]): Rgb
     if (a === undefined) throw new Error(`unknown alpha token --${translucent[2]}`);
     return over.map((c, i) => c + (colour[i] - c) * a) as Rgb;
   }
+
+  /* A role read through its TRANSLUCENCY COMPANION (gh#901). `hsl(var(--popover) /
+   * var(--popover-alpha, 100%))` is the shipped shape now: the colour axis and the opacity axis
+   * are separate tokens, so a theme can make a surface translucent without restating its colour
+   * and losing polarity. The fallback in the declaration is the package default, 100%, so for the
+   * shipped values this resolves exactly as the plain form did — which is the point, and why the
+   * numbers below did not move. A theme that sets the alpha is measured by measure-glass, not here. */
+  const defaulted = value.match(/^hsl\(var\(\s*--([\w-]+)\) \/ var\(--[\w-]+, 100%\)\)$/);
+  if (defaulted) return hslToken(theme, defaulted[1]);
 
   const plain = value.match(/^hsl\(var\(\s*--([\w-]+)\)\)$/);
   if (plain) return hslToken(theme, plain[1]);

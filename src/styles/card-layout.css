@@ -59,7 +59,7 @@
         var(--card-tint),
         var(--card-tint-end, var(--card-tint))
       ),
-      hsl(var(--card-background, var(--card)));
+      hsl(var(--card-background, var(--card)) / var(--card-alpha, 100%));
     color: hsl(var(--card-foreground));
     /* GLASS, AND OFF UNLESS ASKED FOR — the shape `.ui-topbar` established in gh#831. The knob is
      * `initial`, so unset this whole declaration is invalid-at-computed-value-time and

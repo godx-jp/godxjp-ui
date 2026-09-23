@@ -154,7 +154,7 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     expect(code(controlStyles)).not.toMatch(/border-input bg-background/);
     expect(controlStyles).toMatch(/ui-control-outlined-surface/);
     expect(controlLayout).toMatch(
-      /\.ui-control-outlined-surface \{\s*border-color: var\(--control-surface-border-color, hsl\(var\(--input\)\)\);\s*background-color: var\(--control-surface-background, hsl\(var\(--background\)\)\);/,
+      /\.ui-control-outlined-surface \{\s*border-color: var\(--control-surface-border-color, hsl\(var\(--input\) \/ var\(--input-alpha, 100%\)\)\);\s*background-color: var\(--control-surface-background, hsl\(var\(--background\)\)\);/,
     );
   });
 
@@ -215,27 +215,27 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     // `src/styles/__tests__/bar-row-blur-895.test.ts`.
     expect(shellTokens).toMatch(/--app-shell-bar-backdrop-blur-size:\s*initial;/);
     expect(shellLayout).toMatch(
-      /background: var\(--app-shell-bar-background, hsl\(var\(--card\)\)\);/,
+      /background: var\(--app-shell-bar-background, hsl\(var\(--card\) \/ var\(--card-alpha, 100%\)\)\);/,
     );
     expect(shellLayout).toMatch(
       /background: var\(--app-shell-nav-rail-background, hsl\(var\(--muted\)\)\);/,
     );
     expect(tableTokens).toMatch(/--table-surface-background:\s*initial;/);
     expect(controlLayout).toMatch(
-      /background: var\(--select-content-background, hsl\(var\(--popover\)\)\);/,
+      /background: var\(--select-content-background, hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\);/,
     );
     expect(navLayout).toMatch(
-      /background: var\(--dropdown-content-background, hsl\(var\(--popover\)\)\);/,
+      /background:\s*var\(\s*--dropdown-content-background,\s*hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\s*\);/,
     );
     expect(shellLayout).toMatch(
-      /background: var\(--sidebar-surface-background, hsl\(var\(--card\)\)\);/,
+      /background: var\(--sidebar-surface-background, hsl\(var\(--card\) \/ var\(--card-alpha, 100%\)\)\);/,
     );
     // The DataTable frame painted NO fill, so its knob is read with no fallback: unset, the
     // declaration is invalid and `background-color` keeps its own initial `transparent`.
     expect(tableLayout).toMatch(/background-color: var\(--table-surface-background\);/);
     // Sonner owns the toast body, so the package's knob is threaded through its private var.
     expect(sonnerTsx).toMatch(
-      /"--normal-bg":\s*"var\(--toast-background, hsl\(var\(--popover\)\)\)"/,
+      /"--normal-bg":\s*"var\(--toast-background, hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\)"/,
     );
   });
 });

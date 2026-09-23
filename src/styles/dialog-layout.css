@@ -383,7 +383,7 @@
     padding-block: var(--tooltip-space-block);
     border-radius: var(--tooltip-radius);
     border: 1px solid var(--tooltip-border-color, hsl(var(--border)));
-    background-color: var(--tooltip-background, hsl(var(--popover)));
+    background-color: var(--tooltip-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
     color: var(--tooltip-foreground, hsl(var(--popover-foreground)));
     font-size: var(--tooltip-font-size);
     backdrop-filter: blur(var(--tooltip-backdrop-blur-size))
@@ -406,7 +406,10 @@
     padding: var(--popover-space-inset);
     border-radius: var(--popover-radius);
     border: 1px solid var(--popover-surface-border-color, hsl(var(--border)));
-    background-color: var(--popover-surface-background, hsl(var(--popover)));
+    background-color: var(
+      --popover-surface-background,
+      hsl(var(--popover) / var(--popover-alpha, 100%))
+    );
     color: var(--popover-surface-foreground, hsl(var(--popover-foreground)));
     backdrop-filter: blur(var(--popover-backdrop-blur-size))
       saturate(var(--surface-backdrop-saturate, 160%));

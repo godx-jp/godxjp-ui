@@ -228,7 +228,7 @@
     /* A knob, with the role default resolved HERE (gh#880) — the Topbar next to it has had one
      * since gh#831 and this had none, which made the always-on-screen half of the shell the half a
      * theme could not touch. */
-    background: var(--sidebar-surface-background, hsl(var(--card)));
+    background: var(--sidebar-surface-background, hsl(var(--card) / var(--card-alpha, 100%)));
     /* Opt-in brand-chrome wash — invisible by default (--sidebar-gradient: none). */
     background-image: var(--sidebar-gradient);
     /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so the shipped rail creates no backdrop
@@ -394,7 +394,7 @@
     border-bottom: 1px solid hsl(var(--border));
     /* A knob, with the role default resolved HERE — the sidebar beside it got one in gh#880 and
      * this is the row the `<Topbar>` component's own glass actually sits on. */
-    background: var(--app-shell-bar-background, hsl(var(--card)));
+    background: var(--app-shell-bar-background, hsl(var(--card) / var(--card-alpha, 100%)));
     /* Opt-in brand-chrome wash — invisible by default (--topbar-gradient: none). */
     background-image: var(--topbar-gradient);
     /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so the shipped bar creates no backdrop
@@ -897,7 +897,7 @@
     gap: var(--space-3);
     padding-inline: var(--centered-shell-bar-padding-x);
     border-bottom: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
     /* Opt-in brand-chrome wash — shares the topbar hook, invisible by default (none). */
     background-image: var(--topbar-gradient);
   }
@@ -1656,7 +1656,7 @@
   .ui-org-switcher-command .ui-command-input-wrapper {
     /* `border-bottom` is what the palette declares, so it is what has to be cleared — a shorthand
      * `border` alone would leave the bottom rule doubling the field's own edge. */
-    border: 1px solid hsl(var(--input));
+    border: 1px solid hsl(var(--input) / var(--input-alpha, 100%));
     border-radius: var(--control-radius);
     /* Inline margin is 0: `.ui-org-switcher-command` owns the column now, so the field simply
      * fills it. It used to carry the inset itself, which is how the rows and the field ended up on
@@ -2583,7 +2583,7 @@
     width: 0.5625rem;
     height: 0.5625rem;
     border-radius: var(--radius-pill);
-    border: 1.5px solid hsl(var(--card));
+    border: 1.5px solid hsl(var(--card) / var(--card-alpha, 100%));
     background: hsl(var(--success));
   }
 
@@ -3094,7 +3094,7 @@
     align-items: center;
     gap: var(--space-2);
     padding-inline: var(--space-2);
-    border: 1px solid hsl(var(--input));
+    border: 1px solid hsl(var(--input) / var(--input-alpha, 100%));
     border-radius: var(--radius);
     background: hsl(var(--background));
     color: hsl(var(--muted-foreground));
@@ -3400,7 +3400,7 @@
     gap: var(--mobile-shell-region-gap);
     padding-block-start: var(--mobile-shell-safe-inset-block-start);
     padding-inline: var(--mobile-shell-padding-inline);
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
   }
 
   .ui-mobile-shell-header {
@@ -3416,7 +3416,7 @@
     gap: var(--mobile-shell-region-gap);
     padding-inline: var(--mobile-shell-padding-inline);
     border-block-end: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
     background-image: var(--topbar-gradient);
   }
 
@@ -3463,7 +3463,7 @@
     padding-block: var(--mobile-shell-actions-padding-block);
     padding-inline: var(--mobile-shell-padding-inline);
     border-block-start: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
   }
 
   .ui-mobile-shell-tabbar {
@@ -3476,7 +3476,7 @@
     padding-block-end: var(--mobile-shell-safe-inset-block-end);
     padding-inline: var(--mobile-shell-safe-inset-inline);
     border-block-start: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
   }
 
   /* A phone tab bar tiles: equal-width targets, no seam, no page gutter. The region owns that so a

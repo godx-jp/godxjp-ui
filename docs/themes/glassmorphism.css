@@ -226,7 +226,7 @@
 
   /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
    *    src/styles/card-layout.css:44 (border), :49 (background). ────────────────────────────── */
-  --card-background: 0 0% 100% / 12%;
+  --card-alpha: 12%;
   --card-border: var(--glass-edge);
 
   /* ── Dialog — `--dialog-content-glow` is an additive box-shadow LAYER, not the panel fill: the
@@ -256,7 +256,7 @@
    *    knob is unset; it is always consumed as `hsl(var(--popover))`, so a bare triplet with an
    *    alpha reaches every one of them at once. Select's and DropdownMenu's own dedicated fills
    *    are set in the seed layer, which is what they actually render. ───────────────────────── */
-  --popover: 0 0% 100% / 22%;
+  --popover-alpha: 22%;
 
   /* ── Table — three different levers for three different lines, verified individually:
    *      · The OUTER frame (`.ui-data-table-surface`, what a reader actually sees around a plain
@@ -340,7 +340,6 @@
    *    element wearing it, and AppShell's chrome grid sits outside the one region that has one —
    *    which is also why the Topbar's Popover was the only overlay on this page that failed AA
    *    until its fill was moved to the dark end (see the seed layer). */
-  --card: 0 0% 100% / 12%;
 
   /* ── The bar — AND IT IS **ONE** SURFACE, WHICH TOOK A MEASUREMENT TO GET RIGHT (gh#895).
    *
@@ -493,7 +492,7 @@
   --accent-foreground: var(--glass-ink);
   --secondary: 230 var(--glass-secondary-sl);
   --secondary-foreground: var(--glass-ink);
-  --input: 0 0% 100% / 18%;
+  --input-alpha: 18%;
 
   /* ── THE BRAND INK RAMP — the second half of §3, and the half the first build skipped ────────
    *    `--text-link` / `--text-brand` / `--text-primary` and the per-component actives below all

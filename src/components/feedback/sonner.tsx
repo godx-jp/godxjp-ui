@@ -74,7 +74,7 @@ const toneVars = Object.fromEntries(
       // call-site fallback. Without it the toast was the fourth of eight status surfaces that
       // could only ever be a derivation of its own ink, so a brand's chosen pale ground reached
       // the Alert and not the toast that says the same sentence.
-      `var(--surface-${hue}, color-mix(in srgb, hsl(var(--${hue})) calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover))))`,
+      `var(--surface-${hue}, color-mix(in srgb, hsl(var(--${hue})) calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover) / var(--popover-alpha, 100%))))`,
     ],
     [`--${type}-border`, `hsl(var(--${hue}) / var(--alert-border-alpha))`],
     [`--${type}-text`, `hsl(var(--${ink}))`],
@@ -123,7 +123,8 @@ function Toaster({ style, richColors = true, ...props }: ToasterProps) {
           // never has to know that this one surface is painted by a vendor stylesheet. The default
           // is the same `hsl(var(--popover))` and resolves in the browser, on the toaster, under
           // whatever scope it sits in — so a themed region's toast follows the region (gh#877).
-          "--normal-bg": "var(--toast-background, hsl(var(--popover)))",
+          "--normal-bg":
+            "var(--toast-background, hsl(var(--popover) / var(--popover-alpha, 100%)))",
           "--normal-text": "hsl(var(--popover-foreground))",
           "--normal-border": "hsl(var(--border))",
           "--border-radius": "var(--radius)",

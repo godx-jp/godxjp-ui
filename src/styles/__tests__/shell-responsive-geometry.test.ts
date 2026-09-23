@@ -816,7 +816,7 @@ describe("responsive shell geometry", () => {
       shellStyles,
       ".ui-org-switcher-command .ui-command-input-wrapper",
     );
-    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(\s*--input\)\);/);
+    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(\s*--input\) \/ var\(--input-alpha, 100%\)\);/);
     expect(decls).toMatch(/border-radius:\s*var\(\s*--control-radius\);/);
     expect(decls).toMatch(/margin-inline:\s*0;/);
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(

@@ -260,7 +260,7 @@
    * second of two live toasts, which is what a consumer's browser test reported as
    *   [serious] color-contrast · li[data-index="1"] > [data-content] > [data-title]
    * `#f9f9f9` was never a colour from the dark palette; it is `hsl(var(--popover-foreground))`
-   * flattened over `hsl(var(--popover))` at the ~2% opacity the 400ms fade was passing through.
+   * flattened over `hsl(var(--popover) / var(--popover-alpha, 100%))` at the ~2% opacity the 400ms fade was passing through.
    *
    * `visibility` takes the same subtree out of BOTH — no paint, no a11y tree, nothing to measure —
    * and it is the honest description of the state: text a sighted user cannot read should not be

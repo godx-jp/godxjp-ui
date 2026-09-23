@@ -255,7 +255,7 @@
    * WHY IT REBINDS THE ROLE INSTEAD OF DECLARING `border-color`. Input, Textarea and every popup
    * trigger paint their edge with the `border-input` Tailwind UTILITY, and utilities out-rank
    * `@layer components` — a `border-color` declaration here would simply lose, silently.
-   * `@theme inline` compiles `border-input` to `border-color: hsl(var(--input))`, so rebinding
+   * `@theme inline` compiles `border-input` to `border-color: hsl(var(--input) / var(--input-alpha, 100%))`, so rebinding
    * `--input` ON THE FOCUSED ELEMENT feeds the utility instead of fighting it, and reaches the
    * components-layer edges (`.ui-tag-input`, `.ui-control-composite-field`) that read the same
    * role. `aria-invalid:border-destructive` still wins over it, and the `[aria-invalid]` rule at

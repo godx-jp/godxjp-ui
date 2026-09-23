@@ -146,7 +146,7 @@ describe("every status surface consumes the role (gh#866)", () => {
     expect(source).toContain(
       squash(
         "`var(--surface-${hue}, color-mix(in srgb, hsl(var(--${hue}))" +
-          " calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover))))`",
+          " calc(var(--alert-bg-alpha) * 100%), hsl(var(--popover) / var(--popover-alpha, 100%))))`",
       ),
     );
     for (const [type, hue] of [

@@ -845,7 +845,7 @@
   width: 16rem;
   border-radius: var(--radius-md);
   border: 1px solid hsl(var(--border));
-  background: hsl(var(--popover));
+  background: hsl(var(--popover) / var(--popover-alpha, 100%));
   color: hsl(var(--popover-foreground));
   padding: var(--space-4);
   box-shadow: var(--shadow-md);
@@ -1239,7 +1239,7 @@
     inset-inline-start: 0;
     /* Above the scrolling cells, below any portaled overlay (--overlay-z-index). */
     z-index: 20;
-    background-color: hsl(var(--card));
+    background-color: hsl(var(--card) / var(--card-alpha, 100%));
     border-inline-end: 1px solid hsl(var(--border));
     inline-size: var(--permission-matrix-label-width);
     min-inline-size: var(--permission-matrix-label-width);
@@ -1927,7 +1927,7 @@
     position: sticky;
     inset-inline-start: 0;
     z-index: 1;
-    background: hsl(var(--card));
+    background: hsl(var(--card) / var(--card-alpha, 100%));
     padding: var(--space-2);
     border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
   }

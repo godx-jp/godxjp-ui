@@ -236,7 +236,8 @@
   }
 
   .ui-button--outline {
-    border: 1px solid var(--button-outline-border-color, hsl(var(--input)));
+    border: 1px solid
+      var(--button-outline-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     background: var(--button-outline-background, hsl(var(--background)));
     color: hsl(var(--foreground));
 
@@ -809,7 +810,7 @@
   }
 
   .ui-switch[data-state="unchecked"] {
-    background: var(--switch-unchecked-background, hsl(var(--input)));
+    background: var(--switch-unchecked-background, hsl(var(--input) / var(--input-alpha, 100%)));
   }
 
   .ui-switch-thumb {
@@ -960,7 +961,7 @@
   .ui-color-picker-preview {
     width: 100%;
     height: 100%;
-    border: 1px solid hsl(var(--input));
+    border: 1px solid hsl(var(--input) / var(--input-alpha, 100%));
     border-radius: var(--control-radius);
     box-shadow: var(--shadow-sm);
   }
@@ -1005,7 +1006,7 @@
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     border-radius: var(--control-radius);
-    background: hsl(var(--popover));
+    background: hsl(var(--popover) / var(--popover-alpha, 100%));
     color: hsl(var(--popover-foreground));
   }
 
@@ -1147,7 +1148,7 @@
     transform: translateX(-50%);
     gap: 0;
     padding: 0;
-    background: hsl(var(--popover));
+    background: hsl(var(--popover) / var(--popover-alpha, 100%));
   }
 
   .ui-command-palette-trigger {
@@ -1598,7 +1599,8 @@
      * cannot be fixed by moving either colour — see the token's own note (gh#843). */
     box-shadow:
       var(--segmented-item-selected-shadow, var(--shadow-md)),
-      inset 0 0 0 1px hsl(var(--segmented-item-selected-border-color, var(--input)));
+      inset 0 0 0 1px
+        hsl(var(--segmented-item-selected-border-color, var(--input)) / var(--input-alpha, 100%));
     color: hsl(var(--segmented-item-selected-color));
     /* The signal that does not depend on the canvas (gh#843) — see the token's own note. */
     font-weight: var(--segmented-item-selected-font-weight);
@@ -1655,9 +1657,10 @@
     padding: var(--space-1) var(--control-padding-x);
     /* Same two tokens the `.ui-control-surface` matrix drives, so TagInput inherits `variant` /
      * `status` from that one block instead of restating four surfaces of its own. The defaults
-     * resolve to the `hsl(var(--input))` / `hsl(var(--background))` pair this rule used to name
+     * resolve to the `hsl(var(--input) / var(--input-alpha, 100%))` / `hsl(var(--background))` pair this rule used to name
      * literally, so nothing about the resting TagInput changes. */
-    border: var(--control-border-width) solid var(--control-surface-border-color, hsl(var(--input)));
+    border: var(--control-border-width) solid
+      var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     border-radius: var(--control-radius);
     background: var(--control-surface-background, hsl(var(--background)));
     box-shadow: var(--control-shadow);
@@ -1832,7 +1835,7 @@
    * `<html>` re-resolves them (docs/TOKENS.md, the freeze rule — the note in
    * tokens/components/control.css has the measurement). An explicit knob still wins. */
   .ui-control-surface {
-    border-color: var(--control-surface-border-color, hsl(var(--input)));
+    border-color: var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     background: var(--control-surface-background, hsl(var(--background)));
   }
 
@@ -2361,7 +2364,7 @@
     /* A knob, with the role default resolved HERE (gh#880). The listbox is an OVERLAY, not a
      * field — see the note on --select-content-background for why it does not share the trigger's
      * surface knob. */
-    background: var(--select-content-background, hsl(var(--popover)));
+    background: var(--select-content-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
     color: hsl(var(--popover-foreground));
     /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`: no blur, and no backdrop root to become the
      * containing block for anything fixed inside the popup. */
@@ -3442,7 +3445,7 @@
     align-items: center;
     gap: var(--control-composite-field-space-gap);
     border-radius: var(--control-radius);
-    border-color: hsl(var(--input));
+    border-color: hsl(var(--input) / var(--input-alpha, 100%));
     background: hsl(var(--background));
     outline: none;
     transition:
@@ -3658,11 +3661,11 @@
    *
    * THE FOCUS EDGE STILL WORKS, and by the same mechanism as before: `focus-ring.css` rebinds
    * `--input` ON the focused element rather than declaring `border-color`, and this rule reads
-   * `hsl(var(--input))` at that same element. The status edges (`aria-invalid:border-destructive`,
+   * `hsl(var(--input) / var(--input-alpha, 100%))` at that same element. The status edges (`aria-invalid:border-destructive`,
    * `data-[status=warning]:border-warning`) are still utilities and still outrank it, which is the
    * order they need. */
   .ui-control-outlined-surface {
-    border-color: var(--control-surface-border-color, hsl(var(--input)));
+    border-color: var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     background-color: var(--control-surface-background, hsl(var(--background)));
   }
 
@@ -3760,7 +3763,7 @@
     font-size: var(--control-font-size);
     color: hsl(var(--input-addon-color));
     background-color: hsl(var(--input-addon-background));
-    border: var(--control-border-width) solid hsl(var(--input));
+    border: var(--control-border-width) solid hsl(var(--input) / var(--input-alpha, 100%));
     white-space: nowrap;
   }
 

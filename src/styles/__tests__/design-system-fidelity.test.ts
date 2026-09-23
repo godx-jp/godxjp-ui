@@ -34,7 +34,7 @@ describe("DXS hi-fi visual contract", () => {
     // resolves to is now the call-site fallback of a knob rather than a bare declaration. The
     // guarantee this line carries — the flat chrome paints the card colour — is unchanged.
     expect(shell).toMatch(
-      /\.app-topbar\s*\{[^}]*background:\s*var\(--app-shell-bar-background, hsl\(var\(--card\)\)\)/s,
+      /\.app-topbar\s*\{[^}]*background:\s*var\(--app-shell-bar-background, hsl\(var\(--card\) \/ var\(--card-alpha, 100%\)\)\)/s,
     );
     // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,
     // which held only while nothing else in the file had one; the launcher's launchpad scrim now
