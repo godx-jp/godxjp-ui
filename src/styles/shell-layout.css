@@ -3022,64 +3022,6 @@
     }
   }
 
-  .tb-chip {
-    display: inline-flex;
-    max-width: 15rem;
-    min-width: 0;
-    height: var(--control-height-sm);
-    align-items: center;
-    gap: var(--space-1);
-    padding-inline: var(--space-2);
-    border: 1px solid transparent;
-    border-radius: var(--radius);
-    background: transparent;
-    color: hsl(var(--foreground));
-    cursor: pointer;
-    font: inherit;
-    font-size: var(--font-size-base);
-  }
-
-  .tb-chip:hover,
-  .tb-chip[data-open="true"] {
-    border-color: hsl(var(--border));
-    background: hsl(var(--accent));
-  }
-
-  .tb-chip-empty {
-    border-color: hsl(var(--border));
-    border-style: dashed;
-    color: hsl(var(--muted-foreground));
-  }
-
-  /* Non-interactive brand chip — no menu/handler, so no pointer/hover affordance and no caret. */
-  .tb-chip-static,
-  .tb-chip-static:hover {
-    border-color: transparent;
-    background: transparent;
-    cursor: default;
-  }
-
-  .tb-chip-label {
-    min-width: 0;
-    overflow: hidden;
-    font-weight: 500;
-    /* `.tb-chip` uses `font: inherit`, so without this the chip would shear its glyphs the moment
-     * a service set a tight line-height on the bar. */
-    line-height: 1.5;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .tb-chip-caret,
-  .tb-chip-sep {
-    color: hsl(var(--muted-foreground));
-  }
-
-  .tb-chip-caret svg {
-    width: var(--topbar-caret-icon-size);
-    height: var(--topbar-caret-icon-size);
-  }
-
   .tb-search {
     display: flex;
     /* `width: 100%` + `max-width: none` is the pair that makes both cases work from ONE token: a
@@ -3190,7 +3132,6 @@
       padding-inline: var(--topbar-item-padding-inline-compact);
     }
 
-    .tb-chip-sep,
     .tb-search .kbd,
     /* The trigger's LABEL gets the same compact treatment the shortcut cap already had. Without a
      * hook of its own the compact `.tb-search` kept a full text label inside a box that had just
