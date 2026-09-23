@@ -48,13 +48,16 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     const rule = shadowFormRule();
     expect(rule).toContain(".sb-nav-item");
     // The mark is an `outline` now rather than a `box-shadow`, so there is no browser outline left
-    // to suppress — the rule REPLACES it instead of turning it off and painting beside it.
-    expect(rule).toMatch(/outline:\s*var\(\s*--focus-ring-width\)/);
+    // to suppress — the rule REPLACES it instead of turning it off and painting beside it. Written
+    // as the three longhands since gh#885: as a shorthand, a consumer's wrong-form colour token took
+    // `outline-width` and `outline-style` down with the colour and the mark disappeared entirely.
+    expect(rule).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
   });
 
   it("draws the mark from the global focus tokens", () => {
     const rule = shadowFormRule();
-    expect(rule).toMatch(/outline:\s*var\(\s*--focus-ring-width\) solid/);
+    expect(rule).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
+    expect(rule).toMatch(/outline-style:\s*solid;/);
     expect(rule).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
     // The knob the private copy used to drop. A service that softens every mark must soften
     // this one too.

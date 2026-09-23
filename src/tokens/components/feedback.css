@@ -9,7 +9,15 @@
    * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a
    * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog). */
   --sheet-overlay-background: initial;
-  --sheet-overlay-alpha: 40%;
+  /* A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886). The base is a finished
+   * colour that already carries `/0.5`, so `40%` composites to **0.20**, and a theme author who
+   * sets `62%` gets 0.31. That is the library-wide convention for a `--*-alpha` knob in the
+   * `color-mix(in srgb, <base> <alpha>, transparent)` share form — 100% means "the base as
+   * authored", 0% means gone — and it is deliberate: the calibrated depth lives ONCE in
+   * `--overlay-background` so a service retints every scrim with one line. Want an absolute
+   * opacity instead? Set `--sheet-overlay-background` directly; it wins outright.
+   * Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. */
+  --sheet-overlay-alpha: 40%; /* 40% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.20) */
   /* GLASS — ON THE SCRIM, for the same two reasons the dialog's note below spells out. A drawer
    * covers content that must stay unreadable-but-present, so this is the surface whose blur does
    * the most work, and the panel's own fill belongs at the OPAQUE end of the range
@@ -47,7 +55,13 @@
   --dialog-width-default: 32rem;
   --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: initial;
-  --dialog-overlay-alpha: 60%;
+  /* A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886) — the miss that was
+   * reported, because this knob carried no note of its own and `60%` reads as "0.6". The base is a
+   * finished colour with `/0.5` baked in, so the product is **0.30**, and `62%` gives 0.31 rather
+   * than the darker scrim that was asked for. See `--sheet-overlay-alpha` above for the convention
+   * and for the escape hatch: `--dialog-overlay-background` is an absolute colour and wins outright.
+   * Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. */
+  --dialog-overlay-alpha: 60%; /* 60% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.30) */
   /* GLASS — THE BLUR IS ON THE SCRIM, NEVER ON THE DIALOG BOX (gh#880).
    *
    * Two reasons, and both are already written down in this repo. `backdrop-filter` filters what is

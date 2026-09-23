@@ -317,8 +317,11 @@ describe("the switch is ON by default, and the OFF position still zeroes everyth
   });
 
   it("EVERY painted path multiplies by the switch — no rule paints a raw length", () => {
-    // The mark itself.
-    expect(focusRing).toMatch(/outline:\s*var\(\s*--focus-ring-width\) solid/);
+    // The mark itself. Three longhands since gh#885 — the shorthand let a wrong-form colour token
+    // discard `outline-width` and `outline-style` with it, so the whole indicator vanished. The
+    // switched length is still the same `--focus-ring-width`, which is what this gate is about.
+    expect(focusRing).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
+    expect(focusRing).toMatch(/outline-style:\s*solid;/);
     expect(flatFocusRing).toContain(`box-shadow: ${HALO_DEFAULT};`);
     // The region ring, which has its own opt-in token and would otherwise bypass the switch.
     const shell = readFileSync(join(process.cwd(), "src/styles/shell-layout.css"), "utf8");
