@@ -120,12 +120,17 @@ export const THEMES: readonly ThemeRow[] = [
      * ground under brand ink is #DFE2E5 against the constant's #EBE9E5, and light `base` reads
      * 562/562 at every seed.
      *
-     * THE HEX IS A PAINTED-PIXEL MEASUREMENT, not a token composite. Sampling
-     * `--card/--popover/--accent/--muted/--secondary` and compositing them gave #3C3A34; sampling
-     * the actual pixel under each brand-ink element with the glyphs hidden gives #3C3619, which is
-     * darker because the token set does not include the gradients a theme paints. The pixel is the
-     * one the reader sees. */
-    inkSurface: { light: null, dark: "#3C3619" },
+     * #3C3A34, AND THE PAINTED-PIXEL MEASUREMENT PICKED THE WRONG ONE (gh#903). Sampling the
+     * actual pixel under each brand-ink element gave #3C3619 and I took it, on the reasoning that a
+     * painted pixel beats a token composite. It does — but I sampled every element AT REST, and the
+     * ground a hovered MegaMenu trigger sits on is `--accent`, which is #3C3A34 and LIGHTER. For a
+     * dark theme the hardest ground is the LIGHTEST one, so the darker sample sent the ink the
+     * wrong way by a hair: it walked to L 74.9% instead of 76.4%, and the hovered label measured
+     * 4.23:1 on four of five seeds.
+     *
+     * The method was right and its COVERAGE was not. A ground only exists at rest if nothing ever
+     * changes it; an interaction state is a different ground and has to be sampled too. */
+    inkSurface: { light: null, dark: "#3C3A34" },
   },
   {
     id: "glass",
