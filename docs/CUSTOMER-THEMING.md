@@ -475,13 +475,45 @@ way the browser would, over a sweep of seeds and both label polarities.
 than per-label, so JS cannot compute them without being told the theme, and they are a hairline and
 an 11%-alpha halo rather than a state a reader tracks.
 
-### What it deliberately does NOT retint
+### The brand as INK, and the surface it has to clear (gh#887)
 
-`--text-link` / `--text-brand` / `--text-primary` are brand INK on the page surface. Their
-legibility depends on `--background`, which a customer's fill colour does not control, and their
-step direction is per-theme. A pale seed such as `#FFD400` derives a link at about **1.4:1** on a
-white page. `tenantTheme` leaves those three alone; if you want brand links, set them yourself
-after measuring with `contrastRatio()`.
+The pair above is a FILL and the label on it. It says nothing about the brand used as INK on a page
+surface — which a sidebar active item, a NavList item, a MegaMenu trigger, an Anchor link, a
+`Text link` and `Button variant="link"` all are. So a brand could pass the library's own contrast
+computation and still ship a navigation nobody can read: measured on `/showcase/theme-lab?theme=base`,
+`#FFD400` gave **1.18–2.06:1** and `#E2564A` **2.16–3.64:1**, at rest and hovered.
+
+The three ink roles already existed. What they lacked was a FLOOR: each was a plain lightness step
+off the seed (`l - 8.4` for the link, `l - 15.5` for the pressed ink), and a step is not a contrast
+guarantee — `#FFD400` minus 8.4 lightness is `#d4b000`, 2.06:1 on the page. `tenantTheme` now emits
+all three as literals, each walked AWAY from the surface until the painted pixel clears 4.5:1 and no
+further:
+
+```tsx
+tenantTheme("#FFD400").vars["--text-brand"]; // "49.88 100% 24.4%" — 4.56:1, not 1.73:1
+tenantTheme("#7C3AED").vars["--text-brand"]; // "262.12 83.26% 49.44%" — the ramp step, untouched
+```
+
+**A seed whose ramp step already clears is emitted unchanged**, so the package's own violet is
+byte-identical to what it shipped before, and so are the middle seeds. `tenant-theme.test.ts` sweeps
+the whole sRGB cube: the worst case is 4.5:1 on either surface, for all three roles.
+
+**`surface` is the darkest surface the ink lands on, not the page canvas.** It defaults to the
+package light `--accent` `#ebe9e5` — the hover fill under a nav row — because an ink clamped to
+4.5:1 on `--background` `#fdfdfc` measures 3.78:1 the moment the row is hovered, and the hovered
+state is where the lab measured 1.18:1. A region inside the DARK theme must say so, or its ink is
+walked the wrong way:
+
+```tsx
+tenantTheme(tenant.primary_color, { surface: "#3c3a34" }); // --accent in the dark theme
+tenantTheme(tenant.primary_color, { surface: myThemedSidebarFill });
+```
+
+**The guarantee travels with `tenantTheme()`, not with the token.** A consumer who sets `--primary`
+by hand in a stylesheet gets the CSS ramp step and no floor, because WCAG relative luminance cannot
+be computed in CSS — a lightness clamp is hue-blind, and a yellow and a blue at the same lightness
+are four stops apart in luminance. If you re-seed in raw CSS, set the three ink roles yourself and
+check them with `contrastRatio()`.
 
 Worked screen: `docs/showcase/tenant-brand-color.tsx` (`/showcase/tenant-brand-color`) — scope
 proof inside vs outside, the contrast table above, and three run cases (an invalid hex, a
@@ -515,6 +547,13 @@ no effect, no unmount restore, no SSR flash. Use `applyPrimaryColor(el, hex)` wh
 RE-SEEDING a tree that is already themed (a project switcher, a service theme): it additionally
 resets `--primary-border` / `--control-outline` / the brand ink roles to `initial`, so a literal an
 ancestor pinned for the previous brand cannot outrank the new seed, and it returns a cleanup.
+
+One consequence of that reset, stated rather than discovered: because `applyPrimaryColor` writes
+`--text-link` / `--text-brand` / `--text-primary` back to `initial` AFTER spreading
+`tenantTheme(...).vars`, a re-seeded tree gets the CSS ramp step and **not** the 4.5:1 ink floor the
+section above describes. On a pale brand that is the gh#887 defect again. Until that reset is
+reconciled with the floor, prefer `tenantTheme` + `ThemeScope` for a pale seed, or re-apply the
+three ink declarations yourself after the call.
 
 ---
 
