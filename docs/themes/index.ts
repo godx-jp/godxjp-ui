@@ -131,11 +131,18 @@ export const THEMES: readonly ThemeRow[] = [
     id: "glass",
     nameKey: "themeLab.theme.glass.name",
     noteKey: "themeLab.theme.glass.note",
-    /* Measured per branch, and the two are not the same KIND of number (see the type above).
+    /* THE LIGHT VALUE WAS MEASURED THE WRONG WAY THE FIRST TIME (gh#903). #B59FDB came from
+     * compositing the five surface TOKENS; the real ground is the PAINTED PIXEL under each
+     * brand-ink element, which includes the gradients a theme paints and the token set does not.
+     * Sampled with every glyph hidden, the darkest such ground across the five seeds is navy's
+     * #9493CC at L=0.3152 — darker than the #B59FDB (L=0.3973) I had, so the ink was not being
+     * walked far enough and 16 strings in light glass sat at 3.41-4.43:1.
+     *
+     * Measured per branch, and the two are not the same KIND of number (see the type above).
      * `#766A2D` was right and stays on the dark side, where the hardest ground is the LIGHTEST
      * surface; the light side is #B59FDB, the DARKEST surface, because the ink walks the other
      * way there. Carrying one hex into both slots would have been wrong in exactly one of them. */
-    inkSurface: { light: "#B59FDB", dark: "#766A2D" },
+    inkSurface: { light: "#9493CC", dark: "#766A2D" },
   },
   {
     id: "flat",

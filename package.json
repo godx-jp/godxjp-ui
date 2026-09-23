@@ -393,7 +393,7 @@
     "lint:fix": "eslint . --fix",
     "postinstall": "node scripts/postinstall.mjs",
     "prepublishOnly": "pnpm run build",
-    "preview": "node preview/scripts/kill-port.mjs ${PREVIEW_PORT:-6008} && vite --config preview/vite.config.ts --port ${PREVIEW_PORT:-6008} --strictPort",
+    "preview": "PORT=$(node preview/scripts/preview-port.mjs) && node preview/scripts/kill-port.mjs $PORT && echo \"preview: http://localhost:$PORT\" && vite --config preview/vite.config.ts --port $PORT --strictPort",
     "preview:build": "vite build --config preview/vite.config.ts && node scripts/gen-registry.mjs && node scripts/copy-agent-catalog.mjs",
     "regen": "node scripts/regen-generated.mjs",
     "release": "node scripts/release.mjs",

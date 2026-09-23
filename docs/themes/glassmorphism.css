@@ -92,8 +92,8 @@
    * trigger — are not, which is why the sidebar's selected label was the one string still washed
    * out after the backdrop was fixed. Measured: `color(srgb 0.875 0.805 0.995)` on a
    * `rgba(124,58,237,0.26)` pill. */
-  --glass-brand-ink-l: 38%;
-  --glass-brand-ink-strong-l: 32%;
+  --glass-brand-ink-l: 30 24%;
+  --glass-brand-ink-strong-l: %;
   --glass-lobe-a-l: 58%;
   --glass-lobe-a-alpha: 0.5;
   --glass-lobe-b-l: 52%;
@@ -943,8 +943,8 @@
   --glass-muted-sl: 24% 18%;
   --glass-accent-sl: 45% 32%;
   --glass-secondary-sl: 38% 22%;
-  --glass-brand-ink-l: 88%;
-  --glass-brand-ink-strong-l: 90%;
+  --glass-brand-ink-l: 24 19%;
+  --glass-brand-ink-strong-l: %;
   --glass-lobe-a-l: 58%;
   --glass-lobe-a-alpha: 0.55;
   --glass-lobe-b-l: 48%;

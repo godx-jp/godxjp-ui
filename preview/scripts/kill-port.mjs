@@ -12,7 +12,12 @@
  */
 import { execSync } from "node:child_process";
 
-const PORT = Number(process.argv[2] ?? process.env.PREVIEW_PORT) || 6008;
+/* The default is DERIVED from the checkout, not the constant 6008 (gh#875) — see
+ * `preview-port.mjs` for why. A caller that passes a port still wins, and `PREVIEW_PORT` still
+ * wins over both; what changed is that a caller who passes NOTHING no longer lands on the same
+ * port as every other worktree on the machine. */
+const { previewPort } = await import("./preview-port.mjs");
+const PORT = Number(process.argv[2]) || previewPort();
 
 let pids = [];
 try {
