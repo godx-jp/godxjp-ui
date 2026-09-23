@@ -3059,18 +3059,6 @@
     cursor: default;
   }
 
-  .tb-chip-icon {
-    display: grid;
-    width: var(--topbar-chip-icon-size);
-    height: var(--topbar-chip-icon-size);
-    flex: 0 0 auto;
-    place-items: center;
-    border-radius: calc(var(--radius) - 2px);
-    color: white;
-    font-size: var(--topbar-chip-icon-font-size);
-    font-weight: 700;
-  }
-
   .tb-chip-label {
     min-width: 0;
     overflow: hidden;

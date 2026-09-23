@@ -318,13 +318,9 @@ describe("icon size — tier 2, the per-instance escape hatch (gh#326)", () => {
    * Menubar / NavigationMenu chevrons, and those components have since been deleted (v23) — the
    * knob they were pointed at, --menu-icon-size, is still what DropdownMenu's chevron reads.
    *
-   * The three left are blocked on token files outside that pass:
+   * The two left are blocked on token files outside that pass:
    *   • `.ui-otp-separator-icon` needs --otp-separator-icon-size in components/control.css
    *   • `.tb-icon-btn svg` needs --topbar-icon-size in components/shell.css
-   *   • `.tb-chip-icon` needs --topbar-chip-icon-size in components/shell.css, and it is NOT a
-   *     snap case: 1.125rem is a whole 18px, and the box is a letter medallion (`display: grid`,
-   *     `place-items: center`, a border-radius and `color: white`), not a stroked glyph — so it
-   *     wants `scale-exempt`, not the nearest step.
    *
    * The list may only SHRINK. A new literal-sized icon rule fails this test.
    */

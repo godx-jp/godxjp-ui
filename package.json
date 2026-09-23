@@ -38,6 +38,7 @@
     "scripts/postinstall.mjs",
     "scripts/_agent-setup.mjs",
     "scripts/cli.mjs",
+    "scripts/explain-token.mjs",
     "docs"
   ],
   "main": "./dist/index.js",

@@ -97,10 +97,12 @@ It is the single most common cause of "I overrode the token and nothing happened
 ## 4. The tool
 
 ```
-node scripts/explain-token.mjs --card-radius     # one token: every declaration, every read
-node scripts/explain-token.mjs --table           # a whole family
-node scripts/explain-token.mjs --audit           # every freeze, orphan and unpublished token
+node node_modules/@godxjp/ui/scripts/explain-token.mjs --card-radius     # one token: every declaration, every read
+node node_modules/@godxjp/ui/scripts/explain-token.mjs --table           # a whole family
+node node_modules/@godxjp/ui/scripts/explain-token.mjs --audit           # every freeze, orphan and unpublished token
 ```
+
+(From inside this repo's own checkout, drop the `node_modules/@godxjp/ui/` prefix.)
 
 For one token it prints every declaration site — marked `root-only` or `below root` — with its
 selector, its value, and whether it is a freeze; then every read and whether that read carries a

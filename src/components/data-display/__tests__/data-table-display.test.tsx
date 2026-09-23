@@ -32,7 +32,9 @@ describe("DataTable display props", () => {
     );
     expect(surface(container)).toHaveAttribute("data-hoverable");
     const row = container.querySelector("tbody tr")!;
-    expect(row.className).toContain("hover:bg-accent/70");
+    expect(row.className).toContain(
+      "hover:[background-color:color-mix(in_oklab,hsl(var(--accent))_var(--table-row-hover-background-alpha,70%),transparent)]",
+    );
     expect(row.className).not.toContain("cursor-pointer");
   });
 

@@ -211,7 +211,22 @@ export const TableRow = React.forwardRef<
     className={cn(
       // The row rule itself is `.ui-table-row` in table-layout.css (--table-row-border-width),
       // NOT a `border-b` utility — a utility sits in `@layer utilities` and would outrank the
-      "ui-table-row hover:bg-accent/70 data-[state=selected]:bg-primary/[0.06] transition-colors",
+      //
+      // THE WASH NOW READS THE SAME TOKEN THE PINNED-COLUMN MIRROR ALREADY DID (gh#894). A bare
+      // `hover:bg-accent/70` could not be retuned by any theme — the pin-column mirror right
+      // below this file's own selectors (table-layout.css, data-display-layout.css) already
+      // reads `--table-row-hover-background-alpha`, so the row that actually owns the fill was
+      // the one piece a theme could not reach. The shared default stays 0.7 (unchanged; gh#700
+      // needs it >= ~0.68 or a striped row's hover stops being a visible step) — a tone Badge
+      // composed over a hovered GLASS row still measures 4.02–4.34:1 on four of five seeds, and
+      // clearing that needs glass's OWN lower value for this token (its theme file, not this
+      // one). What this line fixes is that a theme now CAN set that value at all.
+      //
+      // `color-mix(…)`, not `hsl(var(--accent) / var(--x, 70%))`: Tailwind's arbitrary-property
+      // parser treats a bare `/` inside the bracket as ITS OWN opacity-modifier boundary — that
+      // spelling measured 0.1 alpha in Chromium (not 0.7), silently. `color-mix` has no `/` for
+      // it to misread, matching the same idiom `toneSuccessClass` already uses (control-styles.ts).
+      "ui-table-row data-[state=selected]:bg-primary/[0.06] transition-colors hover:[background-color:color-mix(in_oklab,hsl(var(--accent))_var(--table-row-hover-background-alpha,70%),transparent)]",
       className,
     )}
     {...props}
