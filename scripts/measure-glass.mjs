@@ -36,11 +36,17 @@ const SURFACES = [
   { name: "Card", sel: '[data-slot="card"]' },
   { name: "Sidebar", sel: ".app-sidebar" },
   { name: "Topbar", sel: ".ui-topbar" },
-  { name: "Table", sel: '[data-slot="table"]' },
+  // The SURFACE, not the <table>: the frame that paints the fill and the blur is
+  // `.ui-data-table-surface` (table-layout.css:380). Probing `[data-slot="table"]` reported
+  // `blur NONE` while the knob was working — the third selector mistake this instrument has made,
+  // and the reason each surface below names the element that actually paints.
+  { name: "Table", sel: '.ui-data-table-surface, [data-slot="table"]' },
   { name: "Alert", sel: '[data-slot="alert"]' },
   { name: "Badge", sel: '[data-slot="badge"]' },
   { name: "Segmented", sel: '[data-slot="segmented"]' },
   { name: "Tabs", sel: '[data-slot="tabs-list"]' },
+  { name: "Popover", sel: ".ui-popover-content" },
+  { name: "Tooltip", sel: ".ui-tooltip-content" },
   { name: "Input", sel: ".ui-input-affix-wrapper" },
   { name: "Button", sel: ".ui-button" },
   { name: "Progress", sel: ".ui-progress" },
@@ -49,9 +55,16 @@ const SURFACES = [
 
 /** Overlays, each with the trigger that opens it. These are where the style matters most (§4). */
 const OVERLAYS = [
-  { name: "Dialog", open: 'button[aria-haspopup="dialog"]', sel: '[role="dialog"]' },
-  { name: "Select listbox", open: 'button[role="combobox"]', sel: '[role="listbox"]' },
-  { name: "DropdownMenu", open: 'button[aria-haspopup="menu"]', sel: '[role="menu"]' },
+  // Triggers are matched by their ACCESSIBLE NAME, not by `aria-haspopup`. Radix's DialogTrigger
+  // does not set that attribute, so an attribute selector matched nothing and the instrument
+  // printed "did not open" — which, in the output, is indistinguishable from a dialog that is
+  // genuinely broken. A regex against the button's name is what a user would use.
+  { name: "Dialog", open: "dialog", sel: '[data-slot="dialog-content"]' },
+  { name: "Dialog scrim", open: "dialog", sel: '[data-slot="dialog-overlay"]' },
+  { name: "Sheet", open: "sheet", sel: ".ui-sheet-panel" },
+  { name: "Select listbox", open: 'button[role="combobox"]', sel: ".ui-select-content" },
+  { name: "Tooltip", open: "tooltip", sel: ".ui-tooltip-content", hover: true },
+  { name: "Toast", open: "toast", sel: "[data-sonner-toast]" },
 ];
 
 const lin = (c) =>
@@ -75,12 +88,20 @@ const alphaOf = (s) => {
 
 function grade(cs) {
   const blur = cs.backdropFilter && cs.backdropFilter !== "none" ? cs.backdropFilter : null;
+  // ANY SIDE, not just the top. The first version read `borderTopWidth` alone and reported the
+  // Sidebar as having no edge — its border is on the inline-end. Four selector/property mistakes
+  // in this instrument so far, every one of them making the library look worse than it is, which
+  // is the direction that wastes work: it sends you off to add a knob that already exists.
+  const sides = ["Top", "Right", "Bottom", "Left"];
+  const painted = sides.filter(
+    (d) => cs[`border${d}Width`] !== "0px" && cs[`border${d}Style`] !== "none",
+  );
   return {
     fill: cs.backgroundColor,
     translucent: alphaOf(cs.backgroundColor) < 0.99,
     blur,
     saturate: blur ? /saturate/.test(blur) : false,
-    border: cs.borderTopWidth !== "0px" ? cs.borderTopColor : null,
+    border: painted.length ? `${painted.join("/")} ${cs[`border${painted[0]}Color`]}` : null,
     shadow: cs.boxShadow && cs.boxShadow !== "none" ? cs.boxShadow.slice(0, 48) : null,
   };
 }
@@ -105,8 +126,13 @@ for (const s of SURFACES) {
     return {
       backgroundColor: cs.backgroundColor,
       backdropFilter: cs.backdropFilter,
-      borderTopWidth: cs.borderTopWidth,
-      borderTopColor: cs.borderTopColor,
+      ...Object.fromEntries(
+        ["Top", "Right", "Bottom", "Left"].flatMap((d) => [
+          [`border${d}Width`, cs[`border${d}Width`]],
+          [`border${d}Style`, cs[`border${d}Style`]],
+          [`border${d}Color`, cs[`border${d}Color`]],
+        ]),
+      ),
       boxShadow: cs.boxShadow,
     };
   }, s.sel);
@@ -114,12 +140,16 @@ for (const s of SURFACES) {
 }
 
 for (const o of OVERLAYS) {
-  const trigger = page.locator(o.open).first();
+  // `open` is either a CSS selector or a substring of the trigger's visible label.
+  const trigger = /[[.#]/.test(o.open)
+    ? page.locator(o.open).first()
+    : page.getByRole("button", { name: new RegExp(o.open, "i") }).first();
   if ((await trigger.count()) === 0) {
     report.overlays[o.name] = "no trigger on this page";
     continue;
   }
-  await trigger.click({ timeout: 4000 }).catch(() => {});
+  if (o.hover) await trigger.hover({ timeout: 4000 }).catch(() => {});
+  else await trigger.click({ timeout: 4000 }).catch(() => {});
   await page.waitForTimeout(800);
   const found = await page.evaluate((sel) => {
     const el = document.querySelector(sel);
@@ -128,8 +158,13 @@ for (const o of OVERLAYS) {
     return {
       backgroundColor: cs.backgroundColor,
       backdropFilter: cs.backdropFilter,
-      borderTopWidth: cs.borderTopWidth,
-      borderTopColor: cs.borderTopColor,
+      ...Object.fromEntries(
+        ["Top", "Right", "Bottom", "Left"].flatMap((d) => [
+          [`border${d}Width`, cs[`border${d}Width`]],
+          [`border${d}Style`, cs[`border${d}Style`]],
+          [`border${d}Color`, cs[`border${d}Color`]],
+        ]),
+      ),
       boxShadow: cs.boxShadow,
     };
   }, o.sel);
@@ -138,35 +173,106 @@ for (const o of OVERLAYS) {
   await page.waitForTimeout(400);
 }
 
-// CONTRAST — the composited pixel under each string, never the declared colour (§3).
-const strings = await page.evaluate(() => {
+// CONTRAST — the effective background, computed by COMPOSITING the ancestor chain (§3).
+//
+// Three screenshot-based attempts failed in three different ways, and each produced a confident
+// wrong number: sampling 3px below an element put a table header's ground in the first body row
+// (1.03:1 against light ink on a dark pane — impossible); sampling its top-left landed on a
+// glyph; and taking the modal pixel of the box reported exactly 1:1 for a title, because an
+// inline box hugs its text and the glyphs are then the majority.
+//
+// So do not sample pixels at all. Walk from the element up, compositing each translucent
+// `background-color` over the next until one is opaque. That is deterministic, it is what an
+// accessibility checker does, and it can never accidentally measure the ink against itself.
+//
+// Its one limitation, stated rather than hidden: it does not see `background-image`. A gradient
+// or a photograph behind a translucent pane resolves to the last opaque COLOUR beneath it, so on
+// a vivid backdrop these ratios are approximations of the worst case, not of every pixel. §3
+// asks for the worst region, which is the direction this errs in.
+// Sample the painted backdrop once per 50px band, in an empty left margin, so the compositor has
+// a real base colour for the gradient rather than a `background-color` nobody ever sees.
+const backdropBands = [];
+{
+  const width = 1440;
+  for (let y = 40; y < 1000; y += 50) {
+    // x=1430, the far RIGHT margin. The first version sampled x=4 and landed inside the Sidebar,
+    // so every "backdrop" reading was the sidebar's own fill and the numbers did not move at all.
+    const shot = await page.screenshot({ clip: { x: 1430, y, width: 3, height: 3 } });
+    const png = PNG.sync.read(shot);
+    backdropBands.push({ y, rgb: [png.data[0], png.data[1], png.data[2]] });
+  }
+  void width;
+}
+await page.evaluate((bands) => {
+  window.__glassBase = (el) => {
+    const mid = el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2;
+    let best = bands[0];
+    for (const b of bands) if (Math.abs(b.y - mid) < Math.abs(best.y - mid)) best = b;
+    return { r: best.rgb[0], g: best.rgb[1], b: best.rgb[2], a: 1 };
+  };
+}, backdropBands);
+
+const contrastRows = await page.evaluate(() => {
+  const parse = (c) => {
+    const n = (c.match(/[\d.]+/g) ?? []).map(Number);
+    if (!n.length) return null;
+    return {
+      r: n[0],
+      g: n[1],
+      b: n[2],
+      a: /\/\s*[\d.]+\s*\)/.test(c) ? Number(/\/\s*([\d.]+)\s*\)/.exec(c)[1]) : (n[3] ?? 1),
+    };
+  };
+  const over = (fg, bg) => ({
+    r: fg.a * fg.r + (1 - fg.a) * bg.r,
+    g: fg.a * fg.g + (1 - fg.a) * bg.g,
+    b: fg.a * fg.b + (1 - fg.a) * bg.b,
+    a: 1,
+  });
+  const groundOf = (el) => {
+    const stack = [];
+    for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
+      const c = parse(getComputedStyle(n).backgroundColor);
+      if (c && c.a > 0) stack.push(c);
+      if (c && c.a >= 0.999) break;
+    }
+    // THE BASE IS THE PAGE'S PAINTED BACKDROP, sampled — not its `background-color`.
+    //
+    // Compositing alone cannot see a `background-image`, and on this page the base IS one: a
+    // four-stop gradient. Falling back to `--background` composited every translucent pane onto a
+    // LIGHT colour that is never on screen, which is how a table header over a dark gradient came
+    // out at 1.03:1. `__glassBase` is a pixel sampled from an empty margin at the element's own
+    // vertical position, so it tracks the gradient down the page.
+    const base = window.__glassBase?.(el) ??
+      parse(getComputedStyle(document.documentElement).backgroundColor) ?? {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 1,
+      };
+    stack.push({ ...base, a: 1 });
+    let acc = stack.pop();
+    while (stack.length) acc = over(stack.pop(), acc);
+    return [Math.round(acc.r), Math.round(acc.g), Math.round(acc.b)];
+  };
   const out = [];
   for (const el of document.querySelectorAll(
-    '[data-slot="card"] *, [data-slot="alert"] *, [data-slot="table"] td *, [data-slot="segmented"] *, .ui-button, .ui-page-header *',
+    '[data-slot="card"] *, [data-slot="alert"] *, [data-slot="table"] th *, [data-slot="table"] td *, [data-slot="segmented"] *, .ui-button, .ui-page-header *',
   )) {
     const text = (el.textContent ?? "").trim();
     if (!text || el.children.length) continue;
     const r = el.getBoundingClientRect();
-    if (r.width < 18 || r.height < 8 || r.top < 0 || r.bottom > 990) continue;
-    out.push({
-      text: text.slice(0, 26),
-      color: getComputedStyle(el).color,
-      box: { x: Math.round(r.x), y: Math.round(r.y + r.height + 3), width: 3, height: 3 },
-    });
-    if (out.length >= 40) break;
+    if (r.width < 8 || r.height < 6) continue;
+    out.push({ text: text.slice(0, 26), ink: getComputedStyle(el).color, ground: groundOf(el) });
+    if (out.length >= 50) break;
   }
   return out;
 });
 
-for (const t of strings) {
-  try {
-    const png = PNG.sync.read(await page.screenshot({ clip: t.box }));
-    const r = ratio([png.data[0], png.data[1], png.data[2]], rgbOf(t.color));
-    if (r < 4.5) report.contrast.fail.push({ text: t.text, ratio: +r.toFixed(2) });
-    else report.contrast.pass += 1;
-  } catch {
-    /* a string that cannot be clipped is not a contrast result */
-  }
+for (const row of contrastRows) {
+  const r = ratio(row.ground, rgbOf(row.ink));
+  if (r < 4.5) report.contrast.fail.push({ text: row.text, ratio: +r.toFixed(2) });
+  else report.contrast.pass += 1;
 }
 
 await browser.close();

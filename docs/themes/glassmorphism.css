@@ -75,7 +75,7 @@
    *    `border: 1px solid hsl(var(--border))`). Verified no consumer composes a SECOND alpha after
    *    it (unlike `--background`, see below), so a bare triplet + alpha is safe here and reaches
    *    all of the above at once — the widest-reaching single line in this file. */
-  --border: 0 0% 100% / 32%;
+  --border: 0 0% 100% / 25%;
 
   /* ── `--background` — deliberately NOT touched, and that is the finding. It is consumed BOTH
    *    bare (`hsl(var(--background))` — Dialog's panel, Sheet's `bg-background` utility, the page
@@ -138,8 +138,8 @@
 
   /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
    *    src/styles/card-layout.css:44 (border), :49 (background). ────────────────────────────── */
-  --card-background: 0 0% 100% / 55%;
-  --card-border: 0 0% 100% / 35%;
+  --card-background: 0 0% 100% / 12%;
+  --card-border: 0 0% 100% / 25%;
 
   /* ── Dialog — the panel BACKGROUND is the one true dead end in this set. dialog-layout.css:56
    *    hard-codes `background-color: hsl(var(--background))` with NO `--dialog-background` token
@@ -163,8 +163,8 @@
   /* ── Popover — the only overlay with FULL dedicated surface tokens (background AND border),
    *    both consumed as a COMPLETE value (dialog-layout.css:362-363), so each needs its own
    *    hsl(...) wrapper here, not a bare triplet. ──────────────────────────────────────────── */
-  --popover-surface-background: hsl(0 0% 100% / 62%);
-  --popover-surface-border-color: hsl(0 0% 100% / 40%);
+  --popover-surface-background: hsl(0 0% 100% / 22%);
+  --popover-surface-border-color: hsl(0 0% 100% / 30%);
 
   /* ── Tooltip — same shape as Popover, its own dedicated background + border tokens
    *    (dialog-layout.css:342-343), also consumed as a complete value. Dark frosted chip, the
@@ -179,7 +179,7 @@
    *    FOUNDATION-tier role for the fill, always consumed as `hsl(var(--popover))`, so a bare
    *    triplet + alpha reaches both Select and DropdownMenu at once — shared, not scoped to
    *    either component individually. */
-  --popover: 0 0% 100% / 60%;
+  --popover: 0 0% 100% / 22%;
 
   /* ── Table — three different levers for three different lines, verified individually:
    *      · The OUTER frame (`.ui-data-table-surface`, what a reader actually sees around a plain
@@ -264,7 +264,7 @@
    *    through: measured in the browser, both render as a flat, near-opaque-looking wash over the
    *    page's own light canvas, not over the vivid gradient. Glass needs a busy ground BEHIND the
    *    element wearing it, and AppShell's chrome grid sits outside the one region that has one. */
-  --card: 0 0% 100% / 42%;
+  --card: 0 0% 100% / 12%;
 
   /* ── Topbar — the ONE surface in this entire list with a REAL backdrop-filter wired to a
    *    token (shell-layout.css:2648-2649): `background-color: hsl(var(--background) /
@@ -288,30 +288,60 @@
    *    L ≤ 9.5% for 7:1. Body sits at 7:1 (AAA) so it keeps a margin when the backdrop shifts
    *    under it; secondary sits at 20%, comfortably inside the AA bound with room for the
    *    gradient to move. */
-  --foreground: 40 8% 8%;
-  --card-foreground: 40 8% 8%;
-  --popover-foreground: 40 8% 8%;
-  --muted-foreground: 40 6% 20%;
-  --text-tertiary: 40 6% 24%;
+  /* ── LIGHT INK, BECAUSE THE GLASS IS DARK. I built this the other way round first and the
+   *    owner's screenshots showed why it could not work: at 42% white the panes were light, so
+   *    the ink went dark — and then the PAGE HEADER, which sits on the bare dark backdrop with no
+   *    pane under it at all, measured 1.63:1 and its subtitle 1.30:1. One ramp cannot serve a
+   *    light pane and a dark ground; §3 of the standard calls that a POLARITY bug and I wrote
+   *    that sentence while still having it.
+   *
+   *    At the spec's 0.12 the panes are dark — white at 12% over a dark backdrop lightens it
+   *    slightly and no more — so light ink is right on the panes AND on the ground, and the
+   *    polarity problem stops existing rather than being worked around. There is no
+   *    `--page-title-color` token; this is why one is not needed.
+   *
+   *    Solved over the three regions the backdrop actually produces, worst case first:
+   *
+   *      region             pane (12% white over it)   off-white ink    bare ground
+   *      blob xanh          rgb(66,110,154)            4.98:1           6.67:1
+   *      blob tím sáng      rgb(112,83,163)            5.66:1           7.69:1
+   *      darkest base       rgb(55,57,70)             10.65:1          15.36:1
+   *
+   *    Every one clears AA 4.5:1, measured against the WORST region rather than a convenient
+   *    sample (§3). Off-white rather than pure white: it keeps a hair of warmth against the cool
+   *    backdrop and still clears 4.98:1 at the worst point. */
+  --foreground: 48 20% 96%;
+  --card-foreground: 48 20% 96%;
+  --popover-foreground: 48 20% 96%;
+  /* "Muted" is SMALLER AND LIGHTER IN WEIGHT, never lower contrast — §3. 82% still measures
+   * 3.49:1 on the worst pane, so it stays at 90% and the hierarchy comes from size. */
+  --muted-foreground: 48 14% 90%;
+  --text-tertiary: 48 12% 86%;
 
-  /* Status ink measured 2.37–3.05:1 over glass, all of it failing. These are the same hues at the
-   * lightness the ground demands — the meaning survives, the contrast arrives. */
-  --text-success: 152 88% 11%;
-  --text-warning: 33 100% 15%;
-  --text-info: 214 84% 20%;
-  --text-error: 0 72% 22%;
+  /* Status ink lightened to match. The hue carries the meaning; the lightness carries the
+   * legibility, and on dark glass those pull in the opposite direction from the light build. */
+  --text-success: 152 60% 82%;
+  --text-warning: 42 90% 82%;
+  --text-info: 210 90% 86%;
+  --text-error: 6 85% 84%;
 
   /* ── THE CARD WAS NOT CONSISTENT WITH ITS OWN CONTENTS, which is what the owner spotted by eye:
    *    a translucent Card whose Segmented track stayed opaque `--muted` (measured
    *    rgb(244,243,240)). This knob EXISTS and the first pass simply never set it — unlike
    *    `--tabs-list-background` and `--tabs-trigger-active-background`, which do not exist at all
    *    and are the library half of gh#880. So Segmented is fixed here and Tabs cannot be. */
-  --segmented-track-background: 0 0% 100% / 26%;
-  --segmented-item-selected-background: 0 0% 100% / 72%;
+  --segmented-track-background: 0 0% 100% / 10%;
+  --segmented-item-selected-background: 0 0% 100% / 24%;
   /* The ITEM ink too — an unselected item measured 2.86:1 because only the track had been
    * retinted and the label kept its own default. Same ramp as everything else. */
-  --segmented-item-color: 40 6% 20%;
-  --segmented-item-selected-color: 40 8% 8%;
+  /* The table's header strip: both knobs exist, and the first build set neither, so it kept an
+   * opaque `--muted` band with the default dark ink — the same "container is glass, its own parts
+   * are not" defect the owner spotted on the Card's Segmented. */
+  --table-header-background: hsl(0 0% 100% / 8%);
+  --table-header-foreground: hsl(48 14% 90%);
+
+  --segmented-item-color: 48 14% 90%;
+  --segmented-item-selected-color: 48 20% 96%;
 
   /* ── ONE INK RAMP ONLY WORKS IF EVERY GLASS SURFACE SHARES A POLARITY, and that is the part
    *    §3 of the standard did not say. Card is LIGHT glass (white at 42–55%), so dark ink is
@@ -323,8 +353,76 @@
    *    than darkened by it. The status still reads — the hue is in the border and the icon —
    *    and the ink stops fighting its own ground. gh#866 shipped these four roles an hour ago;
    *    this is the first theme to need them. */
-  --surface-success: hsl(152 60% 97% / 0.62);
-  --surface-warning: hsl(42 80% 96% / 0.62);
-  --surface-info: hsl(214 70% 97% / 0.62);
-  --surface-destructive: hsl(0 70% 97% / 0.62);
+  --surface-success: hsl(152 60% 40% / 0.22);
+  --surface-warning: hsl(42 80% 45% / 0.22);
+  --surface-info: hsl(214 70% 50% / 0.22);
+  --surface-destructive: hsl(0 70% 50% / 0.22);
+
+  /* ══ THE RECIPE, NOW THAT THE KNOBS EXIST (gh#880) ════════════════════════════════════════
+   * namethatui.com, verbatim: background rgba(255,255,255,.12) · backdrop-filter blur(16px) ·
+   * border 1px rgba(255,255,255,.25) · radius 16px. Everything above this block was written when
+   * only ONE surface in the library could take a blur; these 20 lines are what the other eleven
+   * were waiting for.
+   *
+   * BLUR SIZE IS PER SURFACE, SATURATE IS SHARED. `--surface-backdrop-saturate` is one knob
+   * because saturation is a property of the MATERIAL — the per-surface decisions the standard
+   * actually names are the fill alpha and the blur radius. The 160% lives at each call site, so
+   * asking for a blur can never accidentally ask for fog. */
+  /* ── A TRAP THIS FILE FELL INTO, WRITTEN DOWN SO THE NEXT READER DOES NOT.
+   *    This library has TWO token value forms and nothing announces which a given knob takes:
+   *
+   *      HSL COMPONENTS  `--card: 60 33% 99%`      read as `hsl(var(--card))`
+   *      COMPLETE COLOUR `--card-background: …`    read as `var(--card-background)` directly
+   *
+   *    Every one of the 29 knobs gh#880 added is the SECOND kind; every older role token is the
+   *    first. I set fourteen of them in the components form, and the failure is silent: the
+   *    substituted declaration is invalid at computed-value time, so the property takes its own
+   *    initial value or the call-site fallback, and the surface simply keeps the colour it had.
+   *    The table header measured 1.03:1 — light ink on the `--muted` it had fallen back to —
+   *    and looked, from the token file, exactly like a knob that does not work. */
+  --surface-backdrop-saturate: 170%;
+
+  /* §4's OPACITY TIERS. A dropdown sits over arbitrary content and needs the most opaque fill of
+   * the three; a drawer next; a content card the least. Blur follows the same order — a small
+   * pane over busy content needs more frosting than a large one. */
+  --card-backdrop-blur-size: var(--blur-lg); /* 16px — the spec's number */
+  --table-surface-backdrop-blur-size: var(--blur-lg);
+  --sidebar-backdrop-blur-size: var(--blur-lg);
+  --button-backdrop-blur-size: var(--blur-md);
+
+  --popover-backdrop-blur-size: var(--blur-lg);
+  --select-content-backdrop-blur-size: var(--blur-lg);
+  --dropdown-content-backdrop-blur-size: var(--blur-lg);
+  --tooltip-backdrop-blur-size: var(--blur-md);
+  --toast-backdrop-blur-size: var(--blur-lg);
+  /* The modal blur belongs on the SCRIM, not the box — an element with a backdrop-filter becomes
+   * the containing block for its fixed descendants (shell-layout.css:1728). */
+  --dialog-overlay-backdrop-blur-size: var(--blur-lg);
+  --sheet-overlay-backdrop-blur-size: var(--blur-lg);
+
+  /* FILLS at the tiers. Card at the spec's .12; overlays heavier because a 7-line menu over a
+   * photograph is unreadable at .12. */
+  --select-content-background: hsl(0 0% 100% / 22%);
+  --dropdown-content-background: hsl(0 0% 100% / 22%);
+  --toast-background: hsl(0 0% 100% / 22%);
+  --dialog-surface-background: hsl(0 0% 100% / 20%);
+  --sheet-surface-background: hsl(0 0% 100% / 24%);
+  --sidebar-surface-background: hsl(0 0% 100% / 10%);
+  --table-surface-background: hsl(0 0% 100% / 8%);
+
+  /* The nested surfaces that made the Card disagree with its own contents. */
+  --tabs-list-background: hsl(0 0% 100% / 10%);
+  --tabs-trigger-active-background: hsl(0 0% 100% / 24%);
+
+  /* Buttons are IN scope — glassmorphism skins any surface; it is Liquid Glass that reserves
+   * glass for the control layer. A solid button on a glass page is that split applied backwards. */
+  --button-outline-background: hsl(0 0% 100% / 14%);
+  --button-secondary-background: hsl(0 0% 100% / 14%);
+  --button-default-background: hsl(262 83% 58% / 55%);
+
+  /* A REAL two-stop gradient, which the Card could not take until card-layout.css:49 stopped
+   * repeating one variable as both stops. */
+  --card-tint: hsl(0 0% 100% / 0.1);
+  --card-tint-end: hsl(262 83% 70% / 0.08);
+  --card-tint-angle: 135deg;
 }
