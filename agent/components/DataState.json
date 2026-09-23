@@ -1,5 +1,5 @@
 {
-  "example": "import { DataState } from \"@godxjp/ui/query\";\n\n<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d: any) => d.items.length === 0} empty={<EmptyState title=\"会員なし\" />}>\n  {(d) => <MemberTable items={d.items} />}\n</DataState>",
+  "example": "import { useQuery } from \"@tanstack/react-query\";\nimport { DataState } from \"@godxjp/ui/query\";\n\ntype MembersPage = { items: { id: string; name: string }[] };\n\n// T flows from the query, so `d` is MembersPage in BOTH callbacks. If you find yourself\n// annotating them, the query is untyped — fix that, never write `(d: any)`.\nconst membersQuery = useQuery<MembersPage>({ queryKey: [\"members\"], queryFn: fetchMembers });\n\n<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title=\"会員なし\" />}>\n  {(d) => <MemberTable items={d.items} />}\n</DataState>",
   "group": "data-display",
   "importPath": "@godxjp/ui/query",
   "name": "DataState",

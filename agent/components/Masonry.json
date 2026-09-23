@@ -1,6 +1,6 @@
 {
   "docPath": "layout/masonry.tsx",
-  "example": "import { Masonry } from \"@godxjp/ui/layout\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }: any) => (\n    <Card>\n      <CardContent>\n        <Text>{data.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
+  "example": "import { Masonry } from \"@godxjp/ui/layout\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n// T flows from `items`, so `data` in itemRender is whatever you put there — give the\n// collection a shape and the render callback needs no annotation.\ntype Note = { id: string; body: string };\nconst notes: Note[] = useNotes();\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }) => (\n    <Card>\n      <CardContent>\n        <Text>{data?.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
   "group": "layout",
   "importPath": "@godxjp/ui/layout",
   "name": "Masonry",

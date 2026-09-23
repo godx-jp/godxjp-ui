@@ -5108,7 +5108,7 @@
     ]
   },
   {
-    "example": "import { DataState } from \"@godxjp/ui/query\";\n\n<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d: any) => d.items.length === 0} empty={<EmptyState title=\"会員なし\" />}>\n  {(d) => <MemberTable items={d.items} />}\n</DataState>",
+    "example": "import { useQuery } from \"@tanstack/react-query\";\nimport { DataState } from \"@godxjp/ui/query\";\n\ntype MembersPage = { items: { id: string; name: string }[] };\n\n// T flows from the query, so `d` is MembersPage in BOTH callbacks. If you find yourself\n// annotating them, the query is untyped — fix that, never write `(d: any)`.\nconst membersQuery = useQuery<MembersPage>({ queryKey: [\"members\"], queryFn: fetchMembers });\n\n<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title=\"会員なし\" />}>\n  {(d) => <MemberTable items={d.items} />}\n</DataState>",
     "group": "data-display",
     "importPath": "@godxjp/ui/query",
     "name": "DataState",
@@ -5187,7 +5187,7 @@
     ]
   },
   {
-    "example": "import { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages as any} isEmpty={(it: any) => it.length === 0}>\n  {(items: any) => items.map((a: any) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
+    "example": "import { useInfiniteQuery } from \"@tanstack/react-query\";\nimport { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\ntype Activity = { id: string; label: string };\n\n// `flattenItemPages` constrains the page to `{ items: TItem[] }`, so the query must be typed:\n// an untyped one makes the page `unknown`, which cannot satisfy that constraint.\nconst q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({\n  queryKey: [\"activity\"],\n  queryFn: fetchActivityPage,\n  initialPageParam: undefined,\n  getNextPageParam: (last) => last.cursor,\n});\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>\n  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
     "group": "data-display",
     "importPath": "@godxjp/ui/query",
     "name": "InfiniteQueryState",
@@ -15496,7 +15496,7 @@
   },
   {
     "docPath": "layout/masonry.tsx",
-    "example": "import { Masonry } from \"@godxjp/ui/layout\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }: any) => (\n    <Card>\n      <CardContent>\n        <Text>{data.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
+    "example": "import { Masonry } from \"@godxjp/ui/layout\";\nimport { Card, CardContent } from \"@godxjp/ui/data-display\";\nimport { Text } from \"@godxjp/ui/general\";\n\n// T flows from `items`, so `data` in itemRender is whatever you put there — give the\n// collection a shape and the render callback needs no annotation.\ntype Note = { id: string; body: string };\nconst notes: Note[] = useNotes();\n\n<Masonry\n  columns={{ base: 1, sm: 2, lg: 3 }}\n  gap=\"md\"\n  items={notes.map((note) => ({ key: note.id, data: note }))}\n  itemRender={({ data }) => (\n    <Card>\n      <CardContent>\n        <Text>{data?.body}</Text>\n      </CardContent>\n    </Card>\n  )}\n  onLayoutChange={(layout) => console.log(layout.length, \"tiles placed\")}\n/>",
     "group": "layout",
     "importPath": "@godxjp/ui/layout",
     "name": "Masonry",

@@ -6098,9 +6098,16 @@ import remarkGfm from "remark-gfm";
       "EmptyState — pass as the `empty` prop of DataState alongside a matching `isEmpty` predicate; do not hand-roll an empty-check outside DataState by inspecting `query.data` yourself.",
       "AlertMutationFeedback — sibling widget for mutation (not query) lifecycle; use it below a form submit button to surface `useMutation` errors, not DataState which only handles `useQuery`.",
     ],
-    example: `import { DataState } from "@godxjp/ui/query";
+    example: `import { useQuery } from "@tanstack/react-query";
+import { DataState } from "@godxjp/ui/query";
 
-<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d: any) => d.items.length === 0} empty={<EmptyState title="会員なし" />}>
+type MembersPage = { items: { id: string; name: string }[] };
+
+// T flows from the query, so \`d\` is MembersPage in BOTH callbacks. If you find yourself
+// annotating them, the query is untyped — fix that, never write \`(d: any)\`.
+const membersQuery = useQuery<MembersPage>({ queryKey: ["members"], queryFn: fetchMembers });
+
+<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title="会員なし" />}>
   {(d) => <MemberTable items={d.items} />}
 </DataState>`,
     storyPath: "query/DataState.stories.tsx",
@@ -6160,10 +6167,22 @@ import remarkGfm from "remark-gfm";
       "SkeletonTable / SkeletonStat — pass as the `skeleton` prop to InfiniteQueryState; do not render them manually alongside InfiniteQueryState since the component controls when skeleton is visible.",
       "ButtonRefetch — companion component for the page header refresh action wired to `query.refetch()`. Use alongside InfiniteQueryState when you want an explicit refresh control in addition to the built-in load-more footer.",
     ],
-    example: `import { InfiniteQueryState, flattenItemPages } from "@godxjp/ui/query";
+    example: `import { useInfiniteQuery } from "@tanstack/react-query";
+import { InfiniteQueryState, flattenItemPages } from "@godxjp/ui/query";
 
-<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages as any} isEmpty={(it: any) => it.length === 0}>
-  {(items: any) => items.map((a: any) => <ActivityRow key={a.id} activity={a} />)}
+type Activity = { id: string; label: string };
+
+// \`flattenItemPages\` constrains the page to \`{ items: TItem[] }\`, so the query must be typed:
+// an untyped one makes the page \`unknown\`, which cannot satisfy that constraint.
+const q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({
+  queryKey: ["activity"],
+  queryFn: fetchActivityPage,
+  initialPageParam: undefined,
+  getNextPageParam: (last) => last.cursor,
+});
+
+<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>
+  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}
 </InfiniteQueryState>`,
     storyPath: "query/InfiniteQueryState.stories.tsx",
     rules: [],
@@ -17881,14 +17900,19 @@ import { Text } from "@godxjp/ui/general";
 import { Card, CardContent } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 
+// T flows from \`items\`, so \`data\` in itemRender is whatever you put there — give the
+// collection a shape and the render callback needs no annotation.
+type Note = { id: string; body: string };
+const notes: Note[] = useNotes();
+
 <Masonry
   columns={{ base: 1, sm: 2, lg: 3 }}
   gap="md"
   items={notes.map((note) => ({ key: note.id, data: note }))}
-  itemRender={({ data }: any) => (
+  itemRender={({ data }) => (
     <Card>
       <CardContent>
-        <Text>{data.body}</Text>
+        <Text>{data?.body}</Text>
       </CardContent>
     </Card>
   )}

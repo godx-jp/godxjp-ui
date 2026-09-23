@@ -1,5 +1,5 @@
 {
-  "example": "import { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages as any} isEmpty={(it: any) => it.length === 0}>\n  {(items: any) => items.map((a: any) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
+  "example": "import { useInfiniteQuery } from \"@tanstack/react-query\";\nimport { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\ntype Activity = { id: string; label: string };\n\n// `flattenItemPages` constrains the page to `{ items: TItem[] }`, so the query must be typed:\n// an untyped one makes the page `unknown`, which cannot satisfy that constraint.\nconst q = useInfiniteQuery<{ items: Activity[]; cursor?: string }>({\n  queryKey: [\"activity\"],\n  queryFn: fetchActivityPage,\n  initialPageParam: undefined,\n  getNextPageParam: (last) => last.cursor,\n});\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>\n  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
   "group": "data-display",
   "importPath": "@godxjp/ui/query",
   "name": "InfiniteQueryState",

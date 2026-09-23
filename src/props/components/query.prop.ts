@@ -61,18 +61,37 @@ export type ButtonRefetchProp = Omit<ButtonProp, "onClick" | "disabled"> & {
   label?: React.ReactNode;
 };
 
-type InfiniteQueryLike<TPage> = Pick<
-  UseInfiniteQueryResult<InfiniteData<TPage>, unknown>,
-  | "isPending"
-  | "isError"
-  | "isFetching"
-  | "isFetchingNextPage"
-  | "error"
-  | "data"
-  | "hasNextPage"
-  | "fetchNextPage"
-  | "refetch"
->;
+/**
+ * TPage MUST BE INFERABLE FROM `data`, WHICH A BARE `Pick` MAKES IMPOSSIBLE (gh#889).
+ *
+ * This was `Pick<UseInfiniteQueryResult<InfiniteData<TPage>, unknown>, … | "data" | …>`. TPage is
+ * then buried under a mapped type over a generic instantiation, and TypeScript cannot run inference
+ * backwards through a mapped type — so every consumer of `InfiniteQueryState` got `TPage = unknown`
+ * from `query={q}` however well typed `q` was, which collapsed TFlat and handed `unknown` to
+ * `flatten`, `isEmpty` and `children`. The catalog example was written with
+ * `flatten={flattenItemPages as any}` and three `: any` annotations, and the cast is what kept the
+ * defect invisible: a reader could not tell whether the inference was broken or the example sloppy.
+ *
+ * Spelling `data` as its own intersection member puts `InfiniteData<TPage>` — a plain object type
+ * whose `pages` is `TPage[]` — in an inference position. The `Pick` still supplies the other eight
+ * fields, so they stay tied to tanstack's real result shape and a signature change there still
+ * breaks the build here.
+ */
+type InfiniteQueryLike<TPage> = Omit<
+  Pick<
+    UseInfiniteQueryResult<InfiniteData<TPage>, unknown>,
+    | "isPending"
+    | "isError"
+    | "isFetching"
+    | "isFetchingNextPage"
+    | "error"
+    | "data"
+    | "hasNextPage"
+    | "fetchNextPage"
+    | "refetch"
+  >,
+  "data"
+> & { data: InfiniteData<TPage> | undefined };
 
 export type InfiniteQueryHelpers = {
   fetchNextPage: () => void;
@@ -81,7 +100,24 @@ export type InfiniteQueryHelpers = {
 };
 
 /** @see InfiniteQueryState — useInfiniteQuery lifecycle + load more. */
-export type InfiniteQueryStateProp<TPage, TFlat> = {
+/**
+ * TFLAT'S DEFAULT IS WHAT MAKES `flatten={flattenItemPages}` TYPE (gh#889).
+ *
+ * TypeScript infers a type parameter from argument POSITIONS. `TFlat` appears in the RETURN of
+ * `flatten`, so when `flatten` is handed a generic function BY REFERENCE the source signature is
+ * still uninstantiated and produces no inference candidate at all — `TFlat` fell to `unknown` and
+ * `isEmpty` and `children` received `unknown`. That is why the catalog example shipped as
+ * `flatten={flattenItemPages as any}` with `(it: any)` and `(items: any)`.
+ *
+ * A default is used exactly when inference yields no candidate, which is precisely this case: the
+ * flattened shape of the library's own `flattenItemPages`. An inline arrow — `flatten={(d) =>
+ * d.pages.flatMap((p) => p.rows)}` — is context-sensitive, so it DOES produce a candidate and
+ * overrides the default as before. Nothing about a custom flatten changes.
+ */
+export type InfiniteQueryStateProp<
+  TPage,
+  TFlat = TPage extends { items: (infer TItem)[] } ? TItem[] : unknown,
+> = {
   query: InfiniteQueryLike<TPage>;
   skeleton: React.ReactNode;
   empty?: React.ReactNode;

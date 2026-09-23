@@ -11,9 +11,23 @@ export type {
   InfiniteQueryStateProp as InfiniteQueryStateProps,
 } from "../../props/components/query.prop";
 
-/** Flatten `{ pages: [{ items }] }` — default GODX paginated API shape. */
-export function flattenItemPages<TItem, TPage extends { items: TItem[] }>(
-  data: { pages: TPage[] } | undefined,
+/**
+ * Flatten `{ pages: [{ items }] }` — default GODX paginated API shape.
+ *
+ * TItem USED TO BE ITS OWN TYPE PARAMETER, constrained by `TPage extends { items: TItem[] }`, and
+ * that made it uninferable in the one way this function is documented to be used. TypeScript infers
+ * a type parameter from ARGUMENT POSITIONS, never from another parameter's constraint, so passing
+ * the function by reference — `flatten={flattenItemPages}`, the whole API — left TItem at its
+ * fallback and collapsed InfiniteQueryState's TFlat to `unknown`. The catalog example was written
+ * with `flattenItemPages as any` and `(items: any)` to silence exactly that, which is how the
+ * signature survived (gh#889).
+ *
+ * Taking the page shape INLINE — `{ pages: { items: TItem[] }[] }` — puts TItem in an argument
+ * position, so it is inferred from the real page type and `items` arrives as `Activity[]`. TPage
+ * itself was never used for anything but that constraint, so naming it bought nothing.
+ */
+export function flattenItemPages<TItem>(
+  data: { pages: { items: TItem[] }[] } | undefined,
 ): TItem[] {
   if (!data) return [];
   return data.pages.flatMap((page) => page.items);
@@ -28,7 +42,10 @@ function defaultIsEmptyFlat(flat: unknown): boolean {
  * `useInfiniteQuery` lifecycle widget — flatten pages, load-more footer.
  * Cursor / activity feeds where user accumulates pages (vs DataTable cursor buttons).
  */
-export function InfiniteQueryState<TPage, TFlat>({
+export function InfiniteQueryState<
+  TPage,
+  TFlat = TPage extends { items: (infer TItem)[] } ? TItem[] : unknown,
+>({
   query,
   skeleton,
   empty,
