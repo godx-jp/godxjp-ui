@@ -57,8 +57,8 @@
    * the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is
    * already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other
    * track-and-slab control. */
-  --segmented-track-radius: var(--radius);
-  --segmented-item-radius: var(--radius-md);
+  --segmented-track-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
+  --segmented-item-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   /* label height = control height − track padding × 2. The track therefore measures exactly
    * --control-height, so a Segmented sits level with an Input and a Button on the same row.
    *

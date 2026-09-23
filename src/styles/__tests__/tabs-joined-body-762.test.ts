@@ -124,7 +124,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     expect(body).toMatch(
       /border:\s*var\(\s*--tabs-panel-border-width\)\s+solid\s+hsl\(var\(\s*--border\)\)/,
     );
-    expect(body).toMatch(/border-radius:\s*var\(\s*--tabs-panel-radius\)/);
+    expect(body).toMatch(/border-radius:\s*var\(\s*--tabs-panel-radius/);
     expect(body).toMatch(
       /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(\s*--background\)\s*\)\s*\/\s*var\(--tabs-panel-background-alpha, 100%\)\s*\)/,
     );
@@ -198,7 +198,9 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     expect(tokenValue(navTokens, "--tabs-panel-border-width")).toBe(
       "var(--tabs-card-rail-border-width)",
     );
-    expect(tokenValue(navTokens, "--tabs-panel-radius")).toBe("var(--tabs-card-radius)");
+    // `initial` since gh#888 — a :root binding to --tabs-card-radius froze there too; the default
+    // (var(--tabs-card-radius)) now resolves at the call site (navigation-layout.css) instead.
+    expect(tokenValue(navTokens, "--tabs-panel-radius")).toBe("initial");
   });
 
   it("re-states the seam structurally under forced colors, where a merged edge cannot merge", () => {

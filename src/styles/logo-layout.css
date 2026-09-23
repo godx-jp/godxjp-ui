@@ -6,7 +6,7 @@
     flex: 0 0 auto;
     width: var(--logo-size-md);
     height: var(--logo-size-md);
-    border-radius: var(--logo-radius);
+    border-radius: var(--logo-radius, var(--radius));
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
     font-weight: 700;

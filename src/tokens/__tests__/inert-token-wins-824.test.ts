@@ -111,7 +111,7 @@ describe("gh#824 · --conversations-item-radius reaches the rail row", () => {
   it("the row re-points the variable its Button utility reads", () => {
     /* The row IS `<Button variant="ghost">`, so `rounded-[var(--button-radius)]` beat any
      * border-radius declared here: measured, 37px on :root left all 13 rows at 3.70828px. */
-    expect(body()).toMatch(/--button-radius:\s*var\(\s*--conversations-item-radius\)/);
+    expect(body()).toMatch(/--button-radius:\s*var\(\s*--conversations-item-radius/);
   });
 
   it("and declares no border-radius of its own, which could only lose again", () => {
@@ -119,10 +119,25 @@ describe("gh#824 · --conversations-item-radius reaches the rail row", () => {
   });
 
   it("the paint MOVES 3.71px -> 6px, and 6px is what the token always advertised", () => {
+    /* gh#888 flipped both `--conversations-item-radius` and `--sidebar-nav-item-radius` to
+     * `initial` — a :root binding to --radius froze exactly like --button-radius/--radius-md
+     * did above, just one call further down the chain. The resolver can no longer compute a
+     * number for an `initial` knob (its formula now lives at the CSS call site, not in the
+     * token graph), so the measurement moves to the source text instead of the resolver. */
     const env = environment({ selectors: [":root"] });
-    expect(resolveToken("--conversations-item-radius", env)).toBe("0.375rem"); // 6px
-    // The sidebar row rhythm this rail's defaults were drawn from — 5px, 1px away, not 2.3px.
-    expect(resolveToken("--sidebar-nav-item-radius", env)).toBe("calc(calc(0.375rem * 1) - 1px)");
+    expect(resolveToken("--conversations-item-radius", env)).toBe("initial");
+    expect(resolveToken("--sidebar-nav-item-radius", env)).toBe("initial");
+    expect(read("src/tokens/components/conversations.css")).toMatch(
+      /--conversations-item-radius:\s*initial;.*default = var\(--radius\)/,
+    );
+    // 6px unmoved: --button-radius: var(--conversations-item-radius, var(--radius)) at the row.
+    expect(body()).toMatch(
+      /--button-radius:\s*var\(\s*--conversations-item-radius,\s*var\(\s*--radius\)\)/,
+    );
+    // 5px unmoved: --sidebar-nav-item-radius: calc(var(--radius) - 1px) at the call site.
+    expect(read("src/styles/shell-layout.css")).toMatch(
+      /border-radius:\s*var\(\s*--sidebar-nav-item-radius,\s*calc\(var\(\s*--radius\)\s*-\s*1px\)\);/,
+    );
   });
 });
 

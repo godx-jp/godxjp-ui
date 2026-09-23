@@ -511,7 +511,7 @@
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-panel"],
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
     border: var(--tabs-panel-border-width) solid hsl(var(--border));
-    border-radius: var(--tabs-panel-radius);
+    border-radius: var(--tabs-panel-radius, var(--tabs-card-radius));
     background: hsl(
       var(--tabs-panel-background, var(--background)) / var(--tabs-panel-background-alpha, 100%)
     );
@@ -630,7 +630,10 @@
     block-size: var(--tabs-tab-remove-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--tabs-tab-remove-radius);
+    border-radius: var(
+      --tabs-tab-remove-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     margin-inline-start: var(--tabs-tab-remove-space-inline-end);
     margin-inline-end: calc(-1 * var(--tabs-tab-remove-space-inline-end));
     color: hsl(var(--muted-foreground));
@@ -665,7 +668,7 @@
     block-size: var(--tabs-overflow-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--tabs-overflow-radius);
+    border-radius: var(--tabs-overflow-radius, calc(var(--radius) / var(--radius-ratio)));
     color: hsl(var(--muted-foreground));
   }
 
@@ -687,7 +690,7 @@
     align-items: center;
     justify-content: center;
     border: var(--tabs-card-rail-border-width) solid hsl(var(--border));
-    border-radius: var(--tabs-add-radius);
+    border-radius: var(--tabs-add-radius, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(
       var(--tabs-card-background, var(--muted)) / var(--tabs-card-background-alpha, 100%)
     );
@@ -789,7 +792,10 @@
   .ui-dropdown-menu-checkbox-item,
   .ui-dropdown-menu-radio-item,
   .ui-dropdown-menu-shortcut {
-    border-radius: var(--menu-item-radius);
+    border-radius: var(
+      --menu-item-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--menu-item-space-inline);
     height: var(--menu-item-height);
     display: flex;
@@ -931,7 +937,10 @@
     min-width: 0;
     align-items: center;
     gap: var(--steps-inline-item-gap);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     outline: none;
   }
 
@@ -979,7 +988,7 @@
 
     z-index: var(--overlay-z-index);
     min-width: var(--menu-content-min-width);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). `.ui-popover-content` has had one
      * since gh#354 and this — the same kind of floating panel, portaled the same way — did not. */
@@ -1055,7 +1064,10 @@
     display: inline-flex;
     align-items: center;
     gap: var(--breadcrumb-menu-trigger-gap);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: transparent;
     color: inherit;
     font: inherit;
@@ -1345,7 +1357,7 @@
     gap: var(--steps-nav-space-gap);
     padding-inline: var(--steps-nav-space-inline);
     padding-block: var(--steps-nav-space-block);
-    border-radius: var(--steps-nav-radius);
+    border-radius: var(--steps-nav-radius, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--muted));
   }
 
@@ -1514,7 +1526,7 @@
    * sharper than the nav rail beside it to 1px rounder — toward the rhythm it was drawn from, and
    * off a coupling to Button that #124 created --button-radius to avoid. */
   .ui-conversations-row {
-    --button-radius: var(--conversations-item-radius);
+    --button-radius: var(--conversations-item-radius, var(--radius));
 
     min-inline-size: 0;
     height: var(--conversations-item-height);
@@ -1805,7 +1817,10 @@
     min-block-size: var(--mega-menu-trigger-height);
     padding-inline: var(--mega-menu-trigger-padding-x);
     border: 0;
-    border-radius: var(--mega-menu-trigger-radius);
+    border-radius: var(
+      --mega-menu-trigger-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: var(--mega-menu-trigger-background);
     color: var(--mega-menu-trigger-foreground);
     font-size: var(--mega-menu-trigger-font-size);
@@ -1896,7 +1911,7 @@
     max-block-size: var(--mega-menu-panel-max-height);
     overflow-y: auto;
     border: var(--mega-menu-panel-border-width) solid var(--mega-menu-panel-border-color);
-    border-radius: var(--mega-menu-panel-radius);
+    border-radius: var(--mega-menu-panel-radius, calc(var(--radius) / var(--radius-ratio)));
     background: var(--mega-menu-panel-background);
     color: var(--mega-menu-panel-foreground);
     box-shadow: var(--mega-menu-panel-shadow);
@@ -1991,7 +2006,10 @@
     min-block-size: var(--mega-menu-link-min-height);
     padding-block: var(--mega-menu-link-padding-y);
     padding-inline: var(--mega-menu-link-padding-x);
-    border-radius: var(--mega-menu-link-radius);
+    border-radius: var(
+      --mega-menu-link-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     color: var(--mega-menu-link-foreground);
     font-size: var(--mega-menu-link-font-size);
     line-height: var(--line-height-body);

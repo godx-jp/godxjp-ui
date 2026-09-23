@@ -15,7 +15,7 @@
   /* Inset of the `filled` form. `borderless` drops it to zero. */
   --welcome-padding-block: var(--space-4);
   --welcome-padding-inline: var(--space-4);
-  --welcome-radius: var(--radius-lg);
+  --welcome-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   /* The glyph column. A square, so an image icon and an SVG icon occupy the same track. */
   --welcome-icon-size: var(--icon-size-xl);
 

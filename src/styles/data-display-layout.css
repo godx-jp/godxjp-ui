@@ -21,7 +21,7 @@
   .ui-avatar[data-shape="square"] {
     inline-size: var(--avatar-square-size);
     block-size: var(--avatar-square-size);
-    border-radius: var(--avatar-square-radius);
+    border-radius: var(--avatar-square-radius, var(--radius));
     --avatar-background: var(--avatar-square-background, hsl(var(--primary)));
     color: var(--avatar-square-foreground, hsl(var(--primary-foreground)));
   }
@@ -247,7 +247,7 @@
   .ui-progress[data-breakdown] .ui-progress-track {
     display: flex;
     height: var(--progress-breakdown-block-size);
-    border-radius: var(--progress-breakdown-radius);
+    border-radius: var(--progress-breakdown-radius, var(--radius));
   }
 
   /* `size="sm"` — thickness only. Both forms keep their own corner and their own ARIA; the
@@ -601,7 +601,7 @@
     max-inline-size: 100%;
     block-size: var(--thumbnail-block-size);
     border: var(--thumbnail-border-width) solid hsl(var(--border));
-    border-radius: var(--thumbnail-radius);
+    border-radius: var(--thumbnail-radius, var(--radius));
     /* A light screenshot on a light card needs something behind it while it loads, and a
      * transparent PNG needs it for good. */
     background: hsl(var(--muted));
@@ -819,7 +819,7 @@
   text-decoration: underline;
 }
 .ui-accordion-trigger:focus-visible {
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm, calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)));
 }
 .ui-accordion-trigger:disabled,
 .ui-accordion-trigger[data-disabled] {
@@ -849,7 +849,7 @@
 .ui-hover-card-content {
   z-index: 50;
   width: 16rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   border: 1px solid hsl(var(--border));
   background: hsl(var(--popover) / var(--popover-alpha, 100%));
   color: hsl(var(--popover-foreground));
@@ -1404,7 +1404,7 @@
   :is(.ui-code-block, .ui-prose pre) {
     margin: 0;
     overflow: auto;
-    border-radius: var(--code-block-radius);
+    border-radius: var(--code-block-radius, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--muted));
     padding: var(--code-block-space-inset);
     color: var(--code-block-foreground, hsl(var(--foreground)));
@@ -1661,7 +1661,10 @@
     font-size: var(--prose-code-font-size);
     background: hsl(var(--muted));
     padding-inline: var(--prose-code-space-inline);
-    border-radius: var(--prose-code-radius);
+    border-radius: var(
+      --prose-code-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   /* The link, and the ONE element in here a consumer is invited to select (gh#717).
@@ -1696,7 +1699,7 @@
   .ui-prose img {
     max-inline-size: 100%;
     block-size: auto;
-    border-radius: var(--prose-image-radius);
+    border-radius: var(--prose-image-radius, calc(var(--radius) / var(--radius-ratio)));
   }
 
   .ui-prose[data-image-size="original"] img {
@@ -1823,7 +1826,10 @@
     padding: var(--timeline-grid-event-space-inset);
     border-inline-start: var(--timeline-grid-event-border-width) solid
       var(--timeline-grid-event-color, hsl(var(--primary)));
-    border-radius: var(--timeline-grid-event-radius);
+    border-radius: var(
+      --timeline-grid-event-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     /* Surface first, colour second — the same wash order Badge's `color` mode documents, so a
      * browser without color-mix degrades to the quiet surface rather than a solid chip. */
     background-color: color-mix(
@@ -1924,7 +1930,7 @@
   .ui-range-timeline {
     overflow: auto;
     border: 1px solid hsl(var(--range-timeline-border-color));
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
   .ui-range-timeline-canvas {
     min-inline-size: calc(
@@ -2070,7 +2076,10 @@
     inset-block-start: 50%;
     transform: translateY(-50%);
     block-size: var(--range-timeline-bar-height);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
@@ -2176,7 +2185,7 @@
     gap: 0;
     border-inline-end: var(--descriptions-border-width) solid hsl(var(--border));
     border-block-end: var(--descriptions-border-width) solid hsl(var(--border));
-    border-radius: var(--descriptions-border-radius);
+    border-radius: var(--descriptions-border-radius, calc(var(--radius) / var(--radius-ratio)));
     overflow: hidden;
   }
 
@@ -2301,7 +2310,10 @@
   }
   .ui-text[data-chip] {
     background: hsl(var(--muted));
-    border-radius: var(--prose-code-radius);
+    border-radius: var(
+      --prose-code-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--prose-code-space-inline);
     font-size: var(--prose-code-font-size);
   }
@@ -2365,7 +2377,7 @@
 
   .ui-chat-bubble-body {
     min-inline-size: 0;
-    border-radius: var(--chat-bubble-radius);
+    border-radius: var(--chat-bubble-radius, var(--radius));
     padding-block: var(--chat-bubble-padding-block);
     padding-inline: var(--chat-bubble-padding-inline);
     background: var(--chat-bubble-background, hsl(var(--muted)));
@@ -2552,7 +2564,10 @@
      * calc() offset: the row is a control-sized target and must stay in step with the controls
      * beside it under every density. */
     min-block-size: var(--tree-node-height, var(--control-height));
-    border-radius: var(--tree-node-radius);
+    border-radius: var(
+      --tree-node-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--tree-node-padding-inline);
     /* level × step, then the row's own padding — the ONE place indentation is expressed. */
     padding-inline-start: calc(
@@ -2729,7 +2744,7 @@
     min-inline-size: 0;
     align-items: flex-start;
     gap: var(--welcome-gap);
-    border-radius: var(--welcome-radius);
+    border-radius: var(--welcome-radius, var(--radius));
   }
 
   .ui-welcome[data-variant="filled"] {
@@ -2947,7 +2962,7 @@
     padding-block: var(--thought-chain-item-padding-block);
     padding-inline: var(--thought-chain-item-padding-inline);
     border: 0;
-    border-radius: var(--thought-chain-item-radius);
+    border-radius: var(--thought-chain-item-radius, var(--radius));
     background: transparent;
     color: inherit;
     font: inherit;

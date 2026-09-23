@@ -97,7 +97,9 @@
 @source inline("{text,bg,border}-{foreground-tertiary,foreground-disabled,link,brand}");
 @source inline("bg-{primary,secondary,destructive}-{hover,active}");
 /* Force the extended radius steps so Tailwind emits --radius-xs/-xl/-2xl to :root (consumers read
- * `var(--radius-2xl)` directly; without a generated utility Tailwind drops the unused var). */
+ * `var(--radius-2xl)` directly; without a generated utility Tailwind drops the unused var. Since
+ * gh#888 that `:root` copy is `initial` again below — see the unfreeze block after `@theme inline`
+ * — so a bare consumer read now needs its own fallback too, same as every reader in this package). */
 @source inline("rounded-{xs,xl,2xl}");
 @source inline("text-2xs");
 @source inline("text-{3xl,4xl,5xl}");
@@ -242,6 +244,28 @@
   );
   --text-4xl: var(--font-size-4xl, calc(var(--font-size-display) / var(--font-size-display-ratio)));
   --text-5xl: var(--font-size-5xl, var(--font-size-display));
+}
+
+/* Unfreeze the φ radius tier (gh#888). The `@theme inline` block above MUST keep the real calc()
+ * formulas — Tailwind inlines that exact expression into `.rounded-xs/-xl/-2xl` at build time and,
+ * separately, copies it into a `@layer theme` `:root { --radius-xs: calc(…) }`. That second copy is
+ * the freeze: it resolves once against `:root`'s `--radius` and every reader of `var(--radius-xl)`
+ * (61 component-token mirrors, 86 direct call sites) inherits the frozen result, so a scoped
+ * `[data-theme-style] { --radius: 0 }` never reaches them (measured: `:root { --radius: 0 }` squared
+ * 75/102 surfaces, a scoped override moved 5/102 — docs/TOKENS.md · "Role-mirror knobs MUST be
+ * `initial`"). Restating the six steps here, UNLAYERED, wins the cascade over that `@layer theme`
+ * declaration regardless of source order (an unlayered rule always outranks a layered one), so every
+ * reader now gets the guaranteed-invalid value and falls through to the fallback formula written at
+ * ITS OWN call site — exactly like `--card-shadow` (gh#880). Tailwind's OWN `.rounded-*` utilities are
+ * unaffected: verified in the compiled CSS, they never read `--radius-xl` back — they inline
+ * `calc(var(--radius) * var(--radius-ratio))` directly — so this cannot touch them. */
+:root {
+  --radius-xs: initial;
+  --radius-sm: initial;
+  --radius-md: initial;
+  --radius-lg: initial;
+  --radius-xl: initial;
+  --radius-2xl: initial;
 }
 
 @layer base {

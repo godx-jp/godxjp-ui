@@ -16,7 +16,7 @@
   /* DROPZONE — the large drag target. Its inset is deliberately generous; a dense service
    * dials it back with one override instead of forking the variant. */
   --upload-dropzone-space-inset: var(--space-10);
-  --upload-dropzone-radius: var(--radius-lg);
+  --upload-dropzone-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --upload-dropzone-border-width: var(--stroke-md);
   --upload-dropzone-icon-size: var(--icon-size-3xl);
   --upload-dropzone-hint-space-block-start: var(--space-3);
@@ -31,7 +31,7 @@
    * One knob resizes the whole gallery; picture-card grids are the most common thing a service
    * re-grids to match its own column rhythm. */
   --upload-tile-size: 6rem;
-  --upload-tile-radius: var(--radius-md);
+  --upload-tile-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --upload-tile-space-gap: var(--space-3);
   --upload-tile-icon-size: var(--icon-size-xl);
   --upload-tile-label-space-block-start: var(--space-1);
@@ -55,7 +55,7 @@
 
   /* PICTURE — the single wide preview variant. */
   --upload-picture-max-width: 20rem;
-  --upload-picture-radius: var(--radius-md);
+  --upload-picture-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --upload-picture-preview-max-height: 12rem;
   --upload-picture-empty-height: 8rem;
   /* The empty-state mark. It was `controlIconClass` — a CONTROL height (32px) leaking into a media
@@ -68,7 +68,7 @@
   /* "Pending replace" chip. The radius previously came from a bare `rounded`, which resolves to a
    * flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss.
    * It now follows the tile radius like every other chip in the component. */
-  --upload-picture-badge-radius: var(--radius-md);
+  --upload-picture-badge-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --upload-picture-badge-offset: var(--space-2);
   --upload-picture-badge-space-inline: var(--space-2);
   --upload-picture-badge-space-block: 0.125rem;
@@ -95,7 +95,7 @@
   --upload-draft-space-inline: var(--space-3);
   --upload-draft-space-block: var(--space-2);
   --upload-draft-space-gap: var(--space-2);
-  --upload-draft-radius: var(--radius-md);
+  --upload-draft-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --upload-draft-font-size: var(--font-size-sm, var(--font-size-base));
   --upload-draft-icon-size: var(--icon-size-sm);
 
@@ -103,7 +103,7 @@
   --upload-row-space-inline: var(--space-3);
   --upload-row-space-block: var(--space-2);
   --upload-row-space-gap: var(--space-3);
-  --upload-row-radius: var(--radius-md);
+  --upload-row-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --upload-row-font-size: var(--font-size-sm, var(--font-size-base));
   --upload-row-icon-size: var(--icon-size-md);
 

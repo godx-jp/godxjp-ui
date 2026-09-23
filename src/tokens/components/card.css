@@ -58,7 +58,7 @@
    * --card-header-background-alpha: 0 for a quiet borderless-band header.
    * Default = 1px solid hsl(var(--card-border)) (resolved at the call site). */
   --card-header-border-bottom: initial;
-  --card-radius: var(--radius-xl);
+  --card-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) * var(--radius-ratio)) */
   /* The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm
    * elevation layer. Consumers can still flatten or lift cards through this knob.
    *
@@ -140,7 +140,7 @@
   --stat-card-gap: var(--space-stack-xs);
   --stat-card-icon-size: var(--icon-size-2xl);
   --stat-card-icon-glyph-size: var(--icon-size-lg);
-  --stat-card-icon-radius: var(--radius-md);
+  --stat-card-icon-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   /* Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding
    * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default
    * re-resolves at the call site under a scoped theme (no :root freeze).
@@ -163,7 +163,7 @@
    * inflated to 48px while the glyph inside it stayed 20px. */
   --card-service-launcher-icon-size: calc(var(--icon-size-2xl) * var(--scaling));
   --card-service-launcher-icon-glyph-size: calc(var(--icon-size-lg) * var(--scaling));
-  --card-service-launcher-icon-radius: var(--radius-md);
+  --card-service-launcher-icon-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   /* Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role
    * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them.
    * Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph. */

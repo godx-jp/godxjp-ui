@@ -16,7 +16,7 @@
   /* The 1px edge of an `outlined` bubble. Decorative chrome, so it mirrors --border, not --input
    * (docs/TOKENS.md — `--border` vs `--input`). Documented default = hsl(var(--border)). */
   --chat-bubble-border-color: initial;
-  --chat-bubble-radius: var(--radius-lg);
+  --chat-bubble-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   /* Gap between the avatar column and the message column. */
   --chat-bubble-gap: var(--space-3);
   /* The measure a bubble never exceeds. Long-form assistant prose past ~70 characters per line

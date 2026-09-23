@@ -72,7 +72,7 @@
    * deliberately left to the global `border-color` role so a scoped [data-tenant] override still
    * reaches it. */
   --descriptions-border-width: var(--stroke-hairline);
-  --descriptions-border-radius: var(--radius-md);
+  --descriptions-border-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   /* Inset inside one bordered cell. Only read while `bordered` is set — an unbordered
    * Descriptions has no cell box to pad, and gains nothing. */
   --descriptions-cell-padding-y: var(--space-2);

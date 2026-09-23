@@ -27,7 +27,7 @@
   --draggable-panel-block-size: auto;
   --draggable-panel-max-block-size: 70vh;
 
-  --draggable-panel-radius: var(--radius-lg);
+  --draggable-panel-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --draggable-panel-shadow: var(--shadow-lg);
   --draggable-panel-border-width: var(--stroke-hairline);
 

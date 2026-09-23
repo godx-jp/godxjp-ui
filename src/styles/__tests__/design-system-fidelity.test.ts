@@ -108,7 +108,13 @@ describe("DXS hi-fi visual contract", () => {
   it("uses the DXS 10px card radius and shadow-sm surface", () => {
     const card = read("../../tokens/components/card.css");
 
-    expect(card).toMatch(/--card-radius:\s*var\(\s*--radius-xl\)/);
+    // 10px IS still the radius; gh#888 moved WHERE it is stated. A `:root` binding to the φ tier
+    // substitutes at `:root`, so a scope that restates `--radius` could never move the card — the
+    // knob is `initial` and the xl-step default now resolves on `.ui-card`.
+    expect(card).toMatch(/--card-radius:\s*initial;/);
+    expect(read("../card-layout.css")).toMatch(
+      /border-radius: var\(--card-radius, calc\(var\(--radius\) \* var\(--radius-ratio\)\)\);/,
+    );
     // `shadow-sm` IS still the surface; gh#880 moved WHERE it is stated. A `:root` binding to the
     // ramp substitutes on `<html>`, so a scope that restates the ramp could never move the card —
     // the knob is `initial` and the ramp default now resolves on `.ui-card`.

@@ -26,7 +26,7 @@
   --conversations-item-height: var(--band-height-md);
   --conversations-item-gap: var(--space-inline-sm);
   --conversations-item-padding-inline: var(--space-inline-sm);
-  --conversations-item-radius: var(--radius);
+  --conversations-item-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --conversations-item-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))

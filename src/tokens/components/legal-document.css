@@ -32,7 +32,7 @@
   --legal-document-toc-max-height: calc(100dvh - var(--space-12));
   --legal-document-toc-gap: var(--space-1);
   --legal-document-toc-item-padding: var(--space-1) var(--space-2);
-  --legal-document-toc-item-radius: var(--radius);
+  --legal-document-toc-item-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --legal-document-toc-title-font-size: var(
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))

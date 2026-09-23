@@ -47,7 +47,7 @@
   --thought-chain-item-gap: var(--space-2);
   --thought-chain-item-padding-block: var(--space-2);
   --thought-chain-item-padding-inline: var(--space-3);
-  --thought-chain-item-radius: var(--radius);
+  --thought-chain-item-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --thought-chain-item-solid-background: initial; /* default = hsl(var(--muted)) */
   --thought-chain-item-outlined-border: initial; /* default = hairline solid hsl(var(--border)) */
 }

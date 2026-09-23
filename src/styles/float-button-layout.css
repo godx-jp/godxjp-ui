@@ -126,7 +126,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--float-button-group-gap);
-    border-radius: var(--float-button-group-radius);
+    border-radius: var(--float-button-group-radius, var(--radius));
   }
 
   /* A SQUARE group is one joined slab (antd renders `Space.Compact` there): no gap, one shadow
@@ -142,13 +142,13 @@
   }
 
   .ui-float-button-group:not([data-individual]) .ui-float-button-list > :first-child {
-    border-start-start-radius: var(--float-button-group-radius);
-    border-start-end-radius: var(--float-button-group-radius);
+    border-start-start-radius: var(--float-button-group-radius, var(--radius));
+    border-start-end-radius: var(--float-button-group-radius, var(--radius));
   }
 
   .ui-float-button-group:not([data-individual]) .ui-float-button-list > :last-child {
-    border-end-start-radius: var(--float-button-group-radius);
-    border-end-end-radius: var(--float-button-group-radius);
+    border-end-start-radius: var(--float-button-group-radius, var(--radius));
+    border-end-end-radius: var(--float-button-group-radius, var(--radius));
   }
 
   /* ── MENU MODE ────────────────────────────────────────────────────────────
