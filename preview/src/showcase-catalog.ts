@@ -291,12 +291,12 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/caimono-price-comparison"),
   },
   {
-    id: "glassmorphism",
-    title: "Glassmorphism — token-only reach across 19 components",
+    id: "theme-lab",
+    title: "Theme lab — mọi component, nhiều theme, nhiều màu seed, đo được",
     description:
-      "Đo xem một theme kính mờ (frosted, backdrop-blur, viền chỉ mảnh, bóng lớp) đi được tới đâu CHỈ bằng custom property trong docs/themes/glassmorphism.css — 0 dòng src/components, 0 className/style trang. Kèm bảng gap surface/blur/border/shadow cho từng component (Card, Dialog, Sheet, Popover, DropdownMenu, Select, Tooltip, Topbar, Sidebar, DataTable, Input, Button, Badge, Tabs, Alert, Toast, Avatar, Progress, Segmented) và phát hiện portal thoát scope.",
+      "Một trang, một bộ chuyển theme (mặc định · glassmorphism · flat) và một bộ chuyển màu seed (tím · xanh · cam · vàng rất sáng #FFD400 · xanh navy rất tối #0A1F44, đều qua tenantTheme). Theme chỉ được là custom property trong docs/themes/*.css — 0 dòng src/, 0 className/style trang. Thêm theme = thêm 1 file CSS + 1 dòng trong docs/themes/index.ts, không sửa trang. ?theme=&seed= địa chỉ hoá từng ô của ma trận cho scripts/measure-glass.mjs. Kèm bảng những export KHÔNG render được và lý do.",
     tag: "Theme",
-    load: () => import("../../docs/showcase/glassmorphism"),
+    load: () => import("../../docs/showcase/theme-lab"),
   },
 ];
 

@@ -840,116 +840,6 @@
     "tokenScopeBody": "線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。",
     "tokenScopeLabel": "週次相場（テーマ適用）"
   },
-  "glassShowcase": {
-    "page": {
-      "title": "グラスモーフィズム",
-      "subtitle": "フロストガラステーマがトークンだけで届く範囲",
-      "refresh": "更新"
-    },
-    "alert": {
-      "title": "このページは測定用です（デモではありません）",
-      "description": "以下の半透明な面はすべて docs/themes/glassmorphism.css 内のトークンからです。コンポーネントのソースは一切変更していません。不透明のままの面は、届くトークンが存在しないことを意味します。"
-    },
-    "sidebar": {
-      "product": "Northwind",
-      "role": "運用ワークスペース",
-      "sectionLabel": "ワークスペース",
-      "overview": "概要",
-      "reports": "レポート",
-      "settings": "設定"
-    },
-    "topbar": {
-      "brand": "Northwind",
-      "notifications": "通知",
-      "notificationsTitle": "通知",
-      "notificationsBody": "3件の承認待ちがあります。",
-      "account": "アカウントメニュー",
-      "profile": "プロフィール",
-      "billing": "請求",
-      "logout": "ログアウト"
-    },
-    "overview": {
-      "title": "チーム概要",
-      "description": "フロストガラスカード上の Badge、Progress、Avatar。",
-      "badgeActive": "稼働中",
-      "badgeInvited": "招待中",
-      "badgePending": "保留",
-      "progressLabel": "スプリント容量",
-      "avatarGroupLabel": "チームメンバー"
-    },
-    "controls": {
-      "title": "コントロール",
-      "description": "同じ面上の Segmented と Tabs パネル。",
-      "period": {
-        "week": "週",
-        "month": "月",
-        "quarter": "四半期"
-      },
-      "tabs": {
-        "overview": "概要",
-        "activity": "アクティビティ",
-        "overviewBody": "今は対応事項はありません。",
-        "activityBody": "Mika が今朝2件を承認しました。"
-      }
-    },
-    "form": {
-      "title": "新規メンバー",
-      "description": "Input と Select は同じ control-surface トークンを共有します。",
-      "nameLabel": "名前",
-      "namePlaceholder": "氏名",
-      "roleLabel": "役割",
-      "roleViewer": "閲覧者",
-      "roleEditor": "編集者",
-      "roleAdmin": "管理者"
-    },
-    "table": {
-      "title": "最近の申請",
-      "description": "DataTable は設置先の Card の面をそのまま継承します。",
-      "columnName": "申請",
-      "columnOwner": "担当",
-      "columnStatus": "状態",
-      "toneSuccess": "承認済み",
-      "toneWarning": "宩査中",
-      "toneDestructive": "却下",
-      "row1Name": "経費精算（5月）",
-      "row1Owner": "佐藤 美華",
-      "row2Name": "出張申請（大阪）",
-      "row2Owner": "Daniel Cruz",
-      "row3Name": "機器購入",
-      "row3Owner": "Priya Nair"
-    },
-    "actions": {
-      "title": "オーバーレイ",
-      "openDialog": "ダイアログを開く",
-      "openSheet": "シートを開く",
-      "showToast": "トーストを表示",
-      "tooltipTrigger": "ホバーでツールチップ"
-    },
-    "dialog": {
-      "title": "申請を承認",
-      "description": "このダイアログのパネルは半透明にできませんでした。詳細はギャップレポートを参照。",
-      "body": "Dialog は --background/--border を直接参照し、専用の --dialog-background トークンがないため、ガラススコープ内でも不透明のままです。",
-      "cancel": "キャンセル",
-      "confirm": "承認"
-    },
-    "sheet": {
-      "title": "申請詳細",
-      "description": "Sheet のパネルも Dialog と同じ不透明の行き止まりです。",
-      "body": "sheet.tsx は className に Tailwind の bg-background を埋め込んでおり、代替できる --sheet-background トークンがありません。",
-      "close": "閉じる"
-    },
-    "tooltip": {
-      "text": "Tooltip は背景・枚・影の専用トークンをすべて持ち、完全に到達可能です。"
-    },
-    "toast": {
-      "message": "3件の承認を同期しました。"
-    },
-    "popover": {
-      "title": "通知",
-      "body": "Popover は背景と枚の両方のトークンを持つ唱一のオーバーレイです。",
-      "action": "すべて既読に"
-    }
-  },
   "themeScopeDocs": {
     "page": {
       "subtitle": "テーマを持つ領域。そこから開くオーバーレイも領域のトークンを保つ。",
@@ -1009,5 +899,292 @@
     "check": "要確認",
     "failed": "引き落とし失敗",
     "failedBadge": "失敗"
+  },
+  "themeLab": {
+    "page": {
+      "title": "テーマラボ",
+      "subtitle": "1ページに描画可能な全コンポーネント、複数のテーマ、複数のシードカラー。ここでのテーマはカスタムプロパティだけでできています。",
+      "footer": "テーマとシードはURLに載るため、スクリーンショットと計測は同じマス目を指せます。"
+    },
+    "product": "テーマラボ",
+    "switch": {
+      "title": "テーマとシード",
+      "note": "テーマの追加はCSSファイル1つと docs/themes/index.ts の1行だけ。このページは編集しません。",
+      "themeLabel": "テーマ",
+      "seedLabel": "シードカラー",
+      "seedHex": "シード",
+      "seedInk": "シード上の文字色",
+      "seedContrast": "文字のコントラスト（WCAG 2.2 SC 1.4.3）",
+      "legendPass": "4.5:1 以上",
+      "legendFail": "AA 未満"
+    },
+    "theme": {
+      "base": {
+        "name": "既定",
+        "note": "ライブラリ自身のテーマ。テーマファイルも上書きもなく、テーマ未適用の見え方を示す対照群です。"
+      },
+      "glass": {
+        "name": "グラスモーフィズム",
+        "note": "半透明のすりガラス面、彩度を伴う背景ぼかし、細い明るい縁、そして鮮やかな背景の上に重なる奥行き。"
+      },
+      "flat": {
+        "name": "フラット",
+        "note": "角丸なし、影なし、線で区切る不透明な面。角丸を0にするだけで67行の宣言が必要です。"
+      }
+    },
+    "seed": {
+      "violet": "バイオレット",
+      "azure": "アジュール",
+      "coral": "コーラル",
+      "citron": "シトロン",
+      "navy": "ネイビー"
+    },
+    "nav": {
+      "section": "ワークスペース",
+      "overview": "概要",
+      "reports": "レポート",
+      "people": "メンバー",
+      "settings": "設定",
+      "role": "管理者",
+      "footer": "ログイン中"
+    },
+    "app": {
+      "console": "コンソール",
+      "billing": "請求"
+    },
+    "topbar": {
+      "notifications": "通知",
+      "account": "アカウント"
+    },
+    "menu": {
+      "profile": "プロフィール",
+      "billing": "請求",
+      "logout": "ログアウト"
+    },
+    "popover": {
+      "title": "新着2件",
+      "body": "いま対応が必要なものはありません。",
+      "action": "すべて既読にする"
+    },
+    "section": {
+      "type": "文字・マーク・リズム",
+      "typeNote": "半透明の面で最初に壊れるのは文字色の階調なので、その全段階を同時に並べています。",
+      "actions": "アクション",
+      "display": "ステータスとデータ表示",
+      "tables": "テーブル",
+      "charts": "チャート",
+      "fields": "フォーム部品",
+      "fieldsNote": "入力欄はテーマである前に「入力できる場所」として読めなければなりません。塗り・境界線・フォーカスリング・プレースホルダー・入力済みと空の両状態を並べています。",
+      "nav": "ナビゲーション",
+      "feedback": "フィードバック",
+      "overlays": "オーバーレイ",
+      "overlaysNote": "これらは置いてあるだけでなく計測時に実際に開かれます。いずれもこのDOMの外へポータルされ、ThemeScope のオーバーレイホスト経由でテーマを受け取ります。",
+      "regions": "入れ子になる領域",
+      "chat": "会話",
+      "absent": "描画できなかったもの",
+      "absentNote": "見えない欠落は、誰も勘定に入れない欠落です。"
+    },
+    "absent": {
+      "export": "エクスポート",
+      "reason": "理由",
+      "provider": "プロバイダー。プレビュー実行環境がこのページの上で既にマウントしています。",
+      "overlayPortal": "全オーバーレイのポータル先を付け替えるプロバイダー。ここで使うと、このページが測ろうとしている ThemeScope のホストを置き換えてしまいます。",
+      "themeScope": "このページ自身のラッパーです。",
+      "ownsPage": "ドキュメント全体を占有するシェルで、AppShell の中に入れ子にできません。",
+      "hook": "フックであり、描画する面を持ちません。",
+      "function": "コンポーネントではなく関数です。",
+      "inertia": "Inertia アダプター。このプレビューにないルーターを必要とします。",
+      "needsFile": "ファイル入力から選ばれた実際の File が必要です。",
+      "needsNetwork": "ネットワーク画像が必要なため、リポジトリ内の素材で代替しています。",
+      "needsRouter": "ルートとプリフェッチ可能なクエリが必要です。",
+      "needsQuery": "実際の TanStack Query の結果が必要で、これはテーマではなくデータの話です。",
+      "invisible": "ページ上にありますが、定義上なにも描画しません。",
+      "needsSchema": "zod スキーマが必要ですが、check:example-imports はドキュメントページに react・lucide-react・@godxjp/ui 以外の import を許可していません。",
+      "sameSurface": "ページ上にある AlertDialog を組み立て直した形で、新しい面は描画しません。"
+    },
+    "action": {
+      "save": "保存",
+      "cancel": "キャンセル",
+      "secondary": "セカンダリ",
+      "outline": "アウトライン",
+      "ghost": "ゴースト",
+      "dashed": "破線",
+      "destructive": "削除",
+      "link": "リンク",
+      "disabled": "無効",
+      "search": "検索",
+      "bold": "太字",
+      "unread": "未読",
+      "retry": "再試行",
+      "more": "その他",
+      "share": "共有",
+      "open": "開く"
+    },
+    "align": {
+      "start": "左寄せ",
+      "center": "中央",
+      "end": "右寄せ"
+    },
+    "label": {
+      "variants": "バリアント",
+      "sizes": "サイズ",
+      "toggles": "トグルと評価",
+      "actionsBar": "回答の操作",
+      "badges": "バッジと色見本",
+      "items": "件",
+      "align": "配置",
+      "progress": "使用容量",
+      "people": "チーム",
+      "tools": "ツール",
+      "schedule": "スケジュール",
+      "week": "週",
+      "start": "期間の開始",
+      "end": "期間の終了",
+      "permissions": "権限",
+      "quickPick": "クイック選択",
+      "noResults": "表示するものがありません",
+      "available": "選択可能",
+      "selected": "選択済み",
+      "qr": "登録用QRコード",
+      "thumbnail": "ダッシュボードのスクリーンショット",
+      "credential": "APIキー",
+      "detail": "詳細",
+      "master": "一覧",
+      "catalog": "カタログから追加",
+      "mainNav": "メインナビゲーション",
+      "onThisPage": "このページの内容",
+      "pinned": "固定バー",
+      "skeletons": "読み込み中のプレースホルダー",
+      "assistant": "アシスタント",
+      "loading": "読み込み中",
+      "rating": "評価"
+    },
+    "table": {
+      "name": "名称",
+      "owner": "担当",
+      "status": "状態",
+      "amount": "金額"
+    },
+    "tone": {
+      "neutral": "通常",
+      "success": "承認済み",
+      "warning": "保留",
+      "destructive": "却下",
+      "info": "情報"
+    },
+    "stat": {
+      "members": "メンバー数",
+      "revenue": "売上",
+      "usage": "利用率",
+      "open": "未処理の申請",
+      "hint": "先月比 +3%"
+    },
+    "chart": {
+      "trend": "計画と実績",
+      "plan": "計画",
+      "actual": "実績",
+      "byMonth": "月別",
+      "stacked": "積み上げ",
+      "split": "内訳",
+      "weekly": "直近7日間"
+    },
+    "field": {
+      "name": "名称",
+      "namePlaceholder": "2〜60文字",
+      "email": "メールアドレス",
+      "emailError": "メールアドレスの形式ではありません。",
+      "search": "検索",
+      "searchPlaceholder": "名称またはIDで検索",
+      "quantity": "数量",
+      "password": "パスワード",
+      "notes": "メモ",
+      "tags": "ラベル",
+      "role": "ロール",
+      "date": "日付",
+      "time": "時刻",
+      "timeRange": "シフト",
+      "colour": "ブランドカラー",
+      "volume": "音量",
+      "region": "地域",
+      "account": "勘定科目",
+      "notify": "メール通知",
+      "agree": "利用規約に同意します",
+      "scope": "適用範囲"
+    },
+    "role": {
+      "viewer": "閲覧者",
+      "editor": "編集者",
+      "admin": "管理者"
+    },
+    "perm": {
+      "read": "参照",
+      "write": "更新",
+      "admin": "管理"
+    },
+    "overlay": {
+      "dialog": "ダイアログを開く",
+      "sheet": "シートを開く",
+      "alertDialog": "削除の確認",
+      "tooltip": "ツールチップを表示",
+      "toast": "トーストを表示",
+      "toastMessage": "保存しました。",
+      "twoFactor": "二要素認証を設定",
+      "inlineNote": "Select のリストボックスもオーバーレイです。任意の内容の上に重なるため、3つのうち最も不透明な塗りが必要になります。"
+    },
+    "error": {
+      "title": "このレポートへのアクセス権がありません"
+    },
+    "auth": {
+      "title": "サインイン",
+      "requester": "テーマラボがアクセスを要求しています",
+      "switch": "アカウントを切り替える",
+      "or": "または",
+      "terms": "利用規約",
+      "privacy": "プライバシー"
+    },
+    "chat": {
+      "welcomeTitle": "こんにちは",
+      "welcomeBody": "請求、経費、勤怠についてお手伝いできます。",
+      "assistant": "どのようなご用件でしょうか。",
+      "user": "昨日の請求書を要約して。",
+      "assistantName": "アシスタント",
+      "userName": "あなた",
+      "thoughts": "実行した手順",
+      "placeholder": "メッセージを入力"
+    },
+    "sample": {
+      "alpha": "北部地区",
+      "beta": "本社オフィス",
+      "gamma": "南部倉庫",
+      "delta": "港湾別棟",
+      "epsilon": "現場チーム",
+      "one": "ファム・タイ・ズオン",
+      "two": "佐藤 舞",
+      "three": "ディエゴ・コスタ",
+      "short": "数分前に更新されました。",
+      "long": "整いすぎた見本こそが欠陥です。この行には3行に折り返すラベルと1語のラベル、改行できない長い語と空のセル、そしてレイアウトが受け取りうる最長の文字列が同居しています。",
+      "headline": "このコンポーネント群は複雑なテーマを着られるか。",
+      "linkLabel": "トークン解決のルールを読む",
+      "codeLabel": "テーマの抜粋",
+      "secure": "セッションは暗号化されています",
+      "syncing": "同期中",
+      "marqueeLabel": "スクロールを一時停止",
+      "aspectTitle": "比率が固定された領域"
+    },
+    "launcher": {
+      "trigger": "アプリ",
+      "title": "アプリを切り替える"
+    },
+    "org": {
+      "trigger": "組織"
+    },
+    "twoFactor": {
+      "title": "二要素認証を設定する",
+      "description": "認証アプリでコードを読み取り、表示された6桁を入力してください。",
+      "manualKey": "または、このキーを手入力してください",
+      "code": "6桁のコード",
+      "recovery": "リカバリーコードは安全な場所に保管してください。表示は一度きりです。",
+      "acknowledge": "保管しました"
+    }
   }
 }
