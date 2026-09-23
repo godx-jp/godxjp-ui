@@ -2127,7 +2127,12 @@
     flex: 0 0 auto;
     place-items: center;
     border-radius: var(--radius);
-    color: white;
+    /* The mark's FILL is the caller's (`product.color`, defaulting to `hsl(var(--attention))`), so
+     * the library cannot derive an ink that is legible on it — and a literal `white` is wrong the
+     * moment that fill is light. Measured on the theme lab across 3 themes x 5 seeds: white on the
+     * default `--attention` orange is 3.38:1 in 15/15 cells, under the 4.5:1 floor in every one.
+     * A knob, `initial`, resolved here so a scoped `[data-tenant]` override reaches it (gh#884). */
+    color: var(--sidebar-logo-mark-color, white);
     font-size: var(--sidebar-logo-mark-font-size);
     font-weight: 700;
   }

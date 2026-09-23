@@ -52,6 +52,12 @@
   --button-outline-background: initial; /* default = hsl(var(--background)) at the call site */
   --button-outline-border-color: initial; /* default = hsl(var(--input)) at the call site */
   --button-secondary-background: initial; /* default = hsl(var(--secondary)) at the call site */
+  /* THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The
+   * others above are backgrounds, so their contrast is owned by the label token that rides on them;
+   * this one IS the label, over a surface the library does not control. `--primary` is only ever
+   * guaranteed against `--primary-foreground`, so a light seed or a translucent panel makes the
+   * default illegible (measured 1.43:1 at `#FFD400`, 1.10:1 on glass) and the service sets this. */
+  --button-link-foreground: initial; /* default = hsl(var(--primary)) at the call site */
   --button-backdrop-blur-size: initial; /* default = none — a button blurs nothing */
   /* Control surface knobs — font-size, border width and resting shadow of every
    * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them

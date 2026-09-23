@@ -112,11 +112,30 @@
   .ui-control-composite-field[data-state="open"],
   .ui-otp-slot[data-active="true"],
   .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
-    outline: var(--focus-ring-width) solid
-      hsl(
-        var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
-          var(--focus-ring-opacity, 1)
-      );
+    /* THREE LONGHANDS, NOT THE `outline` SHORTHAND — and the difference is the whole indicator.
+     *
+     * `--focus-outline-color` / `--focus-ring-color` are contracted as the TWO-VALUE form, a bare
+     * `H S% L%` triple read inside `hsl()` (cardinal rule 48, docs/TOKENS.md). A consumer who sets
+     * the complete-value form instead — `--focus-ring-color: hsl(220 80% 24%)`, the shape most of
+     * this library's other knobs take — nests `hsl()` inside `hsl()`. That is invalid at
+     * computed-value time, and CSS discards the WHOLE declaration it appears in: as a shorthand
+     * that took `outline-style` and `outline-width` down with the colour, so the declaration fell
+     * back to `medium none currentcolor` and the control had NO focus indicator at all. Measured
+     * in Chromium: `outline-width: 3px, outline-style: none` — which is also exactly what an
+     * instrument reading width + colour and not style reports as "a 3px ring in the brand colour"
+     * (gh#885 · gh#884's sweep read it that way on an unfocused box).
+     *
+     * Split, the failure is contained to `outline-color`, which falls back to `currentcolor` — a
+     * ring that is the wrong colour instead of a ring that does not exist. WCAG 2.2 SC 2.4.11 asks
+     * for a visible indicator; a mis-tinted one can still satisfy it, a missing one never can.
+     * BYTE-IDENTICAL when the token is in the contracted form: `outline` sets exactly these three
+     * longhands (`outline-offset` was never part of it) and the values are unchanged. */
+    outline-width: var(--focus-ring-width);
+    outline-style: solid;
+    outline-color: hsl(
+      var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
+        var(--focus-ring-opacity, 1)
+    );
     outline-offset: var(--focus-ring-offset);
     /* Both are zeroed, so the mark appears the instant focus lands rather than easing in. */
     transition:

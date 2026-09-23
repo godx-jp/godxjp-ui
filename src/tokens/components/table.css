@@ -127,8 +127,10 @@
   --table-row-striped-background: initial;
   /* Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row
    * paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full
-   * stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real
-   * alpha, not a flag: a theme may also dial a lighter stripe (`60%`).
+   * stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a ratio
+   * and not a flag: a theme may also dial a lighter stripe (`60%`). It is a SHARE OF the stripe
+   * colour rather than the resulting alpha (gh#886) — the base default `hsl(var(--muted) / 0.8)`
+   * already carries an alpha, so `100%` composites to 0.8 and `60%` to 0.48.
    *
    * THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes
    * every Table and DataTable. The `striped` prop is the per-instance override on top of it —

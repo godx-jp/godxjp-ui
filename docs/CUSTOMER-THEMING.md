@@ -665,19 +665,25 @@ screenshot during that build was one of the missing 90:
 - a Topbar hover block — `--topbar-item-hover-background`, same shape.
 
 **`--focus-ring-color` is on that list, and it is the worst one to get wrong.** Every ring in the
-package is painted by one rule (`src/styles/focus-ring.css:116-119`):
+package is painted by one rule in `src/styles/focus-ring.css`:
 
 ```css
-outline: var(--focus-ring-width) solid
-  hsl(
-    var(--focus-outline-color, var(--focus-ring-color, var(--ring))) / var(--focus-ring-opacity, 1)
-  );
+outline-width: var(--focus-ring-width);
+outline-style: solid;
+outline-color: hsl(
+  var(--focus-outline-color, var(--focus-ring-color, var(--ring))) / var(--focus-ring-opacity, 1)
+);
 ```
 
-So it is **HSL components** — and it is read with an alpha applied, which means both mistakes from
-§1 delete the focus indicator outright rather than mistinting it: write `hsl(...)` into it, or bake
-an alpha into it, and the whole `outline` declaration is invalid at computed-value time. Unset it
-follows `--ring`, which is the package's, not your theme's. A ring tuned for a light page is a WCAG
+So it is **HSL components** — and it is read with an alpha applied, so both mistakes from §1 (write
+`hsl(...)` into it, or bake an alpha into it) make the colour invalid at computed-value time. The
+three longhands are what contains the damage (gh#885): only `outline-color` is discarded, falling
+back to `currentcolor`, so you get a ring in the wrong colour. **As a single `outline` shorthand it
+used to take `outline-width` and `outline-style` down with it and delete the indicator outright** —
+Chromium reported `outline-width: 3px; outline-style: none`, which reads in a measurement tool that
+ignores `outline-style` as "a 3px ring in the brand colour". Fix the FORM of the token; a
+`currentcolor` ring is not the ring you asked for. Unset it follows `--ring`, which is the
+package's, not your theme's. A ring tuned for a light page is a WCAG
 2.2 SC 1.4.11 defect on a dark one (3:1 against **every** surface a control sits on) and an SC 2.4.7
 failure if it vanishes. See the focus-ring section above for the switch, the weight and the
 per-component knobs.

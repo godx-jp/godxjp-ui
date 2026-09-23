@@ -265,8 +265,18 @@
     background: hsl(var(--secondary) / 0.8);
   }
 
+  /* LINK — the one Button variant whose brand colour is INK on a page surface rather than a FILL.
+   *
+   * `--primary` is contracted against `--primary-foreground`: that is the pair `tenantTheme()`
+   * computes and the only one it guarantees. Nothing guarantees the same colour as text on
+   * `--background`, and measured over the theme lab's 3 themes x 5 seeds this ink clears WCAG 2.2
+   * AA (4.5:1) in 6 of 15 cells — 3.71:1 at a coral seed, 1.43:1 at `#FFD400`, and 1.10-3.33:1 in
+   * every cell of the glass theme, whose panel is translucent over a brand-tinted backdrop. The
+   * knob is therefore not a nicety: a service whose seed is light or whose surface is not opaque
+   * MUST set it. The default stays `hsl(var(--primary))` byte for byte, because changing it would
+   * move the shipped look at the seeds where it is already legible; the verdict lives in gh#884. */
   .ui-button--link {
-    color: hsl(var(--primary));
+    color: var(--button-link-foreground, hsl(var(--primary)));
     text-underline-offset: 4px;
   }
 

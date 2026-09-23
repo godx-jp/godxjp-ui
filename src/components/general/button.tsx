@@ -35,7 +35,15 @@ const buttonVariants = cva("ui-button", {
       dashed: "ui-button--dashed border border-dashed hover:bg-accent hover:text-accent-foreground",
       secondary: "ui-button--secondary text-secondary-foreground hover:bg-secondary/80",
       ghost: "ui-button--ghost hover:bg-accent hover:text-accent-foreground",
-      link: "ui-button--link text-primary underline-offset-4 hover:underline",
+      // `text-primary` gone for the reason `bg-background` went in gh#880 and the checkbox's
+      // `data-[state=checked]:bg-primary` went before it: a utility is layered AFTER components in
+      // Tailwind v4, so it silently out-ranked `.ui-button--link`'s own `color` and NO token could
+      // reach this ink. gh#884 measured the consequence — the link is the one Button variant whose
+      // brand colour is TEXT on a page surface rather than a fill, and it fails WCAG 2.2 AA at
+      // 9 of 15 theme x seed cells. The components-layer rule now resolves
+      // `var(--button-link-foreground, hsl(var(--primary)))`, and `text-primary` compiled to
+      // exactly that fallback, so the default is byte-identical.
+      link: "ui-button--link underline-offset-4 hover:underline",
       // NO utilities, deliberately: `bare` is the absence of geometry, and every property it has
       // to unset (the size tier's height and inline inset) is declared in the components layer.
       // A utility here would be the only thing that could out-rank it. See `.ui-button--bare`.

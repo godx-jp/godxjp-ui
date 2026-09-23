@@ -1009,6 +1009,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--secondary)) at the call site"
   },
   {
+    "name": "--button-link-foreground",
+    "value": "initial",
+    "description": "THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The others above are backgrounds, so their contrast is owned by the label token that rides on them; this one IS the label, over a surface the library does not control. `--primary` is only ever guaranteed against `--primary-foreground`, so a light seed or a translucent panel makes the default illegible (measured 1.43:1 at `#FFD400`, 1.10:1 on glass) and the service sets this. default = hsl(var(--primary)) at the call site"
+  },
+  {
     "name": "--button-backdrop-blur-size",
     "value": "initial",
     "description": "default = none — a button blurs nothing"
@@ -3741,7 +3746,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--sheet-overlay-alpha",
     "value": "40%",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886). The base is a finished colour that already carries `/0.5`, so `40%` composites to **0.20**, and a theme author who sets `62%` gets 0.31. That is the library-wide convention for a `--*-alpha` knob in the `color-mix(in srgb, <base> <alpha>, transparent)` share form — 100% means \"the base as authored\", 0% means gone — and it is deliberate: the calibrated depth lives ONCE in `--overlay-background` so a service retints every scrim with one line. Want an absolute opacity instead? Set `--sheet-overlay-background` directly; it wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 40% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.20)"
   },
   {
     "name": "--sheet-overlay-backdrop-blur-size",
@@ -3831,7 +3836,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--dialog-overlay-alpha",
     "value": "60%",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "description": "A SHARE OF `--overlay-background`, NOT THE RESULTING ALPHA (gh#886) — the miss that was reported, because this knob carried no note of its own and `60%` reads as \"0.6\". The base is a finished colour with `/0.5` baked in, so the product is **0.30**, and `62%` gives 0.31 rather than the darker scrim that was asked for. See `--sheet-overlay-alpha` above for the convention and for the escape hatch: `--dialog-overlay-background` is an absolute colour and wins outright. Pinned by src/styles/__tests__/overlay-alpha-share-886.test.ts. 60% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.30)"
   },
   {
     "name": "--dialog-overlay-backdrop-blur-size",
@@ -6359,6 +6364,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
   },
   {
+    "name": "--sidebar-logo-mark-color",
+    "value": "initial",
+    "description": "The initial of the brand mark, whose FILL comes from the caller (`product.color`). No token can derive this ink — the library never sees that fill — and the literal it replaces measured 3.38:1 on the default `--attention` orange in all 15 theme x seed cells (gh#884). default = white at the call site"
+  },
+  {
     "name": "--sidebar-avatar-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
@@ -6486,7 +6496,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--app-shell-mobile-nav-alpha",
     "value": "40%",
-    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole system with one --overlay-background and every overlay keeps its calibrated depth."
+    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole system with one --overlay-background and every overlay keeps its calibrated depth. A SHARE, not the resulting alpha (gh#886): the base already carries `/0.5`, so the product is 0.20. 40% of rgb(0 0 0 / 0.5) = rgb(0 0 0 / 0.20)"
   },
   {
     "name": "--app-shell-mobile-nav-inset",
@@ -7771,7 +7781,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--table-row-striped-alpha",
     "value": "0%",
-    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a real alpha, not a flag: a theme may also dial a lighter stripe (`60%`). THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes every Table and DataTable. The `striped` prop is the per-instance override on top of it — `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root without the freeze rule (docs/TOKENS.md)."
+    "description": "Zebra SWITCH (gh#700) — how much of --table-row-striped-background every EVEN logical body row paints: `0%` = no stripe (the default, byte-identical to an unstriped table), `100%` = the full stripe. It is the percentage a `color-mix(… , transparent)` reads at the row, so it is a ratio and not a flag: a theme may also dial a lighter stripe (`60%`). It is a SHARE OF the stripe colour rather than the resulting alpha (gh#886) — the base default `hsl(var(--muted) / 0.8)` already carries an alpha, so `100%` composites to 0.8 and `60%` to 0.48. THE SERVICE-WIDE DEFAULT IS THIS ONE LINE: `:root { --table-row-striped-alpha: 100%; }` stripes every Table and DataTable. The `striped` prop is the per-instance override on top of it — `striped` sets `100%` on that table, `striped={false}` sets `0%`, and leaving the prop out inherits whatever the theme chose. A plain length is not a role mirror, so it lives on :root without the freeze rule (docs/TOKENS.md)."
   },
   {
     "name": "--table-row-hover-background",

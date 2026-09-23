@@ -4,7 +4,7 @@
     "components": 171,
     "patterns": 20,
     "rules": 50,
-    "tokens": 2017,
+    "tokens": 2019,
     "vocabulary": 14
   },
   "files": [
@@ -55,7 +55,7 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1717,
+      "component": 1719,
       "foundation": 202,
       "semantic": 98
     },
