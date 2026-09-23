@@ -71,6 +71,15 @@ Concretely, for this library:
   text rather than by hue.
 - **Measure the composited pixel, not the declared colour.** A `rgba()` fill over a busy backdrop
   is not the colour you wrote. Screenshot, sample the pixel under the text, compute the ratio.
+- **A CLAMPED INK IS CLAMPED AGAINST ONE SURFACE, AND A DARK THEME MUST SAY WHICH.** The sharpest
+  thing measurement taught here, and no source above says it. A generator that walks an ink until it
+  clears 4.5:1 has to be told the ground: `tenantTheme(hex)` defaults to the package's LIGHT surface,
+  so on a dark theme it walks the ink the WRONG WAY — measured on glass/citron it emitted
+  rgb(124,103,0) over a #3b382b panel and read **2.09:1**, while the theme's own `--foreground` beside
+  it was near-white. Worse, it emits the result as a literal in `style`, which outranks the
+  `--text-link` the theme declared. Pass the theme's own surface (`options.surface`), and pass the
+  LIGHTEST surface the ink lands on: ink walked away from a dark ground goes lighter, and lighter ink
+  on a darker ground only gains contrast, so clearing the worst case clears all of them.
 
 ## 4. Overlays — where this matters most
 
@@ -128,7 +137,22 @@ field cannot currently differ from a card, which is the first thing this table a
 ## 6. What this library must expose for any of it to be reachable
 
 Measured on the first attempt: **1 of 19 surfaces** could take a blur (Topbar), **3 of 19** a
-gradient. The theme API cannot currently express this standard. The gaps, in priority order:
+gradient. **Measured now, token-only, on `/showcase/theme-lab?theme=glass`: 12 of 25 surfaces carry
+a backdrop blur, 19 of 25 are translucent, 9 of 25 shadowed, and contrast is 557–558 of 559 strings
+at every one of the five seeds** (the remainder is one badge on a hovered table row at 4.43:1).
+
+Items 3, 5 and 6 below are CLOSED — kept with their measurements because each names a shape of
+defect worth recognising again, not because it is still open:
+
+- **3 — Dialog and Sheet fills** are knobs now (`--dialog-surface-background`,
+  `--sheet-surface-background`, `src/tokens/components/feedback.css`), both `initial` and resolved at
+  the call site.
+- **5 — Card's gradient** is a real two-stop ramp; `card-layout.css` no longer names one variable
+  twice.
+- **6 — Nested control surfaces** have knobs: `--tabs-list-background` and
+  `--tabs-trigger-active-background` exist and are read (`navigation-layout.css:268`).
+
+The gaps that REMAIN, in priority order:
 
 1. **A backdrop-blur knob on every surface that can float** — Card, Dialog, Sheet, Popover,
    DropdownMenu, Select listbox, Tooltip, Toast, Sidebar, Table surface. Today only

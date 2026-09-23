@@ -312,7 +312,9 @@ A `data-*` attribute the package never writes is a selector you can hold a style
 }
 ```
 
-Use `--text-error`, not `--destructive`: the fill tier is tuned for a white label on top of it and measures 2.95:1 as ink on the dark card (gh#610). The whole family is `--prose-link-color` (default `hsl(var(--primary))`, resolved at the anchor so a scoped re-tint reaches it) and `--prose-link-decoration-line` (default `underline`). Set the first on `[data-tenant]` to re-tint every wiki link at once.
+Use `--text-error`, not `--destructive`: the fill tier is tuned for a white label on top of it and measures 2.95:1 as ink on the dark card (gh#610). The whole family is `--prose-link-color` and `--prose-link-decoration-line` (default `underline`). Set the first on `[data-tenant]` to re-tint every wiki link at once.
+
+`--prose-link-color`'s default is now `hsl(var(--text-link, var(--primary)))`, not `hsl(var(--primary))` (gh#887). The brand FILL was being used as INK here, and a fill has no contrast guarantee as ink — measured across five seeds, prose links ran 1.25:1 to 3.64:1 on the surfaces they land on. `--text-link` is the INK role, which `tenantTheme` clamps to 4.5:1, and `--primary` remains the last fallback so a consumer who set neither sees no change. Set `--text-link` once and every brand-as-ink surface follows; set `--prose-link-color` only to make prose links differ from the rest.
 
 There is **no prop** naming the attribute, deliberately: the attribute IS the API, the same way `data-expanded-row` and `data-axe-open` are. A prop would make the package own a name only your renderer knows, and would let exactly one state be marked.
 
@@ -350,6 +352,7 @@ The interaction states are **derived from the `--primary` in scope, at the eleme
 | `--sidebar-item-active-foreground` | **yes** — defaults to the live `--primary-active` | — |
 | `--focus-outline-color` | **yes, through `--ring`** — every keyboard-focus outline (gh#687) | `var(--focus-ring-color, var(--ring))`, read at the focused element — so it follows the `--ring` you set in the scope |
 | Radio button bar selected (`--choice-button-*`), Slider active dot, BackTop progress, `.ui-brand-glow` | **yes** (gh#687) | `var(--primary)` / `var(--primary-foreground)` at the call site |
+| `--text-link`, `--text-brand`, `--text-primary` | **yes, and they are the BRAND AS INK** — Button `variant="link"`, prose and Anchor links, the active sidebar/NavList label, MegaMenu's current trigger, Timeline's current title, tinted Avatar, the checked radio dot, `Text tone="primary"` and 20 more (gh#887) | `tenantTheme` returns all three as literals, each walked away from the surface until it clears 4.5:1. They are NOT a step on the `--primary` ramp: a fill is tuned for a label ON it, and the same colour used as ink on a page surface has no guarantee at all — measured at 1.24:1 on the lightest seed before this. |
 | Topbar item / AppLauncher tile / Segmented / filled-control hover | **follow `--accent`** (gh#687) | `var(--accent)` / `var(--accent-foreground)` at the call site |
 | `--primary-foreground` | **no — set it** | the label on a filled primary; you choose it for your seed |
 | `--ring` | **only on the element that declares `--primary`** — set it in a nested scope | `var(--primary)` on `:root` / `.dark`. `--ring` is a public role read as `hsl(var(--ring))` in consumer CSS, so it cannot become a live default; a scope below `<html>` inherits the root's |
