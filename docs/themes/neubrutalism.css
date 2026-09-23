@@ -1,0 +1,529 @@
+/**
+ * neubrutalism theme — the FOURTH theme, and the one chosen to break the token model rather than
+ * to flatter it.
+ *
+ * Reference: https://neubrutalism.com/. The style is defined by four moves, and they were picked
+ * for this lab because three of them are things no theme here had asked the API for before:
+ *
+ *   1. square corners            — `flat.css` already proved this one, at 68 declarations
+ *   2. THICK BLACK BORDERS       — new axis: nothing had tried to change a stroke WIDTH
+ *   3. HARD OFFSET SHADOWS       — new: a shadow with no blur and full alpha, used as structure
+ *   4. SATURATED OPAQUE FILLS    — the exact opposite of `glassmorphism.css`
+ *
+ * SAME CONSTRAINT AS `flat.css` AND `glassmorphism.css`, no exceptions: every line below is a
+ * `--custom-property` declaration under `[data-theme-style="neubrutalism"]`. No `border:`, no
+ * `box-shadow:`, no `border-radius:`, no selector into a `.ui-*` class. Where the look cannot be
+ * expressed that way the RESULT is the finding — `measure-glass.mjs` says which, not this comment.
+ *
+ * ── FINDING A · the `:root` freeze is not a radius quirk, it runs on the STROKE axis too ──────
+ * `flat.css` FINDING 1 records that squaring the corners costs 68 declarations because `--radius`,
+ * its six derived steps and 61 component mirrors are all `:root`-bound. Thickening the borders is
+ * the same shape on a different scale, and finding it a second time is what makes it a PROPERTY of
+ * the token model rather than an accident of one family:
+ *
+ *   `--stroke-hairline … --stroke-2xl` is a real six-step foundation scale (foundation.css:814-819)
+ *   and 44 component knobs read it as `--x: var(--stroke-y)`. Every one of those 44 is declared at
+ *   `:root`, so it substitutes against the ROOT's `--stroke-hairline` and inherits the frozen 1px
+ *   into this scope no matter what the scale says here.
+ *
+ * So the scale is restated AND the mirrors are restated, exactly as the radius family needs both.
+ *
+ * ── FINDING B · and under the mirrors, 107 border widths that are not tokens at all ───────────
+ * The 44 stroke mirrors are the reachable part. Counted across `src/styles/*.css` and
+ * `src/tokens/components/*.css`:
+ *
+ *   107  literal border widths  —  `border: 1px solid hsl(var(--border))` and friends
+ *
+ * The COLOUR in those rules is a token; the WIDTH beside it is a literal. That asymmetry is the
+ * finding: a theme can recolour every border in the library and cannot thicken most of them, so
+ * the single most defining property of this style is the one the API reaches least. Nothing is
+ * worked around here — the thick borders below land where a token exists and nowhere else, and
+ * the measurement is what shows which those are.
+ *
+ * ── FINDING C · shadows came through, and gh#880 is why ───────────────────────────────────────
+ * This theme needs a shadow that is pure structure — no blur, full alpha, hard offset — which is
+ * the furthest thing from what the six foundation steps ship. It works, in one restatement each,
+ * because gh#880 turned `--card-shadow` / `--sheet-shadow` / `--popover-shadow` / `--tooltip-shadow`
+ * / `--segmented-item-selected-shadow` into `initial` knobs that read the foundation step at the
+ * CALL site instead of freezing it at `:root`. Five mirrors are still frozen `var(--shadow-*)`
+ * bindings and take one line each, and they are listed as such.
+ *
+ * That contrast is the useful part: the shadow family was fixed and the stroke family was not, so
+ * this file shows the same model succeeding and failing on two axes at once. The fix shape is
+ * known and it is `initial`.
+ *
+ * ── FINDING D · this theme does not need gh#887's ink walk, and that is a result, not luck ────
+ * `flat.css` FINDING 1b records that seed-derived navigation ink fails AA at both ends of the seed
+ * range on a light canvas. Neubrutalism sidesteps it by construction: the seed paints FILLS, never
+ * ink. Every string on this theme is near-black on a light fill or near-white on a dark one, so
+ * the brand colour never has to carry a contrast contract. It is worth writing down because it is
+ * the cheapest known answer to gh#887 — not "derive safer ink", but "do not use the seed as ink" —
+ * and it costs the theme nothing it wanted.
+ *
+ * ── FINDING E · no translucency, so no fallback is owed ───────────────────────────────────────
+ * docs/TOKEN-RESOLUTION.md §5 puts `prefers-reduced-transparency` and `@supports not
+ * (backdrop-filter)` on the theme that made a surface translucent. Every alpha below is 100% and
+ * no blur knob is turned on. The absence is the proof, same as `flat.css` FINDING 4.
+ */
+[data-theme-style="neubrutalism"] {
+  /* ── Corners. Same 68 declarations `flat.css` FINDING 1 costs, for the same reason:
+   *    `--radius` and its six steps are `:root`-bound and so are 61 component mirrors, so
+   *    one design decision is 68 lines in every theme that makes it. List generated, not
+   *    hand-kept — see the docblock. ───────────────────────────────────────────────────── */
+  --radius: 0;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  --actions-radius: 0;
+  --app-launcher-launchpad-mark-radius: 0;
+  --app-launcher-launchpad-tile-radius: 0;
+  --app-launcher-mark-radius: 0;
+  --app-launcher-tile-radius: 0;
+  --attachments-card-radius: 0;
+  --avatar-square-radius: 0;
+  --badge-radius: 0;
+  --button-radius: 0;
+  --calendar-day-radius: 0;
+  --calendar-weekday-radius: 0;
+  --card-radius: 0;
+  --card-service-launcher-icon-radius: 0;
+  --cascader-result-radius: 0;
+  --chart-trend-bar-radius: 0;
+  --chat-bubble-radius: 0;
+  --code-block-radius: 0;
+  --control-affix-action-radius: 0;
+  --control-radius: 0;
+  --conversations-item-radius: 0;
+  --descriptions-border-radius: 0;
+  --draggable-panel-radius: 0;
+  --float-button-group-radius: 0;
+  --legal-document-toc-item-radius: 0;
+  --logo-radius: 0;
+  --mega-menu-link-radius: 0;
+  --mega-menu-panel-radius: 0;
+  --mega-menu-trigger-radius: 0;
+  --menu-item-radius: 0;
+  --popover-radius: 0;
+  --progress-breakdown-radius: 0;
+  --prose-code-radius: 0;
+  --prose-image-radius: 0;
+  --radius: 0;
+  --radius-2xl: 0;
+  --radius-lg: 0;
+  --radius-md: 0;
+  --radius-sm: 0;
+  --radius-xl: 0;
+  --radius-xs: 0;
+  --segmented-item-radius: 0;
+  --segmented-track-radius: 0;
+  --skeleton-element-radius: 0;
+  --skeleton-radius: 0;
+  --slider-tooltip-radius: 0;
+  --stat-card-icon-radius: 0;
+  --steps-nav-radius: 0;
+  --table-skeleton-radius: 0;
+  --tabs-add-radius: 0;
+  --tabs-card-radius: 0;
+  --tabs-overflow-radius: 0;
+  --tabs-tab-remove-radius: 0;
+  --thought-chain-item-radius: 0;
+  --thumbnail-radius: 0;
+  --time-picker-option-radius: 0;
+  --timeline-grid-event-radius: 0;
+  --tooltip-radius: 0;
+  --transfer-pane-radius: 0;
+  --transfer-row-radius: 0;
+  --tree-node-radius: 0;
+  --tree-select-row-radius: 0;
+  --upload-draft-radius: 0;
+  --upload-dropzone-radius: 0;
+  --upload-picture-badge-radius: 0;
+  --upload-picture-radius: 0;
+  --upload-row-radius: 0;
+  --upload-tile-radius: 0;
+  --welcome-radius: 0;
+
+  /* ── THE STROKE SCALE, and the second axis the `:root` freeze runs on. ─────────────────────
+   *    `--stroke-hairline … --stroke-2xl` is a real foundation scale (foundation.css:814-819) and
+   *    44 component knobs read it. Restating the scale here reaches only the rules that read
+   *    `var(--stroke-*)` DIRECTLY; the 44 knobs are `--x: var(--stroke-y)` declared at `:root`, so
+   *    they froze against the root's values exactly as the radius family does. Both halves are
+   *    below, and `measure-glass.mjs` is what says which of them moved. */
+  --stroke-hairline: 3px;
+  --stroke-sm: 3px;
+  --stroke-md: 4px;
+  --stroke-lg: 5px;
+  --stroke-xl: 6px;
+  --stroke-2xl: 8px;
+
+  /* The 22 frozen mirrors that are genuinely an EDGE. The other 22 stroke mirrors are a
+   * caret, a bar size, a progress ring or a tone rail — thickening those would change what
+   * they MEAN, which is `flat.css` FINDING 2's rule applied to this axis. */
+  --branch-scope-picker-subset-border-width: 3px;
+  --calendar-footer-border-width: 3px;
+  --card-accent-perimeter-ring-width: 3px;
+  --card-accent-perimeter-width: 3px;
+  --card-featured-ring-width: 3px;
+  --checkbox-border-width: 3px;
+  --command-item-divider-width: 3px;
+  --control-border-width: 3px;
+  --descriptions-border-width: 3px;
+  --draggable-panel-border-width: 3px;
+  --logo-divider-width: 3px;
+  --prose-quote-border-width: 3px;
+  --separator-rule-size: 3px;
+  --steps-marker-border-width: 3px;
+  --swatch-border-width: 3px;
+  --table-row-border-width: 3px;
+  --table-summary-border-width: 3px;
+  --tabs-card-rail-border-width: 3px;
+  --thumbnail-border-width: 3px;
+  --timeline-grid-event-border-width: 3px;
+  --upload-avatar-border-width: 3px;
+  --upload-dropzone-border-width: 3px;
+
+  /* ── SHADOWS AS STRUCTURE. No blur, full alpha, hard offset — the move that makes the style
+   *    read as "pasted paper". The six foundation steps are restated; five frozen mirrors follow
+   *    (FINDING C). `--shadow-color` is already `0 0 0`, so `rgb(var(--shadow-color))` at no alpha
+   *    is the pure black this needs. ─────────────────────────────────────────────────────────── */
+  --shadow-xs: 2px 2px 0 rgb(var(--shadow-color));
+  --shadow-sm: 3px 3px 0 rgb(var(--shadow-color));
+  --shadow-md: 4px 4px 0 rgb(var(--shadow-color));
+  --shadow-lg: 6px 6px 0 rgb(var(--shadow-color));
+  --shadow-xl: 8px 8px 0 rgb(var(--shadow-color));
+  --shadow-2xl: 12px 12px 0 rgb(var(--shadow-color));
+
+  --app-launcher-launchpad-mark-shadow: 4px 4px 0 rgb(var(--shadow-color));
+  --card-hover-shadow: 8px 8px 0 rgb(var(--shadow-color));
+  --control-shadow: 3px 3px 0 rgb(var(--shadow-color));
+  --draggable-panel-shadow: 6px 6px 0 rgb(var(--shadow-color));
+  --float-button-shadow: 6px 6px 0 rgb(var(--shadow-color));
+  --mega-menu-panel-shadow: 6px 6px 0 rgb(var(--shadow-color));
+
+  /* ── SURFACES. Opaque paper, pure-black edges. The border is doing the work a shadow does in
+   *    the default theme and a blur does in glass, so it is pure black rather than a hairline
+   *    grey — at anything lighter the style stops reading. ─────────────────────────────────── */
+  --card-background: 0 0% 100%;
+  --card: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --border: 0 0% 0%;
+  --input: 0 0% 0%;
+
+  /* ── INK. Near-black throughout. Solved against `--accent`, the DARKEST fill this theme
+   *    declares (the worst case for a dark ink), using the same sRGB relative-luminance formula
+   *    `measure-glass.mjs` uses. Worst case is the seed-tinted `--accent` at L 88%, whose darkest
+   *    realisation across the five SEEDS is a blue hue at luminance 0.572:
+   *      --foreground        0%   → 15.9:1    --muted-foreground  18%  → 8.06:1
+   *      --text-tertiary     26%  →  5.95:1   brand ink           16%  → 5.91:1
+   *    All clear the 4.5:1 text floor; on `--card` (white) every one is higher. ─────────────── */
+  --foreground: 0 0% 0%;
+  --card-foreground: 0 0% 0%;
+  --popover-foreground: 0 0% 0%;
+  --muted-foreground: 0 0% 18%;
+  --text-tertiary: 0 0% 26%;
+
+  /* ── FILLS. Literal fallbacks; the `@supports` block below re-derives all four from the seed.
+   *    Saturated and LIGHT, because FINDING D depends on it: black ink on a light fill needs no
+   *    contrast contract, so the seed can be as loud as the style wants. ───────────────────── */
+  --background: 48 100% 95%;
+  --muted: 48 60% 90%;
+  --accent: 48 90% 88%;
+  --secondary: 48 80% 90%;
+  --app-shell-main-background: hsl(48 100% 95%);
+
+  /* ── BRAND INK. Hue from the seed, lightness clamped (FINDING D): these roles exist, so they
+   *    are set rather than left to the seed walk, but nothing in this theme relies on them
+   *    carrying the brand at a readable ratio. Same two value FORMS as `flat.css` — a token read
+   *    inside `hsl()` takes a bare triplet, one read as a complete value takes a whole `hsl(...)`,
+   *    and getting it backwards fails silently. ──────────────────────────────────────────────── */
+  --text-link: 48 90% 16%;
+  --text-brand: 48 90% 16%;
+  --text-primary: 48 90% 14%;
+  --anchor-ink-color: 48 90% 16%;
+  --auth-shell-divider-label-color: 0 0% 18%;
+  --org-switcher-meta-foreground: 0 0% 18%;
+  --separator-label-color: 0 0% 18%;
+  --sidebar-item-active-foreground: hsl(48 90% 14%);
+  --sidebar-nav-icon-active-foreground: hsl(48 90% 14%);
+  --mega-menu-trigger-current-foreground: hsl(48 90% 14%);
+  --mega-menu-trigger-open-foreground: hsl(48 90% 14%);
+  --mega-menu-link-current-foreground: hsl(48 90% 14%);
+  --timeline-grid-event-muted-color: hsl(0 0% 18%);
+
+  /* ── FOCUS. Pure black and THICK — the one place this style and WCAG 2.2 SC 2.4.11 want the
+   *    same thing. Pinned off the brand for the reason `flat.css` gives: a ring that follows the
+   *    seed is invisible for a `#FFD400` tenant. ───────────────────────────────────────────── */
+  --focus-ring-color: 0 0% 0%;
+  --focus-outline-color: 0 0% 0%;
+  --focus-ring-glow-color: 0 0% 0%;
+  --control-outline: 0 0% 0%;
+  --focus-ring-width: calc(3px * var(--focus-outline));
+  --region-focus-ring-color: hsl(0 0% 0%);
+
+  /* ── INTERACTION STATES. The canonical neubrutalism hover is the element pressing INTO its
+   *    shadow — a transform, which no token expresses and which is therefore not attempted here.
+   *    What is left is the fill, so a hover is a firmly DARKER step of the same seed rather than a
+   *    wash: at this saturation a 4% step is invisible. The ink never drops its ratio to signal a
+   *    state (docs/GLASSMORPHISM-STANDARD.md §3). ──────────────────────────────────────────── */
+  --topbar-item-hover-background: 48 90% 80%;
+  --topbar-item-hover-color: 0 0% 0%;
+  --segmented-item-hover-background: 48 90% 80%;
+  --segmented-item-hover-color: 0 0% 0%;
+  --segmented-item-active-background: 48 90% 72%;
+  --app-launcher-tile-hover-background: 48 90% 80%;
+  --app-launcher-tile-hover-color: 0 0% 0%;
+  --control-variant-filled-hover-background: 48 90% 80%;
+  --choice-button-selected-color: 0 0% 0%;
+  --choice-button-selected-border-color: 0 0% 0%;
+  --secondary-hover: 48 80% 80%;
+  --secondary-active: 48 80% 72%;
+
+  --menu-item-hover-background: hsl(48 90% 82%);
+  --menu-item-hover-foreground: hsl(0 0% 0%);
+  --table-row-hover-background: hsl(48 90% 86%);
+  --table-row-selected-background: hsl(48 90% 78%);
+  --tree-node-hover-background: hsl(48 90% 86%);
+  --tree-node-selected-background: hsl(48 90% 78%);
+  --tree-node-selected-foreground: hsl(0 0% 0%);
+  --mega-menu-trigger-hover-background: hsl(48 90% 82%);
+  --mega-menu-trigger-hover-foreground: hsl(0 0% 0%);
+  --mega-menu-link-hover-background: hsl(48 90% 82%);
+  --mega-menu-link-hover-foreground: hsl(0 0% 0%);
+  --sidebar-nav-item-hover-foreground: hsl(0 0% 0%);
+  --sidebar-nav-icon-hover-foreground: hsl(0 0% 0%);
+  --conversations-item-active-background: hsl(48 90% 78%);
+  --conversations-item-active-color: hsl(0 0% 0%);
+  --tabs-count-active-background: hsl(48 90% 74%);
+  --tabs-count-active-color: hsl(0 0% 0%);
+  --toggle-soft-hover-background: hsl(48 90% 84%);
+  --toggle-pressed-count-background: hsl(48 90% 74%);
+  --toggle-pressed-count-color: hsl(0 0% 0%);
+  --toggle-pressed-border-color: hsl(0 0% 0%);
+  --switch-unchecked-background: hsl(0 0% 72%);
+  --switch-content-unchecked-foreground: hsl(0 0% 12%);
+
+  /* ── FINDING A, a THIRD time: the frozen INK mirrors. ─────────────────────────────────────────
+   *    Setting `--muted-foreground` here moved the roles that read it AT THE CALL SITE and left
+   *    behind every `:root` mirror that reads it through a `var()`. Measured, not assumed: the
+   *    Segmented label computed `rgb(104, 102, 94)` inside this scope — the library's own
+   *    `44 5% 39%` — while the scope's own `--muted-foreground` was `0 0% 18%`, and it failed at
+   *    4.15-4.37:1 in four of five light cells. Thirteen mirrors have this shape; the list is
+   *    generated:
+   *      grep -rhoE -- '--[a-z0-9-]+:\s*var\(--(muted-foreground|foreground|text-tertiary)\)' \
+   *        src/tokens/components/*.css
+   *    So the freeze is now measured on THREE axes in one theme — 68 radius mirrors, 44 stroke
+   *    mirrors, 13 ink mirrors, 125 declarations that exist only because a `var()` substitutes
+   *    where it is DECLARED. That is the finding; restating them is the cost. ─────────────────── */
+  --activity-color: 0 0% 18%;
+  --app-launcher-group-label-color: 0 0% 18%;
+  --app-launcher-tile-color: 0 0% 0%;
+  --choice-button-color: 0 0% 0%;
+  --control-count-color: 0 0% 18%;
+  --input-addon-color: 0 0% 18%;
+  --segmented-item-color: 0 0% 18%;
+  --segmented-item-selected-color: 0 0% 0%;
+  --slider-mark-color: 0 0% 18%;
+  --topbar-item-color: 0 0% 18%;
+
+  --text-action-color: hsl(0 0% 0%);
+  --text-action-color-hover: hsl(0 0% 18%);
+}
+
+/* Seed-derived fills. The literals above stand where relative colour is unsupported. Only the
+ * HUE follows the seed — every lightness is pinned, because lightness is not luminance and one
+ * clamp cannot serve the hue circle (the number `flat.css` had to move twice). Solved with the
+ * sRGB formula against all five `SEEDS` from `docs/themes/index.ts`: worst case is the violet
+ * seed's `--accent`, where `--text-tertiary` reads 6.35:1. */
+@supports (color: hsl(from red h s l)) {
+  [data-theme-style="neubrutalism"] {
+    --background: from hsl(var(--primary)) h 100% 95%;
+    --muted: from hsl(var(--primary)) h 60% 90%;
+    --accent: from hsl(var(--primary)) h 90% 88%;
+    --secondary: from hsl(var(--primary)) h 80% 90%;
+    --app-shell-main-background: hsl(from hsl(var(--primary)) h 100% 95%);
+
+    --text-link: from hsl(var(--primary)) h 90% 16%;
+    --text-brand: from hsl(var(--primary)) h 90% 16%;
+    --text-primary: from hsl(var(--primary)) h 90% 14%;
+    --anchor-ink-color: from hsl(var(--primary)) h 90% 16%;
+    --sidebar-item-active-foreground: hsl(from hsl(var(--primary)) h 90% 14%);
+    --sidebar-nav-icon-active-foreground: hsl(from hsl(var(--primary)) h 90% 14%);
+    --mega-menu-trigger-current-foreground: hsl(from hsl(var(--primary)) h 90% 14%);
+    --mega-menu-trigger-open-foreground: hsl(from hsl(var(--primary)) h 90% 14%);
+    --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 90% 14%);
+
+    --topbar-item-hover-background: from hsl(var(--primary)) h 90% 80%;
+    --segmented-item-hover-background: from hsl(var(--primary)) h 90% 80%;
+    --segmented-item-active-background: from hsl(var(--primary)) h 90% 72%;
+    --app-launcher-tile-hover-background: from hsl(var(--primary)) h 90% 80%;
+    --control-variant-filled-hover-background: from hsl(var(--primary)) h 90% 80%;
+    --secondary-hover: from hsl(var(--primary)) h 80% 80%;
+    --secondary-active: from hsl(var(--primary)) h 80% 72%;
+
+    --menu-item-hover-background: hsl(from hsl(var(--primary)) h 90% 82%);
+    --table-row-hover-background: hsl(from hsl(var(--primary)) h 90% 86%);
+    --table-row-selected-background: hsl(from hsl(var(--primary)) h 90% 78%);
+    --tree-node-hover-background: hsl(from hsl(var(--primary)) h 90% 86%);
+    --tree-node-selected-background: hsl(from hsl(var(--primary)) h 90% 78%);
+    --mega-menu-trigger-hover-background: hsl(from hsl(var(--primary)) h 90% 82%);
+    --mega-menu-link-hover-background: hsl(from hsl(var(--primary)) h 90% 82%);
+    --conversations-item-active-background: hsl(from hsl(var(--primary)) h 90% 78%);
+    --tabs-count-active-background: hsl(from hsl(var(--primary)) h 90% 74%);
+    --toggle-soft-hover-background: hsl(from hsl(var(--primary)) h 90% 84%);
+    --toggle-pressed-count-background: hsl(from hsl(var(--primary)) h 90% 74%);
+  }
+}
+
+/**
+ * The dark polarity. Same gh#896 shape as `flat.css` FINDING 5 and the same fix: the selector
+ * pair mirrors the library's own `.dark, :root[data-theme="dark"]` so this is the SAME div matched
+ * at (0,2,0), beating the base rule's (0,1,0) on every property it restates — and leaving the 68
+ * radius lines, the 22 stroke lines and the shadow geometry flowing from the base rule untouched,
+ * because the cascade resolves per PROPERTY, not per rule.
+ *
+ * `--shadow-color` inverts to white. A hard black shadow on a black canvas is not a subtle shadow,
+ * it is no shadow — the offset is the whole device here, so it has to be the thing the canvas is
+ * not. This is the one token in the file whose DARK value is not a lightness step of its light
+ * value, and it is why the shadow family being themeable (FINDING C) mattered twice over.
+ *
+ * Ink solved against `--accent` again — in dark it is the LIGHTEST fill and so the worst case for
+ * a light ink, the inverse of the light block. Across all five seeds the worst is the citron
+ * seed: `--text-tertiary` 4.84:1, `--muted-foreground` 5.90:1, `--foreground` 7.77:1.
+ */
+.dark [data-theme-style="neubrutalism"],
+[data-theme="dark"] [data-theme-style="neubrutalism"] {
+  --shadow-color: 255 255 255;
+
+  --card-background: 0 0% 14%;
+  --card: 0 0% 14%;
+  --popover: 0 0% 14%;
+  --border: 0 0% 100%;
+  --input: 0 0% 100%;
+
+  --foreground: 0 0% 100%;
+  --card-foreground: 0 0% 100%;
+  --popover-foreground: 0 0% 100%;
+  --muted-foreground: 0 0% 88%;
+  --text-tertiary: 0 0% 80%;
+
+  --background: 0 0% 8%;
+  --muted: 48 60% 16%;
+  --accent: 48 90% 20%;
+  --secondary: 48 80% 18%;
+  --app-shell-main-background: hsl(0 0% 8%);
+
+  --text-link: 48 90% 86%;
+  --text-brand: 48 90% 86%;
+  --text-primary: 48 90% 90%;
+  --anchor-ink-color: 48 90% 86%;
+  --auth-shell-divider-label-color: 0 0% 88%;
+  --org-switcher-meta-foreground: 0 0% 88%;
+  --separator-label-color: 0 0% 88%;
+  --sidebar-item-active-foreground: hsl(48 90% 90%);
+  --sidebar-nav-icon-active-foreground: hsl(48 90% 90%);
+  --mega-menu-trigger-current-foreground: hsl(48 90% 90%);
+  --mega-menu-trigger-open-foreground: hsl(48 90% 90%);
+  --mega-menu-link-current-foreground: hsl(48 90% 90%);
+  --timeline-grid-event-muted-color: hsl(0 0% 88%);
+
+  --focus-ring-color: 0 0% 100%;
+  --focus-outline-color: 0 0% 100%;
+  --focus-ring-glow-color: 0 0% 100%;
+  --control-outline: 0 0% 100%;
+  --region-focus-ring-color: hsl(0 0% 100%);
+
+  --topbar-item-hover-background: 48 90% 22%;
+  --topbar-item-hover-color: 0 0% 100%;
+  --segmented-item-hover-background: 48 90% 22%;
+  --segmented-item-hover-color: 0 0% 100%;
+  --segmented-item-active-background: 48 90% 26%;
+  --app-launcher-tile-hover-background: 48 90% 22%;
+  --app-launcher-tile-hover-color: 0 0% 100%;
+  --control-variant-filled-hover-background: 48 90% 22%;
+  --choice-button-selected-color: 0 0% 100%;
+  --choice-button-selected-border-color: 0 0% 100%;
+  --secondary-hover: 48 80% 22%;
+  --secondary-active: 48 80% 26%;
+
+  --menu-item-hover-background: hsl(48 90% 26%);
+  --menu-item-hover-foreground: hsl(0 0% 100%);
+  --table-row-hover-background: hsl(48 90% 22%);
+  --table-row-selected-background: hsl(48 90% 26%);
+  --tree-node-hover-background: hsl(48 90% 22%);
+  --tree-node-selected-background: hsl(48 90% 26%);
+  --tree-node-selected-foreground: hsl(0 0% 100%);
+  --mega-menu-trigger-hover-background: hsl(48 90% 26%);
+  --mega-menu-trigger-hover-foreground: hsl(0 0% 100%);
+  --mega-menu-link-hover-background: hsl(48 90% 26%);
+  --mega-menu-link-hover-foreground: hsl(0 0% 100%);
+  --sidebar-nav-item-hover-foreground: hsl(0 0% 100%);
+  --sidebar-nav-icon-hover-foreground: hsl(0 0% 100%);
+  --conversations-item-active-background: hsl(48 90% 26%);
+  --conversations-item-active-color: hsl(0 0% 100%);
+  --tabs-count-active-background: hsl(48 90% 26%);
+  --tabs-count-active-color: hsl(0 0% 100%);
+  --toggle-soft-hover-background: hsl(48 90% 24%);
+  --toggle-pressed-count-background: hsl(48 90% 26%);
+  --toggle-pressed-count-color: hsl(0 0% 100%);
+  --toggle-pressed-border-color: hsl(0 0% 100%);
+  --switch-unchecked-background: hsl(0 0% 40%);
+  --switch-content-unchecked-foreground: hsl(0 0% 96%);
+
+  /* The same 13 frozen ink mirrors, at the other polarity (FINDING A). */
+  --activity-color: 0 0% 88%;
+  --app-launcher-group-label-color: 0 0% 88%;
+  --app-launcher-tile-color: 0 0% 100%;
+  --choice-button-color: 0 0% 100%;
+  --control-count-color: 0 0% 88%;
+  --input-addon-color: 0 0% 88%;
+  --segmented-item-color: 0 0% 88%;
+  --segmented-item-selected-color: 0 0% 100%;
+  --slider-mark-color: 0 0% 88%;
+  --topbar-item-color: 0 0% 88%;
+
+  --text-action-color: hsl(0 0% 100%);
+  --text-action-color-hover: hsl(0 0% 88%);
+}
+
+@supports (color: hsl(from red h s l)) {
+  .dark [data-theme-style="neubrutalism"],
+  [data-theme="dark"] [data-theme-style="neubrutalism"] {
+    --muted: from hsl(var(--primary)) h 60% 16%;
+    --accent: from hsl(var(--primary)) h 90% 20%;
+    --secondary: from hsl(var(--primary)) h 80% 18%;
+
+    --text-link: from hsl(var(--primary)) h 90% 86%;
+    --text-brand: from hsl(var(--primary)) h 90% 86%;
+    --text-primary: from hsl(var(--primary)) h 90% 90%;
+    --anchor-ink-color: from hsl(var(--primary)) h 90% 86%;
+    --sidebar-item-active-foreground: hsl(from hsl(var(--primary)) h 90% 90%);
+    --sidebar-nav-icon-active-foreground: hsl(from hsl(var(--primary)) h 90% 90%);
+    --mega-menu-trigger-current-foreground: hsl(from hsl(var(--primary)) h 90% 90%);
+    --mega-menu-trigger-open-foreground: hsl(from hsl(var(--primary)) h 90% 90%);
+    --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 90% 90%);
+
+    --topbar-item-hover-background: from hsl(var(--primary)) h 90% 22%;
+    --segmented-item-hover-background: from hsl(var(--primary)) h 90% 22%;
+    --segmented-item-active-background: from hsl(var(--primary)) h 90% 26%;
+    --app-launcher-tile-hover-background: from hsl(var(--primary)) h 90% 22%;
+    --control-variant-filled-hover-background: from hsl(var(--primary)) h 90% 22%;
+    --secondary-hover: from hsl(var(--primary)) h 80% 22%;
+    --secondary-active: from hsl(var(--primary)) h 80% 26%;
+
+    --menu-item-hover-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --table-row-hover-background: hsl(from hsl(var(--primary)) h 90% 22%);
+    --table-row-selected-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --tree-node-hover-background: hsl(from hsl(var(--primary)) h 90% 22%);
+    --tree-node-selected-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --mega-menu-trigger-hover-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --mega-menu-link-hover-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --conversations-item-active-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --tabs-count-active-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --toggle-soft-hover-background: hsl(from hsl(var(--primary)) h 90% 24%);
+    --toggle-pressed-count-background: hsl(from hsl(var(--primary)) h 90% 26%);
+  }
+}

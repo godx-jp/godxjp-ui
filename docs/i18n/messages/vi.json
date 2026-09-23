@@ -935,6 +935,10 @@
       "flat": {
         "name": "Flat",
         "note": "Không bo góc, không đổ bóng, mặt đục ngăn nhau bằng một đường kẻ. Bo góc về 0 tốn sáu mươi bảy khai báo."
+      },
+      "neubrutalism": {
+        "name": "Neubrutalism",
+        "note": "Viền đen dày, bóng đổ cứng không làm mờ, góc vuông và mảng màu bão hoà. Làm dày viền tốn 22 khai báo mà vẫn chỉ với tới một phần năm số chỗ."
       }
     },
     "seed": {

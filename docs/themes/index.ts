@@ -30,6 +30,7 @@
  */
 import "./glassmorphism.css";
 import "./flat.css";
+import "./neubrutalism.css";
 
 export type ThemeRow = {
   /**
@@ -158,6 +159,24 @@ export const THEMES: readonly ThemeRow[] = [
      * pivot) — stated anyway, because "near enough to the default" is a fact about today's flat,
      * not a contract it holds anyone to. */
     inkSurface: { light: "#E4E1EA", dark: "#403D30" },
+  },
+  {
+    id: "neubrutalism",
+    nameKey: "themeLab.theme.neubrutalism.name",
+    noteKey: "themeLab.theme.neubrutalism.note",
+    /* Both members are the WORST-CASE ground rather than the average one, and the two are
+     * different KINDS of worst case — in light the ink walks dark, so the hardest ground is the
+     * DARKEST fill; in dark it walks light, so the hardest is the LIGHTEST. Computed over every
+     * fill this theme declares × all five `SEEDS`, with the sRGB relative-luminance formula:
+     * light is the violet seed's `--accent` (#D9C5FC, L=0.6171), dark is the citron seed's
+     * `--accent` (#615205, L=0.0859). Carrying one hex into both slots is the mistake the pair
+     * exists to prevent (gh#896), and taking the average fill is the mistake gh#903 made.
+     *
+     * Named even though FINDING D means this theme never leans on seed-derived ink: `tenantTheme`
+     * emits these as inline literals on an ancestor, so leaving the slot `null` would walk them
+     * against the LIGHT default in both polarities — the gh#887 defect, arriving through a door
+     * this theme does not otherwise use. */
+    inkSurface: { light: "#D9C5FC", dark: "#615205" },
   },
 ];
 

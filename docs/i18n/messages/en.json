@@ -941,6 +941,10 @@
       "flat": {
         "name": "Flat",
         "note": "No corners, no shadow, opaque surfaces separated by a line. Squaring one number costs sixty-seven declarations."
+      },
+      "neubrutalism": {
+        "name": "Neubrutalism",
+        "note": "Thick black borders, hard offset shadows with no blur, square corners and loud saturated fills. Thickening a border costs 22 declarations and still reaches only a fifth of them."
       }
     },
     "seed": {
