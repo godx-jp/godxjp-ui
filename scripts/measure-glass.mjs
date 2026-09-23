@@ -280,6 +280,91 @@ async function measureCell(page, mode, theme, seed) {
     report.surfaces[s.name] = found ? grade(found) : "not rendered on this page";
   }
 
+  /* ── LIFT: IS THE PANE ACTUALLY DISTINGUISHABLE FROM WHAT IS BEHIND IT? ────────────────────
+   *
+   * The seventh blind spot in this instrument, and the one that mattered most, because it is the
+   * signal a reader looks at. `translucent` above counts `alpha < 0.99` and nothing else — so a
+   * pane painted in almost exactly the backdrop's own colour scored as glass while being, to the
+   * eye, no pane at all. Reported as "nó phải kiểu trong suốt blur cao vẫn nhìn thấy layer dưới
+   * mờ mờ ảo ảo cơ mà ... như hiện tại là thuần gradient đặc 100% thì ko giống glass".
+   *
+   * §1 of docs/GLASSMORPHISM-STANDARD.md makes it signal ONE: "frosted translucent panels —
+   * semi-transparent with a strong background blur; content behind is visible but softened". A
+   * panel you cannot see is not a frosted panel, however correct its alpha is.
+   *
+   * MEASURED, not declared: the painted pixel just inside the pane's top edge against the painted
+   * pixel just outside it. Both come from the same screenshot, so blur, saturate, tint, gradient
+   * and every compositing step are already in them — which is the only way to see a lift that is
+   * produced by four declarations interacting.
+   *
+   * THE FLOOR IS 1.2:1 and it is a judgement, so it is written down rather than implied. WCAG has
+   * no rule for "a surface must be visible"; 1.4.11's 3:1 is for a BOUNDARY, which glass carries
+   * separately as its 1px edge. 1.2 is what separated the two states this measurement was built
+   * to tell apart: the dark theme read 1.617 when its pane was a white scrim and 1.137 after the
+   * scrim was lost, and at 1.137 the pane is invisible in a screenshot. */
+  const LIFT_FLOOR = 1.2;
+  /* Back to the top first: earlier stages scroll the page, and a pane whose top edge has gone off
+   * screen is rejected below rather than sampled at a guessed coordinate — which would report
+   * "not sampleable" for every surface and print nothing at all, the first way this measurement
+   * failed. */
+  await page.evaluate(() => {
+    document.querySelector(".app-main")?.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(250);
+  const LIFT_SURFACES = [
+    ["Card", '[data-slot="card"]'],
+    ["Sidebar", ".app-sidebar"],
+    ["Topbar", ".app-topbar"],
+    ["DataTable", ".ui-data-table-surface"],
+  ];
+  report.lift = {};
+  for (const [name, sel] of LIFT_SURFACES) {
+    const box = await page.evaluate((selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      if (r.width < 40 || r.height < 24) return null;
+      // A column 75% across the pane, clear of a leading icon; 12px inside the top edge and 10px
+      // above it. Both must be on screen or the sample is a lie.
+      const x = Math.round(r.x + r.width * 0.75);
+      return r.y - 10 < 0 || r.y + 12 > window.innerHeight || x < 0 || x > window.innerWidth
+        ? null
+        : { x, inside: Math.round(r.y + 12), outside: Math.round(r.y - 10) };
+    }, sel);
+    if (!box) {
+      report.lift[name] = "not sampleable on this page";
+      continue;
+    }
+    const shot = await page.screenshot();
+    const px = await page.evaluate(
+      async ({ dataUrl, box }) => {
+        const img = new Image();
+        img.src = dataUrl;
+        await img.decode();
+        const c = document.createElement("canvas");
+        c.width = img.width;
+        c.height = img.height;
+        const g = c.getContext("2d");
+        g.drawImage(img, 0, 0);
+        const at = (x, y) => [...g.getImageData(x, y, 1, 1).data].slice(0, 3);
+        return { inside: at(box.x, box.inside), outside: at(box.x, box.outside) };
+      },
+      { dataUrl: `data:image/png;base64,${shot.toString("base64")}`, box },
+    );
+    const lum = ([r, g, b]) => {
+      const f = (v) => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const a = lum(px.inside);
+    const b = lum(px.outside);
+    const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    report.lift[name] = { ratio: Math.round(ratio * 1000) / 1000, pass: ratio >= LIFT_FLOOR };
+  }
+
   // ── CONTRAST ────────────────────────────────────────────────────────────────────────────────
   // The effective background is computed by COMPOSITING the ancestor chain, never by sampling the
   // pixel under the glyphs. Three screenshot-based attempts failed in three different ways and
@@ -857,6 +942,14 @@ if (AS_JSON) {
         `${graded.filter((g) => g.translucent).length}/${graded.length} translucent · ` +
         `${graded.filter((g) => g.shadow).length}/${graded.length} shadowed`,
     );
+    const lifts = Object.entries(r.lift ?? {}).filter(([, v]) => typeof v !== "string");
+    if (lifts.length) {
+      console.log(
+        `LIFT      ${lifts.filter(([, v]) => v.pass).length}/${lifts.length} panes are DISTINGUISHABLE from what is behind them (>= 1.2:1)`,
+      );
+      for (const [name, v] of lifts)
+        console.log(`  ${v.pass ? "ok  " : "FLAT"}  ${String(v.ratio).padStart(6)}:1  ${name}`);
+    }
     if (r.pageErrors.length) console.log("page errors:", r.pageErrors.slice(0, 3));
   }
 

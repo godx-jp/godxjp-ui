@@ -94,14 +94,14 @@
    * `rgba(124,58,237,0.26)` pill. */
   --glass-brand-ink-l: 38%;
   --glass-brand-ink-strong-l: 32%;
-  --glass-lobe-a-l: 84%;
+  --glass-lobe-a-l: 58%;
   --glass-lobe-a-alpha: 0.5;
-  --glass-lobe-b-l: 78%;
+  --glass-lobe-b-l: 52%;
   --glass-lobe-b-alpha: 0.45;
-  --glass-lobe-c-l: 86%;
+  --glass-lobe-c-l: 60%;
   --glass-lobe-c-alpha: 0.4;
-  --glass-floor-l-1: 94%;
-  --glass-floor-l-2: 90%;
+  --glass-floor-l-1: 70%;
+  --glass-floor-l-2: 60%;
   --glass-edge: 0 0% 100% / 55%; /* the glass RIM — decorative, brighter than the pane */
   --glass-rule: 230 22% 38% / 60%; /* a boundary that CARRIES MEANING: >= 3:1, WCAG 2.2 SC 1.4.11 */
 
@@ -687,8 +687,16 @@
 
   /* A REAL two-stop gradient, which the Card could not take until card-layout.css:49 stopped
    * repeating one variable as both stops. */
-  --card-tint: hsl(0 0% 100% / 0.1);
-  --card-tint-end: hsl(var(--primary) / 0.08);
+  /* THE TINT IS THE PANE'S LIFT, AND 0.1 WAS NOT ONE (gh#902). `--card` now supplies the COLOUR
+   * and flips with the polarity (gh#901), which is right — but it also means the pane is the
+   * backdrop's own colour at 12%, i.e. very nearly the backdrop. Measured: the Card sat 1.137:1
+   * from the page behind it in dark and 1.026:1 in light, which is no pane at all. §1 of the
+   * standard makes "frosted translucent panels" signal ONE, so a pane you cannot see fails the
+   * look however correct its alpha is. This white scrim is what separates pane from backdrop, in
+   * both polarities, and it is deliberately NOT a role: a lift is white on dark glass and white on
+   * light glass alike. Dark 1.137 -> 1.957, light 1.026 -> 1.507. */
+  --card-tint: hsl(0 0% 100% / 0.34);
+  --card-tint-end: hsl(0 0% 100% / 0.18);
   --card-tint-angle: 135deg;
 }
 
