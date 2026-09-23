@@ -245,6 +245,33 @@
    * The three the base list/trigger DO claim (`bg-muted`, `p-1`, `rounded-lg`, `text-sm`) are
    * replaced from the component as arbitrary-value utilities instead — see tabs.tsx. */
 
+  /* ── THE DEFAULT STRIP'S TRACK AND SLAB (gh#880 item 3) ──────────────────────────────────────
+   *
+   * A Tabs strip is a track-and-slab control, exactly like Segmented, and `segmented.css` says so
+   * in its own header: "TabsList is `bg-muted` and an active TabsTrigger is `bg-background` +
+   * `shadow-sm` — the same track-and-slab pair". Segmented's half of that pair has been a knob
+   * since gh#848; this half was two Tailwind utilities on the component. Utilities live in
+   * `@layer utilities`, which outranks every rule here, so the strip was not merely un-knobbed —
+   * it was unreachable by any rule this package could write, and the visible result was a
+   * translucent Card whose Tabs stayed opaque `--muted` while everything around them was glass.
+   *
+   * THE DEFAULTS RESOLVE HERE, not at `:root`. Written `var(--muted)` in the token file the
+   * binding substitutes on `<html>`, so a `[data-tenant]`/`[data-theme]` subtree inherits the
+   * root's answer — the freeze `segmented.css` measured (a dark panel on a light page painted the
+   * LIGHT neutral under dark ink). docs/TOKEN-RESOLUTION.md §3.
+   *
+   * SCOPED TO `default` AND TO `[data-state="active"]`, and the other two strips are untouched:
+   * `variant="card"` and `variant="line"` each restate their fill as a utility of their own
+   * (`data-[variant=default]:bg-transparent` on the card list, the `--tabs-panel-background` face
+   * on its active tab, `bg-transparent` on the line strip), and a utility still wins over this. */
+  [data-slot="tabs-list"][data-variant="default"] {
+    background-color: var(--tabs-list-background, hsl(var(--muted)));
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background-color: var(--tabs-trigger-active-background, hsl(var(--background)));
+  }
+
   /* The bar row: strip + `editable-card` add button + the two `extra` slots on ONE inline run.
    * It only exists when something needs it, so a plain <Tabs items> keeps the DOM it always had. */
   .ui-tabs-bar {
@@ -935,9 +962,15 @@
     min-width: var(--menu-content-min-width);
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
-    background: hsl(var(--popover));
+    /* A knob, with the role default resolved HERE (gh#880). `.ui-popover-content` has had one
+     * since gh#354 and this — the same kind of floating panel, portaled the same way — did not. */
+    background: var(--dropdown-content-background, hsl(var(--popover)));
     color: hsl(var(--popover-foreground));
     padding: var(--menu-content-space-inset);
+    /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so no backdrop root and no containing block
+     * for a fixed descendant. The saturate companion is shared and defaults at the call site. */
+    backdrop-filter: blur(var(--dropdown-content-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
     box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 

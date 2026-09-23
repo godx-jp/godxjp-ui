@@ -217,12 +217,20 @@ SheetOverlay.displayName = "SheetOverlay";
 const SHEET_OVERLAY_CLASS =
   "ui-sheet-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed";
 
-/* `text-foreground` pairs with `bg-background` and is not optional (gh#877): this panel portals to
- * `document.body`, so without it the ink is whatever the document inherits. On a page-level theme
- * that is the right value by accident; under a themed REGION the panel follows the region and the
- * ink does not, which measured 1.03:1 on the Dialog that shares this shape. */
+/* `text-foreground` is not optional (gh#877): this panel portals to `document.body`, so without it
+ * the ink is whatever the document inherits. On a page-level theme that is the right value by
+ * accident; under a themed REGION the panel follows the region and the ink does not, which measured
+ * 1.03:1 on the Dialog that shares this shape.
+ *
+ * ITS OLD PARTNER `bg-background` IS GONE, AND THAT IS THE POINT OF gh#880 item 4. A Tailwind
+ * utility lives in `@layer utilities` and outranks every rule in `@layer components`, so while the
+ * fill was baked here NO package rule could reach the drawer's surface — a theme had no knob and
+ * this package had no way to give it one. The fill is now `.ui-sheet-panel`'s, painted from
+ * `--sheet-surface-background` with the identical `hsl(var(--background))` default resolved at that
+ * element (dialog-layout.css). The ink stays a utility: nothing competes for `color` here, and
+ * losing it is the 1.03:1 defect above. */
 const sheetVariants = cva(
-  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] bg-background text-foreground px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
+  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] text-foreground px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
   {
     variants: {
       // `side` is a deliberately PHYSICAL API (left/right/top/bottom) — a sheet

@@ -225,9 +225,16 @@
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     border-inline-end: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    /* A knob, with the role default resolved HERE (gh#880) — the Topbar next to it has had one
+     * since gh#831 and this had none, which made the always-on-screen half of the shell the half a
+     * theme could not touch. */
+    background: var(--sidebar-surface-background, hsl(var(--card)));
     /* Opt-in brand-chrome wash — invisible by default (--sidebar-gradient: none). */
     background-image: var(--sidebar-gradient);
+    /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so the shipped rail creates no backdrop
+     * root and nothing `position: fixed` inside it changes containing block. */
+    backdrop-filter: blur(var(--sidebar-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
     color: hsl(var(--foreground));
   }
 
@@ -245,7 +252,7 @@
     overflow: clip;
     overflow-clip-margin: var(--focus-ring-clip-margin);
     border-inline-end: 1px solid hsl(var(--border));
-    background: hsl(var(--muted));
+    background: var(--app-shell-nav-rail-background, hsl(var(--muted)));
     color: hsl(var(--foreground));
     padding-block: var(--app-shell-nav-rail-inset);
   }
@@ -385,7 +392,9 @@
     gap: var(--app-shell-bar-gap);
     padding-inline: var(--app-shell-bar-inset);
     border-bottom: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
+    /* A knob, with the role default resolved HERE — the sidebar beside it got one in gh#880 and
+     * this is the row the `<Topbar>` component's own glass actually sits on. */
+    background: var(--app-shell-bar-background, hsl(var(--card)));
     /* Opt-in brand-chrome wash — invisible by default (--topbar-gradient: none). */
     background-image: var(--topbar-gradient);
   }

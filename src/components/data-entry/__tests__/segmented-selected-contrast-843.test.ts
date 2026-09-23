@@ -97,7 +97,11 @@ describe("Segmented selected state — the stylesheet actually asks for it (gh#8
       anchorIndex(controlStyles, '.ui-segmented-item[data-state="checked"] {'),
     );
     const body = rule.slice(rule.indexOf("{") + 1, rule.indexOf("}"));
-    expect(body).toMatch(/box-shadow:[\s\S]*var\(--segmented-item-selected-shadow\)/);
+    // The chain, not the bare token: gh#880 made the knob `initial` so a scope that restates the
+    // elevation ramp can reach the selected slab, which puts the ramp default at this call site.
+    expect(body).toMatch(
+      /box-shadow:[\s\S]*var\(--segmented-item-selected-shadow,\s*var\(--shadow-md\)\)/,
+    );
     expect(body).toMatch(
       /inset 0 0 0 1px hsl\(var\(--segmented-item-selected-border-color,\s*var\(--input\)\)\)/,
     );

@@ -103,7 +103,11 @@
   /* selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted
    * off the recessed track, which is the whole affordance. */
   --segmented-item-selected-background: initial; /* default = var(--background), resolved at the call site */
-  --segmented-item-selected-shadow: var(--shadow-md);
+  /* `initial` + the ramp default at the CALL SITE (gh#880 item 7). Bound to `var(--shadow-md)`
+   * here it substituted on `<html>`, so a scope that restated the elevation ramp could not move
+   * the selected slab — the same freeze the two knobs above this one were converted for in gh#848,
+   * left on the one property that carries the lift. docs/TOKEN-RESOLUTION.md §3. */
+  --segmented-item-selected-shadow: initial; /* default = var(--shadow-md), resolved at the call site */
   /* A SECOND SIGNAL, because the first one is nearly invisible on a light canvas (gh#843).
    *
    * The lifted-slab idea is right and the tokens express it, but measured on

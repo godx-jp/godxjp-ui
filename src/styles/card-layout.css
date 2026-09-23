@@ -44,13 +44,37 @@
     border-color: hsl(var(--card-border, var(--border)));
     border-radius: var(--card-radius);
     /* Fill = base card colour with an opt-in role tint washed over it (--card-tint default
-     * transparent → byte-identical at rest). */
+     * transparent → byte-identical at rest).
+     *
+     * A REAL TWO-STOP RAMP (gh#880). This used to be `linear-gradient(var(--card-tint),
+     * var(--card-tint))` — one variable named twice, so a service with a two-colour wash to
+     * express had one slot for it and got `linear-gradient(A, B, A, B)`, a hard split. The end
+     * stop and the angle are now their own knobs, each `initial` with its default resolved HERE so
+     * a scoped theme's `--card-tint` is the one that arrives (docs/TOKEN-RESOLUTION.md §3). With
+     * nothing set this is `linear-gradient(to bottom, transparent, transparent)` — the direction
+     * the two-stop form already had, and the same painted result as before. */
     background:
-      linear-gradient(var(--card-tint), var(--card-tint)), hsl(var(--card-background, var(--card)));
+      linear-gradient(
+        var(--card-tint-angle, to bottom),
+        var(--card-tint),
+        var(--card-tint-end, var(--card-tint))
+      ),
+      hsl(var(--card-background, var(--card)));
     color: hsl(var(--card-foreground));
+    /* GLASS, AND OFF UNLESS ASKED FOR — the shape `.ui-topbar` established in gh#831. The knob is
+     * `initial`, so unset this whole declaration is invalid-at-computed-value-time and
+     * `backdrop-filter` keeps its own initial `none`: no blur, and — the part that matters — no
+     * backdrop root, so a `position: fixed` descendant still resolves against the viewport. A
+     * literal `blur(0px)` would NOT be equivalent. The saturate is not optional and is not a
+     * per-card decision, so it comes from the one shared knob with its 160% default resolved here
+     * (tokens/foundation.css · docs/GLASSMORPHISM-STANDARD.md §1). */
+    backdrop-filter: blur(var(--card-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
     /* Resting elevation + opt-in brand glow — both quiet no-ops by default so a service theme can
-     * lift (--card-shadow) and/or glow (--card-glow) every card with no markup change. */
-    box-shadow: var(--card-shadow), var(--card-glow);
+     * lift (--card-shadow) and/or glow (--card-glow) every card with no markup change. The ramp
+     * default resolves HERE, not at `:root`, so a scoped theme that restates `--shadow-sm` reaches
+     * its own cards (gh#880 item 7). */
+    box-shadow: var(--card-shadow, var(--shadow-sm)), var(--card-glow);
     overflow: hidden;
   }
 
@@ -184,7 +208,7 @@
     border-color: var(--card-accent-color);
     box-shadow:
       0 0 0 var(--card-accent-perimeter-ring-width) var(--card-accent-color),
-      var(--card-shadow),
+      var(--card-shadow, var(--shadow-sm)),
       var(--card-glow);
   }
 
@@ -201,8 +225,8 @@
    * a `box-shadow` transition and raises the shadow on hover.
    *
    * Written here as a REDEFINITION OF `--card-shadow`, never as a `box-shadow` of its own, and
-   * that is the whole point. The surface box-shadow is `var(--card-shadow), var(--card-glow)`,
-   * and the `accentPlacement="perimeter"` rule re-lists `var(--card-shadow)` behind its attention
+   * that is the whole point. The surface box-shadow is `var(--card-shadow, …), var(--card-glow)`,
+   * and the `accentPlacement="perimeter"` rule re-lists that same chain behind its attention
    * ring — so a hover rule that PAINTED a box-shadow would win at equal specificity and silently
    * erase that ring (and any service `--card-glow`) for as long as the pointer sat on the card.
    * Moving the step up one level means every rule that already composes the resting elevation

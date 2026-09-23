@@ -118,7 +118,12 @@ function Toaster({ style, richColors = true, ...props }: ToasterProps) {
           // sonner uses these vars verbatim as CSS colors, so wrap with hsl()
           // here — unwrapped they are invalid values and the toast renders
           // transparent.
-          "--normal-bg": "hsl(var(--popover))",
+          // `--normal-bg` is SONNER's private name, so the package's own knob is threaded through
+          // it (gh#880): a theme sets `--toast-background` like every other surface's fill and
+          // never has to know that this one surface is painted by a vendor stylesheet. The default
+          // is the same `hsl(var(--popover))` and resolves in the browser, on the toaster, under
+          // whatever scope it sits in — so a themed region's toast follows the region (gh#877).
+          "--normal-bg": "var(--toast-background, hsl(var(--popover)))",
           "--normal-text": "hsl(var(--popover-foreground))",
           "--normal-border": "hsl(var(--border))",
           "--border-radius": "var(--radius)",

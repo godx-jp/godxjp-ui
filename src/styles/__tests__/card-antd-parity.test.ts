@@ -85,7 +85,8 @@ describe("Card `hoverable` — antd's lift, composed rather than painted", () =>
       "box-shadow",
     );
     expect(perimeter).toContain("var(--card-accent-color)");
-    expect(perimeter).toContain("var(--card-shadow)");
+    // gh#880 moved the ramp default to the call site, so the re-listed value is the whole chain.
+    expect(perimeter).toContain("var(--card-shadow, var(--shadow-sm))");
     expect(perimeter).toContain("var(--card-glow)");
   });
 

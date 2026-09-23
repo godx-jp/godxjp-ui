@@ -60,7 +60,9 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     );
     // The card's own elevation and opt-in glow survive the ring — a perimeter card must not lose
     // the surface treatment every other card on the page has.
-    expect(perimeter).toMatch(/var\(\s*--card-shadow\)/);
+    // The chain, not the bare token: `--card-shadow` is `initial` since gh#880 so a scoped theme
+    // that restates the elevation ramp reaches it, which means every reader carries the fallback.
+    expect(perimeter).toMatch(/var\(\s*--card-shadow,\s*var\(--shadow-sm\)\)/);
     expect(perimeter).toMatch(/var\(\s*--card-glow\)/);
     // The two weights read the hairline step (`--stroke-hairline` IS 1px), so assert
     // the step rather than a literal the file no longer carries.

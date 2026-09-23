@@ -369,8 +369,16 @@
      * the wide thing the region scrolls. WCAG 1.4.10: the table scrolls in its own box, never the
      * page. */
     min-inline-size: min-content;
-    border: 1px solid hsl(var(--border));
+    /* The frame's edge follows the same knob `<Table bordered>` uses below, so the two frames in
+     * this file cannot disagree about what a table's boundary is (gh#880). */
+    border: 1px solid var(--table-border-color, hsl(var(--border)));
     border-radius: var(--radius-md);
+    /* Both unset ⇒ both declarations are invalid-at-computed-value-time ⇒ each property keeps its
+     * OWN initial value (`transparent` and `none`), which is byte-identical to the frame that had
+     * neither declaration. No fill, no blur, no backdrop root. */
+    background-color: var(--table-surface-background);
+    backdrop-filter: blur(var(--table-surface-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
   }
 
   .ui-data-table-surface[data-preset="action-collection"] {

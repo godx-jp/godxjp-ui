@@ -922,7 +922,14 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
           // — so the leading tab sat permanently outside the scrollport (an unreachable control at
           // 320px, WCAG 2.2 SC 2.1.1). `safe` falls back to start alignment exactly when it
           // overflows, and still centres whenever the tabs fit.
-          "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-[var(--tabs-list-line-space-gap)] data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
+          // `data-[variant=default]:bg-muted` USED TO BE HERE AND IS NOW `--tabs-list-background`
+          // in navigation-layout.css (gh#880). A Tailwind utility lives in `@layer utilities`, so
+          // while the track was painted from here NO rule this package writes could reach it and a
+          // theme had no knob at all — the visible defect being a translucent Card whose Tabs strip
+          // stayed opaque `--muted`. Nothing about the card/line strips changes: both clear the
+          // track with utilities of their own (`data-[variant=default]:bg-transparent`,
+          // `data-[variant=line]:bg-transparent`), and a utility still outranks the new rule.
+          "group/tabs-list text-muted-foreground inline-flex w-fit max-w-full min-w-0 items-center justify-center-safe rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-[var(--tabs-list-line-space-gap)] data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
           className,
         )}
         render={(domProps) =>
@@ -987,7 +994,13 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
           // labels needing 107 / 95 / 53px, i.e. the SAME defect one API away. antd puts no
           // `flex-grow` on a tab of any `type`, so the rule belongs to the line STRIP rather than
           // to one construction path; the pill strip keeps `flex-1`, which is what fills its box.
-          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
+          // `data-[state=active]:bg-background` USED TO BE HERE and is now
+          // `--tabs-trigger-active-background` in navigation-layout.css, for the same reason as the
+          // list's track (gh#880): the selected slab of this library's other track-and-slab control
+          // — Segmented — has been `--segmented-item-selected-background` since gh#848, and these
+          // two are documented as the same pair. The card face and the line strip both restate the
+          // fill as utilities, which still outrank the new rule, so neither moves.
+          "text-muted-foreground ring-offset-background hover:text-foreground ui-focus-ring data-[state=active]:text-foreground group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:border-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:flex-none group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:flex-none group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs:group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
           // The tier the root was given. Without this the compound form ignored `size` outright.
           triggerSizeClassName(size),
           className,

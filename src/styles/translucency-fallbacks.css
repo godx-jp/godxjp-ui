@@ -1,0 +1,181 @@
+/* TRANSLUCENCY FALLBACKS — the two conditions under which a translucent surface must not ship
+ * translucent (gh#880).
+ *
+ * NAMED FOR WHAT IT DOES, NOT FOR THE THEME THAT NEEDED IT. Nothing here is about glassmorphism:
+ * "what happens when translucency cannot or must not be rendered" is a permanent property of ANY
+ * translucent theme, and a file in `src/styles/` carrying one aesthetic's name would say that the
+ * aesthetic lives in the library — which is the opposite of what gh#880 set out to prove, namely
+ * that a complex theme is expressible from the token API alone.
+ *
+ * `docs/GLASSMORPHISM-STANDARD.md` §5 names both, and they are not the same kind of thing:
+ *
+ *   · `@supports not (backdrop-filter: blur(1px))` is an ENGINE limit. Without the blur the fill
+ *     is all that is left, and a 12%-alpha fill with nothing frosted behind it is a washed-out
+ *     rectangle, not a pane of glass.
+ *   · `prefers-reduced-transparency: reduce` is an OS ACCESSIBILITY SETTING. A user who has asked
+ *     their system for less transparency has asked every application on it, and honouring that is
+ *     not a nicety. It is also the branch that actually runs: every engine this package supports
+ *     has had `backdrop-filter` for years, so the `@supports` branch is a floor, while this one is
+ *     a live user preference.
+ *
+ * ONE FILE, NOT ELEVEN RULES SCATTERED ACROSS FIVE STYLESHEETS, because the thing being stated is
+ * a property of the SET: "every surface that can be made translucent drops back to an opaque
+ * fill together". Split across the files that own each surface, the eleventh would be the one
+ * nobody adds, and a single opaque pane in a reduced-transparency page is as broken as none.
+ *
+ * ── HOW IT STAYS BYTE-IDENTICAL BY DEFAULT ──────────────────────────────────────────────────
+ *
+ * Neither branch introduces a value. Each surface repaints from the ONE shared knob
+ * `--surface-solid-background` (tokens/foundation.css) with ITS OWN package role colour as the
+ * call-site fallback — `hsl(var(--card))` for a Card, `hsl(var(--popover))` for a menu — so with
+ * no theme set the branch paints the colour the surface was already painting. The two surfaces
+ * whose resting fill is `transparent` (the glass Topbar and the DataTable frame) read the knob
+ * with NO fallback: unset it is invalid-at-computed-value-time, `background-color` keeps its own
+ * initial `transparent`, and they too are unchanged.
+ *
+ * `backdrop-filter: none` is likewise a no-op wherever no blur was asked for, because an unset
+ * blur knob already computes to `none`.
+ *
+ * A theme whose ROLE colours are themselves translucent (`--card: 0 0% 100% / 0.12`) must name an
+ * opaque `--surface-solid-background`; there is no value this package could guess for it.
+ *
+ * ── WHAT IS DELIBERATELY NOT HERE ───────────────────────────────────────────────────────────
+ *
+ * `AppLauncher responsive="fullscreen"` is the one surface in the library that ships a blur ON
+ * (`--app-launcher-launchpad-backdrop-blur-size: var(--blur-lg)`), and it is NOT in these lists.
+ * Dropping only its blur would leave its 55% veil over a now-sharp page — less readable under the
+ * accessibility setting than without it — so honouring the preference there means moving the veil
+ * to opaque as well, which is a change to a shipped surface with its own baseline and belongs in
+ * its own issue rather than riding along with this one. It is a real gap, recorded here rather
+ * than quietly left out.
+ */
+
+@layer components {
+  /* ── THE ENGINE FLOOR ──────────────────────────────────────────────────────────────────────
+   * Ordering note: every selector below ties on specificity with the rule that owns the surface,
+   * so this file must be imported AFTER the layout sheets (see styles/index.css and core.css). */
+  @supports not (backdrop-filter: blur(1px)) {
+    [data-slot="card"],
+    .app-sidebar {
+      background-color: var(--surface-solid-background, hsl(var(--card)));
+    }
+
+    [data-slot="dialog-content"],
+    .ui-sheet-panel {
+      background-color: var(--surface-solid-background, hsl(var(--background)));
+    }
+
+    .ui-popover-content,
+    .ui-tooltip-content,
+    .ui-select-content,
+    .ui-dropdown-menu-content,
+    .ui-dropdown-menu-sub-content,
+    [data-sonner-toast] {
+      background-color: var(--surface-solid-background, hsl(var(--popover)));
+    }
+
+    /* Resting fill `transparent` — the knob is read WITHOUT a fallback so an unset knob leaves the
+     * property at its own initial value rather than painting a colour these two never had. */
+    .ui-topbar,
+    .ui-data-table-surface {
+      background-color: var(--surface-solid-background);
+    }
+
+    /* The Button variants (standard §1 puts controls in scope). Each falls back to its OWN role,
+     * so an unthemed button is unchanged; `ghost` and `link` paint no resting surface and are not
+     * here. `--surface-solid-background` is deliberately NOT their fallback chain's first choice
+     * on a per-variant basis — one opaque colour for a primary CTA and a secondary chip would
+     * collapse the two into each other, so the shared knob names the SURFACE fills and a theme
+     * that wants a different opaque button states `--button-*-background` under the same query. */
+    .ui-button--default {
+      background-color: hsl(var(--primary));
+    }
+
+    .ui-button--destructive {
+      background-color: hsl(var(--destructive));
+    }
+
+    .ui-button--outline,
+    .ui-button--dashed {
+      background-color: hsl(var(--background));
+    }
+
+    .ui-button--secondary {
+      background-color: hsl(var(--secondary));
+    }
+  }
+
+  /* ── THE USER PREFERENCE ───────────────────────────────────────────────────────────────────
+   * Same fills, plus the blur itself. The blur is dropped by declaring the PROPERTY rather than by
+   * zeroing the knob: a theme's `--card-backdrop-blur-size` may be set on any scope, and only a
+   * declaration on the element that reads it is guaranteed to win. `none`, never `blur(0px)` —
+   * a zero blur still promotes the element to a backdrop root and makes it the containing block
+   * for its fixed descendants, which is a layout change, not a visual one. */
+  @media (prefers-reduced-transparency: reduce) {
+    [data-slot="card"],
+    .app-sidebar {
+      background-color: var(--surface-solid-background, hsl(var(--card)));
+    }
+
+    [data-slot="dialog-content"],
+    .ui-sheet-panel {
+      background-color: var(--surface-solid-background, hsl(var(--background)));
+    }
+
+    .ui-popover-content,
+    .ui-tooltip-content,
+    .ui-select-content,
+    .ui-dropdown-menu-content,
+    .ui-dropdown-menu-sub-content,
+    [data-sonner-toast] {
+      background-color: var(--surface-solid-background, hsl(var(--popover)));
+    }
+
+    .ui-topbar,
+    .ui-data-table-surface {
+      background-color: var(--surface-solid-background);
+    }
+
+    /* The Button variants (standard §1 puts controls in scope). Each falls back to its OWN role,
+     * so an unthemed button is unchanged; `ghost` and `link` paint no resting surface and are not
+     * here. `--surface-solid-background` is deliberately NOT their fallback chain's first choice
+     * on a per-variant basis — one opaque colour for a primary CTA and a secondary chip would
+     * collapse the two into each other, so the shared knob names the SURFACE fills and a theme
+     * that wants a different opaque button states `--button-*-background` under the same query. */
+    .ui-button--default {
+      background-color: hsl(var(--primary));
+    }
+
+    .ui-button--destructive {
+      background-color: hsl(var(--destructive));
+    }
+
+    .ui-button--outline,
+    .ui-button--dashed {
+      background-color: hsl(var(--background));
+    }
+
+    .ui-button--secondary {
+      background-color: hsl(var(--secondary));
+    }
+
+    /* Every frosted surface in the set, INCLUDING the two modal scrims, which is where the blur
+     * lives for Dialog and Sheet (the containing-block rule — see dialog-layout.css). */
+    [data-slot="card"],
+    .app-sidebar,
+    .ui-sheet-panel,
+    .ui-popover-content,
+    .ui-tooltip-content,
+    .ui-select-content,
+    .ui-dropdown-menu-content,
+    .ui-dropdown-menu-sub-content,
+    [data-sonner-toast],
+    .ui-topbar,
+    .ui-data-table-surface,
+    .ui-button,
+    .ui-dialog-overlay,
+    [data-slot="sheet-overlay"] {
+      backdrop-filter: none;
+    }
+  }
+}

@@ -43,16 +43,22 @@ export function controlAppearanceAttributes({
 }
 
 /**
- * The chrome utilities a variant carries, kept in the COMPONENT rather than in `control.css`.
+ * The chrome a variant carries, kept in the COMPONENT rather than in `control.css`.
  *
- * A Tailwind utility lives in `@layer utilities`, which outranks `@layer components` no matter
- * how specific the component rule is — so `bg-background` baked unconditionally into the class
- * list would silently defeat `filled` and `borderless` and no gate would notice. The outlined
- * field therefore keeps exactly the utilities it always had, and the other two simply do not
- * receive them; their surface comes from `.ui-control--filled` / `.ui-control--borderless`.
+ * A Tailwind utility lives in `@layer utilities`, which outranks `@layer components` no matter how
+ * specific the component rule is — so a chrome class baked unconditionally into the base list
+ * would silently defeat `filled` and `borderless` and no gate would notice. Each variant therefore
+ * receives exactly its own, and the other two never see it.
+ *
+ * `outlined` USED TO BE THE TWO UTILITIES `border-input bg-background` (gh#880). That is why
+ * `--control-surface-background` / `--control-surface-border-color` — documented, published, and
+ * reaching the whole select family through `.ui-control-surface` — reached neither Input nor
+ * DatePicker: the utilities outranked the tokens by construction. It is a component CLASS now, so
+ * the same two tokens paint every field in the library. No token was added; the existing pair just
+ * has no hole left in it. See `.ui-control-outlined-surface` in control.css.
  */
 export const CONTROL_VARIANT_CHROME_CLASS: Record<ControlVariantProp, string> = {
-  outlined: "border-input bg-background",
+  outlined: "ui-control-outlined-surface",
   filled: "ui-control--filled",
   borderless: "ui-control--borderless",
 };

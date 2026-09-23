@@ -21,7 +21,12 @@ describe("Textarea ghost variant", () => {
   it("keeps the standalone chrome by default", () => {
     const cls = classesOf(<Textarea aria-label="Message" />);
     expect(cls).toContain("border");
-    expect(cls).toContain("bg-background");
+    // The FILL is `.ui-control-outlined-surface` now, not a `bg-background` utility (gh#880): a
+    // Tailwind utility outranks `@layer components`, so while it was baked here neither
+    // `--control-surface-background` nor `--control-surface-border-color` could reach a Textarea —
+    // the two tokens reached the select family and nothing else. Same painted colour, reachable.
+    expect(cls).toContain("ui-control-outlined-surface");
+    expect(cls).not.toContain("bg-background");
   });
 
   it("drops border, background and shadow when ghost", () => {
