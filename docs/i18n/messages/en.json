@@ -846,116 +846,6 @@
     "tokenScopeBody": "Stroke weight, band density and grid dash are house style, so they are tokens rather than props. --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash are set on the block below and nowhere else. No page-local CSS, no raw recharts.",
     "tokenScopeLabel": "Weekly price (themed)"
   },
-  "glassShowcase": {
-    "page": {
-      "title": "Glassmorphism",
-      "subtitle": "Token-only reach of a frosted theme across the component set",
-      "refresh": "Refresh"
-    },
-    "alert": {
-      "title": "This page is a measurement, not a demo",
-      "description": "Every translucent surface below comes from a documented custom property inside docs/themes/glassmorphism.css — no component source was touched. Where a surface stayed opaque, no token could reach it."
-    },
-    "sidebar": {
-      "product": "Northwind",
-      "role": "Ops workspace",
-      "sectionLabel": "Workspace",
-      "overview": "Overview",
-      "reports": "Reports",
-      "settings": "Settings"
-    },
-    "topbar": {
-      "brand": "Northwind",
-      "notifications": "Notifications",
-      "notificationsTitle": "Notifications",
-      "notificationsBody": "3 approvals are waiting on you.",
-      "account": "Account menu",
-      "profile": "Profile",
-      "billing": "Billing",
-      "logout": "Log out"
-    },
-    "overview": {
-      "title": "Team overview",
-      "description": "Badge, Progress and Avatar over the frosted card surface.",
-      "badgeActive": "Active",
-      "badgeInvited": "Invited",
-      "badgePending": "Pending",
-      "progressLabel": "Sprint capacity",
-      "avatarGroupLabel": "Team members"
-    },
-    "controls": {
-      "title": "Controls",
-      "description": "Segmented and Tabs panels over the same surface.",
-      "period": {
-        "week": "Week",
-        "month": "Month",
-        "quarter": "Quarter"
-      },
-      "tabs": {
-        "overview": "Overview",
-        "activity": "Activity",
-        "overviewBody": "Nothing needs your attention right now.",
-        "activityBody": "Mika approved 2 requests this morning."
-      }
-    },
-    "form": {
-      "title": "New member",
-      "description": "Input and Select share one control-surface token pair.",
-      "nameLabel": "Name",
-      "namePlaceholder": "Full name",
-      "roleLabel": "Role",
-      "roleViewer": "Viewer",
-      "roleEditor": "Editor",
-      "roleAdmin": "Admin"
-    },
-    "table": {
-      "title": "Recent requests",
-      "description": "DataTable inherits the Card surface it sits in.",
-      "columnName": "Request",
-      "columnOwner": "Owner",
-      "columnStatus": "Status",
-      "toneSuccess": "Approved",
-      "toneWarning": "In review",
-      "toneDestructive": "Rejected",
-      "row1Name": "Expense report — May",
-      "row1Owner": "Mika Sato",
-      "row2Name": "Travel request — Osaka",
-      "row2Owner": "Daniel Cruz",
-      "row3Name": "Equipment purchase",
-      "row3Owner": "Priya Nair"
-    },
-    "actions": {
-      "title": "Overlays",
-      "openDialog": "Open dialog",
-      "openSheet": "Open sheet",
-      "showToast": "Show toast",
-      "tooltipTrigger": "Hover for tooltip"
-    },
-    "dialog": {
-      "title": "Approve request",
-      "description": "This dialog's panel could not be made translucent — see the gap report.",
-      "body": "Dialog reads --background/--border directly with no --dialog-background token, so this panel stays opaque even inside the glass scope.",
-      "cancel": "Cancel",
-      "confirm": "Approve"
-    },
-    "sheet": {
-      "title": "Request details",
-      "description": "Sheet's panel is the same opaque dead end as Dialog's.",
-      "body": "sheet.tsx bakes the Tailwind utility bg-background into its className — no --sheet-background token exists to redirect it.",
-      "close": "Close"
-    },
-    "tooltip": {
-      "text": "Tooltip has its own dedicated background, border and shadow tokens — fully reachable."
-    },
-    "toast": {
-      "message": "3 approvals synced."
-    },
-    "popover": {
-      "title": "Notifications",
-      "body": "Popover exposes a real background AND border token pair — the only overlay that does.",
-      "action": "Mark all read"
-    }
-  },
   "themeScopeDocs": {
     "page": {
       "subtitle": "A themed region whose overlays keep the region's tokens.",
@@ -1015,5 +905,292 @@
     "check": "Needs review",
     "failed": "Direct debit failed",
     "failedBadge": "Failed"
+  },
+  "themeLab": {
+    "page": {
+      "title": "Theme lab",
+      "subtitle": "One page, every component that can render, several themes, several seed colours. A theme here is custom properties and nothing else.",
+      "footer": "The URL carries the theme and the seed, so a screenshot and a measurement address the same cell of the matrix."
+    },
+    "product": "Theme Lab",
+    "switch": {
+      "title": "Theme and seed",
+      "note": "Adding a theme is one CSS file plus one row in docs/themes/index.ts. This page is never edited for it.",
+      "themeLabel": "Theme",
+      "seedLabel": "Seed colour",
+      "seedHex": "Seed",
+      "seedInk": "Label on the seed",
+      "seedContrast": "Label contrast, WCAG 2.2 SC 1.4.3",
+      "legendPass": "4.5:1 or better",
+      "legendFail": "below AA"
+    },
+    "theme": {
+      "base": {
+        "name": "Default",
+        "note": "The library's own theme. No theme file and no overrides — the control that shows what these components look like unthemed."
+      },
+      "glass": {
+        "name": "Glassmorphism",
+        "note": "Frosted translucent panels, a backdrop blur with saturation, a thin light edge and layered depth over a vivid ground."
+      },
+      "flat": {
+        "name": "Flat",
+        "note": "No corners, no shadow, opaque surfaces separated by a line. Squaring one number costs sixty-seven declarations."
+      }
+    },
+    "seed": {
+      "violet": "Violet",
+      "azure": "Azure",
+      "coral": "Coral",
+      "citron": "Citron",
+      "navy": "Navy"
+    },
+    "nav": {
+      "section": "Workspace",
+      "overview": "Overview",
+      "reports": "Reports",
+      "people": "People",
+      "settings": "Settings",
+      "role": "Administrator",
+      "footer": "Signed in"
+    },
+    "app": {
+      "console": "Console",
+      "billing": "Billing"
+    },
+    "topbar": {
+      "notifications": "Notifications",
+      "account": "Account"
+    },
+    "menu": {
+      "profile": "Profile",
+      "billing": "Billing",
+      "logout": "Sign out"
+    },
+    "popover": {
+      "title": "Two new items",
+      "body": "Nothing needs your attention right now.",
+      "action": "Mark all as read"
+    },
+    "section": {
+      "type": "Type, marks and rhythm",
+      "typeNote": "The ink ramp is the first thing a translucent surface breaks, so every step of it is on the page at once.",
+      "actions": "Actions",
+      "display": "Status and data display",
+      "tables": "Tables",
+      "charts": "Charts",
+      "fields": "Form controls",
+      "fieldsNote": "A field has to read as a place you can type before it reads as a theme: fill, border, focus ring, placeholder and the filled and empty states are all here.",
+      "nav": "Navigation",
+      "feedback": "Feedback",
+      "overlays": "Overlays",
+      "overlaysNote": "These are opened by the measurement, not merely present. Each one portals out of this subtree and reaches the theme through ThemeScope's overlay host.",
+      "regions": "Regions that nest",
+      "chat": "Conversational",
+      "absent": "Could not be rendered",
+      "absentNote": "An absence nobody can see is an absence nobody accounts for."
+    },
+    "absent": {
+      "export": "Export",
+      "reason": "Reason",
+      "provider": "A provider, already mounted above this page by the preview runtime.",
+      "overlayPortal": "A provider that re-parents every overlay portal; mounting it here would replace the ThemeScope host this page exists to measure.",
+      "themeScope": "It is this page's own wrapper.",
+      "ownsPage": "A shell that owns the whole document; it cannot nest inside AppShell.",
+      "hook": "A hook. It has no surface of its own to paint.",
+      "function": "A function, not a component.",
+      "inertia": "An Inertia adapter; it needs a router this preview does not have.",
+      "needsFile": "It needs a real File chosen from a file input.",
+      "needsNetwork": "It needs a network image; committed assets are used instead.",
+      "needsRouter": "It needs a route and a prefetchable query.",
+      "needsQuery": "It needs a live TanStack Query result, which is data rather than theme.",
+      "invisible": "It is on the page, and by definition it paints nothing.",
+      "needsSchema": "It needs a zod schema, and check:example-imports allows a docs page to import only react, lucide-react and @godxjp/ui.",
+      "sameSurface": "The composed form of AlertDialog, which is on the page; it paints no new surface."
+    },
+    "action": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "secondary": "Secondary",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "dashed": "Dashed",
+      "destructive": "Delete",
+      "link": "Link",
+      "disabled": "Disabled",
+      "search": "Search",
+      "bold": "Bold",
+      "unread": "Unread",
+      "retry": "Try again",
+      "more": "More",
+      "share": "Share",
+      "open": "Open"
+    },
+    "align": {
+      "start": "Start",
+      "center": "Centre",
+      "end": "End"
+    },
+    "label": {
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "toggles": "Toggles and rating",
+      "actionsBar": "Response actions",
+      "badges": "Badges and swatches",
+      "items": "items",
+      "align": "Alignment",
+      "progress": "Storage used",
+      "people": "Team",
+      "tools": "Tools",
+      "schedule": "Schedule",
+      "week": "Week",
+      "start": "Start of range",
+      "end": "End of range",
+      "permissions": "Permissions",
+      "quickPick": "Quick pick",
+      "noResults": "Nothing to show",
+      "available": "Available",
+      "selected": "Selected",
+      "qr": "Enrolment QR code",
+      "thumbnail": "A dashboard screenshot",
+      "credential": "API key",
+      "detail": "Detail",
+      "master": "List",
+      "catalog": "Add from the catalogue",
+      "mainNav": "Main navigation",
+      "onThisPage": "On this page",
+      "pinned": "Pinned bar",
+      "skeletons": "Loading placeholders",
+      "assistant": "Assistant",
+      "loading": "Loading",
+      "rating": "Rating"
+    },
+    "table": {
+      "name": "Name",
+      "owner": "Owner",
+      "status": "Status",
+      "amount": "Amount"
+    },
+    "tone": {
+      "neutral": "Neutral",
+      "success": "Approved",
+      "warning": "Waiting",
+      "destructive": "Rejected",
+      "info": "Information"
+    },
+    "stat": {
+      "members": "Members",
+      "revenue": "Revenue",
+      "usage": "Usage",
+      "open": "Open requests",
+      "hint": "Up 3% on last month"
+    },
+    "chart": {
+      "trend": "Plan against actual",
+      "plan": "Plan",
+      "actual": "Actual",
+      "byMonth": "By month",
+      "stacked": "Stacked",
+      "split": "Split",
+      "weekly": "Last seven days"
+    },
+    "field": {
+      "name": "Name",
+      "namePlaceholder": "Two to sixty characters",
+      "email": "Email",
+      "emailError": "That is not an email address.",
+      "search": "Search",
+      "searchPlaceholder": "Search by name or id",
+      "quantity": "Quantity",
+      "password": "Password",
+      "notes": "Notes",
+      "tags": "Labels",
+      "role": "Role",
+      "date": "Date",
+      "time": "Time",
+      "timeRange": "Shift",
+      "colour": "Brand colour",
+      "volume": "Volume",
+      "region": "Region",
+      "account": "Account",
+      "notify": "Email notifications",
+      "agree": "I accept the terms",
+      "scope": "Applies to"
+    },
+    "role": {
+      "viewer": "Viewer",
+      "editor": "Editor",
+      "admin": "Administrator"
+    },
+    "perm": {
+      "read": "Read",
+      "write": "Write",
+      "admin": "Administer"
+    },
+    "overlay": {
+      "dialog": "Open dialog",
+      "sheet": "Open sheet",
+      "alertDialog": "Confirm deletion",
+      "tooltip": "Hover for a tooltip",
+      "toast": "Show toast",
+      "toastMessage": "Saved.",
+      "twoFactor": "Set up two-factor",
+      "inlineNote": "The Select listbox is an overlay too: it needs the most opaque fill of the three, because a menu sits over arbitrary content."
+    },
+    "error": {
+      "title": "You do not have access to this report"
+    },
+    "auth": {
+      "title": "Sign in",
+      "requester": "Theme Lab is requesting access",
+      "switch": "Switch account",
+      "or": "or",
+      "terms": "Terms",
+      "privacy": "Privacy"
+    },
+    "chat": {
+      "welcomeTitle": "Good afternoon",
+      "welcomeBody": "Ask about invoices, expenses or attendance.",
+      "assistant": "How can I help?",
+      "user": "Summarise yesterday's invoices.",
+      "assistantName": "Assistant",
+      "userName": "You",
+      "thoughts": "Steps taken",
+      "placeholder": "Write a message"
+    },
+    "sample": {
+      "alpha": "Northern district",
+      "beta": "Central office",
+      "gamma": "Southern depot",
+      "delta": "Harbour annexe",
+      "epsilon": "Field team",
+      "one": "Pham Thai Duong",
+      "two": "Mai Sato",
+      "three": "Diego Costa",
+      "short": "Updated a few minutes ago.",
+      "long": "A tidy board is the defect, not the deliverable: this row carries a three-line label beside a one-word one, an unbreakable token beside an empty slot, and the longest string the layout will ever be handed.",
+      "headline": "Can this component set wear a complex theme?",
+      "linkLabel": "Read the token-resolution rules",
+      "codeLabel": "Theme excerpt",
+      "secure": "Session is encrypted",
+      "syncing": "Syncing",
+      "marqueeLabel": "Pause the scrolling list",
+      "aspectTitle": "A fixed-ratio region"
+    },
+    "launcher": {
+      "trigger": "Apps",
+      "title": "Switch app"
+    },
+    "org": {
+      "trigger": "Organisation"
+    },
+    "twoFactor": {
+      "title": "Set up two-factor authentication",
+      "description": "Scan the code with an authenticator app, then enter the six digits it shows.",
+      "manualKey": "Or enter this key by hand",
+      "code": "Six-digit code",
+      "recovery": "Store these recovery codes somewhere safe. They are shown once.",
+      "acknowledge": "I have saved them"
+    }
   }
 }

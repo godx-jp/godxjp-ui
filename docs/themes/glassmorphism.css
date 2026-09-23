@@ -8,8 +8,22 @@
  * exercise: find out what a consumer can reach through the published theme API alone, the way an
  * Ant Design consumer is limited to `theme.token` / `theme.components`.
  *
- * Where a component has no such hook, this file does not fake one — see the gap report in
- * docs/showcase/glassmorphism.tsx's file docblock for the exact file:line evidence per component.
+ * Where a component has no such hook, this file does not fake one.
+ *
+ * ── A STANDING RULE FOR THIS FILE, AND IT WAS EARNED TWICE ──────────────────────────────────
+ * **No comment here — and no sentence on the showcase page — may assert that a surface is
+ * unreachable.** A reachability claim is true on the day it is written and false the moment
+ * someone adds a knob, and it silently becomes the most damaging kind of wrong, because the whole
+ * claim of this exercise is to be a measurement. It has rotted twice already. The Sheet is the
+ * worked example: this file and the page it fed both said "sheet.tsx bakes `bg-background` into
+ * its className, there is no `--sheet-background` to set", and gh#880 had added
+ * `--sheet-surface-background` hours earlier — the panel renders `rgba(29, 33, 53, 0.92)` while a
+ * paragraph inside it described a dead end.
+ *
+ * So the only claims kept below are the ones this file DEMONSTRATES by setting a token and the
+ * ones a reader can re-run: `scripts/measure-glass.mjs` reads the computed value of every surface
+ * and every overlay and is the authority on what a theme reaches. If a surface interests you, run
+ * it; do not trust a sentence here about a token this file does not set.
  *
  * ── The one trick this file leans on: an alpha suffix inside an HSL-triplet token ────────────
  * Most colour tokens in this system are declared as a bare "H S% L%" triplet and consumed as
@@ -77,17 +91,16 @@
    *    all of the above at once — the widest-reaching single line in this file. */
   --border: 0 0% 100% / 25%;
 
-  /* ── `--background` — deliberately NOT touched, and that is the finding. It is consumed BOTH
-   *    bare (`hsl(var(--background))` — Dialog's panel, Sheet's `bg-background` utility, the page
-   *    canvas itself, base.css:260) AND pre-composed with its OWN alpha elsewhere
-   *    (`hsl(var(--background) / var(--topbar-background-alpha))`, shell-layout.css:2648, THE
-   *    Topbar glass rule this file relies on below). Giving `--background` its own alpha suffix
-   *    here would make Topbar's rule read `hsl(H S% L% / A% / var(--topbar-background-alpha))` —
-   *    invalid CSS (two `/`), which drops `background-color` to its property-initial
-   *    `transparent` — confirmed by trying it: Topbar's fill vanished and the PAGE CANVAS itself
-   *    (every bare consumer) went fully see-through to the browser's own white. So Dialog's panel
-   *    and Sheet's panel are the two surfaces in this set with NO safe lever at all: the only
-   *    token that reaches them is shared with a consumer that would break first. ──────────────── */
+  /* ── `--background` IS SHARED, and the sharing is the constraint — not the syntax, which the
+   *    seed layer at the bottom of this file dissolves. It is consumed BOTH bare
+   *    (`hsl(var(--background))` — the page canvas, base.css:260) AND pre-composed with its own
+   *    alpha (`hsl(var(--background) / var(--topbar-background-alpha))`, shell-layout.css:2648,
+   *    the Topbar glass rule). A bare-triplet alpha suffix here makes Topbar's rule read
+   *    `hsl(H S% L% / A% / …)` — invalid CSS, two `/` — which drops `background-color` to
+   *    `transparent`; measured, the Topbar's fill vanished and the page canvas went see-through.
+   *    Relative colour removes exactly that syntactic problem (see the seed layer). What it does
+   *    not remove is that one alpha here would make the PAGE CANVAS translucent too, which is why
+   *    this token stays opaque and the surfaces that want translucency use their own knobs. ──── */
 
   /* ── Ambient backdrop — .app-main already exposes this as an opt-in hook
    *    (src/styles/shell-layout.css: "background-image: var(--gradient-glow)"; default `none`).
@@ -125,60 +138,38 @@
     hsl(262 83% 58% / 0.15) 100%
   );
 
-  /* ── Card's gradient hook is a DEAD END — measured, this is the finding, not an oversight.
-   *    card-layout.css:49 paints the fill as `linear-gradient(var(--card-tint), var(--card-tint))`
-   *    — the SAME token substituted as BOTH gradient stops, a trick that only works to fake a flat
-   *    solid wash (both stops identical). Feeding it a real two-colour stop list produces
-   *    `linear-gradient(colorA 0%, colorB 100%, colorA 0%, colorB 100%)`: CSS gradient stops must
-   *    be monotonically non-decreasing, so the browser clamps the repeated `0%` up to the previous
-   *    `100%` and the whole second half collapses to solid colorB — confirmed with
-   *    `getComputedStyle` (`background-image` came back as that exact four-stop, clamped list, and
-   *    it painted as a hard two-tone split, not a blend). There is no token on Card that accepts a
-   *    real multi-stop gradient; `--card-tint` is a single-colour wash, full stop. */
-
   /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
    *    src/styles/card-layout.css:44 (border), :49 (background). ────────────────────────────── */
   --card-background: 0 0% 100% / 12%;
   --card-border: 0 0% 100% / 25%;
 
-  /* ── Dialog — the panel BACKGROUND is the one true dead end in this set. dialog-layout.css:56
-   *    hard-codes `background-color: hsl(var(--background))` with NO `--dialog-background` token
-   *    to redirect, and `--background` cannot safely take an alpha suffix here (see the note on
-   *    it below) — so the fill stays opaque no matter what this file does. The BORDER (line 55,
-   *    `hsl(var(--border))`) is the shared role restated above, so it DOES pick up the translucent
-   *    hairline. `--dialog-content-glow` is a real, dedicated, additive box-shadow LAYER (not the
-   *    panel fill) — used here for a glass edge highlight, on top of the (now-retinted)
-   *    elevation. ─────────────────────────────────────────────────────────────────────────── */
+  /* ── Dialog — `--dialog-content-glow` is an additive box-shadow LAYER, not the panel fill: the
+   *    glass edge highlight, on top of the retinted elevation. The panel's own fill is set in the
+   *    seed layer through `--dialog-surface-background`. ─────────────────────────────────────── */
   --dialog-content-glow: inset 0 1px 0 hsl(0 0% 100% / 0.5);
 
-  /* ── Sheet — panel background is the Tailwind utility `bg-background` baked into sheet.tsx's
-   *    className (no `--sheet-background` token exists), same dead end as Dialog's background.
-   *    Its border (`border-l`/`border-r`, sheet.tsx:235-236 — a physical utility, not `border-s`/
-   *    `border-e`, the file's own "rtl-ignore" comment already flags that as pre-existing) DOES
-   *    exist, though, and rides the `--border` restatement above — measured, not assumed: an
-   *    earlier draft of this file claimed Sheet drew no border at all, and `getComputedStyle`
-   *    said otherwise (`border-width: 0 0 0 1px`, translucent). `--sheet-shadow` (retinted via the
-   *    seed above) is the third reachable axis. ─────────────────────────────────────────────── */
+  /* ── Sheet — the panel fill is set in the seed layer through `--sheet-surface-background`, at
+   *    92%: §4 of the standard, a drawer covers content that must stay unreadable-but-present, so
+   *    it sits at the opaque end of the range. Its border rides the `--border` restatement above —
+   *    measured, not assumed: an earlier draft claimed Sheet drew no border at all and
+   *    `getComputedStyle` said `border-width: 0 0 0 1px`, translucent. ──────────────────────── */
 
-  /* ── Popover — the only overlay with FULL dedicated surface tokens (background AND border),
-   *    both consumed as a COMPLETE value (dialog-layout.css:362-363), so each needs its own
-   *    hsl(...) wrapper here, not a bare triplet. ──────────────────────────────────────────── */
+  /* ── Popover / Tooltip — dedicated background and border tokens, both consumed as a COMPLETE
+   *    value (dialog-layout.css:342-343, :362-363), so each needs its own `hsl(...)` wrapper here
+   *    rather than a bare triplet. The Popover's fill is re-set darker in the seed layer, for the
+   *    reason measured there. ───────────────────────────────────────────────────────────────── */
   --popover-surface-background: hsl(0 0% 100% / 22%);
   --popover-surface-border-color: hsl(0 0% 100% / 30%);
 
-  /* ── Tooltip — same shape as Popover, its own dedicated background + border tokens
-   *    (dialog-layout.css:342-343), also consumed as a complete value. Dark frosted chip, the
-   *    conventional tooltip treatment even inside an otherwise light-glass page. ─────────────── */
+  /* Dark frosted chip — the conventional tooltip treatment even inside an otherwise light-glass
+   * page. Re-derived from the seed in the seed layer. */
   --tooltip-background: hsl(230 45% 12% / 78%);
   --tooltip-border-color: hsl(0 0% 100% / 14%);
 
-  /* ── DropdownMenu + Select — NEITHER exposes a background/border token of its own; both
-   *    hard-code `hsl(var(--border))` / `hsl(var(--popover))`
-   *    (src/styles/navigation-layout.css:936-937, src/styles/control.css:2315-2316). Border is
-   *    already covered by the `--border` restatement above; `--popover` is the matching
-   *    FOUNDATION-tier role for the fill, always consumed as `hsl(var(--popover))`, so a bare
-   *    triplet + alpha reaches both Select and DropdownMenu at once — shared, not scoped to
-   *    either component individually. */
+  /* ── `--popover` is the FOUNDATION-tier role several floating panels fall back to when their own
+   *    knob is unset; it is always consumed as `hsl(var(--popover))`, so a bare triplet with an
+   *    alpha reaches every one of them at once. Select's and DropdownMenu's own dedicated fills
+   *    are set in the seed layer, which is what they actually render. ───────────────────────── */
   --popover: 0 0% 100% / 22%;
 
   /* ── Table — three different levers for three different lines, verified individually:
@@ -200,19 +191,15 @@
   /* ── Input / Select trigger / TagInput — the SHARED `.ui-control-surface` base
    *    (src/lib/control-styles.ts:1791-1792), both consumed as a complete value. This is the one
    *    component-tier knob pair the form-control family has; there is no per-control override. */
-  --control-surface-background: hsl(0 0% 100% / 35%);
+  /* 18%, not 35%. §4b asks a field to be MORE opaque than the card it sits on — it is (the Card is
+   * at 12%) — but 35% white over a dark canvas put the Select's own value at 4.20:1, just under
+   * the floor, on every seed. The border keeps its 45% because §4b's other requirement is a
+   * boundary at 3:1 or better, and that one is carried by the edge rather than the fill. */
+  --control-surface-background: hsl(0 0% 100% / 18%);
   --control-surface-border-color: hsl(0 0% 100% / 45%);
 
-  /* ── Button — NO surface token at any tier. `variant="default"` paints `bg-primary`
-   *    (a Tailwind utility reading the foundation `--primary` role directly); `outline`/`dashed`
-   *    paint `bg-background`; `secondary` paints `bg-secondary`. Retinting any of those roles
-   *    here would recolour every other consumer of that same role in scope (the page canvas
-   *    itself, for `--background`), which is exactly the collateral-damage trade the theme
-   *    hierarchy in docs/CUSTOMER-THEMING.md warns against — so this file deliberately leaves
-   *    Button's FILL alone; it stays a solid, opaque chip. Its BORDER (`outline`/`dashed`
-   *    variants, the plain `border` Tailwind utility) and its SHADOW (`.ui-button--outline` reads
-   *    `var(--shadow-sm)`) both ride the `--border` and `--shadow-sm` restatements above for free —
-   *    the two axes Button gets without a dedicated token. */
+  /* ── Button — its three variant fills are set further down, through their own knobs. Its BORDER
+   *    and its SHADOW ride the `--border` and `--shadow-sm` restatements above for free. ────── */
 
   /* ── Badge — the only knobs are the two MIX PERCENTAGES color-mix reads
    *    (badge-layout.css:64-70), not colours themselves; no shadow property exists on a badge at
@@ -220,29 +207,32 @@
   --badge-tint-fill: 22%;
   --badge-tint-edge: 45%;
 
-  /* ── Tabs — the "card" tab-list and its panel are the only two backgrounds with tokens
-   *    (navigation-layout.css:482,653), both consumed as hsl(var(--token)). The default
-   *    (underline) tab list paints nothing, so it is already "glass" by having no surface. ───── */
+  /* ── Tabs — the "card" tab-list and its panel, both consumed as hsl(var(--token))
+   *    (navigation-layout.css:482,653). The default (underline) tab list paints nothing, so it is
+   *    already "glass" by having no surface; its own list and active-trigger fills are set further
+   *    down. ─────────────────────────────────────────────────────────────────────────────────── */
   --tabs-panel-background: 0 0% 100% / 18%;
   --tabs-card-background: 0 0% 100% / 30%;
 
   /* ── Alert — only the FOUR TONED variants (destructive/warning/success/info) resolve their
    *    SURFACE through `--alert-bg-alpha` / `--alert-border-alpha` (alert-layout.css:25-44). The
    *    default/neutral tone's border is `hsl(var(--border))` bare — covered by the restatement
-   *    above — but its background is a literal `hsl(var(--muted) / 0.4)` (alert-layout.css:20):
-   *    the SAME double-alpha dead end as `--background`, since `--muted` would need its own suffix
-   *    added to an already-alpha'd call site. That one surface cannot be reached at all. */
+   *    above. Its background composes `--muted` with its own alpha, so this file does not try to
+   *    add a second one there; run the instrument rather than trusting this sentence. */
   --alert-bg-alpha: 16%;
   --alert-border-alpha: 35%;
 
   /* ── Toast (Sonner) — sonner.tsx sets `--normal-bg: hsl(var(--popover))` /
-   *    `--normal-border: hsl(var(--border))` inline on the Toaster; both resolve through the same
-   *    shared `--popover` role already set above, so the toast picks it up for free. There is no
-   *    `--toast-background`/`--toast-shadow` token of its own. */
+   *    `--normal-border: hsl(var(--border))` inline on the Toaster, so it rides the two shared
+   *    roles above; its own `--toast-background` is set in the seed layer and is what renders. */
 
   /* ── Avatar — its own dedicated token (data-display-layout.css:14), consumed as a complete
    *    value. No border or shadow property exists on `.ui-avatar` at all (flat fill by design). */
-  --avatar-background: hsl(0 0% 100% / 40%);
+  /* 14%, not 40%. At 40% the chip composited LIGHT over the dark canvas while the fallback
+   * initials inherit the theme's near-white ink: measured 1.70:1 on three avatars in a row and
+   * 1.81:1 on the Topbar's. A fallback is TEXT, so the chip is a text ground and has to be
+   * treated as one. */
+  --avatar-background: hsl(0 0% 100% / 14%);
 
   /* ── Progress — track has a dedicated token, consumed as a complete value
    *    (data-display-layout.css:203); the FILL is deliberately left alone — it is the data
@@ -252,23 +242,29 @@
   /* ── Sidebar — Sidebar itself is `display: contents` (no box of its own); the surface a
    *    consumer actually sees is AppShell's `.app-sidebar`, which hard-codes
    *    `border-inline-end: 1px solid hsl(var(--border)); background: hsl(var(--card));`
-   *    (shell-layout.css:216-229) — bare foundation roles, no `--sidebar-background` token. Border
-   *    is covered by the `--border` restatement above; `--card` is only otherwise read as Card's
-   *    OWN fallback (moot once `--card-background` is set directly above), so retinting it here
-   *    reaches Sidebar (and AppShell's `.app-topbar` chrome, see below) with no other collateral
-   *    found in this codebase. NO `backdrop-filter` exists on `.app-sidebar` at all — see the real
-   *    `<Topbar>` component below for the one surface in this whole list that actually has one —
-   *    and NEITHER `.app-sidebar` nor `.app-topbar` sits inside `.app-main`, so even where they
-   *    ARE translucent there is no part of the `--gradient-glow` backdrop behind them to show
-   *    through: measured in the browser, both render as a flat, near-opaque-looking wash over the
-   *    page's own light canvas, not over the vivid gradient. Glass needs a busy ground BEHIND the
-   *    element wearing it, and AppShell's chrome grid sits outside the one region that has one. */
+   *    (shell-layout.css:216-229) as its FALLBACK. Border is covered by the `--border`
+   *    restatement above; `--card` is only otherwise read as Card's own fallback (moot once
+   *    `--card-background` is set directly above). The Sidebar's own fill and blur knobs are set
+   *    further down and are what render.
+   *
+   *    WHAT IS STILL TRUE, AND IT IS A PLACEMENT FACT RATHER THAN A TOKEN ONE: neither
+   *    `.app-sidebar` nor `.app-topbar` sits inside `.app-main`, and `--gradient-glow` is painted
+   *    only inside `.app-main` (shell-layout.css:403). So both chrome surfaces blur and tint over
+   *    the page's own flat canvas, not over the vivid ground. Glass needs a busy ground BEHIND the
+   *    element wearing it, and AppShell's chrome grid sits outside the one region that has one —
+   *    which is also why the Topbar's Popover was the only overlay on this page that failed AA
+   *    until its fill was moved to the dark end (see the seed layer). */
   --card: 0 0% 100% / 12%;
 
-  /* ── Topbar — the ONE surface in this entire list with a REAL backdrop-filter wired to a
-   *    token (shell-layout.css:2648-2649): `background-color: hsl(var(--background) /
-   *    var(--topbar-background-alpha)); backdrop-filter: blur(var(--topbar-backdrop-blur-size));`
-   *    Both default to `initial` (off) precisely so a service opts in with these two lines. */
+  /* ── Topbar — `background-color: hsl(var(--background) / var(--topbar-background-alpha));
+   *    backdrop-filter: blur(var(--topbar-backdrop-blur-size));` (shell-layout.css:2648-2649).
+   *    Both default to `initial` (off) precisely so a service opts in with these two lines.
+   *
+   *    ONE INCONSISTENCY, MEASURED: this is the only blur call site in `src/styles/**` that does
+   *    NOT carry the shared `saturate(var(--surface-backdrop-saturate, 160%))` companion the eleven
+   *    gh#880 knobs all pair with — `measure-glass.mjs` prints `sat NO` for the Topbar and `sat
+   *    yes` for every other blurred surface. Blur without saturate is the grey mush the standard
+   *    names in §1, and no token here can add it. */
   --topbar-background-alpha: 55%;
   --topbar-backdrop-blur-size: var(--blur-lg);
 
@@ -314,15 +310,15 @@
   --popover-foreground: 48 20% 96%;
   /* "Muted" is SMALLER AND LIGHTER IN WEIGHT, never lower contrast — §3. 82% still measures
    * 3.49:1 on the worst pane, so it stays at 90% and the hierarchy comes from size. */
-  --muted-foreground: 48 14% 90%;
-  --text-tertiary: 48 12% 86%;
+  --muted-foreground: 48 10% 94%;
+  --text-tertiary: 48 10% 93%;
 
   /* Status ink lightened to match. The hue carries the meaning; the lightness carries the
    * legibility, and on dark glass those pull in the opposite direction from the light build. */
-  --text-success: 152 60% 82%;
-  --text-warning: 42 90% 82%;
-  --text-info: 210 90% 86%;
-  --text-error: 6 85% 84%;
+  --text-success: 152 60% 90%;
+  --text-warning: 42 90% 90%;
+  --text-info: 210 90% 92%;
+  --text-error: 6 85% 90%;
 
   /* ── THE CARD WAS NOT CONSISTENT WITH ITS OWN CONTENTS, which is what the owner spotted by eye:
    *    a translucent Card whose Segmented track stayed opaque `--muted` (measured
@@ -330,22 +326,22 @@
    *    `--tabs-list-background` and `--tabs-trigger-active-background`, which do not exist at all
    *    and are the library half of gh#880. So Segmented is fixed here and Tabs cannot be. */
   --segmented-track-background: 0 0% 100% / 10%;
-  --segmented-item-selected-background: 0 0% 100% / 24%;
+  --segmented-item-selected-background: 0 0% 100% / 16%;
   /* The ITEM ink too — an unselected item measured 2.86:1 because only the track had been
    * retinted and the label kept its own default. Same ramp as everything else. */
   /* The table's header strip: both knobs exist, and the first build set neither, so it kept an
    * opaque `--muted` band with the default dark ink — the same "container is glass, its own parts
    * are not" defect the owner spotted on the Card's Segmented. */
   --table-header-background: hsl(0 0% 100% / 8%);
-  --table-header-foreground: hsl(48 14% 90%);
+  --table-header-foreground: hsl(48 10% 94%);
 
-  --segmented-item-color: 48 14% 90%;
+  --segmented-item-color: 48 10% 94%;
   --segmented-item-selected-color: 48 20% 96%;
 
   /* ── ONE INK RAMP ONLY WORKS IF EVERY GLASS SURFACE SHARES A POLARITY, and that is the part
-   *    §3 of the standard did not say. Card is LIGHT glass (white at 42–55%), so dark ink is
-   *    right there. Alert was a toned tint — `--surface-*` at 16% over the DARK page backdrop —
-   *    so the same dark ink measured 1.27:1 and 1.35:1. Not a contrast bug in the ink: a
+   *    §3 of the standard did not say. Card is white glass over a dark canvas; Alert was a toned
+   *    tint — `--surface-*` at 16% over the same dark backdrop — and the same ink measured 1.27:1
+   *    and 1.35:1 on it. Not a contrast bug in the ink: a
    *    POLARITY bug, two surfaces of opposite value asking one ramp to serve both.
    *
    *    Fixed by making the alert a light pane like every other surface, tinted by hue rather
@@ -390,12 +386,144 @@
    *    other is what produced a light chrome carrying near-white labels. */
   --background: 230 40% 9%;
   --muted: 230 24% 18%;
-  --muted-foreground: 48 14% 90%;
+  --muted-foreground: 48 10% 94%;
   --accent: 262 55% 32%;
   --accent-foreground: 48 20% 96%;
   --secondary: 230 24% 22%;
   --secondary-foreground: 48 20% 96%;
   --input: 0 0% 100% / 18%;
+
+  /* ── THE BRAND INK RAMP — the second half of §3, and the half the first build skipped ────────
+   *    `--text-link` / `--text-brand` / `--text-primary` and the per-component actives below all
+   *    derive from `--primary` at the root, where a `var()` substitutes ONCE — so they compute
+   *    against the ROOT's light-theme seed and inherit that frozen dark violet into this dark
+   *    scope. Measured before these lines, on the violet seed alone: the Sidebar's active label
+   *    1.46:1, NavList's 1.39:1, MegaMenu's trigger 1.13:1, the Anchor link and `Button
+   *    variant="link"` 2.44:1, `Text link` 1.85:1. None of it is a contrast bug in the ink: it is
+   *    the `:root` freeze rule (docs/TOKEN-RESOLUTION.md §3) applied to the whole action family.
+   *
+   *    Every one of them has a knob. Restating them here is what a dark theme owes, and the split
+   *    between the two forms is the trap this file already documents: a token read INSIDE `hsl()`
+   *    takes a bare triplet, a token read as a complete value takes a whole `hsl(...)`. Getting
+   *    that backwards fails silently — the declaration is invalid at computed-value time and the
+   *    surface simply keeps the colour it had. ──────────────────────────────────────────────── */
+  --text-link: 48 20% 92%;
+  --text-brand: 48 20% 92%;
+  --text-primary: 48 20% 92%;
+  --anchor-ink-color: 48 20% 92%;
+  --org-switcher-meta-foreground: 48 14% 90%;
+  --separator-label-color: 48 14% 90%;
+  --sidebar-item-active-foreground: hsl(48 20% 96%);
+  --sidebar-nav-item-foreground: hsl(48 14% 90%);
+  --sidebar-nav-icon-foreground: hsl(48 14% 90%);
+  --sidebar-nav-icon-active-foreground: hsl(48 20% 96%);
+  --mega-menu-trigger-current-foreground: hsl(48 20% 96%);
+  --mega-menu-trigger-open-foreground: hsl(48 20% 96%);
+  --mega-menu-link-current-foreground: hsl(48 20% 96%);
+  --timeline-grid-event-color: hsl(48 20% 96%);
+  /* Three more ROOT-BOUND ink bindings, found the same way — by measuring, not by reading. Each is
+   * `--x: hsl(var(--foreground))` or `var(--muted-foreground)` declared once at `:root`, so it
+   * resolves against the root's dark ink and inherits that into this light-ink scope. The numbers
+   * before restating them, on the violet seed: TimelineGrid's event time and description 1.14:1,
+   * MegaMenu's non-current trigger 1.13:1, AuthDivider's label 2.42:1. */
+  --timeline-grid-event-muted-color: hsl(48 14% 90%);
+  --mega-menu-trigger-foreground: hsl(48 20% 96%);
+  --mega-menu-link-foreground: hsl(48 20% 96%);
+  --mega-menu-panel-foreground: hsl(48 20% 96%);
+  --mega-menu-group-label-foreground: hsl(48 14% 90%);
+  --mega-menu-group-description-foreground: hsl(48 14% 90%);
+  --mega-menu-link-description-foreground: hsl(48 14% 90%);
+  --auth-shell-divider-label-color: 48 14% 90%;
+  --org-switcher-current-foreground: hsl(48 20% 96%);
+
+  /* ══ INTERACTION STATES — 55 knobs exist, this theme used 3 of them, and every state defect the
+   *    owner found by hovering was in the other 52 ═══════════════════════════════════════════
+   *
+   *    Reported from screenshots, all three the same shape — a knob that EXISTS and that the theme
+   *    never set, so the surface kept a value calibrated for a light canvas:
+   *      · the Sidebar's active row — dark violet ink on a violet wash over a dark canvas;
+   *      · a hovered Segmented item — dark fill, dark text;
+   *      · the Topbar's bell on hover — a solid brand block.
+   *
+   *    §3 DECIDES THE VALUES, and it is the rule that is easy to get backwards in this direction:
+   *    a secondary or unselected state may not be expressed as LOWER CONTRAST. Smaller, lighter in
+   *    weight, a quieter fill — but the ink keeps its ratio. So every hover and selected fill below
+   *    is a LIGHTER wash on this dark glass, never a darker one, and every state ink stays on the
+   *    one ramp.
+   *
+   *    FOCUS IS NOT OPTIONAL (§4b). `--focus-ring-color` defaults to `--ring`, which
+   *    `tenantTheme()` pins to the seed — and a ring tinted to the seed is invisible over the
+   *    light lobe of this backdrop, which is most of the top-left, and invisible again on the navy
+   *    seed everywhere. So the ring is pinned to a warm near-white that clears every band instead
+   *    of following the brand. ────────────────────────────────────────────────────────────── */
+
+  /* Triplet form — read inside `hsl()`. */
+  --focus-ring-color: 48 100% 82%;
+  --focus-outline-color: 48 100% 82%;
+  /* 2px, because §4b asks for 2px and the package ships a hairline. The three width tokens are all
+   * `:root`-bound (`--focus-ring-width: calc(var(--focus-ring-weight) * var(--focus-outline))`,
+   * `--focus-ring-weight: var(--focus-outline-weight)`, `--focus-outline-weight:
+   * var(--stroke-hairline)`), so a scope has to restate the one that is actually read — measured,
+   * the ring computed `outline-width: 1px` until this line existed. `var(--focus-outline)` is kept
+   * in the calc so the package's own on/off toggle still works. */
+  --focus-ring-width: calc(2px * var(--focus-outline));
+  /* A SECOND ring token, found only by focusing every control: Checkbox (and the choice family with
+   * it) draws its ring from `--control-outline`, which derives from `--primary` and not from
+   * `--focus-ring-color` — measured `3px rgb(124, 58, 237)` on the violet seed, which on the navy
+   * seed over this canvas would be a ring nobody can see. §4b: the ring must survive ANY backdrop,
+   * so it is pinned to the same warm near-white rather than to the brand. */
+  --control-outline: 48 100% 82%;
+  --focus-ring-glow-color: 48 100% 82%;
+  /* AND ONE THAT NO TOKEN REACHED, recorded rather than worked around: the choice family's heavy
+   * ring stays `3px` of the SEED — measured `rgb(10, 31, 68)` on navy and `rgb(255, 212, 0)` on
+   * citron, i.e. the brand colour itself, on a canvas made of the brand colour. Setting
+   * `--focus-outline-color`, `--focus-ring-color`, `--control-outline`, `--focus-ring-glow-color`
+   * and `--primary-border` in turn moved none of it, so it is reported here and not faked. Every
+   * other control on the page takes the 2px warm-white ring. */
+  --topbar-item-hover-background: 0 0% 100% / 16%;
+  --topbar-item-hover-color: 48 20% 96%;
+  --segmented-item-hover-background: 0 0% 100% / 18%;
+  --segmented-item-hover-color: 48 20% 96%;
+  --segmented-item-active-background: 0 0% 100% / 26%;
+  --app-launcher-tile-hover-background: 0 0% 100% / 16%;
+  --app-launcher-tile-hover-color: 48 20% 96%;
+  --control-variant-filled-hover-background: 0 0% 100% / 24%;
+  --choice-button-selected-color: 48 20% 96%;
+  --choice-button-selected-border-color: 0 0% 100% / 60%;
+  --slider-dot-active-border-color: 48 20% 96%;
+  --secondary-hover: 0 0% 100% / 20%;
+  --secondary-active: 0 0% 100% / 26%;
+
+  /* Complete-value form — read as `var(--token, …)` directly. */
+  --region-focus-ring-color: hsl(48 100% 82%);
+  --menu-item-hover-background: hsl(0 0% 100% / 14%);
+  --menu-item-hover-foreground: hsl(48 20% 96%);
+  --table-row-hover-background: hsl(0 0% 100% / 10%);
+  --table-row-selected-background: hsl(0 0% 100% / 16%);
+  --tree-node-hover-background: hsl(0 0% 100% / 10%);
+  --tree-node-selected-background: hsl(0 0% 100% / 18%);
+  --tree-node-selected-foreground: hsl(48 20% 96%);
+  --mega-menu-trigger-hover-background: hsl(0 0% 100% / 14%);
+  --mega-menu-trigger-hover-foreground: hsl(48 20% 96%);
+  --mega-menu-link-hover-background: hsl(0 0% 100% / 14%);
+  --mega-menu-link-hover-foreground: hsl(48 20% 96%);
+  --sidebar-item-active-background: hsl(var(--primary) / 26%);
+  --sidebar-nav-item-hover-foreground: hsl(48 20% 96%);
+  --sidebar-nav-icon-hover-foreground: hsl(48 20% 96%);
+  --conversations-item-active-background: hsl(0 0% 100% / 18%);
+  --conversations-item-active-color: hsl(48 20% 96%);
+  --tabs-count-active-background: hsl(0 0% 100% / 24%);
+  --tabs-count-active-color: hsl(48 20% 96%);
+  --toggle-soft-hover-background: hsl(0 0% 100% / 16%);
+  --toggle-pressed-count-background: hsl(0 0% 100% / 26%);
+  --toggle-pressed-count-color: hsl(48 20% 96%);
+  --toggle-pressed-border-color: hsl(0 0% 100% / 45%);
+  --checkbox-checked-background: hsl(var(--primary) / 90%);
+  --switch-checked-background: hsl(var(--primary) / 90%);
+  --switch-unchecked-background: hsl(0 0% 100% / 26%);
+  --switch-content-unchecked-foreground: hsl(48 14% 92%);
+  --text-action-color: hsl(48 20% 94%);
+  --text-action-color-hover: hsl(48 20% 99%);
 
   --surface-backdrop-saturate: 170%;
 
@@ -433,20 +561,161 @@
   --table-surface-background: hsl(0 0% 100% / 8%);
 
   /* The nested surfaces that made the Card disagree with its own contents. */
-  --tabs-list-background: hsl(0 0% 100% / 10%);
-  --tabs-trigger-active-background: hsl(0 0% 100% / 24%);
+  --tabs-list-background: hsl(0 0% 100% / 6%);
+  /* 15%, not 24%. The selected tab's own label measured 4.10-4.48:1 on the citron and navy seeds
+   * at 24% — a light fill under light ink. §3 again: the selected state is carried by the fill's
+   * PRESENCE and the label's weight, not by making the label harder to read. */
+  --tabs-trigger-active-background: hsl(0 0% 100% / 15%);
 
   /* Buttons are IN scope — glassmorphism skins any surface; it is Liquid Glass that reserves
    * glass for the control layer. A solid button on a glass page is that split applied backwards. */
   --button-outline-background: hsl(0 0% 100% / 14%);
   --button-secondary-background: hsl(0 0% 100% / 14%);
-  --button-default-background: hsl(262 83% 58% / 55%);
+  /* THE SEED, not a literal violet: `--primary` arrives from `tenantTheme(hex).vars` as an
+   * inline declaration on the very element this rule matches, so the alpha suffix composes
+   * with whatever seed the switcher is on. No relative-colour support needed for this one.
+   *
+   * 85%, AND THE NUMBER IS A MEASUREMENT. At the 55% this started on, the coral seed's confirm
+   * button measured 2.96:1 inside the Dialog — because `tenantTheme` guarantees its
+   * `--primary`/`--primary-foreground` pair on the SOLID seed, and coral (#E2564A, relative
+   * luminance 0.22) sits just above the 0.179 pivot where black wins, at 4.66:1 black against
+   * 4.51:1 white. Put an alpha on the fill and it composites towards the dark panel behind it,
+   * the black label loses its ground, and the pair the function promised is void. No seed is
+   * wrong here and the function is not wrong either: ALPHA ON `--primary` IS OUTSIDE WHAT IT
+   * PROMISES. 85% keeps the fill close enough to the solid seed for the pair to hold on all five
+   * (measured: coral 2.96:1 -> 4.53:1) while still reading as glass. */
+  --button-default-background: hsl(var(--primary) / 85%);
 
   /* A REAL two-stop gradient, which the Card could not take until card-layout.css:49 stopped
    * repeating one variable as both stops. */
   --card-tint: hsl(0 0% 100% / 0.1);
-  --card-tint-end: hsl(262 83% 70% / 0.08);
+  --card-tint-end: hsl(var(--primary) / 0.08);
   --card-tint-angle: 135deg;
+}
+
+/* ══ THE SEED LAYER — everything above that was a literal violet, re-derived from --primary ═══
+ *
+ * gh#882's second question: "nothing proves the theme is not tuned to violet". It was — the
+ * backdrop blobs, the three surface gradients and the page canvas were hand-picked 262°/199°/330°
+ * literals, so every seed but violet would have rendered a violet page with a differently coloured
+ * Button. Everything below re-derives those from `--primary`, which arrives on THIS very element
+ * as an inline declaration from `tenantTheme(hex).vars`.
+ *
+ * ── THE PROBLEM THIS BLOCK EXISTS TO SOLVE, and it is a real limit of the token model ─────────
+ * Half this system's colour roles are declared as a BARE TRIPLET ("H S% L%") and read as
+ * `hsl(var(--token))` at the call site. CSS relative colour (`hsl(from C h s l)`) returns a
+ * COLOUR, never a triplet, so a triplet-shaped token cannot be computed from another
+ * triplet-shaped token by any function CSS has: `--background: hsl(from …)` is simply invalid
+ * where the consumer writes `hsl(var(--background))`.
+ *
+ * The way through is to put the `from` clause INSIDE the token and let the consumer's own `hsl()`
+ * close it — `--background: from hsl(var(--primary)) h 40% 9%` makes `hsl(var(--background))`
+ * expand to `hsl(from hsl(262 83% 58%) h 40% 9%)`, valid relative colour evaluated at the call
+ * site against the scope's own seed. It is still one custom-property declaration and nothing else.
+ *
+ * A SIDE EFFECT WORTH RECORDING: it also dissolves the "`--background` cannot take an alpha" dead
+ * end documented at the top of this file. Topbar's `hsl(var(--background) / var(--topbar-
+ * background-alpha))` becomes `hsl(from … h 40% 9% / 55%)`, which is legal — the second `/` that
+ * broke the bare-triplet form never appears. So that dead end was SYNTACTIC, and relative colour
+ * removes it. What it does NOT remove is the SHARING: `--background` is still the page canvas as
+ * well as Dialog's and Sheet's panel, so one alpha there would still make the canvas see-through.
+ * Dialog and Sheet are therefore fixed through their own gh#880 knobs, not through this.
+ *
+ * `@supports` guards the whole layer, so an engine without relative colour keeps the literal
+ * violet above rather than losing the theme — the same shape `src/tokens/derived.css` uses for its
+ * own `hsl(from …)` branch. ════════════════════════════════════════════════════════════════════ */
+@supports (color: hsl(from red h s l)) {
+  [data-theme-style="glass"] {
+    /* TRIPLET-shaped roles — the `from` clause lives in the token, the consumer's hsl() closes it. */
+    --background: from hsl(var(--primary)) h 40% 9%;
+    --muted: from hsl(var(--primary)) h 24% 18%;
+    --accent: from hsl(var(--primary)) h 45% 32%;
+    --secondary: from hsl(var(--primary)) h 24% 22%;
+
+    /* COMPLETE-VALUE tokens — these call sites take a colour, so ordinary relative colour works. */
+    --app-shell-main-background: hsl(from hsl(var(--primary)) h 47% 9%);
+    --gradient-glow:
+      radial-gradient(
+        circle at 12% 18%,
+        hsl(from hsl(var(--primary)) h s 58% / 0.55),
+        transparent 42%
+      ),
+      radial-gradient(
+        circle at 88% 12%,
+        hsl(from hsl(var(--primary)) calc(h - 63) 89% 48% / 0.5),
+        transparent 48%
+      ),
+      radial-gradient(
+        circle at 55% 92%,
+        hsl(from hsl(var(--primary)) calc(h + 68) 81% 60% / 0.42),
+        transparent 52%
+      ),
+      linear-gradient(
+        160deg,
+        hsl(from hsl(var(--primary)) h 55% 11%),
+        hsl(from hsl(var(--primary)) calc(h - 52) 45% 16%)
+      );
+    --topbar-gradient: linear-gradient(
+      120deg,
+      hsl(from hsl(var(--primary)) h s 58% / 0.35) 0%,
+      hsl(from hsl(var(--primary)) calc(h - 63) 89% 48% / 0.2) 100%
+    );
+    --sidebar-gradient: linear-gradient(
+      160deg,
+      hsl(from hsl(var(--primary)) calc(h + 68) 81% 60% / 0.22) 0%,
+      hsl(from hsl(var(--primary)) h s 58% / 0.16) 100%
+    );
+    --gradient-hero: linear-gradient(
+      100deg,
+      hsl(from hsl(var(--primary)) calc(h + 68) 81% 60% / 0.25) 0%,
+      hsl(from hsl(var(--primary)) h s 58% / 0.15) 100%
+    );
+    --tooltip-background: hsl(from hsl(var(--primary)) h 45% 12% / 78%);
+    --select-content-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
+    --dropdown-content-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
+    --toast-background: hsl(from hsl(var(--primary)) h 30% 16% / 90%);
+    --dialog-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
+    --sheet-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 92%);
+
+    /* ── THE POPOVER WAS THE ONE OVERLAY LEFT WHITE, AND IT WAS THE ONLY OVERLAY THAT FAILED AA.
+     *    Measured on every seed: 2.42–3.12:1 for its title and description, while Dialog, Sheet,
+     *    Select, DropdownMenu, Tooltip and Toast all cleared it. The cause is not the fill's alpha
+     *    but WHERE this Popover opens — its trigger is a Topbar cell, and AppShell paints
+     *    `--gradient-glow` only inside `.app-main`, so the panel floats over the light page canvas
+     *    rather than over the dark ground every other overlay gets. A 22% WHITE fill there
+     *    composites light, and the theme's one ink ramp is near-white by design (§3: one ramp, or
+     *    a card has one string that passes and two that fail).
+     *
+     *    So the fill joins the other overlays at the dark end instead of the ink being split. That
+     *    is §3's remedy — a scrim, not darker ink — applied to the panel itself. ─────────────── */
+    --popover-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
+    --popover-surface-border-color: hsl(0 0% 100% / 22%);
+
+    /* ── THE SCRIM KNOB IS A SHARE, NOT AN OPACITY — measured, and it is a trap worth writing down.
+     *    `--dialog-overlay-alpha: 62%` above reads as "62% black". It is not: dialog-layout.css:26
+     *    resolves it as `color-mix(in srgb, var(--overlay-background) 62%, transparent)`, and
+     *    `--overlay-background` is ITSELF `rgb(0 0 0 / 0.5)` (semantic/layout.css:109). The two
+     *    alphas multiply, so the computed scrim was `color(srgb 0 0 0 / 0.31)` — half what the
+     *    theme asked for, and confirmed by reading the computed value rather than the declaration.
+     *    The Sheet's 40% share landed at 0.20 the same way.
+     *
+     *    `--dialog-overlay-background` / `--sheet-overlay-background` are the direct knobs the same
+     *    rule offers, so the number written here is the number that paints. ──────────────────── */
+    /* The brand ink, tinted by the seed rather than fixed warm-white — same split of forms as the
+     * literals above, and the `from` clause lives inside the triplet-shaped ones. */
+    --text-link: from hsl(var(--primary)) h 90% 88%;
+    --text-brand: from hsl(var(--primary)) h 90% 88%;
+    --text-primary: from hsl(var(--primary)) h 90% 88%;
+    --anchor-ink-color: from hsl(var(--primary)) h 90% 88%;
+    --sidebar-item-active-foreground: hsl(from hsl(var(--primary)) h 95% 90%);
+    --sidebar-nav-icon-active-foreground: hsl(from hsl(var(--primary)) h 95% 90%);
+    --mega-menu-trigger-current-foreground: hsl(from hsl(var(--primary)) h 95% 90%);
+    --mega-menu-trigger-open-foreground: hsl(from hsl(var(--primary)) h 95% 90%);
+    --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 95% 90%);
+
+    --dialog-overlay-background: hsl(0 0% 0% / 62%);
+    --sheet-overlay-background: hsl(0 0% 0% / 55%);
+  }
 }
 
 /* ── THE TWO FALLBACKS THIS THEME OWES BECAUSE IT MADE THESE SURFACES TRANSLUCENT ────────────

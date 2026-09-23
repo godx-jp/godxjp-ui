@@ -1,0 +1,810 @@
+
+================================================================================================
+THEME base   SEED violet #7C3AED
+http://localhost:6811/showcase/theme-lab?theme=base&seed=violet
+SURFACES
+  Page canvas    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 9.708px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.486198 0.227376 0.929  focus outline 1px rgb(124, 58, 237) on self
+  Sidebar item     hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Topbar item      hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Segmented item   hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(124, 58, 237) on self
+  Tabs trigger     hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(124, 58, 237) on self
+  Button           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Button outline   hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Field            hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Table row        hover moves oklab(0.934582 0.000586867 0.00574  focus outline 3px rgb(36, 35, 30) on self
+  MegaMenu trigger hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  NavList item     hover SAME  color(srgb 0.486198 0.227376 0.929  focus outline 1px rgb(124, 58, 237) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+  Switch           hover SAME  rgb(124, 58, 237)                   focus outline 1px rgb(124, 58, 237) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(124, 58, 237) on self
+  Tree node        hover moves rgb(235, 233, 229)                  focus outline 1px rgb(124, 58, 237) on self
+CONTRAST  558/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+VERDICT   0/25 surfaces carry a backdrop blur · 5/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME base   SEED azure #2563EB
+http://localhost:6811/showcase/theme-lab?theme=base&seed=azure
+SURFACES
+  Page canvas    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 9.708px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.145052 0.388225 0.921  focus outline 1px rgb(37, 99, 235) on self
+  Sidebar item     hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Topbar item      hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Segmented item   hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(37, 99, 235) on self
+  Tabs trigger     hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(37, 99, 235) on self
+  Button           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Button outline   hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Field            hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Table row        hover moves oklab(0.934582 0.000586867 0.00574  focus outline 3px rgb(36, 35, 30) on self
+  MegaMenu trigger hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  NavList item     hover SAME  color(srgb 0.145052 0.388225 0.921  focus outline 1px rgb(37, 99, 235) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+  Switch           hover SAME  rgb(37, 99, 235)                    focus outline 1px rgb(37, 99, 235) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(37, 99, 235) on self
+  Tree node        hover moves rgb(235, 233, 229)                  focus outline 1px rgb(37, 99, 235) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   4.26:1 (needs 4.5:1, 14px)  [MegaMenu trigger:hover] "Khu vực phía Bắc"  ← [mega-menu-bar] [mega-menu-item] [mega-menu-trigger] .ui-mega-menu-trigger-label
+VERDICT   0/25 surfaces carry a backdrop blur · 5/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME base   SEED coral #E2564A
+http://localhost:6811/showcase/theme-lab?theme=base&seed=coral
+SURFACES
+  Page canvas    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 9.708px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.886261 0.337233 0.290  focus outline 1px rgb(226, 86, 74) on self
+  Sidebar item     hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Topbar item      hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Segmented item   hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(226, 86, 74) on self
+  Tabs trigger     hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(226, 86, 74) on self
+  Button           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Button outline   hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Field            hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Table row        hover moves oklab(0.934582 0.000586867 0.00574  focus outline 3px rgb(36, 35, 30) on self
+  MegaMenu trigger hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  NavList item     hover SAME  color(srgb 0.886261 0.337233 0.290  focus outline 1px rgb(226, 86, 74) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+  Switch           hover SAME  rgb(226, 86, 74)                    focus outline 1px rgb(226, 86, 74) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(226, 86, 74) on self
+  Tree node        hover moves rgb(235, 233, 229)                  focus outline 1px rgb(226, 86, 74) on self
+CONTRAST  549/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   2.16:1 (needs 4.5:1, 12.5px)  [page] "Tổng quan"  ← div div button span
+  FAIL   3.64:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+  FAIL   3.64:1 (needs 4.5:1, 14px)  [page] "Khu vực phía Bắc"  ← [mega-menu-bar] [mega-menu-item] [mega-menu-trigger] .ui-mega-menu-trigger-label
+  FAIL   2.16:1 (needs 4.5:1, 12.5px)  [page] "Khu vực phía Bắc"  ← .ui-nav-list div button span
+  FAIL   2.51:1 (needs 4.5:1, 12.5px)  [page] "Tổng quan"  ← div div a span
+  FAIL   3.64:1 (needs 4.5:1, 14px)  [page] "Bảng"  ← .ui-anchor-track [anchor-list] [anchor-item] [anchor-link]
+  FAIL   2.16:1 (needs 4.5:1, 12.5px)  [Sidebar active:hover] "Tổng quan"  ← div div button span
+  FAIL   3.06:1 (needs 4.5:1, 14px)  [MegaMenu trigger:hover] "Khu vực phía Bắc"  ← [mega-menu-bar] [mega-menu-item] [mega-menu-trigger] .ui-mega-menu-trigger-label
+  FAIL   2.16:1 (needs 4.5:1, 12.5px)  [NavList item:hover] "Khu vực phía Bắc"  ← .ui-nav-list div button span
+VERDICT   0/25 surfaces carry a backdrop blur · 5/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME base   SEED citron #FFD400
+http://localhost:6811/showcase/theme-lab?theme=base&seed=citron
+SURFACES
+  Page canvas    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 9.708px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 1 0.831333 0 / 0.12)     focus outline 1px rgb(255, 212, 0) on self
+  Sidebar item     hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Topbar item      hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Segmented item   hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(255, 212, 0) on self
+  Tabs trigger     hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(255, 212, 0) on self
+  Button           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Button outline   hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Field            hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Table row        hover moves oklab(0.934582 0.000586867 0.00574  focus outline 3px rgb(36, 35, 30) on self
+  MegaMenu trigger hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  NavList item     hover SAME  color(srgb 1 0.831333 0 / 0.12)     focus outline 1px rgb(255, 212, 0) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+  Switch           hover SAME  rgb(255, 212, 0)                    focus outline 1px rgb(255, 212, 0) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(255, 212, 0) on self
+  Tree node        hover moves rgb(235, 233, 229)                  focus outline 1px rgb(255, 212, 0) on self
+CONTRAST  548/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   1.25:1 (needs 4.5:1, 12.5px)  [page] "Tổng quan"  ← div div button span
+  FAIL   2.06:1 (needs 4.5:1, 14px)  [page] "Đọc quy tắc phân giải token"  ← [card-content] .ui-flex .ui-flex [text]
+  FAIL   1.41:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+  FAIL   1.41:1 (needs 4.5:1, 14px)  [page] "Khu vực phía Bắc"  ← [mega-menu-bar] [mega-menu-item] [mega-menu-trigger] .ui-mega-menu-trigger-label
+  FAIL   1.25:1 (needs 4.5:1, 12.5px)  [page] "Khu vực phía Bắc"  ← .ui-nav-list div button span
+  FAIL   1.31:1 (needs 4.5:1, 12.5px)  [page] "Tổng quan"  ← div div a span
+  FAIL   1.41:1 (needs 4.5:1, 14px)  [page] "Bảng"  ← .ui-anchor-track [anchor-list] [anchor-item] [anchor-link]
+  FAIL   1.25:1 (needs 4.5:1, 12.5px)  [Sidebar active:hover] "Tổng quan"  ← div div button span
+  FAIL   1.18:1 (needs 4.5:1, 14px)  [MegaMenu trigger:hover] "Khu vực phía Bắc"  ← [mega-menu-bar] [mega-menu-item] [mega-menu-trigger] .ui-mega-menu-trigger-label
+  FAIL   1.25:1 (needs 4.5:1, 12.5px)  [NavList item:hover] "Khu vực phía Bắc"  ← .ui-nav-list div button span
+VERDICT   0/25 surfaces carry a backdrop blur · 5/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME base   SEED navy #0A1F44
+http://localhost:6811/showcase/theme-lab?theme=base&seed=navy
+SURFACES
+  Page canvas    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 9.708px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 3.70828px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.0392036 0.12152 0.266  focus outline 1px rgb(10, 31, 68) on self
+  Sidebar item     hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Topbar item      hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Segmented item   hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(10, 31, 68) on self
+  Tabs trigger     hover SAME  rgb(253, 253, 252)                  focus outline 1px rgb(10, 31, 68) on self
+  Button           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Button outline   hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Field            hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Table row        hover moves oklab(0.934582 0.000586867 0.00574  focus outline 3px rgb(36, 35, 30) on self
+  MegaMenu trigger hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  NavList item     hover SAME  color(srgb 0.0392036 0.12152 0.266  focus outline 1px rgb(10, 31, 68) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+  Switch           hover SAME  rgb(10, 31, 68)                     focus outline 1px rgb(10, 31, 68) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(10, 31, 68) on self
+  Tree node        hover moves rgb(235, 233, 229)                  focus outline 1px rgb(10, 31, 68) on self
+CONTRAST  558/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+VERDICT   0/25 surfaces carry a backdrop blur · 5/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME glass   SEED violet #7C3AED
+http://localhost:6811/showcase/theme-lab?theme=glass&seed=violet
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 9.708px
+  Sidebar        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow NO   radius 0px
+  Topbar         fill translucent  blur blur(16px)              sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur blur(8px) saturate(1.7  sat yes  edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Dialog panel   fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Sheet panel    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  Popover        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+  Tooltip        fill translucent  blur blur(8px) saturate(1.7  sat yes  edge yes  shadow yes  radius 6px
+  Toast          fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  rgba(124, 58, 237, 0.26)            focus outline 2px rgb(255, 237, 163) on self
+  Sidebar item     hover moves color(srgb 0.282176 0.176 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Topbar item      hover moves rgba(255, 255, 255, 0.16)           focus outline 2px rgb(255, 237, 163) on self
+  Segmented item   hover moves rgba(255, 255, 255, 0.18)           focus outline 3px rgb(247, 246, 243) on self
+  Tabs trigger     hover SAME  rgba(255, 255, 255, 0.15)           focus outline 2px rgb(255, 237, 163) on self
+  Button           hover moves color(srgb 0.282176 0.176 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Button outline   hover moves color(srgb 0.282176 0.176 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Field            hover moves color(srgb 0.282176 0.176 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Table row        hover moves oklab(0.369927 0.0550331 -0.107449  focus outline 3px rgb(247, 246, 243) on self
+  MegaMenu trigger hover moves rgba(255, 255, 255, 0.14)           focus outline 2px rgb(255, 237, 163) on self
+  NavList item     hover SAME  rgba(124, 58, 237, 0.26)            focus outline 2px rgb(255, 237, 163) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.282176 0.176 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Switch           hover SAME  rgba(124, 58, 237, 0.9)             focus outline 2px rgb(255, 237, 163) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(124, 58, 237) on self
+  Tree node        hover moves rgba(255, 255, 255, 0.1)            focus outline 2px rgb(255, 237, 163) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   2.41:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   12/25 surfaces carry a backdrop blur · 19/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME glass   SEED azure #2563EB
+http://localhost:6811/showcase/theme-lab?theme=glass&seed=azure
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 9.708px
+  Sidebar        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow NO   radius 0px
+  Topbar         fill translucent  blur blur(16px)              sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur blur(8px) saturate(1.7  sat yes  edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Dialog panel   fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Sheet panel    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  Popover        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+  Tooltip        fill translucent  blur blur(8px) saturate(1.7  sat yes  edge yes  shadow yes  radius 6px
+  Toast          fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  rgba(37, 99, 235, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Sidebar item     hover moves color(srgb 0.176 0.266192 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Topbar item      hover moves rgba(255, 255, 255, 0.16)           focus outline 2px rgb(255, 237, 163) on self
+  Segmented item   hover moves rgba(255, 255, 255, 0.18)           focus outline 3px rgb(247, 246, 243) on self
+  Tabs trigger     hover SAME  rgba(255, 255, 255, 0.15)           focus outline 2px rgb(255, 237, 163) on self
+  Button           hover moves color(srgb 0.176 0.266192 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Button outline   hover moves color(srgb 0.176 0.266192 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Field            hover moves color(srgb 0.176 0.266192 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Table row        hover moves oklab(0.393936 -0.00912397 -0.0898  focus outline 3px rgb(247, 246, 243) on self
+  MegaMenu trigger hover moves rgba(255, 255, 255, 0.14)           focus outline 2px rgb(255, 237, 163) on self
+  NavList item     hover SAME  rgba(37, 99, 235, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.176 0.266192 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Switch           hover SAME  rgba(37, 99, 235, 0.9)              focus outline 2px rgb(255, 237, 163) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(37, 99, 235) on self
+  Tree node        hover moves rgba(255, 255, 255, 0.1)            focus outline 2px rgb(255, 237, 163) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   2.56:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   12/25 surfaces carry a backdrop blur · 19/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME glass   SEED coral #E2564A
+http://localhost:6811/showcase/theme-lab?theme=glass&seed=coral
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 9.708px
+  Sidebar        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow NO   radius 0px
+  Topbar         fill translucent  blur blur(16px)              sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur blur(8px) saturate(1.7  sat yes  edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Dialog panel   fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Sheet panel    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  Popover        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+  Tooltip        fill translucent  blur blur(8px) saturate(1.7  sat yes  edge yes  shadow yes  radius 6px
+  Toast          fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  rgba(226, 86, 74, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Sidebar item     hover moves color(srgb 0.464 0.198752 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Topbar item      hover moves rgba(255, 255, 255, 0.16)           focus outline 2px rgb(255, 237, 163) on self
+  Segmented item   hover moves rgba(255, 255, 255, 0.18)           focus outline 3px rgb(247, 246, 243) on self
+  Tabs trigger     hover SAME  rgba(255, 255, 255, 0.15)           focus outline 2px rgb(255, 237, 163) on self
+  Button           hover moves color(srgb 0.464 0.198752 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Button outline   hover moves color(srgb 0.464 0.198752 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Field            hover moves color(srgb 0.464 0.198752 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Table row        hover moves oklab(0.411213 0.0858675 0.0438287  focus outline 3px rgb(247, 246, 243) on self
+  MegaMenu trigger hover moves rgba(255, 255, 255, 0.14)           focus outline 2px rgb(255, 237, 163) on self
+  NavList item     hover SAME  rgba(226, 86, 74, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.464 0.198752 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Switch           hover SAME  rgba(226, 86, 74, 0.9)              focus outline 2px rgb(255, 237, 163) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(226, 86, 74) on self
+  Tree node        hover moves rgba(255, 255, 255, 0.1)            focus outline 2px rgb(255, 237, 163) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   3.59:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   12/25 surfaces carry a backdrop blur · 19/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME glass   SEED citron #FFD400
+http://localhost:6811/showcase/theme-lab?theme=glass&seed=citron
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 9.708px
+  Sidebar        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow NO   radius 0px
+  Topbar         fill translucent  blur blur(16px)              sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur blur(8px) saturate(1.7  sat yes  edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Dialog panel   fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Sheet panel    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  Popover        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+  Tooltip        fill translucent  blur blur(8px) saturate(1.7  sat yes  edge yes  shadow yes  radius 6px
+  Toast          fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  rgba(255, 212, 0, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Sidebar item     hover moves color(srgb 0.464 0.415424 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Topbar item      hover moves rgba(255, 255, 255, 0.16)           focus outline 2px rgb(255, 237, 163) on self
+  Segmented item   hover moves rgba(255, 255, 255, 0.18)           focus outline 3px rgb(247, 246, 243) on self
+  Tabs trigger     hover SAME  rgba(255, 255, 255, 0.15)           focus outline 2px rgb(255, 237, 163) on self
+  Button           hover moves color(srgb 0.464 0.415424 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Button outline   hover moves color(srgb 0.464 0.415424 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Field            hover moves color(srgb 0.464 0.415424 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Table row        hover moves oklab(0.52251 -0.0113648 0.0816351  focus outline 3px rgb(247, 246, 243) on self
+  MegaMenu trigger hover moves rgba(255, 255, 255, 0.14)           focus outline 2px rgb(255, 237, 163) on self
+  NavList item     hover SAME  rgba(255, 212, 0, 0.26)             focus outline 2px rgb(255, 237, 163) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.464 0.415424 0.176)    focus outline 2px rgb(255, 237, 163) on self
+  Switch           hover SAME  rgba(255, 212, 0, 0.9)              focus outline 2px rgb(255, 237, 163) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(255, 212, 0) on self
+  Tree node        hover moves rgba(255, 255, 255, 0.1)            focus outline 2px rgb(255, 237, 163) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   4.43:1 (needs 4.5:1, 12.5px)  [Table row:hover] "Đã duyệt"  ← .ui-table-row [table-cell] [badge] [badge-label]
+VERDICT   12/25 surfaces carry a backdrop blur · 19/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME glass   SEED navy #0A1F44
+http://localhost:6811/showcase/theme-lab?theme=glass&seed=navy
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 9.708px
+  Sidebar        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow NO   radius 0px
+  Topbar         fill translucent  blur blur(16px)              sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 3.70828px
+  Segmented      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Tabs list      fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 6px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur blur(8px) saturate(1.7  sat yes  edge NO   shadow NO   radius 3.70828px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Dialog panel   fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  AlertDialog    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 6px
+  Sheet scrim    fill translucent  blur blur(16px) saturate(1.  sat yes  edge NO   shadow NO   radius 0px
+  Sheet panel    fill translucent  blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+  Select list    fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  DropdownMenu   fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 3.70828px
+  Popover        fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+  Tooltip        fill translucent  blur blur(8px) saturate(1.7  sat yes  edge yes  shadow yes  radius 6px
+  Toast          fill translucent  blur blur(16px) saturate(1.  sat yes  edge yes  shadow yes  radius 6px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  rgba(10, 31, 68, 0.26)              focus outline 2px rgb(255, 237, 163) on self
+  Sidebar item     hover moves color(srgb 0.176 0.280256 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Topbar item      hover moves rgba(255, 255, 255, 0.16)           focus outline 2px rgb(255, 237, 163) on self
+  Segmented item   hover moves rgba(255, 255, 255, 0.18)           focus outline 3px rgb(247, 246, 243) on self
+  Tabs trigger     hover SAME  rgba(255, 255, 255, 0.15)           focus outline 2px rgb(255, 237, 163) on self
+  Button           hover moves color(srgb 0.176 0.280256 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Button outline   hover moves color(srgb 0.176 0.280256 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Field            hover moves color(srgb 0.176 0.280256 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Table row        hover moves oklab(0.402449 -0.0133823 -0.08473  focus outline 3px rgb(247, 246, 243) on self
+  MegaMenu trigger hover moves rgba(255, 255, 255, 0.14)           focus outline 2px rgb(255, 237, 163) on self
+  NavList item     hover SAME  rgba(10, 31, 68, 0.26)              focus outline 2px rgb(255, 237, 163) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.176 0.280256 0.464)    focus outline 2px rgb(255, 237, 163) on self
+  Switch           hover SAME  rgba(10, 31, 68, 0.9)               focus outline 2px rgb(255, 237, 163) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(10, 31, 68) on self
+  Tree node        hover moves rgba(255, 255, 255, 0.1)            focus outline 2px rgb(255, 237, 163) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   1.24:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   12/25 surfaces carry a backdrop blur · 19/25 translucent · 9/25 shadowed
+
+================================================================================================
+THEME flat   SEED violet #7C3AED
+http://localhost:6811/showcase/theme-lab?theme=flat&seed=violet
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.486198 0.227376 0.929  focus outline 2px rgb(12, 45, 110) on self
+  Sidebar item     hover moves color(srgb 0.895797 0.884 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Topbar item      hover moves rgb(220, 223, 229)                  focus outline 2px rgb(12, 45, 110) on self
+  Segmented item   hover moves rgb(220, 223, 229)                  focus outline 3px rgb(23, 28, 39) on self
+  Tabs trigger     hover SAME  color(srgb 0.968424 0.964 0.976)    focus outline 2px rgb(12, 45, 110) on self
+  Button           hover moves color(srgb 0.895797 0.884 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Button outline   hover moves color(srgb 0.895797 0.884 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Field            hover moves color(srgb 0.895797 0.884 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Table row        hover moves oklab(0.915725 0.00622705 -0.00956  focus outline 3px rgb(23, 28, 39) on self
+  MegaMenu trigger hover moves rgb(231, 234, 238)                  focus outline 2px rgb(12, 45, 110) on self
+  NavList item     hover SAME  color(srgb 0.486198 0.227376 0.929  focus outline 2px rgb(12, 45, 110) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.895797 0.884 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Switch           hover SAME  rgb(124, 58, 237)                   focus outline 2px rgb(12, 45, 110) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(124, 58, 237) on self
+  Tree node        hover moves rgb(237, 239, 242)                  focus outline 2px rgb(12, 45, 110) on self
+CONTRAST  558/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+VERDICT   0/25 surfaces carry a backdrop blur · 4/25 translucent · 1/25 shadowed
+
+================================================================================================
+THEME flat   SEED azure #2563EB
+http://localhost:6811/showcase/theme-lab?theme=flat&seed=azure
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.145052 0.388225 0.921  focus outline 2px rgb(12, 45, 110) on self
+  Sidebar item     hover moves color(srgb 0.884 0.894021 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Topbar item      hover moves rgb(220, 223, 229)                  focus outline 2px rgb(12, 45, 110) on self
+  Segmented item   hover moves rgb(220, 223, 229)                  focus outline 3px rgb(23, 28, 39) on self
+  Tabs trigger     hover SAME  color(srgb 0.964 0.967758 0.976)    focus outline 2px rgb(12, 45, 110) on self
+  Button           hover moves color(srgb 0.884 0.894021 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Button outline   hover moves color(srgb 0.884 0.894021 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Field            hover moves color(srgb 0.884 0.894021 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Table row        hover moves oklab(0.918445 -0.00048402 -0.0080  focus outline 3px rgb(23, 28, 39) on self
+  MegaMenu trigger hover moves rgb(231, 234, 238)                  focus outline 2px rgb(12, 45, 110) on self
+  NavList item     hover SAME  color(srgb 0.145052 0.388225 0.921  focus outline 2px rgb(12, 45, 110) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.884 0.894021 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Switch           hover SAME  rgb(37, 99, 235)                    focus outline 2px rgb(12, 45, 110) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(37, 99, 235) on self
+  Tree node        hover moves rgb(237, 239, 242)                  focus outline 2px rgb(12, 45, 110) on self
+CONTRAST  558/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+VERDICT   0/25 surfaces carry a backdrop blur · 4/25 translucent · 1/25 shadowed
+
+================================================================================================
+THEME flat   SEED coral #E2564A
+http://localhost:6811/showcase/theme-lab?theme=flat&seed=coral
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.886261 0.337233 0.290  focus outline 2px rgb(12, 45, 110) on self
+  Sidebar item     hover moves color(srgb 0.916 0.886528 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Topbar item      hover moves rgb(220, 223, 229)                  focus outline 2px rgb(12, 45, 110) on self
+  Segmented item   hover moves rgb(220, 223, 229)                  focus outline 3px rgb(23, 28, 39) on self
+  Tabs trigger     hover SAME  color(srgb 0.976 0.964948 0.964)    focus outline 2px rgb(12, 45, 110) on self
+  Button           hover moves color(srgb 0.916 0.886528 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Button outline   hover moves color(srgb 0.916 0.886528 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Field            hover moves color(srgb 0.916 0.886528 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Table row        hover moves oklab(0.918707 0.0076198 0.0032842  focus outline 3px rgb(23, 28, 39) on self
+  MegaMenu trigger hover moves rgb(231, 234, 238)                  focus outline 2px rgb(12, 45, 110) on self
+  NavList item     hover SAME  color(srgb 0.886261 0.337233 0.290  focus outline 2px rgb(12, 45, 110) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.916 0.886528 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Switch           hover SAME  rgb(226, 86, 74)                    focus outline 2px rgb(12, 45, 110) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(226, 86, 74) on self
+  Tree node        hover moves rgb(237, 239, 242)                  focus outline 2px rgb(12, 45, 110) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   3.71:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   0/25 surfaces carry a backdrop blur · 4/25 translucent · 1/25 shadowed
+
+================================================================================================
+THEME flat   SEED citron #FFD400
+http://localhost:6811/showcase/theme-lab?theme=flat&seed=citron
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 1 0.831333 0 / 0.12)     focus outline 2px rgb(12, 45, 110) on self
+  Sidebar item     hover moves color(srgb 0.916 0.910603 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Topbar item      hover moves rgb(220, 223, 229)                  focus outline 2px rgb(12, 45, 110) on self
+  Segmented item   hover moves rgb(220, 223, 229)                  focus outline 3px rgb(23, 28, 39) on self
+  Tabs trigger     hover SAME  color(srgb 0.976 0.973976 0.964)    focus outline 2px rgb(12, 45, 110) on self
+  Button           hover moves color(srgb 0.916 0.910603 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Button outline   hover moves color(srgb 0.916 0.910603 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Field            hover moves color(srgb 0.916 0.910603 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Table row        hover moves oklab(0.930791 -0.0011183 0.009131  focus outline 3px rgb(23, 28, 39) on self
+  MegaMenu trigger hover moves rgb(231, 234, 238)                  focus outline 2px rgb(12, 45, 110) on self
+  NavList item     hover SAME  color(srgb 1 0.831333 0 / 0.12)     focus outline 2px rgb(12, 45, 110) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.916 0.910603 0.884)    focus outline 2px rgb(12, 45, 110) on self
+  Switch           hover SAME  rgb(255, 212, 0)                    focus outline 2px rgb(12, 45, 110) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(255, 212, 0) on self
+  Tree node        hover moves rgb(237, 239, 242)                  focus outline 2px rgb(12, 45, 110) on self
+CONTRAST  557/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+  FAIL   1.43:1 (needs 4.5:1, 14px)  [page] "Liên kết"  ← .ui-flex .ui-flex .ui-flex [button]
+VERDICT   0/25 surfaces carry a backdrop blur · 4/25 translucent · 1/25 shadowed
+
+================================================================================================
+THEME flat   SEED navy #0A1F44
+http://localhost:6811/showcase/theme-lab?theme=flat&seed=navy
+SURFACES
+  Page canvas    fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Card           fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sidebar        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Topbar         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Page header    fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  DataTable      fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Table          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Alert          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 9.708px
+  Badge          fill translucent  blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Segmented      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Tabs list      fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Field          fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Button         fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Progress       fill none         blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Avatar         fill OPAQUE       blur NONE                    sat NO   edge NO   shadow NO   radius 9999px
+OVERLAYS  (opened, not queried)
+  Dialog scrim   fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Dialog panel   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  AlertDialog    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Sheet scrim    fill translucent  blur NONE                    sat NO   edge NO   shadow NO   radius 0px
+  Sheet panel    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Select list    fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  DropdownMenu   fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Popover        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Tooltip        fill OPAQUE       blur NONE                    sat NO   edge yes  shadow NO   radius 0px
+  Toast          fill OPAQUE       blur NONE                    sat NO   edge yes  shadow yes  radius 0px
+STATES    (hovered and keyboard-focused, not queried at rest)
+  Sidebar active   hover SAME  color(srgb 0.0392036 0.12152 0.266  focus outline 2px rgb(12, 45, 110) on self
+  Sidebar item     hover moves color(srgb 0.884 0.895584 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Topbar item      hover moves rgb(220, 223, 229)                  focus outline 2px rgb(12, 45, 110) on self
+  Segmented item   hover moves rgb(220, 223, 229)                  focus outline 3px rgb(23, 28, 39) on self
+  Tabs trigger     hover SAME  color(srgb 0.964 0.968344 0.976)    focus outline 2px rgb(12, 45, 110) on self
+  Button           hover moves color(srgb 0.884 0.895584 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Button outline   hover moves color(srgb 0.884 0.895584 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Field            hover moves color(srgb 0.884 0.895584 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Table row        hover moves oklab(0.919234 -0.00104326 -0.0076  focus outline 3px rgb(23, 28, 39) on self
+  MegaMenu trigger hover moves rgb(231, 234, 238)                  focus outline 2px rgb(12, 45, 110) on self
+  NavList item     hover SAME  color(srgb 0.0392036 0.12152 0.266  focus outline 2px rgb(12, 45, 110) on self
+  Anchor link      hover SAME  rgba(0, 0, 0, 0)                    focus outline 1px rgb(0, 95, 204) on self
+  Toggle           hover moves color(srgb 0.884 0.895584 0.916)    focus outline 2px rgb(12, 45, 110) on self
+  Switch           hover SAME  rgb(10, 31, 68)                     focus outline 2px rgb(12, 45, 110) on self
+  Checkbox         hover SAME  rgba(0, 0, 0, 0)                    focus outline 3px rgb(10, 31, 68) on self
+  Tree node        hover moves rgb(237, 239, 242)                  focus outline 2px rgb(12, 45, 110) on self
+CONTRAST  558/559 strings clear WCAG 2.2 AA, worst of 24 backdrop band(s)
+  FAIL   3.38:1 (needs 4.5:1, 12.5px)  [page] "T"  ← aside div div span
+VERDICT   0/25 surfaces carry a backdrop blur · 4/25 translucent · 1/25 shadowed
+
+================================================================================================
+MATRIX SUMMARY
+  base    violet   contrast 558/559  failures 1
+  base    azure    contrast 557/559  failures 2
+  base    coral    contrast 549/559  failures 10
+  base    citron   contrast 548/559  failures 11
+  base    navy     contrast 558/559  failures 1
+  glass   violet   contrast 557/559  failures 2
+  glass   azure    contrast 557/559  failures 2
+  glass   coral    contrast 557/559  failures 2
+  glass   citron   contrast 557/559  failures 2
+  glass   navy     contrast 557/559  failures 2
+  flat    violet   contrast 558/559  failures 1
+  flat    azure    contrast 558/559  failures 1
+  flat    coral    contrast 557/559  failures 2
+  flat    citron   contrast 557/559  failures 2
+  flat    navy     contrast 558/559  failures 1

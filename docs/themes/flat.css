@@ -1,0 +1,280 @@
+/**
+ * flat theme — the SECOND theme, and the control.
+ *
+ * gh#882: "adding a second theme must mean one new CSS file and one new row, never a page edit".
+ * This is that file. It proves the switch is real rather than promised, and — because it removes
+ * every corner, every shadow and every translucency the default theme spends — it is also the
+ * control: what these components look like when the decoration is taken away.
+ *
+ * SAME CONSTRAINT AS `glassmorphism.css`, no exceptions: every line below is a
+ * `--custom-property` declaration under `[data-theme-style="flat"]`. No `background:`, no
+ * `border-radius:`, no `box-shadow:`, no selector into a `.ui-*` class. What cannot be expressed
+ * that way is written down as a finding on the page, not worked around here.
+ *
+ * ── FINDING 1 · one number, sixty-eight declarations ─────────────────────────────────────────
+ * "Square the corners" is one design decision and it costs SIXTY-EIGHT lines. `--radius` is the
+ * seed; `--radius-xs … --radius-2xl` are `calc(var(--radius) · φⁿ)` declared at `:root`
+ * (src/styles/base.css:169-176); and 61 component knobs are `--x-radius: var(--radius-<step>)`,
+ * also declared at `:root` (src/tokens/components/*.css). A `var()` substitutes where the
+ * REFERENCING property is declared, so all 68 resolve once against the root's `--radius` and
+ * inherit the frozen result — the `:root` freeze rule of docs/TOKEN-RESOLUTION.md §3, at scale.
+ * Setting `--radius: 0` here alone moves NOTHING except the handful of call sites that read
+ * `--radius` directly. This is the same trap `docs/showcase/theme-customization.tsx` records for
+ * `--ring`, except there it was one line and here it is sixty-seven.
+ *
+ * The list below is GENERATED, not hand-kept:
+ *   grep -rhoE "^\s*--[a-z0-9-]*radius[a-z0-9-]*:\s*var\(--radius[a-z0-9-]*\)" src/tokens/
+ * A hand-kept list is what went blind in gh#854, and a theme that squares 40 of 61 corners looks
+ * like a bug rather than a style.
+ *
+ * ── FINDING 1b · the brand INK does not follow the seed to a safe ratio, and this theme SHOWS it
+ * On a light canvas the seed-derived link/active ink fails AA at both ends of the seed range:
+ * measured with `measure-glass.mjs`, the coral seed puts six strings at 2.11-3.71:1 and the citron
+ * seed (#FFD400) puts the same six at 1.07-1.43:1 — Sidebar active item, NavList active item,
+ * MegaMenu trigger, Anchor link, `Button variant="link"`. `tenantTheme()` guarantees
+ * `--primary` against `--primary-foreground`; it says nothing about `--primary` used as INK on the
+ * page's own surface, and nothing derives a safe value for that.
+ *
+ * The `base` row — no theme file at all — keeps those failures, and that is where the finding
+ * lives: a consumer who hands the library a light brand colour gets inaccessible navigation ink
+ * and has nothing to say about it, because the seed is the only input. This file DOES restate the
+ * roles, darker, so the matrix also shows the second half of the answer: the gap is reachable by
+ * a theme, one line per role, once you know which of them are `:root`-bound. Both columns are
+ * needed — base is the defect, flat and glass are the proof it can be closed from outside.
+ *
+ * ── FINDING 2 · the pill is a SHAPE, not a corner ────────────────────────────────────────────
+ * Eight knobs mirror `--radius-pill` (Switch's track, ScrollArea's thumb, the count chips on
+ * Segmented/Tabs/Toggle) and one mirrors `--radius-sharp`. They are deliberately left alone: a
+ * squared Switch reads as a Checkbox, which is a meaning change, not a style change. A flat theme
+ * that squares them would be measuring its own taste rather than the token model.
+ *
+ * ── FINDING 3 · the shadow mirrors are mostly FIXED now, and the exceptions are visible ──────
+ * gh#880 turned `--card-shadow` / `--sheet-shadow` / `--popover-shadow` / `--tooltip-shadow` /
+ * `--segmented-item-selected-shadow` into `initial` knobs, so restating the six foundation steps
+ * reaches them at the call site — no per-mirror restatement, unlike the radius family above and
+ * unlike what `glassmorphism.css` had to do before that fix. Six mirrors are still frozen
+ * `var(--shadow-*)` bindings at `:root` and each needs its own line; they are listed as such.
+ *
+ * ── FINDING 4 · this theme owes no translucency fallback, and that is not an omission ────────
+ * docs/TOKEN-RESOLUTION.md §5 puts `prefers-reduced-transparency` and `@supports not
+ * (backdrop-filter)` on the theme that made a surface translucent. Nothing here is translucent and
+ * no blur knob is turned on, so there is nothing to fall back to. The absence is the proof.
+ */
+[data-theme-style="flat"] {
+  /* ── Corners. The seed, its six derived steps, then every frozen component mirror. ────────── */
+  --radius: 0;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  --actions-radius: 0;
+  --app-launcher-launchpad-mark-radius: 0;
+  --app-launcher-launchpad-tile-radius: 0;
+  --app-launcher-mark-radius: 0;
+  --app-launcher-tile-radius: 0;
+  --attachments-card-radius: 0;
+  --avatar-square-radius: 0;
+  --badge-radius: 0;
+  --button-radius: 0;
+  --calendar-day-radius: 0;
+  --calendar-weekday-radius: 0;
+  --card-radius: 0;
+  --card-service-launcher-icon-radius: 0;
+  --cascader-result-radius: 0;
+  --chart-trend-bar-radius: 0;
+  --chat-bubble-radius: 0;
+  --code-block-radius: 0;
+  --control-affix-action-radius: 0;
+  --control-radius: 0;
+  --conversations-item-radius: 0;
+  --descriptions-border-radius: 0;
+  --draggable-panel-radius: 0;
+  --float-button-group-radius: 0;
+  --legal-document-toc-item-radius: 0;
+  --logo-radius: 0;
+  --mega-menu-link-radius: 0;
+  --mega-menu-panel-radius: 0;
+  --mega-menu-trigger-radius: 0;
+  --menu-item-radius: 0;
+  --popover-radius: 0;
+  --progress-breakdown-radius: 0;
+  --prose-code-radius: 0;
+  --prose-image-radius: 0;
+  --segmented-item-radius: 0;
+  --segmented-track-radius: 0;
+  --skeleton-element-radius: 0;
+  --skeleton-radius: 0;
+  --slider-tooltip-radius: 0;
+  --stat-card-icon-radius: 0;
+  --steps-nav-radius: 0;
+  --table-skeleton-radius: 0;
+  --tabs-add-radius: 0;
+  --tabs-card-radius: 0;
+  --tabs-overflow-radius: 0;
+  --tabs-tab-remove-radius: 0;
+  --thought-chain-item-radius: 0;
+  --thumbnail-radius: 0;
+  --time-picker-option-radius: 0;
+  --timeline-grid-event-radius: 0;
+  --tooltip-radius: 0;
+  --transfer-pane-radius: 0;
+  --transfer-row-radius: 0;
+  --tree-node-radius: 0;
+  --tree-select-row-radius: 0;
+  --upload-draft-radius: 0;
+  --upload-dropzone-radius: 0;
+  --upload-picture-badge-radius: 0;
+  --upload-picture-radius: 0;
+  --upload-row-radius: 0;
+  --upload-tile-radius: 0;
+  --welcome-radius: 0;
+
+  /* ── Elevation. Six foundation steps flattened; five component mirrors are `initial` knobs
+   *    since gh#880 and follow the steps at their own call site, so they need no line here. The
+   *    six below are still root-bound `var(--shadow-*)` and do not. ─────────────────────────── */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
+
+  --app-launcher-launchpad-mark-shadow: none;
+  --card-hover-shadow: none;
+  --control-shadow: none;
+  --draggable-panel-shadow: none;
+  --float-button-shadow: none;
+  --mega-menu-panel-shadow: none;
+
+  /* ── Surfaces. Opaque, paper-white, separated by a line rather than by a shadow — which is what
+   *    "flat" means and also what removes every variable glassmorphism introduces. The border is
+   *    the ONLY separator left, so it is darker than the default hairline: at `0 0% 90%` a
+   *    shadowless Card has no edge at all against the canvas. ───────────────────────────────── */
+  --card-background: 0 0% 100%;
+  --card: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --border: 220 13% 78%;
+  --input: 220 13% 72%;
+
+  /* ── Ink. One ramp, all of it above 7:1 on white — the flat surfaces give the text nothing to
+   *    hide behind, so "muted" here is a lighter WEIGHT at the same ratio, per
+   *    docs/GLASSMORPHISM-STANDARD.md §3, and not a lighter grey. ──────────────────────────── */
+  --foreground: 220 26% 12%;
+  --card-foreground: 220 26% 12%;
+  --popover-foreground: 220 26% 12%;
+  --muted-foreground: 220 16% 32%;
+  --text-tertiary: 220 14% 38%;
+
+  /* ── The one place the seed is allowed to paint a large area: the page canvas and the two
+   *    neutral fills, tinted a few percent towards `--primary` so the theme is visibly the seed's
+   *    and not a fixed grey. The `from` clause lives inside the token because these roles are
+   *    consumed as bare triplets — see the long note in `glassmorphism.css`; without relative
+   *    colour support the literals below stand. ───────────────────────────────────────────── */
+  --background: 220 20% 97%;
+  --muted: 220 16% 93%;
+  --accent: 220 16% 90%;
+  --secondary: 220 14% 92%;
+  /* ── The brand ink ramp. Every one of these is `:root`-bound in the library, so it resolves
+   *    against the ROOT seed and inherits that value into this scope no matter what `--primary`
+   *    says here. A token read inside `hsl()` takes a bare triplet; one read as a complete value
+   *    takes a whole `hsl(...)`; getting it backwards fails silently. ─────────────────────────── */
+  --text-link: 220 80% 34%;
+  --text-brand: 220 80% 34%;
+  --text-primary: 220 80% 30%;
+  --anchor-ink-color: 220 80% 34%;
+  --auth-shell-divider-label-color: 220 16% 32%;
+  --org-switcher-meta-foreground: 220 16% 32%;
+  --separator-label-color: 220 16% 32%;
+  --sidebar-item-active-foreground: hsl(220 80% 30%);
+  --sidebar-nav-icon-active-foreground: hsl(220 80% 30%);
+  --mega-menu-trigger-current-foreground: hsl(220 80% 30%);
+  --mega-menu-trigger-open-foreground: hsl(220 80% 30%);
+  --mega-menu-link-current-foreground: hsl(220 80% 30%);
+  --timeline-grid-event-muted-color: hsl(220 16% 32%);
+
+  /* ── INTERACTION STATES. The same sweep the glass theme documents, at the other polarity: this
+   *    canvas is light, so a hover is a slightly DARKER wash and the ring is a dark ink. §3 still
+   *    holds — the state is carried by the fill and the weight, never by lowering the ink's ratio.
+   *    The ring is 2px (§4b) and pinned OFF the brand: pinning it to `--ring`, which follows the
+   *    seed, is what makes a `#FFD400` tenant's focus indicator invisible on white. ─────────── */
+  --focus-ring-color: 220 80% 24%;
+  --focus-outline-color: 220 80% 24%;
+  --focus-ring-width: calc(2px * var(--focus-outline));
+  --control-outline: 220 80% 24%;
+  --focus-ring-glow-color: 220 80% 24%;
+  --topbar-item-hover-background: 220 16% 88%;
+  --topbar-item-hover-color: 220 26% 12%;
+  --segmented-item-hover-background: 220 16% 88%;
+  --segmented-item-hover-color: 220 26% 12%;
+  --segmented-item-active-background: 220 16% 84%;
+  --app-launcher-tile-hover-background: 220 16% 90%;
+  --app-launcher-tile-hover-color: 220 26% 12%;
+  --control-variant-filled-hover-background: 220 16% 88%;
+  --choice-button-selected-color: 220 26% 12%;
+  --choice-button-selected-border-color: 220 30% 40%;
+  --secondary-hover: 220 14% 86%;
+  --secondary-active: 220 14% 82%;
+
+  --region-focus-ring-color: hsl(220 80% 24%);
+  --menu-item-hover-background: hsl(220 16% 92%);
+  --menu-item-hover-foreground: hsl(220 26% 12%);
+  --table-row-hover-background: hsl(220 16% 94%);
+  --table-row-selected-background: hsl(220 20% 90%);
+  --tree-node-hover-background: hsl(220 16% 94%);
+  --tree-node-selected-background: hsl(220 20% 90%);
+  --tree-node-selected-foreground: hsl(220 26% 12%);
+  --mega-menu-trigger-hover-background: hsl(220 16% 92%);
+  --mega-menu-trigger-hover-foreground: hsl(220 26% 12%);
+  --mega-menu-link-hover-background: hsl(220 16% 92%);
+  --mega-menu-link-hover-foreground: hsl(220 26% 12%);
+  --sidebar-nav-item-hover-foreground: hsl(220 26% 12%);
+  --sidebar-nav-icon-hover-foreground: hsl(220 26% 12%);
+  --conversations-item-active-background: hsl(220 20% 90%);
+  --conversations-item-active-color: hsl(220 26% 12%);
+  --tabs-count-active-background: hsl(220 20% 86%);
+  --tabs-count-active-color: hsl(220 26% 12%);
+  --toggle-soft-hover-background: hsl(220 16% 90%);
+  --toggle-pressed-count-background: hsl(220 20% 84%);
+  --toggle-pressed-count-color: hsl(220 26% 12%);
+  --toggle-pressed-border-color: hsl(220 20% 50%);
+  --switch-unchecked-background: hsl(220 14% 74%);
+  --switch-content-unchecked-foreground: hsl(220 16% 28%);
+  --text-action-color: hsl(220 26% 16%);
+  --text-action-color-hover: hsl(220 26% 8%);
+
+  --app-shell-main-background: hsl(220 20% 97%);
+}
+
+@supports (color: hsl(from red h s l)) {
+  [data-theme-style="flat"] {
+    --background: from hsl(var(--primary)) h 20% 97%;
+    --muted: from hsl(var(--primary)) h 16% 93%;
+    --accent: from hsl(var(--primary)) h 16% 90%;
+    --secondary: from hsl(var(--primary)) h 14% 92%;
+    --border: from hsl(var(--primary)) h 13% 78%;
+    --app-shell-main-background: hsl(from hsl(var(--primary)) h 20% 97%);
+
+    /* Seed-tinted, and clamped in LIGHTNESS rather than copied: `--primary` itself is what fails
+     * as ink on a light canvas (1.07:1 for #FFD400), so the hue follows the seed and the lightness
+     * is fixed at a value that clears 4.5:1 on this theme's own surfaces.
+     *
+     * 26%/24%, AND THE NUMBER WAS MEASURED TWICE. At 34%/30% every seed cleared except citron,
+     * which still failed at 4.32:1 and 3.65:1 — because lightness is not luminance: at a fixed
+     * HSL lightness a yellow hue is far brighter than a blue one, so one clamp cannot serve the
+     * hue circle. Four points lower clears the worst hue with margin and only darkens the rest,
+     * which is the safe direction. A theme that wanted a tighter ramp would need per-hue
+     * lightness, which is `oklch`, and none of these roles is declared in it. */
+    --text-link: from hsl(var(--primary)) h 80% 26%;
+    --text-brand: from hsl(var(--primary)) h 80% 26%;
+    --text-primary: from hsl(var(--primary)) h 80% 30%;
+    --anchor-ink-color: from hsl(var(--primary)) h 80% 26%;
+    --sidebar-item-active-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
+    --sidebar-nav-icon-active-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
+    --mega-menu-trigger-current-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
+    --mega-menu-trigger-open-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
+    --mega-menu-link-current-foreground: hsl(from hsl(var(--primary)) h 80% 24%);
+  }
+}
