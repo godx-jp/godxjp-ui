@@ -1246,7 +1246,7 @@ const sidebar = (
   />
 );
 
-export function CrmLayout({ children }: { content: React.ReactNode }) {
+export function CrmLayout({ children }: { children: React.ReactNode }) {
   return <AppShell sidebar={sidebar}>{children}</AppShell>;
 }`,
     storyPath: "layout/AppShell.stories.tsx",
@@ -1742,7 +1742,7 @@ export function HandyInbound() {
 import { LayoutDashboard, FileText, Users, Shield, CreditCard, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AppShell, createSidebarLink } from "@godxjp/ui/layout";
-import { Sidebar, type SidebarSection } from "@godxjp/ui/layout";
+import { Sidebar, type SidebarSectionProp } from "@godxjp/ui/layout";
 import { Topbar, TopbarItem } from "@godxjp/ui/layout";
 
 // The WHOLE router integration: pass the element type, the library composes every row
@@ -1750,7 +1750,7 @@ import { Topbar, TopbarItem } from "@godxjp/ui/layout";
 // "@godxjp/ui/inertia". Next.js: createSidebarLink(Link).
 const NavLink = createSidebarLink(Link, "to");
 
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "Accounting",
     items: [
@@ -1816,7 +1816,7 @@ export default function Shell() {
         />
       }
     >
-      {/* page content */}
+      <>{/* page content */}</>
     </AppShell>
   );
 }\`}
@@ -1882,6 +1882,7 @@ export default function Shell() {
       "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
       "DO build the sidebar toggle as a `TopbarItem` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell's `sidebarCollapsed`. There is no baked toggle — but there IS a bar CELL, and it is not a Button: a Button in a slot is a --control-height pill floating in a taller bar, with its own hover fill and a ring drawn around the pill instead of the cell. The same holds for the notifications bell and the account trigger.",
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
+      "DON'T wrap two+ TopbarItems in a `<Flex>` to group them in one slot (gh#883) — the slot is already a flex line with its own gap, and a `<Flex>` wrapper collapses to 16px and takes every item inside it down with it. Use a fragment (`<>…</>`, no DOM node) or pass an array instead; see TopbarItem's own DON'T for the measured before/after.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
       "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
@@ -2006,6 +2007,7 @@ import { PanelLeftClose, Search } from "lucide-react";
       "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
       'DO collapse a cell by breakpoint with its own props, never by hand-wrapping the glyph: `<TopbarItem asChild icon={<Target />} labelHideBelow="sm"><a href="/goals">Goals</a></TopbarItem>` replaces `<Flex hideFrom="sm"><Icon as={Target} size="md" /></Flex>` — icon-only below sm, the label still the accessible name. Add `iconHideFrom` for a label-only cell from a step up (gh#726).',
       "DON'T reach for it outside a Topbar — a full-bleed cell needs a bar to bleed to. Use Button anywhere else.",
+      'DON\'T wrap two or more TopbarItems in a `<Flex>` to place them together in one slot (gh#883) — a `<Flex>` is a REAL element with `align-self: auto` by default, so it sits between the item and the slot, collapses to its own content height, and every item inside it stretches only to THAT (measured: a 47px bar down to 16px). The slot (`.ui-topbar-start`/`-center`/`-end`) is already a flex line with its own `gap`, so it needs no wrapper at all: put a JSX FRAGMENT `<>…</>` around the items (renders no DOM node, so each item is still the slot\'s DIRECT child) or pass an array — `end={[<TopbarItem key="notifications" …/>, <TopbarItem key="account" …/>]}` — either way every item keeps its own `align-self: stretch` reaching the real bar height. Reach for `<Flex>` there only when you deliberately want the group NOT full height (rare in a topbar).',
     ],
     useCases: [
       "Account / user-menu trigger in the topbar end slot",
@@ -2217,13 +2219,23 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@godxjp/
 </MasterDetail>
 
 // Leading navigator rail instead.
-<MasterDetail rail="master" railWidth="compact" masterLabel="Categories">
+<MasterDetail
+  rail="master"
+  railWidth="compact"
+  masterLabel="Categories"
+  master={<CategoryNav activeId={activeCategory} onSelect={setActiveCategory} />}
+>
   <SettingsForm />
 </MasterDetail>
 
 // A long real collection: bound the master so it scrolls in place and the detail
 // stays near the top of a stacked mobile page.
-<MasterDetail masterViewport="compact" masterLabel="Members" detailLabel="Selected member">
+<MasterDetail
+  masterViewport="compact"
+  masterLabel="Members"
+  detailLabel="Selected member"
+  master={<MemberList onRowClick={select} />}
+>
   <MemberDetail member={selected} />
 </MasterDetail>`,
     storyPath: "layout/MasterDetail.stories.tsx",
@@ -4161,8 +4173,8 @@ const columns: ColumnDef<Invoice>[] = [
     header: "Status",
     render: (row) => (
       <Badge
-        variant={
-          row.status === "paid" ? "success" : row.status === "overdue" ? "destructive" : "secondary"
+        tone={
+          row.status === "paid" ? "success" : row.status === "overdue" ? "destructive" : "warning"
         }
       >
         {row.status}
@@ -5150,9 +5162,9 @@ import { Flex } from "@godxjp/ui/layout";
   </CardContent>
 </Card>
 
-// A list of LINKS — \`as="li"\` gives the list item, \`asChild\` gives the whole-row link,
-// and the item carries the divider. Never wrap the row in your own <li>, and never reach for a
-// raw <ul>: \`marker="none"\` is the semantic list container (no bullet, no indent, gap token).
+{/* A list of LINKS — \`as="li"\` gives the list item, \`asChild\` gives the whole-row link, and the
+   item carries the divider. Never wrap the row in your own li, and never reach for a raw ul:
+   \`marker="none"\` is the semantic list container (no bullet, no indent, gap token). */}
 <Card>
   <CardContent flush>
     <Flex as="ul" marker="none" direction="col" gap="none">
@@ -6088,7 +6100,7 @@ import remarkGfm from "remark-gfm";
     ],
     example: `import { DataState } from "@godxjp/ui/query";
 
-<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d) => d.items.length === 0} empty={<EmptyState title="会員なし" />}>
+<DataState query={membersQuery} skeleton={<SkeletonTable />} isEmpty={(d: any) => d.items.length === 0} empty={<EmptyState title="会員なし" />}>
   {(d) => <MemberTable items={d.items} />}
 </DataState>`,
     storyPath: "query/DataState.stories.tsx",
@@ -6150,8 +6162,8 @@ import remarkGfm from "remark-gfm";
     ],
     example: `import { InfiniteQueryState, flattenItemPages } from "@godxjp/ui/query";
 
-<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>
-  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}
+<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages as any} isEmpty={(it: any) => it.length === 0}>
+  {(items: any) => items.map((a: any) => <ActivityRow key={a.id} activity={a} />)}
 </InfiniteQueryState>`,
     storyPath: "query/InfiniteQueryState.stories.tsx",
     rules: [],
@@ -6386,7 +6398,7 @@ import remarkGfm from "remark-gfm";
     example: `import { FormField, Input } from "@godxjp/ui/data-entry";
 
 <FormField id="coupon-name" label="クーポン名" required error={errors.name} helper="最大50文字">
-  <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onValueChange={(e) => setName(e.target.value)} />
+  <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onValueChange={(v) => setName(v)} />
 </FormField>`,
     storyPath: "data-entry/FormField.stories.tsx",
     rules: [23],
@@ -6562,7 +6574,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     ],
     example: `import { Input } from "@godxjp/ui/data-entry";
 
-<Input id="qty" type="number" placeholder="例: 500" value={value} onValueChange={(e) => setValue(e.target.value)} />`,
+<Input id="qty" type="number" placeholder="例: 500" value={value} onValueChange={(v) => setValue(v)} />`,
     storyPath: "data-entry/Input.stories.tsx",
     rules: [],
   },
@@ -9491,6 +9503,7 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
   {
     name: "AppProvider",
     group: "providers",
+    importPath: "@godxjp/ui/app",
     tagline:
       "Root locale/timezone/date-time context — wrap the app ONCE. All pickers + formatDate read from it. Import from @godxjp/ui/app.",
     props: [
@@ -9711,6 +9724,7 @@ const shadowRoot = host.attachShadow({ mode: "open" });
   {
     name: "formatDate",
     group: "providers",
+    importPath: "@godxjp/ui/datetime",
     tagline:
       "MANDATORY for all date/time display. Auto-detects ISO date / HH:mm / instant; reads AppProvider context. Import from @godxjp/ui/datetime.",
     props: [
@@ -10211,11 +10225,11 @@ const REGIONS = [
   {
     value: "jp",
     label: "日本",
-    content: [
+    children: [
       {
         value: "tokyo",
         label: "東京都",
-        content: [
+        children: [
           { value: "shinjuku", label: "新宿区" },
           { value: "shibuya", label: "渋谷区" },
         ],
@@ -10225,11 +10239,11 @@ const REGIONS = [
   {
     value: "vn",
     label: "Việt Nam",
-    content: [
+    children: [
       {
         value: "hcm",
         label: "TP. Hồ Chí Minh",
-        content: [
+        children: [
           { value: "q1", label: "Quận 1" },
           { value: "q3", label: "Quận 3" },
         ],
@@ -10271,7 +10285,7 @@ function MultiRegionPicker() {
 // With custom field names (data uses 'name'/'id'/'nodes')
 <Cascader
   options={rawApiData}
-  fieldNames={{ label: "name", value: "id", content: "nodes" }}
+  fieldNames={{ label: "name", value: "id", children: "nodes" }}
   defaultValue={["dept-1", "team-3"]}
 />
 
@@ -10534,13 +10548,13 @@ const accountTree = [
   {
     value: "assets",
     label: "Assets",
-    content: [
-      { value: "current-assets", label: "Current Assets", content: [
+    children: [
+      { value: "current-assets", label: "Current Assets", children: [
           { value: "cash", label: "Cash" },
           { value: "ar", label: "Accounts Receivable" },
         ],
       },
-      { value: "fixed-assets", label: "Fixed Assets", content: [
+      { value: "fixed-assets", label: "Fixed Assets", children: [
           { value: "equipment", label: "Equipment" },
         ],
       },
@@ -10549,7 +10563,7 @@ const accountTree = [
   {
     value: "liabilities",
     label: "Liabilities",
-    content: [
+    children: [
       { value: "ap", label: "Accounts Payable" },
     ],
   },
@@ -10743,11 +10757,11 @@ export function DepartmentFilter() {
 import { Transfer } from "@godxjp/ui/data-entry";
 
 const ALL_ACCOUNTS = [
-  { value: "1010", title: "Cash", description: "Asset" },
-  { value: "1020", title: "Accounts Receivable", description: "Asset" },
-  { value: "2010", title: "Accounts Payable", description: "Liability" },
-  { value: "3010", title: "Revenue", description: "Income" },
-  { value: "4010", title: "Cost of Goods Sold", description: "Expense", disabled: true },
+  { key: "1010", title: "Cash", description: "Asset" },
+  { key: "1020", title: "Accounts Receivable", description: "Asset" },
+  { key: "2010", title: "Accounts Payable", description: "Liability" },
+  { key: "3010", title: "Revenue", description: "Income" },
+  { key: "4010", title: "Cost of Goods Sold", description: "Expense", disabled: true },
 ];
 
 export function AccountMapping() {
@@ -11123,7 +11137,7 @@ export function DocumentUploadDropzone() {
       "Upload (variant='picture-card') — multi-image grid upload without crop.",
     ],
     example: `{\`import { useState } from "react";
-import { UploadCropDialog } from "@godxjp/ui/upload"; // internal — prefer Upload variant="avatar-crop" instead
+import { UploadCropDialog } from "@godxjp/ui/data-entry"; // internal — prefer Upload variant="avatar-crop" instead
 
 export function AvatarField() {
   const [cropFile, setCropFile] = useState<File | null>(null);
@@ -11143,7 +11157,7 @@ export function AvatarField() {
 
   return (
     <>
-      <input type="file" accept="image/*" onValueChange={handleFileChange} />
+      <input type="file" accept="image/*" onChange={handleFileChange} />
       <UploadCropDialog
         open={cropFile !== null}
         onOpenChange={(open) => { if (!open) setCropFile(null); }}
@@ -14160,14 +14174,12 @@ import { Separator } from "@godxjp/ui/layout";
     related: ["PasswordInput", "FormField", "Input"],
     example: `import { PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
 
-const rules = ["length", "upper", "lower", "number", "symbol"] as const;
-
 export default function PasswordBlock() {
   const [value, setValue] = useState("");
   return (
     <div className="ui-stack">
       <PasswordInput value={value} onChange={(event) => setValue(event.target.value)} />
-      <PasswordStrength value={value} rules={rules} />
+      <PasswordStrength value={value} rules={["length", "upper", "lower", "number", "symbol"]} />
     </div>
   );
 }`,
@@ -15335,6 +15347,7 @@ export function NotifyRow() {
       "Progress — one ratio against a target, not a series over time.",
     ],
     example: `import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";
+import { Text } from "@godxjp/ui/general";
 
 <CompactBarTrend
   label={t("dashboard.newOrganizations7d")}
@@ -15344,7 +15357,7 @@ export function NotifyRow() {
   valueKey="count"
   emphasizedIndex={-1}
   size="xs"
-  footer={<Text size="xs" tone="muted">{t("dashboard.lastUpdated", { at })}</Text>}
+  footer={<Text size="xs" tone="muted">{t("dashboard.lastUpdated", { at: new Date().toISOString() })}</Text>}
 />`,
     storyPath: "charts/CompactBarTrend.stories.tsx",
     rules: [],
@@ -16400,7 +16413,7 @@ import { Badge } from "@godxjp/ui/data-display";
     example: `import { Card, CardContent, PermissionMatrix } from "@godxjp/ui/data-display";
 import { grantKey } from "@godxjp/ui/lib/permission-grid";
 
-const grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));
+const grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));
 
 <Card>
   <CardContent flush>
@@ -17872,7 +17885,7 @@ import { Text } from "@godxjp/ui/general";
   columns={{ base: 1, sm: 2, lg: 3 }}
   gap="md"
   items={notes.map((note) => ({ key: note.id, data: note }))}
-  itemRender={({ data }) => (
+  itemRender={({ data }: any) => (
     <Card>
       <CardContent>
         <Text>{data.body}</Text>
