@@ -84,6 +84,15 @@
    * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text. */
   --table-header-background: initial;
   --table-header-foreground: initial;
+  /* THE DATATABLE FRAME ITSELF (gh#880). Every band, row state and header inside the table has had
+   * a knob for some time; the box that draws the frame around them had none and painted no fill at
+   * all, so a themed page could retint the contents of a table and not the table. Unset, the
+   * declaration is invalid-at-computed-value-time and `background-color` keeps its own initial
+   * `transparent` — which is exactly what the surface painted before, so nothing moves. */
+  --table-surface-background: initial; /* default = transparent, i.e. what the frame already had */
+  /* GLASS — `initial`, no blur and no backdrop root. A DataTable holds sticky/pinned columns; a
+   * backdrop root here would change what `position: fixed` inside the frame resolves against. */
+  --table-surface-backdrop-blur-size: initial; /* default = none — the frame blurs nothing */
   /* Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over. */
   --table-pin-shadow: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
   /* The same lift for a column frozen to the inline START (antd `fixed: "start"`), pointing the

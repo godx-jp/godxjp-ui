@@ -455,8 +455,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-shadow",
-    "value": "var(--shadow-sm)",
-    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm elevation layer. Consumers can still flatten or lift cards through this knob."
+    "value": "initial",
+    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm elevation layer. Consumers can still flatten or lift cards through this knob. `initial`, NOT `var(--shadow-sm)` — a role-mirror knob written here binds at `<html>` and a scope below root that restates the elevation ramp can never reach it (docs/TOKEN-RESOLUTION.md §3). The default now resolves on `.ui-card`, so a `[data-tenant]`/`[data-theme]` region that sets `--shadow-sm` moves its own cards and nothing else. gh#880 item 7. default = var(--shadow-sm), resolved at the call site"
   },
   {
     "name": "--card-glow",
@@ -472,6 +472,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--card-tint",
     "value": "transparent",
     "description": "Fill tint — subtle role wash over the card background (default transparent = invisible). Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once."
+  },
+  {
+    "name": "--card-tint-end",
+    "value": "initial",
+    "description": "THE OTHER END OF THE TINT, AND ITS DIRECTION (gh#880 item 6). The wash used to be painted `linear-gradient(var(--card-tint), var(--card-tint))` — the same variable twice — which is a flat overlay wearing a gradient's clothes. A service that wanted a genuine two-colour wash had one value slot for two colours, so `--card-tint: A, B` expanded to `linear-gradient(A, B, A, B)`: a hard split, not a ramp. A glass card's rim highlight is a diagonal two-stop ramp (docs/GLASSMORPHISM-STANDARD.md §1), so this is the difference between \"a card can be glass\" and \"a card can be tinted\". BOTH ARE `initial` WITH THEIR DEFAULT AT THE CALL SITE, so the default value is the live `--card-tint` of whatever scope the card is in, not the one frozen at `<html>`, and the resting card paints `linear-gradient(to bottom, transparent, transparent)` exactly as before. default = var(--card-tint) — a single-colour wash stays flat"
+  },
+  {
+    "name": "--card-tint-angle",
+    "value": "initial",
+    "description": "default = `to bottom`, the direction the two-stop form already had"
+  },
+  {
+    "name": "--card-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS (gh#880 item 1) — `initial`, i.e. OFF, and the default must stay `initial` rather than `0px`. An element with a `backdrop-filter` becomes the containing block for its fixed descendants (the trap `src/styles/shell-layout.css` documents on the app-launcher scrim and `src/components/layout/affix.tsx` documents for Affix), and `blur(0px)` still promotes the box to a backdrop root. Unset, the whole declaration at `.ui-card` is invalid-at-computed-value-time and `backdrop-filter` keeps its own initial `none`, so no backdrop root is created and an `Affix` inside a Card still positions against the viewport. The saturate companion is shared: `--surface-backdrop-saturate` (tokens/foundation.css). default = none — a card blurs nothing"
   },
   {
     "name": "--card-accent-rail-width",
@@ -967,6 +982,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--button-radius",
     "value": "var(--radius-md)",
     "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing changes by default, but is its OWN knob so a service theme can retune the button radius INDEPENDENTLY of input/control radius (issue #124)."
+  },
+  {
+    "name": "--button-default-background",
+    "value": "initial",
+    "description": "THE BUTTON'S OWN SURFACE — one knob per painted variant (gh#880, standard §1). Every variant painted a bare role (`hsl(var(--primary))`, `hsl(var(--background))`, `hsl(var(--secondary))`, `hsl(var(--destructive))`) with no knob of its own, so the only way to retint a button was to retint the ROLE — and `--primary` is also the link ink, the focus mark and a chart series. There was no way to say \"this button is translucent\" without saying it about eight other things. WHY BUTTONS AT ALL. namethatui's source draws the line this library needed: glassmorphism is a decorative skin for ANY surface including controls, while Apple's Liquid Glass reserves glass for the floating control layer above opaque content. A glass page with a solid primary button on it is the Liquid Glass split applied backwards. FOUR FILLS, NOT SIX. `ghost` and `link` paint no resting surface, so they have nothing to knob. The HOVER fills are deliberately not knobs either: they already resolve from roles at their own call sites (`--primary-hover`, `--accent`, `--secondary`), so a theme reaches them today — the documented consequence being that a glass RESTING fill with an untouched hover gives a button that turns opaque under the pointer, and a theme that wants glass on both moves the role too. ONE BLUR FOR THE WHOLE COMPONENT, because the material is one decision per component and the variants are one component. `initial`, so unset there is no blur and no backdrop root. default = hsl(var(--primary)) at the call site"
+  },
+  {
+    "name": "--button-destructive-background",
+    "value": "initial",
+    "description": "default = hsl(var(--destructive)) at the call site"
+  },
+  {
+    "name": "--button-outline-background",
+    "value": "initial",
+    "description": "default = hsl(var(--background)) at the call site"
+  },
+  {
+    "name": "--button-outline-border-color",
+    "value": "initial",
+    "description": "default = hsl(var(--input)) at the call site"
+  },
+  {
+    "name": "--button-secondary-background",
+    "value": "initial",
+    "description": "default = hsl(var(--secondary)) at the call site"
+  },
+  {
+    "name": "--button-backdrop-blur-size",
+    "value": "initial",
+    "description": "default = none — a button blurs nothing"
   },
   {
     "name": "--control-font-size",
@@ -1787,6 +1832,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--select-content-inline-size",
     "value": "auto",
     "description": "Seat for a NUMERIC `popupMatchSelectWidth` on the plain listbox. `auto` is the inert default."
+  },
+  {
+    "name": "--select-content-background",
+    "value": "initial",
+    "description": "THE LISTBOX SURFACE — and it is deliberately NOT the trigger's (gh#880, docs/GLASSMORPHISM-STANDARD.md §4b). Select is two problems: the TRIGGER is a form field and takes `--control-surface-background` with every other field, while the LISTBOX is an overlay that opens over arbitrary page content and needs the most opaque fill in the system — a 7-line menu over a photograph is unreadable at a card's alpha. One knob for both would make the correct answer for one the wrong answer for the other. `initial` with the role default at the call site, the same shape `--popover-surface-background` uses; the listbox painted a bare `hsl(var(--popover))` with no knob at all until now. default = hsl(var(--popover)) at the call site"
+  },
+  {
+    "name": "--select-content-backdrop-blur-size",
+    "value": "initial",
+    "description": "default = none — the listbox blurs nothing"
   },
   {
     "name": "--select-empty-space-block",
@@ -3689,9 +3744,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--sheet-overlay-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS — ON THE SCRIM, for the same two reasons the dialog's note below spells out. A drawer covers content that must stay unreadable-but-present, so this is the surface whose blur does the most work, and the panel's own fill belongs at the OPAQUE end of the range (docs/GLASSMORPHISM-STANDARD.md §4). `initial` = no blur and no backdrop root. default = none — the scrim blurs nothing"
+  },
+  {
+    "name": "--sheet-surface-background",
+    "value": "initial",
+    "description": "THE PANEL FILL (gh#880 item 4). This was `bg-background` baked into the Sheet's own className, which is a Tailwind utility — `@layer utilities` outranks every component-layer rule, so the drawer's surface was not merely un-knobbed, it was unreachable by any rule this package could write. The utility is gone and `.ui-sheet-panel` paints from this knob instead; unset, the default resolves to the same `hsl(var(--background))` at the call site. default = hsl(var(--background)) at the call site"
+  },
+  {
     "name": "--sheet-shadow",
-    "value": "var(--shadow-lg)",
-    "description": "Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so a service could retune the sheet's outer padding and still be stuck with the inner rhythm."
+    "value": "initial",
+    "description": "`initial` + the ramp default at the call site — see --tooltip-shadow (gh#880 item 7). default = var(--shadow-lg), resolved at the call site"
   },
   {
     "name": "--sheet-header-space-gap",
@@ -3767,6 +3832,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--dialog-overlay-alpha",
     "value": "60%",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-overlay-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS — THE BLUR IS ON THE SCRIM, NEVER ON THE DIALOG BOX (gh#880). Two reasons, and both are already written down in this repo. `backdrop-filter` filters what is painted BEHIND an element, and the scrim is the layer that covers the page, so the box would only ever blur the (flat) scrim. And an element with a `backdrop-filter` becomes the containing block for its fixed descendants, which would pin the dialog to itself — the trap `src/styles/shell-layout.css` documents where the app-launcher launchpad puts its blur on the overlay for exactly this reason. docs/GLASSMORPHISM-STANDARD.md §4 states the same rule. `initial` = no blur AND no backdrop root, so nothing about the shipped modal moves. The dialog's own translucency is `--dialog-surface-background` below, not a second blur. default = none — the scrim blurs nothing"
+  },
+  {
+    "name": "--dialog-surface-background",
+    "value": "initial",
+    "description": "THE PANEL FILL — a role-mirror knob, `initial`, default `hsl(var(--background))` at the call site (gh#880 item 4). `dialog-layout.css` hard-coded that colour, which made the modal one of the surfaces a theme could not make translucent at all: `--background` is a raw HSL triplet that is already composed with an alpha elsewhere, so a theme cannot add a second `/` to it. A whole colour here can. The panel's INK is stated on the same rule (`color: hsl(var( --foreground))`, gh#877) rather than inherited — a translucent fill over inherited text is how an invisible label ships, and that is the half of this surface that was already fixed. default = hsl(var(--background)) at the call site"
   },
   {
     "name": "--dialog-space-x",
@@ -4135,8 +4210,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tooltip-shadow",
-    "value": "var(--shadow-md)",
-    "description": "Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once."
+    "value": "initial",
+    "description": "Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once. `initial` rather than `var(--shadow-md)`: a `:root` binding to the ramp substitutes at `<html>` and a scope that restates the ramp can never reach it (docs/TOKEN-RESOLUTION.md §3, gh#880 item 7). The default resolves on `.ui-tooltip-content`. default = var(--shadow-md), resolved at the call site"
+  },
+  {
+    "name": "--tooltip-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS (gh#880 item 1) — `initial`, so unset there is no blur and no backdrop root. A tooltip is the smallest surface in the system and sits over arbitrary content, so it follows §4's dropdown rule: if it is made translucent at all, it needs the most opaque fill of the family. Saturate is shared (`--surface-backdrop-saturate`). default = none — a tooltip blurs nothing"
   },
   {
     "name": "--tooltip-background",
@@ -4170,8 +4250,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--popover-shadow",
-    "value": "var(--shadow-md)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "`initial` + the ramp default at the call site — same freeze, same reason as --tooltip-shadow. default = var(--shadow-md), resolved at the call site"
+  },
+  {
+    "name": "--popover-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS (gh#880 item 1) — `initial`, no blur and no backdrop root by default. This one carries a second warning: a Popover is a CONTAINER, so turning its blur on makes it the containing block for any `position: fixed` descendant it holds. default = none — a popover blurs nothing"
   },
   {
     "name": "--popover-header-space-gap",
@@ -4207,6 +4292,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--toast-icon-size",
     "value": "var(--icon-size-md)",
     "description": "TOAST (Sonner) — the status glyph in the toast's leading slot. WHY A KNOB AND NOT A UTILITY: sonner renders the toast body itself and takes the five status glyphs through ONE `icons={{ success, info, warning, error, loading }}` config prop. That prop is all-or-nothing — a consumer who wants a different glyph size must re-declare all five icons, re-importing lucide and re-deriving the aria wiring. Routing the size through a token makes it a one-line theme override instead (rule #45). Raw rem, not var(--space-N): it replaces a flat Tailwind `size-4` step, and the 16px box sonner gives `[data-icon]` is itself fixed — scaling the glyph with density alone would overflow it. NAMESPACE NOTE: sonner publishes its own `--toast-*` custom properties (--toast-icon-margin-*, --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below collides with those; keep it that way when adding to this group."
+  },
+  {
+    "name": "--toast-background",
+    "value": "initial",
+    "description": "THE TOAST SURFACE (gh#880 item 1). Sonner paints the toast body itself from its own `--normal-bg`, which `sonner.tsx` sets to `hsl(var(--popover))`. That made the fill reachable only by re-declaring sonner's private variable, so this knob is the package's own name for it: the component now passes `var(--toast-background, hsl(var(--popover)))` through, and the default resolves in the browser, on the toaster, under whatever scope it is in. The blur goes on `[data-sonner-toast]` from `alert-layout.css`. `initial` = no blur and no backdrop root; a toast holds an action Button and a close ✕, neither of which is `fixed`, but the rule is the rule. default = hsl(var(--popover)) at the call site"
+  },
+  {
+    "name": "--toast-backdrop-blur-size",
+    "value": "initial",
+    "description": "default = none — a toast blurs nothing"
   },
   {
     "name": "--toast-mobile-offset",
@@ -5269,6 +5364,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--tabs-list-background",
+    "value": "initial",
+    "description": "THE DEFAULT STRIP'S TRACK AND ITS SELECTED SLAB (gh#880 item 3) — the pair whose absence was the defect the owner spotted by eye: a translucent Card whose Tabs strip stayed opaque `--muted`, so \"các card này có đồng bộ đéo đâu\". Both used to be Tailwind utilities on the component (`data-[variant=default]:bg-muted` on the list, `data-[state=active]:bg-background` on the trigger), i.e. `@layer utilities`, which outranks every rule this package can write — the strip was not merely un-knobbed, it was unreachable. `--segmented-track-background` / `--segmented-item-selected-background` are the SAME track-and-slab pair and have been knobs since gh#848; `segmented.css` says in so many words that its role ports \"are the ones `Tabs` ALREADY MADE\". So these two are named after that pair and default to exactly the roles the utilities painted. `initial` with the default at the call site, for the reason that file measured: written `var(--muted)` here the binding substitutes on `<html>` and a scope below root inherits the root's answer, which reads as correct only because `.dark` also lands on `<html>`. default = hsl(var(--muted)) at the call site"
+  },
+  {
+    "name": "--tabs-trigger-active-background",
+    "value": "initial",
+    "description": "default = hsl(var(--background)) at the call site"
+  },
+  {
     "name": "--tabs-placement-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Width at or below which `tabPlacement=\"start\"`/`\"end\"` folds to `top`/`bottom` (gh#502) — a vertical strip and its panel share one inline axis and a phone has room for one of them. Same line `--sheet-responsive-breakpoint-width` draws; `0px` (which no viewport matches) turns the fold off. Read in JS (src/lib/breakpoint-token.ts) because the fold also swaps which arrow keys move the roving focus — see the note on `foldVerticalPlacement` in navigation/tabs.tsx."
@@ -5649,6 +5754,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu."
   },
   {
+    "name": "--dropdown-content-background",
+    "value": "initial",
+    "description": "THE MENU SURFACE (gh#880). `.ui-dropdown-menu-content` painted `hsl(var(--popover))` with no knob, while `.ui-popover-content` — the same kind of floating panel, in the same portal — had `--popover-surface-background`. That asymmetry is the shape of defect this repo keeps paying for: the theme reaches two of the three menu surfaces and the third silently stays opaque. A DROPDOWN IS THE MOST OPAQUE MEMBER OF THE FAMILY, by the standard's own rule (docs/GLASSMORPHISM-STANDARD.md §4): it is small, it sits over arbitrary content, and a 7-line menu over a photograph is unreadable at a card's alpha. It therefore gets its OWN fill knob rather than sharing the popover's — the two are meant to be able to differ. default = hsl(var(--popover)) at the call site"
+  },
+  {
+    "name": "--dropdown-content-backdrop-blur-size",
+    "value": "initial",
+    "description": "default = none — a menu blurs nothing"
+  },
+  {
     "name": "--menu-content-width-sm",
     "value": "12rem",
     "description": "MENU WIDTH LADDER (gh#396) — the measures `<DropdownMenuContent width=\"sm|md|lg\">` selects. Read ONLY when the prop is set, so an untouched menu keeps --dropdown-content-min-width above and moves by nothing. They exist because a menu wider than its trigger — a user menu, a project switcher, a notification panel — had exactly one mechanism left at the call site (`className=\"min-w-56\"`), which put the width of every menu in the app beyond a theme's reach. A regular ladder, not the three literals one app happened to write: a service that wants 22.5rem notification panels retunes --menu-content-width-lg once."
@@ -5980,8 +6095,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-item-selected-shadow",
-    "value": "var(--shadow-md)",
-    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
+    "value": "initial",
+    "description": "`initial` + the ramp default at the CALL SITE (gh#880 item 7). Bound to `var(--shadow-md)` here it substituted on `<html>`, so a scope that restated the elevation ramp could not move the selected slab — the same freeze the two knobs above this one were converted for in gh#848, left on the one property that carries the lift. docs/TOKEN-RESOLUTION.md §3. default = var(--shadow-md), resolved at the call site"
   },
   {
     "name": "--segmented-item-selected-font-weight",
@@ -6262,6 +6377,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--topbar-gradient",
     "value": "none",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+  },
+  {
+    "name": "--sidebar-surface-background",
+    "value": "initial",
+    "description": "THE SIDEBAR'S OWN SURFACE (gh#880). `.app-sidebar` painted a bare `hsl(var(--card))`, so the one piece of shell chrome that is ALWAYS on screen was the one a theme could not retint — the Topbar beside it has had `--topbar-background-alpha` since gh#831. Role-mirror knob: `initial`, with `hsl(var(--card))` resolved at the call site so a scoped theme's `--card` arrives. default = hsl(var(--card)) at the call site"
+  },
+  {
+    "name": "--sidebar-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS — `initial`, so unset there is no blur and, more importantly, no backdrop root. The sidebar is a long-lived container full of other people's content; promoting it to a containing block for fixed descendants by default would be the worst possible place to do it. default = none — the sidebar blurs nothing"
+  },
+  {
+    "name": "--app-shell-bar-background",
+    "value": "initial",
+    "description": "THE OTHER TWO SHELL ROWS, and they are here because leaving them out is the asymmetry this change exists to remove (gh#880). `.app-topbar` and `.app-nav-rail` are grid rows of `.app-root` — the chrome that is on screen for the whole session — and each painted a bare role with no knob while the sidebar beside them got one. THEY GET NO BLUR KNOB, deliberately. `.app-topbar` is a SIBLING of `.app-main`, not a child, so whatever vivid backdrop a theme paints inside the main region is not behind the bar and there is nothing there for a `backdrop-filter` to blur — it would be a knob that exists and does nothing, which is worse than an honest gap. The blur that IS wanted on the bar belongs to the `<Topbar>` COMPONENT inside it (`--topbar-backdrop-blur-size`, gh#831), whose backdrop is the row this knob paints. A theme that wants the whole bar to float over a gradient moves the gradient to `.app-root`; that is a theme decision, not a knob. default = hsl(var(--card)) at the call site"
+  },
+  {
+    "name": "--app-shell-nav-rail-background",
+    "value": "initial",
+    "description": "default = hsl(var(--muted)) at the call site"
   },
   {
     "name": "--app-shell-viewport-inset",
@@ -7577,6 +7712,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-header-foreground",
     "value": "initial",
     "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-surface-background",
+    "value": "initial",
+    "description": "THE DATATABLE FRAME ITSELF (gh#880). Every band, row state and header inside the table has had a knob for some time; the box that draws the frame around them had none and painted no fill at all, so a themed page could retint the contents of a table and not the table. Unset, the declaration is invalid-at-computed-value-time and `background-color` keeps its own initial `transparent` — which is exactly what the surface painted before, so nothing moves. default = transparent, i.e. what the frame already had"
+  },
+  {
+    "name": "--table-surface-backdrop-blur-size",
+    "value": "initial",
+    "description": "GLASS — `initial`, no blur and no backdrop root. A DataTable holds sticky/pinned columns; a backdrop root here would change what `position: fixed` inside the frame resolves against. default = none — the frame blurs nothing"
   },
   {
     "name": "--table-pin-shadow",

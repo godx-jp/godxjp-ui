@@ -1,6 +1,6 @@
 /** Shared control sizing — reads `--control-height`, `--font-size-*` from density / theme. */
 export const controlMultilineClass =
-  "ui-control-multiline aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] border-input bg-background ring-offset-background placeholder:text-muted-foreground";
+  "ui-control-multiline ui-control-outlined-surface aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] ring-offset-background placeholder:text-muted-foreground";
 
 /**
  * Multiline control with its own chrome removed, for a textarea EMBEDDED in a surface that already
@@ -13,10 +13,10 @@ export const controlMultilineGhostClass =
 /**
  * Multiline control drawn as antd's `filled` variant — a tinted surface instead of a boundary.
  *
- * It is a SEPARATE string rather than `controlMultilineClass` plus a modifier because
- * `bg-background` lives in `@layer utilities`, which outranks every component-layer rule: a
- * `.ui-control--filled` appended to the outlined list would be silently overpainted and no gate
- * would catch it. The two lists differ only in which chrome utilities they carry.
+ * It is a SEPARATE string rather than `controlMultilineClass` plus a modifier because the two
+ * surfaces are alternatives, not a base plus a modifier: appending `.ui-control--filled` to the
+ * outlined list would put two same-layer rules on one element and leave the winner to source order.
+ * The two lists differ only in which chrome class they carry.
  */
 export const controlMultilineFilledClass =
   "ui-control-multiline ui-control--filled aria-invalid:border-destructive data-[status=error]:border-destructive data-[status=warning]:border-warning w-full rounded-[var(--control-radius)] ring-offset-background placeholder:text-muted-foreground";
@@ -56,7 +56,15 @@ export const controlOpenRingClass = "ui-control-trigger";
 export const controlTriggerBaseClass =
   "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1 [&>[data-slot=select-value]]:whitespace-normal [&>[data-slot=select-value]]:text-ellipsis";
 
-export const controlTriggerClass = `${controlTriggerBaseClass} border-input bg-background`;
+/**
+ * The trigger WITH the resting surface — `.ui-control-outlined-surface`, which paints the identical
+ * border and fill from `--control-surface-border-color` / `--control-surface-background`.
+ *
+ * It used to be the two Tailwind utilities `border-input bg-background`, and `@layer utilities`
+ * outranks `@layer components`, so those two tokens could not reach it (gh#880). The painted result
+ * is unchanged; what changed is that a theme can now reach it.
+ */
+export const controlTriggerClass = `${controlTriggerBaseClass} ui-control-outlined-surface`;
 
 /** `controlTriggerBaseClass` + the token-driven surface — the select-family trigger. */
 export const controlSurfaceTriggerClass = `${controlTriggerBaseClass} ui-control-surface`;

@@ -10,10 +10,22 @@
    * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog). */
   --sheet-overlay-background: initial;
   --sheet-overlay-alpha: 40%;
+  /* GLASS — ON THE SCRIM, for the same two reasons the dialog's note below spells out. A drawer
+   * covers content that must stay unreadable-but-present, so this is the surface whose blur does
+   * the most work, and the panel's own fill belongs at the OPAQUE end of the range
+   * (docs/GLASSMORPHISM-STANDARD.md §4). `initial` = no blur and no backdrop root. */
+  --sheet-overlay-backdrop-blur-size: initial; /* default = none — the scrim blurs nothing */
+  /* THE PANEL FILL (gh#880 item 4). This was `bg-background` baked into the Sheet's own className,
+   * which is a Tailwind utility — `@layer utilities` outranks every component-layer rule, so the
+   * drawer's surface was not merely un-knobbed, it was unreachable by any rule this package could
+   * write. The utility is gone and `.ui-sheet-panel` paints from this knob instead; unset, the
+   * default resolves to the same `hsl(var(--background))` at the call site. */
+  --sheet-surface-background: initial; /* default = hsl(var(--background)) at the call site */
   /* Sheet chrome rhythm (#319). --sheet-pad-x/-y already governed the panel inset, but the gaps
    * INSIDE the chrome — header stack, title/subtitle pair, the extra-slot row — were literal, so
    * a service could retune the sheet's outer padding and still be stuck with the inner rhythm. */
-  --sheet-shadow: var(--shadow-lg);
+  /* `initial` + the ramp default at the call site — see --tooltip-shadow (gh#880 item 7). */
+  --sheet-shadow: initial; /* default = var(--shadow-lg), resolved at the call site */
   --sheet-header-space-gap: 0.375rem;
   --sheet-title-block-space-gap: var(--space-1);
   --sheet-title-row-space-gap: var(--space-3);
@@ -36,6 +48,26 @@
   --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: initial;
   --dialog-overlay-alpha: 60%;
+  /* GLASS — THE BLUR IS ON THE SCRIM, NEVER ON THE DIALOG BOX (gh#880).
+   *
+   * Two reasons, and both are already written down in this repo. `backdrop-filter` filters what is
+   * painted BEHIND an element, and the scrim is the layer that covers the page, so the box would
+   * only ever blur the (flat) scrim. And an element with a `backdrop-filter` becomes the containing
+   * block for its fixed descendants, which would pin the dialog to itself — the trap
+   * `src/styles/shell-layout.css` documents where the app-launcher launchpad puts its blur on the
+   * overlay for exactly this reason. docs/GLASSMORPHISM-STANDARD.md §4 states the same rule.
+   *
+   * `initial` = no blur AND no backdrop root, so nothing about the shipped modal moves. The
+   * dialog's own translucency is `--dialog-surface-background` below, not a second blur. */
+  --dialog-overlay-backdrop-blur-size: initial; /* default = none — the scrim blurs nothing */
+  /* THE PANEL FILL — a role-mirror knob, `initial`, default `hsl(var(--background))` at the call
+   * site (gh#880 item 4). `dialog-layout.css` hard-coded that colour, which made the modal one of
+   * the surfaces a theme could not make translucent at all: `--background` is a raw HSL triplet
+   * that is already composed with an alpha elsewhere, so a theme cannot add a second `/` to it.
+   * A whole colour here can. The panel's INK is stated on the same rule (`color: hsl(var(
+   * --foreground))`, gh#877) rather than inherited — a translucent fill over inherited text is how
+   * an invisible label ships, and that is the half of this surface that was already fixed. */
+  --dialog-surface-background: initial; /* default = hsl(var(--background)) at the call site */
   /* Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the
    * whole system, or --dialog-space-x/-y for dialogs only). */
   --dialog-space-x: var(--space-chrome-x);
@@ -233,8 +265,16 @@
   --tooltip-space-block: var(--space-1);
   --tooltip-radius: var(--radius);
   --tooltip-font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
-  /* Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once. */
-  --tooltip-shadow: var(--shadow-md);
+  /* Raised-surface depth — role-mirror knob, so a flat service theme sets `none` once.
+   * `initial` rather than `var(--shadow-md)`: a `:root` binding to the ramp substitutes at `<html>`
+   * and a scope that restates the ramp can never reach it (docs/TOKEN-RESOLUTION.md §3, gh#880
+   * item 7). The default resolves on `.ui-tooltip-content`. */
+  --tooltip-shadow: initial; /* default = var(--shadow-md), resolved at the call site */
+  /* GLASS (gh#880 item 1) — `initial`, so unset there is no blur and no backdrop root. A tooltip
+   * is the smallest surface in the system and sits over arbitrary content, so it follows §4's
+   * dropdown rule: if it is made translucent at all, it needs the most opaque fill of the family.
+   * Saturate is shared (`--surface-backdrop-saturate`). */
+  --tooltip-backdrop-blur-size: initial; /* default = none — a tooltip blurs nothing */
   /* Surface colours — `initial` so the popover roles re-resolve at the CALL SITE under a scoped
    * [data-tenant]/.dark theme (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
    * Defaults = hsl(var(--popover)) fill · hsl(var(--popover-foreground)) text. */
@@ -247,7 +287,12 @@
   --popover-width: 18rem;
   --popover-space-inset: var(--space-4);
   --popover-radius: var(--radius);
-  --popover-shadow: var(--shadow-md);
+  /* `initial` + the ramp default at the call site — same freeze, same reason as --tooltip-shadow. */
+  --popover-shadow: initial; /* default = var(--shadow-md), resolved at the call site */
+  /* GLASS (gh#880 item 1) — `initial`, no blur and no backdrop root by default. This one carries a
+   * second warning: a Popover is a CONTAINER, so turning its blur on makes it the containing block
+   * for any `position: fixed` descendant it holds. */
+  --popover-backdrop-blur-size: initial; /* default = none — a popover blurs nothing */
   --popover-header-space-gap: var(--space-1);
   --popover-header-font-size: var(--font-size-sm, var(--font-size-base));
   /* Role-mirror knobs — `initial`, defaults resolve at the call site (see Tooltip above). */
@@ -275,6 +320,17 @@
    * --toast-svg-margin-*, --toast-button-margin-*, --toast-close-button-*). Neither name below
    * collides with those; keep it that way when adding to this group. */
   --toast-icon-size: var(--icon-size-md);
+  /* THE TOAST SURFACE (gh#880 item 1). Sonner paints the toast body itself from its own
+   * `--normal-bg`, which `sonner.tsx` sets to `hsl(var(--popover))`. That made the fill reachable
+   * only by re-declaring sonner's private variable, so this knob is the package's own name for it:
+   * the component now passes `var(--toast-background, hsl(var(--popover)))` through, and the
+   * default resolves in the browser, on the toaster, under whatever scope it is in.
+   *
+   * The blur goes on `[data-sonner-toast]` from `alert-layout.css`. `initial` = no blur and no
+   * backdrop root; a toast holds an action Button and a close ✕, neither of which is `fixed`, but
+   * the rule is the rule. */
+  --toast-background: initial; /* default = hsl(var(--popover)) at the call site */
+  --toast-backdrop-blur-size: initial; /* default = none — a toast blurs nothing */
   /* Viewport gutter of the mobile toast stack. Sonner passes `mobileOffset` straight into inline
    * CSS, so a var() string resolves normally. Flat 16px on purpose: this is a fixed inset from the
    * device edge (thumb reach / safe area), not a density-scaled gap inside a surface. */

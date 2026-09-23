@@ -39,15 +39,26 @@ describe("portalled overlay surfaces declare the ink that pairs with their backg
   it("[data-slot=dialog-content] declares `color` beside `background-color`", () => {
     const declarations = declarationsFor(dialogStyles, '[data-slot="dialog-content"]');
 
-    expect(declarations).toContain("background-color: hsl(var(--background))");
+    // gh#880 made the fill a knob; the pairing this test exists for is unchanged, and the
+    // default the knob falls back to at this call site is the same `--background`.
+    expect(declarations).toContain(
+      "background-color: var(--dialog-surface-background, hsl(var(--background)))",
+    );
     expect(declarations).toContain("color: hsl(var(--foreground))");
   });
 
-  it("the Sheet panel pairs `text-foreground` with `bg-background`", () => {
+  it("the Sheet panel pairs `text-foreground` with the fill that replaced `bg-background`", () => {
     const panelClass = /"ui-sheet-panel[^"]*"/.exec(sheetSource)?.[0] ?? "";
 
-    expect(panelClass).toContain("bg-background");
+    // The INK stays a utility — nothing competes for `color` here, and losing it is the 1.03:1
+    // defect this file is about. The FILL left the className in gh#880: a Tailwind utility lives in
+    // `@layer utilities` and outranks every rule this package writes, so while it stood no knob
+    // could reach the drawer's surface. It is painted from `.ui-sheet-panel` now, same colour.
+    expect(panelClass).not.toContain("bg-background");
     expect(panelClass).toContain("text-foreground");
+    expect(declarationsFor(dialogStyles, ".ui-sheet-panel")).toContain(
+      "background-color: var(--sheet-surface-background, hsl(var(--background)))",
+    );
   });
 
   it("the two surfaces that already paired them are left alone", () => {

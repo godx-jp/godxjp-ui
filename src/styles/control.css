@@ -186,8 +186,18 @@
     flex-shrink: 0;
   }
 
+  /* The four resting fills read a knob whose default is the SAME role, resolved here so a scoped
+   * theme's role still arrives (gh#880 · docs/TOKEN-RESOLUTION.md §3). Before this, retinting a
+   * button meant retinting `--primary` — which is also the link ink, the focus mark and a chart
+   * series. The blur is shared across the variants and `initial`, so the shipped button creates no
+   * backdrop root. */
+  .ui-button {
+    backdrop-filter: blur(var(--button-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+  }
+
   .ui-button--default {
-    background: hsl(var(--primary));
+    background: var(--button-default-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
     /* Brand glow layers on top of the resting shadow; --shadow-glow is invisible by default
      * (quiet) so a service opts the CTA halo in by setting the token alone. */
@@ -203,7 +213,7 @@
   }
 
   .ui-button--destructive {
-    background: hsl(var(--destructive));
+    background: var(--button-destructive-background, hsl(var(--destructive)));
     color: hsl(var(--destructive-foreground));
     box-shadow: var(--shadow-sm);
   }
@@ -219,9 +229,15 @@
 
   /* Outline + ghost set their text colour EXPLICITLY (read --foreground) — never rely on inherited
    * body colour. */
+  /* `dashed` is `outline` with a dashed edge — one surface, one knob. Its fill lived in a
+   * `bg-background` utility on the component with no rule here at all, so it is declared now. */
+  .ui-button--dashed {
+    background: var(--button-outline-background, hsl(var(--background)));
+  }
+
   .ui-button--outline {
-    border: 1px solid hsl(var(--input));
-    background: hsl(var(--background));
+    border: 1px solid var(--button-outline-border-color, hsl(var(--input)));
+    background: var(--button-outline-background, hsl(var(--background)));
     color: hsl(var(--foreground));
 
     /* Qua TOKEN, không qua utility: một service đặt `--shadow-sm: none` phải tắt được
@@ -241,7 +257,7 @@
   }
 
   .ui-button--secondary {
-    background: hsl(var(--secondary));
+    background: var(--button-secondary-background, hsl(var(--secondary)));
     color: hsl(var(--secondary-foreground));
   }
 
@@ -1553,7 +1569,7 @@
      * INSET so it costs no layout; the fill/track pair is 1.09:1 in light and 1.33:1 in dark and
      * cannot be fixed by moving either colour — see the token's own note (gh#843). */
     box-shadow:
-      var(--segmented-item-selected-shadow),
+      var(--segmented-item-selected-shadow, var(--shadow-md)),
       inset 0 0 0 1px hsl(var(--segmented-item-selected-border-color, var(--input)));
     color: hsl(var(--segmented-item-selected-color));
     /* The signal that does not depend on the canvas (gh#843) — see the token's own note. */
@@ -2314,8 +2330,15 @@
     overflow: hidden;
     border-radius: var(--radius-md);
     border: 1px solid hsl(var(--border));
-    background: hsl(var(--popover));
+    /* A knob, with the role default resolved HERE (gh#880). The listbox is an OVERLAY, not a
+     * field — see the note on --select-content-background for why it does not share the trigger's
+     * surface knob. */
+    background: var(--select-content-background, hsl(var(--popover)));
     color: hsl(var(--popover-foreground));
+    /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`: no blur, and no backdrop root to become the
+     * containing block for anything fixed inside the popup. */
+    backdrop-filter: blur(var(--select-content-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
     box-shadow: var(--shadow-md);
   }
 
@@ -3582,11 +3605,41 @@
  */
 @layer components {
   /* ── VARIANT ──────────────────────────────────────────────────────────────────────────────
-   * `outlined` has NO rule here on purpose: it is the field this library already drew, and it
-   * keeps carrying `border-input bg-background` as utilities. The other two get their surface
-   * from these rules precisely because they carry no such utility to fight (a Tailwind utility
-   * lives in @layer utilities and outranks anything in @layer components — see
-   * data-entry/control-appearance.ts). */
+   *
+   * `outlined` NOW HAS A RULE, AND IT USED TO BE THE HOLE (gh#880, standard §4b).
+   *
+   * The resting field was drawn by two Tailwind utilities, `border-input bg-background`, carried in
+   * three separate class strings — `CONTROL_VARIANT_CHROME_CLASS.outlined` (Input, DatePicker),
+   * `controlMultilineClass` (Textarea) and `controlTriggerClass`. Utilities live in
+   * `@layer utilities`, which outranks every rule this package writes, so the DEFAULT variant of
+   * the most-used control in the library was not merely un-knobbed: `--control-surface-background`
+   * and `--control-surface-border-color` existed, were documented, and reached NONE of them. The
+   * select family (`controlSurfaceTriggerClass` → `.ui-control-surface`), TagInput and
+   * ChatComposer were reachable the whole time — the exact "two of three" split this repo keeps
+   * paying for, with the field a consumer actually types into on the wrong side of it.
+   *
+   * IT IS THE SAME PAIR, NOT A NEW ONE. No knob is added here: the standard asks for a field fill
+   * that can differ from the card it sits on, and these two tokens are already independent of
+   * `--card-background` — they simply had no route to three quarters of the family. The defaults
+   * resolve at this element, so a scoped theme's `--input`/`--background` arrive
+   * (docs/TOKEN-RESOLUTION.md §3).
+   *
+   * WHY A DEDICATED CLASS RATHER THAN `.ui-control-surface`: that class also carries the size and
+   * `[data-variant]`/`[data-status]` matrix, and Input/Textarea size themselves through their own
+   * ladder. This paints the surface and nothing else.
+   *
+   * THE FOCUS EDGE STILL WORKS, and by the same mechanism as before: `focus-ring.css` rebinds
+   * `--input` ON the focused element rather than declaring `border-color`, and this rule reads
+   * `hsl(var(--input))` at that same element. The status edges (`aria-invalid:border-destructive`,
+   * `data-[status=warning]:border-warning`) are still utilities and still outrank it, which is the
+   * order they need. */
+  .ui-control-outlined-surface {
+    border-color: var(--control-surface-border-color, hsl(var(--input)));
+    background-color: var(--control-surface-background, hsl(var(--background)));
+  }
+
+  /* The other two variants get their surface from these rules, and always could: they carry no
+   * chrome utility to fight (see data-entry/control-appearance.ts). */
   .ui-control--filled {
     border-color: transparent;
     background-color: hsl(var(--control-variant-filled-background));

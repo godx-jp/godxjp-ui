@@ -78,6 +78,23 @@
   );
   --tabs-list-max-inline-size: 100%;
   --tabs-list-overflow: auto;
+  /* THE DEFAULT STRIP'S TRACK AND ITS SELECTED SLAB (gh#880 item 3) — the pair whose absence was
+   * the defect the owner spotted by eye: a translucent Card whose Tabs strip stayed opaque
+   * `--muted`, so "các card này có đồng bộ đéo đâu".
+   *
+   * Both used to be Tailwind utilities on the component (`data-[variant=default]:bg-muted` on the
+   * list, `data-[state=active]:bg-background` on the trigger), i.e. `@layer utilities`, which
+   * outranks every rule this package can write — the strip was not merely un-knobbed, it was
+   * unreachable. `--segmented-track-background` / `--segmented-item-selected-background` are the
+   * SAME track-and-slab pair and have been knobs since gh#848; `segmented.css` says in so many
+   * words that its role ports "are the ones `Tabs` ALREADY MADE". So these two are named after
+   * that pair and default to exactly the roles the utilities painted.
+   *
+   * `initial` with the default at the call site, for the reason that file measured: written
+   * `var(--muted)` here the binding substitutes on `<html>` and a scope below root inherits the
+   * root's answer, which reads as correct only because `.dark` also lands on `<html>`. */
+  --tabs-list-background: initial; /* default = hsl(var(--muted)) at the call site */
+  --tabs-trigger-active-background: initial; /* default = hsl(var(--background)) at the call site */
 
   /* Width at or below which `tabPlacement="start"`/`"end"` folds to `top`/`bottom` (gh#502) — a
    * vertical strip and its panel share one inline axis and a phone has room for one of them. Same
@@ -294,6 +311,17 @@
   --menu-content-min-width: 10rem;
   /* DropdownMenu is anchored to a small trigger, so it opens narrower than a context menu. */
   --dropdown-content-min-width: 8rem;
+  /* THE MENU SURFACE (gh#880). `.ui-dropdown-menu-content` painted `hsl(var(--popover))` with no
+   * knob, while `.ui-popover-content` — the same kind of floating panel, in the same portal — had
+   * `--popover-surface-background`. That asymmetry is the shape of defect this repo keeps paying
+   * for: the theme reaches two of the three menu surfaces and the third silently stays opaque.
+   *
+   * A DROPDOWN IS THE MOST OPAQUE MEMBER OF THE FAMILY, by the standard's own rule
+   * (docs/GLASSMORPHISM-STANDARD.md §4): it is small, it sits over arbitrary content, and a 7-line
+   * menu over a photograph is unreadable at a card's alpha. It therefore gets its OWN fill knob
+   * rather than sharing the popover's — the two are meant to be able to differ. */
+  --dropdown-content-background: initial; /* default = hsl(var(--popover)) at the call site */
+  --dropdown-content-backdrop-blur-size: initial; /* default = none — a menu blurs nothing */
   /* MENU WIDTH LADDER (gh#396) — the measures `<DropdownMenuContent width="sm|md|lg">` selects.
    * Read ONLY when the prop is set, so an untouched menu keeps --dropdown-content-min-width above
    * and moves by nothing. They exist because a menu wider than its trigger — a user menu, a

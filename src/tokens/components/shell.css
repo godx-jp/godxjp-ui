@@ -96,6 +96,29 @@
    * the sidebar/topbar surface by setting these to a gradient (no-op = none). */
   --sidebar-gradient: none;
   --topbar-gradient: none;
+  /* THE SIDEBAR'S OWN SURFACE (gh#880). `.app-sidebar` painted a bare `hsl(var(--card))`, so the
+   * one piece of shell chrome that is ALWAYS on screen was the one a theme could not retint — the
+   * Topbar beside it has had `--topbar-background-alpha` since gh#831. Role-mirror knob: `initial`,
+   * with `hsl(var(--card))` resolved at the call site so a scoped theme's `--card` arrives. */
+  --sidebar-surface-background: initial; /* default = hsl(var(--card)) at the call site */
+  /* GLASS — `initial`, so unset there is no blur and, more importantly, no backdrop root. The
+   * sidebar is a long-lived container full of other people's content; promoting it to a containing
+   * block for fixed descendants by default would be the worst possible place to do it. */
+  --sidebar-backdrop-blur-size: initial; /* default = none — the sidebar blurs nothing */
+  /* THE OTHER TWO SHELL ROWS, and they are here because leaving them out is the asymmetry this
+   * change exists to remove (gh#880). `.app-topbar` and `.app-nav-rail` are grid rows of
+   * `.app-root` — the chrome that is on screen for the whole session — and each painted a bare
+   * role with no knob while the sidebar beside them got one.
+   *
+   * THEY GET NO BLUR KNOB, deliberately. `.app-topbar` is a SIBLING of `.app-main`, not a child,
+   * so whatever vivid backdrop a theme paints inside the main region is not behind the bar and
+   * there is nothing there for a `backdrop-filter` to blur — it would be a knob that exists and
+   * does nothing, which is worse than an honest gap. The blur that IS wanted on the bar belongs to
+   * the `<Topbar>` COMPONENT inside it (`--topbar-backdrop-blur-size`, gh#831), whose backdrop is
+   * the row this knob paints. A theme that wants the whole bar to float over a gradient moves the
+   * gradient to `.app-root`; that is a theme decision, not a knob. */
+  --app-shell-bar-background: initial; /* default = hsl(var(--card)) at the call site */
+  --app-shell-nav-rail-background: initial; /* default = hsl(var(--muted)) at the call site */
 
   /* DXS application-shell geometry. These defaults mirror the checked-in
    * Admin/Console hi-fi source while remaining themeable by consumers. */

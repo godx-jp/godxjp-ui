@@ -237,6 +237,18 @@
     block-size: var(--toast-icon-size);
   }
 
+  /* GLASS ON THE TOAST (gh#880 item 1). The FILL is sonner's (`--normal-bg`, threaded through
+   * `--toast-background` in sonner.tsx) because sonner renders the toast body; the blur has to be
+   * a rule, and it belongs in this package's `@layer components` — sonner's own sheet is imported
+   * into `@layer vendor`, which is EARLIER, so this wins without a specificity contest.
+   *
+   * `initial` by default ⇒ the declaration is invalid-at-computed-value-time ⇒ `backdrop-filter`
+   * keeps its own initial `none`, so the shipped toast creates no backdrop root. */
+  [data-sonner-toast] {
+    backdrop-filter: blur(var(--toast-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+  }
+
   /* A COLLAPSED STACK MUST HIDE ITS BACK TOASTS FROM THE A11Y TREE, NOT ONLY FROM THE EYE.
    *
    * Sonner shows one toast at a time: every toast behind the front one keeps its box (the stack

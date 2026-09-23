@@ -60,8 +60,13 @@
   --card-header-border-bottom: initial;
   --card-radius: var(--radius-xl);
   /* The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm
-   * elevation layer. Consumers can still flatten or lift cards through this knob. */
-  --card-shadow: var(--shadow-sm);
+   * elevation layer. Consumers can still flatten or lift cards through this knob.
+   *
+   * `initial`, NOT `var(--shadow-sm)` — a role-mirror knob written here binds at `<html>` and a
+   * scope below root that restates the elevation ramp can never reach it (docs/TOKEN-RESOLUTION.md
+   * §3). The default now resolves on `.ui-card`, so a `[data-tenant]`/`[data-theme]` region that
+   * sets `--shadow-sm` moves its own cards and nothing else. gh#880 item 7. */
+  --card-shadow: initial; /* default = var(--shadow-sm), resolved at the call site */
   /* Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the
    * surface box-shadow so a service can wash every card with the global glow, e.g.
    * --card-glow: var(--shadow-glow), with no markup change. */
@@ -73,6 +78,29 @@
   /* Fill tint — subtle role wash over the card background (default transparent = invisible).
    * Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once. */
   --card-tint: transparent;
+  /* THE OTHER END OF THE TINT, AND ITS DIRECTION (gh#880 item 6).
+   *
+   * The wash used to be painted `linear-gradient(var(--card-tint), var(--card-tint))` — the same
+   * variable twice — which is a flat overlay wearing a gradient's clothes. A service that wanted a
+   * genuine two-colour wash had one value slot for two colours, so `--card-tint: A, B` expanded to
+   * `linear-gradient(A, B, A, B)`: a hard split, not a ramp. A glass card's rim highlight is a
+   * diagonal two-stop ramp (docs/GLASSMORPHISM-STANDARD.md §1), so this is the difference between
+   * "a card can be glass" and "a card can be tinted".
+   *
+   * BOTH ARE `initial` WITH THEIR DEFAULT AT THE CALL SITE, so the default value is the live
+   * `--card-tint` of whatever scope the card is in, not the one frozen at `<html>`, and the
+   * resting card paints `linear-gradient(to bottom, transparent, transparent)` exactly as before. */
+  --card-tint-end: initial; /* default = var(--card-tint) — a single-colour wash stays flat */
+  --card-tint-angle: initial; /* default = `to bottom`, the direction the two-stop form already had */
+  /* GLASS (gh#880 item 1) — `initial`, i.e. OFF, and the default must stay `initial` rather than
+   * `0px`. An element with a `backdrop-filter` becomes the containing block for its fixed
+   * descendants (the trap `src/styles/shell-layout.css` documents on the app-launcher scrim and
+   * `src/components/layout/affix.tsx` documents for Affix), and `blur(0px)` still promotes the box
+   * to a backdrop root. Unset, the whole declaration at `.ui-card` is
+   * invalid-at-computed-value-time and `backdrop-filter` keeps its own initial `none`, so no
+   * backdrop root is created and an `Affix` inside a Card still positions against the viewport.
+   * The saturate companion is shared: `--surface-backdrop-saturate` (tokens/foundation.css). */
+  --card-backdrop-blur-size: initial; /* default = none — a card blurs nothing */
   /* Accent edge — width of the semantic leading-edge stripe (data-accent).
    * Tokenised (rule #44) so a service theme can re-tune it without forking CSS.
    * The slot padding compensation in card-layout.css subtracts the same token,

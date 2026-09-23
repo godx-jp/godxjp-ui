@@ -26,6 +26,15 @@
       --dialog-overlay-background,
       color-mix(in srgb, var(--overlay-background) var(--dialog-overlay-alpha), transparent)
     );
+    /* THE MODAL BLUR LIVES HERE, ON THE SCRIM, and never on `[data-slot="dialog-content"]` — the
+     * precedent `shell-layout.css` sets for the app-launcher launchpad and the rule
+     * docs/GLASSMORPHISM-STANDARD.md §4 states. `backdrop-filter` filters what is painted behind
+     * the element, and the scrim is the layer that covers the page; on the box it would blur the
+     * (flat) scrim and make the box the containing block for its own fixed descendants.
+     * Both knobs unset ⇒ invalid-at-computed-value-time ⇒ `none`, so no backdrop root exists on
+     * the shipped modal and nothing inside it changes position. */
+    backdrop-filter: blur(var(--dialog-overlay-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
   }
 
   [data-slot="sheet-overlay"] {
@@ -33,6 +42,9 @@
       --sheet-overlay-background,
       color-mix(in srgb, var(--overlay-background) var(--sheet-overlay-alpha), transparent)
     );
+    /* Same rule, same reason — the drawer's blur is the scrim's. */
+    backdrop-filter: blur(var(--sheet-overlay-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
   }
 
   /* Default is 50, the literal this replaces. */
@@ -53,7 +65,12 @@
     transform: translate(-50%, -50%);
     gap: var(--dialog-space-gap);
     border: 1px solid hsl(var(--border));
-    background-color: hsl(var(--background));
+    /* A KNOB, NOT A HARD-CODED ROLE (gh#880 item 4). `hsl(var(--background))` here was one of the
+     * two surfaces a theme could not make translucent at all: `--background` is a raw HSL triplet
+     * and is already composed with an alpha for the glass Topbar, so a second `/` is invalid CSS.
+     * A whole colour in the knob can be `rgb(255 255 255 / .12)`. The default resolves HERE, so a
+     * scoped theme's `--background` is the one that arrives (docs/TOKEN-RESOLUTION.md §3). */
+    background-color: var(--dialog-surface-background, hsl(var(--background)));
     /* THE INK HAS TO BE DECLARED HERE, not inherited (gh#877).
      *
      * This surface paints `--background` and, until now, took its text colour from whatever it
@@ -354,7 +371,10 @@
     background-color: var(--tooltip-background, hsl(var(--popover)));
     color: var(--tooltip-foreground, hsl(var(--popover-foreground)));
     font-size: var(--tooltip-font-size);
-    box-shadow: var(--tooltip-shadow);
+    backdrop-filter: blur(var(--tooltip-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+    /* The ramp default resolves HERE, so a scoped theme that restates `--shadow-md` reaches it. */
+    box-shadow: var(--tooltip-shadow, var(--shadow-md));
     outline: none;
   }
 
@@ -373,7 +393,9 @@
     border: 1px solid var(--popover-surface-border-color, hsl(var(--border)));
     background-color: var(--popover-surface-background, hsl(var(--popover)));
     color: var(--popover-surface-foreground, hsl(var(--popover-foreground)));
-    box-shadow: var(--popover-shadow);
+    backdrop-filter: blur(var(--popover-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
+    box-shadow: var(--popover-shadow, var(--shadow-md));
     outline: none;
   }
 
@@ -470,7 +492,14 @@
   }
 
   .ui-sheet-panel {
-    box-shadow: var(--sheet-shadow);
+    /* THE FILL MOVED OUT OF THE CLASSNAME (gh#880 item 4). `sheetVariants` carried `bg-background`,
+     * and a Tailwind utility lives in `@layer utilities`, which outranks every rule this file can
+     * write — so the drawer's surface was not merely un-knobbed, no package rule could reach it.
+     * Painted here from a knob whose default resolves at this element, the result is the same
+     * colour and a theme can now make it translucent. The panel's own INK is stated too, for the
+     * reason `[data-slot="dialog-content"]` documents above (gh#877). */
+    background-color: var(--sheet-surface-background, hsl(var(--background)));
+    box-shadow: var(--sheet-shadow, var(--shadow-lg));
   }
 
   .ui-sheet-panel[data-side="top"] {

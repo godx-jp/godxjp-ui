@@ -30,7 +30,12 @@ describe("DXS hi-fi visual contract", () => {
      */
     expect(shell).toMatch(/height:\s*calc\(100vh - var\(\s*--app-shell-viewport-inset, 0px\)\)/);
     expect(tokens).toMatch(/--app-shell-viewport-inset:\s*0px;/);
-    expect(shell).toMatch(/\.app-topbar\s*\{[^}]*background:\s*hsl\(var\(\s*--card\)\)/s);
+    // `--card` IS still the bar's surface; gh#880 made it reachable, which means the role it
+    // resolves to is now the call-site fallback of a knob rather than a bare declaration. The
+    // guarantee this line carries — the flat chrome paints the card colour — is unchanged.
+    expect(shell).toMatch(
+      /\.app-topbar\s*\{[^}]*background:\s*var\(--app-shell-bar-background, hsl\(var\(--card\)\)\)/s,
+    );
     // FLAT means the BAR is flat. This used to scan the whole stylesheet for `backdrop-filter`,
     // which held only while nothing else in the file had one; the launcher's launchpad scrim now
     // does, and it is not chrome — it is the surface the chrome opens on top of. Scoped to the
@@ -104,7 +109,13 @@ describe("DXS hi-fi visual contract", () => {
     const card = read("../../tokens/components/card.css");
 
     expect(card).toMatch(/--card-radius:\s*var\(\s*--radius-xl\)/);
-    expect(card).toMatch(/--card-shadow:\s*var\(\s*--shadow-sm\)/);
+    // `shadow-sm` IS still the surface; gh#880 moved WHERE it is stated. A `:root` binding to the
+    // ramp substitutes on `<html>`, so a scope that restates the ramp could never move the card —
+    // the knob is `initial` and the ramp default now resolves on `.ui-card`.
+    expect(card).toMatch(/--card-shadow:\s*initial;/);
+    expect(read("../card-layout.css")).toMatch(
+      /box-shadow: var\(--card-shadow, var\(--shadow-sm\)\), var\(--card-glow\);/,
+    );
   });
 
   it("bundles Noto Sans JP as the default product face (product override, direct instruction)", () => {
