@@ -92,6 +92,8 @@
    * trigger — are not, which is why the sidebar's selected label was the one string still washed
    * out after the backdrop was fixed. Measured: `color(srgb 0.875 0.805 0.995)` on a
    * `rgba(124,58,237,0.26)` pill. */
+  --glass-hero-alpha-start: 0.34;
+  --glass-hero-alpha-end: 0.1;
   --glass-brand-ink-l: 38%;
   --glass-brand-ink-strong-l: 32%;
   --glass-lobe-a-l: 84%;
@@ -203,10 +205,25 @@
     hsl(330 81% var(--glass-lobe-c-l) / 0.22) 0%,
     hsl(262 83% var(--glass-lobe-a-l) / 0.16) 100%
   );
+  /* THE PAGE HEADER IS A GLASS BAND, NOT A SECOND PALETTE (reported: "phần header tự dưng tại sao
+   * có bg riêng grandient riêng thế??? trông nó ko đồng bộ tí đéo nào cả").
+   *
+   * This used to be `linear-gradient(100deg, pink/0.25, violet/0.15)` — a saturated wash at 100deg
+   * laid across one band of a page whose own backdrop runs at 160deg with three radial lobes. Two
+   * independent gradients, so the header read as a stripe pasted over the page rather than part of
+   * it, in BOTH polarities.
+   *
+   * It is signal 2 of the standard that this breaks, not taste: "a vivid backdrop showing through —
+   * its colour bleeds through every panel and IS most of the palette". A second gradient means the
+   * palette comes from two places, and the seam is where they meet.
+   *
+   * The hook is still exercised, because proving it reachable is this file's job. What changed is
+   * the VALUE: a white scrim on the theme's own axis, so the page backdrop bleeds through the
+   * header exactly as it does through every Card, and the band reads as glass over the page. */
   --gradient-hero: linear-gradient(
-    100deg,
-    hsl(330 81% var(--glass-lobe-c-l) / 0.25) 0%,
-    hsl(262 83% var(--glass-lobe-a-l) / 0.15) 100%
+    160deg,
+    hsl(0 0% 100% / var(--glass-hero-alpha-start)) 0%,
+    hsl(0 0% 100% / var(--glass-hero-alpha-end)) 100%
   );
 
   /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
@@ -758,11 +775,6 @@
       hsl(from hsl(var(--primary)) calc(h + 68) 81% var(--glass-lobe-c-l) / 0.22) 0%,
       hsl(from hsl(var(--primary)) h s var(--glass-lobe-a-l) / 0.16) 100%
     );
-    --gradient-hero: linear-gradient(
-      100deg,
-      hsl(from hsl(var(--primary)) calc(h + 68) 81% var(--glass-lobe-c-l) / 0.25) 0%,
-      hsl(from hsl(var(--primary)) h s var(--glass-lobe-a-l) / 0.15) 100%
-    );
     --tooltip-background: hsl(from hsl(var(--primary)) h 45% 12% / 78%);
     --select-content-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
     --dropdown-content-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
@@ -912,6 +924,8 @@
   --glass-muted-sl: 24% 18%;
   --glass-accent-sl: 45% 32%;
   --glass-secondary-sl: 38% 22%;
+  --glass-hero-alpha-start: 0.12;
+  --glass-hero-alpha-end: 0.03;
   --glass-brand-ink-l: 88%;
   --glass-brand-ink-strong-l: 90%;
   --glass-lobe-a-l: 58%;

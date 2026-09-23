@@ -116,7 +116,7 @@ describe("every scoped theme answers the polarity switch (gh#896)", () => {
      * colour in every gradient the theme declares and requires it to be a `var()`. A literal there
      * is a stop that cannot move between polarities, which is exactly the defect. */
     const lightnessSlots = (value: string) => {
-      const out: { raw: string; lightness: string }[] = [];
+      const out: { raw: string; lightness: string; alpha: string | null }[] = [];
       // Every `hsl(…)` inside the value, brace-matched so nested `var()`/`calc()` survive.
       for (let i = value.indexOf("hsl("); i !== -1; i = value.indexOf("hsl(", i + 1)) {
         let depth = 0;
@@ -126,6 +126,7 @@ describe("every scoped theme answers the polarity switch (gh#896)", () => {
           else if (value[end] === ")" && --depth === 0) break;
         }
         const args = value.slice(i + 4, end);
+        const alpha = args.includes("/") ? args.slice(args.indexOf("/") + 1).trim() : null;
         // Split on top-level whitespace only, so `hsl(var(--x))` and `calc(h - 63)` stay whole.
         const parts: string[] = [];
         let buf = "";
@@ -141,7 +142,8 @@ describe("every scoped theme answers the polarity switch (gh#896)", () => {
         if (buf) parts.push(buf);
         // `hsl(from <color> h s l)` — drop the two leading tokens of the relative form.
         const comps = parts[0] === "from" ? parts.slice(2) : parts;
-        if (comps.length >= 3) out.push({ raw: value.slice(i, end + 1), lightness: comps[2] });
+        if (comps.length >= 3)
+          out.push({ raw: value.slice(i, end + 1), lightness: comps[2], alpha });
       }
       return out;
     };
@@ -152,11 +154,29 @@ describe("every scoped theme answers the polarity switch (gh#896)", () => {
     const light = decommented(css).slice(0, darkAt);
     for (const [, name, value] of light.matchAll(/^\s*(--[a-z-]*gradient[a-z-]*):([^;]*);/gm)) {
       for (const stop of lightnessSlots(value)) {
+        /* LIGHTNESS **OR** ALPHA, and the second half is not a loophole — it is how a scrim works.
+         * `hsl(0 0% 100% / var(--glass-hero-alpha-start))` is a WHITE scrim: 100% lightness is
+         * correct in both polarities and the polarity lives entirely in the alpha. My first rule
+         * said "the lightness must be a var()" and failed exactly that declaration, which is the
+         * test being wrong rather than the theme. What actually matters is that the stop CAN move,
+         * by either route. */
+        const movable = stop.lightness.startsWith("var(") || stop.alpha?.startsWith("var(");
         expect(
-          stop.lightness.startsWith("var("),
-          `${file}: ${name} has a LITERAL lightness ${stop.lightness} in ${stop.raw.slice(0, 70)} — ` +
-            `a stop that cannot move between polarities. Give it a knob the dark branch sets.`,
+          movable,
+          `${file}: ${name} has a fixed stop ${stop.raw.slice(0, 70)} — neither its lightness ` +
+            `(${stop.lightness}) nor its alpha (${stop.alpha ?? "opaque"}) is a knob, so it cannot ` +
+            `move between polarities.`,
         ).toBe(true);
+        // …and whichever route it takes, the dark branch has to actually set that knob.
+        const knob = (
+          stop.lightness.startsWith("var(") ? stop.lightness : (stop.alpha ?? "")
+        ).match(/var\((--[a-z0-9-]+)/)?.[1];
+        if (knob) {
+          expect(
+            new RegExp(`^\\s*${knob}:`, "m").test(decommented(css).slice(darkAt)),
+            `${file}: ${name} moves through ${knob}, which the dark branch never sets`,
+          ).toBe(true);
+        }
       }
     }
   });
