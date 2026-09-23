@@ -9,19 +9,35 @@ Sources are listed at the bottom. Nothing here is invented.
 
 ---
 
-## 1. The recipe
+## 1. The recipe — namethatui.com, verbatim
 
-Glass is **four properties together**. Any three of them without the fourth is not glass:
+```css
+background: rgba(255, 255, 255, 0.12);
+backdrop-filter: blur(16px);
+border: 1px solid rgba(255, 255, 255, 0.25);
+border-radius: 16px;
+```
 
-|                   | value                                                                                         | why                                                                                                     |
-| ----------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| **fill**          | `rgba(255,255,255, .10–.18)` on a dark backdrop · `rgba(255,255,255, .55–.70)` on a light one | translucency, not opacity                                                                               |
-| **backdrop blur** | `blur(12px) saturate(160%)`                                                                   | **the saturate is not optional** — blur alone desaturates and produces exactly the grey mush we shipped |
-| **edge**          | `1px solid rgba(255,255,255, .25–.30)`                                                        | the highlight that reads as a glass rim; without it the panel has no edge and melts into the backdrop   |
-| **depth**         | `0 8px 32px rgba(0,0,0,.25)`                                                                  | separates the pane from what it floats over                                                             |
+Fallback where `backdrop-filter` is unsupported: `background: rgba(30, 30, 40, 0.85)`.
 
-Blur range **8–24px**; avoid **≥20px** — past that it stops reading as glass and becomes fog, and
-it costs the most GPU.
+**Four defining signals**, and a surface that drops any one of them is not glass:
+
+1. **Frosted translucent panels** — semi-transparent with a strong background blur; content behind is visible but softened.
+2. **A vivid backdrop showing through** — a gradient, photo or aurora behind the glass, _"its color bleeds through every panel and IS most of the palette."_
+3. **A thin light edge** — 1px semi-transparent white, often brighter on top, catching the rim and separating glass from glass.
+4. **Layered floating depth** — panels float above the backdrop and above each other with soft wide shadows; the stack of sheets is part of the look.
+
+### The number I got wrong, and it is the whole problem
+
+**`0.12`.** The first build used **42–55% white**. At that opacity no backdrop colour bleeds through, so signal 2 is gone — and signal 2 is the one that says the palette comes from the backdrop. That is exactly why every pane came out the same grey no matter what else was tuned.
+
+Going to `0.12` makes the contrast problem _harder_, not easier, which leads to the correction below.
+
+### Glassmorphism is not Liquid Glass
+
+Glassmorphism applies the frosted treatment as a **decorative skin to any surface** — content cards, dashboards, panels, buttons, inputs. Apple's Liquid Glass reserves glass for the **control layer only** (bars, buttons, navigation) floating above opaque app content, with an adaptive material that lenses and retints.
+
+The practical consequence here: **buttons and form fields are in scope.** A solid-purple primary button and an opaque white outline button on a glass page are the Liquid-Glass split applied backwards — the content is glass and the controls are not.
 
 ## 2. The backdrop is part of the component
 
@@ -45,6 +61,8 @@ Concretely, for this library:
   high-contrast family — near-white on dark glass, near-black on light glass. The owner's second
   note, _"màu sắc chữ phải tương phản và đồng bộ"_, is this: a card that uses three different
   greys for title, body and caption will have one that passes and two that fail.
+- **The remedy is a SCRIM, not darker ink.** The source is explicit: _"measure text contrast against the worst backdrop region or add a translucent contrast scrim."_ My first fix darkened the ink ramp instead, which worked at 42% fill and will not survive `0.12` — at that opacity the text sits on whatever the backdrop is doing underneath, and a gradient has no single answer. A scrim behind the text block is the move that holds across the whole backdrop.
+- **Measure against the WORST region the backdrop can produce**, not a convenient sample. A radial gradient has a light lobe and a dark one; the panel must be legible over both.
 - **Muted/secondary text is the first casualty.** Our measurement: title 6.19:1 passed while five
   secondary strings on the same card measured **2.19–3.05:1**. On glass, "muted" cannot mean
   "lower contrast" — it must mean _smaller_ or _lighter weight_, at the same ratio.
@@ -133,6 +151,7 @@ gradient. The theme API cannot currently express this standard. The gaps, in pri
 
 ## Sources
 
+- [namethatui — Glassmorphism](https://namethatui.com/styles/glassmorphism) — the recipe and the four signals quoted above
 - [Axess Lab — Glassmorphism Meets Accessibility](https://axesslab.com/glassmorphism-meets-accessibility-can-frosted-glass-be-inclusive/)
 - [Superdesign — Glassmorphism CSS recipe and when not to use it](https://www.superdesign.dev/styles/glassmorphism)
 - [CSS Studio — The Complete Guide to Frosted Glass Effects](https://css-studio.com/blog/glassmorphism-css-guide)
