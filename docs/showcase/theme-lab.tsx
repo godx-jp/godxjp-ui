@@ -84,12 +84,7 @@ import {
 } from "lucide-react";
 
 import { ThemeScope, tenantTheme } from "@godxjp/ui/app";
-import {
-  AreaChart,
-  BarChart,
-  LineChart,
-  PieChart,
-} from "@godxjp/ui/charts";
+import { AreaChart, BarChart, LineChart, PieChart } from "@godxjp/ui/charts";
 import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";
 import {
   Accordion,
@@ -372,7 +367,12 @@ const ABSENT: ReadonlyArray<{ name: string; reasonKey: string }> = [
 
 const UNBREAKABLE = "Betriebsstaettengewinnabgrenzungsaufzeichnungsverordnung-2026-A";
 
-type Row = { id: string; nameKey: string; ownerKey: string; tone: "success" | "warning" | "destructive" };
+type Row = {
+  id: string;
+  nameKey: string;
+  ownerKey: string;
+  tone: "success" | "warning" | "destructive";
+};
 
 const ROWS: Row[] = [
   { id: "r1", nameKey: "alpha", ownerKey: "one", tone: "success" },
@@ -442,15 +442,15 @@ export default function ThemeLabShowcase() {
   const { t } = useTranslation();
 
   const initial = React.useMemo(() => {
-    const params = new URLSearchParams(
-      typeof window === "undefined" ? "" : window.location.search,
-    );
+    const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
     return {
       theme: themeFromQuery(params.get("theme")),
       seed: seedFromQuery(params.get("seed")),
     };
   }, []);
 
+  // The bounded scroller Affix and Anchor pin against — see the note at their call site.
+  const affixScrollerRef = React.useRef<HTMLDivElement>(null);
   const [theme, setTheme] = React.useState<ThemeRow>(initial.theme);
   const [seed, setSeed] = React.useState<SeedRow>(initial.seed);
 
@@ -502,10 +502,7 @@ export default function ThemeLabShowcase() {
     branchIds?: readonly string[];
   }>({ mode: "selected", branchIds: ["b1"] });
 
-  const toneLabel = React.useCallback(
-    (tone: Row["tone"]) => t(`themeLab.tone.${tone}`),
-    [t],
-  );
+  const toneLabel = React.useCallback((tone: Row["tone"]) => t(`themeLab.tone.${tone}`), [t]);
 
   const columns: ColumnDef<Row>[] = [
     {
@@ -617,7 +614,11 @@ export default function ThemeLabShowcase() {
               <TopbarItem
                 data-probe="dropdown"
                 aria-label={t("themeLab.topbar.account")}
-                icon={<Avatar><AvatarFallback>DP</AvatarFallback></Avatar>}
+                icon={
+                  <Avatar>
+                    <AvatarFallback>DP</AvatarFallback>
+                  </Avatar>
+                }
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -709,7 +710,11 @@ export default function ThemeLabShowcase() {
                   </Field>
                   <Flex direction="row" gap="sm" wrap align="center">
                     {SEEDS.map((row) => (
-                      <Swatch key={row.id} color={row.hex} aria-label={`${t(row.nameKey)} ${row.hex}`} />
+                      <Swatch
+                        key={row.id}
+                        color={row.hex}
+                        aria-label={`${t(row.nameKey)} ${row.hex}`}
+                      />
                     ))}
                   </Flex>
                   <Descriptions columns={2}>
@@ -730,7 +735,11 @@ export default function ThemeLabShowcase() {
             </Card>
 
             {/* ── 2 · type ─────────────────────────────────────────────────────────────── */}
-            <Section id="type" title={t("themeLab.section.type")} note={t("themeLab.section.typeNote")}>
+            <Section
+              id="type"
+              title={t("themeLab.section.type")}
+              note={t("themeLab.section.typeNote")}
+            >
               <Flex direction="col" gap="sm">
                 <Heading level={3}>{t("themeLab.sample.headline")}</Heading>
                 <Title level={4}>{t("themeLab.sample.alpha")}</Title>
@@ -803,10 +812,19 @@ export default function ThemeLabShowcase() {
               </Row2>
               <Row2 label={t("themeLab.label.toggles")}>
                 <Toggle aria-label={t("themeLab.action.bold")}>B</Toggle>
-                <Toggle variant="soft" shape="pill" count={12} countLabel={t("themeLab.label.items")}>
+                <Toggle
+                  variant="soft"
+                  shape="pill"
+                  count={12}
+                  countLabel={t("themeLab.label.items")}
+                >
                   {t("themeLab.action.unread")}
                 </Toggle>
-                <ToggleGroup type="single" defaultValue="left" aria-label={t("themeLab.label.align")}>
+                <ToggleGroup
+                  type="single"
+                  defaultValue="left"
+                  aria-label={t("themeLab.label.align")}
+                >
                   <ToggleGroupItem value="left">{t("themeLab.align.start")}</ToggleGroupItem>
                   <ToggleGroupItem value="center">{t("themeLab.align.center")}</ToggleGroupItem>
                   <ToggleGroupItem value="right">{t("themeLab.align.end")}</ToggleGroupItem>
@@ -821,7 +839,9 @@ export default function ThemeLabShowcase() {
                     {
                       key: "more",
                       label: t("themeLab.action.more"),
-                      subItems: [{ key: "share", label: t("themeLab.action.share"), icon: <Share2 /> }],
+                      subItems: [
+                        { key: "share", label: t("themeLab.action.share"), icon: <Share2 /> },
+                      ],
                     },
                     { key: "copy", actionRender: <ActionsCopy text={UNBREAKABLE} /> },
                     { key: "feedback", actionRender: <ActionsFeedback /> },
@@ -843,7 +863,11 @@ export default function ThemeLabShowcase() {
                 <Swatch color={seed.hex} aria-label={t(seed.nameKey)} />
               </Row2>
               <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-                <StatCard label={t("themeLab.stat.members")} value="12,450" hint={t("themeLab.stat.hint")} />
+                <StatCard
+                  label={t("themeLab.stat.members")}
+                  value="12,450"
+                  hint={t("themeLab.stat.hint")}
+                />
                 <StatCard label={t("themeLab.stat.revenue")} value="8.2M" delta="+12%" />
                 <StatCard label={t("themeLab.stat.usage")} value="68.4%" />
                 <StatCard label={t("themeLab.stat.open")} value="3" />
@@ -1050,7 +1074,11 @@ export default function ThemeLabShowcase() {
                 )}
               />
               <Flex direction="row" gap="md" wrap align="start">
-                <QrCode value="https://example.test/enrol" label={t("themeLab.label.qr")} size="md" />
+                <QrCode
+                  value="https://example.test/enrol"
+                  label={t("themeLab.label.qr")}
+                  size="md"
+                />
                 <Thumbnail
                   src={shotLandscape}
                   width={960}
@@ -1167,7 +1195,11 @@ export default function ThemeLabShowcase() {
             </Section>
 
             {/* ── 7 · form controls ────────────────────────────────────────────────────── */}
-            <Section id="fields" title={t("themeLab.section.fields")} note={t("themeLab.section.fieldsNote")}>
+            <Section
+              id="fields"
+              title={t("themeLab.section.fields")}
+              note={t("themeLab.section.fieldsNote")}
+            >
               <Form
                 layout="vertical"
                 columns={2}
@@ -1177,17 +1209,41 @@ export default function ThemeLabShowcase() {
                 errors={{ email: t("themeLab.field.emailError") }}
               >
                 <FormErrors />
-                <FormField id="f-name" label={t("themeLab.field.name")} required helper={t("themeLab.sample.short")}>
-                  <Input id="f-name" name="name" placeholder={t("themeLab.field.namePlaceholder")} />
+                <FormField
+                  id="f-name"
+                  label={t("themeLab.field.name")}
+                  required
+                  helper={t("themeLab.sample.short")}
+                >
+                  <Input
+                    id="f-name"
+                    name="name"
+                    placeholder={t("themeLab.field.namePlaceholder")}
+                  />
                 </FormField>
-                <FormField id="f-error" label={t("themeLab.field.email")} error={t("themeLab.field.emailError")}>
+                <FormField
+                  id="f-error"
+                  label={t("themeLab.field.email")}
+                  error={t("themeLab.field.emailError")}
+                >
                   <Input id="f-error" name="email" defaultValue="not-an-email" />
                 </FormField>
                 <FormField id="f-search" label={t("themeLab.field.search")}>
-                  <SearchInput id="f-search" value={query} onSearch={setQuery} placeholder={t("themeLab.field.searchPlaceholder")} />
+                  <SearchInput
+                    id="f-search"
+                    value={query}
+                    onSearch={setQuery}
+                    placeholder={t("themeLab.field.searchPlaceholder")}
+                  />
                 </FormField>
                 <FormField id="f-qty" label={t("themeLab.field.quantity")}>
-                  <NumberInput id="f-qty" aria-label={t("themeLab.field.quantity")} defaultValue={3} min={0} max={99} />
+                  <NumberInput
+                    id="f-qty"
+                    aria-label={t("themeLab.field.quantity")}
+                    defaultValue={3}
+                    min={0}
+                    max={99}
+                  />
                 </FormField>
                 <FormField id="f-pw" label={t("themeLab.field.password")}>
                   <PasswordInput
@@ -1201,7 +1257,12 @@ export default function ThemeLabShowcase() {
                   <Textarea id="f-notes" rows={3} placeholder={t("themeLab.sample.short")} />
                 </FormField>
                 <FormField id="f-tags" label={t("themeLab.field.tags")}>
-                  <TagInput id="f-tags" aria-label={t("themeLab.field.tags")} value={tags} onValueChange={setTags} />
+                  <TagInput
+                    id="f-tags"
+                    aria-label={t("themeLab.field.tags")}
+                    value={tags}
+                    onValueChange={setTags}
+                  />
                 </FormField>
                 <FormField id="f-role" label={t("themeLab.field.role")}>
                   <Select
@@ -1222,7 +1283,10 @@ export default function ThemeLabShowcase() {
                   <TimePicker id="f-time" value={time} onValueChange={setTime} minuteStep={15} />
                 </FormField>
                 <FormField id="f-range" label={t("themeLab.field.timeRange")}>
-                  <TimeRangePicker aria-label={t("themeLab.field.timeRange")} defaultValue={["09:00", "18:00"]} />
+                  <TimeRangePicker
+                    aria-label={t("themeLab.field.timeRange")}
+                    defaultValue={["09:00", "18:00"]}
+                  />
                 </FormField>
                 <FormField id="f-colour" label={t("themeLab.field.colour")}>
                   <ColorPicker
@@ -1302,7 +1366,11 @@ export default function ThemeLabShowcase() {
                 </FormField>
               </Form>
               <Flex direction="col" gap="md">
-                <Field id="f-switch" label={t("themeLab.field.notify")} description={t("themeLab.sample.short")}>
+                <Field
+                  id="f-switch"
+                  label={t("themeLab.field.notify")}
+                  description={t("themeLab.sample.short")}
+                >
                   <Switch
                     id="f-switch"
                     aria-label={t("themeLab.field.notify")}
@@ -1323,7 +1391,11 @@ export default function ThemeLabShowcase() {
                   aria-label={t("themeLab.label.permissions")}
                   options={[
                     { label: t("themeLab.perm.read"), value: "read" },
-                    { label: t("themeLab.perm.write"), value: "write", description: t("themeLab.sample.short") },
+                    {
+                      label: t("themeLab.perm.write"),
+                      value: "write",
+                      description: t("themeLab.sample.short"),
+                    },
                     { label: t("themeLab.perm.admin"), value: "admin", disabled: true },
                   ]}
                   defaultValue={["read"]}
@@ -1345,7 +1417,11 @@ export default function ThemeLabShowcase() {
                   defaultValue="card"
                   orientation="vertical"
                   options={[
-                    { label: t("themeLab.sample.gamma"), value: "card", description: t("themeLab.sample.short") },
+                    {
+                      label: t("themeLab.sample.gamma"),
+                      value: "card",
+                      description: t("themeLab.sample.short"),
+                    },
                     { label: t("themeLab.sample.delta"), value: "bank" },
                   ]}
                 />
@@ -1382,7 +1458,12 @@ export default function ThemeLabShowcase() {
                   titles={[t("themeLab.label.available"), t("themeLab.label.selected")]}
                   showSearch
                 />
-                <Calendar mode="single" selected={date} onSelect={setDate} aria-label={t("themeLab.field.date")} />
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  aria-label={t("themeLab.field.date")}
+                />
               </Flex>
             </Section>
 
@@ -1400,8 +1481,16 @@ export default function ThemeLabShowcase() {
               <Tabs
                 defaultValue="overview"
                 items={[
-                  { value: "overview", label: t("themeLab.nav.overview"), content: t("themeLab.sample.long") },
-                  { value: "reports", label: t("themeLab.nav.reports"), content: t("themeLab.sample.short") },
+                  {
+                    value: "overview",
+                    label: t("themeLab.nav.overview"),
+                    content: t("themeLab.sample.long"),
+                  },
+                  {
+                    value: "reports",
+                    label: t("themeLab.nav.reports"),
+                    content: t("themeLab.sample.short"),
+                  },
                 ]}
               />
               <Steps
@@ -1414,7 +1503,11 @@ export default function ThemeLabShowcase() {
               />
               <Pagination value={page} total={96} pageSize={10} showTotal onValueChange={setPage} />
               <Toolbar hasActiveFilters onClear={() => setQuery("")}>
-                <SearchInput value={query} onSearch={setQuery} placeholder={t("themeLab.field.searchPlaceholder")} />
+                <SearchInput
+                  value={query}
+                  onSearch={setQuery}
+                  placeholder={t("themeLab.field.searchPlaceholder")}
+                />
                 <ToolbarGroup label={t("themeLab.table.status")}>
                   <Select
                     aria-label={t("themeLab.table.status")}
@@ -1428,7 +1521,11 @@ export default function ThemeLabShowcase() {
                 </ToolbarGroup>
               </Toolbar>
               <FilterBar
-                search={{ value: query, onValueChange: setQuery, placeholder: t("themeLab.field.searchPlaceholder") }}
+                search={{
+                  value: query,
+                  onValueChange: setQuery,
+                  placeholder: t("themeLab.field.searchPlaceholder"),
+                }}
                 resultCount={ROWS.length}
                 actions={<Button size="sm">{t("themeLab.action.save")}</Button>}
               />
@@ -1469,10 +1566,23 @@ export default function ThemeLabShowcase() {
                       { id: "people", label: t("themeLab.nav.people"), href: "#people" },
                     ],
                   },
-                  { id: "appearance", label: t("themeLab.nav.settings"), icon: Palette, href: "#settings" },
+                  {
+                    id: "appearance",
+                    label: t("themeLab.nav.settings"),
+                    icon: Palette,
+                    href: "#settings",
+                  },
                 ]}
               />
+              {/*
+               * `affix={false}`, because Anchor has NO `target` prop — unlike Affix, which does.
+               * So an affixed Anchor can only pin to the viewport, and on this page that put it
+               * on top of the PageContainer header alongside the Affix. Turning the pinning off
+               * is the only thing the API offers here; that asymmetry between two components
+               * whose whole job is the same behaviour is filed as its own issue.
+               */}
               <Anchor
+                affix={false}
                 label={t("themeLab.label.onThisPage")}
                 items={[
                   { key: "type", href: "#type", title: t("themeLab.section.type") },
@@ -1480,12 +1590,33 @@ export default function ThemeLabShowcase() {
                   { key: "tables", href: "#tables", title: t("themeLab.section.tables") },
                 ]}
               />
-              <Affix offsetBlockStart={64}>
-                <Flex align="center" justify="between" gap="sm">
-                  <Text weight="medium">{t("themeLab.label.pinned")}</Text>
-                  <Button size="sm">{t("themeLab.action.save")}</Button>
-                </Flex>
-              </Affix>
+              {/*
+               * Affix AND Anchor pin to their SCROLL TARGET, and without one that target is the
+               * viewport — so on this page both landed on top of the PageContainer header, three
+               * `position: fixed` bars stacked over the title. Measured: `.ui-affix-content` at
+               * `inset-block-start: 0` and `64px`, `z-index: 20`, over a header at z-index 0.
+               *
+               * That is the components doing exactly what they were told, which is why it is the
+               * PAGE that is wrong: a demo of a pinning component has no business pinning to the
+               * document it is being demonstrated in. Each gets its own bounded scroller, which is
+               * also the only way to SHOW the behaviour — a bar pinned to a viewport you are not
+               * scrolling never moves, so the old version demonstrated nothing while breaking the
+               * page it sat on.
+               */}
+              <div
+                ref={affixScrollerRef}
+                className="ui-scroll-area"
+                style={{ blockSize: "12rem", overflowY: "auto" }}
+              >
+                <div style={{ blockSize: "30rem" }}>
+                  <Affix offsetBlockStart={8} target={() => affixScrollerRef.current}>
+                    <Flex align="center" justify="between" gap="sm">
+                      <Text weight="medium">{t("themeLab.label.pinned")}</Text>
+                      <Button size="sm">{t("themeLab.action.save")}</Button>
+                    </Flex>
+                  </Affix>
+                </div>
+              </div>
             </Section>
 
             {/* ── 9 · feedback ─────────────────────────────────────────────────────────── */}
@@ -1525,7 +1656,10 @@ export default function ThemeLabShowcase() {
                 <Callout.Title>{t("themeLab.tone.warning")}</Callout.Title>
                 <Callout.Description>{t("themeLab.sample.long")}</Callout.Description>
               </Callout>
-              <EmptyState title={t("themeLab.label.noResults")} description={t("themeLab.sample.short")} />
+              <EmptyState
+                title={t("themeLab.label.noResults")}
+                description={t("themeLab.sample.short")}
+              />
               <ErrorSurface
                 mode="application"
                 status={403}
@@ -1546,7 +1680,11 @@ export default function ThemeLabShowcase() {
             </Section>
 
             {/* ── 10 · overlays. OPENED by the instrument, not merely present. ──────────── */}
-            <Section id="overlays" title={t("themeLab.section.overlays")} note={t("themeLab.section.overlaysNote")}>
+            <Section
+              id="overlays"
+              title={t("themeLab.section.overlays")}
+              note={t("themeLab.section.overlaysNote")}
+            >
               <Flex direction="row" gap="sm" wrap align="center">
                 <Button data-probe="dialog" onClick={() => setDialogOpen(true)}>
                   {t("themeLab.overlay.dialog")}
@@ -1554,7 +1692,11 @@ export default function ThemeLabShowcase() {
                 <Button data-probe="sheet" variant="outline" onClick={() => setSheetOpen(true)}>
                   {t("themeLab.overlay.sheet")}
                 </Button>
-                <Button data-probe="alert-dialog" variant="destructive" onClick={() => setAlertOpen(true)}>
+                <Button
+                  data-probe="alert-dialog"
+                  variant="destructive"
+                  onClick={() => setAlertOpen(true)}
+                >
                   {t("themeLab.overlay.alertDialog")}
                 </Button>
                 <Tooltip>
@@ -1572,7 +1714,11 @@ export default function ThemeLabShowcase() {
                 >
                   {t("themeLab.overlay.toast")}
                 </Button>
-                <Button data-probe="two-factor" variant="outline" onClick={() => setTwoFactorOpen(true)}>
+                <Button
+                  data-probe="two-factor"
+                  variant="outline"
+                  onClick={() => setTwoFactorOpen(true)}
+                >
                   {t("themeLab.overlay.twoFactor")}
                 </Button>
                 <CommandPalette
@@ -1619,7 +1765,10 @@ export default function ThemeLabShowcase() {
 
             {/* ── 11 · regions and shells that nest ────────────────────────────────────── */}
             <Section id="regions" title={t("themeLab.section.regions")}>
-              <SplitPane asideLabel={t("themeLab.label.detail")} aside={<Text size="sm">{t("themeLab.sample.short")}</Text>}>
+              <SplitPane
+                asideLabel={t("themeLab.label.detail")}
+                aside={<Text size="sm">{t("themeLab.sample.short")}</Text>}
+              >
                 <Text size="sm">{t("themeLab.sample.long")}</Text>
               </SplitPane>
               <MasterDetail
@@ -1669,7 +1818,9 @@ export default function ThemeLabShowcase() {
                 value={selectedRole}
                 onValueChange={setSelectedRole}
               >
-                {(selected) => <Text size="sm">{selected ? selected.name : t("themeLab.label.noResults")}</Text>}
+                {(selected) => (
+                  <Text size="sm">{selected ? selected.name : t("themeLab.label.noResults")}</Text>
+                )}
               </ServiceRolePanel>
               <OrgSwitcher
                 organizations={[
@@ -1687,7 +1838,10 @@ export default function ThemeLabShowcase() {
                 }}
               />
               <AuthStack>
-                <AuthIdentity title={t("themeLab.auth.title")} requester={t("themeLab.auth.requester")} />
+                <AuthIdentity
+                  title={t("themeLab.auth.title")}
+                  requester={t("themeLab.auth.requester")}
+                />
                 <AuthAccountSummary
                   email="duong@example.test"
                   actionLabel={t("themeLab.auth.switch")}
@@ -1726,7 +1880,12 @@ export default function ThemeLabShowcase() {
                 defaultExpandedKeys={["search"]}
                 items={[
                   { key: "read", title: t("themeLab.sample.alpha"), status: "success" },
-                  { key: "search", title: t("themeLab.sample.beta"), status: "loading", collapsible: true },
+                  {
+                    key: "search",
+                    title: t("themeLab.sample.beta"),
+                    status: "loading",
+                    collapsible: true,
+                  },
                   { key: "write", title: t("themeLab.sample.gamma"), status: "abort" },
                 ]}
               />
@@ -1760,7 +1919,11 @@ export default function ThemeLabShowcase() {
             </Section>
 
             {/* ── 13 · what could NOT be rendered, and why ──────────────────────────────── */}
-            <Section id="absent" title={t("themeLab.section.absent")} note={t("themeLab.section.absentNote")}>
+            <Section
+              id="absent"
+              title={t("themeLab.section.absent")}
+              note={t("themeLab.section.absentNote")}
+            >
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -1876,7 +2039,11 @@ export default function ThemeLabShowcase() {
         <Text size="sm">{t("themeLab.sample.short")}</Text>
       </DraggablePanel>
 
-      <FloatButton.Group trigger="click" icon={<ActivityIcon />} aria-label={t("themeLab.label.assistant")}>
+      <FloatButton.Group
+        trigger="click"
+        icon={<ActivityIcon />}
+        aria-label={t("themeLab.label.assistant")}
+      >
         <FloatButton tooltip={t("themeLab.action.share")} icon={<Share2 />} />
         <FloatButton tooltip={t("themeLab.action.more")} icon={<FileText />} />
         <FloatButton.BackTop />
