@@ -196,7 +196,6 @@
    *        set above: DataTable in a Card gets the Card's glass for free, by design ("Card +
    *        CardContent flush + DataTable" is the documented composition). ─────────────────────── */
   --table-border-color: hsl(0 0% 100% / 30%);
-  --table-header-background: hsl(0 0% 100% / 18%);
 
   /* ── Input / Select trigger / TagInput — the SHARED `.ui-control-surface` base
    *    (src/lib/control-styles.ts:1791-1792), both consumed as a complete value. This is the one
@@ -380,6 +379,24 @@
    *    initial value or the call-site fallback, and the surface simply keeps the colour it had.
    *    The table header measured 1.03:1 — light ink on the `--muted` it had fallen back to —
    *    and looked, from the token file, exactly like a knob that does not work. */
+  /* ── THE PAGE CANVAS MUST BE DARK, and not setting it was the single biggest visual defect.
+   *    `--gradient-glow` paints on `.app-main` ONLY (shell-layout.css:412). Sidebar and Topbar are
+   *    its SIBLINGS, not its children, so nothing of the gradient is behind them — they were
+   *    translucent white over the package's light `--background`, which is why the sidebar read as
+   *    pink and the bar ran pink on the left and blue on the right. Neither is a gap: the canvas
+   *    under the whole shell is `--background`, and a dark-glass theme has to say so.
+   *
+   *    `--foreground` is already the light ink; this is its missing pair. Setting one without the
+   *    other is what produced a light chrome carrying near-white labels. */
+  --background: 230 40% 9%;
+  --muted: 230 24% 18%;
+  --muted-foreground: 48 14% 90%;
+  --accent: 262 55% 32%;
+  --accent-foreground: 48 20% 96%;
+  --secondary: 230 24% 22%;
+  --secondary-foreground: 48 20% 96%;
+  --input: 0 0% 100% / 18%;
+
   --surface-backdrop-saturate: 170%;
 
   /* §4's OPACITY TIERS. A dropdown sits over arbitrary content and needs the most opaque fill of
@@ -397,16 +414,21 @@
   --toast-backdrop-blur-size: var(--blur-lg);
   /* The modal blur belongs on the SCRIM, not the box — an element with a backdrop-filter becomes
    * the containing block for its fixed descendants (shell-layout.css:1728). */
+  --dialog-overlay-alpha: 62%;
   --dialog-overlay-backdrop-blur-size: var(--blur-lg);
   --sheet-overlay-backdrop-blur-size: var(--blur-lg);
 
   /* FILLS at the tiers. Card at the spec's .12; overlays heavier because a 7-line menu over a
    * photograph is unreadable at .12. */
-  --select-content-background: hsl(0 0% 100% / 22%);
-  --dropdown-content-background: hsl(0 0% 100% / 22%);
-  --toast-background: hsl(0 0% 100% / 22%);
-  --dialog-surface-background: hsl(0 0% 100% / 20%);
-  --sheet-surface-background: hsl(0 0% 100% / 24%);
+  --select-content-background: hsl(230 30% 16% / 88%);
+  --dropdown-content-background: hsl(230 30% 16% / 88%);
+  --toast-background: hsl(230 30% 16% / 90%);
+  /* A MODAL IS NOT A CARD. §4: a drawer covers content that must stay unreadable-but-present, and
+   * a dialog the same — at 20% the page read straight through the panel. The scrim blurs what is
+   * behind; the panel then sits on that blur at an alpha high enough to carry text. These two are
+   * the most opaque surfaces in the theme, deliberately. */
+  --dialog-surface-background: hsl(230 30% 16% / 88%);
+  --sheet-surface-background: hsl(230 30% 16% / 92%);
   --sidebar-surface-background: hsl(0 0% 100% / 10%);
   --table-surface-background: hsl(0 0% 100% / 8%);
 

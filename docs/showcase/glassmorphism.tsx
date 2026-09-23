@@ -130,6 +130,7 @@ import {
   Topbar,
   TopbarItem,
 } from "@godxjp/ui/layout";
+import { ThemeScope } from "@godxjp/ui/app";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   Avatar,
@@ -328,9 +329,24 @@ export default function GlassmorphismShowcase() {
   );
 
   return (
-    <div data-theme-style={GLASS}>
+    /*
+     * `ThemeScope`, not a bare `<div>` (gh#881). `src/styles/base.css` sets
+     * `color: hsl(var(--foreground))` on `body`, which is above every scope a page can create, so
+     * that `var()` substitutes against the ROOT's foreground once and every descendant inherits
+     * the resolved colour. A plain wrapper therefore retints every SURFACE and no TEXT: measured
+     * here, the page title's own computed `--foreground` was the theme's near-white while its
+     * `color` stayed `rgb(36,35,30)` — 1.34:1 on real pixels.
+     *
+     * `ThemeScope` re-states `color` on itself and on the body-level overlay host, which is also
+     * what carries the theme to the portalled panels. Using it here is the point, not a
+     * convenience: it is the library's own answer to the defect this page exists to measure.
+     */
+    <ThemeScope data-theme-style={GLASS}>
       <AppShell sidebar={sidebar} topbar={topbar}>
-        <PageContainer title={t("glassShowcase.page.title")} subtitle={t("glassShowcase.page.subtitle")}>
+        <PageContainer
+          title={t("glassShowcase.page.title")}
+          subtitle={t("glassShowcase.page.subtitle")}
+        >
           <Flex direction="col" gap="lg">
             <Alert tone="info">
               <AlertTitle>{t("glassShowcase.alert.title")}</AlertTitle>
@@ -432,8 +448,12 @@ export default function GlassmorphismShowcase() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent data-theme-style={GLASS}>
-                          <SelectItem value="viewer">{t("glassShowcase.form.roleViewer")}</SelectItem>
-                          <SelectItem value="editor">{t("glassShowcase.form.roleEditor")}</SelectItem>
+                          <SelectItem value="viewer">
+                            {t("glassShowcase.form.roleViewer")}
+                          </SelectItem>
+                          <SelectItem value="editor">
+                            {t("glassShowcase.form.roleEditor")}
+                          </SelectItem>
                           <SelectItem value="admin">{t("glassShowcase.form.roleAdmin")}</SelectItem>
                         </SelectContent>
                       </Select>
@@ -509,7 +529,9 @@ export default function GlassmorphismShowcase() {
             <DialogClose asChild>
               <Button variant="outline">{t("glassShowcase.dialog.cancel")}</Button>
             </DialogClose>
-            <Button onClick={() => setDialogOpen(false)}>{t("glassShowcase.dialog.confirm")}</Button>
+            <Button onClick={() => setDialogOpen(false)}>
+              {t("glassShowcase.dialog.confirm")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -536,6 +558,6 @@ export default function GlassmorphismShowcase() {
 
       {/* Toast — portal escape: re-declared on Toaster itself, see the file docblock. */}
       <Toaster data-theme-style={GLASS} />
-    </div>
+    </ThemeScope>
   );
 }
