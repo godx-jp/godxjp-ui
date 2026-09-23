@@ -467,7 +467,14 @@ export default function ThemeLabShowcase() {
     window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
   }, [theme, seed]);
 
-  const brand = React.useMemo(() => tenantTheme(seed.hex), [seed.hex]);
+  /* The seed is walked against THIS THEME's surface, not the package's (see `inkSurface`). A
+   * theme declares its own `--text-link`, but `tenantTheme` returns the brand inks as literals in
+   * `style`, and an inline literal outranks any selector — so the theme's declaration is only
+   * reachable if the value handed to it was computed on the right ground. */
+  const brand = React.useMemo(
+    () => tenantTheme(seed.hex, { surface: theme.inkSurface }),
+    [seed.hex, theme.inkSurface],
+  );
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [sheetOpen, setSheetOpen] = React.useState(false);

@@ -89,7 +89,9 @@ describe("gh#880 · a backdrop-blur knob on every floating surface", () => {
   });
 
   it.each(BLUR_KNOBS)("%s is paired with the shared saturate companion", (knob, _t, sheet) => {
-    const decl = sheet.match(new RegExp(`backdrop-filter:\\s*blur\\(var\\(${knob}\\)\\)[^;]*;`))?.[0];
+    const decl = sheet.match(
+      new RegExp(`backdrop-filter:\\s*blur\\(var\\(${knob}\\)\\)[^;]*;`),
+    )?.[0];
     expect(decl, `no backdrop-filter declaration reads ${knob}`).toBeTruthy();
     // 160% at the CALL SITE, not in the token: a theme that sets only a blur size still gets the
     // saturate, so asking for glass can never accidentally ask for fog.
@@ -108,9 +110,11 @@ describe("gh#880 · a backdrop-blur knob on every floating surface", () => {
     // `backdrop-filter` on the panel would blur the (flat) scrim and pin the panel to itself as the
     // containing block for its fixed descendants — the trap shell-layout.css documents for the app
     // launcher, and the rule docs/GLASSMORPHISM-STANDARD.md §4 states.
-    const panel = code(dialogLayout).match(/\[data-slot="dialog-content"\] \{[\s\S]*?\n {2}\}/)?.[0] ?? "";
+    const panel =
+      code(dialogLayout).match(/\[data-slot="dialog-content"\] \{[\s\S]*?\n {2}\}/)?.[0] ?? "";
     expect(panel).not.toMatch(/backdrop-filter/);
-    const sheetPanel = code(dialogLayout).match(/\n {2}\.ui-sheet-panel \{[\s\S]*?\n {2}\}/)?.[0] ?? "";
+    const sheetPanel =
+      code(dialogLayout).match(/\n {2}\.ui-sheet-panel \{[\s\S]*?\n {2}\}/)?.[0] ?? "";
     expect(sheetPanel).not.toMatch(/backdrop-filter/);
     expect(dialogLayout).toMatch(/blur\(var\(--dialog-overlay-backdrop-blur-size\)\)/);
     expect(dialogLayout).toMatch(/blur\(var\(--sheet-overlay-backdrop-blur-size\)\)/);
@@ -201,8 +205,12 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     expect(shellTokens).toMatch(/--app-shell-bar-background:\s*initial;/);
     expect(shellTokens).toMatch(/--app-shell-nav-rail-background:\s*initial;/);
     expect(shellTokens).not.toMatch(/--app-shell-bar-backdrop-blur-size/);
-    expect(shellLayout).toMatch(/background: var\(--app-shell-bar-background, hsl\(var\(--card\)\)\);/);
-    expect(shellLayout).toMatch(/background: var\(--app-shell-nav-rail-background, hsl\(var\(--muted\)\)\);/);
+    expect(shellLayout).toMatch(
+      /background: var\(--app-shell-bar-background, hsl\(var\(--card\)\)\);/,
+    );
+    expect(shellLayout).toMatch(
+      /background: var\(--app-shell-nav-rail-background, hsl\(var\(--muted\)\)\);/,
+    );
     expect(tableTokens).toMatch(/--table-surface-background:\s*initial;/);
     expect(controlLayout).toMatch(
       /background: var\(--select-content-background, hsl\(var\(--popover\)\)\);/,
@@ -258,7 +266,9 @@ describe("gh#880 · Card's gradient dead end", () => {
     expect(rule).toMatch(/var\(--card-tint-angle,\s*to bottom\)/);
     expect(rule).toMatch(/var\(--card-tint\),/);
     expect(rule).toMatch(/var\(--card-tint-end,\s*var\(--card-tint\)\)/);
-    expect(code(cardLayout)).not.toMatch(/linear-gradient\(var\(--card-tint\), var\(--card-tint\)\)/);
+    expect(code(cardLayout)).not.toMatch(
+      /linear-gradient\(var\(--card-tint\), var\(--card-tint\)\)/,
+    );
   });
 });
 
@@ -274,11 +284,14 @@ describe("gh#880 · the frozen --*-shadow mirrors", () => {
     ["--segmented-item-selected-shadow", segmentedTokens, controlLayout, "--shadow-md"],
   ];
 
-  it.each(MIRRORS)("%s is `initial` with the ramp at the call site", (knob, tokenFile, sheet, tier) => {
-    expect(tokenFile).toMatch(new RegExp(`${knob}:\\s*initial;`));
-    expect(code(tokenFile)).not.toMatch(new RegExp(`${knob}:\\s*var\\(${tier}\\);`));
-    expect(sheet).toMatch(new RegExp(`var\\(${knob}, var\\(${tier}\\)\\)`));
-  });
+  it.each(MIRRORS)(
+    "%s is `initial` with the ramp at the call site",
+    (knob, tokenFile, sheet, tier) => {
+      expect(tokenFile).toMatch(new RegExp(`${knob}:\\s*initial;`));
+      expect(code(tokenFile)).not.toMatch(new RegExp(`${knob}:\\s*var\\(${tier}\\);`));
+      expect(sheet).toMatch(new RegExp(`var\\(${knob}, var\\(${tier}\\)\\)`));
+    },
+  );
 
   it("every call site that composes --card-shadow carries the fallback, not just the first", () => {
     // `accentPlacement="perimeter"` re-lists the resting elevation behind its attention ring; a

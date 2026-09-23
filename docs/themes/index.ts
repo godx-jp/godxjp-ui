@@ -42,6 +42,29 @@ export type ThemeRow = {
   nameKey: string;
   /** Message key for the one-line note under the switch. */
   noteKey: string;
+  /**
+   * The LIGHTEST surface brand INK lands on in this theme, as hex — handed to `tenantTheme` as
+   * `options.surface`. `null` means the library's own light default (`--accent` #ebe9e5).
+   *
+   * `tenantTheme` walks the three brand inks AWAY from a surface until they clear 4.5:1, and it
+   * has to be told which surface, because it emits them as literals in `style` — which outrank a
+   * theme's own `--text-link` however carefully the theme declared it. Omitting this on a DARK
+   * theme is not a missing nicety, it is the ink walked the WRONG WAY: measured on glass/citron,
+   * `tenantTheme(#FFD400)` alone emitted `--text-link: 49.88 100% 24.4%` — rgb(124,103,0), walked
+   * dark for the light default — over a #3b382b panel, so `Button variant="link"` and a `Text`
+   * link both read **2.09:1** while the theme's own `--foreground` next to them was near-white.
+   * The library says so at `src/app/tenant-theme.ts`: "a region inside a DARK theme must pass the
+   * dark surface or its ink is walked the wrong way."
+   *
+   * WHY ONE HEX COVERS FIVE SEEDS. Every glass surface is a translucent white over
+   * `--background`, which derives its hue from the seed, so the composited panel moves per seed.
+   * Composited and measured across all five: card #312b3b..#3b382b, popover #434851..#514f43,
+   * accent #482d76..#766a2d, muted #232a39..#393523. The value below is the LIGHTEST of the
+   * twenty — glass/citron's `--accent` — because ink walked away from a dark surface goes
+   * lighter, and lighter ink on a DARKER surface only gains contrast. Clearing the worst case
+   * clears all of them.
+   */
+  inkSurface: string | null;
 };
 
 export type SeedRow = {
@@ -58,9 +81,27 @@ export type SeedRow = {
  * control nobody looks at.
  */
 export const THEMES: readonly ThemeRow[] = [
-  { id: null, nameKey: "themeLab.theme.base.name", noteKey: "themeLab.theme.base.note" },
-  { id: "glass", nameKey: "themeLab.theme.glass.name", noteKey: "themeLab.theme.glass.note" },
-  { id: "flat", nameKey: "themeLab.theme.flat.name", noteKey: "themeLab.theme.flat.note" },
+  {
+    id: null,
+    nameKey: "themeLab.theme.base.name",
+    noteKey: "themeLab.theme.base.note",
+    // The package default IS this surface, so there is nothing to override.
+    inkSurface: null,
+  },
+  {
+    id: "glass",
+    nameKey: "themeLab.theme.glass.name",
+    noteKey: "themeLab.theme.glass.note",
+    inkSurface: "#766A2D",
+  },
+  {
+    id: "flat",
+    nameKey: "themeLab.theme.flat.name",
+    noteKey: "themeLab.theme.flat.note",
+    // Light like the default — measured `--accent` #e4e1ea against the default's #ebe9e5, both far
+    // above the pivot, and the lab reads 558/559 at every seed with it omitted.
+    inkSurface: null,
+  },
 ];
 
 /**

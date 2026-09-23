@@ -392,7 +392,10 @@ describe("the brand INK clears AA on the surface it lands on (gh#887)", () => {
   const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
   const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
   const lightBlock = derived.slice(derived.indexOf(":root {"), derived.indexOf(".dark,"));
-  const darkBlock = derived.slice(derived.indexOf(".dark,"), derived.indexOf("@supports not (color"));
+  const darkBlock = derived.slice(
+    derived.indexOf(".dark,"),
+    derived.indexOf("@supports not (color"),
+  );
 
   /** The darkest / lightest surface brand ink lands on: `--accent` in each block of foundation.css. */
   const LIGHT_SURFACE = hsl(foundation.slice(0, foundation.indexOf(".dark,")), "accent");

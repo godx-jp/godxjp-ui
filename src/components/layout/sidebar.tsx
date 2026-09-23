@@ -1,4 +1,5 @@
 import * as React from "react";
+import { CONTRAST_PIVOT, relativeLuminance } from "../../app/tenant-theme";
 import { Slot } from "../../lib/slot";
 import { ChevronDown } from "lucide-react";
 
@@ -508,10 +509,41 @@ export function Sidebar({
           // brand header — render a non-interactive element with NO caret, so there's no dropdown
           // chevron promising a menu that doesn't exist (the "dead dropdown" bug).
           const interactive = onProductClick != null;
+          /* THE MARK'S INK HAS TO FOLLOW THE FILL THIS LINE PAINTS (gh#884).
+           *
+           * The stylesheet could only ever say `white`, because the fill is the CALLER's and CSS
+           * cannot measure it. Measured on the theme lab across 3 themes x 5 seeds, white on the
+           * default `--attention` orange (#eb6101) is 3.38:1 — under SC 1.4.3's 4.5:1 in 15 of 15
+           * cells, and the only string that failed in every single one. The pairing was already
+           * solved for every other `--attention` surface in gh#643, which is where
+           * `--attention-foreground` (4.68:1 on that fill) comes from; the brand mark was the one
+           * place still holding the literal.
+           *
+           * Resolved AS THE CALL-SITE FALLBACK, never by assigning the knob (docs/TOKENS.md, the
+           * freeze rule): `--sidebar-logo-mark-color` is the consumer's channel from gh#884, and an
+           * inline assignment here would outrank the `[data-tenant]` scope it exists for. Written
+           * as a fallback, the knob still wins whenever it is set.
+           *
+           * A caller-supplied colour gets the same black-or-white pivot `tenantTheme` uses for
+           * `--primary-foreground`, so one rule governs both. A value CSS accepts but we cannot
+           * measure — `var(--x)`, a named colour, `oklch()` — keeps the old `white`: unchanged, and
+           * honest about what was measured. */
+          const markLuminance = product.color != null ? relativeLuminance(product.color) : null;
+          const markInk =
+            product.color == null
+              ? "hsl(var(--attention-foreground))"
+              : markLuminance == null
+                ? "white"
+                : markLuminance > CONTRAST_PIVOT
+                  ? "black"
+                  : "white";
           const mark = (
             <span
               className="sb-logo-mark"
-              style={{ background: product.color ?? "hsl(var(--attention))" }}
+              style={{
+                background: product.color ?? "hsl(var(--attention))",
+                color: `var(--sidebar-logo-mark-color, ${markInk})`,
+              }}
             >
               {product.name[0]?.toUpperCase() ?? "?"}
             </span>

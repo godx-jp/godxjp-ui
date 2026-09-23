@@ -120,8 +120,11 @@ const INK_STEPS = {
  * achromatic, since `hsl(h s 0%)` is black and `hsl(h s 100%)` is white at every hue and saturation.
  * So the walk always reaches at least 4.58:1 and the guarantee is a property of the whole sRGB cube
  * rather than of the seeds we happened to try.
+ *
+ * EXPORTED because a component that paints its own fill has to make the same choice against it and
+ * must not re-derive the number (gh#884: `Sidebar`'s brand mark).
  */
-const CONTRAST_PIVOT = 0.179;
+export const CONTRAST_PIVOT = 0.179;
 
 /**
  * The darkest surface brand INK lands on in the package's LIGHT theme — `--accent`
