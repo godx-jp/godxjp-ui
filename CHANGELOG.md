@@ -4,6 +4,101 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.0.0] - 2026-09-24
+
+MAJOR. **A theme can thicken a border now — one declaration reaches 104 sites.** One breaking
+change, with a silent failure mode, is spelled out first because it is the reason this is a major.
+
+### 💥 BREAKING — 58 component tokens became `initial` knobs
+
+`--control-border-width`, `--checkbox-border-width`, `--table-row-border-width`,
+`--separator-rule-size`, `--segmented-item-color`, `--topbar-item-color` and 52 more no longer
+carry a value at `:root`. They are `initial`, and the default is resolved where the token is
+CONSUMED. **Read one bare and you do not get an error — you get a different number.**
+
+```
+border-width: var(--control-border-width)
+  29.0.0   1px
+  30.0.0   3px     <- `medium`, the CSS initial value. No warning, no console message.
+```
+
+Measured in Chromium, not inferred. The 3px is not our value at all: an `initial` custom property
+makes the declaration invalid at computed-value time, and `border-width` then falls back to its own
+initial value, which is `medium`.
+
+**Migration** — pass the default the library passes, which is the form every call site inside the
+library now uses:
+
+```css
+/* before */
+border-width: var(--control-border-width);
+/* after  */
+border-width: var(--control-border-width, var(--stroke-hairline));
+```
+
+`node scripts/explain-token.mjs --control-border-width` (shipped in the package) prints every
+declaration and every read of a knob, and marks each read `[has a call-site fallback]` — so you can
+tell a safe read from one that needs the migration without guessing:
+
+```
+read by:   34 site(s)
+  dist/styles/control.css:308  .ui-control  [has a call-site fallback]
+```
+
+Setting the knob yourself is unaffected: `--control-border-width: 2px` behaves exactly as before.
+
+**29.0.0 did this to 67 radius mirrors and did not call it breaking.** That is recorded here rather
+than quietly repeated: if a scoped `--radius` override started behaving differently for you at
+29.0.0, this is why, and the same migration applies.
+
+### 📐 One theme declaration now reaches every border in the library
+
+The measurement that opened gh#906, same theme and same declared black:
+
+|                      | where its width came from      | 29.0.0  | 30.0.0  |
+| -------------------- | ------------------------------ | ------- | ------- |
+| `.ui-input`          | `--control-border-width`       | 3px     | 3px     |
+| `[data-slot="card"]` | a literal in `card-layout.css` | **1px** | **3px** |
+
+Three causes, all fixed:
+
+- **104 literal widths** in 20 files became `var(--stroke-hairline)` and friends, read in the RULE
+  so a scope reaches them. The 3 in `email.css` stay literal — email clients do not resolve custom
+  properties, which is why that file exists.
+- **58 `:root`-frozen mirrors** (46 stroke, 12 ink) became `initial` knobs, the shape gh#880 gave
+  the shadow family. 86 call sites carry their default.
+- **Tailwind width utilities** in Badge, Button, Table and Tabs. A utility emits a literal `1px`
+  from the utilities layer and outranks every `.ui-*` rule, so no CSS fix below could reach it.
+
+Counted by measuring what the browser paints, after three grep-derived counts of the same thing
+disagreed with each other:
+
+```
+elements painting a border under 3px, in a scope whose every stroke step is 3px
+  before   12 distinct kinds   139 edges
+  after     1 distinct kind      1 edge
+```
+
+The one left is `.ui-anchor-track`, which reads its own unfrozen knob and is not a defect.
+
+### 🎨 neubrutalism — a fourth theme, chosen to break the token model
+
+`/showcase/theme-lab` carries four themes now. Neubrutalism was picked because three of its four
+defining moves were things no theme had asked the API for: a stroke WIDTH, a blur-less shadow used
+as structure, and fully opaque saturated fills. It is what found gh#906.
+
+It is also the acceptance test: it deleted its 42 workaround declarations (339 → 297) when gh#906
+landed and the matrix did not move.
+
+### ♿ 40 of 40 theme × seed × polarity cells clear WCAG 2.2 AA
+
+Every cell reads 563/563 strings, across 4 themes × 5 seeds × 2 polarities.
+
+### 🧹 Removed
+
+- Dead `.tb-chip-*` CSS — 31 declarations across 12 selectors that no component rendered, residue
+  of a component deleted in `49c4785d` (gh#905). Same shape as gh#879's `.ui-combobox-*`.
+
 ## [29.0.0] - 2026-09-24
 
 MAJOR. **Translucency becomes its own axis, so a theme can stop restating colours — and a theme
