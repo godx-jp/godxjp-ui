@@ -63,8 +63,17 @@ export type ThemeRow = {
    * twenty — glass/citron's `--accent` — because ink walked away from a dark surface goes
    * lighter, and lighter ink on a DARKER surface only gains contrast. Clearing the worst case
    * clears all of them.
+   *
+   * A PAIR, not one hex (gh#896): the surface above was measured while glass was reachable in ONE
+   * polarity only — the whole theme rendered permanently dark (the bug gh#896 reports), so every
+   * hex the paragraph above lists, `#766A2D` included, is a DARK-branch measurement with no light
+   * counterpart. Now that polarity is addressable, both members below are `null` until a real
+   * compositing measurement exists for EACH branch — the old single hex is not carried over into
+   * either slot, because guessing which polarity it belongs to is exactly the mistake this pair
+   * exists to prevent. `null` means the library's own default for that polarity (light `--accent`
+   * #ebe9e5; dark reads the built-in dark spine).
    */
-  inkSurface: string | null;
+  inkSurface: { light: string | null; dark: string | null };
 };
 
 export type SeedRow = {
@@ -77,6 +86,20 @@ export type SeedRow = {
 };
 
 /**
+ * The polarity axis (gh#896): the library ships light AND dark, and until this row existed the lab
+ * had no way to address the dark half of a theme × seed cell — a theme's dark branch could regress
+ * silently because nothing ever asked for it. `id` is the exact string `applyThemeAxes`
+ * (`src/app/theme-axes.ts`) resolves `data-theme` to, so it can be handed straight to
+ * `AppProvider`'s own `setTheme` — never written to `document.documentElement` by this page itself.
+ */
+export type ModeRow = {
+  /** Also the `?mode=` query value. */
+  id: "light" | "dark";
+  /** Message key for the switch label. */
+  nameKey: string;
+};
+
+/**
  * Order is reading order in the switch. `base` leads because a control that is not first is a
  * control nobody looks at.
  */
@@ -85,22 +108,26 @@ export const THEMES: readonly ThemeRow[] = [
     id: null,
     nameKey: "themeLab.theme.base.name",
     noteKey: "themeLab.theme.base.note",
-    // The package default IS this surface, so there is nothing to override.
-    inkSurface: null,
+    // The package default IS this surface in both polarities, so there is nothing to override.
+    inkSurface: { light: null, dark: null },
   },
   {
     id: "glass",
     nameKey: "themeLab.theme.glass.name",
     noteKey: "themeLab.theme.glass.note",
-    inkSurface: "#766A2D",
+    // BOTH `null` for now (gh#896) — see the type's doc comment above for why the OLD single hex
+    // (`#766A2D`, a dark-branch measurement from before polarity was addressable) is not carried
+    // into either slot. The real light and dark hexes are the glass author's to supply, from a
+    // real compositing measurement of each branch, not a guess made here.
+    inkSurface: { light: null, dark: null },
   },
   {
     id: "flat",
     nameKey: "themeLab.theme.flat.name",
     noteKey: "themeLab.theme.flat.note",
-    // Light like the default — measured `--accent` #e4e1ea against the default's #ebe9e5, both far
-    // above the pivot, and the lab reads 558/559 at every seed with it omitted.
-    inkSurface: null,
+    // BOTH `null` for now, same reason as glass above — the real hexes are the flat author's to
+    // supply once `flat.css`'s dark branch exists and can be measured.
+    inkSurface: { light: null, dark: null },
   },
 ];
 
@@ -118,6 +145,12 @@ export const SEEDS: readonly SeedRow[] = [
   { id: "navy", hex: "#0A1F44", nameKey: "themeLab.seed.navy" },
 ];
 
+/** `light` leads for the same reason `base` leads `THEMES`: the first option is the control. */
+export const MODES: readonly ModeRow[] = [
+  { id: "light", nameKey: "themeLab.mode.light" },
+  { id: "dark", nameKey: "themeLab.mode.dark" },
+];
+
 /** The `?theme=` value for a row — `"base"` stands in for the null id in the URL. */
 export const themeQueryValue = (row: ThemeRow): string => row.id ?? "base";
 
@@ -129,4 +162,9 @@ export function themeFromQuery(value: string | null): ThemeRow {
 /** Resolve `?seed=` back to a row, falling back to the first one. */
 export function seedFromQuery(value: string | null): SeedRow {
   return SEEDS.find((row) => row.id === value) ?? SEEDS[0];
+}
+
+/** Resolve `?mode=` back to a row, falling back to the first one (light). */
+export function modeFromQuery(value: string | null): ModeRow {
+  return MODES.find((row) => row.id === value) ?? MODES[0];
 }

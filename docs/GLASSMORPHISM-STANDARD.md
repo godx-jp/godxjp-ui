@@ -77,9 +77,22 @@ Concretely, for this library:
   so on a dark theme it walks the ink the WRONG WAY — measured on glass/citron it emitted
   rgb(124,103,0) over a #3b382b panel and read **2.09:1**, while the theme's own `--foreground` beside
   it was near-white. Worse, it emits the result as a literal in `style`, which outranks the
-  `--text-link` the theme declared. Pass the theme's own surface (`options.surface`), and pass the
-  LIGHTEST surface the ink lands on: ink walked away from a dark ground goes lighter, and lighter ink
-  on a darker ground only gains contrast, so clearing the worst case clears all of them.
+  `--text-link` the theme declared. Pass the theme's own surface (`options.surface`) — and pass the
+  surface that gives the LEAST contrast with the walked ink, which is **not the same one in both
+  polarities**:
+
+  |             | the ink walks | so the hardest ground is | pass                                     |
+  | ----------- | ------------- | ------------------------ | ---------------------------------------- |
+  | light theme | darker        | the DARKEST surface      | e.g. this package's `--accent` #ebe9e5   |
+  | dark theme  | lighter       | the LIGHTEST surface     | e.g. the same theme's `--accent` #3c3a34 |
+
+  Clearing the hardest ground clears every other one, because the ink only gains contrast as the
+  ground moves away from it. I got this backwards the first time and it is an easy mistake: the rule
+  reads "lightest" in a dark theme and "darkest" in a light one, so a value measured under one
+  polarity is actively wrong under the other. The check that the method is right is that it
+  reproduces the two numbers the library already publishes — `INK_SURFACE_LIGHT = "#ebe9e5"`
+  (`src/app/tenant-theme.ts`) and the #3c3a34 its docblock names for the dark theme. Measure both
+  and compare before trusting a value for a theme of your own.
 
 ## 4. Overlays — where this matters most
 

@@ -918,11 +918,16 @@
       "note": "Adding a theme is one CSS file plus one row in docs/themes/index.ts. This page is never edited for it.",
       "themeLabel": "Theme",
       "seedLabel": "Seed colour",
+      "modeLabel": "Polarity",
       "seedHex": "Seed",
       "seedInk": "Label on the seed",
       "seedContrast": "Label contrast, WCAG 2.2 SC 1.4.3",
       "legendPass": "4.5:1 or better",
       "legendFail": "below AA"
+    },
+    "mode": {
+      "light": "Light",
+      "dark": "Dark"
     },
     "theme": {
       "base": {

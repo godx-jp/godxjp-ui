@@ -21,10 +21,20 @@
  * thing being measured can be nudged to pass.
  *
  * ── THE MATRIX COMES FROM THE REGISTRY, NOT FROM THIS FILE ───────────────────────────────────
- * Themes and seeds are parsed out of `docs/themes/index.ts`. gh#882 asks that adding a theme cost
- * one CSS file and one row; a matrix hand-listed here would silently keep measuring the old set
- * and report a clean sweep of a theme nobody ships any more. Same reasoning as the generated
- * radius list in `docs/themes/flat.css`: a hand-kept list is what went blind in gh#854.
+ * Themes, seeds AND polarity (gh#896) are parsed out of `docs/themes/index.ts`. gh#882 asks that
+ * adding a theme cost one CSS file and one row; a matrix hand-listed here would silently keep
+ * measuring the old set and report a clean sweep of a theme nobody ships any more. Same reasoning
+ * as the generated radius list in `docs/themes/flat.css`: a hand-kept list is what went blind in
+ * gh#854. The parser was re-verified against the live file before this row was added (matched
+ * `seeds` unchanged and `modes` to exactly `["light", "dark"]`) — the same discipline the docblock
+ * below asks of a new selector, applied here to a new REGEX instead.
+ *
+ * ── POLARITY (gh#896) ─────────────────────────────────────────────────────────────────────────
+ * The library ships two colour polarities and this instrument used to have no way to address the
+ * dark half of a cell: `?mode=light|dark` on `/showcase/theme-lab` drives `AppProvider`'s own
+ * `theme` axis through the page's `ModeRow` switch (`docs/showcase/theme-lab.tsx`), never a class
+ * or attribute this script pokes at directly — the page is the only thing that knows how to apply
+ * it correctly (through the context, not a direct DOM write; see that file's comment for why).
  *
  * ── SELECTORS: EVERY ONE NAMES THE ELEMENT THAT ACTUALLY PAINTS ──────────────────────────────
  * This instrument has had four of its own selectors wrong, and every one of them made the library
@@ -44,7 +54,7 @@
  * USAGE
  *   PREVIEW_PORT=6811 pnpm preview              # in one shell
  *   node scripts/measure-glass.mjs 6811         # in another: the whole matrix
- *   node scripts/measure-glass.mjs 6811 --theme=glass --seed=navy
+ *   node scripts/measure-glass.mjs 6811 --theme=glass --seed=navy --mode=dark
  *   node scripts/measure-glass.mjs 6811 --json
  *   node scripts/measure-glass.mjs 6811 --shots # also write audit-evidence/theme-lab/*.png
  */
@@ -65,30 +75,36 @@ const only = (flag) => {
 };
 const ONLY_THEMES = only("theme");
 const ONLY_SEEDS = only("seed");
+const ONLY_MODES = only("mode");
 const SHOT_DIR = join(ROOT, "audit-evidence", "theme-lab");
 
-/** Themes and seeds, read from the registry the page itself reads (see the docblock). */
+/** Themes, seeds and polarities, read from the registry the page itself reads (see the docblock). */
 function readMatrix() {
   const src = readFileSync(join(ROOT, "docs", "themes", "index.ts"), "utf8");
   const themesBlock = src.slice(
     src.indexOf("export const THEMES"),
     src.indexOf("export const SEEDS"),
   );
-  const seedsBlock = src.slice(src.indexOf("export const SEEDS"));
+  const seedsBlock = src.slice(
+    src.indexOf("export const SEEDS"),
+    src.indexOf("export const MODES"),
+  );
+  const modesBlock = src.slice(src.indexOf("export const MODES"));
   const themes = [...themesBlock.matchAll(/\{\s*id:\s*(null|"([a-z0-9-]+)")/g)].map(
     (m) => m[2] ?? "base",
   );
   const seeds = [
     ...seedsBlock.matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*hex:\s*"(#[0-9A-Fa-f]{6})"/g),
   ].map((m) => ({ id: m[1], hex: m[2] }));
-  if (!themes.length || !seeds.length) {
+  const modes = [...modesBlock.matchAll(/\{\s*id:\s*"([a-z]+)"/g)].map((m) => m[1]);
+  if (!themes.length || !seeds.length || !modes.length) {
     throw new Error(
       "measure-glass: could not parse docs/themes/index.ts. The registry shape changed; fix the " +
         "parser rather than hand-listing the matrix here — a hand-listed matrix keeps measuring a " +
         "theme nobody ships.",
     );
   }
-  return { themes, seeds };
+  return { themes, seeds, modes };
 }
 
 /**
@@ -238,8 +254,8 @@ const READ_COMPUTED = (sel) => {
 
 const VIEWPORT = { width: 1440, height: 1000 };
 
-async function measureCell(page, theme, seed) {
-  const url = `http://localhost:${PORT}/showcase/theme-lab?theme=${theme}&seed=${seed.id}`;
+async function measureCell(page, mode, theme, seed) {
+  const url = `http://localhost:${PORT}/showcase/theme-lab?theme=${theme}&seed=${seed.id}&mode=${mode}`;
   const pageErrors = [];
   const onError = (e) => pageErrors.push(e.message);
   page.on("pageerror", onError);
@@ -247,6 +263,7 @@ async function measureCell(page, theme, seed) {
   await page.waitForTimeout(1800);
 
   const report = {
+    mode,
     theme,
     seed: seed.id,
     hex: seed.hex,
@@ -743,7 +760,7 @@ async function measureCell(page, theme, seed) {
     });
     await page.waitForTimeout(400);
     await page.screenshot({
-      path: join(SHOT_DIR, `${theme}-${seed.id}.png`),
+      path: join(SHOT_DIR, `${mode}-${theme}-${seed.id}.png`),
       fullPage: false,
     });
     // One shot with the two overlays the user reported reading straight through, open together is
@@ -754,7 +771,7 @@ async function measureCell(page, theme, seed) {
       .click({ timeout: 4000 })
       .catch(() => {});
     await page.waitForTimeout(700);
-    await page.screenshot({ path: join(SHOT_DIR, `${theme}-${seed.id}-dialog.png`) });
+    await page.screenshot({ path: join(SHOT_DIR, `${mode}-${theme}-${seed.id}-dialog.png`) });
     await page.keyboard.press("Escape");
     await page.waitForTimeout(350);
   }
@@ -763,20 +780,24 @@ async function measureCell(page, theme, seed) {
   return report;
 }
 
-const { themes, seeds } = readMatrix();
+const { themes, seeds, modes } = readMatrix();
 const cells = [];
-for (const theme of themes) {
-  if (ONLY_THEMES && !ONLY_THEMES.includes(theme)) continue;
-  for (const seed of seeds) {
-    if (ONLY_SEEDS && !ONLY_SEEDS.includes(seed.id)) continue;
-    cells.push({ theme, seed });
+// Polarity is the OUTER loop (gh#896): 2 modes × 3 themes × 5 seeds = 30 cells.
+for (const mode of modes) {
+  if (ONLY_MODES && !ONLY_MODES.includes(mode)) continue;
+  for (const theme of themes) {
+    if (ONLY_THEMES && !ONLY_THEMES.includes(theme)) continue;
+    for (const seed of seeds) {
+      if (ONLY_SEEDS && !ONLY_SEEDS.includes(seed.id)) continue;
+      cells.push({ mode, theme, seed });
+    }
   }
 }
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 1 });
 const reports = [];
-for (const cell of cells) reports.push(await measureCell(page, cell.theme, cell.seed));
+for (const cell of cells) reports.push(await measureCell(page, cell.mode, cell.theme, cell.seed));
 await browser.close();
 
 if (AS_JSON) {
@@ -788,7 +809,9 @@ if (AS_JSON) {
       : `  ${n.padEnd(14)} fill ${g.fillState}  blur ${(g.blur ?? "NONE").slice(0, 22).padEnd(22)}  sat ${g.saturate ? "yes" : "NO "}  edge ${g.border ? "yes" : "NO "}  shadow ${g.shadow ? "yes" : "NO "}  radius ${g.radius}`;
 
   for (const r of reports) {
-    console.log(`\n${"=".repeat(96)}\nTHEME ${r.theme}   SEED ${r.seed} ${r.hex}\n${r.url}`);
+    console.log(
+      `\n${"=".repeat(96)}\nMODE ${r.mode}   THEME ${r.theme}   SEED ${r.seed} ${r.hex}\n${r.url}`,
+    );
     console.log("SURFACES");
     for (const [n, g] of Object.entries(r.surfaces)) console.log(row(n, g));
     console.log("OVERLAYS  (opened, not queried)");
@@ -841,7 +864,7 @@ if (AS_JSON) {
   for (const r of reports) {
     const total = r.contrast.pass + r.contrast.fail.length;
     console.log(
-      `  ${r.theme.padEnd(7)} ${r.seed.padEnd(7)}  contrast ${String(r.contrast.pass).padStart(3)}/${String(total).padEnd(3)}  failures ${r.contrast.fail.length}`,
+      `  ${r.mode.padEnd(5)} ${r.theme.padEnd(7)} ${r.seed.padEnd(7)}  contrast ${String(r.contrast.pass).padStart(3)}/${String(total).padEnd(3)}  failures ${r.contrast.fail.length}`,
     );
   }
 }
