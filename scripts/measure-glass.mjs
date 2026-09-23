@@ -254,6 +254,41 @@ const READ_COMPUTED = (sel) => {
 
 const VIEWPORT = { width: 1440, height: 1000 };
 
+/*
+ * gh#898 — finishing a `{ paintedPointGround: true, x, y }` marker from `groundsOf` (see that
+ * function's doc comment). The browser cannot screenshot itself, so this is where the marker
+ * becomes a real `[r, g, b]` — and it is done the way the issue's own hand measurement was done,
+ * because that is the one method in this file's history with zero documented sampling errors:
+ * hide every glyph, take ONE screenshot, read the pixel that was under the text. Nothing is
+ * recomposited in Node. The gradient, the blur, the saturate and any nearer translucent layer (an
+ * active nav highlight, say) are already IN that pixel — the browser painted them, correctly, for
+ * every reason this file's own ancestor-stack model keeps getting selectors and colour spaces
+ * wrong trying to reconstruct by hand.
+ */
+async function resolveGradientGrounds(page, rows) {
+  const targets = (rows ?? []).filter((r) => r.grounds && r.grounds.paintedPointGround);
+  if (!targets.length) return;
+  await page.evaluate(() => {
+    if (document.getElementById("__glassHideGlyphs")) return;
+    const style = document.createElement("style");
+    style.id = "__glassHideGlyphs";
+    style.textContent = "* { color: transparent !important; }";
+    document.head.appendChild(style);
+  });
+  await page.waitForTimeout(50);
+  const shot = PNG.sync.read(await page.screenshot());
+  await page.evaluate(() => document.getElementById("__glassHideGlyphs")?.remove());
+  for (const row of targets) {
+    const { x, y } = row.grounds;
+    if (x < 0 || y < 0 || x >= shot.width || y >= shot.height) {
+      row.grounds = null;
+      continue;
+    }
+    const idx = (shot.width * y + x) << 2;
+    row.grounds = [[shot.data[idx], shot.data[idx + 1], shot.data[idx + 2]]];
+  }
+}
+
 async function measureCell(page, mode, theme, seed) {
   const url = `http://localhost:${PORT}/showcase/theme-lab?theme=${theme}&seed=${seed.id}&mode=${mode}`;
   const pageErrors = [];
@@ -400,6 +435,46 @@ async function measureCell(page, mode, theme, seed) {
    * column is chosen because it is the only strip wide enough to be reliably free of panes at every
    * height; widening it would mean sampling through the content, which is the mistake that made
    * every "backdrop" reading the Sidebar's own fill.
+   *
+   * THE SIXTH SAMPLING ERROR (gh#898). Everything above assumes the ancestor chain, once it runs
+   * out of opaque `background-color`, actually reaches `.app-main`'s own backdrop. It does not
+   * always: `.app-sidebar` fills itself with `background: var(--sidebar-surface-background)` —
+   * translucent — PLUS `background-image: var(--sidebar-gradient)`, which is what actually fills
+   * it, and `groundsOf` never read `backgroundImage`. So the walk climbed straight past the
+   * sidebar's own gradient and composited its strings onto all 24 `.app-main` bands, keeping the
+   * worst. Sampled: the sidebar's active nav label on
+   * `/showcase/theme-lab?theme=glass&seed=azure&mode=light`. Reported: `1.28:1`. Truth, measured a
+   * second way — painting every glyph transparent and sampling the pixel actually behind this one —
+   * `~9:1`: wrong by roughly a factor of eight, in the direction that makes the library look broken.
+   *
+   * THE FIRST FIX WAS ALSO WRONG, three times, and every one was caught the same way — by
+   * re-measuring, never by reading the diff. (1) It stopped the walk at ANY ancestor with a
+   * `background-image`, including `.app-main` — but `.app-main`'s own `backgroundColor` is opaque,
+   * so once compositing reaches it the WORST-of-bands math above (correctly) collapses to a single
+   * flat colour; the fix short-circuited straight to a fresh pixel search instead, on a canvas
+   * covered edge-to-edge by cards with no clean gap in it, and 411 of 562 strings across the five
+   * light-glass cells came back UNMEASURED. (2) Even the one string that COULD be sampled — the
+   * sidebar label — still recomposited the sampled pixel with the rest of the ancestor stack by
+   * hand in Node, and that math itself was untrustworthy: it read `4.44:1` against a hand-measured
+   * `~9:1`. (3) Excluding `.app-main` BY NAME instead of fixed that but broke coverage even worse
+   * (428 UNMEASURED): in the glass theme `Card` ALSO paints its own `background-image` — a sheen —
+   * so the walk stopped there instead, one hop too early. That would be fine if `Card`'s own fill
+   * blocked what is behind it, but its `backgroundColor` is only ~12% opaque, so `.app-main`'s
+   * scrolling backdrop still shows through it heavily; the sheen does not make `.app-main` stop
+   * mattering.
+   *
+   * THE SHIPPED FIX drops the by-name check for the actual question: is this ancestor OUTSIDE
+   * `.app-main`'s subtree, not merely "does it have a background-image". Anything still INSIDE
+   * `.app-main` (a Card, its sheen included) keeps composing onto the WORST band exactly as before
+   * this issue, because `.app-main`'s background stays pinned to its own box while everything in
+   * it — the Card, and whatever the Card lets show through — scrolls past that background. Only a
+   * surface with NOTHING of `.app-main` between it and the viewport (`.app-sidebar`, `.app-topbar`
+   * — separate grid areas, not part of the scroller) has a single true ground, and for those there
+   * is no Node-side compositing at all: hide every glyph on the page with one injected stylesheet,
+   * take ONE screenshot, and read the pixel at the string's own on-screen position. Nothing is
+   * reconstructed; the browser already composited the gradient, the blur, the saturate and any
+   * nearer translucent layer correctly, which is exactly why this method has never produced a
+   * documented sampling error and the ancestor-stack model has produced seven.
    */
   const mainRect = await page.evaluate(() => {
     const main = document.querySelector(".app-main") ?? document.body;
@@ -435,6 +510,10 @@ async function measureCell(page, mode, theme, seed) {
       sampled = [png.data[0], png.data[1], png.data[2]];
       break;
     }
+    // The 2 rows this always drops (checked against a live cell, gh#898): `.ui-page-header`'s hero
+    // band is full-bleed at the top of the content, wider than this column's 24px of horizontal
+    // slack, so every `dx` lands on it there — a real gap in a single-column sampler, not a bug
+    // this fix introduced, and it is COUNTED rather than silently dropped for exactly that reason.
     if (sampled) bands.push(sampled);
     else report.contrast.unsampledBands += 1;
   }
@@ -522,11 +601,38 @@ async function measureCell(page, mode, theme, seed) {
       return [Math.round(acc.r), Math.round(acc.g), Math.round(acc.b)];
     };
 
-    /** Every ground this element could composite onto — one per backdrop band, or one for a panel. */
+    /**
+     * Every ground this element could composite onto — one per backdrop band, one for a panel's
+     * own base pixel, or (gh#898) a single `{ paintedPointGround: true, x, y }` marker when a
+     * surface OUTSIDE `.app-main` fills itself with a `background-image` (`.app-sidebar`,
+     * `.app-topbar`): that surface has ONE ground and it is not the page's, so the caller resolves
+     * the marker into a real `[r, g, b]` by sampling the painted pixel directly, not by compositing.
+     *
+     * The test is "is this ancestor OUTSIDE `.app-main`'s subtree", not "does it have a
+     * background-image" — a first cut used the latter and it was wrong: in the glass theme `Card`
+     * ALSO paints its own `background-image` (a sheen), but `Card`'s own `backgroundColor` is only
+     * ~12% opaque, so `.app-main`'s scrolling backdrop still shows through it heavily. `.app-main`
+     * is the scroll container the band rule exists for (see the CONTRAST section's docblock): its
+     * own background stays pinned to its box while its content — every Card in it included — scrolls
+     * past that background, so a Card's ground still depends on which band it happens to be over.
+     * Only a surface that is NOT a descendant of `.app-main` at all (Sidebar, Topbar — separate grid
+     * areas, not part of its scroll region) has nothing shifting behind it, so ONE painted pixel
+     * really is its one true ground.
+     */
     const groundsOf = (el, stopAt, base, bands) => {
       const stack = [];
+      const mainEl = document.querySelector(".app-main");
       for (let n = el; n && n !== document.documentElement && n !== stopAt; n = n.parentElement) {
-        const c = parse(getComputedStyle(n).backgroundColor);
+        const cs = getComputedStyle(n);
+        if (cs.backgroundImage !== "none" && !(mainEl && mainEl.contains(n))) {
+          const r = el.getBoundingClientRect();
+          return {
+            paintedPointGround: true,
+            x: Math.round(r.left + r.width / 2),
+            y: Math.round(r.top + r.height / 2),
+          };
+        }
+        const c = parse(cs.backgroundColor);
         if (c && c.a > 0) stack.push(c);
         if (c && c.a >= 0.999) break;
       }
@@ -677,7 +783,10 @@ async function measureCell(page, mode, theme, seed) {
       // THE WORST GROUND THE BACKDROP CAN PRODUCE, per docs/GLASSMORPHISM-STANDARD.md §3 — not the
       // one the element happened to load over.
       const ink = row.inkRgb ?? rgbOf(row.ink);
-      const r = row.inkRgb ? Math.min(...row.grounds.map((g) => ratio(g, ink))) : Number.NaN;
+      // gh#898: `row.grounds` is `null` when a gradient ancestor had no pixel clean enough to
+      // sample (see `resolveGradientGrounds`) — unmeasured, not a guessed pass or fail.
+      const r =
+        row.inkRgb && row.grounds ? Math.min(...row.grounds.map((g) => ratio(g, ink))) : Number.NaN;
       const floor = row.large ? 3 : 4.5;
       // A RATIO THAT IS NOT A NUMBER IS NOT A PASS. `NaN < 4.5` is false, so an unparsed colour
       // used to slip through as "clear" — which is how a 1.47:1 label was reported clean. Anything
@@ -699,13 +808,14 @@ async function measureCell(page, mode, theme, seed) {
     }
   };
 
-  score(
-    await page.evaluate(
+  {
+    const rows = await page.evaluate(
       ([sel, known]) => window.__glassContrast(sel, null, known),
       ["[data-theme-style]", bands],
-    ),
-    "page",
-  );
+    );
+    await resolveGradientGrounds(page, rows);
+    score(rows, "page");
+  }
 
   /** The composited fill of an open panel, read from a real pixel with no glyph on it. */
   async function panelBase(sel) {
@@ -735,10 +845,12 @@ async function measureCell(page, mode, theme, seed) {
     if (found && !/scrim/.test(o.name)) {
       const base = await panelBase(o.sel);
       if (base) {
-        score(
-          await page.evaluate(([s, b]) => window.__glassContrast(s, b, null), [o.sel, base]),
-          o.name,
+        const rows = await page.evaluate(
+          ([s, b]) => window.__glassContrast(s, b, null),
+          [o.sel, base],
         );
+        await resolveGradientGrounds(page, rows);
+        score(rows, o.name);
       } else {
         report.contrast.unsampledPanels.push(o.name);
       }
@@ -780,6 +892,7 @@ async function measureCell(page, mode, theme, seed) {
       ([sel, known]) => window.__glassContrast(sel, null, known),
       [st.sel, bands],
     );
+    await resolveGradientGrounds(page, hoverInk);
     score(hoverInk, `${st.name}:hover`);
 
     let ring = null;
