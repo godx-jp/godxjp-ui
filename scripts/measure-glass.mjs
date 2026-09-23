@@ -70,14 +70,17 @@ const SHOT_DIR = join(ROOT, "audit-evidence", "theme-lab");
 /** Themes and seeds, read from the registry the page itself reads (see the docblock). */
 function readMatrix() {
   const src = readFileSync(join(ROOT, "docs", "themes", "index.ts"), "utf8");
-  const themesBlock = src.slice(src.indexOf("export const THEMES"), src.indexOf("export const SEEDS"));
+  const themesBlock = src.slice(
+    src.indexOf("export const THEMES"),
+    src.indexOf("export const SEEDS"),
+  );
   const seedsBlock = src.slice(src.indexOf("export const SEEDS"));
   const themes = [...themesBlock.matchAll(/\{\s*id:\s*(null|"([a-z0-9-]+)")/g)].map(
     (m) => m[2] ?? "base",
   );
-  const seeds = [...seedsBlock.matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*hex:\s*"(#[0-9A-Fa-f]{6})"/g)].map(
-    (m) => ({ id: m[1], hex: m[2] }),
-  );
+  const seeds = [
+    ...seedsBlock.matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*hex:\s*"(#[0-9A-Fa-f]{6})"/g),
+  ].map((m) => ({ id: m[1], hex: m[2] }));
   if (!themes.length || !seeds.length) {
     throw new Error(
       "measure-glass: could not parse docs/themes/index.ts. The registry shape changed; fix the " +
@@ -96,7 +99,14 @@ const SURFACES = [
   { name: "Page canvas", sel: ".app-main" },
   { name: "Card", sel: '[data-slot="card"]' },
   { name: "Sidebar", sel: ".app-sidebar" },
-  { name: "Topbar", sel: ".ui-topbar" },
+  // The bar ROW, not the inset `<Topbar>` component — the FOURTH selector mistake this
+  // instrument made, and the one that shows why the list above matters. `.ui-topbar` is the
+  // component, which `.app-topbar` insets by `--app-shell-bar-inset` (24px) on each side; the
+  // fill and the blur a theme puts on the bar belong on the ROW, because that is the element that
+  // reaches both edges (gh#895). Probing the component reported `blur NONE · fill transparent`
+  // for a bar measured at `blur(16px) saturate(1.7)` — the verdict read 11/25 blurred against a
+  // real 12/25, under-reporting the theme it exists to measure.
+  { name: "Topbar", sel: ".app-topbar" },
   { name: "Page header", sel: ".ui-page-header" },
   // The SURFACE, not the <table>: table-layout.css:359 puts the fill and the blur on
   // `.ui-data-table-surface`. Probing `[data-slot="table"]` reported `blur NONE` while the knob
@@ -296,7 +306,11 @@ async function measureCell(page, theme, seed) {
   });
 
   const bands = [];
-  for (let y = Math.round(mainRect.top) + 20; y < Math.min(mainRect.bottom, VIEWPORT.height) - 10; y += 40) {
+  for (
+    let y = Math.round(mainRect.top) + 20;
+    y < Math.min(mainRect.bottom, VIEWPORT.height) - 10;
+    y += 40
+  ) {
     let sampled = null;
     for (const dx of [6, 10, 16, 24]) {
       const x = Math.round(mainRect.right - dx);
@@ -308,7 +322,7 @@ async function measureCell(page, theme, seed) {
           // Over the canvas, not over a pane: anything inside a painted surface would make the
           // "backdrop" the pane's own fill, which is the mistake that froze the old numbers.
           return !el.closest(
-            '[data-slot="card"], [data-slot="alert"], .ui-data-table-surface, .app-sidebar, .ui-topbar, .ui-page-header, [data-slot="table"]',
+            '[data-slot="card"], [data-slot="alert"], .ui-data-table-surface, .app-sidebar, .app-topbar, .ui-page-header, [data-slot="table"]',
           );
         },
         [x, y],
@@ -415,8 +429,7 @@ async function measureCell(page, theme, seed) {
         if (c && c.a >= 0.999) break;
       }
       if (base) return [compose(stack, { r: base[0], g: base[1], b: base[2] })];
-      if (bands?.length)
-        return bands.map((b) => compose(stack, { r: b[0], g: b[1], b: b[2] }));
+      if (bands?.length) return bands.map((b) => compose(stack, { r: b[0], g: b[1], b: b[2] }));
       const fallback = parse(getComputedStyle(document.documentElement).backgroundColor) ?? {
         r: 255,
         g: 255,
@@ -431,7 +444,7 @@ async function measureCell(page, theme, seed) {
       for (let n = el; n && n !== document.body && parts.length < 4; n = n.parentElement) {
         const slot = n.getAttribute?.("data-slot");
         const cls = [...(n.classList ?? [])].find((c) => c.startsWith("ui-"));
-        parts.unshift(slot ? `[${slot}]` : (cls ? `.${cls}` : n.tagName.toLowerCase()));
+        parts.unshift(slot ? `[${slot}]` : cls ? `.${cls}` : n.tagName.toLowerCase());
       }
       return parts.join(" ");
     };
@@ -499,7 +512,12 @@ async function measureCell(page, theme, seed) {
           const range = document.createRange();
           range.selectNodeContents(node);
           for (const rect of range.getClientRects()) {
-            if (x >= rect.left - 2 && x <= rect.right + 2 && y >= rect.top - 2 && y <= rect.bottom + 2)
+            if (
+              x >= rect.left - 2 &&
+              x <= rect.right + 2 &&
+              y >= rect.top - 2 &&
+              y <= rect.bottom + 2
+            )
               return true;
           }
         }
@@ -557,9 +575,7 @@ async function measureCell(page, theme, seed) {
       // THE WORST GROUND THE BACKDROP CAN PRODUCE, per docs/GLASSMORPHISM-STANDARD.md §3 — not the
       // one the element happened to load over.
       const ink = row.inkRgb ?? rgbOf(row.ink);
-      const r = row.inkRgb
-        ? Math.min(...row.grounds.map((g) => ratio(g, ink)))
-        : Number.NaN;
+      const r = row.inkRgb ? Math.min(...row.grounds.map((g) => ratio(g, ink))) : Number.NaN;
       const floor = row.large ? 3 : 4.5;
       // A RATIO THAT IS NOT A NUMBER IS NOT A PASS. `NaN < 4.5` is false, so an unparsed colour
       // used to slip through as "clear" — which is how a 1.47:1 label was reported clean. Anything
@@ -618,10 +634,7 @@ async function measureCell(page, theme, seed) {
       const base = await panelBase(o.sel);
       if (base) {
         score(
-          await page.evaluate(
-            ([s, b]) => window.__glassContrast(s, b, null),
-            [o.sel, base],
-          ),
+          await page.evaluate(([s, b]) => window.__glassContrast(s, b, null), [o.sel, base]),
           o.name,
         );
       } else {
@@ -724,7 +737,7 @@ async function measureCell(page, theme, seed) {
     // nobody asked about. The shell, the switcher and the seed read-out are what a theme × seed
     // cell has to show.
     await page.evaluate(() => {
-      const el = document.querySelector('.app-main');
+      const el = document.querySelector(".app-main");
       if (el) el.scrollTop = 0;
       document.scrollingElement.scrollTop = 0;
     });
@@ -735,7 +748,11 @@ async function measureCell(page, theme, seed) {
     });
     // One shot with the two overlays the user reported reading straight through, open together is
     // not possible (Dialog traps focus), so Dialog gets its own frame over the same cell.
-    await page.locator('[data-probe="dialog"]').first().click({ timeout: 4000 }).catch(() => {});
+    await page
+      .locator('[data-probe="dialog"]')
+      .first()
+      .click({ timeout: 4000 })
+      .catch(() => {});
     await page.waitForTimeout(700);
     await page.screenshot({ path: join(SHOT_DIR, `${theme}-${seed.id}-dialog.png`) });
     await page.keyboard.press("Escape");
@@ -796,7 +813,9 @@ if (AS_JSON) {
     const total = r.contrast.pass + r.contrast.fail.length;
     console.log(
       `CONTRAST  ${r.contrast.pass}/${total} strings clear WCAG 2.2 AA, worst of ${r.contrast.bands} backdrop band(s)` +
-        (r.contrast.unsampledBands ? `  (${r.contrast.unsampledBands} backdrop band(s) unsampled)` : "") +
+        (r.contrast.unsampledBands
+          ? `  (${r.contrast.unsampledBands} backdrop band(s) unsampled)`
+          : "") +
         (r.contrast.unsampledPanels.length
           ? `  (no clean pixel in: ${r.contrast.unsampledPanels.join(", ")})`
           : "") +

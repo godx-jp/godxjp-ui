@@ -122,6 +122,11 @@
    * the row this knob paints. A theme that wants the whole bar to float over a gradient moves the
    * gradient to `.app-root`; that is a theme decision, not a knob. */
   --app-shell-bar-background: initial; /* default = hsl(var(--card)) at the call site */
+  /* The bar ROW's own blur. `--topbar-backdrop-blur-size` is NOT this knob: it is on the
+   * `<Topbar>` COMPONENT, which sits inside this row inset by `--app-shell-bar-inset` on each
+   * side, so blurring there leaves the row's gutters unblurred. The sidebar beside it has had
+   * this since gh#880; the row had none, which is what forced a theme onto the inner element. */
+  --app-shell-bar-backdrop-blur-size: initial; /* default = none — the bar row blurs nothing */
   --app-shell-nav-rail-background: initial; /* default = hsl(var(--muted)) at the call site */
 
   /* DXS application-shell geometry. These defaults mirror the checked-in

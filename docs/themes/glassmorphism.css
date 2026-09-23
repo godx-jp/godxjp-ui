@@ -256,17 +256,33 @@
    *    until its fill was moved to the dark end (see the seed layer). */
   --card: 0 0% 100% / 12%;
 
-  /* ── Topbar — `background-color: hsl(var(--background) / var(--topbar-background-alpha));
-   *    backdrop-filter: blur(var(--topbar-backdrop-blur-size));` (shell-layout.css:2648-2649).
-   *    Both default to `initial` (off) precisely so a service opts in with these two lines.
+  /* ── The bar — AND IT IS **ONE** SURFACE, WHICH TOOK A MEASUREMENT TO GET RIGHT (gh#895).
    *
-   *    ONE INCONSISTENCY, MEASURED: this is the only blur call site in `src/styles/**` that does
-   *    NOT carry the shared `saturate(var(--surface-backdrop-saturate, 160%))` companion the eleven
-   *    gh#880 knobs all pair with — `measure-glass.mjs` prints `sat NO` for the Topbar and `sat
-   *    yes` for every other blurred surface. Blur without saturate is the grey mush the standard
-   *    names in §1, and no token here can add it. */
-  --topbar-background-alpha: 55%;
-  --topbar-backdrop-blur-size: var(--blur-lg);
+   *    There are two elements here and the token names do not say so. `--topbar-gradient` and
+   *    `--app-shell-bar-background` paint `.app-topbar`, the full-width row. `--topbar-background-
+   *    alpha` and `--topbar-backdrop-blur-size` paint `.ui-topbar`, the `<Topbar>` COMPONENT,
+   *    which that row insets by `--app-shell-bar-inset` on each side. Measured at 1440px:
+   *
+   *        .app-topbar   x=256  w=1184     .ui-topbar   x=280  w=1136
+   *
+   *    so this file used to set a 55% dark fill on the inner element while the row underneath
+   *    carried 12% white plus the 120deg gradient — and the 24px gutters showed the row through,
+   *    as two strips of different colour (the gradient runs across them, so one read yellow and
+   *    the other red). Four `--topbar-*` knobs, two elements, and nothing in the names to warn you.
+   *
+   *    The row is the one that reaches the edges, so the row carries the glass. Its FILL needs no
+   *    line here — `.app-topbar` defaults to `hsl(var(--card))`, which this file already set to
+   *    12% white, and that is the correct 0.12 from the standard's §1 recipe. What was missing was
+   *    the BLUR: `--app-shell-bar-backdrop-blur-size` is the knob gh#895 added for the row. The
+   *    sidebar had had one since gh#880; the bar row had none, which is what forced a theme onto
+   *    the inner element in the first place.
+   *
+   *    `.ui-topbar` goes back to being what its own rule calls it, "a layout-only wrapper with no
+   *    fill and no border": both of its knobs are left at `initial`, so each declaration is
+   *    invalid-at-computed-value-time and the property takes its own initial value. NOT `0` and
+   *    NOT `transparent` — a literal `blur(0px)` would still promote it to a backdrop root and
+   *    make it the containing block for its fixed descendants. */
+  --app-shell-bar-backdrop-blur-size: var(--blur-lg);
 
   /* ── ONE INK RAMP, MEASURED ON THE COMPOSITED GLASS (docs/GLASSMORPHISM-STANDARD.md §3)
    *    The first pass set no text token at all, so every string kept a default tuned for an
@@ -732,9 +748,9 @@
  * is not the contrast hazard a translucent fill is; the library's own fallback never touched
  * border-color either.
  *
- * `--topbar-backdrop-blur-size` is the one blur this theme actually turns on (every other surface
- * here stays at the package default of `initial` = no blur), so it is the only knob reset under
- * `reduced-transparency`; `@supports not (...)` needs no blur reset because an engine that cannot
+ * `--app-shell-bar-backdrop-blur-size` is the one blur this theme actually turns on (every other
+ * surface here stays at the package default of `initial` = no blur), so it is the only knob reset
+ * under `reduced-transparency`; `@supports not (...)` needs no blur reset because an engine that cannot
  * blur was never applying one. */
 @supports not (backdrop-filter: blur(1px)) {
   [data-theme-style="glass"] {
@@ -743,7 +759,11 @@
     --popover: 0 0% 100%;
     --popover-surface-background: hsl(0 0% 100%);
     --tooltip-background: hsl(230 45% 12%);
-    --topbar-background-alpha: 100%;
+    /* The BAR ROW, not `.ui-topbar` (gh#895). It used to read `--topbar-background-alpha: 100%`,
+     * which now solidifies only the inset wrapper and would paint a dark block inside a white row.
+     * Pinned rather than left to `--card`, because the line above turns `--card` white for the
+     * page's cards and the bar is dark chrome, not a surface. */
+    --app-shell-bar-background: hsl(var(--background));
   }
 }
 
@@ -754,7 +774,9 @@
     --popover: 0 0% 100%;
     --popover-surface-background: hsl(0 0% 100%);
     --tooltip-background: hsl(230 45% 12%);
-    --topbar-background-alpha: 100%;
-    --topbar-backdrop-blur-size: initial;
+    /* Same pair as the `@supports` block above, plus the blur off — and both now name the ROW's
+     * knobs, since that is where this theme's bar glass lives (gh#895). */
+    --app-shell-bar-background: hsl(var(--background));
+    --app-shell-bar-backdrop-blur-size: initial;
   }
 }

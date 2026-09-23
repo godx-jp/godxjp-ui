@@ -397,6 +397,21 @@
     background: var(--app-shell-bar-background, hsl(var(--card)));
     /* Opt-in brand-chrome wash — invisible by default (--topbar-gradient: none). */
     background-image: var(--topbar-gradient);
+    /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so the shipped bar creates no backdrop
+     * root and nothing `position: fixed` inside it changes containing block — the same wording as
+     * `.app-sidebar` because it is the same contract.
+     *
+     * THIS ROW IS THE FULL-WIDTH SURFACE, AND `--topbar-backdrop-blur-size` IS NOT (gh#895). That
+     * knob is on `.ui-topbar`, the `<Topbar>` COMPONENT, which this row insets by
+     * `--app-shell-bar-inset` on each side. Measured at 1440px on the glass theme before this
+     * line existed: row x=256 w=1184, component x=280 w=1136, so a theme that set
+     * `--topbar-background-alpha` and `--topbar-backdrop-blur-size` — the only bar glass it could
+     * reach — painted the middle 1136px one colour and left this row's own fill showing as two
+     * 24px strips at the edges, each a different colour because the gradient runs across them.
+     * The sidebar got this knob in gh#880 and the bar row was missed; the names being adjacent is
+     * exactly what hid it. */
+    backdrop-filter: blur(var(--app-shell-bar-backdrop-blur-size))
+      saturate(var(--surface-backdrop-saturate, 160%));
   }
 
   .app-main {

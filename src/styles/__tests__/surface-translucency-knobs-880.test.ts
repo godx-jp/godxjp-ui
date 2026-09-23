@@ -200,11 +200,20 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     expect(feedbackTokens).toMatch(/--toast-background:\s*initial;/);
     expect(shellTokens).toMatch(/--sidebar-surface-background:\s*initial;/);
     // The other two shell rows, for the same reason — leaving them out is the asymmetry this
-    // change exists to remove. Neither gets a BLUR knob: `.app-topbar` is a sibling of
-    // `.app-main`, so nothing a theme paints in the main region is behind it to blur.
+    // change exists to remove.
     expect(shellTokens).toMatch(/--app-shell-bar-background:\s*initial;/);
     expect(shellTokens).toMatch(/--app-shell-nav-rail-background:\s*initial;/);
-    expect(shellTokens).not.toMatch(/--app-shell-bar-backdrop-blur-size/);
+    // THE BAR ROW DOES GET A BLUR KNOB, AND THIS LINE USED TO ASSERT IT DOES NOT (gh#895).
+    // The reason recorded here was "`.app-topbar` is a sibling of `.app-main`, so nothing a theme
+    // paints in the main region is behind it to blur" — true about the main region and wrong about
+    // what a bar blurs, which is the PAGE backdrop: the body gradient sits behind the whole shell.
+    // The cost of the omission was not a missing nicety. It left `--topbar-backdrop-blur-size` as
+    // the only bar blur a theme could reach, and that knob is on `.ui-topbar`, which the row insets
+    // by `--app-shell-bar-inset` on each side — so the glass theme filled the inset element and the
+    // row showed through both gutters as two mismatched strips (measured: a 52/255 colour step at
+    // x=24, the gutter boundary, in all five seeds; 0 after). Held by
+    // `src/styles/__tests__/bar-row-blur-895.test.ts`.
+    expect(shellTokens).toMatch(/--app-shell-bar-backdrop-blur-size:\s*initial;/);
     expect(shellLayout).toMatch(
       /background: var\(--app-shell-bar-background, hsl\(var\(--card\)\)\);/,
     );
@@ -336,7 +345,8 @@ describe("gh#880-theme · the theme that made these surfaces translucent owns th
 
   it("the reduced-transparency branch drops the blur through the TOKEN, never `none` or `blur(0px)`", () => {
     const media = code(glassTheme).slice(code(glassTheme).indexOf("prefers-reduced-transparency"));
-    expect(media).toMatch(/--topbar-backdrop-blur-size:\s*initial;/);
+    // The ROW's knob since gh#895 — this theme's bar glass moved off the inset `.ui-topbar`.
+    expect(media).toMatch(/--app-shell-bar-backdrop-blur-size:\s*initial;/);
     expect(media).not.toMatch(/backdrop-filter/);
     expect(media).not.toMatch(/blur\(0/);
   });
@@ -353,7 +363,10 @@ describe("gh#880-theme · the theme that made these surfaces translucent owns th
       expect(block, query).toMatch(/--popover:\s*0 0% 100%;/);
       expect(block, query).toMatch(/--popover-surface-background:\s*hsl\(0 0% 100%\);/);
       expect(block, query).toMatch(/--tooltip-background:\s*hsl\(230 45% 12%\);/);
-      expect(block, query).toMatch(/--topbar-background-alpha:\s*100%;/);
+      // The bar goes opaque through the ROW's fill knob (gh#895), not through the inset
+      // component's alpha. Pinned rather than left to the `--card: 0 0% 100%` above it, because
+      // that line turns cards white for the page and the bar is dark chrome, not a surface.
+      expect(block, query).toMatch(/--app-shell-bar-background:\s*hsl\(var\(--background\)\);/);
     }
   });
 });
