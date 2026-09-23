@@ -350,7 +350,12 @@ describe("recoverable coordinated release", () => {
       "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging @root",
       "npm dist-tag add @godxjp/ui@18.4.1 latest @root",
       "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
-      "git add package.json mcp/package.json @root",
+      /* The four generated files are version-STAMPED artefacts, not drift (gh#904):
+       * `apply-target-metadata` bumps `package.json`, the generators read it back, and they come
+       * out carrying the new number. They travel with the manifests through both the preflight
+       * allowlist and this commit, because a release that bumps one without the others leaves the
+       * tree disagreeing with itself. */
+      "git add package.json mcp/package.json agent/START-HERE.md agent/index.json agent/llms.txt src/contracts/measurement.json @root",
       "git commit -m chore(release): UI + MCP @18.4.1 @root",
     ]);
     // Post-release steady state: godx-staging is NOT removed — it stays on the
@@ -1366,7 +1371,7 @@ describe("the tag is the trigger and the claim — the release verifies it, neve
       "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging",
       "npm dist-tag add @godxjp/ui@18.4.0 latest",
       "npm dist-tag add @godxjp/ui-mcp@18.4.0 latest",
-      "git add package.json mcp/package.json",
+      "git add package.json mcp/package.json agent/START-HERE.md agent/index.json agent/llms.txt src/contracts/measurement.json",
     ]);
     // Nothing to commit, no tag written, and the tree that was packed is the tree that was verified.
     expect(world.log.some((entry) => entry.startsWith("git commit"))).toBe(false);
