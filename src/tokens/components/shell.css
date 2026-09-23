@@ -105,6 +105,7 @@
    * Topbar beside it has had `--topbar-background-alpha` since gh#831. Role-mirror knob: `initial`,
    * with `hsl(var(--card))` resolved at the call site so a scoped theme's `--card` arrives. */
   --sidebar-surface-background: initial; /* default = hsl(var(--card)) at the call site */
+  --sidebar-surface-background-alpha: initial; /* Its own opacity, defaulting to the card's (gh#901). */
   /* GLASS — `initial`, so unset there is no blur and, more importantly, no backdrop root. The
    * sidebar is a long-lived container full of other people's content; promoting it to a containing
    * block for fixed descendants by default would be the worst possible place to do it. */
@@ -422,6 +423,7 @@
   /* The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's
    * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. */
   --topbar-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --topbar-item-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --topbar-item-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
   --topbar-item-active-background: var(--secondary);
   /* COUNT PILL overlaid on the cell's glyph (gh#398) — the unread affordance the bell needs. The
@@ -513,6 +515,7 @@
   --app-launcher-tile-radius: var(--radius);
   --app-launcher-tile-color: var(--foreground);
   --app-launcher-tile-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --app-launcher-tile-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --app-launcher-tile-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
   /* The app you are already in. `initial` so the role default re-resolves at the call site under a
    * scoped theme, the same reason `--sidebar-item-active-*` does. Default = hsl(var(--secondary)). */

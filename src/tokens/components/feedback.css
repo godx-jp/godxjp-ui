@@ -314,6 +314,7 @@
   --popover-surface-background: initial;
   --popover-surface-foreground: initial;
   --popover-surface-border-color: initial;
+  --popover-surface-border-color-alpha: initial; /* default = 100% at the call site (gh#901) */
   /* Width knob, for a panel that owns its own box — a time column pair, a calendar. The three
    * colour knobs above already existed and padding already read `--popover-space-inset`; width was
    * the one surface property left absolute, so a modifier could only reach it by re-declaring the

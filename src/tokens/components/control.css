@@ -109,6 +109,7 @@
    * knobs so a service theme can retune the dense-form treatment once, globally. */
   --control-variant-filled-background: var(--muted);
   --control-variant-filled-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --control-variant-filled-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
 
   /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
   --control-count-font-size: var(--font-size-sm, var(--font-size-base));
@@ -163,6 +164,7 @@
    * root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). */
   --choice-button-selected-color: initial; /* default = var(--primary) */
   --choice-button-selected-border-color: initial; /* default = var(--primary) */
+  --choice-button-selected-border-color-alpha: initial; /* default = 100% at the call site (gh#901) */
   --choice-button-solid-background: initial; /* default = var(--primary) */
   --choice-button-solid-color: initial; /* default = var(--primary-foreground) */
 

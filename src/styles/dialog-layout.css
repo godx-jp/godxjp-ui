@@ -406,7 +406,11 @@
     width: var(--popover-surface-inline-size, var(--popover-width));
     padding: var(--popover-space-inset);
     border-radius: var(--popover-radius);
-    border: 1px solid var(--popover-surface-border-color, hsl(var(--border)));
+    border: 1px solid
+      var(
+        --popover-surface-border-color,
+        hsl(var(--border) / var(--popover-surface-border-color-alpha, 100%))
+      );
     background-color: var(
       --popover-surface-background,
       hsl(var(--popover) / var(--popover-alpha, 100%))

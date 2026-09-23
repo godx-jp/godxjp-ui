@@ -1566,7 +1566,10 @@
     align-items: stretch;
     padding: var(--segmented-track-padding);
     border-radius: var(--segmented-track-radius);
-    background: hsl(var(--segmented-track-background, var(--muted)));
+    background: hsl(
+      var(--segmented-track-background, var(--muted)) /
+        var(--segmented-track-background-alpha, 100%)
+    );
     color: hsl(var(--segmented-item-color));
     font-size: var(--font-size-base);
   }
@@ -1597,7 +1600,10 @@
    * Excluded on the selected item, as the spec excludes it — hovering the current choice must
    * not repaint the slab. */
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):hover {
-    background: hsl(var(--segmented-item-hover-background, var(--accent)));
+    background: hsl(
+      var(--segmented-item-hover-background, var(--accent)) /
+        var(--segmented-item-hover-background-alpha, 100%)
+    );
     color: hsl(var(--segmented-item-hover-color));
   }
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):active {
@@ -1607,7 +1613,10 @@
   }
 
   .ui-segmented-item[data-state="checked"] {
-    background: hsl(var(--segmented-item-selected-background, var(--background)));
+    background: hsl(
+      var(--segmented-item-selected-background, var(--background)) /
+        var(--segmented-item-selected-background-alpha, 100%)
+    );
     /* The elevation, plus the hairline that carries the state across the 3:1 floor. The ring is
      * INSET so it costs no layout; the fill/track pair is 1.09:1 in light and 1.33:1 in dark and
      * cannot be fixed by moving either colour — see the token's own note (gh#843). */
@@ -3700,7 +3709,10 @@
   }
 
   .ui-control--filled:hover:not(:disabled):not([readonly]):not([data-disabled]) {
-    background-color: hsl(var(--control-variant-filled-hover-background, var(--accent)));
+    background-color: hsl(
+      var(--control-variant-filled-hover-background, var(--accent)) /
+        var(--control-variant-filled-hover-background-alpha, 100%)
+    );
   }
 
   .ui-control--borderless {
@@ -4114,7 +4126,10 @@
 
   .ui-radio-button[data-state="checked"] {
     color: hsl(var(--choice-button-selected-color, var(--text-brand, var(--primary))));
-    border-color: hsl(var(--choice-button-selected-border-color, var(--primary)));
+    border-color: hsl(
+      var(--choice-button-selected-border-color, var(--primary)) /
+        var(--choice-button-selected-border-color-alpha, 100%)
+    );
   }
 
   .ui-radio-button-bar[data-button-style="solid"] .ui-radio-button[data-state="checked"] {

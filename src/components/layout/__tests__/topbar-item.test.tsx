@@ -96,7 +96,7 @@ describe("TopbarItem", () => {
 
   it("takes hover, active and open from the bar's surface tokens — no literals", () => {
     expect(declarationsFor(shellStyles, ".ui-topbar-item:hover")).toMatch(
-      /background:\s*hsl\(var\(\s*--topbar-item-hover-background, var\(\s*--accent\)\)\);/,
+      /background:\s*hsl\(\s*var\(\s*--topbar-item-hover-background, var\(\s*--accent\)\)\s*\/\s*var\(--topbar-item-hover-background-alpha, 100%\)\s*\);/,
     );
     // The pointer has left the cell while its menu is open, so :hover alone loses the anchor.
     expect(declarationsFor(shellStyles, '.ui-topbar-item[data-state="open"]')).toMatch(

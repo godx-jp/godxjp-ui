@@ -228,7 +228,10 @@
     /* A knob, with the role default resolved HERE (gh#880) — the Topbar next to it has had one
      * since gh#831 and this had none, which made the always-on-screen half of the shell the half a
      * theme could not touch. */
-    background: var(--sidebar-surface-background, hsl(var(--card) / var(--card-alpha, 100%)));
+    background: var(
+      --sidebar-surface-background,
+      hsl(var(--card) / var(--sidebar-surface-background-alpha, var(--card-alpha, 100%)))
+    );
     /* Opt-in brand-chrome wash — invisible by default (--sidebar-gradient: none). */
     background-image: var(--sidebar-gradient);
     /* Unset ⇒ invalid-at-computed-value-time ⇒ `none`, so the shipped rail creates no backdrop
@@ -2032,7 +2035,10 @@
   }
 
   .ui-app-launcher-tile:hover {
-    background: hsl(var(--app-launcher-tile-hover-background, var(--accent)));
+    background: hsl(
+      var(--app-launcher-tile-hover-background, var(--accent)) /
+        var(--app-launcher-tile-hover-background-alpha, 100%)
+    );
     color: hsl(var(--app-launcher-tile-hover-color, var(--accent-foreground)));
   }
 
@@ -2911,7 +2917,10 @@
   }
 
   .ui-topbar-item:hover {
-    background: hsl(var(--topbar-item-hover-background, var(--accent)));
+    background: hsl(
+      var(--topbar-item-hover-background, var(--accent)) /
+        var(--topbar-item-hover-background-alpha, 100%)
+    );
     color: hsl(var(--topbar-item-hover-color, var(--accent-foreground)));
   }
 

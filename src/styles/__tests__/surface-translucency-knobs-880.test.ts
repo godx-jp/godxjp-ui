@@ -233,11 +233,11 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
       /background:\s*var\(\s*--dropdown-content-background,\s*hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\s*\);/,
     );
     expect(shellLayout).toMatch(
-      /background: var\(--sidebar-surface-background, hsl\(var\(--card\) \/ var\(--card-alpha, 100%\)\)\);/,
+      /background:\s*var\(\s*--sidebar-surface-background,\s*hsl\(var\(--card\) \/ var\(--sidebar-surface-background-alpha, var\(--card-alpha, 100%\)\)\)\s*\);/,
     );
     // The DataTable frame painted NO fill, so its knob is read with no fallback: unset, the
     // declaration is invalid and `background-color` keeps its own initial `transparent`.
-    expect(tableLayout).toMatch(/background-color: var\(--table-surface-background\);/);
+    expect(tableLayout).toMatch(/background-color:\s*var\(\s*--table-surface-background,\s*hsl\(var\(--card\) \/ var\(--table-surface-background-alpha\)\)\s*\);/);
     // Sonner owns the toast body, so the package's knob is threaded through its private var.
     expect(sonnerTsx).toMatch(
       /"--normal-bg":\s*"var\(--toast-background, hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\)"/,

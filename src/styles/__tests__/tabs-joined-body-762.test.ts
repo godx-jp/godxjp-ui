@@ -126,7 +126,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
     );
     expect(body).toMatch(/border-radius:\s*var\(\s*--tabs-panel-radius\)/);
     expect(body).toMatch(
-      /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(\s*--background\)\s*\)\s*\)/,
+      /background:\s*hsl\(\s*var\(\s*--tabs-panel-background,\s*var\(\s*--background\)\s*\)\s*\/\s*var\(--tabs-panel-background-alpha, 100%\)\s*\)/,
     );
     expect(body).toMatch(/padding:\s*var\(\s*--tabs-panel-space-inset\)/);
   });

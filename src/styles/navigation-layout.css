@@ -512,7 +512,9 @@
   [data-slot="tabs"][data-bodied="true"] > [data-slot="tabs-content"] {
     border: var(--tabs-panel-border-width) solid hsl(var(--border));
     border-radius: var(--tabs-panel-radius);
-    background: hsl(var(--tabs-panel-background, var(--background)));
+    background: hsl(
+      var(--tabs-panel-background, var(--background)) / var(--tabs-panel-background-alpha, 100%)
+    );
     padding: var(--tabs-panel-space-inset);
   }
 
@@ -686,7 +688,9 @@
     justify-content: center;
     border: var(--tabs-card-rail-border-width) solid hsl(var(--border));
     border-radius: var(--tabs-add-radius);
-    background: hsl(var(--tabs-card-background, var(--muted)));
+    background: hsl(
+      var(--tabs-card-background, var(--muted)) / var(--tabs-card-background-alpha, 100%)
+    );
     color: hsl(var(--muted-foreground));
   }
 

@@ -379,7 +379,10 @@
     /* Both unset ⇒ both declarations are invalid-at-computed-value-time ⇒ each property keeps its
      * OWN initial value (`transparent` and `none`), which is byte-identical to the frame that had
      * neither declaration. No fill, no blur, no backdrop root. */
-    background-color: var(--table-surface-background);
+    background-color: var(
+      --table-surface-background,
+      hsl(var(--card) / var(--table-surface-background-alpha))
+    );
     backdrop-filter: blur(var(--table-surface-backdrop-blur-size))
       saturate(var(--surface-backdrop-saturate, 160%));
   }

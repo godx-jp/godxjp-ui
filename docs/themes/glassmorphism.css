@@ -244,8 +244,7 @@
    *    value (dialog-layout.css:342-343, :362-363), so each needs its own `hsl(...)` wrapper here
    *    rather than a bare triplet. The Popover's fill is re-set darker in the seed layer, for the
    *    reason measured there. ───────────────────────────────────────────────────────────────── */
-  --popover-surface-background: hsl(0 0% 100% / 22%);
-  --popover-surface-border-color: hsl(0 0% 100% / 30%);
+  --popover-surface-border-color-alpha: 30%;
 
   /* Dark frosted chip — the conventional tooltip treatment even inside an otherwise light-glass
    * page. Re-derived from the seed in the seed layer. */
@@ -297,8 +296,8 @@
    *    (navigation-layout.css:482,653). The default (underline) tab list paints nothing, so it is
    *    already "glass" by having no surface; its own list and active-trigger fills are set further
    *    down. ─────────────────────────────────────────────────────────────────────────────────── */
-  --tabs-panel-background: 0 0% 100% / 18%;
-  --tabs-card-background: 0 0% 100% / 30%;
+  --tabs-panel-background-alpha: 18%;
+  --tabs-card-background-alpha: 30%;
 
   /* ── Alert — only the FOUR TONED variants (destructive/warning/success/info) resolve their
    *    SURFACE through `--alert-bg-alpha` / `--alert-border-alpha` (alert-layout.css:25-44). The
@@ -426,8 +425,8 @@
    *    rgb(244,243,240)). This knob EXISTS and the first pass simply never set it — unlike
    *    `--tabs-list-background` and `--tabs-trigger-active-background`, which do not exist at all
    *    and are the library half of gh#880. So Segmented is fixed here and Tabs cannot be. */
-  --segmented-track-background: 0 0% 100% / 10%;
-  --segmented-item-selected-background: 0 0% 100% / 16%;
+  --segmented-track-background-alpha: 10%;
+  --segmented-item-selected-background-alpha: 16%;
   /* The ITEM ink too — an unselected item measured 2.86:1 because only the track had been
    * retinted and the label kept its own default. Same ramp as everything else. */
   /* The table's header strip: both knobs exist, and the first build set neither, so it kept an
@@ -581,16 +580,16 @@
    * `--focus-outline-color`, `--focus-ring-color`, `--control-outline`, `--focus-ring-glow-color`
    * and `--primary-border` in turn moved none of it, so it is reported here and not faked. Every
    * other control on the page takes the 2px warm-white ring. */
-  --topbar-item-hover-background: 0 0% 100% / 16%;
+  --topbar-item-hover-background-alpha: 16%;
   --topbar-item-hover-color: var(--glass-ink);
-  --segmented-item-hover-background: 0 0% 100% / 18%;
+  --segmented-item-hover-background-alpha: 18%;
   --segmented-item-hover-color: var(--glass-ink);
   --segmented-item-active-background-alpha: 26%;
-  --app-launcher-tile-hover-background: 0 0% 100% / 16%;
+  --app-launcher-tile-hover-background-alpha: 16%;
   --app-launcher-tile-hover-color: var(--glass-ink);
-  --control-variant-filled-hover-background: 0 0% 100% / 24%;
+  --control-variant-filled-hover-background-alpha: 24%;
   --choice-button-selected-color: var(--glass-ink);
-  --choice-button-selected-border-color: 0 0% 100% / 60%;
+  --choice-button-selected-border-color-alpha: 60%;
   --slider-dot-active-border-color: var(--glass-ink);
   --secondary-hover-alpha: 20%;
   --secondary-active-alpha: 26%;
@@ -615,7 +614,6 @@
   --conversations-item-active-color: hsl(var(--glass-ink));
   --tabs-count-active-background-alpha: 24%;
   --tabs-count-active-color: hsl(var(--glass-ink));
-  --toggle-soft-hover-background: hsl(0 0% 100% / 16%);
   --toggle-pressed-count-background-alpha: 26%;
   --toggle-pressed-count-color: hsl(var(--glass-ink));
   --toggle-pressed-border-color-alpha: 45%;
@@ -658,8 +656,8 @@
    * the most opaque surfaces in the theme, deliberately. */
   --dialog-surface-background: hsl(var(--glass-panel) / 88%);
   --sheet-surface-background: hsl(var(--glass-panel) / 92%);
-  --sidebar-surface-background: hsl(0 0% 100% / 10%);
-  --table-surface-background: hsl(0 0% 100% / 8%);
+  --sidebar-surface-background-alpha: 10%;
+  --table-surface-background-alpha: 8%;
 
   /* The nested surfaces that made the Card disagree with its own contents. */
   --tabs-list-background-alpha: 6%;
@@ -791,7 +789,7 @@
      *    So the fill joins the other overlays at the dark end instead of the ink being split. That
      *    is §3's remedy — a scrim, not darker ink — applied to the panel itself. ─────────────── */
     --popover-surface-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
-    --popover-surface-border-color: hsl(0 0% 100% / 22%);
+    --popover-surface-border-color-alpha: 22%;
 
     /* ── THE SCRIM KNOB IS A SHARE, NOT AN OPACITY — measured, and it is a trap worth writing down.
      *    `--dialog-overlay-alpha: 62%` above reads as "62% black". It is not: dialog-layout.css:26

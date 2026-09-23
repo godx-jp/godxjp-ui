@@ -50,6 +50,7 @@
    * numbers. docs/TOKENS.md · "Role-mirror knobs MUST be `initial`". */
   /* track background — the recessed ground a control group sits in. */
   --segmented-track-background: initial; /* default = var(--muted), resolved at the call site */
+  --segmented-track-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   /* track radius = the base radius; item radius = one step DOWN the radius scale, not
    * `radius − trackPadding` (the two coincide only because the source scale happens to step by 2).
    * This scale is φ-spaced, so "one step down" from --radius is --radius-md (6px → 3.71px, against
@@ -99,11 +100,13 @@
   --segmented-item-selected-color: var(--foreground);
   /* item hover fill = the lighter neutral · active fill = the heavier of the pair. */
   --segmented-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
+  --segmented-item-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --segmented-item-active-background: var(--secondary);
   --segmented-item-active-background-alpha: 100%;
   /* selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted
    * off the recessed track, which is the whole affordance. */
   --segmented-item-selected-background: initial; /* default = var(--background), resolved at the call site */
+  --segmented-item-selected-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   /* `initial` + the ramp default at the CALL SITE (gh#880 item 7). Bound to `var(--shadow-md)`
    * here it substituted on `<html>`, so a scope that restated the elevation ramp could not move
    * the selected slab — the same freeze the two knobs above this one were converted for in gh#848,

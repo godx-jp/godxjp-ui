@@ -209,6 +209,7 @@
   --tabs-card-radius: var(--radius-md);
   --tabs-card-rail-border-width: var(--stroke-hairline);
   --tabs-card-background: initial; /* default = var(--muted) at the call site */
+  --tabs-card-background-alpha: initial; /* default = 100% at the call site (gh#901) */
 
   /* TABS JOINED BODY (`bodied`, gh#762). The card strip alone is half an object: antd's active
    * face repaints the edge FACING the panel in the surface colour, which only reads as "opened
@@ -224,6 +225,7 @@
    * The radius mirrors the tab's own (`--tabs-card-radius`), because the body and the faces are
    * two halves of one outline; the border width mirrors the rail's, for the same reason. */
   --tabs-panel-background: initial; /* default = var(--background) at the call site */
+  --tabs-panel-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --tabs-panel-border-width: var(--tabs-card-rail-border-width);
   --tabs-panel-radius: var(--tabs-card-radius);
   --tabs-panel-space-inset: var(--space-4);
