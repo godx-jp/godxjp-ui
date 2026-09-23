@@ -63,7 +63,14 @@ function cssFiles() {
       else if (entry.endsWith(".css")) out.push(full);
     }
   };
-  for (const dir of ["src/tokens", "src/styles"]) {
+  /* BOTH LAYOUTS, because the same script runs in two places and only one of them has `src/`.
+   * In this checkout the CSS lives in `src/tokens` and `src/styles`. In the PUBLISHED package it
+   * lives in `dist/tokens` and `dist/styles` — `package.json::files` ships `dist`, never `src`.
+   * gh#893 put this file in the tarball, and shipping it was not the same as making it work: a
+   * consumer running it against `node_modules/@godxjp/ui` scanned two directories that do not
+   * exist there, found zero CSS files, and got a confident empty answer for every token. Walking
+   * both and keeping whichever is present costs one loop and removes the whole failure mode. */
+  for (const dir of ["src/tokens", "src/styles", "dist/tokens", "dist/styles"]) {
     try {
       walk(join(ROOT, dir));
     } catch {
@@ -312,7 +319,7 @@ function audit({ decls, reads }, published) {
 
   console.log("\nWHAT THIS CANNOT SEE — do not read a clean run as proof of no freeze:");
   console.log(
-    "  1. CONSUMER CSS. Only src/tokens and src/styles are scanned, so a token this package never",
+    "  1. CONSUMER CSS. Only this package's own token/style trees are scanned, so a token it never",
   );
   console.log(
     "     restates below root looks safe. `--shadow-md` binds `--shadow-color` at :root; a",
