@@ -1949,7 +1949,12 @@ DataTable.Content = function DataTableContent() {
                         // Hover highlight when rows are clickable OR explicitly hoverable… The
                         // --accent step TableRow itself uses, not --muted/50: that sat BELOW the
                         // zebra stripe (--muted/0.8, gh#700), so hovering a striped row lightened it.
-                        (onRowClick || hoverable) && "hover:bg-accent/70",
+                        // Same token-driven formula as TableRow's own hover fill (gh#894) — a bare
+                        // `/70` here would silently outrank a theme's retuned default at equal
+                        // specificity, and `color-mix` (not `hsl(x / var(y, 70%))`) because a `/`
+                        // inside a Tailwind arbitrary property is read as ITS OWN opacity suffix.
+                        (onRowClick || hoverable) &&
+                          "hover:[background-color:color-mix(in_oklab,hsl(var(--accent))_var(--table-row-hover-background-alpha,70%),transparent)]",
                         // …but the affordance (cursor + focus mark) only when clickable.
                         //
                         // `ui-focus-ring` = the single focus source (styles/focus-ring.css). It

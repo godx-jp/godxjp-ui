@@ -248,7 +248,7 @@ A system with only tier 1 turns every exception into a hack (`!important`, a glo
 
 An inline custom property wins by **inheritance proximity**, not specificity, so it beats the `:root` default without any weight games. What keeps the route open is that every icon rule in `src/styles` reads its token through `var()` with no baked literal — `src/tokens/__tests__/icon-size-scale.test.ts` asserts exactly that, and carries a shrink-only list of the rules that still bake a literal and are therefore unreachable from an app.
 
-The three left need tokens in `components/control.css` (`.ui-otp-separator-icon`) and `components/shell.css` (`.tb-icon-btn svg`, `.tb-chip-icon`). Note that `.tb-chip-icon`'s `1.125rem` is **not** a snap case even though 18px is off the scale: it is a whole pixel, and the box is a letter medallion (`display: grid`, `place-items: center`, a radius, `color: white`), not a stroked glyph — so it wants a `scale-exempt:` marker, not the nearest step. Off-scale and off-grid are different findings; decide each on what the icon actually is.
+The two left need tokens in `components/control.css` (`.ui-otp-separator-icon`) and `components/shell.css` (`.tb-icon-btn svg`).
 
 **Before you add a step:** if a value is wanted in two places it belongs on the scale, and if it is wanted in one it does not. Adding a tenth step to serve a single call site is how a scale stops meaning anything.
 

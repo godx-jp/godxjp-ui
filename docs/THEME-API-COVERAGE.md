@@ -197,22 +197,21 @@ Components whose only attributable declarations were structural (no non-structur
 | shared: control base         |           65 |        51 |          6 |          8 |         89% | `.ui-control*` — shared by every text-entry control (Input, Textarea, Select trigger, …). A hard-coded value here reaches more surfaces than any single component row.               |
 | shared: stack/inline utility |            9 |         9 |          0 |          0 |        100% | `.ui-stack-*` / `.ui-inline-*` — spacing utility classes, not a catalogued component.                                                                                                |
 
-## The ten worst individual offenders across the library
+## The nine worst individual offenders across the library
 
-Pure hard-coded literals (no `var()` at all — the `--radius-md`-family `var()`-but-unpublished hits are Finding 1's one root cause, already covered there, not repeated as ten separate ones), ranked by how obviously a theme would want to change them: colour and background first, then border/shadow, then type, then spacing.
+Pure hard-coded literals (no `var()` at all — the `--radius-md`-family `var()`-but-unpublished hits are Finding 1's one root cause, already covered there, not repeated as nine separate ones), ranked by how obviously a theme would want to change them: colour and background first, then border/shadow, then type, then spacing.
 
 1. **sidebar** — `src/styles/shell-layout.css:2121` → `color: white` (selector `.sb-logo-mark`)
-2. **topbar** — `src/styles/shell-layout.css:2986` → `color: white` (selector `.tb-chip-icon`)
-3. **skeleton** — `src/styles/alert-layout.css:401` → `background-size: 400% 100%` (selector `.ui-skeleton-block[data-active], .ui-skeleton-article[data-active] .ui`)
-4. **command** — `src/styles/control.css:984` → `opacity: 0.5` (selector `.ui-command-search-icon`)
-5. **command** — `src/styles/control.css:1052` → `opacity: 0.5` (selector `.ui-command-item[data-disabled="true"]`)
-6. **tag-input** — `src/styles/control.css:1661` → `opacity: 0.7` (selector `.ui-tag-input-remove, .ui-search-select-value-remove`)
-7. **accordion** — `src/styles/data-display-layout.css:821` → `opacity: 0.5` (selector `.ui-accordion-trigger:disabled, .ui-accordion-trigger[data-disabled]`)
-8. **attachments** — `src/styles/data-entry-layout.css:204` → `opacity: 0.5` (selector `.ui-attachments-upload-btn:disabled`)
-9. **attachments** — `src/styles/data-entry-layout.css:240` → `opacity: 0.25` (selector `.ui-attachments-placeholder[data-disabled="true"]`)
-10. **resizable-panel** — `src/styles/layout.css:709` → `opacity: 0.5` (selector `.ui-resizable-handle[data-separator="disabled"]`)
+2. **skeleton** — `src/styles/alert-layout.css:401` → `background-size: 400% 100%` (selector `.ui-skeleton-block[data-active], .ui-skeleton-article[data-active] .ui`)
+3. **command** — `src/styles/control.css:984` → `opacity: 0.5` (selector `.ui-command-search-icon`)
+4. **command** — `src/styles/control.css:1052` → `opacity: 0.5` (selector `.ui-command-item[data-disabled="true"]`)
+5. **tag-input** — `src/styles/control.css:1661` → `opacity: 0.7` (selector `.ui-tag-input-remove, .ui-search-select-value-remove`)
+6. **accordion** — `src/styles/data-display-layout.css:821` → `opacity: 0.5` (selector `.ui-accordion-trigger:disabled, .ui-accordion-trigger[data-disabled]`)
+7. **attachments** — `src/styles/data-entry-layout.css:204` → `opacity: 0.5` (selector `.ui-attachments-upload-btn:disabled`)
+8. **attachments** — `src/styles/data-entry-layout.css:240` → `opacity: 0.25` (selector `.ui-attachments-placeholder[data-disabled="true"]`)
+9. **resizable-panel** — `src/styles/layout.css:709` → `opacity: 0.5` (selector `.ui-resizable-handle[data-separator="disabled"]`)
 
-Reading this list: **not one of the ten (nor any of the 288 pure hard-coded literals in the whole
+Reading this list: **not one of the nine (nor any of the 288 pure hard-coded literals in the whole
 per-component scan) is a raw colour hex/hsl/rgb literal.** That discipline holds almost everywhere.
 The only raw colour literals found anywhere in the whole exercise are 6 _token-definition defaults_
 in `src/tokens/components/*.css` (not component rules, so they don't appear in the table above):

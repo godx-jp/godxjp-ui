@@ -1265,7 +1265,8 @@
     );
   }
 
-  /* Hovered row: mirror TableRow's own `hover:bg-accent/70`, over the opaque base above. */
+  /* Hovered row: mirror TableRow's own hover fill (`--table-row-hover-background-alpha`,
+   * gh#894), over the opaque base above. */
   .ui-permission-matrix tbody tr:hover > .ui-permission-matrix-pin {
     background-image: linear-gradient(
       var(
