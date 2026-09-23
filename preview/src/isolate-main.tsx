@@ -44,7 +44,7 @@ function IsolateApp() {
   }
 
   if (loading) {
-    return <div className="preview-runtime-loading">Loading...</div>;
+    return <div className="preview-runtime-loading">Loading…</div>;
   }
 
   if (error) {

@@ -22,11 +22,65 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.preview-runtime-loading,
 .preview-runtime-error {
   padding: 16px;
   font-size: var(--font-size-sm, var(--font-size-base));
   color: hsl(var(--foreground));
+}
+
+/* THE LOADING STATE IS CENTRED, AND ITS MOTION IS THE SMALLEST THING THAT READS AS ALIVE.
+ *
+ * It used to share the error rule: `padding: 16px`, so a bare "Loading…" sat in the top-left of an
+ * otherwise blank page and looked like a rendering failure rather than a wait.
+ *
+ * DELIBERATELY CSS-ONLY, with no import from the library. This is what paints WHILE the showcase
+ * chunk is still in flight, so anything it depended on would be the thing it is waiting for — a
+ * loading state that needs the bundle it is covering for cannot show up when it is most needed.
+ *
+ * `100dvh`, not `100vh`: on iOS Safari `vh` is the LARGEST viewport, so a full-height centred box
+ * is pushed under the URL bar and the mark lands off-centre on exactly the devices where it is
+ * hardest to see.
+ *
+ * The mark is one dot that breathes — ~1.6s, opacity only, no transform and no spin. Opacity is
+ * compositor-only, so it costs nothing on the frame where the chunk finally evaluates, which is
+ * the one frame that matters here. */
+.preview-runtime-loading {
+  display: grid;
+  min-block-size: 100dvh;
+  place-items: center;
+  gap: 12px;
+  grid-auto-flow: row;
+  align-content: center;
+  font-size: var(--font-size-sm, var(--font-size-base));
+  color: hsl(var(--muted-foreground, var(--foreground)));
+}
+
+.preview-runtime-loading::before {
+  content: "";
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: preview-loading-breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes preview-loading-breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* An OS-level accessibility setting, not a preference to weigh against the look. The dot stays,
+ * at a steady mid opacity, so the state still reads as "waiting" rather than disappearing. */
+@media (prefers-reduced-motion: reduce) {
+  .preview-runtime-loading::before {
+    animation: none;
+    opacity: 0.55;
+  }
 }
 
 .preview-runtime-error pre {
