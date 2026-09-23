@@ -112,6 +112,12 @@ describe("Avatar square appearance — token-owned (gh#249)", () => {
 
   it("leaves the circle avatar rule untouched (--radius-pill, muted surface)", () => {
     expect(dataDisplayCss).toContain("border-radius: var(--radius-pill);");
-    expect(dataDisplayCss).toContain("var(--avatar-background, hsl(var(--muted)))");
+    /* The role default now carries its OPACITY companion (gh#901 split the translucency axis out
+     * of the colour axis, so a theme can make a surface see-through without restating its colour
+     * and losing the polarity). The contract this line guards is unchanged: the knob still resolves
+     * `--muted` AT THE CALL SITE rather than binding it at `:root`, which is what would freeze it. */
+    expect(dataDisplayCss).toContain(
+      "var(--avatar-background, hsl(var(--muted) / var(--avatar-background-alpha, 100%)))",
+    );
   });
 });
