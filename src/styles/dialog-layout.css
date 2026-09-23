@@ -54,6 +54,17 @@
     gap: var(--dialog-space-gap);
     border: 1px solid hsl(var(--border));
     background-color: hsl(var(--background));
+    /* THE INK HAS TO BE DECLARED HERE, not inherited (gh#877).
+     *
+     * This surface paints `--background` and, until now, took its text colour from whatever it
+     * happened to inherit — which on a page-level theme is `<body>`, already carrying the matching
+     * `--foreground`, so the omission never showed. It shows the moment a REGION is themed and its
+     * dialog follows: the panel went dark while the ink stayed the light-mode ink, measured at
+     * rgb(25,24,21) on rgb(36,35,30) — a contrast ratio of 1.03:1, WCAG 2.2 SC 1.4.3 failed at
+     * every size. `.ui-popover-content` and `.ui-tooltip-content` already declare their own pair;
+     * this one was the outlier. On a page-level theme it is a no-op, because the value it now
+     * states is the value it was inheriting. */
+    color: hsl(var(--foreground));
     padding: var(--dialog-space-inset);
     /* clip so the full-bleed header/footer bands round with the dialog corners (Ant Modal). */
     overflow: hidden;

@@ -949,5 +949,53 @@
       "body": "Popover có cả cặp token nền VÀ viền — overlay duy nhất làm được điều này.",
       "action": "Đánh dấu đã đọc"
     }
+  },
+  "themeScopeDocs": {
+    "page": {
+      "subtitle": "Một vùng có theme riêng, và overlay nó mở ra giữ nguyên token của vùng đó.",
+      "title": "ThemeScope"
+    },
+    "intro": {
+      "title": "Vì sao một vùng cần đến nó",
+      "description": "Mọi overlay đều portal ra document.body, nên kế thừa custom property dừng lại ở ranh giới portal.",
+      "body": "Một vùng tự đặt theme chỉ phủ được cây con của nó, không phủ được thứ nó mở ra: đo trên một scope có theme, vùng đọc --primary 204 100% 37% còn Dialog nó mở đọc 268.7 100% 50% — mặc định của package. ThemeScope mang phần CHÊNH LỆCH đã tính giữa vùng và gốc tài liệu sang một host đặt tại đích portal, nên overlay kế thừa bằng chính quan hệ chứa trong DOM. Nó không có prop theme — nó đọc DOM, nên style inline, class hay rule trong stylesheet đều cho cùng một kết quả."
+    },
+    "region": {
+      "description": "Mở bất cứ thứ gì ở đây. Panel mở ra được tô bằng token của vùng này.",
+      "pending": "Chờ duyệt",
+      "queue": "12 hồ sơ đang trong hàng đợi",
+      "reviewerLabel": "Giao người duyệt",
+      "reviewerPlaceholder": "Chọn người duyệt",
+      "approve": "Duyệt hồ sơ",
+      "history": "Lịch sử duyệt",
+      "notify": "Báo cho người nộp"
+    },
+    "dialog": {
+      "title": "Duyệt hồ sơ này",
+      "description": "Lượt duyệt được ghi vào tài khoản của bạn và người nộp được báo ngay.",
+      "confirm": "Duyệt",
+      "body": "Ba hồ sơ của khách hàng này đang chờ cùng một bộ chứng từ."
+    },
+    "popover": {
+      "body": "Đã trả lại một lần vì thiếu chứng từ, nộp lại trong cùng ngày."
+    },
+    "toast": {
+      "approved": "Đã duyệt hồ sơ",
+      "saved": "Đã báo cho người nộp"
+    },
+    "acme": {
+      "name": "ACME Logistics"
+    },
+    "night": {
+      "name": "Bảng điều khiển ca đêm"
+    },
+    "without": {
+      "title": "Cũng vùng đó nhưng không có ThemeScope",
+      "description": "Token khai báo y hệt phía trên — chỉ khác là wrapper chỉ còn là một div thường.",
+      "open": "Duyệt hồ sơ",
+      "dialogTitle": "Duyệt hồ sơ này",
+      "dialogDescription": "Panel này chính là lỗi: nó được tô bằng mặc định của package, không phải bằng vùng đã mở nó.",
+      "dialogBody": "So nút đã mở panel với nút nằm trong panel: màu của vùng đã không đi theo."
+    }
   }
 }

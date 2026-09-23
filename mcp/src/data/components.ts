@@ -9646,6 +9646,63 @@ const shadowRoot = host.attachShadow({ mode: "open" });
     rules: [5],
   },
   {
+    name: "ThemeScope",
+    group: "providers",
+    importPath: "@godxjp/ui/app",
+    tagline:
+      "Makes a themed REGION reach the overlays it opens. Every overlay portals to document.body, so custom-property inheritance stops at the portal boundary and a tenant-themed region's Dialog, Select listbox, Popover and Toast paint the package defaults. Wrap the region in ThemeScope and they carry the region's tokens.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "The themed region. Overlays opened anywhere below it follow its tokens.",
+      },
+      {
+        name: "className",
+        type: "string",
+        required: false,
+        description:
+          "Classes on the scope element — this is where `dark` goes when a REGION is dark rather than the whole page.",
+      },
+      {
+        name: "id",
+        type: "string",
+        required: false,
+        description: "DOM id of the scope element.",
+      },
+    ],
+    usage: [
+      'DO wrap the region, then theme it the way you already do — `style={tenantTheme(hex).vars}`, `data-tenant="acme"`, `className="dark"`, or a stylesheet rule that never mentions React. ThemeScope reads the COMPUTED tokens at its own element, so all of those paths behave identically; it has no theme prop and needs none.',
+      "DO nest it. An inner ThemeScope inside an outer one wins for the overlays opened below it, because its scope already inherits the outer's tokens and it diffs against the document root.",
+      "DO mount it inside an OverlayPortalProvider when you have one. It puts its host INSIDE that container, so a shadow-rooted app can be tenant-themed as well — the two providers compose rather than compete.",
+      "DON'T reach for `OverlayPortalProvider container={themedWrapper}` to solve this. It works until the wrapper sits inside an `overflow: hidden`, a `transform` or a `contain` ancestor, and then the region clips its own overlays — a colour bug traded for a layout bug that is harder to see. `container` stays for the shadow-DOM case it was built for.",
+      "DON'T expect it on a page with no scoped theme. With nothing themed it carries nothing, and with no ThemeScope at all every overlay behaves exactly as before.",
+      "DON'T assume a CLASS-keyed rule travels. What crosses the boundary is the custom-property delta — the tokens. A rule written as `.dark .my-thing { background: #111 }` in app CSS is not a token and does not follow the overlay.",
+    ],
+    useCases: [
+      "A multi-tenant screen where one region wears a customer's brand colour from `tenantTheme(hex)` — the button was already right, and this is what makes the dialog it opens right too.",
+      'A dark region on a light page (a preview pane, an editor canvas): `className="dark"` on the region, and its Select listbox and Popover stay dark instead of flashing the page\'s light popover surface.',
+      "A `[data-tenant]` theme written entirely in the consumer's own stylesheet, with no React theming provider anywhere — the documented way to theme a region in this package, and the case the design was chosen to cover.",
+    ],
+    related: [
+      "OverlayPortalProvider — the other half of the same statement: it decides WHERE an overlay lands, ThemeScope decides which TOKENS it inherits there. They compose; a ThemeScope inside one hosts itself in that container.",
+      "tenantTheme — the function that turns a customer hex into the declarations you put ON a ThemeScope (`style={tenantTheme(hex).vars}`). It computes the colours; ThemeScope is what carries them past the portal boundary.",
+      "AppProvider — page-level theme axes (theme/brand/density/fontSize). Use it for the whole app; ThemeScope is for one region that differs from it.",
+    ],
+    example: `import { ThemeScope, tenantTheme } from "@godxjp/ui/app";
+
+// The customer's colour on one region — and on every overlay that region opens.
+<ThemeScope style={tenantTheme(customer.brandHex).vars} data-tenant={customer.slug}>
+  <Dialog>
+    <DialogTrigger asChild><Button>Review</Button></DialogTrigger>
+    <DialogContent><DialogTitle>Review</DialogTitle></DialogContent>
+  </Dialog>
+</ThemeScope>`,
+    storyPath: "app/ThemeScope.stories.tsx",
+    rules: [5],
+  },
+  {
     name: "formatDate",
     group: "providers",
     tagline:

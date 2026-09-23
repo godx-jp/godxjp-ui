@@ -955,5 +955,53 @@
       "body": "Popover exposes a real background AND border token pair — the only overlay that does.",
       "action": "Mark all read"
     }
+  },
+  "themeScopeDocs": {
+    "page": {
+      "subtitle": "A themed region whose overlays keep the region's tokens.",
+      "title": "ThemeScope"
+    },
+    "intro": {
+      "title": "Why a region needs this at all",
+      "description": "Every overlay portals to document.body, so custom-property inheritance stops at the portal boundary.",
+      "body": "A region that themes itself themes its own subtree and nothing it opens: measured on a scoped theme, the region read --primary 204 100% 37% and the Dialog it opened read 268.7 100% 50%, the package default. ThemeScope carries the computed difference between the region and the document root to a host at the portal destination, so the overlay inherits it by containment. It has no theme prop — it reads the DOM, which is why an inline style, a class and a stylesheet rule all behave the same."
+    },
+    "region": {
+      "description": "Open anything here. The panel it opens is painted by this region.",
+      "pending": "Awaiting review",
+      "queue": "12 submissions in the queue",
+      "reviewerLabel": "Assign a reviewer",
+      "reviewerPlaceholder": "Choose a reviewer",
+      "approve": "Approve submission",
+      "history": "Review history",
+      "notify": "Notify the submitter"
+    },
+    "dialog": {
+      "title": "Approve this submission",
+      "description": "The approval is recorded against your account and the submitter is notified immediately.",
+      "confirm": "Approve",
+      "body": "Three submissions from this customer are waiting on the same evidence pack."
+    },
+    "popover": {
+      "body": "Returned once for missing evidence, resubmitted the same day."
+    },
+    "toast": {
+      "approved": "Submission approved",
+      "saved": "The submitter has been notified"
+    },
+    "acme": {
+      "name": "ACME Logistics"
+    },
+    "night": {
+      "name": "Night shift console"
+    },
+    "without": {
+      "title": "The same region without ThemeScope",
+      "description": "The tokens are declared exactly as above — only the wrapper is a plain div.",
+      "open": "Approve submission",
+      "dialogTitle": "Approve this submission",
+      "dialogDescription": "This panel is the defect: it is painted by the package defaults, not by the region that opened it.",
+      "dialogBody": "Compare the button that opened it with the button inside it: the region's colour did not travel."
+    }
   }
 }

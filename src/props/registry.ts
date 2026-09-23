@@ -758,6 +758,11 @@ export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
+  ThemeScopeProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: ["ChildrenProp", "ClassNameProp", "IdProp"],
+  },
   AppSettingPickerProp: {
     group: "app",
     file: "components/app.prop.ts",

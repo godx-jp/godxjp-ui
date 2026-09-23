@@ -49,3 +49,12 @@ export { useTranslation, usePickerLocales } from "../i18n/use-translation";
  */
 export { OverlayPortalProvider } from "../lib/overlay-portal";
 export type { OverlayPortalProviderProps } from "../lib/overlay-portal";
+
+/*
+ * ThemeScope is the same KIND of statement about the tree, for the other half of what a portal
+ * destination decides: not only WHERE an overlay lands but which TOKENS it inherits there. It sits
+ * beside OverlayPortalProvider because it composes with it — a ThemeScope inside one puts its host
+ * inside that container, so a shadow-rooted app can be tenant-themed too (gh#877).
+ */
+export { ThemeScope } from "../lib/overlay-portal";
+export type { ThemeScopeProps } from "../lib/overlay-portal";

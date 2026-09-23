@@ -1,7 +1,7 @@
 {
   "counts": {
     "anti-ai-tells": 26,
-    "components": 170,
+    "components": 171,
     "patterns": 20,
     "rules": 47,
     "tokens": 1981,
@@ -10,7 +10,7 @@
   "files": [
     {
       "file": "components-index.json",
-      "note": "45 KB — name + group + tagline for all 170. FETCH THIS FIRST, then fetch only the components you chose.",
+      "note": "45 KB — name + group + tagline for all 171. FETCH THIS FIRST, then fetch only the components you chose.",
       "url": "https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json"
     },
     {
