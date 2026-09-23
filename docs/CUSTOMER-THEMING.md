@@ -518,6 +518,352 @@ ancestor pinned for the previous brand cannot outrank the new seed, and it retur
 
 ---
 
+## Building a COMPLEX theme — the eight things that cost the most
+
+Everything above changes a **colour**. This section is for a theme that changes the **material** of
+every surface — glass, a dark console, a high-contrast skin, anything where the page is no longer
+"the default with a different hue".
+
+It was written by building one (`docs/themes/glassmorphism.css`, `/showcase/glassmorphism`) from the
+public token API and nothing else, as a deliberate stress test. It worked. But every failure along
+the way was one a consumer would hit with no way to know, and the expensive ones **fail silently**:
+nothing errors, nothing warns, and the surface simply keeps the colour it had. Where the cause is a
+gap on our side rather than a rule you should have guessed, the section says so.
+
+Do them in this order. Each one makes the next one decidable:
+
+| #   | decide                                                                 | why it is first                                               |
+| --- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 1   | which **value form** each knob takes                                   | a knob set in the wrong form paints nothing, and says nothing |
+| 2   | the **polarity** of every surface — light panes or dark                | it determines the ink ramp, and one ramp cannot serve both    |
+| 3   | `--background`, the canvas under the whole shell                       | four visible defects at once if you skip it                   |
+| 4   | the **ink ramp**, measured against the worst ground                    |                                                               |
+| 5   | the **resting** fill of every surface                                  |                                                               |
+| 6   | the **interaction states** — 95 tokens, and resting is not one of them | what you ship broken                                          |
+| 7   | the **overlay opacity tiers** — a dialog is not a card                 |                                                               |
+| 8   | your own `@supports` / `prefers-reduced-transparency` fallbacks        | the library cannot write them for you                         |
+
+Then measure. On composited pixels, never declared colours.
+
+### 1 · There are TWO token value forms, and the name does not tell you which
+
+```css
+HSL COMPONENTS    --card: 60 33% 99%          read at the call site as  hsl(var(--card))
+COMPLETE COLOUR   --card-tint: hsl(var(--primary) / 4%)   read as  var(--card-tint)
+```
+
+A components token holds three (or four) bare numbers with no function around them. A complete
+token holds a finished CSS colour — `hsl(…)`, `rgb(…)`, `oklch(…)`, `#hex`, `color-mix(…)`.
+
+**The name is not a signal, and neither is the tier.** Five knobs that all paint the hover or
+active fill of a navigable row, all defaulting to the same `--accent` role, in three components:
+
+| knob                                | the declaration that reads it                                                                                   | form                |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `--menu-item-hover-background`      | `src/styles/navigation-layout.css:828` — `background: var(--menu-item-hover-background, hsl(var(--accent)))`    | **complete colour** |
+| `--tree-node-hover-background`      | `src/styles/data-display-layout.css:2525` — `background: var(--tree-node-hover-background, hsl(var(--accent)))` | **complete colour** |
+| `--table-row-hover-background`      | `src/styles/table-layout.css:591` — `var(--table-row-hover-background, hsl(var(--accent) / 0.7))`               | **complete colour** |
+| `--segmented-item-hover-background` | `src/styles/control.css:1559` — `background: hsl(var(--segmented-item-hover-background, var(--accent)))`        | **HSL components**  |
+| `--topbar-item-hover-background`    | `src/styles/shell-layout.css:2852` — `background: hsl(var(--topbar-item-hover-background, var(--accent)))`      | **HSL components**  |
+
+And the two halves of the same `.ui-card` rule disagree with each other:
+`--card-background` is components (`src/styles/card-layout.css:62`, `hsl(var(--card-background,
+var(--card)))`) while `--card-tint` three lines above it is a complete colour.
+
+**How to tell, today: read the call site.** The knob's own declaration in
+`dist/tokens/**` is `initial` and tells you nothing; the read site tells you everything.
+
+```sh
+# in your app, after installing the package
+grep -rho 'hsl(var(--tabs-list-background\|var(--tabs-list-background' node_modules/@godxjp/ui/dist
+#   var(--tabs-list-background              → COMPLETE COLOUR
+#   hsl(var(--tabs-list-background          → HSL COMPONENTS
+```
+
+Grep `dist` whole, not `dist/styles` — a few knobs are read from a component's JS
+(`--toast-background` is read in `sonner.tsx` as `var(--toast-background, hsl(var(--popover)))`,
+because sonner renders the toast body itself).
+
+Measured on this repo's sources: **346 published tokens hold a colour. 96 take HSL components, 249
+take a complete colour, 1 (`--brand-foreground`) is published for your CSS and read by none of
+ours.** There is no rule that predicts the split. The older semantic roles — `--primary`,
+`--background`, `--foreground`, `--card`, `--muted`, `--accent`, `--border`, `--input`, `--ring`,
+the `--text-*` ramp, the four status pairs — are components. Most component-tier knobs added since
+are complete colours. "Most" is not a rule you can theme against.
+
+#### The failure is silent, and it does NOT fall back
+
+Set a knob in the wrong form and the substituted declaration is **invalid at computed-value time**.
+The property takes **its own initial value** — and _not_ the call-site fallback, which is the part
+that makes this read like a knob that does not work. Measured in Chromium, both forms, both
+mistakes:
+
+| the call site                | what you set     | computed `background-color`       |
+| ---------------------------- | ---------------- | --------------------------------- |
+| `var(--k, hsl(120 50% 50%))` | nothing          | `rgb(64, 191, 64)` — the fallback |
+| `var(--k, hsl(120 50% 50%))` | `rgb(255 0 0)` ✓ | `rgb(255, 0, 0)`                  |
+| `var(--k, hsl(120 50% 50%))` | `0 100% 50%` ✗   | **`rgba(0, 0, 0, 0)`**            |
+| `hsl(var(--k, 120 50% 50%))` | nothing          | `rgb(64, 191, 64)` — the fallback |
+| `hsl(var(--k, 120 50% 50%))` | `0 100% 50%` ✓   | `rgb(255, 0, 0)`                  |
+| `hsl(var(--k, 120 50% 50%))` | `rgb(255 0 0)` ✗ | **`rgba(0, 0, 0, 0)`**            |
+
+A transparent background shows whatever is painted behind it, so the surface looks like it kept its
+old colour. A table header set in the wrong form measured **1.03:1** against light ink — because it
+was showing the card beneath it, not the fill that was written for it.
+
+**The tell, when you are debugging:** in DevTools the custom property is set to exactly what you
+wrote, and the painted property is `rgba(0, 0, 0, 0)`. If both of those are true, it is the form.
+
+#### The sub-trap: an alpha baked into a components role
+
+A components role may legally carry an alpha — `--card: 0 0% 100% / 42%` is how a glass theme makes
+every card translucent in one line, and it works. But **83 declarations across 15 roles read a role
+and apply their own alpha** (`hsl(var(--accent) / 0.7)`, `hsl(var(--primary) / 0.12)`, …). A role
+that already carries one produces a second `/` in those, which is a parse error. Measured:
+
+| `--role`          | read as `hsl(var(--role))`  | read as `hsl(var(--role) / 0.9)` |
+| ----------------- | --------------------------- | -------------------------------- |
+| `0 0% 100%`       | `rgb(255, 255, 255)`        | `rgba(255, 255, 255, 0.9)`       |
+| `0 0% 100% / 42%` | `rgba(255, 255, 255, 0.42)` | **`rgba(0, 0, 0, 0)`**           |
+
+The 15 roles with at least one such reader, worst first: `--primary` (18 sites), `--muted` (15),
+`--destructive` (8), `--warning` (6), `--success` (5), `--info` (5), `--accent` (5), `--foreground`
+(5), `--muted-foreground` (4), `--table-row-tone-color` (4), `--background` (3),
+`--destructive-foreground` (2), `--secondary` (1), `--accent-foreground` (1), `--ring` (1).
+`--card` and `--popover` have none, which is exactly why baking an alpha into those two is the
+glass theme's main move.
+
+#### This is our defect, not your oversight
+
+`get_tokens`, `agent/tokens.json` and `mcp/src/data/component-tokens.generated.ts` all report a
+knob as `value: "initial"` plus prose. **3 of the 346 colour tokens say which value form they
+take** (`--background`, `--focus-ring-color`, `--rating-star-filled-color`, each by accident of
+someone writing it into a source comment). `scripts/explain-token.mjs` prints every read site of a
+token but not the text of the read, and it is not in the package's `files` list, so a consumer does
+not have it. Until the catalog carries the form as a field, the grep above is the answer, and it
+should not have to be. Cardinal rule **48** states the rule; the gap is what the rule is for.
+
+### 2 · Ninety-five interaction-state tokens exist, and resting state is not one of them
+
+```sh
+node -e "const t=require('./node_modules/@godxjp/ui/agent/tokens.json'); \
+  console.log(t.filter(x => /-(hover|active|selected|checked|pressed|focus)(-|\$)/.test(x.name)).length)"
+# 95
+```
+
+**95** published tokens paint only in a non-resting state; **62** of them paint a colour, an edge or
+an elevation. The glass theme, after three rounds of fixes, sets **5**. Every defect reported off a
+screenshot during that build was one of the missing 90:
+
+- a sidebar row at `[data-active="true"]` reading dark violet on a violet tint —
+  `--sidebar-item-active-foreground` defaults to the live `--primary-active`
+  (`src/styles/shell-layout.css:2289-2291`), which is legible against the page only for a seed that is
+  itself legible as text on the page. A dark seed on a dark theme is not. The same caveat is in
+  "What follows `--primary`" above; it bites hardest in a re-materialised theme.
+- a Segmented item with a dark hover fill under dark hover text — `--segmented-item-hover-background`
+  and `--segmented-item-hover-color` are separate knobs and the first was set alone.
+- a Topbar hover block — `--topbar-item-hover-background`, same shape.
+
+**`--focus-ring-color` is on that list, and it is the worst one to get wrong.** Every ring in the
+package is painted by one rule (`src/styles/focus-ring.css:116-119`):
+
+```css
+outline: var(--focus-ring-width) solid
+  hsl(
+    var(--focus-outline-color, var(--focus-ring-color, var(--ring))) / var(--focus-ring-opacity, 1)
+  );
+```
+
+So it is **HSL components** — and it is read with an alpha applied, which means both mistakes from
+§1 delete the focus indicator outright rather than mistinting it: write `hsl(...)` into it, or bake
+an alpha into it, and the whole `outline` declaration is invalid at computed-value time. Unset it
+follows `--ring`, which is the package's, not your theme's. A ring tuned for a light page is a WCAG
+2.2 SC 1.4.11 defect on a dark one (3:1 against **every** surface a control sits on) and an SC 2.4.7
+failure if it vanishes. See the focus-ring section above for the switch, the weight and the
+per-component knobs.
+
+**The method:** for each component your theme re-materialises, list its tokens
+(`get_component`, or `grep -r -- '--<component>-' node_modules/@godxjp/ui/dist/tokens/components/`)
+and
+set the hover / active / selected / checked row **at the same time as the resting one**. A state
+knob left at its default resolves against the _live role_ at the painting element — which is the
+right default and exactly why it can be wrong for you: your `--accent` is now a dark violet, and the
+item's ink still assumes the package's pale one.
+
+### 3 · One ink ramp only works if every surface shares a POLARITY
+
+`docs/GLASSMORPHISM-STANDARD.md` §3 says "one ink ramp for the whole theme". That is right and
+incomplete, and measuring found where: **a single ramp only serves surfaces of the same polarity.**
+
+Light panes take dark ink. A toned tint over a **dark** page is a dark pane and takes light ink. The
+glass theme had one dark ramp serving both; the Cards were fine and the Alert measured **1.27:1 and
+1.35:1** — not a contrast bug in the ink but a polarity bug, two surfaces of opposite value asking
+one ramp to serve both.
+
+**So decide polarity first, then derive one ramp per polarity.** If you want a single ramp — and you
+should, because it is the only way "muted" stays consistent — then every surface has to be the same
+polarity, which for a tinted status pane means making it a **light pane tinted by hue** rather than a
+dark pane darkened by it. The four knobs for that are
+`--surface-success` / `--surface-warning` / `--surface-info` / `--surface-destructive`
+(`src/tokens/foundation.css:235-238`): independently chosen grounds for the four status tones, so
+the ground stops being derived from the ink through an alpha. They are **finished colours**, and
+`foundation.css:217` says so in as many words — "FINISHED COLOURS, NOT HSL COMPONENTS — the one
+place this tier differs from the three above". See §1.
+
+And on any re-materialised surface, `muted` cannot mean lower contrast. Hierarchy is carried by
+size and weight at the **same** ratio — body at 7:1 so it keeps a margin when the ground shifts
+under it, secondary just inside 4.5:1.
+
+### 4 · `--background` is the canvas under the whole shell
+
+`--gradient-glow` paints on the shell's **main region only** — `.app-main`
+(`src/styles/shell-layout.css:412`), and the two other shells' equivalents,
+`.ui-centered-shell-main` (`:897`) and `.ui-mobile-shell-main` (`:3384`). Sidebar and Topbar are
+`.app-main`'s **siblings** in the same CSS grid (`grid-area: sidebar` at `:217`, `grid-area:
+topbar` at `:384`), so none of the gradient is behind them. What is behind them is
+`.app-root { background: hsl(var(--background)) }` (`:28`) — and `body`
+(`src/styles/base.css:260`) under that.
+
+A theme that sets `--foreground` to near-white and never sets its pair therefore gets **light chrome
+carrying near-white labels**. In the glass build, one missing line was four reported defects: a pink
+Sidebar, a Topbar running pink on the left and blue on the right, an unreadable near-white table
+header strip, and a washed-out dropdown. The fix was `--background` plus the family that derives
+from the same canvas decision — `--muted`, `--accent`, `--secondary`, `--input` and their
+`-foreground` pairs.
+
+**`--foreground` and `--background` are one decision — never set only one of them.** The canvas
+family, in full:
+
+```css
+--background   --foreground
+--card         --card-foreground
+--popover      --popover-foreground
+--muted        --muted-foreground
+--accent       --accent-foreground
+--secondary    --secondary-foreground
+--border       --input       --ring
+```
+
+### 5 · A scoped theme cannot re-ink its own text
+
+`src/styles/base.css:261` sets `color: hsl(var(--foreground))` on `body`. `body` is above every
+scope you can make, so that `var()` substitutes against the **root's** `--foreground` exactly once
+and every element below inherits the already-resolved colour. A plain `<div>` that sets your theme's
+tokens therefore retints every **surface** and no **text**. Measured on the showcase before it was
+fixed: the title's own computed `--foreground` was the theme's near-white while its `color` stayed
+`rgb(36, 35, 30)` — real-pixel contrast **1.34:1**, every element in the subtree reporting that it
+was inside the scope. It is the `:root` freeze rule (`docs/TOKEN-RESOLUTION.md` §3) applied to a
+_property_ instead of a token, and worse there: a token can be given a knob, and `color` on `body`
+has none to give.
+
+Two remedies, and they are not interchangeable:
+
+- **React** — wrap the region in `ThemeScope` (`@godxjp/ui/app`). It re-states
+  `color: "hsl(var(--foreground))"` on its own element (`src/lib/overlay-portal.tsx:270`, with
+  `display: contents` so it removes the box and not the inheritance) **and** on the `body`-level
+  host it creates for portalled overlays (`:203`) — which is the other half of the problem, because
+  a Dialog portals to `document.body` and would otherwise wear the root's theme. `...style` is
+  spread after, so your own `color` still wins.
+- **A stylesheet-only scope** — state it yourself, on your own element:
+
+  ```css
+  [data-theme="glass"] {
+    --foreground: 48 20% 96%;
+    --background: 230 40% 9%;
+    /* … */
+    color: hsl(var(--foreground)); /* NOT optional */
+  }
+  ```
+
+  That is a declaration on _your_ element, not a selector into this package, so it does not breach
+  "a consumer sets tokens, never selectors" (`docs/TOKEN-RESOLUTION.md` §5 rule 5). It does **not**
+  reach portalled overlays; for those you still need `ThemeScope` or a scope on the portal
+  container. `docs/TOKEN-RESOLUTION.md` §5 rule 7 is the short form; gh#881 is the incident.
+
+### 6 · A theme owns its own transparency fallbacks
+
+If your theme makes a surface translucent, **your theme** writes its
+`@media (prefers-reduced-transparency: reduce)` and
+`@supports not (backdrop-filter: blur(1px))` branches. The library does not, and cannot: it does
+not know what opaque colour you want, and guessing at the role's own value is not safe — a theme
+whose `--card` is `0 0% 100% / 42%` would get a "fallback" that is still 42% translucent.
+
+We shipped a generic fallback for a while and it was **actively wrong**: under `reduce` it left a
+Card translucent and painted the Topbar fully transparent — invisible. It is removed.
+`docs/TOKEN-RESOLUTION.md` §5 rule 6 is the standing rule. Keep both branches to
+custom-property declarations on your theme's own selector, and repaint exactly the surfaces you
+made translucent; leave borders alone.
+
+`prefers-reduced-transparency` is an OS accessibility setting. Honouring it is not optional.
+
+### 7 · Overlays are not cards
+
+A dialog or a drawer at a card's alpha is read straight through, and both were, at 20%. A card sits
+on a ground you chose; an overlay sits over **arbitrary** content, and the smaller it is the less
+the reader can use context to recover a word. So every overlay belongs at the opaque end of the
+range and the card belongs at the translucent end — the gap is much bigger than it looks when you
+are picking numbers in a token file.
+
+Where the glass theme landed, after the first pass at 20% was reported unreadable:
+
+| surface                           | fill                                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| drawer (`Sheet`)                  | **92%** — covers content that must stay unreadable-but-present                     |
+| `Toast`                           | **90%**                                                                            |
+| dialog panel                      | **88%**, over `--dialog-overlay-alpha: 62%` — a scrim that both darkens and blurs  |
+| `DropdownMenu` / `Select` listbox | **88%**                                                                            |
+| `Card`                            | **12%** — the recipe's own number, and the one that makes the backdrop the palette |
+
+Two mechanics worth knowing before you tune those numbers:
+
+- **A modal's blur belongs on the SCRIM, not the panel.** `backdrop-filter` filters what is behind
+  the element, and the scrim is the layer that covers the page. It also makes the element the
+  containing block for its `position: fixed` descendants, which is why every blur knob in this
+  package is `initial` rather than `blur(0px)` — unset, the whole declaration is invalid at
+  computed-value time, `backdrop-filter` keeps its own `none`, and no backdrop root is created.
+  `--dialog-overlay-backdrop-blur-size` and `--sheet-overlay-backdrop-blur-size` are the scrim
+  knobs; there is deliberately no knob for a blur on the panel itself.
+- **Do not double-blur.** A dropdown inside an already-blurred panel blurs a blurred copy and reads
+  as dirty glass. Blur the few surfaces that define depth — chrome and overlays — not every card,
+  row and chip. It is also GPU-expensive.
+
+`docs/GLASSMORPHISM-STANDARD.md` §4 has the reasoning per surface, and §4b covers form fields, which
+are the hardest case in the system: a field has to read as _a place you can type_ before it reads as
+anything else, and translucency destroys exactly the two signals that say so.
+
+### 8 · Measure the COMPOSITED pixel, against the worst region
+
+A translucent fill over a gradient is not the colour you declared, and `getComputedStyle` cannot
+tell you what it became — it reports the element's own `background-color` with its own alpha, not
+the stack. **Screenshot the rendered page, sample the pixel under the text, compute the ratio.**
+
+Two more rules that come from getting this wrong four times in one session:
+
+- **Sample the worst region the backdrop can produce**, not a convenient one. A radial gradient has
+  a light lobe and a dark one and the pane must be legible over both. The glass build's worst ground
+  sampled `rgb(172, 159, 172)`; against it the stock `--muted-foreground` `rgb(104, 102, 94)`
+  measures **2.28:1**, and solving from that number rather than guessing gave the ramp: `L ≤ 22.5%`
+  for 4.5:1, `L ≤ 9.5%` for 7:1.
+- **Sanity-check the instrument before you believe it.** Two signatures of a broken measurement,
+  both seen: a ratio that is _identical_ for several visibly different colours (the script failed to
+  resolve a custom property and scored the same fallback every time), and a ratio that contradicts
+  what you can see (`1.03:1` on a surface that looks fine — or the reverse). **When a fix does not
+  hold, suspect the diagnosis before re-applying the cure.** A custom property read with
+  `getPropertyValue()` comes back as `initial`, as an unresolved `var()` chain, or as three bare
+  numbers that are not a colour at all; a parser that accepts all three without complaint will
+  report a number for every one of them.
+
+### What to read next
+
+- `docs/TOKEN-RESOLUTION.md` — §3 the freeze rule (why a knob is `initial` and its default lives at
+  the call site), §5 the seven rules for anyone setting or adding a token.
+- `docs/GLASSMORPHISM-STANDARD.md` — the worked case: the four signals of the style, the contrast
+  rules, overlays, and why form fields are the hardest surface.
+- `docs/THEME-API-COVERAGE.md` — how far the token API reaches today, per component, with the
+  hard-coded declarations listed. Read it before you conclude a knob is missing.
+
+---
+
 ## Artwork & third-party marks — where the token rule ends (gh#867)
 
 Every section above assumes the colour arrives as CSS on an element this library renders. Artwork

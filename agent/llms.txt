@@ -1,7 +1,7 @@
 # @godxjp/ui
 
 > A Japanese-enterprise React design system: 171 components, 2017 design tokens,
-> 47 cardinal rules. This file is the entry point for AI agents. Catalog version 28.13.0.
+> 50 cardinal rules. This file is the entry point for AI agents. Catalog version 28.13.0.
 
 If your client can run a process, do not read these files — run the MCP server instead
 (`npx @godxjp/ui-mcp@28.13.0`). It is searchable and version-locked. These files exist for agents
@@ -20,7 +20,7 @@ that can only fetch URLs.
 - [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.2 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
 - [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value, the reason it exists, and its `tier` — 202 `foundation` seeds (`--primary`, `--background`, `--radius`: set these when you are handed a brand), 98 `semantic` roles, 1717 `component` knobs.
 - [vocabulary.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/vocabulary.json): the controlled prop vocabulary — which prop name means what, across every component.
-- [rules.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json): 47 cardinal rules.
+- [rules.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/rules.json): 50 cardinal rules.
 - [anti-ai-tells.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/anti-ai-tells.json): 26 shapes that make generated UI look generated, each with its fix.
 
 ## Pinning
