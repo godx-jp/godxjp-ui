@@ -2758,6 +2758,30 @@
     flex: 1 1 0%;
     justify-content: center;
   }
+
+  /* ── A WRAPPER IN A SLOT KEEPS THE STRETCH CHAIN (gh#883) ────────────────────────────────
+   * `.ui-topbar-item` carries `align-self: stretch` and its whole contract is "as tall as the
+   * bar" — the rule at line 1706 states it without a condition. It held for exactly one item per
+   * slot. Every real topbar has two in `end` (notifications and account), you reach for a
+   * `<Flex>` to group them, and a `<Flex>` is a REAL element with the initial `align-self: auto`:
+   * it collapses to its own content and the items then stretch to THAT. Measured on
+   * `/showcase/theme-lab`, a 47px bar: a bare item 47, both wrapped items 24, the wrapper 24 —
+   * a hover pill floating in the middle of the bar, and under WCAG 2.2 SC 2.5.8's 24x24 floor.
+   *
+   * `:has()` IS WHAT MAKES THIS SAFE, and the alternative is what the issue asked to be measured
+   * before choosing. Stretching every slot child (`.ui-topbar-end > *`) also stretches an Avatar,
+   * a Badge or a string a consumer deliberately centred. Scoped to a wrapper that CONTAINS a
+   * TopbarItem, the sweep is exact: 38 routes x 4 widths (1280/1024/768/390), 80 slot children,
+   * 16 moved and every one of them a TopbarItem wrapper — 32 -> 47 — with 0 unintended. Nothing
+   * that was centred moves, which is the same guarantee `.app-topbar-rail` makes above.
+   *
+   * The wrapper only gets its HEIGHT; it keeps its own `align-items`, so its content still
+   * centres. A group you deliberately want short keeps working by not putting a TopbarItem in
+   * it — and a fragment or an array needs no wrapper at all, which is the cheaper answer and is
+   * what the catalog now recommends first. */
+  :is(.ui-topbar-start, .ui-topbar-center, .ui-topbar-end) > *:has(.ui-topbar-item) {
+    align-self: stretch;
+  }
   /* `0 1 auto`, NOT `0 0 auto` (gh#728). An unshrinkable end cluster hands 100% of any deficit to
    * `.ui-topbar-start`, which carries `min-width: 0` and therefore collapses to nothing: measured
    * at 320x568 after a consumer had already conceded everything it owned (brand 26.1 · four cells
