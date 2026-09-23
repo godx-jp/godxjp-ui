@@ -36,7 +36,7 @@
   --mega-menu-panel-background: hsl(var(--popover));
   --mega-menu-panel-foreground: hsl(var(--popover-foreground));
   --mega-menu-panel-border-color: hsl(var(--border));
-  --mega-menu-panel-border-width: var(--stroke-hairline);
+  --mega-menu-panel-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --mega-menu-panel-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --mega-menu-panel-padding: var(--space-6);
   --mega-menu-panel-shadow: var(--shadow-md);

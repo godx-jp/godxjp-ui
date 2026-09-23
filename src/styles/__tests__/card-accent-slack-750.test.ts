@@ -15,14 +15,20 @@ import { describe, expect, it } from "vitest";
 const css = readFileSync(join(process.cwd(), "src/styles/card-layout.css"), "utf8");
 
 /** A rule's selector list and body, with comments stripped and whitespace collapsed. */
+/** Whitespace-insensitive INSIDE parens too: a declaration long enough for Prettier to wrap comes
+ * back as `calc( var(--a) - var(--b) )`, and a test that pins the unwrapped spelling then fails
+ * for a reformat rather than for a behaviour change. gh#906 made this one long enough to wrap. */
+const tight = (value: string) =>
+  value.replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")").trim();
+
 function ruleWith(declaration: string): { selectors: string; body: string }[] {
   const bare = css.replace(/\/\*[\s\S]*?\*\//g, " ");
   return [...bare.matchAll(/([^{}]+)\{([^}]*)\}/g)]
     .map((match) => ({
       selectors: match[1].replace(/\s+/g, " ").trim(),
-      body: match[2].replace(/\s+/g, " ").trim(),
+      body: tight(match[2]),
     }))
-    .filter((rule) => rule.body.includes(declaration));
+    .filter((rule) => rule.body.includes(tight(declaration)));
 }
 
 describe("the card's vertical slack is the footer's (gh#750)", () => {

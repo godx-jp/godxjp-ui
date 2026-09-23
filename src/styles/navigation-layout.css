@@ -56,6 +56,15 @@
     scrollbar-width: thin;
   }
 
+  /* The trigger reserves a border box so an active state can colour an edge without moving the
+   * label. It used to come from `border border-transparent` in the className, and a Tailwind WIDTH
+   * utility emits a literal 1px that outranks every `.ui-*` rule — so a theme restating the stroke
+   * scale could not reach it (gh#906). The colour still comes from the className, which is where
+   * the variant and state logic lives; only the WIDTH moves here. */
+  [data-slot="tabs-trigger"] {
+    border-width: var(--stroke-hairline);
+  }
+
   /* It is deliberately painted here (not as an `after:*` utility) so it stays independent of the
    * `:focus-visible` ring utilities: "selected" and "keyboard-focused" are two different states
    * and must remain visually distinct (WCAG 2.4.7). */
@@ -1917,7 +1926,8 @@
     translate: var(--mega-menu-panel-translate-x, 0) var(--mega-menu-panel-translate-y, 0);
     max-block-size: var(--mega-menu-panel-max-height);
     overflow-y: auto;
-    border: var(--mega-menu-panel-border-width) solid var(--mega-menu-panel-border-color);
+    border: var(--mega-menu-panel-border-width, var(--stroke-hairline)) solid
+      var(--mega-menu-panel-border-color);
     border-radius: var(--mega-menu-panel-radius, calc(var(--radius) / var(--radius-ratio)));
     background: var(--mega-menu-panel-background);
     color: var(--mega-menu-panel-foreground);
@@ -2067,7 +2077,7 @@
   .ui-mega-menu-panel-footer {
     margin-block-start: var(--mega-menu-panel-footer-gap);
     padding-block-start: var(--mega-menu-panel-footer-gap);
-    border-block-start: var(--mega-menu-panel-border-width) solid
+    border-block-start: var(--mega-menu-panel-border-width, var(--stroke-hairline)) solid
       var(--mega-menu-panel-footer-border-color);
   }
 

@@ -8,7 +8,7 @@
   --banner-radius: 0;
   /* The strip keeps a single hairline block-end rule (tone-coloured via the alert
    * border rules); inline/block-start edges are open so it reads as part of the frame. */
-  --banner-border-width: var(--stroke-hairline);
+  --banner-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* Strip inset. Block is denser than the inline Alert card; inline defaults to the
    * page gutter so banner text aligns with page content under AppShell/PageContainer. */
   --banner-space-inset-block: var(--space-3);

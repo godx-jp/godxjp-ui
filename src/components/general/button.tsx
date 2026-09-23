@@ -29,10 +29,10 @@ const buttonVariants = cva("ui-button", {
       // `bg-background` gone for the same reason (gh#880). The HOVER fill stays a utility: it
       // is the same value `.ui-button--outline:hover` declares, and moving it is a separate
       // decision from making the resting surface reachable.
-      outline: "ui-button--outline border hover:bg-accent hover:text-accent-foreground",
+      outline: "ui-button--outline hover:bg-accent hover:text-accent-foreground",
       // `dashed` is `outline` with a dashed edge, so it shares `--button-outline-background`
       // rather than growing a knob of its own (gh#880).
-      dashed: "ui-button--dashed border border-dashed hover:bg-accent hover:text-accent-foreground",
+      dashed: "ui-button--dashed hover:bg-accent hover:text-accent-foreground",
       secondary: "ui-button--secondary text-secondary-foreground hover:bg-secondary/80",
       ghost: "ui-button--ghost hover:bg-accent hover:text-accent-foreground",
       // `text-primary` gone for the reason `bg-background` went in gh#880 and the checkbox's

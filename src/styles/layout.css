@@ -1141,7 +1141,7 @@
     gap: var(--space-inline-sm);
     padding-top: var(--space-stack-md);
     padding-inline-end: calc(var(--space-page-active-x) + var(--page-footer-content-slack));
-    border-top: var(--page-footer-divider, 1px solid hsl(var(--border)));
+    border-top: var(--page-footer-divider, var(--stroke-hairline) solid hsl(var(--border)));
   }
 
   .ui-page-footer > * {

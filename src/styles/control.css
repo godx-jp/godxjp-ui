@@ -235,6 +235,11 @@
   /* `dashed` is `outline` with a dashed edge — one surface, one knob. Its fill lived in a
    * `bg-background` utility on the component with no rule here at all, so it is declared now. */
   .ui-button--dashed {
+    /* The width and the style used to come from `border border-dashed` in the className. A
+     * Tailwind width utility emits a literal 1px and outranks every `.ui-*` rule, so a theme
+     * restating the stroke scale could not reach it (gh#906). */
+    border: var(--stroke-hairline) dashed
+      var(--button-outline-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     background: var(
       --button-outline-background,
       hsl(var(--background) / var(--button-outline-background-alpha, 100%))

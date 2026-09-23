@@ -179,7 +179,7 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     // `dashed` is `outline` with a dashed edge, so it SHARES the outline fill rather than growing a
     // fifth knob — and its fill had no rule at all before, only a `bg-background` utility.
     expect(controlLayout).toMatch(
-      /\.ui-button--dashed \{\s*background:\s*var\(\s*--button-outline-background,\s*hsl\(var\(--background\) \/ var\(--button-outline-background-alpha, 100%\)\)\s*\);/,
+      /\.ui-button--dashed \{[\s\S]*?background:\s*var\(\s*--button-outline-background,\s*hsl\(var\(--background\) \/ var\(--button-outline-background-alpha, 100%\)\)\s*\);/,
     );
     expect(controlTokens).not.toMatch(/--button-dashed-background/);
   });
@@ -237,7 +237,9 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     );
     // The DataTable frame painted NO fill, so its knob is read with no fallback: unset, the
     // declaration is invalid and `background-color` keeps its own initial `transparent`.
-    expect(tableLayout).toMatch(/background-color:\s*var\(\s*--table-surface-background,\s*hsl\(var\(--card\) \/ var\(--table-surface-background-alpha\)\)\s*\);/);
+    expect(tableLayout).toMatch(
+      /background-color:\s*var\(\s*--table-surface-background,\s*hsl\(var\(--card\) \/ var\(--table-surface-background-alpha\)\)\s*\);/,
+    );
     // Sonner owns the toast body, so the package's knob is threaded through its private var.
     expect(sonnerTsx).toMatch(
       /"--normal-bg":\s*"var\(--toast-background, hsl\(var\(--popover\) \/ var\(--popover-alpha, 100%\)\)\)"/,
