@@ -1,4 +1,5 @@
 import {
+  Badge,
   Card,
   CardContent,
   CardDescription,
@@ -284,6 +285,55 @@ export default function Demo() {
                   <TableCell wrap>API のレート制限について</TableCell>
                   <TableCell align="center">完了</TableCell>
                   <TableCell numeric>12</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* ── gh#876 — TableRow tone, a typed route to the same paint DataTable's own
+            `rowTone` writes onto `data-tone` (wash + leading rail + `--surface-*` grounding,
+            gh#866). A hand-composed row discovers it from types now; `data-tone` written by
+            hand keeps working unchanged — this is an addition, not a migration. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>入出金明細 · row tone</CardTitle>
+            <CardDescription>
+              `TableRow tone` writes the same `data-tone` attribute `DataTable`&apos;s `rowTone`
+              already writes for you — no more reaching for the raw attribute to discover the row
+              can be toned at all.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>項目</TableHead>
+                  <TableHead align="end">金額</TableHead>
+                  <TableHead>状態</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>振込手数料</TableCell>
+                  <TableCell numeric>¥440</TableCell>
+                  <TableCell>
+                    <Badge tone="neutral">処理済</Badge>
+                  </TableCell>
+                </TableRow>
+                <TableRow tone="warning">
+                  <TableCell>支払期日超過（3日）</TableCell>
+                  <TableCell numeric>¥128,000</TableCell>
+                  <TableCell>
+                    <Badge tone="warning">要確認</Badge>
+                  </TableCell>
+                </TableRow>
+                <TableRow tone="destructive">
+                  <TableCell>引き落とし失敗</TableCell>
+                  <TableCell numeric>¥52,300</TableCell>
+                  <TableCell>
+                    <Badge tone="destructive">失敗</Badge>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>

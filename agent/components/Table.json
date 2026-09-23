@@ -57,6 +57,11 @@
       "type": "boolean"
     },
     {
+      "description": "On TableRow (gh#876): the row's STATE — a leading-edge rail plus a weak wash, the SAME six tones and meanings `DataTable rowTone` already paints. Writes `data-tone`, the attribute the paint is keyed on — `<TableRow data-tone=\"warning\">` still works unchanged, `tone` is just the typed, discoverable route to it. Never the only signal (WCAG 1.4.1): keep the reason in a cell (a Badge, a status column) and let the rail make that cell findable. DO NOT reach for a `bg-<status>/…` utility on a TableRow instead — that bypasses the token-owned wash and the theme can no longer retune it (gh#872).",
+      "name": "tone",
+      "type": "\"primary\" | \"success\" | \"warning\" | \"info\" | \"attention\" | \"destructive\""
+    },
+    {
       "defaultValue": "\"default\"",
       "description": "Named collection contract. \"default\" emits no attribute and keeps the plain table. \"action-collection\" is the canonical dense approval/action queue: the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. \"stacked-record-collection\" is the other direction, for a WIDE, HETEROGENEOUS record set with no sensible narrow column measure: below collapseBelow the <thead> hides and every <tr> becomes a bordered key-value card (--table-stacked-collection-*). Give each TableCell a `label` — its column header — because the <th> association it normally reads from is the thing that just went away; DataTable derives that label from ColumnDef.header for you (gh#864). The label is aria-hidden and the real <th> stays in the DOM, so the accessible name and table navigation are unchanged.",
       "name": "preset",

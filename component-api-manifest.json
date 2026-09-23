@@ -16201,7 +16201,16 @@
     },
     "TableRow": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "TableRowToneProp | undefined",
+          "values": ["warning", "success", "destructive", "info", "primary", "attention"],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        }
+      ]
     },
     "Tabs": {
       "group": "navigation",
