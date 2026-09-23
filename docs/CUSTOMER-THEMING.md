@@ -515,3 +515,109 @@ no effect, no unmount restore, no SSR flash. Use `applyPrimaryColor(el, hex)` wh
 RE-SEEDING a tree that is already themed (a project switcher, a service theme): it additionally
 resets `--primary-border` / `--control-outline` / the brand ink roles to `initial`, so a literal an
 ancestor pinned for the previous brand cannot outrank the new seed, and it returns a cleanup.
+
+---
+
+## Artwork & third-party marks — where the token rule ends (gh#867)
+
+Every section above assumes the colour arrives as CSS on an element this library renders. Artwork
+is the case the rule does not state: **an SVG loaded through `<img src>` runs inside its own
+document boundary and cannot see the page's custom properties.** No token reaches it, scoped or
+otherwise — that is a browser fact, not a library omission, and no component API can change it. So
+"brand colour enters only through scoped tokens" has one silent exception: artwork that arrives as
+a file. Four techniques, and the boundary between them:
+
+| the asset                                                   | the technique                                                    |
+| ----------------------------------------------------------- | ---------------------------------------------------------------- |
+| a multi-colour brand mark                                   | **1 · two masters** — ship both variants, switch by scheme       |
+| a single-colour glyph that should follow the text beside it | **2 · inline + `currentColor`**                                  |
+| a single-colour glyph that should sit at a token colour     | **3 · `mask-image`** — shape from the asset, colour from a token |
+| everything else — screenshots, illustrations, uploads       | **4 · do not recolour**                                          |
+
+### 1 · Two masters, switched by colour scheme
+
+What this library does for its own mark, and the right answer for any multi-colour brand: both
+masters ship, and CSS shows one per scheme. `src/components/general/logo.tsx` renders the light
+and dark artworks as siblings, and `src/styles/logo-layout.css` picks between them — an explicit
+light choice, an explicit dark choice, and the un-stamped default where only the OS preference
+separates them. The brand guidelines quoted in the component's comment (brand identity v2.3)
+forbid all three shortcuts: no re-tinting the master to a module's colour, no inverting it with a
+filter, and the correct sáng/tối variant rendered as-is.
+
+Two properties of that implementation matter if you copy it:
+
+- **The masters are different files and stay different files.** They arrive as separate assets in
+  the brand kit and land verbatim in `src/brand/godx-artwork.generated.ts` — not one artwork whose
+  token values get swapped per theme. `grep -c currentColor src/brand/` → `0`: the package's own
+  brand artwork carries no token hooks at all. This technique involves no tokens on purpose.
+- **Inlining is for fidelity and document validity, not tokenisation.** The markup is inlined
+  (`dangerouslySetInnerHTML`) because 8 gradients, a clipPath and 10 paths must stay byte-exact,
+  and because SVG ids are unique per document — two `<Logo>`s on one page would otherwise emit
+  duplicate ids. Both comments in `logo.tsx` state this explicitly and claim no theming benefit.
+
+The colours of a multi-colour mark ARE the brand; they do not follow `--primary` — which is exactly
+why the generator keeps `--brand` / `--brand-foreground` independent of the action colour (gh#250).
+
+### 2 · Inline the SVG and use `currentColor` — the single-colour glyph
+
+For a single-colour glyph that should follow the text it sits beside. Inline the file and paint
+the path with `currentColor`:
+
+```css
+/* your app's stylesheet — a role, not a literal, so scopes and dark mode reach it */
+.ui-mark {
+  color: hsl(var(--primary)); /* or --text-link, or whatever text role it accompanies */
+}
+```
+
+```tsx
+<svg className="ui-mark" viewBox="…" aria-hidden="true">
+  <path fill="currentColor" d="…" />
+</svg>
+```
+
+The glyph now follows `color` like any text: a `[data-tenant]` scope, a link's `--text-link`, dark
+mode — anything that sets `color` above it re-tints the glyph with it. It is one colour by
+construction; if the glyph needs two, this is the wrong technique — go back to 1.
+
+### 3 · `mask-image` — shape from the asset, colour from a token
+
+When the asset should sit at a token colour regardless of the text around it, take the shape from
+the file and the colour from CSS:
+
+```css
+.ui-partner-mark {
+  width: 1.25em;
+  height: 1.25em;
+  background: hsl(var(--primary)); /* the token does the colouring */
+  mask-image: url("./partner-mark.svg"); /* the asset's transparency supplies the shape */
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+```
+
+The mask reads the asset's alpha as the shape; `background` supplies the only colour, so a token
+change, a `[data-tenant]` scope and dark mode all reach it — the colour is ordinary CSS. It is
+single-colour by construction: a mask has no way to carry a second colour.
+
+Stated honestly, this library uses CSS masking in exactly **two** places — the Marquee's edge fade
+(`src/styles/motion.css`) and the FloatButton (`src/styles/float-button-layout.css`). This is a
+technique documented here, not a house pattern; reach for it for one-colour glyphs, not as the
+default answer to "how do I theme an image".
+
+### 4 · Do not recolour
+
+`Thumbnail` (`src/components/data-display/thumbnail.tsx`) is a framed `<img>`, and `src` artwork
+keeps its authored colours in every theme — it always has. Screenshots, illustrations, photos,
+uploaded logos: they render exactly as authored, and that is the answer, not a gap and not a
+roadmap item. If the artwork must read on both schemes, choose or commission artwork that does;
+the frame and the surface around it are yours to theme — the pixels inside them are not.
+
+### The caveat that is not a footnote
+
+Techniques 1–3 inline SVG, and inlined SVG is markup in your document. An upload that lands as
+markup is an XSS surface — `<script>`, event attributes, `javascript:` hrefs all execute. The
+boundary `logo.tsx` states in its own comment — _"package-owned generated content, never user
+input"_ — is the whole rule: **inlining is for artwork you generate**, at build time, from your
+own kit. Anything a customer uploads either passes a real sanitiser before it is inlined, or goes
+through `<img>` and stays unthemed — which is technique 4, and a legitimate outcome.
