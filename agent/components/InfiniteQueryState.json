@@ -1,5 +1,5 @@
 {
-  "example": "import { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages} isEmpty={(it) => it.length === 0}>\n  {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
+  "example": "import { InfiniteQueryState, flattenItemPages } from \"@godxjp/ui/query\";\n\n<InfiniteQueryState query={q} skeleton={<SkeletonRows />} flatten={flattenItemPages as any} isEmpty={(it: any) => it.length === 0}>\n  {(items: any) => items.map((a: any) => <ActivityRow key={a.id} activity={a} />)}\n</InfiniteQueryState>",
   "group": "data-display",
   "importPath": "@godxjp/ui/query",
   "name": "InfiniteQueryState",

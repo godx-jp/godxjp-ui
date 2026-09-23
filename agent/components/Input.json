@@ -1,5 +1,5 @@
 {
-  "example": "import { Input } from \"@godxjp/ui/data-entry\";\n\n<Input id=\"qty\" type=\"number\" placeholder=\"例: 500\" value={value} onValueChange={(e) => setValue(e.target.value)} />",
+  "example": "import { Input } from \"@godxjp/ui/data-entry\";\n\n<Input id=\"qty\" type=\"number\" placeholder=\"例: 500\" value={value} onValueChange={(v) => setValue(v)} />",
   "group": "data-entry",
   "importPath": "@godxjp/ui/data-entry",
   "name": "Input",

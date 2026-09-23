@@ -1,5 +1,5 @@
 {
-  "example": "import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";\n\n<CompactBarTrend\n  label={t(\"dashboard.newOrganizations7d\")}\n  description={t(\"dashboard.newOrganizationsHint\")}\n  data={trend}\n  categoryKey=\"date\"\n  valueKey=\"count\"\n  emphasizedIndex={-1}\n  size=\"xs\"\n  footer={<Text size=\"xs\" tone=\"muted\">{t(\"dashboard.lastUpdated\", { at })}</Text>}\n/>",
+  "example": "import { CompactBarTrend } from \"@godxjp/ui/charts/compact-bar-trend\";\nimport { Text } from \"@godxjp/ui/general\";\n\n<CompactBarTrend\n  label={t(\"dashboard.newOrganizations7d\")}\n  description={t(\"dashboard.newOrganizationsHint\")}\n  data={trend}\n  categoryKey=\"date\"\n  valueKey=\"count\"\n  emphasizedIndex={-1}\n  size=\"xs\"\n  footer={<Text size=\"xs\" tone=\"muted\">{t(\"dashboard.lastUpdated\", { at: new Date().toISOString() })}</Text>}\n/>",
   "group": "data-display",
   "importPath": "@godxjp/ui/charts/compact-bar-trend",
   "name": "CompactBarTrend",

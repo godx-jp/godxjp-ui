@@ -1,6 +1,6 @@
 {
   "docPath": "data-display/permission-matrix.tsx",
-  "example": "import { Card, CardContent, PermissionMatrix } from \"@godxjp/ui/data-display\";\nimport { grantKey } from \"@godxjp/ui/lib/permission-grid\";\n\nconst grants = new Set(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));\n\n<Card>\n  <CardContent flush>\n    <PermissionMatrix\n      roles={roles}\n      permissions={permissions}\n      grants={grants}\n      onGrantChange={(roleId, permissionId, granted) => mutate({ roleId, permissionId, granted })}\n    />\n  </CardContent>\n</Card>",
+  "example": "import { Card, CardContent, PermissionMatrix } from \"@godxjp/ui/data-display\";\nimport { grantKey } from \"@godxjp/ui/lib/permission-grid\";\n\nconst grants = new Set<string>(rolePermissions.map((rp) => grantKey(rp.roleId, rp.permissionId)));\n\n<Card>\n  <CardContent flush>\n    <PermissionMatrix\n      roles={roles}\n      permissions={permissions}\n      grants={grants}\n      onGrantChange={(roleId, permissionId, granted) => mutate({ roleId, permissionId, granted })}\n    />\n  </CardContent>\n</Card>",
   "group": "data-display",
   "importPath": "@godxjp/ui/data-display",
   "name": "PermissionMatrix",

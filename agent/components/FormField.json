@@ -1,5 +1,5 @@
 {
-  "example": "import { FormField, Input } from \"@godxjp/ui/data-entry\";\n\n<FormField id=\"coupon-name\" label=\"クーポン名\" required error={errors.name} helper=\"最大50文字\">\n  <Input id=\"coupon-name\" placeholder=\"春の花粉症対策15%OFF\" value={name} onValueChange={(e) => setName(e.target.value)} />\n</FormField>",
+  "example": "import { FormField, Input } from \"@godxjp/ui/data-entry\";\n\n<FormField id=\"coupon-name\" label=\"クーポン名\" required error={errors.name} helper=\"最大50文字\">\n  <Input id=\"coupon-name\" placeholder=\"春の花粉症対策15%OFF\" value={name} onValueChange={(v) => setName(v)} />\n</FormField>",
   "group": "data-entry",
   "importPath": "@godxjp/ui/data-entry",
   "name": "FormField",

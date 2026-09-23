@@ -1,7 +1,7 @@
 {
   "example": "import { formatDate } from \"@godxjp/ui/datetime\";\n\nformatDate(coupon.validFrom);                       // \"2026-05-01\"\nformatDate(order.createdAt, { kind: \"relative\" });  // \"3日前\"",
   "group": "providers",
-  "importPath": "@godxjp/ui/app",
+  "importPath": "@godxjp/ui/datetime",
   "name": "formatDate",
   "props": [
     {
