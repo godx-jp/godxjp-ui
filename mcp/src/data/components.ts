@@ -5958,6 +5958,12 @@ import remarkGfm from "remark-gfm";
           'Zebra rows: every EVEN LOGICAL body row paints --table-row-striped-background (default --muted at 0.8 alpha — every text role on it stays at AA). Mark a hand-composed detail row `<TableRow data-expanded-row="">` and it is skipped when counting and wears its record\'s stripe. OMIT to inherit the theme default (`--table-row-striped-alpha`, 0% unless the service set it); `true` emits data-striped="" (100%), `false` emits data-striped="false" (0%) for this table only.',
       },
       {
+        name: "tone",
+        type: '"primary" | "success" | "warning" | "info" | "attention" | "destructive"',
+        description:
+          'On TableRow (gh#876): the row\'s STATE — a leading-edge rail plus a weak wash, the SAME six tones and meanings `DataTable rowTone` already paints. Writes `data-tone`, the attribute the paint is keyed on — `<TableRow data-tone="warning">` still works unchanged, `tone` is just the typed, discoverable route to it. Never the only signal (WCAG 1.4.1): keep the reason in a cell (a Badge, a status column) and let the rail make that cell findable. DO NOT reach for a `bg-<status>/…` utility on a TableRow instead — that bypasses the token-owned wash and the theme can no longer retune it (gh#872).',
+      },
+      {
         name: "preset",
         type: '"default" | "action-collection" | "stacked-record-collection"',
         defaultValue: '"default"',

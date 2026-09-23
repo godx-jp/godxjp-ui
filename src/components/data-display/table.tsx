@@ -10,6 +10,7 @@ import type {
   TableCellIndentProp,
   TableColumnPriorityProp,
   TablePresetProp,
+  TableRowToneProp,
   WidthProp,
 } from "../../props/vocabulary";
 
@@ -192,12 +193,21 @@ export const TableBody = React.forwardRef<
 ));
 TableBody.displayName = "TableBody";
 
+/**
+ * The row's STATE — same wash/rail/`--surface-*` grounding `DataTable`'s own `rowTone` already
+ * writes onto `data-tone` (gh#866). Typed here so a hand-composed row can discover it instead of
+ * reaching for the raw attribute; the attribute keeps working (`TableRow data-tone="warning"`
+ * is untouched — this is an addition, not a migration), and `tone` writes the same attribute.
+ */
+type TableRowTone = { tone?: TableRowToneProp };
+
 export const TableRow = React.forwardRef<
   HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLTableRowElement> & TableRowTone
+>(({ className, tone, ...props }, ref) => (
   <tr
     ref={ref}
+    data-tone={tone}
     className={cn(
       // The row rule itself is `.ui-table-row` in table-layout.css (--table-row-border-width),
       // NOT a `border-b` utility — a utility sits in `@layer utilities` and would outrank the
