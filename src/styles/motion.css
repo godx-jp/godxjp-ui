@@ -113,7 +113,7 @@
     color: hsl(var(--foreground));
   }
   .ui-activity[data-tone="primary"] .ui-activity-mark {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
   .ui-activity[data-tone="success"] .ui-activity-mark {
     color: hsl(var(--text-success));

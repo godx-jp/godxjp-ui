@@ -97,9 +97,13 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
     // measured floor lives in src/tokens/__tests__/sidebar-active-contrast.test.ts.
     const active = rule('.sb-nav-item[data-active="true"]');
     expect(active).toContain("background: var(--sidebar-item-active-background,");
-    // The label's DEFAULT moved again in gh#678 — to the derived active tier — and the knob did not.
+    // The label's DEFAULT moved again in gh#678 — to the derived active tier — and the knob did
+    // not. gh#887 put `--text-primary` in front of that tier: the pressed FILL carries no floor as
+    // ink (1.25:1 at `#FFD400`), the pressed INK does. The role is `initial` in the package, so the
+    // unseeded default is still byte for byte the gh#678 expression, which is why it is still
+    // spelled out in full here.
     expect(active).toContain(
-      "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))))",
+      "color: var(--sidebar-item-active-foreground, hsl(var(--text-primary, var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels)))))",
     );
     expect(sidebarTokens).not.toContain("--sidebar-nav-item-active-foreground");
   });

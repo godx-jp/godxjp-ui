@@ -1490,8 +1490,9 @@ const brand = tenantTheme(tenant.primary_color);      // "#0071bd" · 3- or 6-di
   <Button>Open app</Button>                            {/* rest, hover AND pressed follow */}
 </div>
 
-// brand.vars is exactly five declarations:
+// brand.vars is exactly eight declarations:
 //   --primary  --primary-foreground  --ring  --primary-hover  --primary-active
+//   --text-link  --text-brand  --text-primary        ← the brand as INK (gh#887)
 // An unusable hex yields EMPTY vars, so the region falls back to your own theme
 // instead of breaking the page (same contract ColorPicker already has).
 
@@ -1514,12 +1515,29 @@ if (!supplied.meetsAA) {
 // NESTED TENANTS on one page: call it per region. Each region carries its own
 // pair, so nothing freezes from the region above it.
 
-// WHAT IT DOES NOT RETINT: --text-link / --text-brand / --text-primary. Those are
-// brand INK on the page surface; their legibility depends on --background, which
-// a customer's fill colour does not control (a pale seed gives a ~1.4:1 link on
-// white). Set them yourself, after measuring:
+// THE BRAND AS INK IS ALSO FLOORED (gh#887) — it used not to be, and that is the
+// half of the contract a consumer used to have to write. --primary is guaranteed
+// against --primary-foreground: a FILL and its label. Nothing guaranteed the same
+// colour as TEXT on a page surface, and a sidebar active item, a NavList item, a
+// MegaMenu trigger, an Anchor link, \`Text link\` and \`Button variant="link"\` all do
+// exactly that. Measured on /showcase/theme-lab: #FFD400 gave 1.18–2.06:1.
+// So the three inks come back as LITERALS, each walked away from the surface until
+// the painted pixel clears 4.5:1 and no further — a seed whose ramp step already
+// clears is untouched. No call site of yours changes; the roles were always read.
+//   #FFD400  link ink 1.73:1 → 4.56:1     #E2564A  3.80:1 → 4.53:1
+//   #7C3AED / #2563EB / #0A1F44           byte-identical, they already cleared
+
+// WHICH SURFACE? The DARKEST one the ink lands on — the default is --accent
+// (#ebe9e5), not --background, because an ink clamped on the canvas measures
+// 3.78:1 the moment the row under it is hovered. Pass your own when the region is
+// darker than the package light theme, and ALWAYS for a region inside a dark theme
+// (--accent there is #3c3a34) or the ink is walked the wrong way:
+const darkRegion = tenantTheme(tenant.primary_color, { surface: "#3c3a34" });
+
+// Still your call whether the raw seed is usable as ink somewhere the library does
+// not paint — contrastRatio is the same arithmetic, exported:
 if ((contrastRatio(tenant.primary_color, "#ffffff") ?? 0) >= 4.5) {
-  // …only then is the seed usable as link ink on a white page
+  // …the seed ITSELF, unclamped, on a white page
 }
 
 // The raw conversion, if you need it on its own (the inverse of hslToHex):

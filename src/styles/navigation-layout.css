@@ -930,7 +930,7 @@
   }
 
   .ui-steps-inline-item[data-status="finish"] .ui-steps-inline-control {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-steps-inline-item[data-status="process"] .ui-steps-inline-control {
@@ -1087,7 +1087,7 @@
 
   .ui-dropdown-menu-radio-item[data-state="checked"] {
     background: hsl(var(--primary) / 0.1);
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-weight: var(--font-weight-medium);
   }
 
@@ -1151,7 +1151,7 @@
 
   .ui-steps-marker[data-status="process"] {
     border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-steps-marker[data-status="error"] {
@@ -1658,7 +1658,7 @@
   }
 
   .ui-anchor [data-slot="anchor-link"][data-active] {
-    color: hsl(var(--anchor-ink-color, var(--primary)));
+    color: hsl(var(--anchor-ink-color, var(--text-link, var(--primary))));
     font-weight: var(--font-weight-medium);
   }
 
@@ -1804,7 +1804,7 @@
   /* `aria-current` is the CURRENT ROUTE, and it must not be colour-only (WCAG 1.4.1): the weight
    * step and the underline carry it for anyone who cannot see the hue. */
   .ui-mega-menu-trigger[aria-current="page"] {
-    color: var(--mega-menu-trigger-current-foreground, hsl(var(--primary)));
+    color: var(--mega-menu-trigger-current-foreground, hsl(var(--text-brand, var(--primary))));
     font-weight: var(--font-weight-semibold);
     text-decoration: underline;
     text-underline-offset: var(--space-1);
@@ -1976,7 +1976,7 @@
   }
 
   .ui-mega-menu-link[aria-current="page"] {
-    color: var(--mega-menu-link-current-foreground, hsl(var(--primary)));
+    color: var(--mega-menu-link-current-foreground, hsl(var(--text-link, var(--primary))));
     font-weight: var(--font-weight-semibold);
   }
 

@@ -196,7 +196,7 @@
 
   .ui-attachments-upload-btn:hover:not(:disabled) {
     border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-attachments-upload-btn:disabled {
@@ -474,7 +474,7 @@
 
   .ui-upload-tile-add:hover {
     border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
   }
 
   .ui-upload-tile-add-icon {

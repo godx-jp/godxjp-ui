@@ -30,7 +30,7 @@
    * of a solid fill and the glyph in the role itself. */
   .ui-avatar[data-appearance="tinted"] {
     --avatar-background: var(--avatar-tinted-background, hsl(var(--primary) / 0.1));
-    color: var(--avatar-tinted-foreground, hsl(var(--primary)));
+    color: var(--avatar-tinted-foreground, hsl(var(--text-brand, var(--primary))));
   }
 
   .ui-avatar[data-appearance="tinted"] svg {
@@ -774,7 +774,7 @@
   }
 
   .ui-timeline-title[data-current="true"] {
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     font-weight: var(--font-weight-semibold);
   }
 
@@ -1429,7 +1429,7 @@
 
   .ui-code-block [data-code-token="keyword"],
   .ui-prose pre [data-code-token="keyword"] {
-    color: var(--code-block-token-keyword-color, hsl(var(--primary)));
+    color: var(--code-block-token-keyword-color, hsl(var(--text-brand, var(--primary))));
   }
 
   .ui-code-block [data-code-token="string"],
@@ -1632,7 +1632,7 @@
    * Setting a custom property on the anchor is enough; the `var()` here reads the value computed on
    * the element, whichever rule declared it. Documented in docs/CUSTOMER-THEMING.md. */
   .ui-prose a {
-    color: hsl(var(--prose-link-color, var(--primary)));
+    color: hsl(var(--prose-link-color, var(--text-link, var(--primary))));
     text-decoration-line: var(--prose-link-decoration-line);
   }
 

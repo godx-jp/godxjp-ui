@@ -100,7 +100,9 @@ export function applyThemeAxes(el: HTMLElement, axes: Partial<AppThemeAxes>): vo
  * The arithmetic — hex → HSL triplet, and the WCAG 2.2 label choice — is {@link tenantTheme}'s, so
  * there is one formula rather than two. This entry point adds what a RE-SEED needs and a fresh
  * region does not: the knobs an ancestor service theme may have pinned to the PREVIOUS brand are
- * reset to `initial`, so the new seed cannot be outranked by a stale literal (gh#678, gh#664).
+ * reset to `initial`, so the new seed cannot be outranked by a stale literal (gh#678, gh#664). The
+ * three brand INKS are reset and then re-declared from the seed, because `tenantTheme` computes a
+ * 4.5:1 floor for them and a bare reset would discard it (gh#887 — see the palette below).
  *
  * Use {@link tenantTheme} instead when you are painting a region with a customer's colour — it
  * returns declarations to put in `style`, with no effect, no unmount restore and no SSR flash.
@@ -119,16 +121,28 @@ export function applyPrimaryColor(
   // it to the brand TEXT family, which reads them (`--text-link-channels`, src/tokens/derived.css).
   const polarity = (relativeLuminance(seed.foreground!) ?? 0) > 0.5 ? "darken" : "lighten";
   const palette: Record<string, string> = {
-    ...seed.vars,
-    /* `--primary-border` / `--control-outline` keep deriving in CSS from the `--primary` in scope;
-     * they are reset here only so an ancestor's literal cannot outrank the new seed. The brand TEXT
-     * roles derive from the seed too (gh#664) and are reset for the same reason: a theme that
-     * pinned a link colour for the previous brand would keep it on a re-tinted product. */
-    "--primary-border": "initial",
-    "--control-outline": "initial",
+    /* THE STALE-PIN RESETS COME FIRST, AND THE ORDER IS THE WHOLE POINT (gh#887).
+     *
+     * They exist because a theme above this element may have pinned a knob to the PREVIOUS brand,
+     * and an inherited literal would outrank a seed that only re-derives in CSS (gh#678, gh#664):
+     * a link colour pinned for the old brand would survive on a re-tinted product. That reason
+     * still holds, so nothing is deleted.
+     *
+     * But `tenantTheme` now RETURNS the three brand inks as clamped literals (gh#887), and these
+     * three keys used to sit AFTER the spread — so the same call that walked each ink to 4.5:1 on
+     * the surface threw the result away one line later, and a re-seeded tree got the unclamped
+     * ramp step back. Declared BEFORE the spread they are overwritten by those literals, which
+     * defeat an ancestor's pin on their own (a literal ON the element beats an inherited one), and
+     * the guard still stands if that emission ever stops.
+     *
+     * `--primary-border` / `--control-outline` are NOT in `vars` — the reset IS their value here,
+     * and they go on deriving in CSS from the `--primary` in scope. */
     "--text-link": "initial",
     "--text-brand": "initial",
     "--text-primary": "initial",
+    ...seed.vars,
+    "--primary-border": "initial",
+    "--control-outline": "initial",
     "--primary-hover-channels": `var(--primary-hover-${polarity}-channels)`,
     "--primary-active-channels": `var(--primary-active-${polarity}-channels)`,
   };

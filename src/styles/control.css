@@ -274,9 +274,27 @@
    * every cell of the glass theme, whose panel is translucent over a brand-tinted backdrop. The
    * knob is therefore not a nicety: a service whose seed is light or whose surface is not opaque
    * MUST set it. The default stays `hsl(var(--primary))` byte for byte, because changing it would
-   * move the shipped look at the seeds where it is already legible; the verdict lives in gh#884. */
+   * move the shipped look at the seeds where it is already legible; the verdict lives in gh#884.
+   *
+   * gh#887 kept that promise and still closed the hole, by reading `--text-link` FIRST. The role is
+   * `initial` in the package, so an unseeded page resolves straight through to `--primary` and the
+   * shipped look does not move by one byte — but `tenantTheme()` emits it as a literal walked to
+   * 4.5:1 on the surface, so the moment a customer's hex is in scope the link ink is floored
+   * without the consumer setting anything. The shape is the same at every brand-as-ink call site in
+   * src/styles/**: `var(--text-link | --text-brand | --text-primary, <what it painted before>)`.
+   *
+   * ON A TRANSLUCENT PANEL THE CLAMP DOES NOT HELP, AND THE MEASUREMENT SAYS SO. The floor is
+   * computed against an OPAQUE surface (`--accent` by default, `tenantTheme`'s `surface` option
+   * otherwise); the glass theme's panel is translucent over a brand-tinted backdrop, so that
+   * assumption is false there and the walked ink can land CLOSER to the ground than the raw seed
+   * did. Measured on /showcase/theme-lab, glass column: 2.41→1.83 violet, 2.56→1.94 azure,
+   * 3.59→2.42 coral, 1.24→1.47 navy, and at `#FFD400` a string that passed now reads 2.09:1. That
+   * is the documented cost, not an oversight — it is also the number `Text link` ALREADY had in
+   * those cells, so the two links on one panel now agree instead of differing by a step. A
+   * non-opaque theme closes it in one declaration, which is what `--button-link-foreground` and the
+   * three ink roles are for; on the `base` and `flat` themes the same wiring closes every row. */
   .ui-button--link {
-    color: var(--button-link-foreground, hsl(var(--primary)));
+    color: var(--button-link-foreground, hsl(var(--text-link, var(--primary))));
     text-underline-offset: 4px;
   }
 
@@ -651,7 +669,7 @@
     height: var(--checkbox-size);
     flex-shrink: 0;
     border: var(--checkbox-border-width) solid hsl(var(--primary));
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     background: transparent;
   }
 
@@ -3813,7 +3831,7 @@
   .ui-switch-spinner {
     inline-size: var(--switch-spinner-size);
     block-size: var(--switch-spinner-size);
-    color: hsl(var(--primary));
+    color: hsl(var(--text-brand, var(--primary)));
     animation: spin 1s linear infinite;
   }
 
@@ -4066,7 +4084,7 @@
   }
 
   .ui-radio-button[data-state="checked"] {
-    color: hsl(var(--choice-button-selected-color, var(--primary)));
+    color: hsl(var(--choice-button-selected-color, var(--text-brand, var(--primary))));
     border-color: hsl(var(--choice-button-selected-border-color, var(--primary)));
   }
 

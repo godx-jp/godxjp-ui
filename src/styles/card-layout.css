@@ -691,7 +691,7 @@
     margin-bottom: var(--stat-card-gap);
     border-radius: var(--stat-card-icon-radius);
     background: var(--stat-card-icon-background, hsl(var(--primary) / 0.1));
-    color: var(--stat-card-icon-foreground, hsl(var(--primary)));
+    color: var(--stat-card-icon-foreground, hsl(var(--text-brand, var(--primary))));
   }
 
   [data-slot="stat-card-icon"] svg {
@@ -798,7 +798,7 @@
     justify-content: center;
     border-radius: var(--card-service-launcher-icon-radius);
     background: hsl(var(--card-service-launcher-icon-background, var(--accent)));
-    color: hsl(var(--card-service-launcher-icon-foreground, var(--primary)));
+    color: hsl(var(--card-service-launcher-icon-foreground, var(--text-brand, var(--primary))));
   }
 
   /* Unavailable tile (the consumer supplied a `disabledReason`): the medallion drops its brand

@@ -151,8 +151,11 @@ const MEASURED: Record<string, Record<string, { shipped: number; atCeiling: numb
  * 1. ONE NAME, ONE LOOK — and still a knob.
  * ──────────────────────────────────────────────────────────────────────────── */
 describe("both nav levels signal `open` in one colour language", () => {
+  // gh#887: `--text-primary` — the pressed INK — is read first, then the pressed FILL tier this
+  // case has always guarded. The role is `initial` in the package, so the default measured below is
+  // unchanged; what the role adds is a 4.5:1 floor when `tenantTheme()` emits it for a customer hex.
   const LABEL =
-    "color: var(--sidebar-item-active-foreground, hsl(var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))))";
+    "color: var(--sidebar-item-active-foreground, hsl(var(--text-primary, var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels)))))";
 
   it("level 1 and level 2 read the SAME label knob, with the SAME live default", () => {
     expect(rule('.sb-nav-item[data-active="true"]')).toContain(LABEL);
