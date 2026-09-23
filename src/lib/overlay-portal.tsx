@@ -193,6 +193,14 @@ export function ThemeScope({ children, style, ...props }: ThemeScopeProps) {
 
     element.setAttribute(OVERLAY_THEME_HOST_ATTRIBUTE, "");
     element.style.display = "contents";
+    /*
+     * The host carries the scope's TOKENS; without this it would not carry its INK. An overlay
+     * portalled here is a child of `body`, so it inherits `body`'s colour — resolved against the
+     * root — and would paint the scope's surfaces under the root's text. That is gh#877's defect
+     * returning one level down, and it is why this line sits beside the token sync rather than
+     * being left to the surfaces.
+     */
+    element.style.color = "hsl(var(--foreground))";
     syncOverlayThemeHost(element, scope);
     parent.appendChild(element);
     hostRef.current = element;
@@ -239,7 +247,29 @@ export function ThemeScope({ children, style, ...props }: ThemeScopeProps) {
      */
     <OverlayPortalContext.Provider value={host ?? parentContainer}>
       <OverlayThemeRefreshContext.Provider value={refresh}>
-        <div ref={scopeRef} style={{ display: "contents", ...style }} {...props}>
+        <div
+          ref={scopeRef}
+          /*
+           * `color` IS RE-STATED HERE, AND THAT IS NOT DECORATION (gh#881).
+           *
+           * `src/styles/base.css:261` sets `color: hsl(var(--foreground))` on `body`. `body` is
+           * above every scope a consumer can make, so that `var()` substitutes against the ROOT's
+           * `--foreground` exactly once and everything below inherits the resolved colour. Measured
+           * on a themed region whose `--foreground` was near-white: the title's own computed
+           * `--foreground` WAS the light value and its `color` was still `rgb(36,35,30)`, all the
+           * way up the chain, every element reporting `inScope: true`. Real-pixel contrast 1.34:1.
+           *
+           * It is the `:root` freeze rule (docs/TOKEN-RESOLUTION.md §3) applied to a PROPERTY
+           * rather than a token, and it is worse there: a token can be given a knob, while `color`
+           * on `body` has none to give. Re-stating it at the scope re-resolves it where the scope
+           * is in force — the same "formula at the call site" the token rule prescribes.
+           *
+           * `display: contents` removes the box, not the element, so inherited properties still
+           * flow through it. `...style` is spread AFTER, so a consumer's own `color` still wins.
+           */
+          style={{ display: "contents", color: "hsl(var(--foreground))", ...style }}
+          {...props}
+        >
           {children}
         </div>
       </OverlayThemeRefreshContext.Provider>

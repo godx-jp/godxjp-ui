@@ -170,6 +170,16 @@ clean run as proof.
    that fell back to `hsl(var(--card))` would still be 42% translucent. Both branches stay
    custom-property overrides on the theme's own selector, same shape as rule 5.
 
+7. **A scoped theme cannot re-ink text it does not own the `color` of.** `src/styles/base.css`
+   sets `color: hsl(var(--foreground))` on `body`, above every scope, so that `var()` substitutes
+   once against the root and everything below inherits the resolved colour — the §3 freeze rule
+   applied to a PROPERTY rather than a token, and worse there, because a token can be given a knob
+   and `color` on `body` has none to give. `ThemeScope` re-states it on itself and on the
+   body-level overlay host, so a region wrapped in one re-inks correctly (gh#881). **A plain
+   wrapper themed by a stylesheet must state `color: hsl(var(--foreground))` on its own element
+   too** — that is the consumer's own element, not a selector into this package, so rule 5 permits
+   it.
+
 ## 6. What is not yet true
 
 The owner's second question was whether **every smallest element** is configurable. It is not, and

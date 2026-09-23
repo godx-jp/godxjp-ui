@@ -19,7 +19,15 @@ describe("control-styles (token wiring)", () => {
   describe("form controls", () => {
     it("controlMultilineClass uses ui-control-multiline", () => {
       expect(controlMultilineClass).toContain("ui-control-multiline");
-      expect(controlMultilineClass).toContain("border-input");
+      // gh#880 moved the surface pair off the utilities layer. `border-input` / `bg-background`
+      // sit in `@layer utilities`, which outranks `@layer components`, so while a field carried
+      // them NO rule this package could write could recolour it — the same trap gh#366/gh#375
+      // documented for the select trigger, still live on Input and Textarea. They now wear
+      // `.ui-control-outlined-surface`, which reads `--control-surface-background` /
+      // `--control-surface-border-color`: tokens that were already published and already reached
+      // the select family, and that three quarters of the field family had no route to.
+      expect(controlMultilineClass).toContain("ui-control-outlined-surface");
+      expect(controlMultilineClass).not.toMatch(/\bborder-input\b/);
     });
 
     it("controlTriggerClass uses ui-control flex layout", () => {
@@ -27,10 +35,12 @@ describe("control-styles (token wiring)", () => {
       expect(controlTriggerClass).toContain("flex");
       expect(controlTriggerClass).toContain("items-center");
       expect(controlTriggerClass).not.toMatch(/\bh-9\b/);
-      // The historical surface pair stays on THIS export — every non-select consumer still reads
-      // its border and fill from the utilities layer.
-      expect(controlTriggerClass).toContain("border-input");
-      expect(controlTriggerClass).toContain("bg-background");
+      // The surface pair is no longer a pair of UTILITIES (gh#880): see the note on
+      // `controlMultilineClass` above. The trigger reads the same published tokens the select
+      // family already did, through one shared class.
+      expect(controlTriggerClass).toContain("ui-control-outlined-surface");
+      expect(controlTriggerClass).not.toMatch(/\bborder-input\b/);
+      expect(controlTriggerClass).not.toMatch(/\bbg-background\b/);
     });
 
     it("controlSurfaceTriggerClass withholds the surface utilities and wears ui-control-surface", () => {
