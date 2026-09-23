@@ -814,15 +814,6 @@
    * invalid-at-computed-value-time and `backdrop-filter` keeps its own initial `none`, which is
    * what keeps every surface byte-identical by default. */
   --surface-backdrop-saturate: initial; /* default = 160%, resolved at every call site */
-  /* THE OPAQUE FALLBACK, for the two cases where translucency must not ship (§5 of the standard).
-   *
-   * `@supports not (backdrop-filter: blur(1px))` — an engine that cannot blur renders glass as a
-   * washed-out rectangle — and `@media (prefers-reduced-transparency: reduce)`, which is an OS
-   * accessibility setting and not a nicety. In both branches every frosted surface drops its blur
-   * and repaints from THIS knob; where it is unset each surface falls back to its own package
-   * role colour (`hsl(var(--card))`, `hsl(var(--popover))`, …), which is opaque. A theme whose
-   * ROLE colours are themselves translucent must name an opaque colour here. */
-  --surface-solid-background: initial; /* default = each surface's own package role colour */
 
   /* ── BAND HEIGHT — the vertical extent of a horizontal band that content is centred in
    * (gh#324, the third axis to be named).

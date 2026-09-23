@@ -163,6 +163,12 @@ clean run as proof.
 5. **A consumer sets tokens, never selectors.** App CSS targeting `[data-slot]`, `[data-priority]`
    or `.ui-*` is unlayered and therefore outranks every package layer at every width, including the
    responsive re-points — which is how a page-local fix becomes a library-wide regression.
+6. **A theme that makes a surface translucent owns its own `prefers-reduced-transparency` and
+   `@supports not (backdrop-filter)` fallbacks.** The library cannot write them on the theme's
+   behalf — it does not know what opaque colour the theme wants, and guessing at one role's own
+   colour is not safe: `docs/themes/glassmorphism.css` sets `--card: 0 0% 100% / 42%`, so a fallback
+   that fell back to `hsl(var(--card))` would still be 42% translucent. Both branches stay
+   custom-property overrides on the theme's own selector, same shape as rule 5.
 
 ## 6. What is not yet true
 
