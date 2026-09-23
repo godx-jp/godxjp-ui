@@ -1202,16 +1202,56 @@
     min-inline-size: var(--permission-matrix-min-width);
   }
 
-  /* Sticky first column: the scrolling grid passes UNDER it, so it needs an opaque ground. */
+  /* Sticky first column: the scrolling grid passes UNDER it, so it needs an opaque ground.
+   *
+   * `background-color: inherit` (gh#874) took the row's `background-color`, which an ordinary
+   * `<tr>` never sets — its tone/hover/selected washes are all `background-image` layers, which
+   * do not inherit. The pin painted nothing, and the scrolling grid showed through it.
+   *
+   * The card ground is opaque (PermissionMatrix always sits in a `CardContent`), and the row's
+   * wash is composited OVER it as a second layer — the same shape `table-layout.css` uses for
+   * DataTable's own pinned columns (`.ui-data-table-pin-start`/`-end`), so a toned row's colour
+   * still reaches the first column instead of being cut by a flat block. */
   .ui-permission-matrix .ui-permission-matrix-pin {
     position: sticky;
     inset-inline-start: 0;
     /* Above the scrolling cells, below any portaled overlay (--overlay-z-index). */
     z-index: 20;
-    background-color: inherit;
+    background-color: hsl(var(--card));
     border-inline-end: 1px solid hsl(var(--border));
     inline-size: var(--permission-matrix-label-width);
     min-inline-size: var(--permission-matrix-label-width);
+  }
+
+  /* Toned row (gh#872's diff wash): mirror it onto the pin over the opaque base above. */
+  .ui-permission-matrix .ui-table-row[data-tone] > .ui-permission-matrix-pin {
+    background-image: linear-gradient(
+      var(
+        --table-row-tone-surface,
+        hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+      ),
+      var(
+        --table-row-tone-surface,
+        hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
+      )
+    );
+  }
+
+  /* Hovered row: mirror TableRow's own `hover:bg-accent/70`, over the opaque base above. */
+  .ui-permission-matrix tbody tr:hover > .ui-permission-matrix-pin {
+    background-image: linear-gradient(
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7)),
+      var(--table-row-hover-background, hsl(var(--accent) / 0.7))
+    );
+  }
+
+  /* Selected row (`data-state="selected"`, same hand-off TableRow's own fill uses): mirror it
+   * onto the pin too, so a consumer that marks a row selected sees the pin agree with it. */
+  .ui-permission-matrix tbody tr[data-state="selected"] > .ui-permission-matrix-pin {
+    background-image: linear-gradient(
+      var(--table-row-selected-background, hsl(var(--primary) / 0.06)),
+      var(--table-row-selected-background, hsl(var(--primary) / 0.06))
+    );
   }
 
   .ui-permission-matrix-role {
