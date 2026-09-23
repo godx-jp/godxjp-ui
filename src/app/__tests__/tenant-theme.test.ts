@@ -23,7 +23,9 @@ import { hslToHex } from "../../email/color";
 import {
   channelsOf,
   contrast,
+  hsl,
   hslToRgb,
+  luminance,
   relative,
   triplet,
 } from "../../tokens/__tests__/wcag-contrast";
@@ -243,13 +245,16 @@ describe("the literal steps ARE the CSS formula (gh#868 gap 3 / gh#678)", () => 
   const cssStep = (step: "hover" | "active", pair: "darken" | "lighten", seed: Hsl) =>
     relative(seed, channelsOf(`primary-${step}-${pair}`, light));
 
-  it("emits --primary, --primary-foreground, --ring and the two states, and nothing else", () => {
+  it("emits --primary, --primary-foreground, --ring, the two states and the three inks — nothing else", () => {
     expect(Object.keys(tenantTheme("#0071bd").vars)).toEqual([
       "--primary",
       "--primary-foreground",
       "--ring",
       "--primary-hover",
       "--primary-active",
+      "--text-link",
+      "--text-brand",
+      "--text-primary",
     ]);
   });
 
@@ -370,5 +375,207 @@ describe("a region, not the document (gh#861)", () => {
   it("the result is frozen — a consumer cannot mutate the declarations it just spread", () => {
     const seed = tenantTheme("#0071bd");
     expect(Object.isFrozen(seed.vars)).toBe(true);
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * 5. THE BRAND AS INK (gh#887)
+ *
+ * The pair above is a FILL and its label. Nothing guaranteed the brand used as INK on a page
+ * surface, and the theme lab's `base` column measured 1.18–2.06:1 at `#FFD400` and 2.16–3.64:1 at
+ * `#E2564A`, at rest and hovered — a brand that passes this module's own contrast computation and
+ * still ships an unreadable sidebar. The roles already existed (`--text-link` / `--text-brand` /
+ * `--text-primary`); what they lacked was a FLOOR, because a lightness step is not a contrast
+ * guarantee. These hold the floor for the whole sRGB cube rather than for the seeds we tried.
+ * ──────────────────────────────────────────────────────────────────────────── */
+describe("the brand INK clears AA on the surface it lands on (gh#887)", () => {
+  const derived = readFileSync(join(process.cwd(), "src/tokens/derived.css"), "utf8");
+  const foundation = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
+  const lightBlock = derived.slice(derived.indexOf(":root {"), derived.indexOf(".dark,"));
+  const darkBlock = derived.slice(derived.indexOf(".dark,"), derived.indexOf("@supports not (color"));
+
+  /** The darkest / lightest surface brand ink lands on: `--accent` in each block of foundation.css. */
+  const LIGHT_SURFACE = hsl(foundation.slice(0, foundation.indexOf(".dark,")), "accent");
+  const DARK_SURFACE = hsl(foundation.slice(foundation.indexOf(".dark,")), "accent");
+  /** The pixel the browser paints for a triplet — integers, the way a screen composites it. */
+  const paint = (value: string) =>
+    hslToRgb(triplet(value)).map((v) => Math.round(v)) as [number, number, number];
+  const hexOf = (rgb: [number, number, number]) =>
+    `#${rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`;
+  const INKS = ["--text-link", "--text-brand", "--text-primary"] as const;
+  const grid = (): string[] => {
+    const out: string[] = [];
+    for (let r = 0; r <= 255; r += 17)
+      for (let g = 0; g <= 255; g += 17)
+        for (let b = 0; b <= 255; b += 17)
+          out.push(`#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`);
+    return out;
+  };
+
+  it("the surface it defaults to IS --accent, not --background — the hovered half of the defect", () => {
+    // 4.5:1 on --background is 3.78:1 on --accent, and that gap is where the lab measured 1.18:1
+    // and 3.06:1 on HOVER while the resting string on the page canvas passed. So the default is the
+    // darker of the two, and this asserts the module did not quietly pick the easier one.
+    const background = hsl(foundation.slice(0, foundation.indexOf(".dark,")), "background");
+    expect(luminance(hslToRgb(LIGHT_SURFACE))).toBeLessThan(luminance(hslToRgb(background)));
+    expect(hexOf(hslToRgb(LIGHT_SURFACE))).toBe("#ebe9e5");
+    expect(hexOf(hslToRgb(DARK_SURFACE))).toBe("#3c3a34");
+  });
+
+  it("THE DEFAULT SEED IS UNCHANGED — byte-identical to the literals derived.css already ships", () => {
+    // derived.css's `@supports not` block carries what 25.4.0 shipped to every engine for the
+    // package seed. The clamp is a no-op there (violet ink is 6.2:1 on --accent), so these three
+    // must come out exactly equal — a fix that moved the default would be a re-theme, not a fix.
+    const seed = tenantTheme("#7A00FF");
+    expect(triplet(seed.vars["--text-link"])).toEqual([268.71, 100, 41.6]);
+    expect(triplet(seed.vars["--text-brand"])).toEqual([268.71, 100, 41.6]);
+    expect(triplet(seed.vars["--text-primary"])).toEqual([268.71, 100, 34.5]);
+    for (const [role, expected] of [
+      ["text-link", "268.7 100% 41.6%"],
+      ["text-brand", "268.7 100% 41.6%"],
+      ["text-primary", "268.7 100% 34.5%"],
+    ] as const) {
+      expect(derived).toContain(`--${role}: ${expected};`);
+    }
+  });
+
+  it("is the derived.css ink ramp wherever the step already clears — one formula, two encodings", () => {
+    const failures: string[] = [];
+    let clamped = 0;
+    let checked = 0;
+    for (const hex of grid()) {
+      const seed = tenantTheme(hex);
+      const source = triplet(seed.vars["--primary"]) as Hsl;
+      for (const [role, css] of [
+        ["--text-link", channelsOf("text-link", lightBlock)],
+        ["--text-primary", channelsOf("text-primary", lightBlock)],
+      ] as const) {
+        const mine = triplet(seed.vars[role]) as Hsl;
+        const theirs = relative(source, css);
+        checked += 1;
+        // The clamp only ever moves the ink DOWN a light surface, never up, and never past it.
+        if (mine[2] < theirs[2] - 0.01) {
+          clamped += 1;
+          continue;
+        }
+        for (const channel of [0, 1, 2]) {
+          if (Math.abs(mine[channel] - theirs[channel]) > 0.01) {
+            failures.push(`${hex} ${role}: ${mine.join(" ")} vs ${theirs.join(" ")}`);
+          }
+        }
+      }
+    }
+    expect(failures).toEqual([]);
+    // A clamp that never fires would mean the guarantee is vacuous; one that always fires would
+    // mean the ramp was thrown away. Both branches must be real, and the count is the evidence.
+    expect(clamped).toBeGreaterThan(0);
+    expect(checked - clamped).toBeGreaterThan(checked / 4);
+    console.info(
+      `gh#887 ink: ${clamped}/${checked} of the grid needed the clamp, ` +
+        `${checked - clamped} kept the derived.css ramp step exactly`,
+    );
+  });
+
+  it("follows the SURFACE in dark too — the dark ramp, walked UP instead of down", () => {
+    const failures: string[] = [];
+    for (const hex of grid()) {
+      const seed = tenantTheme(hex, { surface: hexOf(hslToRgb(DARK_SURFACE)) });
+      const source = triplet(seed.vars["--primary"]) as Hsl;
+      for (const [role, css] of [
+        ["--text-link", channelsOf("text-link", darkBlock, lightBlock)],
+        ["--text-primary", channelsOf("text-primary", darkBlock, lightBlock)],
+      ] as const) {
+        const mine = triplet(seed.vars[role]) as Hsl;
+        const theirs = relative(source, css);
+        // Same rule mirrored: on a dark surface the clamp may only LIGHTEN the ramp step.
+        if (mine[2] < theirs[2] - 0.01) failures.push(`${hex} ${role} walked the wrong way`);
+      }
+    }
+    expect(failures).toEqual([]);
+  });
+
+  it("NO sRGB SEED EXISTS whose ink misses AA — on either surface, for all three roles", () => {
+    const failures: string[] = [];
+    const worst: Record<string, number> = {};
+    for (const [name, surface] of [
+      ["light --accent", LIGHT_SURFACE],
+      ["dark --accent", DARK_SURFACE],
+    ] as const) {
+      const surfaceHex = hexOf(hslToRgb(surface));
+      const surfacePixel = paint(`${surface[0]} ${surface[1]}% ${surface[2]}%`);
+      worst[name] = Infinity;
+      for (const hex of grid()) {
+        const seed = tenantTheme(hex, { surface: surfaceHex });
+        for (const role of INKS) {
+          const ratio = contrast(paint(seed.vars[role]), surfacePixel);
+          worst[name] = Math.min(worst[name], ratio);
+          if (ratio < AA_NORMAL_TEXT) failures.push(`${hex} ${role} on ${name} ${round2(ratio)}`);
+        }
+      }
+    }
+    expect(failures).toEqual([]);
+    console.info(
+      `gh#887 ink worst case over the cube: ` +
+        Object.entries(worst)
+          .map(([k, v]) => `${k} ${round2(v)}:1`)
+          .join(" · "),
+    );
+    for (const value of Object.values(worst)) expect(value).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+  });
+
+  it("walks no further than it must — one 0.1 step back towards the ramp always fails", () => {
+    const surfacePixel = paint(`${LIGHT_SURFACE[0]} ${LIGHT_SURFACE[1]}% ${LIGHT_SURFACE[2]}%`);
+    let asserted = 0;
+    for (const hex of ["#FFD400", "#E2564A", "#ffff00", "#7fff00", "#44ccff", "#fdfdfc"]) {
+      const seed = tenantTheme(hex);
+      const source = triplet(seed.vars["--primary"]) as Hsl;
+      for (const [role, css] of [
+        ["--text-link", channelsOf("text-link", lightBlock)],
+        ["--text-primary", channelsOf("text-primary", lightBlock)],
+      ] as const) {
+        const [h, s, l] = triplet(seed.vars[role]);
+        // Only where the clamp actually fired: an untouched ramp step is free to clear by a mile.
+        if (l >= relative(source, css)[2] - 0.01 || l <= 0) continue;
+        asserted += 1;
+        const nearer = contrast(paint(`${h} ${s}% ${round2(l + 0.1)}%`), surfacePixel);
+        expect(nearer, `${hex} ${role} walked past the floor`).toBeLessThan(AA_NORMAL_TEXT);
+      }
+    }
+    expect(asserted).toBeGreaterThan(5);
+  });
+
+  it("THE FIVE LAB SEEDS — the ratio before the clamp and after, on both surfaces", () => {
+    const table: string[] = [];
+    const surfacePixel = paint(`${LIGHT_SURFACE[0]} ${LIGHT_SURFACE[1]}% ${LIGHT_SURFACE[2]}%`);
+    for (const [name, hex] of [
+      ["violet", "#7C3AED"],
+      ["azure", "#2563EB"],
+      ["coral", "#E2564A"],
+      ["citron", "#FFD400"],
+      ["navy", "#0A1F44"],
+    ] as const) {
+      const seed = tenantTheme(hex);
+      const source = triplet(seed.vars["--primary"]) as Hsl;
+      const before = relative(source, channelsOf("text-link", lightBlock));
+      const beforeRatio = contrast(paint(`${before[0]} ${before[1]}% ${before[2]}%`), surfacePixel);
+      const afterRatio = contrast(paint(seed.vars["--text-link"]), surfacePixel);
+      // The brand used as ink RAW — `color: hsl(var(--primary))`, which is what nine of the ten
+      // failing strings in the lab actually read. It does not move here; it is the wiring half.
+      const rawRatio = contrast(paint(seed.vars["--primary"]), surfacePixel);
+      table.push(
+        `${name.padEnd(7)} ${hex}  --text-link ${round2(beforeRatio)}:1 → ${round2(afterRatio)}:1` +
+          `   raw --primary as ink ${round2(rawRatio)}:1`,
+      );
+      expect(afterRatio, `${name} ink`).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+      expect(afterRatio, `${name} ink`).toBeGreaterThanOrEqual(beforeRatio - 0.01);
+    }
+    console.info(`gh#887 five seeds on --accent (#ebe9e5):\n${table.join("\n")}`);
+  });
+
+  it("ignores a surface that is not a hex rather than walking against a NaN", () => {
+    const fallback = tenantTheme("#FFD400");
+    for (const value of ["", "accent", "hsl(40 13% 91%)", "#nope00", null]) {
+      expect(tenantTheme("#FFD400", { surface: value }).vars).toEqual(fallback.vars);
+    }
   });
 });
