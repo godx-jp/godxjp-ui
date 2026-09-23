@@ -135,6 +135,7 @@ export function Anchor({
   direction = "vertical",
   affix = true,
   bounds = DEFAULT_BOUNDS,
+  target,
   getContainer,
   getCurrentAnchor,
   offsetBlockStart,
@@ -232,10 +233,16 @@ export function Anchor({
     onValueChangeRef.current?.(href);
   }, []);
 
-  const container = React.useCallback(
-    (): AnchorContainerProp => getContainer?.() ?? window,
-    [getContainer],
-  );
+  // `target` (gh#890) is `Affix`'s own name and shape for this idea; `getContainer` is antd's
+  // older spelling of the identical thing and is kept live for it, but `target` wins when both
+  // are given. Whichever resolves feeds BOTH halves that need to agree on a scroll box — the pin
+  // (`<Affix target={container}>` below) AND the scroll-spy (`resolveFromScroll`, the scroll
+  // listeners, the click landing math) — so a `target` that scopes the bar necessarily scopes the
+  // highlight too; there is no second, unscoped path left to fall into.
+  const container = React.useCallback((): AnchorContainerProp => {
+    if (target) return target() ?? window;
+    return getContainer?.() ?? window;
+  }, [target, getContainer]);
 
   // The decision line. antd uses `targetOffset` for it whenever that is a number and falls back to
   // `offsetTop`, so the line a section becomes CURRENT at and the line it LANDS on are the same

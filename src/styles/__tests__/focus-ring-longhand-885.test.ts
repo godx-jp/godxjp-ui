@@ -38,8 +38,13 @@ describe("gh#885 · the focus mark is three longhands, never the `outline` short
     expect(markRule).toMatch(/outline-color/);
   });
 
-  it("sets outline-width from --focus-ring-width", () => {
-    expect(markRule).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\)/);
+  it("sets outline-width from --focus-ring-width, via the gh#891 per-component fallback", () => {
+    // `--focus-ring-width-component` is the fresh-at-this-element override
+    // (`.ui-toggle`, the field-control family); everything else falls through to the
+    // root/theme `--focus-ring-width` exactly as before.
+    expect(markRule).toMatch(
+      /outline-width:\s*var\(\s*--focus-ring-width-component,\s*var\(\s*--focus-ring-width\)\)/,
+    );
   });
 
   it("sets outline-style as a LITERAL, so no token can delete it", () => {

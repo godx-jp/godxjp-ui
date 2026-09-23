@@ -95,7 +95,11 @@ describe("focus ring — no utility defeats the components layer", () => {
     // gh#885 split the shorthand into its three longhands so a wrong-form colour token can no longer
     // take `outline-style` and `outline-width` down with it — the same outline, still the same
     // reason `outline-none` is a defeat. The pin moved to the longhands; it did not weaken.
-    expect(FOCUS_RING_CSS).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
+    // gh#891 wrapped the read in a per-component fallback (`--focus-ring-width-component`); the
+    // pin is still on `--focus-ring-width` reaching `outline-width`.
+    expect(FOCUS_RING_CSS).toMatch(
+      /outline-width:\s*var\(\s*--focus-ring-width-component,\s*var\(\s*--focus-ring-width\)\);/,
+    );
     expect(FOCUS_RING_CSS).toMatch(/outline-style:\s*solid;/);
   });
 });

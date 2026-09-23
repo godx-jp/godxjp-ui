@@ -405,3 +405,66 @@ describe("Anchor — nesting, direction, and antd's spellings", () => {
     expect(second.container.querySelector('[data-slot="anchor"]')).not.toHaveAttribute("data-ink");
   });
 });
+
+describe("Anchor — `target` (gh#890)", () => {
+  /**
+   * `Affix` has always taken `target`; `Anchor` had no way to be told what it scrolls within, so
+   * an affixed `Anchor` could only ever pin to the viewport — and, because `resolveFromScroll`
+   * and the scroll listeners run off the SAME `container()` this pin does, a `target` that missed
+   * either half would be worse than none (a bar pinned to a pane whose highlight still tracked
+   * the document). This asserts both halves move together.
+   */
+  it("scopes BOTH the scroll-spy and the pin to `target`, not the viewport", () => {
+    const pane = document.createElement("div");
+    document.body.append(pane);
+    vi.spyOn(pane, "getBoundingClientRect").mockReturnValue({ top: 0 } as DOMRect);
+    const paneAddEventListener = vi.spyOn(pane, "addEventListener");
+    const windowAddEventListener = vi.spyOn(window, "addEventListener");
+
+    mountSections(["alpha", "beta", "gamma"]);
+    renderWithUi(<Anchor items={ITEMS} affix={false} target={() => pane} />);
+
+    // The scroll-spy listens on the TARGET, never on the viewport.
+    expect(paneAddEventListener).toHaveBeenCalledWith("scroll", expect.any(Function), {
+      passive: true,
+    });
+    expect(windowAddEventListener).not.toHaveBeenCalledWith("scroll", expect.any(Function), {
+      passive: true,
+    });
+    expect(activeHref()).toBe("#alpha");
+
+    // Scrolling the PANE re-resolves the current section...
+    tops = { alpha: -600, beta: -100, gamma: 400 };
+    act(() => {
+      pane.dispatchEvent(new Event("scroll"));
+    });
+    expect(activeHref()).toBe("#beta");
+
+    // ...scrolling the VIEWPORT, which this Anchor no longer watches, must not.
+    tops = { alpha: -1200, beta: -700, gamma: -200 };
+    act(() => {
+      window.dispatchEvent(new Event("scroll"));
+    });
+    expect(activeHref()).toBe("#beta");
+
+    pane.remove();
+  });
+
+  it("`target` wins over the legacy `getContainer` when both are given", () => {
+    const pane = document.createElement("div");
+    document.body.append(pane);
+    vi.spyOn(pane, "getBoundingClientRect").mockReturnValue({ top: 0 } as DOMRect);
+    const paneAddEventListener = vi.spyOn(pane, "addEventListener");
+
+    mountSections(["alpha", "beta", "gamma"]);
+    renderWithUi(
+      <Anchor items={ITEMS} affix={false} target={() => pane} getContainer={() => window} />,
+    );
+
+    expect(paneAddEventListener).toHaveBeenCalledWith("scroll", expect.any(Function), {
+      passive: true,
+    });
+
+    pane.remove();
+  });
+});

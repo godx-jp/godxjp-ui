@@ -18058,10 +18058,16 @@ const [pinned, setPinned] = useState(false);
           "antd `targetOffset`, on its LOGICAL axis: where a CLICKED section lands — the room a pinned header needs. Defaults to `offsetBlockStart`, and (as in antd) it moves the decision line too, so a click can never leave the entry it just selected unselected.",
       },
       {
+        name: "target",
+        type: "() => Window | HTMLElement | null",
+        description:
+          "gh#890. The scroll box the sections are measured in AND `Affix` pins the nav against — one function, both halves. `Affix`'s own name and shape (`AffixTargetProp`), the same lazy getter `FloatButton.BackTop.target` already spells here. `null`, or an absent `target`, means the viewport. Wins over `getContainer` when both are given.",
+      },
+      {
         name: "getContainer",
         type: "() => HTMLElement | Window",
         description:
-          "antd `getContainer`, default `() => window` — the scroll box holding the sections.",
+          "antd `getContainer`, default `() => window` — the scroll box holding the sections. Superseded by `target` (gh#890), which mirrors `Affix`'s own spelling for the identical idea; kept live for a call site written before `target` existed.",
       },
       {
         name: "showInkInFixed",
