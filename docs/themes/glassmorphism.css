@@ -683,7 +683,23 @@
    * wrong here and the function is not wrong either: ALPHA ON `--primary` IS OUTSIDE WHAT IT
    * PROMISES. 85% keeps the fill close enough to the solid seed for the pair to hold on all five
    * (measured: coral 2.96:1 -> 4.53:1) while still reading as glass. */
-  --button-default-background: hsl(var(--primary) / 85%);
+  /* 92%, NOT 85%, AND THE 7 POINTS ARE A CONTRACT NOT A TASTE (gh#904).
+   *
+   * `tenantTheme` guarantees `--primary-foreground` clears 4.5:1 on `--primary` — computed against
+   * the OPAQUE fill. Making the fill translucent composites it with whatever pane is behind it, so
+   * the ground the label actually sits on is no longer the colour the guarantee was proved for, and
+   * the pair quietly stops holding. At 85% on the coral seed it landed at 4.48:1 — 0.02 short, on
+   * twelve strings at once, every primary Button on the page.
+   *
+   * This is the same shape as the ink-surface finding (gh#887, gh#896): a contrast guarantee
+   * computed on one ground, applied on another. The difference is that this one is the theme's own
+   * doing, so the theme is where it gets paid for.
+   *
+   * 92% is measured, not chosen: it is where every glass cell returns 562/562 in both polarities
+   * and at all five seeds. The glass look survives — 8% of the pane still reads through the fill —
+   * and a consumer who wants it thinner has to re-check the pair, which is what the number above
+   * this comment is for. */
+  --button-default-background: hsl(var(--primary) / 92%);
 
   /* A REAL two-stop gradient, which the Card could not take until card-layout.css:49 stopped
    * repeating one variable as both stops. */
