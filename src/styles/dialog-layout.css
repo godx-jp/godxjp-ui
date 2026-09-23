@@ -199,16 +199,31 @@
     border-top: 1px solid hsl(var(--border));
   }
 
-  [data-slot="dialog-close"] {
+  /* THE CORNER ✕, KEYED ON ITS OWN MARKER — NOT ON THE SLOT (gh#900).
+   *
+   * `data-slot="dialog-close"` is on every close TRIGGER, because `DialogClose` is the generic
+   * one: `<DialogClose asChild><Button>Cancel</Button></DialogClose>` in a footer is the
+   * documented pattern and this component supports `asChild` for exactly that. Keying the corner
+   * styling on the slot therefore took that Cancel button, made it `position: absolute` and pinned
+   * it to the dialog's top-right corner on top of the real ✕. Measured: the footer's Cancel and
+   * the corner ✕ at the identical rect x=906 y=324 w=53 h=32, while the footer sat at y=527.
+   *
+   * `.ui-sheet-close` below has always keyed on a marker class, and sheet.tsx's comment says it
+   * "matches DialogClose, which already carries the marker class" — which was not true. Now it is.
+   *
+   * `inset-block-start`, not `top`: the Sheet rule is logical and these two are the same control. */
+  .ui-dialog-close {
     position: absolute;
+    inset-block-start: var(--dialog-close-space-offset);
     inset-inline-end: var(--dialog-close-space-offset);
-    top: var(--dialog-close-space-offset);
     border-radius: var(--radius-sm);
     opacity: var(--dialog-close-rest-alpha);
   }
 
-  /* The TARGET, not the paint (gh#806). See --dialog-close-size for why the glyph stays 16px. */
-  :is([data-slot="dialog-close"], [data-slot="sheet-close"])::after {
+  /* The TARGET, not the paint (gh#806). See --dialog-close-size for why the glyph stays 16px.
+   * Also markers now, and for the same reason: a footer Cancel does not want a 24px pseudo-element
+   * centred on it. */
+  :is(.ui-dialog-close, .ui-sheet-close)::after {
     content: "";
     position: absolute;
     inset-block-start: 50%;
@@ -220,7 +235,7 @@
     block-size: 100%;
   }
 
-  [data-slot="dialog-close"]:hover {
+  .ui-dialog-close:hover {
     opacity: 1;
   }
 

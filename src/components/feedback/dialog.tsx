@@ -279,7 +279,7 @@ function DialogShell({
   React.useEffect(() => {
     if (ignoresNonModal && isDevelopment()) {
       console.warn(
-        "[godxjp-ui] Dialog: `modal={false}` is ignored for `variant=\"destructive\"` — an " +
+        '[godxjp-ui] Dialog: `modal={false}` is ignored for `variant="destructive"` — an ' +
           "alertdialog is always modal (WAI-ARIA APG).",
       );
     }
@@ -309,7 +309,10 @@ function DialogShell({
             {...props}
             style={style}
             ref={mergeRefs(ref, racRef, contentRef)}
-            onKeyDown={chain(props.onKeyDown, closeOnEscape(() => state.setOpen(false)))}
+            onKeyDown={chain(
+              props.onKeyDown,
+              closeOnEscape(() => state.setOpen(false)),
+            )}
           />
         );
       }}
@@ -484,7 +487,12 @@ function DialogContent({
             // four --focus-ring-* tokens, so a service retunes this ring with every other one.
             // The hand-written `focus:ring-2 focus:ring-offset-2` it replaces was un-themeable
             // AND fired on plain `:focus` (i.e. on a mouse click), unlike every other control.
-            className="ui-focus-ring transition-opacity disabled:pointer-events-none"
+            // `ui-dialog-close` is the CORNER marker, and it is what the positioning rule keys
+            // on. It cannot key on `data-slot="dialog-close"`: that slot is on every close
+            // TRIGGER, including the Cancel button a consumer wraps in `<DialogClose asChild>` —
+            // the documented pattern — which was then yanked out of the footer and pinned to the
+            // dialog's top-right corner. `.ui-sheet-close` has always done it this way.
+            className="ui-dialog-close ui-focus-ring transition-opacity disabled:pointer-events-none"
           >
             <X className="ui-dialog-close-icon" aria-hidden="true" />
             <span className="sr-only">{t("feedback.alert.dismiss")}</span>
@@ -655,7 +663,7 @@ function AlertDialogContent({
           // opacity. Without it this button rendered inline, in flow, under the footer.
           data-slot="dialog-close"
           // Same single-source ring as DialogContent's close (styles/focus-ring.css).
-          className="ui-focus-ring transition-opacity disabled:pointer-events-none"
+          className="ui-dialog-close ui-focus-ring transition-opacity disabled:pointer-events-none"
           aria-label={t("feedback.alert.dismiss")}
           onClick={() => {
             state.setOpen(false);
@@ -868,28 +876,28 @@ function AlertDialog({
             challenge label or a step-up error pushes the footer's buttons off-screen, with Escape as
             the only way out — `[data-slot=dialog-content]` is `overflow: hidden` by design. */}
         <DialogBody>
-        {needsPhrase && (
-          <FormField id={inputId} label={t("common.typeToConfirm", { phrase })}>
-            <Input
-              id={inputId}
-              value={typed}
-              onChange={(e) => {
-                setTyped(e.target.value);
-              }}
-              autoComplete="off"
-              spellCheck={false}
-              placeholder={phrase}
-              aria-required="true"
-              disabled={busy}
-            />
-          </FormField>
-        )}
+          {needsPhrase && (
+            <FormField id={inputId} label={t("common.typeToConfirm", { phrase })}>
+              <Input
+                id={inputId}
+                value={typed}
+                onChange={(e) => {
+                  setTyped(e.target.value);
+                }}
+                autoComplete="off"
+                spellCheck={false}
+                placeholder={phrase}
+                aria-required="true"
+                disabled={busy}
+              />
+            </FormField>
+          )}
 
-        {stepUpFailed && (
-          <p id={stepErrorId} role="alert" className="ui-dialog-step-up-error">
-            {t("feedback.alert.stepUpFailed")}
-          </p>
-        )}
+          {stepUpFailed && (
+            <p id={stepErrorId} role="alert" className="ui-dialog-step-up-error">
+              {t("feedback.alert.stepUpFailed")}
+            </p>
+          )}
         </DialogBody>
 
         <DialogFooter>

@@ -348,7 +348,9 @@ export function SheetContent({
             // `ui-focus-ring` = the single focus source. It replaces a hand-rolled
             // `focus:ring-2 focus:ring-offset-2 focus:ring-ring` — token-blind, on `:focus`
             // rather than `:focus-visible`, and with a 2px offset nothing else in the system
-            // used. Matches DialogClose, which already carries the marker class.
+            // used. `ui-sheet-close` is also the CORNER marker the positioning rule keys on —
+            // never `data-slot="sheet-close"`, which every close trigger carries. This comment
+            // used to say DialogClose already did the same; it did not, until gh#900.
             className="ui-sheet-close ui-focus-ring disabled:pointer-events-none"
           >
             <X className="ui-sheet-close-icon" aria-hidden="true" />

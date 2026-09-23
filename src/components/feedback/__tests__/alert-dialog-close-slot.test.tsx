@@ -19,11 +19,18 @@ import {
 /**
  * The AlertDialog ✕ must be the SAME slot as the Dialog ✕.
  *
- * dialog-layout.css pins the close button with `[data-slot="dialog-close"] { position: absolute;
- * inset-inline-end: …; top: …; opacity: … }`. AlertDialogContent rendered its ✕ as a bare
- * `<button>` inside `AlertDialogPrimitive.Cancel asChild` with no slot attribute, so the rule
- * never reached it and the glyph rendered INLINE, in flow, instead of pinned to the corner. It is
- * opt-in there (`showCloseButton` defaults to false), which is why it went unnoticed.
+ * dialog-layout.css pins the corner ✕ with `.ui-dialog-close { position: absolute; … }`.
+ * AlertDialogContent rendered its ✕ as a bare `<button>` inside `AlertDialogPrimitive.Cancel
+ * asChild` with nothing the rule could select, so the glyph rendered INLINE, in flow, instead of
+ * pinned to the corner. It is opt-in there (`showCloseButton` defaults to false), which is why it
+ * went unnoticed.
+ *
+ * THE RULE MOVED FROM THE SLOT TO A MARKER CLASS (gh#900) and this file follows it, which makes
+ * the assertion stricter rather than looser. `data-slot="dialog-close"` is on every close TRIGGER
+ * — including the Cancel button a consumer wraps in `<DialogClose asChild>` — so keying the pin on
+ * it dragged that footer button to the dialog's corner. The slot is still asserted below, because
+ * both ✕ marks should carry it; what is now asserted SEPARATELY is the marker, because that is the
+ * part the pin depends on.
  *
  * Asserted against the selector EXTRACTED from the shipped stylesheet — never a retyped copy and
  * never the Tailwind utility that happens to paint it.
@@ -34,7 +41,7 @@ const dialogCss = readFileSync(join(here, "../../../styles/dialog-layout.css"), 
 /** The corner-pinning rule itself — anchored on the declaration that makes the slot load-bearing. */
 const pinnedCloseSelector = ruleSelector(
   dialogCss,
-  /\[data-slot="dialog-close"\] \{\s*\n\s*position: absolute;/,
+  /\.ui-dialog-close \{\s*\n\s*position: absolute;/,
 );
 
 describe("AlertDialogContent close button", () => {
@@ -57,6 +64,9 @@ describe("AlertDialogContent close button", () => {
     expect(close, "the opt-in ✕ renders with the shared dialog-close slot").not.toBeNull();
     // The pin only lands if the rendered node actually matches the shipped selector.
     expect(close!.matches(pinnedCloseSelector)).toBe(true);
+    // And the thing the pin keys on is the MARKER, not the slot — a footer Cancel carries the
+    // slot too and must NOT be pinned (gh#900).
+    expect(close!.classList.contains("ui-dialog-close")).toBe(true);
   });
 
   it("is the same slot the Dialog ✕ uses — one rule pins both", () => {

@@ -25,11 +25,14 @@ import { anchorIndex } from "../../../test/css-selector";
 const layout = readFileSync(join(process.cwd(), "src/styles/dialog-layout.css"), "utf8");
 const tokens = readFileSync(join(process.cwd(), "src/tokens/components/feedback.css"), "utf8");
 
+/* THE SELECTOR MOVED FROM THE SLOT TO THE MARKER (gh#900), and the hit-area contract did not.
+ * `data-slot="dialog-close"` is on every close TRIGGER, including the Cancel button a consumer
+ * wraps in `<DialogClose asChild>` — so this rule was also putting a 24px pseudo-element on a
+ * footer button that neither needed nor wanted one, and the sibling positioning rule was pinning
+ * that button to the dialog's corner. Both now key on `.ui-dialog-close` / `.ui-sheet-close`, the
+ * CORNER buttons. The floor this file exists to protect is unchanged. */
 const rule = (() => {
-  const at = anchorIndex(
-    layout,
-    /:is\(\[data-slot="dialog-close"\], \[data-slot="sheet-close"\]\)::after/,
-  );
+  const at = anchorIndex(layout, /:is\(\.ui-dialog-close, \.ui-sheet-close\)::after/);
   expect(at, "the overlay close hit-area rule must exist").toBeGreaterThan(-1);
   const open = layout.indexOf("{", at);
   return layout.slice(open + 1, layout.indexOf("\n  }", open));
