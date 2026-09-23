@@ -912,11 +912,16 @@
       "note": "Thêm một theme là thêm một file CSS và một dòng trong docs/themes/index.ts. Trang này không phải sửa.",
       "themeLabel": "Theme",
       "seedLabel": "Màu seed",
+      "modeLabel": "Sắc độ",
       "seedHex": "Seed",
       "seedInk": "Màu chữ trên seed",
       "seedContrast": "Tương phản chữ, WCAG 2.2 SC 1.4.3",
       "legendPass": "từ 4.5:1 trở lên",
       "legendFail": "dưới AA"
+    },
+    "mode": {
+      "light": "Sáng",
+      "dark": "Tối"
     },
     "theme": {
       "base": {

@@ -912,11 +912,16 @@
       "note": "テーマの追加はCSSファイル1つと docs/themes/index.ts の1行だけ。このページは編集しません。",
       "themeLabel": "テーマ",
       "seedLabel": "シードカラー",
+      "modeLabel": "明暗",
       "seedHex": "シード",
       "seedInk": "シード上の文字色",
       "seedContrast": "文字のコントラスト（WCAG 2.2 SC 1.4.3）",
       "legendPass": "4.5:1 以上",
       "legendFail": "AA 未満"
+    },
+    "mode": {
+      "light": "ライト",
+      "dark": "ダーク"
     },
     "theme": {
       "base": {

@@ -83,7 +83,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { ThemeScope, tenantTheme } from "@godxjp/ui/app";
+import { ThemeScope, tenantTheme, useOptionalAppContext } from "@godxjp/ui/app";
 import { AreaChart, BarChart, LineChart, PieChart } from "@godxjp/ui/charts";
 import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";
 import {
@@ -320,11 +320,14 @@ import { useTranslation } from "@godxjp/ui/i18n";
 
 import shotLandscape from "../assets/shot-landscape.svg";
 import {
+  MODES,
   SEEDS,
   THEMES,
+  modeFromQuery,
   seedFromQuery,
   themeFromQuery,
   themeQueryValue,
+  type ModeRow,
   type SeedRow,
   type ThemeRow,
 } from "../themes";
@@ -446,6 +449,7 @@ export default function ThemeLabShowcase() {
     return {
       theme: themeFromQuery(params.get("theme")),
       seed: seedFromQuery(params.get("seed")),
+      mode: modeFromQuery(params.get("mode")),
     };
   }, []);
 
@@ -453,6 +457,7 @@ export default function ThemeLabShowcase() {
   const affixScrollerRef = React.useRef<HTMLDivElement>(null);
   const [theme, setTheme] = React.useState<ThemeRow>(initial.theme);
   const [seed, setSeed] = React.useState<SeedRow>(initial.seed);
+  const [mode, setMode] = React.useState<ModeRow>(initial.mode);
 
   /*
    * The URL is the page's own state, so a measurement or a screenshot can address one cell of the
@@ -464,16 +469,46 @@ export default function ThemeLabShowcase() {
     const params = new URLSearchParams(window.location.search);
     params.set("theme", themeQueryValue(theme));
     params.set("seed", seed.id);
+    params.set("mode", mode.id);
     window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
-  }, [theme, seed]);
+  }, [theme, seed, mode]);
 
-  /* The seed is walked against THIS THEME's surface, not the package's (see `inkSurface`). A
-   * theme declares its own `--text-link`, but `tenantTheme` returns the brand inks as literals in
-   * `style`, and an inline literal outranks any selector — so the theme's declaration is only
-   * reachable if the value handed to it was computed on the right ground. */
+  /*
+   * Polarity, applied THE WAY THE LIBRARY ITSELF APPLIES IT: through `AppProvider`'s own `theme`
+   * axis (`src/app/theme-axes.ts`'s `applyThemeAxes`, which is what `AppProvider` calls on
+   * `<html data-theme>`), never by writing `document.documentElement` from this page. Writing it
+   * here directly would race `AppProvider`'s own mount effect and lose: React commits a
+   * descendant's effects before its ancestor's, so a direct write on mount would be overwritten a
+   * moment later by `AppProvider`'s own effect re-asserting ITS state. Going through
+   * `ctx.setTheme` — the exact setter `AppSettingToggle kind="theme"` already uses above — sets
+   * `AppProvider`'s OWN state, so its effect re-fires FROM that state and there is nothing to race.
+   *
+   * `ctx` is read via a ref kept fresh every render, and the effect depends only on `mode.id`, so
+   * this does not re-fire every time some OTHER axis (locale, density, …) changes the context's
+   * identity — only when this switch changes. The cleanup restores whatever the axis was
+   * immediately before this effect's own change, so leaving the page (or flipping the switch back)
+   * does not leak a forced polarity into the rest of the showcase.
+   */
+  const appContext = useOptionalAppContext();
+  const appContextRef = React.useRef(appContext);
+  appContextRef.current = appContext;
+  React.useEffect(() => {
+    const ctx = appContextRef.current;
+    if (!ctx) return;
+    const previous = ctx.theme;
+    ctx.setTheme(mode.id);
+    return () => {
+      ctx.setTheme(previous);
+    };
+  }, [mode.id]);
+
+  /* The seed is walked against THIS THEME's surface for THIS POLARITY, not the package's (see
+   * `inkSurface`). A theme declares its own `--text-link`, but `tenantTheme` returns the brand
+   * inks as literals in `style`, and an inline literal outranks any selector — so the theme's
+   * declaration is only reachable if the value handed to it was computed on the right ground. */
   const brand = React.useMemo(
-    () => tenantTheme(seed.hex, { surface: theme.inkSurface }),
-    [seed.hex, theme.inkSurface],
+    () => tenantTheme(seed.hex, { surface: theme.inkSurface[mode.id] }),
+    [seed.hex, theme.inkSurface, mode.id],
   );
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -710,6 +745,18 @@ export default function ThemeLabShowcase() {
                       value={seed.id}
                       onValueChange={(next) => setSeed(seedFromQuery(next))}
                       options={SEEDS.map((row) => ({
+                        value: row.id,
+                        label: t(row.nameKey),
+                      }))}
+                    />
+                  </Field>
+                  <Field id="mode-switch" label={t("themeLab.switch.modeLabel")}>
+                    <Segmented
+                      id="mode-switch"
+                      aria-label={t("themeLab.switch.modeLabel")}
+                      value={mode.id}
+                      onValueChange={(next) => setMode(modeFromQuery(next))}
+                      options={MODES.map((row) => ({
                         value: row.id,
                         label: t(row.nameKey),
                       }))}
