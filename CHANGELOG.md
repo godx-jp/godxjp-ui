@@ -4,6 +4,84 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [29.0.0] - 2026-09-24
+
+MAJOR. **Translucency becomes its own axis, so a theme can stop restating colours — and a theme
+that restates one no longer loses dark mode.** One breaking change, with a silent failure mode, is
+spelled out first because it is the reason this is a major.
+
+### 💥 BREAKING — a colour role must no longer carry its own alpha
+
+`--card`, `--popover` and `--input` are read as `hsl(var(--card) / var(--card-alpha, 100%))`. CSS
+Color 4 lets an HSL triplet carry `/ A` inside itself, and a theme that used that — the idiom
+`--card: 0 0% 100% / 12%` — now produces `hsl(0 0% 100% / 12% / 100%)`: two slashes, invalid at
+computed-value time. **The surface loses its fill entirely and nothing reports it.**
+
+```
+--card: 0 0% 100% / 12%
+  28.13.0   rgb(253, 253, 252) composited at 12%
+  29.0.0    rgba(0, 0, 0, 0)          <- no fill, no error
+```
+
+Measured in Chromium, not inferred.
+
+**Migration** — set the opacity on its own token and leave the colour alone:
+
+```css
+/* before */
+--card: 0 0% 100% / 12%;
+/* after  */
+--card-alpha: 12%;
+```
+
+This is strictly better than what it replaces: `--card` keeps flipping light/dark with the
+polarity, which the old idiom destroyed. The idiom was never in `docs/CUSTOMER-THEMING.md` or
+`docs/TOKENS.md` — it appears only in this repo's own showcase theme — but it is legal CSS that a
+consumer could reasonably have discovered, and the failure is silent, so it gets a major and this
+entry rather than a footnote.
+
+`color-mix` would have preserved the old spelling. It was measured and rejected: it changes the
+computed value of the three most-read surface tokens from `rgb(…)` to `color(srgb …)`, and that
+spelling has already broken this repo's own measurement tooling twice.
+
+### ⚡ A theme can have a polarity again
+
+A scoped theme declares its values BELOW `:root`, and a declaration on a descendant beats an
+inherited one whatever the specificity — so a theme shadowed the library's own `.dark` block
+entirely. Measured, by toggling the polarity and counting core tokens that move:
+
+| theme               | before  | after |
+| ------------------- | ------- | ----- |
+| the package default | 5/5     | 5/5   |
+| glass               | **0/5** | 5/5   |
+| flat                | **0/5** | 5/5   |
+
+85 alpha tokens now exist where 42 did, and the showcase theme restates 2 colours where it restated 50.
+
+### 📐 The φ radius tier is no longer frozen at `:root`
+
+`:root { --radius: 0 }` squared 324 of 335 rounded elements; the same override on a scoped theme
+moved 3. Both now move essentially together (324 vs 309). 67 mirrors became `initial` with the
+formula at the call site.
+
+### ♿ 30 of 30 theme × seed × polarity cells clear WCAG 2.2 AA
+
+Every cell reads 562/562 strings, from 0 of 15 clean cells when the sweep began. The worst string
+went 1.07:1 → passing. All 10 glass cells clear the pane-lift floor — a measurement that did not
+exist before, and whose absence let an invisible pane count as glass.
+
+Fixed on the way: `Affix` mispositioned by any containing-block ancestor (**every** theme,
+including the default, measured at −9325px); a footer `Cancel` inside `DialogClose` pinned to the
+dialog's corner; Carousel arrows centred on the component instead of its content, with the glyph now
+replaceable; the per-component focus-ring widths, which were inert; `Anchor` gaining `target`; and
+the brand ink, which failed as ink at four of five seeds.
+
+### 🔧 For anyone running the tooling
+
+`scripts/explain-token.mjs` now ships AND works — it was added to the package earlier and still
+scanned `src/`, which a consumer does not have. `pnpm preview` derives its port from the checkout,
+so parallel worktrees stop serving each other's source tree.
+
 ## [28.13.0] - 2026-09-22
 
 MINOR. **Every consumer's i18n bundle shrinks by 68.9% gzip**, and the catalogue stops under-reporting
@@ -16,13 +94,13 @@ exports — so any component calling `useTranslation()` (`ScrollArea` does, for 
 label) dragged **every** namespace into a consumer's bundle, with nothing for a bundler to shake.
 
 **60.2% of it was showcase and theme-editor demo copy.** A consumer session pulled strings like
-*"A wide 240×96 wordmark logo. Because of contain it's never cropped…"* out of its **production**
+_"A wide 240×96 wordmark logo. Because of contain it's never cropped…"_ out of its **production**
 build.
 
-| | before | after |
-| --- | --- | --- |
-| three locales, raw | 160,715 B | **63,941 B** (−60.2%) |
-| three locales, one gzip stream | 48,869 B | **15,183 B** (−68.9%) |
+|                                | before    | after                 |
+| ------------------------------ | --------- | --------------------- |
+| three locales, raw             | 160,715 B | **63,941 B** (−60.2%) |
+| three locales, one gzip stream | 48,869 B  | **15,183 B** (−68.9%) |
 
 Six namespaces moved to a docs-owned catalogue the preview registers explicitly:
 `serviceLauncherShowcase`, `themeShowcase`, `themeEditor`, `marketingShowcase`, `showcase`,
@@ -33,7 +111,7 @@ Six namespaces moved to a docs-owned catalogue the preview registers explicitly:
 refuses to collide with a library namespace.
 
 **And the hole that created this is closed.** `check:no-consumer-coupling` correctly forbids
-hard-coded locale literals in `docs/**` — but had no opinion about *which* catalogue received the
+hard-coded locale literals in `docs/**` — but had no opinion about _which_ catalogue received the
 keys, which is how a docs page localised on 2026-09-22 added 18% to every consumer's bundle. A
 namespace in the runtime catalogue that only `docs/**` reads is now a hard failure, un-baselined.
 
@@ -41,9 +119,9 @@ namespace in the runtime catalogue that only `docs/**` reads is now a hard failu
 
 - **`check:mcp-prop-sync` was blind to 541 declared props across 65 prop types.** Its member split
   counted `{([<` as opening and `})]>` as closing, so an arrow in a function type — `(v: string) =>
-  void` — drove the depth to −1 and nothing split again: **every prop declared after any
-  arrow-returning prop was invisible**, in a gate whose success line reads *"catalog documents every
-  declared component prop"*. Verified against a TypeScript-compiler ground truth: 1751 of 1751
+void` — drove the depth to −1 and nothing split again: **every prop declared after any
+  arrow-returning prop was invisible**, in a gate whose success line reads _"catalog documents every
+  declared component prop"_. Verified against a TypeScript-compiler ground truth: 1751 of 1751
   declared props now found, zero spurious.
 
   It surfaced **35 genuinely undocumented props across 16 components**. 31 are now documented;
@@ -54,7 +132,7 @@ namespace in the runtime catalogue that only `docs/**` reads is now a hard failu
 
 - **`Attachments` forwarded antd's `classNames`/`styles`/`rootClassName`** while
   `docs/DESIGN-AUTHORITY.md` records those as deliberately not adopted, and the catalog told readers
-  *"DON'T expect `styles`/`classNames` from Ant X"* — so an agent reading the catalog and an agent
+  _"DON'T expect `styles`/`classNames` from Ant X"_ — so an agent reading the catalog and an agent
   reading autocomplete got opposite answers. Documented as shipped and recorded in the divergence
   ledger; removing them is a breaking change and needs its own decision.
 
@@ -73,14 +151,14 @@ and three gates that could not see what they were built to find.
 15 slot classes emitted, **1** with a rule, and all **12** of its tokens declared and read by
 nothing. Measured on the isolate frame:
 
-| | before | after |
-| --- | --- | --- |
-| `.ui-attachments-card` | `display: list-item`, 976×72.6 | `display: flex`, 268×68 |
-| `.ui-attachments-list` | `display: block` | `flex` + wrap + 8px gap |
-| raw `<input type="file">` | **9 × 265×24, visible** | 9 × 1×1, `clip-path: inset(50%)` |
-| file names painted on a card | **0** | 24 |
-| the drop layer | **0 elements rendered** | 9 |
-| tokens declared / read | 12 / **0** | **13 / 13** |
+|                              | before                         | after                            |
+| ---------------------------- | ------------------------------ | -------------------------------- |
+| `.ui-attachments-card`       | `display: list-item`, 976×72.6 | `display: flex`, 268×68          |
+| `.ui-attachments-list`       | `display: block`               | `flex` + wrap + 8px gap          |
+| raw `<input type="file">`    | **9 × 265×24, visible**        | 9 × 1×1, `clip-path: inset(50%)` |
+| file names painted on a card | **0**                          | 24                               |
+| the drop layer               | **0 elements rendered**        | 9                                |
+| tokens declared / read       | 12 / **0**                     | **13 / 13**                      |
 
 Three defects found while fixing it, each measured: the card never showed the file name at all
 (`item.name` existed only inside the remove button's accessible name, so a tray of six attachments
@@ -155,7 +233,7 @@ inside a card sat **4px inboard of its own card's header and footer**, on both e
 1440px as a gap from the card's inner edge: header 17px, columns **13px**, footer 17px.
 
 It could not be settled in the footer, because `--table-pagination-padding-x` defaults to the cell
-token *by design* — the footer follows the columns so "rows per page" lands on the first column's
+token _by design_ — the footer follows the columns so "rows per page" lands on the first column's
 text axis. Either the cells move to the card's inset, or a card disagrees with its own content
 forever. Both 12 and 16 are legal IBM Carbon steps (this repo's spacing authority) and Carbon gives
 DataTable and Tile the same 16px inline inset for exactly this reason: **the relationship was
@@ -187,7 +265,7 @@ the cell — it did not before (see Fixed).
   which now sits beneath `Button`'s existing utility so an explicit size still wins. Also caught
   two nobody had reported: the sidebar group chevron (24px in a 32px row, 14 frames) and the
   pagination ellipsis (24px in 32px, 8 frames).
-- **A `CardAction` in the header stripped the top padding from *every* body in the card**, not just
+- **A `CardAction` in the header stripped the top padding from _every_ body in the card**, not just
   the one below it. A pagination band two siblings and a whole flush table away from the header
   read `padding-block: 0 / 16px` — one band, two different insets on its two block edges. The rule
   is now adjacent (`+`) instead of descendant.
@@ -286,13 +364,13 @@ ability to reach them, and the gate that would have caught all five on day one.
 
 - **A `text-5xl` hero was 54px at 320px too.** Measured on one 81-character headline:
 
-  | viewport | was | now |
-  | --- | --- | --- |
-  | 320 | 54px / 9 lines | **32px / 6 lines** |
-  | 375 | 54px / 8 lines | 33.38px / 4 lines |
-  | 768 | 54px / 4 lines | 43.2px / 3 lines |
-  | 1280 | 54px / 2 lines | **54px / 2 lines** |
-  | 1440 | 54px / 2 lines | **54px / 2 lines** |
+  | viewport | was            | now                |
+  | -------- | -------------- | ------------------ |
+  | 320      | 54px / 9 lines | **32px / 6 lines** |
+  | 375      | 54px / 8 lines | 33.38px / 4 lines  |
+  | 768      | 54px / 4 lines | 43.2px / 3 lines   |
+  | 1280     | 54px / 2 lines | **54px / 2 lines** |
+  | 1440     | 54px / 2 lines | **54px / 2 lines** |
 
   The desktop hero is unchanged to the pixel; only the small end moves. gh#836 offered two roads —
   widen `size` to the responsive object `Flex direction` takes, or make the ramp fluid. This takes
