@@ -4,7 +4,7 @@
     "components": 171,
     "patterns": 20,
     "rules": 47,
-    "tokens": 1981,
+    "tokens": 1987,
     "vocabulary": 14
   },
   "files": [
@@ -57,7 +57,7 @@
     "counts": {
       "component": 1688,
       "foundation": 201,
-      "semantic": 92
+      "semantic": 98
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"

@@ -33,7 +33,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { build } from "esbuild";
 
-import { parseThemeTokens } from "./theme-token-rules.mjs";
+import { parseTailwindBridgeTokens, parseThemeTokens } from "./theme-token-rules.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CHECK = process.argv.includes("--check");
@@ -141,11 +141,21 @@ const THEME_TIERS = [
    * semantic/ for the same reason. */
   ["semantic", ["src/tokens/derived.css", ...globSync("src/tokens/semantic/*.css").sort()]],
 ];
-const themeTokens = THEME_TIERS.flatMap(([tier, files]) =>
+const tierTokens = THEME_TIERS.flatMap(([tier, files]) =>
   files.flatMap((file) =>
     parseThemeTokens(readFileSync(join(ROOT, file), "utf8")).map((t) => ({ ...t, tier })),
   ),
 );
+/* THE TAILWIND BRIDGE IS A SOURCE TOO (gh#878). The radius scale `--radius-xs`…`--radius-2xl` is
+ * declared in `@theme inline` in src/styles/base.css, not under src/tokens/, so reading src/tokens
+ * alone published `--radius` and `--radius-ratio` and none of the six steps the library reads 96
+ * times. They are `semantic`: derived roles, not seeds. The same block carries Tailwind's mirrors of
+ * tokens published above under their real names; `parseTailwindBridgeTokens` drops those. */
+const bridge = parseTailwindBridgeTokens(
+  readFileSync(join(ROOT, "src/styles/base.css"), "utf8"),
+  new Set([...tierTokens, ...tokens.COMPONENT_TOKENS].map((t) => t.name)),
+);
+const themeTokens = [...tierTokens, ...bridge.tokens.map((t) => ({ ...t, tier: "semantic" }))];
 
 const data = {
   "components.json": components.COMPONENTS,
@@ -504,6 +514,6 @@ const counts = Object.entries(data)
 console.log(
   CHECK
     ? `✓ check:agent-catalog — the published catalog matches mcp/src/data + src/tokens, and ` +
-      `contains every token docs/CUSTOMER-THEMING.md tells a consumer to set (${counts}).`
+        `contains every token docs/CUSTOMER-THEMING.md tells a consumer to set (${counts}).`
     : `✓ gen:agent-catalog — ${Object.keys(files).length} file(s) in agent/ (${counts}).`,
 );
