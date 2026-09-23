@@ -267,10 +267,35 @@
   --wa-sumi: #595857; /* 墨   warm ink */
   --wa-nezu: #949495; /* 鼠   mouse-grey */
 
-  /* Chart accents are neutral decorative primitives, not business semantics. */
+  /* Chart accents are neutral decorative primitives, not business semantics.
+   *
+   * gh#873 — `--chart-3` (山吹 yamabuki) measured 1.78:1 as a rendered 2px LINE stroke on --card
+   * (rgb(253,253,252)): 59% of the WCAG 2.2 SC 1.4.11 non-text floor (3:1). It is not stroke-only:
+   * `chartColor()` (chart-frame.tsx) hands the same raw hex to Bar's `fill` and Pie's `Cell fill`
+   * at FULL opacity, so "keep it out of the stroke rotation" would still leave two chart types
+   * failing — a bar or a slice IS the graphical object, same floor as a line. The one place the
+   * palette is genuinely a fill with a different argument is Area's *band* (chart-cartesian.tsx),
+   * which composites at `--chart-area-fill-alpha` (0.2) UNDER the line that carries the value
+   * (chart-layout.css's own comment) — that pixel is not this token's raw hex and is not what
+   * this fix is measured against.
+   *
+   * Same hue (43.79°) and saturation (100%) held, lightness alone dropped 48.63% → 34.35% — light
+   * 1.78:1 → 3.50:1, dark 9.01:1 → 4.58:1 (was already comfortable; stays comfortable). Measured
+   * on the RENDERED stroke/fill in Chromium, not the token value — a token-value probe on this
+   * exact palette silently returns 15.46:1 for every member by failing to resolve the custom
+   * property, which is how the prior pass on gh#865 got a plausible-looking number that meant
+   * nothing.
+   *
+   * `--chart-2` and `--chart-4` clear 3:1 here (6.14:1 / 6.15:1) but NOT against the dark `--card`
+   * (2.61:1 / 2.61:1 — a different ground, not the same measurement re-run); their fix is a
+   * dark-theme-only override below, so the light values — and their tie to --wa-moegi / the
+   * --destructive hex — are untouched. `--chart-1` (3.47:1), `--chart-5` (3.19:1) and `--chart-6`
+   * (3.31/4.85:1) clear the floor in both themes and are left alone (surgical: fix what measured
+   * under, not what merely has a thin margin). See src/components/charts/__tests__/
+   * chart-palette-contrast-873.test.tsx for the regression test derived from this stylesheet. */
   --chart-1: #0077c7;
   --chart-2: #006e54;
-  --chart-3: #f8b500;
+  --chart-3: #af8000;
   --chart-4: #b7282e;
   --chart-5: #4c6cb3;
   --chart-6: #eb6101;
@@ -1069,4 +1094,14 @@
   /* Brand interaction steps are GENERATED from this block's own seeds (see the light block). */
   --secondary-hover: 45 6% 22%;
   --secondary-active: 45 6% 26%;
+
+  /* gh#873 — `--chart-2` and `--chart-4` clear WCAG 2.2 SC 1.4.11 (3:1) on the LIGHT `--card`
+   * (6.14:1 / 6.15:1) but not on THIS card (rgb(33,32,28)): 2.61:1 / 2.61:1, measured on the
+   * rendered stroke/fill. The light block's own values stay exactly the wa-iro hex (萌葱 / 茜,
+   * the latter also `--destructive`'s literal) — only this theme, where the ground is darker, gets
+   * an override. Same hue/saturation held, lightness raised just enough to clear the floor with
+   * margin: 21.57%→25.96% (chart-2, 2.61:1→3.50:1) and 43.73%→53.21% (chart-4, 2.61:1→3.50:1).
+   * `--chart-1`/`-3`/`-5`/`-6` already clear 3:1 on this card and are not touched. */
+  --chart-2: #008465;
+  --chart-4: #d43b42;
 }
