@@ -57,7 +57,7 @@
 
 .ui-chart .recharts-default-tooltip {
   border-radius: var(--radius);
-  border: 1px solid hsl(var(--border)) !important;
+  border: var(--stroke-hairline) solid hsl(var(--border)) !important;
   background: hsl(var(--popover) / var(--popover-alpha, 100%)) !important;
   color: hsl(var(--popover-foreground));
   font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));
@@ -143,7 +143,10 @@
   inline-size: 100%;
   max-inline-size: var(--chart-trend-bar-max-width);
   /* Data-driven: the 0..1 ratio arrives as an inline custom property. */
-  block-size: max(var(--chart-trend-bar-min-height), calc(var(--chart-trend-bar-value, 0) * 100%));
+  block-size: max(
+    var(--chart-trend-bar-min-height, var(--stroke-md)),
+    calc(var(--chart-trend-bar-value, 0) * 100%)
+  );
   border-start-start-radius: var(
     --chart-trend-bar-radius,
     calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))

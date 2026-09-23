@@ -53,10 +53,12 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
       cardStyles,
       '[data-slot="card"][data-accent][data-accent-placement="perimeter"]',
     );
-    expect(perimeter).toMatch(/border-width:\s*var\(\s*--card-accent-perimeter-width\)/);
+    expect(perimeter).toMatch(
+      /border-width:\s*var\(\s*--card-accent-perimeter-width, var\(--stroke-hairline\)\)/,
+    );
     expect(perimeter).toMatch(/border-color:\s*var\(\s*--card-accent-color\)/);
     expect(perimeter).toMatch(
-      /box-shadow:\s*0 0 0 var\(\s*--card-accent-perimeter-ring-width\) var\(\s*--card-accent-color\)/,
+      /box-shadow:\s*0 0 0 var\(\s*--card-accent-perimeter-ring-width, var\(--stroke-hairline\)\) var\(\s*--card-accent-color\)/,
     );
     // The card's own elevation and opt-in glow survive the ring — a perimeter card must not lose
     // the surface treatment every other card on the page has.
@@ -66,8 +68,8 @@ describe("Card accentPlacement=perimeter — the semantic attention border (gh#1
     expect(perimeter).toMatch(/var\(\s*--card-glow\)/);
     // The two weights read the hairline step (`--stroke-hairline` IS 1px), so assert
     // the step rather than a literal the file no longer carries.
-    expect(cardTokens).toContain("--card-accent-perimeter-width: var(--stroke-hairline);");
-    expect(cardTokens).toContain("--card-accent-perimeter-ring-width: var(--stroke-hairline);");
+    expect(cardTokens).toContain("--card-accent-perimeter-width: initial;");
+    expect(cardTokens).toContain("--card-accent-perimeter-ring-width: initial;");
     expect(foundationTokens).toContain("--stroke-hairline: 1px;");
   });
 

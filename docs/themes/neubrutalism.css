@@ -160,31 +160,12 @@
   --stroke-xl: 6px;
   --stroke-2xl: 8px;
 
-  /* The 22 frozen mirrors that are genuinely an EDGE. The other 22 stroke mirrors are a
-   * caret, a bar size, a progress ring or a tone rail — thickening those would change what
-   * they MEAN, which is `flat.css` FINDING 2's rule applied to this axis. */
-  --branch-scope-picker-subset-border-width: 3px;
-  --calendar-footer-border-width: 3px;
-  --card-accent-perimeter-ring-width: 3px;
-  --card-accent-perimeter-width: 3px;
-  --card-featured-ring-width: 3px;
-  --checkbox-border-width: 3px;
-  --command-item-divider-width: 3px;
-  --control-border-width: 3px;
-  --descriptions-border-width: 3px;
-  --draggable-panel-border-width: 3px;
-  --logo-divider-width: 3px;
-  --prose-quote-border-width: 3px;
-  --separator-rule-size: 3px;
-  --steps-marker-border-width: 3px;
-  --swatch-border-width: 3px;
-  --table-row-border-width: 3px;
-  --table-summary-border-width: 3px;
-  --tabs-card-rail-border-width: 3px;
-  --thumbnail-border-width: 3px;
-  --timeline-grid-event-border-width: 3px;
-  --upload-avatar-border-width: 3px;
-  --upload-dropzone-border-width: 3px;
+  /* The 22 frozen EDGE mirrors this theme used to restate are GONE (gh#906): they are `initial`
+   * knobs now and read the stroke scale above at their call sites, so the six lines above are the
+   * whole of it. Deleting them and measuring 563/563 unchanged is the acceptance test that issue
+   * asked for. The other 21 stroke mirrors are a caret, a bar size, a progress ring or a tone rail
+   * — reachable now too, and deliberately left at their own steps, because thickening those would
+   * change what they MEAN (`flat.css` FINDING 2, on this axis). */
 
   /* ── SHADOWS AS STRUCTURE. No blur, full alpha, hard offset — the move that makes the style
    *    read as "pasted paper". The six foundation steps are restated; five frozen mirrors follow
@@ -305,29 +286,6 @@
   --toggle-pressed-border-color: hsl(0 0% 0%);
   --switch-unchecked-background: hsl(0 0% 72%);
   --switch-content-unchecked-foreground: hsl(0 0% 12%);
-
-  /* ── FINDING A, a THIRD time: the frozen INK mirrors. ─────────────────────────────────────────
-   *    Setting `--muted-foreground` here moved the roles that read it AT THE CALL SITE and left
-   *    behind every `:root` mirror that reads it through a `var()`. Measured, not assumed: the
-   *    Segmented label computed `rgb(104, 102, 94)` inside this scope — the library's own
-   *    `44 5% 39%` — while the scope's own `--muted-foreground` was `0 0% 18%`, and it failed at
-   *    4.15-4.37:1 in four of five light cells. Thirteen mirrors have this shape; the list is
-   *    generated:
-   *      grep -rhoE -- '--[a-z0-9-]+:\s*var\(--(muted-foreground|foreground|text-tertiary)\)' \
-   *        src/tokens/components/*.css
-   *    So the freeze is now measured on THREE axes in one theme — 68 radius mirrors, 44 stroke
-   *    mirrors, 13 ink mirrors, 125 declarations that exist only because a `var()` substitutes
-   *    where it is DECLARED. That is the finding; restating them is the cost. ─────────────────── */
-  --activity-color: 0 0% 18%;
-  --app-launcher-group-label-color: 0 0% 18%;
-  --app-launcher-tile-color: 0 0% 0%;
-  --choice-button-color: 0 0% 0%;
-  --control-count-color: 0 0% 18%;
-  --input-addon-color: 0 0% 18%;
-  --segmented-item-color: 0 0% 18%;
-  --segmented-item-selected-color: 0 0% 0%;
-  --slider-mark-color: 0 0% 18%;
-  --topbar-item-color: 0 0% 18%;
 
   --text-action-color: hsl(0 0% 0%);
   --text-action-color-hover: hsl(0 0% 18%);
@@ -472,18 +430,6 @@
   --toggle-pressed-border-color: hsl(0 0% 100%);
   --switch-unchecked-background: hsl(0 0% 40%);
   --switch-content-unchecked-foreground: hsl(0 0% 96%);
-
-  /* The same 13 frozen ink mirrors, at the other polarity (FINDING A). */
-  --activity-color: 0 0% 88%;
-  --app-launcher-group-label-color: 0 0% 88%;
-  --app-launcher-tile-color: 0 0% 100%;
-  --choice-button-color: 0 0% 100%;
-  --control-count-color: 0 0% 88%;
-  --input-addon-color: 0 0% 88%;
-  --segmented-item-color: 0 0% 88%;
-  --segmented-item-selected-color: 0 0% 100%;
-  --slider-mark-color: 0 0% 88%;
-  --topbar-item-color: 0 0% 88%;
 
   --text-action-color: hsl(0 0% 100%);
   --text-action-color-hover: hsl(0 0% 88%);

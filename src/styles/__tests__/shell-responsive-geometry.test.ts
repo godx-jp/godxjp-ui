@@ -819,7 +819,7 @@ describe("responsive shell geometry", () => {
       ".ui-org-switcher-command .ui-command-input-wrapper",
     );
     expect(decls).toMatch(
-      /border:\s*1px solid hsl\(var\(\s*--input\) \/ var\(--input-alpha, 100%\)\);/,
+      /border:\s*var\(--stroke-hairline\) solid hsl\(var\(\s*--input\) \/ var\(--input-alpha, 100%\)\);/,
     );
     expect(decls).toMatch(/border-radius:\s*var\(\s*--control-radius\);/);
     expect(decls).toMatch(/margin-inline:\s*0;/);
@@ -832,7 +832,7 @@ describe("responsive shell geometry", () => {
     // The palette keeps its bottom rule; this is a local re-shape, not a change to Command.
     const controlStyles = readFileSync(resolve(process.cwd(), "src/styles/control.css"), "utf8");
     expect(declarationsFor(controlStyles, ".ui-command-input-wrapper")).toMatch(
-      /border-bottom:\s*1px solid hsl\(var\(\s*--border\)\);/,
+      /border-bottom:\s*var\(--stroke-hairline\) solid hsl\(var\(\s*--border\)\);/,
     );
   });
 

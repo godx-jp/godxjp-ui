@@ -112,7 +112,7 @@ describe("RangeTimeline column labels are centred (gh#730)", () => {
     // over 5 timelines x 4 viewports, light/dark, LTR/RTL.
     expect(column).toMatch(/padding:\s*var\(\s*--space-2\);/);
     expect(column).toMatch(
-      /padding-inline-start:\s*calc\(var\(\s*--space-2\) \+ var\(\s*--range-timeline-grid-width\)\);/,
+      /padding-inline-start:\s*calc\(var\(\s*--space-2\) \+ var\(--range-timeline-grid-width, var\(--stroke-hairline\)\)\);/,
     );
   });
 

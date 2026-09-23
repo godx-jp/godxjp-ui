@@ -1,6 +1,9 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
-import { allDeclarations, environment, resolveToken } from "./css-token-resolve";
+import { allDeclarations, environment, resolveToken, tierFiles } from "./css-token-resolve";
 
 /**
  * The two geometry axes that had a vocabulary and no name.
@@ -132,6 +135,15 @@ const FROZEN: Record<string, [string, string, string, string]> = {
  * property (Gmail and Outlook strip <style> and demand literal inline values), so every constant
  * in that file must stay a literal. It is the one documented exception on every axis.
  */
+/* Both places a call-site chain can live: a rule in the stylesheets, and one token declared as
+ * another's default (`--focus-ring-weight: var(--focus-outline-weight, var(--stroke-hairline))`
+ * in foundation.css is the case that proved the stylesheets alone are not enough). */
+const CHAIN_SOURCES = [
+  ...readdirSync(join(process.cwd(), "src/styles"))
+    .filter((f) => f.endsWith(".css"))
+    .map((f) => join(process.cwd(), "src/styles", f)),
+  ...tierFiles().map((f) => join(process.cwd(), f)),
+];
 const decls = allDeclarations().filter((d) => d.file !== "src/tokens/components/email.css");
 const root = environment({ selectors: [":root"] });
 const compact = environment({ selectors: [":root"], scaling: "0.92" });
@@ -182,8 +194,14 @@ describe("stroke scale — tier 1 (gh#324)", () => {
     expect(root.get("--focus-ring-width")).toBe(
       "calc(var(--focus-ring-weight) * var(--focus-outline))",
     );
-    expect(root.get("--focus-ring-weight")).toBe("var(--focus-outline-weight)");
-    expect(root.get("--focus-outline-weight")).toBe("var(--stroke-hairline)");
+    // gh#906 — the knob is `initial` and the scale is read where it is CONSUMED, so that a theme
+    // restating the stroke scale reaches it. The contract is unchanged and now lives in the chain:
+    // the alias must still point at the knob, and the knob's default must still be the hairline.
+    expect(root.get("--focus-ring-weight")).toBe(
+      "var(--focus-outline-weight, var(--stroke-hairline))",
+    );
+    expect(root.get("--focus-outline-weight")).toBe("initial");
+    expect(CALL_SITE_DEFAULT.get("--focus-outline-weight")).toBe("--stroke-hairline");
   });
 });
 
@@ -223,14 +241,59 @@ describe("band-height scale — tier 1 (gh#324)", () => {
   });
 });
 
+/**
+ * gh#906 — the 43 stroke mirrors and the 12 ink mirrors became `initial` knobs whose default is
+ * resolved AT THE CALL SITE, the shape gh#880 gave the shadow family and that `--button-xs-height`
+ * above already records. `resolveToken` reads the token's OWN declaration, which for those is now
+ * the guaranteed-invalid value, so a FROZEN row for one of them has to be resolved through the
+ * default its call sites actually pass — `var(--x, var(--y))` with `--x: initial` renders exactly
+ * `var(--y)`, so resolving `--y` in the same environment IS the rendered value.
+ *
+ * The map is DERIVED from the shipped stylesheets, never hand-kept. That is load-bearing in two
+ * directions: a knob whose call sites stop passing a default drops out of the map, its row falls
+ * back to reading `initial` and the test fails — which is the regression this file exists to
+ * catch; and a knob given a DIFFERENT default at different call sites is caught below rather than
+ * silently resolved against whichever one was seen last.
+ */
+const CALL_SITE_DEFAULT = ((): Map<string, string> => {
+  const chain = /var\(\s*(--[a-z0-9-]+)\s*,\s*var\(\s*(--[a-z0-9-]+)\s*\)\s*\)/g;
+  const seen = new Map<string, Set<string>>();
+  for (const path of CHAIN_SOURCES) {
+    const css = readFileSync(path, "utf8");
+    for (const [, knob, fallback] of css.matchAll(chain)) {
+      const set = seen.get(knob) ?? new Set<string>();
+      set.add(fallback);
+      seen.set(knob, set);
+    }
+  }
+  const map = new Map<string, string>();
+  for (const [knob, defaults] of seen) {
+    if (defaults.size === 1) map.set(knob, [...defaults][0]);
+  }
+  return map;
+})();
+
+/** The rendered value of a FROZEN row, following the call-site default for an `initial` knob. */
+function rendered(token: string, env: Map<string, string>): string {
+  const own = resolveToken(token, env);
+  if (own !== "initial") return own;
+  const fallback = CALL_SITE_DEFAULT.get(token);
+  if (fallback === undefined)
+    throw new Error(
+      `${token} is \`initial\` and no call site in src/styles/ passes it a single default — ` +
+        `either it is unreachable or two call sites disagree (gh#906).`,
+    );
+  return resolveToken(fallback, env);
+}
+
 describe("the migration moved nothing (gh#324)", () => {
   it.each(Object.entries(FROZEN))(
     "%s resolves unchanged at default / compact / comfortable / scale-fixed",
     (token, [atDefault, atCompact, atComfortable, atFixed]) => {
-      expect(resolveToken(token, root)).toBe(atDefault);
-      expect(resolveToken(token, compact)).toBe(atCompact);
-      expect(resolveToken(token, comfortable)).toBe(atComfortable);
-      expect(resolveToken(token, scaleFixed)).toBe(atFixed);
+      expect(rendered(token, root)).toBe(atDefault);
+      expect(rendered(token, compact)).toBe(atCompact);
+      expect(rendered(token, comfortable)).toBe(atComfortable);
+      expect(rendered(token, scaleFixed)).toBe(atFixed);
     },
   );
 

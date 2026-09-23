@@ -196,7 +196,7 @@ describe("Tabs bodied — the joined body (gh#762)", () => {
 
   it("derives the body's border and radius from the tab's own, not from new constants", () => {
     expect(tokenValue(navTokens, "--tabs-panel-border-width")).toBe(
-      "var(--tabs-card-rail-border-width)",
+      "var(--tabs-card-rail-border-width, var(--stroke-hairline))",
     );
     // `initial` since gh#888 — a :root binding to --tabs-card-radius froze there too; the default
     // (var(--tabs-card-radius)) now resolves at the call site (navigation-layout.css) instead.
@@ -266,6 +266,8 @@ describe("Tabs counter pill ↔ Toggle counter pill (gh#762)", () => {
     );
     expect(selected).toMatch(/background:/);
     expect(selected).toMatch(/color:/);
-    expect(navStyles).toMatch(/outline:\s*var\(\s*--tabs-count-forced-outline-width\)/);
+    expect(navStyles).toMatch(
+      /outline:\s*var\(\s*--tabs-count-forced-outline-width, var\(--stroke-hairline\)\)/,
+    );
   });
 });

@@ -36,7 +36,7 @@ describe("the card's vertical slack is the footer's (gh#750)", () => {
 
   it("steps all three accented bands back by the rail width", () => {
     const rules = ruleWith(
-      "padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width))",
+      "padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width, var(--stroke-2xl)))",
     );
     expect(rules.length).toBe(1);
     for (const slot of ["card-header", "card-content", "card-footer"]) {

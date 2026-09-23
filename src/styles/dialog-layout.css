@@ -11,11 +11,11 @@
   /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule)
    * — a body-less sheet never shows a doubled header-bottom + footer-top line. */
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-header"] {
-    border-bottom: 1px solid hsl(var(--border));
+    border-bottom: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-footer"] {
-    border-top: 1px solid hsl(var(--border));
+    border-top: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   /* Scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved here at the
@@ -64,7 +64,7 @@
     max-width: none;
     transform: translate(-50%, -50%);
     gap: var(--dialog-space-gap);
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     /* A KNOB, NOT A HARD-CODED ROLE (gh#880 item 4). `hsl(var(--background))` here was one of the
      * two surfaces a theme could not make translucent at all: `--background` is a raw HSL triplet
      * and is already composed with an alpha for the glass Topbar, so a second `/` is invalid CSS.
@@ -189,14 +189,14 @@
     margin-inline: calc(-1 * var(--dialog-space-x));
     margin-block-start: calc(-1 * var(--dialog-space-y));
     padding: var(--dialog-space-y) var(--dialog-space-x);
-    border-bottom: 1px solid hsl(var(--border));
+    border-bottom: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-footer"] {
     margin-inline: calc(-1 * var(--dialog-space-x));
     margin-block-end: calc(-1 * var(--dialog-space-y));
     padding: var(--dialog-space-y) var(--dialog-space-x);
-    border-top: 1px solid hsl(var(--border));
+    border-top: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   /* THE CORNER ✕, KEYED ON ITS OWN MARKER — NOT ON THE SLOT (gh#900).
@@ -292,7 +292,7 @@
   }
 
   .ui-two-factor-setup-notice {
-    border: 1px dashed hsl(var(--border));
+    border: var(--stroke-hairline) dashed hsl(var(--border));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     padding: var(--space-2) var(--space-3);
   }
@@ -302,7 +302,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-2);
     padding: var(--space-3);
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--muted) / 0.4);
   }
@@ -385,7 +385,7 @@
     padding-inline: var(--tooltip-space-inline);
     padding-block: var(--tooltip-space-block);
     border-radius: var(--tooltip-radius, var(--radius));
-    border: 1px solid
+    border: var(--stroke-hairline) solid
       var(--tooltip-border-color, hsl(var(--border) / var(--tooltip-border-color-alpha, 100%)));
     background-color: var(--tooltip-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
     color: var(--tooltip-foreground, hsl(var(--popover-foreground)));
@@ -409,7 +409,7 @@
     width: var(--popover-surface-inline-size, var(--popover-width));
     padding: var(--popover-space-inset);
     border-radius: var(--popover-radius, var(--radius));
-    border: 1px solid
+    border: var(--stroke-hairline) solid
       var(
         --popover-surface-border-color,
         hsl(var(--border) / var(--popover-surface-border-color-alpha, 100%))
@@ -533,12 +533,12 @@
 
   .ui-sheet-panel[data-side="top"] {
     inset-block-start: 0;
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-sheet-panel[data-side="bottom"] {
     inset-block-end: 0;
-    border-block-start: 1px solid hsl(var(--border));
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   /* The scroll region must be allowed to shrink inside the flex column, or it grows past the panel

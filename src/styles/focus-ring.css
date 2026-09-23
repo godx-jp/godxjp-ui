@@ -312,7 +312,7 @@
    * same element rather than inherited frozen from an ancestor, still multiplies by the switch,
    * and the mark rule prefers it over `--focus-ring-width` only where it is set. */
   .ui-toggle {
-    --focus-ring-weight: var(--toggle-focus-ring-width);
+    --focus-ring-weight: var(--toggle-focus-ring-width, var(--stroke-lg));
     --focus-ring-width-component: calc(var(--focus-ring-weight) * var(--focus-outline));
     --focus-ring-opacity: var(--toggle-focus-ring-alpha);
   }
@@ -361,7 +361,7 @@
     .ui-app-setting-picker-icon,
     .ui-app-setting-picker-inline
   ) {
-    --focus-ring-weight: var(--control-focus-ring-width);
+    --focus-ring-weight: var(--control-focus-ring-width, var(--stroke-hairline));
     --focus-ring-width-component: calc(var(--focus-ring-weight) * var(--focus-outline));
   }
 

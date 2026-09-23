@@ -62,7 +62,7 @@
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
   );
-  --org-switcher-meta-foreground: var(--muted-foreground);
+  --org-switcher-meta-foreground: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --sidebar-nav-sub-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
@@ -421,7 +421,7 @@
   /* Square by default: a cell that meets both bar edges has no corner to round. A service that
    * wants the softer read sets this to var(--radius). */
   --topbar-item-radius: var(--radius-sharp);
-  --topbar-item-color: var(--muted-foreground);
+  --topbar-item-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   /* The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's
    * built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. */
   --topbar-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
@@ -515,7 +515,7 @@
    * on a desktop, and the comfortable control tier IS that floor. */
   --app-launcher-tile-min-height: var(--control-height-comfortable);
   --app-launcher-tile-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
-  --app-launcher-tile-color: var(--foreground);
+  --app-launcher-tile-color: initial; /* default = var(--foreground), resolved at the call site (gh#906) */
   --app-launcher-tile-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
   --app-launcher-tile-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --app-launcher-tile-hover-color: initial; /* default = var(--accent-foreground), resolved at the call site */
@@ -535,7 +535,7 @@
     --font-size-2xs,
     calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio))
   );
-  --app-launcher-group-label-color: var(--muted-foreground);
+  --app-launcher-group-label-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --app-launcher-state-min-height: 8rem;
 
   /* LAUNCHPAD — the full-viewport surface (`AppLauncher responsive="fullscreen"`).
@@ -846,7 +846,7 @@
   );
   --auth-shell-divider-label-line-height: calc(19 / 11);
   --auth-shell-divider-rule-color: var(--border);
-  --auth-shell-divider-label-color: var(--muted-foreground);
+  --auth-shell-divider-label-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --auth-identity-gap: 0.375rem;
   --auth-requester-gap: 0.375rem;
   --auth-requester-icon-size: var(--icon-size-md);

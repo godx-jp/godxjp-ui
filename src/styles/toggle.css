@@ -52,7 +52,7 @@
     }
 
     .ui-toggle[data-state="on"] .ui-toggle-count {
-      outline: var(--toggle-count-forced-outline-width) solid currentColor;
+      outline: var(--toggle-count-forced-outline-width, var(--stroke-hairline)) solid currentColor;
     }
   }
 }

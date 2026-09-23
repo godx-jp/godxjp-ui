@@ -41,7 +41,7 @@ describe("picker triggers all sit on the control chrome (gh#348)", () => {
     const trigger = styles.match(/\.ui-control-trigger\s*\{[^}]*\}/)?.[0] ?? "";
     expect(trigger).toContain("cursor: pointer");
     const control = styles.match(/\n {2}\.ui-control \{[^}]*\}/)?.[0] ?? "";
-    expect(control).toContain("var(--control-border-width)");
+    expect(control).toContain("var(--control-border-width, var(--stroke-hairline))");
     expect(control).toContain("var(--control-shadow)");
   });
 
@@ -50,7 +50,7 @@ describe("picker triggers all sit on the control chrome (gh#348)", () => {
     const mark =
       read("src/styles/control.css").match(/\.ui-checkbox,\s*\n\s*\.ui-radio\s*\{[^}]*\}/)?.[0] ??
       "";
-    expect(mark).toContain("var(--checkbox-border-width)");
-    expect(mark).not.toContain("var(--control-border-width)");
+    expect(mark).toContain("var(--checkbox-border-width, var(--stroke-hairline))");
+    expect(mark).not.toContain("var(--control-border-width, var(--stroke-hairline))");
   });
 });

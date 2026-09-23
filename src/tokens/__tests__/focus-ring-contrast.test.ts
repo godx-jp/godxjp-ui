@@ -230,7 +230,7 @@ describe.each(THEMES)("the shipped default matches the derived tier ($theme)", (
     // form paints outside the box model. This is the STRUCTURAL reason there is no layout shift,
     // asserted so a future "thicken the border on focus" cannot land without deleting it.
     expect(focusRing).not.toMatch(/border(?:-[a-z]+)?-width\s*:/);
-    expect(controlTokens).toMatch(/--control-border-width:\s*var\(\s*--stroke-hairline\)/);
+    expect(controlTokens).toMatch(/--control-border-width:\s*initial/);
   });
 });
 
@@ -471,7 +471,7 @@ describe("the ON position is the LIGHT one, and it still carries the criterion",
     // The complaint was weight, not existence: 3px of opaque brand around an already-shaded
     // selected nav row is two heavy treatments on one element. The FIELD form of this indicator
     // is one hairline, and WCAG's AA bar for an indicator is CONTRAST, not thickness.
-    expect(root).toMatch(/--focus-outline-weight:\s*var\(\s*--stroke-hairline\)/);
+    expect(root).toMatch(/--focus-outline-weight:\s*initial/);
     expect(css).toMatch(/--stroke-hairline:\s*1px;/);
     // The heavier outline weight stays one token away.
     expect(css).toMatch(/--stroke-lg:\s*3px;/);
@@ -568,8 +568,20 @@ describe.each(THEMES)("the ON mark clears SC 1.4.11 ($theme)", ({ theme, selecto
     const step = (value: string) =>
       strokeScale[value.match(/var\(\s*--stroke-([a-z0-9]+)\)/)?.[1] ?? ""] ??
       Number.parseFloat(value);
+    /* gh#906 — `--focus-outline-weight` is an `initial` knob now, so its own declaration is the
+     * guaranteed-invalid value and the PAINTED width is the default its consumer passes. Follow
+     * the chain rather than the declaration; `step()` below already reads a `var(--stroke-*)`
+     * wherever it sits, including as a fallback. */
+    const painted = (knob: string, declared: string) =>
+      declared === "initial"
+        ? (css.match(new RegExp(`var\\(\\s*${knob}\\s*,\\s*(var\\(--stroke-[a-z0-9]+\\))`))?.[1] ??
+          declared)
+        : declared;
     const weights = [
-      root.match(/--focus-outline-weight:\s*([^;\n]+);/)?.[1]?.trim() ?? "",
+      painted(
+        "--focus-outline-weight",
+        root.match(/--focus-outline-weight:\s*([^;\n]+);/)?.[1]?.trim() ?? "",
+      ),
       ...[...focusRing.matchAll(/--focus-ring-weight:\s*([^;]+);/g)].map((m) => {
         const value = m[1].trim();
         const knob = value.match(/var\((--[a-z-]+)\)/)?.[1];
@@ -675,11 +687,15 @@ describe("one focus language, applied consistently", () => {
     // and resolves to NONE. Measured in Chromium while this knob was briefly `0`: a focused Input
     // reported `box-shadow: none` and still looked plausible, because the recoloured border was
     // carrying the state on its own. A bare `0` does not thin the mark, it deletes it.
-    expect(focusRing).toContain("var(--control-focus-ring-width)");
+    expect(focusRing).toContain("var(--control-focus-ring-width, var(--stroke-hairline))");
     const declaration = controlTokens.match(/--control-focus-ring-width:\s*([^;]+);/)?.[1]?.trim();
     expect(declaration, "--control-focus-ring-width must be declared").toBeDefined();
+    // `initial` is admissible ONLY because the assertion above has already pinned the call site to
+    // `var(--control-focus-ring-width, var(--stroke-hairline))` — the knob being unset then paints
+    // the hairline, which carries a unit. Without that line this alternative would let a bare `0`
+    // back in through the default (gh#906).
     expect(declaration, "must be a length with a unit — see the calc() note above").toMatch(
-      /^(0|var\(\s*--stroke-[a-z0-9]+\)|[\d.]+[a-z%]+)$/,
+      /^(0|initial|var\(\s*--stroke-[a-z0-9]+\)|[\d.]+[a-z%]+)$/,
     );
   });
 

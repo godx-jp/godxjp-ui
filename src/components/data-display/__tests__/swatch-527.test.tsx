@@ -102,7 +102,9 @@ describe("Swatch", () => {
    * forced-colors must not repaint a colour that IS the content.
    */
   it("keeps the hairline and the real colour under forced colors", () => {
-    expect(swatchRule).toContain("box-shadow: inset 0 0 0 var(--swatch-border-width)");
+    expect(swatchRule).toContain(
+      "box-shadow: inset 0 0 0 var(--swatch-border-width, var(--stroke-hairline))",
+    );
     expect(swatchRule).toContain("forced-color-adjust: none");
   });
 

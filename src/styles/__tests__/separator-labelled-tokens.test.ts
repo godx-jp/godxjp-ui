@@ -170,7 +170,9 @@ describe("AuthDivider preset (gh#308)", () => {
   it("only re-points Separator's knobs — it no longer re-implements the rule", () => {
     expect(body).toContain("--separator-label-gap: var(--auth-shell-divider-gap)");
     expect(body).toContain("--separator-rule-color: var(--auth-shell-divider-rule-color)");
-    expect(body).toContain("--separator-label-color: var(--auth-shell-divider-label-color)");
+    expect(body).toContain(
+      "--separator-label-color: var(--auth-shell-divider-label-color, var(--muted-foreground))",
+    );
     expect(body).toContain(
       "--separator-label-font-size: var(--auth-shell-divider-label-font-size)",
     );

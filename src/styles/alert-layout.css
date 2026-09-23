@@ -11,7 +11,7 @@
       --alert-radius,
       var(--card-radius, calc(var(--radius) * var(--radius-ratio)))
     );
-    border-width: 1px;
+    border-width: var(--stroke-hairline);
     padding: var(--alert-space-inset);
     font-size: var(--font-size-base);
   }
@@ -334,7 +334,7 @@
 
   .ui-skeleton-table {
     overflow: hidden;
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--skeleton-radius, var(--radius));
   }
 
@@ -359,7 +359,7 @@
   }
 
   .ui-skeleton-table-row + .ui-skeleton-table-row {
-    border-top: 1px solid hsl(var(--border));
+    border-top: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-skeleton-detail {
@@ -369,7 +369,7 @@
   .ui-skeleton-detail-box,
   .ui-skeleton-stat,
   .ui-skeleton-card {
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--skeleton-radius, var(--radius));
     padding: var(--skeleton-card-inset);
 

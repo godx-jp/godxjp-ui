@@ -21,12 +21,12 @@
 
   .ui-separator:not([data-labelled])[data-orientation="horizontal"] {
     width: 100%;
-    height: var(--separator-rule-size);
+    height: var(--separator-rule-size, var(--stroke-hairline));
     background: hsl(var(--separator-rule-color, var(--border)));
   }
 
   .ui-separator:not([data-labelled])[data-orientation="vertical"] {
-    width: var(--separator-rule-size);
+    width: var(--separator-rule-size, var(--stroke-hairline));
     height: 100%;
     background: hsl(var(--separator-rule-color, var(--border)));
   }
@@ -48,7 +48,7 @@
   }
 
   .ui-separator-rule {
-    block-size: var(--separator-rule-size);
+    block-size: var(--separator-rule-size, var(--stroke-hairline));
     background: hsl(var(--separator-rule-color, var(--border)));
   }
 
@@ -679,7 +679,7 @@
   }
 
   .ui-resizable-handle {
-    width: var(--control-border-width);
+    width: var(--control-border-width, var(--stroke-hairline));
     background: hsl(var(--border));
     position: relative;
     flex-shrink: 0;
@@ -691,7 +691,7 @@
 
   .ui-resizable-handle[aria-orientation="vertical"] {
     width: auto;
-    height: var(--control-border-width);
+    height: var(--control-border-width, var(--stroke-hairline));
   }
 
   .ui-resizable-handle:hover,
@@ -1382,7 +1382,7 @@
       --radius-sm,
       calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
     );
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     color: hsl(var(--foreground));
     text-decoration: none;
   }
@@ -1670,7 +1670,7 @@
     display: block;
     padding: var(--legal-document-toc-item-padding);
     border-radius: var(--legal-document-toc-item-radius, var(--radius));
-    border-inline-start: var(--legal-document-toc-marker-width) solid transparent;
+    border-inline-start: var(--legal-document-toc-marker-width, var(--stroke-md)) solid transparent;
     font-size: var(--legal-document-toc-font-size);
     line-height: 1.6;
     color: hsl(var(--legal-document-toc-foreground, var(--muted-foreground)));
@@ -2247,7 +2247,7 @@
     max-inline-size: calc(100% - var(--draggable-panel-inset) - var(--draggable-panel-inset));
     block-size: var(--draggable-panel-block-size);
     max-block-size: var(--draggable-panel-max-block-size);
-    border: var(--draggable-panel-border-width) solid hsl(var(--border));
+    border: var(--draggable-panel-border-width, var(--stroke-hairline)) solid hsl(var(--border));
     border-radius: var(--draggable-panel-radius, var(--radius));
     background-color: hsl(var(--background));
     box-shadow: var(--draggable-panel-shadow);
@@ -2296,7 +2296,8 @@
     align-items: center;
     gap: var(--draggable-panel-bar-gap);
     padding: var(--draggable-panel-bar-padding);
-    border-block-end: var(--draggable-panel-border-width) solid hsl(var(--border));
+    border-block-end: var(--draggable-panel-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
     background-color: hsl(var(--muted) / 0.4);
   }
 

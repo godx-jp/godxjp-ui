@@ -105,19 +105,19 @@
    * Tokenised (rule #44) so a service theme can re-tune it without forking CSS.
    * The slot padding compensation in card-layout.css subtracts the same token,
    * so content stays aligned on the shell whatever the rail width. */
-  --card-accent-rail-width: var(--stroke-2xl);
+  --card-accent-rail-width: initial; /* default = var(--stroke-2xl), resolved at the call site (gh#906) */
   /* Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can
    * tune the edge weight and the outer ring independently; the defaults reproduce the optical
    * weight of `variant="featured"` (1px border + 1px ring) in the card's own semantic accent tone
    * instead of --primary. Structural 1px literals, like the base card hairline. */
-  --card-accent-perimeter-width: var(--stroke-hairline);
-  --card-accent-perimeter-ring-width: var(--stroke-hairline);
+  --card-accent-perimeter-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
+  --card-accent-perimeter-ring-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* `variant="featured"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary
    * default resolves at the CALL SITE and a scoped [data-tenant]/.dark override of --primary
    * reaches it; a service points it anywhere (e.g. var(--attention)) to retint every featured card
    * at once. Default = hsl(var(--primary)). */
   --card-featured-border-color: initial;
-  --card-featured-ring-width: var(--stroke-hairline);
+  --card-featured-ring-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --stat-card-label-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))

@@ -80,10 +80,10 @@ describe("Thumbnail", () => {
     const base = rule(".ui-thumbnail");
 
     expect(base).toMatch(
-      /border:\s*var\(\s*--thumbnail-border-width\)\s+solid\s+hsl\(var\(\s*--border\)\)/,
+      /border:\s*var\(--thumbnail-border-width, var\(--stroke-hairline\)\)\s+solid\s+hsl\(var\(\s*--border\)\)/,
     );
     expect(base).toMatch(/border-radius:\s*var\(\s*--thumbnail-radius/);
-    expect(tokens()).toMatch(/--thumbnail-border-width:\s*var\(\s*--stroke-hairline\)/);
+    expect(tokens()).toMatch(/--thumbnail-border-width:\s*initial/);
     // gh#888 — a :root binding to --radius froze there too; default now resolves at the call site.
     expect(tokens()).toMatch(/--thumbnail-radius:\s*initial;/);
   });

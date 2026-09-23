@@ -382,7 +382,7 @@
    *          the border RECOLOURS to `--ring` at its UNCHANGED hairline width, plus
    *          `box-shadow: 0 0 0 var(--control-outline-width) var(--control-outline)`.
    *   OUTLINE (a control with no boundary of its own — Button, Checkbox, Radio, Switch, nav rows):
-   *          `outline: var(--focus-outline-weight) solid …; outline-offset: 1px`.
+   *          `outline: var(--focus-outline-weight, var(--stroke-hairline)) solid …; outline-offset: 1px`.
    *
    * Because the field form recolours the border WITHOUT changing its width, focus moves nothing:
    * no layout shift is possible by construction, which is why there is no reserved-space trick
@@ -448,7 +448,8 @@
    * cannot satisfy SC 1.4.11 on every surface at any thickness.
    * A mark that fails the criterion is not an indicator. */
   --focus-outline: 1; /* the switch — 1 = on (shipped default since gh#544), 0 = off */
-  --focus-outline-weight: var(--stroke-hairline); /* the heavy alternative is --stroke-lg */
+  --focus-outline-weight: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
+  /* the heavy alternative is --stroke-lg */
   /* default = var(--focus-ring-color, var(--ring)), resolved at the focused element — a `:root`
    * binding froze on the root's --ring, so a nested tenant scope never re-tinted the outline
    * (gh#687; docs/TOKENS.md, the freeze rule) */
@@ -469,7 +470,7 @@
   /* The painted thickness, and the point every path passes through. `--focus-ring-weight` is the
    * public knob a component or a service retunes; multiplying by the switch is what guarantees
    * that a rebind cannot bring the mark back while the switch is off. */
-  --focus-ring-weight: var(--focus-outline-weight);
+  --focus-ring-weight: var(--focus-outline-weight, var(--stroke-hairline));
   --focus-ring-width: calc(var(--focus-ring-weight) * var(--focus-outline));
   /* Alpha of the ring fill. Exists so a component that needs a SOFTER ring
    * (a filled toggle, tinted shell chrome) tunes one knob instead of writing

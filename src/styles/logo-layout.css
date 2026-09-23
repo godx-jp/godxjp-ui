@@ -317,9 +317,9 @@
   .ui-logo-lockup .ui-logo-product-suffix::before {
     content: "";
     flex: 0 0 auto;
-    inline-size: var(--logo-divider-width);
+    inline-size: var(--logo-divider-width, var(--stroke-hairline));
     block-size: var(--logo-divider-height);
-    border-radius: var(--logo-divider-width);
+    border-radius: var(--logo-divider-width, var(--stroke-hairline));
     background: hsl(
       var(--logo-divider-color, var(--logo-godx-ink-color)) / var(--logo-divider-alpha)
     );

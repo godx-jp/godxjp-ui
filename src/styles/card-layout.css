@@ -39,7 +39,7 @@
     flex-direction: column;
     /* Base hairline border — width lives here (not a Tailwind `border` utility) so the
      * `[data-accent]` rail-width override below can win within the same cascade layer. */
-    border-width: 1px;
+    border-width: var(--stroke-hairline);
     border-style: solid;
     border-color: hsl(var(--card-border, var(--border)));
     border-radius: var(--card-radius, calc(var(--radius) * var(--radius-ratio)));
@@ -113,7 +113,7 @@
   /* `featured` = the brand-toned perimeter. */
   [data-slot="card"][data-variant="featured"] {
     border-color: var(--card-featured-border-color, hsl(var(--primary)));
-    box-shadow: 0 0 0 var(--card-featured-ring-width)
+    box-shadow: 0 0 0 var(--card-featured-ring-width, var(--stroke-hairline))
       var(--card-featured-border-color, hsl(var(--primary)));
   }
 
@@ -167,7 +167,7 @@
 
   /* ── Accent placement `edge` (DEFAULT) — semantic left stripe (token width), content on shell ─ */
   [data-slot="card"][data-accent] {
-    border-inline-start-width: var(--card-accent-rail-width);
+    border-inline-start-width: var(--card-accent-rail-width, var(--stroke-2xl));
     border-inline-start-color: var(--card-accent-color);
   }
 
@@ -185,7 +185,9 @@
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
-    padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
+    padding-inline-start: calc(
+      var(--card-space-inset) - var(--card-accent-rail-width, var(--stroke-2xl))
+    );
   }
 
   /* The footer takes the slack — this is the half that bottom-aligns; the column only makes the
@@ -204,10 +206,10 @@
    * ring on that side. Inside a scroller use the default `edge` placement (the rail is inside the
    * box) or a tone fill; this is a documented limit, not a bug in the scroller. */
   [data-slot="card"][data-accent][data-accent-placement="perimeter"] {
-    border-width: var(--card-accent-perimeter-width);
+    border-width: var(--card-accent-perimeter-width, var(--stroke-hairline));
     border-color: var(--card-accent-color);
     box-shadow:
-      0 0 0 var(--card-accent-perimeter-ring-width) var(--card-accent-color),
+      0 0 0 var(--card-accent-perimeter-ring-width, var(--stroke-hairline)) var(--card-accent-color),
       var(--card-shadow, var(--shadow-sm)),
       var(--card-glow);
   }
@@ -271,7 +273,7 @@
     align-items: center;
     gap: var(--space-inline-md);
     padding: var(--card-space-header-y) var(--card-space-inset);
-    border-block: 1px solid hsl(var(--card-border, var(--border)));
+    border-block: var(--stroke-hairline) solid hsl(var(--card-border, var(--border)));
   }
 
   [data-slot="card-bar"]:first-child {
@@ -593,7 +595,7 @@
   }
 
   [data-slot="card-footer"][data-separated] {
-    border-top: 1px solid hsl(var(--card-border, var(--border)));
+    border-top: var(--stroke-hairline) solid hsl(var(--card-border, var(--border)));
     /* Divided band → symmetric vertical padding (border-aware), in sync with a banded header. */
     padding-block: var(--card-space-divided-y);
     justify-content: flex-end;

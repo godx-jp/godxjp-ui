@@ -18,11 +18,11 @@
   }
 
   .ui-toggle-default {
-    border: 1px solid transparent;
+    border: var(--stroke-hairline) solid transparent;
   }
 
   .ui-toggle-outline {
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     background: hsl(var(--background));
   }
 
@@ -31,7 +31,7 @@
    * `--secondary`, byte-identical to `Badge variant="secondary"` and `.ui-button--secondary`, and
    * the border stays transparent so the box is the same size as `default`'s. */
   .ui-toggle-soft {
-    border: 1px solid transparent;
+    border: var(--stroke-hairline) solid transparent;
     background: var(--toggle-soft-background, hsl(var(--secondary)));
     color: var(--toggle-soft-color, hsl(var(--secondary-foreground)));
   }
@@ -242,7 +242,7 @@
   }
 
   .ui-button--outline {
-    border: 1px solid
+    border: var(--stroke-hairline) solid
       var(--button-outline-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     background: var(
       --button-outline-background,
@@ -440,7 +440,7 @@
     padding-inline-start: var(--control-padding-x);
     padding-inline-end: var(--control-padding-x);
     font-size: var(--control-font-size);
-    border-width: var(--control-border-width);
+    border-width: var(--control-border-width, var(--stroke-hairline));
     border-style: solid;
     box-shadow: var(--control-shadow);
   }
@@ -450,7 +450,7 @@
     padding-block: var(--control-multiline-padding-block);
     padding-inline: var(--control-padding-x);
     font-size: var(--control-font-size);
-    border-width: var(--control-border-width);
+    border-width: var(--control-border-width, var(--stroke-hairline));
     border-style: solid;
     box-shadow: var(--control-shadow);
   }
@@ -510,7 +510,7 @@
     padding-block-end: var(--textarea-padding-block-end, var(--control-multiline-padding-block));
     padding-inline-start: var(--textarea-padding-inline-start, var(--control-padding-x));
     padding-inline-end: var(--textarea-padding-inline-end, var(--control-padding-x));
-    border: var(--control-border-width) solid transparent;
+    border: var(--control-border-width, var(--stroke-hairline)) solid transparent;
     /* The floor never undercuts the control tier, so a resting one-row composer still lines up
      * with the Input / Button on its row; above it the box counts in rows. */
     min-block-size: max(
@@ -684,7 +684,7 @@
     width: var(--checkbox-size);
     height: var(--checkbox-size);
     flex-shrink: 0;
-    border: var(--checkbox-border-width) solid hsl(var(--primary));
+    border: var(--checkbox-border-width, var(--stroke-hairline)) solid hsl(var(--primary));
     color: hsl(var(--text-brand, var(--primary)));
     background: transparent;
   }
@@ -784,7 +784,7 @@
     flex-shrink: 0;
     cursor: pointer;
     align-items: center;
-    border: 2px solid transparent;
+    border: var(--stroke-md) solid transparent;
     border-radius: var(--radius-pill);
     box-shadow: var(--shadow-sm);
     transition-property: color, background-color, border-color, box-shadow;
@@ -807,7 +807,7 @@
    *
    * CENTRED ON THE BLOCK AXIS, not inset from both edges. An absolutely-positioned box resolves
    * its insets and its percentage height against the containing block's PADDING box, and the track
-   * carries `border: 2px` — so the padding box is 16px tall, not 20px, and a symmetric
+   * carries `border: var(--stroke-md)` — so the padding box is 16px tall, not 20px, and a symmetric
    * `inset-block: -2px` produced 20px rather than 24px. Measured exactly that way before this was
    * corrected. Anchoring the centre and sizing with `max()` is independent of the border.
    *
@@ -943,7 +943,7 @@
     block-size: var(--slider-thumb-size);
     margin-block-start: calc(var(--slider-thumb-size) / -2);
     margin-inline-start: calc(var(--slider-thumb-size) / -2);
-    border: 1px solid hsl(var(--primary) / 0.5);
+    border: var(--stroke-hairline) solid hsl(var(--primary) / 0.5);
     border-radius: var(--radius-pill);
     background: hsl(var(--background));
     box-shadow: var(--shadow-sm);
@@ -976,7 +976,7 @@
   .ui-color-picker-preview {
     width: 100%;
     height: 100%;
-    border: 1px solid hsl(var(--input) / var(--input-alpha, 100%));
+    border: var(--stroke-hairline) solid hsl(var(--input) / var(--input-alpha, 100%));
     border-radius: var(--control-radius);
     box-shadow: var(--shadow-sm);
   }
@@ -1028,7 +1028,7 @@
   .ui-command-input-wrapper {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid hsl(var(--border));
+    border-bottom: var(--stroke-hairline) solid hsl(var(--border));
     padding-inline: var(--command-input-padding-x);
   }
 
@@ -1142,14 +1142,14 @@
   }
 
   .ui-command[data-split] .ui-command-item:has(+ .ui-command-item) {
-    border-block-end: var(--command-item-divider-width) solid
+    border-block-end: var(--command-item-divider-width, var(--stroke-hairline)) solid
       hsl(var(--command-item-divider-color, var(--border)));
   }
 
   /* A group boundary keeps the rule, so a list split into groups is still one ruled box. `[hidden]`
    * is how cmdk hides a group with no matching rows. */
   .ui-command[data-split] .ui-command-group:not([hidden]) ~ .ui-command-group:not([hidden]) {
-    border-block-start: var(--command-item-divider-width) solid
+    border-block-start: var(--command-item-divider-width, var(--stroke-hairline)) solid
       hsl(var(--command-item-divider-color, var(--border)));
   }
 
@@ -1192,7 +1192,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--command-palette-hint-gap);
-    border-top: 1px solid hsl(var(--border));
+    border-top: var(--stroke-hairline) solid hsl(var(--border));
     padding: var(--command-palette-hint-padding-y) var(--command-palette-hint-padding-x);
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
@@ -1378,13 +1378,13 @@
     align-items: center;
     justify-content: center;
     font-size: var(--font-size-base);
-    border: var(--control-border-width) solid hsl(var(--border));
+    border: var(--control-border-width, var(--stroke-hairline)) solid hsl(var(--border));
     border-inline-start-width: 0;
     background: hsl(var(--background));
     transition: box-shadow 0.15s ease;
   }
   .ui-otp-group .ui-otp-slot:first-child {
-    border-inline-start-width: var(--control-border-width);
+    border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
     border-start-start-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     border-end-start-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
@@ -1394,7 +1394,7 @@
   }
   .ui-otp-group[data-appearance="grouped"] {
     overflow: hidden;
-    border: var(--control-border-width) solid hsl(var(--border));
+    border: var(--control-border-width, var(--stroke-hairline)) solid hsl(var(--border));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--background));
   }
@@ -1449,7 +1449,7 @@
     justify-content: center;
   }
   .ui-otp-caret {
-    width: var(--otp-caret-inline-size);
+    width: var(--otp-caret-inline-size, var(--stroke-hairline));
     height: var(--otp-caret-block-size);
     background: hsl(var(--foreground));
     animation: ui-otp-blink 1s step-end infinite;
@@ -1576,7 +1576,7 @@
       var(--segmented-track-background, var(--muted)) /
         var(--segmented-track-background-alpha, 100%)
     );
-    color: hsl(var(--segmented-item-color));
+    color: hsl(var(--segmented-item-color, var(--muted-foreground)));
     font-size: var(--font-size-base);
   }
 
@@ -1610,7 +1610,7 @@
       var(--segmented-item-hover-background, var(--accent)) /
         var(--segmented-item-hover-background-alpha, 100%)
     );
-    color: hsl(var(--segmented-item-hover-color));
+    color: hsl(var(--segmented-item-hover-color, var(--foreground)));
   }
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):active {
     background: hsl(
@@ -1630,7 +1630,7 @@
       var(--segmented-item-selected-shadow, var(--shadow-md)),
       inset 0 0 0 1px
         hsl(var(--segmented-item-selected-border-color, var(--input)) / var(--input-alpha, 100%));
-    color: hsl(var(--segmented-item-selected-color));
+    color: hsl(var(--segmented-item-selected-color, var(--foreground)));
     /* The signal that does not depend on the canvas (gh#843) — see the token's own note. */
     font-weight: var(--segmented-item-selected-font-weight);
   }
@@ -1688,7 +1688,7 @@
      * `status` from that one block instead of restating four surfaces of its own. The defaults
      * resolve to the `hsl(var(--input) / var(--input-alpha, 100%))` / `hsl(var(--background))` pair this rule used to name
      * literally, so nothing about the resting TagInput changes. */
-    border: var(--control-border-width) solid
+    border: var(--control-border-width, var(--stroke-hairline)) solid
       var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     border-radius: var(--control-radius);
     background: var(
@@ -1760,7 +1760,10 @@
   .ui-tag-input-field {
     flex: 1;
     min-width: 6rem;
-    block-size: calc(var(--control-height) - var(--space-1) * 2 - var(--control-border-width) * 2);
+    block-size: calc(
+      var(--control-height) - var(--space-1) * 2 -
+        var(--control-border-width, var(--stroke-hairline)) * 2
+    );
     border: 0;
     outline: none;
     background: transparent;
@@ -2126,7 +2129,7 @@
 
   .ui-search-select-search {
     flex-shrink: 0;
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   /* The search field is the panel's own header, so it drops the standalone input chrome. */
@@ -2252,7 +2255,7 @@
   .ui-search-select-footer {
     flex-shrink: 0;
     padding: var(--search-select-footer-space-inset);
-    border-block-start: 1px solid hsl(var(--border));
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 }
 
@@ -2265,7 +2268,7 @@
 
   .ui-cascader-column {
     min-inline-size: var(--cascader-column-min-width);
-    border-inline-end: 1px solid hsl(var(--border));
+    border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-cascader-column:last-child {
@@ -2407,7 +2410,7 @@
     );
     overflow: hidden;
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). The listbox is an OVERLAY, not a
      * field — see the note on --select-content-background for why it does not share the trigger's
      * surface knob. */
@@ -2578,7 +2581,7 @@
   .ui-time-picker-column-heading {
     padding-inline: var(--time-picker-heading-space-inline);
     padding-block: var(--time-picker-heading-space-block);
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
     text-align: center;
     font-size: var(--time-picker-heading-font-size);
     font-weight: var(--font-weight-medium);
@@ -2637,7 +2640,7 @@
     flex-direction: column;
     gap: var(--time-picker-footer-space-gap);
     padding: var(--time-picker-footer-space-inset);
-    border-block-start: 1px solid hsl(var(--border));
+    border-block-start: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   /* `now` on the leading edge, `confirm` on the trailing one — antd's footer order, which is also
@@ -3013,13 +3016,16 @@
    * 27.6.0 weight. Pinned by calendar-grid-line-contrast.test.ts. */
   .ui-calendar[data-bordered="true"] .ui-calendar-day,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekday {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-inline-start: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
+    border-block-start: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-week,
   .ui-calendar[data-bordered="true"] .ui-calendar-weekdays {
-    border-inline-end: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-inline-end: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The header row gets a tint once the grid is ruled. Unruled it reads as a header by position
@@ -3037,7 +3043,8 @@
   }
 
   .ui-calendar[data-bordered="true"] .ui-calendar-grid {
-    border-block-end: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-block-end: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The day button fills its ruled cell instead of floating inside it — otherwise the selection
@@ -3074,8 +3081,10 @@
   /* Week numbers are cells of the same grid; without this the column sat outside the ruling. */
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number,
   .ui-calendar[data-bordered="true"] .ui-calendar-week-number-header {
-    border-inline-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
-    border-block-start: 1px solid var(--calendar-grid-border-color, hsl(var(--border)));
+    border-inline-start: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
+    border-block-start: var(--stroke-hairline) solid
+      var(--calendar-grid-border-color, hsl(var(--border)));
   }
 
   /* The ruled day cell takes the column width ITSELF, like the weekday cell above it. The button
@@ -3395,7 +3404,8 @@
     gap: var(--calendar-footer-space-gap);
     margin-block-start: var(--calendar-footer-space-block-start);
     padding-block-start: var(--calendar-footer-space-block-start);
-    border-block-start: var(--calendar-footer-border-width) solid hsl(var(--border));
+    border-block-start: var(--calendar-footer-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
   }
 
   .ui-calendar-footer-today {
@@ -3418,7 +3428,7 @@
     flex: 1 1 0%;
     flex-direction: column;
     border-radius: var(--transfer-pane-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     background: hsl(var(--background));
   }
 
@@ -3428,7 +3438,7 @@
     justify-content: space-between;
     padding-inline: var(--transfer-header-space-inline);
     padding-block: var(--transfer-header-space-block);
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
     font-size: var(--transfer-header-font-size);
   }
 
@@ -3442,7 +3452,7 @@
 
   .ui-transfer-search {
     padding: var(--transfer-search-space-inset);
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-transfer-search[data-disabled] {
@@ -3800,7 +3810,7 @@
   .ui-control-count {
     flex-shrink: 0;
     font-size: var(--control-count-font-size);
-    color: hsl(var(--control-count-color));
+    color: hsl(var(--control-count-color, var(--muted-foreground)));
     font-variant-numeric: tabular-nums;
     padding-inline-end: var(--control-count-space-inline);
   }
@@ -3835,9 +3845,10 @@
     block-size: var(--control-height);
     padding-inline: var(--input-addon-padding-inline);
     font-size: var(--control-font-size);
-    color: hsl(var(--input-addon-color));
+    color: hsl(var(--input-addon-color, var(--muted-foreground)));
     background-color: hsl(var(--input-addon-background));
-    border: var(--control-border-width) solid hsl(var(--input) / var(--input-alpha, 100%));
+    border: var(--control-border-width, var(--stroke-hairline)) solid
+      hsl(var(--input) / var(--input-alpha, 100%));
     white-space: nowrap;
   }
 
@@ -4001,7 +4012,7 @@
     justify-content: center;
     inline-size: 0;
     font-size: var(--slider-mark-font-size);
-    color: hsl(var(--slider-mark-color));
+    color: hsl(var(--slider-mark-color, var(--muted-foreground)));
     white-space: nowrap;
     cursor: pointer;
   }
@@ -4025,7 +4036,8 @@
     margin-inline-start: calc(var(--slider-dot-size) / -2);
     border-radius: var(--radius-pill);
     background: hsl(var(--slider-dot-background));
-    border: var(--control-border-width) solid hsl(var(--slider-dot-border-color));
+    border: var(--control-border-width, var(--stroke-hairline)) solid
+      hsl(var(--slider-dot-border-color));
   }
 
   .ui-slider[data-orientation="vertical"] .ui-slider-dot {
@@ -4148,15 +4160,16 @@
     block-size: var(--control-height);
     padding-inline: var(--control-padding-x);
     font-size: var(--control-font-size);
-    color: hsl(var(--choice-button-color));
+    color: hsl(var(--choice-button-color, var(--foreground)));
     background: hsl(var(--choice-button-background));
-    border: var(--control-border-width) solid hsl(var(--choice-button-border-color));
+    border: var(--control-border-width, var(--stroke-hairline)) solid
+      hsl(var(--choice-button-border-color));
     border-inline-start-width: 0;
     cursor: pointer;
   }
 
   .ui-radio-button:first-child {
-    border-inline-start-width: var(--control-border-width);
+    border-inline-start-width: var(--control-border-width, var(--stroke-hairline));
     border-start-start-radius: var(--control-radius);
     border-end-start-radius: var(--control-radius);
   }

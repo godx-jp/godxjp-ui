@@ -79,7 +79,7 @@
   --prose-heading-space-block-start: var(--space-6);
   --prose-list-space-inline: var(--space-6);
   --prose-list-item-space: var(--space-1);
-  --prose-quote-border-width: var(--stroke-md);
+  --prose-quote-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   --prose-quote-space-inline: var(--space-3);
   --prose-code-font-size: calc(1em / var(--font-size-ratio));
   --prose-code-space-inline: var(--space-1);
@@ -218,10 +218,10 @@
   --avatar-presence-size: 30%;
   --avatar-presence-min-size: var(--space-2);
   --avatar-presence-inset: 0;
-  --avatar-presence-ring-width: var(--stroke-md);
-  --avatar-presence-stroke-width: var(--stroke-sm);
+  --avatar-presence-ring-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
+  --avatar-presence-stroke-width: initial; /* default = var(--stroke-sm), resolved at the call site (gh#906) */
   --avatar-presence-bar-inline-size: 56%;
-  --avatar-presence-bar-block-size: var(--stroke-sm);
+  --avatar-presence-bar-block-size: initial; /* default = var(--stroke-sm), resolved at the call site (gh#906) */
   --avatar-presence-ring-color: initial;
   --avatar-presence-online-color: initial;
   --avatar-presence-away-color: initial;
@@ -261,7 +261,7 @@
      thinner arc at a smaller diameter stops being readable as a proportion at all. */
   --progress-ring-size: 2.75rem;
   --progress-ring-size-sm: 2rem;
-  --progress-ring-border-width: var(--stroke-lg);
+  --progress-ring-border-width: initial; /* default = var(--stroke-lg), resolved at the call site (gh#906) */
   /* A KNOB, with the derivation at the CALL SITE — and the first attempt got this wrong.
    *
    * It was `--font-size-xs`, one value for every diameter, so a 32px `sm` ring carried the same
@@ -300,7 +300,7 @@
   --swatch-radius: 0.125rem; /* scale-exempt: the same corner as --legend-swatch-radius — --radius (6px) on a 16px square reads as a DOT, a different symbol, and a sample and a key mark must be the same shape. */
   /* The hairline that keeps a white value visible on a white card. It is the resting border
      weight, not a decision of this component. */
-  --swatch-border-width: var(--stroke-hairline);
+  --swatch-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* `initial` so the border role re-resolves at the call site under a scoped theme.
      Default = hsl(var(--border)). */
   --swatch-border-color: initial;
@@ -335,7 +335,7 @@
   --thumbnail-block-size-sm: 4rem; /* 64px — an attachment chip beside its filename. */
   --thumbnail-block-size: 6rem; /* 96px — the default: a gallery row that still shows the shot. */
   --thumbnail-block-size-lg: 10rem; /* 160px — a review screen, where the picture IS the content. */
-  --thumbnail-border-width: var(--stroke-hairline);
+  --thumbnail-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --thumbnail-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
@@ -352,7 +352,7 @@
   --timeline-line-completed-background: initial;
   /* The current dot's ring is the ONLY chromatic difference from a done dot, so it is
      `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing. */
-  --timeline-dot-current-ring-width: var(--stroke-xl);
+  --timeline-dot-current-ring-width: initial; /* default = var(--stroke-xl), resolved at the call site (gh#906) */
 
   /* QR codes stay scanner-safe in light and dark application themes. Consumers may override these
      component tokens only when the resulting pair retains strong contrast. */
@@ -393,8 +393,8 @@
   --timeline-grid-event-gap: var(--space-1);
   --timeline-grid-event-space-inset: var(--space-1);
   --timeline-grid-event-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
-  --timeline-grid-event-border-width: var(--stroke-md);
-  --timeline-grid-now-width: var(--stroke-sm);
+  --timeline-grid-event-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
+  --timeline-grid-now-width: initial; /* default = var(--stroke-sm), resolved at the call site (gh#906) */
   /* Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and
    * a scoped [data-tenant]/.dark override of the role still reaches them.
    * Defaults = hsl(var(--border)) hour rules · hsl(var(--primary)) block accent ·
@@ -455,7 +455,7 @@
    * Set any colour to retint, e.g. `hsl(var(--input) / 0.5)` for the 27.6.0 weight. */
   --range-timeline-grid-color: initial;
   /* Weight of every grid rule, header column rules included, so header and body stay aligned. */
-  --range-timeline-grid-width: var(--stroke-hairline);
+  --range-timeline-grid-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* Fill for `columns[].muted` (a non-working day), full body height. `initial`; call-site default
    * `hsl(var(--muted))`, the header's own surface, so a muted column reads as part of the axis. */
   --range-timeline-muted-column-background: initial;

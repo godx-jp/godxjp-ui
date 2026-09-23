@@ -39,7 +39,7 @@
    * hsl(var(--muted-foreground)). Never the only signal: the article also carries `aria-busy`
    * and a localized sr-only "typing" string. */
   --chat-bubble-typing-caret-color: initial;
-  --chat-bubble-typing-caret-width: var(--stroke-md);
+  --chat-bubble-typing-caret-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   /* One line box tall, so the caret matches whatever type ramp the bubble is rendering at
      rather than a fixed pixel height a service theme could not move. */
   --chat-bubble-typing-caret-height: 1em;

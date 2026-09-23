@@ -75,7 +75,7 @@
    * once instead of each component hard-coding Tailwind utilities. Defaults preserve
    * the historical look (font-size-base, 1px border, shadow-xs). */
   --control-font-size: var(--font-size-base);
-  --control-border-width: var(--stroke-hairline);
+  --control-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --control-shadow: var(--shadow-xs);
   --control-icon-size: calc(var(--icon-size-md) * var(--scaling));
   --control-icon-size-sm: calc(var(--icon-size-sm) * var(--scaling));
@@ -122,7 +122,7 @@
 
   /* Character counter — antd `count`. Quiet by default; loud only once the ceiling is passed. */
   --control-count-font-size: var(--font-size-sm, var(--font-size-base));
-  --control-count-color: var(--muted-foreground);
+  --control-count-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   /* `initial`, not `var(--text-error)`: a binding here computes ONCE at `:root`, so a
    * `[data-tenant]` re-theming the error ink would keep this counter on the root's answer
    * (docs/TOKENS.md, the freeze rule). The default lives at the rule that paints it. */
@@ -133,7 +133,7 @@
 
   /* antd `addonBefore` / `addonAfter` — a segment welded outside the field's own box. */
   --input-addon-background: var(--muted);
-  --input-addon-color: var(--muted-foreground);
+  --input-addon-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --input-addon-padding-inline: var(--control-padding-x);
 
   /* Switch `checkedChildren` / `unCheckedChildren` and `loading`. */
@@ -149,7 +149,7 @@
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
   );
-  --slider-mark-color: var(--muted-foreground);
+  --slider-mark-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
   --slider-mark-space-block-start: var(--space-2);
   --slider-dot-size: var(--slider-track-height);
   --slider-dot-background: var(--background);
@@ -167,7 +167,7 @@
 
   /* Radio `optionType="button"` — antd's welded radio bar. */
   --choice-button-background: var(--background);
-  --choice-button-color: var(--foreground);
+  --choice-button-color: initial; /* default = var(--foreground), resolved at the call site (gh#906) */
   --choice-button-border-color: var(--input);
   /* The four brand-coloured knobs default at the call site — a `:root` binding would freeze on the
    * root's primary and ignore a scoped [data-tenant] re-theme (docs/TOKENS.md, the freeze rule). */
@@ -189,7 +189,7 @@
    * quiet as it likes because it is decoration rather than the indicator. The knobs stay — a
    * service can still trade the criterion away deliberately — but the shipped default no longer
    * makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts. */
-  --toggle-focus-ring-width: var(--stroke-lg);
+  --toggle-focus-ring-width: initial; /* default = var(--stroke-lg), resolved at the call site (gh#906) */
   --toggle-focus-ring-alpha: 1;
 
   /* Mark width for a BORDERED FIELD.
@@ -210,7 +210,7 @@
    * If a service sets this, note the unit: the halo's spread is summed with a length in
    * `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole
    * box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. */
-  --control-focus-ring-width: var(--stroke-hairline);
+  --control-focus-ring-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
 
   /* Outline-form gaps — marks where a radius-hugging ring would touch the glyph. */
   --rating-focus-ring-offset: 2px;
@@ -221,7 +221,7 @@
   --rating-star-empty-color: initial;
   --rating-star-empty-alpha: 0.45;
 
-  --checkbox-border-width: var(--stroke-hairline);
+  --checkbox-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --checkbox-size: calc(1rem * var(--scaling));
   --checkbox-size-compact: 0.875rem;
   --checkbox-size-comfortable: 1.125rem;
@@ -324,7 +324,7 @@
    *                                 call site = var(--border) (HSL channels; docs/TOKENS.md). */
   --command-list-split-padding: 0;
   --command-list-split-inset: 0px;
-  --command-item-divider-width: var(--stroke-hairline);
+  --command-item-divider-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --command-item-divider-color: initial;
   --command-palette-width: 35rem;
   --command-palette-inset-top: calc(var(--space-6) * 4);
@@ -438,7 +438,8 @@
    * edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost
    * variant drops its own chrome. */
   --textarea-autogrow-box-inset: calc(
-    (var(--control-multiline-padding-block) + var(--control-border-width)) * 2
+    (var(--control-multiline-padding-block) + var(--control-border-width, var(--stroke-hairline))) *
+      2
   );
   /* COMPOSITE FIELD — the bordered box that wraps two inputs plus a separator (date/month
    * range pickers) or one input plus affixes. Shared so the four range/picker fields cannot
@@ -596,7 +597,7 @@
   --calendar-chevron-size: var(--icon-size-md);
   --calendar-footer-space-gap: var(--space-2);
   --calendar-footer-space-block-start: var(--space-2);
-  --calendar-footer-border-width: var(--stroke-hairline);
+  --calendar-footer-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* Placed LAST in the calendar group on purpose: gen-component-tokens gives every token the
    * nearest comment above it, so a comment in the middle of the group became the description of
    * every calendar token after it. */
@@ -717,7 +718,7 @@
    * rather than forced onto one.
    * scale-exempt: text-caret height, tracks the OTP digit's line box, not an icon or a band */
   --otp-caret-block-size: 1rem;
-  --otp-caret-inline-size: var(--stroke-hairline);
+  --otp-caret-inline-size: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --otp-separator-icon-size: var(--icon-size-md);
 
   --button-count-min-width: var(--space-4);

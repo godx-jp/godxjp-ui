@@ -17,7 +17,7 @@
    * dials it back with one override instead of forking the variant. */
   --upload-dropzone-space-inset: var(--space-10);
   --upload-dropzone-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
-  --upload-dropzone-border-width: var(--stroke-md);
+  --upload-dropzone-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   --upload-dropzone-icon-size: var(--icon-size-3xl);
   --upload-dropzone-hint-space-block-start: var(--space-3);
   --upload-dropzone-hint-font-size: var(--font-size-sm, var(--font-size-base));
@@ -82,7 +82,7 @@
   /* The camera mark inside the empty avatar. Same step as --upload-tile-icon-size on purpose: the
    * avatar and the picture-card tile are the SAME 96px box, and they were drawing 32 and 24. */
   --upload-avatar-icon-size: var(--icon-size-xl);
-  --upload-avatar-border-width: var(--stroke-md);
+  --upload-avatar-border-width: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   --upload-avatar-change-space-block: var(--space-1);
   /* The "change" strip sits ON the photo, so its scrim is intentionally a fixed dark wash rather
    * than a surface role — it must stay legible over an arbitrary user image in either theme. */

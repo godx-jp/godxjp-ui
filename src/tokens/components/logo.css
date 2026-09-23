@@ -264,7 +264,7 @@
    * Documented defaults:
    *   --logo-divider-color          = var(--logo-godx-ink-color)
    *   --logo-product-suffix-color   = hsl(var(--foreground)) */
-  --logo-divider-width: var(--stroke-hairline);
+  --logo-divider-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --logo-divider-height: 1em;
   --logo-divider-alpha: 0.25;
   --logo-divider-color: initial;

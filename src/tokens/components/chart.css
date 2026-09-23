@@ -25,7 +25,7 @@
   /* Ceiling on a single mark so a 3-point trend does not render slabs. */
   --chart-trend-bar-max-width: 1.5rem;
   /* Floor so a zero/absent value still reads as a plotted category rather than a hole. */
-  --chart-trend-bar-min-height: var(--stroke-md);
+  --chart-trend-bar-min-height: initial; /* default = var(--stroke-md), resolved at the call site (gh#906) */
   /* Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves
    * at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · "Role-mirror knobs
    * MUST be `initial`"). Default = hsl(var(--muted-foreground) / 0.75), which clears the
@@ -38,7 +38,7 @@
 
   /* ── Baseline + category ticks ────────────────────────────────────────────────────────
    * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with
-   * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`. */
+   * `--chart-trend-baseline-border: var(--stroke-hairline) solid hsl(var(--border));`. */
   --chart-trend-baseline-border: initial;
   --chart-trend-tick-gap: var(--space-1);
   --chart-trend-tick-font-size: var(

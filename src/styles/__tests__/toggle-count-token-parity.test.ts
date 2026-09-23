@@ -80,6 +80,8 @@ describe("Toggle counter pill ↔ Button counter pill (gh#312)", () => {
       /\.ui-toggle\[data-state="on"\] \.ui-toggle-count\s*\{[^}]*background:[^}]*color:/,
     );
     expect(toggleStyles).toMatch(/@media \(forced-colors: active\)/);
-    expect(toggleStyles).toMatch(/outline:\s*var\(\s*--toggle-count-forced-outline-width\)/);
+    expect(toggleStyles).toMatch(
+      /outline:\s*var\(\s*--toggle-count-forced-outline-width, var\(--stroke-hairline\)\)/,
+    );
   });
 });

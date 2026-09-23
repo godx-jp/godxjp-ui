@@ -164,14 +164,16 @@ describe("card face — antd genCardStyle, all four placements", () => {
     // Inset shadow, not a border — the reason is recorded beside the rule. Negative block offset
     // draws the band at the bottom (placement=top); positive draws it at the top (placement=bottom).
     expect(css).toContain(
-      "box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width)) 0 hsl(var(--border));",
+      "box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline))) 0 hsl(var(--border));",
     );
     const bottomRail = css.indexOf('[data-variant="card"][data-placement="bottom"]');
     expect(bottomRail, "no placement=bottom rail rule").toBeGreaterThan(-1);
     const rule = css.slice(bottomRail, ruleEnd(bottomRail));
-    expect(rule).toContain("box-shadow: inset 0 var(--tabs-card-rail-border-width) 0");
+    expect(rule).toContain(
+      "box-shadow: inset 0 var(--tabs-card-rail-border-width, var(--stroke-hairline)) 0",
+    );
     expect(rule, "the bottom rail must not reuse the negative (downward) offset").not.toContain(
-      "calc(-1 * var(--tabs-card-rail-border-width))",
+      "calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline)))",
     );
   });
 });
@@ -194,8 +196,8 @@ describe("the card rail faces the panel on every axis, in both directions", () =
    * and in RTL the panel really is on the other side of the strip, which is what makes "faces the
    * panel" a claim rather than a restatement of the sign.
    */
-  const NEGATIVE = "inset calc(-1 * var(--tabs-card-rail-border-width))";
-  const POSITIVE = "inset var(--tabs-card-rail-border-width)";
+  const NEGATIVE = "inset calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline)))";
+  const POSITIVE = "inset var(--tabs-card-rail-border-width, var(--stroke-hairline))";
 
   const RAILS = [
     { placement: "start", ltr: NEGATIVE, rtl: POSITIVE },

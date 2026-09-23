@@ -36,7 +36,7 @@
 
   /* The connector. Its inline position tracks HALF the glyph column so it stays centred whatever
    * the column's size becomes — never a literal offset. */
-  --thought-chain-line-width: var(--stroke-hairline);
+  --thought-chain-line-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --thought-chain-line-color: initial; /* default = hsl(var(--border)) */
 
   /* The collapsed body and its chevron. */

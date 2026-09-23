@@ -23,7 +23,7 @@
      * context that reshapes it — a Badge nested in a bordered Button — could only write the radius
      * as a constant nobody could reach back past. Default is byte-identical. */
     border-radius: var(--badge-radius, calc(var(--radius) / var(--radius-ratio)));
-    border-width: 1px;
+    border-width: var(--stroke-hairline);
     font-size: var(--badge-font-size);
     /* Default reproduces `text-xs` exactly. */
     line-height: var(--badge-line-height);

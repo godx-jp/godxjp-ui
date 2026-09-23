@@ -95,9 +95,9 @@
   --segmented-item-gap: calc(var(--space-3) / 2);
 
   /* item ink = the label ink · hover / selected ink = the body ink. */
-  --segmented-item-color: var(--muted-foreground);
-  --segmented-item-hover-color: var(--foreground);
-  --segmented-item-selected-color: var(--foreground);
+  --segmented-item-color: initial; /* default = var(--muted-foreground), resolved at the call site (gh#906) */
+  --segmented-item-hover-color: initial; /* default = var(--foreground), resolved at the call site (gh#906) */
+  --segmented-item-selected-color: initial; /* default = var(--foreground), resolved at the call site (gh#906) */
   /* item hover fill = the lighter neutral · active fill = the heavier of the pair. */
   --segmented-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
   --segmented-item-hover-background-alpha: initial; /* default = 100% at the call site (gh#901) */

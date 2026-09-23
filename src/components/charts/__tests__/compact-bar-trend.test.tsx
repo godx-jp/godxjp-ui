@@ -353,7 +353,7 @@ describe("CompactBarTrend token contract (gh#218)", () => {
 
   it("sizes the bar height from the datum ratio plus the min-height floor", () => {
     const bar = rule(".ui-chart-trend-bar");
-    expect(bar).toMatch(/var\(\s*--chart-trend-bar-min-height\)/);
+    expect(bar).toMatch(/var\(--chart-trend-bar-min-height, var\(--stroke-md\)\)/);
     expect(bar).toMatch(/calc\(var\(\s*--chart-trend-bar-value,\s*0\)\s*\*\s*100%\)/);
     expect(bar).toMatch(/max-inline-size:\s*var\(\s*--chart-trend-bar-max-width\)/);
     // rounded data-end anchored to the baseline, expressed logically (RTL-safe)

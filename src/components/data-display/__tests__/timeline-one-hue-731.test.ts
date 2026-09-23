@@ -99,7 +99,7 @@ describe("the current item is told apart by its RING, not by a second role", () 
 
   it("only the current dot carries a ring", () => {
     expect(current).toContain(
-      "box-shadow: 0 0 0 var(--timeline-dot-current-ring-width) hsl(var(--primary) / 0.2)",
+      "box-shadow: 0 0 0 var(--timeline-dot-current-ring-width, var(--stroke-xl)) hsl(var(--primary) / 0.2)",
     );
     expect(done).not.toContain("box-shadow");
   });
@@ -117,7 +117,7 @@ describe("the current item is told apart by its RING, not by a second role", () 
       .map(([, , body]) => body);
     expect(processRules.length).toBeGreaterThan(1);
     expect(processRules.join("")).toContain(
-      "box-shadow: 0 0 0 var(--steps-dot-process-ring-width) hsl(var(--primary) / 0.2)",
+      "box-shadow: 0 0 0 var(--steps-dot-process-ring-width, var(--stroke-xl)) hsl(var(--primary) / 0.2)",
     );
   });
 

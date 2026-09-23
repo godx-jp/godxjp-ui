@@ -9,7 +9,7 @@
 
   /* Horizontal rules between rows, and the "last row draws no rule" idiom. */
   .ui-table-row {
-    border-block-end-width: var(--table-row-border-width);
+    border-block-end-width: var(--table-row-border-width, var(--stroke-hairline));
   }
 
   [data-slot="table-body"] .ui-table-row:last-child {
@@ -145,9 +145,11 @@
   }
 
   .ui-table-row[data-tone] > [data-slot="table-cell"]:first-child {
-    border-inline-start: var(--table-row-tone-rail-width) solid hsl(var(--table-row-tone-color));
+    border-inline-start: var(--table-row-tone-rail-width, var(--stroke-2xl)) solid
+      hsl(var(--table-row-tone-color));
     padding-inline-start: calc(
-      var(--table-cell-space-x, var(--space-section-active)) - var(--table-row-tone-rail-width)
+      var(--table-cell-space-x, var(--space-section-active)) -
+        var(--table-row-tone-rail-width, var(--stroke-2xl))
     );
   }
 
@@ -374,7 +376,7 @@
     min-inline-size: min-content;
     /* The frame's edge follows the same knob `<Table bordered>` uses below, so the two frames in
      * this file cannot disagree about what a table's boundary is (gh#880). */
-    border: 1px solid var(--table-border-color, hsl(var(--border)));
+    border: var(--stroke-hairline) solid var(--table-border-color, hsl(var(--border)));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     /* Both unset ⇒ both declarations are invalid-at-computed-value-time ⇒ each property keeps its
      * OWN initial value (`transparent` and `none`), which is byte-identical to the frame that had
@@ -428,7 +430,7 @@
   }
 
   [data-slot="card-content"][data-flush] .ui-data-table-toolbar {
-    border-bottom: 1px solid hsl(var(--card-border, var(--border)));
+    border-bottom: var(--stroke-hairline) solid hsl(var(--card-border, var(--border)));
     padding: var(--card-space-header-y) var(--card-space-inset);
   }
 
@@ -682,7 +684,8 @@
   }
 
   .ui-data-table-summary > tr > [data-slot="table-cell"] {
-    border-block-start: var(--table-summary-border-width) solid hsl(var(--border));
+    border-block-start: var(--table-summary-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
   }
 
   /* ── column filter menu (antd `filters`) ──────────────────────────────── */
@@ -708,11 +711,11 @@
    * the vertical rules between columns, so rowSpan/colSpan merged cells read as merged (a merged
    * group cell floating in whitespace is unreadable). */
   .ui-table-bordered {
-    border: 1px solid var(--table-border-color, hsl(var(--border)));
+    border: var(--stroke-hairline) solid var(--table-border-color, hsl(var(--border)));
   }
 
   .ui-table-bordered :is([data-slot="table-head"], [data-slot="table-cell"]):not(:last-child) {
-    border-inline-end: 1px solid var(--table-border-color, hsl(var(--border)));
+    border-inline-end: var(--stroke-hairline) solid var(--table-border-color, hsl(var(--border)));
   }
 
   /* Both full-bleed surfaces are covered by ONE rule: `.ui-data-table-surface` (the DataTable's

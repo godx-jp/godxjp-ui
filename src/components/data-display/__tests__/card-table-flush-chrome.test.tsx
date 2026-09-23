@@ -220,6 +220,8 @@ describe("the flush body's block-start divider survives (gh#306)", () => {
 
   it("takes its width from a declared token, not a literal (cardinal rules #44/#45)", () => {
     expect(ruleBlock(RESTORE)).toBe("border-block-start-width: var(--table-flush-divider-width);");
-    expect(tokens).toMatch(/--table-flush-divider-width:\s*var\(\s*--table-row-border-width\);/);
+    expect(tokens).toMatch(
+      /--table-flush-divider-width:\s*var\(--table-row-border-width, var\(--stroke-hairline\)\);/,
+    );
   });
 });

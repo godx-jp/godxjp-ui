@@ -384,7 +384,7 @@
     cursor: pointer;
     padding: var(--upload-dropzone-space-inset);
     border-radius: var(--upload-dropzone-radius, var(--radius));
-    border: var(--upload-dropzone-border-width) dashed hsl(var(--border));
+    border: var(--upload-dropzone-border-width, var(--stroke-md)) dashed hsl(var(--border));
     text-align: center;
     transition: border-color 150ms ease;
   }
@@ -456,7 +456,7 @@
     block-size: var(--upload-tile-size);
     overflow: hidden;
     border-radius: var(--upload-tile-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     background-color: hsl(var(--muted));
   }
 
@@ -468,7 +468,7 @@
     inline-size: var(--upload-tile-size);
     block-size: var(--upload-tile-size);
     border-radius: var(--upload-tile-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px dashed hsl(var(--border));
+    border: var(--stroke-hairline) dashed hsl(var(--border));
     color: hsl(var(--muted-foreground));
     transition:
       border-color 150ms ease,
@@ -542,7 +542,7 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--upload-picture-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-upload-picture-img {
@@ -575,7 +575,7 @@
     inline-size: 100%;
     block-size: var(--upload-picture-empty-height);
     border-radius: var(--upload-picture-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px dashed hsl(var(--border));
+    border: var(--stroke-hairline) dashed hsl(var(--border));
     color: hsl(var(--muted-foreground));
   }
 
@@ -599,7 +599,7 @@
     block-size: var(--upload-avatar-size);
     overflow: hidden;
     border-radius: var(--radius-pill);
-    border: var(--upload-avatar-border-width) solid hsl(var(--border));
+    border: var(--upload-avatar-border-width, var(--stroke-md)) solid hsl(var(--border));
     background-color: hsl(var(--muted));
   }
 
@@ -643,7 +643,7 @@
     inset-inline-end: calc(var(--upload-remove-offset) * -1);
     padding: var(--upload-remove-space-inset);
     border-radius: var(--radius-pill);
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     background-color: hsl(var(--background));
     box-shadow: var(--shadow-sm);
   }
@@ -661,7 +661,7 @@
     padding-inline: var(--upload-draft-space-inline);
     padding-block: var(--upload-draft-space-block);
     border-radius: var(--upload-draft-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px dashed hsl(var(--destructive) / 0.4);
+    border: var(--stroke-hairline) dashed hsl(var(--destructive) / 0.4);
     background-color: var(
       --surface-destructive,
       hsl(var(--destructive) / var(--surface-destructive-alpha, 0.05))
@@ -700,7 +700,7 @@
     padding-inline: var(--upload-row-space-inline);
     padding-block: var(--upload-row-space-block);
     border-radius: var(--upload-row-radius, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     font-size: var(--upload-row-font-size);
   }
 
@@ -768,7 +768,7 @@
     flex-direction: column;
     gap: var(--branch-scope-picker-subset-gap);
     padding-inline-start: var(--branch-scope-picker-subset-padding-inline);
-    border-inline-start-width: var(--branch-scope-picker-subset-border-width);
+    border-inline-start-width: var(--branch-scope-picker-subset-border-width, var(--stroke-md));
   }
 
   /* A bounded scroll region — the component gives it `tabIndex={0}` + a group name so it stays
@@ -792,7 +792,7 @@
     inline-size: 100%;
     padding-block: var(--chat-composer-padding-block);
     padding-inline: var(--chat-composer-padding-inline);
-    border-width: var(--control-border-width);
+    border-width: var(--control-border-width, var(--stroke-hairline));
     border-style: solid;
     border-radius: var(--chat-composer-radius, var(--control-radius));
   }
@@ -806,7 +806,7 @@
     padding-block-end: var(--chat-composer-gap);
     border-block-end: var(
       --chat-composer-header-border,
-      var(--control-border-width) solid hsl(var(--border))
+      var(--control-border-width, var(--stroke-hairline)) solid hsl(var(--border))
     );
   }
 

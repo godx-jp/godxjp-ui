@@ -60,7 +60,7 @@ describe('Card `variant="borderless"` — antd\'s borderless, which `outline` ne
     // borderless rule below the accent rule and an accented borderless card silently loses its
     // status stripe — a failure that is invisible in the markup.
     expect(declaration('[data-slot="card"][data-accent]', "border-inline-start-width")).toBe(
-      "var(--card-accent-rail-width)",
+      "var(--card-accent-rail-width, var(--stroke-2xl))",
     );
     expect(position('[data-slot="card"][data-accent]')).toBeGreaterThan(
       position('[data-slot="card"][data-variant="borderless"]'),

@@ -171,7 +171,7 @@
    *
    * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines
    * its text up with the page title instead of sitting at a second, unrelated margin. */
-  --banner-border-block-end-width: 1px;
+  --banner-border-block-end-width: var(--stroke-hairline);
   --banner-space-block: var(--space-3);
   /* Inline inset tracks the page gutter so a banner's text lines up with the page title.
    * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and

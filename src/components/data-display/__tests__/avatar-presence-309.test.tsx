@@ -198,7 +198,9 @@ describe("Avatar presence — never colour-only (WCAG 1.4.1, gh#309)", () => {
     // box-shadow is DROPPED in forced-colors, so the separator ring has to be re-drawn as an
     // outline in a system colour or the dot melts into the mark.
     expect(presenceCss).toMatch(/@media \(forced-colors: active\)/);
-    expect(flatStyles).toContain("outline: var(--avatar-presence-ring-width) solid Canvas;");
+    expect(flatStyles).toContain(
+      "outline: var(--avatar-presence-ring-width, var(--stroke-md)) solid Canvas;",
+    );
     expect(flatStyles).toContain(
       "background-image: linear-gradient(to bottom, Canvas 0 50%, CanvasText 50%);",
     );
@@ -226,10 +228,10 @@ describe("Avatar presence — every constant is a knob (rules #44/#45, gh#309)",
     // The three line weights read the stroke scale — --stroke-md IS 2px and
     // --stroke-sm IS 1.5px, pinned in src/tokens/__tests__/geometry-axis-scales.test.ts. A theme
     // that wants heavier presence rings now has both routes: the step, or these knobs.
-    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*var\(\s*--stroke-md\);/);
-    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*var\(\s*--stroke-sm\);/);
+    expect(tokens).toMatch(/--avatar-presence-ring-width:\s*initial;/);
+    expect(tokens).toMatch(/--avatar-presence-stroke-width:\s*initial;/);
     expect(tokens).toMatch(/--avatar-presence-bar-inline-size:\s*56%;/);
-    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*var\(\s*--stroke-sm\);/);
+    expect(tokens).toMatch(/--avatar-presence-bar-block-size:\s*initial;/);
     expect(tokens).toMatch(/--avatar-presence-min-size:\s*var\(\s*--space-2\);/);
   });
 

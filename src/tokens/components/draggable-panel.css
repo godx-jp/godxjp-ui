@@ -29,7 +29,7 @@
 
   --draggable-panel-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --draggable-panel-shadow: var(--shadow-lg);
-  --draggable-panel-border-width: var(--stroke-hairline);
+  --draggable-panel-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
 
   --draggable-panel-bar-padding: var(--space-2) var(--space-3);
   --draggable-panel-bar-gap: var(--space-2);

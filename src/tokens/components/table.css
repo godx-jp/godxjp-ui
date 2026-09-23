@@ -111,7 +111,7 @@
    * scoped theme, exactly like the row-state washes above.
    * Default = hsl(var(--muted)). */
   --table-summary-background: initial;
-  --table-summary-border-width: var(--stroke-hairline);
+  --table-summary-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* Wash behind an expanded detail row, so the panel reads as belonging to the row above it.
    * Default = hsl(var(--muted) / 0.3), the same weight as the selected-row tint. It fades out as
    * --table-row-striped-alpha comes in: on a striped table the stripe ties the panel to its row. */
@@ -298,7 +298,7 @@
    * rule in `@layer components` can actually zero it; a utility would outrank it by layer.
    * Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }`
    * so a scoped [data-tenant]/.dark override of --border still reaches every row. */
-  --table-row-border-width: var(--stroke-hairline);
+  --table-row-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside
    * `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three
    * edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind
@@ -309,7 +309,7 @@
    * only the width is restored, so the surface's own border declaration still owns them and a
    * scoped [data-tenant]/.dark override of --border reaches it.
    * Default = the same hairline the table's other rules draw. */
-  --table-flush-divider-width: var(--table-row-border-width);
+  --table-flush-divider-width: var(--table-row-border-width, var(--stroke-hairline));
 
   /* Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state.
    * The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card
@@ -318,6 +318,6 @@
    * The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger
    * statement about the same row) and must not carry meaning on its own — that is what the rail
    * and the row's own status cell are for. */
-  --table-row-tone-rail-width: var(--stroke-2xl);
+  --table-row-tone-rail-width: initial; /* default = var(--stroke-2xl), resolved at the call site (gh#906) */
   --table-row-tone-wash-alpha: 0.06;
 }

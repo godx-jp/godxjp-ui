@@ -115,12 +115,12 @@
     block-size: var(--avatar-presence-size);
     min-inline-size: var(--avatar-presence-min-size);
     min-block-size: var(--avatar-presence-min-size);
-    border: var(--avatar-presence-stroke-width) solid transparent;
+    border: var(--avatar-presence-stroke-width, var(--stroke-sm)) solid transparent;
     border-radius: var(--radius-pill);
     background-origin: border-box;
     /* It is what keeps the dot legible over a busy photo; a service that puts the avatar on a
      * coloured surface retunes the colour once. */
-    box-shadow: 0 0 0 var(--avatar-presence-ring-width)
+    box-shadow: 0 0 0 var(--avatar-presence-ring-width, var(--stroke-md))
       hsl(var(--avatar-presence-ring-color, var(--background)));
   }
 
@@ -157,7 +157,7 @@
     inset: 0;
     margin: auto;
     inline-size: var(--avatar-presence-bar-inline-size);
-    block-size: var(--avatar-presence-bar-block-size);
+    block-size: var(--avatar-presence-bar-block-size, var(--stroke-sm));
     border-radius: var(--radius-pill);
     background: hsl(var(--avatar-presence-ring-color, var(--background)));
   }
@@ -175,7 +175,7 @@
       border-color: CanvasText;
       background-color: CanvasText;
       background-image: none;
-      outline: var(--avatar-presence-ring-width) solid Canvas;
+      outline: var(--avatar-presence-ring-width, var(--stroke-md)) solid Canvas;
     }
 
     [data-slot="avatar-presence"][data-presence="away"] {
@@ -321,7 +321,7 @@
   .ui-progress-ring-track,
   .ui-progress-ring-indicator {
     fill: none;
-    stroke-width: var(--progress-ring-border-width);
+    stroke-width: var(--progress-ring-border-width, var(--stroke-lg));
   }
 
   .ui-progress-ring-track {
@@ -366,7 +366,8 @@
      * string clips INSIDE the ring instead of painting over the arc, which is the difference
      * between "this number is truncated" and "this component is broken". */
     max-inline-size: calc(
-      var(--progress-ring-size) - 2 * var(--progress-ring-border-width) - var(--space-1)
+      var(--progress-ring-size) - 2 * var(--progress-ring-border-width, var(--stroke-lg)) -
+        var(--space-1)
     );
     overflow: hidden;
     text-overflow: ellipsis;
@@ -486,7 +487,7 @@
     block-size: var(--swatch-size);
     border-radius: var(--swatch-radius);
     background: var(--swatch-color);
-    box-shadow: inset 0 0 0 var(--swatch-border-width)
+    box-shadow: inset 0 0 0 var(--swatch-border-width, var(--stroke-hairline))
       var(--swatch-border-color, hsl(var(--border)));
     forced-color-adjust: none;
   }
@@ -600,7 +601,7 @@
      * bites, `contain` letterboxes inside the frame rather than distorting the picture. */
     max-inline-size: 100%;
     block-size: var(--thumbnail-block-size);
-    border: var(--thumbnail-border-width) solid hsl(var(--border));
+    border: var(--thumbnail-border-width, var(--stroke-hairline)) solid hsl(var(--border));
     border-radius: var(--thumbnail-radius, var(--radius));
     /* A light screenshot on a light card needs something behind it while it loads, and a
      * transparent PNG needs it for good. */
@@ -648,7 +649,7 @@
     width: 1.5rem;
     height: 1.5rem;
     place-items: center;
-    border: 1px solid transparent;
+    border: var(--stroke-hairline) solid transparent;
     border-radius: var(--radius-pill);
     background: var(--timeline-dot-done-background, hsl(var(--primary)));
     color: var(--timeline-dot-done-foreground, hsl(var(--primary-foreground)));
@@ -705,7 +706,8 @@
   .ui-timeline-dot[data-current="true"] {
     background: var(--timeline-dot-current-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
-    box-shadow: 0 0 0 var(--timeline-dot-current-ring-width) hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 0 var(--timeline-dot-current-ring-width, var(--stroke-xl))
+      hsl(var(--primary) / 0.2);
   }
 
   /* pending → muted outline on the surface (no fill). */
@@ -799,7 +801,7 @@
 
 /* Accordion */
 .ui-accordion-item {
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: var(--stroke-hairline) solid hsl(var(--border));
 }
 .ui-accordion-header {
   display: flex;
@@ -850,7 +852,7 @@
   z-index: 50;
   width: 16rem;
   border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
-  border: 1px solid hsl(var(--border));
+  border: var(--stroke-hairline) solid hsl(var(--border));
   background: hsl(var(--popover) / var(--popover-alpha, 100%));
   color: hsl(var(--popover-foreground));
   padding: var(--space-4);
@@ -913,7 +915,7 @@
   place-items: center;
   border-radius: var(--radius-pill);
   background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
+  border: var(--stroke-hairline) solid hsl(var(--border));
   color: hsl(var(--foreground));
   transition: background-color 150ms ease;
   transform: translateY(-50%);
@@ -1181,7 +1183,7 @@
     min-height: var(--control-height);
     padding-block: var(--space-1);
     padding-inline: var(--space-3);
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--control-radius);
     background: hsl(var(--muted) / 0.4);
   }
@@ -1246,7 +1248,7 @@
     /* Above the scrolling cells, below any portaled overlay (--overlay-z-index). */
     z-index: 20;
     background-color: hsl(var(--card) / var(--card-alpha, 100%));
-    border-inline-end: 1px solid hsl(var(--border));
+    border-inline-end: var(--stroke-hairline) solid hsl(var(--border));
     inline-size: var(--permission-matrix-label-width);
     min-inline-size: var(--permission-matrix-label-width);
   }
@@ -1652,7 +1654,7 @@
   }
 
   .ui-prose blockquote {
-    border-inline-start: var(--prose-quote-border-width) solid hsl(var(--border));
+    border-inline-start: var(--prose-quote-border-width, var(--stroke-md)) solid hsl(var(--border));
     padding-inline-start: var(--prose-quote-space-inline);
     color: hsl(var(--muted-foreground));
   }
@@ -1732,7 +1734,7 @@
   }
 
   .ui-timeline-grid-corner {
-    border-block-end: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
   }
 
   .ui-timeline-grid-head {
@@ -1740,8 +1742,8 @@
     flex-direction: column;
     align-items: center;
     padding: var(--space-1);
-    border-block-end: 1px solid hsl(var(--border));
-    border-inline-start: 1px solid hsl(var(--border));
+    border-block-end: var(--stroke-hairline) solid hsl(var(--border));
+    border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
     background: hsl(var(--secondary));
     font-size: var(--timeline-grid-head-font-size);
     font-weight: var(--font-weight-medium);
@@ -1784,7 +1786,7 @@
   .ui-timeline-grid-column {
     margin: 0;
     padding: 0;
-    border-inline-start: 1px solid hsl(var(--border));
+    border-inline-start: var(--stroke-hairline) solid hsl(var(--border));
     background-image: repeating-linear-gradient(
       to bottom,
       var(--timeline-grid-line-color, hsl(var(--border))) 0 1px,
@@ -1825,7 +1827,7 @@
     inline-size: 100%;
     block-size: 100%;
     padding: var(--timeline-grid-event-space-inset);
-    border-inline-start: var(--timeline-grid-event-border-width) solid
+    border-inline-start: var(--timeline-grid-event-border-width, var(--stroke-md)) solid
       var(--timeline-grid-event-color, hsl(var(--primary)));
     border-radius: var(
       --timeline-grid-event-radius,
@@ -1899,7 +1901,7 @@
     position: absolute;
     inset-inline: 0;
     inset-block-start: calc(var(--timeline-grid-hour-height) * var(--timeline-grid-now-offset, 0));
-    block-size: var(--timeline-grid-now-width);
+    block-size: var(--timeline-grid-now-width, var(--stroke-sm));
     background: var(--timeline-grid-now-color, hsl(var(--destructive)));
     pointer-events: none;
   }
@@ -1930,7 +1932,7 @@
 @layer components {
   .ui-range-timeline {
     overflow: auto;
-    border: 1px solid hsl(var(--range-timeline-border-color));
+    border: var(--stroke-hairline) solid hsl(var(--range-timeline-border-color));
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
   .ui-range-timeline-canvas {
@@ -1954,7 +1956,7 @@
     z-index: 1;
     background: hsl(var(--card) / var(--card-alpha, 100%));
     padding: var(--space-2);
-    border-inline-end: 1px solid hsl(var(--range-timeline-border-color));
+    border-inline-end: var(--stroke-hairline) solid hsl(var(--range-timeline-border-color));
   }
   /* One track per UNIT, shared by the band row, the tick row and the body grid; every cell spans
    * its `units`. With `flex: units` a cell's padding and rule sat outside the grow share, so a band
@@ -1981,9 +1983,11 @@
     min-inline-size: 0;
     overflow: hidden;
     padding: var(--space-2);
-    padding-inline-start: calc(var(--space-2) + var(--range-timeline-grid-width));
+    padding-inline-start: calc(
+      var(--space-2) + var(--range-timeline-grid-width, var(--stroke-hairline))
+    );
     text-align: center;
-    border-inline-end: var(--range-timeline-grid-width) solid
+    border-inline-end: var(--range-timeline-grid-width, var(--stroke-hairline)) solid
       hsl(var(--range-timeline-border-color));
   }
   .ui-range-timeline-track {
@@ -2010,7 +2014,7 @@
   .ui-range-timeline-grid-column {
     min-inline-size: 0;
     padding-inline: var(--space-2);
-    border-inline-end: var(--range-timeline-grid-width) solid transparent;
+    border-inline-end: var(--range-timeline-grid-width, var(--stroke-hairline)) solid transparent;
   }
   .ui-range-timeline-grid-column[data-muted="true"] {
     background: var(--range-timeline-muted-column-background, hsl(var(--muted)));
@@ -2034,7 +2038,7 @@
   }
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-header + .ui-range-timeline-header,
   .ui-range-timeline[data-bordered="true"] .ui-range-timeline-row {
-    border-block-start: var(--range-timeline-grid-width) solid
+    border-block-start: var(--range-timeline-grid-width, var(--stroke-hairline)) solid
       var(--range-timeline-grid-color, hsl(var(--border)));
   }
   /* `density` (gh#730) — the axis step, and ONLY the axis step: the row height, the bar height and
@@ -2104,7 +2108,7 @@
   .ui-range-timeline-today {
     position: absolute;
     inset-block: 0;
-    border-inline-start: 1px solid hsl(var(--primary));
+    border-inline-start: var(--stroke-hairline) solid hsl(var(--primary));
   }
   /* Nested rows (gh#724). Only a timeline with some `depth > 0` sets `data-nested`, so a flat one
    * matches nothing here. The indent is padding INSIDE the label cell: the label column keeps its
@@ -2184,16 +2188,20 @@
    * first in its row — which is exactly what a responsive column count makes unknowable. */
   [data-slot="descriptions"][data-bordered] {
     gap: 0;
-    border-inline-end: var(--descriptions-border-width) solid hsl(var(--border));
-    border-block-end: var(--descriptions-border-width) solid hsl(var(--border));
+    border-inline-end: var(--descriptions-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
+    border-block-end: var(--descriptions-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
     border-radius: var(--descriptions-border-radius, calc(var(--radius) / var(--radius-ratio)));
     overflow: hidden;
   }
 
   [data-slot="descriptions"][data-bordered] [data-slot="descriptions-item"] {
     gap: 0;
-    border-block-start: var(--descriptions-border-width) solid hsl(var(--border));
-    border-inline-start: var(--descriptions-border-width) solid hsl(var(--border));
+    border-block-start: var(--descriptions-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
+    border-inline-start: var(--descriptions-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
   }
 
   [data-slot="descriptions"][data-bordered]
@@ -2209,7 +2217,8 @@
   [data-slot="descriptions"][data-bordered]
     [data-slot="descriptions-item"][data-layout="horizontal"]
     [data-slot="descriptions-label"] {
-    border-inline-end: var(--descriptions-border-width) solid hsl(var(--border));
+    border-inline-end: var(--descriptions-border-width, var(--stroke-hairline)) solid
+      hsl(var(--border));
   }
 }
 
@@ -2461,7 +2470,7 @@
    * that never blinks is one less thing to switch off under prefers-reduced-motion. */
   .ui-chat-bubble-caret {
     display: inline-block;
-    inline-size: var(--chat-bubble-typing-caret-width);
+    inline-size: var(--chat-bubble-typing-caret-width, var(--stroke-md));
     block-size: var(--chat-bubble-typing-caret-height);
     margin-inline-start: var(--space-1);
     background: var(--chat-bubble-typing-caret-color, hsl(var(--muted-foreground)));
@@ -2667,7 +2676,7 @@
       var(--tree-node-padding-inline) + (var(--tree-node-level, 1) - 1) * var(--tree-indent-width) +
         var(--tree-switcher-size) / 2
     );
-    border-inline-start: 1px solid var(--tree-line-color, hsl(var(--border)));
+    border-inline-start: var(--stroke-hairline) solid var(--tree-line-color, hsl(var(--border)));
     content: "";
   }
 
@@ -2831,10 +2840,10 @@
     position: absolute;
     inset-block: var(--thought-chain-icon-size) calc(-1 * var(--thought-chain-gap));
     inset-inline-start: calc(var(--thought-chain-icon-size) / 2);
-    border-inline-start: var(--thought-chain-line-width) solid
+    border-inline-start: var(--thought-chain-line-width, var(--stroke-hairline)) solid
       var(--thought-chain-line-color, hsl(var(--border)));
     content: "";
-    translate: calc(-1 * var(--thought-chain-line-width) / 2) 0;
+    translate: calc(-1 * var(--thought-chain-line-width, var(--stroke-hairline)) / 2) 0;
   }
 
   .ui-thought-chain[data-line="dashed"] .ui-thought-chain-node::before {

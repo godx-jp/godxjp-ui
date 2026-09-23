@@ -358,7 +358,8 @@
    * its own 1px of rail. Nothing overflows, so nothing can be shaved. */
   [data-slot="tabs"][data-variant="card"] [data-slot="tabs-list"],
   [data-slot="tabs"][data-variant="editable-card"] [data-slot="tabs-list"] {
-    box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width)) 0 hsl(var(--border));
+    box-shadow: inset 0 calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline))) 0
+      hsl(var(--border));
   }
 
   /* …and for `placement="bottom"` it is the BLOCK-START edge, because the panel is above the
@@ -371,7 +372,8 @@
   [data-slot="tabs"][data-variant="card"][data-placement="bottom"] [data-slot="tabs-list"],
   [data-slot="tabs"][data-variant="editable-card"][data-placement="bottom"]
     [data-slot="tabs-list"] {
-    box-shadow: inset 0 var(--tabs-card-rail-border-width) 0 hsl(var(--border));
+    box-shadow: inset 0 var(--tabs-card-rail-border-width, var(--stroke-hairline)) 0
+      hsl(var(--border));
   }
 
   /* VERTICAL PLACEMENTS. `start` puts the strip before the panel, so the rail belongs on the
@@ -386,12 +388,14 @@
    * which are logical already. */
   [data-slot="tabs"][data-variant="card"][data-placement="start"] [data-slot="tabs-list"],
   [data-slot="tabs"][data-variant="editable-card"][data-placement="start"] [data-slot="tabs-list"] {
-    box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
+    box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline))) 0 0
+      hsl(var(--border));
   }
 
   [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
   [data-slot="tabs"][data-variant="editable-card"][data-placement="end"] [data-slot="tabs-list"] {
-    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
+    box-shadow: inset var(--tabs-card-rail-border-width, var(--stroke-hairline)) 0 0
+      hsl(var(--border));
   }
 
   [dir="rtl"]
@@ -400,14 +404,16 @@
   [dir="rtl"]
     [data-slot="tabs"][data-variant="editable-card"][data-placement="start"]
     [data-slot="tabs-list"] {
-    box-shadow: inset var(--tabs-card-rail-border-width) 0 0 hsl(var(--border));
+    box-shadow: inset var(--tabs-card-rail-border-width, var(--stroke-hairline)) 0 0
+      hsl(var(--border));
   }
 
   [dir="rtl"] [data-slot="tabs"][data-variant="card"][data-placement="end"] [data-slot="tabs-list"],
   [dir="rtl"]
     [data-slot="tabs"][data-variant="editable-card"][data-placement="end"]
     [data-slot="tabs-list"] {
-    box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width)) 0 0 hsl(var(--border));
+    box-shadow: inset calc(-1 * var(--tabs-card-rail-border-width, var(--stroke-hairline))) 0 0
+      hsl(var(--border));
   }
 
   /* ── THE JOINED BODY (`Tabs bodied`, gh#762) ───────────────────────────────────────────────
@@ -617,7 +623,7 @@
 
   @media (forced-colors: active) {
     [data-slot="tabs-trigger"][data-state="active"] .ui-tabs-count {
-      outline: var(--tabs-count-forced-outline-width) solid currentColor;
+      outline: var(--tabs-count-forced-outline-width, var(--stroke-hairline)) solid currentColor;
     }
   }
 
@@ -689,7 +695,7 @@
     block-size: var(--tabs-add-size);
     align-items: center;
     justify-content: center;
-    border: var(--tabs-card-rail-border-width) solid hsl(var(--border));
+    border: var(--tabs-card-rail-border-width, var(--stroke-hairline)) solid hsl(var(--border));
     border-radius: var(--tabs-add-radius, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(
       var(--tabs-card-background, var(--muted)) / var(--tabs-card-background-alpha, 100%)
@@ -989,7 +995,7 @@
     z-index: var(--overlay-z-index);
     min-width: var(--menu-content-min-width);
     border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
-    border: 1px solid hsl(var(--border));
+    border: var(--stroke-hairline) solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). `.ui-popover-content` has had one
      * since gh#354 and this — the same kind of floating panel, portaled the same way — did not. */
     background: var(
@@ -1159,7 +1165,8 @@
   }
 
   .ui-steps-dot[data-status="process"] {
-    box-shadow: 0 0 0 var(--steps-dot-process-ring-width) hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 0 var(--steps-dot-process-ring-width, var(--stroke-xl))
+      hsl(var(--primary) / 0.2);
   }
 
   .ui-steps-dot[data-status="error"] {
@@ -1172,7 +1179,7 @@
 
   .ui-steps-marker {
     border-radius: var(--radius-pill);
-    border: var(--steps-marker-border-width) solid transparent;
+    border: var(--steps-marker-border-width, var(--stroke-md)) solid transparent;
     font-size: var(--steps-marker-font-size);
     font-weight: var(--font-weight-medium);
   }
@@ -1332,7 +1339,7 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-pill);
-    padding: var(--steps-progress-ring-width);
+    padding: var(--steps-progress-ring-width, var(--stroke-md));
     background: conic-gradient(
       hsl(var(--primary)) calc(var(--steps-progress-ratio, 0) * 360deg),
       hsl(var(--steps-progress-track-color, var(--muted))) 0
@@ -1658,7 +1665,7 @@
    * than add one — otherwise the solid band sits behind the dashes and nothing looks dashed. */
   .ui-conversations-separator[data-dashed="true"] {
     height: 0;
-    border-block-start: var(--separator-rule-size) dashed
+    border-block-start: var(--separator-rule-size, var(--stroke-hairline)) dashed
       hsl(var(--separator-rule-color, var(--border)));
     background: transparent;
   }

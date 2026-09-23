@@ -51,7 +51,7 @@
    *
    * Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on
    * PageContainer: a `border` shorthand a service opts into with ONE declaration
-   * (`--descriptions-row-border: 1px solid hsl(var(--border))`), read at the call site. Bound at
+   * (`--descriptions-row-border: var(--stroke-hairline) solid hsl(var(--border))`), read at the call site. Bound at
    * :root rather than `initial` because the default is a plain CSS keyword, not another role
    * token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the
    * keyword is worth reading here (the same reasoning --page-toolbar-background records).
@@ -71,7 +71,7 @@
    * stroke step so a service that thickens every hairline gets this one with it; colour is
    * deliberately left to the global `border-color` role so a scoped [data-tenant] override still
    * reaches it. */
-  --descriptions-border-width: var(--stroke-hairline);
+  --descriptions-border-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --descriptions-border-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   /* Inset inside one bordered cell. Only read while `bordered` is set — an unbordered
    * Descriptions has no cell box to pad, and gains nothing. */
