@@ -69,6 +69,34 @@ Dropdown, modal and drawer are the hardest cases and the owner flagged them by n
 - **A dropdown is small and sits over arbitrary content.** It needs the _most_ opaque fill of the
   three, because a 7-line menu over a photograph is unreadable at `0.12`.
 
+## 4b. Form fields — where glassmorphism usually breaks
+
+The owner asked for Input, Select and the rest to match. They are the hardest surface in the
+system, and the literature is blunt about why: **a translucent input with a low-contrast border is
+unusable.** An input has to read as a _place you can type_ before it reads as glass, and
+translucency destroys exactly the two signals that say so — the boundary and the fill.
+
+What a correct glass field has:
+
+|                     | requirement                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **fill**            | frosted, but MORE opaque than the card it sits on. A field at the card's own alpha disappears into it.                   |
+| **inner shadow**    | `inset 0 1px 2px rgba(0,0,0,.15)` — the depth cue that says "recessed", replacing the border the glass just weakened     |
+| **border**          | ≥ **3:1** against the surface behind it. WCAG 2.2 SC 1.4.11 covers the field boundary as a UI component.                 |
+| **focus ring**      | **2px, `:focus-visible`, and it must survive ANY backdrop.** A ring tinted to the glass is invisible over a light photo. |
+| **placeholder**     | 4.5:1 like any other text. Placeholder grey on frosted glass is the single most common failure.                          |
+| **filled vs empty** | both states checked. An empty field on glass often has no visible box at all.                                            |
+| **label**           | a real `<label>`, never a placeholder standing in for one — translucency makes a vanished label unrecoverable.           |
+
+For **Select** specifically the trigger and the listbox are two different problems: the trigger is a
+field and follows this table; the **listbox is an overlay** and follows §4 — it needs the most
+opaque fill of any surface, because a menu over arbitrary content is unreadable at a card's alpha.
+
+In this library the field surface is `--control-surface-background` /
+`--control-surface-border-color`, which Input, Select, Textarea, NumberInput and the pickers share.
+That sharing is the opportunity — one pair retunes every field — and the risk: it also means a
+field cannot currently differ from a card, which is the first thing this table asks for.
+
 ## 5. The fallbacks that make it shippable
 
 - **`@supports not (backdrop-filter: blur(1px))`** → a solid fill. Without it the panel is a
