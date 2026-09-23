@@ -54,7 +54,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    first; it exists because that is the mistake.
 2. `components/<Name>.json` — one file per component (1 KB–34 KB, median 6 KB), carrying its props,
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
-3. `rules.json` — 47 cardinal rules. The ones about raw HTML and hardcoded colour are not
+3. `rules.json` — 50 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
 4. `tokens.json` — 2017 design tokens, each tagged with its `tier`. **If you were handed a
    brand, read the 202 `foundation` entries first** — `--primary`, `--background`,

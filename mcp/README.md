@@ -10,7 +10,8 @@ MCP-aware agent live access to:
 - 80+ component catalog (props, types, defaults, examples)
 - 14 shared prop-vocabulary types (`SizeProp`, `ColorProp`, `LoadingProp`, …)
 - 48 design tokens across the primitive / semantic / component tiers
-- 47 cardinal rules from `CLAUDE.md`
+- 50 cardinal rules from `CLAUDE.md` (48–50 are the complex-theme rules — see
+  `docs/CUSTOMER-THEMING.md` · "Building a COMPLEX theme")
 - 9 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
 - 15 design skills, each tagged by **audience** — 12 taste-family (taste / soft / minimalist /
   brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile /
