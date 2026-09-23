@@ -129,8 +129,22 @@
      * ring that is the wrong colour instead of a ring that does not exist. WCAG 2.2 SC 2.4.11 asks
      * for a visible indicator; a mis-tinted one can still satisfy it, a missing one never can.
      * BYTE-IDENTICAL when the token is in the contracted form: `outline` sets exactly these three
-     * longhands (`outline-offset` was never part of it) and the values are unchanged. */
-    outline-width: var(--focus-ring-width);
+     * longhands (`outline-offset` was never part of it) and the values are unchanged.
+     *
+     * `--focus-ring-width-component` (gh#891) — READ HERE, NEVER ASSIGNED HERE. `--focus-ring-width`
+     * itself may be declared nowhere but `tokens/foundation.css` (the guard immediately below this
+     * file's own tests), because a stray literal reassignment anywhere else could paint with the
+     * switch off. But that guard is also the reason the per-component knobs two sections down
+     * (`--toggle-focus-ring-width`, `--control-focus-ring-width`) used to do nothing: they rebind
+     * `--focus-ring-weight`, and `--focus-ring-width`'s FORMULA already froze on `:root`'s weight
+     * the moment `:root` declared it — var() substitutes where a property is DECLARED, not where it
+     * is read (docs/TOKEN-RESOLUTION.md §3), so no rebind anywhere downstream could ever reach it.
+     * `--focus-ring-width-component` is the same fix that section prescribes for a colour, applied
+     * to a width for the first time: an unset knob (nothing declares it here) that a component may
+     * set to ITS OWN copy of the identical formula — safe to duplicate because both copies still
+     * multiply by `--focus-outline`, so the switch still zeroes either one — and the fallback keeps
+     * reading `--focus-ring-width` untouched for every element that does not. */
+    outline-width: var(--focus-ring-width-component, var(--focus-ring-width));
     outline-style: solid;
     outline-color: hsl(
       var(--focus-outline-color, var(--focus-ring-color, var(--ring))) /
@@ -283,11 +297,23 @@
   /* ── Per-component rebinds ──────────────────────────────────────────────────
    *
    * Each line maps a PUBLIC knob (declared in tokens/components/*.css) onto the local value the
-   * rule above reads. They set `--focus-ring-weight`, never `--focus-ring-width`: the width is
-   * `weight × --focus-outline`, so routing every rebind through the weight is what makes it
-   * impossible for a component to bring the mark back while the switch is off. */
+   * rule above reads. They set `--focus-ring-weight`, never `--focus-ring-width` directly — a
+   * stray reassignment of the width itself is what the guard test two files over exists to catch.
+   *
+   * THE WEIGHT ALONE USED TO BE INERT (gh#891). `--focus-ring-weight` rebinds correctly — it is a
+   * plain property, declared and read at the SAME element — but `outline-width` used to read
+   * `--focus-ring-width`, whose FORMULA is declared once, at `:root`, so it froze on `:root`'s
+   * weight before any rebind here ran (the mark rule's own note explains why, and
+   * docs/TOKEN-RESOLUTION.md §3 names the mechanism). `--toggle-focus-ring-width` said 3px and
+   * `.ui-toggle` painted 1px — the root default — for exactly that reason.
+   *
+   * `--focus-ring-width-component` closes it without touching `--focus-ring-width` at all: each
+   * knob's OWN copy of the identical `weight × --focus-outline` formula, declared fresh at this
+   * same element rather than inherited frozen from an ancestor, still multiplies by the switch,
+   * and the mark rule prefers it over `--focus-ring-width` only where it is set. */
   .ui-toggle {
     --focus-ring-weight: var(--toggle-focus-ring-width);
+    --focus-ring-width-component: calc(var(--focus-ring-weight) * var(--focus-outline));
     --focus-ring-opacity: var(--toggle-focus-ring-alpha);
   }
 
@@ -324,7 +350,9 @@
 
   /* FIELD MARK WIDTH — its own knob, because a field is the one control that already owns a
    * boundary the ON state recolours, so a service may want its outline thinner than a button's.
-   * It feeds the WEIGHT, so it is still subject to the switch.
+   * It feeds the WEIGHT, so it is still subject to the switch — and, since gh#891, it also feeds
+   * `--focus-ring-width-component`, the same fresh-at-this-element formula `.ui-toggle` sets
+   * above, for the same reason: the weight alone never reached `outline-width`.
    *
    * The two picker variants excluded here hide their own boundary on purpose (a topbar icon
    * trigger and an inline text trigger, both borderless at rest), so a field-scoped width must
@@ -334,6 +362,7 @@
     .ui-app-setting-picker-inline
   ) {
     --focus-ring-weight: var(--control-focus-ring-width);
+    --focus-ring-width-component: calc(var(--focus-ring-weight) * var(--focus-outline));
   }
 
   /* THE ONE CONTROL WITH NO MARK EVEN WHEN THE SWITCH IS ON, AND WHY THAT IS NOT A HOLE. The

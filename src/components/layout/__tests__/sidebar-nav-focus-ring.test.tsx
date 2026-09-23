@@ -51,12 +51,18 @@ describe("sidebar nav rows draw the design system's focus ring", () => {
     // to suppress — the rule REPLACES it instead of turning it off and painting beside it. Written
     // as the three longhands since gh#885: as a shorthand, a consumer's wrong-form colour token took
     // `outline-width` and `outline-style` down with the colour and the mark disappeared entirely.
-    expect(rule).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
+    // gh#891 wrapped the read in `--focus-ring-width-component` — an unset knob for a row, so
+    // `--focus-ring-width` is still exactly what paints here.
+    expect(rule).toMatch(
+      /outline-width:\s*var\(\s*--focus-ring-width-component,\s*var\(\s*--focus-ring-width\)\);/,
+    );
   });
 
   it("draws the mark from the global focus tokens", () => {
     const rule = shadowFormRule();
-    expect(rule).toMatch(/outline-width:\s*var\(\s*--focus-ring-width\);/);
+    expect(rule).toMatch(
+      /outline-width:\s*var\(\s*--focus-ring-width-component,\s*var\(\s*--focus-ring-width\)\);/,
+    );
     expect(rule).toMatch(/outline-style:\s*solid;/);
     expect(rule).toContain("var(--focus-outline-color, var(--focus-ring-color, var(--ring)))");
     // The knob the private copy used to drop. A service that softens every mark must soften
