@@ -88,7 +88,9 @@ describe("Avatar shape (gh#249)", () => {
 
 describe("Avatar square appearance — token-owned (gh#249)", () => {
   it("declares every knob, with the brand colours as role-mirror `initial`", () => {
-    expect(dataDisplayTokens).toMatch(/--avatar-square-radius:\s*var\(\s*--radius-lg\);/);
+    // gh#888 — a :root binding to --radius-lg froze there too; default now resolves at the call
+    // site via `var(--avatar-square-radius, var(--radius))`.
+    expect(dataDisplayTokens).toMatch(/--avatar-square-radius:\s*initial;/);
     expect(dataDisplayTokens).toMatch(/--avatar-square-size:\s*var\(\s*--control-height\);/);
     // `initial` (NOT `var(--primary)`) so a scoped [data-tenant]/.dark override of the role
     // still reaches the mark — a :root binding to a role var freezes at the :root value.
@@ -97,9 +99,12 @@ describe("Avatar square appearance — token-owned (gh#249)", () => {
   });
 
   it("reads the tokens with the role defaults at the CALL SITE", () => {
+    // gh#888 — --avatar-square-radius is also `initial` now (a :root binding to --radius-lg
+    // froze there too), so this call site carries the same `var(token, formula)` fallback.
     expect(dataDisplayCss).toContain(
       '.ui-avatar[data-shape="square"] { inline-size: var(--avatar-square-size); ' +
-        "block-size: var(--avatar-square-size); border-radius: var(--avatar-square-radius); " +
+        "block-size: var(--avatar-square-size); " +
+        "border-radius: var(--avatar-square-radius, var(--radius)); " +
         "--avatar-background: var(--avatar-square-background, hsl(var(--primary))); " +
         "color: var(--avatar-square-foreground, hsl(var(--primary-foreground))); }",
     );

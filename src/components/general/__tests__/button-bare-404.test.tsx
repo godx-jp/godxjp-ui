@@ -82,15 +82,18 @@ describe("Badge nested in a Button (gh#404)", () => {
     const at = control.indexOf(".ui-button:is(");
     const rule = control.slice(at, control.indexOf("}", at));
     expect(rule).toContain("--badge-space-y: 0;");
-    expect(rule).toContain("--badge-radius: var(--radius-sm);");
+    // gh#888 — a :root binding to --radius-sm froze there too; the formula now rides the same
+    // `var(token, formula)` fallback shape every other reader of the φ tier carries. The value
+    // wraps across lines (prettier), so this is whitespace-tolerant rather than `toContain`.
+    expect(rule.replace(/\s+/g, " ")).toMatch(
+      /--badge-radius: var\(\s*--radius-sm,\s*calc\(var\(--radius\) \/ var\(--radius-ratio\) \/ var\(--radius-ratio\)\)\s*\);/,
+    );
     expect(rule).not.toMatch(/padding-block:|border-radius:/);
     // The knob it now writes through has to be the one the Badge actually reads.
     expect(read("../../../styles/badge-layout.css")).toContain(
-      "border-radius: var(--badge-radius);",
+      "border-radius: var(--badge-radius, calc(var(--radius) / var(--radius-ratio)));",
     );
-    expect(read("../../../tokens/components/badge.css")).toMatch(
-      /--badge-radius:\s*var\(\s*--radius-md\);/,
-    );
+    expect(read("../../../tokens/components/badge.css")).toMatch(/--badge-radius:\s*initial;/);
   });
 
   it("still renders one badge node inside a ghost button, untouched", () => {
