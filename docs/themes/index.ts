@@ -108,13 +108,24 @@ export const THEMES: readonly ThemeRow[] = [
     id: null,
     nameKey: "themeLab.theme.base.name",
     noteKey: "themeLab.theme.base.note",
-    /* The package default IS this surface in both polarities, so there is nothing to override —
-     * and measuring it anyway is what proves the method used for the other two rows. Compositing
-     * every surface of this theme across five seeds returns #EBE9E5 light and #3C3A34 dark, which
-     * are exactly `INK_SURFACE_LIGHT` in `src/app/tenant-theme.ts` and the hex its docblock names
-     * for a dark theme. A probe that reproduces the library's own two answers is one whose answers
-     * for glass and flat can be trusted. */
-    inkSurface: { light: null, dark: null },
+    /* `null` IS ONLY CORRECT IN LIGHT, AND THE 30-CELL RUN IS WHAT SHOWED IT. I wrote "the package
+     * default IS this surface in both polarities" here and the matrix answered: every dark `base`
+     * cell read 552/562, ten failures, identical at all five seeds. `tenantTheme`'s default is
+     * `INK_SURFACE_LIGHT` (#ebe9e5) and there is no dark counterpart, so `null` in the dark slot
+     * walks the brand ink AWAY FROM A LIGHT SURFACE and lands it dark on a dark page — the same
+     * defect gh#887 found for glass, in the package's own theme, seed-independent because the
+     * surface is wrong rather than the seed.
+     *
+     * The light slot stays `null` because there the default really is right: measured, the darkest
+     * ground under brand ink is #DFE2E5 against the constant's #EBE9E5, and light `base` reads
+     * 562/562 at every seed.
+     *
+     * THE HEX IS A PAINTED-PIXEL MEASUREMENT, not a token composite. Sampling
+     * `--card/--popover/--accent/--muted/--secondary` and compositing them gave #3C3A34; sampling
+     * the actual pixel under each brand-ink element with the glyphs hidden gives #3C3619, which is
+     * darker because the token set does not include the gradients a theme paints. The pixel is the
+     * one the reader sees. */
+    inkSurface: { light: null, dark: "#3C3619" },
   },
   {
     id: "glass",
