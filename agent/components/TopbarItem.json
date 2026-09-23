@@ -69,7 +69,8 @@
     "DO wrap it in a DropdownMenuTrigger asChild for a user menu; the open state lights the cell via [data-state=open].",
     "DON'T set a height: the cell stretches to whatever the bar is (AppShell's grid row, --topbar-height, or the coarse-pointer bar), which is why there is no height knob.",
     "DO collapse a cell by breakpoint with its own props, never by hand-wrapping the glyph: `<TopbarItem asChild icon={<Target />} labelHideBelow=\"sm\"><a href=\"/goals\">Goals</a></TopbarItem>` replaces `<Flex hideFrom=\"sm\"><Icon as={Target} size=\"md\" /></Flex>` — icon-only below sm, the label still the accessible name. Add `iconHideFrom` for a label-only cell from a step up (gh#726).",
-    "DON'T reach for it outside a Topbar — a full-bleed cell needs a bar to bleed to. Use Button anywhere else."
+    "DON'T reach for it outside a Topbar — a full-bleed cell needs a bar to bleed to. Use Button anywhere else.",
+    "DON'T wrap two or more TopbarItems in a `<Flex>` to place them together in one slot (gh#883) — a `<Flex>` is a REAL element with `align-self: auto` by default, so it sits between the item and the slot, collapses to its own content height, and every item inside it stretches only to THAT (measured: a 47px bar down to 16px). The slot (`.ui-topbar-start`/`-center`/`-end`) is already a flex line with its own `gap`, so it needs no wrapper at all: put a JSX FRAGMENT `<>…</>` around the items (renders no DOM node, so each item is still the slot's DIRECT child) or pass an array — `end={[<TopbarItem key=\"notifications\" …/>, <TopbarItem key=\"account\" …/>]}` — either way every item keeps its own `align-self: stretch` reaching the real bar height. Reach for `<Flex>` there only when you deliberately want the group NOT full height (rare in a topbar)."
   ],
   "useCases": [
     "Account / user-menu trigger in the topbar end slot",
