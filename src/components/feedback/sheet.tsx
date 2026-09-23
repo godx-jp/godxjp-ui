@@ -115,13 +115,7 @@ export interface SheetProps {
   children?: React.ReactNode;
 }
 
-export function Sheet({
-  open,
-  defaultOpen,
-  onOpenChange,
-  modal = true,
-  children,
-}: SheetProps) {
+export function Sheet({ open, defaultOpen, onOpenChange, modal = true, children }: SheetProps) {
   const [uncontrolled, setUncontrolled] = React.useState(defaultOpen ?? false);
   const isOpen = open ?? uncontrolled;
 
@@ -223,8 +217,12 @@ SheetOverlay.displayName = "SheetOverlay";
 const SHEET_OVERLAY_CLASS =
   "ui-sheet-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed";
 
+/* `text-foreground` pairs with `bg-background` and is not optional (gh#877): this panel portals to
+ * `document.body`, so without it the ink is whatever the document inherits. On a page-level theme
+ * that is the right value by accident; under a themed REGION the panel follows the region and the
+ * ink does not, which measured 1.03:1 on the Dialog that shares this shape. */
 const sheetVariants = cva(
-  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] bg-background px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
+  "ui-sheet-panel fixed flex flex-col gap-[var(--space-chrome-gap)] bg-background text-foreground px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
   {
     variants: {
       // `side` is a deliberately PHYSICAL API (left/right/top/bottom) — a sheet
@@ -327,7 +325,10 @@ export function SheetContent({
             {...props}
             style={mergedStyle}
             ref={mergeRefs(ref, racRef, contentRef)}
-            onKeyDown={chain(props.onKeyDown, closeOnEscape(() => state.setOpen(false)))}
+            onKeyDown={chain(
+              props.onKeyDown,
+              closeOnEscape(() => state.setOpen(false)),
+            )}
           />
         );
       }}

@@ -1,8 +1,10 @@
 // shadcn/ui Sonner — recommended toast (replaces deprecated Radix Toast).
 // @see https://ui.shadcn.com/docs/components/sonner
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { CheckCircle2, Info, Loader2, OctagonX, TriangleAlert } from "lucide-react";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
+import { useOverlayPortalContainer } from "../../lib/overlay-portal";
 
 function useDocumentTheme(): ToasterProps["theme"] {
   return React.useSyncExternalStore(
@@ -87,8 +89,16 @@ const toneVars = Object.fromEntries(
  */
 function Toaster({ style, richColors = true, ...props }: ToasterProps) {
   const theme = useDocumentTheme();
+  /*
+   * Sonner is the one overlay in this library that does NOT portal — it renders where it is
+   * mounted. On an ordinary page that is right, and this hook returns `undefined`, so nothing
+   * moves. Inside a `ThemeScope` it returns that scope's body-level host, which is what makes a
+   * toast raised from a themed region wear the region's tokens instead of the package defaults —
+   * the same statement about the tree the other overlays already obey (gh#877).
+   */
+  const overlayPortalContainer = useOverlayPortalContainer();
 
-  return (
+  const toaster = (
     <Sonner
       theme={theme}
       richColors={richColors}
@@ -130,6 +140,8 @@ function Toaster({ style, richColors = true, ...props }: ToasterProps) {
       {...props}
     />
   );
+
+  return overlayPortalContainer ? createPortal(toaster, overlayPortalContainer) : toaster;
 }
 
 export { Toaster };

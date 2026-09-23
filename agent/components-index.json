@@ -484,6 +484,11 @@
   },
   {
     "group": "providers",
+    "name": "ThemeScope",
+    "tagline": "Makes a themed REGION reach the overlays it opens. Every overlay portals to document.body, so custom-property inheritance stops at the portal boundary and a tenant-themed region's Dialog, Select listbox, Popover and Toast paint the package defaults. Wrap the region in ThemeScope and they carry the region's tokens."
+  },
+  {
+    "group": "providers",
     "name": "formatDate",
     "tagline": "MANDATORY for all date/time display. Auto-detects ISO date / HH:mm / instant; reads AppProvider context. Import from @godxjp/ui/datetime."
   },

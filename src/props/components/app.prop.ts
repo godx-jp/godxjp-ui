@@ -23,6 +23,19 @@ import type {
   ValueProp,
 } from "../vocabulary";
 
+/**
+ * @see ThemeScope
+ *
+ * A marker, not a configuration carrier: the theme is read from the DOM at this element, so there
+ * is no `primary`/`tenant`/`theme` prop to get wrong. Everything a `<div>` accepts is forwarded,
+ * which is how `data-tenant`, `className="dark"` and `style={tenantTheme(hex).vars}` are applied.
+ */
+export type ThemeScopeProp = {
+  children: ChildrenProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+};
+
 /** @see AppProvider */
 export type AppProviderProp = {
   children: ChildrenProp;

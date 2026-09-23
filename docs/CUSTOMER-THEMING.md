@@ -487,6 +487,27 @@ Worked screen: `docs/showcase/tenant-brand-color.tsx` (`/showcase/tenant-brand-c
 proof inside vs outside, the contrast table above, and three run cases (an invalid hex, a
 server-supplied pair below AA, and the brand-ink boundary).
 
+### A scoped theme needs `ThemeScope` to reach the overlays (gh#877)
+
+Every overlay in this library portals to `document.body`, so custom-property inheritance stops at
+the portal boundary: a themed region themes its own subtree and **nothing it opens**. Measured with
+the trigger inside the scope, the region read `--primary 204 100% 37%` and the Dialog it opened read
+`268.7 100% 50%`, the package default — the button right, the panel it opens wrong.
+
+Wrap the region in `ThemeScope` (`@godxjp/ui/app`) and the Dialog, Select listbox, Popover,
+DropdownMenu, Tooltip, Sheet and Toast all follow it:
+
+```tsx
+<ThemeScope data-tenant={tenant.slug} style={tenantTheme(tenant.primary_color).vars}>
+  {region}
+</ThemeScope>
+```
+
+It reads the COMPUTED tokens at its own element, so it does not care whether the theme came from
+`tenantTheme(...).vars`, from `className="dark"`, or from a `[data-tenant]` rule in your own
+stylesheet — the path this page recommends. `docs/providers/theme-scope.tsx`
+(`/isolate/providers-theme-scope`) is the worked screen.
+
 ### `applyPrimaryColor` vs `tenantTheme`
 
 Both land on the same arithmetic. Use `tenantTheme` when you are painting a region declaratively —

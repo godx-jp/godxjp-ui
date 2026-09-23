@@ -839,5 +839,53 @@
     "tokenScopeTitle": "テーマトークン · 領域スコープ",
     "tokenScopeBody": "線の太さ・帯の濃さ・グリッドの破線はハウススタイルなので prop ではなくトークンです。下のブロックにだけ --chart-series-stroke-width / --chart-area-fill-alpha / --chart-grid-line-dash を当てています。ページ固有 CSS も raw recharts も要りません。",
     "tokenScopeLabel": "週次相場（テーマ適用）"
+  },
+  "themeScopeDocs": {
+    "page": {
+      "subtitle": "テーマを持つ領域。そこから開くオーバーレイも領域のトークンを保つ。",
+      "title": "ThemeScope"
+    },
+    "intro": {
+      "title": "なぜ領域にこれが要るのか",
+      "description": "すべてのオーバーレイは document.body にポータルするため、カスタムプロパティの継承はポータル境界で止まる。",
+      "body": "自分にテーマを当てた領域は自分の部分木しか塗れず、そこから開いたものは塗れない。実測では、領域が --primary 204 100% 37% を読む一方、開いた Dialog はパッケージ既定の 268.7 100% 50% を読んでいた。ThemeScope は領域と文書ルートの計算済みの差分をポータル先のホスト要素へ運ぶので、オーバーレイは DOM の包含関係そのもので継承する。テーマ用の prop は持たず DOM を読むため、インライン style でもクラスでもスタイルシートの規則でも結果は同じになる。"
+    },
+    "region": {
+      "description": "ここから何を開いても、開いたパネルはこの領域のトークンで塗られる。",
+      "pending": "審査待ち",
+      "queue": "キューに 12 件",
+      "reviewerLabel": "審査担当を割り当てる",
+      "reviewerPlaceholder": "審査担当を選択",
+      "approve": "申請を承認",
+      "history": "審査履歴",
+      "notify": "申請者へ通知"
+    },
+    "dialog": {
+      "title": "この申請を承認する",
+      "description": "承認はあなたのアカウントに記録され、申請者へ直ちに通知される。",
+      "confirm": "承認",
+      "body": "この顧客の申請 3 件が同じ証憑一式を待っている。"
+    },
+    "popover": {
+      "body": "証憑不足で一度差し戻し、同日中に再提出。"
+    },
+    "toast": {
+      "approved": "申請を承認した",
+      "saved": "申請者へ通知した"
+    },
+    "acme": {
+      "name": "ACME ロジスティクス"
+    },
+    "night": {
+      "name": "夜勤コンソール"
+    },
+    "without": {
+      "title": "ThemeScope なしの同じ領域",
+      "description": "トークンの宣言は上とまったく同じ。違いはラッパーが素の div であることだけ。",
+      "open": "申請を承認",
+      "dialogTitle": "この申請を承認する",
+      "dialogDescription": "このパネルが不具合そのもの。開いた領域ではなくパッケージ既定で塗られている。",
+      "dialogBody": "開いたボタンと中のボタンを見比べる。領域の色は運ばれていない。"
+    }
   }
 }

@@ -112,6 +112,7 @@ export type {
   AppSettingPickerProp,
   AppSettingToggleKind,
   AppSettingToggleProp,
+  ThemeScopeProp,
 } from "./app.prop";
 export type {
   ZodSchemaProp,
