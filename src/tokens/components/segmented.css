@@ -100,6 +100,7 @@
   /* item hover fill = the lighter neutral · active fill = the heavier of the pair. */
   --segmented-item-hover-background: initial; /* default = var(--accent), resolved at the call site (the freeze rule) */
   --segmented-item-active-background: var(--secondary);
+  --segmented-item-active-background-alpha: 100%;
   /* selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted
    * off the recessed track, which is the whole affordance. */
   --segmented-item-selected-background: initial; /* default = var(--background), resolved at the call site */

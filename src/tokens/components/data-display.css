@@ -110,6 +110,7 @@
      A service re-tints the placeholder fill once (e.g. --avatar-background: hsl(var(--accent))).
      Default = hsl(var(--muted)). */
   --avatar-background: initial;
+  --avatar-background-alpha: initial; /* default = 100% at the call site */
   /* Optional role wash over the avatar (default transparent = invisible, rule #44).
      Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08). */
   --avatar-tint: transparent;
@@ -231,6 +232,7 @@
      Track reads --secondary, fill reads --success; a service re-tones once.
      Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill. */
   --progress-track-background: initial;
+  --progress-track-background-alpha: initial; /* default = 100% at the call site */
   --progress-fill-background: initial;
 
   /* BREAKDOWN geometry (`segments`) — its own block size and corner, not the meter's.

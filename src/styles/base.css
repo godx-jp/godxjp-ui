@@ -188,8 +188,8 @@
   --color-primary-active: hsl(
     var(--primary-active, from hsl(var(--primary)) var(--primary-active-channels))
   );
-  --color-secondary-hover: hsl(var(--secondary-hover));
-  --color-secondary-active: hsl(var(--secondary-active));
+  --color-secondary-hover: hsl(var(--secondary-hover) / var(--secondary-hover-alpha, 100%));
+  --color-secondary-active: hsl(var(--secondary-active) / var(--secondary-active-alpha, 100%));
   --color-destructive-hover: hsl(var(--destructive-hover));
   --color-destructive-active: hsl(var(--destructive-active));
   /* Wire Tailwind's font-sans/mono (and preflight) to the design-system fonts. */

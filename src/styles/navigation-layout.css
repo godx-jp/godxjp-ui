@@ -265,11 +265,17 @@
    * (`data-[variant=default]:bg-transparent` on the card list, the `--tabs-panel-background` face
    * on its active tab, `bg-transparent` on the line strip), and a utility still wins over this. */
   [data-slot="tabs-list"][data-variant="default"] {
-    background-color: var(--tabs-list-background, hsl(var(--muted)));
+    background-color: var(
+      --tabs-list-background,
+      hsl(var(--muted) / var(--tabs-list-background-alpha, 100%))
+    );
   }
 
   [data-slot="tabs-trigger"][data-state="active"] {
-    background-color: var(--tabs-trigger-active-background, hsl(var(--background)));
+    background-color: var(
+      --tabs-trigger-active-background,
+      hsl(var(--background) / var(--tabs-trigger-active-background-alpha, 100%))
+    );
   }
 
   /* The bar row: strip + `editable-card` add button + the two `extra` slots on ONE inline run.
@@ -600,7 +606,10 @@
    * `<Badge>` the consumer drops into `label`. It is a SECOND cue, never the only one: the tab's
    * selected state is already carried by the indicator bar / card face (WCAG 1.4.1). */
   [data-slot="tabs-trigger"][data-state="active"] .ui-tabs-count {
-    background: var(--tabs-count-active-background, hsl(var(--primary)));
+    background: var(
+      --tabs-count-active-background,
+      hsl(var(--primary) / var(--tabs-count-active-background-alpha, 100%))
+    );
     color: var(--tabs-count-active-color, hsl(var(--primary-foreground)));
   }
 
@@ -825,7 +834,10 @@
 
   .ui-dropdown-menu-item:hover,
   .ui-dropdown-menu-sub-trigger:hover {
-    background: var(--menu-item-hover-background, hsl(var(--accent)));
+    background: var(
+      --menu-item-hover-background,
+      hsl(var(--accent) / var(--menu-item-hover-background-alpha, 100%))
+    );
     color: var(--menu-item-hover-foreground, hsl(var(--accent-foreground)));
   }
 
@@ -834,7 +846,10 @@
   .ui-dropdown-menu-checkbox-item[data-highlighted],
   .ui-dropdown-menu-radio-item[data-highlighted],
   .ui-dropdown-menu-sub-trigger[data-state="open"] {
-    background: var(--menu-item-hover-background, hsl(var(--accent)));
+    background: var(
+      --menu-item-hover-background,
+      hsl(var(--accent) / var(--menu-item-hover-background-alpha, 100%))
+    );
     color: var(--menu-item-hover-foreground, hsl(var(--accent-foreground)));
   }
 
@@ -1509,7 +1524,10 @@
   /* "Current" is carried by `aria-current` in the markup; this is only its paint. Both halves are
    * required — a tint alone fails WCAG 1.4.1, an attribute alone is invisible. */
   .ui-conversations-item[data-active="true"] .ui-conversations-row {
-    background: var(--conversations-item-active-background, hsl(var(--accent)));
+    background: var(
+      --conversations-item-active-background,
+      hsl(var(--accent) / var(--conversations-item-active-background-alpha, 100%))
+    );
     color: var(--conversations-item-active-color, hsl(var(--foreground)));
     font-weight: var(--conversations-item-active-font-weight);
   }
@@ -1795,7 +1813,10 @@
   }
 
   .ui-mega-menu-trigger:hover {
-    background: var(--mega-menu-trigger-hover-background, hsl(var(--accent)));
+    background: var(
+      --mega-menu-trigger-hover-background,
+      hsl(var(--accent) / var(--mega-menu-trigger-hover-background-alpha, 100%))
+    );
     color: var(--mega-menu-trigger-hover-foreground, hsl(var(--accent-foreground)));
   }
 
@@ -1974,7 +1995,10 @@
   }
 
   .ui-mega-menu-link:hover {
-    background: var(--mega-menu-link-hover-background, hsl(var(--accent)));
+    background: var(
+      --mega-menu-link-hover-background,
+      hsl(var(--accent) / var(--mega-menu-link-hover-background-alpha, 100%))
+    );
     color: var(--mega-menu-link-hover-foreground, hsl(var(--accent-foreground)));
   }
 

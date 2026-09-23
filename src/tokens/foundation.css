@@ -29,6 +29,8 @@
   --card-alpha: 100%;
   --popover-alpha: 100%;
   --input-alpha: 100%;
+  --secondary-hover-alpha: 100%;
+  --secondary-active-alpha: 100%;
 
   --card: 60 33% 99%;
   --card-foreground: 48 8% 13%;
@@ -257,9 +259,13 @@
    * deriving their edge from the ink: the kit supplies no border colours, and a brand that wants
    * one already has the per-component alpha. */
   --surface-success: initial;
+  --surface-success-alpha: initial; /* default = 0.12 at the call site */
   --surface-warning: initial;
+  --surface-warning-alpha: initial; /* default = 0.12 at the call site */
   --surface-info: initial;
+  --surface-info-alpha: initial; /* default = 0.12 at the call site */
   --surface-destructive: initial;
+  --surface-destructive-alpha: initial; /* default = 0.05 at the call site */
 
   /* Interaction ramp — hover / active steps.
    *

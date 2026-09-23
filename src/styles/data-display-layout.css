@@ -11,7 +11,7 @@
     border-radius: var(--radius-pill);
     background:
       linear-gradient(var(--avatar-tint), var(--avatar-tint)),
-      var(--avatar-background, hsl(var(--muted)));
+      var(--avatar-background, hsl(var(--muted) / var(--avatar-background-alpha, 100%)));
     color: hsl(var(--muted-foreground));
     font-size: var(--avatar-font-size);
     font-weight: var(--font-weight-medium);
@@ -89,7 +89,7 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: var(--avatar-background, hsl(var(--muted)));
+    background: var(--avatar-background, hsl(var(--muted) / var(--avatar-background-alpha, 100%)));
   }
 
   /* Opt-in ONLY: with no `presence` prop the avatar emits neither the attribute nor the node, so
@@ -201,7 +201,10 @@
     height: var(--progress-meter-block-size);
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: var(--progress-track-background, hsl(var(--secondary)));
+    background: var(
+      --progress-track-background,
+      hsl(var(--secondary) / var(--progress-track-background-alpha, 100%))
+    );
   }
 
   /* THE FILL IS THE DATA, so it is a MARK, not a chip: nothing is written on it, and the only
@@ -322,7 +325,10 @@
   }
 
   .ui-progress-ring-track {
-    stroke: var(--progress-track-background, hsl(var(--secondary)));
+    stroke: var(
+      --progress-track-background,
+      hsl(var(--secondary) / var(--progress-track-background-alpha, 100%))
+    );
   }
 
   .ui-progress-ring-indicator {
@@ -1262,8 +1268,14 @@
   /* Hovered row: mirror TableRow's own `hover:bg-accent/70`, over the opaque base above. */
   .ui-permission-matrix tbody tr:hover > .ui-permission-matrix-pin {
     background-image: linear-gradient(
-      var(--table-row-hover-background, hsl(var(--accent) / 0.7)),
-      var(--table-row-hover-background, hsl(var(--accent) / 0.7))
+      var(
+        --table-row-hover-background,
+        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+      ),
+      var(
+        --table-row-hover-background,
+        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+      )
     );
   }
 
@@ -1271,8 +1283,14 @@
    * onto the pin too, so a consumer that marks a row selected sees the pin agree with it. */
   .ui-permission-matrix tbody tr[data-state="selected"] > .ui-permission-matrix-pin {
     background-image: linear-gradient(
-      var(--table-row-selected-background, hsl(var(--primary) / 0.06)),
-      var(--table-row-selected-background, hsl(var(--primary) / 0.06))
+      var(
+        --table-row-selected-background,
+        hsl(var(--primary) / var(--table-row-selected-background-alpha, 0.06))
+      ),
+      var(
+        --table-row-selected-background,
+        hsl(var(--primary) / var(--table-row-selected-background-alpha, 0.06))
+      )
     );
   }
 
@@ -2544,11 +2562,17 @@
   }
 
   .ui-tree-node:hover {
-    background: var(--tree-node-hover-background, hsl(var(--accent)));
+    background: var(
+      --tree-node-hover-background,
+      hsl(var(--accent) / var(--tree-node-hover-background-alpha, 100%))
+    );
   }
 
   .ui-tree-node[data-selected="true"] {
-    background: var(--tree-node-selected-background, hsl(var(--accent)));
+    background: var(
+      --tree-node-selected-background,
+      hsl(var(--accent) / var(--tree-node-selected-background-alpha, 100%))
+    );
     color: var(--tree-node-selected-foreground, hsl(var(--accent-foreground)));
     font-weight: var(--font-weight-medium);
   }
@@ -2687,7 +2711,10 @@
 
   /* DirectoryTree: the selected band spans the whole row and reads as a file-manager selection. */
   .ui-tree[data-variant="directory"] .ui-tree-node[data-selected="true"] {
-    background: var(--tree-node-selected-background, hsl(var(--primary) / 0.12));
+    background: var(
+      --tree-node-selected-background,
+      hsl(var(--primary) / var(--tree-node-selected-background-alpha, 0.12))
+    );
   }
 }
 

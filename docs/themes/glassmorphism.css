@@ -250,7 +250,7 @@
   /* Dark frosted chip — the conventional tooltip treatment even inside an otherwise light-glass
    * page. Re-derived from the seed in the seed layer. */
   --tooltip-background: hsl(230 45% 12% / 78%);
-  --tooltip-border-color: hsl(0 0% 100% / 14%);
+  --tooltip-border-color-alpha: 14%;
 
   /* ── `--popover` is the FOUNDATION-tier role several floating panels fall back to when their own
    *    knob is unset; it is always consumed as `hsl(var(--popover))`, so a bare triplet with an
@@ -281,7 +281,7 @@
    * at 12%) — but 35% white over a dark canvas put the Select's own value at 4.20:1, just under
    * the floor, on every seed. The border keeps its 45% because §4b's other requirement is a
    * boundary at 3:1 or better, and that one is carried by the edge rather than the fill. */
-  --control-surface-background: hsl(0 0% 100% / 18%);
+  --control-surface-background-alpha: 18%;
   --control-surface-border-color: hsl(var(--glass-rule));
 
   /* ── Button — its three variant fills are set further down, through their own knobs. Its BORDER
@@ -318,12 +318,12 @@
    * initials inherit the theme's near-white ink: measured 1.70:1 on three avatars in a row and
    * 1.81:1 on the Topbar's. A fallback is TEXT, so the chip is a text ground and has to be
    * treated as one. */
-  --avatar-background: hsl(0 0% 100% / 14%);
+  --avatar-background-alpha: 14%;
 
   /* ── Progress — track has a dedicated token, consumed as a complete value
    *    (data-display-layout.css:203); the FILL is deliberately left alone — it is the data
    *    (WCAG 2.2 SC 1.4.11 contrast mark), not a decorative surface. */
-  --progress-track-background: hsl(0 0% 100% / 25%);
+  --progress-track-background-alpha: 25%;
 
   /* ── Sidebar — Sidebar itself is `display: contents` (no box of its own); the surface a
    *    consumer actually sees is AppShell's `.app-sidebar`, which hard-codes
@@ -433,7 +433,7 @@
   /* The table's header strip: both knobs exist, and the first build set neither, so it kept an
    * opaque `--muted` band with the default dark ink — the same "container is glass, its own parts
    * are not" defect the owner spotted on the Card's Segmented. */
-  --table-header-background: hsl(0 0% 100% / 8%);
+  --table-header-background-alpha: 8%;
   --table-header-foreground: hsl(var(--glass-ink-soft));
 
   --segmented-item-color: var(--glass-ink-soft);
@@ -585,43 +585,43 @@
   --topbar-item-hover-color: var(--glass-ink);
   --segmented-item-hover-background: 0 0% 100% / 18%;
   --segmented-item-hover-color: var(--glass-ink);
-  --segmented-item-active-background: 0 0% 100% / 26%;
+  --segmented-item-active-background-alpha: 26%;
   --app-launcher-tile-hover-background: 0 0% 100% / 16%;
   --app-launcher-tile-hover-color: var(--glass-ink);
   --control-variant-filled-hover-background: 0 0% 100% / 24%;
   --choice-button-selected-color: var(--glass-ink);
   --choice-button-selected-border-color: 0 0% 100% / 60%;
   --slider-dot-active-border-color: var(--glass-ink);
-  --secondary-hover: 0 0% 100% / 20%;
-  --secondary-active: 0 0% 100% / 26%;
+  --secondary-hover-alpha: 20%;
+  --secondary-active-alpha: 26%;
 
   /* Complete-value form — read as `var(--token, …)` directly. */
   --region-focus-ring-color: hsl(var(--glass-focus));
-  --menu-item-hover-background: hsl(0 0% 100% / 14%);
+  --menu-item-hover-background-alpha: 14%;
   --menu-item-hover-foreground: hsl(var(--glass-ink));
-  --table-row-hover-background: hsl(0 0% 100% / 10%);
-  --table-row-selected-background: hsl(0 0% 100% / 16%);
-  --tree-node-hover-background: hsl(0 0% 100% / 10%);
-  --tree-node-selected-background: hsl(0 0% 100% / 18%);
+  --table-row-hover-background-alpha: 10%;
+  --table-row-selected-background-alpha: 16%;
+  --tree-node-hover-background-alpha: 10%;
+  --tree-node-selected-background-alpha: 18%;
   --tree-node-selected-foreground: hsl(var(--glass-ink));
-  --mega-menu-trigger-hover-background: hsl(0 0% 100% / 14%);
+  --mega-menu-trigger-hover-background-alpha: 14%;
   --mega-menu-trigger-hover-foreground: hsl(var(--glass-ink));
-  --mega-menu-link-hover-background: hsl(0 0% 100% / 14%);
+  --mega-menu-link-hover-background-alpha: 14%;
   --mega-menu-link-hover-foreground: hsl(var(--glass-ink));
   --sidebar-item-active-background: hsl(var(--primary) / 26%);
   --sidebar-nav-item-hover-foreground: hsl(var(--glass-ink));
   --sidebar-nav-icon-hover-foreground: hsl(var(--glass-ink));
-  --conversations-item-active-background: hsl(0 0% 100% / 18%);
+  --conversations-item-active-background-alpha: 18%;
   --conversations-item-active-color: hsl(var(--glass-ink));
-  --tabs-count-active-background: hsl(0 0% 100% / 24%);
+  --tabs-count-active-background-alpha: 24%;
   --tabs-count-active-color: hsl(var(--glass-ink));
   --toggle-soft-hover-background: hsl(0 0% 100% / 16%);
-  --toggle-pressed-count-background: hsl(0 0% 100% / 26%);
+  --toggle-pressed-count-background-alpha: 26%;
   --toggle-pressed-count-color: hsl(var(--glass-ink));
-  --toggle-pressed-border-color: hsl(0 0% 100% / 45%);
+  --toggle-pressed-border-color-alpha: 45%;
   --checkbox-checked-background: hsl(var(--primary) / 90%);
   --switch-checked-background: hsl(var(--primary) / 90%);
-  --switch-unchecked-background: hsl(0 0% 100% / 26%);
+  --switch-unchecked-background-alpha: 26%;
   --switch-content-unchecked-foreground: hsl(48 14% 92%);
   --text-action-color: hsl(48 20% 94%);
   --text-action-color-hover: hsl(48 20% 99%);
@@ -662,16 +662,16 @@
   --table-surface-background: hsl(0 0% 100% / 8%);
 
   /* The nested surfaces that made the Card disagree with its own contents. */
-  --tabs-list-background: hsl(0 0% 100% / 6%);
+  --tabs-list-background-alpha: 6%;
   /* 15%, not 24%. The selected tab's own label measured 4.10-4.48:1 on the citron and navy seeds
    * at 24% — a light fill under light ink. §3 again: the selected state is carried by the fill's
    * PRESENCE and the label's weight, not by making the label harder to read. */
-  --tabs-trigger-active-background: hsl(0 0% 100% / 15%);
+  --tabs-trigger-active-background-alpha: 15%;
 
   /* Buttons are IN scope — glassmorphism skins any surface; it is Liquid Glass that reserves
    * glass for the control layer. A solid button on a glass page is that split applied backwards. */
-  --button-outline-background: hsl(0 0% 100% / 14%);
-  --button-secondary-background: hsl(0 0% 100% / 14%);
+  --button-outline-background-alpha: 14%;
+  --button-secondary-background-alpha: 14%;
   /* THE SEED, not a literal violet: `--primary` arrives from `tenantTheme(hex).vars` as an
    * inline declaration on the very element this rule matches, so the alpha suffix composes
    * with whatever seed the switcher is on. No relative-colour support needed for this one.

@@ -59,7 +59,9 @@
    * --tree-node-selected-background = hsl(var(--accent));
    * --tree-node-selected-foreground = hsl(var(--accent-foreground)). */
   --tree-node-hover-background: initial;
+  --tree-node-hover-background-alpha: initial; /* default = 100% at the call site */
   --tree-node-selected-background: initial;
+  --tree-node-selected-background-alpha: initial; /* default = 100% at the call site */
   --tree-node-selected-foreground: initial;
 
   /* Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a

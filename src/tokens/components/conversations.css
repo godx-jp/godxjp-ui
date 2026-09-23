@@ -40,6 +40,7 @@
    * Default active ink    = hsl(var(--foreground)) */
   --conversations-item-color: initial;
   --conversations-item-active-background: initial;
+  --conversations-item-active-background-alpha: initial; /* default = 100% at the call site */
   --conversations-item-active-color: initial;
   --conversations-item-active-font-weight: var(--font-weight-medium);
 

@@ -63,8 +63,12 @@ describe("Toggle counter pill ↔ Button counter pill (gh#312)", () => {
       // A `:root` binding to a role freezes at the :root value, so a scoped [data-tenant]/.dark
       // override of that role would never reach the pill. docs/TOKENS.md · role-mirror knobs.
       expect(tokenValue(toggleTokens, token), `${token} must be declared initial`).toBe("initial");
-      expect(toggleStyles, `${token} needs its role default at the call site`).toContain(
-        `var(${token}, hsl(var(--`,
+      /* A REGEX, NOT `toContain` — Prettier wraps a long value across lines, and since gh#901
+       * split the opacity axis out of the colour axis these values carry an extra
+       * `/ var(--<knob>-alpha, …)` and cross the print width. The contract is unchanged: the knob
+       * still resolves its ROLE default at the call site rather than binding it at `:root`. */
+      expect(toggleStyles, `${token} needs its role default at the call site`).toMatch(
+        new RegExp(`var\\(\\s*${token},\\s*hsl\\(var\\(--`),
       );
     }
   });

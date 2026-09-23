@@ -74,7 +74,10 @@
    * under it, so the same chip would shift between the two. `--secondary-hover` is the opaque
    * derived step foundation.css already ships for exactly this. */
   .ui-toggle-soft:hover {
-    background: var(--toggle-soft-hover-background, hsl(var(--secondary-hover)));
+    background: var(
+      --toggle-soft-hover-background,
+      hsl(var(--secondary-hover) / var(--secondary-hover-alpha, 100%))
+    );
     color: var(--toggle-soft-color, hsl(var(--secondary-foreground)));
   }
 
@@ -232,13 +235,19 @@
   /* `dashed` is `outline` with a dashed edge — one surface, one knob. Its fill lived in a
    * `bg-background` utility on the component with no rule here at all, so it is declared now. */
   .ui-button--dashed {
-    background: var(--button-outline-background, hsl(var(--background)));
+    background: var(
+      --button-outline-background,
+      hsl(var(--background) / var(--button-outline-background-alpha, 100%))
+    );
   }
 
   .ui-button--outline {
     border: 1px solid
       var(--button-outline-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
-    background: var(--button-outline-background, hsl(var(--background)));
+    background: var(
+      --button-outline-background,
+      hsl(var(--background) / var(--button-outline-background-alpha, 100%))
+    );
     color: hsl(var(--foreground));
 
     /* Qua TOKEN, không qua utility: một service đặt `--shadow-sm: none` phải tắt được
@@ -258,7 +267,10 @@
   }
 
   .ui-button--secondary {
-    background: var(--button-secondary-background, hsl(var(--secondary)));
+    background: var(
+      --button-secondary-background,
+      hsl(var(--secondary) / var(--button-secondary-background-alpha, 100%))
+    );
     color: hsl(var(--secondary-foreground));
   }
 
@@ -1589,7 +1601,9 @@
     color: hsl(var(--segmented-item-hover-color));
   }
   .ui-segmented-item:not([data-state="checked"]):not([data-disabled]):active {
-    background: hsl(var(--segmented-item-active-background));
+    background: hsl(
+      var(--segmented-item-active-background) / var(--segmented-item-active-background-alpha, 100%)
+    );
   }
 
   .ui-segmented-item[data-state="checked"] {
@@ -1662,7 +1676,10 @@
     border: var(--control-border-width) solid
       var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
     border-radius: var(--control-radius);
-    background: var(--control-surface-background, hsl(var(--background)));
+    background: var(
+      --control-surface-background,
+      hsl(var(--background) / var(--control-surface-background-alpha, 100%))
+    );
     box-shadow: var(--control-shadow);
   }
   .ui-tag-input-disabled {
@@ -1836,7 +1853,10 @@
    * tokens/components/control.css has the measurement). An explicit knob still wins. */
   .ui-control-surface {
     border-color: var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
-    background: var(--control-surface-background, hsl(var(--background)));
+    background: var(
+      --control-surface-background,
+      hsl(var(--background) / var(--control-surface-background-alpha, 100%))
+    );
   }
 
   .ui-control-surface[data-variant="filled"] {
@@ -3666,7 +3686,10 @@
    * order they need. */
   .ui-control-outlined-surface {
     border-color: var(--control-surface-border-color, hsl(var(--input) / var(--input-alpha, 100%)));
-    background-color: var(--control-surface-background, hsl(var(--background)));
+    background-color: var(
+      --control-surface-background,
+      hsl(var(--background) / var(--control-surface-background-alpha, 100%))
+    );
   }
 
   /* The other two variants get their surface from these rules, and always could: they carry no
@@ -3856,7 +3879,10 @@
   }
 
   .ui-switch:has(.ui-switch-content)[data-state="unchecked"] {
-    background: var(--switch-unchecked-background, hsl(var(--muted-foreground)));
+    background: var(
+      --switch-unchecked-background,
+      hsl(var(--muted-foreground) / var(--switch-unchecked-background-alpha, 100%))
+    );
   }
 
   .ui-switch[data-state="unchecked"] .ui-switch-content {

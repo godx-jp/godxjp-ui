@@ -133,10 +133,10 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     expect(code(tabsTsx)).not.toMatch(/data-\[variant=default\]:bg-muted/);
     expect(code(tabsTsx)).not.toMatch(/"[^"]*\bdata-\[state=active\]:bg-background\b/);
     expect(navLayout).toMatch(
-      /\[data-slot="tabs-list"\]\[data-variant="default"\] \{\s*background-color: var\(--tabs-list-background, hsl\(var\(--muted\)\)\);/,
+      /\[data-slot="tabs-list"\]\[data-variant="default"\] \{\s*background-color: var\(\s*--tabs-list-background,\s*hsl\(var\(--muted\) \/ var\(--tabs-list-background-alpha, 100%\)\)\s*\);/,
     );
     expect(navLayout).toMatch(
-      /\[data-slot="tabs-trigger"\]\[data-state="active"\] \{\s*background-color: var\(--tabs-trigger-active-background, hsl\(var\(--background\)\)\);/,
+      /\[data-slot="tabs-trigger"\]\[data-state="active"\] \{\s*background-color: var\(\s*--tabs-trigger-active-background,\s*hsl\(var\(--background\) \/ var\(--tabs-trigger-active-background-alpha, 100%\)\)\s*\);/,
     );
   });
 
@@ -154,7 +154,7 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     expect(code(controlStyles)).not.toMatch(/border-input bg-background/);
     expect(controlStyles).toMatch(/ui-control-outlined-surface/);
     expect(controlLayout).toMatch(
-      /\.ui-control-outlined-surface \{\s*border-color: var\(--control-surface-border-color, hsl\(var\(--input\) \/ var\(--input-alpha, 100%\)\)\);\s*background-color: var\(--control-surface-background, hsl\(var\(--background\)\)\);/,
+      /\.ui-control-outlined-surface \{\s*border-color: var\(--control-surface-border-color, hsl\(var\(--input\) \/ var\(--input-alpha, 100%\)\)\);\s*background-color: var\(\s*--control-surface-background,\s*hsl\(var\(--background\) \/ var\(--control-surface-background-alpha, 100%\)\)\s*\);/,
     );
   });
 
@@ -166,15 +166,20 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
       ["--button-secondary-background", "--secondary"],
     ]) {
       expect(controlTokens).toMatch(new RegExp(`${knob}:\\s*initial;`));
+      /* The role default may now carry the knob's OPACITY companion (gh#901) and Prettier wraps
+       * the longer value, so this tolerates both spellings and any line breaking. What it still
+       * pins is the contract: the knob resolves its role default AT THE CALL SITE. */
       expect(controlLayout).toMatch(
-        new RegExp(`background: var\\(${knob}, hsl\\(var\\(${role}\\)\\)\\);`),
+        new RegExp(
+          `background:\\s*var\\(\\s*${knob},\\s*hsl\\(var\\(${role}\\)(?:\\s*/\\s*var\\(${knob}-alpha,[^)]*\\))?\\)\\s*\\);`,
+        ),
       );
     }
     expect(controlTokens).toMatch(/--button-outline-border-color:\s*initial;/);
     // `dashed` is `outline` with a dashed edge, so it SHARES the outline fill rather than growing a
     // fifth knob — and its fill had no rule at all before, only a `bg-background` utility.
     expect(controlLayout).toMatch(
-      /\.ui-button--dashed \{\s*background: var\(--button-outline-background, hsl\(var\(--background\)\)\);/,
+      /\.ui-button--dashed \{\s*background:\s*var\(\s*--button-outline-background,\s*hsl\(var\(--background\) \/ var\(--button-outline-background-alpha, 100%\)\)\s*\);/,
     );
     expect(controlTokens).not.toMatch(/--button-dashed-background/);
   });

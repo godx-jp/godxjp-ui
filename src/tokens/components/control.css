@@ -50,8 +50,10 @@
   --button-default-background: initial; /* default = hsl(var(--primary)) at the call site */
   --button-destructive-background: initial; /* default = hsl(var(--destructive)) at the call site */
   --button-outline-background: initial; /* default = hsl(var(--background)) at the call site */
+  --button-outline-background-alpha: initial; /* default = 100% at the call site */
   --button-outline-border-color: initial; /* default = hsl(var(--input)) at the call site */
   --button-secondary-background: initial; /* default = hsl(var(--secondary)) at the call site */
+  --button-secondary-background-alpha: initial; /* default = 100% at the call site */
   /* THE ONE BUTTON KNOB THAT IS INK, NOT A FILL (gh#884) — the `link` variant's text colour. The
    * others above are backgrounds, so their contrast is owned by the label token that rides on them;
    * this one IS the label, over a surface the library does not control. `--primary` is only ever
@@ -278,6 +280,7 @@
    * below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page
    * and against the thumb (--background), or "off" stops being a visible state. */
   --switch-unchecked-background: initial;
+  --switch-unchecked-background-alpha: initial; /* default = 100% at the call site */
   /* A labelled OFF track defaults to muted-foreground rather than the input boundary role:
    * text needs 4.5:1, not the 3:1 required of an empty track. Pair custom track fills with this
    * foreground; the default background role contrasts in both light and dark themes. */
@@ -821,6 +824,7 @@
    * where the element paints instead of where the knob is declared. */
   --control-surface-border-color: initial; /* default = hsl(var(--input)) at the call site */
   --control-surface-background: initial; /* default = hsl(var(--background)) at the call site */
+  --control-surface-background-alpha: initial; /* default = 100% at the call site */
 
   /* `filled` — antd's grey field: no edge, a muted fill, no resting elevation. */
   --control-filled-border-color: transparent;

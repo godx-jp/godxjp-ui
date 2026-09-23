@@ -35,16 +35,22 @@ function block(selector: string): string {
   return foundation.slice(open + 1, foundation.indexOf("\n}", open));
 }
 
-const stripeAlpha = Number(
-  layout.match(
-    /var\(\s*--table-row-striped-background, hsl\(var\(\s*--muted\) \/ ([\d.]+)\)\)/,
-  )?.[1],
-);
-const hoverAlpha = Number(
-  layout.match(
-    /var\(\s*--table-row-hover-background, hsl\(var\(\s*--accent\) \/ ([\d.]+)\)\)/,
-  )?.[1],
-);
+/* THE ALPHA IS ITS OWN TOKEN NOW (gh#901), so the shipped default lives in the call-site
+ * fallback rather than as a bare literal: `hsl(var(--accent) / var(--table-row-hover-background-alpha,
+ * 0.7))`. The opacity axis was split from the colour axis so a translucent theme stops restating
+ * colours — restating a colour is what shadowed the library's own `.dark` block. Both spellings are
+ * accepted here: the number this file measures is the DEFAULT, which is unchanged either way. */
+const alphaOf = (knob: string, role: string) =>
+  Number(
+    layout.match(
+      new RegExp(
+        `var\\(\\s*--${knob},\\s*hsl\\(var\\(\\s*--${role}\\)\\s*\\/\\s*(?:var\\(--${knob}-alpha,\\s*)?([\\d.]+)`,
+      ),
+    )?.[1],
+  );
+
+const stripeAlpha = alphaOf("table-row-striped-background", "muted");
+const hoverAlpha = alphaOf("table-row-hover-background", "accent");
 
 /** Luminance ratio between a plain row and a striped row below which the stripe is not a stripe. */
 const STRIPE_VISIBLE = 1.06;

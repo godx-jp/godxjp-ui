@@ -30,11 +30,17 @@
 
   /* PRESSED — the state is never carried by hue alone (WCAG 1.4.1). */
   .ui-toggle[data-state="on"] {
-    border-color: var(--toggle-pressed-border-color, hsl(var(--primary)));
+    border-color: var(
+      --toggle-pressed-border-color,
+      hsl(var(--primary) / var(--toggle-pressed-border-color-alpha, 100%))
+    );
   }
 
   .ui-toggle[data-state="on"] .ui-toggle-count {
-    background: var(--toggle-pressed-count-background, hsl(var(--primary-foreground)));
+    background: var(
+      --toggle-pressed-count-background,
+      hsl(var(--primary-foreground) / var(--toggle-pressed-count-background-alpha, 100%))
+    );
     color: var(--toggle-pressed-count-color, hsl(var(--primary)));
   }
 

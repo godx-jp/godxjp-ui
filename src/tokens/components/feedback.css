@@ -295,6 +295,7 @@
   --tooltip-background: initial;
   --tooltip-foreground: initial;
   --tooltip-border-color: initial;
+  --tooltip-border-color-alpha: initial; /* default = 100% at the call site */
 
   /* POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md`
    * were literals, so a service could not align the panel to its own grid or width scale. */

@@ -1251,19 +1251,31 @@
   /* `muted` (default) keeps the neutral role fallback. */
   .ui-empty-state[data-tone="success"] {
     --empty-state-icon-foreground: hsl(var(--success));
-    --empty-state-icon-tint: var(--surface-success, hsl(var(--success) / 0.12));
+    --empty-state-icon-tint: var(
+      --surface-success,
+      hsl(var(--success) / var(--surface-success-alpha, 0.12))
+    );
   }
   .ui-empty-state[data-tone="warning"] {
     --empty-state-icon-foreground: hsl(var(--warning));
-    --empty-state-icon-tint: var(--surface-warning, hsl(var(--warning) / 0.12));
+    --empty-state-icon-tint: var(
+      --surface-warning,
+      hsl(var(--warning) / var(--surface-warning-alpha, 0.12))
+    );
   }
   .ui-empty-state[data-tone="destructive"] {
     --empty-state-icon-foreground: hsl(var(--destructive));
-    --empty-state-icon-tint: var(--surface-destructive, hsl(var(--destructive) / 0.12));
+    --empty-state-icon-tint: var(
+      --surface-destructive,
+      hsl(var(--destructive) / var(--surface-destructive-alpha, 0.12))
+    );
   }
   .ui-empty-state[data-tone="info"] {
     --empty-state-icon-foreground: hsl(var(--info));
-    --empty-state-icon-tint: var(--surface-info, hsl(var(--info) / 0.12));
+    --empty-state-icon-tint: var(
+      --surface-info,
+      hsl(var(--info) / var(--surface-info-alpha, 0.12))
+    );
   }
 }
 

@@ -659,7 +659,10 @@
     padding-block: var(--upload-draft-space-block);
     border-radius: var(--upload-draft-radius);
     border: 1px dashed hsl(var(--destructive) / 0.4);
-    background-color: var(--surface-destructive, hsl(var(--destructive) / 0.05));
+    background-color: var(
+      --surface-destructive,
+      hsl(var(--destructive) / var(--surface-destructive-alpha, 0.05))
+    );
     font-size: var(--upload-draft-font-size);
   }
 

@@ -382,7 +382,8 @@
     padding-inline: var(--tooltip-space-inline);
     padding-block: var(--tooltip-space-block);
     border-radius: var(--tooltip-radius);
-    border: 1px solid var(--tooltip-border-color, hsl(var(--border)));
+    border: 1px solid
+      var(--tooltip-border-color, hsl(var(--border) / var(--tooltip-border-color-alpha, 100%)));
     background-color: var(--tooltip-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
     color: var(--tooltip-foreground, hsl(var(--popover-foreground)));
     font-size: var(--tooltip-font-size);

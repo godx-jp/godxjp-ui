@@ -83,6 +83,7 @@
    * reaches it. A brand sets both header tokens together to keep band/text contrast.
    * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text. */
   --table-header-background: initial;
+  --table-header-background-alpha: initial; /* default = 100% at the call site */
   --table-header-foreground: initial;
   /* THE DATATABLE FRAME ITSELF (gh#880). Every band, row state and header inside the table has had
    * a knob for some time; the box that draws the frame around them had none and painted no fill at
@@ -139,7 +140,9 @@
    * without the freeze rule (docs/TOKENS.md). */
   --table-row-striped-alpha: 0%;
   --table-row-hover-background: initial;
+  --table-row-hover-background-alpha: initial; /* default = 0.7 at the call site */
   --table-row-selected-background: initial;
+  --table-row-selected-background-alpha: initial; /* default = 0.3 at the call site */
 }
 
 /* Table · action-collection preset (gh#253) — the canonical dense approval / action queue.

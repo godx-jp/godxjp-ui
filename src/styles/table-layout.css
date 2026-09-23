@@ -156,7 +156,10 @@
     padding: var(--table-cell-padding-y) var(--table-cell-space-x, var(--space-section-active));
     text-align: start;
     vertical-align: middle;
-    background: var(--table-header-background, hsl(var(--muted)));
+    background: var(
+      --table-header-background,
+      hsl(var(--muted) / var(--table-header-background-alpha, 100%))
+    );
     font-size: var(--table-head-font-size);
     /* gh#410 — ~18 call sites in one app wrote `font-normal` back onto their headers. A quiet
      * header row that common is a THEME decision, not eighteen classNames. Default unchanged. */
@@ -588,16 +591,28 @@
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-start {
     background-image: linear-gradient(
-      var(--table-row-hover-background, hsl(var(--accent) / 0.7)),
-      var(--table-row-hover-background, hsl(var(--accent) / 0.7))
+      var(
+        --table-row-hover-background,
+        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+      ),
+      var(
+        --table-row-hover-background,
+        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+      )
     );
   }
 
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-start {
     background-image: linear-gradient(
-      var(--table-row-selected-background, hsl(var(--muted) / 0.3)),
-      var(--table-row-selected-background, hsl(var(--muted) / 0.3))
+      var(
+        --table-row-selected-background,
+        hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
+      ),
+      var(
+        --table-row-selected-background,
+        hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
+      )
     );
   }
 

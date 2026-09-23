@@ -94,7 +94,9 @@
    * `var(--muted)` here the binding substitutes on `<html>` and a scope below root inherits the
    * root's answer, which reads as correct only because `.dark` also lands on `<html>`. */
   --tabs-list-background: initial; /* default = hsl(var(--muted)) at the call site */
+  --tabs-list-background-alpha: initial; /* default = 100% at the call site */
   --tabs-trigger-active-background: initial; /* default = hsl(var(--background)) at the call site */
+  --tabs-trigger-active-background-alpha: initial; /* default = 100% at the call site */
 
   /* Width at or below which `tabPlacement="start"`/`"end"` folds to `top`/`bottom` (gh#502) — a
    * vertical strip and its panel share one inline axis and a phone has room for one of them. Same
@@ -242,6 +244,7 @@
   --tabs-count-card-background: initial; /* default = hsl(var(--background)) at the call site */
   --tabs-count-color: initial; /* default = hsl(var(--muted-foreground)) at the call site */
   --tabs-count-active-background: initial; /* default = hsl(var(--primary)) at the call site */
+  --tabs-count-active-background-alpha: initial; /* default = 100% at the call site */
   --tabs-count-active-color: initial; /* default = hsl(var(--primary-foreground)) at the call site */
   --tabs-count-forced-outline-width: var(--stroke-hairline);
 
@@ -268,6 +271,7 @@
    * under a scoped theme (a :root binding to a role var freezes at :root).
    * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */
   --menu-item-hover-background: initial;
+  --menu-item-hover-background-alpha: initial; /* default = 100% at the call site */
   --menu-item-hover-foreground: initial;
 
   /* Sticky offset for the pinned filter strip (Toolbar `sticky`, #197). Default 0 (chrome,

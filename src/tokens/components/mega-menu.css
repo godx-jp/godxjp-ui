@@ -24,6 +24,7 @@
    * role is the FALLBACK at the call site in styles/navigation-layout.css, which re-resolves per
    * scope. Documented defaults: hover/open = accent on accent-foreground, current = primary. */
   --mega-menu-trigger-hover-background: initial;
+  --mega-menu-trigger-hover-background-alpha: initial; /* default = 100% at the call site */
   --mega-menu-trigger-hover-foreground: initial;
   --mega-menu-trigger-open-background: initial;
   --mega-menu-trigger-open-foreground: initial;
@@ -73,6 +74,7 @@
   --mega-menu-link-font-size: var(--font-size-sm, var(--font-size-base));
   --mega-menu-link-foreground: hsl(var(--foreground));
   --mega-menu-link-hover-background: initial;
+  --mega-menu-link-hover-background-alpha: initial; /* default = 100% at the call site */
   --mega-menu-link-hover-foreground: initial;
   --mega-menu-link-current-foreground: initial;
   --mega-menu-link-description-font-size: var(

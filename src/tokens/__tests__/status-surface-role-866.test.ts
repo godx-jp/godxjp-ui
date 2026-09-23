@@ -111,7 +111,7 @@ const CONSUMERS: ReadonlyArray<{
   {
     component: "EmptyState tone medallion",
     file: "src/styles/layout.css",
-    callSite: (s) => `--empty-state-icon-tint: var(--surface-${s}, hsl(var(--${s}) / 0.12));`,
+    callSite: (s) => `--empty-state-icon-tint: var(--surface-${s}, hsl(var(--${s}) / var(--surface-${s}-alpha, 0.12)));`,
   },
   {
     component: 'Flex surface="warning"',
@@ -123,7 +123,7 @@ const CONSUMERS: ReadonlyArray<{
     component: "Upload draft-undo strip",
     file: "src/styles/data-entry-layout.css",
     statuses: ["destructive"],
-    callSite: (s) => `background-color: var(--surface-${s}, hsl(var(--${s}) / 0.05));`,
+    callSite: (s) => `background-color: var(--surface-${s}, hsl(var(--${s}) / var(--surface-${s}-alpha, 0.05)));`,
   },
 ];
 
