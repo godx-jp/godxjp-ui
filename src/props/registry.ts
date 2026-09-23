@@ -4765,9 +4765,16 @@ export const COMPONENT_PROP_REGISTRY = {
         reason: "Ant Design `Anchor.bounds` — pixel tolerance added to the decision line.",
       },
       {
+        field: "target",
+        local: true,
+        reason:
+          "gh#890 — `Affix`'s own lazy scroll-box getter, same shape and name, so the pin and the scroll-spy agree on one container. Wins over `getContainer` when both are given.",
+      },
+      {
         field: "getContainer",
         local: true,
-        reason: "Ant Design `Anchor.getContainer` — the lazy scroll-box getter.",
+        reason:
+          "Ant Design `Anchor.getContainer` — the lazy scroll-box getter. Superseded by `target` (gh#890) but kept live for a call site written before it existed.",
       },
       {
         field: "getCurrentAnchor",
