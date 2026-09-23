@@ -80,7 +80,7 @@
     padding-block: var(--space-3);
     padding-inline: var(--space-4);
     border: var(--stroke-hairline) solid transparent;
-    border-radius: var(--attachments-card-radius);
+    border-radius: var(--attachments-card-radius, var(--radius));
     background-color: hsl(var(--muted));
     overflow: hidden;
   }
@@ -99,7 +99,7 @@
   }
 
   .ui-attachments-card-preview {
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     object-fit: cover;
   }
 
@@ -185,7 +185,7 @@
     inline-size: var(--attachments-card-block-size);
     block-size: var(--attachments-card-block-size);
     border: var(--stroke-hairline) dashed hsl(var(--border));
-    border-radius: var(--attachments-card-radius);
+    border-radius: var(--attachments-card-radius, var(--radius));
     background-color: transparent;
     color: hsl(var(--muted-foreground));
     cursor: pointer;
@@ -217,7 +217,7 @@
     gap: var(--attachments-placeholder-gap);
     padding: var(--attachments-placeholder-space-inset);
     border: var(--stroke-md) dashed hsl(var(--border));
-    border-radius: var(--attachments-placeholder-radius);
+    border-radius: var(--attachments-placeholder-radius, var(--radius));
     background-color: hsl(var(--muted) / 0.4);
     text-align: center;
     cursor: pointer;
@@ -269,7 +269,7 @@
     inset: 0;
     z-index: 1;
     border: var(--stroke-md) dashed hsl(var(--primary));
-    border-radius: var(--attachments-placeholder-radius);
+    border-radius: var(--attachments-placeholder-radius, var(--radius));
     background: var(
       --attachments-drop-overlay-background,
       color-mix(in srgb, hsl(var(--background)) 85%, transparent)
@@ -314,7 +314,10 @@
    * of the datum rather than the datum, exactly as the progress bar's track is `--secondary`. */
   .ui-password-strength-segment {
     height: 0.5rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--muted));
   }
 
@@ -380,7 +383,7 @@
   .ui-upload-dropzone {
     cursor: pointer;
     padding: var(--upload-dropzone-space-inset);
-    border-radius: var(--upload-dropzone-radius);
+    border-radius: var(--upload-dropzone-radius, var(--radius));
     border: var(--upload-dropzone-border-width) dashed hsl(var(--border));
     text-align: center;
     transition: border-color 150ms ease;
@@ -452,7 +455,7 @@
     inline-size: var(--upload-tile-size);
     block-size: var(--upload-tile-size);
     overflow: hidden;
-    border-radius: var(--upload-tile-radius);
+    border-radius: var(--upload-tile-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
     background-color: hsl(var(--muted));
   }
@@ -464,7 +467,7 @@
     justify-content: center;
     inline-size: var(--upload-tile-size);
     block-size: var(--upload-tile-size);
-    border-radius: var(--upload-tile-radius);
+    border-radius: var(--upload-tile-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px dashed hsl(var(--border));
     color: hsl(var(--muted-foreground));
     transition:
@@ -538,7 +541,7 @@
   .ui-upload-picture-frame {
     position: relative;
     overflow: hidden;
-    border-radius: var(--upload-picture-radius);
+    border-radius: var(--upload-picture-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
   }
 
@@ -558,7 +561,7 @@
     inset-inline-start: var(--upload-picture-badge-offset);
     padding-inline: var(--upload-picture-badge-space-inline);
     padding-block: var(--upload-picture-badge-space-block);
-    border-radius: var(--upload-picture-badge-radius);
+    border-radius: var(--upload-picture-badge-radius, calc(var(--radius) / var(--radius-ratio)));
     background-color: hsl(var(--warning));
     color: hsl(var(--warning-foreground));
     font-size: var(--upload-picture-badge-font-size);
@@ -571,7 +574,7 @@
     justify-content: center;
     inline-size: 100%;
     block-size: var(--upload-picture-empty-height);
-    border-radius: var(--upload-picture-radius);
+    border-radius: var(--upload-picture-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px dashed hsl(var(--border));
     color: hsl(var(--muted-foreground));
   }
@@ -657,7 +660,7 @@
     gap: var(--upload-draft-space-gap);
     padding-inline: var(--upload-draft-space-inline);
     padding-block: var(--upload-draft-space-block);
-    border-radius: var(--upload-draft-radius);
+    border-radius: var(--upload-draft-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px dashed hsl(var(--destructive) / 0.4);
     background-color: var(
       --surface-destructive,
@@ -696,7 +699,7 @@
     gap: var(--upload-row-space-gap);
     padding-inline: var(--upload-row-space-inline);
     padding-block: var(--upload-row-space-block);
-    border-radius: var(--upload-row-radius);
+    border-radius: var(--upload-row-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
     font-size: var(--upload-row-font-size);
   }

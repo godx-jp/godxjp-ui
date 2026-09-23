@@ -465,9 +465,11 @@ describe("responsive shell geometry", () => {
     // --sidebar-nav-scroll-padding and --sidebar-nav-gap has full-bleed rows flush with both
     // edges, and rounding a band leaves notched corners against the rail. Without the knob the
     // only fix is a consumer selector against `.sb-nav-item` — the coupling rule #45 forbids.
-    expect(shellTokens).toContain("--sidebar-nav-item-radius: calc(var(--radius) - 1px);");
+    // `initial` since gh#888 — a :root binding to --radius froze here too; the formula
+    // (calc(var(--radius) - 1px)) now resolves at the call site below instead.
+    expect(shellTokens).toContain("--sidebar-nav-item-radius: initial;");
     expect(declarationsFor(shellStyles, ".sb-nav-item")).toMatch(
-      /border-radius:\s*var\(\s*--sidebar-nav-item-radius\);/,
+      /border-radius:\s*var\(\s*--sidebar-nav-item-radius,\s*calc\(var\(\s*--radius\)\s*-\s*1px\)\);/,
     );
     // The literal it replaced must not survive on the row — that is what pinned it before.
     expect(declarationsFor(shellStyles, ".sb-nav-item")).not.toMatch(
@@ -816,7 +818,9 @@ describe("responsive shell geometry", () => {
       shellStyles,
       ".ui-org-switcher-command .ui-command-input-wrapper",
     );
-    expect(decls).toMatch(/border:\s*1px solid hsl\(var\(\s*--input\) \/ var\(--input-alpha, 100%\)\);/);
+    expect(decls).toMatch(
+      /border:\s*1px solid hsl\(var\(\s*--input\) \/ var\(--input-alpha, 100%\)\);/,
+    );
     expect(decls).toMatch(/border-radius:\s*var\(\s*--control-radius\);/);
     expect(decls).toMatch(/margin-inline:\s*0;/);
     expect(declarationsFor(shellStyles, ".ui-org-switcher-command")).toMatch(

@@ -38,7 +38,7 @@
   /* Gap between the buttons of an open group, and between the group's list and its trigger.
      antd uses `padding` (16px) for both, so one token answers both. */
   --float-button-group-gap: var(--space-stack-md);
-  --float-button-group-radius: var(--radius-lg);
+  --float-button-group-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
   /* The corner count/dot mark. `--float-button-badge-background` is `initial` so a scoped
      [data-tenant]/.dark theme that retunes --destructive still reaches the mark; the fallback is

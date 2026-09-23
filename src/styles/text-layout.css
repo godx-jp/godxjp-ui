@@ -440,7 +440,10 @@
   [data-slot="heading"] kbd {
     background: hsl(var(--muted));
     border: var(--stroke-hairline) solid hsl(var(--border));
-    border-radius: var(--prose-code-radius);
+    border-radius: var(
+      --prose-code-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--prose-code-space-inline);
     font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
     font-size: var(--prose-code-font-size);

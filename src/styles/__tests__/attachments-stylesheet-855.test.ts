@@ -87,7 +87,7 @@ describe("Attachments stylesheet — every slot has a rule, every knob has a rea
     expect(card).toMatch(/display:\s*flex/);
     expect(card).toMatch(/inline-size:\s*var\(--attachments-card-size\)/);
     expect(card).toMatch(/block-size:\s*var\(--attachments-card-block-size\)/);
-    expect(card).toMatch(/border-radius:\s*var\(--attachments-card-radius\)/);
+    expect(card).toMatch(/border-radius:\s*var\(--attachments-card-radius/);
     // Ant X pins 268px flat; a ceiling is what keeps a 320px frame from spilling.
     expect(card).toMatch(/max-inline-size:\s*100%/);
   });

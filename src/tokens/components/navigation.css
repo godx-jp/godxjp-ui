@@ -206,7 +206,13 @@
   --tabs-card-list-radius: 0px;
   --tabs-card-list-space-inset: 0px;
   --tabs-card-list-space-gap: var(--space-1);
-  --tabs-card-radius: var(--radius-md);
+  /* Read via `rounded-s-[var(--tabs-card-radius)]` / `rounded-e-[var(--tabs-card-radius)]` in
+   * tabs.tsx — a Tailwind utility (`@layer utilities`) this package cannot hand a fallback to from
+   * CSS, so (same reasoning as `--button-radius` in control.css) this stays a plain :root binding
+   * rather than `initial`. The `var(--radius-md, …)` fallback is gh#888: without it, the tier's
+   * global unfreeze leaves `--radius-md` unset and this — and every card-variant Tab corner —
+   * would go to 0. The formula keeps the declaration byte-identical to before gh#888. */
+  --tabs-card-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   --tabs-card-rail-border-width: var(--stroke-hairline);
   --tabs-card-background: initial; /* default = var(--muted) at the call site */
   --tabs-card-background-alpha: initial; /* default = 100% at the call site (gh#901) */
@@ -227,7 +233,9 @@
   --tabs-panel-background: initial; /* default = var(--background) at the call site */
   --tabs-panel-background-alpha: initial; /* default = 100% at the call site (gh#901) */
   --tabs-panel-border-width: var(--tabs-card-rail-border-width);
-  --tabs-panel-radius: var(--tabs-card-radius);
+  /* `initial`, not `var(--tabs-card-radius)` — a :root binding freezes (gh#888); default resolves
+   * at the call site. Default = var(--tabs-card-radius). */
+  --tabs-panel-radius: initial;
   --tabs-panel-space-inset: var(--space-4);
 
   /* TAB COUNTER PILL (`TabItemProp.count`, gh#762) — the SAME counter Button and Toggle already
@@ -258,14 +266,14 @@
    * the add button so the two affordances that flank the strip land on one rhythm; unlike the add
    * button it draws no card face, because it is bar chrome rather than a tab. */
   --tabs-overflow-size: var(--band-height-md);
-  --tabs-overflow-radius: var(--radius-md);
+  --tabs-overflow-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-overflow-icon-size: var(--control-icon-size);
   --tabs-add-size: var(--band-height-md);
-  --tabs-add-radius: var(--radius-md);
+  --tabs-add-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --tabs-add-icon-size: var(--control-icon-size);
   --tabs-trigger-icon-size: var(--control-icon-size);
   --tabs-tab-remove-size: var(--band-height-xs);
-  --tabs-tab-remove-radius: var(--radius-sm);
+  --tabs-tab-remove-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --tabs-tab-remove-icon-size: var(--icon-size-xs);
   --tabs-tab-remove-space-inline-end: var(--space-1);
 
@@ -303,7 +311,7 @@
    * whole box as Tailwind literals on the component (#319). A service tunes the menu rhythm once
    * here instead of once per surface. */
   --menu-item-height: var(--band-height-md);
-  --menu-item-radius: var(--radius-sm);
+  --menu-item-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --menu-item-space-inline: var(--space-2);
   --menu-item-space-gap: var(--space-2);
   --menu-item-font-size: var(--font-size-base);
@@ -384,7 +392,7 @@
   --steps-nav-space-gap: var(--space-2);
   --steps-nav-space-inline: var(--space-4);
   --steps-nav-space-block: var(--space-3);
-  --steps-nav-radius: var(--radius-md);
+  --steps-nav-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --steps-nav-separator-size: var(--control-icon-size-sm);
 
   /* STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring

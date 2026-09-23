@@ -31,7 +31,7 @@
   );
   --code-block-line-height: var(--line-height-normal);
   --code-block-space-inset: var(--space-3);
-  --code-block-radius: var(--radius-md);
+  --code-block-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --code-block-max-height-sm: 12rem;
   --code-block-max-height-md: 20rem;
   --code-block-max-height-lg: 32rem;
@@ -83,7 +83,7 @@
   --prose-quote-space-inline: var(--space-3);
   --prose-code-font-size: calc(1em / var(--font-size-ratio));
   --prose-code-space-inline: var(--space-1);
-  --prose-code-radius: var(--radius-sm);
+  --prose-code-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   /* The link ink. `initial` — not `var(--primary)` — because the default IS a tenant-scoped role:
    * a `:root` binding computes against the root's --primary and inherits that frozen value down, so
    * a `[data-tenant]` re-tint never reaches it (docs/TOKENS.md, the freeze rule; gh#687). The
@@ -99,7 +99,7 @@
    * needs 3:1 for colour to carry a link on its own (gh#664). A theme that drops the rule in chrome
    * must not drop it here by accident. */
   --prose-link-decoration-line: underline;
-  --prose-image-radius: var(--radius-md);
+  --prose-image-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --timeline-note-font-size: var(
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
@@ -171,7 +171,7 @@
      [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value).
      Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping
      shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph. */
-  --avatar-square-radius: var(--radius-lg);
+  --avatar-square-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
   --avatar-square-size: var(--control-height);
   --avatar-square-background: initial;
   --avatar-square-foreground: initial;
@@ -242,7 +242,7 @@
      round the first and last slice only, so the partition would look like it starts and stops
      somewhere other than where it does. */
   --progress-breakdown-block-size: 1.375rem;
-  --progress-breakdown-radius: var(--radius);
+  --progress-breakdown-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
   /* `size="sm"` — the SAME two forms, thinner, for a bar that annotates a row rather than being
      the subject of the screen (an in-table capacity column). The meter step is half its default
@@ -336,7 +336,7 @@
   --thumbnail-block-size: 6rem; /* 96px — the default: a gallery row that still shows the shot. */
   --thumbnail-block-size-lg: 10rem; /* 160px — a review screen, where the picture IS the content. */
   --thumbnail-border-width: var(--stroke-hairline);
-  --thumbnail-radius: var(--radius);
+  --thumbnail-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
   /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
      ONE HUE down the whole progress column (gh#731): done, current and the travelled line all
@@ -392,7 +392,7 @@
   );
   --timeline-grid-event-gap: var(--space-1);
   --timeline-grid-event-space-inset: var(--space-1);
-  --timeline-grid-event-radius: var(--radius-sm);
+  --timeline-grid-event-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --timeline-grid-event-border-width: var(--stroke-md);
   --timeline-grid-now-width: var(--stroke-sm);
   /* Role-mirror knobs (docs/TOKENS.md): `initial` so the defaults re-resolve at the CALL SITE and

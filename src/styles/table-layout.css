@@ -375,7 +375,7 @@
     /* The frame's edge follows the same knob `<Table bordered>` uses below, so the two frames in
      * this file cannot disagree about what a table's boundary is (gh#880). */
     border: 1px solid var(--table-border-color, hsl(var(--border)));
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     /* Both unset ⇒ both declarations are invalid-at-computed-value-time ⇒ each property keeps its
      * OWN initial value (`transparent` and `none`), which is byte-identical to the frame that had
      * neither declaration. No fill, no blur, no backdrop root. */
@@ -857,7 +857,10 @@
   .ui-data-table-root .ui-data-table-skeleton-check {
     inline-size: var(--table-skeleton-check-size);
     block-size: var(--table-skeleton-check-size);
-    border-radius: var(--table-skeleton-radius);
+    border-radius: var(
+      --table-skeleton-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   .ui-data-table-root .ui-data-table-skeleton-line {
@@ -865,7 +868,10 @@
   }
 
   .ui-data-table-sort-button {
-    border-radius: var(--table-skeleton-radius);
+    border-radius: var(
+      --table-skeleton-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 }
 
@@ -1080,7 +1086,7 @@
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
       border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
       margin-block-end: var(--table-stacked-collection-card-gap);
@@ -1125,7 +1131,7 @@
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
       border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
       margin-block-end: var(--table-stacked-collection-card-gap);
@@ -1170,7 +1176,7 @@
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
       border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
       margin-block-end: var(--table-stacked-collection-card-gap);
@@ -1215,7 +1221,7 @@
        * fixed row height from control.css still applies and the cells spill past the card edge. */
       height: auto;
       border: var(--stroke-hairline) solid hsl(var(--border));
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
       padding: var(--table-stacked-collection-card-padding-y)
         var(--table-stacked-collection-card-padding-x);
       margin-block-end: var(--table-stacked-collection-card-gap);

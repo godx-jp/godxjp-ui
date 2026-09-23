@@ -13,7 +13,7 @@
   --mega-menu-trigger-height: var(--control-height);
   --mega-menu-trigger-padding-x: var(--space-3);
   --mega-menu-trigger-gap: var(--space-inline-sm);
-  --mega-menu-trigger-radius: var(--radius-sm);
+  --mega-menu-trigger-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --mega-menu-trigger-font-size: var(--font-size-sm, var(--font-size-base));
   --mega-menu-trigger-foreground: hsl(var(--foreground));
   --mega-menu-trigger-background: transparent;
@@ -37,7 +37,7 @@
   --mega-menu-panel-foreground: hsl(var(--popover-foreground));
   --mega-menu-panel-border-color: hsl(var(--border));
   --mega-menu-panel-border-width: 1px;
-  --mega-menu-panel-radius: var(--radius-md);
+  --mega-menu-panel-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --mega-menu-panel-padding: var(--space-6);
   --mega-menu-panel-shadow: var(--shadow-md);
   --mega-menu-panel-offset: 0px;
@@ -70,7 +70,7 @@
   --mega-menu-link-gap: var(--space-inline-sm);
   --mega-menu-link-padding-x: var(--space-2);
   --mega-menu-link-padding-y: var(--space-2);
-  --mega-menu-link-radius: var(--radius-sm);
+  --mega-menu-link-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --mega-menu-link-font-size: var(--font-size-sm, var(--font-size-base));
   --mega-menu-link-foreground: hsl(var(--foreground));
   --mega-menu-link-hover-background: initial;

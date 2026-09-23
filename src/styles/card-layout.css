@@ -42,7 +42,7 @@
     border-width: 1px;
     border-style: solid;
     border-color: hsl(var(--card-border, var(--border)));
-    border-radius: var(--card-radius);
+    border-radius: var(--card-radius, calc(var(--radius) * var(--radius-ratio)));
     /* Fill = base card colour with an opt-in role tint washed over it (--card-tint default
      * transparent → byte-identical at rest).
      *
@@ -689,7 +689,7 @@
     width: var(--stat-card-icon-size);
     height: var(--stat-card-icon-size);
     margin-bottom: var(--stat-card-gap);
-    border-radius: var(--stat-card-icon-radius);
+    border-radius: var(--stat-card-icon-radius, calc(var(--radius) / var(--radius-ratio)));
     background: var(--stat-card-icon-background, hsl(var(--primary) / 0.1));
     color: var(--stat-card-icon-foreground, hsl(var(--text-brand, var(--primary))));
   }
@@ -796,7 +796,10 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    border-radius: var(--card-service-launcher-icon-radius);
+    border-radius: var(
+      --card-service-launcher-icon-radius,
+      calc(var(--radius) / var(--radius-ratio))
+    );
     background: hsl(var(--card-service-launcher-icon-background, var(--accent)));
     color: hsl(var(--card-service-launcher-icon-foreground, var(--text-brand, var(--primary))));
   }

@@ -357,8 +357,8 @@ describe("CompactBarTrend token contract (gh#218)", () => {
     expect(bar).toMatch(/calc\(var\(\s*--chart-trend-bar-value,\s*0\)\s*\*\s*100%\)/);
     expect(bar).toMatch(/max-inline-size:\s*var\(\s*--chart-trend-bar-max-width\)/);
     // rounded data-end anchored to the baseline, expressed logically (RTL-safe)
-    expect(bar).toMatch(/border-start-start-radius:\s*var\(\s*--chart-trend-bar-radius\)/);
-    expect(bar).toMatch(/border-start-end-radius:\s*var\(\s*--chart-trend-bar-radius\)/);
+    expect(bar).toMatch(/border-start-start-radius:\s*var\(\s*--chart-trend-bar-radius/);
+    expect(bar).toMatch(/border-start-end-radius:\s*var\(\s*--chart-trend-bar-radius/);
     expect(layoutCss).not.toMatch(/\.ui-chart-trend[^{]*\{[^}]*(?:margin|padding)-(?:left|right):/);
   });
 });

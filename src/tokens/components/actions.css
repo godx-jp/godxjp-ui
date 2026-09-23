@@ -11,7 +11,7 @@
   /* Inset of the `filled` / `outlined` forms. `borderless` drops both to zero. */
   --actions-padding-block: var(--space-1);
   --actions-padding-inline: var(--space-1);
-  --actions-radius: var(--radius);
+  --actions-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
 
   /* Chrome of the two bounded variants. Role-mirror knobs (docs/TOKENS.md): `initial` so each
    * documented default resolves at the CALL SITE.

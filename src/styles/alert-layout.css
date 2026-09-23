@@ -7,7 +7,10 @@
     align-items: flex-start;
     gap: var(--alert-space-gap);
     width: 100%;
-    border-radius: var(--alert-radius);
+    border-radius: var(
+      --alert-radius,
+      var(--card-radius, calc(var(--radius) * var(--radius-ratio)))
+    );
     border-width: 1px;
     padding: var(--alert-space-inset);
     font-size: var(--font-size-base);
@@ -71,7 +74,10 @@
    * fill and the border colour, so a callout and an alert of the same tone agree; only the geometry
    * differs. Logical properties throughout, so the rail sits on the start edge in both directions. */
   [data-slot="alert"][data-variant="callout"] {
-    border-radius: var(--callout-radius);
+    border-radius: var(
+      --callout-radius,
+      var(--alert-radius, var(--card-radius, calc(var(--radius) * var(--radius-ratio))))
+    );
     border-block-width: 0;
     border-inline-end-width: 0;
     border-inline-start-width: var(--callout-rail-width);
@@ -209,7 +215,10 @@
     position: absolute;
     top: var(--alert-dismiss-space-offset);
     inset-inline-end: var(--alert-dismiss-space-offset);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     opacity: var(--alert-dismiss-rest-alpha);
     transition: opacity var(--duration-fast) ease;
   }
@@ -274,7 +283,7 @@
   }
 
   .ui-skeleton-block {
-    border-radius: var(--skeleton-radius);
+    border-radius: var(--skeleton-radius, var(--radius));
     background: var(--skeleton-background, hsl(var(--muted)));
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
@@ -309,21 +318,24 @@
     block-size: var(--skeleton-caption-height);
     inline-size: var(--skeleton-label-width);
     max-inline-size: 100%;
-    border-radius: var(--skeleton-radius);
+    border-radius: var(--skeleton-radius, var(--radius));
     background: var(--skeleton-background, hsl(var(--muted)));
   }
 
   .ui-skeleton-form-control {
     block-size: var(--control-height);
     inline-size: 100%;
-    border-radius: var(--skeleton-element-radius);
+    border-radius: var(
+      --skeleton-element-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: var(--skeleton-background, hsl(var(--muted)));
   }
 
   .ui-skeleton-table {
     overflow: hidden;
     border: 1px solid hsl(var(--border));
-    border-radius: var(--skeleton-radius);
+    border-radius: var(--skeleton-radius, var(--radius));
   }
 
   /* Drop the self-frame inside a flush CardContent so the Card supplies the single border —
@@ -358,7 +370,7 @@
   .ui-skeleton-stat,
   .ui-skeleton-card {
     border: 1px solid hsl(var(--border));
-    border-radius: var(--skeleton-radius);
+    border-radius: var(--skeleton-radius, var(--radius));
     padding: var(--skeleton-card-inset);
 
     .ui-skeleton-line {
@@ -453,7 +465,10 @@
     display: inline-block;
     vertical-align: top;
     block-size: var(--skeleton-element-block-size);
-    border-radius: var(--skeleton-element-radius);
+    border-radius: var(
+      --skeleton-element-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   [data-skeleton-element][data-size="xs"] {
@@ -470,7 +485,7 @@
 
   [data-skeleton-element="avatar"] {
     inline-size: var(--skeleton-element-block-size);
-    border-radius: var(--avatar-square-radius);
+    border-radius: var(--avatar-square-radius, var(--radius));
   }
 
   [data-skeleton-element="avatar"][data-shape="circle"] {

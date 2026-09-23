@@ -7,8 +7,10 @@
   /* A leading RAIL, not a frame: an aside inside prose reads as an annotation of the
    * column it sits in, and four borders make it a card that interrupts the column. */
   --callout-rail-width: var(--space-1);
-  /* Squared off against the rail; the trailing corners still follow the alert radius. */
-  --callout-radius: var(--alert-radius);
+  /* Squared off against the rail; the trailing corners still follow the alert radius.
+   * `initial`, not `var(--alert-radius)` — a :root binding freezes (gh#888); default resolves at
+   * the call site. Default = var(--alert-radius). */
+  --callout-radius: initial;
   /* Prose insets. Block matches the paragraph rhythm around it rather than the
    * denser banner strip; inline leaves room for the rail without shifting the text. */
   --callout-space-inset-block: var(--space-3);

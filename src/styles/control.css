@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-inline-xs);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     color: hsl(var(--foreground));
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
@@ -389,7 +389,10 @@
     [data-slot="badge"] {
     --badge-space-y: 0;
     --badge-line-height: var(--line-height-tight);
-    --badge-radius: var(--radius-sm);
+    --badge-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   .ui-button--lg {
@@ -1382,17 +1385,17 @@
   }
   .ui-otp-group .ui-otp-slot:first-child {
     border-inline-start-width: var(--control-border-width);
-    border-start-start-radius: var(--radius-md);
-    border-end-start-radius: var(--radius-md);
+    border-start-start-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+    border-end-start-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
   .ui-otp-group .ui-otp-slot:last-child {
-    border-start-end-radius: var(--radius-md);
-    border-end-end-radius: var(--radius-md);
+    border-start-end-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
+    border-end-end-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   }
   .ui-otp-group[data-appearance="grouped"] {
     overflow: hidden;
     border: var(--control-border-width) solid hsl(var(--border));
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--background));
   }
   .ui-otp-group[data-appearance="grouped"] .ui-otp-slot {
@@ -1510,7 +1513,10 @@
     fill: currentColor;
   }
   .ui-rating-star:focus-visible {
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   /* ── SEGMENTED ────────────────────────────────────────────────────────────────────────────
@@ -1565,7 +1571,7 @@
     flex-wrap: wrap;
     align-items: stretch;
     padding: var(--segmented-track-padding);
-    border-radius: var(--segmented-track-radius);
+    border-radius: var(--segmented-track-radius, var(--radius));
     background: hsl(
       var(--segmented-track-background, var(--muted)) /
         var(--segmented-track-background-alpha, 100%)
@@ -1585,7 +1591,7 @@
     gap: var(--segmented-item-gap);
     padding-inline: var(--segmented-item-padding-inline);
     border: 0;
-    border-radius: var(--segmented-item-radius);
+    border-radius: var(--segmented-item-radius, calc(var(--radius) / var(--radius-ratio)));
     background: transparent;
     color: inherit;
     cursor: pointer;
@@ -1713,7 +1719,10 @@
     gap: var(--space-1);
     font-size: var(--tag-input-chip-font-size);
     padding: 0.0625rem var(--space-2);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
   }
@@ -2047,7 +2056,10 @@
     block-size: var(--control-affix-action-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--control-affix-action-radius);
+    border-radius: var(
+      --control-affix-action-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     opacity: var(--control-affix-rest-alpha);
   }
 
@@ -2176,7 +2188,10 @@
     max-inline-size: 100%;
     align-items: center;
     overflow: hidden;
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--secondary));
     padding: 0.0625rem var(--space-2);
     color: hsl(var(--secondary-foreground));
@@ -2309,7 +2324,10 @@
     display: flex;
     inline-size: 100%;
     align-items: center;
-    border-radius: var(--cascader-result-radius);
+    border-radius: var(
+      --cascader-result-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--cascader-result-space-inline);
     padding-block: var(--cascader-result-space-block);
     font-size: var(--cascader-option-font-size);
@@ -2388,7 +2406,7 @@
       var(--trigger-width, var(--menu-content-min-width))
     );
     overflow: hidden;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
     /* A knob, with the role default resolved HERE (gh#880). The listbox is an OVERLAY, not a
      * field — see the note on --select-content-background for why it does not share the trigger's
@@ -2438,7 +2456,10 @@
   /* Row geometry for Select's own listbox. */
   .ui-select-item,
   .ui-select-label {
-    border-radius: var(--menu-item-radius);
+    border-radius: var(
+      --menu-item-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--menu-item-space-inline);
     height: var(--menu-item-height);
     display: flex;
@@ -2450,7 +2471,10 @@
   /* Row geometry for Select's own listbox. */
   .ui-select-item,
   .ui-select-label {
-    border-radius: var(--menu-item-radius);
+    border-radius: var(
+      --menu-item-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--menu-item-space-inline);
     height: var(--menu-item-height);
     display: flex;
@@ -2575,7 +2599,7 @@
     inline-size: 100%;
     align-items: center;
     justify-content: center;
-    border-radius: var(--time-picker-option-radius);
+    border-radius: var(--time-picker-option-radius, calc(var(--radius) / var(--radius-ratio)));
     padding-block: var(--time-picker-option-space-block);
     font-size: var(--time-picker-option-font-size);
     font-variant-numeric: tabular-nums;
@@ -2660,7 +2684,10 @@
     block-size: var(--control-inline-affix-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--control-affix-action-radius);
+    border-radius: var(
+      --control-affix-action-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     color: hsl(var(--muted-foreground));
     opacity: var(--control-inline-affix-rest-alpha);
     transition: opacity 150ms ease;
@@ -2824,7 +2851,10 @@
   .ui-tree-select-row {
     display: flex;
     align-items: center;
-    border-radius: var(--tree-select-row-radius);
+    border-radius: var(
+      --tree-select-row-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-block: var(--tree-select-row-space-block);
     padding-inline-end: var(--tree-select-row-space-inline-end);
     padding-inline-start: calc(
@@ -2857,7 +2887,10 @@
     align-items: center;
     justify-content: center;
     margin-inline-end: var(--tree-select-toggle-space-inline-end);
-    border-radius: var(--tree-select-row-radius);
+    border-radius: var(
+      --tree-select-row-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
   }
 
   .ui-tree-select-toggle[data-leaf] {
@@ -2895,7 +2928,10 @@
     block-size: var(--control-affix-action-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--control-affix-action-radius);
+    border-radius: var(
+      --control-affix-action-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     opacity: var(--control-affix-rest-alpha);
   }
 
@@ -3201,7 +3237,7 @@
 
   .ui-calendar-weekday {
     inline-size: var(--control-height);
-    border-radius: var(--calendar-weekday-radius);
+    border-radius: var(--calendar-weekday-radius, calc(var(--radius) / var(--radius-ratio)));
     font-size: var(--calendar-weekday-font-size);
     font-weight: var(--font-weight-normal);
     color: hsl(var(--muted-foreground));
@@ -3245,7 +3281,7 @@
     block-size: var(--control-height);
     padding: 0;
     font-weight: var(--font-weight-normal);
-    border-radius: var(--calendar-day-radius);
+    border-radius: var(--calendar-day-radius, calc(var(--radius) / var(--radius-ratio)));
   }
 
   .ui-calendar .ui-calendar-day-button[aria-selected] {
@@ -3329,7 +3365,7 @@
     box-shadow: inset 0 0 0 1px hsl(var(--primary));
     color: hsl(var(--text-primary, from hsl(var(--primary)) var(--text-primary-channels)));
     font-weight: var(--font-weight-medium);
-    border-radius: var(--calendar-day-radius);
+    border-radius: var(--calendar-day-radius, calc(var(--radius) / var(--radius-ratio)));
   }
 
   .ui-calendar .ui-calendar-day.day-outside:not(:has(button)) {
@@ -3339,7 +3375,7 @@
   .ui-calendar .ui-calendar-day.day-selected:not(:has(button)) {
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
-    border-radius: var(--calendar-day-radius);
+    border-radius: var(--calendar-day-radius, calc(var(--radius) / var(--radius-ratio)));
   }
 
   /* The td carries no ink of its own any more; it is the grid cell and nothing else. */
@@ -3381,7 +3417,7 @@
     min-block-size: var(--transfer-pane-min-height);
     flex: 1 1 0%;
     flex-direction: column;
-    border-radius: var(--transfer-pane-radius);
+    border-radius: var(--transfer-pane-radius, calc(var(--radius) / var(--radius-ratio)));
     border: 1px solid hsl(var(--border));
     background: hsl(var(--background));
   }
@@ -3430,7 +3466,10 @@
     cursor: pointer;
     align-items: flex-start;
     gap: var(--transfer-row-space-gap);
-    border-radius: var(--transfer-row-radius);
+    border-radius: var(
+      --transfer-row-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     padding-inline: var(--transfer-row-space-inline);
     padding-block: var(--transfer-row-space-block);
     font-size: var(--transfer-row-font-size);
@@ -4047,7 +4086,10 @@
 
   .ui-slider-tooltip-content {
     padding-inline: var(--slider-tooltip-padding-inline);
-    border-radius: var(--slider-tooltip-radius);
+    border-radius: var(
+      --slider-tooltip-radius,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--slider-tooltip-background));
     color: hsl(var(--slider-tooltip-color));
     font-size: var(--slider-tooltip-font-size);

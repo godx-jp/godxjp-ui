@@ -144,8 +144,14 @@
   max-inline-size: var(--chart-trend-bar-max-width);
   /* Data-driven: the 0..1 ratio arrives as an inline custom property. */
   block-size: max(var(--chart-trend-bar-min-height), calc(var(--chart-trend-bar-value, 0) * 100%));
-  border-start-start-radius: var(--chart-trend-bar-radius);
-  border-start-end-radius: var(--chart-trend-bar-radius);
+  border-start-start-radius: var(
+    --chart-trend-bar-radius,
+    calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+  );
+  border-start-end-radius: var(
+    --chart-trend-bar-radius,
+    calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+  );
   background: var(
     --chart-trend-bar-background,
     hsl(var(--muted-foreground) / var(--chart-trend-bar-background-alpha))

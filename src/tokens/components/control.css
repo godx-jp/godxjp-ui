@@ -24,8 +24,17 @@
   --control-radius: var(--radius);
   /* Button corner radius — defaults to the button's historical `rounded-md` so nothing
    * changes by default, but is its OWN knob so a service theme can retune the button
-   * radius INDEPENDENTLY of input/control radius (issue #124). */
-  --button-radius: var(--radius-md);
+   * radius INDEPENDENTLY of input/control radius (issue #124).
+   * The `var(--radius-md, …)` fallback is gh#888, NOT the same fix as this token's own freeze:
+   * Button reads this value through `rounded-[var(--button-radius)]`, a Tailwind utility
+   * (`@layer utilities`) that this package cannot give a fallback to from CSS — so this knob is
+   * deliberately NOT flipped to `initial` (that would still be unreachable from a scoped theme,
+   * gh#824 measured `--control-radius: 37px` on `:root` moving 0 buttons). What DOES need the
+   * fallback is the read of `--radius-md` itself: gh#888 unfreezes the φ tier globally, so without
+   * this fallback `--radius-md` resolves to nothing and `--button-radius` — and therefore every
+   * Button's corner — would go to 0. The formula keeps this declaration byte-identical to before
+   * gh#888 (still frozen at :root against --radius, same historical limitation). */
+  --button-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
   /* THE BUTTON'S OWN SURFACE — one knob per painted variant (gh#880, standard §1).
    *
    * Every variant painted a bare role (`hsl(var(--primary))`, `hsl(var(--background))`,
@@ -152,7 +161,7 @@
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
   );
-  --slider-tooltip-radius: var(--radius-sm);
+  --slider-tooltip-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --slider-tooltip-padding-inline: var(--space-2);
   --slider-tooltip-offset-block: var(--space-2);
 
@@ -379,7 +388,7 @@
    * concern, not a per-component one. */
   --control-affix-inset-inline-end: var(--space-2);
   --control-affix-action-size: 1.5rem;
-  --control-affix-action-radius: var(--radius-sm);
+  --control-affix-action-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --control-affix-icon-size: var(--icon-size-md);
   /* Resting weight of an affix glyph — it must read as secondary until hovered/focused. */
   --control-affix-rest-alpha: 0.5;
@@ -480,7 +489,7 @@
   /* The flat search result row is denser than a column row — it has no chevron to balance. */
   --cascader-result-space-inline: var(--space-2);
   --cascader-result-space-block: 0.375rem;
-  --cascader-result-radius: var(--radius-sm);
+  --cascader-result-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --cascader-result-icon-space-inline-end: var(--space-2);
   --cascader-empty-space-block: var(--space-6);
 
@@ -523,7 +532,7 @@
   );
   --time-picker-column-space-inset: var(--space-1);
   --time-picker-option-space-block: 0.375rem;
-  --time-picker-option-radius: var(--radius-md);
+  --time-picker-option-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --time-picker-option-font-size: var(--font-size-sm, var(--font-size-base));
   --time-picker-footer-space-inset: var(--space-2);
   --time-picker-footer-space-gap: var(--space-2);
@@ -536,7 +545,7 @@
   --tree-select-list-max-height: min(300px, 50vh);
   --tree-select-row-space-block: 0.375rem;
   --tree-select-row-space-inline-end: var(--space-2);
-  --tree-select-row-radius: var(--radius-sm);
+  --tree-select-row-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --tree-select-row-font-size: var(--font-size-sm, var(--font-size-base));
   /* Indent = base + depth × step. A denser service dials the step down without touching JSX. */
   --tree-select-depth-space-base: var(--space-2);
@@ -581,9 +590,9 @@
     --font-size-xs,
     calc(var(--font-size-base) / var(--font-size-ratio))
   );
-  --calendar-weekday-radius: var(--radius-md);
+  --calendar-weekday-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --calendar-day-font-size: var(--font-size-sm, var(--font-size-base));
-  --calendar-day-radius: var(--radius-md);
+  --calendar-day-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --calendar-chevron-size: var(--icon-size-md);
   --calendar-footer-space-gap: var(--space-2);
   --calendar-footer-space-block-start: var(--space-2);
@@ -611,7 +620,7 @@
    * on the component (#319), so a service could not fit the panes to its own page grid or
    * tighten the row for a dense admin table without forking. */
   --transfer-pane-min-height: 14rem;
-  --transfer-pane-radius: var(--radius-md);
+  --transfer-pane-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio)) */
   --transfer-panes-space-gap: var(--space-3);
   --transfer-header-space-inline: var(--space-3);
   --transfer-header-space-block: var(--space-2);
@@ -622,7 +631,7 @@
   --transfer-row-space-inline: var(--space-2);
   --transfer-row-space-block: var(--space-2);
   --transfer-row-space-gap: var(--space-2);
-  --transfer-row-radius: var(--radius-sm);
+  --transfer-row-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --transfer-row-font-size: var(--font-size-sm, var(--font-size-base));
   /* The checkbox is top-aligned against a two-line row, so it needs a hair of optical offset to
    * sit level with the first line's cap height rather than its box. */

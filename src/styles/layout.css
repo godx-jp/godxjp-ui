@@ -1378,7 +1378,10 @@
     align-items: center;
     justify-content: center;
     padding-inline: var(--pagination-page-padding-x);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     border: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
     text-decoration: none;
@@ -1666,7 +1669,7 @@
   .ui-legal-document-toc-link {
     display: block;
     padding: var(--legal-document-toc-item-padding);
-    border-radius: var(--legal-document-toc-item-radius);
+    border-radius: var(--legal-document-toc-item-radius, var(--radius));
     border-inline-start: var(--legal-document-toc-marker-width) solid transparent;
     font-size: var(--legal-document-toc-font-size);
     line-height: 1.6;
@@ -1953,7 +1956,10 @@
     display: list-item;
   }
   .ui-flex[data-surface] {
-    border-radius: var(--flex-surface-radius, var(--radius-md));
+    border-radius: var(
+      --flex-surface-radius,
+      var(--radius-md, calc(var(--radius) / var(--radius-ratio)))
+    );
   }
   .ui-flex[data-surface="muted"] {
     background: var(--flex-surface-background, hsl(var(--muted)));
@@ -2149,7 +2155,7 @@
     min-inline-size: 0;
     align-items: center;
     gap: var(--actions-gap);
-    border-radius: var(--actions-radius);
+    border-radius: var(--actions-radius, var(--radius));
   }
 
   .ui-actions[data-variant="filled"],
@@ -2242,7 +2248,7 @@
     block-size: var(--draggable-panel-block-size);
     max-block-size: var(--draggable-panel-max-block-size);
     border: var(--draggable-panel-border-width) solid hsl(var(--border));
-    border-radius: var(--draggable-panel-radius);
+    border-radius: var(--draggable-panel-radius, var(--radius));
     background-color: hsl(var(--background));
     box-shadow: var(--draggable-panel-shadow);
     overflow: hidden;
@@ -2305,7 +2311,10 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     color: hsl(var(--muted-foreground));
     cursor: grab;
     touch-action: none;
@@ -2346,7 +2355,10 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     color: hsl(var(--muted-foreground));
   }
 

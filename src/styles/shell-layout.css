@@ -719,7 +719,10 @@
     height: var(--auth-requester-icon-size);
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     background: hsl(var(--accent));
     color: hsl(var(--text-brand, var(--primary)));
   }
@@ -736,7 +739,7 @@
     align-items: center;
     gap: var(--auth-account-summary-gap);
     padding: var(--auth-account-summary-padding);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--muted));
   }
 
@@ -1618,8 +1621,8 @@
      * default 0 because `--popover-space-inset: 0` leaves them nothing. */
     --org-switcher-list-offset: var(--org-switcher-sheet-inset);
     max-height: var(--org-switcher-sheet-max-height);
-    border-start-start-radius: var(--radius-lg);
-    border-start-end-radius: var(--radius-lg);
+    border-start-start-radius: var(--radius-lg, var(--radius));
+    border-start-end-radius: var(--radius-lg, var(--radius));
   }
 
   /* ONE CONTENT COLUMN FOR THE WHOLE PANEL.
@@ -1738,8 +1741,8 @@
 
   .ui-app-launcher-sheet {
     max-height: var(--app-launcher-sheet-max-height);
-    border-start-start-radius: var(--radius-lg);
-    border-start-end-radius: var(--radius-lg);
+    border-start-start-radius: var(--radius-lg, var(--radius));
+    border-start-end-radius: var(--radius-lg, var(--radius));
   }
 
   /* ── LAUNCHPAD ────────────────────────────────────────────────────────────────────────────
@@ -1898,7 +1901,7 @@
     justify-content: flex-start;
     gap: var(--app-launcher-launchpad-tile-gap);
     padding: var(--app-launcher-launchpad-tile-padding);
-    border-radius: var(--app-launcher-launchpad-tile-radius);
+    border-radius: var(--app-launcher-launchpad-tile-radius, var(--radius));
   }
 
   /* The tile's own hover is a WASH of the foreground, not the `--accent` fill the popover uses: an
@@ -1916,7 +1919,7 @@
     width: var(--app-launcher-launchpad-mark-size);
     height: var(--app-launcher-launchpad-mark-size);
     border: 1px solid var(--app-launcher-launchpad-mark-border-color);
-    border-radius: var(--app-launcher-launchpad-mark-radius);
+    border-radius: var(--app-launcher-launchpad-mark-radius, var(--radius));
     background: var(--app-launcher-launchpad-mark-background);
     box-shadow: var(--app-launcher-launchpad-mark-shadow);
     color: hsl(var(--foreground));
@@ -2025,7 +2028,7 @@
     justify-content: center;
     gap: var(--app-launcher-tile-gap);
     padding: var(--app-launcher-tile-padding);
-    border-radius: var(--app-launcher-tile-radius);
+    border-radius: var(--app-launcher-tile-radius, var(--radius));
     color: hsl(var(--app-launcher-tile-color));
     text-align: center;
     text-decoration: none;
@@ -2055,7 +2058,7 @@
     flex: 0 0 auto;
     place-items: center;
     overflow: hidden;
-    border-radius: var(--app-launcher-mark-radius);
+    border-radius: var(--app-launcher-mark-radius, var(--radius));
     background: hsl(var(--app-launcher-mark-background));
     color: hsl(var(--app-launcher-mark-foreground));
     font-size: var(--app-launcher-mark-font-size);
@@ -2257,7 +2260,7 @@
     gap: var(--sidebar-nav-item-gap);
     padding-inline: var(--sidebar-nav-item-padding-x);
     border: 0;
-    border-radius: var(--sidebar-nav-item-radius);
+    border-radius: var(--sidebar-nav-item-radius, calc(var(--radius) - 1px));
     background: transparent;
     /* The icon reads a SEPARATE knob on `.sb-icon` below, so a service can darken 16px nav icons
      * without re-tinting every muted text. */

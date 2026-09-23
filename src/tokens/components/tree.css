@@ -29,7 +29,7 @@
    * corner. Pure geometry — no role to freeze, so these bind directly. */
   --tree-node-padding-inline: var(--space-2);
   --tree-node-gap: var(--space-2);
-  --tree-node-radius: var(--radius-sm);
+  --tree-node-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
   --tree-node-font-size: var(--font-size-sm, var(--font-size-base));
 
   /* The disclosure triangle (NameThatUI: "disclosure triangle"; an indented tree that expands is

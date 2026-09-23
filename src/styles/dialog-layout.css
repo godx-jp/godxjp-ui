@@ -90,7 +90,7 @@
 
   @media (min-width: 640px) {
     [data-slot="dialog-content"] {
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, var(--radius));
     }
   }
 
@@ -216,7 +216,10 @@
     position: absolute;
     inset-block-start: var(--dialog-close-space-offset);
     inset-inline-end: var(--dialog-close-space-offset);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     opacity: var(--dialog-close-rest-alpha);
   }
 
@@ -290,7 +293,7 @@
 
   .ui-two-factor-setup-notice {
     border: 1px dashed hsl(var(--border));
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     padding: var(--space-2) var(--space-3);
   }
 
@@ -300,7 +303,7 @@
     gap: var(--space-2);
     padding: var(--space-3);
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, calc(var(--radius) / var(--radius-ratio)));
     background: hsl(var(--muted) / 0.4);
   }
 
@@ -381,7 +384,7 @@
     max-width: var(--tooltip-max-width);
     padding-inline: var(--tooltip-space-inline);
     padding-block: var(--tooltip-space-block);
-    border-radius: var(--tooltip-radius);
+    border-radius: var(--tooltip-radius, var(--radius));
     border: 1px solid
       var(--tooltip-border-color, hsl(var(--border) / var(--tooltip-border-color-alpha, 100%)));
     background-color: var(--tooltip-background, hsl(var(--popover) / var(--popover-alpha, 100%)));
@@ -405,7 +408,7 @@
      * `PopoverContent flush` zeroes it (gh#354), and a modifier can set that same token. */
     width: var(--popover-surface-inline-size, var(--popover-width));
     padding: var(--popover-space-inset);
-    border-radius: var(--popover-radius);
+    border-radius: var(--popover-radius, var(--radius));
     border: 1px solid
       var(
         --popover-surface-border-color,
@@ -490,7 +493,10 @@
     position: absolute;
     inset-block-start: var(--sheet-close-offset);
     inset-inline-end: var(--sheet-close-offset);
-    border-radius: var(--radius-sm);
+    border-radius: var(
+      --radius-sm,
+      calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))
+    );
     opacity: var(--sheet-close-rest-alpha);
     transition: opacity 150ms ease;
   }

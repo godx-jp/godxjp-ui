@@ -283,7 +283,7 @@
    * in a future major. */
   --table-skeleton-line-block-size: 1rem;
   --table-skeleton-line-height: var(--table-skeleton-line-block-size);
-  --table-skeleton-radius: var(--radius-sm);
+  --table-skeleton-radius: initial; /* gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio)) */
 
   /* The table's own base type step (gh#319). Was a `text-sm` utility on the <table>; the theme
    * remaps `--text-sm` to `--font-size-sm`, so this default is byte-identical. */
