@@ -50,6 +50,34 @@
  * costs one more line per mirror, each just re-pointing at the (now-scoped) step it already named.
  */
 [data-theme-style="glass"] {
+  /* ── THE POLARITY LAYER (gh#896) ────────────────────────────────────────────────────────────
+   * Five private knobs, holding every value in this file that FLIPS between light and dark. The
+   * declarations below read them instead of repeating a literal, so the dark branch at the bottom
+   * of this file is those five lines and not a second copy of the theme.
+   *
+   * THE FREEZE RULE DOES NOT BITE HERE, and it is worth saying why, because it bites everywhere
+   * else in this system (docs/TOKEN-RESOLUTION.md §3). A `var()` substitutes where the referencing
+   * property is DECLARED — so a knob declared at `:root` and overridden in a scope below is frozen
+   * and unreachable. These five are declared on the SAME ELEMENT as every declaration that reads
+   * them (the theme scope div), and `.dark [data-theme-style="glass"]` re-declares them on that
+   * same element with higher specificity. Same element, so the reads resolve against the winning
+   * value. This is the one shape where a private indirection layer is safe.
+   *
+   * Counts are measured, not estimated — how many literal sites each knob replaced. */
+  --glass-ink: 230 30% 14%; /* primary ink */
+  --glass-ink-muted: 230 22% 26%; /* secondary ink — same ratio, lower emphasis */
+  --glass-ink-soft: 230 20% 22%; /* muted / tertiary */
+  --glass-focus: 262 95% 32%; /* the focus mark, which must survive ANY backdrop */
+  --glass-panel: 0 0% 100%; /* the opaque-end overlay panels: select · dropdown · toast · dialog · sheet */
+  --glass-panel-sl: 0% 100%; /* the same panel for the relative-colour layer, where the hue is the seed's */
+  --glass-status-l: 21%; /* status ink lightness — the hue carries the meaning, this carries legibility */
+  --glass-canvas-sl: 55% 86%; /* S L of the page canvas */
+  --glass-muted-sl: 40% 80%;
+  --glass-accent-sl: 45% 74%;
+  --glass-secondary-sl: 38% 78%;
+  --glass-edge: 0 0% 100% / 55%; /* the glass RIM — decorative, brighter than the pane */
+  --glass-rule: 230 22% 38% / 60%; /* a boundary that CARRIES MEANING: >= 3:1, WCAG 2.2 SC 1.4.11 */
+
   /* ── Seed: seven surfaces' elevation, retinted at once — BUT ONLY once the freeze trap below is
    *    also closed (see docblock above and the note here; this is the SAME trap
    *    docs/showcase/theme-customization.tsx documents for `--ring` and `--radius`).
@@ -89,7 +117,7 @@
    *    `border: 1px solid hsl(var(--border))`). Verified no consumer composes a SECOND alpha after
    *    it (unlike `--background`, see below), so a bare triplet + alpha is safe here and reaches
    *    all of the above at once — the widest-reaching single line in this file. */
-  --border: 0 0% 100% / 25%;
+  --border: var(--glass-edge);
 
   /* ── `--background` IS SHARED, and the sharing is the constraint — not the syntax, which the
    *    seed layer at the bottom of this file dissolves. It is consumed BOTH bare
@@ -112,7 +140,7 @@
     radial-gradient(circle at 88% 12%, hsl(199 89% 48% / 0.5), transparent 48%),
     radial-gradient(circle at 55% 92%, hsl(330 81% 60% / 0.42), transparent 52%),
     linear-gradient(160deg, hsl(230 55% 11%), hsl(210 45% 16%));
-  --app-shell-main-background: hsl(222 47% 9%);
+  --app-shell-main-background: hsl(222 var(--glass-canvas-sl));
 
   /* ── Gradient is not only a PAGE-backdrop thing — three more surfaces have a real, CLEAN
    *    single-slot `background-image: var(--token)` hook (verified with `getComputedStyle`, not
@@ -141,7 +169,7 @@
   /* ── Card — dedicated tokens, consumed AS hsl(var(--token)), so a bare triplet + alpha works.
    *    src/styles/card-layout.css:44 (border), :49 (background). ────────────────────────────── */
   --card-background: 0 0% 100% / 12%;
-  --card-border: 0 0% 100% / 25%;
+  --card-border: var(--glass-edge);
 
   /* ── Dialog — `--dialog-content-glow` is an additive box-shadow LAYER, not the panel fill: the
    *    glass edge highlight, on top of the retinted elevation. The panel's own fill is set in the
@@ -186,7 +214,7 @@
    *      · The table's own SURFACE re-uses `--card-background` (table-layout.css:540), already
    *        set above: DataTable in a Card gets the Card's glass for free, by design ("Card +
    *        CardContent flush + DataTable" is the documented composition). ─────────────────────── */
-  --table-border-color: hsl(0 0% 100% / 30%);
+  --table-border-color: hsl(var(--glass-rule));
 
   /* ── Input / Select trigger / TagInput — the SHARED `.ui-control-surface` base
    *    (src/lib/control-styles.ts:1791-1792), both consumed as a complete value. This is the one
@@ -196,7 +224,7 @@
    * the floor, on every seed. The border keeps its 45% because §4b's other requirement is a
    * boundary at 3:1 or better, and that one is carried by the edge rather than the fill. */
   --control-surface-background: hsl(0 0% 100% / 18%);
-  --control-surface-border-color: hsl(0 0% 100% / 45%);
+  --control-surface-border-color: hsl(var(--glass-rule));
 
   /* ── Button — its three variant fills are set further down, through their own knobs. Its BORDER
    *    and its SHADOW ride the `--border` and `--shadow-sm` restatements above for free. ────── */
@@ -321,20 +349,20 @@
    *    Every one clears AA 4.5:1, measured against the WORST region rather than a convenient
    *    sample (§3). Off-white rather than pure white: it keeps a hair of warmth against the cool
    *    backdrop and still clears 4.98:1 at the worst point. */
-  --foreground: 48 20% 96%;
-  --card-foreground: 48 20% 96%;
-  --popover-foreground: 48 20% 96%;
+  --foreground: var(--glass-ink);
+  --card-foreground: var(--glass-ink);
+  --popover-foreground: var(--glass-ink);
   /* "Muted" is SMALLER AND LIGHTER IN WEIGHT, never lower contrast — §3. 82% still measures
    * 3.49:1 on the worst pane, so it stays at 90% and the hierarchy comes from size. */
-  --muted-foreground: 48 10% 94%;
+  --muted-foreground: var(--glass-ink-soft);
   --text-tertiary: 48 10% 93%;
 
   /* Status ink lightened to match. The hue carries the meaning; the lightness carries the
    * legibility, and on dark glass those pull in the opposite direction from the light build. */
-  --text-success: 152 60% 90%;
-  --text-warning: 42 90% 90%;
-  --text-info: 210 90% 92%;
-  --text-error: 6 85% 90%;
+  --text-success: 152 60% var(--glass-status-l);
+  --text-warning: 42 90% var(--glass-status-l);
+  --text-info: 210 90% var(--glass-status-l);
+  --text-error: 6 85% var(--glass-status-l);
 
   /* ── THE CARD WAS NOT CONSISTENT WITH ITS OWN CONTENTS, which is what the owner spotted by eye:
    *    a translucent Card whose Segmented track stayed opaque `--muted` (measured
@@ -349,10 +377,10 @@
    * opaque `--muted` band with the default dark ink — the same "container is glass, its own parts
    * are not" defect the owner spotted on the Card's Segmented. */
   --table-header-background: hsl(0 0% 100% / 8%);
-  --table-header-foreground: hsl(48 10% 94%);
+  --table-header-foreground: hsl(var(--glass-ink-soft));
 
-  --segmented-item-color: 48 10% 94%;
-  --segmented-item-selected-color: 48 20% 96%;
+  --segmented-item-color: var(--glass-ink-soft);
+  --segmented-item-selected-color: var(--glass-ink);
 
   /* ── ONE INK RAMP ONLY WORKS IF EVERY GLASS SURFACE SHARES A POLARITY, and that is the part
    *    §3 of the standard did not say. Card is white glass over a dark canvas; Alert was a toned
@@ -400,13 +428,13 @@
    *
    *    `--foreground` is already the light ink; this is its missing pair. Setting one without the
    *    other is what produced a light chrome carrying near-white labels. */
-  --background: 230 40% 9%;
-  --muted: 230 24% 18%;
-  --muted-foreground: 48 10% 94%;
-  --accent: 262 55% 32%;
-  --accent-foreground: 48 20% 96%;
-  --secondary: 230 24% 22%;
-  --secondary-foreground: 48 20% 96%;
+  --background: 230 var(--glass-canvas-sl);
+  --muted: 230 var(--glass-muted-sl);
+  --muted-foreground: var(--glass-ink-soft);
+  --accent: 262 var(--glass-accent-sl);
+  --accent-foreground: var(--glass-ink);
+  --secondary: 230 var(--glass-secondary-sl);
+  --secondary-foreground: var(--glass-ink);
   --input: 0 0% 100% / 18%;
 
   /* ── THE BRAND INK RAMP — the second half of §3, and the half the first build skipped ────────
@@ -427,30 +455,30 @@
   --text-brand: 48 20% 92%;
   --text-primary: 48 20% 92%;
   --anchor-ink-color: 48 20% 92%;
-  --org-switcher-meta-foreground: 48 14% 90%;
-  --separator-label-color: 48 14% 90%;
-  --sidebar-item-active-foreground: hsl(48 20% 96%);
-  --sidebar-nav-item-foreground: hsl(48 14% 90%);
-  --sidebar-nav-icon-foreground: hsl(48 14% 90%);
-  --sidebar-nav-icon-active-foreground: hsl(48 20% 96%);
-  --mega-menu-trigger-current-foreground: hsl(48 20% 96%);
-  --mega-menu-trigger-open-foreground: hsl(48 20% 96%);
-  --mega-menu-link-current-foreground: hsl(48 20% 96%);
-  --timeline-grid-event-color: hsl(48 20% 96%);
+  --org-switcher-meta-foreground: var(--glass-ink-muted);
+  --separator-label-color: var(--glass-ink-muted);
+  --sidebar-item-active-foreground: hsl(var(--glass-ink));
+  --sidebar-nav-item-foreground: hsl(var(--glass-ink-muted));
+  --sidebar-nav-icon-foreground: hsl(var(--glass-ink-muted));
+  --sidebar-nav-icon-active-foreground: hsl(var(--glass-ink));
+  --mega-menu-trigger-current-foreground: hsl(var(--glass-ink));
+  --mega-menu-trigger-open-foreground: hsl(var(--glass-ink));
+  --mega-menu-link-current-foreground: hsl(var(--glass-ink));
+  --timeline-grid-event-color: hsl(var(--glass-ink));
   /* Three more ROOT-BOUND ink bindings, found the same way — by measuring, not by reading. Each is
    * `--x: hsl(var(--foreground))` or `var(--muted-foreground)` declared once at `:root`, so it
    * resolves against the root's dark ink and inherits that into this light-ink scope. The numbers
    * before restating them, on the violet seed: TimelineGrid's event time and description 1.14:1,
    * MegaMenu's non-current trigger 1.13:1, AuthDivider's label 2.42:1. */
-  --timeline-grid-event-muted-color: hsl(48 14% 90%);
-  --mega-menu-trigger-foreground: hsl(48 20% 96%);
-  --mega-menu-link-foreground: hsl(48 20% 96%);
-  --mega-menu-panel-foreground: hsl(48 20% 96%);
-  --mega-menu-group-label-foreground: hsl(48 14% 90%);
-  --mega-menu-group-description-foreground: hsl(48 14% 90%);
-  --mega-menu-link-description-foreground: hsl(48 14% 90%);
-  --auth-shell-divider-label-color: 48 14% 90%;
-  --org-switcher-current-foreground: hsl(48 20% 96%);
+  --timeline-grid-event-muted-color: hsl(var(--glass-ink-muted));
+  --mega-menu-trigger-foreground: hsl(var(--glass-ink));
+  --mega-menu-link-foreground: hsl(var(--glass-ink));
+  --mega-menu-panel-foreground: hsl(var(--glass-ink));
+  --mega-menu-group-label-foreground: hsl(var(--glass-ink-muted));
+  --mega-menu-group-description-foreground: hsl(var(--glass-ink-muted));
+  --mega-menu-link-description-foreground: hsl(var(--glass-ink-muted));
+  --auth-shell-divider-label-color: var(--glass-ink-muted);
+  --org-switcher-current-foreground: hsl(var(--glass-ink));
 
   /* ══ INTERACTION STATES — 55 knobs exist, this theme used 3 of them, and every state defect the
    *    owner found by hovering was in the other 52 ═══════════════════════════════════════════
@@ -474,8 +502,8 @@
    *    of following the brand. ────────────────────────────────────────────────────────────── */
 
   /* Triplet form — read inside `hsl()`. */
-  --focus-ring-color: 48 100% 82%;
-  --focus-outline-color: 48 100% 82%;
+  --focus-ring-color: var(--glass-focus);
+  --focus-outline-color: var(--glass-focus);
   /* 2px, because §4b asks for 2px and the package ships a hairline. The three width tokens are all
    * `:root`-bound (`--focus-ring-width: calc(var(--focus-ring-weight) * var(--focus-outline))`,
    * `--focus-ring-weight: var(--focus-outline-weight)`, `--focus-outline-weight:
@@ -488,8 +516,8 @@
    * `--focus-ring-color` — measured `3px rgb(124, 58, 237)` on the violet seed, which on the navy
    * seed over this canvas would be a ring nobody can see. §4b: the ring must survive ANY backdrop,
    * so it is pinned to the same warm near-white rather than to the brand. */
-  --control-outline: 48 100% 82%;
-  --focus-ring-glow-color: 48 100% 82%;
+  --control-outline: var(--glass-focus);
+  --focus-ring-glow-color: var(--glass-focus);
   /* AND ONE THAT NO TOKEN REACHED, recorded rather than worked around: the choice family's heavy
    * ring stays `3px` of the SEED — measured `rgb(10, 31, 68)` on navy and `rgb(255, 212, 0)` on
    * citron, i.e. the brand colour itself, on a canvas made of the brand colour. Setting
@@ -497,42 +525,42 @@
    * and `--primary-border` in turn moved none of it, so it is reported here and not faked. Every
    * other control on the page takes the 2px warm-white ring. */
   --topbar-item-hover-background: 0 0% 100% / 16%;
-  --topbar-item-hover-color: 48 20% 96%;
+  --topbar-item-hover-color: var(--glass-ink);
   --segmented-item-hover-background: 0 0% 100% / 18%;
-  --segmented-item-hover-color: 48 20% 96%;
+  --segmented-item-hover-color: var(--glass-ink);
   --segmented-item-active-background: 0 0% 100% / 26%;
   --app-launcher-tile-hover-background: 0 0% 100% / 16%;
-  --app-launcher-tile-hover-color: 48 20% 96%;
+  --app-launcher-tile-hover-color: var(--glass-ink);
   --control-variant-filled-hover-background: 0 0% 100% / 24%;
-  --choice-button-selected-color: 48 20% 96%;
+  --choice-button-selected-color: var(--glass-ink);
   --choice-button-selected-border-color: 0 0% 100% / 60%;
-  --slider-dot-active-border-color: 48 20% 96%;
+  --slider-dot-active-border-color: var(--glass-ink);
   --secondary-hover: 0 0% 100% / 20%;
   --secondary-active: 0 0% 100% / 26%;
 
   /* Complete-value form — read as `var(--token, …)` directly. */
-  --region-focus-ring-color: hsl(48 100% 82%);
+  --region-focus-ring-color: hsl(var(--glass-focus));
   --menu-item-hover-background: hsl(0 0% 100% / 14%);
-  --menu-item-hover-foreground: hsl(48 20% 96%);
+  --menu-item-hover-foreground: hsl(var(--glass-ink));
   --table-row-hover-background: hsl(0 0% 100% / 10%);
   --table-row-selected-background: hsl(0 0% 100% / 16%);
   --tree-node-hover-background: hsl(0 0% 100% / 10%);
   --tree-node-selected-background: hsl(0 0% 100% / 18%);
-  --tree-node-selected-foreground: hsl(48 20% 96%);
+  --tree-node-selected-foreground: hsl(var(--glass-ink));
   --mega-menu-trigger-hover-background: hsl(0 0% 100% / 14%);
-  --mega-menu-trigger-hover-foreground: hsl(48 20% 96%);
+  --mega-menu-trigger-hover-foreground: hsl(var(--glass-ink));
   --mega-menu-link-hover-background: hsl(0 0% 100% / 14%);
-  --mega-menu-link-hover-foreground: hsl(48 20% 96%);
+  --mega-menu-link-hover-foreground: hsl(var(--glass-ink));
   --sidebar-item-active-background: hsl(var(--primary) / 26%);
-  --sidebar-nav-item-hover-foreground: hsl(48 20% 96%);
-  --sidebar-nav-icon-hover-foreground: hsl(48 20% 96%);
+  --sidebar-nav-item-hover-foreground: hsl(var(--glass-ink));
+  --sidebar-nav-icon-hover-foreground: hsl(var(--glass-ink));
   --conversations-item-active-background: hsl(0 0% 100% / 18%);
-  --conversations-item-active-color: hsl(48 20% 96%);
+  --conversations-item-active-color: hsl(var(--glass-ink));
   --tabs-count-active-background: hsl(0 0% 100% / 24%);
-  --tabs-count-active-color: hsl(48 20% 96%);
+  --tabs-count-active-color: hsl(var(--glass-ink));
   --toggle-soft-hover-background: hsl(0 0% 100% / 16%);
   --toggle-pressed-count-background: hsl(0 0% 100% / 26%);
-  --toggle-pressed-count-color: hsl(48 20% 96%);
+  --toggle-pressed-count-color: hsl(var(--glass-ink));
   --toggle-pressed-border-color: hsl(0 0% 100% / 45%);
   --checkbox-checked-background: hsl(var(--primary) / 90%);
   --switch-checked-background: hsl(var(--primary) / 90%);
@@ -564,15 +592,15 @@
 
   /* FILLS at the tiers. Card at the spec's .12; overlays heavier because a 7-line menu over a
    * photograph is unreadable at .12. */
-  --select-content-background: hsl(230 30% 16% / 88%);
-  --dropdown-content-background: hsl(230 30% 16% / 88%);
-  --toast-background: hsl(230 30% 16% / 90%);
+  --select-content-background: hsl(var(--glass-panel) / 88%);
+  --dropdown-content-background: hsl(var(--glass-panel) / 88%);
+  --toast-background: hsl(var(--glass-panel) / 90%);
   /* A MODAL IS NOT A CARD. §4: a drawer covers content that must stay unreadable-but-present, and
    * a dialog the same — at 20% the page read straight through the panel. The scrim blurs what is
    * behind; the panel then sits on that blur at an alpha high enough to carry text. These two are
    * the most opaque surfaces in the theme, deliberately. */
-  --dialog-surface-background: hsl(230 30% 16% / 88%);
-  --sheet-surface-background: hsl(230 30% 16% / 92%);
+  --dialog-surface-background: hsl(var(--glass-panel) / 88%);
+  --sheet-surface-background: hsl(var(--glass-panel) / 92%);
   --sidebar-surface-background: hsl(0 0% 100% / 10%);
   --table-surface-background: hsl(0 0% 100% / 8%);
 
@@ -643,13 +671,13 @@
 @supports (color: hsl(from red h s l)) {
   [data-theme-style="glass"] {
     /* TRIPLET-shaped roles — the `from` clause lives in the token, the consumer's hsl() closes it. */
-    --background: from hsl(var(--primary)) h 40% 9%;
-    --muted: from hsl(var(--primary)) h 24% 18%;
-    --accent: from hsl(var(--primary)) h 45% 32%;
-    --secondary: from hsl(var(--primary)) h 24% 22%;
+    --background: from hsl(var(--primary)) h var(--glass-canvas-sl);
+    --muted: from hsl(var(--primary)) h var(--glass-muted-sl);
+    --accent: from hsl(var(--primary)) h var(--glass-accent-sl);
+    --secondary: from hsl(var(--primary)) h var(--glass-secondary-sl);
 
     /* COMPLETE-VALUE tokens — these call sites take a colour, so ordinary relative colour works. */
-    --app-shell-main-background: hsl(from hsl(var(--primary)) h 47% 9%);
+    --app-shell-main-background: hsl(from hsl(var(--primary)) h var(--glass-canvas-sl));
     --gradient-glow:
       radial-gradient(
         circle at 12% 18%,
@@ -687,11 +715,11 @@
       hsl(from hsl(var(--primary)) h s 58% / 0.15) 100%
     );
     --tooltip-background: hsl(from hsl(var(--primary)) h 45% 12% / 78%);
-    --select-content-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
-    --dropdown-content-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
-    --toast-background: hsl(from hsl(var(--primary)) h 30% 16% / 90%);
-    --dialog-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
-    --sheet-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 92%);
+    --select-content-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
+    --dropdown-content-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
+    --toast-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 90%);
+    --dialog-surface-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
+    --sheet-surface-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 92%);
 
     /* ── THE POPOVER WAS THE ONE OVERLAY LEFT WHITE, AND IT WAS THE ONLY OVERLAY THAT FAILED AA.
      *    Measured on every seed: 2.42–3.12:1 for its title and description, while Dialog, Sheet,
@@ -704,7 +732,7 @@
      *
      *    So the fill joins the other overlays at the dark end instead of the ink being split. That
      *    is §3's remedy — a scrim, not darker ink — applied to the panel itself. ─────────────── */
-    --popover-surface-background: hsl(from hsl(var(--primary)) h 30% 16% / 88%);
+    --popover-surface-background: hsl(from hsl(var(--primary)) h var(--glass-panel-sl) / 88%);
     --popover-surface-border-color: hsl(0 0% 100% / 22%);
 
     /* ── THE SCRIM KNOB IS A SHARE, NOT AN OPACITY — measured, and it is a trap worth writing down.
@@ -779,4 +807,52 @@
     --app-shell-bar-background: hsl(var(--background));
     --app-shell-bar-backdrop-blur-size: initial;
   }
+}
+
+/* ══ THE DARK POLARITY (gh#896) ═══════════════════════════════════════════════════════════════
+ *
+ * The library ships two colour polarities and this theme had one. Measured before this block, by
+ * toggling the library's own switch and counting how many of five core tokens move:
+ *
+ *     base    5/5    the package default — works
+ *     glass   0/5    nothing moves. Permanently dark.
+ *
+ * The cause is the `:root` freeze rule running BACKWARDS (docs/TOKEN-RESOLUTION.md §3 documents
+ * only the forward direction). Forward: a binding at `:root` freezes and a scope below cannot
+ * reach it. Backwards, which is this: a scope below SHADOWS a branch at the root, and the root
+ * cannot reach in. `[data-theme-style="glass"]` sits on a div under `<html>`, and the polarity
+ * switch is `.dark, :root[data-theme="dark"]` ON the root — so every value this theme declares
+ * beat the dark branch by being nearer the element, and toggling dark mode changed nothing.
+ *
+ * WHY THIS IS TWELVE LINES AND NOT A SECOND COPY OF THE THEME. Everything that flips between the
+ * two polarities was first lifted into the private knobs at the top of the file — a change proved
+ * to be a no-op by measurement (40 computed values across two seeds, 0 changed). The 53 literal
+ * sites that used to hold an ink or a panel colour now read a knob, so a polarity is the knob
+ * values and nothing else. Both blocks declare them on the SAME element, which is the one shape
+ * where an indirection layer is safe from the freeze rule — see the note at the top.
+ *
+ * WHAT DOES **NOT** FLIP, and each is a decision, not an oversight:
+ *   · the blur sizes and `--surface-backdrop-saturate` — a blur is a blur
+ *   · every white scrim alpha (the 0.12 pane, the hover washes) — §1 of the standard says 0.12 is
+ *     THE number, and it holds in both: white at 12% lifts a dark ground slightly and lightens a
+ *     vivid light one slightly. The pane reads as frosted either way.
+ *   · `--tooltip-background` stays the dark chip in both, which is the conventional treatment and
+ *     what this file already documented — so its ink is pinned light in both, not flipped.
+ *   · the shadow seed and its five mirrors — elevation is not a polarity.
+ */
+.dark [data-theme-style="glass"],
+[data-theme="dark"] [data-theme-style="glass"] {
+  --glass-ink: 48 20% 96%;
+  --glass-ink-muted: 48 14% 90%;
+  --glass-ink-soft: 48 10% 94%;
+  --glass-focus: 48 100% 82%;
+  --glass-panel: 230 30% 16%;
+  --glass-panel-sl: 30% 16%;
+  --glass-status-l: 90%;
+  --glass-canvas-sl: 40% 9%;
+  --glass-muted-sl: 24% 18%;
+  --glass-accent-sl: 45% 32%;
+  --glass-secondary-sl: 38% 22%;
+  --glass-edge: 0 0% 100% / 25%;
+  --glass-rule: 0 0% 100% / 45%;
 }
