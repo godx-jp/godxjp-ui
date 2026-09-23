@@ -108,26 +108,33 @@ export const THEMES: readonly ThemeRow[] = [
     id: null,
     nameKey: "themeLab.theme.base.name",
     noteKey: "themeLab.theme.base.note",
-    // The package default IS this surface in both polarities, so there is nothing to override.
+    /* The package default IS this surface in both polarities, so there is nothing to override —
+     * and measuring it anyway is what proves the method used for the other two rows. Compositing
+     * every surface of this theme across five seeds returns #EBE9E5 light and #3C3A34 dark, which
+     * are exactly `INK_SURFACE_LIGHT` in `src/app/tenant-theme.ts` and the hex its docblock names
+     * for a dark theme. A probe that reproduces the library's own two answers is one whose answers
+     * for glass and flat can be trusted. */
     inkSurface: { light: null, dark: null },
   },
   {
     id: "glass",
     nameKey: "themeLab.theme.glass.name",
     noteKey: "themeLab.theme.glass.note",
-    // BOTH `null` for now (gh#896) — see the type's doc comment above for why the OLD single hex
-    // (`#766A2D`, a dark-branch measurement from before polarity was addressable) is not carried
-    // into either slot. The real light and dark hexes are the glass author's to supply, from a
-    // real compositing measurement of each branch, not a guess made here.
-    inkSurface: { light: null, dark: null },
+    /* Measured per branch, and the two are not the same KIND of number (see the type above).
+     * `#766A2D` was right and stays on the dark side, where the hardest ground is the LIGHTEST
+     * surface; the light side is #B59FDB, the DARKEST surface, because the ink walks the other
+     * way there. Carrying one hex into both slots would have been wrong in exactly one of them. */
+    inkSurface: { light: "#B59FDB", dark: "#766A2D" },
   },
   {
     id: "flat",
     nameKey: "themeLab.theme.flat.name",
     noteKey: "themeLab.theme.flat.note",
-    // BOTH `null` for now, same reason as glass above — the real hexes are the flat author's to
-    // supply once `flat.css`'s dark branch exists and can be measured.
-    inkSurface: { light: null, dark: null },
+    /* Measured per branch now that flat has one. The light side is close enough to the package
+     * default that omitting it would very nearly work (#E4E1EA against #EBE9E5, both far above the
+     * pivot) — stated anyway, because "near enough to the default" is a fact about today's flat,
+     * not a contract it holds anyone to. */
+    inkSurface: { light: "#E4E1EA", dark: "#403D30" },
   },
 ];
 

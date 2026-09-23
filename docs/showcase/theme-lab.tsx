@@ -481,28 +481,34 @@ export default function ThemeLabShowcase() {
    * sets `AppProvider`'s OWN state, so ITS OWN effect is what reaches the DOM; this page never
    * touches `document.documentElement` for polarity.
    *
-   * `useLayoutEffect`, not `useEffect` — MEASURED, not assumed. `AppProvider` mounts this page as
-   * a CHILD, and React commits a descendant's passive effects before its ancestor's, so a plain
-   * `useEffect` here calling `ctx.setTheme("dark")` on mount was overwritten a moment later by
-   * `AppProvider`'s OWN mount effect re-asserting its initial ("light") state — the preview harness
-   * resolves `?theme=` (base/glass/flat here) as a SEPARATE polarity switch, so that initial state
-   * is always "light" on this page. Confirmed with a MutationObserver on `data-theme`: with
-   * `useEffect`, `?mode=dark` produced ZERO attribute mutations and settled on "light". Layout
-   * effects for the WHOLE tree run before ANY passive effect does, so calling `setTheme` here
-   * forces the synchronous re-render (and re-application) to happen before `AppProvider`'s own
-   * mount effect ever reads its stale initial value — reconfirmed with the same observer, now
-   * showing `data-theme` reaching "dark" on the first paint.
+   * `mounted`, not a plain effect on `[mode.id]` — MEASURED, not assumed. `AppProvider` re-derives
+   * `theme` from `persist`/storage on ITS OWN mount effect (`app-provider.tsx`'s "hydrate stored
+   * preferences" effect), unconditionally, from `initialTheme` when nothing is stored — and the
+   * preview harness resolves `?theme=` (base/glass/flat here) as a SEPARATE polarity switch, so
+   * that initial value is always "light" on this page. Calling `ctx.setTheme("dark")` from a plain
+   * mount effect here was overwritten a moment later: React commits a descendant's passive effects
+   * before its ancestor's, so `AppProvider`'s own hydration effect always runs AFTER this page's —
+   * confirmed with a `MutationObserver` on `data-theme`, which recorded ZERO mutations and settled
+   * on "light" for `?mode=dark`. Deferring our own call by one render pass (`setMounted(true)` in
+   * an effect, then applying `mode` only once `mounted`) pushes it into a SECOND commit, which
+   * starts only after the FIRST commit's entire effect list — `AppProvider`'s hydration effect
+   * included — has already run and settled; reconfirmed with the same observer, now showing
+   * `data-theme` reaching "dark" reliably.
    *
-   * `ctx` is read via a ref kept fresh every render, and the effect depends only on `mode.id`, so
-   * this does not re-fire every time some OTHER axis (locale, density, …) changes the context's
-   * identity — only when this switch changes. The cleanup restores whatever the axis was
-   * immediately before this effect's own change, so leaving the page (or flipping the switch back)
-   * does not leak a forced polarity into the rest of the showcase.
+   * `ctx` is read via a ref kept fresh every render, and the apply effect depends only on
+   * `[mounted, mode.id]`, so it does not re-fire every time some OTHER axis (locale, density, …)
+   * changes the context's identity — only once mounted, and again when this switch changes. The
+   * cleanup restores whatever the axis was immediately before this effect's own change, so leaving
+   * the page (or flipping the switch back) does not leak a forced polarity into the rest of the
+   * showcase.
    */
   const appContext = useOptionalAppContext();
   const appContextRef = React.useRef(appContext);
   appContextRef.current = appContext;
-  React.useLayoutEffect(() => {
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => {
+    if (!mounted) return;
     const ctx = appContextRef.current;
     if (!ctx) return;
     const previous = ctx.theme;
@@ -510,7 +516,7 @@ export default function ThemeLabShowcase() {
     return () => {
       ctx.setTheme(previous);
     };
-  }, [mode.id]);
+  }, [mounted, mode.id]);
 
   /* The seed is walked against THIS THEME's surface for THIS POLARITY, not the package's (see
    * `inkSurface`). A theme declares its own `--text-link`, but `tenantTheme` returns the brand
