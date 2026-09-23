@@ -1302,6 +1302,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "target",
+          "origin": "owned",
+          "required": false,
+          "type": "AffixTargetProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "targetOffset",
           "origin": "owned",
           "required": false,

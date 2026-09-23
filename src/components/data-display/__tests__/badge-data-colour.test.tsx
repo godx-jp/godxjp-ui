@@ -78,7 +78,11 @@ describe("Badge color (the record's own colour)", () => {
 
     expect(rule, "badge-layout.css must carry the [data-tinted] rule").not.toBeNull();
 
-    const body = rule![1];
+    /* SQUASHED — one line, no whitespace hugging a paren. Since gh#901 gave the role default its
+     * opacity companion, this value is long enough that Prettier wraps it across four lines, and
+     * an assertion carrying the line breaks asserts on Prettier's mood rather than on the token
+     * graph. `status-surface-role-866.test.ts` solved the same problem the same way. */
+    const body = rule![1].replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
 
     // The fill is where the label sits; the edge carries no text and is free to
     // be the louder of the two.
@@ -88,12 +92,14 @@ describe("Badge color (the record's own colour)", () => {
     // that FROZE — measured in a `.dark` region, the chip painted the light card at
     // `color(srgb 0.9933 …)` while the region's own `--card` was the dark one.
     expect(body).toContain(
-      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-fill)",
+      // Prettier wraps this value now that the role carries its opacity companion, so the
+      // assertion is on the SQUASHED text rather than on where the line happens to break.
+      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card) / var(--card-alpha, 100%)))) var(--badge-tint-fill)",
     );
     expect(body).toContain(
-      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card)))) var(--badge-tint-edge)",
+      "var(--badge-color, var(--badge-tint-surface, hsl(var(--card) / var(--card-alpha, 100%)))) var(--badge-tint-edge)",
     );
-    expect(body).toContain("var(--badge-tint-surface, hsl(var(--card)))");
+    expect(body).toContain("var(--badge-tint-surface, hsl(var(--card) / var(--card-alpha, 100%)))");
     expect(body).toContain("color: var(--badge-tint-foreground, hsl(var(--card-foreground)))");
 
     // Surface first in BOTH mixes. A build targeting a browser without
@@ -120,6 +126,8 @@ describe("Badge color (the record's own colour)", () => {
     expect(tokens).toContain("--badge-tint-foreground: initial");
     expect(tokens).toContain("--badge-color: initial");
     // And the shape that caused it must not come back, in any spelling.
-    expect(tokens).not.toMatch(/--badge-(tint-surface|tint-foreground|color):\s*(?!initial)[^;]*var\(/);
+    expect(tokens).not.toMatch(
+      /--badge-(tint-surface|tint-foreground|color):\s*(?!initial)[^;]*var\(/,
+    );
   });
 });

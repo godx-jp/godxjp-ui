@@ -25,8 +25,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--actions-radius",
-    "value": "var(--radius)",
-    "description": "Actions component tokens — the strip of actions under an assistant message (Ant Design X `Actions`). Every action is a `Button`, so NOTHING here sets a control height: that comes from the `--control-height` tier through Button's own `size=\"icon-sm\"` step, and restating it would re-derive a tier that drifts from the buttons beside it (`pnpm check:control-sizing`)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--actions-filled-background",
@@ -180,8 +180,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--attachments-card-radius",
-    "value": "var(--radius-lg)",
-    "description": "Ant X `token.borderRadius` = 6 ≡ --radius"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; `initial`, default = var(--radius). Ant X `token.borderRadius` = 6 ≡ --radius"
   },
   {
     "name": "--attachments-card-gap",
@@ -195,8 +195,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--attachments-placeholder-radius",
-    "value": "var( --radius-lg )",
-    "description": "Ant X `token.borderRadius` = 6 ≡ --radius"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; `initial`, default = var(--radius). Ant X `token.borderRadius` = 6 ≡ --radius"
   },
   {
     "name": "--attachments-placeholder-icon-size",
@@ -245,8 +245,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--badge-radius",
-    "value": "var(--radius-md)",
-    "description": "Corner of the chip (gh#404). Default = the historical literal `--radius-md`, so nothing moves; it exists so a NESTING context can restate it through the cascade (a Badge inside a bordered Button squares down to --radius-sm) and a call site can restate it back."
+    "value": "initial",
+    "description": "Corner of the chip (gh#404). Default = the historical literal `--radius-md`, so nothing moves; it exists so a NESTING context can restate it through the cascade (a Badge inside a bordered Button squares down to --radius-sm) and a call site can restate it back. gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--badge-font-size",
@@ -340,8 +340,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--callout-radius",
-    "value": "var(--alert-radius)",
-    "description": "Squared off against the rail; the trailing corners still follow the alert radius."
+    "value": "initial",
+    "description": "Squared off against the rail; the trailing corners still follow the alert radius. `initial`, not `var(--alert-radius)` — a :root binding freezes (gh#888); default resolves at the call site. Default = var(--alert-radius)."
   },
   {
     "name": "--callout-space-inset-block",
@@ -450,8 +450,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-radius",
-    "value": "var(--radius-xl)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) * var(--radius-ratio))"
   },
   {
     "name": "--card-shadow",
@@ -565,8 +565,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-icon-radius",
-    "value": "var(--radius-md)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--stat-card-icon-background",
@@ -600,8 +600,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-service-launcher-icon-radius",
-    "value": "var(--radius-md)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--card-service-launcher-icon-background",
@@ -690,8 +690,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chart-trend-bar-radius",
-    "value": "var(--radius-sm)",
-    "description": "Chart component tokens — the dependency-free `CompactBarTrend` primitive (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a service theme can match its own design grid WITHOUT page-local CSS or inline heights (cardinal rules #44/#45). The recharts-backed charts draw their own SVG from the foundation `--chart-1..6` palette, plus the cartesian series knobs at the bottom of this file."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--chart-trend-bar-max-width",
@@ -780,8 +780,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chat-bubble-radius",
-    "value": "var(--radius-lg)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--chat-bubble-gap",
@@ -980,8 +980,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--button-radius",
-    "value": "var(--radius-md)",
-    "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing changes by default, but is its OWN knob so a service theme can retune the button radius INDEPENDENTLY of input/control radius (issue #124)."
+    "value": "var(--radius-md, calc(var(--radius) / var(--radius-ratio)))",
+    "description": "Button corner radius — defaults to the button's historical `rounded-md` so nothing changes by default, but is its OWN knob so a service theme can retune the button radius INDEPENDENTLY of input/control radius (issue #124). The `var(--radius-md, …)` fallback is gh#888, NOT the same fix as this token's own freeze: Button reads this value through `rounded-[var(--button-radius)]`, a Tailwind utility (`@layer utilities`) that this package cannot give a fallback to from CSS — so this knob is deliberately NOT flipped to `initial` (that would still be unreachable from a scoped theme, gh#824 measured `--control-radius: 37px` on `:root` moving 0 buttons). What DOES need the fallback is the read of `--radius-md` itself: gh#888 unfreezes the φ tier globally, so without this fallback `--radius-md` resolves to nothing and `--button-radius` — and therefore every Button's corner — would go to 0. The formula keeps this declaration byte-identical to before gh#888 (still frozen at :root against --radius, same historical limitation)."
   },
   {
     "name": "--button-default-background",
@@ -999,6 +999,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--background)) at the call site"
   },
   {
+    "name": "--button-outline-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--button-outline-border-color",
     "value": "initial",
     "description": "default = hsl(var(--input)) at the call site"
@@ -1007,6 +1012,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--button-secondary-background",
     "value": "initial",
     "description": "default = hsl(var(--secondary)) at the call site"
+  },
+  {
+    "name": "--button-secondary-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--button-link-foreground",
@@ -1072,6 +1082,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--control-variant-filled-hover-background",
     "value": "initial",
     "description": "default = var(--accent), resolved at the call site (the freeze rule)"
+  },
+  {
+    "name": "--control-variant-filled-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--control-count-font-size",
@@ -1185,8 +1200,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--slider-tooltip-radius",
-    "value": "var(--radius-sm)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--slider-tooltip-padding-inline",
@@ -1222,6 +1237,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--choice-button-selected-border-color",
     "value": "initial",
     "description": "default = var(--primary)"
+  },
+  {
+    "name": "--choice-button-selected-border-color-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--choice-button-solid-background",
@@ -1439,6 +1459,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Switch OFF track fill (gh#315) — `initial`, default hsl(var(--input)). Its own knob so a service can quieten the off-track without dragging the --input control-boundary role back below the WCAG SC 1.4.11 floor (rule #45); whatever you set still owes 3:1 against the page and against the thumb (--background), or \"off\" stops being a visible state."
   },
   {
+    "name": "--switch-unchecked-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--switch-content-unchecked-foreground",
     "value": "initial",
     "description": "A labelled OFF track defaults to muted-foreground rather than the input boundary role: text needs 4.5:1, not the 3:1 required of an empty track. Pair custom track fills with this foreground; the default background role contrasts in both light and dark themes."
@@ -1595,8 +1620,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-affix-action-radius",
-    "value": "var(--radius-sm)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--control-affix-icon-size",
@@ -1815,8 +1840,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--cascader-result-radius",
-    "value": "var(--radius-sm)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--cascader-result-icon-space-inline-end",
@@ -1905,8 +1930,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--time-picker-option-radius",
-    "value": "var(--radius-md)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--time-picker-option-font-size",
@@ -1945,8 +1970,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tree-select-row-radius",
-    "value": "var(--radius-sm)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--tree-select-row-font-size",
@@ -2035,8 +2060,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-weekday-radius",
-    "value": "var(--radius-md)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--calendar-day-font-size",
@@ -2045,8 +2070,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-day-radius",
-    "value": "var(--radius-md)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--calendar-chevron-size",
@@ -2085,8 +2110,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-pane-radius",
-    "value": "var(--radius-md)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--transfer-panes-space-gap",
@@ -2140,8 +2165,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--transfer-row-radius",
-    "value": "var(--radius-sm)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--transfer-row-font-size",
@@ -2369,6 +2394,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--background)) at the call site"
   },
   {
+    "name": "--control-surface-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--control-filled-border-color",
     "value": "transparent",
     "description": "`filled` — antd's grey field: no edge, a muted fill, no resting elevation."
@@ -2470,8 +2500,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--conversations-item-radius",
-    "value": "var(--radius)",
-    "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--conversations-item-font-size",
@@ -2487,6 +2517,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--conversations-item-active-background",
     "value": "initial",
     "description": "Conversations component tokens — the session rail of a chat surface (Ant Design X `Conversations`). Ant X answers \"how do I retune this rail\" with `styles={{ root, group, item, creation }}` — a free-form style hole that freezes its internal slot names into public API. This file is the answer instead (rules #44/#45): every length, tint and type step the rail paints is a named knob a service sets once in its own theme.css. THE DEFAULTS ARE THE SIDEBAR'S ROW RHYTHM, taken from the same foundation steps rather than by reading `--sidebar-*` — a chat rail and a nav rail are the same object seen twice, and gh#559 is partly a complaint that the two halves of one surface were drawn by two different hands. Reading the sidebar's own knobs would have made a service's sidebar retune silently move the chat rail too, which is a coupling nobody asked for; agreeing on the STEP is the part that matters. row band --band-height-md (32px) = --sidebar-nav-item-height row type --font-size-xs = --sidebar-nav-item-font-size icon column --icon-size-md (16px) = --sidebar-nav-icon-size"
+  },
+  {
+    "name": "--conversations-item-active-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--conversations-item-active-color",
@@ -2539,6 +2574,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--carousel-arrow-inset-block-start",
+    "value": "initial",
+    "description": "WHERE THE ARROWS SIT, AND THE DEFAULT IS THE MIDDLE OF THE CONTENT — NOT OF THE COMPONENT. `.ui-carousel` is the positioning context and it is as tall as the slides PLUS the dots, so a plain `50%` centres the arrows on that sum. Measured on a 98px carousel: slides 58px (middle at -3415), dots 40px, arrows landing at -3395 — exactly half the dots row too low, which is what \"tại sao lại là middle của cả khung thế\" is pointing at. The reserve below subtracts it back. default = the content's middle, at the call site"
+  },
+  {
+    "name": "--carousel-dots-block-size",
+    "value": "0px",
+    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
     "name": "--accordion-focus-ring-offset",
     "value": "2px",
     "description": "Outline-form ring gaps — a hugging ring would touch these marks (styles/focus-ring.css)."
@@ -2575,8 +2620,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--code-block-radius",
-    "value": "var(--radius-md)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--code-block-max-height-sm",
@@ -2715,8 +2760,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--prose-code-radius",
-    "value": "var(--radius-sm)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--prose-link-color",
@@ -2730,8 +2775,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--prose-image-radius",
-    "value": "var(--radius-md)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--timeline-note-font-size",
@@ -2742,6 +2787,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--avatar-background",
     "value": "initial",
     "description": "Avatar surface — `initial` so the --muted default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override never reaches it). A service re-tints the placeholder fill once (e.g. --avatar-background: hsl(var(--accent))). Default = hsl(var(--muted))."
+  },
+  {
+    "name": "--avatar-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--avatar-tint",
@@ -2805,8 +2855,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-square-radius",
-    "value": "var(--radius-lg)",
-    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
+    "value": "initial",
+    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph. gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--avatar-square-size",
@@ -2904,6 +2954,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
   },
   {
+    "name": "--progress-track-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--progress-fill-background",
     "value": "initial",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
@@ -2915,8 +2970,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-breakdown-radius",
-    "value": "var(--radius)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--progress-meter-block-size",
@@ -3055,8 +3110,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--thumbnail-radius",
-    "value": "var(--radius)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--timeline-dot-done-background",
@@ -3160,8 +3215,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--timeline-grid-event-radius",
-    "value": "var(--radius-sm)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--timeline-grid-event-border-width",
@@ -3380,8 +3435,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--descriptions-border-radius",
-    "value": "var(--radius-md)",
-    "description": "Descriptions component tokens."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--descriptions-cell-padding-y",
@@ -3455,8 +3510,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--draggable-panel-radius",
-    "value": "var(--radius-lg)",
-    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--draggable-panel-shadow",
@@ -3925,8 +3980,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--alert-radius",
-    "value": "var(--card-radius)",
-    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by overriding this once. Default keeps the historical --radius-md."
+    "value": "initial",
+    "description": "Alert corner radius (gh#268 — rule #45): a full-width Alert often sits in the same page column as a Card — so the DEFAULT IS the Card radius (gh#282); a service re-tunes by overriding this once. Default keeps the historical --radius-md. `initial`, not `var(--card-radius)` — a :root binding freezes (gh#888); default resolves at the call site. Default = var(--card-radius)."
   },
   {
     "name": "--alert-space-inset",
@@ -4075,8 +4130,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--skeleton-radius",
-    "value": "var(--radius)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--skeleton-background",
@@ -4120,8 +4175,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--skeleton-element-radius",
-    "value": "var(--radius-sm)",
-    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` tier, so a skeleton button is exactly as tall as the Button it stands in for and follows density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); they are unitless on purpose — a service widens the stand-in without leaving the height tier."
+    "value": "initial",
+    "description": "SKELETON · antd 6 parity (ant-design/components/skeleton/style/index.ts). antd derives every element box from `controlHeight` and its ±steps; the same boxes here read the `--control-height` tier, so a skeleton button is exactly as tall as the Button it stands in for and follows density with it. The two RATIOS are antd's own multipliers (button = 2× the box, input = 5×); they are unitless on purpose — a service widens the stand-in without leaving the height tier. gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--skeleton-button-width-ratio",
@@ -4205,8 +4260,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tooltip-radius",
-    "value": "var(--radius)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--tooltip-font-size",
@@ -4239,6 +4294,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--tooltip-border-color-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--popover-width",
     "value": "18rem",
     "description": "POPOVER — the interactive overlay panel. Same story as Tooltip: `w-72 rounded-md p-4 shadow-md` were literals, so a service could not align the panel to its own grid or width scale."
@@ -4250,8 +4310,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--popover-radius",
-    "value": "var(--radius)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--popover-shadow",
@@ -4287,6 +4347,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--popover-surface-border-color",
     "value": "initial",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--popover-surface-border-color-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--popover-surface-inline-size",
@@ -4395,8 +4460,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--float-button-group-radius",
-    "value": "var(--radius-lg)",
-    "description": "Float button component tokens — the corner action and its group (Ant Design FloatButton)."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--float-button-badge-background",
@@ -4540,8 +4605,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--legal-document-toc-item-radius",
-    "value": "var(--radius)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--legal-document-toc-title-font-size",
@@ -4720,8 +4785,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-radius",
-    "value": "var(--radius)",
-    "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary role tokens directly, so a re-themed --primary re-tints the mark automatically."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--logo-size-xs",
@@ -4995,8 +5060,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-trigger-radius",
-    "value": "var(--radius-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--mega-menu-trigger-font-size",
@@ -5017,6 +5082,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--mega-menu-trigger-hover-background",
     "value": "initial",
     "description": "ROLE-MIRROR KNOBS — `initial`, NOT `hsl(var(--accent))` (gh#687, docs/TOKENS.md). A tier that binds to a tenant-scoped role computes ONCE at `:root` and every descendant inherits that computed colour, so a `[data-tenant]` block redefining `--accent` would leave this bar on the root brand while its neighbours followed. The knob stays empty here and the role is the FALLBACK at the call site in styles/navigation-layout.css, which re-resolves per scope. Documented defaults: hover/open = accent on accent-foreground, current = primary."
+  },
+  {
+    "name": "--mega-menu-trigger-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--mega-menu-trigger-hover-foreground",
@@ -5070,8 +5140,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-panel-radius",
-    "value": "var(--radius-md)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--mega-menu-panel-padding",
@@ -5155,8 +5225,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-link-radius",
-    "value": "var(--radius-sm)",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--mega-menu-link-font-size",
@@ -5172,6 +5242,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--mega-menu-link-hover-background",
     "value": "initial",
     "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
+  },
+  {
+    "name": "--mega-menu-link-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--mega-menu-link-hover-foreground",
@@ -5374,9 +5449,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "THE DEFAULT STRIP'S TRACK AND ITS SELECTED SLAB (gh#880 item 3) — the pair whose absence was the defect the owner spotted by eye: a translucent Card whose Tabs strip stayed opaque `--muted`, so \"các card này có đồng bộ đéo đâu\". Both used to be Tailwind utilities on the component (`data-[variant=default]:bg-muted` on the list, `data-[state=active]:bg-background` on the trigger), i.e. `@layer utilities`, which outranks every rule this package can write — the strip was not merely un-knobbed, it was unreachable. `--segmented-track-background` / `--segmented-item-selected-background` are the SAME track-and-slab pair and have been knobs since gh#848; `segmented.css` says in so many words that its role ports \"are the ones `Tabs` ALREADY MADE\". So these two are named after that pair and default to exactly the roles the utilities painted. `initial` with the default at the call site, for the reason that file measured: written `var(--muted)` here the binding substitutes on `<html>` and a scope below root inherits the root's answer, which reads as correct only because `.dark` also lands on `<html>`. default = hsl(var(--muted)) at the call site"
   },
   {
+    "name": "--tabs-list-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--tabs-trigger-active-background",
     "value": "initial",
     "description": "default = hsl(var(--background)) at the call site"
+  },
+  {
+    "name": "--tabs-trigger-active-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--tabs-placement-responsive-breakpoint-width",
@@ -5500,8 +5585,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-card-radius",
-    "value": "var(--radius-md)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "var(--radius-md, calc(var(--radius) / var(--radius-ratio)))",
+    "description": "Read via `rounded-s-[var(--tabs-card-radius)]` / `rounded-e-[var(--tabs-card-radius)]` in tabs.tsx — a Tailwind utility (`@layer utilities`) this package cannot hand a fallback to from CSS, so (same reasoning as `--button-radius` in control.css) this stays a plain :root binding rather than `initial`. The `var(--radius-md, …)` fallback is gh#888: without it, the tier's global unfreeze leaves `--radius-md` unset and this — and every card-variant Tab corner — would go to 0. The formula keeps the declaration byte-identical to before gh#888."
   },
   {
     "name": "--tabs-card-rail-border-width",
@@ -5514,9 +5599,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = var(--muted) at the call site"
   },
   {
+    "name": "--tabs-card-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
+  },
+  {
     "name": "--tabs-panel-background",
     "value": "initial",
     "description": "TABS JOINED BODY (`bodied`, gh#762). The card strip alone is half an object: antd's active face repaints the edge FACING the panel in the surface colour, which only reads as \"opened into\" when there IS a surface under it — and the package shipped no such body, so every consumer picked a box and every box was wrong (measured on 28.0.0: `<Card>` 8px gap + a second 1px border at a 9.7px radius, `<Card variant=\"borderless\">` 8px gap, no box 8px gap). `--tabs-panel-background` is a role-mirror knob (docs/TOKENS.md): `initial` so the --background default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. It is read BOTH by the body and by the active card face's merged edge, so the two can never disagree — a theme that retints the body retints the tab that opens into it. The radius mirrors the tab's own (`--tabs-card-radius`), because the body and the faces are two halves of one outline; the border width mirrors the rail's, for the same reason. default = var(--background) at the call site"
+  },
+  {
+    "name": "--tabs-panel-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--tabs-panel-border-width",
@@ -5525,8 +5620,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-panel-radius",
-    "value": "var(--tabs-card-radius)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "`initial`, not `var(--tabs-card-radius)` — a :root binding freezes (gh#888); default resolves at the call site. Default = var(--tabs-card-radius)."
   },
   {
     "name": "--tabs-panel-space-inset",
@@ -5579,6 +5674,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "default = hsl(var(--primary)) at the call site"
   },
   {
+    "name": "--tabs-count-active-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--tabs-count-active-color",
     "value": "initial",
     "description": "default = hsl(var(--primary-foreground)) at the call site"
@@ -5605,8 +5705,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-overflow-radius",
-    "value": "var(--radius-md)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--tabs-overflow-icon-size",
@@ -5620,8 +5720,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-add-radius",
-    "value": "var(--radius-md)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--tabs-add-icon-size",
@@ -5640,8 +5740,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-tab-remove-radius",
-    "value": "var(--radius-sm)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--tabs-tab-remove-icon-size",
@@ -5657,6 +5757,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--menu-item-hover-background",
     "value": "initial",
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root). Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
+  },
+  {
+    "name": "--menu-item-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--menu-item-hover-foreground",
@@ -5705,8 +5810,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--menu-item-radius",
-    "value": "var(--radius-sm)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--menu-item-space-inline",
@@ -5905,8 +6010,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-nav-radius",
-    "value": "var(--radius-md)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--steps-nav-separator-size",
@@ -6039,14 +6144,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "track background — the recessed ground a control group sits in. default = var(--muted), resolved at the call site"
   },
   {
+    "name": "--segmented-track-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
+  },
+  {
     "name": "--segmented-track-radius",
-    "value": "var(--radius)",
-    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other track-and-slab control."
+    "value": "initial",
+    "description": "track radius = the base radius; item radius = one step DOWN the radius scale, not `radius − trackPadding` (the two coincide only because the source scale happens to step by 2). This scale is φ-spaced, so \"one step down\" from --radius is --radius-md (6px → 3.71px, against the source's 6 → 4); --radius-sm is two steps and reads visibly squarer. The same pair is already what TabsList (`rounded-lg`) and TabsTrigger (`rounded-md`) use — this library's other track-and-slab control. gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--segmented-item-radius",
-    "value": "var(--radius-md)",
-    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--segmented-item-padding-inline",
@@ -6089,14 +6199,29 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "item hover fill = the lighter neutral · active fill = the heavier of the pair. default = var(--accent), resolved at the call site (the freeze rule)"
   },
   {
+    "name": "--segmented-item-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
+  },
+  {
     "name": "--segmented-item-active-background",
     "value": "var(--secondary)",
+    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
+  },
+  {
+    "name": "--segmented-item-active-background-alpha",
+    "value": "100%",
     "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
   },
   {
     "name": "--segmented-item-selected-background",
     "value": "initial",
     "description": "selected fill = the elevated surface + a soft shadow — the selected slab reads as lifted off the recessed track, which is the whole affordance. default = var(--background), resolved at the call site"
+  },
+  {
+    "name": "--segmented-item-selected-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--segmented-item-selected-shadow",
@@ -6394,6 +6519,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "THE SIDEBAR'S OWN SURFACE (gh#880). `.app-sidebar` painted a bare `hsl(var(--card))`, so the one piece of shell chrome that is ALWAYS on screen was the one a theme could not retint — the Topbar beside it has had `--topbar-background-alpha` since gh#831. Role-mirror knob: `initial`, with `hsl(var(--card))` resolved at the call site so a scoped theme's `--card` arrives. default = hsl(var(--card)) at the call site"
   },
   {
+    "name": "--sidebar-surface-background-alpha",
+    "value": "initial",
+    "description": "Its own opacity, defaulting to the card's (gh#901)."
+  },
+  {
     "name": "--sidebar-backdrop-blur-size",
     "value": "initial",
     "description": "GLASS — `initial`, so unset there is no blur and, more importantly, no backdrop root. The sidebar is a long-lived container full of other people's content; promoting it to a containing block for fixed descendants by default would be the worst possible place to do it. default = none — the sidebar blurs nothing"
@@ -6402,6 +6532,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-shell-bar-background",
     "value": "initial",
     "description": "THE OTHER TWO SHELL ROWS, and they are here because leaving them out is the asymmetry this change exists to remove (gh#880). `.app-topbar` and `.app-nav-rail` are grid rows of `.app-root` — the chrome that is on screen for the whole session — and each painted a bare role with no knob while the sidebar beside them got one. THEY GET NO BLUR KNOB, deliberately. `.app-topbar` is a SIBLING of `.app-main`, not a child, so whatever vivid backdrop a theme paints inside the main region is not behind the bar and there is nothing there for a `backdrop-filter` to blur — it would be a knob that exists and does nothing, which is worse than an honest gap. The blur that IS wanted on the bar belongs to the `<Topbar>` COMPONENT inside it (`--topbar-backdrop-blur-size`, gh#831), whose backdrop is the row this knob paints. A theme that wants the whole bar to float over a gradient moves the gradient to `.app-root`; that is a theme decision, not a knob. default = hsl(var(--card)) at the call site"
+  },
+  {
+    "name": "--app-shell-bar-backdrop-blur-size",
+    "value": "initial",
+    "description": "The bar ROW's own blur. `--topbar-backdrop-blur-size` is NOT this knob: it is on the `<Topbar>` COMPONENT, which sits inside this row inset by `--app-shell-bar-inset` on each side, so blurring there leaves the row's gutters unblurred. The sidebar beside it has had this since gh#880; the row had none, which is what forced a theme onto the inner element. default = none — the bar row blurs nothing"
   },
   {
     "name": "--app-shell-nav-rail-background",
@@ -6580,8 +6715,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-nav-item-radius",
-    "value": "calc(var(--radius) - 1px)",
-    "description": "Corner radius of a nav row. Defaults to the global rail radius, which is what an inset pill wants — but a rail that sets --sidebar-nav-scroll-padding and --sidebar-nav-gap to 0 makes its rows full-bleed bands flush with both edges, and a band wants square corners. Every other geometry property of `.sb-nav-item` was already a knob; this one was pinned to a constant, so the only way to square a band was a consumer selector against a DS internal class — the exact coupling rule #45 exists to prevent. Set `0` for full-bleed bands."
+    "value": "initial",
+    "description": "`initial`, not the calc() literal — a :root binding to --radius freezes there too (gh#888); default resolves at the call site. Default = calc(var(--radius) - 1px)."
   },
   {
     "name": "--sidebar-nav-scroll-padding",
@@ -6677,6 +6812,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--topbar-item-hover-background",
     "value": "initial",
     "description": "The bar's own hover surface — the same pair `.tb-icon-btn` already uses for the shell's built-in bar chrome, so a consumer-supplied cell and the shell's own read identically. default = var(--accent), resolved at the call site (the freeze rule)"
+  },
+  {
+    "name": "--topbar-item-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--topbar-item-hover-color",
@@ -6850,8 +6990,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-tile-radius",
-    "value": "var(--radius)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--app-launcher-tile-color",
@@ -6862,6 +7002,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--app-launcher-tile-hover-background",
     "value": "initial",
     "description": "default = var(--accent), resolved at the call site (the freeze rule)"
+  },
+  {
+    "name": "--app-launcher-tile-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site (gh#901)"
   },
   {
     "name": "--app-launcher-tile-hover-color",
@@ -6880,8 +7025,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-mark-radius",
-    "value": "var(--radius)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--app-launcher-mark-background",
@@ -6975,8 +7120,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-tile-radius",
-    "value": "var(--radius-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--app-launcher-launchpad-tile-gap",
@@ -6995,8 +7140,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-launchpad-mark-radius",
-    "value": "var(--radius-lg)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--app-launcher-launchpad-mark-background",
@@ -7719,6 +7864,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root binding to a role var freezes at the :root value and a scoped [data-tenant] role override never reaches it. A brand sets both header tokens together to keep band/text contrast. Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text."
   },
   {
+    "name": "--table-header-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--table-header-foreground",
     "value": "initial",
     "description": "Table component tokens: row height, cell padding."
@@ -7727,6 +7877,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-surface-background",
     "value": "initial",
     "description": "THE DATATABLE FRAME ITSELF (gh#880). Every band, row state and header inside the table has had a knob for some time; the box that draws the frame around them had none and painted no fill at all, so a themed page could retint the contents of a table and not the table. Unset, the declaration is invalid-at-computed-value-time and `background-color` keeps its own initial `transparent` — which is exactly what the surface painted before, so nothing moves. default = transparent, i.e. what the frame already had"
+  },
+  {
+    "name": "--table-surface-background-alpha",
+    "value": "initial",
+    "description": "`initial` keeps the shipped contract: with no fill asked for, the whole declaration is invalid-at-computed-value-time and the surface stays transparent."
   },
   {
     "name": "--table-surface-backdrop-blur-size",
@@ -7789,9 +7944,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Table component tokens: row height, cell padding."
   },
   {
+    "name": "--table-row-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 0.7 at the call site"
+  },
+  {
     "name": "--table-row-selected-background",
     "value": "initial",
     "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-row-selected-background-alpha",
+    "value": "initial",
+    "description": "default = 0.3 at the call site"
   },
   {
     "name": "--table-action-collection-primary-width",
@@ -7945,8 +8110,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-skeleton-radius",
-    "value": "var(--radius-sm)",
-    "description": "Table component tokens: row height, cell padding."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--table-font-size",
@@ -8110,8 +8275,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--thought-chain-item-radius",
-    "value": "var(--radius)",
-    "description": "ThoughtChain component tokens — the assistant's reasoning, step by step (Ant Design X `ThoughtChain`). Ant retunes this through `styles={{ root, item, itemHeader, itemIcon, itemContent, itemFooter }}`. This file is the answer instead (rules #44/#45). The chain deliberately reads the SAME steps as `Timeline`'s rail, because the two are the same vertical object seen twice — one for events that happened, one for a run in progress — and two rails on one screen that disagree by two pixels is the complaint gh#559 opens with."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--thought-chain-item-solid-background",
@@ -8189,6 +8354,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "── Counter pill · PRESSED colours. Defaults = hsl(var(--primary-foreground)) fill, hsl(var(--primary)) text — the pressed chip's OWN pair, swapped. Not `--primary` on `--primary`: the pressed chip is already filled with --primary, so a --primary pill would be invisible on it. The swap also flips the pill from near-invisible to solid, which is one of the encodings that keeps the pressed state off colour alone (WCAG 1.4.1)."
   },
   {
+    "name": "--toggle-pressed-count-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--toggle-pressed-count-color",
     "value": "initial",
     "description": "TOGGLE — counter-pill + pressed-state knobs (gh#312). Toggle owns the pressed state; Button owns the counter-pill vocabulary (`count` / `overflowCount` / `showZero`). A counted pressed chip (a faceted filter chip \"Unread 12\", a reaction chip) needs both, so Toggle grew the same vocabulary — and these knobs exist so it grows it WITHOUT growing a second, drifting set of constants (cardinal rule #45). SHARE vs SPLIT — the rule this file follows, and why each half falls where it does: • GEOMETRY is genuinely the same pill — min-width, inline padding, type step, corner. Toggle keeps its OWN knob for each (rule #45) but sets it to Button's exact value off the same primitive scale token, and a test asserts the two stay equal — so a Toggle count set beside a Button count is indistinguishable and cannot drift unnoticed, while a service can still move one without the other. • COLOUR is genuinely different, and MEASURED so. Button's pill sits on a static variant surface and tints itself with a translucent foreground (`bg-primary-foreground/15`, `bg-foreground/8`). Toggle's pill sits on a surface that INVERTS when pressed, and a translucent tint over it cannot clear WCAG 1.4.3 AA at the xs step: with the shipped roles, `--primary-foreground` over `--primary-foreground/0.16` over `--primary` measures 3.82:1 in light (4.39:1 even at 0.08 — the ceiling is the chip label's own 5.04:1, and any tint can only lower it), and `--muted-foreground` over `--foreground/0.08` measures 4.32:1, dropping to 3.64:1 once the chip hovers to `--accent`. Forcing a shared colour token here would ship a known #299-class failure. So Toggle's pill uses OPAQUE role fills, which makes its contrast independent of the chip's variant and hover surface, and inverts them with the state: unpressed --foreground on --muted → 14.25:1 light · 12.40:1 dark pressed --primary on --primary-foreground → 5.04:1 light · 7.07:1 dark The pressed pair is the chip label's own pair, swapped — the pill is exactly as legible as the label it sits next to, never worse, under any theme that keeps that pair legible. Every colour knob is a ROLE-MIRROR knob: `initial` at :root with the role default at the call site (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"). A `:root` binding to `var(--primary)` would freeze at the :root value and a scoped `[data-tenant]`/`.dark` override of the role would never reach it."
@@ -8197,6 +8367,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--toggle-pressed-border-color",
     "value": "initial",
     "description": "── Pressed chrome. Default = hsl(var(--primary)), i.e. the pressed fill itself, so out of the box this border is quiet (#44) and the pressed state is carried by the fill inversion + the pill inversion + the forced-colors rule below. A service whose pressed fill is a PALE tint (where those inversions get weak) opts into a visible outline by overriding this."
+  },
+  {
+    "name": "--toggle-pressed-border-color-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--toggle-count-forced-outline-width",
@@ -8225,8 +8400,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tree-node-radius",
-    "value": "var(--radius-sm)",
-    "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio))"
   },
   {
     "name": "--tree-node-font-size",
@@ -8264,9 +8439,19 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Row states. Both mirror roles, so both are `initial` with the role read at the call site. Documented defaults: --tree-node-hover-background = hsl(var(--accent)); --tree-node-selected-background = hsl(var(--accent)); --tree-node-selected-foreground = hsl(var(--accent-foreground))."
   },
   {
+    "name": "--tree-node-hover-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
+  },
+  {
     "name": "--tree-node-selected-background",
     "value": "initial",
     "description": "TREE — the standalone, on-page WAI-ARIA \"Tree View\" (`src/components/data-display/tree.tsx`). Every value the tree paints is a knob (cardinal rule #45), and the defaults are the QUIETEST reading (#44): no rails, a muted disclosure glyph, a selected band that tints rather than inverts. A service retunes the whole outline in one place instead of forking a row. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE. A knob whose default is a role token or a RE-SCOPED tier may not be bound at `:root` — CSS substitutes the `var()` where it is DECLARED, so the value would freeze at `:root` and a scoped `[data-tenant]` / `.dark` / a shell that re-scopes `--control-height` would never reach it. @see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"."
+  },
+  {
+    "name": "--tree-node-selected-background-alpha",
+    "value": "initial",
+    "description": "default = 100% at the call site"
   },
   {
     "name": "--tree-node-selected-foreground",
@@ -8285,8 +8470,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-radius",
-    "value": "var(--radius-lg)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--upload-dropzone-border-width",
@@ -8325,8 +8510,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-tile-radius",
-    "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--upload-tile-space-gap",
@@ -8385,8 +8570,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-picture-radius",
-    "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--upload-picture-preview-max-height",
@@ -8420,8 +8605,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-picture-badge-radius",
-    "value": "var(--radius-md)",
-    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. It now follows the tile radius like every other chip in the component."
+    "value": "initial",
+    "description": "\"Pending replace\" chip. The radius previously came from a bare `rounded`, which resolves to a flat .25rem and so ignored the radius scale entirely — the exact shape of a rule #44 miss. It now follows the tile radius like every other chip in the component. gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--upload-picture-badge-offset",
@@ -8495,8 +8680,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-draft-radius",
-    "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--upload-draft-font-size",
@@ -8525,8 +8710,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-row-radius",
-    "value": "var(--radius-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = calc(var(--radius) / var(--radius-ratio))"
   },
   {
     "name": "--upload-row-font-size",
@@ -8585,8 +8770,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--welcome-radius",
-    "value": "var(--radius-lg)",
-    "description": "Welcome component tokens — the greeting block at the head of an empty conversation (Ant Design X `Welcome`). Ant X retunes this block through `styles={{ root, icon, title, description, extra }}`. This file is the answer instead (rules #44/#45): a service sets the knob once in its theme.css and every Welcome on every surface follows."
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
   },
   {
     "name": "--welcome-icon-size",

@@ -115,8 +115,14 @@ describe("EmptyState tone → glyph colour", () => {
       // The medallion is one of the nine status SURFACES that read `--surface-*` first (gh#866),
       // so a brand's independently chosen pale ground reaches it too. Unset — the default — the
       // fallback is the identical 12% wash, which is what the second half of this assertion pins.
-      expect(rule).toContain(
-        `--empty-state-icon-tint: var(--surface-${role}, hsl(var(--${role}) / 0.12))`,
+      /* A REGEX, NOT `toContain` — since gh#901 gave the role default its opacity companion the
+       * value is long enough that Prettier wraps it, and an assertion carrying the one-line
+       * spelling asserts on Prettier's mood rather than on the token graph. */
+      expect(rule).toMatch(
+        new RegExp(
+          `--empty-state-icon-tint:\\s*var\\(\\s*--surface-${role},\\s*` +
+            `hsl\\(var\\(--${role}\\) / var\\(--surface-${role}-alpha, 0.12\\)\\)\\s*\\)`,
+        ),
       );
     }
   });

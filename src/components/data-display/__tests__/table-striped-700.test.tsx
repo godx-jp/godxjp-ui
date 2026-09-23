@@ -223,7 +223,7 @@ describe("gh#700 striped — frozen columns and precedence", () => {
   it("inside a Card a frozen body cell's opaque base is the CARD surface, not the page", () => {
     const anchor =
       '[data-slot="card"] .ui-data-table-surface tbody :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {';
-    expect(block(anchor)).toContain("hsl(var(--card-background, var(--card)))");
+    expect(block(anchor)).toContain("hsl(var(--card-background, var(--card)) / var(--card-alpha, 100%))");
     const { container } = renderWithUi(
       <div data-slot="card">
         <DataTable data={DATA} columns={COLUMNS} getRowId={(r) => r.id} striped />

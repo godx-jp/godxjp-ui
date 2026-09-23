@@ -103,7 +103,7 @@ describe("Segmented selected state — the stylesheet actually asks for it (gh#8
       /box-shadow:[\s\S]*var\(--segmented-item-selected-shadow,\s*var\(--shadow-md\)\)/,
     );
     expect(body).toMatch(
-      /inset 0 0 0 1px hsl\(var\(--segmented-item-selected-border-color,\s*var\(--input\)\)\)/,
+      /inset 0 0 0 1px\s*hsl\(\s*var\(--segmented-item-selected-border-color,\s*var\(--input\)\)\s*\/\s*var\(--input-alpha, 100%\)\s*\)/,
     );
     expect(body).toMatch(/font-weight:\s*var\(--segmented-item-selected-font-weight\)/);
   });

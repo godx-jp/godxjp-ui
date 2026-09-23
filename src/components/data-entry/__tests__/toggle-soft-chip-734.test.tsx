@@ -62,8 +62,12 @@ describe("Toggle soft (gh#734) — the chip has a REST fill", () => {
   });
 
   it("is the SAME fill Badge/Button secondary already paint (one family, one token)", () => {
-    expect(flat(controlCss)).toContain(
-      ".ui-button--secondary { background: hsl(var(--secondary));",
+    /* Both now read the role through a knob and its opacity companion (gh#901). What this pins
+     * is unchanged and is the point of the test: ONE role, read by both, neither hard-coding a
+     * colour. The knob spelling is asserted loosely so the next token change does not read as a
+     * behaviour change. */
+    expect(flat(controlCss)).toMatch(
+      /\.ui-button--secondary \{ background: var\( --button-secondary-background, hsl\(var\(--secondary\)/,
     );
     // The two read the same role; neither hard-codes a colour.
     expect(flat(controlCss)).toMatch(/\.ui-toggle-soft \{[^}]*hsl\(var\(\s*--secondary\)\)/);
@@ -83,7 +87,7 @@ describe("Toggle soft (gh#734) — the chip has a REST fill", () => {
     expect(hoverSoft).toBeGreaterThan(hoverAll); // same specificity — source order decides
     expect(pressed).toBeGreaterThan(hoverSoft); // …so a pressed chip keeps its pressed fill
     expect(css).toContain(
-      ".ui-toggle-soft:hover { background: var(--toggle-soft-hover-background, hsl(var(--secondary-hover)));",
+      ".ui-toggle-soft:hover { background: var( --toggle-soft-hover-background, hsl(var(--secondary-hover) / var(--secondary-hover-alpha, 100%)) );",
     );
     // NOT Button's translucent `--secondary / 0.8`: a chip row sits on the page AND in a Card.
     expect(css).not.toMatch(/\.ui-toggle-soft:hover \{[^}]*--secondary\s*\/\s*0\.8/);

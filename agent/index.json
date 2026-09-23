@@ -4,7 +4,7 @@
     "components": 171,
     "patterns": 20,
     "rules": 50,
-    "tokens": 2019,
+    "tokens": 2070,
     "vocabulary": 14
   },
   "files": [
@@ -55,9 +55,9 @@
   "tokenTiers": {
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
-      "component": 1719,
-      "foundation": 202,
-      "semantic": 98
+      "component": 1756,
+      "foundation": 211,
+      "semantic": 103
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",
     "semantic": "named roles that follow the seeds — --ring, --text-link, --overlay-background"
