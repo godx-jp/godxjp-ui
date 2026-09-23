@@ -107,7 +107,9 @@ describe("Attachments stylesheet — every slot has a rule, every knob has a rea
   });
 
   it("keeps every offset logical, so the tray flips whole under dir=rtl", () => {
-    const section = css.slice(css.indexOf(".ui-attachments"), css.indexOf(".ui-combobox-content"));
+    // Dead `.ui-combobox-*` (gh#879, residue of a component deleted in 49c4785d) was the
+    // boundary here; `.ui-password-strength` is what now immediately follows the section.
+    const section = css.slice(css.indexOf(".ui-attachments"), css.indexOf(".ui-password-strength"));
     expect(section).not.toMatch(/(?:^|[\s;{])(?:margin|padding|inset|border)-(?:left|right)\s*:/m);
     expect(section).not.toMatch(/(?:^|[\s;{])(?:left|right)\s*:/m);
   });

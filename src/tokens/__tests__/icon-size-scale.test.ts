@@ -328,12 +328,10 @@ describe("icon size — tier 2, the per-instance escape hatch (gh#326)", () => {
    *
    * The list may only SHRINK. A new literal-sized icon rule fails this test.
    */
-  // One entry, and it is not a missing token — it is DEAD CSS. Nothing renders `.ui-combobox-*`:
-  // the ten rules in data-entry-layout.css style a component that no longer exists (the ARIA
-  // `role="combobox"` on TreeSelect/TimePicker is unrelated, and applies no class). Giving a knob
-  // to a rule nothing renders would document a capability the library does not have, so it stays
-  // listed here until the dead block is removed. See the follow-up issue.
-  const KNOWN_UNREACHABLE = ["src/styles/data-entry-layout.css .ui-combobox-caret 0.9rem"];
+  // `.ui-combobox-caret` (and the rest of the dead `.ui-combobox-*` block it lived in) was DEAD
+  // CSS — nothing rendered it, the component was deleted in 49c4785d — and was removed in gh#879,
+  // so the list is empty again rather than carrying a knob for a rule that no longer exists.
+  const KNOWN_UNREACHABLE: string[] = [];
 
   it("no NEW icon rule bakes in a literal size (ratchet, may only shrink)", () => {
     const found = new Set<string>();

@@ -137,7 +137,10 @@ function GrantCell({ granted }: { granted: boolean }) {
 }
 
 // 固定列（先頭 = 権限）— スクロールする本体が下を通るので不透明背景 + トークン端。
-const PIN_START = "sticky start-0 z-20 bg-inherit border-e border-border";
+// `.ui-permission-matrix-pin` is the packaged component's own class (gh#874 fixed its opaque
+// base + tone/hover/selected compositing in `data-display-layout.css`) — reused here rather than
+// hand-rolled so this showcase gets the identical answer instead of drifting from it again.
+const PIN_START = "ui-permission-matrix-pin";
 
 export default function Demo() {
   const [compareA, setCompareA] = React.useState("editor");
@@ -225,11 +228,11 @@ export default function Demo() {
             </CardAction>
           </CardHeader>
           <CardContent flush>
-            <div className="overflow-x-auto">
+            <div className="ui-permission-matrix overflow-x-auto">
               <Table className="min-w-[760px]">
                 <TableHeader className="bg-secondary [&_tr]:bg-secondary">
                   <TableRow className="bg-secondary hover:bg-secondary">
-                    <TableHead className={cn(PIN_START, "w-64 min-w-64")}>権限</TableHead>
+                    <TableHead className={PIN_START}>権限</TableHead>
                     {ROLES.map((role) => {
                       const isCompared = !sameRole && compared.has(role.id);
                       return (
@@ -271,7 +274,7 @@ export default function Demo() {
                         data-tone={isDiffRow ? "warning" : undefined}
                         aria-label={isDiffRow ? `${perm.name} · 比較ロール間で差分あり` : undefined}
                       >
-                        <TableCell className={cn(PIN_START, "w-64 min-w-64 align-middle")}>
+                        <TableCell className={cn(PIN_START, "align-middle")}>
                           <Flex direction="col" className="leading-tight">
                             <Flex align="center" gap="xs">
                               <Text weight="medium">{perm.name}</Text>
