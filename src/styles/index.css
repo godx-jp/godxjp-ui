@@ -75,10 +75,6 @@
 @import "./navigation-layout.css";
 @import "./chart-layout.css";
 @import "./float-button-layout.css";
-/* AFTER every sheet that paints a surface, and the order is the whole mechanism: each rule in
- * translucency-fallbacks.css ties on specificity with the rule that owns its surface, so a tie is
- * broken by source order and this has to be the later one. See that file's header. */
-@import "./translucency-fallbacks.css";
 /* LAST, deliberately: Icon's (0,3,1) size rule TIES with the ListRow leading-slot rule, and a
  * tie is broken by order. See the header of icon-layout.css. */
 @import "./icon-layout.css";

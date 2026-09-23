@@ -41,9 +41,9 @@ const navLayout = read("../navigation-layout.css");
 const shellLayout = read("../shell-layout.css");
 const tableLayout = read("../table-layout.css");
 const alertLayout = read("../alert-layout.css");
-const fallbacks = read("../translucency-fallbacks.css");
 const indexCss = read("../index.css");
 const coreCss = read("../core.css");
+const glassTheme = read("../../../docs/themes/glassmorphism.css");
 
 const foundation = read("../../tokens/foundation.css");
 const cardTokens = read("../../tokens/components/card.css");
@@ -289,49 +289,58 @@ describe("gh#880 · the frozen --*-shadow mirrors", () => {
   });
 });
 
-describe("gh#880 · the fallbacks that make it shippable", () => {
+describe("gh#880 · the library ships no translucency fallback of its own any more", () => {
+  it("the file, its import, and the shared opaque knob are gone", () => {
+    expect(() => read("../translucency-fallbacks.css")).toThrow();
+    expect(indexCss).not.toMatch(/translucency-fallbacks/);
+    expect(coreCss).not.toMatch(/translucency-fallbacks/);
+    expect(foundation).not.toMatch(/--surface-solid-background/);
+  });
+});
+
+describe("gh#880-theme · the theme that made these surfaces translucent owns their fallbacks", () => {
   it("both branches exist, and they are the two the standard names", () => {
-    expect(fallbacks).toMatch(/@supports not \(backdrop-filter: blur\(1px\)\)/);
+    expect(glassTheme).toMatch(/@supports not \(backdrop-filter: blur\(1px\)\)/);
     // An OS accessibility setting, not a nicety.
-    expect(fallbacks).toMatch(/@media \(prefers-reduced-transparency: reduce\)/);
+    expect(glassTheme).toMatch(/@media \(prefers-reduced-transparency: reduce\)/);
   });
 
-  it("the reduced-transparency branch drops the blur as a PROPERTY, never as blur(0px)", () => {
-    const media = code(fallbacks).slice(code(fallbacks).indexOf("prefers-reduced-transparency"));
-    expect(media).toMatch(/backdrop-filter: none;/);
+  it("both branches declare custom properties only — no selector into a .ui-* class, no raw property", () => {
+    for (const query of [
+      "@supports not (backdrop-filter: blur(1px))",
+      "@media (prefers-reduced-transparency: reduce)",
+    ]) {
+      const at = code(glassTheme).indexOf(query);
+      expect(at, query).toBeGreaterThan(0);
+      const block = code(glassTheme).slice(at, code(glassTheme).indexOf("\n}\n", at) + 2);
+      expect(block).toMatch(/\[data-theme-style="glass"\]/);
+      expect(block).not.toMatch(/\.ui-/);
+      const decls = [...block.matchAll(/^\s{4}([a-zA-Z-]+):/gm)].map((m) => m[1]);
+      expect(decls.length).toBeGreaterThan(0);
+      for (const prop of decls) expect(prop.startsWith("--")).toBe(true);
+    }
+  });
+
+  it("the reduced-transparency branch drops the blur through the TOKEN, never `none` or `blur(0px)`", () => {
+    const media = code(glassTheme).slice(code(glassTheme).indexOf("prefers-reduced-transparency"));
+    expect(media).toMatch(/--topbar-backdrop-blur-size:\s*initial;/);
+    expect(media).not.toMatch(/backdrop-filter/);
     expect(media).not.toMatch(/blur\(0/);
   });
 
-  it("the opaque fallback is ONE shared knob, `initial`, with each surface's own role behind it", () => {
-    expect(foundation).toMatch(/--surface-solid-background:\s*initial;/);
-    expect(fallbacks).toMatch(/var\(--surface-solid-background, hsl\(var\(--card\)\)\)/);
-    expect(fallbacks).toMatch(/var\(--surface-solid-background, hsl\(var\(--background\)\)\)/);
-    expect(fallbacks).toMatch(/var\(--surface-solid-background, hsl\(var\(--popover\)\)\)/);
-    // The two surfaces whose resting fill is `transparent` read it with NO fallback, or the branch
-    // would paint them a colour they never had.
-    expect(fallbacks).toMatch(
-      /\.ui-topbar,\s*\.ui-data-table-surface \{\s*background-color: var\(--surface-solid-background\);/,
-    );
-  });
-
-  it("is imported AFTER every sheet that paints a surface — a tie is broken by order", () => {
-    for (const [name, css] of [
-      ["index.css", indexCss],
-      ["core.css", coreCss],
-    ] as const) {
-      const glassAt = css.indexOf('@import "./translucency-fallbacks.css"');
-      expect(glassAt, `${name} does not import translucency-fallbacks.css`).toBeGreaterThan(0);
-      for (const sheet of [
-        "shell-layout.css",
-        "control.css",
-        "card-layout.css",
-        "table-layout.css",
-        "dialog-layout.css",
-        "alert-layout.css",
-        "navigation-layout.css",
-      ]) {
-        expect(css.indexOf(`@import "./${sheet}"`), `${name}: ${sheet}`).toBeLessThan(glassAt);
-      }
+  it("every surface the theme makes translucent above is repainted opaque in both branches", () => {
+    for (const query of [
+      "@supports not (backdrop-filter: blur(1px))",
+      "@media (prefers-reduced-transparency: reduce)",
+    ]) {
+      const at = code(glassTheme).indexOf(query);
+      const block = code(glassTheme).slice(at, code(glassTheme).indexOf("\n}\n", at) + 2);
+      expect(block, query).toMatch(/--card-background:\s*0 0% 100%;/);
+      expect(block, query).toMatch(/--card:\s*0 0% 100%;/);
+      expect(block, query).toMatch(/--popover:\s*0 0% 100%;/);
+      expect(block, query).toMatch(/--popover-surface-background:\s*hsl\(0 0% 100%\);/);
+      expect(block, query).toMatch(/--tooltip-background:\s*hsl\(230 45% 12%\);/);
+      expect(block, query).toMatch(/--topbar-background-alpha:\s*100%;/);
     }
   });
 });

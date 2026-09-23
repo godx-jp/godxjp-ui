@@ -4,7 +4,7 @@
     "components": 171,
     "patterns": 20,
     "rules": 47,
-    "tokens": 2018,
+    "tokens": 2017,
     "vocabulary": 14
   },
   "files": [
@@ -56,7 +56,7 @@
     "component": "per-part knobs, --{component}-{part}-{property}; usually leave these alone",
     "counts": {
       "component": 1717,
-      "foundation": 203,
+      "foundation": 202,
       "semantic": 98
     },
     "foundation": "the seeds a consumer is invited to set — --primary, --background, --radius",

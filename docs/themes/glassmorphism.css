@@ -328,3 +328,44 @@
   --surface-info: hsl(214 70% 97% / 0.62);
   --surface-destructive: hsl(0 70% 97% / 0.62);
 }
+
+/* ── THE TWO FALLBACKS THIS THEME OWES BECAUSE IT MADE THESE SURFACES TRANSLUCENT ────────────
+ * docs/TOKEN-RESOLUTION.md §5: a theme that makes a surface translucent owns its own
+ * `prefers-reduced-transparency` and `@supports not (backdrop-filter)` fallbacks, because only the
+ * theme knows what opaque colour it wants — the library cannot guess it (see the removed
+ * `src/styles/translucency-fallbacks.css`, gh#880). Both branches below are CUSTOM-PROPERTY
+ * DECLARATIONS ONLY, same as every rule above: no `.ui-*` selector, no `background-color` or
+ * `backdrop-filter` written directly. Each token here is re-read by the SAME `src/styles/**` rule
+ * the top of this file already names for it, so restating it opaque under either condition
+ * repaints that surface through the existing rule, nothing new.
+ *
+ * Borders are deliberately NOT restated here — a translucent hairline does not carry text, so it
+ * is not the contrast hazard a translucent fill is; the library's own fallback never touched
+ * border-color either.
+ *
+ * `--topbar-backdrop-blur-size` is the one blur this theme actually turns on (every other surface
+ * here stays at the package default of `initial` = no blur), so it is the only knob reset under
+ * `reduced-transparency`; `@supports not (...)` needs no blur reset because an engine that cannot
+ * blur was never applying one. */
+@supports not (backdrop-filter: blur(1px)) {
+  [data-theme-style="glass"] {
+    --card-background: 0 0% 100%;
+    --card: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-surface-background: hsl(0 0% 100%);
+    --tooltip-background: hsl(230 45% 12%);
+    --topbar-background-alpha: 100%;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme-style="glass"] {
+    --card-background: 0 0% 100%;
+    --card: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-surface-background: hsl(0 0% 100%);
+    --tooltip-background: hsl(230 45% 12%);
+    --topbar-background-alpha: 100%;
+    --topbar-backdrop-blur-size: initial;
+  }
+}
