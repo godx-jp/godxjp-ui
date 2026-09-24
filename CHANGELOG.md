@@ -4,6 +4,58 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.3.0] - 2026-09-24
+
+MINOR. Everything here came out of an issue that was **declined** (gh#910). The feature it asked
+for is still declined; four real defects were found while proving why.
+
+### ✨ `data-value` on every tree row
+
+A row published its level, its position, its selected and expanded state — and nothing that said
+WHICH node it was. A consumer who wanted to bind a key of their own had to map
+`document.activeElement` back to a node through the internal label id.
+
+```tsx
+document.activeElement?.closest('[role="treeitem"]')?.dataset.value;
+```
+
+That is the escape hatch instead of a `spaceAction` prop: the library keeps one key language — the
+WAI-ARIA APG map, where `→` unfolds and `←` folds and neither fires `onValueChange` — and an app
+that wants a different binding drives `expandedValues` itself from a public contract.
+
+The worked recipe is a passing test rather than prose, in
+`src/components/data-display/__tests__/tree-keyboard.test.tsx`. **It must be
+`onKeyDownCapture`**: a bubbling handler on a wrapper runs _after_ the row's own, so
+`preventDefault` there is too late. The first version of that recipe was wrong and the test caught
+it before it was published.
+
+### 🐛 Lazy children now load for a branch the CONSUMER opened
+
+`requestLoad` had one caller — the tree's own expand path — so a branch expanded through the
+**controlled** `expandedValues` prop rendered open and never asked for its children. Open, empty,
+staying that way. The same hole ate `defaultExpandAll` on a lazy tree.
+
+This is the half of the recipe above that would have failed on a real folder navigator, which is
+almost always lazy. Re-opening a branch still cannot re-fetch it: `open → close → open` calls
+`loadData` exactly once.
+
+### 📖 The THIRD axis, named
+
+The catalog told consumers to keep SELECTION and CHECKS apart — "two axes, never drive one from the
+other" — and said nothing about selection vs EXPANSION, which is the pair gh#910 tripped on.
+`onValueChange` says which node a detail pane should show; `onExpandedValuesChange` says which
+branches are unfolded. A sibling pane listens to the first and ignores the second, so unfolding
+cannot reload it.
+
+With the diagnostic, which is the useful half: **if a pane reloads when a branch opens, it is being
+driven from the wrong event — not from a missing feature.**
+
+### 🧹 `expandedSet` is memoised on its content
+
+Found by the lint rule that the first draft of the lazy fix tried to silence. The set was rebuilt
+every render, so anything depending on it ran every render. The array is rebuilt every render
+either way, so its identity was never a usable key.
+
 ## [30.2.0] - 2026-09-24
 
 MINOR. **`Topbar overflow="menu"`** — a bar that does not fit folds into one cell instead of
