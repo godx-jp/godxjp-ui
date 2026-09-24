@@ -279,8 +279,20 @@
     color: hsl(var(--secondary-foreground));
   }
 
+  /* THE LAST OPACITY WASH IN THIS FILE, AND IT WENT THE WRONG WAY (gh#908). `--secondary / 0.8`
+   * composites toward whatever is BEHIND the button, so on this near-white canvas the hovered
+   * button became LESS distinguishable from the page than at rest, measured 1.09:1 → 1.07:1. The
+   * role this library already declares for the step — `--secondary-hover`, foundation.css:280,
+   * read this way at line 79 — goes the other way: 1.09:1 → 1.18:1. WCAG 2.2's Understanding of
+   * SC 1.4.11 names exactly this as the thing to watch: a hover effect must not "cause a component
+   * itself to lose sufficient contrast against adjacent colors".
+   *
+   * The label is never at risk either way here (14.18 → 14.46 washed, → 13.07 tokened, against a
+   * 4.5 floor). This is about the button's own edge against the page, and about the role being
+   * REACHABLE: a theme that sets `--secondary-hover` had no effect on this variant before, because
+   * the rule did not read it. */
   .ui-button--secondary:hover {
-    background: hsl(var(--secondary) / 0.8);
+    background: hsl(var(--secondary-hover) / var(--secondary-hover-alpha, 100%));
   }
 
   /* LINK — the one Button variant whose brand colour is INK on a page surface rather than a FILL.

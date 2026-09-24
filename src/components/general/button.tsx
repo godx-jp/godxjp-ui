@@ -33,7 +33,7 @@ const buttonVariants = cva("ui-button", {
       // `dashed` is `outline` with a dashed edge, so it shares `--button-outline-background`
       // rather than growing a knob of its own (gh#880).
       dashed: "ui-button--dashed hover:bg-accent hover:text-accent-foreground",
-      secondary: "ui-button--secondary text-secondary-foreground hover:bg-secondary/80",
+      secondary: "ui-button--secondary text-secondary-foreground",
       ghost: "ui-button--ghost hover:bg-accent hover:text-accent-foreground",
       // `text-primary` gone for the reason `bg-background` went in gh#880 and the checkbox's
       // `data-[state=checked]:bg-primary` went before it: a utility is layered AFTER components in

@@ -194,9 +194,22 @@ describe("gh#880 · nested control surfaces that had no knob of their own", () =
     for (const role of ["background", "secondary", "destructive", "primary"]) {
       expect(variants, role).not.toMatch(new RegExp(`(?<![:/])\\bbg-${role}\\b`));
     }
-    // The HOVER fills are deliberately untouched — a separate decision from the resting surface.
+    /* The HOVER fills were deliberately untouched by gh#880 — "a separate decision from the resting
+     * surface". That decision has since been taken for `secondary` and NOT for the rest, so the two
+     * are pinned apart rather than as one group.
+     *
+     * `hover:bg-secondary/80` is GONE (gh#908). It was an opacity wash, which composites toward
+     * whatever is behind the button: measured on the package canvas the hovered button went from
+     * 1.09:1 to 1.07:1 against the page — LESS distinguishable than at rest, which is the one thing
+     * WCAG 2.2's Understanding of SC 1.4.11 names about hover effects. `--secondary-hover`, the role
+     * this library already declares for the step, goes the other way (1.18:1). The utility also
+     * outranked the rule, so a theme setting that role reached this variant not at all.
+     *
+     * `hover:bg-accent` STAYS, and stays pinned: `--accent` is the shared hover wash for outline /
+     * ghost / dashed, it is not an opacity modifier, and moving it is its own measurement. Pinning
+     * it here is what stops it drifting while nobody is looking. */
     expect(variants).toMatch(/hover:bg-accent/);
-    expect(variants).toMatch(/hover:bg-secondary\/80/);
+    expect(variants).not.toMatch(/hover:bg-secondary\/80/);
   });
 
   it("the overlay surfaces that had no fill knob now have one, each `initial`", () => {
