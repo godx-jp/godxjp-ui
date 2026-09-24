@@ -6,6 +6,10 @@ import { Flex } from "../flex";
 /**
  * gh#916 — a label must not cost an element the role it already has.
  *
+ * `as` is a closed union (`div | span | ul | ol | li`), so the elements with a role to lose are
+ * exactly `ul`, `ol` and `li`. The first draft of this file tested `section` and `nav`; the
+ * release's typecheck rejected them, which is how the fix learned its own scope.
+ *
  * A named `Flex` defaults to `role="group"` because `FormField` lands its contract there: a range
  * from/to pair or a 年/月 combo is a group, and `group` is the WAI-ARIA container for exactly that.
  * The default was applied without looking at what `as` renders, so `<Flex as="ul" aria-label="…">`
@@ -37,20 +41,17 @@ describe("a labelled Flex keeps the role its element already has (gh#916)", () =
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
   });
 
-  it("leaves a named <section> as a region and a <nav> as navigation", () => {
+  it("leaves a labelled <li> a listitem, not a group inside its list", () => {
     render(
-      <>
-        <Flex as="section" aria-label="請求">
-          <span>x</span>
+      <ul aria-label="組織">
+        <Flex as="li" aria-label="Acme">
+          <span>Acme</span>
         </Flex>
-        <Flex as="nav" aria-label="サイド">
-          <span>y</span>
-        </Flex>
-      </>,
+      </ul>,
     );
 
-    expect(screen.getByRole("region", { name: "請求" }).tagName).toBe("SECTION");
-    expect(screen.getByRole("navigation", { name: "サイド" }).tagName).toBe("NAV");
+    expect(screen.getByRole("listitem", { name: "Acme" }).tagName).toBe("LI");
+    expect(screen.queryByRole("group")).toBeNull();
   });
 
   it("STILL defaults a named <div> to group — this is FormField's contract, not an accident", () => {

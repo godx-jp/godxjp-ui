@@ -58,7 +58,7 @@ export type {
 } from "../../props/components/layout.prop";
 
 /**
- * Tags whose OWN role must survive a label (gh#916).
+ * The tags `as` can render that ALREADY have a role (gh#916).
  *
  * A named `Flex` defaults to `role="group"` because `FormField` lands its contract here — see the
  * note at the call site. That default was applied without looking at what `as` renders, so
@@ -66,31 +66,16 @@ export type {
  * and every `<li>` inside became a `listitem` with no `list` to belong to. Reported from a real
  * consumer whose two e2e specs asserted a list and were right to.
  *
- * These elements already carry a role that a name IMPROVES rather than replaces: a named `section`
- * is a `region`, a named `nav` is a named `navigation`, a named `ul` is a named `list`. Overriding
- * any of them loses structure the browser gives for free — which is the whole reason to reach for
- * the semantic tag instead of a `div`.
+ * THE SET IS EXACTLY THREE because `as` is a closed union — `div | span | ul | ol | li` — and the
+ * first draft of this fix listed fifteen tags including `section` and `nav`. Those are not
+ * reachable, and writing them here would advertise an `as` this component does not accept. The
+ * release's typecheck is what caught it, on the test that used them.
  *
- * A `div` or a `span` has no role to lose, so the `group` default still applies there, which is
- * every case `FormField` actually uses.
+ * A name IMPROVES these roles rather than replacing them: a named `ul` is a named list, and a
+ * `listitem` only means anything inside one. `div` and `span` have no role to lose, so the `group`
+ * default still applies there — which is every case `FormField` actually uses.
  */
-const HAS_IMPLICIT_ROLE = new Set([
-  "ul",
-  "ol",
-  "dl",
-  "menu",
-  "nav",
-  "section",
-  "article",
-  "aside",
-  "main",
-  "header",
-  "footer",
-  "form",
-  "fieldset",
-  "table",
-  "figure",
-]);
+const HAS_IMPLICIT_ROLE = new Set(["ul", "ol", "li"]);
 
 export function Flex({
   as: Element = "div",
