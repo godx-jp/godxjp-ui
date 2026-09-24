@@ -1,10 +1,10 @@
 # @godxjp/ui
 
 > A Japanese-enterprise React design system: 171 components, 2070 design tokens,
-> 50 cardinal rules. This file is the entry point for AI agents. Catalog version 30.0.1.
+> 50 cardinal rules. This file is the entry point for AI agents. Catalog version 30.0.2.
 
 If your client can run a process, do not read these files — run the MCP server instead
-(`npx @godxjp/ui-mcp@30.0.1`). It is searchable and version-locked. These files exist for agents
+(`npx @godxjp/ui-mcp@30.0.2`). It is searchable and version-locked. These files exist for agents
 that can only fetch URLs.
 
 ## Start
@@ -26,7 +26,7 @@ that can only fetch URLs.
 ## Pinning
 
 Every URL above tracks `main`. To pin to the release a project actually installed, swap `main` for
-the tag: `.../godx-jp/godxjp-ui/v30.0.1/agent/...`. A catalog that does not match the installed
+the tag: `.../godx-jp/godxjp-ui/v30.0.2/agent/...`. A catalog that does not match the installed
 package describes props that are absent, or hides props that are present, and says nothing either way.
 
 Pinned catalogs only exist for releases whose tag actually contains `agent/`. If `…/v<version>/agent/index.json` returns 404, that release predates this catalog: read `…/main/…` instead and compare `index.json` → `version` against the package you have, so you at least know which way it drifted.
