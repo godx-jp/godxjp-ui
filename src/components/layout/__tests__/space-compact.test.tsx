@@ -118,4 +118,21 @@ describe("SpaceCompact — the antd Space.Compact port", () => {
     );
     expect(group()).toHaveAttribute("role", "presentation");
   });
+
+  it("wraps each child in exactly one `[data-slot=\"space-compact-item\"]` box, even when a child's own root is `display: contents` (gh#919)", () => {
+    renderWithUi(
+      <SpaceCompact fullWidth>
+        <NumberInput aria-label="間隔" defaultValue={2} />
+        <Select aria-label="単位" defaultValue="week" options={UNITS} />
+      </SpaceCompact>,
+    );
+    // Exactly one wrapper per React child — `.ui-select-root` (display: contents) and its
+    // `<template>` sibling must NOT show up as extra direct children the `> *` CSS used to hit.
+    const items = group().querySelectorAll(':scope > [data-slot="space-compact-item"]');
+    expect(items).toHaveLength(2);
+    expect(group().children).toHaveLength(2);
+    // The SELECT's wrapper holds the trigger through the display:contents root, not a bare div.
+    expect(items[1].querySelector('[data-slot="select-trigger"]')).toBeInTheDocument();
+    expect(items[1].querySelector("template")).toBeInTheDocument();
+  });
 });

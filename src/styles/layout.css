@@ -165,7 +165,7 @@
     inline-size: 100%;
   }
 
-  .ui-space-compact[data-full-width="true"] > * {
+  .ui-space-compact[data-full-width="true"] > [data-slot="space-compact-item"] {
     flex: 1 1 0%;
     min-inline-size: 0;
   }
@@ -174,7 +174,7 @@
     flex-direction: column;
   }
 
-  .ui-space-compact[data-orientation="vertical"][data-full-width="true"] > * {
+  .ui-space-compact[data-orientation="vertical"][data-full-width="true"] > [data-slot="space-compact-item"] {
     min-inline-size: auto;
     min-block-size: 0;
   }
@@ -182,20 +182,24 @@
   /* Collapse the doubled seam to one hairline, then raise whichever child currently owns
    * interaction so its boundary and focus ring paint over its neighbour instead of under it —
    * the same z-index-on-interaction technique antd's own Space.Compact uses. */
-  .ui-space-compact[data-orientation="horizontal"] > * + * {
+  .ui-space-compact[data-orientation="horizontal"] > [data-slot="space-compact-item"] + [data-slot="space-compact-item"] {
     margin-inline-start: calc(var(--control-border-width, var(--stroke-hairline)) * -1);
   }
 
-  .ui-space-compact[data-orientation="vertical"] > * + * {
+  .ui-space-compact[data-orientation="vertical"] > [data-slot="space-compact-item"] + [data-slot="space-compact-item"] {
     margin-block-start: calc(var(--control-border-width, var(--stroke-hairline)) * -1);
   }
 
-  .ui-space-compact > * {
+  .ui-space-compact > [data-slot="space-compact-item"] {
+    /* The box the seam, the stacking raise and the corner knobs all key on. One per child,
+     * whatever the child renders — see the gh#919 note in space-compact.tsx. */
+    display: flex;
     position: relative;
+    min-inline-size: 0;
   }
 
-  .ui-space-compact > *:hover,
-  .ui-space-compact > *:focus-within {
+  .ui-space-compact > [data-slot="space-compact-item"]:hover,
+  .ui-space-compact > [data-slot="space-compact-item"]:focus-within {
     z-index: 1;
   }
 
@@ -206,12 +210,12 @@
    * utility knob — a custom property nobody reads costs nothing, so setting both pairs on every
    * child is safe regardless of which family that child belongs to. Inline-axis only; see the
    * component file for why `orientation="vertical"` does not (yet) zero the block corners. */
-  .ui-space-compact[data-orientation="horizontal"] > *:not(:first-child) {
+  .ui-space-compact[data-orientation="horizontal"] > [data-slot="space-compact-item"]:not(:first-child) {
     --input-radius-start: 0;
     --control-trigger-radius-start: 0;
   }
 
-  .ui-space-compact[data-orientation="horizontal"] > *:not(:last-child) {
+  .ui-space-compact[data-orientation="horizontal"] > [data-slot="space-compact-item"]:not(:last-child) {
     --input-radius-end: 0;
     --control-trigger-radius-end: 0;
   }

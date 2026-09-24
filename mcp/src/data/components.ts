@@ -1023,6 +1023,7 @@ import { Button } from "@godxjp/ui/general";
       "DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
       "DO set `size` on each CHILD individually, not on SpaceCompact — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
       'DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.',
+      "`fullWidth` sets NO per-child flex ratio — same as antd, whose Space.Compact block style only stretches the ROW (`display: flex; width: 100%`), never the children. Two fields (NumberInput+Select, Input+Select) split the row evenly because both already default to their own full width; a Button beside a field keeps its own content width and the field absorbs the rest (Select+Button, Input+Button) — the same split you get outside SpaceCompact.",
       "DON'T expect corner-radius welding on `orientation=\"vertical\"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).",
     ],
     useCases: [
