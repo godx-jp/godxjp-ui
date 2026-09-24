@@ -1,6 +1,5 @@
 # @godxjp/ui — agent instructions
 
-
 ## Platform ↔ godx-ui development and acceptance (confirmed 2026-09-07)
 
 - `@godxjp/ui` is the shared UI framework. Platform is its first consumer and the real application used to develop, debug, and validate the framework. Keep business workflows, data, and permissions in Platform; fix reusable presentation and interaction behavior in godx-ui.
@@ -9,11 +8,11 @@
 - Rebuild godx-ui with `pnpm build` in its checkout after source changes (or use its watcher), then run `pnpm build` in Platform. Verify that Platform consumes the rebuilt local output. Keep committed dependency/patch configuration reproducible for other checkouts; do not commit machine-specific absolute links.
 - Acceptance is based on passing the required local checks, relevant framework tests, and real Platform browser/E2E verification, including responsive screenshots for UI changes. A build alone is not workflow acceptance. Record exact commands, results, commits, and evidence in the owning issues; preserve existing redesign reviewer and regression-test requirements.
 - Once local acceptance passes and the fix is integrated, close the resolved issues. Do not keep an otherwise completed issue open solely because GitHub Actions is queued or running. Do not wait for CI, a registry publication, or a release build to continue development or to close a locally verified issue.
-- **How an issue is closed, not just when (gh#620).** The rule above says WHEN to close; this says HOW, and it was learned the expensive way — gh#503/#506/#507 were each closed and reopened four times, until the reporter opened an issue about the closing itself: *"when `closed` stops meaning `fixed`, we lose the ability to read the issue tracker at all, so we have to re-measure everything every release."*
+- **How an issue is closed, not just when (gh#620).** The rule above says WHEN to close; this says HOW, and it was learned the expensive way — gh#503/#506/#507 were each closed and reopened four times, until the reporter opened an issue about the closing itself: _"when `closed` stops meaning `fixed`, we lose the ability to read the issue tracker at all, so we have to re-measure everything every release."_
   - **Closing as FIXED requires a number.** Paste the new measurement, or the release that carries the fix, in the closing comment — one line, e.g. `fixed in 23.4.9: unchecked dot 4/4 → 0/6`. A reporter who measured the defect must be able to see it move without re-running their suite.
   - **If the reporter's number will NOT change, it is a REFUSAL, not a fix.** Label it `wontfix`, close it `not planned`, and say so in one sentence with the reason. A clear refusal is more useful than a quiet close, and dressing a refusal up as a fix is what cost the four reopenings.
   - **A fix merged to `main` is not a fix the reporter has.** If the artefact they run comes from the registry — the package, `scripts/ui-audit.mjs` — say plainly that it is unreleased, or release it. If what changed is CI-only and never reaches them, say that instead of implying a release.
-  - **A process complaint about your own closing behaviour is closed like anything else — on DELIVERY, not on a promise.** The first draft of this rule said "leave the close to the reporter", and applying it showed that to be wrong: an issue that is fully resolved and released but left open forever misreports the tracker exactly as badly as a close that wasn't a fix, which is the thing gh#620 was about. The standard lifecycle is *resolve → deliver → communicate → close → reopen on recurrence* (ISO/IEC 20000-1 service management; the same shape as ITIL incident closure and GitHub's own `closed as completed`, where reopening costs nothing and stays the reporter's right). So: do not close it while it is unaddressed, and never on an intention — close it once the change is **shipped in a release the reporter can install**, with the release number and the evidence in the closing comment, and say plainly that reopening is welcome if the behaviour returns.
+  - **A process complaint about your own closing behaviour is closed like anything else — on DELIVERY, not on a promise.** The first draft of this rule said "leave the close to the reporter", and applying it showed that to be wrong: an issue that is fully resolved and released but left open forever misreports the tracker exactly as badly as a close that wasn't a fix, which is the thing gh#620 was about. The standard lifecycle is _resolve → deliver → communicate → close → reopen on recurrence_ (ISO/IEC 20000-1 service management; the same shape as ITIL incident closure and GitHub's own `closed as completed`, where reopening costs nothing and stays the reporter's right). So: do not close it while it is unaddressed, and never on an intention — close it once the change is **shipped in a release the reporter can install**, with the release number and the evidence in the closing comment, and say plainly that reopening is welcome if the behaviour returns.
 - The user has authorized push and merge for this Platform/godx-ui work. Do not ask again for that same authorization. Let normal GitHub Actions run asynchronously and check them occasionally at meaningful checkpoints while working; do not continuously poll or block on them. Respect branch protection; if it prevents merging, report the pending merge and continue independent work rather than bypassing it.
 - Never force-push shared branches or suppress their CI with `[skip ci]`. Local acceptance does not mean CI is green. If a later check reveals a failure caused by this work, fix it forward with priority and reopen/link an issue as needed. Package publication and deployment are separate actions, not prerequisites for this local development loop.
 - This decision supersedes older instructions requiring renewed push/merge approval or waiting for CI for this authorized work. A newer explicit user restriction takes precedence.
@@ -46,12 +45,21 @@ any repository in any language. This repo's numbers live in `references/this-rep
 generates its own with the ten-step protocol in `references/adopting.md`; the incidents that
 justify the rules are in `references/case-studies.md`.
 
-| phase | model | may run | banned |
-| --- | --- | --- | --- |
-| **1 · classify** — read every issue, group by blast radius A–E, build the tracking list | any | nothing | everything |
-| **2 · implement** many at once, write the tests + every edge case | sonnet is fine | only the tests you just wrote | full suite · `verify:ci:static` · `ship:surface` · any browser sweep |
-| **3 · review** the diff and the requirement flow, audit the TESTS not just the code | opus / fable | only tests the change reaches | same |
-| **4 · batch run** — once, for the whole batch | any | everything | running it **unasked** |
+| phase                                                                                   | model          | may run                       | banned                                                               |
+| --------------------------------------------------------------------------------------- | -------------- | ----------------------------- | -------------------------------------------------------------------- |
+| **1 · classify** — read every issue, group by blast radius A–E, build the tracking list | any            | nothing                       | everything                                                           |
+| **2 · implement** many at once, write the tests + every edge case                       | sonnet is fine | only the tests you just wrote | full suite · `verify:ci:static` · `ship:surface` · any browser sweep |
+| **3 · review** the diff and the requirement flow, audit the TESTS not just the code     | opus / fable   | only tests the change reaches | same                                                                 |
+| **4 · batch run** — once, for the whole batch                                           | any            | everything                    | running it **unasked**                                               |
+
+**A merged agent worktree must be REMOVED, in the same step as the merge.** `isolation: "worktree"`
+is a tool PARAMETER, never a request in the brief — and the copy is rented, not given. Kill the
+worktree's preview server first (gh#875 puts it on `6100 + sha256(top) % 900`, so it is not on 6008
+and it outlives the worktree), prove the tree is clean AND its HEAD is already an ancestor of
+`main`, then `git worktree remove --force` + `git worktree prune`. Leave `locked` ones alone.
+Measured 2026-09-24 when nobody did this: **64 worktrees, 30 GB, 46 `node_modules` trees and 4
+orphaned servers, the oldest up over a day** — 0 of the 61 agent copies held work that was not
+already on `main`. Commands and the full measurement: `agent-dev-loop/references/this-repo.md`.
 
 **Phase 4 runs only when the owner asks for it.** No counter, no threshold, no automatic case —
 silence is not a yes. A batch that feels too big to review means stop taking work into it, not
@@ -61,10 +69,10 @@ reach for the suite.
 
 The owner, after asking for one padding fix and watching six minutes of gates:
 
-> *"việc code là mày cứ code mà thôi!! ko phải lúc đéo nào cũng run test full thế này! code xong chỉ
+> _"việc code là mày cứ code mà thôi!! ko phải lúc đéo nào cũng run test full thế này! code xong chỉ
 > review diff thôi chứ?! rồi khi hoàn thiện nhiều issue xong rồi mới được phép hỏi user run test cho
 > toàn bộ issue 1 lần duy nhất chứ đéo phải mỗi lần đều run fulltest! tốn token mà đéo cần thiết tốn
-> thời gian!"*
+> thời gian!"_
 
 **Per issue: code, run the T1 rows the diff maps to, review the diff, move on.** That is it.
 
@@ -72,18 +80,18 @@ The owner, after asking for one padding fix and watching six minutes of gates:
 small-batch guidance; a batch you cannot check is itself a defect) — post ONE message: the issues,
 the rows you ran per issue with their times, and the question:
 
-> *Chạy batch run một lần cho cả N issue này không? (`ship:surface` ~70s [+ `check:frame-overflow`
-> 52s vì có layout] [+ `pnpm test` ~375s])*
+> _Chạy batch run một lần cho cả N issue này không? (`ship:surface` ~70s [+ `check:frame-overflow`
+> 52s vì có layout] [+ `pnpm test` ~375s])_
 
 - **Yes** → run it ONCE for the whole batch. `pnpm ship:surface` already contains `regen` +
   `verify:ci:static` + `check:frame-contracts` — do not also run those separately. Add the full
-  frame sweep only if the batch moved layout, and `pnpm test` only if he says *"full"*. Record the
+  frame sweep only if the batch moved layout, and `pnpm test` only if he says _"full"_. Record the
   results in the issues, open the PR.
 - **No** → open the PR anyway. `pr-lane` is the merge gate and `ci.yml` on `main` is the verdict; a
   red `main` is fixed forward with priority. **Never report a skipped batch run as passed.**
 - **axe / VoiceOver are NOT in the bundle.** A yes to the batch run is not a yes to axe — he must
-  name it. (Codex forced this distinction: *"'owner said yes' is not the same as 'owner
-  specifically requested axe'; your own instruction says 'never an agent'."*)
+  name it. (Codex forced this distinction: _"'owner said yes' is not the same as 'owner
+  specifically requested axe'; your own instruction says 'never an agent'."_)
 
 A T1 failure is never waived by the batch run being optional.
 

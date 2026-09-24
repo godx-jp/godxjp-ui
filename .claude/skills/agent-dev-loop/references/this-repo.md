@@ -24,11 +24,11 @@ series); `--only <slug>` narrows it to ~18s for a diff-scoped run and refuses `-
 
 ## Aliases expanded
 
-| alias | what it really runs | cost |
-| --- | --- | --- |
-| `ship:surface` | `regen && verify:ci:static && check:frame-contracts` | **~70s** |
-| `verify:ci:static` | a **46-command `&&` chain** | 60s |
-| `check:frame-contracts` | 7 gates | 5.5s |
+| alias                   | what it really runs                                  | cost     |
+| ----------------------- | ---------------------------------------------------- | -------- |
+| `ship:surface`          | `regen && verify:ci:static && check:frame-contracts` | **~70s** |
+| `verify:ci:static`      | a **46-command `&&` chain**                          | 60s      |
+| `check:frame-contracts` | 7 gates                                              | 5.5s     |
 
 `ship:surface` was prescribed **per public export** by the docs, a skill and a saved memory. It is
 batch-only. Expand aliases before running them.
@@ -45,25 +45,25 @@ cannot find them and drags in everything else. Do not use it here. Select by pat
 
 ## Lint cache: **SAFE**
 
-`eslint.config.js` uses `tseslint.configs.recommended` — *not* `recommendedTypeChecked` — with no
+`eslint.config.js` uses `tseslint.configs.recommended` — _not_ `recommendedTypeChecked` — with no
 `project`/`projectService` and no import-resolution rules, so nothing is type-aware or cross-file.
 `--cache --cache-strategy content` is sound, including in CI. **12.9s → 1.8s warm.**
 
 ## Path → gate map
 
-| changed path | run |
-| --- | --- |
-| any `.ts/.tsx` in `src/` | `typecheck` · `audit` · `eslint <files>` |
-| `src/components/<group>/<name>.tsx` | + `vitest run src/components/<group>/__tests__/<name>` |
-| `src/styles/*.css` | `audit` · `vitest run src/styles/__tests__/<name>` |
-| `src/tokens/**` | `check:token-tiers` · `vitest run src/tokens/__tests__` · `regen` **twice** (gh#847) |
-| a public prop / export | `regen` · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **not `ship:surface`** |
-| `package.json` exports, a barrel, tsup entries | + `build && check:packed-public-contract` |
-| `mcp/**` | `typecheck:mcp` · `cd mcp && vitest run` |
-| `docs/**` | `typecheck:docs` — **not `typecheck`**, which covers `src/` only — · `audit` · `check:example-imports` |
+| changed path                                                  | run                                                                                                                                                                                                                              |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| any `.ts/.tsx` in `src/`                                      | `typecheck` · `audit` · `eslint <files>`                                                                                                                                                                                         |
+| `src/components/<group>/<name>.tsx`                           | + `vitest run src/components/<group>/__tests__/<name>`                                                                                                                                                                           |
+| `src/styles/*.css`                                            | `audit` · `vitest run src/styles/__tests__/<name>`                                                                                                                                                                               |
+| `src/tokens/**`                                               | `check:token-tiers` · `vitest run src/tokens/__tests__` · `regen` **twice** (gh#847)                                                                                                                                             |
+| a public prop / export                                        | `regen` · `check:prop-vocabulary` · `check:mcp-sync` · `check:mcp-orphans` · `check:component-api-manifest` · `check:registry` — **not `ship:surface`**                                                                          |
+| `package.json` exports, a barrel, tsup entries                | + `build && check:packed-public-contract`                                                                                                                                                                                        |
+| `mcp/**`                                                      | `typecheck:mcp` · `cd mcp && vitest run`                                                                                                                                                                                         |
+| `docs/**`                                                     | `typecheck:docs` — **not `typecheck`**, which covers `src/` only — · `audit` · `check:example-imports`                                                                                                                           |
 | `docs/**` **that uses a prop/export added in the same batch** | `pnpm build` FIRST, then `typecheck:docs`. It resolves `@godxjp/ui/*` through `dist/`, so a docs page consuming a brand-new prop fails against yesterday's build with an error that looks like the page's fault, not the build's |
-| `.github/workflows/**`, `scripts/check-*.mjs` | `check:gate-coverage` · `vitest run src/test/__tests__` |
-| anything that moves layout | `check:frame-overflow --only <slug>` |
+| `.github/workflows/**`, `scripts/check-*.mjs`                 | `check:gate-coverage` · `vitest run src/test/__tests__`                                                                                                                                                                          |
+| anything that moves layout                                    | `check:frame-overflow --only <slug>`                                                                                                                                                                                             |
 
 **The test unit is the COMPONENT, not the group.** `src/components/data-entry/__tests__` is **231
 files** (3–4 min); the `select` prefix is 19 files (22.6s).
@@ -101,3 +101,44 @@ hook refusing `pnpm test`, a bare `vitest run`, `ship:surface`, `verify:ci:stati
 `check:frame-overflow` and `check:contrast`. Must match at command position, must **not** demand a
 path (`vitest run --changed` is a legitimate narrow form), and must name its human-only escape
 hatch in the block message.
+
+## Sub-agent worktrees — the commands, and what they cost when nobody reclaims them
+
+The portable skill says isolation is rented. Here is the rent, measured on the owner's machine,
+**2026-09-24**, after several multi-agent batches had run without a cleanup step:
+
+```
+64 worktrees · 30 GB · 46 node_modules trees
+4 orphaned `vite preview` servers, the oldest up 1 day 46 minutes
+load average 24.42 / 15.64 / 11.80 with none of this session's work running
+```
+
+61 were finished agent runs. Every one was checked before deletion: **0 held a commit that was not
+already on `main`, 0 held uncommitted changes.** Removing 56 took `.claude/worktrees` from
+**30 GB to 833 MB**, and `mds` (Spotlight) plus a stray `vite` had been the machine's top CPU
+consumers for a day — the disk is the smaller half of the bill.
+
+**Launch:** `isolation: "worktree"` as an Agent **tool parameter**. A sentence in the brief is not
+the same thing; see the memory `agents-need-worktree-isolation` for the two incidents that proved
+it, one of which pushed an agent's mid-flight file to `main`.
+
+**Reclaim, in the same step as the merge:**
+
+```sh
+# 1. the server first — gh#875 gives a worktree `6100 + sha256(top) % 900`, so it is NOT on 6008
+#    and it survives the worktree it served
+ps -eo pid,command | grep '[v]ite.*preview/vite.config'
+
+# 2. prove the worktree holds nothing — BOTH, per worktree
+git -C "$wt" status --porcelain                                   # must be empty
+git merge-base --is-ancestor "$(git -C "$wt" rev-parse HEAD)" main # must succeed
+
+# 3. remove, then prune the registry
+git worktree remove --force "$wt" && git worktree prune
+```
+
+`git worktree list` marks held copies `locked`; leave those alone, the lock is a decision. It also
+marks dead ones `prunable`.
+
+**The trigger, if the per-merge step was missed:** `git worktree list | wc -l` in double digits.
+That number is the debt, not the workload.

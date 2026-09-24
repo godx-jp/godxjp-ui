@@ -23,20 +23,20 @@ a working session spent re-proving things the diff could not have broken.
 
 This is not a local preference. **Test Impact Analysis** and **Predictive Test Selection** (Meta,
 [arXiv 1810.05286](https://arxiv.org/pdf/1810.05286)) exist because running everything on every
-change is unaffordable. Google's test-size taxonomy says it plainly: *engineers don't wait for slow
-tests.* DORA gives CI a **ten-minute budget** and prescribes splitting what exceeds it into a
+change is unaffordable. Google's test-size taxonomy says it plainly: _engineers don't wait for slow
+tests._ DORA gives CI a **ten-minute budget** and prescribes splitting what exceeds it into a
 separate build.
 
 ---
 
 ## The four phases
 
-| phase | what you do | may run | **banned** |
-| --- | --- | --- | --- |
-| **1 · Classify** | read every request, group by blast radius, build the tracking list | nothing | everything |
-| **2 · Implement** | build many items at once, write the tests and their edge cases | the tests you wrote **+ the three-term set** | the full suite · any aggregate verification alias · any browser/visual sweep · anything whole-repo and slow |
-| **3 · Review** | read the diff and the requirement flow; audit the tests | the **same three-term set** | same as phase 2 |
-| **4 · Verify the batch** | one pass, for the whole batch | everything, once | running it **unasked** |
+| phase                    | what you do                                                        | may run                                      | **banned**                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **1 · Classify**         | read every request, group by blast radius, build the tracking list | nothing                                      | everything                                                                                                  |
+| **2 · Implement**        | build many items at once, write the tests and their edge cases     | the tests you wrote **+ the three-term set** | the full suite · any aggregate verification alias · any browser/visual sweep · anything whole-repo and slow |
+| **3 · Review**           | read the diff and the requirement flow; audit the tests            | the **same three-term set**                  | same as phase 2                                                                                             |
+| **4 · Verify the batch** | one pass, for the whole batch                                      | everything, once                             | running it **unasked**                                                                                      |
 
 **The ban in phases 2 and 3 is absolute, not a preference.** A check you run there is a check you
 will run again in phase 4; the only thing it bought was wall clock.
@@ -59,23 +59,23 @@ or discover on day three.
 
 Size predicts nothing. Radius decides what verification the change will need.
 
-| class | the question it answers | typical members |
-| --- | --- | --- |
-| **A · leaf** | touches one unit and nothing else | one component/module and its own tests |
-| **B · shared surface** | many things read it | a token, a shared stylesheet, a utility, a base class |
-| **C · public contract** | consumers depend on the shape | an exported symbol, a prop, a package entry point, a schema |
-| **D · presentation** | only a rendered surface can prove it | anything that moves a box, a colour, a focus ring |
-| **E · infrastructure** | it decides how everything else is checked | CI config, a gate script, a generator, build config |
+| class                   | the question it answers                   | typical members                                             |
+| ----------------------- | ----------------------------------------- | ----------------------------------------------------------- |
+| **A · leaf**            | touches one unit and nothing else         | one component/module and its own tests                      |
+| **B · shared surface**  | many things read it                       | a token, a shared stylesheet, a utility, a base class       |
+| **C · public contract** | consumers depend on the shape             | an exported symbol, a prop, a package entry point, a schema |
+| **D · presentation**    | only a rendered surface can prove it      | anything that moves a box, a colour, a focus ring           |
+| **E · infrastructure**  | it decides how everything else is checked | CI config, a gate script, a generator, build config         |
 
 ### And a SECOND axis, which A–E cannot see
 
-A–E ask *how much did you touch*. These ask **what happens if it is wrong, and would anyone find
+A–E ask _how much did you touch_. These ask **what happens if it is wrong, and would anyone find
 out**. Add them if your repo has them; a library usually does not, a product usually does.
 
-| class | definition | the rule it forces |
-| --- | --- | --- |
-| **F · irreversible write** | a deploy writes this into live data, unattended, whenever someone ships | may re-apply **system-owned** invariants; **never** re-applies **operator-owned** state. Screening question: *is it safe at the busiest hour of the week?* If the answer depends on when you deploy, it is not safe. |
-| **G · believed number** | produces a figure that will later be trusted without being re-derived | the producer never states its own authority; a **fabricated** value is worse than a missing one, because it will be believed. Every such write needs a surface that **actively wakes a person** — not a log line, not a dashboard someone could open. |
+| class                      | definition                                                              | the rule it forces                                                                                                                                                                                                                                    |
+| -------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F · irreversible write** | a deploy writes this into live data, unattended, whenever someone ships | may re-apply **system-owned** invariants; **never** re-applies **operator-owned** state. Screening question: _is it safe at the busiest hour of the week?_ If the answer depends on when you deploy, it is not safe.                                  |
+| **G · believed number**    | produces a figure that will later be trusted without being re-derived   | the producer never states its own authority; a **fabricated** value is worse than a missing one, because it will be believed. Every such write needs a surface that **actively wakes a person** — not a log line, not a dashboard someone could open. |
 
 The distinction that makes G its own class: a presentation defect is **seen and reported**; a
 believed-number defect reports **healthy**. See `references/case-studies.md`.
@@ -85,7 +85,7 @@ believed-number defect reports **healthy**. See `references/case-studies.md`.
 One row per item: `id · class · files it will touch · the measurement that proves it fixed · status`.
 
 The measurement column is not decoration. An item closes on a **number**, and deciding that number
-*before* coding is what stops a fix being declared by eye.
+_before_ coding is what stops a fix being declared by eye.
 
 ---
 
@@ -106,7 +106,7 @@ related(diff)  ∪  glob-mapping(diff)  ∪  ALL source-scanning gates
 >
 > A gate that reads source text (rather than importing the module) has no edge in the import graph.
 > Ask a selector like `<runner> related <file>` for the tests covering that file and it answers
-> *"No test files found"* — and **exits 0**. It does not fail silently; it emits a success signal,
+> _"No test files found"_ — and **exits 0**. It does not fail silently; it emits a success signal,
 > which is worse. Verified independently in two unrelated repositories, one JS/TS and one PHP.
 >
 > **A selector that answers "nothing to run → exit 0" is a trap.** When scope cannot be derived,
@@ -127,8 +127,28 @@ A test proving only the happy path is why defects ship with a green tick. For wh
 ### Sub-agents
 
 Give each one an isolated working copy — they otherwise share your checkout, and a release-time
-`add -A` has swallowed an agent's work-in-progress. Put the phase-2 ban list in **every** brief,
-verbatim: an agent that was not told will run the suite.
+`add -A` has swallowed an agent's work-in-progress. Make it a parameter of however you launch the
+agent, not a sentence in its brief: an instruction is a request, and an agent can touch the shared
+tree on its way to honouring it. Put the phase-2 ban list in **every** brief, verbatim: an agent
+that was not told will run the suite.
+
+**And reclaim the copy when its branch lands.** Isolation is rented, not given. An isolated copy is
+a second checkout _and_ a second dependency tree, and both keep costing after the work is merged —
+disk, a filesystem watcher per tree, and any dev server the agent started, which outlives the copy
+it was serving because nothing connects the two. Left alone they accumulate silently: nothing fails,
+the machine just gets slower, and the cause is invisible because none of it is running your work.
+
+So removal belongs to the merge step, not to "later":
+
+1. Stop whatever the agent left running for that copy. A per-copy server is on a port you never
+   look at, so it will not be noticed; find it by process, not by checking the port you use.
+2. Prove the copy holds nothing: no uncommitted changes, and its HEAD already an ancestor of the
+   integration branch. Both, per copy — the first without the second deletes merged-looking work.
+3. Remove it, then prune whatever registry your VCS keeps of these copies.
+4. Leave anything explicitly marked as held/locked alone. That mark is somebody's decision.
+
+A periodic sweep is a fallback, not the plan. If a listing of these copies runs to double digits,
+step 1–3 already stopped happening and the sweep is just paying the debt late.
 
 ---
 
@@ -172,10 +192,10 @@ currently broken becomes tempting to attribute to it. **List what the new cause 
 before you accept it.**
 
 Worked example, and it was aimed at me. A peer found that a change of mine landed **48 minutes**
-before its build went red, with a mechanism that fits precisely. It recorded that as a *dated
-external contributing cause with the mechanism spelled out* and explicitly **not as proof** — one
+before its build went red, with a mechanism that fits precisely. It recorded that as a _dated
+external contributing cause with the mechanism spelled out_ and explicitly **not as proof** — one
 sample inside a 48-minute window is a coincidence with a plausible story attached. Then it checked
-the two nights *before* my change existed, found the same degradation there, and kept both
+the two nights _before_ my change existed, found the same degradation there, and kept both
 mechanisms separate.
 
 Had it accepted the tidier explanation, a real problem inside its own repository would have been
@@ -199,16 +219,16 @@ Two questions, not one list:
 
 The second question is the one that gets skipped, and skipping it is silent.
 
-| family | (1) cannot observe | (2) observable only when pinned |
-| --- | --- | --- |
-| **interface** | paint · contrast · hit-target size · overflow · cascade resolution · focus geometry | text metrics under a fallback font; layout at a width nobody runs |
-| **product / service** | — | **business time** (one timezone proves nothing when "today" is not global) · **bytes reaching a physical device** (encoding, and the library version that decides them) · **cryptographic signatures** (golden fixtures) · **database constraints under real concurrency** |
+| family                | (1) cannot observe                                                                  | (2) observable only when pinned                                                                                                                                                                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **interface**         | paint · contrast · hit-target size · overflow · cascade resolution · focus geometry | text metrics under a fallback font; layout at a width nobody runs                                                                                                                                                                                                          |
+| **product / service** | —                                                                                   | **business time** (one timezone proves nothing when "today" is not global) · **bytes reaching a physical device** (encoding, and the library version that decides them) · **cryptographic signatures** (golden fixtures) · **database constraints under real concurrency** |
 
 > #### A list that does not match your repo reads as "not applicable". It is not.
 >
 > This section used to be the interface row alone, presented as universal. In a repo with no UI an
 > agent reads it, finds nothing that applies, and concludes step 5 is **skippable** — when in fact
-> it owes *more*: freeze the clock and assert across **at least three timezones**; compare against a
+> it owes _more_: freeze the clock and assert across **at least three timezones**; compare against a
 > golden fixture; pin the library version to the one production runs, because a minor version can
 > change which characters fold and therefore which bytes a printer receives.
 >
@@ -232,9 +252,9 @@ and how, and which you deferred. A review nobody can read is a review nobody can
 ### What a full run IS and IS NOT
 
 **A full suite run is RELEASE EVIDENCE, bound to the exact commit being shipped.** It is not a
-ritual and it is not debt collection. *A run at one commit proves nothing about the next one.*
+ritual and it is not debt collection. _A run at one commit proves nothing about the next one._
 
-And *"we just ran the full suite"* is **never** the evidence. Release gates take the **latest
+And _"we just ran the full suite"_ is **never** the evidence. Release gates take the **latest
 attempt of the required check on the exact commit** — a newer cancelled run beats an older green
 one. Verified independently in both repositories that debated this file.
 
@@ -289,8 +309,8 @@ portable core; everything else is measurement.
 1. **Source-scanning gates are invisible to import-graph selectors.** Select them by path glob and
    run them unconditionally.
 2. **The reporting layer is the thing that lies — in three shapes, and you must check for all
-   three.** *Fails green*: a selector answers "nothing to run → exit 0". *Fails green from the
-   outside*: `continue-on-error` makes a red job report a green run. *Fails with no verdict*: a job
+   three.** _Fails green_: a selector answers "nothing to run → exit 0". _Fails green from the
+   outside_: `continue-on-error` makes a red job report a green run. _Fails with no verdict_: a job
    that hits its timeout reports **`cancelled`** and prints no summary at all — so the lane that is
    being pushed over its cap **by its own failures** destroys the evidence needed to fix them, and
    the word reads as though a human pressed cancel. Fail closed whenever scope cannot be derived,
@@ -302,6 +322,7 @@ portable core; everything else is measurement.
    window in which you can still read what is wrong closes while you are not looking. So the signal
    is the growing duration, not the eventual timeout: **the slope is the finding; the cap is only
    where it becomes visible.** One measured slope: 22, 26, 23, 21, 35, >60 minutes.
+
 3. **Expand and TIME an alias before running it.** Never trust a name. Aggregate aliases hide
    minutes behind one word, and nobody had expanded ours for months.
 4. **A SWEEP IS A MEASUREMENT, so validate the lens on a known-true case before believing its
@@ -334,6 +355,7 @@ portable core; everything else is measurement.
    mostly false positives is worse than silence: it costs everyone who reads it, and it teaches
    them to ignore the next one. **Two clean sweeps and two abandoned in one afternoon is a healthy
    ratio, not a failure.**
+
 5. **`sideEffects: false` DELETES a side-effect-only import, and every check stays green.**
    `import "./thing"` where nothing takes a binding is dropped by the bundler — that declaration is
    a promise that dropping it is safe. Typecheck, lint and build all pass, and the module is simply
@@ -350,46 +372,46 @@ portable core; everything else is measurement.
 7. **The diff is not the diff command alone** — include staged and untracked files.
 8. **The full suite is release evidence bound to a commit** — not a ritual, not a counter, and not
    the memory of having run it. Nothing but a person asking should start one.
-9. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at *command position*,
+9. **A ban enforced by pattern must not block the GOOD narrow forms.** Match at _command position_,
    not anywhere in the string — a guard that blocks reading a file whose name contains the tool is
    switched off the same day. Watch the reverse failure too: narrow forms like `--changed` or
    `related <file>` carry no path, so a rule demanding a path blocks the best options and pushes
-   people to the *wider* command that is not caught. And **name the escape hatch inside the block
+   people to the _wider_ command that is not caught. And **name the escape hatch inside the block
    message**: someone blocked without a visible door goes around it, and you lose the trace.
 10. **A timeout on a job and a timeout on the step inside it are not both live.** The smaller one
-   wins and the larger is dead configuration — with its justifying comment still attached, still
-   read as true. Check that the numbers agree, and prefer a shape where one slow unit cannot
-   consume the whole budget: a per-unit or matrix shape survives where one long job does not.
+    wins and the larger is dead configuration — with its justifying comment still attached, still
+    read as true. Check that the numbers agree, and prefer a shape where one slow unit cannot
+    consume the whole budget: a per-unit or matrix shape survives where one long job does not.
 11. **On a SHARED runner, the core count is not yours.** `availableParallelism()` reports the whole
-   box, not your job's slice, so a pool sized from it competes with every other repository on that
-   pool. Speeding your own gate up by tipping someone else's over is a cost moved somewhere harder
-   to diagnose. Cap parallelism when `CI` is set, and keep the fast pool for the developer machine.
+    box, not your job's slice, so a pool sized from it competes with every other repository on that
+    pool. Speeding your own gate up by tipping someone else's over is a cost moved somewhere harder
+    to diagnose. Cap parallelism when `CI` is set, and keep the fast pool for the developer machine.
 12. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
-   One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
-   scope is decided after the expensive step, every skipped job pays in full.
+    One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
+    scope is decided after the expensive step, every skipped job pays in full.
 13. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
-   twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
+    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
 14. **A GUARD THAT READS TEXT TREATS YOUR PROSE AS INPUT.** Its own comments, its fixtures and
-   its own error messages are inside the corpus it scans. Four separate instances in one session
-   in one repo: a pattern matched a directory name; another matched an explanatory sentence; a
-   detector matched its own comment; and a fixture written as a single-line string with an escaped
-   newline ended in a word character right before the token being anchored, which slid the match
-   and reported the fixture's own script names as non-existent commands. The first repair
-   reintroduced it, because the docblock explaining the trap **quoted** the escape sequence.
+    its own error messages are inside the corpus it scans. Four separate instances in one session
+    in one repo: a pattern matched a directory name; another matched an explanatory sentence; a
+    detector matched its own comment; and a fixture written as a single-line string with an escaped
+    newline ended in a word character right before the token being anchored, which slid the match
+    and reported the fixture's own script names as non-existent commands. The first repair
+    reintroduced it, because the docblock explaining the trap **quoted** the escape sequence.
 
-   Three rules: parse the **structure** (the YAML step, the AST, the import statement) rather than
-   grepping raw text; **strip comments before matching**; and in documentation, **describe rather
-   than quote** the thing you are matching on. Verified here by planting a matching string in a
-   gate's own comment — it was correctly ignored, because that gate strips comments before it
-   matches. That is the property to check, not to assume.
+Three rules: parse the **structure** (the YAML step, the AST, the import statement) rather than
+grepping raw text; **strip comments before matching**; and in documentation, **describe rather
+than quote** the thing you are matching on. Verified here by planting a matching string in a
+gate's own comment — it was correctly ignored, because that gate strips comments before it
+matches. That is the property to check, not to assume.
 
 15. **A fail-fast chain of N gates is not N gates.** One red at position 3 makes 4…N not exist for
-   that run, and an index that checks *wiring* cannot see it. **The fix is neither a log-scanner
-   nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
-   matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
-   log-scanner must know the gate *names*, so it needs an index — and the index is the thing that
-   drifts, so it cannot close the loop. Write exactly one **structural** gate: *no step may contain
-   more than one gate command.* Nobody writes a 46- or 56-command chain on purpose.
+    that run, and an index that checks _wiring_ cannot see it. **The fix is neither a log-scanner
+    nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
+    matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
+    log-scanner must know the gate _names_, so it needs an index — and the index is the thing that
+    drifts, so it cannot close the loop. Write exactly one **structural** gate: _no step may contain
+    more than one gate command._ Nobody writes a 46- or 56-command chain on purpose.
 
 ## What must NOT be generalised
 
@@ -400,8 +422,8 @@ Measure these per repository; copying them is how a handbook becomes wrong.
   in B does not change A's content hash, so a cached A returns a stale result.
 - **Whether an import-graph selector works at all.** One repo: 5.3s over 2 files. The other: 250s
   over 251 files, because its tests read their fixtures as text.
-- **What a time budget is measuring.** Ten minutes of *waiting* is not ten minutes of *runner
-  time*: one repo waits 8–11 minutes while spending 81–107 runner-minutes. Say which you mean.
+- **What a time budget is measuring.** Ten minutes of _waiting_ is not ten minutes of _runner
+  time_: one repo waits 8–11 minutes while spending 81–107 runner-minutes. Say which you mean.
 - **The definition of "unit".** One repo's directory group is 231 files; another's single test file
   is 1.5 seconds. Measure, then take the smallest grain that still means something.
 - **Where the money actually goes.** It may not be tests at all.
