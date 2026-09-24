@@ -18784,8 +18784,8 @@
           "name": "overflow",
           "origin": "owned",
           "required": false,
-          "type": "\"scroll\" | \"clip\" | undefined",
-          "values": ["scroll", "clip"],
+          "type": "\"menu\" | \"scroll\" | \"clip\" | undefined",
+          "values": ["menu", "scroll", "clip"],
           "declaredIn": ["src/props/components/layout.prop.ts"]
         },
         {

@@ -243,6 +243,7 @@
     },
     "topbar": {
       "toggleSidebar": "Toggle sidebar",
+      "more": "More",
       "search": "Search",
       "searchPlaceholder": "Search...",
       "notifications": "Notifications",

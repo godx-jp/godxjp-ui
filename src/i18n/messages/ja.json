@@ -239,6 +239,7 @@
     },
     "topbar": {
       "toggleSidebar": "サイドバーの切り替え",
+      "more": "その他",
       "search": "検索",
       "searchPlaceholder": "検索...",
       "notifications": "通知",
