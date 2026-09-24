@@ -4,6 +4,57 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.0.1] - 2026-09-24
+
+PATCH, and **nothing in it reaches a consumer** — that is stated first because a version number
+that changes nothing you can observe is worse than no version at all if it is not said plainly.
+Both files below are local tooling and neither is in the package `files` list. No `src/` file
+changed either, so the built `dist/` carries nothing new — stated that way rather than
+"byte-identical", which would be a claim about build determinism that was not measured. Install
+this only if you want the tag; there is no reason to upgrade for it.
+
+### 🔧 The measurement instrument stops reporting two non-defects
+
+`scripts/measure-glass.mjs` — the theme-lab instrument. Both of these printed a warning on every
+cell of every theme, which is how a reader learns to skip the output.
+
+- **`2 backdrop band(s) unsampled`.** The band sampler only tried four offsets inside a 24px column
+  at the right edge of `.app-main`, and `.ui-page-header` is full-bleed, so every one of them landed
+  on it for two rows. It now sweeps the full width, and — the part that matters — it tells apart
+  _"canvas is visible somewhere but sampling failed"_ (a real gap, still counted) from _"a measured
+  surface covers the whole row, so there is no backdrop band at this height"_ (nothing was missed).
+  Same 22 bands as before; the warning is gone because it was never a gap.
+
+- **`LIFT … FLAT` on three of the four themes.** The 1.2:1 floor exists so a pane you can see
+  THROUGH stays distinguishable from what is behind it. An opaque pane is distinguished by its own
+  fill, border and shadow, and a low ratio there is the design: flat matches the canvas on purpose
+  and separates with a line, neubrutalism separates with a 3px black edge. The floor is now applied
+  by the surface's OWN measured translucency, not by the theme's name — glass still grades
+  (`1/1 ok 1.511:1`), the others read `n/a` **with the ratio still printed**, so nothing is hidden,
+  only ungraded.
+
+  The hole that opens is recorded in the script: a pane that SHOULD be translucent and regressed to
+  opaque now reads `n/a` rather than `FLAT`. That is gh#902's regression, and the `VERDICT` line
+  above it is what reports it (`N/M translucent` drops), pinned by
+  `surface-translucency-knobs-880.test.ts`.
+
+Re-measured after the change: **40/40 cells at 563/563**, unchanged. A change to the instrument that
+moved a number would have invalidated every measurement this release rests on, so it was verified
+rather than assumed.
+
+### 🔧 A gate script was a binary file to every text tool
+
+`scripts/check-token-width-wins.mjs` carried a raw NUL byte as a key separator, so `file(1)` called
+it binary data and `grep` silently suppressed every match in it. Same runtime value, written as an
+escape.
+
+The same commit records a limit that was MEASURED, not reasoned about: gh#906 is the sixth instance
+of the defect that gate is named for, in border-width form, and an axis for it was written, tested
+by putting each of the four real defects back, and **removed** because it fired on none of them —
+Badge's and Button's utilities live in a `cva` variant map and Table's sits on the parent element,
+both already-documented limits of that gate. A gate that cannot fire on the defect it names reports
+success, which is the failure that gate exists to prevent.
+
 ## [30.0.0] - 2026-09-24
 
 MAJOR. **A theme can thicken a border now — one declaration reaches 104 sites.** One breaking

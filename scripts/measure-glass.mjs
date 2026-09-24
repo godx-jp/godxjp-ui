@@ -306,7 +306,14 @@ async function measureCell(page, mode, theme, seed) {
     surfaces: {},
     overlays: {},
     states: {},
-    contrast: { pass: 0, fail: [], unmeasured: [], unsampledBands: 0, unsampledPanels: [] },
+    contrast: {
+      pass: 0,
+      fail: [],
+      unmeasured: [],
+      unsampledBands: 0,
+      coveredBands: 0,
+      unsampledPanels: [],
+    },
     pageErrors,
   };
 
@@ -397,7 +404,24 @@ async function measureCell(page, mode, theme, seed) {
     const a = lum(px.inside);
     const b = lum(px.outside);
     const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-    report.lift[name] = { ratio: Math.round(ratio * 1000) / 1000, pass: ratio >= LIFT_FLOOR };
+    /* THE FLOOR ONLY MEANS SOMETHING FOR A TRANSLUCENT PANE. It exists so a pane you can see
+     * THROUGH is still distinguishable from what is behind it. An OPAQUE pane is distinguished by
+     * its own fill, its border and its shadow, and a low ratio there is a deliberate design — flat
+     * matches the canvas on purpose and separates with a line; neubrutalism separates with a 3px
+     * black edge. Grading those against a translucency floor printed `FLAT` on three of the four
+     * themes for panes that were never meant to lift, which is a gate reporting an opinion as a
+     * defect. Judged by the surface's OWN measured translucency, not by the theme's name.
+     *
+     * THE HOLE THIS OPENS, and where it is closed instead: a pane that SHOULD be translucent and
+     * regressed to opaque now reads `n/a` here rather than FLAT. That regression is gh#902's, and
+     * the VERDICT line above it is what reports it — `N/M translucent` drops — with
+     * surface-translucency-knobs-880.test.ts pinning the knobs that produce it. The ratio is still
+     * printed on an `n/a` row for the same reason: nothing is hidden, only ungraded. */
+    const surface = report.surfaces?.[name];
+    const translucent = typeof surface === "object" && surface !== null && surface.translucent;
+    report.lift[name] = translucent
+      ? { ratio: Math.round(ratio * 1000) / 1000, pass: ratio >= LIFT_FLOOR }
+      : { ratio: Math.round(ratio * 1000) / 1000, pass: true, opaque: true };
   }
 
   // ── CONTRAST ────────────────────────────────────────────────────────────────────────────────
@@ -489,7 +513,15 @@ async function measureCell(page, mode, theme, seed) {
     y += 40
   ) {
     let sampled = null;
-    for (const dx of [6, 10, 16, 24]) {
+    let covered = false;
+    /* Sweep the WHOLE width, not a 24px column at the right edge. The narrow column was why two
+     * rows always came back unsampled: `.ui-page-header` is full-bleed, so every one of the four
+     * old offsets landed on it. Sweeping first tells the two cases apart — a row where some canvas
+     * IS visible somewhere, and a row where a measured surface covers the full width and there is
+     * therefore no backdrop band at that height at all. */
+    const offsets = [6, 10, 16, 24];
+    for (let dx = 40; dx < mainRect.right - mainRect.left; dx += 40) offsets.push(dx);
+    for (const dx of offsets) {
       const x = Math.round(mainRect.right - dx);
       if (x <= mainRect.left) continue;
       const clean = await page.evaluate(
@@ -504,17 +536,22 @@ async function measureCell(page, mode, theme, seed) {
         },
         [x, y],
       );
-      if (!clean) continue;
+      if (!clean) {
+        covered = true;
+        continue;
+      }
       const shot = await page.screenshot({ clip: { x, y, width: 3, height: 3 } });
       const png = PNG.sync.read(shot);
       sampled = [png.data[0], png.data[1], png.data[2]];
       break;
     }
-    // The 2 rows this always drops (checked against a live cell, gh#898): `.ui-page-header`'s hero
-    // band is full-bleed at the top of the content, wider than this column's 24px of horizontal
-    // slack, so every `dx` lands on it there — a real gap in a single-column sampler, not a bug
-    // this fix introduced, and it is COUNTED rather than silently dropped for exactly that reason.
+    /* Two rows used to be reported "unsampled" here, every cell, every theme. With the full-width
+     * sweep above they are correctly identified instead: `.ui-page-header` covers the whole row, so
+     * there is no canvas band at that height — nothing was missed, there was nothing there. That is
+     * `coveredBands`, and it is not a warning. `unsampledBands` now means only what it says: the
+     * sweep found neither a clean pixel NOR a covering surface, which would be a real gap. */
     if (sampled) bands.push(sampled);
+    else if (covered) report.contrast.coveredBands += 1;
     else report.contrast.unsampledBands += 1;
   }
   report.contrast.bands = bands.length;
@@ -1057,11 +1094,19 @@ if (AS_JSON) {
     );
     const lifts = Object.entries(r.lift ?? {}).filter(([, v]) => typeof v !== "string");
     if (lifts.length) {
+      const graded = lifts.filter(([, v]) => !v.opaque);
       console.log(
-        `LIFT      ${lifts.filter(([, v]) => v.pass).length}/${lifts.length} panes are DISTINGUISHABLE from what is behind them (>= 1.2:1)`,
+        graded.length
+          ? `LIFT      ${graded.filter(([, v]) => v.pass).length}/${graded.length} translucent pane(s) are DISTINGUISHABLE from what is behind them (>= 1.2:1)` +
+              (lifts.length > graded.length
+                ? ` · ${lifts.length - graded.length} opaque, floor n/a`
+                : "")
+          : `LIFT      n/a — no pane on this page is translucent, so there is nothing for the floor to be about`,
       );
       for (const [name, v] of lifts)
-        console.log(`  ${v.pass ? "ok  " : "FLAT"}  ${String(v.ratio).padStart(6)}:1  ${name}`);
+        console.log(
+          `  ${v.opaque ? "n/a " : v.pass ? "ok  " : "FLAT"}  ${String(v.ratio).padStart(6)}:1  ${name}`,
+        );
     }
     if (r.pageErrors.length) console.log("page errors:", r.pageErrors.slice(0, 3));
   }
