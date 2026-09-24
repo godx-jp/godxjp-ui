@@ -4,6 +4,29 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 🐛 `SpaceCompact` — a `display: contents` child (`Select`) is now welded correctly (gh#919)
+
+PATCH. Found by the guinea-pig consumer on the real `NumberInput` + `Select` row published in
+30.4.0: `fullWidth`'s `flex`/`min-inline-size`, the border-collapse margin, the hover/focus
+`z-index` raise, and the `:not(:first-child)`/`:not(:last-child)` corner zeroing all keyed on
+`.ui-space-compact > *` — the DIRECT element children. `Select`'s root is `.ui-select-root`
+(`display: contents`, so the TRIGGER is the box a flex row sees) plus a `<template>` sibling, so
+`> *` matched a box that renders nothing: the trigger inherited none of those rules and kept its
+own `w-full`, and the `<template>` shifted first/last-child by one. Measured on the catalog's own
+`NumberInput` + `Select` example at 562px: the trigger rendered at 562px (the whole row, value
+hidden) and the spinbutton collapsed to 54px with its step buttons pushed outside the box.
+
+`SpaceCompact` now wraps each child in one `[data-slot="space-compact-item"]` box it owns, so
+every rule above targets a real box regardless of what the child renders underneath — the radius
+custom properties still reach the control because they inherit through both the wrapper and
+`display: contents`. Re-measured at 562px: `NumberInput` + `Select`, `Input` + `Select`,
+`Select` + `Button` and `Input` + `Button` all share one row (tops within 1px), split the row
+evenly when both sides are fields (`Select`/`Button` and `Input`/`Button` keep the `Button` at its
+content width and let the field absorb the rest, matching antd's `Space.Compact` — which sets no
+per-child `flex` at all), and the selected option's label stays visible.
+
 ## [30.4.0] - 2026-09-24
 
 MINOR. Two gaps found by the guinea-pig consumer (godx-task): no way to weld a row of controls
