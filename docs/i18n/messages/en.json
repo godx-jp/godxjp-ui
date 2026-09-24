@@ -1201,5 +1201,54 @@
       "recovery": "Store these recovery codes somewhere safe. They are shown once.",
       "acknowledge": "I have saved them"
     }
+  },
+  "spaceCompactDocs": {
+    "title": "SpaceCompact",
+    "subtitle": "Read a row of controls as ONE box — recurrence, search, an amount with its unit",
+    "recur": {
+      "title": "Recurrence (every N weeks)",
+      "body": "The number and the unit are one setting, so they read as one box. FormField lands the label on the ROW, so a screen reader opens with “Recurrence, group” and each control inside keeps its own name.",
+      "label": "Recurrence",
+      "helper": "How often the invoice is issued automatically.",
+      "every": "Interval",
+      "unit": "Unit",
+      "reads": "Reads as",
+      "role": "role",
+      "roleValue": "group (only on a NAMED row)"
+    },
+    "unit": {
+      "day": "day",
+      "week": "week",
+      "month": "month"
+    },
+    "search": {
+      "title": "Search and its button",
+      "body": "Typing and running are one continuous action, so the seam goes. The button is still a real Button — focus ring and disabled keep working.",
+      "row": "Search employees",
+      "term": "Search term",
+      "run": "Run the search",
+      "placeholder": "Name or employee number"
+    },
+    "amount": {
+      "title": "Amount, currency, and fullWidth",
+      "body": "`fullWidth` stretches the row to its parent (antd `block`). The proportions inside stay each control's own, so the digits do not crush on a narrow screen.",
+      "label": "Invoice amount",
+      "value": "Amount",
+      "currency": "Currency"
+    },
+    "vertical": {
+      "title": "orientation=\"vertical\" — a written-down partial port",
+      "body": "A vertical stack collapses the shared border, but corner-zeroing is inline-only for now: the Input and trigger corner tokens exist on the inline axis only. Written down as a follow-up rather than left as a silent gap.",
+      "row": "Note and send",
+      "note": "Handover note",
+      "send": "Send",
+      "alias": "`vertical` is antd's boolean spelling. Set both and `orientation` wins."
+    },
+    "dont": {
+      "title": "When NOT to weld",
+      "body": "Joining things that are not one setting makes unrelated values look like one box. Keep them in separate FormFields.",
+      "dept": "Department code",
+      "ext": "Extension"
+    }
   }
 }

@@ -1195,5 +1195,54 @@
       "recovery": "Hãy cất các mã khôi phục ở nơi an toàn. Chúng chỉ hiện một lần.",
       "acknowledge": "Tôi đã lưu lại"
     }
+  },
+  "spaceCompactDocs": {
+    "title": "SpaceCompact",
+    "subtitle": "Đọc một hàng control như MỘT hộp — lặp lại, tìm kiếm, số tiền kèm đơn vị",
+    "recur": {
+      "title": "Lặp lại (mỗi N tuần)",
+      "body": "Con số và đơn vị là một thiết lập, nên chúng đọc như một hộp. FormField gắn nhãn lên HÀNG, nên screen reader mở đầu bằng “Lặp lại, nhóm” và mỗi control bên trong vẫn giữ tên riêng.",
+      "label": "Lặp lại",
+      "helper": "Tần suất phát hành hoá đơn tự động.",
+      "every": "Khoảng",
+      "unit": "Đơn vị",
+      "reads": "Đọc thành",
+      "role": "role",
+      "roleValue": "group (chỉ khi hàng CÓ tên)"
+    },
+    "unit": {
+      "day": "ngày",
+      "week": "tuần",
+      "month": "tháng"
+    },
+    "search": {
+      "title": "Tìm kiếm và nút của nó",
+      "body": "Gõ và chạy là một thao tác liền mạch nên bỏ đường nối. Nút vẫn là Button thật — vòng focus và disabled vẫn hoạt động.",
+      "row": "Tìm nhân viên",
+      "term": "Từ khoá",
+      "run": "Chạy tìm kiếm",
+      "placeholder": "Tên hoặc mã nhân viên"
+    },
+    "amount": {
+      "title": "Số tiền, tiền tệ và fullWidth",
+      "body": "`fullWidth` kéo hàng đầy chiều rộng cha (antd `block`). Tỉ lệ bên trong vẫn của từng control nên chữ số không bị bóp trên màn hẹp.",
+      "label": "Số tiền hoá đơn",
+      "value": "Số tiền",
+      "currency": "Tiền tệ"
+    },
+    "vertical": {
+      "title": "orientation=\"vertical\" — phần port còn thiếu, đã ghi rõ",
+      "body": "Xếp dọc thì gộp được đường viền chung, nhưng bo góc hiện chỉ làm ở trục ngang: token góc của Input và trigger chỉ có ở trục inline. Ghi rõ thành việc tiếp theo, không để thiếu âm thầm.",
+      "row": "Ghi chú và gửi",
+      "note": "Ghi chú bàn giao",
+      "send": "Gửi",
+      "alias": "`vertical` là cách viết boolean của antd. Đặt cả hai thì `orientation` thắng."
+    },
+    "dont": {
+      "title": "Khi KHÔNG nên nối",
+      "body": "Nối những thứ không phải một thiết lập sẽ khiến các giá trị không liên quan trông như một hộp. Hãy tách FormField riêng.",
+      "dept": "Mã phòng ban",
+      "ext": "Số máy lẻ"
+    }
   }
 }
