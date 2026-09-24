@@ -4,7 +4,7 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [30.4.0] - 2026-09-24
 
 MINOR. Two gaps found by the guinea-pig consumer (godx-task): no way to weld a row of controls
 into one visual unit, and `ChatComposer`'s send/cancel action could not move off the draft row.
