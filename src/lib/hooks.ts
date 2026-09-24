@@ -1,6 +1,7 @@
 // Shared hooks for admin components.
 import { useLayoutEffect } from "@react-aria/utils";
 import { type RefObject, useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 /**
  * Returns a debounced view of `value`, updated only after `delay` ms of no
@@ -200,15 +201,33 @@ export function useScrollsOnAxis(
     if (!enabled || !el) return undefined;
     // `client === 0` is an UNLAID-OUT box, never "it fits" — see the note above.
     const overflows = (client: number, scroll: number) => client === 0 || scroll - client > 1;
-    const update = () => {
-      setScrolls(
+    /* THE TWO DIRECTIONS ARE NOT SYMMETRIC, and gh#907 is what happens when they are treated as
+     * if they were. A `ResizeObserver` callback runs after layout and BEFORE paint, but the
+     * `setScrolls` inside it is batched, so the re-render lands in the NEXT frame: the frame in
+     * between paints a box that overflows with no tab stop on it. Measured on
+     * /showcase/table-sticky-columns by widening the viewport until the table fits (stop correctly
+     * withheld) and narrowing it again: exactly ONE such frame. One frame is ~16ms idle and
+     * arbitrarily long on a loaded machine, which is why the reporter saw it on a busy CI runner
+     * and never locally.
+     *
+     * So ADDING the stop is flushed synchronously — it is the direction this hook's contract calls
+     * non-negotiable ("may only ever REMOVE the stop, never withhold it on a guess"), and the cost
+     * is one synchronous render on a transition that happens when a box starts overflowing.
+     * REMOVING it stays batched: a stop that scrolls nothing is noise, and noise for one extra
+     * frame is the lesser failure this docblock already ranks it as. */
+    /* `sync` is false for the FIRST call, which happens inside this effect: React warns when
+     * `flushSync` is called from a lifecycle, and it would buy nothing there — the state already
+     * starts `true`, so the mount frame always carries the stop. Only the observer needs it. */
+    const update = (sync: boolean) => {
+      const next =
         (axis !== "vertical" && overflows(el.clientWidth, el.scrollWidth)) ||
-          (axis !== "horizontal" && overflows(el.clientHeight, el.scrollHeight)),
-      );
+        (axis !== "horizontal" && overflows(el.clientHeight, el.scrollHeight));
+      if (next && sync) flushSync(() => setScrolls(true));
+      else setScrolls(next);
     };
-    update();
+    update(false);
     if (typeof ResizeObserver === "undefined") return undefined;
-    const observer = new ResizeObserver(update);
+    const observer = new ResizeObserver(() => update(true));
     observer.observe(el);
     // The content resizes without the box doing so whenever data/columns/density change.
     if (el.firstElementChild) observer.observe(el.firstElementChild);
