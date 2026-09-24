@@ -5,6 +5,7 @@ import type { DateRange } from "react-day-picker";
 import type * as React from "react";
 import type { UploadFileItem } from "../../components/data-entry/upload-types";
 import type { FieldA11yProps } from "../../lib/field-a11y";
+import type { ButtonProp } from "./general.prop";
 import type {
   ClassNameProp,
   ControlWidthProp,
@@ -2094,6 +2095,35 @@ export type BranchScopePickerProp = FieldA11yProps & {
 export type ChatComposerSubmitTypeProp = "enter" | "shiftEnter" | "modEnter";
 
 /**
+ * @see ChatComposer `footer` — the built-in trailing action, pre-wired (onClick/disabled/
+ * accessible name already resolved) and handed to a `footer` render function so it can be
+ * RELOCATED instead of duplicated.
+ *
+ * Ant Design X `Sender.ActionsComponents` ships four (`SendButton`/`ClearButton`/`LoadingButton`/
+ * `SpeechButton`) because `Sender` has a clear affordance and speech input this composer does not
+ * — porting those two as inert components would ship dead API (the same "not ported" discipline
+ * `docs/DESIGN-AUTHORITY.md` applies to antd fields nothing here reads). `LoadingButton` is
+ * `CancelButton` here — this composer already names the streaming state's trailing action `cancel`
+ * (`onCancel`, `cancelLabel`), so the antd-x name would be a second spelling of the same button.
+ */
+export type ChatComposerActionComponents = {
+  /** The send action — disabled while empty/disabled/readOnly/loading, exactly like the inline one. */
+  SubmitButton: React.ComponentType<ButtonProp>;
+  /** The stop action — only meaningful while `loading`; renders antd X's `LoadingButton` slot. */
+  CancelButton: React.ComponentType<ButtonProp>;
+};
+
+/**
+ * @see ChatComposer `footer` — either a plain node (unchanged default behaviour) or Ant Design X
+ * `Sender`'s `NodeRender` shape: a function receiving `{ components }` so a consumer can render
+ * the real send/cancel buttons BELOW the draft box instead of beside it. Combine with `actions=
+ * {false}` to hide the inline pair and avoid rendering both.
+ */
+export type ChatComposerFooterProp =
+  | React.ReactNode
+  | ((info: { components: ChatComposerActionComponents }) => React.ReactNode);
+
+/**
  * @see ChatComposer — the message input of a conversation (Ant Design X `Sender`; the industry
  * calls the control a *composer*, so that is what it is named).
  *
@@ -2146,10 +2176,20 @@ export type ChatComposerProp = Omit<
     header?: React.ReactNode;
     /** Slot at the inline START of the draft row — an attach button, an avatar. */
     prefix?: React.ReactNode;
-    /** Slot BELOW the draft row — a hint line, a token counter. */
-    footer?: React.ReactNode;
-    /** Extra trailing actions, rendered BEFORE the send/cancel action. */
-    actions?: React.ReactNode;
+    /**
+     * Slot BELOW the draft row — a hint line, a token counter, or (Ant Design X `Sender`
+     * `NodeRender`) a function `({ components }) => ReactNode` that renders the real send/cancel
+     * buttons in the footer instead of beside the draft box. Pair with `actions={false}` to hide
+     * the inline pair and avoid rendering both — see the `usage` note on relocating actions.
+     */
+    footer?: ChatComposerFooterProp;
+    /**
+     * Extra trailing actions, rendered BEFORE the send/cancel action — or `false` (Ant Design X
+     * `Sender`'s `suffix` semantics: `BaseNode = ReactNode | false`) to hide the ENTIRE inline
+     * trailing-action cell, built-in send/cancel button included, when `footer` has taken over
+     * rendering it. Omitted (`undefined`) renders the cell exactly as before — no breaking change.
+     */
+    actions?: React.ReactNode | false;
     /** Control height tier on the shared `--control-height` ladder. Default `md`. */
     size?: SizeProp;
     /** Hard ceiling on the draft length, forwarded to the textarea. */

@@ -168,6 +168,16 @@ export default function Demo() {
   const [savedStatus, setSavedStatus] = useState("open");
   const [comments, setComments] = useState<Comment[]>([]);
 
+  // ── Card 2c: footer as a NodeRender — the toolbar-below layout ─────────────────────────────
+  const [toolbarDraft, setToolbarDraft] = useState("");
+  const [toolbarComments, setToolbarComments] = useState<string[]>([]);
+
+  function postToolbarComment(text: string) {
+    if (!text) return;
+    setToolbarComments((current) => [...current, text]);
+    setToolbarDraft("");
+  }
+
   function postComment(text: string) {
     const changed = status !== savedStatus;
     // An empty draft with no status change carries nothing — the consumer decides, not the box.
@@ -380,6 +390,50 @@ export default function Demo() {
                       </Text>
                     </Flex>
                   }
+                />
+              </Flex>
+            </CardContent>
+          </Card>
+
+          {/* ── 2c. footer as NodeRender — toolbar BELOW a full-width draft box ─────────────── */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>
+                footer as NodeRender · attach / hint / send を下段のツールバーへ
+              </CardTitle>
+              <CardDescription>
+                actions={"{false}"} で行内の送信ボタンを隠し、footer に関数を渡すと
+                components.SubmitButton（onSubmit / disabled / ローディング切替が配線済み）を
+                受け取れます。下書き欄は全幅のまま、添付は行頭・送信は行末に配置できます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex direction="col" gap="md">
+                {toolbarComments.length === 0 ? (
+                  <Text size="sm" tone="muted">
+                    まだコメントはありません
+                  </Text>
+                ) : (
+                  toolbarComments.map((body, index) => <Text key={index}>{body}</Text>)
+                )}
+                <ChatComposer
+                  aria-label="コメント（下段ツールバー）"
+                  value={toolbarDraft}
+                  onValueChange={setToolbarDraft}
+                  onSubmit={postToolbarComment}
+                  placeholder="コメントを入力"
+                  actions={false}
+                  footer={({ components: { SubmitButton } }) => (
+                    <Flex direction="row" gap="sm" align="center" justify="between">
+                      <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付">
+                        <Paperclip aria-hidden="true" />
+                      </Button>
+                      <Text size="xs" tone="muted">
+                        Enter で送信 · Shift + Enter で改行
+                      </Text>
+                      <SubmitButton aria-label="コメントを送信" />
+                    </Flex>
+                  )}
                 />
               </Flex>
             </CardContent>

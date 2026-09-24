@@ -54,7 +54,12 @@ export const controlOpenRingClass = "ui-control-trigger";
  * The clamp keeps it to one line, so a wrappable value cannot grow the control.
  */
 export const controlTriggerBaseClass =
-  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-[var(--control-radius)] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1 [&>[data-slot=select-value]]:whitespace-normal [&>[data-slot=select-value]]:text-ellipsis";
+  // PER-EDGE RADIUS THROUGH A KNOB, same repair as Input's `--input-radius-start`/`-end`
+  // (gh#841): a plain `rounded-[var(--control-radius)]` is a utility, and `@layer utilities`
+  // outranks `@layer components`, so a joined-control seam (SpaceCompact) can never zero one
+  // side of it from a components-layer rule. Unset, both knobs fall back to `--control-radius`
+  // exactly as before — no existing trigger changes.
+  "ui-control ui-control-trigger flex items-center justify-between gap-2 whitespace-nowrap rounded-s-[var(--control-trigger-radius-start,var(--control-radius))] rounded-e-[var(--control-trigger-radius-end,var(--control-radius))] transition-[color,box-shadow] [&>[data-slot=select-value]]:line-clamp-1 [&>[data-slot=select-value]]:whitespace-normal [&>[data-slot=select-value]]:text-ellipsis";
 
 /**
  * The trigger WITH the resting surface — `.ui-control-outlined-surface`, which paints the identical

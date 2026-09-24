@@ -4,6 +4,65 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+MINOR. Two gaps found by the guinea-pig consumer (godx-task): no way to weld a row of controls
+into one visual unit, and `ChatComposer`'s send/cancel action could not move off the draft row.
+
+### ✨ `SpaceCompact` — antd `Space.Compact`
+
+A row (or column) of controls read as ONE box: inner corner radii zeroed, the shared border
+collapsed to a single hairline, each child's own focus ring left intact — the "毎 [2] [週 ▾] ごと"
+case, a `NumberInput` + `Select` fused on one line inside a `FormField`.
+
+```tsx
+<FormField label="繰り返し間隔">
+  <SpaceCompact>
+    <NumberInput aria-label="間隔の数" min={1} defaultValue={2} />
+    <Select aria-label="単位" defaultValue="week" options={UNITS} />
+  </SpaceCompact>
+</FormField>
+```
+
+Ported from the installed `antd/es/space/Compact.d.ts`: `orientation` (antd's own non-deprecated
+name; `direction` is itself `@deprecated` upstream, so it is not carried), `vertical` (antd's
+boolean spelling of it), `fullWidth` (antd `block`, renamed to match `Button.fullWidth`), and
+`density` (antd `size` — the `ConfigProvider` ambient-size cascade, which this library already
+owns under `density`; each child keeps its own `size`). There is still no `Space` — bare `Space` is
+a composition of `Flex`/`ResponsiveGrid` `gap`, already covered — so this ships as the flat
+`SpaceCompact` export, the same shape as `CheckboxGroup`/`ToggleGroup`/`SearchSelect`. A NAMED
+`SpaceCompact` (an `aria-label`/`aria-labelledby` FormField clones onto it) promotes itself to
+`role="group"`, the same contract `Flex` already honours for a range/年月 pair.
+`orientation="vertical"` collapses its shared border but does not yet zero its block-axis corners
+— a documented gap, not a silent one; see the component's JSDoc.
+
+### ✨ `ChatComposer` `footer` as a render function — relocate the send/cancel action
+
+`footer` now also accepts Ant Design X `Sender`'s `NodeRender` shape: a function receiving
+`{ components: { SubmitButton, CancelButton } }`, both pre-wired to `onSubmit`/`onCancel`/
+`disabled`/the loading swap. Paired with the new `actions={false}` (antd `suffix`'s `BaseNode`
+semantics), a consumer can move the trailing action into a toolbar row BELOW a full-width draft
+box instead of beside it — a record-detail comment box with attach on the start side, a keyboard
+hint in the middle, and send on the end side:
+
+```tsx
+<ChatComposer
+  actions={false}
+  footer={({ components: { SubmitButton } }) => (
+    <Flex justify="between">
+      <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付"><Paperclip /></Button>
+      <Text size="xs" tone="muted">Enter で送信 · Shift + Enter で改行</Text>
+      <SubmitButton aria-label="コメントを送信" />
+    </Flex>
+  )}
+/>
+```
+
+A plain `React.ReactNode` `footer` — every existing call site — is unchanged; `actions` omitted
+still renders the inline pair exactly as before. `LoadingButton`/`ClearButton`/`SpeechButton` are
+not ported: this composer has no clear/speech affordance, so those would be inert API — the
+streaming stop button is `CancelButton`, this composer's existing name for the same slot.
+
 ## [30.3.1] - 2026-09-24
 
 PATCH. **A label no longer costs an element the role it already has** (gh#916).

@@ -449,3 +449,68 @@ describe("ChatComposer — the field contract", () => {
     expect(screen.getByText("A")).toBeInTheDocument();
   });
 });
+
+/**
+ * `footer` as an Ant Design X `Sender`-style render function, plus `actions={false}` — the
+ * record-comment toolbar case: a full-width textarea with attach / hint / send relocated to a
+ * row BELOW it instead of beside it (godx-task gh#158-adjacent guinea-pig report).
+ */
+describe("ChatComposer — relocating actions into `footer`", () => {
+  it("a function `footer` receives the real send/cancel buttons, pre-wired", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderWithUi(
+      <ChatComposer
+        aria-label="コメント"
+        defaultValue="内容"
+        onSubmit={onSubmit}
+        actions={false}
+        footer={({ components: { SubmitButton } }) => (
+          <SubmitButton aria-label="コメントを送信" />
+        )}
+      />,
+    );
+
+    // Only ONE send button exists — the inline cell is suppressed by `actions={false}`.
+    expect(screen.getAllByRole("button", { name: "コメントを送信" })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: "メッセージを送信" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "コメントを送信" }));
+    expect(onSubmit).toHaveBeenCalledWith("内容");
+  });
+
+  it("`components.CancelButton` in the footer stops the in-flight response", async () => {
+    const user = userEvent.setup();
+    const onCancel = vi.fn();
+    renderWithUi(
+      <ChatComposer
+        aria-label="コメント"
+        loading
+        onCancel={onCancel}
+        actions={false}
+        footer={({ components: { CancelButton } }) => <CancelButton aria-label="停止" />}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "停止" }));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("without `actions={false}` the inline pair still renders — footer relocation opts IN, no breaking change", () => {
+    renderWithUi(
+      <ChatComposer
+        aria-label="メッセージ"
+        footer={({ components: { SubmitButton } }) => <SubmitButton aria-label="下段の送信" />}
+      />,
+    );
+
+    // The default composer's own accessible name for the inline send action is still present.
+    expect(screen.getByRole("button", { name: "下段の送信" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button").length).toBeGreaterThan(1);
+  });
+
+  it("`actions={false}` alone (no custom footer) hides the entire trailing-action cell", () => {
+    renderWithUi(<ChatComposer aria-label="メッセージ" actions={false} />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+});

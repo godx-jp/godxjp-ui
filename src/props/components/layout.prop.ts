@@ -9,6 +9,7 @@ import type {
   ExtraProp,
   FooterProp,
   PageDensityProp,
+  DensityProp,
   PageContainerVariantProp,
   CenteredShellWidthProp,
   CenteredShellAlignProp,
@@ -378,6 +379,54 @@ export type FlexProp = React.HTMLAttributes<HTMLElement> & {
    * geometry; a Flex that is a row of controls has no business carrying it.
    */
   measure?: FlexMeasureProp;
+};
+
+/**
+ * @see SpaceCompact — antd `Space.Compact`, a row of controls welded into one visual unit: the
+ * inner corner radii are zeroed and the shared border is collapsed so two boxes read as one,
+ * while each child keeps its own focus ring and its own `size`.
+ *
+ * ## Deviations from `antd/es/space/Compact.d.ts` (read at `@ant-design/x` install time, not
+ * from memory — see the PR for the exact checkout), each written down per `DESIGN-AUTHORITY.md`
+ *
+ * - **No `Space`.** antd's `Space.Compact` is a static member of `Space`; this library has no
+ *   `Space` at all, and does not gain one here — `Space`'s only other job (gaps between siblings)
+ *   already lives on `Flex`/`ResponsiveGrid` `gap`, so a `Space` built only to host `.Compact`
+ *   would duplicate that primitive for nothing (`docs/roadmap/parity-audit-layout-navigation-
+ *   general.md` §4.2 marks bare `Space` a composition, not a gap). `SpaceCompact` ships standalone
+ *   — the same flat-export shape as `CheckboxGroup`/`ToggleGroup`/`SearchSelect`/`TagInput`, not a
+ *   `Space.Compact` dotted member.
+ * - **`size` → `density`, not forwarded.** antd's `size?: SizeType` (`small|middle|large`) is the
+ *   `ConfigProvider` ambient-size cascade (`SpaceCompactItemContext`/`useCompactItemContext`,
+ *   read by antd's own `Input`/`Select`/`Button`) — the exact capability this library already
+ *   owns under `density` (`compact|default|comfortable`, `docs/DESIGN-AUTHORITY.md` "A capability
+ *   this library already has keeps its own name"). `density` scopes `--scaling` to this row via
+ *   `.ui-density-*` (the same class `Form.density`/`FormRoot.density` already emit), and each
+ *   child keeps its OWN `size` (`SizeProp`) exactly as it does anywhere else — a second axis
+ *   would be the duplicate spelling `check:prop-vocabulary` exists to prevent.
+ * - **`direction` not ported, only `orientation`.** The installed `SpaceCompactProps.direction` is
+ *   itself `@deprecated please use \`orientation\` instead`; only the current, non-deprecated name
+ *   is carried, reusing the vocabulary `OrientationProp` already shared by `Separator`/`Steps`/
+ *   `RadioGroup`/`Toolbar` rather than a second `"horizontal" | "vertical"` spelling.
+ * - **`block` → `fullWidth`.** Same rename already applied to `Button.block`
+ *   (`ButtonProp.fullWidth`) for the same reason — "this library's controlled vocabulary wins on
+ *   values" — so one word means the same thing on both components.
+ * - **No `prefixCls`/`rootClassName`.** Plumbing for antd's `prefixCls`-rooted styling system,
+ *   which this library does not have; every component here takes one `className`.
+ */
+export type SpaceCompactProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** The controls to weld into one row — antd `Space.Compact` children. */
+  children?: ChildrenProp;
+  /** Layout axis. Default `horizontal` (antd `orientation`, `direction` deprecated upstream). */
+  orientation?: OrientationProp;
+  /** antd's boolean spelling of `orientation="vertical"`. `orientation` wins when both are set. */
+  vertical?: boolean;
+  /** Row fills its parent's inline size (antd `block`, renamed to match `Button.fullWidth`). */
+  fullWidth?: boolean;
+  /** Scoped control density for the whole row (antd `Space.Compact` `size`). */
+  density?: DensityProp;
+  id?: IdProp;
+  className?: ClassNameProp;
 };
 
 /** Container column counts; omitted steps inherit from the previous step. Base defaults to 1. */

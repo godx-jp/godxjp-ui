@@ -10,11 +10,14 @@ import { Textarea } from "./textarea";
 import { controlSurfaceAttrs, resolveAriaInvalid } from "./control-surface";
 
 import type { ChatComposerProp } from "../../props/components/data-entry.prop";
+import type { ButtonSizeProp } from "../../props/vocabulary";
 
 export type {
   ChatComposerProp,
   ChatComposerProp as ChatComposerProps,
   ChatComposerSubmitTypeProp,
+  ChatComposerActionComponents,
+  ChatComposerFooterProp,
 } from "../../props/components/data-entry.prop";
 
 /** A draft that is only spaces, tabs or newlines is not a message. */
@@ -161,8 +164,62 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
      * therefore drop to 24px at `size="xs"` with no coarse-pointer floor). `icon-xs` carries rule
      * #24's `pointer: coarse` bump; a touch target must not shrink because the box did.
      */
-    const actionSize =
+    const actionSize: ButtonSizeProp =
       size === "xs" ? "icon-xs" : size === "sm" ? "icon-sm" : size === "lg" ? "icon-lg" : "icon";
+
+    /*
+     * The two components a `footer` render function receives (Ant Design X `Sender`'s
+     * `info.components`), so a consumer can RELOCATE the real send/cancel buttons instead of
+     * duplicating them. Defined once via a stable `useMemo` identity and reading live values off
+     * a ref: a component redeclared on every render would remount on every keystroke (losing
+     * focus) the moment a consumer parked one inside `footer`.
+     */
+    const liveRef = React.useRef({ actionSize, sendName, cancelName, submit, onCancel, canSubmit, disabled });
+    liveRef.current = { actionSize, sendName, cancelName, submit, onCancel, canSubmit, disabled };
+    const SubmitButton = React.useMemo(
+      () =>
+        function SubmitButton(buttonProps: React.ComponentProps<typeof Button>) {
+          const live = liveRef.current;
+          return (
+            <Button
+              type="button"
+              size={live.actionSize}
+              aria-label={live.sendName}
+              onClick={live.submit}
+              disabled={!live.canSubmit}
+              {...buttonProps}
+            >
+              {buttonProps.children ?? <SendHorizontal aria-hidden="true" />}
+            </Button>
+          );
+        },
+      [],
+    );
+    const CancelButton = React.useMemo(
+      () =>
+        function CancelButton(buttonProps: React.ComponentProps<typeof Button>) {
+          const live = liveRef.current;
+          return (
+            <Button
+              type="button"
+              size={live.actionSize}
+              variant="secondary"
+              aria-label={live.cancelName}
+              onClick={live.onCancel}
+              disabled={live.disabled}
+              {...buttonProps}
+            >
+              {buttonProps.children ?? <Square aria-hidden="true" />}
+            </Button>
+          );
+        },
+      [],
+    );
+    const actionComponents = React.useMemo(
+      () => ({ SubmitButton, CancelButton }),
+      [SubmitButton, CancelButton],
+    );
+    const footerContent = typeof footer === "function" ? footer({ components: actionComponents }) : footer;
 
     return (
       <div
@@ -218,38 +275,19 @@ export const ChatComposer = React.forwardRef<HTMLTextAreaElement, ChatComposerPr
             {...identity}
           />
 
-          <div data-slot="chat-composer-actions" className="ui-chat-composer-actions">
-            {actions}
-            {/* ONE trailing action, never two: while a response streams the send button IS the
-                cancel button. Both are icon-only, so both carry a t()-routed accessible name. */}
-            {loading ? (
-              <Button
-                type="button"
-                size={actionSize}
-                variant="secondary"
-                aria-label={cancelName}
-                onClick={onCancel}
-                disabled={disabled}
-              >
-                <Square aria-hidden="true" />
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                size={actionSize}
-                aria-label={sendName}
-                onClick={submit}
-                disabled={!canSubmit}
-              >
-                <SendHorizontal aria-hidden="true" />
-              </Button>
-            )}
-          </div>
+          {actions === false ? null : (
+            <div data-slot="chat-composer-actions" className="ui-chat-composer-actions">
+              {actions}
+              {/* ONE trailing action, never two: while a response streams the send button IS the
+                  cancel button. Both are icon-only, so both carry a t()-routed accessible name. */}
+              {loading ? <CancelButton /> : <SubmitButton />}
+            </div>
+          )}
         </div>
 
-        {footer ? (
+        {footerContent ? (
           <div data-slot="chat-composer-footer" className="ui-chat-composer-footer">
-            {footer}
+            {footerContent}
           </div>
         ) : null}
       </div>

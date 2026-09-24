@@ -984,6 +984,79 @@ import { Button } from "@godxjp/ui/general";
     rules: [2, 40],
   },
   {
+    name: "SpaceCompact",
+    group: "layout",
+    tagline:
+      "Weld a row (or column) of controls into one visual unit — antd Space.Compact. Inner corner radii are zeroed and the shared border collapses to one hairline; each child keeps its own focus ring and its own size.",
+    props: [
+      {
+        name: "orientation",
+        type: '"horizontal" | "vertical"',
+        defaultValue: '"horizontal"',
+        description:
+          "Layout axis (antd `orientation`; the installed antd `direction` prop is itself @deprecated in favour of this, so only `orientation` is ported).",
+      },
+      {
+        name: "vertical",
+        type: "boolean",
+        description:
+          'antd\'s boolean spelling of orientation="vertical". `orientation` wins when both are given.',
+      },
+      {
+        name: "fullWidth",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "The row fills its parent's inline size (antd `block`, renamed to match Button.fullWidth — the same rename, the same reason: this library's controlled vocabulary wins on values).",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        description:
+          "Scoped control density for the whole row (antd Space.Compact `size`, small|middle|large — the ConfigProvider ambient-size cascade this library already owns under `density`; see `Form.density`). Each child still carries its OWN `size` prop.",
+      },
+      { name: "id", type: "string", description: "DOM id of the row." },
+    ],
+    usage: [
+      'DO reach for it when two or more controls must read as ONE field — a number + a unit ("毎 [2] [週 ▾] ごと"), a currency Select welded to an amount Input, a search field with an attached filter Select. `ResponsiveGrid columns={2}` puts them in separate cells (which collapses to ONE column on a narrow form card); SpaceCompact keeps them fused on one line regardless of the grid.',
+      'ONE label for the pair vs per-control: wrap the WHOLE `SpaceCompact` in a single `FormField label="…"` when the pair reads as one field ("繰り返し間隔" over a number+unit row) — a role-less `<div>` cannot carry a cloned `aria-label`/`aria-labelledby` (axe `aria-allowed-attr`), so a NAMED SpaceCompact with no explicit `role` promotes itself to `role="group"` automatically, the same contract `Flex` already honours for a range/年月 pair. Give each CHILD its own `aria-label` instead only when the two controls are independently meaningful outside the row (rare — prefer the one-label pattern for a welded control).',
+      "DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
+      "DO set `size` on each CHILD individually, not on SpaceCompact — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
+      'DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.',
+      "DON'T expect corner-radius welding on `orientation=\"vertical\"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).",
+    ],
+    useCases: [
+      '定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.',
+      "A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
+      "A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
+    ],
+    related: [
+      "Flex `gap` — siblings that stay visually SEPARATE (a normal control row with spacing between items). SpaceCompact is the opposite case: controls that must read as ONE box.",
+      "ResponsiveGrid — equal-width form CELLS; SpaceCompact welds controls WITHIN one cell (or one row) into a single unit.",
+      "FormField — wraps the whole SpaceCompact with one label when the pair is one field.",
+      "NumberInput, Select — the two controls the shipping use case welds; either composes cleanly inside SpaceCompact because both already expose the radius knob it reads (`--input-radius-*`, `--control-trigger-radius-*`).",
+    ],
+    example: `import { SpaceCompact } from "@godxjp/ui/layout";
+import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
+
+<FormField label="繰り返し間隔">
+  <SpaceCompact>
+    <NumberInput aria-label="間隔の数" min={1} defaultValue={2} />
+    <Select
+      aria-label="単位"
+      defaultValue="week"
+      options={[
+        { value: "day", label: "日" },
+        { value: "week", label: "週" },
+        { value: "month", label: "月" },
+      ]}
+    />
+  </SpaceCompact>
+</FormField>`,
+    storyPath: "layout/SpaceCompact.stories.tsx",
+    rules: [2],
+  },
+  {
     name: "ResponsiveGrid",
     group: "layout",
     tagline: "Container-responsive card grid with configurable base, sm, md and lg columns.",
@@ -16944,13 +17017,15 @@ const messages: ChatMessageProp[] = [
       },
       {
         name: "footer",
-        type: "React.ReactNode",
-        description: "Slot BELOW the draft row — a hint line, a token counter.",
+        type: "React.ReactNode | ((info: { components: ChatComposerActionComponents }) => React.ReactNode)",
+        description:
+          "Slot BELOW the draft row — a hint line, a token counter, OR (Ant Design X Sender NodeRender) a function that receives the real SubmitButton/CancelButton components, pre-wired, so they can be rendered in the footer instead of beside the draft box. Pair with actions={false} to hide the inline pair.",
       },
       {
         name: "actions",
-        type: "React.ReactNode",
-        description: "Extra trailing actions, rendered BEFORE the send/cancel action.",
+        type: "React.ReactNode | false",
+        description:
+          "Extra trailing actions, rendered BEFORE the send/cancel action — or false (Ant Design X Sender suffix semantics) to hide the ENTIRE inline trailing-action cell, built-in send/cancel button included, once footer has taken it over. Omitted renders exactly as before.",
       },
       {
         name: "size",
@@ -17006,10 +17081,12 @@ const messages: ChatMessageProp[] = [
       "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter') / 'hintShiftEnter') when you flip `submitType` — the keystroke contract is invisible otherwise. For submitType=\"modEnter\" use t('dataEntry.chatComposer.hintModEnter', { modifier: isApplePlatform() ? '⌘' : 'Ctrl' }) with isApplePlatform from @godxjp/ui/lib/utils — the same platform test the composer uses to pick metaKey vs ctrlKey.",
       'DO set `allowEmptySubmit` (not a hidden fake draft) when the composer also submits field changes from `header`/`footer`; your onSubmit receives "" and decides whether anything changed.',
       "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme.",
+      "DO move the toolbar BELOW a full-width draft box with `actions={false}` + a function `footer` — the function receives `{ components: { SubmitButton, CancelButton } }`, both already wired to onSubmit/onCancel/disabled/the loading swap, so nothing about the send contract is reimplemented at the call site. Put the attach control and a keyboard hint on the START side of the footer row and `<SubmitButton />` on the END side (a `Flex justify=\"between\"`), exactly like the record-comment box case. Leaving `actions` unset keeps today's inline row — this is opt-in, not a breaking change.",
     ],
     useCases: [
       "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
       "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
+      "A record-detail comment box with a full-width textarea and a toolbar row BELOW it — attach on the start side, a keyboard hint in the middle, clear/send on the end side: `actions={false}` + `footer={({ components }) => <Flex justify=\"between\">…<components.SubmitButton /></Flex>}`.",
       'A long-form reply box where Enter must break the line: submitType="shiftEnter".',
       'A comment bar on an issue/record where Enter breaks the line and ⌘/Ctrl+Enter posts, and a status change may be posted without text: submitType="modEnter" + allowEmptySubmit.',
       "A streaming answer the user can stop: loading + onCancel.",
