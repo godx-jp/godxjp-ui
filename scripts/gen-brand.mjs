@@ -147,7 +147,17 @@ console.log(`✓ gen:brand — ${name} from ${hex}\n`);
 console.log(`  ${outDir}/${name}.service.css`);
 console.log(`  ${outDir}/${name}.email.ts\n`);
 console.log(
-  `  light seed ${toHex(brand.light.seed)}  ·  dark seed ${toHex(brand.dark.seed)} (lifted ${brand.darkLift}%)\n`,
+  `  light seed ${toHex(brand.light.seed)}  ·  dark seed ${toHex(brand.dark.seed)} (lifted ${brand.darkLift}%)`,
+);
+/* THE LABEL THIS GENERATOR CHOSE, PRINTED — because every "label on fill" row below is measured
+ * against it, and a reader who ships a different one is reading a number about someone else's page
+ * (gh#908). The label is DERIVED from the fill's luminance unless `--foreground` forces it, so a
+ * brand whose guidelines mandate white can be handed a report full of ticks that were all measured
+ * on black: #E8340D reports 4.92:1 here and measures 4.26:1 with a white label, and nothing in the
+ * old output said which one it meant. */
+console.log(
+  `  label     ${toHex(brand.light.label)} (light)  ·  ${toHex(brand.dark.label)} (dark)` +
+    `${forcedForeground ? "  — forced by --foreground" : "  — derived from the fill's luminance; pass --foreground to fix it yourself"}\n`,
 );
 let failed = 0;
 for (const row of brand.report) {
