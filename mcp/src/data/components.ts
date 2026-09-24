@@ -1053,6 +1053,7 @@ import { FormField, NumberInput, Select } from "@godxjp/ui/data-entry";
     />
   </SpaceCompact>
 </FormField>`,
+    docPath: "layout/space-compact.tsx",
     storyPath: "layout/SpaceCompact.stories.tsx",
     rules: [2],
   },
