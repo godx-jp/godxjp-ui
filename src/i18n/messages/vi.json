@@ -240,6 +240,7 @@
     },
     "topbar": {
       "toggleSidebar": "Bật/tắt thanh bên",
+      "more": "Thêm",
       "search": "Tìm kiếm",
       "searchPlaceholder": "Tìm kiếm...",
       "notifications": "Thông báo",

@@ -2882,6 +2882,43 @@
     min-inline-size: auto;
   }
 
+  /* OVERFLOW "menu" (gh#914). The clusters keep their natural width, exactly as under "scroll",
+   * so the bar's scrollWidth says how much room they need; Topbar measures that and, when it does
+   * not fit, renders one "more" cell in their place. `hidden` rather than `clip` because the
+   * measurement needs a scroll container, and there is nothing to scroll to for more than the one
+   * frame before the bar collapses. */
+  .ui-topbar[data-overflow="menu"] {
+    overflow: hidden;
+    min-inline-size: var(--topbar-item-min-width);
+  }
+
+  .ui-topbar[data-overflow="menu"] > .ui-topbar-end {
+    max-inline-size: none;
+    min-inline-size: auto;
+  }
+
+  .ui-topbar[data-overflow="menu"] > [data-topbar-overflow-trigger] {
+    margin-inline-start: auto;
+  }
+
+  /* The clusters inside the popover: the same cells, wrapped instead of in one row. */
+  .ui-topbar-overflow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--topbar-gap);
+    /* The panel's own inset on both sides, taken off the viewport, so an open menu never widens
+     * the page it was opened to rescue. */
+    max-inline-size: calc(100vi - 2 * var(--popover-space-inset) - var(--space-4));
+  }
+
+  .ui-topbar-overflow > :is(.ui-topbar-start, .ui-topbar-center, .ui-topbar-end) {
+    flex-wrap: wrap;
+    margin-inline-start: 0;
+    min-block-size: var(--topbar-item-min-width);
+    overflow: visible;
+  }
+
   /* THE START CLUSTER GETS ONE CELL, NOT ITS CONTENT — because its content is not only cells.
    * The slot's last child is a TITLE that truncates, and `white-space: nowrap` means its
    * min-content size is the WHOLE string: measured on the topbar frame in `en`, a content floor

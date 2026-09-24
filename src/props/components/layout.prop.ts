@@ -1498,12 +1498,17 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
    * - `"clip"` — the pre-gh#728 behaviour: a cell past the cluster's edge is simply not painted.
    *   Still focusable, still announced, invisible and unreachable by pointer. Choose it only for a
    *   bar you have measured as never overflowing.
+   * - `"menu"` — when the clusters do not fit, the bar shows ONE "more" cell and the clusters
+   *   move into its popover, where they wrap (gh#914). Nothing is off-screen and nothing is
+   *   duplicated: each control is rendered once, in the bar or in the popover. Use it for a bar
+   *   that must survive a narrow viewport with enlarged text, where a scrolling bar can shrink to
+   *   a window narrower than one cell. Ignored with `children`.
    *
    * Independent of `TopbarItem hideBelow`, which REMOVES a cell at a step: dropping a cell is the
    * consumer saying it does not belong on a phone, and that remains the way to spend the budget
    * deliberately. This prop is only about what happens once there is no budget left.
    */
-  overflow?: "scroll" | "clip";
+  overflow?: "scroll" | "clip" | "menu";
   /** Escape hatch — render fully custom bar content instead of the three slots. */
   children?: ReactNode;
 };
