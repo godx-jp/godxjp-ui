@@ -1195,5 +1195,15 @@
       "recovery": "リカバリーコードは安全な場所に保管してください。表示は一度きりです。",
       "acknowledge": "保管しました"
     }
+  },
+  "treeDocs": {
+    "spaceTitle": "Space で開閉だけする（spaceAction）",
+    "spaceDescription": "既定では Space は Enter と同じ「選択」です。一覧ペインの中身を読み込むフォルダナビゲーションでは、選択のたびに再読み込みが走ってしまうので、spaceAction=\"toggle\" にすると Space は枝を開閉するだけになります（遅延読み込みの loadData もここで走ります）。Enter は変わらず選択、葉ノードでは Space も選択にフォールバックします。左のツリーにフォーカスして Space と Enter を押し比べてください。",
+    "folderCardTitle": "フォルダ",
+    "folderTreeLabel": "フォルダ（Space で開閉）",
+    "openFolderLabel": "開いているフォルダ",
+    "listingLoadsLabel": "一覧の読み込み回数",
+    "spaceNote": "Space で枝を開閉しても、この回数は増えません。",
+    "keyboardSpaceBody": "枝ノードは開閉のみ（選択しない）。葉ノードは選択"
   }
 }

@@ -13,6 +13,7 @@ import {
   type TreeNodeProp,
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 import { Building2, FolderTree, ShieldCheck } from "lucide-react";
 
@@ -168,12 +169,17 @@ function attachChildren(nodes: Department[], id: string, children: Department[])
 }
 
 export default function Demo() {
+  const { t } = useTranslation();
   // Card 1 — checks are controlled so the readout beside the tree can never disagree with it.
   const [granted, setGranted] = React.useState<string[]>(["billing.invoice.read"]);
   // Card 2 — selection is controlled and drives the detail pane.
   const [openFile, setOpenFile] = React.useState<string | undefined>("src/components/tree.tsx");
   // The page index — the tree IS the navigation, so selection is what the reading pane follows.
   const [openPage, setOpenPage] = React.useState<string | undefined>("handbook/security/passwords");
+  // The Space-toggle card — `listingLoads` counts what selection would have RELOADED, so the readout
+  // shows Space unfolding a branch without ever touching it.
+  const [openFolder, setOpenFolder] = React.useState<string | undefined>("product");
+  const [listingLoads, setListingLoads] = React.useState(1);
   // Card 3 — async children land in state, exactly as a real fetch would.
   const [departments, setDepartments] = React.useState<Department[]>(initialDepartments);
   // Card 5 — independent (strict) checks, and a multi-select tree.
@@ -335,6 +341,48 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>{t("treeDocs.spaceTitle")}</CardTitle>
+            <CardDescription>{t("treeDocs.spaceDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex gap="lg" wrap>
+              <Card className="w-72">
+                <CardHeader>
+                  <CardTitle level={3}>{t("treeDocs.folderCardTitle")}</CardTitle>
+                </CardHeader>
+                <CardContent flush>
+                  <Tree
+                    aria-label={t("treeDocs.folderTreeLabel")}
+                    spaceAction="toggle"
+                    treeData={wikiPages}
+                    value={openFolder}
+                    onValueChange={(next) => {
+                      setOpenFolder(next as string | undefined);
+                      setListingLoads((count) => count + 1);
+                    }}
+                  />
+                </CardContent>
+              </Card>
+              <Flex direction="col" gap="sm">
+                <Descriptions
+                  items={[
+                    { label: t("treeDocs.openFolderLabel"), children: openFolder ?? "—" },
+                    {
+                      label: t("treeDocs.listingLoadsLabel"),
+                      children: <Badge>{listingLoads}</Badge>,
+                    },
+                  ]}
+                />
+                <Text size="sm" tone="muted">
+                  {t("treeDocs.spaceNote")}
+                </Text>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>組織ツリー（loadData · fieldNames · titleRender）</CardTitle>
             <CardDescription>
               API のキーが id / name / units でも fieldNames で読み替えるだけ。子を持たない枝は
@@ -475,6 +523,10 @@ export default function Demo() {
                 {
                   label: "Enter / Space",
                   children: "選択（checkable のときはチェックを切り替え）",
+                },
+                {
+                  label: 'Space（spaceAction="toggle"）',
+                  children: t("treeDocs.keyboardSpaceBody"),
                 },
                 { label: "*", children: "同じ階層の兄弟をすべて展開" },
                 { label: "文字キー", children: "先頭一致で次のノードへジャンプ（type-ahead）" },

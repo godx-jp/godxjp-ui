@@ -1201,5 +1201,15 @@
       "recovery": "Store these recovery codes somewhere safe. They are shown once.",
       "acknowledge": "I have saved them"
     }
+  },
+  "treeDocs": {
+    "spaceTitle": "Space only unfolds (spaceAction)",
+    "spaceDescription": "By default Space is Enter's twin: it selects. In a folder navigator whose selection loads a listing pane, every selection reloads it, so spaceAction=\"toggle\" makes Space open or close the branch and nothing else (a lazy loadData fetch runs here too). Enter still selects, and on a leaf Space still selects. Focus the tree on the left and compare Space with Enter.",
+    "folderCardTitle": "Folders",
+    "folderTreeLabel": "Folders (Space unfolds)",
+    "openFolderLabel": "Open folder",
+    "listingLoadsLabel": "Listing loads",
+    "spaceNote": "Unfolding a branch with Space does not raise this count.",
+    "keyboardSpaceBody": "Expandable node: opens or closes only, nothing is selected. Leaf: selects"
   }
 }

@@ -19247,6 +19247,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "spaceAction",
+          "origin": "owned",
+          "required": false,
+          "type": "\"toggle\" | \"activate\" | undefined",
+          "values": ["toggle", "activate"],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "titleRender",
           "origin": "owned",
           "required": false,

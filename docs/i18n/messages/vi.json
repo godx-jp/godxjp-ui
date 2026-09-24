@@ -1195,5 +1195,15 @@
       "recovery": "Hãy cất các mã khôi phục ở nơi an toàn. Chúng chỉ hiện một lần.",
       "acknowledge": "Tôi đã lưu lại"
     }
+  },
+  "treeDocs": {
+    "spaceTitle": "Space chỉ đóng/mở nhánh (spaceAction)",
+    "spaceDescription": "Mặc định Space giống hệt Enter: chọn nút. Trong bộ điều hướng thư mục mà việc chọn sẽ nạp lại ngăn danh sách, mỗi lần chọn đều nạp lại, nên spaceAction=\"toggle\" khiến Space chỉ đóng hoặc mở nhánh (loadData lười cũng chạy ở đây). Enter vẫn chọn, và trên nút lá Space vẫn chọn. Hãy đặt tiêu điểm vào cây bên trái rồi so sánh Space với Enter.",
+    "folderCardTitle": "Thư mục",
+    "folderTreeLabel": "Thư mục (Space để đóng/mở)",
+    "openFolderLabel": "Thư mục đang mở",
+    "listingLoadsLabel": "Số lần nạp danh sách",
+    "spaceNote": "Đóng/mở nhánh bằng Space không làm số này tăng.",
+    "keyboardSpaceBody": "Nút có thể mở rộng: chỉ đóng/mở, không chọn. Nút lá: chọn"
   }
 }

@@ -4,6 +4,31 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+MINOR. **`Tree`: a consumer can now choose what Space does** (gh#910).
+
+### ⌨️ `Tree spaceAction="toggle"` — Space unfolds a branch instead of selecting it
+
+`Tree` handled Space exactly like Enter: `preventDefault()` then `activate(node)` — select, or tick
+when `checkable` — and the key was swallowed, so a consumer's own listener never saw it. A tree used
+as a folder navigator next to a listing pane needs two verbs on the keyboard: **Enter** opens the
+folder (selection loads the listing) and **Space** only unfolds the branch, without reloading it.
+The only workaround was a capture-phase listener that parsed the component's private DOM ids.
+
+```tsx
+<Tree aria-label="Folders" treeData={folders} spaceAction="toggle" onValueChange={loadListing} />
+```
+
+| `spaceAction`          | Space on an expandable node                                                                                  | Space on a leaf               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| `"activate"` (default) | selects it (ticks it when `checkable`) — **unchanged**                                                       | activates                     |
+| `"toggle"`             | opens / closes the branch, requesting the lazy `loadData` fetch if one is due; nothing is selected or ticked | activates (nothing to unfold) |
+
+Enter is unchanged in both modes. Opt-in and non-breaking: with the prop unset the behaviour is
+byte-identical to before. Space is still `preventDefault`ed, so the page never scrolls under the tree.
+Covered by nine behavioural cases in `tree-keyboard.test.tsx` and shown on `docs/data-display/tree.tsx`.
+
 ## [30.0.3] - 2026-09-24
 
 PATCH. **A brand generator that told you a ratio without telling you which label it measured**

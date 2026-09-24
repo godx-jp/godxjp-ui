@@ -112,6 +112,7 @@ function TreeRoot({
   showIcon = false,
   divided = false,
   variant = "default",
+  spaceAction = "activate",
   size = "md",
   disabled = false,
   className,
@@ -359,6 +360,14 @@ function TreeRoot({
           return;
         }
       }
+      return;
+    }
+    // `spaceAction="toggle"` (gh#910): Space unfolds a branch instead of selecting it, so a tree that
+    // drives a listing pane can bind Enter to "open" and Space to "expand". A leaf has nothing to
+    // unfold, so it falls through to `activate` below — Space never becomes a dead key.
+    if (event.key === " " && spaceAction === "toggle" && expandable) {
+      event.preventDefault();
+      toggleExpand(node);
       return;
     }
     if (event.key === "Enter" || event.key === " ") {

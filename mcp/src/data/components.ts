@@ -12918,6 +12918,13 @@ export function FilterSection() {
           "`directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band.",
       },
       {
+        name: "spaceAction",
+        type: '"activate" | "toggle"',
+        defaultValue: '"activate"',
+        description:
+          "What Space does on a focused node (gh#910); Enter always activates. `activate` is the APG default — Space selects the node (or ticks it when `checkable`). `toggle` makes Space on an EXPANDABLE node open/close its branch (requesting the lazy `loadData` fetch if one is due) WITHOUT selecting or ticking it; on a leaf Space still activates. Use it when selection has a cost — a tree that drives a listing pane, where Enter should open the folder and Space should only unfold it. Not antd's spelling: antd's Tree has no Space split.",
+      },
+      {
         name: "size",
         type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
@@ -12946,6 +12953,7 @@ export function FilterSection() {
     ],
     usage: [
       "DO name the tree — pass `aria-label` (through your own `t()`) or `aria-labelledby`. A tree with no name is an unlabelled landmark for every screen reader user.",
+      'DO pass `spaceAction="toggle"` when selecting a node is expensive (it loads a listing pane): Enter then opens the folder and Space only unfolds it. Do not bolt a capture-phase `keydown` listener onto the tree to get this — it has to parse private DOM ids and it breaks on the next markup change.',
       "DO keep SELECTION and CHECKS apart: `value`/`onValueChange` is which node is open in the detail pane; `checkedValues`/`onCheckedValuesChange` is which nodes are ticked. They are two axes, exactly as in antd — never drive one from the other.",
       "DO let the keyboard work: the tree ships the full APG contract (Up/Down through visible nodes, Right expands then descends, Left collapses then climbs, Home/End, Enter/Space, `*` to expand the current level, type-ahead). Do not add your own key handling on top.",
       "DON'T nest a Button, Checkbox, Link or any focusable control inside a node label. A tree item owns exactly ONE tab stop; the disclosure triangle and the tick box are decorative glyphs for that reason. Put row actions in a sibling column outside the tree, or open a detail pane on selection.",

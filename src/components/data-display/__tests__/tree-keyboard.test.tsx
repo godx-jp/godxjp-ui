@@ -301,3 +301,157 @@ describe("Tree keyboard — activation, star and type-ahead", () => {
     expect(focused()).toHaveAccessibleName("アジア");
   });
 });
+
+describe('Tree keyboard — spaceAction="toggle" (gh#910)', () => {
+  it("Space on an expandable node opens it, then closes it, and never selects", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <Tree aria-label="地域" treeData={TREE} spaceAction="toggle" onValueChange={onValueChange} />,
+    );
+
+    item("アジア").focus();
+    await user.keyboard(" ");
+    expect(item("アジア")).toHaveAttribute("aria-expanded", "true");
+    expect(item("日本")).toBeInTheDocument();
+
+    await user.keyboard(" ");
+    expect(item("アジア")).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("treeitem", { name: "日本" })).not.toBeInTheDocument();
+
+    // The whole point: Space unfolds WITHOUT reloading whatever the selection drives.
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(item("アジア")).toHaveAttribute("aria-selected", "false");
+    // Focus stays on the node that was toggled.
+    expect(focused()).toHaveAccessibleName("アジア");
+  });
+
+  it("reports the expansion through onExpandedValuesChange, like any other way of expanding", async () => {
+    const user = userEvent.setup();
+    const onExpandedValuesChange = vi.fn();
+    render(
+      <Tree
+        aria-label="地域"
+        treeData={TREE}
+        spaceAction="toggle"
+        onExpandedValuesChange={onExpandedValuesChange}
+      />,
+    );
+    item("ヨーロッパ").focus();
+    await user.keyboard(" ");
+    expect(onExpandedValuesChange).toHaveBeenLastCalledWith(["eu"]);
+    await user.keyboard(" ");
+    expect(onExpandedValuesChange).toHaveBeenLastCalledWith([]);
+  });
+
+  it("Enter is unchanged: it still selects a branch and does not expand it", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <Tree aria-label="地域" treeData={TREE} spaceAction="toggle" onValueChange={onValueChange} />,
+    );
+
+    item("アジア").focus();
+    await user.keyboard("{Enter}");
+    expect(onValueChange).toHaveBeenLastCalledWith("asia");
+    expect(item("アジア")).toHaveAttribute("aria-selected", "true");
+    expect(item("アジア")).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("Space on a LEAF falls back to activate (both a declared leaf and a childless node)", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <Tree
+        aria-label="地域"
+        treeData={TREE}
+        defaultExpandAll
+        spaceAction="toggle"
+        onValueChange={onValueChange}
+      />,
+    );
+
+    item("南極").focus();
+    await user.keyboard(" ");
+    expect(onValueChange).toHaveBeenLastCalledWith("antarctica");
+
+    item("日本").focus();
+    await user.keyboard(" ");
+    expect(onValueChange).toHaveBeenLastCalledWith("jp");
+  });
+
+  it("in a checkable tree Space unfolds a branch, Enter still ticks it, Space on a leaf ticks it", async () => {
+    const user = userEvent.setup();
+    const onCheckedValuesChange = vi.fn();
+    render(
+      <Tree
+        aria-label="地域"
+        treeData={TREE}
+        checkable
+        spaceAction="toggle"
+        onCheckedValuesChange={onCheckedValuesChange}
+      />,
+    );
+
+    item("アジア").focus();
+    await user.keyboard(" ");
+    expect(item("アジア")).toHaveAttribute("aria-expanded", "true");
+    expect(onCheckedValuesChange).not.toHaveBeenCalled();
+
+    await user.keyboard("{Enter}");
+    expect(onCheckedValuesChange).toHaveBeenCalledTimes(1);
+
+    item("日本").focus();
+    await user.keyboard(" ");
+    expect(onCheckedValuesChange).toHaveBeenCalledTimes(2);
+  });
+
+  it("requests the lazy load once when Space opens an unloaded branch", async () => {
+    const user = userEvent.setup();
+    const loadData = vi.fn().mockResolvedValue(undefined);
+    const data: TreeNodeProp[] = [{ value: "remote", label: "リモート", isLeaf: false }];
+    render(<Tree aria-label="地域" treeData={data} spaceAction="toggle" loadData={loadData} />);
+
+    item("リモート").focus();
+    await user.keyboard(" ");
+    expect(loadData).toHaveBeenCalledTimes(1);
+    expect(loadData.mock.calls[0][0]).toMatchObject({ value: "remote" });
+    expect(item("リモート")).toHaveAttribute("aria-expanded", "true");
+
+    // Close and reopen: `loadData` fires ONCE per node, ever.
+    await user.keyboard(" ");
+    await user.keyboard(" ");
+    expect(loadData).toHaveBeenCalledTimes(1);
+  });
+
+  it("still swallows Space, so the page does not scroll under the tree", () => {
+    render(<Tree aria-label="地域" treeData={TREE} spaceAction="toggle" />);
+    item("アジア").focus();
+    const event = new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true });
+    focused().dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("a disabled tree does not toggle", async () => {
+    const user = userEvent.setup();
+    render(<Tree aria-label="地域" treeData={TREE} spaceAction="toggle" disabled />);
+    item("アジア").focus();
+    await user.keyboard(" ");
+    expect(item("アジア")).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it('spaceAction="activate" is today\'s behaviour, and so is leaving it unset', async () => {
+    const user = userEvent.setup();
+    for (const props of [{}, { spaceAction: "activate" as const }]) {
+      const onValueChange = vi.fn();
+      const { unmount } = render(
+        <Tree aria-label="地域" treeData={TREE} onValueChange={onValueChange} {...props} />,
+      );
+      item("アジア").focus();
+      await user.keyboard(" ");
+      expect(onValueChange).toHaveBeenLastCalledWith("asia");
+      expect(item("アジア")).toHaveAttribute("aria-expanded", "false");
+      unmount();
+    }
+  });
+});

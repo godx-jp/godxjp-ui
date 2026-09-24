@@ -843,6 +843,19 @@ export type TreeProp = {
   showIcon?: boolean;
   /** `directory` is antd's `<DirectoryTree>`: folder/file glyphs and a full-row selected band. */
   variant?: "default" | "directory";
+  /**
+   * What Space does on a focused node (gh#910). Enter is never affected: it always activates.
+   *
+   * - `"activate"` (default) — Space is Enter's twin, the APG default: it selects the node, or ticks
+   *   it when the tree is `checkable`.
+   * - `"toggle"` — Space on an EXPANDABLE node opens or closes its branch (requesting the lazy
+   *   `loadData` fetch if one is due) WITHOUT selecting, so a tree that drives a listing pane can
+   *   give the keyboard two verbs: Enter opens the folder, Space unfolds it. On a leaf there is
+   *   nothing to unfold, so Space falls back to activating it.
+   *
+   * Not an antd prop — antd's `Tree` has no Space split; see docs/DESIGN-AUTHORITY.md.
+   */
+  spaceAction?: "activate" | "toggle";
   /** Row height tier — the shared `--control-height` ladder. Default `md`. */
   size?: SizeProp;
   /** Disable the whole tree: nothing selects, checks or expands; nodes stay readable. */
