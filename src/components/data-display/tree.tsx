@@ -450,6 +450,17 @@ function TreeRoot({
             if (nodeDisabled) return;
             select(node);
           }}
+          /* THE NODE'S OWN VALUE, PUBLISHED (gh#910). A row already announces its level, position
+           * and expanded state, and said nothing about WHICH node it is — so a consumer who wanted
+           * to bind a key of their own had to map `document.activeElement` back to a node through
+           * the internal label id, which is exactly the fragile thing gh#910 reported doing.
+           *
+           * This is the escape hatch instead of a `spaceAction` prop: the library keeps the APG
+           * key map (`→`/`←` move the hierarchy, Enter/Space activate) and a consumer who wants a
+           * different binding can read the focused row's value off the DOM and drive
+           * `expandedValues` themselves, with no private markup and no second key language shipped
+           * to everyone. */
+          data-value={node.value}
           data-selected={isSelected ? "true" : undefined}
           data-disabled={nodeDisabled ? "" : undefined}
           className="ui-tree-node ui-focus-ring"

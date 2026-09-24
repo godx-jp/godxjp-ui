@@ -1,3 +1,4 @@
+import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -299,5 +300,80 @@ describe("Tree keyboard — activation, star and type-ahead", () => {
     await user.keyboard("日");
     // 日本 is hidden inside a collapsed branch — nothing to jump to.
     expect(focused()).toHaveAccessibleName("アジア");
+  });
+});
+
+describe("a consumer can bind their own key without private markup (gh#910)", () => {
+  /* WHY THIS IS HERE AND `spaceAction` IS NOT. gh#910 asked for a prop that makes Space unfold a
+   * branch, for a folder navigator where Enter loads a listing pane. The APG keys already do that
+   * — `→` unfolds, `←` folds, and neither fires `onValueChange` — so the prop would have shipped a
+   * second key language to every consumer to save one of them two keystrokes.
+   *
+   * What they could NOT do was bind a key themselves: the row published its level, its position
+   * and its expanded state, and nothing that said WHICH node it was, so mapping
+   * `document.activeElement` back to a value meant reading the internal label id. `data-value`
+   * closes that, and this test is the contract — a consumer keying off it must not break because
+   * the row's internals moved. */
+  it("publishes the node value on every row, so the focused node is identifiable", async () => {
+    const user = userEvent.setup();
+    render(<Tree treeData={TREE} aria-label="places" defaultExpandedValues={["asia"]} />);
+
+    await user.tab();
+    const focused = document.activeElement?.closest('[role="treeitem"]');
+    expect(focused).toHaveAttribute("data-value", "asia");
+
+    await user.keyboard("{ArrowDown}");
+    expect(document.activeElement?.closest('[role="treeitem"]')).toHaveAttribute(
+      "data-value",
+      "jp",
+    );
+  });
+
+  it("drives expansion from that value alone — the folder-navigator recipe, with no library change", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    function Harness() {
+      const [expanded, setExpanded] = React.useState<string[]>([]);
+      return (
+        <div
+          /* CAPTURE, not bubble, and this is the part a recipe has to say out loud: the row's own
+           * handler is on the event TARGET, so a bubbling listener on this wrapper runs AFTER it
+           * and `preventDefault` there is too late — the tree has already activated the node.
+           * `onKeyDownCapture` + `stopPropagation` is what takes the key before the tree sees it. */
+          onKeyDownCapture={(event) => {
+            if (event.key !== " ") return;
+            const value = (
+              document.activeElement?.closest('[role="treeitem"]') as HTMLElement | null
+            )?.dataset.value;
+            if (!value) return;
+            event.preventDefault();
+            event.stopPropagation();
+            setExpanded((open) =>
+              open.includes(value) ? open.filter((v) => v !== value) : [...open, value],
+            );
+          }}
+        >
+          <Tree
+            treeData={TREE}
+            aria-label="places"
+            expandedValues={expanded}
+            onExpandedValuesChange={setExpanded}
+            onValueChange={onValueChange}
+          />
+        </div>
+      );
+    }
+    render(<Harness />);
+
+    await user.tab();
+    expect(screen.queryByText("日本")).toBeNull();
+
+    // The consumer's OWN Space handler runs first and stops the tree's activate.
+    await user.keyboard(" ");
+    expect(screen.getByText("日本")).toBeVisible();
+    expect(onValueChange, "expanding must not select").not.toHaveBeenCalled();
+
+    await user.keyboard(" ");
+    expect(screen.queryByText("日本")).toBeNull();
   });
 });
