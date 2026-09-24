@@ -4,6 +4,42 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.0.2] - 2026-09-24
+
+PATCH. **A scroll region's tab stop no longer lags the overflow it is for** (gh#907, reported
+against 30.0.1 with a measured axe finding from a consumer app).
+
+### ♿ `scrollable-region-focusable` — one painted frame, closed
+
+`Table` and `DataTable` paint `overflow-auto` unconditionally and attach `role="group"` +
+`aria-label` + `tabIndex={0}` from a measurement. Measured in Chromium by widening the viewport
+until the table fits (the stop is correctly withheld) and narrowing it again, sampling from inside a
+`ResizeObserver` registered after the component's so the read sees the same frame's final DOM:
+
+```
+30.0.1   1 painted frame overflowing with no tab stop
+30.0.2   0
+```
+
+One frame is ~16ms on an idle machine and arbitrarily long on a loaded one, which is why the
+reporter hit it on a busy CI runner and never locally.
+
+**The report's observation was right and its mechanism was not**, and that changed the fix.
+`useScrollsOnAxis` starts `true`, so the mount frame always carries the stop — "between paint and
+that measurement" cannot happen. The window opens AFTER a correct removal: a box that fits loses the
+stop, something widens it again, and the `ResizeObserver` callback (which runs after layout and
+BEFORE paint) batched its state update into the next frame.
+
+**The fix is asymmetric, because the two failures are.** `hooks.ts` already ranks them — the
+measurement may only ever REMOVE the stop, never withhold it on a guess, and an extra tab stop is
+the lesser fault. So the ADD is flushed synchronously, one synchronous render on the transition into
+overflow; the REMOVAL stays batched. gh#817's ruling that "a focus stop that scrolls nothing is
+noise" is kept, rather than discarded to close the window.
+
+Nothing to do in a consumer: `Table`, `DataTable` and `ScrollArea` all read the same hook. If you
+added a workaround that waits for `tabindex` before running an accessibility gate, it is no longer
+load-bearing.
+
 ## [30.0.1] - 2026-09-24
 
 PATCH, and **nothing in it reaches a consumer** — that is stated first because a version number
