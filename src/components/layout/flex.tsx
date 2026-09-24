@@ -57,6 +57,41 @@ export type {
   FlexProp as FlexProps,
 } from "../../props/components/layout.prop";
 
+/**
+ * Tags whose OWN role must survive a label (gh#916).
+ *
+ * A named `Flex` defaults to `role="group"` because `FormField` lands its contract here — see the
+ * note at the call site. That default was applied without looking at what `as` renders, so
+ * `<Flex as="ul" aria-label="…">` had `group` written over the `list` role the `<ul>` already has,
+ * and every `<li>` inside became a `listitem` with no `list` to belong to. Reported from a real
+ * consumer whose two e2e specs asserted a list and were right to.
+ *
+ * These elements already carry a role that a name IMPROVES rather than replaces: a named `section`
+ * is a `region`, a named `nav` is a named `navigation`, a named `ul` is a named `list`. Overriding
+ * any of them loses structure the browser gives for free — which is the whole reason to reach for
+ * the semantic tag instead of a `div`.
+ *
+ * A `div` or a `span` has no role to lose, so the `group` default still applies there, which is
+ * every case `FormField` actually uses.
+ */
+const HAS_IMPLICIT_ROLE = new Set([
+  "ul",
+  "ol",
+  "dl",
+  "menu",
+  "nav",
+  "section",
+  "article",
+  "aside",
+  "main",
+  "header",
+  "footer",
+  "form",
+  "fieldset",
+  "table",
+  "figure",
+]);
+
 export function Flex({
   as: Element = "div",
   direction = "row",
@@ -94,6 +129,7 @@ export function Flex({
   let domProps: FlexProp = props;
   if (
     props.role === undefined &&
+    !HAS_IMPLICIT_ROLE.has(typeof Element === "string" ? Element : "") &&
     (props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined)
   ) {
     const {
