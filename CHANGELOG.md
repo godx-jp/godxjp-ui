@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.4.1] - 2026-09-25
+
 ### 🐛 `SpaceCompact` — a `display: contents` child (`Select`) is now welded correctly (gh#919)
 
 PATCH. Found by the guinea-pig consumer on the real `NumberInput` + `Select` row published in
