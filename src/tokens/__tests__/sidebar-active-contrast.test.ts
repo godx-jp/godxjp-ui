@@ -177,7 +177,11 @@ describe("both nav levels signal `open` in one colour language", () => {
     );
     // `--accent` is the HOVER fill and must stay that and only that, or the two states collapse.
     expect(active).not.toContain("--accent");
-    expect(rule(".sb-nav-item:hover")).toContain("background: hsl(var(--accent));");
+    // gh#909 put a knob in front of it; the DEFAULT is still the neutral `--accent`, which is
+    // what this contrast contract is about — the hover fill is neutral, the active fill is a tint.
+    expect(rule(".sb-nav-item:hover")).toContain(
+      "background: var(--sidebar-item-hover-background, hsl(var(--accent)));",
+    );
   });
 
   it("every default sits behind a knob, so a service can still have the grey back", () => {

@@ -629,6 +629,12 @@
    * `[data-tenant]` / `.dark` re-tint of `--primary` reaches them (a `:root` binding to a role var
    * freezes at `:root` — docs/TOKENS.md · "Role-mirror knobs MUST be `initial`").
    * Defaults = a `--primary` tint fill · the primary ACTIVE tier as label · `hsl(var(--primary))` dot. */
+  /* THE HOVER FILL, the pair to the active one below it (gh#909). `initial`, with
+   * `hsl(var(--accent))` resolved at the call site in shell-layout.css, so an unset knob paints
+   * exactly what shipped before and a scoped `--accent` re-tint still reaches it. It exists because
+   * a dark rail on a light app could theme every other role of the sidebar — surface, item ink,
+   * icon states, the active pair — and then hovered to the GLOBAL light `--accent`. */
+  --sidebar-item-hover-background: initial;
   --sidebar-item-active-background: initial;
   /* The open row's LABEL, at BOTH nav depths — one name since gh#651 (level 2 used to spell it
    * `--sidebar-item-active-color`). Default = the primary ACTIVE tier, derived at the call site from

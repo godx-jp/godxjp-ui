@@ -56,10 +56,10 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    its `importPath`, and its examples. Fetch only the handful you picked in step 1.
 3. `rules.json` — 50 cardinal rules. The ones about raw HTML and hardcoded colour are not
    style advice.
-4. `tokens.json` — 2070 design tokens, each tagged with its `tier`. **If you were handed a
+4. `tokens.json` — 2071 design tokens, each tagged with its `tier`. **If you were handed a
    brand, read the 211 `foundation` entries first** — `--primary`, `--background`,
    `--radius`, `--font-size-base` are the handful everything else derives from. The
-   1756 `component` entries are per-part knobs; reach for one only when a role is
+   1757 `component` entries are per-part knobs; reach for one only when a role is
    right everywhere except one component.
 5. `anti-ai-tells.json` — 26 shapes that make generated UI look generated, each with the
    fix. Read before you reach for a gradient hero or a wall of coloured chips.
@@ -145,7 +145,7 @@ has stopped following the brand.
 |---|---|---|---|
 | `foundation` | 211 | the seeds — `--primary`, `--background`, `--foreground`, `--radius`, `--font-size-base`, `--shadow-color`. Everything below is derived from these | **yes — this is the main road.** Handed a brand colour, this is where it goes: `:root { --primary: <H> <S>% <L>%; }` (HSL components, no `hsl()` wrapper) |
 | `semantic` | 103 | named roles that follow the seeds — `--ring`, `--text-link`, `--primary-hover`, `--overlay-background` | only when the seed is right and ONE role must differ. That role then stops following a later brand change |
-| `component` | 1756 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
+| `component` | 1757 | per-part knobs, `--{component}-{part}-{property}` | rarely. Most are declared `initial` with the real default at the call site — deliberate, so a scoped override re-resolves instead of freezing at `:root` |
 
 A token whose `value` is `initial` is not empty and not broken: `initial` is the guaranteed-invalid
 value, so the real default is computed where the element paints it. Set it and yours wins.

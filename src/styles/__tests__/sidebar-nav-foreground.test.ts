@@ -84,11 +84,15 @@ describe("Sidebar nav foreground tokens (gh#228)", () => {
   });
 
   it("hover row keeps the foreground default behind its own knob", () => {
+    // gh#909 put a knob in front of the fill. The default is unchanged, so what this pins —
+    // the hover row's fill and ink each sitting behind their own knob — now reads on both.
     expect(rule(".sb-nav-item:hover")).toContain(
       "color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));",
     );
     // Hover background is untouched by the foreground split.
-    expect(rule(".sb-nav-item:hover")).toContain("background: hsl(var(--accent));");
+    expect(rule(".sb-nav-item:hover")).toContain(
+      "background: var(--sidebar-item-hover-background, hsl(var(--accent)));",
+    );
   });
 
   it("active row still reads the pre-existing active knobs (no duplicate token)", () => {

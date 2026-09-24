@@ -2278,8 +2278,18 @@
    * second formula that had already drifted — it dropped `--focus-ring-opacity` and never fed
    * `--tw-ring-shadow`, so a service that softened the ring got every control but this one. */
 
+  /* THE FILL WAS THE ONE PART OF THE RAIL WITH NO KNOB IN FRONT OF IT (gh#909). The ink beside it
+   * already had `--sidebar-nav-item-hover-foreground`, which is what made the gap read as an
+   * oversight rather than a decision — and it is. A dark rail on an otherwise light app (every
+   * other role of it already themeable: surface, item ink, icon states, the active pair) hovered
+   * to the GLOBAL light `--accent`, flashing a pale block under light ink, and the only way out
+   * was to re-point `--accent` app-wide — which is every accent surface in the app, not this one.
+   *
+   * Same shape as `--sidebar-item-active-background` in the rule below: a knob whose default is
+   * resolved HERE, at the call site, so an unset knob is byte-identical to what shipped before and
+   * a scoped `[data-tenant]` re-tint of `--accent` still reaches it. */
   .sb-nav-item:hover {
-    background: hsl(var(--accent));
+    background: var(--sidebar-item-hover-background, hsl(var(--accent)));
     color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));
   }
 
