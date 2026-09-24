@@ -4,6 +4,33 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.3.1] - 2026-09-24
+
+PATCH. **A label no longer costs an element the role it already has** (gh#916).
+
+### ♿ `Flex` keeps `ul` a list, `nav` navigation, `section` a region
+
+A named `Flex` defaults to `role="group"` — `FormField` lands its contract there, and a range
+from/to pair is a group. That default was applied without looking at what `as` renders:
+
+```tsx
+<Flex as="ul" aria-label="Organisations">   →  role="group" written over the ul's own `list`
+  <li>…</li>                                →  a listitem with no list to belong to
+```
+
+To a screen-reader user that is the list count going missing. Reported from a consumer's
+organisation list, with two e2e specs that asserted a `list` and were right to; their stopgap was
+`role="list"` at the call site, which is a consumer paying for a library default.
+
+The default now applies only where there is no role to lose — `div` and `span`, which is every case
+`FormField` uses. `ul`, `ol`, `dl`, `menu`, `nav`, `section`, `article`, `aside`, `main`, `header`,
+`footer`, `form`, `fieldset`, `table` and `figure` keep their own, because a name **improves** those
+roles rather than replacing them: a named `section` is a `region`, a named `nav` is named
+navigation, a named `ul` is a named list.
+
+**Nothing changes for a `<Flex>` that is a `div`**, labelled or not, and an explicit `role` still
+wins everywhere. If you added `role="list"` as a workaround you can drop it.
+
 ## [30.3.0] - 2026-09-24
 
 MINOR. Everything here came out of an issue that was **declined** (gh#910). The feature it asked
