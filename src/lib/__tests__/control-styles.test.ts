@@ -53,7 +53,17 @@ describe("control-styles (token wiring)", () => {
       expect(controlSurfaceTriggerClass).not.toMatch(/\bbg-background\b/);
       // Everything else about the trigger is unchanged.
       expect(controlSurfaceTriggerClass).toContain("ui-control-trigger");
-      expect(controlSurfaceTriggerClass).toContain("rounded-[var(--control-radius)]");
+      // The radius is now PER-EDGE through a knob (#917, same repair as Input's
+      // `--input-radius-start`/`-end` in gh#841) so a SpaceCompact seam can zero one side from the
+      // components layer. What this assertion has always been protecting is that an ORDINARY
+      // trigger still rounds by `--control-radius`, so pin the fallback on BOTH edges — that is
+      // what makes "no existing trigger changes" true rather than merely claimed.
+      expect(controlSurfaceTriggerClass).toContain(
+        "rounded-s-[var(--control-trigger-radius-start,var(--control-radius))]",
+      );
+      expect(controlSurfaceTriggerClass).toContain(
+        "rounded-e-[var(--control-trigger-radius-end,var(--control-radius))]",
+      );
     });
   });
 

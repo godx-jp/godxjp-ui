@@ -56,6 +56,11 @@
   },
   {
     "group": "layout",
+    "name": "SpaceCompact",
+    "tagline": "Weld a row (or column) of controls into one visual unit — antd Space.Compact. Inner corner radii are zeroed and the shared border collapses to one hairline; each child keeps its own focus ring and its own size."
+  },
+  {
+    "group": "layout",
     "name": "ResponsiveGrid",
     "tagline": "Container-responsive card grid with configurable base, sm, md and lg columns."
   },

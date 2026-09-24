@@ -48,7 +48,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | RangeTimeline | **✗** | · | N/A | N/A | · | · | · | · | · | · |
 | PageContainer | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | Flex | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
-| SpaceCompact | ✓ | · | · | · | · | · | · | · | · | · |
+| SpaceCompact | ✓ | · | N/A | N/A | · | · | · | · | · | · |
 | ResponsiveGrid | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | AppShell | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | AuthShell | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
