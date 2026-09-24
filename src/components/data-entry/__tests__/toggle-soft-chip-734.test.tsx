@@ -58,7 +58,7 @@ describe("Toggle soft (gh#734) — the chip has a REST fill", () => {
     expect(rule).toContain("color: var(--toggle-soft-color, hsl(var(--secondary-foreground)));");
     // Transparent border, exactly like `default` — the fill is the whole difference, so the two
     // variants have the same box and a chip row does not jump when it changes variant.
-    expect(rule).toContain("border: 1px solid transparent;");
+    expect(rule).toContain("border: var(--stroke-hairline) solid transparent;");
   });
 
   it("is the SAME fill Badge/Button secondary already paint (one family, one token)", () => {
@@ -75,7 +75,7 @@ describe("Toggle soft (gh#734) — the chip has a REST fill", () => {
 
   it("documents the defect it closes: `default` declares NO background at all", () => {
     const rule = flat(controlCss).match(/\.ui-toggle-default \{([^}]*)\}/)?.[1];
-    expect(rule).toBe(" border: 1px solid transparent; ");
+    expect(rule).toBe(" border: var(--stroke-hairline) solid transparent; ");
     expect(rule).not.toContain("background");
   });
 

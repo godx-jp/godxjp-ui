@@ -169,7 +169,7 @@ describe("Logo productSuffix tokens", () => {
 
   it("declares every knob the kit's file hardcoded (rule #45)", () => {
     for (const [knob, value] of [
-      ["--logo-divider-width", "var(--stroke-hairline)"],
+      ["--logo-divider-width", "initial"],
       // 1em of the SUFFIX's own type: the rule is as tall as the word it separates at every tier,
       // with no per-tier ramp to keep in step (12.5 / 14 / 14 / 17.6px).
       ["--logo-divider-height", "1em"],

@@ -108,12 +108,12 @@ describe("Segmented surface knobs follow a scoped theme (gh#848) — the token g
      * are already carried as debt in preview/frame-token-scope.baseline.json; the other two are
      * invisible to that gate because its COLOUR_SEEDS list does not yet name `--muted-foreground`
      * or `--secondary`. */
-    expect(frozenRoleBindings()).toEqual([
-      "--segmented-item-active-background ← --secondary",
-      "--segmented-item-color ← --muted-foreground",
-      "--segmented-item-hover-color ← --foreground",
-      "--segmented-item-selected-color ← --foreground",
-    ]);
+    /* Three of the four went away in gh#906: `--segmented-item-color`,
+     * `--segmented-item-hover-color` and `--segmented-item-selected-color` are `initial` knobs
+     * now, with the role resolved at the call site, so a scoped theme reaches them. The ledger
+     * shrinks rather than being deleted — `--segmented-item-active-background ← --secondary` is
+     * still bound bare, and it is the ONE remaining debt this test is for. */
+    expect(frozenRoleBindings()).toEqual(["--segmented-item-active-background ← --secondary"]);
   });
 
   it.each(REPAIRED)("%s is no longer one of them", (token) => {

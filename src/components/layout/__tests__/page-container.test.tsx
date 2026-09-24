@@ -774,7 +774,9 @@ describe("PageContainer", () => {
       const presetRule =
         layoutCss.match(/\.ui-page-container\[data-preset="admin-collection"\] \{[^}]*\}/)?.[0] ??
         "";
-      expect(presetRule).toMatch(/--space-section-active: var\(\s*--admin-collection-section-gap\);/);
+      expect(presetRule).toMatch(
+        /--space-section-active: var\(\s*--admin-collection-section-gap\);/,
+      );
       expect(presetRule).not.toMatch(/gap:/);
       // Exactly one band cancels the gap. The header, the body and the footer keep the container's
       // rhythm — a page of three document blocks is what that rhythm is FOR.
@@ -825,7 +827,7 @@ describe("PageContainer", () => {
       const footerRule =
         layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
       expect(footerRule).toMatch(
-        /border-top: var\(\s*--page-footer-divider, 1px solid hsl\(var\(\s*--border\)\)\);/,
+        /border-top: var\(\s*--page-footer-divider, var\(--stroke-hairline\) solid hsl\(var\(\s*--border\)\)\);/,
       );
       expect(footerRule).not.toMatch(/border-top: 1px solid/);
       // `initial` at the semantic tier, beside the other two, so a scoped [data-tenant]/.dark
@@ -851,7 +853,7 @@ describe("PageContainer", () => {
         layoutCss.match(/\n {2}\.ui-page-footer \{[^}]*border-top[^}]*\}/)?.[0] ?? "";
       // The fallback is the OLD literal, verbatim — that is what makes "unset" byte-identical.
       expect(footerRule).toContain(
-        "border-top: var(--page-footer-divider, 1px solid hsl(var(--border)));",
+        "border-top: var(--page-footer-divider, var(--stroke-hairline) solid hsl(var(--border)));",
       );
     });
 
@@ -918,7 +920,9 @@ describe("PageContainer", () => {
       renderWithUi(<PageContainer title="Explicit" headerScale="document" />);
       expect(document.querySelectorAll(".ui-page-container[data-header-scale]")).toHaveLength(0);
       // …and the default title still reads the DOCUMENT step, from the token, in the base rule.
-      expect(layoutCss).toMatch(/\.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size\);/);
+      expect(layoutCss).toMatch(
+        /\.ui-page-title \{\s*font-size: var\(\s*--page-title-font-size\);/,
+      );
     });
 
     it("publishes chrome as one attribute, and the title takes the CHROME token", () => {
@@ -1065,7 +1069,9 @@ describe("PageContainer", () => {
       );
       // A step of the shared golden scale, never a literal (rule #46) — and a SEPARATE knob that
       // sits beside the two document steps rather than redefining either of them.
-      expect(layoutTokens).toMatch(/--page-subtitle-font-size-chrome:\s*var\(\s*--font-size-2xs[,)]/);
+      expect(layoutTokens).toMatch(
+        /--page-subtitle-font-size-chrome:\s*var\(\s*--font-size-2xs[,)]/,
+      );
       expect(layoutCss).not.toMatch(/--page-subtitle-font-size-chrome:/);
       expect(layoutTokens).toMatch(/--page-subtitle-font-size: var\(\s*--font-size-base\);/);
       expect(layoutTokens).toMatch(/--page-subtitle-font-size-compact: var\(\s*--font-size-sm[,)]/);

@@ -113,14 +113,14 @@ describe("navRailPosition", () => {
     expect(strip).toMatch(/flex-direction: row;/);
     expect(strip).toMatch(/border-inline-end: 0;/);
     expect(declarationsFor('.app-nav-rail[data-edge="top"]')).toMatch(
-      /border-block-end: 1px solid/,
+      /border-block-end: var\(--stroke-hairline\) solid/,
     );
     expect(declarationsFor('.app-nav-rail[data-edge="bottom"]')).toMatch(
-      /border-block-start: 1px solid/,
+      /border-block-start: var\(--stroke-hairline\) solid/,
     );
     // `end` mirrors the column, so its border faces the content it separates.
     expect(declarationsFor('.app-nav-rail[data-edge="end"]')).toMatch(
-      /border-inline-start: 1px solid/,
+      /border-inline-start: var\(--stroke-hairline\) solid/,
     );
   });
 

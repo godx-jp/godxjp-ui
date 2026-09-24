@@ -97,7 +97,13 @@ describe("RangeTimeline column labels are centred (gh#730)", () => {
   const css = strip(
     readFileSync(join(process.cwd(), "src/styles/data-display-layout.css"), "utf8"),
   );
-  const column = css.match(/\.ui-range-timeline-column\s*\{([^}]*)\}/)![1];
+  /* Collapsed, so the assertions below pin the DECLARATION and not Prettier's wrapping: gh#906
+   * made the padding calc long enough to break across lines. */
+  const column = css
+    .match(/\.ui-range-timeline-column\s*\{([^}]*)\}/)![1]
+    .replace(/\s+/g, " ")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+\)/g, ")");
 
   it("centres the tick and band label on its column", () => {
     // Chromium, before: the day number sat 21.074px from the centre of a 65.07px cell and the

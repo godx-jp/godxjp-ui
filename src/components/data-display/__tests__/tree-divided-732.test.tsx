@@ -107,7 +107,7 @@ describe("Tree divided (gh#732) — the CSS contract", () => {
 
   it("keeps the vertical rail on its own token, untouched by the divider", () => {
     expect(css()).toContain(
-      "border-inline-start: 1px solid var(--tree-line-color, hsl(var(--border)));",
+      "border-inline-start: var(--stroke-hairline) solid var(--tree-line-color, hsl(var(--border)));",
     );
   });
 });

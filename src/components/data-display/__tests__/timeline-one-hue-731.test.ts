@@ -33,11 +33,17 @@ const navigation = read("src/styles/navigation-layout.css");
 const foundation = read("src/tokens/foundation.css");
 
 /** The body of the FIRST rule whose selector list contains `selector`. */
+/** Collapses the line breaks Prettier inserts once a declaration outgrows the print width, so an
+ * assertion pins the DECLARATION and not the formatter's wrapping decision. gh#906 made the
+ * box-shadow below long enough to wrap. */
+const tight = (value: string) =>
+  value.replace(/\s+/g, " ").replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
+
 function rule(css: string, selector: string): string {
   const at = css.indexOf(selector);
   if (at === -1) throw new Error(`selector not found: ${selector}`);
   const open = css.indexOf("{", at);
-  return css.slice(open + 1, css.indexOf("}", open));
+  return tight(css.slice(open + 1, css.indexOf("}", open)));
 }
 
 function themeBlock(selector: string): string {
@@ -114,7 +120,7 @@ describe("the current item is told apart by its RING, not by a second role", () 
     // so collect both and assert the ring is among them rather than pinning a source order.
     const processRules = [...navigation.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
       .filter(([, selector]) => selector.includes('.ui-steps-dot[data-status="process"]'))
-      .map(([, , body]) => body);
+      .map(([, , body]) => tight(body));
     expect(processRules.length).toBeGreaterThan(1);
     expect(processRules.join("")).toContain(
       "box-shadow: 0 0 0 var(--steps-dot-process-ring-width, var(--stroke-xl)) hsl(var(--primary) / 0.2)",
