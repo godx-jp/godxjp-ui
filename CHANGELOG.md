@@ -4,6 +4,54 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.0.3] - 2026-09-24
+
+PATCH. **A brand generator that told you a ratio without telling you which label it measured**
+(gh#908).
+
+### 🎨 `gen:brand` prints the label it chose
+
+Every "primary label on fill" row is measured against a label the generator DERIVES from the fill's
+luminance — and it never said which one:
+
+```
+gen:brand #E8340D                        ✓ primary label on fill (light)  4.92:1   ← on #000000
+gen:brand #E8340D --foreground #ffffff   ✗ primary label on fill (light)  4.27:1   ← on #ffffff
+```
+
+A brand whose guidelines mandate a white label could read a report of ticks measured entirely on
+black. The reporter's own number was **4.26:1**, which is the second line to within rounding — so the
+generator did catch their configuration and always could; it was never told about it, and nothing on
+screen showed that the number described a different page. It now prints the label for both
+polarities and whether it was derived or forced.
+
+### 📖 `docs/CUSTOMER-THEMING.md` — which road you have to be standing on
+
+The level-1 row called `pnpm gen:brand` "the main road" for a consumer. `scripts/gen-brand.mjs` is
+**not in the package** — it compiles the derivation out of `src/` at runtime — so a consumer with
+only the dependency cannot run it. The shipped route is `tenantTheme()` from `@godxjp/ui/app`: the
+same arithmetic, returning tokens at runtime instead of writing a file. Both are now named, with
+which one needs a checkout, and the label-choice warning is stated where either is chosen.
+
+### 🔍 What was NOT changed, and why
+
+gh#908 asks for a HOVER row in the generator, on the reasoning that a rest-only measurement can pass
+a seed the hover then fails. It was built and reverted: every seed comes back **better** hovered.
+
+```
+#D6300C 4.90 → 6.82    #7C3AED 5.71 → 7.54    #2563EB  5.17 →  6.83
+#FFD400 14.68 → 15.20  #22C55E 9.22 → 11.38   #4ADE80 12.05 → 12.88
+```
+
+Not luck: the label is chosen by the fill's luminance and the hover step is then pointed the
+opposite way, so it can only move the fill AWAY from its own label. A row that cannot fail is noise.
+The invariant it would have asserted is already held by `derived-seed-sweep.test.ts` over a dense
+grid, with the one case where it cannot (label polarity) named rather than skipped.
+
+Nothing changed in `Button`. Its hover reads the derived token step — measured `#AD2709`, 6.6:1 on
+that seed — and the `bg-primary/90` utility that would produce an opacity wash was removed on
+2026-09-07.
+
 ## [30.0.2] - 2026-09-24
 
 PATCH. **A scroll region's tab stop no longer lags the overflow it is for** (gh#907, reported
