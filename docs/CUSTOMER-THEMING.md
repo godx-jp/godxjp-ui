@@ -14,12 +14,12 @@ does the job. Ant Design states the same rule for the same reason — _"In most 
 Tokens is sufficient for custom themes"_ — and the cost of skipping down a level is real, not
 stylistic.
 
-| level            | what it is                                                                                                                                          | when                                            | what you give up by going lower                                           |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
-| **1 · seed**     | `--primary`, `--radius`, `--font-size-base`, `--shadow-color` — the handful everything derives from. `pnpm gen:brand '#RRGGBB'` writes them for you | **almost always**                               | nothing — this is the main road                                           |
-| **2 · role**     | a named semantic token: `--text-link`, `--accent`, `--card-radius`                                                                                  | when the seed is right but ONE role must differ | that role stops following the seed; a later brand change will not move it |
-| **3 · scope**    | the same token under `[data-tenant]` / `.dark` / any subtree                                                                                        | multi-tenant, or one region that differs        | nothing extra, provided you set the token and not a literal               |
-| **4 · instance** | a documented prop, or `style={{ "--x": … }}` on one element                                                                                         | this one element, this one time                 | it is invisible to every audit and every future theme                     |
+| level            | what it is                                                                                                                                                                                                                                                                     | when                                            | what you give up by going lower                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| **1 · seed**     | `--primary`, `--radius`, `--font-size-base`, `--shadow-color` — the handful everything derives from. `tenantTheme('#RRGGBB')` from `@godxjp/ui/app` returns them; `pnpm gen:brand` writes the same thing to a file **from a checkout of this repo** (it is not in the package) | **almost always**                               | nothing — this is the main road                                           |
+| **2 · role**     | a named semantic token: `--text-link`, `--accent`, `--card-radius`                                                                                                                                                                                                             | when the seed is right but ONE role must differ | that role stops following the seed; a later brand change will not move it |
+| **3 · scope**    | the same token under `[data-tenant]` / `.dark` / any subtree                                                                                                                                                                                                                   | multi-tenant, or one region that differs        | nothing extra, provided you set the token and not a literal               |
+| **4 · instance** | a documented prop, or `style={{ "--x": … }}` on one element                                                                                                                                                                                                                    | this one element, this one time                 | it is invisible to every audit and every future theme                     |
 
 **Why the order matters more than the count of knobs.** Every level below the first is a value that
 has stopped being derived. A literal at level 4 is not "more control" — it is a pixel that has left
@@ -33,6 +33,20 @@ the knob is how the system absorbs the change; repeating the literal is how it d
 ---
 
 ## Start from one hex — `pnpm gen:brand`
+
+> **This command runs from a checkout of `godxjp-ui`, not from the installed package** —
+> `scripts/gen-brand.mjs` is not in the package `files` list, because it compiles the derivation out
+> of `src/` at runtime. If you have only the dependency, use **`tenantTheme()`** (below) instead: it
+> is the same arithmetic, it ships, and it returns the tokens at runtime rather than writing a file.
+> Naming that here because this table used to call `gen:brand` "the main road" without saying which
+> road you have to be standing on (gh#908).
+>
+> **And whichever you use, look at the LABEL it chose.** Both pick black or white from the fill's
+> luminance, and every "label on fill" ratio is measured against that choice. A brand whose
+> guidelines mandate a white label must say so — `--foreground '#ffffff'` for the generator, the
+> `foreground` option for `tenantTheme()` — or it will read a passing report about a page it is not
+> shipping. Measured: `#E8340D` reports **4.92:1** on the black label it picks and **4.27:1** on the
+> white label a consumer actually shipped.
 
 Everything below this section is the manual route, and it is worth reading because it says what each
 role means. But the colour half of a brand file is mechanical, and two of its decisions are ones CSS
