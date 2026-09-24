@@ -136,7 +136,14 @@ function TreeRoot({
   });
   const isExpandedControlled = expandedValues !== undefined;
   const expanded = isExpandedControlled ? [...expandedValues] : internalExpanded;
-  const expandedSet = new Set(expanded);
+  /* Memoised on the CONTENT, not the array identity: `expanded` is rebuilt every render (a spread
+   * when controlled, state when not), so a set derived from it plainly would make every effect that
+   * depends on it run every render. The join is the stable key. */
+  const expandedKey = expanded.join("\u0000");
+  const expandedSet = React.useMemo(
+    () => new Set(expandedKey ? expandedKey.split("\u0000") : []),
+    [expandedKey],
+  );
   const commitExpanded = (next: string[]) => {
     if (!isExpandedControlled) setInternalExpanded(next);
     onExpandedValuesChange?.(next);
@@ -183,6 +190,45 @@ function TreeRoot({
       });
     });
   };
+
+  /* LAZY CHILDREN FOR A BRANCH THE CONSUMER OPENED, not just one the tree opened itself (gh#910).
+   * `requestLoad` had exactly one caller — `expandNode`, the tree's own path — so a branch that
+   * became expanded through the CONTROLLED `expandedValues` prop rendered open and never asked for
+   * its children: open, empty, and staying that way. `expandedValues` is a documented controlled
+   * prop, so driving it from outside is a supported thing to do, and it silently skipped the load.
+   *
+   * It also covers `defaultExpandAll` on a lazy tree, which seeds the expanded set without going
+   * through `expandNode` and had the same hole.
+   *
+   * `requestLoad` is idempotent per node (`requestedLoads`), so this cannot double-fetch a branch
+   * the tree itself just opened. */
+  /* Read through a ref rather than silencing the exhaustive-deps rule: `requestLoad` closes over
+   * `loadData` and two setters and is re-made every render, so listing it would re-run this on
+   * every render, and disabling the rule would hide the next dependency somebody forgets. */
+  const requestLoadRef = React.useRef(requestLoad);
+  requestLoadRef.current = requestLoad;
+
+  const nodesByValue = React.useMemo(() => {
+    const map = new Map<string, NormalizedTreeOption>();
+    const walk = (list: readonly NormalizedTreeOption[]) => {
+      for (const node of list) {
+        map.set(node.value, node);
+        if (node.children?.length) walk(node.children);
+      }
+    };
+    walk(options);
+    return map;
+  }, [options]);
+  const loadedFor = React.useRef<Set<string>>(new Set());
+  React.useEffect(() => {
+    if (!loadData) return;
+    for (const value of expandedSet) {
+      if (loadedFor.current.has(value)) continue;
+      loadedFor.current.add(value);
+      const node = nodesByValue.get(value);
+      if (node) requestLoadRef.current(node);
+    }
+  }, [expandedSet, loadData, nodesByValue, requestLoadRef]);
 
   // The keyboard's world: every node the user can actually see, in reading order.
   const visible = flattenVisibleTree(options, expandedSet);

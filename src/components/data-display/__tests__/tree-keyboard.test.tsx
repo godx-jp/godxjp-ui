@@ -377,3 +377,69 @@ describe("a consumer can bind their own key without private markup (gh#910)", ()
     expect(screen.queryByText("日本")).toBeNull();
   });
 });
+
+describe("lazy children load for a branch the CONSUMER opened (gh#910)", () => {
+  /* `requestLoad` used to have one caller — the tree's own `expandNode` — so a branch expanded
+   * through the controlled `expandedValues` prop rendered open and never asked for its children.
+   * That is the half of gh#910's recipe that would have failed silently on a lazy tree, which a
+   * folder navigator almost always is: the Space key would unfold an empty branch and leave it
+   * empty. `expandedValues` is a documented controlled prop, so driving it is supported. */
+  const LAZY: TreeNodeProp[] = [{ value: "docs", label: "ドキュメント", isLeaf: false }];
+
+  it("requests them when expansion is driven from outside, not only by the tree's own keys", async () => {
+    const loadData = vi.fn();
+    function Harness() {
+      const [expanded, setExpanded] = React.useState<string[]>([]);
+      return (
+        <>
+          <button type="button" onClick={() => setExpanded(["docs"])}>
+            open it from outside
+          </button>
+          <Tree
+            treeData={LAZY}
+            aria-label="places"
+            loadData={loadData}
+            expandedValues={expanded}
+            onExpandedValuesChange={setExpanded}
+          />
+        </>
+      );
+    }
+    render(<Harness />);
+    expect(loadData).not.toHaveBeenCalled();
+
+    await userEvent.setup().click(screen.getByRole("button", { name: "open it from outside" }));
+    expect(loadData).toHaveBeenCalledTimes(1);
+    expect(loadData.mock.calls[0][0]).toMatchObject({ value: "docs" });
+  });
+
+  it("asks once per node, however the branch was opened", async () => {
+    const loadData = vi.fn();
+    function Harness() {
+      const [expanded, setExpanded] = React.useState<string[]>([]);
+      return (
+        <>
+          <button type="button" onClick={() => setExpanded(["docs"])}>
+            open
+          </button>
+          <button type="button" onClick={() => setExpanded([])}>
+            close
+          </button>
+          <Tree
+            treeData={LAZY}
+            aria-label="places"
+            loadData={loadData}
+            expandedValues={expanded}
+            onExpandedValuesChange={setExpanded}
+          />
+        </>
+      );
+    }
+    render(<Harness />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "open" }));
+    await user.click(screen.getByRole("button", { name: "close" }));
+    await user.click(screen.getByRole("button", { name: "open" }));
+    expect(loadData, "re-opening a branch must not re-fetch it").toHaveBeenCalledTimes(1);
+  });
+});
