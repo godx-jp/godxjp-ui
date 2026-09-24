@@ -109,7 +109,9 @@
   /* Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can
    * tune the edge weight and the outer ring independently; the defaults reproduce the optical
    * weight of `variant="featured"` (1px border + 1px ring) in the card's own semantic accent tone
-   * instead of --primary. Structural 1px literals, like the base card hairline. */
+   * instead of --primary. Structural strokes, like the base card hairline: both read the
+   * hairline step at their call sites since gh#906, so a theme restating the stroke scale moves
+   * them with everything else. */
   --card-accent-perimeter-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   --card-accent-perimeter-ring-width: initial; /* default = var(--stroke-hairline), resolved at the call site (gh#906) */
   /* `variant="featured"` edge — role-mirror knob (docs/TOKENS.md). `initial` so the --primary

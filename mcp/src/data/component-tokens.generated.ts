@@ -320,8 +320,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--banner-border-width",
-    "value": "1px",
-    "description": "The strip keeps a single hairline block-end rule (tone-coloured via the alert border rules); inline/block-start edges are open so it reads as part of the frame."
+    "value": "initial",
+    "description": "The strip keeps a single hairline block-end rule (tone-coloured via the alert border rules); inline/block-start edges are open so it reads as part of the frame. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--banner-space-inset-block",
@@ -490,18 +490,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-accent-rail-width",
-    "value": "var(--stroke-2xl)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). Tokenised (rule #44) so a service theme can re-tune it without forking CSS. The slot padding compensation in card-layout.css subtracts the same token, so content stays aligned on the shell whatever the rail width."
+    "value": "initial",
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). Tokenised (rule #44) so a service theme can re-tune it without forking CSS. The slot padding compensation in card-layout.css subtracts the same token, so content stays aligned on the shell whatever the rail width. default = var(--stroke-2xl), resolved at the call site (gh#906)"
   },
   {
     "name": "--card-accent-perimeter-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can tune the edge weight and the outer ring independently; the defaults reproduce the optical weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone instead of --primary. Structural 1px literals, like the base card hairline."
+    "value": "initial",
+    "description": "Accent placement `perimeter` (gh#12) — the FULL attention border. Two knobs so a service can tune the edge weight and the outer ring independently; the defaults reproduce the optical weight of `variant=\"featured\"` (1px border + 1px ring) in the card's own semantic accent tone instead of --primary. Structural strokes, like the base card hairline: both read the hairline step at their call sites since gh#906, so a theme restating the stroke scale moves them with everything else. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--card-accent-perimeter-ring-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--card-featured-border-color",
@@ -510,8 +510,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-featured-ring-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--stat-card-label-font-size",
@@ -700,8 +700,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chart-trend-bar-min-height",
-    "value": "var(--stroke-md)",
-    "description": "Floor so a zero/absent value still reads as a plotted category rather than a hole."
+    "value": "initial",
+    "description": "Floor so a zero/absent value still reads as a plotted category rather than a hole. default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--chart-trend-bar-background",
@@ -721,7 +721,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--chart-trend-baseline-border",
     "value": "initial",
-    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
+    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with `--chart-trend-baseline-border: var(--stroke-hairline) solid hsl(var(--border));`."
   },
   {
     "name": "--chart-trend-tick-gap",
@@ -825,8 +825,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--chat-bubble-typing-caret-width",
-    "value": "var(--stroke-md)",
-    "description": "ChatBubble / ChatBubbleList component tokens — one message in a conversation, and the feed it lives in (docs/roadmap/ai-chat-components.md §2/§3). NAMING NOTE: the roadmap spelled the surface knob `--chat-bubble-surface`. `surface` is not one of the property words `check:token-tiers` accepts for the `--{component}-{part}-{property}` shape, so the knob ships as `--chat-bubble-background` — the same word every other component tier uses for the same role (`--card-background`, `--list-row-unread-background`)."
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--chat-bubble-typing-caret-height",
@@ -1035,8 +1035,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--control-shadow",
@@ -1095,8 +1095,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-count-color",
-    "value": "var(--muted-foreground)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--control-count-exceeded-color",
@@ -1125,8 +1125,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--input-addon-color",
-    "value": "var(--muted-foreground)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--input-addon-padding-inline",
@@ -1155,8 +1155,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--slider-mark-color",
-    "value": "var(--muted-foreground)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--slider-mark-space-block-start",
@@ -1220,8 +1220,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--choice-button-color",
-    "value": "var(--foreground)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--choice-button-border-color",
@@ -1255,8 +1255,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toggle-focus-ring-width",
-    "value": "var(--stroke-lg)",
-    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts."
+    "value": "initial",
+    "description": "Ring knobs for the two controls that historically wanted a softer mark than the global default — both are filled surfaces where the ring was felt to read as a second border. THE ALPHA IS 1, AND THAT IS THE CRITERION TALKING. WCAG 2.2 SC 1.4.11 asks for ≥3:1 between the focused and unfocused states of the pixels that mark focus, and colour is the whole of that bar. Measured against this palette, the focus hue at alpha 0.35 composites to 1.64:1 against the page (0.45 → ≈1.90); nothing in that band is a compliant indicator, so \"softer\" was buying taste at the cost of the criterion. The softening now comes from the HALO (`--focus-ring-glow-*`), which sits outside the opaque stop and is free to be as quiet as it likes because it is decoration rather than the indicator. The knobs stay — a service can still trade the criterion away deliberately — but the shipped default no longer makes that trade silently. Guarded by src/tokens/__tests__/focus-ring-contrast.test.ts. default = var(--stroke-lg), resolved at the call site (gh#906)"
   },
   {
     "name": "--toggle-focus-ring-alpha",
@@ -1265,8 +1265,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-focus-ring-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Mark width for a BORDERED FIELD. This knob exists because a field is the one control that already owns a boundary, so it is the one place the mark could plausibly be dropped and the recoloured border left to carry the state — which is the established treatment for a bordered field: a primary border plus a translucent halo, nothing in between. It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a button carry the same weight. A gate asserts the two stay equal, because this token cannot literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is `weight × --focus-outline`, so a field's mark is still switched off with everything else — a knob that bypassed the switch would be a hole in it. If a service sets this, note the unit: the halo's spread is summed with a length in `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`."
+    "value": "initial",
+    "description": "Mark width for a BORDERED FIELD. This knob exists because a field is the one control that already owns a boundary, so it is the one place the mark could plausibly be dropped and the recoloured border left to carry the state — which is the established treatment for a bordered field: a primary border plus a translucent halo, nothing in between. It ships at the same step as `--focus-outline-weight`, the hairline stroke, so a field and a button carry the same weight. A gate asserts the two stay equal, because this token cannot literally READ the global one without freezing at :root (docs/TOKENS.md, the freeze rule). It feeds `--focus-ring-weight`, never `--focus-ring-width`. The width is `weight × --focus-outline`, so a field's mark is still switched off with everything else — a knob that bypassed the switch would be a hole in it. If a service sets this, note the unit: the halo's spread is summed with a length in `calc()`, and CSS refuses to add a unitless number to a length — a bare `0` makes the whole box-shadow invalid at computed-value time and it resolves to NONE. Write `0px`. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--rating-focus-ring-offset",
@@ -1290,8 +1290,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--checkbox-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--checkbox-size",
@@ -1515,8 +1515,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--command-item-divider-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--command-item-divider-color",
@@ -1695,7 +1695,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--textarea-autogrow-box-inset",
-    "value": "calc( (var(--control-multiline-padding-block) + var(--control-border-width)) * 2 )",
+    "value": "calc( (var(--control-multiline-padding-block) + var(--control-border-width, var(--stroke-hairline))) * 2 )",
     "description": "The non-text part of the box the row maths must add back: block padding + border, both edges. `.ui-textarea-autogrow--ghost` re-declares it without the border, because the ghost variant drops its own chrome."
   },
   {
@@ -2090,8 +2090,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--calendar-footer-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--calendar-bordered-weekday-padding-block",
@@ -2300,8 +2300,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--otp-caret-inline-size",
-    "value": "var(--stroke-hairline)",
-    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--otp-separator-icon-size",
@@ -2740,8 +2740,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--prose-quote-border-width",
-    "value": "var(--stroke-md)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--prose-quote-space-inline",
@@ -2905,13 +2905,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-presence-ring-width",
-    "value": "var(--stroke-md)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--avatar-presence-stroke-width",
-    "value": "var(--stroke-sm)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-sm), resolved at the call site (gh#906)"
   },
   {
     "name": "--avatar-presence-bar-inline-size",
@@ -2920,8 +2920,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-presence-bar-block-size",
-    "value": "var(--stroke-sm)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-sm), resolved at the call site (gh#906)"
   },
   {
     "name": "--avatar-presence-ring-color",
@@ -3000,8 +3000,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-ring-border-width",
-    "value": "var(--stroke-lg)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-lg), resolved at the call site (gh#906)"
   },
   {
     "name": "--progress-ring-label-font-size",
@@ -3050,8 +3050,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--swatch-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "The hairline that keeps a white value visible on a white card. It is the resting border weight, not a decision of this component."
+    "value": "initial",
+    "description": "The hairline that keeps a white value visible on a white card. It is the resting border weight, not a decision of this component. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--swatch-border-color",
@@ -3105,8 +3105,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--thumbnail-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--thumbnail-radius",
@@ -3135,8 +3135,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--timeline-dot-current-ring-width",
-    "value": "var(--stroke-xl)",
-    "description": "The current dot's ring is the ONLY chromatic difference from a done dot, so it is `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing."
+    "value": "initial",
+    "description": "The current dot's ring is the ONLY chromatic difference from a done dot, so it is `--steps-dot-process-ring-width` token-for-token — the same ring, meaning the same thing. default = var(--stroke-xl), resolved at the call site (gh#906)"
   },
   {
     "name": "--qr-code-foreground",
@@ -3220,13 +3220,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--timeline-grid-event-border-width",
-    "value": "var(--stroke-md)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--timeline-grid-now-width",
-    "value": "var(--stroke-sm)",
-    "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+    "value": "initial",
+    "description": "default = var(--stroke-sm), resolved at the call site (gh#906)"
   },
   {
     "name": "--timeline-grid-line-color",
@@ -3325,8 +3325,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--range-timeline-grid-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Weight of every grid rule, header column rules included, so header and body stay aligned."
+    "value": "initial",
+    "description": "Weight of every grid rule, header column rules included, so header and body stay aligned. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--range-timeline-muted-column-background",
@@ -3370,8 +3370,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--branch-scope-picker-subset-border-width",
-    "value": "var(--stroke-md)",
-    "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`."
+    "value": "initial",
+    "description": "The indent rule itself is CHROME (#44), so it is a knob: a service that wants the flat treatment sets it to 0 rather than forking the component. Default = today's `border-s-2`. default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--branch-scope-picker-list-max-height",
@@ -3421,7 +3421,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--descriptions-row-border",
     "value": "none",
-    "description": "ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so an existing Descriptions is byte-identical: no rule, no band height. Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on PageContainer: a `border` shorthand a service opts into with ONE declaration (`--descriptions-row-border: 1px solid hsl(var(--border))`), read at the call site. Bound at :root rather than `initial` because the default is a plain CSS keyword, not another role token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the keyword is worth reading here (the same reasoning --page-toolbar-background records). The rule is drawn only on an UNBORDERED grid: `bordered` already draws a rule between every cell, and a second block-end border would double every line it owns. --descriptions-row-min-height gives the ruled variant its band height — a ruled row whose value is one short line otherwise reads as a hairline sandwich. `auto` = today. A continuously ruled panel sets --descriptions-row-gap to `0` in the same declaration block: the row gap is the space BETWEEN rules, so leaving it at the default 12px draws a ladder of detached hairlines rather than a ruled list."
+    "description": "ROW CHROME (gh#414) — the ruled property panel. Both knobs are QUIET by default (rule #44), so an existing Descriptions is byte-identical: no rule, no band height. Same shape as --page-header-divider / --page-toolbar-divider / --page-footer-divider on PageContainer: a `border` shorthand a service opts into with ONE declaration (`--descriptions-row-border: var(--stroke-hairline) solid hsl(var(--border))`), read at the call site. Bound at :root rather than `initial` because the default is a plain CSS keyword, not another role token — there is nothing for a scoped [data-tenant]/.dark override to re-resolve, and the keyword is worth reading here (the same reasoning --page-toolbar-background records). The rule is drawn only on an UNBORDERED grid: `bordered` already draws a rule between every cell, and a second block-end border would double every line it owns. --descriptions-row-min-height gives the ruled variant its band height — a ruled row whose value is one short line otherwise reads as a hairline sandwich. `auto` = today. A continuously ruled panel sets --descriptions-row-gap to `0` in the same declaration block: the row gap is the space BETWEEN rules, so leaving it at the default 12px draws a ladder of detached hairlines rather than a ruled list."
   },
   {
     "name": "--descriptions-row-min-height",
@@ -3430,8 +3430,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--descriptions-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "BORDERED grid (antd `bordered`). The rule between cells and the frame around them. Width is a stroke step so a service that thickens every hairline gets this one with it; colour is deliberately left to the global `border-color` role so a scoped [data-tenant] override still reaches it."
+    "value": "initial",
+    "description": "BORDERED grid (antd `bordered`). The rule between cells and the frame around them. Width is a stroke step so a service that thickens every hairline gets this one with it; colour is deliberately left to the global `border-color` role so a scoped [data-tenant] override still reaches it. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--descriptions-border-radius",
@@ -3520,8 +3520,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--draggable-panel-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "DRAGGABLE PANEL — a floating, movable surface (gh#560). Geometry only. The two offset knobs are written by the component as UNITLESS numbers and multiplied by 1px in `styles/layout.css`, which is how a JS-computed position reaches CSS without a literal in the TSX (`check:no-inline-magic-numbers`)."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--draggable-panel-bar-padding",
@@ -3776,7 +3776,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--error-surface-meta-border",
     "value": "none",
-    "description": "Chrome, default quiet (#44). A service opts in with `--error-surface-meta-border: 1px solid hsl(var(--border));`."
+    "description": "Chrome, default quiet (#44). A service opts in with `--error-surface-meta-border: var(--stroke-hairline) solid hsl(var(--border));`."
   },
   {
     "name": "--error-surface-meta-padding-block",
@@ -4030,8 +4030,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--banner-border-block-end-width",
-    "value": "1px",
-    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to match to its page grid is a knob (rule #45). --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, and both copies were dead: components/banner.css declares the same two names at the same `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read THIS file for the default was told the strip has no rule when it has one, and the MCP token catalog carried both entries with the two conflicting values. banner.css owns the strip geometry; these two live there and only there. The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines its text up with the page title instead of sitting at a second, unrelated margin."
+    "value": "initial",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to match to its page grid is a knob (rule #45). --banner-radius and --banner-border-width are NOT declared here (gh#327). They used to be, and both copies were dead: components/banner.css declares the same two names at the same `:root`, base.css imports banner AFTER feedback, so banner won every time. Radius agreed at `0`, but border-width did not — this file said `0` and banner.css says `1px`, and `1px` is what alert-layout.css actually paints as the strip's block-end hairline. So anyone who read THIS file for the default was told the strip has no rule when it has one, and the MCP token catalog carried both entries with the two conflicting values. banner.css owns the strip geometry; these two live there and only there. The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines its text up with the page title instead of sitting at a second, unrelated margin. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--banner-space-block",
@@ -4596,12 +4596,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-toc-gap",
     "value": "var(--space-1)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-item-padding",
     "value": "var(--space-1) var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-item-radius",
@@ -4611,17 +4611,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-toc-title-font-size",
     "value": "var( --font-size-2xs, calc(var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-marker-width",
-    "value": "var(--stroke-md)",
-    "description": "Leading marker on the active contents entry — a non-colour affordance so the active state is never colour-only (WCAG 1.4.1)."
+    "value": "initial",
+    "description": "Leading marker on the active contents entry — a non-colour affordance so the active state is never colour-only (WCAG 1.4.1). default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--legal-document-nav-gap",
@@ -4631,27 +4631,27 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-header-gap",
     "value": "var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-gap",
     "value": "var(--space-2)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-section-gap",
     "value": "var(--space-10)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-section-title-gap",
     "value": "var(--space-3)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-body-line-height",
@@ -4666,7 +4666,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-footer-gap",
     "value": "var(--space-4)",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-toc-border",
@@ -4676,12 +4676,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--legal-document-header-border",
     "value": "none",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-footer-border",
     "value": "none",
-    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: 1px solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
+    "description": "LegalDocumentShell component tokens — the long-form legal/policy document surface (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky table-of-contents rail. Rule #45 — every service-tunable constant is a knob: the readable measure, the rail width/offset, the section rhythm and the body leading are exactly the values a service theme wants to re-tune to match its design grid, so NONE of them are hard-coded in `src/styles/layout.css`. Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to `none`. A service opts IN via theme, e.g. --legal-document-toc-border: var(--stroke-hairline) solid hsl(var(--border)); Colour knobs whose default is a ROLE token are declared `initial` here with the role default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\" — so a scoped `[data-tenant]` / `.dark` override of the role still reaches them."
   },
   {
     "name": "--legal-document-meta-foreground",
@@ -4975,8 +4975,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-divider-width",
-    "value": "var(--stroke-hairline)",
-    "description": "── The PRODUCT SUFFIX (`<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`, gh#649) ────────── \"GoDX | ID\" — the brand lockup followed by a rule and the name of ONE product. Later also \"GoDX | Console\", \"GoDX | Admin\", and each of those localized. WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over \"GoDX | ID\" as a single flattened lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`), so shipping it would put a SECOND master next to the one above — different box, different gradients, its own `id=\"title\"`/`id=\"desc\"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6` rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives the next product: a drawn suffix means one more master, one more release and one more dark variant for every name that is ever added, and it cannot be localized at all. So the suffix is TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The brand's own construction (the G, the arrow, the \"GoDX\" logotype, the golden ratio between them) stays untouched inside the master; a PRODUCT NAME is not part of that construction. SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline, in the same lockup, at the same optical level as the wordmark, so it reads --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing rather than growing a parallel ramp a service would then have to keep in step. Only the two knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is set in UI ink (--foreground) at a lighter weight, and \"GoDX\" stays the dominant word. THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px against a 24 / 28 / 32 / 40px lockup box. ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the shipped tokens: light #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1 the kit's hardcoded rule #c5c8d6 → 1.64:1 (ΔRGB ≤ 11, no dark counterpart) --border (the table-grid hairline) → 1.15:1 (its own note above records this) dark #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1 So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name. ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md). Documented defaults: --logo-divider-color = var(--logo-godx-ink-color) --logo-product-suffix-color = hsl(var(--foreground))"
+    "value": "initial",
+    "description": "── The PRODUCT SUFFIX (`<Logo mark=\"godx-lockup\" productSuffix=\"ID\" />`, gh#649) ────────── \"GoDX | ID\" — the brand lockup followed by a rule and the name of ONE product. Later also \"GoDX | Console\", \"GoDX | Admin\", and each of those localized. WHY THE SUFFIX IS TYPESET AND NOT DRAWN. The kit hands over \"GoDX | ID\" as a single flattened lockup in its own coordinate space (`0 0 1234 242`, against this package's `30 30 871.29 182`), so shipping it would put a SECOND master next to the one above — different box, different gradients, its own `id=\"title\"`/`id=\"desc\"`, its own hardcoded `#0B0F3B` ink and `#C5C8D6` rule. That is four of the defects gh#649 was opened about, and it buys nothing that survives the next product: a drawn suffix means one more master, one more release and one more dark variant for every name that is ever added, and it cannot be localized at all. So the suffix is TEXT — the same decision, and the same tokens, the readable `wordmark` already uses. The brand's own construction (the G, the arrow, the \"GoDX\" logotype, the golden ratio between them) stays untouched inside the master; a PRODUCT NAME is not part of that construction. SIZE / FACE / TRACKING ARE THE WORDMARK'S, ON PURPOSE. The suffix sits on the same baseline, in the same lockup, at the same optical level as the wordmark, so it reads --logo-wordmark-font-size-* / --logo-wordmark-font-family / --logo-wordmark-letter-spacing rather than growing a parallel ramp a service would then have to keep in step. Only the two knobs whose ROLE differs get their own token: the suffix is not the brand logotype, so it is set in UI ink (--foreground) at a lighter weight, and \"GoDX\" stays the dominant word. THE RULE. --logo-divider-height is `1em` of the suffix's own type, so the tick is exactly as tall as the word it separates at every tier with no per-tier token: 12.5 / 14 / 14 / 17.6px against a 24 / 28 / 32 / 40px lockup box. ITS COLOUR IS THE LOGOTYPE'S INK AT 0.25 ALPHA, NOT A GREY AND NOT --border. Measured on the shipped tokens: light #0B0F3B at 0.25 over --background #fdfdfb → #c1c2cb, 1.74:1 the kit's hardcoded rule #c5c8d6 → 1.64:1 (ΔRGB ≤ 11, no dark counterpart) --border (the table-grid hairline) → 1.15:1 (its own note above records this) dark #F7FAF8 at 0.25 over --background #191815 → #515150, 2.30:1 So the rule lands on the kit's grey in the theme the kit drew it for, and — unlike the literal — it has a dark theme at all, because it is derived from --logo-godx-ink-color, which already flips. ALPHA rather than a mix with --background, so the rule is still correct on a coloured topbar. Nothing here is WCAG-load-bearing: SC 1.4.11 exempts a part of a logo or brand name. ROLE-MIRROR KNOBS — `initial` here, role default at the CALL SITE (docs/TOKENS.md). Documented defaults: --logo-divider-color = var(--logo-godx-ink-color) --logo-product-suffix-color = hsl(var(--foreground)) default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--logo-divider-height",
@@ -5135,8 +5135,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--mega-menu-panel-border-width",
-    "value": "1px",
-    "description": "MegaMenu — the disclosure navigation bar and its full-width panel. Every knob a theme would want to move lives here: nothing in navigation-layout.css writes a literal length for this component. The trigger's BOX HEIGHT is deliberately a pointer at the `--control-height` tier and never an offset of it (cardinal rule #45 / check:control-sizing) — a bar cell must sit on the same step as the Buttons beside it in a real top bar, and that step is density-aware."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--mega-menu-panel-radius",
@@ -5590,8 +5590,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-card-rail-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--tabs-card-background",
@@ -5615,7 +5615,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-panel-border-width",
-    "value": "var(--tabs-card-rail-border-width)",
+    "value": "var(--tabs-card-rail-border-width, var(--stroke-hairline))",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
@@ -5685,8 +5685,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--tabs-count-forced-outline-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--tabs-bar-gap",
@@ -5920,13 +5920,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-dot-process-ring-width",
-    "value": "var(--stroke-xl)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "default = var(--stroke-xl), resolved at the call site (gh#906)"
   },
   {
     "name": "--steps-marker-border-width",
-    "value": "var(--stroke-md)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--steps-marker-font-size",
@@ -6020,8 +6020,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--steps-progress-ring-width",
-    "value": "var(--stroke-md)",
-    "description": "STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring drawn in a padding box AROUND the existing marker, so no status face changes geometry. `--steps-progress-track-color` is a role-mirror knob (docs/TOKENS.md): `initial`, so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme."
+    "value": "initial",
+    "description": "STEPS `percent` (Ant Design) — the determinate arc around the CURRENT marker. It is a ring drawn in a padding box AROUND the existing marker, so no status face changes geometry. `--steps-progress-track-color` is a role-mirror knob (docs/TOKENS.md): `initial`, so the --muted default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--steps-progress-track-color",
@@ -6180,18 +6180,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--segmented-item-color",
-    "value": "var(--muted-foreground)",
-    "description": "item ink = the label ink · hover / selected ink = the body ink."
+    "value": "initial",
+    "description": "item ink = the label ink · hover / selected ink = the body ink. default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--segmented-item-hover-color",
-    "value": "var(--foreground)",
-    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
+    "value": "initial",
+    "description": "default = var(--foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--segmented-item-selected-color",
-    "value": "var(--foreground)",
-    "description": "Segmented (one-of-N control) component tokens. EVERY VALUE BELOW IS A PORT OF AN ESTABLISHED SEGMENTED SPEC, NOT A CHOICE. The geometry and the role assignments come from the widely-implemented enterprise Segmented control, transcribed as ratios rather than as pixels: track padding: the bold line width → 2px track background: the page's recessed neutral item colour: the label ink · hover / selected colour: the body ink item hover fill: the lighter neutral · item active fill: the heavier neutral item selected fill: the elevated surface label height = control height − track padding × 2 → 32 − 4 = 28 label padding-inline = control padding-x − border width → 12 − 1 = 11 icon gap = the small margin step / 2 → 6 THE ROLE PORTS ARE THE ONES `Tabs` ALREADY MADE. TabsList is `bg-muted` and an active TabsTrigger is `bg-background` + `shadow-sm` — the same track-and-slab pair, so a Segmented and a default Tabs strip read as one control family in both themes rather than two near-misses. That matters more than reproducing the source dark ramp literally: that ramp's dark track is BLACK with a lighter slab on it, while this palette's dark `--muted` sits above `--background`, so a literal port would invert the pairing relative to every Tabs strip on the same page. NOT ONE OF THEM READS THE BRAND SEED. The spec's own derivation produces identical Segmented values for its default seed and for this system's `#0071bd` — the control is neutral by construction, and the only brand ink it can carry is the focus mark, which styles/focus-ring.css owns. So the ports below are ROLE references (the same neutrals this system already names), never copied hex. The disabled state is the ONE place this departs. The source recolours to a disabled ink and changes nothing else; this system disables every control with the one `--disabled-opacity` knob, and a single library-wide answer outranks a per-component one. The other thing NOT ported is the sliding thumb: it exists to animate between items, and the implementations that have one remove the `-item-selected` class while it runs, which means the selected state lives in two places at once. A static selected slab reads identically at rest and cannot desynchronise."
+    "value": "initial",
+    "description": "default = var(--foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--segmented-item-hover-background",
@@ -6275,8 +6275,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--separator-rule-size",
-    "value": "var(--stroke-hairline)",
-    "description": "Rule weight, both orientations and both halves of a labelled rule."
+    "value": "initial",
+    "description": "Rule weight, both orientations and both halves of a labelled rule. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--separator-rule-color",
@@ -6460,8 +6460,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--org-switcher-meta-foreground",
-    "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--sidebar-nav-sub-font-size",
@@ -6805,8 +6805,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--topbar-item-color",
-    "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--topbar-item-hover-background",
@@ -6995,8 +6995,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-tile-color",
-    "value": "var(--foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "default = var(--foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--app-launcher-tile-hover-background",
@@ -7055,8 +7055,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--app-launcher-group-label-color",
-    "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--app-launcher-state-min-height",
@@ -7470,8 +7470,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-divider-label-color",
-    "value": "var(--muted-foreground)",
-    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text knobs (rule #45/#46). A service re-tunes chrome text without moving the global scale."
+    "value": "initial",
+    "description": "default = var(--muted-foreground), resolved at the call site (gh#906)"
   },
   {
     "name": "--auth-identity-gap",
@@ -7915,8 +7915,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-summary-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Table component tokens: row height, cell padding."
+    "value": "initial",
+    "description": "default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--table-row-expanded-background",
@@ -8125,18 +8125,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-border-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" rule in `@layer components` can actually zero it; a utility would outrank it by layer. Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of --border still reaches every row."
+    "value": "initial",
+    "description": "Horizontal row rule (chrome, #44) — the divider between body rows AND under the header row. Owned here rather than as TableRow's `border-b` utility so the \"last row draws no rule\" rule in `@layer components` can actually zero it; a utility would outrank it by layer. Colour is deliberately NOT set: it inherits the global `* { border-color: hsl(var(--border)) }` so a scoped [data-tenant]/.dark override of --border still reaches every row. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--table-flush-divider-width",
-    "value": "var(--table-row-border-width)",
+    "value": "var(--table-row-border-width, var(--stroke-hairline))",
     "description": "Flush divider (chrome, #44/#45) — the ONE edge a full-bleed table keeps when it sits inside `<CardContent flush>`: the line between a plain CardHeader and the first row. The other three edges coincide with the card's own frame and are erased (gh#305); this one has nothing behind it, so without it the header band floats (gh#306). Scoped by construction to the case that needs it — a BANDED header, a CardBar or a headerless card already draw their own line there and never reach this token — so a service tunes only the plain-header divider: `0` for a borderless full-bleed table, heavier for a stronger band. Colour and style are NOT set here: only the width is restored, so the surface's own border declaration still owns them and a scoped [data-tenant]/.dark override of --border reaches it. Default = the same hairline the table's other rules draw."
   },
   {
     "name": "--table-row-tone-rail-width",
-    "value": "var(--stroke-2xl)",
-    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card read as the same mark at the same weight; it is spelled out rather than referenced because a service that thins its card rails should not silently thin its table rails too. The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger statement about the same row) and must not carry meaning on its own — that is what the rail and the row's own status cell are for."
+    "value": "initial",
+    "description": "Row TONE (`rowTone`) — the leading-edge rail plus the wash behind a row in a named state. The rail measure is `--card-accent-rail-width`'s own step so a toned row and a toned Card read as the same mark at the same weight; it is spelled out rather than referenced because a service that thins its card rails should not silently thin its table rails too. The wash is deliberately weak: it must stay under the selected-row fill (which is a stronger statement about the same row) and must not carry meaning on its own — that is what the rail and the row's own status cell are for. default = var(--stroke-2xl), resolved at the call site (gh#906)"
   },
   {
     "name": "--table-row-tone-wash-alpha",
@@ -8240,8 +8240,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--thought-chain-line-width",
-    "value": "var(--stroke-hairline)",
-    "description": "The connector. Its inline position tracks HALF the glyph column so it stays centred whatever the column's size becomes — never a literal offset."
+    "value": "initial",
+    "description": "The connector. Its inline position tracks HALF the glyph column so it stays centred whatever the column's size becomes — never a literal offset. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--thought-chain-line-color",
@@ -8375,8 +8375,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--toggle-count-forced-outline-width",
-    "value": "var(--stroke-hairline)",
-    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes anything any more. This outline is the state's structural fallback there — drawn on the PRESSED pill only, and as `outline` (not `border`) so it costs no layout."
+    "value": "initial",
+    "description": "Under forced-colors every fill is flattened to a system colour, so neither inversion encodes anything any more. This outline is the state's structural fallback there — drawn on the PRESSED pill only, and as `outline` (not `border`) so it costs no layout. default = var(--stroke-hairline), resolved at the call site (gh#906)"
   },
   {
     "name": "--tree-node-height",
@@ -8475,8 +8475,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-dropzone-border-width",
-    "value": "var(--stroke-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--upload-dropzone-icon-size",
@@ -8640,8 +8640,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--upload-avatar-border-width",
-    "value": "var(--stroke-md)",
-    "description": "Upload primitive tokens — dropzone, picture tile, avatar, draft bar, file row. Upload carried 66 hard-coded geometry/chrome literals, the single worst file in the library (#319). It renders five variants (dropzone · button · picture · picture-card · avatar), and EVERY one of them baked its box straight onto the component: a service could not resize the avatar, retune the dropzone's generous 40px inset, or align the file row to its own grid without forking. That is precisely the gap cardinal rule #45 exists to close. Radius defaults mirror the utilities they replace, verified against the built CSS: rounded-lg = var(--radius) → --radius-lg rounded-md = calc(var(--radius) / var(--radius-ratio)) → --radius-md rounded-full → --radius-pill"
+    "value": "initial",
+    "description": "default = var(--stroke-md), resolved at the call site (gh#906)"
   },
   {
     "name": "--upload-avatar-change-space-block",
