@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🐛 `SpaceCompact` — the item box must stretch its own child, and `fullWidth` is documented as it behaves (gh#919 follow-up)
+
+PATCH. Two defects in the gh#919 fix, both found by measuring the rendered rows rather than reading
+the diff.
+
+**The wrapper grew but its child did not.** gh#919 gave each child a `[data-slot="space-compact-item"]`
+box so the seam, the stacking raise and the corner knobs key on a real box. The row stretches that
+box — but nothing stretched the box's own child, and a control that had been the flex item lost the
+`align-items: stretch` it used to get for free. Measured on the catalog's own vertical
+`Textarea` + `Button` example at a 1169px row: **76px of button inside a 1169px wrapper, a 1093px
+empty tail behind a collapsed seam.** `.ui-space-compact > [data-slot="space-compact-item"] > *` now
+carries `flex: 1 1 auto` — `auto` basis, not `0`, so the child keeps its preferred size and the three
+horizontal rows re-measure byte-identically (203/64, 223/40, 585/585, tails 0, seams 1px).
+
+**The catalog described the opposite of the shipped CSS.** The `fullWidth` usage note claimed it sets
+"NO per-child flex ratio — same as antd", and that two fields split the row evenly "because both
+already default to their own full width". The rule shipped is `flex: 1 1 0%` on every item, and that
+declaration — not the children's intrinsic width — is what produces the split. Removing it to chase
+antd parity was measured and is strictly worse: the items collapse to their content and the row stops
+filling at all (**203/73.6 in a 1169px column**), which defeats `fullWidth`. The note now states the
+mechanism, adds that a `Button` under `fullWidth` is stretched to an equal share (**585/585**, not its
+content width), and points at omitting `fullWidth` for the content-width case (**223/40**).
+
+A style test pins all three measurements, including that no `.ui-space-compact` rule may key on a bare
+`> *` again — the shape that made a `display: contents` child unreachable in the first place.
+
+
 ## [30.4.1] - 2026-09-25
 
 ### 🐛 `SpaceCompact` — a `display: contents` child (`Select`) is now welded correctly (gh#919)

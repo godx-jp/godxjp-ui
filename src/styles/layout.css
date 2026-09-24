@@ -198,6 +198,18 @@
     min-inline-size: 0;
   }
 
+  /* The wrapper is stretched by the row; its CHILD has to be stretched by the wrapper, or the
+   * wrapper's own size is the only thing that grew. gh#919's wrapper regressed
+   * `orientation="vertical"` exactly there: a `Button` used to BE the flex item, so the column's
+   * `align-items: stretch` sized it to the row; once wrapped, the wrapper took the full inline
+   * size and the button kept its content width — measured 76px of button in a 1169px wrapper, a
+   * 1093px empty tail behind a collapsed seam. `auto` basis, not `0`: the child keeps its own
+   * preferred size as the starting point, so the three horizontal rows measure byte-identically
+   * (203/64, 223/40, 585/585) and only the unstretched case moves. */
+  .ui-space-compact > [data-slot="space-compact-item"] > * {
+    flex: 1 1 auto;
+  }
+
   .ui-space-compact > [data-slot="space-compact-item"]:hover,
   .ui-space-compact > [data-slot="space-compact-item"]:focus-within {
     z-index: 1;
