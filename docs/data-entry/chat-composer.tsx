@@ -273,13 +273,17 @@ export default function Demo() {
                       onCancel={cancel}
                       placeholder="メッセージを入力"
                       prefix={
-                        <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付">
+                        <Button
+                          size="icon-sm"
+                          variant="ghost"
+                          aria-label={t("chatComposerDocs.attach")}
+                        >
                           <Paperclip aria-hidden="true" />
                         </Button>
                       }
                       footer={
                         <Text size="xs" tone="muted">
-                          Enter で送信 · Shift + Enter で改行
+                          {t("chatComposerDocs.enterHint")}
                         </Text>
                       }
                     />
@@ -311,7 +315,7 @@ export default function Demo() {
                   }}
                   footer={
                     <Text size="xs" tone="muted">
-                      Enter で送信 · Shift + Enter で改行
+                      {t("chatComposerDocs.enterHint")}
                     </Text>
                   }
                 />
@@ -350,7 +354,7 @@ export default function Demo() {
               <Flex direction="col" gap="md">
                 {comments.length === 0 ? (
                   <Text size="sm" tone="muted">
-                    まだコメントはありません
+                    {t("chatComposerDocs.noComments")}
                   </Text>
                 ) : (
                   comments.map((comment) => (
@@ -372,7 +376,7 @@ export default function Demo() {
                   value={commentDraft}
                   onValueChange={setCommentDraft}
                   onSubmit={postComment}
-                  placeholder="コメントを入力"
+                  placeholder={t("chatComposerDocs.commentPlaceholder")}
                   submitLabel="コメントを投稿"
                   footer={
                     <Flex direction="row" gap="sm" align="center" justify="between" wrap>
@@ -398,40 +402,38 @@ export default function Demo() {
           {/* ── 2c. footer as NodeRender — toolbar BELOW a full-width draft box ─────────────── */}
           <Card>
             <CardHeader>
-              <CardTitle level={2}>
-                footer as NodeRender · attach / hint / send を下段のツールバーへ
-              </CardTitle>
-              <CardDescription>
-                actions={"{false}"} で行内の送信ボタンを隠し、footer に関数を渡すと
-                components.SubmitButton（onSubmit / disabled / ローディング切替が配線済み）を
-                受け取れます。下書き欄は全幅のまま、添付は行頭・送信は行末に配置できます。
-              </CardDescription>
+              <CardTitle level={2}>{t("chatComposerDocs.footerTitle")}</CardTitle>
+              <CardDescription>{t("chatComposerDocs.footerBody")}</CardDescription>
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="md">
                 {toolbarComments.length === 0 ? (
                   <Text size="sm" tone="muted">
-                    まだコメントはありません
+                    {t("chatComposerDocs.noComments")}
                   </Text>
                 ) : (
                   toolbarComments.map((body, index) => <Text key={index}>{body}</Text>)
                 )}
                 <ChatComposer
-                  aria-label="コメント（下段ツールバー）"
+                  aria-label={t("chatComposerDocs.commentLabel")}
                   value={toolbarDraft}
                   onValueChange={setToolbarDraft}
                   onSubmit={postToolbarComment}
-                  placeholder="コメントを入力"
+                  placeholder={t("chatComposerDocs.commentPlaceholder")}
                   actions={false}
                   footer={({ components: { SubmitButton } }) => (
                     <Flex direction="row" gap="sm" align="center" justify="between">
-                      <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付">
+                      <Button
+                        size="icon-sm"
+                        variant="ghost"
+                        aria-label={t("chatComposerDocs.attach")}
+                      >
                         <Paperclip aria-hidden="true" />
                       </Button>
                       <Text size="xs" tone="muted">
-                        Enter で送信 · Shift + Enter で改行
+                        {t("chatComposerDocs.enterHint")}
                       </Text>
-                      <SubmitButton aria-label="コメントを送信" />
+                      <SubmitButton aria-label={t("chatComposerDocs.sendComment")} />
                     </Flex>
                   )}
                 />
@@ -494,7 +496,7 @@ export default function Demo() {
                   </Flex>
                 }
                 prefix={
-                  <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付">
+                  <Button size="icon-sm" variant="ghost" aria-label={t("chatComposerDocs.attach")}>
                     <Paperclip aria-hidden="true" />
                   </Button>
                 }

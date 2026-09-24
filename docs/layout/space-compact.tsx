@@ -17,6 +17,7 @@ import {
   Textarea,
 } from "@godxjp/ui/data-entry";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Search, Send } from "lucide-react";
 
 /**
@@ -34,12 +35,7 @@ import { Search, Send } from "lucide-react";
  * name has somewhere to live. Each control inside keeps its own accessible name.
  */
 
-const WEEK_UNITS = [
-  { value: "day", label: "日" },
-  { value: "week", label: "週" },
-  { value: "month", label: "月" },
-];
-
+/** Currency CODES are ISO 4217 identifiers, not chrome — they are the same in every locale. */
 const CURRENCIES = [
   { value: "JPY", label: "JPY" },
   { value: "USD", label: "USD" },
@@ -47,52 +43,60 @@ const CURRENCIES = [
 ];
 
 export default function SpaceCompactShowcase() {
+  const { t } = useTranslation();
   const [every, setEvery] = useState(2);
   const [unit, setUnit] = useState("week");
   const [amount, setAmount] = useState(48000);
   const [currency, setCurrency] = useState("JPY");
   const [query, setQuery] = useState("");
   const [note, setNote] = useState("");
+  const weekUnits = [
+    { value: "day", label: t("spaceCompactDocs.unit.day") },
+    { value: "week", label: t("spaceCompactDocs.unit.week") },
+    { value: "month", label: t("spaceCompactDocs.unit.month") },
+  ];
 
   return (
-    <PageContainer
-      title="SpaceCompact"
-      subtitle="くっつけた1つの箱として読ませる — 繰り返し設定・検索・単位つき金額"
-    >
+    <PageContainer title={t("spaceCompactDocs.title")} subtitle={t("spaceCompactDocs.subtitle")}>
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>繰り返し（毎 N 週ごと）</CardTitle>
-            <CardDescription>
-              数値と単位はひとつの設定なので、ひとつの箱に見せます。ラベルは
-              FormField が行に付けるので、読み上げは「繰り返し、グループ」から始まり、中の
-              コントロールはそれぞれの名前を保ちます。
-            </CardDescription>
+            <CardTitle level={2}>{t("spaceCompactDocs.recur.title")}</CardTitle>
+            <CardDescription>{t("spaceCompactDocs.recur.body")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <FormField label="繰り返し" helper="請求書を自動発行する間隔です。">
+              <FormField
+                label={t("spaceCompactDocs.recur.label")}
+                helper={t("spaceCompactDocs.recur.helper")}
+              >
                 <SpaceCompact>
                   <NumberInput
                     value={every}
                     onValueChange={(next) => setEvery(next ?? 1)}
                     min={1}
                     max={52}
-                    aria-label="間隔"
+                    aria-label={t("spaceCompactDocs.recur.every")}
                   />
                   <Select
                     value={unit}
                     onValueChange={(next: string | string[] | undefined) => setUnit(next as string)}
-                    options={WEEK_UNITS}
-                    aria-label="単位"
+                    options={weekUnits}
+                    aria-label={t("spaceCompactDocs.recur.unit")}
                   />
                 </SpaceCompact>
               </FormField>
 
               <Descriptions
                 items={[
-                  { label: "読み方", children: `毎 ${every} ${unit === "day" ? "日" : unit === "week" ? "週" : "月"}ごと` },
-                  { label: "role", children: "group（名前が付いた行のみ）" },
+                  {
+                    label: t("spaceCompactDocs.recur.reads"),
+                    children: `${every} ${weekUnits.find((u) => u.value === unit)?.label ?? ""}`,
+                  },
+                  {
+                    label: t("spaceCompactDocs.recur.role"),
+                    children: t("spaceCompactDocs.recur.roleValue"),
+                  },
                 ]}
               />
             </Flex>
@@ -101,21 +105,18 @@ export default function SpaceCompactShowcase() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>検索とボタン</CardTitle>
-            <CardDescription>
-              入力と実行は一続きの操作なので継ぎ目をなくします。ボタンは本物の Button のままなので、
-              フォーカスリングも disabled もそのまま効きます。
-            </CardDescription>
+            <CardTitle level={2}>{t("spaceCompactDocs.search.title")}</CardTitle>
+            <CardDescription>{t("spaceCompactDocs.search.body")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <SpaceCompact aria-label="社員を検索">
+            <SpaceCompact aria-label={t("spaceCompactDocs.search.row")}>
               <SearchInput
                 value={query}
                 onValueChange={setQuery}
-                placeholder="氏名・社員番号"
-                aria-label="検索語"
+                placeholder={t("spaceCompactDocs.search.placeholder")}
+                aria-label={t("spaceCompactDocs.search.term")}
               />
-              <Button aria-label="検索する">
+              <Button aria-label={t("spaceCompactDocs.search.run")}>
                 <Search aria-hidden="true" />
               </Button>
             </SpaceCompact>
@@ -124,27 +125,26 @@ export default function SpaceCompactShowcase() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>金額と通貨、そして fullWidth</CardTitle>
-            <CardDescription>
-              `fullWidth` は行を親の幅いっぱいに広げます（antd の `block`）。中の比率は各コントロールの
-              ままなので、狭い画面でも桁が潰れません。
-            </CardDescription>
+            <CardTitle level={2}>{t("spaceCompactDocs.amount.title")}</CardTitle>
+            <CardDescription>{t("spaceCompactDocs.amount.body")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <FormField label="請求金額">
+            <FormField label={t("spaceCompactDocs.amount.label")}>
               <SpaceCompact fullWidth>
                 <NumberInput
                   value={amount}
                   onValueChange={(next) => setAmount(next ?? 0)}
                   min={0}
                   step={1000}
-                  aria-label="金額"
+                  aria-label={t("spaceCompactDocs.amount.value")}
                 />
                 <Select
                   value={currency}
-                  onValueChange={(next: string | string[] | undefined) => setCurrency(next as string)}
+                  onValueChange={(next: string | string[] | undefined) =>
+                    setCurrency(next as string)
+                  }
                   options={CURRENCIES}
-                  aria-label="通貨"
+                  aria-label={t("spaceCompactDocs.amount.currency")}
                 />
               </SpaceCompact>
             </FormField>
@@ -153,30 +153,25 @@ export default function SpaceCompactShowcase() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>orientation=&quot;vertical&quot; — 書かれた上での部分対応</CardTitle>
-            <CardDescription>
-              縦積みは共有の境界線を潰しますが、角の丸めは今のところ横方向だけです。Input と
-              トリガーの角トークンが inline 方向にしか無いためで、黙って欠けているのではなく
-              フォローアップとして書いてあります。
-            </CardDescription>
+            <CardTitle level={2}>{t("spaceCompactDocs.vertical.title")}</CardTitle>
+            <CardDescription>{t("spaceCompactDocs.vertical.body")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
-              <SpaceCompact orientation="vertical" aria-label="メモと送信">
+              <SpaceCompact orientation="vertical" aria-label={t("spaceCompactDocs.vertical.row")}>
                 <Textarea
                   value={note}
                   onValueChange={setNote}
-                  placeholder="申し送り事項"
-                  aria-label="申し送り事項"
+                  placeholder={t("spaceCompactDocs.vertical.note")}
+                  aria-label={t("spaceCompactDocs.vertical.note")}
                 />
-                <Button aria-label="送信する">
+                <Button aria-label={t("spaceCompactDocs.vertical.send")}>
                   <Send aria-hidden="true" />
-                  送信
+                  {t("spaceCompactDocs.vertical.send")}
                 </Button>
               </SpaceCompact>
               <Text tone="muted" size="sm">
-                `vertical` は antd 互換の真偽値スペルです。`orientation` と両方指定すると
-                `orientation` が勝ちます。
+                {t("spaceCompactDocs.vertical.alias")}
               </Text>
             </Flex>
           </CardContent>
@@ -184,19 +179,16 @@ export default function SpaceCompactShowcase() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>くっつけない方がよい場合</CardTitle>
-            <CardDescription>
-              ひとつの設定ではないものを繋ぐと、関係のない値が同じ箱に見えます。別々の
-              FormField に分けてください。
-            </CardDescription>
+            <CardTitle level={2}>{t("spaceCompactDocs.dont.title")}</CardTitle>
+            <CardDescription>{t("spaceCompactDocs.dont.body")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="md" wrap>
-              <FormField label="部署コード">
-                <Input placeholder="D-1024" aria-label="部署コード" />
+              <FormField label={t("spaceCompactDocs.dont.dept")}>
+                <Input placeholder="D-1024" aria-label={t("spaceCompactDocs.dont.dept")} />
               </FormField>
-              <FormField label="内線">
-                <Input placeholder="2831" aria-label="内線" />
+              <FormField label={t("spaceCompactDocs.dont.ext")}>
+                <Input placeholder="2831" aria-label={t("spaceCompactDocs.dont.ext")} />
               </FormField>
             </Flex>
           </CardContent>

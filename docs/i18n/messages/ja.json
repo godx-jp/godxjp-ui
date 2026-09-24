@@ -1195,5 +1195,64 @@
       "recovery": "リカバリーコードは安全な場所に保管してください。表示は一度きりです。",
       "acknowledge": "保管しました"
     }
+  },
+  "spaceCompactDocs": {
+    "title": "SpaceCompact",
+    "subtitle": "くっつけた1つの箱として読ませる — 繰り返し設定・検索・単位つき金額",
+    "recur": {
+      "title": "繰り返し（毎 N 週ごと）",
+      "body": "数値と単位はひとつの設定なので、ひとつの箱に見せます。ラベルは FormField が行に付けるので、読み上げは「繰り返し、グループ」から始まり、中のコントロールはそれぞれの名前を保ちます。",
+      "label": "繰り返し",
+      "helper": "請求書を自動発行する間隔です。",
+      "every": "間隔",
+      "unit": "単位",
+      "reads": "読み方",
+      "role": "role",
+      "roleValue": "group（名前が付いた行のみ）"
+    },
+    "unit": {
+      "day": "日",
+      "week": "週",
+      "month": "月"
+    },
+    "search": {
+      "title": "検索とボタン",
+      "body": "入力と実行は一続きの操作なので継ぎ目をなくします。ボタンは本物の Button のままなので、フォーカスリングも disabled もそのまま効きます。",
+      "row": "社員を検索",
+      "term": "検索語",
+      "run": "検索する",
+      "placeholder": "氏名・社員番号"
+    },
+    "amount": {
+      "title": "金額と通貨、そして fullWidth",
+      "body": "`fullWidth` は行を親の幅いっぱいに広げます（antd の `block`）。中の比率は各コントロールのままなので、狭い画面でも桁が潰れません。",
+      "label": "請求金額",
+      "value": "金額",
+      "currency": "通貨"
+    },
+    "vertical": {
+      "title": "orientation=\"vertical\" — 書かれた上での部分対応",
+      "body": "縦積みは共有の境界線を潰しますが、角の丸めは今のところ横方向だけです。Input とトリガーの角トークンが inline 方向にしか無いためで、黙って欠けているのではなくフォローアップとして書いてあります。",
+      "row": "メモと送信",
+      "note": "申し送り事項",
+      "send": "送信",
+      "alias": "`vertical` は antd 互換の真偽値スペルです。`orientation` と両方指定すると `orientation` が勝ちます。"
+    },
+    "dont": {
+      "title": "くっつけない方がよい場合",
+      "body": "ひとつの設定ではないものを繋ぐと、関係のない値が同じ箱に見えます。別々の FormField に分けてください。",
+      "dept": "部署コード",
+      "ext": "内線"
+    }
+  },
+  "chatComposerDocs": {
+    "footerTitle": "footer as NodeRender · attach / hint / send を下段のツールバーへ",
+    "footerBody": "actions={false} で行内の送信ボタンを隠し、footer に関数を渡すと components.SubmitButton（onSubmit / disabled / ローディング切替が配線済み）を受け取れます。下書き欄は全幅のまま、添付は行頭・送信は行末に配置できます。",
+    "noComments": "まだコメントはありません",
+    "commentLabel": "コメント（下段ツールバー）",
+    "commentPlaceholder": "コメントを入力",
+    "attach": "ファイルを添付",
+    "enterHint": "Enter で送信 · Shift + Enter で改行",
+    "sendComment": "コメントを送信"
   }
 }

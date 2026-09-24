@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 296,
-    dimensionCells: 4144,
+    exports: 297,
+    dimensionCells: 4158,
     covered: 93,
-    untested: 2273,
-    notApplicable: 1778,
+    untested: 2281,
+    notApplicable: 1784,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -340,6 +340,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"SkeletonStat","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SkeletonTable","group":"feedback","frame":"docs/feedback/skeleton.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Slider","group":"data-entry","frame":"docs/data-entry/slider.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"SpaceCompact","group":"layout","frame":"docs/layout/space-compact.tsx","covered":[],"untested":["accessibleName","async","contentStress","density","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones","variants"]},
   {"name":"SplitPane","group":"layout","frame":"docs/layout/split-pane.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"StatCard","group":"data-display","frame":"docs/data-display/card/index.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","sizes","states","tones","variants"]},
   {"name":"StatusBadge","group":"data-display","frame":"docs/data-display/badge.tsx","covered":["shapes","tones","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","sizes","states"]},
