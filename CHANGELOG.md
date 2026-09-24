@@ -4,6 +4,55 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.2.0] - 2026-09-24
+
+MINOR. **`Topbar overflow="menu"`** — a bar that does not fit folds into one cell instead of
+scrolling inside a sliver (gh#914).
+
+### ✨ The third overflow strategy
+
+Measured on a consumer at 320px with text at 200%:
+
+```
+topbar          w=32   scrollWidth=336     ← a 32px scroll window
+  topbar-end    w=256                      ← theme, language, notifications, account
+```
+
+Every cell is reachable by Tab in theory; in practice the window is narrower than one cell.
+`"scroll"` (gh#728) stays the default and is right for most bars — this is for the ones where it
+runs out.
+
+With `overflow="menu"`, the clusters fold into a single `…` cell whose popover lets them wrap. They
+are **moved, not copied**: the clusters render in the bar OR in the popover, never both, so every
+control exists exactly once — one id, one mounted menu, one place in the tab order.
+
+The bar measures itself while expanded and remembers the width the content wanted; it unfolds once
+its box is at least that wide again. That remembered width is the hysteresis — without it a bar
+folds, fits, unfolds, overflows and folds again at whatever rate the observer fires. The measurement
+runs in a layout effect, so a bar that does not fit never paints expanded.
+
+`data-collapsed="true"` / `"false"` is published while the behaviour is live, in the same spelling
+`.app-root[data-collapsed]` already uses, so a gate reads the fold state instead of inferring it
+from what is painted. Absent under `"scroll"` / `"clip"` and under the `children` escape hatch,
+where the bar can never fold.
+
+## [30.1.1] - 2026-09-24
+
+PATCH. **The `godx-lockup` logo no longer scrolls the page sideways at 320px with 200% text**
+(gh#912).
+
+The lockup's height is a rem token, so its width followed the text size with no ceiling of its own:
+at 320px with text at 200%, "GoDX | ID" ran to **397px** and pushed the document into horizontal
+scroll — WCAG 2.2 SC 1.4.10 (Reflow) and SC 1.4.4 (Resize Text). It now shrinks and wraps instead:
+the lockup may drop below its tier width (the artwork keeps its ratio in the smaller box) and the
+product suffix moves to its own line. **A lockup that fits is unchanged.**
+
+> This entry was written when 30.1.1 was released and then **lost from `main`**, together with the
+> commit it describes, while the gh#914 work was landing — `main` ended up with the topbar commit
+> where the logo one had been. Both are restored here. No consumer was ever without the fix: the
+> published 30.1.1 tarball carries the rules, verified by unpacking it. `main` was the only thing
+> missing them, and the next release would have regressed it silently.
+
 ## [30.1.0] - 2026-09-24
 
 MINOR. One new knob, and one accessibility fix that 30.0.2 reached for and missed.
