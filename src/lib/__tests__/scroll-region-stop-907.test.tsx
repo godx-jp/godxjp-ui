@@ -43,6 +43,9 @@ vi.mock("react-dom", async (importOriginal) => {
 /** The observer the hook installs, captured so a test can drive one notification at a time. */
 let notify: (() => void) | undefined;
 
+/** The `loadingdone` listeners the hook installs on `document.fonts`, driven the same way. */
+const fontListeners = new Set<() => void>();
+
 class CapturingResizeObserver {
   constructor(callback: () => void) {
     notify = callback;
@@ -74,7 +77,20 @@ function Region() {
 describe("the scroll region's tab stop (gh#907)", () => {
   beforeEach(() => {
     flushSync.mockClear();
+    fontListeners.clear();
     globalThis.ResizeObserver = CapturingResizeObserver as unknown as typeof ResizeObserver;
+    /* jsdom has no `document.fonts`; the hook guards with `?.` so it simply does nothing there.
+     * A stub is installed so the font path can be DRIVEN rather than assumed absent. */
+    Object.defineProperty(document, "fonts", {
+      configurable: true,
+      value: {
+        ready: Promise.resolve(),
+        addEventListener: (type: string, fn: () => void) => {
+          if (type === "loadingdone") fontListeners.add(fn);
+        },
+        removeEventListener: (_type: string, fn: () => void) => fontListeners.delete(fn),
+      },
+    });
   });
   afterEach(() => {
     notify = undefined;
@@ -122,6 +138,47 @@ describe("the scroll region's tab stop (gh#907)", () => {
 
     expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
     expect(flushSync, "a removal does not earn a synchronous render").not.toHaveBeenCalled();
+  });
+
+  it("ADDS the stop when a web face lands, with no resize at all (gh#907, reopened)", () => {
+    /* THE THIRD WAY INTO OVERFLOW, and the one 30.0.2 missed. `[data-slot="table"]` is `w-full`
+     * inside a `w-full` wrapper, so a font slice that re-lays-out the cell text changes NEITHER
+     * observed box — the text overflows inside them and `scrollWidth` crosses `clientWidth` with
+     * no resize to notice. Driven here with the ResizeObserver deliberately silent: if the fix
+     * ever regresses to resize-only, `notify` is never called and this fails. */
+    layout({ client: 800, scroll: 800 });
+    render(<Region />);
+    expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
+
+    flushSync.mockClear();
+    layout({ client: 375, scroll: 1200 }); // a slice landed; the text is wider now
+    for (const fn of fontListeners) fn();
+
+    expect(screen.getByTestId("box")).toHaveAttribute("tabindex", "0");
+    expect(flushSync, "a font-driven add is as urgent as a resize-driven one").toHaveBeenCalled();
+  });
+
+  it("keeps listening after the first batch — a sliced face arrives in many", () => {
+    /* `fonts.ready` settles once, for the faces pending at that moment. The reporter's app loads
+     * 729 unicode-range slices, which keep fetching as new glyphs are needed, so the slice that
+     * widens the table can land long after that promise resolved. `loadingdone` is why a SECOND
+     * batch still re-measures. */
+    layout({ client: 800, scroll: 800 });
+    render(<Region />);
+    for (const fn of fontListeners) fn(); // batch one: still fits
+    expect(screen.getByTestId("box")).not.toHaveAttribute("tabindex");
+
+    layout({ client: 375, scroll: 1200 });
+    for (const fn of fontListeners) fn(); // batch two: now it overflows
+    expect(screen.getByTestId("box")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("unsubscribes from `document.fonts` on unmount", () => {
+    layout({ client: 800, scroll: 800 });
+    const { unmount } = render(<Region />);
+    expect(fontListeners.size).toBe(1);
+    unmount();
+    expect(fontListeners.size, "a listener per mounted region would leak").toBe(0);
   });
 
   it("does not flush on the FIRST measurement, which runs inside the effect", () => {

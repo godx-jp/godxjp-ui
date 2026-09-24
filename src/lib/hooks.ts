@@ -226,12 +226,38 @@ export function useScrollsOnAxis(
       else setScrolls(next);
     };
     update(false);
-    if (typeof ResizeObserver === "undefined") return undefined;
+
+    /* A WEB FACE ARRIVING AFTER FIRST PAINT IS A THIRD WAY INTO OVERFLOW, and the observer below
+     * cannot see it (gh#907, reopened against 30.0.2's fix). `[data-slot="table"]` carries `w-full`
+     * and its wrapper is `w-full` too, so when a font slice lands and re-lays-out the cell text,
+     * NEITHER observed box changes size — the text overflows inside them and `scrollWidth` crosses
+     * `clientWidth` with no resize to notice it. The reporter found this from the other end: their
+     * app loads the sliced font entry (729 unicode-range faces), their gate caught a scrollable
+     * region with no tab stop, and a resize-driven reproduction found nothing at all.
+     *
+     * `loadingdone` rather than only `fonts.ready`: `ready` settles once for the faces pending at
+     * that moment, and a unicode-range set keeps fetching as new glyphs are needed, so a later
+     * slice arrives after that promise has already resolved. Both are used — `ready` for the first
+     * settle, the event for every batch after it. `chart-category-axis.ts` already reads
+     * `document.fonts` for this exact reason, on this exact failure. */
+    const onFonts = () => update(true);
+    let live = true;
+    document.fonts?.addEventListener?.("loadingdone", onFonts);
+    void document.fonts?.ready.then(() => {
+      if (live) update(true);
+    });
+    const stopFontWatch = () => {
+      live = false;
+      document.fonts?.removeEventListener?.("loadingdone", onFonts);
+    };
+
+    if (typeof ResizeObserver === "undefined") return stopFontWatch;
     const observer = new ResizeObserver(() => update(true));
     observer.observe(el);
     // The content resizes without the box doing so whenever data/columns/density change.
     if (el.firstElementChild) observer.observe(el.firstElementChild);
     return () => {
+      stopFontWatch();
       observer.disconnect();
     };
   }, [ref, enabled, axis]);
