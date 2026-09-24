@@ -150,6 +150,72 @@
     flex-direction: column;
   }
 
+  /* ── SpaceCompact (antd `Space.Compact`) ──────────────────────────────────────────────────
+   * A plain row (or column) of controls read as ONE box: inner corners zeroed, the shared border
+   * collapsed to a single hairline, each child's own focus ring left intact. See
+   * `src/components/layout/space-compact.tsx` for the antd-parity notes and the documented
+   * `orientation="vertical"` corner-radius gap. */
+  .ui-space-compact {
+    display: inline-flex;
+    align-items: stretch;
+  }
+
+  .ui-space-compact[data-full-width="true"] {
+    display: flex;
+    inline-size: 100%;
+  }
+
+  .ui-space-compact[data-full-width="true"] > * {
+    flex: 1 1 0%;
+    min-inline-size: 0;
+  }
+
+  .ui-space-compact[data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  .ui-space-compact[data-orientation="vertical"][data-full-width="true"] > * {
+    min-inline-size: auto;
+    min-block-size: 0;
+  }
+
+  /* Collapse the doubled seam to one hairline, then raise whichever child currently owns
+   * interaction so its boundary and focus ring paint over its neighbour instead of under it —
+   * the same z-index-on-interaction technique antd's own Space.Compact uses. */
+  .ui-space-compact[data-orientation="horizontal"] > * + * {
+    margin-inline-start: calc(var(--control-border-width, var(--stroke-hairline)) * -1);
+  }
+
+  .ui-space-compact[data-orientation="vertical"] > * + * {
+    margin-block-start: calc(var(--control-border-width, var(--stroke-hairline)) * -1);
+  }
+
+  .ui-space-compact > * {
+    position: relative;
+  }
+
+  .ui-space-compact > *:hover,
+  .ui-space-compact > *:focus-within {
+    z-index: 1;
+  }
+
+  /* Zero the INNER corners, keep the outer ones. These are the same knobs the Input family
+   * (`--input-radius-*`, `src/components/data-entry/input.tsx`) and the Select/Cascader/
+   * TreeSelect/SearchSelect trigger family (`--control-trigger-radius-*`,
+   * `src/lib/control-styles.ts`) already read through a `rounded-s-[var(…)]`/`rounded-e-[var(…))]`
+   * utility knob — a custom property nobody reads costs nothing, so setting both pairs on every
+   * child is safe regardless of which family that child belongs to. Inline-axis only; see the
+   * component file for why `orientation="vertical"` does not (yet) zero the block corners. */
+  .ui-space-compact[data-orientation="horizontal"] > *:not(:first-child) {
+    --input-radius-start: 0;
+    --control-trigger-radius-start: 0;
+  }
+
+  .ui-space-compact[data-orientation="horizontal"] > *:not(:last-child) {
+    --input-radius-end: 0;
+    --control-trigger-radius-end: 0;
+  }
+
   .ui-empty-state[data-variant="section"] {
     padding: var(--empty-state-section-space-y) var(--empty-state-section-space-x);
   }

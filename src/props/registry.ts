@@ -908,6 +908,27 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  SpaceCompactProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "OrientationProp",
+      {
+        field: "vertical",
+        local: true,
+        reason: "antd's boolean spelling of orientation=\"vertical\"; orientation wins over it.",
+      },
+      {
+        field: "fullWidth",
+        local: true,
+        reason:
+          "antd Space.Compact `block`, renamed to match the existing Button.block → fullWidth rename (same axis, same word everywhere it appears).",
+      },
+      "DensityProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+  },
   ResponsiveGridFlowProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   ResponsiveGridPresetProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
@@ -4424,6 +4445,11 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   ChatComposerSubmitTypeProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  ChatComposerFooterProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [],

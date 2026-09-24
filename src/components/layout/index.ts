@@ -13,6 +13,8 @@ export type {
   FlexProp,
   FlexProps,
 } from "./flex";
+export { SpaceCompact } from "./space-compact";
+export type { SpaceCompactProp, SpaceCompactProps } from "./space-compact";
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { NavList } from "./nav-list";
 export type { NavListProp, NavListProps } from "./nav-list";
