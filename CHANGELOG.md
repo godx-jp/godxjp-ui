@@ -33,6 +33,27 @@ only the dependency cannot run it. The shipped route is `tenantTheme()` from `@g
 same arithmetic, returning tokens at runtime instead of writing a file. Both are now named, with
 which one needs a checkout, and the label-choice warning is stated where either is chosen.
 
+### ♿ `Button variant="secondary"` hovers by its role, not by an opacity wash
+
+The last opacity-wash hover in the library, and it moved the wrong way. `hsl(var(--secondary) / 0.8)`
+composites toward whatever is BEHIND the button, so on the package canvas the hovered button became
+**less** distinguishable from the page than at rest:
+
+```
+rest                      1.09:1
+hover, 80% wash           1.07:1   ← shipped through 30.0.2
+hover, --secondary-hover  1.18:1
+```
+
+WCAG 2.2's Understanding of SC 1.4.11 names this precisely — a hover effect must not "cause a
+component itself to lose sufficient contrast against adjacent colors". The label was never at risk
+either way (14.18 → 14.46 washed, → 13.07 tokened, against a 4.5 floor).
+
+`--secondary-hover` is declared in `foundation.css` and read elsewhere in `control.css`, and every
+theme under `docs/themes` sets it — **this variant read none of it**. The `hover:bg-secondary/80`
+utility beside it is gone too: a utility outranks `@layer components`, so the role could not have
+reached this variant even once the rule read it (the gh#906 trap).
+
 ### 🔍 What was NOT changed, and why
 
 gh#908 asks for a HOVER row in the generator, on the reasoning that a rest-only measurement can pass
