@@ -4,6 +4,43 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [30.1.0] - 2026-09-24
+
+MINOR. One new knob, and one accessibility fix that 30.0.2 reached for and missed.
+
+### ✨ `--sidebar-item-hover-background` (gh#909)
+
+`.sb-nav-item:hover` painted `hsl(var(--accent))` with no token in front of it — the one part of the
+rail without one, while the ink beside it already had `--sidebar-nav-item-hover-foreground`.
+
+Reported from a dark navy rail on an otherwise light app: surface, item ink, icon states and the
+active pair were all themeable, and then hover flashed the **global** light `--accent` under light
+ink. Re-pointing `--accent` is not a workaround — it is every accent surface in the app.
+
+```css
+.sb-nav-item:hover {
+  background: var(--sidebar-item-hover-background, hsl(var(--accent)));
+}
+```
+
+`initial`, with the default resolved at the call site — the same shape as
+`--sidebar-item-active-background` one rule below. **Unset, the paint is byte-identical to 30.0.3.**
+
+### ♿ A web face landing after paint no longer strands the table's tab stop (gh#907)
+
+30.0.2 flushed the scroll region's tab stop synchronously from the `ResizeObserver`. That covers a
+resize; it does not cover a **font**. `[data-slot="table"]` is `w-full` inside a `w-full` wrapper, so
+when a font slice lands and re-lays-out the cell text, neither observed box changes size — the text
+overflows inside them and `scrollWidth` crosses `clientWidth` with no resize to notice.
+
+The hook now re-measures on `document.fonts` as well, using `loadingdone` and not only
+`fonts.ready`: `ready` settles once for the faces pending at that moment, and a unicode-range set
+keeps fetching as new glyphs are needed, so the slice that widens the table can land long after it
+resolved. `chart-category-axis.ts` already read `document.fonts` for this exact failure.
+
+Reported by a consumer running the sliced font entry — 729 unicode-range faces — who also said
+plainly which half of their evidence they could not produce, which is what made it findable.
+
 ## [30.0.3] - 2026-09-24
 
 PATCH. **A brand generator that told you a ratio without telling you which label it measured**
