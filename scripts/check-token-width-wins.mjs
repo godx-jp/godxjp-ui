@@ -68,6 +68,20 @@
  *    axis is the exception, because its trap value is `0` and `0` cannot be a token.
  * 4. It cannot see a utility a CONSUMER passes through `className`, which is the other half of the
  *    cascade and lives outside this repo entirely.
+ * 5. THE BORDER-WIDTH FORM OF THIS TRAP IS OUT OF REACH, and it was tried. gh#906 is the sixth
+ *    instance of the defect this gate is named for — Badge, Button, Table and Tabs each declared a
+ *    width from the stroke scale in the components layer while the TSX emitted `border` /
+ *    `border-b`, measured at 12 distinct element kinds painting 1px inside a scope whose every
+ *    stroke step was 3px. A border axis was written for it (props including the `border`
+ *    shorthand; an EXACT utility matcher, because `border-` also spells a colour and a style and a
+ *    prefix match would both flag `border-transparent` and miss the bare `border`). It was then
+ *    tested the only way that means anything — by putting each of the four defects back — and it
+ *    fired on NONE of them, for reasons that are limits 2 and 4 above rather than anything fixable
+ *    here: Badge's and Button's utilities live in a `cva` variant map, and Table's sits on the
+ *    PARENT via `[&_tr]:border-b` while the declaration is on the child's own class. The axis was
+ *    removed rather than shipped: a gate that cannot fire on the defect it names reports success,
+ *    which is the exact failure mode the second paragraph of this header is about. The border form
+ *    needs the browser check (`check:frame-token-wins`), not this one.
  *
  * The only complete check is a browser one: load each `/isolate/**` frame and ask CDP
  * (`CSS.getMatchedStylesForNode`) which declarations were overridden, which reports an inert
@@ -256,7 +270,7 @@ function collectClassOwnedWidths() {
           if (!decl) continue;
           const text = decl[2].trim();
           for (const cls of classes) {
-            const key = `${cls} ${axis.utilities.join(",")}`;
+            const key = `${cls}\u0000${axis.utilities.join(",")}`;
             if (owned.has(key)) continue;
             owned.set(key, {
               className: cls,
