@@ -239,6 +239,21 @@
     width: auto;
   }
 
+  /* REFLOW (gh#912). Height is a rem token, so the width follows the text size and has no ceiling
+   * of its own: at 320px with 200% text the "GoDX | ID" lockup ran to 397px and scrolled the page
+   * sideways. Nothing here changes a lockup that fits. When it does not fit, the mark may shrink
+   * below its tier width (the artwork keeps its ratio inside the smaller box, `meet` by default)
+   * and the suffix wraps to its own line. That is better than content outside the viewport. */
+  .ui-logo[data-mark="godx-lockup"] {
+    flex-shrink: 1;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .ui-logo[data-mark="godx-lockup"] [data-slot="logo-artwork"] {
+    max-inline-size: 100%;
+  }
+
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {
     display: block;
     width: 100%;
@@ -247,8 +262,11 @@
 
   .ui-logo-lockup {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--logo-wordmark-gap);
+    min-inline-size: 0;
+    max-inline-size: 100%;
   }
 
   .ui-logo-lockup .ui-logo-wordmark {
