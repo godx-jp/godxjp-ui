@@ -16294,6 +16294,14 @@
       "group": "data-display",
       "props": [
         {
+          "name": "interactive",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/components/data-display/table.tsx"]
+        },
+        {
           "name": "tone",
           "origin": "owned",
           "required": false,

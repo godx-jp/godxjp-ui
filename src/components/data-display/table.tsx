@@ -199,13 +199,44 @@ TableBody.displayName = "TableBody";
  */
 type TableRowTone = { tone?: TableRowToneProp };
 
+/**
+ * `interactive` — THE ROW IS THE TARGET (gh#929).
+ *
+ * `ListRow` already gives a clickable row all four of the things that make one usable: the whole
+ * row as the hit area, a pointer cursor, a row-level hover, and the design system's focus ring —
+ * because it wraps the `<a>` itself. A `<tr>` cannot be wrapped in an `<a>` and stay a table row,
+ * so every consumer building "a list with COLUMNS whose rows are selectable" fell into the same
+ * hole and patched it with page CSS, which `CONSUMER-RULES` forbids.
+ *
+ * Measured on a consumer (godx-jp/id, `/organization/roles`): the link occupied 160x66 of a
+ * 318x83 row, so the right half of every row was dead; `cursor` computed `auto` on every `<tr>`,
+ * so the hit area that did exist never advertised itself; and a bare `<Link>` in a `TableCell`
+ * fell back to Chromium's default ring (`rgb(0, 95, 204) auto 1px`) instead of the system's
+ * (`1px solid rgb(122, 0, 255)`), because `focus-ring.css` only names a fixed list of classes.
+ *
+ * This prop writes `data-interactive` and the package answers all three in CSS. It does NOT bind a
+ * handler and does NOT make the row focusable: a row is not a control, and the thing a keyboard
+ * user tabs to must still be a real `<a>`/`<button>` inside it — which is exactly what now gets
+ * the system's ring. Pair it with your own `onClick` on the row for the pointer affordance, and
+ * keep the real control in the first cell for the keyboard.
+ */
+type TableRowInteractive = {
+  /**
+   * The whole row acts as one target: pointer cursor, a row-level hover that means "clickable"
+   * rather than merely "hovered", and the design-system focus ring for the real control inside it.
+   * Presentation only — bind the handler yourself and keep a genuine `<a>`/`<button>` in the row.
+   */
+  interactive?: boolean;
+};
+
 export const TableRow = React.forwardRef<
   HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement> & TableRowTone
->(({ className, tone, ...props }, ref) => (
+  React.HTMLAttributes<HTMLTableRowElement> & TableRowTone & TableRowInteractive
+>(({ className, tone, interactive, ...props }, ref) => (
   <tr
     ref={ref}
     data-tone={tone}
+    data-interactive={interactive ? "" : undefined}
     className={cn(
       // The row rule itself is `.ui-table-row` in table-layout.css (--table-row-border-width),
       // NOT a `border-b` utility — a utility sits in `@layer utilities` and would outrank the

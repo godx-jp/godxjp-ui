@@ -52,6 +52,13 @@
   :is(
     .ui-focus-ring,
     .ui-focus-ring-outline,
+    /* The real control inside an `interactive` TableRow (gh#929). A `<tr>` cannot be wrapped in
+     * an `<a>` and stay a table row, so the row cannot be a carrier itself the way `.ui-list-row`
+     * is — the thing a keyboard user actually reaches is a bare `<a>`/`<button>` in a cell, which
+     * carried no class from this list and fell back to Chromium's own ring (measured
+     * `rgb(0, 95, 204) auto 1px` against the system's `1px solid rgb(122, 0, 255)`). Scoped to
+     * `[data-interactive]` so an ordinary table's in-cell links are untouched. */
+    [data-interactive] > [data-slot="table-cell"] :is(a[href], button),
     .ui-input,
     .ui-control,
     .ui-control-multiline,

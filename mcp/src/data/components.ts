@@ -6012,6 +6012,14 @@ import remarkGfm from "remark-gfm";
       "Primitive table shell (Table/TableHeader/TableBody/TableRow/TableHead/TableCell). Prefer DataTable for admin lists; use these for custom one-off tables.",
     props: [
       {
+        name: "interactive",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'TableRow only. The whole ROW is the target: pointer cursor, a hover that means "clickable" rather than merely "hovered", and (via focus-ring.css) the design-system focus ring for the real <a>/<button> inside a cell. PRESENTATION ONLY — it binds no handler and deliberately adds no tabindex/role: a <tr> is not a control, and the thing a keyboard user reaches must stay a real control inside the row. Pair it with your own onClick on the row and keep a genuine link/button in the first cell. Reach for it when a design calls for "a list with COLUMNS whose rows are selectable" — ListRow gets all of this free by wrapping its own <a>, which a <tr> cannot do, and DataTable solves a different problem (it brings a toolbar and pagination many designs do not have). gh#929.',
+      },
+
+      {
         name: "columnWidths",
         type: "{ actions?: string; actionsCompact?: string; metaCompact?: string; minInlineSizeCompact?: string }",
         description:

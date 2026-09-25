@@ -29,6 +29,27 @@
    * The wash sits on the ROW, so it reaches every cell. It is intentionally under the
    * selected-row fill in specificity terms as well as in weight: selection is a stronger claim
    * about the same row, and the two must not fight. */
+  /* `interactive` — the row is the target (gh#929). Three things `ListRow` gets for free by
+   * wrapping its own <a>, which a <tr> cannot do: the pointer, a hover that MEANS clickable, and
+   * (in focus-ring.css) the system ring for the real control inside. Measured on a consumer:
+   * `cursor` computed `auto` on every <tr>, so a working hit area never advertised itself.
+   *
+   * `@media (hover: hover)` so a touch device never parks in the hovered state, and the hover
+   * reads the SAME token an ordinary row hover already reads — this is the affordance made
+   * explicit, not a second colour a theme would have to discover. */
+  .ui-table-row[data-interactive] {
+    cursor: pointer;
+  }
+  @media (hover: hover) {
+    .ui-table-row[data-interactive]:hover {
+      background-color: color-mix(
+        in oklab,
+        hsl(var(--accent)) var(--table-row-hover-background-alpha, 70%),
+        transparent
+      );
+    }
+  }
+
   .ui-table-row[data-tone="primary"] {
     --table-row-tone-color: var(
       --mark-primary,
