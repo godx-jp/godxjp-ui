@@ -1,4 +1,27 @@
-// Shared hooks for admin components.
+/**
+ * Shared hooks. TWO of the ten exports here are PUBLIC API; the rest are internal (gh#951).
+ *
+ * | reaches a consumer | via |
+ * | --- | --- |
+ * | `useDebouncedValue` | `@godxjp/ui` and `@godxjp/ui/admin` |
+ * | `useTimeoutFlag`    | `@godxjp/ui` and `@godxjp/ui/admin` |
+ *
+ * `useControlledLatch` · `useMediaQuery` · `useIsMobile` · `useScrollableRegionTabIndex` ·
+ * `useScrollsOnAxis` · `useScrollsHorizontally` · `useInView` · `scrollParent` are reachable from NO
+ * published subpath. Measured by importing every barrel out of `dist/`, not read off this file.
+ *
+ * Saying it here because from outside there is no way to tell an internal hook from a public one
+ * parked in an odd place — and that ambiguity has a cost: a consumer that cannot tell writes its
+ * own copy of something that already ships (godx-jp/godxjp-ui#947 measured three such files, one of
+ * them a 12-line re-implementation of `cn`). The two public ones travel through
+ * `export * from "./components/admin"` in `src/index.ts`, which is why the old one-line header said
+ * "for admin components": they are not admin-specific, that is just the path they happen to take.
+ *
+ * Adding an export here does NOT publish it. Making one public means adding it to a barrel, to
+ * `component-api-manifest.json`'s `utilities` section (the generator picks it up) and to
+ * `mcp/src/data/utilities.ts` — `mcp/src/utilities-cover-the-manifest.test.ts` fails until all three
+ * agree.
+ */
 import { useLayoutEffect } from "@react-aria/utils";
 import { type RefObject, useEffect, useState } from "react";
 import { flushSync } from "react-dom";

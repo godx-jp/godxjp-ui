@@ -330,8 +330,32 @@ export function buildComponentApiManifest(rootDir = root) {
       if (!/^[A-Z][A-Za-z0-9]*$/.test(name)) continue;
       const type = checker.getTypeOfSymbolAtLocation(symbol, sourceFile);
       const signature = type.getCallSignatures()[0];
-      const parameter = signature?.parameters[0];
-      if (!parameter) continue;
+      if (!signature) continue;
+      /*
+       * A COMPONENT WITH NO PROPS IS STILL A COMPONENT (gh#957).
+       *
+       * This used to be `if (!parameter) continue`, because the manifest's whole model is "take the
+       * first parameter and enumerate its properties". A fixed shape has nothing to take:
+       *
+       *     export function SkeletonDetail() { … }   // the house shape for a record
+       *     export function SkeletonStat() { … }     // the house shape for a KPI tile
+       *
+       * so both were read as "not a component" and never entered the manifest — which means
+       * `every-public-name-answers.test.ts` never asked about them either, since it takes its keys
+       * FROM the manifest. Same shape as the gh#553 defect that gate exists to stop: nothing that
+       * validates entries can see a name that never became one. Measured: 10 of the 12 `Skeleton*`
+       * components were present, and the two missing ones are exactly the two that take no props.
+       *
+       * Admitting them is safe rather than a widening: across every public barrel, exactly these
+       * two exports have a call signature and zero parameters (measured, not assumed) — SCREAMING_
+       * CASE constants like `CHART_COLORS` already fail the PascalCase test above, and utilities
+       * like `cn` fail it too and are collected separately as `utilities` below.
+       */
+      const parameter = signature.parameters[0];
+      if (!parameter) {
+        components[name] = { group: directory.name, props: [] };
+        continue;
+      }
       const propsType = checker.getTypeOfSymbolAtLocation(parameter, sourceFile);
       const resolvedSymbol =
         symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
@@ -418,11 +442,108 @@ export function buildComponentApiManifest(rootDir = root) {
     }
   }
 
+  /*
+   * THE NON-COMPONENT HALF OF THE PUBLIC SURFACE (gh#951).
+   *
+   * Two independent rules kept every hook and utility out of this file, and both had to go:
+   *
+   *   `if (!/^[A-Z][A-Za-z0-9]*$/.test(name)) continue`   → `cn`, `useDebouncedValue`, `toast`
+   *   the loop only visits `src/components/<group>/index.ts` → `cn` lives at the ROOT barrel only,
+   *                                                            so it was never even reached
+   *
+   * The cost was measured in godx-jp/godxjp-ui#947: `godx-task` and `godx-chat` each hand-wrote a
+   * byte-identical 12-line `lib/utils.ts` wrapping `clsx`, while `cn` has shipped from the root of
+   * this package all along. An agent asked the MCP how to merge classNames, got
+   * `Component "cn" not found`, and wrote its own. That is a DISCOVERABILITY defect, and no new
+   * package fixes it — under #947's own boundary `cn` stays here.
+   *
+   * These get their own section rather than joining `components`, because everything reading
+   * `manifest.components` assumes "has props": `cn(...inputs)` and `useDebouncedValue(value, delay)`
+   * have no props object to enumerate, so folding them in would hand every consumer of this file
+   * entries it cannot interpret.
+   */
+  const utilities = {};
+  const utilityBarrels = [[".", "src/index.ts"]];
+  for (const directory of fs
+    .readdirSync(path.join(rootDir, "src/components"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory()))
+    utilityBarrels.push([
+      `./${directory.name}`,
+      `src/components/${directory.name}/index.ts`,
+    ]);
+
+  for (const [subpath, relative] of utilityBarrels) {
+    const barrelPath = path.join(rootDir, relative);
+    if (!fs.existsSync(barrelPath)) continue;
+    const sourceFile = program.getSourceFile(barrelPath);
+    if (!sourceFile) continue;
+    const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
+    if (!moduleSymbol) continue;
+    for (const symbol of checker.getExportsOfModule(moduleSymbol)) {
+      const name = symbol.name;
+      if (components[name]) continue;
+      const resolved =
+        symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
+      // A type-only export has no runtime identity, so it is not something to call or read.
+      const isValue = Boolean(
+        resolved.flags &
+          (ts.SymbolFlags.Function | ts.SymbolFlags.Variable | ts.SymbolFlags.Method),
+      );
+      if (!isValue) continue;
+      const type = checker.getTypeOfSymbolAtLocation(symbol, sourceFile);
+      const signature = type.getCallSignatures()[0];
+      /*
+       * `kind` is what an agent needs before it can use the thing at all: a hook is only legal
+       * inside a component body under the rules of hooks, a function is callable anywhere, and a
+       * value is neither. Keyed on the `use` prefix because that IS React's rule — the linter and
+       * the runtime both read the name, so nothing more authoritative exists to key on.
+       */
+      const kind = /^use[A-Z]/.test(name) ? "hook" : signature ? "function" : "value";
+      const existing = utilities[name];
+      if (existing) {
+        if (!existing.subpaths.includes(subpath)) existing.subpaths.push(subpath);
+        continue;
+      }
+      utilities[name] = {
+        kind,
+        // Every published subpath it is reachable from. A consumer copying an import needs one that
+        // exists, and several of these are re-exported by `./admin` as well as the root.
+        subpaths: [subpath],
+        signature: stableTypeText(
+          signature
+            ? checker.signatureToString(signature, sourceFile, ts.TypeFormatFlags.NoTruncation)
+            : checker.typeToString(type, sourceFile, ts.TypeFormatFlags.NoTruncation),
+        ),
+        declaredIn: [
+          ...new Set(
+            (resolved.declarations ?? []).map((declaration) =>
+              declaredPathForRoot(declaration.getSourceFile().fileName),
+            ),
+          ),
+        ].sort(),
+      };
+    }
+  }
+
+  /*
+   * STILL schemaVersion 1, deliberately. `utilities` is purely ADDITIVE: every reader here touches
+   * `manifest.components` and keeps working untouched, so there is no incompatible shape for a
+   * version to warn about — and this field is a bare integer with no way to say "additive". A
+   * reader that needs to know whether this section exists asks `"utilities" in manifest`, which is
+   * both more precise than an integer and impossible to get wrong. Bumping it would only break
+   * `scripts/check-component-case-evidence.mjs`, which pins manifest and evidence to 1 in one
+   * condition (and which no npm script currently runs).
+   */
   return {
     schemaVersion: 1,
     generatedBy: "scripts/gen-component-api-manifest.mjs",
     components: Object.fromEntries(
       Object.entries(components).sort(([a], [b]) => a.localeCompare(b)),
+    ),
+    utilities: Object.fromEntries(
+      Object.entries(utilities)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([name, entry]) => [name, { ...entry, subpaths: entry.subpaths.sort() }]),
     ),
   };
 }

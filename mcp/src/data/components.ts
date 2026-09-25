@@ -13673,7 +13673,6 @@ import { Separator } from "@godxjp/ui/layout";
   },
   {
     name: "Skeleton",
-    subParts: ["SkeletonDetail", "SkeletonStat"],
     group: "feedback",
     tagline:
       "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
@@ -13722,6 +13721,70 @@ import { Separator } from "@godxjp/ui/layout";
 
 // The same component is the antd namespace:
 <Skeleton.Button size="sm" />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonDetail",
+    group: "feedback",
+    tagline:
+      "Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically.",
+    props: [],
+    usage: [
+      "DO use it while a single record's data resolves — a detail page, a drawer showing one entity, a Descriptions block.",
+      "DO leave it propless. It has no `rows` knob on purpose: a record page that loads with a different number of lines each time reads as a layout bug, and `Skeleton` is there for a bespoke shape.",
+      "DON'T use it for a list or a table — SkeletonRows draws flat lines, SkeletonTable draws a header band.",
+      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
+    ],
+    useCases: [
+      "Detail page body before the record arrives",
+      "Drawer or sheet opened on a row while its full entity loads",
+      "Descriptions block placeholder",
+    ],
+    related: [
+      "SkeletonStat — the same propless treatment for a KPI tile.",
+      "SkeletonRows — flat list lines, not label/value pairs.",
+      "SkeletonTable — tabular placeholder with a header band.",
+      "Skeleton — the bare block this preset is built from; reach for it when you need a shape this one does not draw.",
+      "Descriptions — the component this placeholder is standing in for.",
+    ],
+    example: `import { SkeletonDetail } from "@godxjp/ui/feedback";
+
+<SkeletonDetail />`,
+    storyPath: "feedback/Skeleton.stories.tsx",
+    rules: [3, 31],
+  },
+  {
+    name: "SkeletonStat",
+    group: "feedback",
+    tagline:
+      "Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive.",
+    props: [],
+    usage: [
+      "DO render one per StatCard while the figures load, inside the same grid the loaded tiles use.",
+      "DO leave it propless — it mirrors StatCard's three-line rhythm exactly, which is what stops the row jumping on hydration.",
+      "DON'T wrap it in a Card yourself if the loaded state uses StatCard; put it where the StatCard goes so the surface is identical.",
+      "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages.",
+    ],
+    useCases: [
+      "Dashboard KPI row before the metrics query resolves",
+      "A single figure on a detail page loading separately from the record",
+      "Placeholder inside a ResponsiveGrid of StatCards",
+    ],
+    related: [
+      "StatCard — the loaded component this stands in for; match the grid, not just the size.",
+      "SkeletonDetail — the same propless treatment for a record page.",
+      "SkeletonRows — flat list lines.",
+      "Skeleton — the bare block this preset is built from.",
+    ],
+    example: `import { SkeletonStat } from "@godxjp/ui/feedback";
+import { ResponsiveGrid } from "@godxjp/ui/layout";
+
+<ResponsiveGrid min="12rem">
+  {Array.from({ length: 4 }).map((_, i) => (
+    <SkeletonStat key={i} />
+  ))}
+</ResponsiveGrid>`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [3, 31],
   },

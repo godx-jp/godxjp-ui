@@ -15354,6 +15354,10 @@
         }
       ]
     },
+    "SkeletonDetail": {
+      "group": "feedback",
+      "props": []
+    },
     "SkeletonForm": {
       "group": "feedback",
       "props": [
@@ -15506,6 +15510,10 @@
           "declaredIn": ["src/components/feedback/skeleton.tsx"]
         }
       ]
+    },
+    "SkeletonStat": {
+      "group": "feedback",
+      "props": []
     },
     "SkeletonTable": {
       "group": "feedback",
@@ -20353,6 +20361,182 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
+    }
+  },
+  "utilities": {
+    "buttonVariants": {
+      "kind": "function",
+      "subpaths": ["./general"],
+      "signature": "(props?: ({ variant?: \"link\" | \"default\" | \"ghost\" | \"destructive\" | \"secondary\" | \"outline\" | \"dashed\" | \"bare\" | null | undefined; size?: \"xs\" | \"sm\" | \"md\" | \"lg\" | \"default\" | \"icon\" | \"icon-xs\" | \"icon-sm\" | \"icon-lg\" | null | undefined; shape?: \"default\" | \"pill\" | \"sharp\" | null | undefined; } & import(\"class-variance-authority/types\").ClassProp) | undefined): string",
+      "declaredIn": ["src/components/general/button.tsx"]
+    },
+    "CHART_COLORS": {
+      "kind": "value",
+      "subpaths": ["./charts"],
+      "signature": "readonly [\"var(--chart-1)\", \"var(--chart-2)\", \"var(--chart-3)\", \"var(--chart-4)\", \"var(--chart-5)\", \"var(--chart-6)\"]",
+      "declaredIn": ["src/components/charts/chart-frame.tsx"]
+    },
+    "classifyQueryError": {
+      "kind": "function",
+      "subpaths": ["./query"],
+      "signature": "(error: unknown): import(\".\").QueryErrorInfo",
+      "declaredIn": ["src/lib/query-error.ts"]
+    },
+    "cn": {
+      "kind": "function",
+      "subpaths": ["."],
+      "signature": "(...inputs: import(\"clsx\").ClassValue[]): string",
+      "declaredIn": ["src/lib/utils.ts"]
+    },
+    "collectUploadCommitActions": {
+      "kind": "function",
+      "subpaths": [".", "./admin", "./data-entry"],
+      "signature": "(items: import(\"./components/data-entry\").UploadFileItem[]): import(\"./components/data-entry\").UploadCommitAction",
+      "declaredIn": ["src/components/data-entry/upload-types.ts"]
+    },
+    "createSidebarLink": {
+      "kind": "function",
+      "subpaths": ["./layout"],
+      "signature": "<P extends { className?: string; children?: React.ReactNode; }>(Link: React.ComponentType<P>, hrefProp?: \"href\" | \"to\"): import(\"./sidebar\").SidebarLinkComponentProp",
+      "declaredIn": ["src/components/layout/sidebar-link.tsx"]
+    },
+    "createUploadItem": {
+      "kind": "function",
+      "subpaths": [".", "./admin", "./data-entry"],
+      "signature": "(file: File, partial?: Partial<import(\"./components/data-entry\").UploadFileItem>): import(\"./components/data-entry\").UploadFileItem",
+      "declaredIn": ["src/components/data-entry/upload-types.ts"]
+    },
+    "dateMatchModifiers": {
+      "kind": "function",
+      "subpaths": ["./data-entry"],
+      "signature": "(date: Date, matchers: import(\"react-day-picker\").Matcher | import(\"react-day-picker\").Matcher[], dateLib?: import(\"react-day-picker\").DateLib): boolean",
+      "declaredIn": ["node_modules/react-day-picker/dist/esm/utils/dateMatchModifiers.d.ts"]
+    },
+    "flattenItemPages": {
+      "kind": "function",
+      "subpaths": ["./query"],
+      "signature": "<TItem>(data: { pages: { items: TItem[]; }[]; } | undefined): TItem[]",
+      "declaredIn": ["src/components/query/infinite-query-state.tsx"]
+    },
+    "flexRender": {
+      "kind": "function",
+      "subpaths": ["./data-display"],
+      "signature": "<TProps extends object>(Comp: import(\"@tanstack/react-table\").Renderable<TProps>, props: TProps): import(\"react\").ReactNode | import(\"react\").JSX.Element",
+      "declaredIn": ["node_modules/@tanstack/react-table/dist/FlexRender.d.ts"]
+    },
+    "formatBytes": {
+      "kind": "function",
+      "subpaths": [".", "./admin"],
+      "signature": "(n: number | null | undefined, locale?: string): string",
+      "declaredIn": ["src/lib/format.ts"]
+    },
+    "formatCurrency": {
+      "kind": "function",
+      "subpaths": [".", "./admin"],
+      "signature": "(amountMinor: number | null | undefined, currency: string, locale?: string): string",
+      "declaredIn": ["src/lib/format.ts"]
+    },
+    "formatDate": {
+      "kind": "function",
+      "subpaths": [".", "./admin"],
+      "signature": "(value: string | Date | null | undefined, options?: import(\"./app\").FormatDateOptions): string",
+      "declaredIn": ["src/lib/datetime/format-date.ts"]
+    },
+    "humanError": {
+      "kind": "function",
+      "subpaths": [".", "./admin"],
+      "signature": "(err: unknown): string",
+      "declaredIn": ["src/lib/format.ts"]
+    },
+    "isRetryableQueryError": {
+      "kind": "function",
+      "subpaths": ["./query"],
+      "signature": "(error: unknown): boolean",
+      "declaredIn": ["src/lib/query-error.ts"]
+    },
+    "shortId": {
+      "kind": "function",
+      "subpaths": [".", "./admin"],
+      "signature": "(id: string | null | undefined): string",
+      "declaredIn": ["src/lib/format.ts"]
+    },
+    "SHOW_ALL": {
+      "kind": "value",
+      "subpaths": ["./data-entry"],
+      "signature": "\"SHOW_ALL\"",
+      "declaredIn": ["src/components/data-entry/tree-select-strategy.ts"]
+    },
+    "SHOW_CHILD": {
+      "kind": "value",
+      "subpaths": ["./data-entry"],
+      "signature": "\"SHOW_CHILD\"",
+      "declaredIn": ["src/components/data-entry/tree-select-strategy.ts"]
+    },
+    "SHOW_PARENT": {
+      "kind": "value",
+      "subpaths": ["./data-entry"],
+      "signature": "\"SHOW_PARENT\"",
+      "declaredIn": ["src/components/data-entry/tree-select-strategy.ts"]
+    },
+    "toast": {
+      "kind": "function",
+      "subpaths": [".", "./admin", "./feedback"],
+      "signature": "(message: import(\"react\").ReactNode | (() => React.ReactNode), data?: import(\"sonner\").ExternalToast): string | number",
+      "declaredIn": ["node_modules/sonner/dist/index.d.mts"]
+    },
+    "UPLOAD_LIST_IGNORE": {
+      "kind": "value",
+      "subpaths": ["./data-entry"],
+      "signature": "typeof import(\"./upload-types\").UPLOAD_LIST_IGNORE",
+      "declaredIn": ["src/components/data-entry/upload-types.ts"]
+    },
+    "useAppShellNavigationMode": {
+      "kind": "hook",
+      "subpaths": ["./layout"],
+      "signature": "(): \"drawer\" | \"docked\"",
+      "declaredIn": ["src/components/layout/app-shell.tsx"]
+    },
+    "useCarousel": {
+      "kind": "hook",
+      "subpaths": ["./data-display"],
+      "signature": "(): { canScrollPrev: boolean; canScrollNext: boolean; selectedIndex: number; scrollSnaps: number[]; api: import(\"./carousel\").CarouselApi | null; scrollPrev: () => void; scrollNext: () => void; scrollTo: (index: number) => void; }",
+      "declaredIn": ["src/components/data-display/carousel.tsx"]
+    },
+    "useDebouncedValue": {
+      "kind": "hook",
+      "subpaths": [".", "./admin"],
+      "signature": "<T>(value: T, delay?: number): T",
+      "declaredIn": ["src/lib/hooks.ts"]
+    },
+    "useFormLayout": {
+      "kind": "hook",
+      "subpaths": ["./data-entry"],
+      "signature": "(): import(\"./form\").FormLayoutContextValue | null",
+      "declaredIn": ["src/components/data-entry/form.tsx"]
+    },
+    "usePasswordStrength": {
+      "kind": "hook",
+      "subpaths": ["./data-entry"],
+      "signature": "(value: string, rules?: import(\"./password-strength\").PasswordRule[]): import(\"./password-strength\").PasswordStrengthReturn",
+      "declaredIn": ["src/components/data-entry/password-strength.tsx"]
+    },
+    "useSheetResponsiveMode": {
+      "kind": "hook",
+      "subpaths": ["./feedback"],
+      "signature": "(responsive?: import(\"./sheet\").SheetResponsiveProp): import(\"./sheet\").SheetPresentation",
+      "declaredIn": ["src/components/feedback/sheet.tsx"]
+    },
+    "useTimeoutFlag": {
+      "kind": "hook",
+      "subpaths": [".", "./admin"],
+      "signature": "(signal: unknown, ms?: number): boolean",
+      "declaredIn": ["src/lib/hooks.ts"]
+    },
+    "useUploadDraft": {
+      "kind": "hook",
+      "subpaths": [".", "./admin", "./data-entry"],
+      "signature": "({ value, onChange }: import(\"./components/data-entry/use-upload-draft\").UseUploadDraftOptions): { state: import(\"./components/data-entry/use-upload-draft\").UploadDraftState; markRemove: () => void; undoRemove: () => void; stageReplace: (file: File) => void; undoReplace: () => void; getCommitActions: () => import(\"./components/data-entry\").UploadCommitAction; }",
+      "declaredIn": ["src/components/data-entry/use-upload-draft.ts"]
     }
   }
 }

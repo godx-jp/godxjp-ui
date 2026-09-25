@@ -90,7 +90,7 @@ prints on every answer and reads as boilerplate:
 }
 ```
 
-Restart Claude Code. The 25 tools appear under `mcp__godx_ui__*`.
+Restart Claude Code. The 26 tools appear under `mcp__godx_ui__*`.
 
 **Which server answered, and which package it is looking at.** Every tool answer opens with one
 line naming the server that produced it — read from this package's `package.json` — followed by the
@@ -207,7 +207,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (25)
+## Tools (26)
 
 > **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
 > (the Consumer namespace below) — they hide library-maintenance material. The data tools
@@ -220,6 +220,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------ |
 | `list_skills`          | 15 design skills (audience-tagged) + section ids                                                                            | ~1 KB  |
 | `list_primitives`      | All components, grouped + tagline. Optional `group` filter.                                                                 | ~3 KB  |
+| `list_utilities`       | Every NON-component export — hooks, helper functions, constants (`cn`, `formatDate`, `toast`, `useDebouncedValue`, `CHART_COLORS`…). Optional `kind` filter. | ~2 KB  |
 | `list_patterns`        | 7 canonical patterns + taglines                                                                                             | ~500 B |
 | `list_anti_ai_tells`   | 20+ AI-tell patterns. Optional `category` filter.                                                                           | ~2 KB  |
 | `list_redesign_checks` | 50+ audit checks + fix priority. Optional `category` filter.                                                                | ~5 KB  |
