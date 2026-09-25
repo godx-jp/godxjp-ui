@@ -4,6 +4,25 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### ✨ `Text break="anywhere"` — a machine identifier can split to fit a table cell (gh#927)
+
+MINOR. `Text` gains a `break` axis (`"normal" | "anywhere"`, type `TextBreakProp`), separate from
+`whitespace`. `anywhere` emits `overflow-wrap: anywhere` plus `min-inline-size: 0`, and releases an
+inherited `nowrap` (a table cell's default) to `normal` unless `whitespace="pre-wrap"` is also set.
+`truncate` wins over it (dev builds warn); `clamp` composes.
+
+`whitespace="pre-wrap"` could not do this job. Its `overflow-wrap: break-word` does not lower
+min-content, and a table column is sized from min-content. Measured in chromium at a 320px viewport
+with a 71-character token in a `width: 100%` auto-layout table: **with no break, and with pre-wrap,
+the table is ~630px wide. With `break="anywhere"` it is 320px and the document does not scroll
+sideways.** A real-engine regression pins all three numbers.
+
+New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-wrap:anywhere]` and
+`wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
+`break="anywhere"` as the prop for an email, code or id in a table cell.
+
 ## [30.4.2] - 2026-09-25
 
 ### 🐛 `SpaceCompact` — the item box must stretch its own child, and `fullWidth` is documented as it behaves (gh#919 follow-up)

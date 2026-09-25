@@ -425,6 +425,38 @@ export default function Demo() {
             <VisuallyHidden>{t("textExamples.preservedText")}</VisuallyHidden>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>break · 識別子を折り返す</CardTitle>
+            <CardDescription>
+              メールアドレス・クーポンコード・ログイン ID のような区切りのない識別子は
+              break=&quot;anywhere&quot;。表のセルでも列が画面幅に収まります。whitespace=&quot;pre-wrap&quot;
+              は人が入力した改行のためのもので、表のセルでは識別子を折り返せません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>担当者</TableHead>
+                  <TableHead>メールアドレス</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Text size="sm">佐藤</Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text size="sm" break="anywhere">
+                      hanako.sato.customer-success-team@example-enterprise-holdings.co.jp
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

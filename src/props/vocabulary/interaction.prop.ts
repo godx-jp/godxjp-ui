@@ -109,6 +109,20 @@ export type TextAlignProp = "start" | "center" | "end";
  */
 export type TextWhitespaceProp = "normal" | "pre-wrap";
 
+/**
+ * Where a run of text may break an over-long token that has no break opportunity of its own — an
+ * email address, a coupon code, a login id, a template key (gh#927).
+ *
+ * `normal` is CSS's own behaviour and the default: an unbroken token stays whole and overflows.
+ *
+ * `anywhere` is `overflow-wrap: anywhere`. It is a SEPARATE axis from {@link TextWhitespaceProp}
+ * because the two answer different questions: `whitespace` says whether the line breaks a person
+ * typed are content, `break` says whether a machine identifier may be split to fit. Only `anywhere`
+ * — not `break-word` — lowers the box's min-content size (CSS Text 3 §5.5), which is what a table
+ * cell sizes its column from; `break-word` breaks in a block and still holds a `<td>` open.
+ */
+export type TextBreakProp = "normal" | "anywhere";
+
 /*
  * ─────────────────────────────────────────────────────────────────────────────
  * antd `Typography` parity — the vocabulary antd names, spelled antd's way.

@@ -54,6 +54,12 @@
       "type": "\"normal\" | \"pre-wrap\""
     },
     {
+      "defaultValue": "\"normal\"",
+      "description": "Where an over-long unbroken token may break. THE prop for a machine identifier — an email address, a coupon code, a login id, a template key — in a DataTable/TableCell or a Descriptions value: `break=\"anywhere\"` emits `overflow-wrap: anywhere` (and releases a table cell's inherited `nowrap`), so the column shrinks to the viewport instead of scrolling the page. Use it INSTEAD of `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`. NOT `whitespace=\"pre-wrap\"`: that is for typed line breaks, and its `break-word` does not lower min-content, so in a table cell it breaks nothing (measured: a 71-char token holds a 320px table at 630px with pre-wrap, 320px with break=\"anywhere\"). Independent of `whitespace` (both may be set); `truncate` wins (dev builds warn); `clamp` composes.",
+      "name": "break",
+      "type": "\"normal\" | \"anywhere\""
+    },
+    {
       "description": "Tabular figures for aligned numbers.",
       "name": "tabular",
       "type": "boolean"
@@ -185,6 +191,7 @@
   "usage": [
     "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
     "DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className=\"text-muted-foreground font-mono tabular-nums\"`.",
+    "DO use `break=\"anywhere\"` for an email, code or id in a table cell or Descriptions value — never `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`, and never `whitespace=\"pre-wrap\"`, which does not shrink a table column.",
     "DO use `clamp={n}` for a description limited to n lines (card grids) and `truncate` for a one-line ellipsis — never `className=\"line-clamp-2\"` (banned utility). They are mutually exclusive; `clamp` wins.",
     "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
     "DO use `link` for a link inside RUNNING CONTENT — an issue subject in a table cell, a page name in a list, a \"see all\" at the end of a row — and compose it onto your router link with `asChild`. Never `className=\"text-primary hover:underline\"`: that is consumer rules 6 and 7 in one string, and it leaves a keyboard user with no underline because `hover:` cannot fire for them.",
@@ -193,6 +200,7 @@
   "useCases": [
     "A muted caption under a value: `<Text size=\"xs\" tone=\"muted\">2026年5月度</Text>`.",
     "A monospace id in a list row: `<Text size=\"xs\" mono tone=\"muted\">RC-204881</Text>`.",
+    "A staff email in a narrow DataTable cell at 320px, wrapping instead of scrolling the page: `<Text size=\"sm\" break=\"anywhere\">{staff.email}</Text>`.",
     "An emphasized inline figure: `<Text weight=\"medium\" tabular>¥1,240,000</Text>`.",
     "A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as=\"p\" size=\"sm\" tone=\"muted\" clamp={2}>{description}</Text>`.",
     "An issue subject linking out of a table cell, wrapping to two lines: `<Text asChild link truncate={false}><Link href={`/view/${key}`}>{subject}</Link></Text>`.",

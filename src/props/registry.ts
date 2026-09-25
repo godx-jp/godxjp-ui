@@ -505,6 +505,12 @@ export const VOCABULARY_REGISTRY = {
     description:
       "Whitespace handling normal | pre-wrap: `pre-wrap` keeps the newlines and indentation a person typed (a plain-text note, a pasted log) and still wraps at the container edge; `truncate` outranks it",
   },
+  TextBreakProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Where an over-long unbroken token may break normal | anywhere: `anywhere` (overflow-wrap: anywhere) lets a machine identifier (email, code, login id) split to fit a narrow table cell; independent of TextWhitespaceProp, and `truncate` outranks it",
+  },
   TypographyTypeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",

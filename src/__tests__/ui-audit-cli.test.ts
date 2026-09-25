@@ -936,3 +936,51 @@ describe("a scrollport is a component, not an overflow utility (gh#825)", () => 
     ).not.toContain('"no-hand-rolled-scrollport"');
   });
 });
+
+/*
+ * gh#927 — `no-hand-rolled-break-anywhere`. `Text break="anywhere"` exists now, so the utility a
+ * consumer carried at 25 call sites is drift. Both directions asserted, as for the scrollport rule.
+ */
+describe("overflow-wrap:anywhere is a Text prop, not a utility (gh#927)", () => {
+  const breakLines = (source: string): number[] =>
+    (JSON.parse(audit(source).output) as { findings: { rule: string; line: number }[] }).findings
+      .filter((finding) => finding.rule === "no-hand-rolled-break-anywhere")
+      .map((finding) => finding.line);
+
+  it("fires on the arbitrary property and on wrap-anywhere, including under a variant", () => {
+    const source = [
+      '<Text className="[overflow-wrap:anywhere] break-words whitespace-normal">', // 1  the reported string
+      '<Text className="wrap-anywhere">', //                                        2  Tailwind v4.1
+      '<span className="sm:[overflow-wrap:anywhere]">', //                          3  variant
+      "<Text className={cn(", //                                                    4
+      '  "wrap-anywhere",', //                                                      5  cn() is a class expr
+      ")} />", //                                                                   6
+    ].join("\n");
+
+    expect(breakLines(source)).toEqual([1, 2, 3, 5]);
+  });
+
+  it("does not fire on the prop, on break-all, or outside a class expression", () => {
+    const source = [
+      '<Text break="anywhere">{email}</Text>', //                     1  the primitive
+      '<Text className="break-all">', //                               2  a different decision
+      '<Text className="break-words">', //                             3
+      "<Text>wrap-anywhere is the Tailwind name</Text>", //            4  product copy
+      'const note = "[overflow-wrap:anywhere]";', //                   5  prose
+    ].join("\n");
+
+    expect(breakLines(source)).toEqual([]);
+  });
+
+  it("warns rather than failing the run, and only in consumer code", () => {
+    const result = audit('<Text className="[overflow-wrap:anywhere]" />');
+    const finding = (
+      JSON.parse(result.output) as { findings: { rule: string; severity: string }[] }
+    ).findings.find((f) => f.rule === "no-hand-rolled-break-anywhere");
+    expect(finding?.severity).toBe("warn");
+    expect(result.status).toBe(0);
+    expect(
+      audit('<span className="wrap-anywhere" />', true, "src/components/general").output,
+    ).not.toContain('"no-hand-rolled-break-anywhere"');
+  });
+});
