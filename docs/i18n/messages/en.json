@@ -1260,5 +1260,184 @@
     "attach": "Attach a file",
     "enterHint": "Enter to send · Shift + Enter for a new line",
     "sendComment": "Send the comment"
+  },
+  "tcgm": {
+    "demoNotice": "DESIGN PROTOTYPE · every card, price, shop and release date below is a fictional sample.",
+    "brandAlt": "TCG-M",
+    "nav": {
+      "cards": "Find cards",
+      "news": "News",
+      "calendar": "Release calendar",
+      "watchlist": "Watchlist",
+      "method": "Data & editorial policy",
+      "label": "Main navigation"
+    },
+    "header": {
+      "search": "Card search",
+      "watchlist": "Watchlist",
+      "tryApp": "Try the app",
+      "openMenu": "Open menu",
+      "menu": "Menu"
+    },
+    "hero": {
+      "eyebrow": "Different cards. Same passion.",
+      "titleLine1": "Find more of",
+      "titleLine2": "the cards you love.",
+      "leadLine1": "From the one card you came for to the next thing you discover.",
+      "leadLine2": "Card data, price comparison and news, in one place.",
+      "searchPlaceholder": "Search by card name, number or set",
+      "searchLabel": "Card name, number or set",
+      "artAlt": "Original card illustration spread across a pale sky",
+      "artTag": "More cards. More possibilities.",
+      "hintTitles": "Many titles",
+      "hintCompare": "Compare like for like",
+      "hintDiscover": "New discoveries"
+    },
+    "games": {
+      "label": "Filter by title",
+      "all": "All",
+      "pokemon": "Pokémon Card",
+      "onepiece": "ONE PIECE",
+      "yugioh": "Yu-Gi-Oh!",
+      "duel": "Duel Masters",
+      "mtg": "MTG",
+      "other": "Other"
+    },
+    "card": {
+      "classifiedAs": "Category: {game}",
+      "priceLabel": "Listed shop price",
+      "noPrice": "No price listed",
+      "shippingNote": "Excl. shipping",
+      "sampleNote": "Sample",
+      "sampleBadge": "SAMPLE",
+      "artAlt": "Fictional card: {name}",
+      "watchAdd": "Add {name} to watchlist",
+      "watchRemove": "Remove {name} from watchlist"
+    },
+    "cards": {
+      "demo-01": {
+        "name": "Guide of the Star Crossing",
+        "edition": "Standard"
+      },
+      "demo-02": {
+        "name": "Atelier of Sky Blue",
+        "edition": "Holo"
+      },
+      "demo-03": {
+        "name": "Garden in Moonlight",
+        "edition": "Standard"
+      },
+      "demo-04": {
+        "name": "Voyage of Coral",
+        "edition": "Alternate art"
+      },
+      "demo-05": {
+        "name": "A Letter That Carries Wind",
+        "edition": "Standard"
+      },
+      "demo-06": {
+        "name": "Prism at Daybreak",
+        "edition": "Holo"
+      }
+    },
+    "collection": {
+      "eyebrow": "Explore the collection",
+      "title": "Meet a card you haven't met yet.",
+      "action": "Find cards",
+      "count": "{count} samples",
+      "note": "The cards below are fictional, for design review only. They are not official cards of any real title.",
+      "emptyTitle": "No card matches these conditions",
+      "emptyBody": "Try a different title or card number.",
+      "reset": "Reset filters"
+    },
+    "news": {
+      "eyebrow": "Read & discover",
+      "title": "Know your cards a little better.",
+      "action": "Read articles",
+      "sample": "Sample article",
+      "meta": "2026.09.24 · 4 min read",
+      "manual": "Manual only · no autoplay"
+    },
+    "articles": {
+      "compare": {
+        "title": "Five things to check before you look at the price",
+        "cat": "Starter guide"
+      },
+      "edition": {
+        "title": "Same name, different card? Telling editions apart",
+        "cat": "Card knowledge"
+      },
+      "watch": {
+        "title": "Keep the cards you care about in one list",
+        "cat": "How to"
+      },
+      "sources": {
+        "title": "Why the \"last updated\" time on price data matters",
+        "cat": "Reading the data"
+      }
+    },
+    "releases": {
+      "eyebrow": "Coming next",
+      "title": "Put what you're waiting for on the calendar.",
+      "action": "Open calendar",
+      "view": "View release"
+    },
+    "release": {
+      "prism": {
+        "title": "Prism World — Chapter of Sky",
+        "kind": "Original fictional set"
+      },
+      "notes": {
+        "title": "Collector's Notes Vol.01",
+        "kind": "Guide release example"
+      },
+      "study": {
+        "title": "Edition Study — Light and Shadow",
+        "kind": "Original fictional set"
+      }
+    },
+    "trust": {
+      "eyebrow": "Clarity comes first",
+      "titleLine1": "The facts you need",
+      "titleLine2": "to compare, made plain.",
+      "bodyLine1": "Not just the price: the edition, the condition, the shipping and the time it was last checked.",
+      "bodyLine2": "The footing you need to choose with confidence.",
+      "link": "Data & editorial policy",
+      "editionTitle": "Same edition, same condition",
+      "editionBody": "Standard and alternate-art printings are compared separately.",
+      "freshnessTitle": "The update time is stated",
+      "freshnessBody": "Conditions at the time of listing may differ from now.",
+      "adsTitle": "Ads kept apart from comparison",
+      "adsBody": "PR labelling and the reason for the ordering, both in plain sight."
+    },
+    "footer": {
+      "taglineLine1": "The cards you love, connecting a wider world.",
+      "taglineLine2": "Card price comparison · card data · news",
+      "accent": "Different cards. Same passion.",
+      "colFind": "Find & compare",
+      "colRead": "Read & learn",
+      "colAbout": "About TCG-M",
+      "linkSearch": "Card search",
+      "linkCompare": "Compare editions",
+      "linkWatchlist": "Watchlist",
+      "linkNews": "News & guides",
+      "linkCalendar": "Release calendar",
+      "linkBasics": "Comparison basics",
+      "linkMethod": "Data & editorial policy",
+      "linkComponents": "UI components",
+      "linkConsent": "Demo storage settings",
+      "legal": "© TCG-M · tcg-m.com · Design prototype",
+      "disclaimer": "Title names are category examples. They do not indicate an official service or partnership."
+    },
+    "toast": {
+      "saved": "Saved to this browser",
+      "removed": "Removed from your watchlist"
+    },
+    "dialog": {
+      "title": "Fictional release",
+      "body": "This is a calendar display example. It is not an actual product release or pre-order.",
+      "sample": "Sample",
+      "date": "September 2026 · demo date"
+    }
   }
 }

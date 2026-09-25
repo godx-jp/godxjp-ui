@@ -1254,5 +1254,184 @@
     "attach": "Đính kèm tệp",
     "enterHint": "Enter để gửi · Shift + Enter để xuống dòng",
     "sendComment": "Gửi bình luận"
+  },
+  "tcgm": {
+    "demoNotice": "DESIGN PROTOTYPE · mọi thẻ, giá, cửa hàng và ngày phát hành bên dưới đều là mẫu hư cấu.",
+    "brandAlt": "TCG-M",
+    "nav": {
+      "cards": "Tìm thẻ",
+      "news": "Tin tức",
+      "calendar": "Lịch phát hành",
+      "watchlist": "Danh sách theo dõi",
+      "method": "Dữ liệu & biên tập",
+      "label": "Điều hướng chính"
+    },
+    "header": {
+      "search": "Tìm thẻ",
+      "watchlist": "Danh sách theo dõi",
+      "tryApp": "Trải nghiệm app",
+      "openMenu": "Mở menu",
+      "menu": "Menu"
+    },
+    "hero": {
+      "eyebrow": "Different cards. Same passion.",
+      "titleLine1": "Tìm thêm những lá bài",
+      "titleLine2": "mà bạn yêu thích.",
+      "leadLine1": "Từ lá bài bạn đang tìm đến điều bạn chưa biết mình sẽ thích.",
+      "leadLine2": "Thông tin thẻ, so sánh giá và tin tức, gom về một chỗ.",
+      "searchPlaceholder": "Tìm theo tên thẻ, mã số hoặc bộ bài",
+      "searchLabel": "Tên thẻ, mã số hoặc bộ bài",
+      "artAlt": "Minh hoạ thẻ bài gốc trải trên nền trời nhạt",
+      "artTag": "More cards. More possibilities.",
+      "hintTitles": "Nhiều tựa game",
+      "hintCompare": "So sánh cùng điều kiện",
+      "hintDiscover": "Khám phá điều mới"
+    },
+    "games": {
+      "label": "Lọc theo tựa game",
+      "all": "Tất cả",
+      "pokemon": "Pokémon Card",
+      "onepiece": "ONE PIECE",
+      "yugioh": "Yu-Gi-Oh!",
+      "duel": "Duel Masters",
+      "mtg": "MTG",
+      "other": "Khác"
+    },
+    "card": {
+      "classifiedAs": "Phân loại: {game}",
+      "priceLabel": "Giá bán tại shop niêm yết",
+      "noPrice": "Chưa có giá",
+      "shippingNote": "Chưa gồm ship",
+      "sampleNote": "Mẫu",
+      "sampleBadge": "SAMPLE",
+      "artAlt": "Thẻ hư cấu: {name}",
+      "watchAdd": "Thêm {name} vào danh sách theo dõi",
+      "watchRemove": "Bỏ {name} khỏi danh sách theo dõi"
+    },
+    "cards": {
+      "demo-01": {
+        "name": "Người dẫn đường giữa các vì sao",
+        "edition": "Bản thường"
+      },
+      "demo-02": {
+        "name": "Xưởng vẽ màu trời",
+        "edition": "Bản holo"
+      },
+      "demo-03": {
+        "name": "Khu vườn dưới trăng",
+        "edition": "Bản thường"
+      },
+      "demo-04": {
+        "name": "Hành trình san hô",
+        "edition": "Bản khác hình"
+      },
+      "demo-05": {
+        "name": "Lá thư nối những cơn gió",
+        "edition": "Bản thường"
+      },
+      "demo-06": {
+        "name": "Lăng kính lúc rạng đông",
+        "edition": "Bản holo"
+      }
+    },
+    "collection": {
+      "eyebrow": "Explore the collection",
+      "title": "Gặp một lá bài bạn chưa từng gặp.",
+      "action": "Tìm thẻ",
+      "count": "{count} mẫu",
+      "note": "Các thẻ bên dưới là hư cấu, chỉ dùng để duyệt thiết kế. Không phải thẻ chính thức của bất kỳ tựa game có thật nào.",
+      "emptyTitle": "Không có thẻ nào khớp điều kiện",
+      "emptyBody": "Hãy thử tựa game hoặc mã thẻ khác.",
+      "reset": "Đặt lại bộ lọc"
+    },
+    "news": {
+      "eyebrow": "Read & discover",
+      "title": "Hiểu thẻ bài thêm một chút.",
+      "action": "Đọc bài viết",
+      "sample": "Bài mẫu",
+      "meta": "2026.09.24 · đọc 4 phút",
+      "manual": "Chuyển tay · không tự chạy"
+    },
+    "articles": {
+      "compare": {
+        "title": "Năm điều nên kiểm tra trước khi nhìn giá",
+        "cat": "Hướng dẫn nhập môn"
+      },
+      "edition": {
+        "title": "Cùng tên nhưng khác thẻ? Cách phân biệt bản in",
+        "cat": "Kiến thức thẻ"
+      },
+      "watch": {
+        "title": "Gom những lá bài bạn quan tâm vào một danh sách",
+        "cat": "Cách dùng"
+      },
+      "sources": {
+        "title": "Vì sao mốc \"cập nhật lần cuối\" của dữ liệu giá lại quan trọng",
+        "cat": "Đọc dữ liệu"
+      }
+    },
+    "releases": {
+      "eyebrow": "Coming next",
+      "title": "Đưa điều bạn đang chờ lên lịch.",
+      "action": "Xem lịch",
+      "view": "Xem lịch phát hành"
+    },
+    "release": {
+      "prism": {
+        "title": "Prism World — Chương của Bầu trời",
+        "kind": "Bộ hư cấu gốc"
+      },
+      "notes": {
+        "title": "Collector's Notes Vol.01",
+        "kind": "Ví dụ phát hành hướng dẫn"
+      },
+      "study": {
+        "title": "Edition Study — Sáng và Tối",
+        "kind": "Bộ hư cấu gốc"
+      }
+    },
+    "trust": {
+      "eyebrow": "Clarity comes first",
+      "titleLine1": "Thông tin để so sánh,",
+      "titleLine2": "trình bày cho dễ hiểu.",
+      "bodyLine1": "Không chỉ giá: còn bản in, tình trạng, phí ship và thời điểm kiểm tra gần nhất.",
+      "bodyLine2": "Đủ căn cứ để bạn chọn một cách yên tâm.",
+      "link": "Dữ liệu & biên tập",
+      "editionTitle": "Cùng bản in, cùng tình trạng",
+      "editionBody": "Bản thường và bản khác hình được so sánh tách riêng.",
+      "freshnessTitle": "Ghi rõ thời điểm cập nhật",
+      "freshnessBody": "Điều kiện lúc niêm yết có thể khác hiện tại.",
+      "adsTitle": "Tách quảng cáo khỏi so sánh",
+      "adsBody": "Nhãn PR và lý do thứ tự sắp xếp đều hiển thị rõ."
+    },
+    "footer": {
+      "taglineLine1": "Những lá bài bạn yêu, nối tới một thế giới rộng hơn.",
+      "taglineLine2": "So sánh giá thẻ · thông tin thẻ · tin tức",
+      "accent": "Different cards. Same passion.",
+      "colFind": "Tìm & so sánh",
+      "colRead": "Đọc & hiểu",
+      "colAbout": "Về TCG-M",
+      "linkSearch": "Tìm thẻ",
+      "linkCompare": "So sánh bản in",
+      "linkWatchlist": "Danh sách theo dõi",
+      "linkNews": "Tin tức & hướng dẫn",
+      "linkCalendar": "Lịch phát hành",
+      "linkBasics": "Cơ bản về so sánh",
+      "linkMethod": "Dữ liệu & biên tập",
+      "linkComponents": "Thành phần UI",
+      "linkConsent": "Cài đặt lưu trữ demo",
+      "legal": "© TCG-M · tcg-m.com · Design prototype",
+      "disclaimer": "Tên các tựa game là ví dụ phân loại, không thể hiện dịch vụ chính thức hay quan hệ hợp tác."
+    },
+    "toast": {
+      "saved": "Đã lưu vào trình duyệt này",
+      "removed": "Đã bỏ khỏi danh sách theo dõi"
+    },
+    "dialog": {
+      "title": "Lịch phát hành hư cấu",
+      "body": "Đây là ví dụ hiển thị lịch. Không phải đợt phát hành hay đặt trước có thật.",
+      "sample": "Mẫu",
+      "date": "Tháng 9/2026 · ngày dùng cho demo"
+    }
   }
 }

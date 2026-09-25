@@ -187,6 +187,14 @@ const NOT_AN_ICON_BOX = new Set([
   "--thought-chain-icon-font-size", // same as the topbar chip: the TYPE size of the step's ordinal
   "--otp-caret-block-size", // a text cursor's height — it tracks a line box, not an icon
   "--otp-caret-inline-size", // a text cursor's 1px bar — that is a stroke, not an icon
+  // The carousel arrow BUTTON, not the mark in it (gh#931). The pattern catches it on `-arrow-`,
+  // but the icon token here is `--carousel-arrow-icon-size`, which is on the scale and frozen
+  // below at 1rem. This one is a TOUCH TARGET, and a target belongs to the ergonomics axis, not
+  // the icon axis: WCAG 2.2 SC 2.5.8 talks about it in absolute CSS px, `--touch-target-min` is
+  // `scale-exempt` in foundation.css for that exact reason, and a brand raising it to 44px is
+  // answering an a11y floor rather than picking a glyph size. Snapping it to the nine steps would
+  // offer 36px or 48px and neither is the number anyone asks for.
+  "--carousel-arrow-size",
 ]);
 
 const iconDecls = decls.filter((d) => ICON_TOKEN.test(d.token) && !NOT_AN_ICON_BOX.has(d.token));

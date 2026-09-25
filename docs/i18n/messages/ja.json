@@ -1254,5 +1254,184 @@
     "attach": "ファイルを添付",
     "enterHint": "Enter で送信 · Shift + Enter で改行",
     "sendComment": "コメントを送信"
+  },
+  "tcgm": {
+    "demoNotice": "DESIGN PROTOTYPE · 掲載カード・価格・店舗・発売予定はすべて架空のサンプルです。",
+    "brandAlt": "TCG-M",
+    "nav": {
+      "cards": "カードを探す",
+      "news": "ニュース",
+      "calendar": "発売カレンダー",
+      "watchlist": "ウォッチリスト",
+      "method": "データと編集方針",
+      "label": "メインナビゲーション"
+    },
+    "header": {
+      "search": "カード検索",
+      "watchlist": "ウォッチリスト",
+      "tryApp": "アプリを体験",
+      "openMenu": "メニューを開く",
+      "menu": "メニュー"
+    },
+    "hero": {
+      "eyebrow": "Different cards. Same passion.",
+      "titleLine1": "好きなカードを、",
+      "titleLine2": "もっと見つけよう。",
+      "leadLine1": "気になる一枚から、新しい発見まで。",
+      "leadLine2": "カード情報・価格比較・ニュースを、ひとつの場所で。",
+      "searchPlaceholder": "カード名・番号・セット名で検索",
+      "searchLabel": "カード名・番号・セット名",
+      "artAlt": "淡い空の中に広がるオリジナルのカードイラスト",
+      "artTag": "More cards. More possibilities.",
+      "hintTitles": "さまざまなタイトル",
+      "hintCompare": "条件をそろえて比較",
+      "hintDiscover": "新しい発見"
+    },
+    "games": {
+      "label": "タイトルで絞り込む",
+      "all": "すべて",
+      "pokemon": "ポケモンカード",
+      "onepiece": "ONE PIECE",
+      "yugioh": "遊戯王",
+      "duel": "デュエマ",
+      "mtg": "MTG",
+      "other": "その他"
+    },
+    "card": {
+      "classifiedAs": "分類例：{game}",
+      "priceLabel": "掲載ショップの販売価格",
+      "noPrice": "価格情報なし",
+      "shippingNote": "送料別",
+      "sampleNote": "サンプル",
+      "sampleBadge": "SAMPLE",
+      "artAlt": "架空のカード：{name}",
+      "watchAdd": "{name}をウォッチに追加",
+      "watchRemove": "{name}をウォッチリストから削除"
+    },
+    "cards": {
+      "demo-01": {
+        "name": "星渡りの案内人",
+        "edition": "通常版"
+      },
+      "demo-02": {
+        "name": "空色のアトリエ",
+        "edition": "ホロ仕様"
+      },
+      "demo-03": {
+        "name": "月明かりの庭園",
+        "edition": "通常版"
+      },
+      "demo-04": {
+        "name": "珊瑚の旅路",
+        "edition": "別イラスト版"
+      },
+      "demo-05": {
+        "name": "風をつなぐ手紙",
+        "edition": "通常版"
+      },
+      "demo-06": {
+        "name": "夜明けのプリズム",
+        "edition": "ホロ仕様"
+      }
+    },
+    "collection": {
+      "eyebrow": "Explore the collection",
+      "title": "カードとの、新しい出会い。",
+      "action": "カードを探す",
+      "count": "{count}件のサンプル",
+      "note": "以下はデザイン確認用の架空カードです。実在タイトルの公式カードではありません。",
+      "emptyTitle": "条件に合うカードが見つかりませんでした",
+      "emptyBody": "タイトルやカード番号を変えて検索してください。",
+      "reset": "絞り込みをリセット"
+    },
+    "news": {
+      "eyebrow": "Read & discover",
+      "title": "トレカを、もっと知る。",
+      "action": "記事を読む",
+      "sample": "サンプル記事",
+      "meta": "2026.09.24 · 4分で読む",
+      "manual": "手動で切り替え · 自動再生なし"
+    },
+    "articles": {
+      "compare": {
+        "title": "価格を見る前に。比較で確認したい5つのこと",
+        "cat": "はじめてガイド"
+      },
+      "edition": {
+        "title": "同じカード名でも違う？版・加工の見分け方",
+        "cat": "カードの知識"
+      },
+      "watch": {
+        "title": "気になるカードを、自分のリストにまとめよう",
+        "cat": "使い方"
+      },
+      "sources": {
+        "title": "価格データの「更新日時」は、なぜ大切？",
+        "cat": "データの読み方"
+      }
+    },
+    "releases": {
+      "eyebrow": "Coming next",
+      "title": "楽しみを、カレンダーに。",
+      "action": "カレンダーを見る",
+      "view": "予定を見る"
+    },
+    "release": {
+      "prism": {
+        "title": "Prism World — 空の章",
+        "kind": "オリジナル架空セット"
+      },
+      "notes": {
+        "title": "Collector's Notes Vol.01",
+        "kind": "ガイド公開例"
+      },
+      "study": {
+        "title": "Edition Study — 光と影",
+        "kind": "オリジナル架空セット"
+      }
+    },
+    "trust": {
+      "eyebrow": "Clarity comes first",
+      "titleLine1": "比べるための情報を、",
+      "titleLine2": "わかりやすく。",
+      "bodyLine1": "価格だけでなく、版・状態・送料・更新日時まで。",
+      "bodyLine2": "納得して選ぶための手がかりを届けます。",
+      "link": "データと編集方針",
+      "editionTitle": "同じ版・状態を確認",
+      "editionBody": "通常版と別イラスト版を区別して比較。",
+      "freshnessTitle": "更新日時を明記",
+      "freshnessBody": "掲載時点と現在の条件は異なる場合があります。",
+      "adsTitle": "広告と比較を分ける",
+      "adsBody": "PR表示と並び順の理由をわかりやすく。"
+    },
+    "footer": {
+      "taglineLine1": "好きなカードで、つながる世界へ。",
+      "taglineLine2": "トレカの価格比較・カード情報・ニュース",
+      "accent": "Different cards. Same passion.",
+      "colFind": "探す・比べる",
+      "colRead": "読む・知る",
+      "colAbout": "TCG-Mについて",
+      "linkSearch": "カード検索",
+      "linkCompare": "版の比較",
+      "linkWatchlist": "ウォッチリスト",
+      "linkNews": "ニュース・ガイド",
+      "linkCalendar": "発売カレンダー",
+      "linkBasics": "比較の基本",
+      "linkMethod": "データと編集方針",
+      "linkComponents": "UIコンポーネント",
+      "linkConsent": "デモの保存設定",
+      "legal": "© TCG-M · tcg-m.com · Design prototype",
+      "disclaimer": "各タイトル名は分類例です。公式サービス・提携を示すものではありません。"
+    },
+    "toast": {
+      "saved": "このブラウザーに保存しました",
+      "removed": "ウォッチリストから削除しました"
+    },
+    "dialog": {
+      "title": "架空の予定",
+      "body": "これはカレンダー表示例です。実際の商品発売・予約受付ではありません。",
+      "sample": "サンプル",
+      "date": "2026年9月 · 予定日はデモ用"
+    }
   }
 }

@@ -1547,6 +1547,165 @@ hexToHsl("#0071bd");   // "204.13 100% 37.06%"
 // Why there is no <TenantTheme> component: docs/COMPOSITION-VS-COMPONENT.md §3.2
 `,
   },
+  {
+    name: "brand-theme-block",
+    aliases: [
+      "rebrand",
+      "design-handoff",
+      "brand-motion",
+      "motion-tokens",
+      "whitelabel",
+      "white-label-theme",
+      "theme-block",
+      "external-brand",
+    ],
+    tagline:
+      "Wear a WHOLE external brand — its palette, shape, type AND its motion spec — as one scoped theme block of token declarations. No forked components, no page-local overrides of library selectors. Use when you are handed a design system (Figma/HTML prototype/brand book), not a single customer hex.",
+    tags: [
+      "theme",
+      "brand",
+      "rebrand",
+      "handoff",
+      "motion",
+      "animation",
+      "reveal",
+      "typography",
+      "font",
+      "cjk",
+      "japanese",
+      "tokens",
+      "design-system",
+      "white-label",
+      "marketing",
+      "landing",
+    ],
+    code: `// ─────────────────────────────────────────────────────────────────────────
+// A WHOLE BRAND AS A THEME BLOCK.
+//
+// tenantTheme(hex) is for ONE customer colour arriving as data. This is the
+// other job: a design system handed to you (brand book, Figma, an HTML
+// prototype) that has its own palette, radii, shadows, type ramp AND motion
+// timing. All of it is token configuration. If you find yourself forking a
+// component or overriding a .ui-* selector from a page stylesheet, stop —
+// that is the signal to file an issue for the missing knob instead.
+//
+// Worked screens, three different brands: /showcase/acme-website (light/gold),
+// /showcase/futurelastic-web (dark/gold), /showcase/tcgm-website (light,
+// Japanese, and the one with a MOTION spec).
+
+<div data-tenant="acme">              {/* a REGION, never <html> */}
+  <style>{THEME}</style>              {/* in an app this is your theme.css */}
+  <Navbar /> <Hero /> <Footer />
+</div>
+
+const THEME = \`
+[data-tenant="acme"] {
+  /* 1 ── COLOUR. Map the brand's hexes onto the ROLES, as HSL triplets. */
+  --primary: 192 72% 21%; --primary-foreground: 0 0% 100%;
+  --ring: 199 89% 29%;          /* DECLARE IT. --ring is bound at :root and FREEZES;
+                                   many brands ring in a different blue than they fill with. */
+  --background: 210 40% 98%; --foreground: 195 57% 16%;
+  --card: 0 0% 100%; --muted-foreground: 196 17% 39%;
+  /* --border is decorative chrome. --input is the CONTROL BOUNDARY and is held to
+     3:1 (WCAG 2.2 SC 1.4.11) — brands usually ship a second, darker "border-strong"
+     for exactly this; use THAT one here, not the hairline. */
+  --border: 196 27% 89%; --input: 197 13% 51%;
+
+  /* 2 ── SHAPE + ELEVATION. Card hover is a TOKEN PAIR, not a hand-written rule:
+     "lift 2px, shadow sm→md" == --card-shadow + --card-hover-shadow. */
+  --radius-md: 12px; --radius-xl: 20px;
+  --card-radius: var(--radius-xl); --control-radius: var(--radius-md);
+  --card-shadow: 0 1px 2px rgb(15 76 92 / .06);
+  --card-hover-shadow: 0 12px 32px -14px rgb(15 76 92 / .20);
+
+  /* 3 ── TYPE. --font-size-display is the BASE KNOB of the display ramp: 3xl/4xl/5xl
+     all derive from it, so never restate --font-size-5xl. Use clamp() or the hero
+     paints its desktop size on a phone (measured: 56px at 390 where the brand scale
+     said 34px). */
+  --font-family-body: "Noto Sans JP", system-ui, sans-serif;
+  --font-family-sans: var(--font-family-body);
+  --font-family-display: var(--font-family-body);
+  --font-size-display: clamp(2.125rem, 4vw, 3.5rem);
+  /* ❌ --font-family-display: "Montserrat", "Noto Sans JP", …
+     A Latin-only face FIRST in a CJK product looks fine (the browser falls through
+     per glyph) while silently setting the Latin inside a Japanese headline in a
+     different face than the headline. Keep the CJK face as the display family and
+     opt into the Latin face per element instead: */
+  --brand-latin: "Montserrat", system-ui, sans-serif;
+}
+[data-tenant="acme"] .brand-eyebrow,
+[data-tenant="acme"] .brand-price { font-family: var(--brand-latin); }
+
+/* 4 ── MOTION. THIS IS THE PART PEOPLE FORK OVER, AND THEY DO NOT NEED TO.
+   A brand motion table — press 90ms · hover 140 · state 200 · enter 260 ·
+   hero-once 480ms at y8→0 · cubic-bezier(.2,.8,.2,1) — is EIGHT declarations.
+   <Reveal>, Card hoverable, Dialog/Sheet enter and every token-driven transition
+   retime themselves off these. Zero new @keyframes. */
+[data-tenant="acme"] {
+  --duration-fast: 140ms;      /* hover / focus  */
+  --duration-base: 200ms;      /* state change   */
+  --duration-slow: 480ms;      /* hero once      */
+  --ease-standard: cubic-bezier(.2,.8,.2,1);
+  --ease-emphasized: cubic-bezier(.2,.8,.2,1);
+  --ease-decelerate: cubic-bezier(.2,.8,.2,1);
+  --reveal-distance: 8px;      /* the spec's "y8→0" */
+  --reveal-stagger-step: 70ms;
+  /* a11y numbers are tokens too — this brand's standard is a 44px target, above
+     the WCAG 2.2 SC 2.5.8 floor of 24px (gh#931): */
+  --carousel-arrow-size: 2.75rem;
+}
+\`;
+
+// 5 ── SPEND THE MOTION, THEN STOP. Most brand books cap decorative motion
+// ("one decorative region per viewport; no parallax, no count-up, no infinite
+// float"). Read the spec before adding effects — adding more is not proving the
+// framework, it is breaking the brand.
+
+<Reveal on="mount">                 {/* hero: illustration only, if the spec says
+                                       "text appears immediately" — then DON'T wrap
+                                       the headline, so it paints on frame 1 */}
+  <img src={heroArt} alt="…" />
+</Reveal>
+
+<Reveal on="view">                  {/* one observer per SECTION */}
+  <SectionHeading />
+</Reveal>
+<ResponsiveGrid columns={{ base: 2, sm: 3, lg: 4 }}>
+  {items.map((it, i) => (
+    <Reveal key={it.id} on="view" delay={Math.min(i, 5) + 1}>   {/* delay caps at 6 */}
+      <Card hoverable>…</Card>
+    </Reveal>
+  ))}
+</ResponsiveGrid>
+
+// ❌ THE ONE THAT BITES: never put on="view" on something a scroller CLIPS.
+//    <Carousel><CarouselItem><Reveal on="view">…  ← 3 of 4 slides stayed at
+//    opacity 0 FOREVER: the observer's root is the viewport and a clipped box has
+//    an empty intersection rect, so a slide parked outside the rail never enters.
+// ✅ Reveal the RAIL:
+<Reveal on="view">
+  <Carousel>
+    <CarouselContent>
+      {news.map((n) => (
+        <CarouselItem key={n.id} className="basis-4/5 sm:basis-1/2 lg:basis-1/3">
+          <Card hoverable>…</Card>          {/* fractional basis, never basis-[82%] */}
+        </CarouselItem>
+      ))}
+    </CarouselContent>
+  </Carousel>
+</Reveal>
+
+// 6 ── VERIFY BY MEASURING, NOT BY SCREENSHOT. A full-page screenshot does not
+// fire viewport observers, so every scroll reveal photographs as invisible and
+// tells you nothing. Scroll the document, then count:
+//   [...document.querySelectorAll('.ui-reveal')]
+//     .filter(e => e.getAttribute('data-reveal-state') === 'out').length   // must be 0
+//   document.documentElement.scrollWidth - document.documentElement.clientWidth // must be 0
+// Check the hero's computed font-size at 390, and remember ResponsiveGrid steps
+// are CONTAINER widths: inside a 1280 shell with 32px gutters, a 768 tablet hands
+// the grid 704px, so \`md\` (48rem) never fires there — key that column to \`sm\`.
+`,
+  },
 ];
 
 /** Resolve a pattern by its canonical name OR any alias (case-insensitive). */

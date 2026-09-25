@@ -44,7 +44,9 @@
   "related": [
     "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
     "Card — the most common thing to wrap in <Reveal> (dashboard cards, auth card, settings sections).",
-    "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal."
+    "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal.",
+    "Carousel — wrap the WHOLE Carousel in one `<Reveal on=\"view\">`, never each CarouselItem: the rail clips its slides, so a per-slide observer never fires for the ones outside the window.",
+    "ScrollArea — same rule as Carousel: reveal the scroller, not the children it clips."
   ],
   "rules": [],
   "storyPath": "general/Reveal.stories.tsx",
@@ -57,6 +59,9 @@
     "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
     "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
     "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
+    "DON'T put `on=\"view\"` on an element a scroller CLIPS — a Carousel slide, a horizontal ScrollArea child, anything inside `overflow: hidden`/`clip`. The observer's root is the VIEWPORT, and a clipped box has an EMPTY intersection rect, so an item parked outside its rail never leaves `data-reveal-state=\"out\"` and stays at `opacity: 0` forever. Measured on a 4-slide rail at 1440: 3 of the 4 slides sat invisible after scrolling the whole document, and stayed invisible. This is the one failure this component may not have. Reveal the RAIL (one `<Reveal on=\"view\">` around the whole `<Carousel>`/`<ScrollArea>`), never the slides.",
+    "DON'T budget a reveal per card inside a rail even when it does work — one region is the entrance, the cascade belongs to a grid whose items all share the page's scroll. `delay` caps at 6, so a long list should pass `Math.min(i, 5) + 1` rather than the raw index.",
+    "DO expect a re-filtered list to re-enter: changing a filter unmounts and remounts the wrappers, so each new item gets a fresh observer and animates again. Items already scrolled past are re-revealed on their way back, which is correct — they are never left hidden.",
     "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens."
   ],
   "useCases": [
