@@ -1,6 +1,6 @@
 # @godxjp/ui
 
-> A Japanese-enterprise React design system: 173 components, 2074 design tokens,
+> A Japanese-enterprise React design system: 175 components, 2074 design tokens,
 > 50 cardinal rules. This file is the entry point for AI agents. Catalog version 30.6.0.
 
 If your client can run a process, do not read these files — run the MCP server instead
@@ -15,7 +15,7 @@ that can only fetch URLs.
 ## Catalog
 
 - [patterns-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/patterns-index.json): 21 whole-task patterns (name, tagline, tags). Start here when the task is a TASK — "build a settings page" — then fetch `patterns/<name>.json` for complete code.
-- [components-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json): 46 KB — all 173 components as name, group, tagline, plus `absorbed`: the names that do NOT exist and map to it (`Combobox` → `Select`).
+- [components-index.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components-index.json): 46 KB — all 175 components as name, group, tagline, plus `absorbed`: the names that do NOT exist and map to it (`Combobox` → `Select`).
 - [components/&lt;Name&gt;.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components/Select.json): one file per component (1 KB–34 KB, median 6 KB). Read the index, then fetch only the ones you chose — this is the selective route, and the reason you do not need the blob.
 - [components.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/components.json): 1.2 MB — every entry in one file. Most URL fetchers truncate a response this size without saying so; prefer the per-component files.
 - [tokens.json](https://raw.githubusercontent.com/godx-jp/godxjp-ui/main/agent/tokens.json): every design token with its value, the reason it exists, and its `tier` — 211 `foundation` seeds (`--primary`, `--background`, `--radius`: set these when you are handed a brand), 103 `semantic` roles, 1760 `component` knobs.
