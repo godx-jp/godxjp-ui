@@ -79,6 +79,7 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement, RecordPickerProp
       disabled = false,
       size,
       className,
+      "data-field": fieldName,
       ...props
     },
     ref,
@@ -101,6 +102,27 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement, RecordPickerProp
         onValueChange?.(isMultiple ? next : (next[0] ?? null));
       },
       [controlled, isMultiple, onValueChange],
+    );
+
+    /*
+     * Select nhận `{ query, page }`, RecordPicker nhận `{ query, filters, cursor }` — nhánh
+     * dropdown KHÔNG vẽ filter nào (đó là thứ chỉ Dialog có), nên `filters` ở đây là rỗng, và
+     * nói thế bằng một adapter tường minh thay vì ép kiểu. `page` của Select là số trang, map
+     * sang `cursor` dạng chuỗi để consumer nào phân trang bằng số vẫn dùng được.
+     */
+    const selectLoadOptions = React.useMemo(
+      () =>
+        loadOptions
+          ? async ({ query, page }: { query: string; page: number }) => {
+              const r = await loadOptions({
+                query,
+                filters: {},
+                cursor: page > 1 ? String(page) : undefined,
+              });
+              return { options: r.options, hasMore: r.nextCursor !== undefined };
+            }
+          : undefined,
+      [loadOptions],
     );
 
     const staticOptions = React.useMemo(
@@ -126,6 +148,17 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement, RecordPickerProp
           // `Select` exposes no ref, so the forwarded one lands on the dialog trigger branch only.
           // Casting one in here would advertise a handle that never arrives.
           mode={isMultiple ? "multiple" : undefined}
+          // gh#942 (1) — `loadOptions` PHẢI đi qua đây. Trước đó nhánh này chỉ đọc `options`, nên
+          // một picker lấy dữ liệu từ server mà `count` nhỏ hiện dropdown RỖNG, và consumer phải
+          // tự nhét trang đầu vào `options` để vòng. Select đã hỗ trợ sẵn `loadOptions`.
+          loadOptions={selectLoadOptions}
+          // gh#942 (2) — những prop NHẬN DẠNG mà FormField truyền xuống. Cả khối `...props` không
+          // chuyển qua được (kiểu `aria-invalid` của DOM rộng hơn của Select: nó còn nhận
+          // "grammar"/"spelling"), nhưng ba cái này mới là thứ consumer mất: trigger nhận id tự
+          // sinh thay cho id của FormField, và không có `data-field` nên lỗi 422 không bám được.
+          id={props.id}
+          data-field={fieldName}
+          aria-describedby={props["aria-describedby"]}
           // `SelectProp` is discriminated on `labelInValue`; this picker returns plain values, so
           // the branch is named explicitly rather than left for inference to pick.
           labelInValue={false}
@@ -144,6 +177,9 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement, RecordPickerProp
     return (
       <DialogPicker
         ref={ref}
+        // Truyền LẠI tường minh: nó đã bị destructure khỏi `props` ở trên để nhánh Select dùng,
+        // nên nhánh này sẽ âm thầm mất nó — đúng lỗi gh#942 điểm 2, chỉ đổi bên.
+        data-field={fieldName}
         isMultiple={isMultiple}
         selected={selected}
         commit={commit}
@@ -209,6 +245,8 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
   const [filterValues, setFilterValues] = React.useState<Record<string, string>>({});
   const [rows, setRows] = React.useState<SearchSelectOptionProp[]>(staticOptions);
   const [status, setStatus] = React.useState<"idle" | "loading" | "error">("idle");
+  // gh#942 điểm 3 — `nextCursor` từng được khai kiểu rồi bỏ đó, nên danh sách dừng ở trang đầu.
+  const [cursor, setCursor] = React.useState<string | undefined>(undefined);
   // `draft` is the in-dialog selection. A multiple picker commits on Confirm, so a mis-click is
   // undone by Cancel rather than by re-finding and unpicking the row in a list of ten thousand.
   const [draft, setDraft] = React.useState<string[]>(selected);
@@ -217,22 +255,34 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
     if (open) setDraft(selected);
   }, [open, selected]);
 
-  // Every label the picker has ever been told about, keyed by value. This is what lets a chip for
-  // a value that is not in the current page still render its name (gh#932 point 3).
-  const labels = React.useMemo(() => {
-    const map = new Map<string, SearchSelectOptionProp>();
-    for (const o of [...(selectedOptions ?? []), ...staticOptions, ...rows]) map.set(o.value, o);
-    if (emptyOption) map.set(emptyOption.value, { value: emptyOption.value, label: emptyOption.label });
-    return map;
-  }, [selectedOptions, staticOptions, rows, emptyOption]);
+  /*
+   * MỌI NHÃN PICKER TỪNG BIẾT, TÍCH LUỸ — không phải dựng lại từ trang hiện tại (gh#942 điểm 4).
+   *
+   * Bản đầu là một `useMemo` đọc `rows`, nên đổi từ khoá xong là trang cũ biến mất và chip của
+   * một giá trị đã chọn rơi về id thô. Một `ref` tích luỹ: cái gì đã thấy một lần thì giữ, vì
+   * người dùng chọn nó rồi — không có lý do gì để quên tên nó chỉ vì họ gõ tiếp.
+   */
+  const labelCache = React.useRef(new Map<string, SearchSelectOptionProp>());
+  for (const o of [...(selectedOptions ?? []), ...staticOptions, ...rows]) {
+    labelCache.current.set(o.value, o);
+  }
+  if (emptyOption) {
+    labelCache.current.set(emptyOption.value, {
+      value: emptyOption.value,
+      label: emptyOption.label,
+    });
+  }
+  const labels = labelCache.current;
 
   const load = React.useCallback(
-    async (q: string, f: Record<string, string>) => {
+    async (q: string, f: Record<string, string>, more?: string) => {
       if (!loadOptions) return;
       setStatus("loading");
       try {
-        const result = await loadOptions({ query: q, filters: f });
-        setRows(result.options);
+        const result = await loadOptions({ query: q, filters: f, cursor: more });
+        // `more` là TRANG TIẾP, nên nối thêm; không có nó là một truy vấn mới, thay cả danh sách.
+        setRows((prev) => (more ? [...prev, ...result.options] : result.options));
+        setCursor(result.nextCursor);
         setStatus("idle");
       } catch {
         // An error is a DISTINCT state from "no results" — a picker that shows "no matching items"
@@ -245,6 +295,7 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
 
   React.useEffect(() => {
     if (!open || !loadOptions) return;
+    // Truy vấn mới ⇒ chuỗi trang cũ hết nghĩa; `load` không truyền cursor nên nó thay cả danh sách.
     const id = setTimeout(() => void load(query, filterValues), 250);
     return () => clearTimeout(id);
   }, [open, query, filterValues, load, loadOptions]);
@@ -282,35 +333,52 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
 
   return (
     <>
-      <Button
-        ref={ref}
-        type="button"
-        variant="outline"
-        size={size}
-        disabled={disabled}
-        aria-haspopup="dialog"
-        onClick={() => setOpen(true)}
-        className={cn("ui-record-picker-trigger", className)}
-        {...props}
-      >
-        <span className="ui-record-picker-trigger-label">
-          {chips.length === 0 ? (
-            <Text as="span" size="sm" tone="muted">
-              {placeholder ?? t("dataEntry.recordPicker.placeholder")}
-            </Text>
-          ) : (
-            <Flex direction="row" gap="xs" wrap align="center">
-              {chips.map((c) => (
-                <Badge key={c.value} variant="secondary" as="span">
-                  {c.icon}
-                  {c.label}
-                </Badge>
-              ))}
-            </Flex>
-          )}
-        </span>
-        <ChevronDown aria-hidden="true" />
-      </Button>
+      <Flex direction="row" gap="xs" align="center" className="ui-record-picker-row">
+        <Button
+          ref={ref}
+          type="button"
+          variant="outline"
+          size={size}
+          disabled={disabled}
+          aria-haspopup="dialog"
+          onClick={() => setOpen(true)}
+          className={cn("ui-record-picker-trigger", className)}
+          {...props}
+        >
+          <span className="ui-record-picker-trigger-label">
+            {chips.length === 0 ? (
+              <Text as="span" size="sm" tone="muted">
+                {placeholder ?? t("dataEntry.recordPicker.placeholder")}
+              </Text>
+            ) : (
+              <Flex direction="row" gap="xs" wrap align="center">
+                {chips.map((c) => (
+                  <Badge key={c.value} variant="secondary" as="span">
+                    {c.icon}
+                    {c.label}
+                  </Badge>
+                ))}
+              </Flex>
+            )}
+          </span>
+          <ChevronDown aria-hidden="true" />
+        </Button>
+
+        {/* gh#942 điểm 5 — single mode phải xoá được mà KHÔNG cần `emptyOption`. Hai thứ khác nhau:
+          `emptyOption` là một giá trị record GIỮ (「担当者なし」, server lưu nó); nút này là "tôi
+          chưa trả lời". Nút RIÊNG, không nhét vào trong trigger: trigger là một control mở dialog,
+          lồng một button vào trong nó là HTML sai và bàn phím không tới được cái bên trong. */}
+        {!isMultiple && selected.length > 0 && !disabled ? (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("dataEntry.recordPicker.clear")}
+            onClick={() => commit([])}
+          >
+            <X aria-hidden="true" />
+          </Button>
+        ) : null}
+      </Flex>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="ui-record-picker-dialog">
@@ -329,7 +397,13 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
               />
 
               {filters?.length ? (
-                <Flex direction="row" gap="sm" wrap role="group" aria-label={t("dataEntry.recordPicker.filters")}>
+                <Flex
+                  direction="row"
+                  gap="sm"
+                  wrap
+                  role="group"
+                  aria-label={t("dataEntry.recordPicker.filters")}
+                >
                   {filters.map((f) => (
                     <Select
                       key={f.name}
@@ -358,7 +432,11 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                     tone="destructive"
                     title={t("dataEntry.recordPicker.error")}
                     action={
-                      <Button variant="outline" size="sm" onClick={() => void load(query, filterValues)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => void load(query, filterValues)}
+                      >
                         {t("dataEntry.recordPicker.more")}
                       </Button>
                     }
@@ -412,6 +490,19 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                   })
                 )}
               </Command>
+
+              {/* gh#942 điểm 3 — phân trang. Một NÚT chứ không phải cuộn-vô-hạn: người dùng bàn
+                  phím tới được nó, nó nói rõ còn nữa hay không, và nó không tự nạp thêm khi ai đó
+                  chỉ lướt qua danh sách. Chỉ hiện khi server nói còn trang. */}
+              {cursor !== undefined && status !== "loading" ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void load(query, filterValues, cursor)}
+                >
+                  {t("dataEntry.recordPicker.more")}
+                </Button>
+              ) : null}
             </Flex>
           </DialogBody>
 

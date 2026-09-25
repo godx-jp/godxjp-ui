@@ -1281,6 +1281,12 @@ export type RecordPickerProp = Omit<
   placeholder?: string;
   dialogTitle?: string;
   size?: "xs" | "sm" | "md" | "lg";
+  /**
+   * Tên trường, do `FormField` truyền xuống. Khai tường minh vì CẢ HAI nhánh phải giữ nó: một
+   * lỗi 422 của server bám theo `data-field`, và consumer đo được nhánh dropdown đánh rơi nó
+   * trong khi nhánh Dialog thì giữ (gh#942).
+   */
+  "data-field"?: string;
 };
 
 export type SearchSelectLoadParamsProp = {
