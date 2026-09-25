@@ -6998,7 +6998,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "loadOptions",
         type: "(params: { query: string; filters: Record<string, string>; cursor?: string }) => Promise<{ options: SearchSelectOptionProp[]; count?: number; nextCursor?: string }>",
         description:
-          "Server fetcher, debounced. `filters` carries YOUR OWN vocabulary back (the `name` of each declared filter), so the server reads the keys it already understands instead of a shape this component invented.",
+          "Server fetcher, debounced, and it runs on BOTH branches — a picker whose `count` is small still fetches from the server rather than showing an empty dropdown (gh#942). `filters` carries YOUR OWN vocabulary back (the `name` of each declared filter), so the server reads the keys it already understands instead of a shape this component invented; the dropdown branch draws no filters, so it passes an empty object. Return `nextCursor` to page: the dialog shows a Load more button and APPENDS, so nothing the user already scrolled past is lost.",
       },
       {
         name: "filters",
@@ -7040,6 +7040,12 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         type: "string",
         description:
           "Trigger text while nothing is chosen. Defaults to the localized `dataEntry.recordPicker.placeholder`; once a value exists the trigger shows chips instead.",
+      },
+      {
+        name: "data-field",
+        type: "string",
+        description:
+          "Field name, normally supplied by FormField. Declared explicitly because BOTH branches must keep it: a server's 422 is pinned to `data-field`, and a consumer measured the dropdown branch dropping it while the dialog branch kept it (gh#942).",
       },
       {
         name: "dialogTitle",

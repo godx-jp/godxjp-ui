@@ -945,3 +945,16 @@
     font-size: var(--font-size-sm);
   }
 }
+
+@layer components {
+  /* RecordPicker — hàng trigger + nút xoá (gh#942 điểm 5). Nút xoá là một control RIÊNG bên
+   * cạnh trigger, không nằm trong nó: trigger đã là một control mở dialog, lồng button vào
+   * trong là HTML sai và bàn phím không tới được cái bên trong. */
+  .ui-record-picker-row {
+    inline-size: 100%;
+  }
+  .ui-record-picker-row > .ui-record-picker-trigger {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+}
