@@ -12851,6 +12851,131 @@
         }
       ]
     },
+    "RecordPicker": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "defaultValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | string[] | null | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "dialogTitle",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "disabled",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["node_modules/@types/react/index.d.ts"]
+        },
+        {
+          "name": "emptyOption",
+          "origin": "owned",
+          "required": false,
+          "type": "{ value: string; label: string; } | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "filters",
+          "origin": "owned",
+          "required": false,
+          "type": "RecordPickerFilterProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "loadOptions",
+          "origin": "owned",
+          "required": false,
+          "type": "((params: { query: string; filters: Record<string, string>; cursor?: string; }) => Promise<{ options: SearchSelectOptionProp[]; count?: number; nextCursor?: string; }>) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "mode",
+          "origin": "owned",
+          "required": false,
+          "type": "\"single\" | \"multiple\" | undefined",
+          "values": ["single", "multiple"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string | string[] | null) => void) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "options",
+          "origin": "owned",
+          "required": false,
+          "type": "(SearchSelectOptionProp | SelectOptionGroupProp)[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "placeholder",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "selectedOptions",
+          "origin": "owned",
+          "required": false,
+          "type": "SearchSelectOptionProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | undefined",
+          "values": ["xs", "sm", "md", "lg"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "threshold",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | string[] | null | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
     "ResizableHandle": {
       "group": "layout",
       "props": [

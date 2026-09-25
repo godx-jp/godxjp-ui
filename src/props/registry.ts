@@ -2276,6 +2276,18 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
     note: "Ant-style data-driven form of Select (options|loadOptions + showSearch). One Select for all single-selects.",
   },
+  RecordPickerProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "SizeProp", "PlaceholderProp"],
+    note: "One picker whose SHAPE follows the size of the set: Select at or under `threshold`, a searchable Dialog with consumer-declared filters over it (gh#932).",
+  },
+  RecordPickerFilterProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp"],
+    note: "One filter on a RecordPicker dialog. `name` is the key that reaches loadOptions({ filters }), so the server reads its own vocabulary back.",
+  },
   SearchSelectOptionProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",

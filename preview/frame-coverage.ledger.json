@@ -516,11 +516,11 @@
   "baseline": {
     "recordedAt": "2026-09-12",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 297,
-    "dimensionCells": 4158,
+    "exports": 298,
+    "dimensionCells": 4172,
     "covered": 93,
-    "untested": 2281,
-    "notApplicable": 1784,
+    "untested": 2291,
+    "notApplicable": 1788,
     "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
@@ -6013,6 +6013,34 @@
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
+        "states": "untested",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "RecordPicker": {
+      "group": "data-entry",
+      "owner": "data-entry/record-picker",
+      "frames": [
+        "docs/data-entry/record-picker.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 4,
+        "untested": 10
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "untested",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",

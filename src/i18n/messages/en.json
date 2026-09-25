@@ -189,6 +189,24 @@
       "remove": "Remove {name}",
       "uploading": "Uploading attachment",
       "error": "Upload failed"
+    },
+    "recordPicker": {
+      "trigger": "Select",
+      "placeholder": "Select…",
+      "search": "Search",
+      "searchPlaceholder": "Search by keyword",
+      "dialogTitle": "Select",
+      "filters": "Filters",
+      "allFilter": "All",
+      "selected": "{count} selected",
+      "loading": "Loading",
+      "empty": "No matching items",
+      "error": "Could not load",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "clear": "Clear selection",
+      "more": "Load more",
+      "openDialog": "Choose from list"
     }
   },
   "feedback": {

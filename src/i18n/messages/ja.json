@@ -185,6 +185,24 @@
       "remove": "{name} を削除",
       "uploading": "添付をアップロード中",
       "error": "アップロードに失敗しました"
+    },
+    "recordPicker": {
+      "trigger": "選択",
+      "placeholder": "選択してください",
+      "search": "検索",
+      "searchPlaceholder": "キーワードで検索",
+      "dialogTitle": "選択",
+      "filters": "絞り込み",
+      "allFilter": "すべて",
+      "selected": "選択中 {count} 件",
+      "loading": "読み込み中",
+      "empty": "該当する項目がありません",
+      "error": "読み込めませんでした",
+      "confirm": "決定",
+      "cancel": "キャンセル",
+      "clear": "選択を解除",
+      "more": "さらに読み込む",
+      "openDialog": "一覧から選択"
     }
   },
   "feedback": {

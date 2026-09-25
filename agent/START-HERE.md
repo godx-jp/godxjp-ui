@@ -3,7 +3,7 @@
 You are about to write code against a design system you did not author. This file is the whole
 contract. Read it before you write JSX.
 
-**This catalog describes `@godxjp/ui` 30.5.0.** If the project you are editing has a different
+**This catalog describes `@godxjp/ui` 30.5.1.** If the project you are editing has a different
 version in its `package.json`, read the pinned catalog for THAT version instead
 (`…/v<their-version>/agent/…`). A catalog newer than the installed package describes props that do
 not exist yet; older, and it hides props that do. Neither failure announces itself.
@@ -47,7 +47,7 @@ Then ask it: `search_components`, `get_component`, `get_tokens`, `get_rule`, `li
    task is a task** — "build a settings page", "confirm a destructive delete", "a list page with
    filters" — start HERE, not at the components. Then fetch `patterns/<name>.json` for complete,
    copy-paste-ready code. A component index answers "does X exist"; it cannot answer "build Y".
-1. `components-index.json` — 45 KB, all 172 components as name + group +
+1. `components-index.json` — 46 KB, all 173 components as name + group +
    tagline. Read this when you already know the SHAPE you need. Each entry may carry `absorbed`:
    names that **do not exist** and map to it — `Combobox`, `Autocomplete`, `CountrySelect` and
    `SearchSelect` are all `Select`. If you are about to hand-roll something, search this field

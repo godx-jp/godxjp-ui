@@ -6962,6 +6962,123 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
     rules: [23],
   },
   {
+    name: "RecordPicker",
+    group: "data-entry",
+    importPath: "@godxjp/ui/data-entry",
+    tagline:
+      "ONE picker whose SHAPE follows the size of the set behind it: at or under `threshold` it IS a Select (dropdown with search); over it, a Dialog with search + consumer-declared filters, chips, and a confirm step for `multiple`. Reach for it when the same field may hold eight records on one tenant and eight thousand on another.",
+    props: [
+      {
+        name: "mode",
+        type: '"single" | "multiple"',
+        defaultValue: '"single"',
+        description:
+          "Decides the VALUE SHAPE and the dialog's commit model. `single` fires onValueChange with a single value (or null) and closes on the pick; `multiple` fires an array and commits only on Confirm, so a mis-click in a list of ten thousand is undone by Cancel rather than by re-finding the row.",
+      },
+      {
+        name: "threshold",
+        type: "number",
+        defaultValue: "10",
+        description:
+          "The dropdown/dialog switch. A dropdown is the right control for eight people and the wrong one for eight hundred; this is where that line is drawn, once, by a service rather than per screen.",
+      },
+      {
+        name: "count",
+        type: "number",
+        description:
+          "Size of the WHOLE set, which only a server knows — a page of results does not, so never pass `rows.length` from a fetch. Omitted with `options` it is their length; omitted with `loadOptions` the dialog shape is assumed (you cannot count what you have not fetched).",
+      },
+      {
+        name: "options",
+        type: "(SearchSelectOptionProp | SelectOptionGroupProp)[]",
+        description:
+          "Static rows, filtered client-side. Provide this OR `loadOptions`. Same row shape Select takes, `group` included — a mixed 'users and roles' picker is two groups, not two components.",
+      },
+      {
+        name: "loadOptions",
+        type: "(params: { query: string; filters: Record<string, string>; cursor?: string }) => Promise<{ options: SearchSelectOptionProp[]; count?: number; nextCursor?: string }>",
+        description:
+          "Server fetcher, debounced. `filters` carries YOUR OWN vocabulary back (the `name` of each declared filter), so the server reads the keys it already understands instead of a shape this component invented.",
+      },
+      {
+        name: "filters",
+        type: "{ name: string; label: string; options: { value: string; label: string }[] }[]",
+        description:
+          "Filter controls rendered above the dialog list; their values reach `loadOptions({ filters })`. This is the 'search condition' half of the report — picking an issue by key alone fails, picking it by status + type + assignee works.",
+      },
+      {
+        name: "selectedOptions",
+        type: "SearchSelectOptionProp[]",
+        description:
+          "Labels for values the picker HOLDS but has not loaded. On first render there is no result page at all, so without this a chip renders a raw id; it is merged ahead of anything that loads later, so the chip also survives a query that does not return its row.",
+      },
+      {
+        name: "emptyOption",
+        type: "{ value: string; label: string }",
+        description:
+          'A real row meaning "none" (an unassigned owner), pinned first — NOT a cleared field. The distinction matters: "no assignee" is a value the record holds and the server stores, while an empty field is the absence of an answer.',
+      },
+      {
+        name: "value",
+        type: "string | string[] | null",
+        description: "Controlled value. Array for `multiple`, single value (or null) otherwise.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string | string[] | null) => void",
+        description:
+          "Receives the SHAPE you passed in — never a one-element array for a single picker, which the consumer would have to unwrap at every call site.",
+      },
+      {
+        name: "dialogTitle",
+        type: "string",
+        description: "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description: "Control height of the trigger, on the shared control ladder.",
+      },
+    ],
+    usage: [
+      "DO pass `count` from the server whenever the list is server-backed. It is the only honest input to the threshold decision — `rows.length` describes the page you fetched, not the set behind it, so a picker over 9000 records would render as a dropdown showing 20.",
+      "DO declare `filters` in your own vocabulary (`{ name: 'status', … }`) — the names travel to `loadOptions({ filters })` unchanged, so the server reads the keys it already has.",
+      "DO pass `selectedOptions` for any value the form arrives holding. On first render there is no result page, so a chip without it shows a raw id; with it the chip is correct before anything loads and survives a query that excludes its row.",
+      'DO use `emptyOption` for "unassigned" rather than leaving the field empty — a record that HOLDS "no owner" is a different state from a field nobody answered, and only the first round-trips.',
+      "DON'T reach for this when the set is small and fixed (a status, a priority, a country): that is `Select`, and RecordPicker just renders Select for you with an extra layer of props in between.",
+      "DON'T use it as a table replacement. It picks records; it does not display, sort or edit them — a screen that needs columns and bulk actions wants DataTable.",
+      "DON'T nest it inside a Popover. It opens a Dialog, and a dialog inside a popover loses focus containment; it is designed to be opened from a field inside a Dialog or Sheet, which is where the consumer reports put it.",
+    ],
+    useCases: [
+      "Assigning an owner on a busy admin screen where one tenant has 8 people and another has 800.",
+      "An approval step that mixes USERS and ROLES in one field — two `group`s in one list, chips distinguishable by the option's `icon`.",
+      "Picking an issue/record by key OR title with status/type/assignee filters, replacing a free-text key field that only failed validation after save.",
+    ],
+    related: [
+      "Select — what this renders at or under the threshold. Use Select directly when the set is small and fixed.",
+      "Command — the dialog list is a Command with `shouldFilter={false}`; the query is answered by your server, not by cmdk over a page it cannot see.",
+      "DataTable — for displaying and acting on records rather than picking one.",
+      "Dialog — the over-threshold branch; `RecordPicker` opens one for you.",
+    ],
+    storyPath: "data-entry/RecordPicker.stories.tsx",
+    example: `import { RecordPicker } from "@godxjp/ui/data-entry";
+
+<RecordPicker
+  mode="multiple"
+  count={totalApprovers}          // the WHOLE set, from the server
+  loadOptions={async ({ query, filters }) =>
+    api.approvers({ q: query, role: filters.role })
+  }
+  filters={[
+    { name: "role", label: "Role", options: roleOptions },
+  ]}
+  selectedOptions={form.approvers}  // labels the form already has
+  value={form.approverIds}
+  onValueChange={(ids) => form.setApproverIds(ids as string[])}
+/>`,
+    rules: [],
+  },
+  {
     name: "Select",
     absorbed: [
       "Combobox",
