@@ -958,3 +958,23 @@
     min-inline-size: 0;
   }
 }
+
+@layer components {
+  /* RecordPicker — hình dạng INLINE (gh#944): ô gõ + nút 「検索」 + gợi ý, cùng một chỗ. */
+  .ui-record-picker-inline {
+    inline-size: 100%;
+  }
+  .ui-record-picker-inline-input {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+  /* Gợi ý là một danh sách NGẮN dưới ô, không phải panel nổi: nó không che nội dung phía dưới,
+   * và trên mobile nó không phải đánh nhau với bàn phím ảo. Ai cần nhìn nhiều hơn thì bấm
+   * 「検索」 — đó là lý do nút ấy luôn ở đó. */
+  .ui-record-picker-suggest {
+    max-block-size: var(--record-picker-suggest-max-block-size);
+    overflow-y: auto;
+    border: var(--stroke-hairline) solid hsl(var(--border));
+    border-radius: var(--radius-md);
+  }
+}

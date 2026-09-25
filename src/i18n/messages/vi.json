@@ -203,7 +203,9 @@
       "cancel": "Huỷ",
       "clear": "Bỏ chọn",
       "more": "Tải thêm",
-      "openDialog": "Chọn từ danh sách"
+      "openDialog": "Chọn từ danh sách",
+      "openSearch": "Tìm kiếm",
+      "suggestions": "Gợi ý"
     }
   },
   "feedback": {

@@ -12959,6 +12959,14 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "\"inline\" | \"auto\" | undefined",
+          "values": ["inline", "auto"],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "size",
           "origin": "owned",
           "required": false,

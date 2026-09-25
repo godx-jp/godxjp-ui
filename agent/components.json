@@ -5997,6 +5997,12 @@
         "type": "\"single\" | \"multiple\""
       },
       {
+        "defaultValue": "\"auto\"",
+        "description": "TWO ENTRY POINTS AT ONCE, instead of \"dropdown OR dialog\" (gh#944). `auto` keeps the original behaviour: `threshold` picks one. `inline` opens both — a typeable field with suggestions REGARDLESS of `count`, and a 「検索」 button beside it that always shows and opens the dialog with filters + pagination; the half-typed text carries into the dialog as its initial query. Reach for it when `count > threshold` is almost always true: a consumer measured customer projects at hundreds-to-thousands of records, so the dialog-only branch was the one users met most, and there they lost the ability to type a key they already knew. The threshold answers \"is the set big\"; the real question is \"does this person already know what they want\" — `inline` stops forcing a choice. NOTE: the forwarded ref lands on the <input> under `inline` and on the trigger <button> otherwise.",
+        "name": "shape",
+        "type": "\"auto\" | \"inline\""
+      },
+      {
         "defaultValue": "10",
         "description": "The dropdown/dialog switch. A dropdown is the right control for eight people and the wrong one for eight hundred; this is where that line is drawn, once, by a service rather than per screen.",
         "name": "threshold",

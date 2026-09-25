@@ -6976,6 +6976,13 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "Decides the VALUE SHAPE and the dialog's commit model. `single` fires onValueChange with a single value (or null) and closes on the pick; `multiple` fires an array and commits only on Confirm, so a mis-click in a list of ten thousand is undone by Cancel rather than by re-finding the row.",
       },
       {
+        name: "shape",
+        type: '"auto" | "inline"',
+        defaultValue: '"auto"',
+        description:
+          'TWO ENTRY POINTS AT ONCE, instead of "dropdown OR dialog" (gh#944). `auto` keeps the original behaviour: `threshold` picks one. `inline` opens both — a typeable field with suggestions REGARDLESS of `count`, and a 「検索」 button beside it that always shows and opens the dialog with filters + pagination; the half-typed text carries into the dialog as its initial query. Reach for it when `count > threshold` is almost always true: a consumer measured customer projects at hundreds-to-thousands of records, so the dialog-only branch was the one users met most, and there they lost the ability to type a key they already knew. The threshold answers "is the set big"; the real question is "does this person already know what they want" — `inline` stops forcing a choice. NOTE: the forwarded ref lands on the <input> under `inline` and on the trigger <button> otherwise.',
+      },
+      {
         name: "threshold",
         type: "number",
         defaultValue: "10",
