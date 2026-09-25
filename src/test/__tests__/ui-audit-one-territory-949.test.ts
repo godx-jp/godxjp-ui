@@ -49,8 +49,11 @@ function fixture(kind: "self" | "consumer", files: Record<string, string>): stri
     JSON.stringify({ name: kind === "self" ? "@godxjp/ui" : "some-consumer-app" }, null, 2),
   );
   git(root, "init", "-q", "-b", "main", ".");
+  // A CI runner has no global git identity, and a machine that signs by default would block on a
+  // passphrase — a fixture leaning on ambient config is testing the machine (broke `main` once).
   git(root, "config", "user.email", "t@example.test");
   git(root, "config", "user.name", "fixture");
+  git(root, "config", "commit.gpgsign", "false");
   git(root, "add", "-A");
   git(root, "commit", "-qm", "base");
   // Written AFTER the commit so `--changed` sees them as this branch's work (untracked counts).
