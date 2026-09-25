@@ -197,13 +197,22 @@ describe("ui-audit --changed selects exactly what it scans (gh#542)", () => {
     expect(JSON.parse(r.stdout)).toEqual({ summary: { errors: 0, warnings: 0 }, findings: [] });
   });
 
-  it("no origin/main: refuses, rather than reporting a clean branch it could not compute", () => {
+  it("no base resolves: refuses, rather than reporting a clean branch it could not compute", () => {
     const root = repo({ withOrigin: false });
     writeFileSync(join(root, "src/Page.jsx"), VIOLATION);
 
     const { status, stderr } = audit(root);
 
     expect(status).toBe(2);
-    expect(stderr).toContain("merge-base");
+    // This used to assert the word "merge-base". gh#948 replaced the single hard-coded base with a
+    // candidate list, so the message now names the CANDIDATES rather than the git verb — and a
+    // test pinned to the vocabulary went red on a change that strengthened the behaviour it
+    // guards. What gh#542 actually asked for is in this test's own title, so assert that: it
+    // refuses, it says a base could not be worked out, and it names what it tried.
+    expect(stderr).toContain("could not resolve a base");
+    expect(stderr).toContain("origin/HEAD");
+    expect(stderr).toContain("origin/main");
+    // The half that matters: a refusal must never read as a pass.
+    expect(stderr).not.toContain("No UI-standardization violations found");
   });
 });
