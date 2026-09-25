@@ -113,6 +113,11 @@ describe("recoverable coordinated release", () => {
     });
     expect(plan.steps.slice(0, plan.steps.indexOf(RELEASE_STEPS.PublishUi))).toEqual([
       RELEASE_STEPS.ApplyTargetMetadata,
+      // gh#920: four artifacts carry the version as generated CONTENT (the agent catalog, its
+      // `pinned` tag URL, llms.txt, the measurement contract). Regenerating them here — after the
+      // bump, before anything is packed — is what stops a tarball self-reporting the PREVIOUS
+      // release, which is what 30.4.0 shipped.
+      RELEASE_STEPS.RegenStampedArtifacts,
       RELEASE_STEPS.VerifyReleaseTag,
       RELEASE_STEPS.VerifyCommitProvenance,
       RELEASE_STEPS.VerifyRoot,
@@ -205,6 +210,7 @@ describe("recoverable coordinated release", () => {
     expect(
       commands.map((entry) => `${[entry.binary, ...entry.args].join(" ")} @${entry.cwd}`),
     ).toEqual([
+      "pnpm regen @root",
       "pnpm run verify:publish-tree @root",
       "pnpm install --frozen-lockfile @mcp",
       "pnpm build @mcp",
@@ -339,6 +345,7 @@ describe("recoverable coordinated release", () => {
     });
 
     expect(log).toEqual([
+      "pnpm regen @root",
       "pnpm run verify:publish-tree @root",
       "pnpm install --frozen-lockfile @mcp",
       "pnpm build @mcp",
@@ -1019,6 +1026,9 @@ describe("recoverable coordinated release", () => {
     );
     expect(firstPublish).toBeGreaterThan(0);
     expect(plan.commands.map((entry) => entry.command).slice(0, firstPublish)).toEqual([
+      // gh#920: the version-stamped artifacts are regenerated from the bumped manifests
+      // BEFORE anything is packed, so the tarball cannot ship a stale catalog.
+      "pnpm regen",
       "pnpm run verify:publish-tree",
       "pnpm install --frozen-lockfile",
       "pnpm build",
@@ -1361,6 +1371,7 @@ describe("the tag is the trigger and the claim — the release verifies it, neve
       packTargetManifests: () => artifacts(),
     });
     expect(world.log).toEqual([
+      "pnpm regen",
       "pnpm run verify:publish-tree",
       "pnpm install --frozen-lockfile",
       "pnpm build",

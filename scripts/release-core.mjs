@@ -18,6 +18,7 @@ import { dirname, join, resolve, sep } from "node:path";
 
 export const RELEASE_STEPS = Object.freeze({
   ApplyTargetMetadata: "apply-target-metadata",
+  RegenStampedArtifacts: "regen-stamped-artifacts",
   VerifyReleaseTag: "verify-release-tag",
   VerifyCommitProvenance: "verify-commit-provenance",
   VerifyRoot: "verify-root",
@@ -56,6 +57,7 @@ const LEGACY_STAGE_TAG_FOR = (targetVersion) => `godx-staging-${targetVersion}`;
  */
 export const PREFLIGHT_STEPS = Object.freeze([
   RELEASE_STEPS.ApplyTargetMetadata,
+  RELEASE_STEPS.RegenStampedArtifacts,
   RELEASE_STEPS.VerifyReleaseTag,
   RELEASE_STEPS.VerifyCommitProvenance,
   RELEASE_STEPS.VerifyRoot,
@@ -553,6 +555,7 @@ export function buildReleasePlan({
   }
   const steps = [
     RELEASE_STEPS.ApplyTargetMetadata,
+    RELEASE_STEPS.RegenStampedArtifacts,
     RELEASE_STEPS.VerifyReleaseTag,
     RELEASE_STEPS.VerifyCommitProvenance,
     RELEASE_STEPS.VerifyRoot,
@@ -966,6 +969,21 @@ const publishCommand = (tarball, plan, packageName) => {
 };
 
 const STEP_COMMANDS = Object.freeze({
+  /* THE BUMP IS NOT THE WHOLE VERSION (gh#920). `ApplyTargetMetadata` writes the two package.json
+   * files; four more artifacts carry the version as generated CONTENT — agent/START-HERE.md,
+   * agent/index.json (whose `pinned` URL embeds the tag), agent/llms.txt and
+   * src/contracts/measurement.json. 30.4.0 was published by the dispatch path without this step and
+   * shipped `package.json` at 30.4.0 while its agent catalog and measurement contract still said
+   * 30.3.1, so an installed consumer read an agent catalog describing the previous release and a
+   * `pinned` URL for a tag that was not this one. Regen is idempotent (it settles in one further
+   * pass) and runs BEFORE `PackTargetManifests`, so the tarball and every later gate see one
+   * version. `check:agent-catalog` and `check:measurement-contract` already detect the drift; they
+   * were simply never given a chance between the bump and the pack. */
+  [RELEASE_STEPS.RegenStampedArtifacts]: () => ({
+    binary: "pnpm",
+    args: ["regen"],
+    cwd: "root",
+  }),
   [RELEASE_STEPS.VerifyRoot]: (plan) => ({
     binary: "pnpm",
     args: ["run", verifyRootScriptFor(plan)],

@@ -59,6 +59,7 @@ on:
 permissions:
   contents: write # push the chore(release) commit back to main (workflow_dispatch path only)
   checks: read # read the CI check-run conclusions for the commit being published
+  administration: read # read main's branch protection before the bump path publishes (gh#920)
 
 jobs:
   publish:
@@ -101,6 +102,43 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # gh#920. The dispatch bump path publishes and THEN pushes its release commit to `main`. When
+      # branch protection requires a status check, that push can never succeed from here — `PR quick
+      # check` only ever runs on a pull request, and GITHUB_TOKEN does not bypass protection the way
+      # a repo admin does. 30.4.0 went out that way: both packages published and promoted, the push
+      # rejected with GH006, and `main` left without the bump or the tag — so the NEXT release
+      # computed its version from the stale one and aborted on `verify-target-outranks-latest`.
+      # Refusing here costs a red run; discovering it after `npm publish` costs a manual reconcile
+      # of a registry that has already moved. Only the dispatch bump path can be hurt: the tag path
+      # publishes a commit that is already on main and writes nothing.
+      - name: Refuse the bump path when its release commit could not be pushed (gh#920)
+        if: github.event_name == 'workflow_dispatch' && github.ref_type != 'tag' && inputs.adopt_staged_version == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # FAIL CLOSED. A probe that cannot read the protection must refuse, not shrug: the token
+          # may lack `administration: read`, and treating that as "no protection" would wave through
+          # exactly the publish this step exists to stop.
+          if ! contexts=$(gh api "repos/${{ github.repository }}/branches/main/protection" \
+            --jq '[.required_status_checks.contexts // [] | .[]] | join(", ")'); then
+            echo "✗ Refusing to bump-and-publish: could not read main's branch protection, so it is" >&2
+            echo "  unknown whether the release commit could be pushed after publishing (gh#920)." >&2
+            echo "  Grant this workflow 'administration: read', or use the tag path." >&2
+            exit 1
+          fi
+          if [ -n "$contexts" ]; then
+            echo "✗ Refusing to bump-and-publish: main requires status check(s) [$contexts]," >&2
+            echo "  which a direct push from this workflow cannot satisfy, so the release commit" >&2
+            echo "  would be rejected AFTER both packages were already published (gh#920)." >&2
+            echo >&2
+            echo "  Use the normal path instead: land the chore(release) commit on main through a" >&2
+            echo "  PR, then push the tag — the tag trigger publishes that exact commit and writes" >&2
+            echo "  nothing back." >&2
+            exit 1
+          fi
+          echo "main takes a direct push from this workflow; the bump path may proceed."
 
       - name: Release (verify tag → verify CI green → publish → promote)
         run: |

@@ -57,6 +57,13 @@ name: PR · quick check
 on:
   pull_request:
     branches: [main]
+    # gh#920. `edited` is NOT in the default set (opened · synchronize · reopened), and this lane
+    # reads `github.event.pull_request.body` for the auto-closing-keyword gate. Without it a body
+    # that trips that gate can never be made green by FIXING the body: no event fires, and a
+    # re-run replays the original payload, so the gate keeps reading the text the author already
+    # deleted. The only ways out were an empty commit or close-and-reopen. Measured on #923, which
+    # sat red through a correct body until it was reopened.
+    types: [opened, synchronize, reopened, edited]
     # L6. Same four entries as ci.yml / ci-browser.yml / release-integrity.yml, but NOT part of
     # the "identical or the provenance gets a gap" rule those three share — that rule is about a
     # commit triggering all three per-merge workflows or none, and this lane is not one of them
@@ -116,4 +123,3 @@ jobs:
 
       - name: build
         run: pnpm build
-
