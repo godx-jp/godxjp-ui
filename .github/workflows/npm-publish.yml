@@ -33,31 +33,24 @@ name: CD · publish to npm
 on:
   push:
     tags: ["v*"]
-  # Manual escape hatch: the legacy bump-and-commit release, and the --adopt-staged recovery for a
-  # release that published but did not promote.
+  # Manual re-run of a tag release (e.g. after a runner failure). It publishes ONLY a tag that
+  # already exists and points at a commit on main — the same path as the tag push. The dispatch
+  # path used to bump the version, publish, and THEN `git push origin HEAD:main`; branch
+  # protection on main requires "PR quick check", which never runs on a direct push, so the push
+  # was always rejected AFTER the registry had moved (issue #920). Nothing here writes to main.
   workflow_dispatch:
     inputs:
-      ui:
-        description: "@godxjp/ui version bump (ignored when adopt_staged_version is set)"
-        type: choice
-        default: minor
-        options: [patch, minor, major, skip]
-      mcp:
-        description: "@godxjp/ui-mcp (sync = adopt the ui version)"
-        type: choice
-        default: sync
-        options: [sync, skip]
-      adopt_staged_version:
-        description: "Recover an exact already-published staging pair (x.y.z; blank for normal release)"
+      tag:
+        description: "Existing release tag to publish (vX.Y.Z, already pushed and on main)"
         type: string
-        default: ""
+        required: true
       full_verify:
         description: "Re-run the whole verify:release locally instead of trusting CI's verdict on the commit"
         type: boolean
         default: false
 
 permissions:
-  contents: write # push the chore(release) commit back to main (workflow_dispatch path only)
+  contents: read # nothing is pushed: both triggers publish a tag that is already on main
   checks: read # read the CI check-run conclusions for the commit being published
 
 jobs:
@@ -68,7 +61,7 @@ jobs:
       # A shallow checkout cannot answer that, and "cannot answer" is refusal, not a pass.
       # `github.event_name == 'push'` is correct for the triggers this workflow declares: the tag
       # push, and workflow_dispatch. On the tag push `github.ref` is the tag being released; on a
-      # dispatch there is no tag to publish, so the checkout falls back to `main`.
+      # dispatch the tag comes from the `tag` input.
       #
       # IF THIS EVER MOVES TO `workflow_run`: `github.event_name` becomes `workflow_run` on every
       # run, this condition goes permanently false, and the release would silently check out `main`
@@ -78,7 +71,7 @@ jobs:
       # runs against the default branch, not against the ref that started it.
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event_name == 'push' && github.ref || 'main' }}
+          ref: ${{ github.event_name == 'push' && github.ref || format('refs/tags/{0}', inputs.tag) }}
           fetch-depth: 0
       - name: Fetch main (so the tag can be proven to be on main)
         run: git fetch --no-tags --force origin +refs/heads/main:refs/remotes/origin/main
@@ -97,30 +90,14 @@ jobs:
           printf 'registry=https://registry.npmjs.org/\n//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\n' > "$RUNNER_TEMP/.npmrc"
           echo "NPM_CONFIG_USERCONFIG=$RUNNER_TEMP/.npmrc" >> "$GITHUB_ENV"
 
-      - name: Configure git author
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
       - name: Release (verify tag → verify CI green → publish → promote)
         run: |
           set -euo pipefail
           FULL=""
           if [ "${{ inputs.full_verify }}" = "true" ]; then FULL="--full-verify"; fi
-          if [ "${{ github.ref_type }}" = "tag" ]; then
-            node scripts/release.mjs --tag "${{ github.ref_name }}" $FULL
-          elif [ -n "${{ inputs.adopt_staged_version }}" ]; then
-            node scripts/release.mjs --adopt-staged "${{ inputs.adopt_staged_version }}" --mcp sync $FULL
-          else
-            node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}" $FULL
-          fi
+          node scripts/release.mjs --tag "$RELEASE_TAG" $FULL
         env:
+          RELEASE_TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # `gh api` reads the commit's check runs
           GITHUB_REPOSITORY: ${{ github.repository }}
-
-      # Tag-triggered releases publish a commit that is ALREADY on main and write nothing, so there
-      # is nothing to push. Only the manual bump-and-commit path produces a commit.
-      - name: Push release commit
-        if: github.event_name == 'workflow_dispatch' && github.ref_type != 'tag'
-        run: git push origin HEAD:main
