@@ -21,6 +21,14 @@ import {
   type ComponentGroup,
 } from "../data/components.js";
 import { PROP_VOCABULARY, findVocab } from "../data/prop-vocabulary.js";
+import {
+  UTILITIES,
+  findUtility,
+  searchUtilities,
+  utilitiesByKind,
+  type UtilityEntry,
+  type UtilityKind,
+} from "../data/utilities.js";
 import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js";
 import { COMPONENT_TOKENS } from "../data/component-tokens.generated.js";
 import {
@@ -87,6 +95,22 @@ export const TOOL_DEFINITIONS = [
             "shell",
             "providers",
           ],
+        },
+      },
+    },
+  },
+  {
+    name: "list_utilities",
+    description:
+      "List every NON-component public export of @godxjp/ui — hooks, helper functions and constants (cn, formatDate, formatCurrency, toast, useDebouncedValue, buttonVariants, CHART_COLORS, SHOW_PARENT …). Reach for this before hand-writing a className merger, a date/money formatter, a debounce hook or a chart palette: two products in this org each re-implemented `cn` because it could not be found. Optionally filter by kind. Then `get_component name=\"<name>\"` for its signature, usage and example.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        kind: {
+          type: "string",
+          enum: ["hook", "function", "value"],
+          description:
+            "hook = only legal inside a component body; function = callable anywhere; value = a constant to read.",
         },
       },
     },
@@ -482,6 +506,8 @@ async function answerTool(name: string, args: Record<string, unknown>): Promise<
       return listSkills();
     case "list_primitives":
       return listPrimitives(args.group as ComponentGroup | undefined);
+    case "list_utilities":
+      return listUtilities(args.kind as UtilityKind | undefined);
     case "list_patterns":
       return listPatterns();
     case "list_anti_ai_tells":
@@ -1019,6 +1045,63 @@ function componentTokensFor(name: string) {
   return COMPONENT_TOKENS.filter((t) => prefixes.some((p) => t.name.startsWith(`--${p}-`)));
 }
 
+/**
+ * A utility's answer is deliberately NOT a props table — it is the signature, where to import it
+ * from, and when NOT to reach for it. The "when not to" lines are the load-bearing part: `cn` was
+ * re-implemented because nobody knew it existed, but `buttonVariants` gets misused on a `<button>`
+ * by people who do.
+ */
+function renderUtility(u: UtilityEntry): string {
+  const label = u.kind === "hook" ? "Hook" : u.kind === "value" ? "Constant" : "Function";
+  let out = `# ${u.name}\n\n**${label}**`;
+  out += `  ·  **Import:** \`import { ${u.name} } from "@godxjp/ui${u.subpaths[0] === "." ? "" : u.subpaths[0].slice(1)}"\``;
+  if (u.subpaths.length > 1) {
+    out += `\n\nAlso importable from: ${u.subpaths
+      .slice(1)
+      .map((s) => `\`@godxjp/ui${s === "." ? "" : s.slice(1)}\``)
+      .join(", ")}`;
+  }
+  out += `\n\n${u.tagline}\n\n## Signature\n\n\`\`\`ts\n${u.name}${u.signature}\n\`\`\`\n\n`;
+  if (u.reExportedFrom) {
+    out += `> Re-exported from \`${u.reExportedFrom}\`. Import it from \`@godxjp/ui\`, never from that package directly — the version has to be the one this package renders with.\n\n`;
+  }
+  if (u.kind === "hook") {
+    out += `> Rules of hooks apply: call it at the top level of a component or another hook, never in a condition or a loop.\n\n`;
+  }
+  out += `## Usage\n\n${u.usage.map((line) => `- ${line}`).join("\n")}\n\n`;
+  out += `## Related\n\n${u.related.map((line) => `- ${line}`).join("\n")}\n\n`;
+  out += `## Example\n\n\`\`\`tsx\n${u.example}\n\`\`\`\n`;
+  return out;
+}
+
+/**
+ * Grouped by kind, because the kind decides whether a name can be used at all: a hook is only legal
+ * inside a component body. The subpath is on every row for the same reason `cn` went unused — a
+ * name with no importable path is not discoverable, it is trivia.
+ */
+function listUtilities(kind?: UtilityKind): string {
+  const entries = kind ? utilitiesByKind(kind) : UTILITIES;
+  if (!entries.length) return `No utilities of kind "${kind}".`;
+  const label: Record<UtilityKind, string> = {
+    hook: "Hooks — only inside a component body",
+    function: "Functions — callable anywhere",
+    value: "Constants",
+  };
+  let out = `# @godxjp/ui utilities (${entries.length})\n\nNot components: these have no props table. Call \`get_component name="<name>"\` for a signature, usage and example.\n`;
+  for (const group of ["function", "hook", "value"] as UtilityKind[]) {
+    const rows = entries.filter((u) => u.kind === group);
+    if (!rows.length) continue;
+    out += `\n## ${label[group]}\n\n| Name | Import from | What it does |\n|---|---|---|\n`;
+    for (const u of rows) {
+      const from = u.subpaths
+        .map((sp) => `\`@godxjp/ui${sp === "." ? "" : sp.slice(1)}\``)
+        .join(" · ");
+      out += `| \`${u.name}\` | ${from} | ${u.tagline.split(" — ")[0].split(". ")[0]} |\n`;
+    }
+  }
+  return out;
+}
+
 function getComponent(name: string, verbose = false): string {
   const installed = installedUiFromLauncher();
   if (installed && !uiVersionMatchesCatalog(installed)) {
@@ -1038,7 +1121,18 @@ function getComponent(name: string, verbose = false): string {
         `Do NOT hand-roll \`${name}\`.`
       );
     }
-    return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
+    /*
+     * A HOOK OR UTILITY IS NOT A MISSING COMPONENT (gh#951).
+     *
+     * `get_component name="cn"` used to answer "not found", and that answer is why two products in
+     * this org each hand-wrote a byte-identical 12-line `lib/utils.ts` wrapping clsx while `cn`
+     * shipped from the root of the package (godx-jp/godxjp-ui#947). `get_component` is the tool an
+     * agent reaches for whatever the name's shape, so it answers here instead of being right about
+     * the taxonomy and useless.
+     */
+    const utility = findUtility(name);
+    if (utility) return renderUtility(utility);
+    return `Component "${name}" not found — and it is not a hook or utility either. Use \`list_primitives\` to discover components, or \`list_utilities\` for hooks and helpers.`;
   }
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
   const importPath = c.importPath ?? `@godxjp/ui/${c.group === "providers" ? "app" : c.group}`;
@@ -1359,11 +1453,29 @@ function searchComponents(query: string): string {
     .filter((m) => m.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 12);
-  if (!matches.length)
-    return `No matches for "${query}". Try \`list_primitives\` or a broader term (e.g. a use-case word like "date", "select", "confirm").`;
-  let out = `# Search "${query}" — ${matches.length} match${matches.length > 1 ? "es" : ""}\n\n`;
+  /*
+   * Utilities are searched too, and that is the whole point of gh#951: the query an agent types is
+   * a TASK ("merge class names", "debounce", "format currency"), not a taxonomy. Answering only with
+   * components meant "debounce" reached nothing while `useDebouncedValue` shipped.
+   *
+   * They are listed after the components rather than interleaved by score, because a component and
+   * a helper are different KINDS of answer — a reader scanning for "which component do I use" must
+   * not have `cn` sitting between two of them.
+   */
+  const utilityMatches = searchUtilities(query);
+  if (!matches.length && !utilityMatches.length)
+    return `No matches for "${query}". Try \`list_primitives\`, \`list_utilities\`, or a broader term (e.g. a use-case word like "date", "select", "confirm").`;
+  let out = `# Search "${query}" — ${matches.length} component match${matches.length === 1 ? "" : "es"}`;
+  out += utilityMatches.length
+    ? `, ${utilityMatches.length} utility match${utilityMatches.length === 1 ? "" : "es"}\n\n`
+    : `\n\n`;
   for (const { c, score } of matches)
     out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
+  if (utilityMatches.length) {
+    out += `\n## Utilities — not components, no props\n\n`;
+    for (const u of utilityMatches.slice(0, 12))
+      out += `- **${u.name}** (${u.kind}, \`@godxjp/ui${u.subpaths[0] === "." ? "" : u.subpaths[0].slice(1)}\`) — ${u.tagline}\n`;
+  }
   return out;
 }
 
