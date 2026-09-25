@@ -136,13 +136,55 @@ if (changed?.error) {
   }
   process.exit(2);
 }
+/*
+ * ONE TERRITORY, READ BY BOTH PATHS (gh#949).
+ *
+ * The scan roots used to be spelled inline here, so only the DEFAULT path knew them and
+ * `--changed` scanned whatever git happened to name. On the same commit, same working tree:
+ *
+ *     pnpm run audit                       -> 0 error
+ *     node scripts/ui-audit.mjs --changed  -> 3 error
+ *
+ * All three were in `mcp/src/data/components.ts`, and all three were the catalog's own PROSE —
+ * `Text`'s description quotes `<span className="text-[13px]">` as the anti-example the component
+ * exists to replace. A guard that reports its own teaching material is a guard people switch off.
+ *
+ * The fix is NOT to strip backtick spans from the corpus, which was the first idea: in a `.tsx`
+ * a backtick is a TEMPLATE LITERAL, i.e. real code — `className={`text-[13px]`}` appears in this
+ * repo today, and blinding the audit to it would trade three false positives for real misses.
+ *
+ * Nor is it a per-directory exclusion. The audit's subject is UI CODE, and in SELF mode this
+ * repo's UI code is `src/` and `docs/` — `mcp/src/data` renders nothing and holds no JSX (0 `.tsx`
+ * files, measured). So the roots are the territory, and `--changed` now narrows to it rather than
+ * having its own opinion. Add a root here and BOTH paths gain it; that is the property the split
+ * spelling could not have.
+ *
+ * CONSUMER mode is deliberately NOT narrowed. There the roots are a GUESS at a Laravel layout,
+ * and an app keeping its components somewhere else would get "nothing scanned" from a filter that
+ * is only right about this repo. `--changed` seeing the real files is strictly better there.
+ */
+const SELF_SCAN_ROOTS = ["src", "docs"];
+const CONSUMER_SCAN_ROOTS = [
+  "resources/js/components",
+  "resources/js/pages",
+  "resources/js/layouts",
+];
+const withinSelfRoots = (file) =>
+  SELF_SCAN_ROOTS.some((root) => file === root || file.startsWith(`${root}/`));
+
+/** Named so the summary can say how many files `--changed` handed over and the roots declined. */
+const changedOutsideRoots =
+  CHANGED && SELF && !dirArgs.length ? changed.files.filter((f) => !withinSelfRoots(f)) : [];
+
 const SCAN_DIRS = CHANGED
-  ? changed.files
+  ? SELF && !dirArgs.length
+    ? changed.files.filter(withinSelfRoots)
+    : changed.files
   : dirArgs.length
     ? dirArgs
     : SELF
-      ? ["src", "docs"]
-      : ["resources/js/components", "resources/js/pages", "resources/js/layouts"];
+      ? SELF_SCAN_ROOTS
+      : CONSUMER_SCAN_ROOTS;
 
 const PALETTE =
   "red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|grey|slate|zinc|neutral|stone";
@@ -1890,7 +1932,15 @@ if (changedNoFiles && findings.length === 0) {
       JSON.stringify({ summary: { errors: 0, warnings: 0 }, findings: [] }, null, 2) + "\n",
     );
   } else if (!quiet) {
-    console.log("✓ ui-audit --changed: no .tsx/.jsx changed on this branch.");
+    // "Nothing changed" and "everything that changed is outside the territory" are two
+    // different facts, and reading the first when the second is true is how someone concludes
+    // their file was audited (gh#949).
+    console.log(
+      changedOutsideRoots.length > 0
+        ? `✓ ui-audit --changed: nhánh này không đổi file .tsx/.jsx nào trong ` +
+            `[${SELF_SCAN_ROOTS.join(", ")}] (${changedOutsideRoots.length} file đổi ở ngoài đó).`
+        : "✓ ui-audit --changed: no .tsx/.jsx changed on this branch.",
+    );
   }
   process.exit(0);
 }
@@ -1943,6 +1993,14 @@ if (filesScanned === 0 && !changedNoFiles) {
   // con số hợp lý, và đó là thứ duy nhất người đọc có thể dùng để nghi ngờ (gh#948).
   if (CHANGED && changed?.base) {
     console.log(`${C.dim}so với: ${changed.base}${C.reset}`);
+  }
+  // Bỏ file trong im lặng là cách một gate thu hẹp dần mà không ai thấy (cùng lý do với dòng
+  // `so với:` ngay trên). Nói ra số file và lãnh thổ đã dùng.
+  if (changedOutsideRoots.length > 0 && !quiet) {
+    console.log(
+      `${C.dim}ngoài lãnh thổ [${SELF_SCAN_ROOTS.join(", ")}], không quét: ` +
+        `${changedOutsideRoots.length} file${C.reset}`,
+    );
   }
   console.log(
     `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset}` +
