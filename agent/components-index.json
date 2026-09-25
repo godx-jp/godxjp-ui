@@ -609,6 +609,16 @@
   },
   {
     "group": "feedback",
+    "name": "SkeletonDetail",
+    "tagline": "Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically."
+  },
+  {
+    "group": "feedback",
+    "name": "SkeletonStat",
+    "tagline": "Fixed-shape placeholder for ONE KPI tile — label, big value, caption. Takes no props, so a row of tiles loads at a uniform height and nothing reflows when the numbers arrive."
+  },
+  {
+    "group": "feedback",
     "name": "SkeletonArticle",
     "tagline": "Avatar + heading line + paragraph placeholder — Ant Design's own <Skeleton> shape, for a comment, a profile block or a feed item."
   },

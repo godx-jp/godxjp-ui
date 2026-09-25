@@ -38,10 +38,6 @@
     31
   ],
   "storyPath": "feedback/Skeleton.stories.tsx",
-  "subParts": [
-    "SkeletonDetail",
-    "SkeletonStat"
-  ],
   "tagline": "Base pulsing skeleton block, and the namespace the shaped presets hang off (Skeleton.Avatar / .Button / .Input / .Node / .Image / .Article).",
   "usage": [
     "DO use Skeleton for a custom block when SkeletonRows/Table/Stat/Article do not match the final layout.",

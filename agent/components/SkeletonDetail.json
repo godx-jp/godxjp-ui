@@ -1,0 +1,31 @@
+{
+  "example": "import { SkeletonDetail } from \"@godxjp/ui/feedback\";\n\n<SkeletonDetail />",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/feedback",
+  "name": "SkeletonDetail",
+  "props": [],
+  "related": [
+    "SkeletonStat — the same propless treatment for a KPI tile.",
+    "SkeletonRows — flat list lines, not label/value pairs.",
+    "SkeletonTable — tabular placeholder with a header band.",
+    "Skeleton — the bare block this preset is built from; reach for it when you need a shape this one does not draw.",
+    "Descriptions — the component this placeholder is standing in for."
+  ],
+  "rules": [
+    3,
+    31
+  ],
+  "storyPath": "feedback/Skeleton.stories.tsx",
+  "tagline": "Fixed-shape placeholder for a RECORD page — title, subtitle, then a bordered box of six label/value pairs. Takes no props: the shape IS the contract, so every detail screen loads identically.",
+  "usage": [
+    "DO use it while a single record's data resolves — a detail page, a drawer showing one entity, a Descriptions block.",
+    "DO leave it propless. It has no `rows` knob on purpose: a record page that loads with a different number of lines each time reads as a layout bug, and `Skeleton` is there for a bespoke shape.",
+    "DON'T use it for a list or a table — SkeletonRows draws flat lines, SkeletonTable draws a header band.",
+    "Import from `@godxjp/ui/feedback` (canonical). `@godxjp/ui/admin` re-exports it for admin pages."
+  ],
+  "useCases": [
+    "Detail page body before the record arrives",
+    "Drawer or sheet opened on a row while its full entity loads",
+    "Descriptions block placeholder"
+  ]
+}
