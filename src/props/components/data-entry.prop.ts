@@ -1250,6 +1250,22 @@ export type RecordPickerProp = Omit<
 > & {
   /** `single` (default) or `multiple`. Decides the value shape AND whether the dialog confirms. */
   mode?: "single" | "multiple";
+  /**
+   * HAI LỐI VÀO CÙNG LÚC, thay vì "dropdown HOẶC Dialog" (gh#944).
+   *
+   * `auto` (mặc định) giữ nguyên hành vi cũ: `threshold` quyết một trong hai.
+   *
+   * `inline` mở cả hai cùng lúc — ô gõ được có gợi ý ngay bên dưới BẤT KỂ `count`, và một nút
+   * 「検索」 luôn hiện bên cạnh mở Dialog có filter + phân trang. Chữ đang gõ dở mang sang Dialog
+   * làm từ khoá ban đầu.
+   *
+   * Vì sao nó tồn tại: consumer đo được dự án khách có vài trăm tới vài nghìn bản ghi, nên
+   * `count > threshold` gần như LUÔN đúng — tức nhánh "chỉ Dialog" là nhánh người dùng gặp
+   * thường xuyên nhất, và ở đó họ mất hẳn khả năng gõ. Ngưỡng trả lời đúng câu hỏi "tập lớn hay
+   * nhỏ" nhưng câu hỏi thật là "người này đã biết mình tìm gì chưa": biết rồi thì gõ nhanh hơn
+   * mở modal, chưa biết thì cần filter. `inline` không bắt chọn.
+   */
+  shape?: "auto" | "inline";
   value?: string | string[] | null;
   defaultValue?: string | string[] | null;
   /** Receives the shape you passed in: an array for `multiple`, a single value (or null) else. */

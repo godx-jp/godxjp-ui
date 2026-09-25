@@ -40,16 +40,52 @@ function changedFiles() {
     return r.status === 0 ? (r.stdout ?? "") : null;
   };
 
-  const mergeBase = run(["merge-base", "HEAD", "origin/main"]);
+  /*
+   * `origin/main` WAS HARD-CODED, AND MOST REPOS THAT RUN THIS DO NOT DEFAULT TO main (gh#948).
+   *
+   * In a repo whose default branch is `dev`, `origin/main` usually still EXISTS — stale, or
+   * forked long ago — so `merge-base` resolves happily to an ancient commit and the "what this
+   * branch changed" set quietly becomes "everything since that commit". Measured in
+   * godx-corebooks: a fresh branch off `origin/dev` with ZERO edits audited ~200 files and
+   * reported 1114 errors. Nothing was wrong with the branch; the question was.
+   *
+   * That is the worst shape a scope bug can take — not a crash, a plausible number. It blocked
+   * corebooks#114 (the ratchet gate) and #86, because a ratchet cannot start from a baseline
+   * nobody believes.
+   *
+   * Order: an explicit `--base=<ref>` wins; otherwise `origin/HEAD`, which is the symbolic ref
+   * git keeps for the remote's OWN default branch and is therefore right in every repo without
+   * naming one; `origin/main` stays last so nothing that works today stops working.
+   *
+   * Fail-closed is unchanged (gh#542): if no candidate resolves, this returns an error rather
+   * than an empty file list. "Could not work out the base" must never read as "nothing changed".
+   */
+  const explicitBase = args.find((a) => a.startsWith("--base="))?.slice("--base=".length);
+  const candidates = explicitBase ? [explicitBase] : ["origin/HEAD", "origin/main"];
+
+  let mergeBase = null;
+  let baseUsed = null;
+  for (const candidate of candidates) {
+    const out = run(["merge-base", "HEAD", candidate]);
+    if (out !== null) {
+      mergeBase = out;
+      baseUsed = candidate;
+      break;
+    }
+  }
+
   if (mergeBase === null) {
     return {
       error:
-        "ui-audit --changed could not resolve `git merge-base HEAD origin/main`. " +
+        `ui-audit --changed could not resolve a base (tried: ${candidates.join(", ")}). ` +
         "Without a base there is no such thing as \u201cwhat this branch changed\u201d, and reporting a " +
-        "clean audit from that is not a result. Fetch origin/main (a shallow clone may need " +
-        "`git fetch --unshallow`), or pass the directories to scan instead of `--changed`.",
+        "clean audit from that is not a result. Fetch the default branch (a shallow clone may need " +
+        "`git fetch --unshallow`), pass `--base=<ref>`, or pass the directories to scan instead of " +
+        "`--changed`.",
     };
   }
+
+
 
   const parts = [
     run(["diff", "--name-only", "--diff-filter=ACMR", mergeBase.trim(), "--"]),
@@ -64,6 +100,10 @@ function changedFiles() {
   }
 
   return {
+    // Đi kèm danh sách file, và được in ra: một base SAI không làm chương trình chết, nó cho ra
+    // một con số hợp lý (1114 lỗi trên nhánh chưa sửa gì). Cách duy nhất để người đọc phát hiện
+    // là thấy nó đã so với cái gì.
+    base: baseUsed,
     files: [
       ...new Set(
         parts
@@ -1898,6 +1938,11 @@ if (filesScanned === 0 && !changedNoFiles) {
     if (f.replacement) console.log(`      ${C.bold}use: ${f.replacement}${C.reset}`);
     if (f.standard) console.log(`      ${C.dim}standard: ${f.standard}${C.reset}`);
     console.log(`      ${C.dim}${f.snippet}${C.reset}`);
+  }
+  // Dưới `--changed`, NÓI RA base đã so. Một base sai không làm chương trình chết — nó cho ra một
+  // con số hợp lý, và đó là thứ duy nhất người đọc có thể dùng để nghi ngờ (gh#948).
+  if (CHANGED && changed?.base) {
+    console.log(`${C.dim}so với: ${changed.base}${C.reset}`);
   }
   console.log(
     `\ngodxjp-ui audit: ${C.red}${errors.length} error(s)${C.reset}, ${C.yellow}${warnings.length} warning(s)${C.reset}` +

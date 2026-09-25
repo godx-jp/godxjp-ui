@@ -202,7 +202,9 @@
       "cancel": "キャンセル",
       "clear": "選択を解除",
       "more": "さらに読み込む",
-      "openDialog": "一覧から選択"
+      "openDialog": "一覧から選択",
+      "openSearch": "検索",
+      "suggestions": "候補"
     }
   },
   "feedback": {

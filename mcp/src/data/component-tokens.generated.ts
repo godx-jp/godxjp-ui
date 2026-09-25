@@ -3349,6 +3349,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "RecordPicker — chiều cao TỐI ĐA của danh sách trong Dialog (gh#932). Một hằng số ở đây là thứ không theme nào với tới: một service dùng hàng dày hơn, hoặc một Dialog cao hơn, cần đổi được con số này mà không phải đè selector của thư viện."
   },
   {
+    "name": "--record-picker-suggest-max-block-size",
+    "value": "14rem",
+    "description": "Danh sách gợi ý dưới ô inline (gh#944) — ngắn hơn danh sách trong Dialog, vì nó nằm TRONG dòng chảy của form chứ không phải trong một lớp phủ riêng."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."

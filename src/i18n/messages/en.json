@@ -206,7 +206,9 @@
       "cancel": "Cancel",
       "clear": "Clear selection",
       "more": "Load more",
-      "openDialog": "Choose from list"
+      "openDialog": "Choose from list",
+      "openSearch": "Search",
+      "suggestions": "Suggestions"
     }
   },
   "feedback": {

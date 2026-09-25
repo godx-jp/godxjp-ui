@@ -5,6 +5,9 @@
    * thứ không theme nào với tới: một service dùng hàng dày hơn, hoặc một Dialog cao hơn, cần
    * đổi được con số này mà không phải đè selector của thư viện. */
   --record-picker-list-max-block-size: 22rem;
+  /* Danh sách gợi ý dưới ô inline (gh#944) — ngắn hơn danh sách trong Dialog, vì nó nằm TRONG
+   * dòng chảy của form chứ không phải trong một lớp phủ riêng. */
+  --record-picker-suggest-max-block-size: 14rem;
 
   --password-strength-score-font-size: var(
     --font-size-xs,
