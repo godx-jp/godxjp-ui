@@ -61,6 +61,35 @@ describe("release CI provenance — a deployment is not a gate", () => {
     ).not.toThrow();
   });
 
+  /*
+   * `publish` IS THIS JOB, và bỏ sót nó khiến release không bao giờ thử lại được CHÍNH NÓ.
+   *
+   * Đo trên v30.5.2: lần chạy đầu publish THÀNH CÔNG cả hai tarball rồi đỏ ở bước tự xác minh,
+   * vì registry chưa kịp phục vụ ("this release is COMPLETE but unpropagated", lời của chính
+   * nó). Việc còn lại đúng một thao tác đổi dist-tag. Nhưng lần đỏ ấy để lại một check `publish`
+   * đỏ trên commit được tag, nên lần thử lại từ chối khởi động — `other red check: publish
+   * (failure)` — và mọi lần sau cũng thế. Một release hỏng một lần là không bao giờ hoàn tất
+   * được.
+   *
+   * Khác `deploy` ở trên: cái đó là hỏng CHẬP CHỜN, chờ hoặc rerun là qua. Cái này là deadlock
+   * TOÀN PHẦN, tự khoá, không lối ra.
+   */
+  it("does NOT block on a red `publish` — nó là chính job này, không phải một claim về commit", () => {
+    const runs = [...allGatesGreen(), red("publish")];
+    expect(() =>
+      assertCiProvenance({ sha: "abc", checkRuns: runs, totalCount: runs.length }),
+    ).not.toThrow();
+  });
+
+  it("matches `publish` exactly — một tên chỉ CHỨA nó vẫn chặn", () => {
+    // Ca âm tính: nếu không có nó thì một prefix-match lỏng lẻo sẽ lọt, và một gate thật tên
+    // `publish-contract` sẽ bị bỏ qua trong im lặng.
+    const runs = [...allGatesGreen(), red("publish-contract")];
+    expect(() =>
+      assertCiProvenance({ sha: "abc", checkRuns: runs, totalCount: runs.length }),
+    ).toThrow(/other red check: publish-contract/);
+  });
+
   it("STILL blocks on a red required gate — the guard keeps guarding", () => {
     const runs = allGatesGreen();
     const shard = runs.findIndex((r: { name: string }) => r.name.startsWith("Tests (shard"));
