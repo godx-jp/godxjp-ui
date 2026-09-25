@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { anchorIndex } from "../../../test/css-selector";
+
 /**
  * THE ARROW'S BOX IS A TOKEN, NOT A LITERAL (gh#931).
  *
@@ -21,14 +23,24 @@ const TOKENS = readFileSync(
   "utf8",
 );
 
+/*
+ * Anchor on STRUCTURE, not on the formatting (gh#767/gh#769). A hand-wrapped literal like
+ * ".ui-carousel-previous,\n.ui-carousel-next" pins the LAYOUT of the stylesheet: the moment
+ * Prettier re-wraps that selector the probe reads "rule not found" and the failure blames the
+ * CSS instead of the test. `anchorIndex` matches any run of whitespace where the caller wrote
+ * one, so the selector can be written on one line here whatever the file does.
+ *
+ * The repo has a meta-guard for exactly this (`src/test/__tests__/css-probe-formatting.test.ts`)
+ * and it is what caught the first version of this file — inside `verify:release`, after the tag.
+ */
 function rule(selector: string) {
-  const at = LAYOUT.indexOf(`\n${selector} {`);
+  const at = anchorIndex(LAYOUT, selector);
   expect(at, `${selector} not found`).toBeGreaterThan(-1);
   return LAYOUT.slice(at, LAYOUT.indexOf("\n}", at));
 }
 
 describe("Carousel arrows · the target is themeable (gh#931)", () => {
-  const arrows = rule(".ui-carousel-previous,\n.ui-carousel-next");
+  const arrows = rule(".ui-carousel-previous, .ui-carousel-next");
 
   it("declares the box token in the component tier, defaulting to today's 2rem", () => {
     expect(TOKENS).toMatch(/--carousel-arrow-size:\s*2rem\s*;/);
