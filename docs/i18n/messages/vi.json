@@ -1,7 +1,12 @@
 {
   "textExamples": {
     "preservedText": "Văn bản thuần",
-    "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối"
+    "sampleText": "Dòng đầu\n  Dòng thụt vào\n\nDòng cuối",
+    "breakTitle": "break · ngắt dòng một định danh",
+    "breakDescription": "Định danh không có chỗ ngắt — địa chỉ email, mã giảm giá, ID đăng nhập — dùng break=\"anywhere\", và cột vẫn nằm gọn trong bề ngang màn hình kể cả trong ô của bảng. whitespace=\"pre-wrap\" dành cho ký tự xuống dòng do người nhập; nó không ngắt được một định danh trong ô bảng.",
+    "breakColumnOwner": "Phụ trách",
+    "breakColumnEmail": "Địa chỉ email",
+    "breakSampleName": "Sato"
   },
   "themeShowcase": {
     "page": {

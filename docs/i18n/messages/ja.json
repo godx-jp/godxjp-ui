@@ -1,7 +1,12 @@
 {
   "textExamples": {
     "preservedText": "プレーンテキスト",
-    "sampleText": "最初の行\n  字下げした行\n\n最後の行"
+    "sampleText": "最初の行\n  字下げした行\n\n最後の行",
+    "breakTitle": "break · 識別子を折り返す",
+    "breakDescription": "メールアドレス・クーポンコード・ログイン ID のような区切りのない識別子は break=\"anywhere\"。表のセルでも列が画面幅に収まります。whitespace=\"pre-wrap\" は人が入力した改行のためのもので、表のセルでは識別子を折り返せません。",
+    "breakColumnOwner": "担当者",
+    "breakColumnEmail": "メールアドレス",
+    "breakSampleName": "佐藤"
   },
   "themeShowcase": {
     "page": {
