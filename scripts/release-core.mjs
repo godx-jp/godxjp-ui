@@ -874,8 +874,72 @@ export function reconcilePackagePublication({
 
 /** Freshness only. */
 export function assertFreshTargets(uiRegistry, mcpRegistry) {
-  if (uiRegistry.exists || mcpRegistry.exists)
-    throw new Error("Target version already exists; refusing partial/overwrite release.");
+  if (uiRegistry.exists || mcpRegistry.exists) {
+    // Name WHICH side is already there. A release that stops here is being read by someone deciding
+    // whether a publish half-happened, and "already exists" alone makes them go and look it up.
+    const present = [
+      uiRegistry.exists ? "@godxjp/ui" : null,
+      mcpRegistry.exists ? "@godxjp/ui-mcp" : null,
+    ].filter(Boolean);
+    throw new Error(
+      `Target version already exists for ${present.join(" and ")}; refusing partial/overwrite ` +
+        `release.\n` +
+        (present.length === 1
+          ? `  Only one of the two is on the registry, so a publish stopped between them and the ` +
+            `tarballs cannot be reconciled automatically — inspect both before re-running.`
+          : `  Both are present but their bytes do not match the tarballs this run packed, so this ` +
+            `is a DIFFERENT artifact, not this release arriving twice.`),
+    );
+  }
+}
+
+/**
+ * THE RELEASE THAT PUBLISHED EVERYTHING AND COULD NOT FINISH (gh#737).
+ *
+ * `verify-published-versions` polls the registry for up to 300s after publishing, because npm is
+ * read-after-write eventual. Measured twice on this repo: 348s (v30.5.2) and 334s (v30.6.0). Both
+ * runs had ALREADY published both tarballs, so they aborted with `godx-staging` on the new version
+ * and `latest` a release behind — "COMPLETE but unpromoted", in the script's own words.
+ *
+ * The rerun was then supposed to be the escape hatch, and it was not. Recovery state lives in
+ * `.git/godx-release-recovery/state.json` INSIDE THE RUNNER'S WORKSPACE, and this repo has several
+ * runners: v30.5.3's rerun happened to land on the same one and resumed; v30.6.0's landed elsewhere,
+ * took the fresh path, and hit `Target version already exists` — the right guard, reached from a
+ * state no path could leave. So resumability was decided by job scheduling, and `latest` sat on
+ * 30.4.2 for 7h40 across three published versions while five issues were closed against it.
+ *
+ * `--adopt-staged` exists for something adjacent and refuses this case by construction: it demands
+ * `adoptStagedVersion !== currentVersion`, and here the staged version IS the repo's current one.
+ *
+ * What makes adopting SAFE rather than a shortcut: the registry is the authority, and a tarball
+ * whose SHA512 integrity equals the one this run just packed is PROOF the publish happened — not an
+ * inference from a file some runner may or may not still have. `assertRegistryArtifact` is the same
+ * check the recovery path already trusts for exactly this decision, so this adds no new judgement;
+ * it only stops requiring a local breadcrumb to reach it. A version present with DIFFERENT bytes
+ * still refuses, because that is a different artifact and no amount of retrying makes it ours.
+ *
+ * Returns true when both packages are already staged as this run's own bytes. The publish steps are
+ * already idempotent (`if (packageState.published) continue`), so marking them published is all it
+ * takes to fall through to promotion.
+ */
+export function adoptAlreadyStagedTargets({
+  uiRegistry,
+  mcpRegistry,
+  artifacts,
+  targetVersion,
+  stageTag,
+}) {
+  const packages = [
+    ["@godxjp/ui", uiRegistry, artifacts.ui],
+    ["@godxjp/ui-mcp", mcpRegistry, artifacts.mcp],
+  ];
+  // Partial is NOT adopted: one side present means a publish stopped between the two, and which
+  // half ran is not something these bytes can answer.
+  if (!packages.every(([, registry]) => registry.exists)) return false;
+  for (const [packageName, registry, artifact] of packages) {
+    assertRegistryArtifact(registry, artifact, targetVersion, stageTag, packageName);
+  }
+  return true;
 }
 
 /**
@@ -1414,6 +1478,27 @@ export function createReleaseRuntime({
           return;
         }
         if (!plan.recovery) {
+          /*
+           * Before refusing: is this release's OWN bytes already on the registry? If both packages
+           * are there with the integrity this run packed, the publish happened and only promotion is
+           * left — adopt instead of dead-ending (gh#737). Different bytes still refuse, inside
+           * `adoptAlreadyStagedTargets`.
+           */
+          if (
+            adoptAlreadyStagedTargets({
+              uiRegistry,
+              mcpRegistry,
+              artifacts: progress.artifacts,
+              targetVersion: plan.targetVersion,
+              stageTag: plan.stageTag,
+            })
+          ) {
+            for (const packageState of [progress.ui, progress.mcp]) {
+              packageState.publishAttempted = true;
+              packageState.published = true;
+            }
+            return;
+          }
           assertFreshTargets(uiRegistry, mcpRegistry);
           return;
         }
@@ -1601,7 +1686,18 @@ export function runRelease({
         persist(step);
       }
       runStep(step, plan, artifacts, progress);
-      if (step === RELEASE_STEPS.VerifyTargetAvailability && plan.adoptStaged) {
+      if (
+        step === RELEASE_STEPS.VerifyTargetAvailability &&
+        /*
+         * Adoption is read off `published` rather than a flag on `progress`, because
+         * `readRecoveryState` validates the persisted state's keys EXACTLY — a new field there makes
+         * every later run reject the file it just wrote. On the plain tag path `published` can only
+         * be true because the step above adopted, so it is the same fact with no schema cost.
+         */
+        (plan.adoptStaged || (progress.ui.published && progress.mcp.published))
+      ) {
+        // Persist from here on: the tarballs are on the registry, so this run is finishing a
+        // release rather than starting one, and losing that fact is what gh#737 costs.
         publishStarted = true;
       }
       if (step === RELEASE_STEPS.RecordPreviousLatestTags) progress.latestRecorded = true;
