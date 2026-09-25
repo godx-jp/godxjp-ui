@@ -1,7 +1,12 @@
 {
   "textExamples": {
     "preservedText": "Plain text",
-    "sampleText": "First line\n  Indented line\n\nLast line"
+    "sampleText": "First line\n  Indented line\n\nLast line",
+    "breakTitle": "break · wrapping an identifier",
+    "breakDescription": "An identifier with nowhere to break — an email address, a coupon code, a login ID — takes break=\"anywhere\", and the column stays inside the viewport even in a table cell. whitespace=\"pre-wrap\" is for newlines a person typed; it cannot wrap an identifier in a table cell.",
+    "breakColumnOwner": "Owner",
+    "breakColumnEmail": "Email address",
+    "breakSampleName": "Sato"
   },
   "themeShowcase": {
     "page": {

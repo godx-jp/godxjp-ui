@@ -427,25 +427,21 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>break · 識別子を折り返す</CardTitle>
-            <CardDescription>
-              メールアドレス・クーポンコード・ログイン ID のような区切りのない識別子は
-              break=&quot;anywhere&quot;。表のセルでも列が画面幅に収まります。whitespace=&quot;pre-wrap&quot;
-              は人が入力した改行のためのもので、表のセルでは識別子を折り返せません。
-            </CardDescription>
+            <CardTitle level={2}>{t("textExamples.breakTitle")}</CardTitle>
+            <CardDescription>{t("textExamples.breakDescription")}</CardDescription>
           </CardHeader>
           <CardContent flush>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>担当者</TableHead>
-                  <TableHead>メールアドレス</TableHead>
+                  <TableHead>{t("textExamples.breakColumnOwner")}</TableHead>
+                  <TableHead>{t("textExamples.breakColumnEmail")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
                   <TableCell>
-                    <Text size="sm">佐藤</Text>
+                    <Text size="sm">{t("textExamples.breakSampleName")}</Text>
                   </TableCell>
                   <TableCell>
                     <Text size="sm" break="anywhere">
