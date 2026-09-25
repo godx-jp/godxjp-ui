@@ -978,7 +978,14 @@ const STEP_COMMANDS = Object.freeze({
    * `pinned` URL for a tag that was not this one. Regen is idempotent (it settles in one further
    * pass) and runs BEFORE `PackTargetManifests`, so the tarball and every later gate see one
    * version. `check:agent-catalog` and `check:measurement-contract` already detect the drift; they
-   * were simply never given a chance between the bump and the pack. */
+   * were simply never given a chance between the bump and the pack.
+   *
+   * #925 removed the dispatch bump path that caused 30.4.0, so `ApplyTargetMetadata` now always
+   * finds a version the release commit already carries and this step is normally a no-op. It is
+   * kept because the fault it prevents does not depend on that path: a release commit that bumps
+   * `package.json` in a PR without running `pnpm regen` leaves the same four artifacts one version
+   * behind, and the tag path would pack them exactly as happily. Idempotent and ~7s, against a
+   * defect that is only visible after publishing. */
   [RELEASE_STEPS.RegenStampedArtifacts]: () => ({
     binary: "pnpm",
     args: ["regen"],
