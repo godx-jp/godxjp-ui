@@ -57,6 +57,16 @@
       "type": "(value: string | string[] | null) => void"
     },
     {
+      "description": "Uncontrolled initial value, same shape as `value`. Use `value` + `onValueChange` when a form owns the state.",
+      "name": "defaultValue",
+      "type": "string | string[] | null"
+    },
+    {
+      "description": "Trigger text while nothing is chosen. Defaults to the localized `dataEntry.recordPicker.placeholder`; once a value exists the trigger shows chips instead.",
+      "name": "placeholder",
+      "type": "string"
+    },
+    {
       "description": "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
       "name": "dialogTitle",
       "type": "string"

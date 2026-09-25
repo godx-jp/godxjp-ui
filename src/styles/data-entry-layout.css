@@ -886,7 +886,7 @@
   }
 
   .ui-record-picker-list {
-    max-block-size: 22rem;
+    max-block-size: var(--record-picker-list-max-block-size);
     overflow-y: auto;
   }
 

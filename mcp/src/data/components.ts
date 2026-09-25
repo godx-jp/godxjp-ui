@@ -7030,6 +7030,18 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
           "Receives the SHAPE you passed in — never a one-element array for a single picker, which the consumer would have to unwrap at every call site.",
       },
       {
+        name: "defaultValue",
+        type: "string | string[] | null",
+        description:
+          "Uncontrolled initial value, same shape as `value`. Use `value` + `onValueChange` when a form owns the state.",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        description:
+          "Trigger text while nothing is chosen. Defaults to the localized `dataEntry.recordPicker.placeholder`; once a value exists the trigger shows chips instead.",
+      },
+      {
         name: "dialogTitle",
         type: "string",
         description: "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
