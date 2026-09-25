@@ -58,7 +58,7 @@ describe("RecordPicker · value shape and labels", () => {
       <RecordPicker options={MANY} placeholder="pick" onValueChange={onValueChange} />,
     );
     await user.click(screen.getByRole("button", { name: /pick/i }));
-    await user.click(await screen.findByRole("option", { name: "Person 2", exact: true }));
+    await user.click(await screen.findByRole("option", { name: "Person 2" }));
     // A picker that returns ["u2"] where the field holds a string is a bug the consumer has to
     // unwrap at every call site.
     expect(onValueChange).toHaveBeenCalledWith("u2");
@@ -76,7 +76,7 @@ describe("RecordPicker · value shape and labels", () => {
       />,
     );
     await user.click(screen.getByRole("button", { name: /pick/i }));
-    await user.click(await screen.findByRole("option", { name: "Person 1", exact: true }));
+    await user.click(await screen.findByRole("option", { name: "Person 1" }));
     expect(onValueChange).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: /confirm|決定|xác nhận/i }));
     expect(onValueChange).toHaveBeenCalledWith(["u1"]);
@@ -116,7 +116,7 @@ describe("RecordPicker · chosen is not the same thing as highlighted", () => {
     const user = userEvent.setup();
     render(<RecordPicker mode="multiple" options={MANY} placeholder="pick" />);
     await user.click(screen.getByRole("button", { name: /pick/i }));
-    const row = await screen.findByRole("option", { name: "Person 3", exact: true });
+    const row = await screen.findByRole("option", { name: "Person 3" });
     expect(row).toHaveAttribute("aria-selected", "false");
     await user.click(row);
     await waitFor(() => expect(row).toHaveAttribute("aria-selected", "true"));
@@ -128,7 +128,15 @@ describe("RecordPicker · chosen is not the same thing as highlighted", () => {
 
 describe("RecordPicker · server-backed search", () => {
   it("passes the query AND the consumer's own filter vocabulary to loadOptions", async () => {
-    const loadOptions = vi.fn(async () => ({ options: MANY.slice(0, 3), count: 900 }));
+    // TYPED by the signature it stands in for. `vi.fn(async () => …)` infers a ZERO-ARG mock, so
+    // `calls[0][0]` indexes an empty tuple — the assertion below would not compile, and casting it
+    // would have hidden that the mock was never recording the argument this test is about.
+    const loadOptions = vi.fn<
+      (params: { query: string; filters: Record<string, string>; cursor?: string }) => Promise<{
+        options: typeof MANY;
+        count?: number;
+      }>
+    >(async () => ({ options: MANY.slice(0, 3), count: 900 }));
     const user = userEvent.setup();
     render(
       <RecordPicker
