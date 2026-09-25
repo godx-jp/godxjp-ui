@@ -83,8 +83,18 @@ describe("TableRow interactive (gh#929)", () => {
   });
 
   it("routes the real control inside the row to the design-system ring", () => {
-    expect(RING_CSS).toMatch(
-      /\[data-interactive\] > \[data-slot="table-cell"\] :is\(a\[href\], button\)/,
-    );
+    // TWO FLAT selectors, not one grouped one. The guard in `focus-ring-contrast.test.ts` reads
+    // that selector list as TEXT and stops at the first closing bracket, so a nested group in
+    // the list hides `.ui-button` from it — which is exactly what the first draft of this did.
+    expect(RING_CSS).toContain('[data-interactive] > [data-slot="table-cell"] a[href],');
+    expect(RING_CSS).toContain('[data-interactive] > [data-slot="table-cell"] button,');
+  });
+
+  it("keeps the focus-ring selector list free of nested groups, so its own guard still parses", () => {
+    // A control case for the rule above: the list between `:is(` and `.ui-button` must contain no
+    // closing bracket at all — not from a selector, and not from a COMMENT citing an issue in
+    // brackets, which is how this broke the second time.
+    const list = RING_CSS.slice(RING_CSS.indexOf(":is("), RING_CSS.indexOf(".ui-button"));
+    expect(list).not.toContain(")");
   });
 });

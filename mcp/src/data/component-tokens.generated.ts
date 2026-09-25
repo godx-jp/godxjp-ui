@@ -3344,6 +3344,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Label-column indent per `rows[].depth` level (gh#724). The label column keeps its width."
   },
   {
+    "name": "--record-picker-list-max-block-size",
+    "value": "22rem",
+    "description": "RecordPicker — chiều cao TỐI ĐA của danh sách trong Dialog (gh#932). Một hằng số ở đây là thứ không theme nào với tới: một service dùng hàng dày hơn, hoặc một Dialog cao hơn, cần đổi được con số này mà không phải đè selector của thư viện."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
