@@ -186,6 +186,24 @@
       "remove": "Xóa {name}",
       "uploading": "Đang tải tệp đính kèm",
       "error": "Tải lên thất bại"
+    },
+    "recordPicker": {
+      "trigger": "Chọn",
+      "placeholder": "Chọn…",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo từ khoá",
+      "dialogTitle": "Chọn",
+      "filters": "Bộ lọc",
+      "allFilter": "Tất cả",
+      "selected": "Đã chọn {count}",
+      "loading": "Đang tải",
+      "empty": "Không có mục nào khớp",
+      "error": "Không tải được",
+      "confirm": "Xác nhận",
+      "cancel": "Huỷ",
+      "clear": "Bỏ chọn",
+      "more": "Tải thêm",
+      "openDialog": "Chọn từ danh sách"
     }
   },
   "feedback": {

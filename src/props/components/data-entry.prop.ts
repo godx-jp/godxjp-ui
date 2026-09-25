@@ -1230,6 +1230,59 @@ export type SearchSelectOptionProp = {
   disabled?: boolean;
 };
 
+/**
+ * One consumer-declared filter on a RecordPicker dialog (gh#932). The `name` is the key the
+ * picker puts into `loadOptions({ filters })`, so the server reads its own vocabulary back.
+ */
+export type RecordPickerFilterProp = {
+  name: string;
+  label: string;
+  options: { value: string; label: string }[];
+};
+
+/**
+ * RecordPicker — a picker whose SHAPE follows the size of the set behind it. Under `threshold`
+ * it IS a `Select`; over it, a dialog with search and consumer-declared filters.
+ */
+export type RecordPickerProp = Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "value" | "defaultValue" | "onChange"
+> & {
+  /** `single` (default) or `multiple`. Decides the value shape AND whether the dialog confirms. */
+  mode?: "single" | "multiple";
+  value?: string | string[] | null;
+  defaultValue?: string | string[] | null;
+  /** Receives the shape you passed in: an array for `multiple`, a single value (or null) else. */
+  onValueChange?: (value: string | string[] | null) => void;
+  /** Static rows, client-filtered. Provide this OR `loadOptions`. */
+  options?: (SearchSelectOptionProp | SelectOptionGroupProp)[];
+  /** Server fetcher. `filters` carries the consumer's own filter vocabulary. */
+  loadOptions?: (params: {
+    query: string;
+    filters: Record<string, string>;
+    cursor?: string;
+  }) => Promise<{ options: SearchSelectOptionProp[]; count?: number; nextCursor?: string }>;
+  /**
+   * Size of the WHOLE set, which only a server knows — a page of results does not. Omitted with
+   * `options`, it is their length; omitted with `loadOptions`, the dialog shape is assumed.
+   */
+  count?: number;
+  /** The dropdown/dialog switch. Default 10. */
+  threshold?: number;
+  /** Filters rendered above the dialog list; their values reach `loadOptions({ filters })`. */
+  filters?: RecordPickerFilterProp[];
+  /**
+   * Labels for values the picker holds but has not loaded — on first render there IS no page. Kept
+   * ahead of anything that loads later, so a chip never renders a raw id and never disappears.
+   */
+  selectedOptions?: SearchSelectOptionProp[];
+  /** A real row meaning "none" (an unassigned owner), pinned first — not a cleared field. */
+  emptyOption?: { value: string; label: string };
+  placeholder?: string;
+  dialogTitle?: string;
+  size?: "xs" | "sm" | "md" | "lg";
+};
+
 export type SearchSelectLoadParamsProp = {
   query: string;
   /** 1-based page for infinite scroll. */

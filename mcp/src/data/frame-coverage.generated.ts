@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 297,
-    dimensionCells: 4158,
+    exports: 298,
+    dimensionCells: 4172,
     covered: 93,
-    untested: 2281,
-    notApplicable: 1784,
+    untested: 2291,
+    notApplicable: 1788,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -288,6 +288,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"RadioItem","group":"data-entry","frame":"docs/data-entry/radio-group.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"RangeTimeline","group":"data-display","frame":"docs/data-display/timeline.tsx","covered":[],"untested":["accessibleName","async","contentStress","density","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Rating","group":"data-entry","frame":"docs/data-entry/rating.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
+  {"name":"RecordPicker","group":"data-entry","frame":"docs/data-entry/record-picker.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states"],"notApplicable":["density","shapes","tones","variants"]},
   {"name":"ResizableHandle","group":"layout","frame":"docs/layout/resizable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"ResizablePanel","group":"layout","frame":"docs/layout/resizable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"ResizablePanelGroup","group":"layout","frame":"docs/layout/resizable-panel.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},

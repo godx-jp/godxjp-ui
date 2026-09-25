@@ -47,6 +47,8 @@ export type {
 export { Field } from "./field";
 export type { FieldProps } from "./field";
 export { SearchInput } from "./search-input";
+export { RecordPicker } from "./record-picker";
+export type { RecordPickerProp, RecordPickerProps } from "./record-picker";
 export { Switch } from "./switch";
 export type { SwitchProps } from "./switch";
 export { Toggle } from "./toggle";

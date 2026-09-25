@@ -357,6 +357,11 @@
     "tagline": "Debounced search box with a clear button. Fires onSearch (NOT onChange) after the debounce. Controlled (value) or uncontrolled (defaultValue)."
   },
   {
+    "group": "data-entry",
+    "name": "RecordPicker",
+    "tagline": "ONE picker whose SHAPE follows the size of the set behind it: at or under `threshold` it IS a Select (dropdown with search); over it, a Dialog with search + consumer-declared filters, chips, and a confirm step for `multiple`. Reach for it when the same field may hold eight records on one tenant and eight thousand on another."
+  },
+  {
     "absorbed": [
       "Combobox",
       "Autocomplete",

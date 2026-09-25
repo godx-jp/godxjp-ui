@@ -376,6 +376,35 @@
   }
 }
 
+/* A CLOSING OVERLAY SURFACE MUST NOT TAKE A CLICK (gh#934).
+ *
+ * Reported from godx-task: a whole 「フローを追加」 form was lost when a reviewer was picked in
+ * step 2. The mechanism, measured in Chromium: while `Select mode="multiple"`'s listbox plays its
+ * exit animation it is `data-state="closed"` but still `pointer-events: auto`, and it has already
+ * left react-aria's overlay stack — so it renders OUTSIDE `[role=dialog]`. The surrounding Dialog
+ * reads a click on it as a click-OUTSIDE and closes, taking the form with it.
+ *
+ * Measured 80ms after Escape: state closed, opacity 0.15, still hit-testable, `elementFromPoint`
+ * returning an option — and no Dialog after the click. Slowing the animation 50x reproduced it at
+ * opacity 0.99, which is the part that makes this not a nicety: a backgrounded tab or a throttled
+ * machine stretches the window arbitrarily, and the user sees a faded list they can still hit.
+ *
+ * Only the CONTENT surfaces, never the overlays. `dialog-overlay` / `sheet-overlay` are the
+ * elements whose whole job is to catch the outside click; making a closing one transparent to the
+ * pointer would let the click fall through to the page behind and activate something there. The
+ * surfaces below have no such duty — they are a menu, a listbox, a card or a tip on their way out.
+ *
+ * UNLAYERED for the same reason as the block above: `animate-out` lands in `@layer utilities`, and
+ * a rule that has to hold WHILE that animation runs must not sit where the animation outranks it.
+ */
+[data-slot="popover-content"][data-state="closed"],
+[data-slot="dropdown-menu-content"][data-state="closed"],
+[data-slot="dropdown-menu-sub-content"][data-state="closed"],
+[data-slot="hover-card-content"][data-state="closed"],
+[data-slot="tooltip-content"][data-state="closed"] {
+  pointer-events: none;
+}
+
 @layer components {
   /* TOOLTIP / POPOVER — the two portaled overlay surfaces. */
   .ui-tooltip-content {
