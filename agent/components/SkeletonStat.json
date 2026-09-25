@@ -1,5 +1,5 @@
 {
-  "example": "import { SkeletonStat } from \"@godxjp/ui/feedback\";\nimport { ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n<ResponsiveGrid min=\"12rem\">\n  {Array.from({ length: 4 }).map((_, i) => (\n    <SkeletonStat key={i} />\n  ))}\n</ResponsiveGrid>",
+  "example": "import { SkeletonStat } from \"@godxjp/ui/feedback\";\nimport { ResponsiveGrid } from \"@godxjp/ui/layout\";\n\n<ResponsiveGrid columns={{ base: 1, sm: 2, lg: 4 }} gap=\"md\">\n  {Array.from({ length: 4 }).map((_, i) => (\n    <SkeletonStat key={i} />\n  ))}\n</ResponsiveGrid>",
   "group": "feedback",
   "importPath": "@godxjp/ui/feedback",
   "name": "SkeletonStat",
