@@ -886,9 +886,51 @@
   margin-inline: calc(var(--space-4) * -1);
 }
 
+/* ONE SLIDE PER VIEW IS A FLEX BASIS, NOT A MINIMUM (gh#930).
+ *
+ * `min-width: 100%` said "one slide fills the rail" in a way nothing could argue with — including
+ * the `basis-*` utility this component's own documentation tells a consumer to reach for. A
+ * `min-width` floor beats `flex-basis`, so `<CarouselItem className="basis-full sm:basis-1/2
+ * lg:basis-1/3">` computed `flex-basis: 33.3333%` and still painted a full-width slide.
+ *
+ * Measured in Chromium at 1440 on this repo's OWN `/isolate/data-display-carousel`, whose
+ * "multi-item" example is written exactly as the docs prescribe:
+ *
+ *     rail (.ui-carousel-viewport)   1278px
+ *     item, before                   1310px   flex-basis 33.3333%, min-width 100%  <- 1-up, and
+ *                                                                                     32px WIDER
+ *                                                                                     than the rail
+ *     item, after                     426px   flex-basis 33.3333%, min-width 0      <- 3-up
+ *
+ * So the documented way to build a 3-across carousel did not work, and the failure was silent: the
+ * page still scrolled, it just showed one card where three were asked for.
+ *
+ * THE FIX MAY NOT DECLARE `flex-basis` EITHER, and that is the part worth remembering: this
+ * carousel block is UNLAYERED (see `.ui-carousel` above — brace depth 1, outside the file's
+ * `@layer components`), so every declaration in it outranks all of `@layer utilities` regardless of
+ * specificity. `flex: 0 0 100%` was tried first and simply moved the blockage from `min-width` to
+ * `flex-basis`: measured on the same page, the item went back to 1310px with a computed
+ * `flex-basis: 100%` while `.lg\:basis-1\/3` sat in the utilities layer, matched, and lost.
+ *
+ * `inline-size: 100%` with the flex basis left at `auto` has nothing to lose, because a flex item
+ * whose basis is `auto` is sized from its width — so the default is the same full-width slide —
+ * and a `basis-*` utility sets a DEFINITE basis, which takes precedence over width in a flex row
+ * by CSS Flexbox §7.2.3. The utility wins by the spec's own ordering rather than by out-ranking
+ * anything.
+ *
+ * `flex-shrink: 0` is the part the old `min-width` was ALSO doing, silently, and dropping it cost
+ * a second measured round: a flex item still shrinks below its width, and with the basis no longer
+ * pinned every slide collapsed to share the rail — 262px each on the same page, for the utility
+ * row and the plain rows alike, where a plain row must be a full 1278px. It is a different
+ * longhand from `flex-basis`, so declaring it takes nothing away from `basis-*`.
+ *
+ * `min-inline-size: 0` is the last piece: it stops a slide holding a long unbreakable string from
+ * refusing to go below its content width. */
 .ui-carousel-item {
   position: relative;
-  min-width: 100%;
+  flex-shrink: 0;
+  inline-size: 100%;
+  min-inline-size: 0;
   padding-inline: var(--space-4);
 }
 
@@ -910,8 +952,11 @@
   );
   z-index: 20;
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  /* The BOX, not the glyph — `--carousel-arrow-icon-size` is the mark inside it (gh#931). These
+   * were two bare `2rem` literals, so the only thing a brand could not retune here was the one
+   * thing an accessibility spec talks about: the target. Default unchanged. */
+  inline-size: var(--carousel-arrow-size);
+  block-size: var(--carousel-arrow-size);
   place-items: center;
   border-radius: var(--radius-pill);
   background: hsl(var(--background));

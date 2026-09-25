@@ -72,6 +72,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/futurelastic-web"),
   },
   {
+    id: "tcgm-website",
+    title: "TCG-M — Website tiếng Nhật có MOTION (token rebuild)",
+    description:
+      "Dựng lại trang chủ TCG-M \"Layered Prism\" (hero prism-wash · rail chip theo tựa game · lưới thẻ có ウォッチ + toast · carousel bài viết thủ công · lịch phát hành · dải trust · footer) CHỈ bằng token + real primitives. Brand thứ BA và là brand đầu tiên mang theo BẢNG THỜI LƯỢNG MOTION riêng: press 90 · hover 140 · state 200 · hero-once 480ms y8→0 · cubic-bezier(.2,.8,.2,1) — cả bảng đó trở thành 8 dòng token, và `Reveal` (on=\"mount\" cho illustration, on=\"view\" + stagger cho từng section) tự chạy đúng nhịp ấy. Hero KHÔNG reveal phần chữ, vì spec ghi \"chỉ illustration, text hiện ngay\". 0 component framework mới.",
+    tag: "Website",
+    load: () => import("../../docs/showcase/tcgm-website"),
+  },
+  {
     id: "marketing-page",
     title: "Marketing page — the composition doctrine's deliverable (gh#833)",
     description:

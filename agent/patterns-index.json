@@ -346,5 +346,37 @@
       "white-label",
       "launcher"
     ]
+  },
+  {
+    "aliases": [
+      "rebrand",
+      "design-handoff",
+      "brand-motion",
+      "motion-tokens",
+      "whitelabel",
+      "white-label-theme",
+      "theme-block",
+      "external-brand"
+    ],
+    "name": "brand-theme-block",
+    "tagline": "Wear a WHOLE external brand — its palette, shape, type AND its motion spec — as one scoped theme block of token declarations. No forked components, no page-local overrides of library selectors. Use when you are handed a design system (Figma/HTML prototype/brand book), not a single customer hex.",
+    "tags": [
+      "theme",
+      "brand",
+      "rebrand",
+      "handoff",
+      "motion",
+      "animation",
+      "reveal",
+      "typography",
+      "font",
+      "cjk",
+      "japanese",
+      "tokens",
+      "design-system",
+      "white-label",
+      "marketing",
+      "landing"
+    ]
   }
 ]

@@ -6,6 +6,18 @@
    * neither selector contains the word "icon". */
   --accordion-chevron-size: var(--icon-size-md);
   --carousel-arrow-icon-size: var(--icon-size-md);
+  /* THE ARROW'S BOX, WHICH IS NOT THE SAME KNOB AS ITS GLYPH (gh#931).
+   *
+   * `--carousel-arrow-icon-size` sizes the mark INSIDE the button; the button itself was a pair of
+   * bare `2rem` literals in data-display-layout.css, so the TARGET had no tier-2 route at all. 32px
+   * clears WCAG 2.2 SC 2.5.8 (24px), which is why this is a missing knob and not a defect — but a
+   * brand whose own foundations ask for a 44px target could not reach it from a theme, and had no
+   * option left except a page-local override of a library selector. Reported from a real re-theme
+   * whose spec reads "arrows44px".
+   *
+   * The default is the same 2rem the literals painted, so no existing carousel moves. A theme that
+   * wants the larger target writes one line: `--carousel-arrow-size: 2.75rem`. */
+  --carousel-arrow-size: 2rem;
   /* WHERE THE ARROWS SIT, AND THE DEFAULT IS THE MIDDLE OF THE CONTENT — NOT OF THE COMPONENT.
    * `.ui-carousel` is the positioning context and it is as tall as the slides PLUS the dots, so a
    * plain `50%` centres the arrows on that sum. Measured on a 98px carousel: slides 58px (middle at

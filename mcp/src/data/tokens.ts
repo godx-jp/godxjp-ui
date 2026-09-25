@@ -62,7 +62,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--font-size-*",
     category: "primitive",
     tier: "primitive",
-    role: "Raw typography scale.",
+    role: "Raw typography scale. `--font-size-display` is the BASE KNOB of the display ramp (`3xl`/`4xl`/`5xl` derive from it), so one declaration moves a marketing hero AND the two steps under it — never restate `--font-size-5xl`. It takes any length expression, so a FLUID hero is `--font-size-display: clamp(2.125rem, 4vw, 3.5rem)`; pinned at a single rem it paints the desktop size on a phone (measured: 56px at a 390 viewport where the brand scale said 34px). Pair with `--font-family-display`, and for a CJK product do NOT put a Latin-only face first in that stack — the browser falls through per glyph so it LOOKS fine, while the Latin inside a Japanese headline silently renders in a different face than the headline. Keep the CJK face as the display family and opt into the Latin face per element (eyebrow, price, code)."
   },
   {
     name: "--font-sans-base",
@@ -80,7 +80,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--duration-{fast,base,slow}",
     category: "primitive",
     tier: "primitive",
-    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site.",
+    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site. RE-THEMING: a brand that ships its own timing TABLE (press/hover/state/enter/hero-once) does not need a fork or new CSS — redeclare these three plus the four `--ease-*` and the two `--reveal-*` in its theme scope, and `Reveal`, Card `hoverable`, Dialog/Sheet enter and every token-driven transition retune themselves. A whole brand motion spec has been reproduced in EIGHT declarations; see the `brand-theme-block` pattern."
   },
   {
     name: "--ease-{standard,emphasized,decelerate,accelerate}",
@@ -92,7 +92,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--reveal-distance",
     category: "primitive",
     tier: "primitive",
-    role: "Distance (10px) a revealed element travels on enter (translateY/-X). Read instead of a literal `translateY(10px)` for staggered reveals.",
+    role: "Distance (10px) a revealed element travels on enter (translateY/-X). Read instead of a literal `translateY(10px)` for staggered reveals. A brand whose spec reads \"hero once 480ms, 0→1, y8→0\" sets `--duration-slow: 480ms` and `--reveal-distance: 8px` — the spec becomes two declarations.",
   },
   {
     name: "--reveal-stagger-step",
@@ -488,6 +488,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: 'The responsive drawer / detail-panel contract (SheetContent responsive="auto"). --sheet-responsive-breakpoint-width (default 48rem = 768px, the library\'s canonical mobile line) is the viewport width at and below which the desktop side panel becomes a mobile bottom sheet; --sheet-bottom-max-height (default 85dvh) caps THAT bottom presentation only (a plain side="bottom" sheet stays content-sized). Because a CSS @media cannot resolve a custom property, the breakpoint is read off :root at runtime by the exported useSheetResponsiveMode() hook — which is also what OrgSwitcher responsive="auto" uses, so ONE knob moves the popover→sheet and side→bottom line for every overlay at once. Accepts px/rem/em.',
+  },
+  {
+    name: "--carousel-arrow-{size,icon-size,inset-block-start}",
+    category: "component",
+    tier: "component",
+    role: "The Carousel prev/next arrows, as THREE separate decisions. `--carousel-arrow-size` is the BUTTON box and therefore the touch target (default 2rem/32px, above WCAG 2.2 SC 2.5.8's 24px floor) — a brand whose own standard is 44px sets `2.75rem` here and nothing else moves. `--carousel-arrow-icon-size` is the mark inside it, on the icon scale (1rem). `--carousel-arrow-inset-block-start` overrides the vertical placement, whose default is the middle of the SLIDES rather than of the component (the dots row is subtracted back out). The box token is gh#931: it used to be two bare literals, which made the target the one dimension a theme could not reach. The arrows are absolutely positioned over the rail edges by design; there is no prop that moves them into a caption row.",
   },
   {
     name: "--scroll-area-anchor-offset",

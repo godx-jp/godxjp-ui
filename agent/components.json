@@ -1065,7 +1065,9 @@
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
       "DO use ResponsiveGrid for page-level spacing — it applies the correct gap token (--space-stack-md) automatically. Never add raw gap-* / p-* / space-* utilities to the page layout around tiles; compose spacing through this component instead (rule 40).",
       "DO render SkeletonStat children in place of StatCard tiles while KPIs are loading — same columns prop, same count as the real tiles. Switch to real StatCard once data resolves.",
-      "The grid uses CSS container queries, not viewport media queries — it responds to its containing block width, not the window. Ensure the container is not artificially constrained (e.g. inside a narrow SplitPane column) or column expansion will never trigger."
+      "The grid uses CSS container queries, not viewport media queries — it responds to its containing block width, not the window. Ensure the container is not artificially constrained (e.g. inside a narrow SplitPane column) or column expansion will never trigger.",
+      "THE STEP NAMES ARE CONTAINER WIDTHS, AND THEY DO NOT LINE UP WITH VIEWPORT NAMES — `sm` is 40rem, `md` 48rem, `lg` 64rem OF THE GRID'S OWN BOX. A page gutter eats the difference: inside a 1280px shell with 32px gutters a 768px tablet hands the grid 704px, so `columns={{ base: 2, md: 3 }}` stays 2-up there — measured. Key the tablet column to `sm` instead (`{ base: 2, sm: 3, lg: 4 }`) and verify by measuring the GRID, not the window. Never reach for a viewport media query to 'correct' it.",
+      "An UNNAMED `@container` in your own CSS resolves against the nearest ANCESTOR container, which inside a grid is the grid — not the card. A rule meant to fire per card measured against the 358px grid instead of the 163px cell. Either make the card its own container (`container-type: inline-size`) or use a plain media query when the viewport is genuinely what you meant."
     ],
     "useCases": [
       "Dashboard KPI row: rendering 3–4 StatCard tiles (revenue, member count, active invoices, overdue amount) that reflow to a 2-column stacked grid on tablet and a single column on mobile.",
@@ -3193,7 +3195,9 @@
     "related": [
       "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
       "Card — the most common thing to wrap in <Reveal> (dashboard cards, auth card, settings sections).",
-      "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal."
+      "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal.",
+      "Carousel — wrap the WHOLE Carousel in one `<Reveal on=\"view\">`, never each CarouselItem: the rail clips its slides, so a per-slide observer never fires for the ones outside the window.",
+      "ScrollArea — same rule as Carousel: reveal the scroller, not the children it clips."
     ],
     "rules": [],
     "storyPath": "general/Reveal.stories.tsx",
@@ -3206,6 +3210,9 @@
       "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
       "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
       "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
+      "DON'T put `on=\"view\"` on an element a scroller CLIPS — a Carousel slide, a horizontal ScrollArea child, anything inside `overflow: hidden`/`clip`. The observer's root is the VIEWPORT, and a clipped box has an EMPTY intersection rect, so an item parked outside its rail never leaves `data-reveal-state=\"out\"` and stays at `opacity: 0` forever. Measured on a 4-slide rail at 1440: 3 of the 4 slides sat invisible after scrolling the whole document, and stayed invisible. This is the one failure this component may not have. Reveal the RAIL (one `<Reveal on=\"view\">` around the whole `<Carousel>`/`<ScrollArea>`), never the slides.",
+      "DON'T budget a reveal per card inside a rail even when it does work — one region is the entrance, the cascade belongs to a grid whose items all share the page's scroll. `delay` caps at 6, so a long list should pass `Math.min(i, 5) + 1` rather than the raw index.",
+      "DO expect a re-filtered list to re-enter: changing a filter unmounts and remounts the wrappers, so each new item gets a fresh observer and animates again. Items already scrolled past are re-revealed on their way back, which is correct — they are never left hidden.",
       "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens."
     ],
     "useCases": [
@@ -12749,7 +12756,10 @@
       "DON'T use a Carousel where ALL items must be seen/compared at once or be keyboard-reachable in reading order (e.g. a list of selectable options, a data table, primary navigation) — hiding content behind a swipe is an anti-pattern there; use a Grid/`ResponsiveGrid`, `ScrollArea`, or `Tabs`.",
       "DON'T autoplay without a pause-on-hover/focus control and reduced-motion respect — pass the Embla autoplay plugin via `plugins` only for non-essential decorative content, never for content the user must read.",
       "DO set `opts={{ loop: true }}` for galleries that wrap, and rely on the built-in disabling: `CarouselPrevious`/`CarouselNext` auto-disable at the ends (via `canScrollPrev`/`canScrollNext`) — don't hide them, let them grey out.",
-      "DO give each `<CarouselItem>` real, meaningful content; the component already injects an 'N of M' slide label for screen readers, so don't add a redundant one (a consumer `aria-label` on the item overrides the default)."
+      "DO give each `<CarouselItem>` real, meaningful content; the component already injects an 'N of M' slide label for screen readers, so don't add a redundant one (a consumer `aria-label` on the item overrides the default).",
+      "DO size a MULTI-ITEM rail with `basis-*` on the item: `<CarouselItem className=\"basis-full sm:basis-1/2 lg:basis-1/3\">` is 1/2/3 per view, and `basis-4/5` leaves the \"peek\" that tells a phone user the rail scrolls. Use the FRACTIONAL ladder, never an arbitrary `basis-[82%]` (the audit rejects it). Fixed in gh#930 — before that the item carried `min-width: 100%`, which silently beat every `basis-*`: the documented 3-across composition computed `flex-basis: 33.3333%` and still painted one full-width slide 32px WIDER than its own rail. If a rail renders 1-up on an older version, that is the bug, not your className.",
+      "DON'T wrap each `<CarouselItem>` in `<Reveal on=\"view\">`. The rail clips its slides, so the observer on a slide outside the window has an empty intersection rect and the slide never becomes visible — measured at 3 of 4 slides stuck at `opacity: 0`. Put ONE `<Reveal on=\"view\">` around the whole `<Carousel>`.",
+      "DO expect the prev/next arrows to OVERLAY the rail edges — they are `position: absolute` inside the Carousel, so placing them in a caption row is not something a prop offers. Two knobs retune them: `--carousel-arrow-inset-block-start` for the vertical placement, and `--carousel-arrow-size` for the BUTTON box (default 2rem/32px, which clears WCAG 2.2 SC 2.5.8's 24px floor). A brand whose own standard is a 44px target sets `--carousel-arrow-size: 2.75rem` in its theme — the box and the glyph are separate decisions, so the mark stays on the icon scale via `--carousel-arrow-icon-size`. The box token is gh#931; before it, those were two bare literals and the target was the one dimension a theme could not reach."
     ],
     "useCases": [
       "Feature / onboarding highlight cards on a dashboard or landing surface, with CarouselDots showing position.",
