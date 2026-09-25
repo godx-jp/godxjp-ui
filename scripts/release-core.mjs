@@ -402,8 +402,22 @@ export function assertCiProvenance({ sha, checkRuns, totalCount }) {
    * REQUIRED_CI_CHECK_RUNS, and anything that is a BROKEN gate belongs in RELEASE_BLOCK_EXEMPT
    * above, where writing the justification down is the point. This list is only for jobs that never
    * made a claim about the commit in the first place.
+   *
+   * `publish` is THIS JOB — and leaving it out made the release unable to retry ITSELF.
+   *
+   * Measured on v30.5.2. The first attempt published both tarballs successfully and then failed
+   * its own post-publish verification, because the registry had not begun serving them yet ("this
+   * release is COMPLETE but unpropagated", its own words). The remaining work was one dist-tag
+   * move. But that failed attempt left a red `publish` check run on the tagged commit, so the
+   * retry refused to start — `- other red check: publish (failure)` — and every further retry
+   * refused for the same reason. A release that fails once can never be finished.
+   *
+   * It is the clearest possible NOT_A_GATE: the publish job makes no claim ABOUT the commit, it
+   * is the thing acting ON it. Treating its own failure as evidence against the commit is
+   * circular, and the deadlock it creates is total rather than intermittent — unlike the `deploy`
+   * 502 above, no amount of waiting clears it.
    */
-  const NOT_A_GATE = [/^deploy$/];
+  const NOT_A_GATE = [/^deploy$/, /^publish$/];
 
   const collateral = [...latestByName.values()]
     .filter(
