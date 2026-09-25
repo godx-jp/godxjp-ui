@@ -13780,7 +13780,7 @@ import { Separator } from "@godxjp/ui/layout";
     example: `import { SkeletonStat } from "@godxjp/ui/feedback";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 
-<ResponsiveGrid min="12rem">
+<ResponsiveGrid columns={{ base: 1, sm: 2, lg: 4 }} gap="md">
   {Array.from({ length: 4 }).map((_, i) => (
     <SkeletonStat key={i} />
   ))}
