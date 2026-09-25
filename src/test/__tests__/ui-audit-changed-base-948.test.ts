@@ -31,6 +31,13 @@ afterEach(() => {
 
 const git = (cwd: string, ...a: string[]) => execFileSync("git", a, { cwd, encoding: "utf8" });
 
+/** Every repo a fixture commits in needs its own identity; signing must be off for the same reason. */
+function identify(cwd: string) {
+  git(cwd, "config", "user.email", "t@example.test");
+  git(cwd, "config", "user.name", "fixture");
+  git(cwd, "config", "commit.gpgsign", "false");
+}
+
 /** `p-4` is a consumer-rule error; a bare `<div>` is clean. One bit, and it is the audit's own. */
 const DIRTY = 'export default function L() {\n  return <div className="p-4">l</div>;\n}\n';
 const CLEAN = (n: string) => `export default function ${n}() {\n  return <div>${n}</div>;\n}\n`;
@@ -48,8 +55,7 @@ function fixture(): { clone: string } {
   const up = join(root, "up");
   mkdirSync(join(up, "src"), { recursive: true });
   git(up, "init", "-q", "-b", "main", ".");
-  git(up, "config", "user.email", "t@example.test");
-  git(up, "config", "user.name", "fixture");
+  identify(up);
   writeFileSync(join(up, "src", "app.tsx"), CLEAN("A"));
   git(up, "add", "-A");
   git(up, "commit", "-qm", "M0");
@@ -62,6 +68,10 @@ function fixture(): { clone: string } {
 
   const clone = join(root, "clone");
   git(root, "clone", "-q", up, clone);
+  // A clone inherits no identity, and a CI runner has no global one — this test passed locally and
+  // failed on the runner with `Command failed: git commit -qm N1`. A fixture that leans on ambient
+  // git config is testing the machine.
+  identify(clone);
   git(clone, "checkout", "-qb", "feature");
   writeFileSync(join(clone, "src", "new.tsx"), CLEAN("N"));
   git(clone, "add", "-A");
