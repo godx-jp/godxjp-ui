@@ -706,6 +706,8 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     truncate,
     clamp,
     whitespace,
+    // `break` is a reserved word, so it cannot be a binding name.
+    break: breakMode,
     tabular,
     decoration,
     chip,
@@ -763,6 +765,11 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
         'Text: `truncate` and `whitespace="pre-wrap"` are mutually exclusive — `truncate` takes precedence (one line, one ellipsis); use `clamp` to keep preserved line breaks and still bound the height.',
       );
     }
+    if (breakMode === "anywhere" && truncating) {
+      console.warn(
+        'Text: `truncate` and `break="anywhere"` are mutually exclusive — `truncate` takes precedence (one line has nowhere to break to); use `clamp` to split the token and still bound the height.',
+      );
+    }
     if (ellipsis && (truncate || clamp !== undefined)) {
       console.warn(
         "Text: `ellipsis` (antd) and `truncate`/`clamp` are the same axis — `ellipsis` takes precedence; drop the other.",
@@ -798,6 +805,9 @@ const TextBase = React.forwardRef<HTMLElement, TextBaseProp>((props, ref) => {
     // Inert default: `normal` is CSS's own behaviour, so it emits no attribute and there is no
     // `[data-whitespace="normal"]` rule to lose a specificity argument with anything.
     "data-whitespace": whitespace === "pre-wrap" && !truncating ? "pre-wrap" : undefined,
+    // Same shape and the same precedence as `whitespace`: `normal` is inert, and one line has
+    // nowhere to break to, so `truncate` simply does not emit it (gh#927).
+    "data-break": breakMode === "anywhere" && !truncating ? "anywhere" : undefined,
     style: clampStyle,
     "data-tabular": tabular ? "" : undefined,
     "data-decoration": decoration,

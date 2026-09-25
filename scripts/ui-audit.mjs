@@ -788,6 +788,29 @@ const RULES = [
     message:
       'Hand-rolled scrollport (overflow-auto / -scroll on your own element) — use <ScrollArea label={t("…")} orientation> so the box that scrolls is a tab stop with a role and a localized name, and stops being one when there is nothing to scroll (gh#821). Without it, anything below the fold is reachable by mouse and by nothing else (WCAG 2.2 SC 2.1.1). axe only catches the instances whose content happens to have no focusable child, so this checks the markup rather than one render (gh#825). overflow-hidden is a clipping box, not a scrollport, and is not flagged.',
   },
+  {
+    id: "no-hand-rolled-break-anywhere",
+    replacement: 'Text break="anywhere"',
+    classOnly: true,
+    scope: "consumer",
+    severity: "warn",
+    /*
+     * `overflow-wrap: anywhere` spelled as a utility instead of `Text break="anywhere"` (gh#927).
+     *
+     * One consumer carried `className="[overflow-wrap:anywhere] break-words whitespace-normal"` on
+     * a `Text` at 25 call sites, every one an email, code or login id in a table cell — because no
+     * prop said it. Now one does, and it also releases the cell's inherited `nowrap`, which the
+     * `whitespace-normal` in that string existed to do by hand.
+     *
+     * Both spellings: the arbitrary property, and Tailwind v4.1's `wrap-anywhere`. `break-all`
+     * (`word-break`) is NOT matched — it splits ordinary words that would have fit, which is a
+     * different decision this rule has no business making for anyone. WARN, like the scrollport
+     * rule: the utility renders correctly, it just drifts from the primitive.
+     */
+    test: /(?<![\w-])(?:\[overflow-wrap:anywhere\]|wrap-anywhere)(?![\w-])/,
+    message:
+      'Hand-rolled overflow-wrap:anywhere ([overflow-wrap:anywhere] / wrap-anywhere) — use <Text break="anywhere"> for an email, code or id in a table cell or Descriptions value. It also releases the cell\'s inherited nowrap, so drop the break-words / whitespace-normal that came with it. Not whitespace="pre-wrap": its break-word does not shrink a table column (gh#927).',
+  },
 ];
 
 /**

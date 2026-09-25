@@ -223,6 +223,29 @@
     overflow-wrap: break-word;
     min-inline-size: 0;
   }
+  /* A MACHINE identifier may be split anywhere (gh#927) — an email, a coupon code, a login id.
+   *
+   * `anywhere`, not `break-word`, and the difference is the whole feature. Both break a token that
+   * cannot fit, but only `anywhere` counts those break opportunities when computing the box's
+   * min-content size (CSS Text 3 §5.5). A table cell sizes its column FROM min-content, so
+   * `break-word` — the `pre-wrap` rule above — still holds a `<td>` open. Measured, a 71-character
+   * token in a `width: 100%` auto-layout table at a 320px viewport: 629.6px with nothing, 629.6px
+   * with the `pre-wrap` rule, 320px with `overflow-wrap: anywhere`.
+   *
+   * `min-inline-size: 0` for the same reason as `pre-wrap`: inside a flex or grid row the item's
+   * `min-width: auto` would otherwise pin it back to its unbroken width (gh#838).
+   *
+   * `white-space: normal` only when `whitespace` is not also set. A table cell is `nowrap` and it
+   * INHERITS into the text, and under `nowrap` there are no soft wraps for `overflow-wrap` to act
+   * on — so the release is part of the promise. When `whitespace="pre-wrap"` is also set the typed
+   * line breaks are content and that rule's `white-space` stands. */
+  [data-slot="text"][data-break="anywhere"] {
+    overflow-wrap: anywhere;
+    min-inline-size: 0;
+  }
+  [data-slot="text"][data-break="anywhere"]:not([data-whitespace]) {
+    white-space: normal;
+  }
   /* Visual-only: the full text stays in the DOM and the accessible name. */
   [data-slot="text"][data-clamp] {
     display: -webkit-box;

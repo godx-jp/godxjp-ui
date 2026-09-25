@@ -9670,6 +9670,14 @@
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
+          "name": "break",
+          "origin": "owned",
+          "required": false,
+          "type": "TextBreakProp | undefined",
+          "values": ["normal", "anywhere"],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
           "name": "chip",
           "origin": "owned",
           "required": false,
@@ -11373,6 +11381,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "break",
+          "origin": "owned",
+          "required": false,
+          "type": "TextBreakProp | undefined",
+          "values": ["normal", "anywhere"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {
@@ -16798,6 +16814,14 @@
           "required": false,
           "type": "boolean | undefined",
           "values": [false, true],
+          "declaredIn": ["src/props/components/general.prop.ts"]
+        },
+        {
+          "name": "break",
+          "origin": "owned",
+          "required": false,
+          "type": "TextBreakProp | undefined",
+          "values": ["normal", "anywhere"],
           "declaredIn": ["src/props/components/general.prop.ts"]
         },
         {

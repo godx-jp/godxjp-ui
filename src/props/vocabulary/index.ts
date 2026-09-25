@@ -84,6 +84,7 @@ export type {
   HeadingLevelProp,
   TextAlignProp,
   TextWhitespaceProp,
+  TextBreakProp,
   TypographyTypeProp,
   TitleLevelProp,
   TypographyCopyConfigProp,

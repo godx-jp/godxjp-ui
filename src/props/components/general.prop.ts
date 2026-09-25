@@ -28,6 +28,7 @@ import type {
   TextSizeProp,
   TextToneProp,
   TextWhitespaceProp,
+  TextBreakProp,
   TitleLevelProp,
   TypographyActionsConfigProp,
   TypographyCopyConfigProp,
@@ -116,6 +117,20 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> &
      * `clamp` composes with it — a clamped pre-wrap block shows its first N real lines.
      */
     whitespace?: TextWhitespaceProp;
+    /**
+     * Where an over-long unbroken token may break. Default `normal` (CSS's own: it stays whole).
+     *
+     * `anywhere` is for a MACHINE identifier — an email address, a coupon code, a login id, a
+     * template key — in a narrow `DataTable` cell or `Descriptions` value: it may be split at any
+     * character to fit, so the column shrinks to the viewport instead of scrolling the page. It
+     * also releases a `nowrap` it inherited (a table cell's default) back to `normal` — newlines
+     * still collapse, because an identifier's whitespace is not content.
+     *
+     * Independent of `whitespace`: `whitespace="pre-wrap" break="anywhere"` keeps typed line breaks
+     * AND splits a long token. `truncate` WINS (one line has nowhere to break to), so the attribute
+     * is not emitted under it; `clamp` composes.
+     */
+    break?: TextBreakProp;
     /** Tabular figures for aligned numbers. */
     tabular?: boolean;
     decoration?: "none" | "underline" | "line-through";
