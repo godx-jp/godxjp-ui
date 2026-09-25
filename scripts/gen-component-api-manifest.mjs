@@ -330,8 +330,32 @@ export function buildComponentApiManifest(rootDir = root) {
       if (!/^[A-Z][A-Za-z0-9]*$/.test(name)) continue;
       const type = checker.getTypeOfSymbolAtLocation(symbol, sourceFile);
       const signature = type.getCallSignatures()[0];
-      const parameter = signature?.parameters[0];
-      if (!parameter) continue;
+      if (!signature) continue;
+      /*
+       * A COMPONENT WITH NO PROPS IS STILL A COMPONENT (gh#957).
+       *
+       * This used to be `if (!parameter) continue`, because the manifest's whole model is "take the
+       * first parameter and enumerate its properties". A fixed shape has nothing to take:
+       *
+       *     export function SkeletonDetail() { … }   // the house shape for a record
+       *     export function SkeletonStat() { … }     // the house shape for a KPI tile
+       *
+       * so both were read as "not a component" and never entered the manifest — which means
+       * `every-public-name-answers.test.ts` never asked about them either, since it takes its keys
+       * FROM the manifest. Same shape as the gh#553 defect that gate exists to stop: nothing that
+       * validates entries can see a name that never became one. Measured: 10 of the 12 `Skeleton*`
+       * components were present, and the two missing ones are exactly the two that take no props.
+       *
+       * Admitting them is safe rather than a widening: across every public barrel, exactly these
+       * two exports have a call signature and zero parameters (measured, not assumed) — SCREAMING_
+       * CASE constants like `CHART_COLORS` already fail the PascalCase test above, and utilities
+       * like `cn` fail it too and are collected separately as `utilities` below.
+       */
+      const parameter = signature.parameters[0];
+      if (!parameter) {
+        components[name] = { group: directory.name, props: [] };
+        continue;
+      }
       const propsType = checker.getTypeOfSymbolAtLocation(parameter, sourceFile);
       const resolvedSymbol =
         symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;

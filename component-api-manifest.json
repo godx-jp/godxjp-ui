@@ -15354,6 +15354,10 @@
         }
       ]
     },
+    "SkeletonDetail": {
+      "group": "feedback",
+      "props": []
+    },
     "SkeletonForm": {
       "group": "feedback",
       "props": [
@@ -15506,6 +15510,10 @@
           "declaredIn": ["src/components/feedback/skeleton.tsx"]
         }
       ]
+    },
+    "SkeletonStat": {
+      "group": "feedback",
+      "props": []
     },
     "SkeletonTable": {
       "group": "feedback",
