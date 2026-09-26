@@ -109,6 +109,14 @@ selector, its value, and whether it is a freeze; then every read and whether tha
 call-site fallback. If two components move together, run it on the token they share and the shared
 declaration is on the screen.
 
+**Before you rely on a token, read its `published:` line.** `yes` is the contract; `NO` is an
+internal variable that can change or vanish in any release — `--text-xs` looks like the obvious
+name for the small size, but it is Tailwind's inlined `0.75rem` (12px), while the published
+`--font-size-xs` resolves to 12.4699px. A consumer who patched with the first shipped a 0.47px shift
+no gate caught (gh#988). For an `initial` knob the tool also prints `read it as: var(--x, …)` — the
+fallback the package itself uses at its read sites. Copy that line; a bare `var(--x)` on an
+`initial` knob is unset.
+
 **It does not compute a winner, and says so.** The first version ranked selectors into four
 "cascade" buckets by regex and printed them strongest-last. Codex found that `@theme inline` and
 `[dir="rtl"] .ui-actions[data-fade-in-inline]` both scored top precedence on the substring
