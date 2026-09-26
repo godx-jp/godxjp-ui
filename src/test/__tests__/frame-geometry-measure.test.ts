@@ -89,33 +89,34 @@ function withFrame(build: (frame: Box) => void) {
     opacity: n.opacity,
     position: n.position,
   });
-  return measure() as { overflowX: boolean; clipped: number };
+  return measure() as Promise<{ overflowX: boolean; clipped: number }>;
 }
 
 afterEach(() => {
   const g = globalThis as unknown as Record<string, unknown>;
   delete g.document;
   delete g.getComputedStyle;
+  delete g.requestAnimationFrame;
 });
 
 const focusable = (box: Box) => ((box.focusable = true), box);
 
 describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () => {
-  it("counts a control that overflows the frame with no scroll container (real defect)", () => {
+  it("counts a control that overflows the frame with no scroll container (real defect)", async () => {
     // data-entry-rating @320: a rating button painted at 278→302 past a 300px frame, nothing to
     // scroll. This is the WCAG 2.1.1 / 2.4.7 case the gate exists for.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const row = frame.append(new Box({ x: 0, width: 300 }));
       focusable(row.append(new Box({ x: 278, width: 24 })));
     });
     expect(r.clipped).toBe(1);
   });
 
-  it("does NOT count a control inside a scroll region that can bring it into view", () => {
+  it("does NOT count a control inside a scroll region that can bring it into view", async () => {
     // layout-master-detail @320: the DataTable sort button sits at 464→505 inside
     // `.ui-data-table-scroll` (clientWidth 244 / scrollWidth 640) — one scroll away, and the
     // browser performs that scroll itself when the button takes focus.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const scroller = frame.append(
         new Box({ x: 0, width: 244, overflowX: "auto", clientWidth: 244, scrollWidth: 640 }),
       );
@@ -124,9 +125,9 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("does NOT count content wider than its own scroll viewport (a full table row)", () => {
+  it("does NOT count content wider than its own scroll viewport (a full table row)", async () => {
     // A 640px focusable table row can never fit a 244px scroller; it is still reachable.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const scroller = frame.append(
         new Box({ x: 0, width: 244, overflowX: "auto", clientWidth: 244, scrollWidth: 640 }),
       );
@@ -135,8 +136,8 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("still counts a control clipped by an overflow:hidden container (no user can scroll it)", () => {
-    const r = withFrame((frame) => {
+  it("still counts a control clipped by an overflow:hidden container (no user can scroll it)", async () => {
+    const r = await withFrame((frame) => {
       const clipper = frame.append(
         new Box({ x: 0, width: 244, overflowX: "hidden", clientWidth: 244, scrollWidth: 640 }),
       );
@@ -145,10 +146,10 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(1);
   });
 
-  it("still counts a control a scroll container cannot reach", () => {
+  it("still counts a control a scroll container cannot reach", async () => {
     // The scroller has room, but the control is painted outside its scrollable content entirely
     // (e.g. an absolutely-positioned escape) — scrolling to the end never reveals it.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const scroller = frame.append(
         new Box({ x: 0, width: 244, overflowX: "auto", clientWidth: 244, scrollWidth: 260 }),
       );
@@ -157,9 +158,55 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(1);
   });
 
-  it("leaves scroll offsets untouched after probing", () => {
+  describe("reachable by focus (gh#983)", () => {
+    const frames = () => {
+      (globalThis as unknown as Record<string, unknown>).requestAnimationFrame = (cb: () => void) =>
+        cb();
+    };
+
+    it("does NOT count a control that Tab brings into the frame without scrolling anything", async () => {
+      // A Marquee link off the inline start: no scroll reaches negative overflow, but focusing it
+      // seeks the track (a transform, modelled here as moving the box) until it is centred.
+      frames();
+      const r = await withFrame((frame) => {
+        const viewport = frame.append(new Box({ x: 0, width: 300, overflowX: "hidden" }));
+        const link = focusable(viewport.append(new Box({ x: -149, width: 84 })));
+        Object.assign(link, { focus: () => (link.x = 108) });
+      });
+      expect(r.clipped).toBe(0);
+    });
+
+    it("STILL counts a control whose focus only arrives by scrolling an overflow:hidden ancestor", async () => {
+      // Chromium scrolls even a hidden-overflow card to reveal a focused input; its pointer user can
+      // never scroll it back, so that arrival is the defect, not a way in.
+      frames();
+      const r = await withFrame((frame) => {
+        const card = frame.append(
+          new Box({ x: 0, width: 244, overflowX: "hidden", clientWidth: 244, scrollWidth: 640 }),
+        );
+        const input = focusable(card.append(new Box({ x: 464, width: 41 })));
+        Object.assign(input, { focus: () => (card.scrollLeft = 300) });
+      });
+      expect(r.clipped).toBe(1);
+    });
+
+    it("puts back what the focus probe scrolled", async () => {
+      frames();
+      let card!: Box;
+      await withFrame((frame) => {
+        card = frame.append(
+          new Box({ x: 0, width: 244, overflowX: "hidden", clientWidth: 244, scrollWidth: 640 }),
+        );
+        const input = focusable(card.append(new Box({ x: 464, width: 41 })));
+        Object.assign(input, { focus: () => (card.scrollLeft = 300) });
+      });
+      expect(card.scrollLeft).toBe(0);
+    });
+  });
+
+  it("leaves scroll offsets untouched after probing", async () => {
     let scroller!: Box;
-    withFrame((frame) => {
+    await withFrame((frame) => {
       scroller = frame.append(
         new Box({ x: 0, width: 244, overflowX: "auto", clientWidth: 244, scrollWidth: 640 }),
       );
@@ -168,12 +215,12 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(scroller.scrollLeft).toBe(0);
   });
 
-  it("does NOT count a hidden form mirror parked off the inline start", () => {
+  it("does NOT count a hidden form mirror parked off the inline start", async () => {
     // Radix's native <input> behind Checkbox/Radio/Switch: aria-hidden, tabindex -1, opacity 0,
     // translateX(-100%) — off-frame by construction, never seen or focused. The control the user
     // operates is the sibling button inside the frame. Counting it flagged every choice-control
     // form (data-entry-form-examples-*) as unreachable at all four narrow widths.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const field = frame.append(new Box({ x: 34, width: 16 }));
       focusable(field.append(new Box({ x: 34, width: 16 }))); // the visible radio button
       const mirror = focusable(field.append(new Box({ x: -16, width: 16 })));
@@ -183,8 +230,8 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("does NOT count a control hidden inside an aria-hidden subtree", () => {
-    const r = withFrame((frame) => {
+  it("does NOT count a control hidden inside an aria-hidden subtree", async () => {
+    const r = await withFrame((frame) => {
       const hiddenRegion = frame.append(new Box({ x: 0, width: 300 }));
       hiddenRegion.ariaHidden = true;
       focusable(hiddenRegion.append(new Box({ x: 400, width: 41 })));
@@ -192,15 +239,15 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("still counts a VISIBLE control that merely sits in a transformed wrapper", () => {
+  it("still counts a VISIBLE control that merely sits in a transformed wrapper", async () => {
     // Guard against over-broad exclusion: opacity 1, not aria-hidden, unreachable → real defect.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       focusable(frame.append(new Box({ x: 400, width: 41 })));
     });
     expect(r.clipped).toBe(1);
   });
 
-  it("does NOT count a VIEWPORT-ANCHORED control that lands outside the frame", () => {
+  it("does NOT count a VIEWPORT-ANCHORED control that lands outside the frame", async () => {
     // general-float-button: `.ui-float-button` is `position: fixed`, so the viewport is its
     // containing block, not the frame. Measured on /frame/general-float-button before this rule:
     // 3 clipped at 768px and at 1920px, and 0 at 320px — where the frame nearly fills the viewport
@@ -210,7 +257,7 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     // FloatButton was ported in gh#558/gh#574, after the 2026-08-19 baseline was taken, so it
     // entered the sweep as 7 permanent "NEW regressions" and the browser lane was red on them
     // every night. A user can always reach a fixed control; it simply does not live in the frame.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const fixed = frame.append(new Box({ x: 708, width: 36 }));
       fixed.position = "fixed";
       focusable(fixed);
@@ -218,11 +265,11 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("does NOT count a control nested inside a viewport-anchored group", () => {
+  it("does NOT count a control nested inside a viewport-anchored group", async () => {
     // `.ui-float-button-group` is the fixed box; the buttons inside it are `position: relative`
     // and inherit the group's containing block. Walking only the element itself would have missed
     // them and left the frame red for the same reason.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       const group = frame.append(new Box({ x: 708, width: 36 }));
       group.position = "fixed";
       focusable(group.append(new Box({ x: 708, width: 36 })));
@@ -230,16 +277,16 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
     expect(r.clipped).toBe(0);
   });
 
-  it("STILL counts an ordinary control at the same coordinates", () => {
+  it("STILL counts an ordinary control at the same coordinates", async () => {
     // The exemption must be about the containing block, not about being far to the right — or it
     // would silence the real gh#2.1.1 defect this gate exists for.
-    const r = withFrame((frame) => {
+    const r = await withFrame((frame) => {
       focusable(frame.append(new Box({ x: 708, width: 36 })));
     });
     expect(r.clipped).toBe(1);
   });
 
-  it("reports document overflow independently of the clipped count", () => {
+  it("reports document overflow independently of the clipped count", async () => {
     const g = globalThis as unknown as Record<string, unknown>;
     const frame = new Box({ x: 0, width: 300, overflowX: "auto", clientWidth: 300 });
     frame.scrollWidth = 420;
@@ -249,7 +296,7 @@ describe("frame-geometry · clipped = UNREACHABLE, not merely out of frame", () 
       visibility: n.visibility,
       opacity: n.opacity,
     });
-    const r = measure() as { overflowX: boolean; clipped: number };
+    const r = (await measure()) as { overflowX: boolean; clipped: number };
     expect(r.overflowX).toBe(true);
     expect(r.clipped).toBe(0);
   });
