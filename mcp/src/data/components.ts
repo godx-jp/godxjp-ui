@@ -1022,12 +1022,12 @@ import { Button } from "@godxjp/ui/general";
       'ONE label for the pair vs per-control: wrap the WHOLE `SpaceCompact` in a single `FormField label="…"` when the pair reads as one field ("繰り返し間隔" over a number+unit row) — a role-less `<div>` cannot carry a cloned `aria-label`/`aria-labelledby` (axe `aria-allowed-attr`), so a NAMED SpaceCompact with no explicit `role` promotes itself to `role="group"` automatically, the same contract `Flex` already honours for a range/年月 pair. Give each CHILD its own `aria-label` instead only when the two controls are independently meaningful outside the row (rare — prefer the one-label pattern for a welded control).',
       "DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
       "DO set `size` on each CHILD individually, not on SpaceCompact — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
-      'DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.',
+      "DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.",
       "`fullWidth` gives EVERY child an equal share of the row — each item carries `flex: 1 1 0%`, so the split is even no matter what the children would size to on their own. Measured at a 1169px row: NumberInput+Select 585/585, and Select+Button ALSO 585/585, i.e. a Button under `fullWidth` is stretched to half the row, not left at its content width. Want the Button at content width and the field absorbing the rest? Omit `fullWidth` — the row is then `inline-flex` and sizes to content (measured 223/40). Do NOT remove the per-child `flex` to chase antd's block style: without it the items collapse to their content and the row stops filling at all (measured 203/73.6 in a 1169px column), which defeats `fullWidth`.",
-      "DON'T expect corner-radius welding on `orientation=\"vertical\"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).",
+      'DON\'T expect corner-radius welding on `orientation="vertical"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one).',
     ],
     useCases: [
-      '定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.',
+      "定期課題 (recurring issue) interval row: 毎 [NumberInput] [Select 週/月/日 ▾] ごと, fused on one line inside a FormField, inside a 2-column ResponsiveGrid form card that collapses to one column.",
       "A currency amount: [Select 通貨 ▾][NumberInput 金額] welded so the currency reads as part of the amount field, not a separate control beside it.",
       "A filtered search bar: [Select scope][SearchInput query] as one visual field, `fullWidth` inside a page toolbar.",
     ],
@@ -3200,7 +3200,7 @@ import { Trash2 } from "lucide-react";
         type: '"normal" | "anywhere"',
         defaultValue: '"normal"',
         description:
-          "Where an over-long unbroken token may break. THE prop for a machine identifier — an email address, a coupon code, a login id, a template key — in a DataTable/TableCell or a Descriptions value: `break=\"anywhere\"` emits `overflow-wrap: anywhere` (and releases a table cell's inherited `nowrap`), so the column shrinks to the viewport instead of scrolling the page. Use it INSTEAD of `className=\"[overflow-wrap:anywhere] break-words whitespace-normal\"`. NOT `whitespace=\"pre-wrap\"`: that is for typed line breaks, and its `break-word` does not lower min-content, so in a table cell it breaks nothing (measured: a 71-char token holds a 320px table at 630px with pre-wrap, 320px with break=\"anywhere\"). Independent of `whitespace` (both may be set); `truncate` wins (dev builds warn); `clamp` composes.",
+          'Where an over-long unbroken token may break. THE prop for a machine identifier — an email address, a coupon code, a login id, a template key — in a DataTable/TableCell or a Descriptions value: `break="anywhere"` emits `overflow-wrap: anywhere` (and releases a table cell\'s inherited `nowrap`), so the column shrinks to the viewport instead of scrolling the page. Use it INSTEAD of `className="[overflow-wrap:anywhere] break-words whitespace-normal"`. NOT `whitespace="pre-wrap"`: that is for typed line breaks, and its `break-word` does not lower min-content, so in a table cell it breaks nothing (measured: a 71-char token holds a 320px table at 630px with pre-wrap, 320px with break="anywhere"). Independent of `whitespace` (both may be set); `truncate` wins (dev builds warn); `clamp` composes.',
       },
       { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
@@ -3736,7 +3736,7 @@ import { Trash2 } from "lucide-react";
       "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
       "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
       'DON\'T put `on="view"` on an element a scroller CLIPS — a Carousel slide, a horizontal ScrollArea child, anything inside `overflow: hidden`/`clip`. The observer\'s root is the VIEWPORT, and a clipped box has an EMPTY intersection rect, so an item parked outside its rail never leaves `data-reveal-state="out"` and stays at `opacity: 0` forever. Measured on a 4-slide rail at 1440: 3 of the 4 slides sat invisible after scrolling the whole document, and stayed invisible. This is the one failure this component may not have. Reveal the RAIL (one `<Reveal on="view">` around the whole `<Carousel>`/`<ScrollArea>`), never the slides.',
-      'DON\'T budget a reveal per card inside a rail even when it does work — one region is the entrance, the cascade belongs to a grid whose items all share the page\'s scroll. `delay` caps at 6, so a long list should pass `Math.min(i, 5) + 1` rather than the raw index.',
+      "DON'T budget a reveal per card inside a rail even when it does work — one region is the entrance, the cascade belongs to a grid whose items all share the page's scroll. `delay` caps at 6, so a long list should pass `Math.min(i, 5) + 1` rather than the raw index.",
       "DO expect a re-filtered list to re-enter: changing a filter unmounts and remounts the wrappers, so each new item gets a fresh observer and animates again. Items already scrolled past are re-revealed on their way back, which is correct — they are never left hidden.",
       "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens.",
     ],
@@ -7005,7 +7005,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "loadOptions",
         type: "(params: { query: string; filters: Record<string, string>; cursor?: string }) => Promise<{ options: SearchSelectOptionProp[]; count?: number; nextCursor?: string }>",
         description:
-          "Server fetcher, debounced, and it runs on BOTH branches — a picker whose `count` is small still fetches from the server rather than showing an empty dropdown (gh#942). `filters` carries YOUR OWN vocabulary back (the `name` of each declared filter), so the server reads the keys it already understands instead of a shape this component invented; the dropdown branch draws no filters, so it passes an empty object. Return `nextCursor` to page: the dialog shows a Load more button and APPENDS, so nothing the user already scrolled past is lost. `cursor` is EXACTLY the `nextCursor` your previous response returned for the same `query` (undefined on the first page) — the same in all three shapes, dropdown included; an offset or an opaque token both work. Before gh#964 the dropdown sent the page NUMBER instead, so an offset server read \"2\" as offset 2 and returned duplicate rows; if you worked around that, remove the workaround.",
+          'Server fetcher, debounced, and it runs on BOTH branches — a picker whose `count` is small still fetches from the server rather than showing an empty dropdown (gh#942). `filters` carries YOUR OWN vocabulary back (the `name` of each declared filter), so the server reads the keys it already understands instead of a shape this component invented; the dropdown branch draws no filters, so it passes an empty object. Return `nextCursor` to page: the dialog shows a Load more button and APPENDS, so nothing the user already scrolled past is lost. `cursor` is EXACTLY the `nextCursor` your previous response returned for the same `query` (undefined on the first page) — the same in all three shapes, dropdown included; an offset or an opaque token both work. Before gh#964 the dropdown sent the page NUMBER instead, so an offset server read "2" as offset 2 and returned duplicate rows; if you worked around that, remove the workaround.',
       },
       {
         name: "filters",
@@ -7057,7 +7057,8 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "dialogTitle",
         type: "string",
-        description: "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
+        description:
+          "Dialog heading. Defaults to the localized `dataEntry.recordPicker.dialogTitle`.",
       },
       {
         name: "size",
@@ -17315,12 +17316,12 @@ const messages: ChatMessageProp[] = [
       "DO put a hint in `footer` (t('dataEntry.chatComposer.hintEnter') / 'hintShiftEnter') when you flip `submitType` — the keystroke contract is invisible otherwise. For submitType=\"modEnter\" use t('dataEntry.chatComposer.hintModEnter', { modifier: isApplePlatform() ? '⌘' : 'Ctrl' }) with isApplePlatform from @godxjp/ui/lib/utils — the same platform test the composer uses to pick metaKey vs ctrlKey.",
       'DO set `allowEmptySubmit` (not a hidden fake draft) when the composer also submits field changes from `header`/`footer`; your onSubmit receives "" and decides whether anything changed.',
       "DON'T size it with a className height: the box grows between --chat-composer-min-height and --chat-composer-max-height, both derived from the --control-height tier. Use `size`, or re-tune the two tokens in your theme.",
-      "DO move the toolbar BELOW a full-width draft box with `actions={false}` + a function `footer` — the function receives `{ components: { SubmitButton, CancelButton } }`, both already wired to onSubmit/onCancel/disabled/the loading swap, so nothing about the send contract is reimplemented at the call site. Put the attach control and a keyboard hint on the START side of the footer row and `<SubmitButton />` on the END side (a `Flex justify=\"between\"`), exactly like the record-comment box case. Leaving `actions` unset keeps today's inline row — this is opt-in, not a breaking change.",
+      'DO move the toolbar BELOW a full-width draft box with `actions={false}` + a function `footer` — the function receives `{ components: { SubmitButton, CancelButton } }`, both already wired to onSubmit/onCancel/disabled/the loading swap, so nothing about the send contract is reimplemented at the call site. Put the attach control and a keyboard hint on the START side of the footer row and `<SubmitButton />` on the END side (a `Flex justify="between"`), exactly like the record-comment box case. Leaving `actions` unset keeps today\'s inline row — this is opt-in, not a breaking change.',
     ],
     useCases: [
       "The message box of an AI assistant or support chat, under a ChatBubbleList feed.",
       "A comment composer on a record detail screen (prefix = attach Button, footer = character counter).",
-      "A record-detail comment box with a full-width textarea and a toolbar row BELOW it — attach on the start side, a keyboard hint in the middle, clear/send on the end side: `actions={false}` + `footer={({ components }) => <Flex justify=\"between\">…<components.SubmitButton /></Flex>}`.",
+      'A record-detail comment box with a full-width textarea and a toolbar row BELOW it — attach on the start side, a keyboard hint in the middle, clear/send on the end side: `actions={false}` + `footer={({ components }) => <Flex justify="between">…<components.SubmitButton /></Flex>}`.',
       'A long-form reply box where Enter must break the line: submitType="shiftEnter".',
       'A comment bar on an issue/record where Enter breaks the line and ⌘/Ctrl+Enter posts, and a status change may be posted without text: submitType="modEnter" + allowEmptySubmit.',
       "A streaming answer the user can stop: loading + onCancel.",
@@ -18262,7 +18263,7 @@ const notes: Note[] = useNotes();
         name: "target",
         type: "() => Window | HTMLElement | null",
         description:
-          "antd `target`, default `() => window` — the scroll box to pin against, which need not be the nearest scrolling ancestor. Same lazy-getter shape `FloatButton.BackTop.target` uses here, and for the same reason: the element does not exist on the render that declares it.",
+          "antd `target` — the scroll box to pin against, which need not be the nearest scrolling ancestor. Omitted, it IS the nearest block-axis scroller (`position: sticky`'s rule), else the viewport (gh#984); `() => window` is the viewport. Same lazy-getter shape `FloatButton.BackTop.target` uses here, and for the same reason: the element does not exist on the render that declares it.",
       },
       {
         name: "onChange",
@@ -18373,13 +18374,13 @@ const [pinned, setPinned] = useState(false);
         name: "target",
         type: "() => Window | HTMLElement | null",
         description:
-          "gh#890. The scroll box the sections are measured in AND `Affix` pins the nav against — one function, both halves. `Affix`'s own name and shape (`AffixTargetProp`), the same lazy getter `FloatButton.BackTop.target` already spells here. `null`, or an absent `target`, means the viewport. Wins over `getContainer` when both are given.",
+          "gh#890. The scroll box the sections are measured in AND `Affix` pins the nav against — one function, both halves. `Affix`'s own name and shape (`AffixTargetProp`), the same lazy getter `FloatButton.BackTop.target` already spells here. `null` means the viewport; absent (with no `getContainer`), the nearest block-axis scroller, else the viewport — `Affix`'s default (gh#984). Wins over `getContainer` when both are given.",
       },
       {
         name: "getContainer",
         type: "() => HTMLElement | Window",
         description:
-          "antd `getContainer`, default `() => window` — the scroll box holding the sections. Superseded by `target` (gh#890), which mirrors `Affix`'s own spelling for the identical idea; kept live for a call site written before `target` existed.",
+          "antd `getContainer` — the scroll box holding the sections; omitted → the nearest block-axis scroller, else the viewport (gh#984). Superseded by `target` (gh#890), which mirrors `Affix`'s own spelling for the identical idea; kept live for a call site written before `target` existed.",
       },
       {
         name: "showInkInFixed",

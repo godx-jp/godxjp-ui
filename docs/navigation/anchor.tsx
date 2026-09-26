@@ -257,24 +257,28 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex gap="lg" align="start">
-              <Anchor
-                offsetBlockStart={16}
-                targetOffsetBlockStart={24}
-                label="On this page"
-                items={[
-                  { key: "page-a", href: "#page-alpha", title: "Alpha · 第一章" },
-                  {
-                    key: "page-b",
-                    href: "#page-beta",
-                    title: "Beta · 第二章",
-                    children: [
-                      { key: "page-b1", href: "#page-beta-one", title: "Beta, part one" },
-                      { key: "page-b2", href: "#page-beta-two", title: "Beta, part two" },
-                    ],
-                  },
-                  { key: "page-c", href: "#page-gamma", title: "Gamma · 第三章" },
-                ]}
-              />
+              {/* A pinned side rail has no room on a phone: at 320px it was squeezed to 58px and
+                  broke "Gamma" mid-word. Documentation sites drop the in-page rail below md. */}
+              <Flex hideBelow="md">
+                <Anchor
+                  offsetBlockStart={16}
+                  targetOffsetBlockStart={24}
+                  label="On this page"
+                  items={[
+                    { key: "page-a", href: "#page-alpha", title: "Alpha · 第一章" },
+                    {
+                      key: "page-b",
+                      href: "#page-beta",
+                      title: "Beta · 第二章",
+                      children: [
+                        { key: "page-b1", href: "#page-beta-one", title: "Beta, part one" },
+                        { key: "page-b2", href: "#page-beta-two", title: "Beta, part two" },
+                      ],
+                    },
+                    { key: "page-c", href: "#page-gamma", title: "Gamma · 第三章" },
+                  ]}
+                />
+              </Flex>
               <Flex direction="col" gap="md" className="flex-1">
                 <Chapter id="page-alpha" title="Alpha · 第一章" lines={6} />
                 <Chapter id="page-beta" title="Beta · 第二章" lines={2} />

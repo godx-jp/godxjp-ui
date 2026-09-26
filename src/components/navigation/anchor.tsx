@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { isDevelopment } from "../../lib/dev";
-import { useControlledLatch } from "../../lib/hooks";
+import { scrollBoxOf, useControlledLatch } from "../../lib/hooks";
 import { cn, prefersReducedMotion } from "../../lib/utils";
 import { Affix } from "../layout/affix";
 import type {
@@ -241,7 +241,10 @@ export function Anchor({
   // highlight too; there is no second, unscoped path left to fall into.
   const container = React.useCallback((): AnchorContainerProp => {
     if (target) return target() ?? window;
-    return getContainer?.() ?? window;
+    // Omitted, the container is the box the rail actually scrolls in — the same default Affix uses
+    // (gh#984). Inside `PageContainer fill` or any inner scroller, `window` never scrolls, so the
+    // highlight never moved and the pinned rail measured against the wrong box.
+    return getContainer?.() ?? scrollBoxOf(navRef.current) ?? window;
   }, [target, getContainer]);
 
   // The decision line. antd uses `targetOffset` for it whenever that is a number and falls back to

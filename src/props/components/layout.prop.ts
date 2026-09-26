@@ -1966,7 +1966,8 @@ export type MasonryProp<TData = unknown> = {
  *
  * It is a FUNCTION and not an element because the element does not exist on the render that
  * declares it: the caller writes `target={() => scrollRef.current}` and the component calls it
- * after mount. `window` (the default) means the document viewport.
+ * after mount. `() => window` means the document viewport. Omitted, it is the nearest ancestor
+ * that scrolls on the block axis (`position: sticky`'s rule), and the viewport only when none does.
  * @see Affix
  */
 export type AffixTargetProp = () => Window | HTMLElement | null;
@@ -2022,7 +2023,7 @@ export type AffixProp = {
    * @deprecated Ant Design spells this `offsetBottom`; in `@godxjp/ui` it is `offsetBlockEnd`.
    */
   offsetBottom?: never;
-  /** The scroll box to pin against. Ant Design `target`, default `() => window`. */
+  /** The scroll box to pin against. Ant Design `target`; omitted → the nearest block-axis scroller, else the viewport. */
   target?: AffixTargetProp;
   /**
    * Fires when the pinned state FLIPS, and only then — never on a scroll frame that did not
