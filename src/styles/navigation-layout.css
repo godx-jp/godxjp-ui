@@ -65,6 +65,35 @@
     border-width: var(--stroke-hairline);
   }
 
+  /* THE STRIP PAINTS ABOVE ITS PANEL, and the panel keeps its z-indices to itself (gh#977).
+   *
+   * The line strip carries a negative block margin equal to the focus ring's reach (tabs.tsx, gh#376)
+   * so the ring is not clipped and the strip does not grow. Its side effect: the block right after
+   * it rises by that much — into the exact strip where the active bar below is drawn. A transparent
+   * panel hides that. A DataTable does not: its `thead` is `position: sticky; z-index: 10` on an
+   * opaque ground, so it painted OVER the bar. Measured on `card/examples/tab-list`: bar at y
+   * 193–195, strip ending at 196, table header starting at 193, and `elementFromPoint` 2px under the
+   * active tab returning `table-head`. The active tab lost its underline and read as selected only
+   * by a slightly darker label.
+   *
+   * NOT fixed by raising the bar's z-index. `z-index: 11` beats the header, but the library also has
+   * sticky layers at `z-index: 1` (PageContainer's sticky footer, frozen columns), and a bar at 11
+   * would bleed through them while the page scrolls — one defect traded for another.
+   *
+   * Instead: ISOLATE the panel, so whatever z-index its content carries (10 for a sticky header)
+   * only ranks INSIDE it, and give the strip `z-index: 1` — enough to paint over the panel, and no
+   * higher than those sticky layers, which (later in the tree) still paint over the strip. Scoped
+   * to line tabs, the only variant with the negative margin. */
+  [data-slot="tabs-list"][data-variant="line"] {
+    position: relative;
+    z-index: 1;
+  }
+
+  [data-slot="tabs"]:has([data-slot="tabs-list"][data-variant="line"])
+    > :is([data-slot="tabs-panel"], [data-slot="tabs-content"]) {
+    isolation: isolate;
+  }
+
   /* It is deliberately painted here (not as an `after:*` utility) so it stays independent of the
    * `:focus-visible` ring utilities: "selected" and "keyboard-focused" are two different states
    * and must remain visually distinct (WCAG 2.4.7). */
