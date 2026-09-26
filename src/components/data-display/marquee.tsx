@@ -5,6 +5,7 @@ import { useTranslation } from "../../i18n/use-translation";
 import { useMediaQuery } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
+import { revealInMarquee } from "./marquee-reveal";
 import { ScrollArea } from "./scroll-area";
 import type { MarqueeProp } from "../../props/components/data-display.prop";
 import type { GapProp } from "../../props/vocabulary";
@@ -138,6 +139,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProp>(function Ma
   const trackId = React.useId();
   const viewportRef = React.useRef<HTMLDivElement | null>(null);
   const copyRef = React.useRef<HTMLDivElement | null>(null);
+  const trackRef = React.useRef<HTMLDivElement | null>(null);
 
   const [uncontrolledPlay, setUncontrolledPlay] = React.useState(defaultPlay);
   const playing = play ?? uncontrolledPlay;
@@ -246,8 +248,23 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProp>(function Ma
       style={animatedStyle}
       {...props}
     >
-      <div ref={viewportRef} data-slot="marquee-viewport" className="ui-marquee-viewport">
-        <div id={trackId} data-slot="marquee-track" className="ui-marquee-track">
+      <div
+        ref={viewportRef}
+        data-slot="marquee-viewport"
+        className="ui-marquee-viewport"
+        // Focus pauses the track (motion.css), but an item that has travelled off the inline-start
+        // side cannot be scrolled back — the browser leaves it focused and invisible. Seek the lap
+        // instead, after the browser has done its own scrolling (gh#983).
+        onFocus={(event) => {
+          const item = event.target;
+          requestAnimationFrame(() => {
+            if (viewportRef.current && trackRef.current) {
+              revealInMarquee(viewportRef.current, trackRef.current, item);
+            }
+          });
+        }}
+      >
+        <div ref={trackRef} id={trackId} data-slot="marquee-track" className="ui-marquee-track">
           <div ref={copyRef} data-slot="marquee-copy" className="ui-marquee-copy">
             {children}
           </div>

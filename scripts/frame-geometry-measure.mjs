@@ -12,7 +12,7 @@
  * scrollable: a DataTable's `.ui-data-table-scroll` at 320px, a `FilterBar overflow="scroll"`
  * strip, a tabs list.
  */
-export function measure() {
+export async function measure() {
   const frame = document.querySelector(".demo-block-frame");
   if (!frame) return { overflowX: false, clipped: 0, scrollWidth: 0, clientWidth: 0 };
   const fr = frame.getBoundingClientRect();
@@ -104,6 +104,40 @@ export function measure() {
     return false;
   };
 
+  /**
+   * REACHABLE BY FOCUS — Tab brings it into the frame, and does so WITHOUT scrolling a clipping
+   * ancestor (gh#983).
+   *
+   * A Marquee's links travel off the inline-start side into negative overflow, which no scroll
+   * container reaches, so `reachableByScroll` rightly says no. But focusing one pauses the track and
+   * seeks the lap until it is centred — a keyboard user DOES bring it into the frame, and counting it
+   * as clipped kept `data-display-marquee` red at six widths for a control that works.
+   *
+   * The ancestor clause is what stops this from excusing real defects: Chromium scrolls even an
+   * `overflow: hidden` box to reveal a focused descendant, so an input cut off by a card would also
+   * "arrive" on focus — inside a pane its pointer user can never scroll back. If any ancestor's
+   * `scrollLeft` moved, the arrival does not count. (The Marquee undoes the browser's own scroll
+   * before seeking, which is why it passes.)
+   */
+  const reachableByFocus = async (el) => {
+    if (typeof el.focus !== "function" || typeof requestAnimationFrame !== "function") return false;
+    const saved = [];
+    for (let p = el.parentElement; p && p !== frame; p = p.parentElement)
+      saved.push([p, p.scrollLeft]);
+    const previous = document.activeElement;
+    el.focus();
+    // Two frames: the component's own focus handler runs in the first.
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const er = el.getBoundingClientRect();
+    const f2 = frame.getBoundingClientRect();
+    const inside = er.right <= f2.right + 1 && er.left >= f2.left - 1;
+    const scrolled = saved.some(([p, left]) => Math.abs(p.scrollLeft - left) > 1);
+    for (const [p, left] of saved) p.scrollLeft = left;
+    el.blur?.();
+    previous?.focus?.();
+    return inside && !scrolled;
+  };
+
   let clipped = 0;
   for (const el of frame.querySelectorAll(
     "a[href], button, [role=button], input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex='-1'])",
@@ -113,7 +147,7 @@ export function measure() {
     if (!isControl(el)) continue;
     if (viewportAnchored(el)) continue;
     if (r.right > fr.right + 1 || r.left < fr.left - 1) {
-      if (!reachableByScroll(el)) clipped++;
+      if (!reachableByScroll(el) && !(await reachableByFocus(el))) clipped++;
     }
   }
   return { overflowX, clipped, scrollWidth: frame.scrollWidth, clientWidth: frame.clientWidth };
