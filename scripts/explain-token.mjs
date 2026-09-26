@@ -39,9 +39,15 @@
  *   node scripts/explain-token.mjs --json <name>           machine-readable, for a gate
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { dirname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = process.cwd();
+/* The PACKAGE root, from this file's own location — never `process.cwd()` (gh#980). The documented
+ * call is `node node_modules/@godxjp/ui/scripts/explain-token.mjs` from the consumer's directory, and
+ * with cwd as the root every read below looked in the consumer's tree: no catalog, no CSS, and a
+ * confident "no token matches" for every token that exists. In this checkout the two roots coincide,
+ * which is why the defect was invisible here. */
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** Source of truth for what a CONSUMER can set: the published catalog, not the stylesheets. */
 function publishedTokens() {
