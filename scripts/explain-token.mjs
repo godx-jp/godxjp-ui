@@ -145,9 +145,35 @@ function parse(file) {
         .slice(m.index, m.index + 400)
         .replace(/\s+/g, " ")
         .includes(`${m[1]},`),
+      fallback: fallbackAt(blank, m.index),
     });
   }
   return { decls, reads };
+}
+
+/**
+ * The fallback text of the `var(` that opens at `at`, or null. Balanced on parentheses, because the
+ * fallbacks this package writes are formulas — `calc(var(--font-size-base) / var(--font-size-ratio))`
+ * — and stopping at the first `)` would print half of one.
+ */
+function fallbackAt(blank, at) {
+  let depth = 0;
+  let comma = -1;
+  for (let i = at; i < blank.length; i += 1) {
+    const ch = blank[i];
+    if (ch === "(") depth += 1;
+    else if (ch === ")") {
+      depth -= 1;
+      if (depth === 0)
+        return comma < 0
+          ? null
+          : blank
+              .slice(comma + 1, i)
+              .trim()
+              .replace(/\s+/g, " ");
+    } else if (ch === "," && depth === 1 && comma < 0) comma = i;
+  }
+  return null;
 }
 
 /** The selector chain enclosing a byte offset, outermost first. */
@@ -288,6 +314,27 @@ function trace(name, { decls, reads }, published, scopedNames) {
     );
   }
   if (myReads.length > 12) console.log(`    … and ${myReads.length - 12} more`);
+
+  /* THE PATCH SHAPE, printed rather than left to be inferred (gh#988). An `initial` knob read bare
+   * is unset, so a consumer migrating a rule has to copy the package's own fallback — and without
+   * this line they went looking for a shorter token instead, picked `--text-xs` (unpublished,
+   * Tailwind-inlined to 12px) over `--font-size-xs` (12.4699px), and shipped a 0.47px shift no
+   * gate caught. The most common fallback wins; the count says how settled it is. */
+  if (mine.some((d) => d.value === "initial")) {
+    const counts = new Map();
+    for (const r of myReads)
+      if (r.fallback) counts.set(r.fallback, (counts.get(r.fallback) ?? 0) + 1);
+    const [best, n] = [...counts].sort((a, b) => b[1] - a[1])[0] ?? [];
+    if (best) {
+      console.log(`  read it as: var(${name}, ${best})`);
+      console.log(
+        `             ${n} of ${myReads.length} read(s) use this fallback — the knob is \`initial\`, so a bare read is unset.`,
+      );
+    }
+  }
+  if (!tier && myReads.length === 0) {
+    console.log("  → not part of the contract: read a published token instead.");
+  }
   return { name, tier, decls: mine, reads: myReads };
 }
 
