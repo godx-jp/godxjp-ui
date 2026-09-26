@@ -1,6 +1,7 @@
 import type { Locale } from "date-fns";
 import { getDateFnsLocale } from "../../app/locales";
 import { resolveDefaultDateFormat } from "../../app/date-format-labels";
+import { resolveHydrationSafeTimezone } from "../../app/timezones";
 import type { AppLocale, AppTimeFormat, AppDateFormat } from "../../app/types";
 
 export type DatetimeContext = {
@@ -11,12 +12,20 @@ export type DatetimeContext = {
   dateFormat: AppDateFormat;
 };
 
+/** Must equal AppProvider's `defaultLocale` default, so "not configured" means one thing. */
 const DEFAULT_LOCALE: AppLocale = "vi";
 
+/*
+ * What `formatDate` uses until AppProvider syncs — module load, SSR, and tests that reset.
+ *
+ * The timezone is AppProvider's OWN unconfigured answer (`defaultTimezone = "browser"`, no
+ * `systemTimezone`), taken from the same function, so the two cannot drift again (gh#968). It was a
+ * hard-coded `Asia/Ho_Chi_Minh`, which disagreed with the provider AND looked plausible when wrong.
+ */
 const defaultContext = (): DatetimeContext => ({
   locale: DEFAULT_LOCALE,
   dateFnsLocale: getDateFnsLocale(DEFAULT_LOCALE),
-  timezone: "Asia/Ho_Chi_Minh",
+  timezone: resolveHydrationSafeTimezone("browser"),
   timeFormat: "24h",
   dateFormat: resolveDefaultDateFormat(DEFAULT_LOCALE),
 });
@@ -26,16 +35,18 @@ let liveRelativeFormattingEnabled = true;
 
 /** Sync module-level datetime prefs from AppProvider (mirrors syncI18nLocale). */
 export function syncDatetimeContext(
-  partial: Pick<DatetimeContext, "locale" | "timezone" | "timeFormat" | "dateFormat"> & {
+  // `prefs`, not `partial`: the type demands all four fields and the body REPLACES the context
+  // rather than merging, so a name promising a partial update was the one wrong thing here.
+  prefs: Pick<DatetimeContext, "locale" | "timezone" | "timeFormat" | "dateFormat"> & {
     dateFnsLocale?: Locale;
   },
 ): void {
   syncedContext = {
-    locale: partial.locale,
-    timezone: partial.timezone,
-    timeFormat: partial.timeFormat,
-    dateFormat: partial.dateFormat,
-    dateFnsLocale: partial.dateFnsLocale ?? getDateFnsLocale(partial.locale),
+    locale: prefs.locale,
+    timezone: prefs.timezone,
+    timeFormat: prefs.timeFormat,
+    dateFormat: prefs.dateFormat,
+    dateFnsLocale: prefs.dateFnsLocale ?? getDateFnsLocale(prefs.locale),
   };
 }
 
