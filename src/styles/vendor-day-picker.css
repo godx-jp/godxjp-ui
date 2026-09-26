@@ -1,0 +1,9 @@
+/*
+ * VENDOR WRAPPER — react-day-picker's stylesheet, in `layer(vendor)`, for prune-css output
+ * (gh#971). Same mechanics and same caveats as vendor-sonner.css: a pruned consumer file
+ * imports this package-owned wrapper because `react-day-picker` is a transitive dependency a
+ * consumer's own css cannot resolve under pnpm, and `layer(vendor)` mirrors styles/index.css.
+ * Emitted by `scripts/prune-css.mjs` when a used component's closure renders a Calendar
+ * (Calendar, DatePicker, …) per dist/styles/layers.json — not a supported hand-written import.
+ */
+@import "react-day-picker/style.css" layer(vendor);

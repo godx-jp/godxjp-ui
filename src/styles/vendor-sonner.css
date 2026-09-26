@@ -1,0 +1,15 @@
+/*
+ * VENDOR WRAPPER — sonner's stylesheet, in `layer(vendor)`, for prune-css output (gh#971).
+ *
+ * A pruned consumer stylesheet cannot say `@import "sonner/dist/styles.css"` itself: sonner is
+ * THIS package's dependency, and under pnpm's strict layout a transitive dependency does not
+ * resolve from the consumer's own css file. Imported from here, inside the package, it resolves
+ * the same way styles/index.css already resolves it. The `layer(vendor)` placement matches
+ * index.css exactly — see the layer-contract comment there for why vendor sits between base
+ * and components.
+ *
+ * Not an entry for humans: `@godxjp/ui/styles`, `styles/core` and the two font variants remain
+ * the supported hand-written imports. This file exists so a file EMITTED by
+ * `scripts/prune-css.mjs` needs it (Toaster in use, per dist/styles/layers.json).
+ */
+@import "sonner/dist/styles.css" layer(vendor);

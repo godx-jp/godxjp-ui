@@ -214,7 +214,29 @@ slices below roughly 620 distinct characters. Full table and reasoning in
 > missing layer fails silently: menus render with no background, rows with no
 > height. `styles`, `styles/core`, `styles/core-with-fallbacks` and
 > `styles/core-with-jis-level1` are the four supported entries; the runtime `visual-audit` flags a
-> page whose layers are incomplete (`css-layers-missing`).
+> page whose layers are incomplete (`css-layers-missing`). The one supported way to ship LESS
+> than `core` is `prune-css` below — the tool slices along the dependency graph the package
+> ships, so it cannot forget a layer the way a hand-picked list does.
+
+### prune-css — ship only the component layers you use (gh#971)
+
+`core` still carries every component's layers (~64 KB gzip for all ~165). If that remainder
+matters, let the package slice it:
+
+```bash
+npx @godxjp/ui prune-css resources/js --out resources/css/godx-ui.css   # --fonts for the bundled faces
+```
+
+It scans your sources for `@godxjp/ui` imports, resolves the CSS layer dependency closure from
+the graph shipped in `dist/styles/layers.json` (what each component's internals render is part
+of the graph — a `DataTable` still gets its dropdown and pagination surfaces), and emits a file
+that imports the foundation plus only the needed layers, in `styles/index.css`'s exact order.
+Import that file INSTEAD of `@godxjp/ui/styles`. Defaults mirror `styles/core` (no
+`@font-face`); the sonner / react-day-picker vendor sheets come along only when a used
+component renders them. **Re-run it whenever the set of components you use changes and after
+every upgrade** — the emitted header says so, and the tool refuses to run against a manifest
+from a different package version. Measured on gh#971's 15-component app: 368 KB gzip
+(`styles`) → 86 KB (`core`) → 75 KB pruned; a small 8-component app lands at 55 KB.
 
 ## Golden ratio (φ ≈ 1.618)
 
