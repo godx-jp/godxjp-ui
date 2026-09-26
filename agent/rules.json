@@ -195,7 +195,7 @@
     "title": "Long text columns get an explicit width"
   },
   {
-    "body": "Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction=\"col\"`, control rows = the default `direction=\"row\"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers.",
+    "body": "Author and verify every page at 320–390px FIRST. Page sections are spaced by `PageContainer` itself (`--page-body-gap` between its direct children). Inside a section spacing comes only from `Flex` `gap` (vertical rhythm = `Flex direction=\"col\"`, control rows = the default `direction=\"row\"`) + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout (the static audit rejects them). Styles are loaded whole: `@godxjp/ui/styles` or `styles/core`, never a hand-picked set of layers. They differ ONLY in the 729 bundled CJK `@font-face` declarations, and that difference is most of the CSS: 367 KB vs 86 KB gzip for a 15-component app (gh#971) — pick `styles/core` whenever the app loads fonts another way.",
     "number": 40,
     "title": "Pages are mobile-first"
   },

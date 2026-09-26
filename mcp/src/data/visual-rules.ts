@@ -25,7 +25,7 @@ export const VISUAL_RULES: VisualRule[] = [
     severity: "error",
     category: "layout",
     standard: "@godxjp/ui styles contract (styles / styles/core are the only entries)",
-    fix: "Import `@godxjp/ui/styles` (or `styles/core` without fonts); never cherry-pick *-layout.css — a missing layer renders naked menus and unsized Select rows.",
+    fix: "Import `@godxjp/ui/styles` (or `styles/core` without fonts — 86 KB instead of 367 KB gzip, since the bundled @font-face declarations are most of the CSS, gh#971); never cherry-pick *-layout.css — a missing layer renders naked menus and unsized Select rows.",
   },
   {
     id: "control-height-mismatch",
