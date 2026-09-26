@@ -94,6 +94,36 @@ try {
         .then(() => true)
         .catch(() => false);
       if (!found) continue;
+      /*
+       * SCROLL IT INTO VIEW FIRST, AND THIS IS THE WHOLE DEFECT (gh#966).
+       *
+       * `reach()` below starts at the element's own CENTRE and walks outward, and
+       * `elementFromPoint` answers `null` for any point outside the viewport. The first
+       * `.ui-control-inline-affix-action` on `/isolate/data-entry-input` sits at y≈2358 in a
+       * 900px viewport, so the very first probe missed and the scan reported `hit 0×0` — which
+       * this gate then printed as "1 claim(s) the package does not keep".
+       *
+       * Measured, same element, same run: before the scroll `paint 20×20 / hit 0×0`; after it
+       * `paint 20×20 / hit 24.5×24.5`, comfortably over the 24px floor. The contract was right,
+       * the CSS was right, and the gate had been red every night since 2026-09-21 saying otherwise.
+       *
+       * The other three expanders passed only because they happened to be above the fold on their
+       * own pages. That is luck, not coverage.
+       */
+      /*
+       * To the CENTRE of the viewport, not merely into it. `scrollIntoViewIfNeeded` scrolls the
+       * minimum, which can leave the element flush against an edge — and `reach()` walks up to
+       * `min * 2` px outward, so a centre within ~13px of an edge has its scan cut short by
+       * `elementFromPoint` answering null past the viewport. That UNDER-reports a conforming target
+       * and brings back exactly the false "claim not kept" this change exists to remove, one edge
+       * further out. Found reviewing this fix, not by a failure.
+       *
+       * `document.querySelector` rather than the locator, so the element scrolled is the element
+       * measured below.
+       */
+      await page.evaluate((selector) => {
+        document.querySelector(selector)?.scrollIntoView({ block: "center", inline: "center" });
+      }, entry.selector);
       await page.waitForTimeout(200);
 
       measured = await page.evaluate(
@@ -116,6 +146,32 @@ try {
 
           const el = document.querySelector(selector);
           const rect = el.getBoundingClientRect();
+          /*
+           * "I could not measure this" and "this claim is false" are different answers, and only
+           * one of them is about the package. Reporting the first as the second is what made this
+           * gate accuse a conforming contract (gh#966), so the centre is checked explicitly and
+           * the caller is told which it got.
+           */
+          const centre = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+          // Half-open: `elementFromPoint` answers inside [0, innerWidth) × [0, innerHeight) only, so
+          // a centre ON the right or bottom edge is already outside what it can see.
+          const inViewport =
+            centre.x >= 0 &&
+            centre.y >= 0 &&
+            centre.x < window.innerWidth &&
+            centre.y < window.innerHeight;
+          if (!inViewport || rect.width === 0 || rect.height === 0) {
+            return {
+              paint: { width: +rect.width.toFixed(2), height: +rect.height.toFixed(2) },
+              hit: null,
+              unmeasurable: rect.width === 0 || rect.height === 0
+                ? "the element paints nothing (0 box), so there is no centre to probe"
+                : `its centre (${Math.round(centre.x)}, ${Math.round(centre.y)}) is outside the ` +
+                  `${window.innerWidth}×${window.innerHeight} viewport, so elementFromPoint ` +
+                  `answers null and the scan cannot start`,
+              stolen: null,
+            };
+          }
           const width = reach(el, -1, 0) + reach(el, 1, 0);
           const height = reach(el, 0, -1) + reach(el, 0, 1);
 
@@ -155,6 +211,16 @@ try {
       failures.push(
         `✗ ${entry.selector} — not rendered on any of ${routes.join(", ")}. The contract promises a ` +
           `${min}px target for a selector this catalogue never shows.`,
+      );
+      continue;
+    }
+
+    if (measured.unmeasurable) {
+      // Deliberately still a failure — a claim nobody can check is not a claim that holds — but it
+      // names the measurement, not the package, so nobody goes looking for a defect that is not there.
+      failures.push(
+        `✗ ${entry.selector} — COULD NOT MEASURE: ${measured.unmeasurable}. ` +
+          `This says nothing about whether the package keeps the claim; fix the probe.`,
       );
       continue;
     }
