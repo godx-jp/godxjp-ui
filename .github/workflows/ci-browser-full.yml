@@ -234,3 +234,83 @@ jobs:
           DATA_ENTRY_STORIES: ${{ matrix.stories }}
           # check-data-entry-frame-runtime reads PREVIEW_PORT; the other scripts keep their own.
           PREVIEW_PORT: ${{ matrix.port }}
+
+  # ── The alarm this lane never had (gh#965) ──────────────────────────────────────────────────────
+  # This lane was red on EVERY scheduled run from 2026-09-21 to 2026-09-26 — six nights, four jobs —
+  # and nothing in the tracker knew. Its whole reason to exist is to catch what the per-merge lanes
+  # cannot, so a red run nobody sees is the same as not running it. `godx-jp/id` solved exactly this
+  # (id#1489 item 4, the job that keeps id#1797 open); this is that job, ported, lessons included.
+  #
+  # One issue, OPEN only while the lane is red: opened on the first red night, commented on every
+  # red night after, closed by the first green one. So an open issue always means "red right now".
+  #
+  # Only on `schedule`. A `workflow_dispatch` or a `run-browser` PR label is someone looking on
+  # purpose; it must not open or close the nightly alarm.
+  nightly-alert:
+    name: Report the nightly verdict
+    needs: [geometry, token-wins, token-scope, control-glyph-tier, rendered-runtime]
+    if: ${{ always() && github.event_name == 'schedule' }}
+    runs-on: [self-hosted, swarm-pool]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open, update or close the nightly alert issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # This job does NOT check out. `gh` infers the repository from the git remote, so without a
+          # `.git` its first call dies with "not a git repository", and under `set -e` the whole step
+          # stops there — no issue, no comment, no close. That is how id's alarm went silent while its
+          # lane stayed red; naming the repo here is the fix it paid for.
+          GH_REPO: ${{ github.repository }}
+          GEOMETRY: ${{ needs.geometry.result }}
+          TOKEN_WINS: ${{ needs.token-wins.result }}
+          TOKEN_SCOPE: ${{ needs.token-scope.result }}
+          GLYPH_TIER: ${{ needs.control-glyph-tier.result }}
+          RENDERED_RUNTIME: ${{ needs.rendered-runtime.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          title="[nightly] CI · browser (full sweep) đang đỏ"
+
+          # A string, not an array: `set -u` on an older bash rejects expanding an EMPTY array, and
+          # "nothing failed" is the case this branch sees most.
+          failed=''
+          [ "${GEOMETRY}" = 'success' ]         || failed="${failed}"$'\n'"- Viewport-matrix geometry sweep (${GEOMETRY})"
+          [ "${TOKEN_WINS}" = 'success' ]       || failed="${failed}"$'\n'"- Inert component tokens (CDP cascade sweep) (${TOKEN_WINS})"
+          [ "${TOKEN_SCOPE}" = 'success' ]      || failed="${failed}"$'\n'"- Unreachable tokens (scope + freeze sweep) (${TOKEN_SCOPE})"
+          [ "${GLYPH_TIER}" = 'success' ]       || failed="${failed}"$'\n'"- Unsized control glyphs (icon-tier sweep) (${GLYPH_TIER})"
+          [ "${RENDERED_RUNTIME}" = 'success' ] || failed="${failed}"$'\n'"- rendered-runtime, one or more shards (${RENDERED_RUNTIME})"
+
+          # The LIST API, not `--search`: GitHub's search index lags by minutes, so an issue opened
+          # last night can be invisible to a search tonight — and tonight would open a second one,
+          # which is the one thing this job exists not to do.
+          existing="$(gh issue list --state open --label ci --limit 100 \
+            --json number,title \
+            --jq "[.[] | select(.title == \"${title}\")] | .[0].number // empty")"
+
+          if [ -z "${failed}" ]; then
+            if [ -n "${existing}" ]; then
+              gh issue comment "${existing}" --body "Làn đã XANH trở lại: ${RUN_URL}"$'\n\n'"Đóng lại. Một issue đang mở ở đây luôn có nghĩa là *ngay lúc này đang đỏ*."
+              gh issue close "${existing}" --reason completed
+              echo "Nightly lane green again; closed #${existing}."
+            else
+              echo 'Nightly lane green; nothing to report.'
+            fi
+            exit 0
+          fi
+
+          body="Lượt nightly đỏ: ${RUN_URL}"$'\n\n'"Job đỏ:${failed}"
+
+          if [ -n "${existing}" ]; then
+            gh issue comment "${existing}" --body "${body}"
+            echo "Commented on #${existing}."
+          else
+            body="${body}"$'\n\n'"Mở tự động bởi job \`nightly-alert\` (gh#965). Nó comment thêm mỗi đêm còn đỏ, và tự đóng khi làn xanh trở lại."
+            gh issue create --title "${title}" --label ci --label bug --body "${body}"
+          fi
+
+          # Red, so the run page says what the issue just said.
+          exit 1
