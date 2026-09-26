@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+import { globSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { defineConfig } from "vitest/config";
@@ -7,6 +8,26 @@ import react from "@vitejs/plugin-react";
 const require = createRequire(import.meta.url);
 const reactDir = path.dirname(require.resolve("react/package.json"));
 const reactDomDir = path.dirname(require.resolve("react-dom/package.json"));
+
+/* TESTS THAT START OTHER PROCESSES RUN LAST, ONE AT A TIME (gh#991).
+ *
+ * Measured on the CI runner, not assumed: each test job is a container with a CPU QUOTA of three
+ * (`cgroup cpu.max = 300000 100000`, `availableParallelism() = 3`), so `maxWorkers: "75%"` is two
+ * workers. A test that spawns `node`/`tsx` — a generator, `pnpm regen`, a release script — adds its
+ * children to those two, the container goes over its quota, and the kernel throttles EVERY process
+ * in it for the rest of each 100ms period. That is why the failures were never the same test twice
+ * and never an assertion: across the last 15 `CI · code` runs, 24 timeouts and 0 wrong answers, in
+ * the spawners themselves (regen 5, comment-ghost 4, release-plan 8, explain-token 2) and in
+ * whatever pure test shared the box with them that minute (tenant-theme 3, popover-cascade 3 — 3.2s
+ * and 1.5s locally, past 20s there).
+ *
+ * So the spawners are found by what they DO — the file calls a child-process API — rather than by
+ * a list someone has to remember to extend, and they get a project of their own that runs after
+ * the parallel one with a single worker: nothing else is in the container while they run. */
+const SPAWNS = /\b(execFileSync|execSync|spawnSync|execFile|spawn|fork)\s*\(/;
+const SPAWNING_TESTS = globSync("src/**/*.test.{ts,tsx}").filter((file) =>
+  SPAWNS.test(readFileSync(file, "utf8")),
+);
 
 export default defineConfig({
   plugins: [react()],
@@ -24,7 +45,8 @@ export default defineConfig({
     environment: "jsdom",
     globals: false,
     setupFiles: ["./vitest.setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    // `include` lives on each project, never here: `extends: true` CONCATENATES arrays, so a root
+    // include would be added to `spawns` too and every test would run in both projects.
     /* 8s was not enough on CI, and the reason is in the two comments below rather than in any
      * test. Four shards run AT THE SAME TIME on one self-hosted runner, and each one takes
      * `maxWorkers: "75%"` of that box — roughly 300% oversubscription. A `userEvent.type` inserts
@@ -37,9 +59,12 @@ export default defineConfig({
      * well under a second. Nothing about them changed; the machine did.
      *
      * 20s is a load allowance, not a budget: no test here is expected to take more than a fraction
-     * of it, and a genuine hang still fails. The real fix is the oversubscription — either fewer
-     * shards or a per-shard worker cap that accounts for them — and that is a CI change with its
-     * own measurement, not something to slip into a release. */
+     * of it, and a genuine hang still fails.
+     *
+     * Correction, measured later (gh#991): each shard is its OWN container with a 3-CPU quota, and
+     * `availableParallelism()` already reports 3 there, so "75% of the box" is two workers, not a
+     * 300% oversubscription. The contention was real but came from tests that SPAWN processes
+     * inside that quota — see SPAWNING_TESTS above for the measurement and the fix. */
     testTimeout: 20_000,
     // `forks`, not `threads`: these are jsdom tests and several suites reach for process-level
     // globals (matchMedia stubs, IANA timezone, the i18n singleton). A forked child gets a real
@@ -64,6 +89,26 @@ export default defineConfig({
     // Leave a core for the OS and for whatever else is running; on CI this is capped by the
     // runner's own core count anyway.
     maxWorkers: "75%",
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          include: ["src/**/*.test.{ts,tsx}"],
+          exclude: SPAWNING_TESTS,
+          sequence: { groupOrder: 0 },
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "spawns",
+          include: SPAWNING_TESTS,
+          maxWorkers: 1,
+          sequence: { groupOrder: 1 },
+        },
+      },
+    ],
     coverage: {
       provider: "v8",
       include: ["src/components/**", "src/form/**", "src/lib/**"],
