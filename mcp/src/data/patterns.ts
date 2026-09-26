@@ -159,7 +159,7 @@ export function SignUpCard() {
 // and responsive/visibility utilities — the library ships NO bespoke settings shell/nav CSS classes.
 import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { Flex } from "@godxjp/ui/layout";
-import { FormField, Input } from "@godxjp/ui/data-entry";
+import { Form, FormField, Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 
 const SECTIONS = [
@@ -201,24 +201,23 @@ export function SettingsLayout() {
 }
 
 // A settings section. Horizontal label/control rows on desktop (collapse to stacked on mobile),
-// controls bounded to a semantic width. FormField OWNS the label↔control relationship — do NOT
-// hand-roll <Label> + <input>. Save feedback = Button loading prop + a toast in onSuccess.
+// controls bounded to a semantic width — set ONCE on the <Form>, which every FormField reads
+// (gh#998). FormField OWNS the label↔control relationship — do NOT hand-roll <Label> + <input>. Save feedback = Button loading prop + a toast in onSuccess.
 export function GeneralSettingsSection({
   defaults, onSave, saving, error,
 }: { defaults: { name: string; email: string }; onSave: (v: FormData) => void; saving: boolean; error?: string }) {
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(new FormData(e.currentTarget)); }}>
-      <Flex direction="col" gap="md">
-        <FormField id="ws-name" label="ワークスペース名" layout="horizontal" controlWidth="24rem"
-          helper="請求書や共有リンクに表示されます。" error={error}>
-          <Input id="ws-name" name="name" defaultValue={defaults.name} />
-        </FormField>
-        <FormField id="ws-email" label="連絡先メール" layout="horizontal" controlWidth="24rem">
-          <Input id="ws-email" name="email" type="email" defaultValue={defaults.email} />
-        </FormField>
-        <Flex gap="sm"><Button type="submit" loading={saving}>変更を保存</Button></Flex>
-      </Flex>
-    </form>
+    <Form layout="horizontal" controlWidth="24rem"
+      onSubmit={(e) => { e.preventDefault(); onSave(new FormData(e.currentTarget)); }}>
+      <FormField id="ws-name" label="ワークスペース名"
+        helper="請求書や共有リンクに表示されます。" error={error}>
+        <Input id="ws-name" name="name" defaultValue={defaults.name} />
+      </FormField>
+      <FormField id="ws-email" label="連絡先メール">
+        <Input id="ws-email" name="email" type="email" defaultValue={defaults.email} />
+      </FormField>
+      <Flex gap="sm"><Button type="submit" loading={saving}>変更を保存</Button></Flex>
+    </Form>
   );
 }
 

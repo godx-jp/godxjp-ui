@@ -120,6 +120,20 @@ ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ
 Lỗi không phải "đoán sai tên prop" mà là **cho rằng nó không tồn tại nên không
 hỏi**.
 
+## Form: `Form` bọc `FormField`, bề rộng theo nội dung, form dài là PAGE
+
+godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit ĐÃ CÓ đồ đúng
+(gh#998). Giờ ui-audit chặn:
+
+| Sai                                                | Đúng                                                                                         | rule                   |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------- |
+| `FormField` đứng trần, hoặc xếp hàng bằng `<Flex>` | `<Form layout="horizontal" labelWidth controlWidth>`; hàng = `SpaceCompact` / `Form columns` | `formfield-needs-form` |
+| ≥3 `FormField` trong `DialogBody`                  | page riêng (route riêng)                                                                     | `dialog-form-too-big`  |
+| `Select` hai lựa chọn kéo full width               | `controlWidth` trên field hoặc một lần trên `Form`                                           | `select-width-hint`    |
+
+Ca kit không diễn đạt được thì **mở issue ở godx-jp/godxjp-ui**, tạm dùng cách
+hợp lệ gần nhất kèm `// TODO(godxjp-ui#<n>)` — không tự chế.
+
 ## Dialog và AlertDialog là MỘT họ — `variant` là lối chuẩn
 
 Đừng với tay sang 12 export `AlertDialog*` nữa. Chúng **vẫn chạy y như cũ** (gỡ

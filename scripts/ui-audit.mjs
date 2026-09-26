@@ -85,8 +85,6 @@ function changedFiles() {
     };
   }
 
-
-
   const parts = [
     run(["diff", "--name-only", "--diff-filter=ACMR", mergeBase.trim(), "--"]),
     run(["diff", "--name-only", "--diff-filter=ACMR", "--cached"]),
@@ -1894,6 +1892,84 @@ for (const dir of SCAN_DIRS) {
           "A bare <Label>/<label> paired with a control — wrap the field in <FormField label=…>. FormField owns the label↔control id wiring, aria-describedby/error, AND the field rhythm (label gap + field spacing); a hand-rolled Label+Input loses all of it (the cramped/mis-spaced form).",
         snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
       });
+    }
+
+    /*
+     * THE LAYER ABOVE THE FIELD (gh#998). `bare-control-needs-formfield` stops a control without a
+     * FormField; nothing stopped a FormField without a Form, or a Form without a width, or a form
+     * that belongs on a page stuffed into a Dialog. godx-mailer hit all four in one day. Validated
+     * on the reporter's own files before and after its fixes: every defect caught before, none in
+     * the fixed files except one the fix missed (four FormFields in a hand-rolled wrapping Flex).
+     */
+    if (isJsx) {
+      const lineAt = (i) => scanContent.slice(0, i).split("\n").length;
+      // `<Form` then whitespace / `>` / `/` — the reporter's files break the tag across lines.
+      let formDepth = 0;
+      for (const m of scanContent.matchAll(/<(\/?)(Form|FormField)(?=[\s>/])/g)) {
+        const [, close, tag] = m;
+        if (tag === "Form") {
+          if (close) formDepth -= 1;
+          else if (!/^<Form\b[^>]*?\/>/.test(scanContent.slice(m.index, m.index + 400)))
+            formDepth += 1;
+          continue;
+        }
+        if (close || formDepth > 0) continue;
+        // A FIELD COMPONENT — its whole output is this FormField — is composed into a <Form>
+        // elsewhere (godx-mailer's `AttachmentsField`); flagging it would flag every reusable field.
+        if (/(?:return|=>)\s*\(?\s*$/.test(scanContent.slice(Math.max(0, m.index - 40), m.index))) {
+          continue;
+        }
+        const lineNo = lineAt(m.index);
+        if (suppressed("formfield-needs-form", lineNo - 1)) continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "formfield-needs-form",
+          severity: "error",
+          standard: "@godxjp/ui Form (gh#998)",
+          message:
+            'A <FormField> with no <Form> around it. <Form layout="horizontal" labelWidth controlWidth> is what lines every field up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field\'s label out of line. Wrap the fields in <Form>; a row that belongs together is <SpaceCompact> or <Form columns>. A reusable field component whose whole output is one FormField is exempt.',
+          snippet: scanContent.slice(m.index, m.index + 120).replace(/\s+/g, " "),
+        });
+      }
+
+      for (const m of scanContent.matchAll(
+        /<(Dialog\.Body|DialogBody|Sheet\.Body|SheetBody)(?=[\s>])[\s\S]*?<\/\1>/g,
+      )) {
+        const count = (m[0].match(/<FormField(?=[\s>/])/g) ?? []).length;
+        if (count < 3) continue;
+        const lineNo = lineAt(m.index);
+        if (suppressed("dialog-form-too-big", lineNo - 1)) continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "dialog-form-too-big",
+          severity: "error",
+          standard: "@godxjp/ui form placement (gh#998)",
+          message: `${count} FormFields in a ${m[1]} — a form this size is a page of its own (its own route, back button, and room to scroll), not a modal. Keep dialogs for a confirmation or one or two fields.`,
+          snippet: m[0].slice(0, 120).replace(/\s+/g, " "),
+        });
+      }
+
+      for (const m of scanContent.matchAll(/<FormField(?=[\s>])([^>]*)>([\s\S]*?)<\/FormField>/g)) {
+        if (!/<Select(?=[\s>/])/.test(m[2]) || /controlWidth=/.test(m[1])) continue;
+        const before = scanContent.slice(0, m.index);
+        const lastForm = [...before.matchAll(/<Form(?=[\s>])([^>]*)>/g)].at(-1);
+        const insideForm = lastForm && before.lastIndexOf("</Form>") < lastForm.index;
+        if (insideForm && /controlWidth=/.test(lastForm[1])) continue;
+        const lineNo = lineAt(m.index);
+        if (suppressed("select-width-hint", lineNo - 1)) continue;
+        findings.push({
+          file: rel,
+          line: lineNo,
+          rule: "select-width-hint",
+          severity: "warn",
+          standard: "GOV.UK Design System · text input width",
+          message:
+            "A <Select> in a FormField with no controlWidth on the field or its <Form> stretches to the full column — a two-option select as wide as an address line. Size the control for its content (`controlWidth` on the FormField, or once on the Form). https://design-system.service.gov.uk/components/text-input/",
+          snippet: scanContent.slice(m.index, m.index + 120).replace(/\s+/g, " "),
+        });
+      }
     }
   }
 }

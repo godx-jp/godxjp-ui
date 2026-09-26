@@ -102,7 +102,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_utilities",
     description:
-      "List every NON-component public export of @godxjp/ui — hooks, helper functions and constants (cn, formatDate, formatCurrency, toast, useDebouncedValue, buttonVariants, CHART_COLORS, SHOW_PARENT …). Reach for this before hand-writing a className merger, a date/money formatter, a debounce hook or a chart palette: two products in this org each re-implemented `cn` because it could not be found. Optionally filter by kind. Then `get_component name=\"<name>\"` for its signature, usage and example.",
+      'List every NON-component public export of @godxjp/ui — hooks, helper functions and constants (cn, formatDate, formatCurrency, toast, useDebouncedValue, buttonVariants, CHART_COLORS, SHOW_PARENT …). Reach for this before hand-writing a className merger, a date/money formatter, a debounce hook or a chart palette: two products in this org each re-implemented `cn` because it could not be found. Optionally filter by kind. Then `get_component name="<name>"` for its signature, usage and example.',
     inputSchema: {
       type: "object",
       properties: {
@@ -1102,6 +1102,23 @@ function listUtilities(kind?: UtilityKind): string {
   return out;
 }
 
+/**
+ * FORM RULES, printed where a consumer agent is already looking (gh#998).
+ *
+ * godx-mailer hit four form defects in one day — a bare FormField, a hand-rolled Flex row of
+ * fields, a two-option Select at full width, a long form in a Dialog — and in every case the kit
+ * already had the right part. An agent reads `get_component` / `search_components` before it
+ * writes; guidance here does not depend on anyone remembering a skill. Each line names the ui-audit
+ * rule that enforces it, so the two cannot drift apart silently.
+ */
+export const FORM_RULES =
+  `**FORM RULES** — enforced by ui-audit (\`formfield-needs-form\`, \`dialog-form-too-big\`, \`select-width-hint\`):\n` +
+  `- Wrap fields in \`<Form layout="horizontal" labelWidth controlWidth>\` — never a bare FormField, never a hand-rolled \`<Flex>\` row of fields.\n` +
+  `- Size each control for its content (GOV.UK text-input width): \`controlWidth\` per field or once on the Form — a port ~7rem, a short enum ~10rem.\n` +
+  `- Fields that belong on one row: \`<SpaceCompact>\` or \`<Form columns>\`.\n` +
+  `- Three or more fields is a page (own route), not a Dialog.\n` +
+  `- A case these do not cover: open an issue on godx-jp/godxjp-ui, use the nearest valid composition with \`// TODO(godxjp-ui#<n>)\` — never hand-roll.\n`;
+
 function getComponent(name: string, verbose = false): string {
   const installed = installedUiFromLauncher();
   if (installed && !uiVersionMatchesCatalog(installed)) {
@@ -1196,6 +1213,7 @@ function getComponent(name: string, verbose = false): string {
       out += rule ? `- #${n} — ${rule.title}\n` : `- #${n}\n`;
     }
   }
+  if (c.group === "data-entry") out += `\n${FORM_RULES}`;
   return out;
 }
 
@@ -1471,6 +1489,7 @@ function searchComponents(query: string): string {
     : `\n\n`;
   for (const { c, score } of matches)
     out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
+  if (matches.some(({ c }) => c.group === "data-entry")) out += `\n${FORM_RULES}`;
   if (utilityMatches.length) {
     out += `\n## Utilities — not components, no props\n\n`;
     for (const u of utilityMatches.slice(0, 12))

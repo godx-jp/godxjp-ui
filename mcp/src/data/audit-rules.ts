@@ -215,6 +215,27 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "Wrap a labelled control in <FormField label=…> — it owns label↔control id wiring, aria/error, AND the field rhythm; never pair a bare <Label> with an <Input>.",
   },
   {
+    id: "formfield-needs-form",
+    severity: "error",
+    category: "composition",
+    standard: "@godxjp/ui Form (gh#998)",
+    fix: 'Wrap FormFields in <Form layout="horizontal" labelWidth controlWidth>; a row of fields is <SpaceCompact> or <Form columns>, never a hand-rolled <Flex>. A field component whose whole output is one FormField is exempt.',
+  },
+  {
+    id: "dialog-form-too-big",
+    severity: "error",
+    category: "composition",
+    standard: "@godxjp/ui form placement (gh#998)",
+    fix: "Three or more FormFields in a Dialog/Sheet body is a page: give the form its own route. Dialogs hold a confirmation or one or two fields.",
+  },
+  {
+    id: "select-width-hint",
+    severity: "warn",
+    category: "composition",
+    standard: "GOV.UK Design System · text input width",
+    fix: "Size a Select for its content — `controlWidth` on the FormField, or once on the <Form>.",
+  },
+  {
     id: "manual-field-error",
     severity: "warn",
     category: "composition",
