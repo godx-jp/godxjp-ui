@@ -110,11 +110,20 @@ try {
        * The other three expanders passed only because they happened to be above the fold on their
        * own pages. That is luck, not coverage.
        */
-      await page
-        .locator(entry.selector)
-        .first()
-        .scrollIntoViewIfNeeded()
-        .catch(() => {});
+      /*
+       * To the CENTRE of the viewport, not merely into it. `scrollIntoViewIfNeeded` scrolls the
+       * minimum, which can leave the element flush against an edge — and `reach()` walks up to
+       * `min * 2` px outward, so a centre within ~13px of an edge has its scan cut short by
+       * `elementFromPoint` answering null past the viewport. That UNDER-reports a conforming target
+       * and brings back exactly the false "claim not kept" this change exists to remove, one edge
+       * further out. Found reviewing this fix, not by a failure.
+       *
+       * `document.querySelector` rather than the locator, so the element scrolled is the element
+       * measured below.
+       */
+      await page.evaluate((selector) => {
+        document.querySelector(selector)?.scrollIntoView({ block: "center", inline: "center" });
+      }, entry.selector);
       await page.waitForTimeout(200);
 
       measured = await page.evaluate(
@@ -144,11 +153,13 @@ try {
            * the caller is told which it got.
            */
           const centre = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+          // Half-open: `elementFromPoint` answers inside [0, innerWidth) × [0, innerHeight) only, so
+          // a centre ON the right or bottom edge is already outside what it can see.
           const inViewport =
             centre.x >= 0 &&
             centre.y >= 0 &&
-            centre.x <= window.innerWidth &&
-            centre.y <= window.innerHeight;
+            centre.x < window.innerWidth &&
+            centre.y < window.innerHeight;
           if (!inViewport || rect.width === 0 || rect.height === 0) {
             return {
               paint: { width: +rect.width.toFixed(2), height: +rect.height.toFixed(2) },
