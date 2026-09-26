@@ -94,7 +94,11 @@
    * broke at every marked row. As a gradient layer the wash sits ON the row's colour — the stripe,
    * or the hover / selected fill — at the same weak weight, and the rail still carries the mark. */
   .ui-table-row[data-tone] {
-    background-image: linear-gradient(
+    /* Declared as a custom property, not only painted, so a PINNED cell can wear the same layer.
+     * A custom property substitutes where it is declared, so this resolves HERE, against the row's
+     * own tone variables, and the cells inherit the finished gradient rather than a formula they
+     * could not resolve. */
+    --table-row-tone-layer: linear-gradient(
       var(
         --table-row-tone-surface,
         hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
@@ -104,6 +108,7 @@
         hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))
       )
     );
+    background-image: var(--table-row-tone-layer);
   }
 
   /* ── Zebra striping (`striped`, gh#700) ─────────────────────────────────────────────────────
@@ -592,54 +597,79 @@
     box-shadow: 6px 0 6px -5px hsl(var(--foreground) / 0.12);
   }
 
+  /* A TONED row's status wash reaches its frozen cells too. Measured before this rule on a
+   * `destructive` DataTable row: the row painted `linear-gradient(rgba(170, 24, 31, 0.06) …)` over
+   * its stripe at rest and KEPT it on hover, while its `pin-end` cell painted only the stripe at
+   * rest and only the hover wash on hover — so the red cue stopped at the column users scan most
+   * (dates, IDs, row actions). The same defect PermissionMatrix fixed for its own pin in gh#874,
+   * whose comment already claimed DataTable worked this way. It did not.
+   *
+   * Zero specificity and BEFORE the stripe rule, so the stripe/hover/selected rules below still
+   * win — and each of those now lists the tone as its first layer, so they win without dropping it.
+   * On an untoned row `--table-row-tone-layer` is unset and they fall back to `none`, a valid empty
+   * layer. The PAINT is unchanged; the computed value is not byte-identical — it gains a leading
+   * `none,` (measured: `linear-gradient(…)` → `none, linear-gradient(…)` on hover and on a striped
+   * rest row). Anything asserting the computed string rather than the pixels will see that. */
+  :where(.ui-table-row[data-tone]) > :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {
+    background-image: var(--table-row-tone-layer);
+  }
+
   /* A frozen cell is OPAQUE (it has to hide the columns scrolling under it), so it would punch a
    * plain hole through a striped row. It wears the row's stripe as an image layer over that opaque
    * base, exactly the way it wears hover and selection below — and at zero specificity plus one
    * class, so those two rules still replace it on a hovered or selected row. */
   :where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row])))
     > :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {
-    background-image: linear-gradient(
-      color-mix(
-        in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
-        transparent
-      ),
-      color-mix(
-        in srgb,
-        var(--table-row-striped-background, hsl(var(--muted) / 0.8)) var(--table-row-striped-alpha),
-        transparent
-      )
-    );
+    background-image:
+      var(--table-row-tone-layer, none),
+      linear-gradient(
+        color-mix(
+          in srgb,
+          var(--table-row-striped-background, hsl(var(--muted) / 0.8))
+            var(--table-row-striped-alpha),
+          transparent
+        ),
+        color-mix(
+          in srgb,
+          var(--table-row-striped-background, hsl(var(--muted) / 0.8))
+            var(--table-row-striped-alpha),
+          transparent
+        )
+      );
   }
 
   /* Mirror the row's hover / selected tint — a translucent muted wash layered over the opaque
    * base, so the pinned cell matches the rest of its row. */
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-start {
-    background-image: linear-gradient(
-      var(
-        --table-row-hover-background,
-        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
-      ),
-      var(
-        --table-row-hover-background,
-        hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
-      )
-    );
+    background-image:
+      var(--table-row-tone-layer, none),
+      linear-gradient(
+        var(
+          --table-row-hover-background,
+          hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+        ),
+        var(
+          --table-row-hover-background,
+          hsl(var(--accent) / var(--table-row-hover-background-alpha, 0.7))
+        )
+      );
   }
 
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end,
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-start {
-    background-image: linear-gradient(
-      var(
-        --table-row-selected-background,
-        hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
-      ),
-      var(
-        --table-row-selected-background,
-        hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
-      )
-    );
+    background-image:
+      var(--table-row-tone-layer, none),
+      linear-gradient(
+        var(
+          --table-row-selected-background,
+          hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
+        ),
+        var(
+          --table-row-selected-background,
+          hsl(var(--muted) / var(--table-row-selected-background-alpha, 0.3))
+        )
+      );
   }
 
   /* ── antd `ellipsis` ──────────────────────────────────────────────────

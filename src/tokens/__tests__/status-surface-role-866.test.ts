@@ -160,11 +160,16 @@ describe("every status surface consumes the role (gh#866)", () => {
   });
 
   it("the DataTable row wash reads the hand-off knob, not the tone colour alone", () => {
-    expect(squash(stripComments(read("src/styles/table-layout.css")))).toContain(
-      squash(`background-image: linear-gradient(
+    const css = squash(stripComments(read("src/styles/table-layout.css")));
+    // The requirement is the GRADIENT: it reads the hand-off knob, falling back to the derived
+    // tone formula. It is attached to `--table-row-tone-layer` so frozen cells can share it, and the
+    // row paints that — so assert the gradient, then that the row actually paints it.
+    expect(css).toContain(
+      squash(`--table-row-tone-layer: linear-gradient(
         var(--table-row-tone-surface, hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))),
         var(--table-row-tone-surface, hsl(var(--table-row-tone-color) / var(--table-row-tone-wash-alpha))));`),
     );
+    expect(css).toContain(squash("background-image: var(--table-row-tone-layer);"));
   });
 });
 
