@@ -395,8 +395,8 @@ export default function Demo() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Flex direction={{ base: "col", md: "row" }} gap="xl" align="start">
-            <Flex direction="col" gap="sm" grow>
+          <Flex direction={{ base: "col", md: "row" }} gap="xl">
+            <Flex direction="col" gap="sm" fill>
               <Text size="sm" weight="medium">
                 レール幅（compact · 18.75rem）
               </Text>
