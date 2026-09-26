@@ -356,39 +356,43 @@ export default function Demo() {
           <CardContent>
             <Form layout="horizontal" labelWidth="9rem">
               <FormField id="cmp-tel" label="電話番号" helper="市外局番から">
-                <Flex direction="row" gap="sm" align="center">
-                  <Flex width="5rem" shrink={false}>
-                    <Input
-                      id="cmp-tel-area"
-                      aria-label="市外局番"
-                      inputMode="numeric"
-                      maxLength={4}
-                      defaultValue="03"
-                    />
-                  </Flex>
-                  <Text aria-hidden tone="muted">
-                    -
-                  </Text>
-                  <Flex width="5rem" shrink={false}>
-                    <Input
-                      id="cmp-tel-city"
-                      aria-label="市内局番"
-                      inputMode="numeric"
-                      maxLength={4}
-                      defaultValue="6273"
-                    />
-                  </Flex>
-                  <Text aria-hidden tone="muted">
-                    -
-                  </Text>
-                  <Flex width="5rem" shrink={false}>
-                    <Input
-                      id="cmp-tel-line"
-                      aria-label="加入者番号"
-                      inputMode="numeric"
-                      maxLength={4}
-                      defaultValue="0001"
-                    />
+                {/* The three parts never split across lines — "03 -" alone on a row reads as a
+                    whole number. The extension is a separate value, so it is what wraps on a phone. */}
+                <Flex direction="row" gap="sm" align="center" wrap>
+                  <Flex direction="row" gap="sm" align="center" shrink={false}>
+                    <Flex width="4rem" shrink={false}>
+                      <Input
+                        id="cmp-tel-area"
+                        aria-label="市外局番"
+                        inputMode="numeric"
+                        maxLength={4}
+                        defaultValue="03"
+                      />
+                    </Flex>
+                    <Text aria-hidden tone="muted">
+                      -
+                    </Text>
+                    <Flex width="4rem" shrink={false}>
+                      <Input
+                        id="cmp-tel-city"
+                        aria-label="市内局番"
+                        inputMode="numeric"
+                        maxLength={4}
+                        defaultValue="6273"
+                      />
+                    </Flex>
+                    <Text aria-hidden tone="muted">
+                      -
+                    </Text>
+                    <Flex width="4rem" shrink={false}>
+                      <Input
+                        id="cmp-tel-line"
+                        aria-label="加入者番号"
+                        inputMode="numeric"
+                        maxLength={4}
+                        defaultValue="0001"
+                      />
+                    </Flex>
                   </Flex>
                   <Flex width="6rem" shrink={false}>
                     <NumberInput
@@ -499,19 +503,19 @@ export default function Demo() {
               </FormField>
               <FormField id="cmp-ok-tel" label="電話番号" validateStatus="success" hasFeedback>
                 <Flex direction="row" gap="sm" align="center">
-                  <Flex width="5rem" shrink={false}>
+                  <Flex width="4rem" shrink={false}>
                     <Input id="cmp-ok-tel-area" aria-label="市外局番" defaultValue="03" />
                   </Flex>
                   <Text aria-hidden tone="muted">
                     -
                   </Text>
-                  <Flex width="5rem" shrink={false}>
+                  <Flex width="4rem" shrink={false}>
                     <Input id="cmp-ok-tel-city" aria-label="市内局番" defaultValue="6273" />
                   </Flex>
                   <Text aria-hidden tone="muted">
                     -
                   </Text>
-                  <Flex width="5rem" shrink={false}>
+                  <Flex width="4rem" shrink={false}>
                     <Input id="cmp-ok-tel-line" aria-label="加入者番号" defaultValue="0001" />
                   </Flex>
                 </Flex>
@@ -1111,7 +1115,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="lg">
-              <Form layout="horizontal" labelWidth="14rem" labelAlign="end" collapseBelow={false}>
+              <Form layout="horizontal" labelWidth="14rem" labelAlign="end">
                 <FormField id="len-e-name" label="氏名" required>
                   <Input id="len-e-name" defaultValue="山田 太郎" />
                 </FormField>
@@ -1127,7 +1131,7 @@ export default function Demo() {
                   <Input id="len-e-note" defaultValue="ゴドー商事" />
                 </FormField>
               </Form>
-              <Form layout="horizontal" labelWidth="14rem" labelAlign="start" collapseBelow={false}>
+              <Form layout="horizontal" labelWidth="14rem" labelAlign="start">
                 <FormField id="len-s-name" label="氏名" required>
                   <Input id="len-s-name" defaultValue="山田 太郎" />
                 </FormField>

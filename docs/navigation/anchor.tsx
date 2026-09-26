@@ -182,8 +182,10 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex gap="lg" align="start">
-              <ScrollArea className="h-96 w-64 shrink-0" label="Contents">
+            {/* Side by side from md; on a phone the rail stacks above the text it indexes. A 256px
+                rail beside a 244px card left the chapters a column one glyph wide (gh#965). */}
+            <Flex direction={{ base: "col", md: "row" }} gap="lg" align="start">
+              <ScrollArea className="h-48 w-full shrink-0 md:h-96 md:w-64" label="Contents">
                 <Anchor
                   affix={false}
                   showInkInFixed
@@ -192,7 +194,11 @@ export default function Demo() {
                   getContainer={() => chaptersRef.current ?? window}
                 />
               </ScrollArea>
-              <ScrollArea viewportRef={chaptersRef} className="h-96 flex-1" label="Agreement">
+              <ScrollArea
+                viewportRef={chaptersRef}
+                className="h-96 w-full md:w-auto md:flex-1"
+                label="Agreement"
+              >
                 <Flex direction="col" gap="md">
                   {CHAPTERS.map((chapter) => (
                     <Chapter
