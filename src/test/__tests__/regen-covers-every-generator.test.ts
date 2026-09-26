@@ -80,11 +80,14 @@ describe("pnpm regen (gh#801)", () => {
     },
   );
 
-  it("finds EIGHT today — the number is asserted so a ninth is noticed", () => {
-    // Not because eight is correct forever, but because the failure mode is a derivation that
+  it("finds NINE today — the number is asserted so a tenth is noticed", () => {
+    // Not because nine is correct forever, but because the failure mode is a derivation that
     // quietly matches FEWER things after someone renames a script. A count that changes makes
-    // that visible; a runner that silently shrinks does not.
-    expect(checkersWithGenerators()).toHaveLength(8);
+    // that visible; a runner that silently shrinks does not. The ninth is `check:style-layers`
+    // (gen-style-layers, gh#971) — noticed by exactly this case on the merge that added it, while
+    // the reachability case above stayed green: regen already ran it.
+    expect(checkersWithGenerators()).toHaveLength(9);
+    expect(checkersWithGenerators()).toContain("check:style-layers");
   });
 
   it("refuses to pass silently if the derivation ever matches nothing", () => {
