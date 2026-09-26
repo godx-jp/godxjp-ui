@@ -191,6 +191,28 @@ export function resolveDefaultTimezone(
   return defaultTimezone;
 }
 
+/**
+ * The timezone to use BEFORE the browser's is known — the first render, and anything that formats
+ * before AppProvider has synced (gh#968).
+ *
+ * `"browser"` answers UTC here, not the browser's zone: a server cannot know the browser's zone, so
+ * resolving it on the first render would render one time on the server and another on the client.
+ * AppProvider settles to the real browser zone in an effect afterwards.
+ *
+ * It lives here, not inside AppProvider, so the module-level datetime fallback (`lib/datetime/sync`)
+ * can call the SAME function. Before gh#968 that fallback hard-coded `Asia/Ho_Chi_Minh` while this
+ * answered UTC — two different answers to "nothing is configured yet". The Vietnamese one was the
+ * worse of the two because it looks right: a JST attendance timestamp read 2 hours off, and nothing
+ * about `01/05/2026 14:30` says so. UTC is at least visibly not the user's local time.
+ */
+export function resolveHydrationSafeTimezone(
+  defaultTimezone: "browser" | "system" | (string & {}),
+  systemTimezone?: string,
+): string {
+  if (defaultTimezone === "browser") return systemTimezone ?? "UTC";
+  return resolveDefaultTimezone(defaultTimezone, systemTimezone);
+}
+
 /** Vitest only — reset cached IANA list between cases. */
 export function resetIanaTimezoneCacheForTests(): void {
   cachedAllTimezones = null;
