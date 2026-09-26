@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { PrefetchLink } from "@godxjp/ui/query";
+import { PrefetchLink } from "@godxjp/ui/react-router";
 
 /**
  * PrefetchLink · a React Router Link that fires queryClient.prefetchQuery on

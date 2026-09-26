@@ -590,7 +590,7 @@
   {
     "group": "data-display",
     "name": "PrefetchLink",
-    "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context."
+    "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context. Imported from `@godxjp/ui/react-router` (not `/query`) because it imports the optional `react-router-dom` peer; in `/query` it broke every router-less app's build (gh#996)."
   },
   {
     "group": "data-display",

@@ -60,7 +60,7 @@ export const FRAME_COVERAGE_POLICY = {
     covered: 93,
     untested: 2292,
     notApplicable: 1787,
-    exportsWithoutFrame: 0,
+    exportsWithoutFrame: 1,
   },
   dimensions: [
     { id: "variants", title: "Variants", axis: "visual" },
@@ -278,7 +278,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"PopoverHeader","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"PopoverTitle","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"PopoverTrigger","group":"data-display","frame":"docs/data-display/popover.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
-  {"name":"PrefetchLink","group":"query","frame":"docs/query/prefetch-link.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"PrefetchLink","group":"react-router","frame":null,"covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"Progress","group":"data-display","frame":"docs/data-display/progress.tsx","covered":["sizes","tones"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","shapes"],"notApplicable":["density","states","variants"]},
   {"name":"Prose","group":"data-display","frame":"docs/data-display/prose.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","sizes"],"notApplicable":["density","ownership","shapes","states","tones","variants"]},
   {"name":"QrCode","group":"data-display","frame":"docs/data-display/qr-code.tsx","covered":["sizes"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl"],"notApplicable":["density","shapes","states","tones","variants"]},

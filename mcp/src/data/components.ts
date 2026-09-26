@@ -13402,9 +13402,9 @@ export function ControlledExample() {
   {
     name: "PrefetchLink",
     group: "data-display",
-    importPath: "@godxjp/ui/query",
+    importPath: "@godxjp/ui/react-router",
     tagline:
-      "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context.",
+      "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context. Imported from `@godxjp/ui/react-router` (not `/query`) because it imports the optional `react-router-dom` peer; in `/query` it broke every router-less app's build (gh#996).",
     props: [
       {
         name: "queryKey",
@@ -13462,7 +13462,7 @@ export function ControlledExample() {
       "InfiniteQueryState — use instead of PrefetchLink when the list itself is infinitely paginated and items are loaded lazily rather than navigated to.",
       "ButtonRefetch — for triggering a manual cache refresh on an already-loaded page, not for navigation prefetching.",
     ],
-    example: `import { PrefetchLink } from "@godxjp/ui/query";
+    example: `import { PrefetchLink } from "@godxjp/ui/react-router";
 import { fetchInvoice } from "@/api/invoices";
 
 // Inside a table row or list item:

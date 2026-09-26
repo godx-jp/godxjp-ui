@@ -11201,9 +11201,9 @@
     ]
   },
   {
-    "example": "import { PrefetchLink } from \"@godxjp/ui/query\";\nimport { fetchInvoice } from \"@/api/invoices\";\n\n// Inside a table row or list item:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  staleTime={60_000}\n  className=\"font-medium hover:underline\"\n>\n  {invoice.number}\n</PrefetchLink>\n\n// Disable prefetch for rows where data is not yet stable:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  prefetchOn=\"none\"\n>\n  {invoice.number}\n</PrefetchLink>",
+    "example": "import { PrefetchLink } from \"@godxjp/ui/react-router\";\nimport { fetchInvoice } from \"@/api/invoices\";\n\n// Inside a table row or list item:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  staleTime={60_000}\n  className=\"font-medium hover:underline\"\n>\n  {invoice.number}\n</PrefetchLink>\n\n// Disable prefetch for rows where data is not yet stable:\n<PrefetchLink\n  to={`/invoices/${invoice.id}`}\n  queryKey={[\"invoice\", invoice.id]}\n  queryFn={() => fetchInvoice(invoice.id)}\n  prefetchOn=\"none\"\n>\n  {invoice.number}\n</PrefetchLink>",
     "group": "data-display",
-    "importPath": "@godxjp/ui/query",
+    "importPath": "@godxjp/ui/react-router",
     "name": "PrefetchLink",
     "props": [
       {
@@ -11248,7 +11248,7 @@
       31
     ],
     "storyPath": "data-display/PrefetchLink.stories.tsx",
-    "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context.",
+    "tagline": "React Router Link that fires prefetchQuery on hover/focus so detail pages feel instant — requires a TanStack Query QueryClient in context. Imported from `@godxjp/ui/react-router` (not `/query`) because it imports the optional `react-router-dom` peer; in `/query` it broke every router-less app's build (gh#996).",
     "usage": [
       "DO: provide a queryKey that exactly matches the destination page's useQuery key — a mismatch means the prefetch populates a different cache slot and the page still loads cold.",
       "DO: keep queryFn lightweight and side-effect-free; it runs speculatively on hover. Avoid mutations or write operations inside queryFn.",
