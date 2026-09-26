@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
-import { ruleSelector, ruleSelectors } from "@/test/css-selector";
+import { anchorIndex, ruleSelector, ruleSelectors } from "@/test/css-selector";
 import { DataTable, type ColumnDef } from "../data-table";
 import { Table, TableBody, TableCell, TableRow } from "../table";
 
@@ -21,7 +21,15 @@ const tokens = readFileSync(join(here, "../../../tokens/components/table.css"), 
 const ROW_RULE =
   ':where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row]))) {';
 const DETAIL_RULE = "+ tr[data-expanded-row]";
-const PIN_RULE = "> :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {";
+/*
+ * Anchored on the part only the STRIPE rule has. The bare tail `> :is(.ui-data-table-pin-end,
+ * .ui-data-table-pin-start) {` is shared with the rule that carries a row's TONE into its frozen
+ * cells, which sits just above it — anchored on the tail alone, `ruleSelector` found that rule
+ * first and every stripe assertion below silently measured the wrong one (they all went false,
+ * which read as "the stripe is gone" while the stripe was painting fine).
+ */
+const PIN_RULE =
+  ":not([data-expanded-row]))) > :is(.ui-data-table-pin-end, .ui-data-table-pin-start) {";
 
 /** The declaration block that follows `anchor`. */
 function block(anchor: string): string {
@@ -236,7 +244,11 @@ describe("gh#700 striped — frozen columns and precedence", () => {
 
   it("every stripe rule is zero-specificity and in `components`, under the utility layer", () => {
     for (const anchor of [ROW_RULE, DETAIL_RULE, PIN_RULE]) {
-      const at = css.indexOf(anchor);
+      // `anchorIndex`, not `css.indexOf`: the pinned rule's selector wraps across lines, and a raw
+      // indexOf of a single-spaced anchor returns -1 — which `layerAt` then read as the LAST layer
+      // in the whole file. This file's own gh#767/#769 note is about exactly that.
+      const at = anchorIndex(css, anchor);
+      expect(at, `rule not found: ${anchor}`).toBeGreaterThan(-1);
       expect(layerAt(at)).toBe("components");
       // The selector opens with `:where(` — hover (`hover:bg-*`), selection
       // (`data-[state=selected]:bg-*`) and a consumer's `rowClassName` are utilities, a LATER
@@ -265,8 +277,13 @@ describe("gh#700 striped — frozen columns and precedence", () => {
 
   it("a toned row keeps its stripe: the tone wash is an image layer, not the shorthand", () => {
     const tone = block(".ui-table-row[data-tone] {");
-    expect(tone).toMatch(/background-image:\s*linear-gradient/);
+    // An IMAGE layer, not the shorthand — the shorthand would reset the stripe's `background-color`.
+    expect(tone).toMatch(/^\s*background-image:/m);
     expect(tone).not.toMatch(/^\s*background:/m);
+    // And that image IS the tone gradient. It is declared once as `--table-row-tone-layer` so the
+    // row's frozen cells can wear the same layer; the row paints it through `var()`.
+    expect(tone).toMatch(/--table-row-tone-layer:\s*linear-gradient/);
+    expect(tone).toMatch(/background-image:\s*var\(--table-row-tone-layer\)/);
 
     const { container } = renderWithUi(
       <DataTable
