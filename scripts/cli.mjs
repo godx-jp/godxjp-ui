@@ -5,6 +5,7 @@
  *   sync-rules     refresh package-owned agent rules (same path as postinstall)
  *   audit          static UI audit (regex over source)
  *   visual-audit   runtime audit (Playwright + axe-core) against a running app
+ *   prune-css      emit a stylesheet with only the CSS layers the app uses (gh#971)
  */
 import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
@@ -16,6 +17,7 @@ const MAP = {
   "sync-rules": "postinstall.mjs",
   audit: "ui-audit.mjs",
   "visual-audit": "visual-audit.mjs",
+  "prune-css": "prune-css.mjs",
 };
 
 // `<command> --help` is answered HERE: the scripts take free positional arguments, so a `--help`
@@ -52,6 +54,18 @@ const HELP = {
     --quiet         print errors only (warnings hidden)
     --rules         print the rule catalog as JSON and exit
   Pre-commit:  npx godxjp-ui audit resources/js || exit 1`,
+  "prune-css": `godxjp-ui prune-css <src dir/glob …> [--out <file>] [--fonts]
+
+  Emit a stylesheet with only the component CSS layers your app uses (gh#971). Scans the given
+  sources for @godxjp/ui imports, resolves the layer dependency closure from the graph the
+  package ships (dist/styles/layers.json), and writes a css file that imports the foundation
+  plus only the needed *-layout.css layers, in the exact order styles/index.css loads them.
+    <src dir/glob …>  your app's source (directories are walked)
+    --out <file>      output path (default: godx-ui.css)
+    --fonts           include the bundled @font-face declarations (default mirrors styles/core)
+  Import the emitted file INSTEAD of "@godxjp/ui/styles". Re-run when your component usage
+  changes and after every upgrade; it refuses on a package/manifest version mismatch.
+  Hand cherry-picking *-layout.css stays forbidden — this tool is the only thing allowed to slice.`,
   "visual-audit": `godxjp-ui visual-audit [--format json] [--strict] <baseUrl> [route …]
 
   Runtime audit (Playwright + axe-core) against an app you are ALREADY running locally.
@@ -70,6 +84,7 @@ commands:
   sync-rules     refresh package-owned agent rules (postinstall, by hand)
   audit          static UI audit over source
   visual-audit   runtime audit (Playwright + axe-core) against a running app
+  prune-css      emit a stylesheet with only the CSS layers your app uses
 
 godxjp-ui <command> --help   details and flags for one command`;
 

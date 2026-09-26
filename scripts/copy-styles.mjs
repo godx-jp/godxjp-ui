@@ -35,6 +35,21 @@ for (const dir of CSS_DIRS) {
   });
 }
 
+// The style layer manifest ships next to the css it describes, stamped with the version it
+// was built with. prune-css (gh#971) REFUSES on a version mismatch against the installed
+// package.json — a half-upgraded node_modules or a stale dist/ must fail loudly rather than
+// slice with another release's dependency graph. Source keeps `version: null` so the
+// committed file does not churn on release bumps; only the built copy carries the number.
+const layersFrom = join(root, "src", "styles", "layers.json");
+if (existsSync(layersFrom)) {
+  const manifest = JSON.parse(readFileSync(layersFrom, "utf8"));
+  manifest.version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
+  writeFileSync(
+    join(root, "dist", "styles", "layers.json"),
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
+}
+
 // Preserved-module output keeps `import ja from "./messages/ja.json"` as-is,
 // so the JSON files must ship next to the emitted i18n modules.
 const messagesFrom = join(root, "src", "i18n", "messages");
