@@ -2,6 +2,11 @@
 
 @layer components {
   [data-slot="alert"] {
+    /* The two-column actions layout below asks how wide THIS alert is, not the viewport (gh#997):
+     * a 360px card on a 1440px screen passed a `min-width: 640px` media query, the `auto` column
+     * took the buttons' width and the title column collapsed to 0-72px. Safe to contain: the root
+     * is `width: 100%`, so its inline size never came from its content. */
+    container: alert / inline-size;
     position: relative;
     display: flex;
     align-items: flex-start;
@@ -144,7 +149,7 @@
     gap: var(--alert-inner-space-gap);
   }
 
-  @media (min-width: 640px) {
+  @container alert (min-width: 40rem) {
     [data-slot="alert-body"]:has(> [data-slot="alert-actions"]) {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -203,7 +208,7 @@
     width: 100%;
   }
 
-  @media (min-width: 640px) {
+  @container alert (min-width: 40rem) {
     [data-slot="alert-actions"] {
       width: auto;
       justify-content: flex-end;
