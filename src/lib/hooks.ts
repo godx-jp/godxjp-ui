@@ -315,6 +315,18 @@ export function scrollParent(el: HTMLElement | null): HTMLElement | null {
 }
 
 /**
+ * `scrollParent` for a caller that hands the answer to `IntersectionObserver` or a scroll listener:
+ * the root and body elements are the VIEWPORT by another name (a reset writing
+ * `html { overflow-y: scroll }` makes the root "scroll"), and the answer for them is `null`.
+ * Affix and Anchor use it as their default scroll box (gh#984).
+ */
+export function scrollBoxOf(el: HTMLElement | null): HTMLElement | null {
+  if (typeof document === "undefined") return null;
+  const box = scrollParent(el);
+  return box === document.documentElement || box === document.body ? null : box;
+}
+
+/**
  * Has this element entered the viewport (or `root`) yet?
  *
  * The ONE `IntersectionObserver` wrapper in the library, and it has to stay that way: before

@@ -963,12 +963,14 @@ export type AnchorProp = {
    * The scroll box the sections are measured in AND the box `Affix` pins the nav against — one
    * function, both halves (gh#890). `AffixTargetProp`, the same lazy-getter shape and the same
    * name `Affix.target` / `FloatButton.BackTop.target` already spell here, so a consumer who has
-   * scoped one scrolling component already knows this one. `null` (or an absent `target`) means
-   * the viewport, matching `Affix`. Wins over `getContainer` when both are given.
+   * scoped one scrolling component already knows this one. `null` means the viewport. Absent (with
+   * no `getContainer`), it is the nearest ancestor that scrolls on the block axis, else the
+   * viewport — `Affix`'s own default (gh#984). Wins over `getContainer` when both are given.
    */
   target?: AffixTargetProp;
   /**
-   * The scroll box holding the sections. Ant Design `getContainer`, default `() => window`.
+   * The scroll box holding the sections. Ant Design `getContainer`; omitted → the nearest
+   * block-axis scroller, else the viewport (gh#984).
    *
    * Superseded by `target`, which mirrors `Affix`'s own spelling for the identical idea; kept,
    * still live, for a call site written before `target` existed.

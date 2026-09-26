@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { isDevelopment } from "../../lib/dev";
-import { useInView } from "../../lib/hooks";
+import { scrollBoxOf, useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { AffixProp } from "../../props/components/layout.prop";
 
@@ -27,12 +27,34 @@ const OVERSHOOT_MARGIN = "1000000px";
 const ROOT_MARGIN_BLOCK_START = `0px 0px ${OVERSHOOT_MARGIN} 0px`;
 const ROOT_MARGIN_BLOCK_END = `${OVERSHOOT_MARGIN} 0px 0px 0px`;
 
-/** The scroll box, resolved. `null` is the document viewport — `IntersectionObserver`'s own word. */
-function resolveTarget(target: AffixProp["target"]): HTMLElement | null {
-  if (!target) return null;
+/**
+ * The scroll box, resolved. `null` is the document viewport — `IntersectionObserver`'s own word.
+ *
+ * With no `target`, the scroll box is the one the user actually scrolls: the nearest ancestor that
+ * scrolls on the block axis — `position: sticky`'s own rule — and the viewport only when there is
+ * none (gh#984).
+ *
+ * The viewport used to be the unconditional default, and inside an inner scroller that is wrong in
+ * both directions. `PageContainer fill` (`.ui-page-body`), MasterDetail's master and the docs
+ * frame all scroll an element, not the window; the sentinel there is CLIPPED by that element,
+ * which the viewport-sized `rootMargin` cannot grow past, so "below the fold" read as "scrolled
+ * past" and the bar pinned on load — measured at top 16 while its column sat at 1680 in an 800px
+ * viewport. And once scrolled, it would pin to the viewport's edge, over whatever header sits above
+ * the scroller. An explicit `target={() => window}` still means the viewport.
+ */
+function resolveTarget(target: AffixProp["target"], from: HTMLElement | null): HTMLElement | null {
+  if (!target) return scrollBoxOf(from);
   const node = target();
   if (!node || typeof window === "undefined" || node === window) return null;
   return node as HTMLElement;
+}
+
+/** False inside a `display: none` subtree — the one case where "out of view" is not "scrolled past". */
+function isRendered(node: HTMLElement): boolean {
+  for (let p: HTMLElement | null = node; p; p = p.parentElement) {
+    if (window.getComputedStyle(p).display === "none") return false;
+  }
+  return true;
 }
 
 /**
@@ -210,7 +232,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
   // returns does not exist while the render that declares it is running.
   const [targetElement, setTargetElement] = React.useState<HTMLElement | null>(null);
   React.useEffect(() => {
-    setTargetElement(resolveTarget(target));
+    setTargetElement(resolveTarget(target, rootRef.current));
   }, [target]);
 
   // `assumeInView` — "not yet pinned" is the resting answer, so an Affix renders in flow on the
@@ -221,7 +243,11 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     rootMargin: pinToEnd ? ROOT_MARGIN_BLOCK_END : ROOT_MARGIN_BLOCK_START,
     assumeInView: true,
   });
-  const affixed = !inView;
+  // A sentinel inside `display: none` has no box, so the observer reports it out of view — which
+  // `!inView` reads as "scrolled past". Measured on the docs page, an Anchor hidden below md
+  // reported `affixed` (and fired `onChange(true)`) for a bar nobody could see (gh#984).
+  const [rendered, setRendered] = React.useState(true);
+  const affixed = !inView && rendered;
 
   const [box, setBox] = React.useState<{ inline: number; block: number } | null>(null);
   const [targetInset, setTargetInset] = React.useState(0);
@@ -230,6 +256,7 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
     const root = rootRef.current;
     const content = contentRef.current;
     if (!root || !content) return;
+    setRendered(isRendered(root));
 
     // INLINE size from the box still in flow — that is the column the pinned bar has to keep
     // occupying. BLOCK size from the content — that is what leaves the flow, and what the
@@ -391,7 +418,11 @@ export const Affix = React.forwardRef<HTMLDivElement, AffixProp>(function Affix(
           data-slot="affix-placeholder"
           aria-hidden="true"
           className="ui-affix-placeholder"
-          style={{ blockSize: box.block }}
+          // BOTH axes (gh#984). Block holds the page still; inline holds the COLUMN open. In a
+          // shrink-to-fit parent — a rail beside its content, which is where Anchor lives — the
+          // root is only as wide as what is in flow, so a block-only placeholder let it collapse
+          // to 0px, the next measurement read that 0, and the pinned rail painted one glyph wide.
+          style={{ blockSize: box.block, inlineSize: box.inline }}
         />
       ) : null}
       <div

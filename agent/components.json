@@ -15858,7 +15858,7 @@
         "type": "number"
       },
       {
-        "description": "antd `target`, default `() => window` — the scroll box to pin against, which need not be the nearest scrolling ancestor. Same lazy-getter shape `FloatButton.BackTop.target` uses here, and for the same reason: the element does not exist on the render that declares it.",
+        "description": "antd `target` — the scroll box to pin against, which need not be the nearest scrolling ancestor. Omitted, it IS the nearest block-axis scroller (`position: sticky`'s rule), else the viewport (gh#984); `() => window` is the viewport. Same lazy-getter shape `FloatButton.BackTop.target` uses here, and for the same reason: the element does not exist on the render that declares it.",
         "name": "target",
         "type": "() => Window | HTMLElement | null"
       },
@@ -15961,12 +15961,12 @@
         "type": "number"
       },
       {
-        "description": "gh#890. The scroll box the sections are measured in AND `Affix` pins the nav against — one function, both halves. `Affix`'s own name and shape (`AffixTargetProp`), the same lazy getter `FloatButton.BackTop.target` already spells here. `null`, or an absent `target`, means the viewport. Wins over `getContainer` when both are given.",
+        "description": "gh#890. The scroll box the sections are measured in AND `Affix` pins the nav against — one function, both halves. `Affix`'s own name and shape (`AffixTargetProp`), the same lazy getter `FloatButton.BackTop.target` already spells here. `null` means the viewport; absent (with no `getContainer`), the nearest block-axis scroller, else the viewport — `Affix`'s default (gh#984). Wins over `getContainer` when both are given.",
         "name": "target",
         "type": "() => Window | HTMLElement | null"
       },
       {
-        "description": "antd `getContainer`, default `() => window` — the scroll box holding the sections. Superseded by `target` (gh#890), which mirrors `Affix`'s own spelling for the identical idea; kept live for a call site written before `target` existed.",
+        "description": "antd `getContainer` — the scroll box holding the sections; omitted → the nearest block-axis scroller, else the viewport (gh#984). Superseded by `target` (gh#890), which mirrors `Affix`'s own spelling for the identical idea; kept live for a call site written before `target` existed.",
         "name": "getContainer",
         "type": "() => HTMLElement | Window"
       },
