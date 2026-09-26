@@ -160,9 +160,22 @@ The framework ships colors, the type scale, the wa-iro palette, and (opt-in) bun
 @source "../views";
 ```
 
-### Slim build — ship only the CSS you use
+### Where the CSS weight actually is — the font faces, not the components
 
-`@godxjp/ui/styles` is the zero-config all-in-one (every component's CSS + bundled fonts). Managing fonts yourself (next/font, a system stack, an extension that must not ship font files)? Load the same layers without the faces:
+`@godxjp/ui/styles` is the zero-config all-in-one: every component's layers **plus 729 `@font-face`
+declarations** for the bundled CJK faces. Those declarations are render-blocking CSS on every page,
+separate from the font FILES (which load lazily, per glyph range). Measured on a fresh Vite 8 +
+Tailwind v4 app using 15 components (gh#971):
+
+| entry                    | CSS emitted | gzip       |
+| ------------------------ | ----------- | ---------- |
+| `@godxjp/ui/styles`      | 1,303,803 B | **367 KB** |
+| `@godxjp/ui/styles/core` | 581,210 B   | **86 KB**  |
+
+So if CSS weight matters, **the one change that moves it is the import line** — 77% of it is the face
+declarations. `core` is not a per-component slice: it still carries every component's layers (about
+64 KB gzip for all ~165), it only drops the faces. Load fonts another way (next/font, a system stack,
+your own `@font-face`) and take the same layers without them:
 
 ```css
 @import "@godxjp/ui/styles/core"; /* every component layer, no @font-face */
