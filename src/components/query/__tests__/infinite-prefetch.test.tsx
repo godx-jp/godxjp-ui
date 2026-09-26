@@ -3,7 +3,7 @@ import type { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { InfiniteQueryState, flattenItemPages } from "../infinite-query-state";
-import { PrefetchLink } from "../prefetch-link";
+import { PrefetchLink } from "../../react-router/prefetch-link";
 
 type Page = { items: string[]; next_cursor?: string };
 

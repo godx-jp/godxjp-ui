@@ -12258,7 +12258,7 @@
       ]
     },
     "PrefetchLink": {
-      "group": "query",
+      "group": "react-router",
       "props": [
         {
           "name": "prefetchOn",

@@ -6,7 +6,7 @@ export { ButtonRefetch } from "./query-refetch-button";
 export type { ButtonRefetchProp, ButtonRefetchProps } from "./query-refetch-button";
 export { InfiniteQueryState, flattenItemPages } from "./infinite-query-state";
 export type { InfiniteQueryStateProp, InfiniteQueryStateProps } from "./infinite-query-state";
-export { PrefetchLink } from "./prefetch-link";
-export type { PrefetchLinkProp, PrefetchLinkProps } from "./prefetch-link";
+// `PrefetchLink` imports `react-router-dom` (an optional peer) and lives at
+// `@godxjp/ui/react-router` — here it broke every router-less app's build (gh#996).
 export { classifyQueryError, isRetryableQueryError } from "../../lib/query-error";
 export type { QueryErrorCategory, QueryErrorInfo } from "../../lib/query-error";

@@ -141,6 +141,10 @@
       "types": "./dist/inertia/index.d.ts",
       "import": "./dist/inertia/index.js"
     },
+    "./react-router": {
+      "types": "./dist/components/react-router/index.d.ts",
+      "import": "./dist/components/react-router/index.js"
+    },
     "./app": {
       "types": "./dist/app/index.d.ts",
       "import": "./dist/app/index.js"

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
-import { PrefetchLink } from "../prefetch-link";
+import { PrefetchLink } from "../../react-router/prefetch-link";
 
 function setup(prefetchOn: "both" | "hover" | "focus" | "none" | undefined) {
   const queryFn = vi.fn(() => Promise.resolve({ ok: true }));
