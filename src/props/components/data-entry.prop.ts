@@ -1272,7 +1272,15 @@ export type RecordPickerProp = Omit<
   onValueChange?: (value: string | string[] | null) => void;
   /** Static rows, client-filtered. Provide this OR `loadOptions`. */
   options?: (SearchSelectOptionProp | SelectOptionGroupProp)[];
-  /** Server fetcher. `filters` carries the consumer's own filter vocabulary. */
+  /**
+   * Server fetcher. `filters` carries the consumer's own filter vocabulary.
+   *
+   * `cursor` is EXACTLY the `nextCursor` your previous response returned for the same `query` —
+   * an offset, an opaque token, whatever your server minted — and `undefined` for the first page.
+   * The same in every shape: under `threshold` (dropdown), `inline`, and the dialog. Return no
+   * `nextCursor` when the list is finished; that is what ends paging. (Before gh#964 the dropdown
+   * sent the page NUMBER here instead, so an offset-based server read "2" as offset 2.)
+   */
   loadOptions?: (params: {
     query: string;
     filters: Record<string, string>;

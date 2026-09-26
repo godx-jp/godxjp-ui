@@ -31,7 +31,7 @@ import {
   type AppTheme,
 } from "./theme-axes";
 import { resolveDefaultTimeFormat } from "./time-format-labels";
-import { resolveDefaultTimezone } from "./timezones";
+import { resolveDefaultTimezone, resolveHydrationSafeTimezone } from "./timezones";
 import {
   APP_REQUEST_HEADER_DATE_FORMAT,
   APP_REQUEST_HEADER_LOCALE,
@@ -81,14 +81,6 @@ function buildRequestHeaders(
     [APP_REQUEST_HEADER_TIME_FORMAT]: timeFormat,
     [APP_REQUEST_HEADER_DATE_FORMAT]: dateFormat,
   };
-}
-
-function resolveHydrationSafeTimezone(
-  defaultTimezone: "browser" | "system" | (string & {}),
-  systemTimezone?: string,
-): string {
-  if (defaultTimezone === "browser") return systemTimezone ?? "UTC";
-  return resolveDefaultTimezone(defaultTimezone, systemTimezone);
 }
 
 export function AppProvider({

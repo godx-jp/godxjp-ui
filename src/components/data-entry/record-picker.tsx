@@ -66,6 +66,41 @@ export type { RecordPickerProp, RecordPickerProp as RecordPickerProps };
  *   inline -> <input> (ô gõ — thứ consumer thật sự muốn focus)
  * Một union ở đây trung thực hơn là cast: người gọi biết mình đang cầm gì.
  */
+/**
+ * Adapt RecordPicker's cursor contract to Select's page-numbered loader (gh#964).
+ *
+ * `loadOptions` is typed to receive the `nextCursor` the server returned last time — an offset, an
+ * opaque token, whatever the server minted. The inline and dialog shapes pass it straight back.
+ * This adapter used to pass `String(page)` instead, so page 2 reached the server as "2" and a
+ * consumer implementing the type as written read it as offset 2: duplicated and missing rows, with
+ * no error. The server's `nextCursor` was used only as a has-more flag.
+ *
+ * Select asks for pages by number, so the adapter remembers, per query, which cursor fetches which
+ * page: page 1 has none, and page N+1 is whatever page N's response said. A new query starts its
+ * own chain, so one query's cursor can never be sent with another's text — a user typing,
+ * deleting and retyping can make Select ask for page 2 of an earlier query after a later one began.
+ *
+ * The chains live in this closure, so they are discarded whenever `loadOptions` itself changes
+ * (the caller memoises on it): a cursor minted by one data source is meaningless to the next.
+ *
+ * @internal Exported for tests only; the package barrel re-exports RecordPicker by name, not this.
+ */
+export function selectLoadOptionsFor(loadOptions: RecordPickerProp["loadOptions"]) {
+  if (!loadOptions) return undefined;
+  const chains = new Map<string, Map<number, string>>();
+  return async ({ query, page }: { query: string; page: number }) => {
+    if (page === 1) chains.set(query, new Map());
+    const chain = chains.get(query);
+    const cursor = page === 1 ? undefined : chain?.get(page);
+    // No cursor for a later page means we never saw one — either page N-1 has not answered, or the
+    // server said the list was finished. Report an empty finished page rather than guess a cursor.
+    if (page > 1 && cursor === undefined) return { options: [], hasMore: false };
+    const r = await loadOptions({ query, filters: {}, cursor });
+    if (r.nextCursor !== undefined) chains.get(query)?.set(page + 1, r.nextCursor);
+    return { options: r.options, hasMore: r.nextCursor !== undefined };
+  };
+}
+
 export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElement, RecordPickerProp>(
   function RecordPicker(
     {
@@ -117,20 +152,7 @@ export const RecordPicker = React.forwardRef<HTMLButtonElement | HTMLInputElemen
      * nói thế bằng một adapter tường minh thay vì ép kiểu. `page` của Select là số trang, map
      * sang `cursor` dạng chuỗi để consumer nào phân trang bằng số vẫn dùng được.
      */
-    const selectLoadOptions = React.useMemo(
-      () =>
-        loadOptions
-          ? async ({ query, page }: { query: string; page: number }) => {
-              const r = await loadOptions({
-                query,
-                filters: {},
-                cursor: page > 1 ? String(page) : undefined,
-              });
-              return { options: r.options, hasMore: r.nextCursor !== undefined };
-            }
-          : undefined,
-      [loadOptions],
-    );
+    const selectLoadOptions = React.useMemo(() => selectLoadOptionsFor(loadOptions), [loadOptions]);
 
     const staticOptions = React.useMemo(
       () => (options ? normalizeSelectOptions(options as SelectOptionGroupProp[]) : []),
