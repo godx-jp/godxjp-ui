@@ -23,6 +23,18 @@ New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-
 `wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
 `break="anywhere"` as the prop for an email, code or id in a table cell.
 
+## [31.0.3] - 2026-09-27
+
+### 🐛 Kit strings outside an `AppProvider` follow `syncI18nLocale`, and a development build says so (gh#1005)
+
+PATCH. Without an `AppProvider`, `useTranslation` read a hard-coded `vi` and ignored
+`syncI18nLocale`: measured in godx-mailer as Vietnamese close/cancel/delete buttons and badges in a
+Japanese UI, with no warning. The React path now reads the same module locale `syncI18nLocale` sets;
+a development build warns ONCE when a kit component renders outside the provider and nothing chose
+a locale; and pickers outside the provider use UTC — AppProvider's own unconfigured answer
+(gh#968) — instead of `Asia/Ho_Chi_Minh`. `docs/CONSUMER-RULES.md` rule 2: mount `AppProvider` once
+at the root.
+
 ## [31.0.2] - 2026-09-27
 
 The first published 31.x — it carries everything listed under 31.0.1 and 31.0.0. `v31.0.1` was
