@@ -2946,6 +2946,10 @@
   .ui-topbar-item {
     display: inline-flex;
     min-width: var(--topbar-item-min-width);
+    /* The block floor is the same cell measure (gh#1010). Inside a Topbar the cell stretches to
+     * the bar and this never binds; anywhere else — a dock strip, a toolbar — `align-self: stretch`
+     * alone collapsed it to the glyph: measured 36 × 16px, failing WCAG 2.2 target-size (2.5.8). */
+    min-block-size: var(--topbar-item-min-width);
     flex: 0 0 auto;
     align-self: stretch;
     align-items: center;

@@ -313,6 +313,14 @@ describe("responsive shell geometry", () => {
     );
   });
 
+  it("gives a TopbarItem a block floor as well as an inline one, so it never collapses to its glyph outside a Topbar (gh#1010)", () => {
+    const cell = declarationsFor(shellStyles, ".ui-topbar-item");
+    expect(cell).toMatch(/min-width:\s*var\(\s*--topbar-item-min-width\);/);
+    expect(cell).toMatch(/min-block-size:\s*var\(\s*--topbar-item-min-width\);/);
+    // The floor is a whole control, which is never below WCAG 2.2's 24px target size.
+    expect(shellTokens).toContain("--topbar-item-min-width: var(--control-height);");
+  });
+
   it("removes the optional Topbar center before it collides with long start/end content (gh#244)", () => {
     expect(shellTokens).toContain("--topbar-center-compact-display: none;");
 
