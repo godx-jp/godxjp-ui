@@ -120,6 +120,14 @@ ngày: năm thứ cần đều ĐÃ CÓ và vẫn bị dựng lại bằng thứ
 Lỗi không phải "đoán sai tên prop" mà là **cho rằng nó không tồn tại nên không
 hỏi**.
 
+## `AppProvider` là bắt buộc — thiếu nó, chuỗi của kit nói tiếng Việt
+
+Mount `<AppProvider defaultLocale="ja">` MỘT lần ở gốc app. Thiếu nó, chuỗi của chính kit (nút
+đóng/hủy/xóa của dialog, upload, badge đếm, nhãn picker) rơi về locale nghỉ `vi` và picker rơi về
+UTC — godx-mailer đo được nút tiếng Việt giữa UI tiếng Nhật, không một cảnh báo (gh#1005). Bản dev
+giờ cảnh báo MỘT lần khi component của kit render ngoài provider. Không mount được provider thì gọi
+`syncI18nLocale(locale, fallback)` lúc khởi động.
+
 ## Form: `Form` bọc `FormField`, bề rộng theo nội dung, form dài là PAGE
 
 godx-mailer dính bốn lỗi form trong một ngày, cả bốn đều là kit ĐÃ CÓ đồ đúng

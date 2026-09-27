@@ -156,10 +156,17 @@ export function translateCurrent(key: MessageKey, params?: TranslateParams): str
 
 let syncedLocale: AppLocale = "vi";
 let syncedFallbackLocale: AppLocale = "en";
+let syncedByCaller = false;
 
 export function syncI18nLocale(locale: AppLocale, fallbackLocale: AppLocale): void {
   syncedLocale = locale;
   syncedFallbackLocale = fallbackLocale;
+  syncedByCaller = true;
+}
+
+/** Whether anything has ever called `syncI18nLocale` — the resting "vi" was never CHOSEN. */
+export function isI18nLocaleSynced(): boolean {
+  return syncedByCaller;
 }
 
 export function getSyncedLocale(): AppLocale {
@@ -174,4 +181,5 @@ export function getSyncedFallbackLocale(): AppLocale {
 export function resetI18nLocale(): void {
   syncedLocale = "vi";
   syncedFallbackLocale = "en";
+  syncedByCaller = false;
 }
