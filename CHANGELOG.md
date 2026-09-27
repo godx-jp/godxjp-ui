@@ -23,6 +23,53 @@ New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-
 `wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
 `break="anywhere"` as the prop for an email, code or id in a table cell.
 
+## [31.0.0] - 2026-09-27
+
+MAJOR, for two reasons: an export moved (gh#996), and the consumer audit gains two `error` rules
+that most existing apps will trip (gh#998).
+
+### 💥 `PrefetchLink` moved to `@godxjp/ui/react-router` (gh#996)
+
+```diff
+- import { PrefetchLink } from "@godxjp/ui/query";
++ import { PrefetchLink } from "@godxjp/ui/react-router";
+```
+
+Same component, same props. `@godxjp/ui/query` imported `react-router-dom` (an OPTIONAL peer) at
+module top level through it, so every app without a router — every Inertia app — failed its Vite
+build on ANY query import, `InfiniteQueryState` and `DataState` included. Measured with a Vite app
+that does not install the router and imports only `InfiniteQueryState`: 30.9.0 exits 1
+(`"Link" is not exported by … react-router-dom`), 31.0.0 exits 0. A test now walks the import graph
+of every entry in `package.json#exports`; only `./react-router` may reach the router.
+
+### 💥 ui-audit: the form layer is enforced (gh#998)
+
+- `formfield-needs-form` (**error**) — a `FormField` with no `<Form>` around it. Wrap fields in
+  `<Form layout="horizontal" labelWidth controlWidth>`; a row that belongs together is
+  `<SpaceCompact>` or `<Form columns>`. A component whose whole output is one FormField is exempt.
+- `dialog-form-too-big` (**error**) — three or more FormFields in a Dialog/Sheet body: give the
+  form its own page.
+- `select-width-hint` (warn) — a `Select` with no `controlWidth` on its field or its Form.
+
+**Migration cost, measured:** across the consumers on the maintainer's machine (1,191 files that
+use `FormField`), `formfield-needs-form` finds 3,772 sites in 831 files and `dialog-form-too-big` 186.
+The PostToolUse hook and `ui-audit --changed` see only the files being edited, so new work is held
+to the rule immediately; a FULL scan stays red until the old forms are migrated. A deliberate
+exception is `// ui-audit-disable-next-line formfield-needs-form -- <reason>`.
+
+`get_component` for any data-entry component, and `search_components` when it returns one, now
+print a FORM RULES block naming these rules. `docs/CONSUMER-RULES.md` rule 5 carries the
+escape-hatch contract: a case the kit cannot express is an issue on godx-jp/godxjp-ui, marked
+`// TODO(godxjp-ui#<n>)`, never a hand-roll.
+
+### 🐛 `Alert` — the two-column actions layout follows the alert's width, not the viewport (gh#997)
+
+`[data-slot="alert"]` is now a named inline-size query container and the two
+`@media (min-width: 640px)` blocks are `@container alert (min-width: 40rem)`. Measured at a 1440px
+viewport, an Alert with three actions in a 360px card: the title column went from **8px** (the
+description wrapping one glyph per line) to **294px**, actions below it. At 700px it is still two
+columns.
+
 ## [30.4.2] - 2026-09-25
 
 ### 🐛 `SpaceCompact` — the item box must stretch its own child, and `fullWidth` is documented as it behaves (gh#919 follow-up)
@@ -50,7 +97,6 @@ content width), and points at omitting `fullWidth` for the content-width case (*
 
 A style test pins all three measurements, including that no `.ui-space-compact` rule may key on a bare
 `> *` again — the shape that made a `display: contents` child unreachable in the first place.
-
 
 ## [30.4.1] - 2026-09-25
 
@@ -121,8 +167,12 @@ hint in the middle, and send on the end side:
   actions={false}
   footer={({ components: { SubmitButton } }) => (
     <Flex justify="between">
-      <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付"><Paperclip /></Button>
-      <Text size="xs" tone="muted">Enter で送信 · Shift + Enter で改行</Text>
+      <Button size="icon-sm" variant="ghost" aria-label="ファイルを添付">
+        <Paperclip />
+      </Button>
+      <Text size="xs" tone="muted">
+        Enter で送信 · Shift + Enter で改行
+      </Text>
       <SubmitButton aria-label="コメントを送信" />
     </Flex>
   )}
