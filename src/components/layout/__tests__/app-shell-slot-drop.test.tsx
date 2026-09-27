@@ -32,7 +32,12 @@ describe("AppShell — `topbar` nuốt các khe khác", () => {
     // ĐỊNH, và một `topbar` tự viết chính là việc thay bố cục ấy.
     expect(getByText("logo")).toBeInTheDocument();
     expect(getByText("bar")).toBeInTheDocument();
-    expect(warn).not.toHaveBeenCalled();
+    // AppShell's own slot warnings only. Rendered without an AppProvider, the i18n layer now says
+    // so once (gh#1005) — a different warning, and not what this contract is about.
+    const shellWarnings = warn.mock.calls.filter(
+      (call) => !String(call[0]).includes("outside <AppProvider>"),
+    );
+    expect(shellWarnings).toEqual([]);
   });
 
   it("liệt kê ĐỦ hai khe bị bỏ qua, và logo KHÔNG nằm trong số đó", () => {
