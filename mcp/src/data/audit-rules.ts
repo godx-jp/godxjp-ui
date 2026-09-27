@@ -226,7 +226,7 @@ export const AUDIT_RULES: AuditRule[] = [
     severity: "error",
     category: "composition",
     standard: "@godxjp/ui form placement (gh#998)",
-    fix: "Three or more FormFields in a Dialog/Sheet body is a page: give the form its own route. Dialogs hold a confirmation or one or two fields.",
+    fix: "Three or more FormFields in a Dialog body is a page: give the form its own route. Dialogs hold a confirmation or one or two fields; a side Sheet (drawer) may hold a filter or edit form.",
   },
   {
     id: "select-width-hint",

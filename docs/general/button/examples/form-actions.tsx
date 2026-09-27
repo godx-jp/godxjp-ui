@@ -1,4 +1,4 @@
-import { FormField, Input } from "@godxjp/ui/data-entry";
+import { Form, FormField, Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import {
@@ -65,20 +65,22 @@ export default function Demo() {
           </Flex>
         }
       >
-        <Flex direction="col" gap="md">
-          <FormField id="name" label="取引先名">
-            <Input id="name" defaultValue="株式会社ベトヤ" />
-          </FormField>
-          <FormField id="code" label="取引先コード">
-            <Input id="code" defaultValue="BTY-0012" />
-          </FormField>
-          <FormField id="contact" label="担当者">
-            <Input id="contact" defaultValue="グエン・ヴァン・A" />
-          </FormField>
-          <FormField id="email" label="メール">
-            <Input id="email" type="email" defaultValue="ke-toan@betoya.test" />
-          </FormField>
-        </Flex>
+        <Form>
+          <Flex direction="col" gap="md">
+            <FormField id="name" label="取引先名">
+              <Input id="name" defaultValue="株式会社ベトヤ" />
+            </FormField>
+            <FormField id="code" label="取引先コード">
+              <Input id="code" defaultValue="BTY-0012" />
+            </FormField>
+            <FormField id="contact" label="担当者">
+              <Input id="contact" defaultValue="グエン・ヴァン・A" />
+            </FormField>
+            <FormField id="email" label="メール">
+              <Input id="email" type="email" defaultValue="ke-toan@betoya.test" />
+            </FormField>
+          </Flex>
+        </Form>
       </PageContainer>
     </AppShell>
   );

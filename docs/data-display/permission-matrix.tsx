@@ -17,7 +17,7 @@ import {
   CardTitle,
   PermissionMatrix,
 } from "@godxjp/ui/data-display";
-import { FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
+import { Form, FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { grantKey } from "@godxjp/ui/lib/permission-grid";
 
@@ -114,35 +114,37 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Flex direction="row" wrap align="end" gap="md">
-                {/* Bare Select has NO accessible name (axe button-name) — the compare
+              <Form>
+                <Flex direction="row" wrap align="end" gap="md">
+                  {/* Bare Select has NO accessible name (axe button-name) — the compare
                     pickers are labelled through FormField, exactly as the showcase does. */}
-                <FormField label="比較 A">
-                  <Select
-                    value={compareA}
-                    onValueChange={setCompareA}
-                    options={roleOptions}
-                    className="w-40"
-                  />
-                </FormField>
-                <FormField label="比較 B">
-                  <Select
-                    value={compareB}
-                    onValueChange={setCompareB}
-                    options={roleOptions}
-                    className="w-40"
-                  />
-                </FormField>
-                <Flex direction="row" align="center" gap="sm">
-                  <Switch
-                    id="pm-doc-diff-only"
-                    size="sm"
-                    checked={diffOnly}
-                    onCheckedChange={setDiffOnly}
-                  />
-                  <Label htmlFor="pm-doc-diff-only">差分のみ</Label>
+                  <FormField label="比較 A">
+                    <Select
+                      value={compareA}
+                      onValueChange={setCompareA}
+                      options={roleOptions}
+                      className="w-40"
+                    />
+                  </FormField>
+                  <FormField label="比較 B">
+                    <Select
+                      value={compareB}
+                      onValueChange={setCompareB}
+                      options={roleOptions}
+                      className="w-40"
+                    />
+                  </FormField>
+                  <Flex direction="row" align="center" gap="sm">
+                    <Switch
+                      id="pm-doc-diff-only"
+                      size="sm"
+                      checked={diffOnly}
+                      onCheckedChange={setDiffOnly}
+                    />
+                    <Label htmlFor="pm-doc-diff-only">差分のみ</Label>
+                  </Flex>
                 </Flex>
-              </Flex>
+              </Form>
               <Card variant="outline" className="overflow-hidden">
                 <CardContent flush>
                   <div>

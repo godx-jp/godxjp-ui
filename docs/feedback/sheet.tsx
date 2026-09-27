@@ -20,6 +20,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
+  Form,
   FormField,
   Input,
   Select,
@@ -139,69 +140,71 @@ export default function Demo() {
                   extra={<Badge tone="info">3 条件</Badge>}
                 />
                 <SheetBody>
-                  <Flex direction="col" gap="md">
-                    <FormField id="filter-account" label="勘定科目">
-                      <Select aria-label="勘定科目" value={account} onValueChange={setAccount}>
-                        <SelectTrigger id="filter-account">
-                          <SelectValue placeholder="すべての勘定科目" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">すべての勘定科目</SelectItem>
-                          <SelectItem value="cash">現金</SelectItem>
-                          <SelectItem value="sales">売上高</SelectItem>
-                          <SelectItem value="expense">旅費交通費</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormField>
-                    <FormField id="filter-status" label="ステータス">
-                      <Select aria-label="ステータス" value={status} onValueChange={setStatus}>
-                        <SelectTrigger id="filter-status">
-                          <SelectValue placeholder="すべてのステータス" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">すべてのステータス</SelectItem>
-                          <SelectItem value="draft">下書き</SelectItem>
-                          <SelectItem value="approved">承認済み</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormField>
-                    <FormField id="filter-source" label="ソース">
-                      <Select aria-label="ソース" value={source} onValueChange={setSource}>
-                        <SelectTrigger id="filter-source">
-                          <SelectValue placeholder="すべてのソース" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">すべてのソース</SelectItem>
-                          <SelectItem value="manual">手入力</SelectItem>
-                          <SelectItem value="import">インポート</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormField>
-                    <FormField id="filter-amount-min" label="金額">
-                      <Flex direction="row" gap="sm" align="center">
-                        <Input
-                          id="filter-amount-min"
-                          className="min-w-0 flex-1"
-                          inputMode="numeric"
-                          placeholder="最小"
-                          value={minAmount}
-                          onChange={(e) => setMinAmount(e.target.value)}
-                        />
-                        <Text tone="muted" aria-hidden="true">
-                          –
-                        </Text>
-                        <Input
-                          id="filter-amount-max"
-                          aria-label="最大金額"
-                          className="min-w-0 flex-1"
-                          inputMode="numeric"
-                          placeholder="最大"
-                          value={maxAmount}
-                          onChange={(e) => setMaxAmount(e.target.value)}
-                        />
-                      </Flex>
-                    </FormField>
-                  </Flex>
+                  <Form>
+                    <Flex direction="col" gap="md">
+                      <FormField id="filter-account" label="勘定科目">
+                        <Select aria-label="勘定科目" value={account} onValueChange={setAccount}>
+                          <SelectTrigger id="filter-account">
+                            <SelectValue placeholder="すべての勘定科目" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">すべての勘定科目</SelectItem>
+                            <SelectItem value="cash">現金</SelectItem>
+                            <SelectItem value="sales">売上高</SelectItem>
+                            <SelectItem value="expense">旅費交通費</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormField>
+                      <FormField id="filter-status" label="ステータス">
+                        <Select aria-label="ステータス" value={status} onValueChange={setStatus}>
+                          <SelectTrigger id="filter-status">
+                            <SelectValue placeholder="すべてのステータス" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">すべてのステータス</SelectItem>
+                            <SelectItem value="draft">下書き</SelectItem>
+                            <SelectItem value="approved">承認済み</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormField>
+                      <FormField id="filter-source" label="ソース">
+                        <Select aria-label="ソース" value={source} onValueChange={setSource}>
+                          <SelectTrigger id="filter-source">
+                            <SelectValue placeholder="すべてのソース" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">すべてのソース</SelectItem>
+                            <SelectItem value="manual">手入力</SelectItem>
+                            <SelectItem value="import">インポート</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormField>
+                      <FormField id="filter-amount-min" label="金額">
+                        <Flex direction="row" gap="sm" align="center">
+                          <Input
+                            id="filter-amount-min"
+                            className="min-w-0 flex-1"
+                            inputMode="numeric"
+                            placeholder="最小"
+                            value={minAmount}
+                            onChange={(e) => setMinAmount(e.target.value)}
+                          />
+                          <Text tone="muted" aria-hidden="true">
+                            –
+                          </Text>
+                          <Input
+                            id="filter-amount-max"
+                            aria-label="最大金額"
+                            className="min-w-0 flex-1"
+                            inputMode="numeric"
+                            placeholder="最大"
+                            value={maxAmount}
+                            onChange={(e) => setMaxAmount(e.target.value)}
+                          />
+                        </Flex>
+                      </FormField>
+                    </Flex>
+                  </Form>
                 </SheetBody>
                 <SheetFooter>
                   <Button
@@ -245,22 +248,24 @@ export default function Demo() {
                   <SheetDescription>取引先の基本情報を編集します。</SheetDescription>
                 </SheetHeader>
                 <SheetBody>
-                  <Flex direction="col" gap="md">
-                    <FormField id="edit-company" label="会社名" required>
-                      <Input
-                        id="edit-company"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                      />
-                    </FormField>
-                    <FormField id="edit-registration" label="登録番号" helper="T + 13桁">
-                      <Input
-                        id="edit-registration"
-                        value={registration}
-                        onChange={(e) => setRegistration(e.target.value)}
-                      />
-                    </FormField>
-                  </Flex>
+                  <Form>
+                    <Flex direction="col" gap="md">
+                      <FormField id="edit-company" label="会社名" required>
+                        <Input
+                          id="edit-company"
+                          value={companyName}
+                          onChange={(e) => setCompanyName(e.target.value)}
+                        />
+                      </FormField>
+                      <FormField id="edit-registration" label="登録番号" helper="T + 13桁">
+                        <Input
+                          id="edit-registration"
+                          value={registration}
+                          onChange={(e) => setRegistration(e.target.value)}
+                        />
+                      </FormField>
+                    </Flex>
+                  </Form>
                 </SheetBody>
                 <SheetFooter>
                   <Button variant="outline" onClick={() => setEditOpen(false)}>

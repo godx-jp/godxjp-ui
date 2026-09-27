@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Textarea } from "@godxjp/ui/data-entry";
+import { Form, FormField, Textarea } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -145,50 +145,52 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="autogrow-ceiling"
-                label="上限あり (minRows=1 / maxRows=3)"
-                helper="4行目からは箱が伸びずに内部スクロールへ切り替わります。"
-              >
-                <Textarea
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
                   id="autogrow-ceiling"
-                  autoGrow
-                  minRows={1}
-                  maxRows={3}
-                  defaultValue={"1行目\n2行目\n3行目\n4行目\n5行目\n6行目"}
-                />
-              </FormField>
+                  label="上限あり (minRows=1 / maxRows=3)"
+                  helper="4行目からは箱が伸びずに内部スクロールへ切り替わります。"
+                >
+                  <Textarea
+                    id="autogrow-ceiling"
+                    autoGrow
+                    minRows={1}
+                    maxRows={3}
+                    defaultValue={"1行目\n2行目\n3行目\n4行目\n5行目\n6行目"}
+                  />
+                </FormField>
 
-              <FormField
-                id="autogrow-floor"
-                label="下限あり (minRows=3)"
-                helper="空でも3行分の高さを保ちます。"
-              >
-                <Textarea
+                <FormField
                   id="autogrow-floor"
-                  autoGrow
-                  minRows={3}
-                  placeholder="社内メモ..."
-                  allowClear
-                />
-              </FormField>
+                  label="下限あり (minRows=3)"
+                  helper="空でも3行分の高さを保ちます。"
+                >
+                  <Textarea
+                    id="autogrow-floor"
+                    autoGrow
+                    minRows={3}
+                    placeholder="社内メモ..."
+                    allowClear
+                  />
+                </FormField>
 
-              <FormField
-                id="autogrow-unbounded"
-                label="上限なし (maxRows=0)"
-                helper="ページ側にスクロールを持つ画面でのみ使ってください。"
-              >
-                <Textarea
+                <FormField
                   id="autogrow-unbounded"
-                  autoGrow
-                  maxRows={0}
-                  defaultValue={
-                    "長文の下書きを最後まで見せたい画面向け。\n箱は内容に合わせて伸び続けます。"
-                  }
-                />
-              </FormField>
-            </Flex>
+                  label="上限なし (maxRows=0)"
+                  helper="ページ側にスクロールを持つ画面でのみ使ってください。"
+                >
+                  <Textarea
+                    id="autogrow-unbounded"
+                    autoGrow
+                    maxRows={0}
+                    defaultValue={
+                      "長文の下書きを最後まで見せたい画面向け。\n箱は内容に合わせて伸び続けます。"
+                    }
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

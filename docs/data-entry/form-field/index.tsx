@@ -39,49 +39,51 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="ff-name" label="取引先名" required helper="最大50文字">
-                <Input id="ff-name" placeholder="株式会社..." />
-              </FormField>
-              <FormField
-                id="ff-email"
-                label="メール"
-                error="メールアドレスの形式が正しくありません"
-              >
-                <Input id="ff-email" type="email" defaultValue="invalid@" />
-              </FormField>
-              <FormField id="ff-status" label="状態" helper="未選択の場合は下書きになります">
-                <Select
-                  id="ff-status"
-                  name="status"
-                  value="paid"
-                  onValueChange={() => {}}
-                  options={[
-                    { value: "draft", label: "下書き" },
-                    { value: "paid", label: "入金済" },
-                  ]}
-                />
-              </FormField>
-              <FormField
-                id="ff-required-status"
-                label="承認状態"
-                required
-                helper="承認ワークフローで使用します"
-                error="承認状態を選択してください"
-              >
-                <Select
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="ff-name" label="取引先名" required helper="最大50文字">
+                  <Input id="ff-name" placeholder="株式会社..." />
+                </FormField>
+                <FormField
+                  id="ff-email"
+                  label="メール"
+                  error="メールアドレスの形式が正しくありません"
+                >
+                  <Input id="ff-email" type="email" defaultValue="invalid@" />
+                </FormField>
+                <FormField id="ff-status" label="状態" helper="未選択の場合は下書きになります">
+                  <Select
+                    id="ff-status"
+                    name="status"
+                    value="paid"
+                    onValueChange={() => {}}
+                    options={[
+                      { value: "draft", label: "下書き" },
+                      { value: "paid", label: "入金済" },
+                    ]}
+                  />
+                </FormField>
+                <FormField
                   id="ff-required-status"
-                  name="approval_status"
-                  value=""
-                  onValueChange={() => {}}
-                  placeholder="状態を選択"
-                  options={[
-                    { value: "pending", label: "承認待ち" },
-                    { value: "approved", label: "承認済み" },
-                  ]}
-                />
-              </FormField>
-            </Flex>
+                  label="承認状態"
+                  required
+                  helper="承認ワークフローで使用します"
+                  error="承認状態を選択してください"
+                >
+                  <Select
+                    id="ff-required-status"
+                    name="approval_status"
+                    value=""
+                    onValueChange={() => {}}
+                    placeholder="状態を選択"
+                    options={[
+                      { value: "pending", label: "承認待ち" },
+                      { value: "approved", label: "承認済み" },
+                    ]}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -261,21 +263,23 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="state-readonly" label="作成者" helper="システム管理項目">
-                <Input id="state-readonly" readOnly defaultValue="山田 太郎" />
-              </FormField>
-              <FormField id="state-disabled" label="契約番号">
-                <Input id="state-disabled" disabled defaultValue="CTR-2026-0042" />
-              </FormField>
-              <FormField
-                id="state-server"
-                label="組織名"
-                error="保存できませんでした。しばらくしてから再試行してください。"
-              >
-                <Input id="state-server" defaultValue="株式会社アクメ" />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="state-readonly" label="作成者" helper="システム管理項目">
+                  <Input id="state-readonly" readOnly defaultValue="山田 太郎" />
+                </FormField>
+                <FormField id="state-disabled" label="契約番号">
+                  <Input id="state-disabled" disabled defaultValue="CTR-2026-0042" />
+                </FormField>
+                <FormField
+                  id="state-server"
+                  label="組織名"
+                  error="保存できませんでした。しばらくしてから再試行してください。"
+                >
+                  <Input id="state-server" defaultValue="株式会社アクメ" />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

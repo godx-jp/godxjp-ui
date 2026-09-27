@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Input, PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
+import { Form, FormField, Input, PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
@@ -128,34 +128,36 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AuthStack>
-              <FormField id="recovery-new-password" label="新しいパスワード" required>
-                <PasswordInput
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                />
-              </FormField>
-              <PasswordStrength value={password} />
-              <FormField
-                id="recovery-confirm-password"
-                label="新しいパスワード（確認）"
-                error="パスワードが一致しません。"
-                required
-              >
-                <PasswordInput
-                  autoComplete="new-password"
-                  value={confirmation}
-                  onChange={(event) => setConfirmation(event.target.value)}
-                />
-              </FormField>
-              <Button fullWidth>パスワードを更新</Button>
-              <Flex justify="between" gap="sm" wrap>
-                <Button variant="ghost" size="sm">
-                  サインインに戻る
-                </Button>
-              </Flex>
-            </AuthStack>
+            <Form>
+              <AuthStack>
+                <FormField id="recovery-new-password" label="新しいパスワード" required>
+                  <PasswordInput
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                </FormField>
+                <PasswordStrength value={password} />
+                <FormField
+                  id="recovery-confirm-password"
+                  label="新しいパスワード（確認）"
+                  error="パスワードが一致しません。"
+                  required
+                >
+                  <PasswordInput
+                    autoComplete="new-password"
+                    value={confirmation}
+                    onChange={(event) => setConfirmation(event.target.value)}
+                  />
+                </FormField>
+                <Button fullWidth>パスワードを更新</Button>
+                <Flex justify="between" gap="sm" wrap>
+                  <Button variant="ghost" size="sm">
+                    サインインに戻る
+                  </Button>
+                </Flex>
+              </AuthStack>
+            </Form>
           </CardContent>
         </Card>
 

@@ -14,6 +14,7 @@ import {
   ListRow,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   Checkbox,
   Field,
   FormField,
@@ -137,91 +138,93 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <AuthStack>
-                <FormField id="reg-name" label="お名前" required>
-                  <Input id="reg-name" autoComplete="name" placeholder="山田 太郎" />
-                </FormField>
+              <Form>
+                <AuthStack>
+                  <FormField id="reg-name" label="お名前" required>
+                    <Input id="reg-name" autoComplete="name" placeholder="山田 太郎" />
+                  </FormField>
 
-                <FormField
-                  id="reg-email"
-                  label="メールアドレス"
-                  required
-                  helper="確認リンクの送信先になります。"
-                >
-                  <Input
+                  <FormField
                     id="reg-email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                  />
-                </FormField>
+                    label="メールアドレス"
+                    required
+                    helper="確認リンクの送信先になります。"
+                  >
+                    <Input
+                      id="reg-email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                    />
+                  </FormField>
 
-                <FormField id="reg-password" label="パスワード" required>
-                  <PasswordInput
-                    id="reg-password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                  />
-                </FormField>
+                  <FormField id="reg-password" label="パスワード" required>
+                    <PasswordInput
+                      id="reg-password"
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                    />
+                  </FormField>
 
-                {/* The strength meter is a real primitive — never a hand-rolled coloured bar. */}
-                <PasswordStrength value={password} />
+                  {/* The strength meter is a real primitive — never a hand-rolled coloured bar. */}
+                  <PasswordStrength value={password} />
 
-                <FormField
-                  id="reg-confirm"
-                  label="パスワード（確認）"
-                  required
-                  // The error is announced through the field's own aria-errormessage wiring, so
-                  // the mismatch is not communicated by colour alone.
-                  error={mismatch ? "パスワードが一致しません。" : undefined}
-                >
-                  <PasswordInput
+                  <FormField
                     id="reg-confirm"
-                    autoComplete="new-password"
-                    value={confirm}
-                    onChange={(event) => setConfirm(event.target.value)}
-                  />
-                </FormField>
+                    label="パスワード（確認）"
+                    required
+                    // The error is announced through the field's own aria-errormessage wiring, so
+                    // the mismatch is not communicated by colour alone.
+                    error={mismatch ? "パスワードが一致しません。" : undefined}
+                  >
+                    <PasswordInput
+                      id="reg-confirm"
+                      autoComplete="new-password"
+                      value={confirm}
+                      onChange={(event) => setConfirm(event.target.value)}
+                    />
+                  </FormField>
 
-                <Field id="reg-consent" label="利用規約とプライバシーポリシーに同意します">
-                  <Checkbox
-                    id="reg-consent"
-                    checked={consent}
-                    onCheckedChange={(next) => setConsent(next === true)}
-                  />
-                </Field>
+                  <Field id="reg-consent" label="利用規約とプライバシーポリシーに同意します">
+                    <Checkbox
+                      id="reg-consent"
+                      checked={consent}
+                      onCheckedChange={(next) => setConsent(next === true)}
+                    />
+                  </Field>
 
-                <Button
-                  loading={submitting}
-                  disabled={!consent || mismatch}
-                  onClick={() => {
-                    setSubmitting(true);
-                    setSubmitting(false);
-                    setStage("pending-email");
-                  }}
-                >
-                  アカウントを作成
-                </Button>
+                  <Button
+                    loading={submitting}
+                    disabled={!consent || mismatch}
+                    onClick={() => {
+                      setSubmitting(true);
+                      setSubmitting(false);
+                      setStage("pending-email");
+                    }}
+                  >
+                    アカウントを作成
+                  </Button>
 
-                {/* ── SOCIAL / PROVIDER ACTIONS — the documented "SocialLinks" composition.
+                  {/* ── SOCIAL / PROVIDER ACTIONS — the documented "SocialLinks" composition.
                        A divider + real outline Buttons. No new component: the package must not
                        invent which providers a product offers, in what order, or what consent
                        they imply. `disabled` / `loading` are the Button's own props. ── */}
-                <AuthDivider label="または" />
+                  <AuthDivider label="または" />
 
-                <Flex direction="col" gap="sm">
-                  {PROVIDERS.map((provider) => {
-                    const Icon = provider.icon;
-                    return (
-                      <Button key={provider.id} variant="outline" disabled={submitting}>
-                        <Icon aria-hidden="true" />
-                        {provider.label}
-                      </Button>
-                    );
-                  })}
-                </Flex>
-              </AuthStack>
+                  <Flex direction="col" gap="sm">
+                    {PROVIDERS.map((provider) => {
+                      const Icon = provider.icon;
+                      return (
+                        <Button key={provider.id} variant="outline" disabled={submitting}>
+                          <Icon aria-hidden="true" />
+                          {provider.label}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </AuthStack>
+              </Form>
             </CardContent>
           </Card>
         ) : (

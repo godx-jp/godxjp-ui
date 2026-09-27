@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, TimePicker, TimeRangePicker } from "@godxjp/ui/data-entry";
+import { Form, FormField, TimePicker, TimeRangePicker } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -51,28 +51,30 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" wrap>
-              <FormField id="shift-start" label="出勤時刻">
-                <TimePicker
-                  id="shift-start"
-                  name="shift_start"
-                  value={shiftStart}
-                  onValueChange={setShiftStart}
-                  minuteStep={15}
-                  className="w-36"
-                />
-              </FormField>
-              <FormField id="shift-end" label="退勤時刻">
-                <TimePicker
-                  id="shift-end"
-                  name="shift_end"
-                  value={shiftEnd}
-                  onValueChange={setShiftEnd}
-                  minuteStep={15}
-                  className="w-36"
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="row" gap="md" wrap>
+                <FormField id="shift-start" label="出勤時刻">
+                  <TimePicker
+                    id="shift-start"
+                    name="shift_start"
+                    value={shiftStart}
+                    onValueChange={setShiftStart}
+                    minuteStep={15}
+                    className="w-36"
+                  />
+                </FormField>
+                <FormField id="shift-end" label="退勤時刻">
+                  <TimePicker
+                    id="shift-end"
+                    name="shift_end"
+                    value={shiftEnd}
+                    onValueChange={setShiftEnd}
+                    minuteStep={15}
+                    className="w-36"
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -135,30 +137,32 @@ export default function Demo() {
             <CardTitle level={2}>入力状態</CardTitle>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="readonly-time" label="選択のみ">
-                <TimePicker
-                  id="readonly-time"
-                  inputReadOnly
-                  defaultValue="09:00"
-                  allowClear={false}
-                  size="sm"
-                  variant="filled"
-                />
-              </FormField>
-              <FormField id="invalid-time" label="入力を保持">
-                <TimePicker id="invalid-time" preserveInvalidOnBlur status="error" size="lg" />
-              </FormField>
-              <FormField id="quiet-time" label="任意時刻">
-                <TimePicker
-                  id="quiet-time"
-                  variant="borderless"
-                  status="warning"
-                  placement="top-start"
-                  showNow={false}
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="readonly-time" label="選択のみ">
+                  <TimePicker
+                    id="readonly-time"
+                    inputReadOnly
+                    defaultValue="09:00"
+                    allowClear={false}
+                    size="sm"
+                    variant="filled"
+                  />
+                </FormField>
+                <FormField id="invalid-time" label="入力を保持">
+                  <TimePicker id="invalid-time" preserveInvalidOnBlur status="error" size="lg" />
+                </FormField>
+                <FormField id="quiet-time" label="任意時刻">
+                  <TimePicker
+                    id="quiet-time"
+                    variant="borderless"
+                    status="warning"
+                    placement="top-start"
+                    showNow={false}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
         <Card>

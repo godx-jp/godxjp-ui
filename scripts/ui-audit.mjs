@@ -1903,39 +1903,60 @@ for (const dir of SCAN_DIRS) {
      */
     if (isJsx) {
       const lineAt = (i) => scanContent.slice(0, i).split("\n").length;
-      // `<Form` then whitespace / `>` / `/` — the reporter's files break the tag across lines.
+      /*
+       * TWO OR MORE FormFields under ONE parent with no <Form> above them. That is the shape of
+       * every defect in the report — a hand-rolled <Flex> row of fields, a long form in a Dialog, a
+       * page of fields each choosing its own layout. A LONE field is not: a search box, the
+       * ConfirmDialog's type-to-confirm input, a field component whose whole output is one
+       * FormField. Flagging those made this repo's own library code and 29 docs pages red on a
+       * rule whose defect they do not have.
+       *
+       * The walk keeps a stack of open JSX elements so "same parent" is structural. `(?<![\w.$])`
+       * skips a generic argument (`useRef<HTMLDivElement>`), which is preceded by an identifier.
+       */
+      const stack = [];
+      const bareByParent = new Map();
       let formDepth = 0;
-      for (const m of scanContent.matchAll(/<(\/?)(Form|FormField)(?=[\s>/])/g)) {
-        const [, close, tag] = m;
-        if (tag === "Form") {
-          if (close) formDepth -= 1;
-          else if (!/^<Form\b[^>]*?\/>/.test(scanContent.slice(m.index, m.index + 400)))
-            formDepth += 1;
+      for (const m of scanContent.matchAll(
+        /(?<![\w.$])<(\/?)([A-Za-z][\w.]*)(?=[\s>/])([^<>]*?(?:\{[^{}]*\}[^<>]*?)*)(\/?)>/g,
+      )) {
+        const [, close, tag, , selfClose] = m;
+        if (close) {
+          for (let i = stack.length - 1; i >= 0; i -= 1) {
+            if (stack[i].tag === tag) {
+              stack.length = i;
+              break;
+            }
+          }
+          if (tag === "Form") formDepth = Math.max(0, formDepth - 1);
           continue;
         }
-        if (close || formDepth > 0) continue;
-        // A FIELD COMPONENT — its whole output is this FormField — is composed into a <Form>
-        // elsewhere (godx-mailer's `AttachmentsField`); flagging it would flag every reusable field.
-        if (/(?:return|=>)\s*\(?\s*$/.test(scanContent.slice(Math.max(0, m.index - 40), m.index))) {
-          continue;
+        if (tag === "FormField" && formDepth === 0) {
+          const parent = stack.at(-1)?.index ?? -1;
+          (bareByParent.get(parent) ?? bareByParent.set(parent, []).get(parent)).push(m.index);
         }
-        const lineNo = lineAt(m.index);
-        if (suppressed("formfield-needs-form", lineNo - 1)) continue;
-        findings.push({
-          file: rel,
-          line: lineNo,
-          rule: "formfield-needs-form",
-          severity: "error",
-          standard: "@godxjp/ui Form (gh#998)",
-          message:
-            'A <FormField> with no <Form> around it. <Form layout="horizontal" labelWidth controlWidth> is what lines every field up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field\'s label out of line. Wrap the fields in <Form>; a row that belongs together is <SpaceCompact> or <Form columns>. A reusable field component whose whole output is one FormField is exempt.',
-          snippet: scanContent.slice(m.index, m.index + 120).replace(/\s+/g, " "),
-        });
+        if (selfClose) continue;
+        stack.push({ tag, index: m.index });
+        if (tag === "Form") formDepth += 1;
+      }
+      for (const group of bareByParent.values()) {
+        if (group.length < 2) continue;
+        for (const at of group) {
+          const lineNo = lineAt(at);
+          if (suppressed("formfield-needs-form", lineNo - 1)) continue;
+          findings.push({
+            file: rel,
+            line: lineNo,
+            rule: "formfield-needs-form",
+            severity: "error",
+            standard: "@godxjp/ui Form (gh#998)",
+            message: `${group.length} FormFields under one parent with no <Form> around them. <Form layout="horizontal" labelWidth controlWidth> is what lines fields up — without it each form picks its own layout, and a row of fields in a hand-rolled <Flex> drops the required field's label out of line. Wrap them in <Form>; a row that belongs together is <SpaceCompact> or <Form columns>. A lone field (a search box, a type-to-confirm input) is not flagged.`,
+            snippet: scanContent.slice(at, at + 120).replace(/\s+/g, " "),
+          });
+        }
       }
 
-      for (const m of scanContent.matchAll(
-        /<(Dialog\.Body|DialogBody|Sheet\.Body|SheetBody)(?=[\s>])[\s\S]*?<\/\1>/g,
-      )) {
+      for (const m of scanContent.matchAll(/<(Dialog\.Body|DialogBody)(?=[\s>])[\s\S]*?<\/\1>/g)) {
         const count = (m[0].match(/<FormField(?=[\s>/])/g) ?? []).length;
         if (count < 3) continue;
         const lineNo = lineAt(m.index);
@@ -1946,7 +1967,7 @@ for (const dir of SCAN_DIRS) {
           rule: "dialog-form-too-big",
           severity: "error",
           standard: "@godxjp/ui form placement (gh#998)",
-          message: `${count} FormFields in a ${m[1]} — a form this size is a page of its own (its own route, back button, and room to scroll), not a modal. Keep dialogs for a confirmation or one or two fields.`,
+          message: `${count} FormFields in a ${m[1]} — a form this size is a page of its own (its own route, back button, and room to scroll), not a modal. Keep dialogs for a confirmation or one or two fields. A Sheet is not flagged: a side drawer is where an advanced filter or an edit form belongs (antd Drawer).`,
           snippet: m[0].slice(0, 120).replace(/\s+/g, " "),
         });
       }

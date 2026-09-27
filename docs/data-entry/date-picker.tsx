@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ja } from "date-fns/locale";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { DatePicker, FormField } from "@godxjp/ui/data-entry";
+import { Form, DatePicker, FormField } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { DateRange } from "react-day-picker";
 
@@ -65,23 +65,25 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex gap="lg" wrap>
-              <FormField id="ruled-date" label="罫線あり (既定)">
-                <DatePicker
-                  id="ruled-date"
-                  name="ruled_date"
-                  defaultValue={new Date(2026, 0, 15)}
-                />
-              </FormField>
-              <FormField id="unruled-date" label="罫線なし (bordered={false})">
-                <DatePicker
-                  id="unruled-date"
-                  name="unruled_date"
-                  defaultValue={new Date(2026, 0, 15)}
-                  bordered={false}
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex gap="lg" wrap>
+                <FormField id="ruled-date" label="罫線あり (既定)">
+                  <DatePicker
+                    id="ruled-date"
+                    name="ruled_date"
+                    defaultValue={new Date(2026, 0, 15)}
+                  />
+                </FormField>
+                <FormField id="unruled-date" label="罫線なし (bordered={false})">
+                  <DatePicker
+                    id="unruled-date"
+                    name="unruled_date"
+                    defaultValue={new Date(2026, 0, 15)}
+                    bordered={false}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -231,31 +233,33 @@ export default function Demo() {
             <CardTitle level={2}>表示形式と元号</CardTitle>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="formatted-date" label="契約日">
-                <DatePicker
-                  id="formatted-date"
-                  name="contract"
-                  defaultValue={new Date(2026, 8, 9)}
-                  format="yyyy年MM月dd日"
-                />
-              </FormField>
-              <FormField id="era-date" label="和暦">
-                <DatePicker
-                  id="era-date"
-                  name="era"
-                  defaultValue={new Date(2026, 8, 9)}
-                  format={{
-                    calendar: "japanese",
-                    era: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }}
-                  inputReadOnly
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="formatted-date" label="契約日">
+                  <DatePicker
+                    id="formatted-date"
+                    name="contract"
+                    defaultValue={new Date(2026, 8, 9)}
+                    format="yyyy年MM月dd日"
+                  />
+                </FormField>
+                <FormField id="era-date" label="和暦">
+                  <DatePicker
+                    id="era-date"
+                    name="era"
+                    defaultValue={new Date(2026, 8, 9)}
+                    format={{
+                      calendar: "japanese",
+                      era: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }}
+                    inputReadOnly
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
         <Card>

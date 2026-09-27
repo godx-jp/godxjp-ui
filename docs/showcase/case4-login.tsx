@@ -29,6 +29,7 @@ import { Languages, Monitor, Moon, Sun } from "lucide-react";
 
 import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
+  Form,
   FormField,
   Input,
   PasswordInput,
@@ -243,42 +244,44 @@ export default function LoginShowcase() {
                   e.preventDefault();
                 }}
               >
-                <Flex direction="col" gap="md">
-                  <FormField id="login-email" label="メールアドレス" required>
-                    <Input
-                      type="email"
-                      name="email"
-                      autoComplete="email"
-                      inputMode="email"
-                      placeholder="name@example.com"
-                      defaultValue="m.tanaka@famgia.com"
-                    />
-                  </FormField>
+                <Form>
+                  <Flex direction="col" gap="md">
+                    <FormField id="login-email" label="メールアドレス" required>
+                      <Input
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        inputMode="email"
+                        placeholder="name@example.com"
+                        defaultValue="m.tanaka@famgia.com"
+                      />
+                    </FormField>
 
-                  {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
-                  <FormField
-                    id="login-password"
-                    label="パスワード"
-                    required
-                    labelAddon={
-                      <Button type="button" variant="link" size="sm" className="ms-auto text-xs">
-                        お忘れの場合
-                      </Button>
-                    }
-                  >
-                    <PasswordInput
-                      name="password"
-                      autoComplete="current-password"
-                      placeholder="パスワードを入力"
-                      defaultValue="example-pass"
-                    />
-                  </FormField>
+                    {/* Password — labelAddon hosts the right-aligned "忘れた場合" link. */}
+                    <FormField
+                      id="login-password"
+                      label="パスワード"
+                      required
+                      labelAddon={
+                        <Button type="button" variant="link" size="sm" className="ms-auto text-xs">
+                          お忘れの場合
+                        </Button>
+                      }
+                    >
+                      <PasswordInput
+                        name="password"
+                        autoComplete="current-password"
+                        placeholder="パスワードを入力"
+                        defaultValue="example-pass"
+                      />
+                    </FormField>
 
-                  {/* The single --primary action of the view. */}
-                  <Button type="submit" className="w-full justify-center">
-                    ログイン
-                  </Button>
-                </Flex>
+                    {/* The single --primary action of the view. */}
+                    <Button type="submit" className="w-full justify-center">
+                      ログイン
+                    </Button>
+                  </Flex>
+                </Form>
               </form>
 
               <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">

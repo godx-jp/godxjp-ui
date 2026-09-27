@@ -40,55 +40,57 @@ export default function Demo() {
           {/* data-axe-open on the region: the gate presses the first `[role="combobox"]` inside it,
               which is the compound SelectTrigger. */}
           <CardContent data-axe-open>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="compound-controlled"
-                label="Controlled priority"
-                helper="Arrow keys move between enabled options"
-              >
-                <Select value={controlled} onValueChange={setControlled}>
-                  <SelectTrigger id="compound-controlled" size="sm">
-                    <SelectValue placeholder="選択" />
-                  </SelectTrigger>
-                  <SelectContent collisionPadding={16}>
-                    <SelectGroup>
-                      <SelectLabel>日本</SelectLabel>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
+                  id="compound-controlled"
+                  label="Controlled priority"
+                  helper="Arrow keys move between enabled options"
+                >
+                  <Select value={controlled} onValueChange={setControlled}>
+                    <SelectTrigger id="compound-controlled" size="sm">
+                      <SelectValue placeholder="選択" />
+                    </SelectTrigger>
+                    <SelectContent collisionPadding={16}>
+                      <SelectGroup>
+                        <SelectLabel>日本</SelectLabel>
+                        <SelectItem value="tokyo">東京</SelectItem>
+                        <SelectItem value="osaka">大阪</SelectItem>
+                      </SelectGroup>
+                      <SelectSeparator />
+                      <SelectGroup>
+                        <SelectLabel>Việt Nam</SelectLabel>
+                        <SelectItem value="hcm">Thành phố Hồ Chí Minh</SelectItem>
+                        <SelectItem value="danang" disabled>
+                          Đà Nẵng（利用不可）
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                <FormField id="compound-uncontrolled" label="Uncontrolled default">
+                  <Select defaultValue="osaka">
+                    <SelectTrigger id="compound-uncontrolled" size="md">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper" sideOffset={8} collisionPadding={24}>
                       <SelectItem value="tokyo">東京</SelectItem>
                       <SelectItem value="osaka">大阪</SelectItem>
-                    </SelectGroup>
-                    <SelectSeparator />
-                    <SelectGroup>
-                      <SelectLabel>Việt Nam</SelectLabel>
-                      <SelectItem value="hcm">Thành phố Hồ Chí Minh</SelectItem>
-                      <SelectItem value="danang" disabled>
-                        Đà Nẵng（利用不可）
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField id="compound-uncontrolled" label="Uncontrolled default">
-                <Select defaultValue="osaka">
-                  <SelectTrigger id="compound-uncontrolled" size="md">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent position="popper" sideOffset={8} collisionPadding={24}>
-                    <SelectItem value="tokyo">東京</SelectItem>
-                    <SelectItem value="osaka">大阪</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField id="compound-disabled" label="Disabled control">
-                <Select defaultValue="tokyo" disabled>
-                  <SelectTrigger id="compound-disabled">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="tokyo">東京</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </Flex>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                <FormField id="compound-disabled" label="Disabled control">
+                  <Select defaultValue="tokyo" disabled>
+                    <SelectTrigger id="compound-disabled">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="tokyo">東京</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

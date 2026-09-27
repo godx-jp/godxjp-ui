@@ -521,9 +521,7 @@
     "covered": 93,
     "untested": 2292,
     "notApplicable": 1787,
-    "knownMissingFrames": [
-      "react-router/prefetch-link"
-    ],
+    "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -5750,8 +5748,9 @@
     "PrefetchLink": {
       "group": "react-router",
       "owner": "react-router/prefetch-link",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/react-router/prefetch-link.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,

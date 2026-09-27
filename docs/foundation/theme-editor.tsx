@@ -13,6 +13,7 @@ import {
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   Checkbox,
   ColorPicker,
   Field,
@@ -172,26 +173,28 @@ function PreviewPane({
               </AlertDescription>
             </Alert>
 
-            <ResponsiveGrid columns={{ base: 1, md: 2 }}>
-              <FormField
-                id={`${idPrefix}-org`}
-                label={t("themeEditor.preview.field.org")}
-                helper={t("themeEditor.preview.field.orgHelper")}
-              >
-                <Input id={`${idPrefix}-org`} defaultValue="Acme 株式会社" />
-              </FormField>
-              <FormField id={`${idPrefix}-plan`} label={t("themeEditor.preview.field.plan")}>
-                <Select
-                  id={`${idPrefix}-plan`}
-                  defaultValue="pro"
-                  options={[
-                    { value: "starter", label: t("themeEditor.preview.plan.starter") },
-                    { value: "pro", label: t("themeEditor.preview.plan.pro") },
-                    { value: "scale", label: t("themeEditor.preview.plan.scale") },
-                  ]}
-                />
-              </FormField>
-            </ResponsiveGrid>
+            <Form>
+              <ResponsiveGrid columns={{ base: 1, md: 2 }}>
+                <FormField
+                  id={`${idPrefix}-org`}
+                  label={t("themeEditor.preview.field.org")}
+                  helper={t("themeEditor.preview.field.orgHelper")}
+                >
+                  <Input id={`${idPrefix}-org`} defaultValue="Acme 株式会社" />
+                </FormField>
+                <FormField id={`${idPrefix}-plan`} label={t("themeEditor.preview.field.plan")}>
+                  <Select
+                    id={`${idPrefix}-plan`}
+                    defaultValue="pro"
+                    options={[
+                      { value: "starter", label: t("themeEditor.preview.plan.starter") },
+                      { value: "pro", label: t("themeEditor.preview.plan.pro") },
+                      { value: "scale", label: t("themeEditor.preview.plan.scale") },
+                    ]}
+                  />
+                </FormField>
+              </ResponsiveGrid>
+            </Form>
 
             <Flex gap="lg" wrap>
               <Field id={`${idPrefix}-tax`} label={t("themeEditor.preview.field.tax")}>
@@ -417,53 +420,55 @@ export default function Demo() {
               <CardDescription>{t("themeEditor.seed.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Flex direction="col" gap="md">
-                <FormField
-                  id="theme-editor-seed"
-                  label={t("themeEditor.seed.label")}
-                  helper={t("themeEditor.seed.helper")}
-                >
-                  <ColorPicker id="theme-editor-seed" value={seed} onValueChange={setSeed} />
-                </FormField>
+              <Form>
+                <Flex direction="col" gap="md">
+                  <FormField
+                    id="theme-editor-seed"
+                    label={t("themeEditor.seed.label")}
+                    helper={t("themeEditor.seed.helper")}
+                  >
+                    <ColorPicker id="theme-editor-seed" value={seed} onValueChange={setSeed} />
+                  </FormField>
 
-                <FormField
-                  id="theme-editor-preset"
-                  label={t("themeEditor.seed.presetLabel")}
-                  helper={t("themeEditor.seed.presetHelper")}
-                >
-                  <Select
+                  <FormField
                     id="theme-editor-preset"
-                    value={SEED_PRESETS.find((p) => p.hex === seed)?.id ?? ""}
-                    placeholder={t("themeEditor.seed.presetPlaceholder")}
-                    onValueChange={(next: string) => {
-                      const preset = SEED_PRESETS.find((p) => p.id === next);
-                      if (!preset) return;
-                      setSeed(preset.hex);
-                      setDarkL(null);
-                    }}
-                    options={SEED_PRESETS.map((preset) => ({
-                      value: preset.id,
-                      label: t(`themeEditor.seed.preset.${preset.id}`),
-                      sublabel: preset.hex,
-                    }))}
-                  />
-                </FormField>
+                    label={t("themeEditor.seed.presetLabel")}
+                    helper={t("themeEditor.seed.presetHelper")}
+                  >
+                    <Select
+                      id="theme-editor-preset"
+                      value={SEED_PRESETS.find((p) => p.hex === seed)?.id ?? ""}
+                      placeholder={t("themeEditor.seed.presetPlaceholder")}
+                      onValueChange={(next: string) => {
+                        const preset = SEED_PRESETS.find((p) => p.id === next);
+                        if (!preset) return;
+                        setSeed(preset.hex);
+                        setDarkL(null);
+                      }}
+                      options={SEED_PRESETS.map((preset) => ({
+                        value: preset.id,
+                        label: t(`themeEditor.seed.preset.${preset.id}`),
+                        sublabel: preset.hex,
+                      }))}
+                    />
+                  </FormField>
 
-                {/* The live region. It is VISIBLE as well as announced: the same sentence a screen
+                  {/* The live region. It is VISIBLE as well as announced: the same sentence a screen
                     reader hears is the one the summary line needs anyway, so there is no hidden
                     copy to drift out of sync with what is on screen. */}
-                <Text as="div" size="xs" tone="muted" role="status" aria-live="polite">
-                  {brand && brand.dark
-                    ? t("themeEditor.seed.announce", {
-                        hex: toHex(brand.light.seed),
-                        light: toHex(brand.light.seed),
-                        dark: toHex(brand.dark.seed),
-                        pass: passing,
-                        count: report.length,
-                      })
-                    : t("themeEditor.seed.announceNoDark", { hex: seed })}
-                </Text>
-              </Flex>
+                  <Text as="div" size="xs" tone="muted" role="status" aria-live="polite">
+                    {brand && brand.dark
+                      ? t("themeEditor.seed.announce", {
+                          hex: toHex(brand.light.seed),
+                          light: toHex(brand.light.seed),
+                          dark: toHex(brand.dark.seed),
+                          pass: passing,
+                          count: report.length,
+                        })
+                      : t("themeEditor.seed.announceNoDark", { hex: seed })}
+                  </Text>
+                </Flex>
+              </Form>
             </CardContent>
           </Card>
 
@@ -503,72 +508,76 @@ export default function Demo() {
               <CardDescription>{t("themeEditor.overrides.description")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Flex direction="col" gap="md">
-                <Alert tone="warning">
-                  <AlertTitle>{t("themeEditor.overrides.costTitle")}</AlertTitle>
-                  <AlertDescription>{t("themeEditor.overrides.costDescription")}</AlertDescription>
-                </Alert>
+              <Form>
+                <Flex direction="col" gap="md">
+                  <Alert tone="warning">
+                    <AlertTitle>{t("themeEditor.overrides.costTitle")}</AlertTitle>
+                    <AlertDescription>
+                      {t("themeEditor.overrides.costDescription")}
+                    </AlertDescription>
+                  </Alert>
 
-                <FormField
-                  id="theme-editor-label"
-                  label={t("themeEditor.overrides.labelTitle")}
-                  helper={t("themeEditor.overrides.labelHelper")}
-                >
-                  <Segmented
+                  <FormField
                     id="theme-editor-label"
-                    aria-label={t("themeEditor.overrides.labelTitle")}
-                    value={labelMode}
-                    onValueChange={(next) => setLabelMode(next as LabelMode)}
-                    options={[
-                      { value: "auto", label: t("themeEditor.overrides.labelAuto") },
-                      { value: "light", label: t("themeEditor.overrides.labelLight") },
-                      { value: "dark", label: t("themeEditor.overrides.labelDark") },
-                    ]}
-                  />
-                </FormField>
-
-                <FormField
-                  id="theme-editor-dark-l"
-                  label={t("themeEditor.overrides.darkTitle")}
-                  helper={
-                    searchedL === null
-                      ? t("themeEditor.overrides.darkNoParity")
-                      : t("themeEditor.overrides.darkHelper", {
-                          parity: percentFormat.format(searchedL),
-                        })
-                  }
-                >
-                  <Slider
-                    id="theme-editor-dark-l"
-                    aria-label={t("themeEditor.overrides.darkTitle")}
-                    min={0}
-                    max={100}
-                    step={0.1}
-                    value={darkL ?? searchedL ?? 0}
-                    onChange={(next: number) => setDarkL(next)}
-                    tooltip={{ formatter: (value) => percentFormat.format(value) }}
-                    marks={searchedL === null ? undefined : { [searchedL]: "" }}
-                  />
-                </FormField>
-
-                <Flex gap="sm" wrap align="center">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={!darkOverridden}
-                    onClick={() => setDarkL(null)}
+                    label={t("themeEditor.overrides.labelTitle")}
+                    helper={t("themeEditor.overrides.labelHelper")}
                   >
-                    {t("themeEditor.overrides.darkReset")}
-                  </Button>
-                  <Badge tone={darkOverridden ? "warning" : "neutral"} variant="outline">
-                    {t(
-                      darkOverridden
-                        ? "themeEditor.overrides.darkAuthored"
-                        : "themeEditor.overrides.darkParity",
-                    )}
-                  </Badge>
+                    <Segmented
+                      id="theme-editor-label"
+                      aria-label={t("themeEditor.overrides.labelTitle")}
+                      value={labelMode}
+                      onValueChange={(next) => setLabelMode(next as LabelMode)}
+                      options={[
+                        { value: "auto", label: t("themeEditor.overrides.labelAuto") },
+                        { value: "light", label: t("themeEditor.overrides.labelLight") },
+                        { value: "dark", label: t("themeEditor.overrides.labelDark") },
+                      ]}
+                    />
+                  </FormField>
+
+                  <FormField
+                    id="theme-editor-dark-l"
+                    label={t("themeEditor.overrides.darkTitle")}
+                    helper={
+                      searchedL === null
+                        ? t("themeEditor.overrides.darkNoParity")
+                        : t("themeEditor.overrides.darkHelper", {
+                            parity: percentFormat.format(searchedL),
+                          })
+                    }
+                  >
+                    <Slider
+                      id="theme-editor-dark-l"
+                      aria-label={t("themeEditor.overrides.darkTitle")}
+                      min={0}
+                      max={100}
+                      step={0.1}
+                      value={darkL ?? searchedL ?? 0}
+                      onChange={(next: number) => setDarkL(next)}
+                      tooltip={{ formatter: (value) => percentFormat.format(value) }}
+                      marks={searchedL === null ? undefined : { [searchedL]: "" }}
+                    />
+                  </FormField>
+
+                  <Flex gap="sm" wrap align="center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={!darkOverridden}
+                      onClick={() => setDarkL(null)}
+                    >
+                      {t("themeEditor.overrides.darkReset")}
+                    </Button>
+                    <Badge tone={darkOverridden ? "warning" : "neutral"} variant="outline">
+                      {t(
+                        darkOverridden
+                          ? "themeEditor.overrides.darkAuthored"
+                          : "themeEditor.overrides.darkParity",
+                      )}
+                    </Badge>
+                  </Flex>
                 </Flex>
-              </Flex>
+              </Form>
             </CardContent>
           </Card>
 

@@ -43,7 +43,7 @@ import {
   AvatarFallback,
 } from "@godxjp/ui/data-display";
 import { Alert, AlertDescription, SkeletonTable } from "@godxjp/ui/feedback";
-import { DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
+import { Form, DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
 import { toIsoDate } from "@godxjp/ui/datetime";
 import {
   AppShell,
@@ -353,30 +353,32 @@ export default function Demo() {
           <Card className="self-start">
             <CardContent>
               <Flex direction="col" gap="md">
-                <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-                  <FormField id="f-type" label="区分">
-                    <Select
-                      options={TYPE_OPTIONS}
-                      value={type}
-                      onValueChange={setType}
-                      placeholder="すべて"
-                    />
-                  </FormField>
-                  <FormField id="f-status" label="状態">
-                    <Select
-                      options={STATUS_OPTIONS}
-                      value={status}
-                      onValueChange={setStatus}
-                      placeholder="すべて"
-                    />
-                  </FormField>
-                  <FormField id="f-from" label="期間 (開始)">
-                    <DatePicker value={from} onValueChange={setFrom} placeholder="YYYY-MM-DD" />
-                  </FormField>
-                  <FormField id="f-to" label="期間 (終了)">
-                    <DatePicker value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
-                  </FormField>
-                </ResponsiveGrid>
+                <Form>
+                  <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+                    <FormField id="f-type" label="区分">
+                      <Select
+                        options={TYPE_OPTIONS}
+                        value={type}
+                        onValueChange={setType}
+                        placeholder="すべて"
+                      />
+                    </FormField>
+                    <FormField id="f-status" label="状態">
+                      <Select
+                        options={STATUS_OPTIONS}
+                        value={status}
+                        onValueChange={setStatus}
+                        placeholder="すべて"
+                      />
+                    </FormField>
+                    <FormField id="f-from" label="期間 (開始)">
+                      <DatePicker value={from} onValueChange={setFrom} placeholder="YYYY-MM-DD" />
+                    </FormField>
+                    <FormField id="f-to" label="期間 (終了)">
+                      <DatePicker value={to} onValueChange={setTo} placeholder="YYYY-MM-DD" />
+                    </FormField>
+                  </ResponsiveGrid>
+                </Form>
                 {hasActiveFilters && (
                   <Flex direction="row" justify="end">
                     <Button variant="ghost" size="sm" onClick={clearFilters}>

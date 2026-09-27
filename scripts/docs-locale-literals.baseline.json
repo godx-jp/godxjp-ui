@@ -194,7 +194,7 @@
     "docs/query/data-state.tsx": 6,
     "docs/query/infinite-query-state.tsx": 3,
     "docs/query/mutation-feedback.tsx": 8,
-    "docs/query/prefetch-link.tsx": 19,
+    "docs/react-router/prefetch-link.tsx": 19,
     "docs/showcase/case2-employee-me.tsx": 47,
     "docs/showcase/case3-approval-workflow.tsx": 48,
     "docs/showcase/case4-login.tsx": 24,

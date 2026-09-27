@@ -9,6 +9,7 @@ import {
   Descriptions,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   FormField,
   Input,
   NumberInput,
@@ -183,14 +184,16 @@ export default function SpaceCompactShowcase() {
             <CardDescription>{t("spaceCompactDocs.dont.body")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" wrap>
-              <FormField label={t("spaceCompactDocs.dont.dept")}>
-                <Input placeholder="D-1024" aria-label={t("spaceCompactDocs.dont.dept")} />
-              </FormField>
-              <FormField label={t("spaceCompactDocs.dont.ext")}>
-                <Input placeholder="2831" aria-label={t("spaceCompactDocs.dont.ext")} />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="row" gap="md" wrap>
+                <FormField label={t("spaceCompactDocs.dont.dept")}>
+                  <Input placeholder="D-1024" aria-label={t("spaceCompactDocs.dont.dept")} />
+                </FormField>
+                <FormField label={t("spaceCompactDocs.dont.ext")}>
+                  <Input placeholder="2831" aria-label={t("spaceCompactDocs.dont.ext")} />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
       </Flex>

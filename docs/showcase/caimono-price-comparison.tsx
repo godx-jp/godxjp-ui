@@ -17,6 +17,7 @@ import {
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   Checkbox,
   FormField,
   NumberInput,
@@ -468,31 +469,33 @@ export default function CaimonoPriceComparison() {
         <Card style={{ "--card-radius": "var(--radius-2xl)" } as React.CSSProperties}>
           <CardContent solo>
             <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="xl">
-              <Flex direction="col" gap="md">
-                <Badge tone="neutral">{t("caimono.synthetic")}</Badge>
-                <Heading level={1}>{t("caimono.product")}</Heading>
-                <Text tone="muted">{t("caimono.productMeta", { count: number(1) })}</Text>
-                <FormField label={t("caimono.variant")}>
-                  <Select
-                    value={variant}
-                    onValueChange={setVariant}
-                    options={["black", "cream"].map((value) => ({
-                      value,
-                      label: t(`caimono.${value}`),
-                    }))}
-                  />
-                </FormField>
-                <FormField label={t("caimono.condition")}>
-                  <Segmented
-                    value={condition}
-                    onValueChange={setCondition}
-                    options={["new", "used"].map((value) => ({
-                      value,
-                      label: t(`caimono.${value}`),
-                    }))}
-                  />
-                </FormField>
-              </Flex>
+              <Form>
+                <Flex direction="col" gap="md">
+                  <Badge tone="neutral">{t("caimono.synthetic")}</Badge>
+                  <Heading level={1}>{t("caimono.product")}</Heading>
+                  <Text tone="muted">{t("caimono.productMeta", { count: number(1) })}</Text>
+                  <FormField label={t("caimono.variant")}>
+                    <Select
+                      value={variant}
+                      onValueChange={setVariant}
+                      options={["black", "cream"].map((value) => ({
+                        value,
+                        label: t(`caimono.${value}`),
+                      }))}
+                    />
+                  </FormField>
+                  <FormField label={t("caimono.condition")}>
+                    <Segmented
+                      value={condition}
+                      onValueChange={setCondition}
+                      options={["new", "used"].map((value) => ({
+                        value,
+                        label: t(`caimono.${value}`),
+                      }))}
+                    />
+                  </FormField>
+                </Flex>
+              </Form>
               <Flex direction="col" gap="md">
                 <Text tone="muted">{t("caimono.lowest")}</Text>
                 <Text size="4xl" weight="bold" tabular>
@@ -544,32 +547,37 @@ export default function CaimonoPriceComparison() {
         <Text tone="muted" size="sm">
           {t("caimono.snapshot", { date: date(snapshot) })}
         </Text>
-        <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md">
-          <FormField label={t("caimono.findShop")}>
-            <SearchInput
-              value={query}
-              onValueChange={setQuery}
-              placeholder={t("caimono.searchPlaceholder")}
-            />
-          </FormField>
-          <FormField label={t("caimono.deliverTo")}>
-            <Select
-              value={destination}
-              onValueChange={(v: string) => setDestination(v === "Osaka" ? "Osaka" : "Tokyo")}
-              options={["Tokyo", "Osaka"].map((value) => ({ value, label: t(`caimono.${value}`) }))}
-            />
-          </FormField>
-          <FormField label={t("caimono.sort")}>
-            <Select
-              value={sort}
-              onValueChange={setSort}
-              options={[
-                { value: "total", label: t("caimono.totalSort") },
-                { value: "delivery", label: t("caimono.deliverySort") },
-              ]}
-            />
-          </FormField>
-        </ResponsiveGrid>
+        <Form>
+          <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md">
+            <FormField label={t("caimono.findShop")}>
+              <SearchInput
+                value={query}
+                onValueChange={setQuery}
+                placeholder={t("caimono.searchPlaceholder")}
+              />
+            </FormField>
+            <FormField label={t("caimono.deliverTo")}>
+              <Select
+                value={destination}
+                onValueChange={(v: string) => setDestination(v === "Osaka" ? "Osaka" : "Tokyo")}
+                options={["Tokyo", "Osaka"].map((value) => ({
+                  value,
+                  label: t(`caimono.${value}`),
+                }))}
+              />
+            </FormField>
+            <FormField label={t("caimono.sort")}>
+              <Select
+                value={sort}
+                onValueChange={setSort}
+                options={[
+                  { value: "total", label: t("caimono.totalSort") },
+                  { value: "delivery", label: t("caimono.deliverySort") },
+                ]}
+              />
+            </FormField>
+          </ResponsiveGrid>
+        </Form>
         <Flex gap="md" wrap align="center">
           <Checkbox checked={free} onCheckedChange={(v) => setFree(v === true)}>
             {t("caimono.free")}
