@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   FormField,
   Select,
   SelectContent,
@@ -334,44 +335,46 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="priority-md" label="優先度 (size=md)">
-                <Select value={priorityMd} onValueChange={setPriorityMd}>
-                  <SelectTrigger size="md" id="priority-md" aria-labelledby="priority-md-label">
-                    <SelectValue placeholder="優先度" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="high">高</SelectItem>
-                    <SelectItem value="medium">中</SelectItem>
-                    <SelectItem value="low">低</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              <FormField id="priority" label="優先度 (size=sm)">
-                <Select value={priority} onValueChange={setPriority}>
-                  <SelectTrigger size="sm" id="priority" aria-labelledby="priority-label">
-                    <SelectValue placeholder="優先度" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>標準</SelectLabel>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="priority-md" label="優先度 (size=md)">
+                  <Select value={priorityMd} onValueChange={setPriorityMd}>
+                    <SelectTrigger size="md" id="priority-md" aria-labelledby="priority-md-label">
+                      <SelectValue placeholder="優先度" />
+                    </SelectTrigger>
+                    <SelectContent>
                       <SelectItem value="high">高</SelectItem>
                       <SelectItem value="medium">中</SelectItem>
                       <SelectItem value="low">低</SelectItem>
-                    </SelectGroup>
-                    <SelectSeparator />
-                    <SelectGroup>
-                      <SelectLabel>追加レベル</SelectLabel>
-                      {Array.from({ length: 24 }, (_, index) => (
-                        <SelectItem key={index} value={`level-${index + 1}`}>
-                          レベル {index + 1}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </Flex>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+                <FormField id="priority" label="優先度 (size=sm)">
+                  <Select value={priority} onValueChange={setPriority}>
+                    <SelectTrigger size="sm" id="priority" aria-labelledby="priority-label">
+                      <SelectValue placeholder="優先度" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>標準</SelectLabel>
+                        <SelectItem value="high">高</SelectItem>
+                        <SelectItem value="medium">中</SelectItem>
+                        <SelectItem value="low">低</SelectItem>
+                      </SelectGroup>
+                      <SelectSeparator />
+                      <SelectGroup>
+                        <SelectLabel>追加レベル</SelectLabel>
+                        {Array.from({ length: 24 }, (_, index) => (
+                          <SelectItem key={index} value={`level-${index + 1}`}>
+                            レベル {index + 1}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
         <Card>

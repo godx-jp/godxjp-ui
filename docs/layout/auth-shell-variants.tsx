@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Input, PasswordInput, RadioGroup } from "@godxjp/ui/data-entry";
+import { Form, FormField, Input, PasswordInput, RadioGroup } from "@godxjp/ui/data-entry";
 import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   AuthDivider,
@@ -68,19 +68,21 @@ export default function Demo() {
             <CardDescription>組織アカウントの資格情報を入力してください。</CardDescription>
           </CardHeader>
           <CardContent>
-            <AuthStack>
-              <FormField id="auth-axis-email" label="メールアドレス" layout="vertical" required>
-                <Input id="auth-axis-email" type="email" placeholder="you@example.co.jp" />
-              </FormField>
-              <FormField id="auth-axis-password" label="パスワード" layout="vertical" required>
-                <PasswordInput id="auth-axis-password" />
-              </FormField>
-              <Button fullWidth>サインイン</Button>
-              <AuthDivider label="または" />
-              <Button variant="outline" fullWidth>
-                パスキーでサインイン
-              </Button>
-            </AuthStack>
+            <Form>
+              <AuthStack>
+                <FormField id="auth-axis-email" label="メールアドレス" layout="vertical" required>
+                  <Input id="auth-axis-email" type="email" placeholder="you@example.co.jp" />
+                </FormField>
+                <FormField id="auth-axis-password" label="パスワード" layout="vertical" required>
+                  <PasswordInput id="auth-axis-password" />
+                </FormField>
+                <Button fullWidth>サインイン</Button>
+                <AuthDivider label="または" />
+                <Button variant="outline" fullWidth>
+                  パスキーでサインイン
+                </Button>
+              </AuthStack>
+            </Form>
           </CardContent>
         </Card>
 
@@ -94,43 +96,45 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="auth-axis-variant"
-                label="variant · シェルの寸法"
-                layout="vertical"
-                helper="canonical は GoDX ID の正準寸法、default は素の中央寄せシェル。"
-              >
-                <RadioGroup
-                  orientation="horizontal"
-                  value={variant}
-                  onValueChange={(next) => setVariant(next as AuthShellVariant)}
-                  options={[
-                    { value: "default", label: "default（既定）" },
-                    { value: "canonical", label: "canonical（正準）" },
-                  ]}
-                />
-              </FormField>
-              <FormField
-                id="auth-axis-density"
-                label="density · 操作要素の段"
-                layout="vertical"
-                helper="comfortable は 44px のタッチ下限、compact は情報密度を優先した段。"
-              >
-                <RadioGroup
-                  orientation="horizontal"
-                  value={density}
-                  onValueChange={(next) => setDensity(next as AuthShellDensity)}
-                  options={[
-                    { value: "comfortable", label: "comfortable（44px）" },
-                    { value: "compact", label: "compact" },
-                  ]}
-                />
-              </FormField>
-              <Text size="sm" tone="muted">
-                現在の組み合わせ: variant=&quot;{variant}&quot; · density=&quot;{density}&quot;
-              </Text>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
+                  id="auth-axis-variant"
+                  label="variant · シェルの寸法"
+                  layout="vertical"
+                  helper="canonical は GoDX ID の正準寸法、default は素の中央寄せシェル。"
+                >
+                  <RadioGroup
+                    orientation="horizontal"
+                    value={variant}
+                    onValueChange={(next) => setVariant(next as AuthShellVariant)}
+                    options={[
+                      { value: "default", label: "default（既定）" },
+                      { value: "canonical", label: "canonical（正準）" },
+                    ]}
+                  />
+                </FormField>
+                <FormField
+                  id="auth-axis-density"
+                  label="density · 操作要素の段"
+                  layout="vertical"
+                  helper="comfortable は 44px のタッチ下限、compact は情報密度を優先した段。"
+                >
+                  <RadioGroup
+                    orientation="horizontal"
+                    value={density}
+                    onValueChange={(next) => setDensity(next as AuthShellDensity)}
+                    options={[
+                      { value: "comfortable", label: "comfortable（44px）" },
+                      { value: "compact", label: "compact" },
+                    ]}
+                  />
+                </FormField>
+                <Text size="sm" tone="muted">
+                  現在の組み合わせ: variant=&quot;{variant}&quot; · density=&quot;{density}&quot;
+                </Text>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
       </Flex>

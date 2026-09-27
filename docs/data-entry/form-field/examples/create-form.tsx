@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Field, FormField, Input, Select, Switch, Textarea } from "@godxjp/ui/data-entry";
+import { Form, Field, FormField, Input, Select, Switch, Textarea } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
 import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import {
@@ -69,36 +69,38 @@ export default function Demo() {
           </Flex>
         }
       >
-        <Flex direction="col" gap="md" className="max-w-2xl">
-          <FormField id="cf-name" label="取引先名" required helper="最大50文字">
-            <Input id="cf-name" placeholder="株式会社ベトヤ" />
-          </FormField>
-          <FormField id="cf-code" label="取引先コード" required helper="一意のコードを入力">
-            <Input id="cf-code" placeholder="BTY-0012" />
-          </FormField>
-          <FormField id="cf-type" label="区分">
-            <Select
-              id="cf-type"
-              name="type"
-              value={type}
-              onValueChange={setType}
-              options={[
-                { value: "corp", label: "法人" },
-                { value: "indiv", label: "個人事業主" },
-              ]}
-            />
-          </FormField>
-          <FormField id="cf-memo" label="メモ" helper="任意">
-            <Textarea id="cf-memo" placeholder="例: 4月分から取引開始" />
-          </FormField>
-          <Field
-            id="cf-active"
-            label="取引を有効にする"
-            description="無効にすると新規取引を登録できません"
-          >
-            <Switch id="cf-active" defaultChecked />
-          </Field>
-        </Flex>
+        <Form>
+          <Flex direction="col" gap="md" className="max-w-2xl">
+            <FormField id="cf-name" label="取引先名" required helper="最大50文字">
+              <Input id="cf-name" placeholder="株式会社ベトヤ" />
+            </FormField>
+            <FormField id="cf-code" label="取引先コード" required helper="一意のコードを入力">
+              <Input id="cf-code" placeholder="BTY-0012" />
+            </FormField>
+            <FormField id="cf-type" label="区分">
+              <Select
+                id="cf-type"
+                name="type"
+                value={type}
+                onValueChange={setType}
+                options={[
+                  { value: "corp", label: "法人" },
+                  { value: "indiv", label: "個人事業主" },
+                ]}
+              />
+            </FormField>
+            <FormField id="cf-memo" label="メモ" helper="任意">
+              <Textarea id="cf-memo" placeholder="例: 4月分から取引開始" />
+            </FormField>
+            <Field
+              id="cf-active"
+              label="取引を有効にする"
+              description="無効にすると新規取引を登録できません"
+            >
+              <Switch id="cf-active" defaultChecked />
+            </Field>
+          </Flex>
+        </Form>
       </PageContainer>
     </AppShell>
   );

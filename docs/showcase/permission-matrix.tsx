@@ -45,7 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
+import { Form, FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { cn } from "@godxjp/ui/lib/utils";
@@ -170,50 +170,52 @@ export default function Demo() {
             </Text>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" wrap align="end" gap="md">
-              <FormField label="比較 A">
-                <Select
-                  value={compareA}
-                  onValueChange={setCompareA}
-                  options={roleOptions}
-                  className="w-40"
-                />
-              </FormField>
-              <FormField label="比較 B">
-                <Select
-                  value={compareB}
-                  onValueChange={setCompareB}
-                  options={roleOptions}
-                  className="w-40"
-                />
-              </FormField>
-              <Flex direction="row" align="center" gap="sm">
-                <Switch
-                  id="pm-diff-only"
-                  size="sm"
-                  checked={diffOnly}
-                  onCheckedChange={setDiffOnly}
-                  disabled={sameRole}
-                />
-                <Label htmlFor="pm-diff-only">差分のみ</Label>
-              </Flex>
-              <Flex direction="row" align="center" gap="xs" aria-live="polite">
-                {sameRole ? (
-                  <Text size="xs" tone="muted">
-                    同一ロールを比較中
-                  </Text>
-                ) : (
-                  <>
-                    <Badge tone={diffN > 0 ? "warning" : "success"} variant="outline">
-                      差分 {diffN} 件
-                    </Badge>
+            <Form>
+              <Flex direction="row" wrap align="end" gap="md">
+                <FormField label="比較 A">
+                  <Select
+                    value={compareA}
+                    onValueChange={setCompareA}
+                    options={roleOptions}
+                    className="w-40"
+                  />
+                </FormField>
+                <FormField label="比較 B">
+                  <Select
+                    value={compareB}
+                    onValueChange={setCompareB}
+                    options={roleOptions}
+                    className="w-40"
+                  />
+                </FormField>
+                <Flex direction="row" align="center" gap="sm">
+                  <Switch
+                    id="pm-diff-only"
+                    size="sm"
+                    checked={diffOnly}
+                    onCheckedChange={setDiffOnly}
+                    disabled={sameRole}
+                  />
+                  <Label htmlFor="pm-diff-only">差分のみ</Label>
+                </Flex>
+                <Flex direction="row" align="center" gap="xs" aria-live="polite">
+                  {sameRole ? (
                     <Text size="xs" tone="muted">
-                      {roleName(compareA)} vs {roleName(compareB)}
+                      同一ロールを比較中
                     </Text>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <Badge tone={diffN > 0 ? "warning" : "success"} variant="outline">
+                        差分 {diffN} 件
+                      </Badge>
+                      <Text size="xs" tone="muted">
+                        {roleName(compareA)} vs {roleName(compareB)}
+                      </Text>
+                    </>
+                  )}
+                </Flex>
               </Flex>
-            </Flex>
+            </Form>
           </CardContent>
         </Card>
 

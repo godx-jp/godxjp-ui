@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Slider } from "@godxjp/ui/data-entry";
+import { Form, FormField, Slider } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { Text } from "@godxjp/ui/general";
 
@@ -148,23 +148,25 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="lg">
-              <FormField id="bands" label={`区切り: ${bands.join(" / ")}`}>
-                <Slider
-                  range={{ editable: true, minCount: 1, maxCount: 4, draggableTrack: false }}
-                  value={bands}
-                  onChange={setBands}
-                  step={5}
-                />
-              </FormField>
-              <FormField id="scale" label="評価スケール (included={false})">
-                <Slider
-                  defaultValue={50}
-                  included={false}
-                  marks={{ 0: "低", 50: "中", 100: "高" }}
-                />
-              </FormField>
-            </ResponsiveGrid>
+            <Form>
+              <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="lg">
+                <FormField id="bands" label={`区切り: ${bands.join(" / ")}`}>
+                  <Slider
+                    range={{ editable: true, minCount: 1, maxCount: 4, draggableTrack: false }}
+                    value={bands}
+                    onChange={setBands}
+                    step={5}
+                  />
+                </FormField>
+                <FormField id="scale" label="評価スケール (included={false})">
+                  <Slider
+                    defaultValue={50}
+                    included={false}
+                    marks={{ 0: "低", 50: "中", 100: "高" }}
+                  />
+                </FormField>
+              </ResponsiveGrid>
+            </Form>
           </CardContent>
         </Card>
 
@@ -177,29 +179,31 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="lg">
-              <FormField id="volume-vertical" label={`音量 (縦): ${volume}`}>
-                <Slider
-                  vertical
-                  value={volume}
-                  onChange={setVolume}
-                  marks={{ 0: "0", 50: "50", 100: "100" }}
-                  tooltip
-                />
-              </FormField>
-              <FormField id="countdown" label="残り日数 (reverse)">
-                <Slider
-                  reverse
-                  defaultValue={30}
-                  max={60}
-                  step={5}
-                  marks={{ 0: "0日", 30: "30日", 60: "60日" }}
-                />
-              </FormField>
-              <FormField id="locked-rate" label="確定済み税率 (変更不可)">
-                <Slider value={10} disabled min={0} max={20} step={1} />
-              </FormField>
-            </ResponsiveGrid>
+            <Form>
+              <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="lg">
+                <FormField id="volume-vertical" label={`音量 (縦): ${volume}`}>
+                  <Slider
+                    vertical
+                    value={volume}
+                    onChange={setVolume}
+                    marks={{ 0: "0", 50: "50", 100: "100" }}
+                    tooltip
+                  />
+                </FormField>
+                <FormField id="countdown" label="残り日数 (reverse)">
+                  <Slider
+                    reverse
+                    defaultValue={30}
+                    max={60}
+                    step={5}
+                    marks={{ 0: "0日", 30: "30日", 60: "60日" }}
+                  />
+                </FormField>
+                <FormField id="locked-rate" label="確定済み税率 (変更不可)">
+                  <Slider value={10} disabled min={0} max={20} step={1} />
+                </FormField>
+              </ResponsiveGrid>
+            </Form>
           </CardContent>
         </Card>
       </Flex>

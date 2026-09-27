@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Checkbox, FormField, Input, Label, Switch, Textarea } from "@godxjp/ui/data-entry";
+import { Form, Checkbox, FormField, Input, Label, Switch, Textarea } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -84,14 +84,16 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="invoice-no" label="請求書番号" required helper="例: INV-2024-001">
-                <Input id="invoice-no" placeholder="INV-2024-001" />
-              </FormField>
-              <FormField id="note" label="摘要" error="摘要は必須です">
-                <Input id="note" defaultValue="" />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="invoice-no" label="請求書番号" required helper="例: INV-2024-001">
+                  <Input id="invoice-no" placeholder="INV-2024-001" />
+                </FormField>
+                <FormField id="note" label="摘要" error="摘要は必須です">
+                  <Input id="note" defaultValue="" />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
       </Flex>

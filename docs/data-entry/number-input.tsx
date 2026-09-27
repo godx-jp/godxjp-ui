@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, NumberInput } from "@godxjp/ui/data-entry";
+import { Form, FormField, NumberInput } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Heading, Text } from "@godxjp/ui/general";
 
@@ -117,32 +117,34 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" wrap>
-              <FormField id="ni-price" label="価格">
-                <NumberInput
-                  id="ni-price"
-                  name="price"
-                  value={price}
-                  onValueChange={setPrice}
-                  prefix="¥"
-                  step={10}
-                  min={0}
-                  aria-label="価格"
-                />
-              </FormField>
-              <FormField id="ni-discount" label="割引率">
-                <NumberInput
-                  id="ni-discount"
-                  name="discount"
-                  value={discount}
-                  onValueChange={setDiscount}
-                  suffix="%"
-                  min={0}
-                  max={100}
-                  aria-label="割引率"
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="row" gap="md" wrap>
+                <FormField id="ni-price" label="価格">
+                  <NumberInput
+                    id="ni-price"
+                    name="price"
+                    value={price}
+                    onValueChange={setPrice}
+                    prefix="¥"
+                    step={10}
+                    min={0}
+                    aria-label="価格"
+                  />
+                </FormField>
+                <FormField id="ni-discount" label="割引率">
+                  <NumberInput
+                    id="ni-discount"
+                    name="discount"
+                    value={discount}
+                    onValueChange={setDiscount}
+                    suffix="%"
+                    min={0}
+                    max={100}
+                    aria-label="割引率"
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -175,26 +177,28 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" wrap>
-              <FormField id="ni-disabled" label="確定数量 (disabled)">
-                <NumberInput
-                  id="ni-disabled"
-                  name="locked_qty"
-                  value={3}
-                  disabled
-                  aria-label="確定数量"
-                />
-              </FormField>
-              <FormField id="ni-readonly" label="参照値 (readOnly)">
-                <NumberInput
-                  id="ni-readonly"
-                  name="ref_value"
-                  value={128}
-                  readOnly
-                  aria-label="参照値"
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="row" gap="md" wrap>
+                <FormField id="ni-disabled" label="確定数量 (disabled)">
+                  <NumberInput
+                    id="ni-disabled"
+                    name="locked_qty"
+                    value={3}
+                    disabled
+                    aria-label="確定数量"
+                  />
+                </FormField>
+                <FormField id="ni-readonly" label="参照値 (readOnly)">
+                  <NumberInput
+                    id="ni-readonly"
+                    name="ref_value"
+                    value={128}
+                    readOnly
+                    aria-label="参照値"
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -206,20 +210,22 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="ni-xs" label="xs">
-                <NumberInput id="ni-xs" size="xs" defaultValue={1} aria-label="xs サイズ" />
-              </FormField>
-              <FormField id="ni-sm" label="sm">
-                <NumberInput id="ni-sm" size="sm" defaultValue={2} aria-label="sm サイズ" />
-              </FormField>
-              <FormField id="ni-md" label="md (既定)">
-                <NumberInput id="ni-md" size="md" defaultValue={3} aria-label="md サイズ" />
-              </FormField>
-              <FormField id="ni-lg" label="lg">
-                <NumberInput id="ni-lg" size="lg" defaultValue={4} aria-label="lg サイズ" />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="ni-xs" label="xs">
+                  <NumberInput id="ni-xs" size="xs" defaultValue={1} aria-label="xs サイズ" />
+                </FormField>
+                <FormField id="ni-sm" label="sm">
+                  <NumberInput id="ni-sm" size="sm" defaultValue={2} aria-label="sm サイズ" />
+                </FormField>
+                <FormField id="ni-md" label="md (既定)">
+                  <NumberInput id="ni-md" size="md" defaultValue={3} aria-label="md サイズ" />
+                </FormField>
+                <FormField id="ni-lg" label="lg">
+                  <NumberInput id="ni-lg" size="lg" defaultValue={4} aria-label="lg サイズ" />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -234,23 +240,25 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md" id="number-input-affixes">
-              <FormField id="ni-prefix" label="金額（前置き）">
-                <NumberInput id="ni-prefix" prefix="¥" defaultValue={1980} aria-label="金額" />
-              </FormField>
-              <FormField id="ni-suffix" label="日数（後置き）">
-                <NumberInput id="ni-suffix" suffix="日" defaultValue={7} aria-label="日数" />
-              </FormField>
-              <FormField id="ni-both" label="率（前後）">
-                <NumberInput
-                  id="ni-both"
-                  prefix="+"
-                  suffix="%"
-                  defaultValue={12}
-                  aria-label="率"
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md" id="number-input-affixes">
+                <FormField id="ni-prefix" label="金額（前置き）">
+                  <NumberInput id="ni-prefix" prefix="¥" defaultValue={1980} aria-label="金額" />
+                </FormField>
+                <FormField id="ni-suffix" label="日数（後置き）">
+                  <NumberInput id="ni-suffix" suffix="日" defaultValue={7} aria-label="日数" />
+                </FormField>
+                <FormField id="ni-both" label="率（前後）">
+                  <NumberInput
+                    id="ni-both"
+                    prefix="+"
+                    suffix="%"
+                    defaultValue={12}
+                    aria-label="率"
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

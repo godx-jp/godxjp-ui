@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Cascader, FormField } from "@godxjp/ui/data-entry";
+import { Form, Cascader, FormField } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { TreeOptionProp } from "@godxjp/ui/props";
 
@@ -351,25 +351,27 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="disabled-empty" label="無効（未選択）">
-                <Cascader
-                  id="disabled-empty"
-                  options={EXPENSE_CATEGORIES}
-                  disabled
-                  placeholder="カテゴリを選択..."
-                />
-              </FormField>
-              <FormField id="disabled-selected" label="無効（選択済み）">
-                <Cascader
-                  id="disabled-selected"
-                  options={EXPENSE_CATEGORIES}
-                  disabled
-                  defaultValue={["operating", "admin", "salary"]}
-                  placeholder="カテゴリを選択..."
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="disabled-empty" label="無効（未選択）">
+                  <Cascader
+                    id="disabled-empty"
+                    options={EXPENSE_CATEGORIES}
+                    disabled
+                    placeholder="カテゴリを選択..."
+                  />
+                </FormField>
+                <FormField id="disabled-selected" label="無効（選択済み）">
+                  <Cascader
+                    id="disabled-selected"
+                    options={EXPENSE_CATEGORIES}
+                    disabled
+                    defaultValue={["operating", "admin", "salary"]}
+                    placeholder="カテゴリを選択..."
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
       </Flex>

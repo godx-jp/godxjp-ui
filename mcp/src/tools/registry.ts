@@ -1113,7 +1113,7 @@ function listUtilities(kind?: UtilityKind): string {
  */
 export const FORM_RULES =
   `**FORM RULES** — enforced by ui-audit (\`formfield-needs-form\`, \`dialog-form-too-big\`, \`select-width-hint\`):\n` +
-  `- Wrap fields in \`<Form layout="horizontal" labelWidth controlWidth>\` — never a bare FormField, never a hand-rolled \`<Flex>\` row of fields.\n` +
+  `- Wrap fields in \`<Form layout="horizontal" labelWidth controlWidth>\` — never a group of FormFields without it, never a hand-rolled \`<Flex>\` row of fields.\n` +
   `- Size each control for its content (GOV.UK text-input width): \`controlWidth\` per field or once on the Form — a port ~7rem, a short enum ~10rem.\n` +
   `- Fields that belong on one row: \`<SpaceCompact>\` or \`<Form columns>\`.\n` +
   `- Three or more fields is a page (own route), not a Dialog.\n` +

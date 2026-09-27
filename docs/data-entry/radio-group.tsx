@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Field, FormField, RadioGroup, RadioItem } from "@godxjp/ui/data-entry";
+import { Form, Field, FormField, RadioGroup, RadioItem } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /** 配送時間帯 · 選択肢が2〜4個を超えたときの見え方を確かめるための実データ。 */
@@ -218,33 +218,40 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="closing-day" label="締め日" required error="締め日を選択してください">
-                <RadioGroup
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
                   id="closing-day"
-                  name="closing_day"
-                  orientation="horizontal"
-                  options={CLOSING_DAYS.map((day) => ({ value: day, label: day }))}
-                />
-              </FormField>
-              <FormField
-                id="tax-rounding"
-                label="消費税の端数処理"
-                helper="取引先との契約に合わせて選びます"
-              >
-                <RadioGroup
+                  label="締め日"
+                  required
+                  error="締め日を選択してください"
+                >
+                  <RadioGroup
+                    id="closing-day"
+                    name="closing_day"
+                    orientation="horizontal"
+                    options={CLOSING_DAYS.map((day) => ({ value: day, label: day }))}
+                  />
+                </FormField>
+                <FormField
                   id="tax-rounding"
-                  name="tax_rounding"
-                  defaultValue="floor"
-                  orientation="horizontal"
-                  options={[
-                    { value: "round", label: "四捨五入" },
-                    { value: "floor", label: "切り捨て" },
-                    { value: "ceil", label: "切り上げ" },
-                  ]}
-                />
-              </FormField>
-            </Flex>
+                  label="消費税の端数処理"
+                  helper="取引先との契約に合わせて選びます"
+                >
+                  <RadioGroup
+                    id="tax-rounding"
+                    name="tax_rounding"
+                    defaultValue="floor"
+                    orientation="horizontal"
+                    options={[
+                      { value: "round", label: "四捨五入" },
+                      { value: "floor", label: "切り捨て" },
+                      { value: "ceil", label: "切り上げ" },
+                    ]}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

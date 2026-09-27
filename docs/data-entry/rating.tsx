@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Rating } from "@godxjp/ui/data-entry";
+import { Form, FormField, Rating } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -29,19 +29,21 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="vendor-rating" label="取引先評価">
-                <Rating name="vendor_rating" value={vendorScore} onValueChange={setVendorScore} />
-              </FormField>
-              <FormField id="quality-rating" label="品質スコア">
-                <Rating
-                  name="quality_score"
-                  value={qualityScore}
-                  onValueChange={setQualityScore}
-                  max={5}
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="vendor-rating" label="取引先評価">
+                  <Rating name="vendor_rating" value={vendorScore} onValueChange={setVendorScore} />
+                </FormField>
+                <FormField id="quality-rating" label="品質スコア">
+                  <Rating
+                    name="quality_score"
+                    value={qualityScore}
+                    onValueChange={setQualityScore}
+                    max={5}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -54,17 +56,19 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="avg-payment" label="支払い信頼性 (平均)">
-                <Rating value={4} readOnly />
-              </FormField>
-              <FormField id="avg-response" label="対応速度 (平均)">
-                <Rating value={3} readOnly />
-              </FormField>
-              <FormField id="avg-accuracy" label="請求正確性 (平均)">
-                <Rating value={5} readOnly />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="avg-payment" label="支払い信頼性 (平均)">
+                  <Rating value={4} readOnly />
+                </FormField>
+                <FormField id="avg-response" label="対応速度 (平均)">
+                  <Rating value={3} readOnly />
+                </FormField>
+                <FormField id="avg-accuracy" label="請求正確性 (平均)">
+                  <Rating value={5} readOnly />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

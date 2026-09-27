@@ -136,6 +136,7 @@ import {
   type TimelineItem,
 } from "@godxjp/ui/data-display";
 import {
+  Form,
   CheckboxGroup,
   ColorPicker,
   DatePicker,
@@ -586,85 +587,91 @@ function ComponentsBoard(props: {
       pad={{ inline: "lg", block: "md" }}
     >
       {/* 1 · text entry */}
-      <Flex direction="col" gap="md">
-        <FormField
-          id="board-email"
-          label={t("themeShowcase.form.email")}
-          helper={t("themeShowcase.form.emailHint")}
-        >
-          <Input
+      <Form>
+        <Flex direction="col" gap="md">
+          <FormField
             id="board-email"
-            type="email"
-            autoComplete="email"
-            prefix={<Mail aria-hidden="true" />}
-            placeholder={t("themeShowcase.form.emailPlaceholder")}
-            defaultValue="release-desk@ops.example.jp"
-          />
-        </FormField>
-        <FormField id="board-handle" label={t("themeShowcase.form.handle")}>
-          <Input
-            id="board-handle"
-            addonBefore={<AtSign aria-hidden="true" />}
-            defaultValue="release-desk"
-            count={{ max: 24, show: true }}
-          />
-        </FormField>
-      </Flex>
+            label={t("themeShowcase.form.email")}
+            helper={t("themeShowcase.form.emailHint")}
+          >
+            <Input
+              id="board-email"
+              type="email"
+              autoComplete="email"
+              prefix={<Mail aria-hidden="true" />}
+              placeholder={t("themeShowcase.form.emailPlaceholder")}
+              defaultValue="release-desk@ops.example.jp"
+            />
+          </FormField>
+          <FormField id="board-handle" label={t("themeShowcase.form.handle")}>
+            <Input
+              id="board-handle"
+              addonBefore={<AtSign aria-hidden="true" />}
+              defaultValue="release-desk"
+              count={{ max: 24, show: true }}
+            />
+          </FormField>
+        </Flex>
+      </Form>
 
       {/* 2 · multi-select with removable tags + free tags */}
-      <Flex direction="col" gap="md">
-        <FormField
-          id="board-regions"
-          label={t("themeShowcase.form.regions")}
-          helper={regions.length > 0 ? regionList : t("themeShowcase.form.regionsEmpty")}
-        >
-          <Select
+      <Form>
+        <Flex direction="col" gap="md">
+          <FormField
             id="board-regions"
-            mode="multiple"
-            maxTagCount={2}
-            value={regions}
-            onValueChange={setRegions}
-            placeholder={t("themeShowcase.form.regionsPlaceholder")}
-            options={REGION_CODES.map((code) => ({
-              value: code,
-              label: new Intl.DisplayNames([props.locale], { type: "region" }).of(code) ?? code,
-            }))}
-          />
-        </FormField>
-        <FormField id="board-labels" label={t("themeShowcase.form.labels")}>
-          <TagInput
-            id="board-labels"
-            value={labels}
-            onValueChange={setLabels}
-            maxTagCount={2}
-            /* The ceiling the 71-character id is measured against (gh#840). 16 is the widest cut
+            label={t("themeShowcase.form.regions")}
+            helper={regions.length > 0 ? regionList : t("themeShowcase.form.regionsEmpty")}
+          >
+            <Select
+              id="board-regions"
+              mode="multiple"
+              maxTagCount={2}
+              value={regions}
+              onValueChange={setRegions}
+              placeholder={t("themeShowcase.form.regionsPlaceholder")}
+              options={REGION_CODES.map((code) => ({
+                value: code,
+                label: new Intl.DisplayNames([props.locale], { type: "region" }).of(code) ?? code,
+              }))}
+            />
+          </FormField>
+          <FormField id="board-labels" label={t("themeShowcase.form.labels")}>
+            <TagInput
+              id="board-labels"
+              value={labels}
+              onValueChange={setLabels}
+              maxTagCount={2}
+              /* The ceiling the 71-character id is measured against (gh#840). 16 is the widest cut
                that still leaves room for a second chip and the `+1` on one row at 375px; the value
                is untouched — it stays in the chip's `title` and in the remover's accessible name,
                which is the only reason truncating an identifier is allowed at all. */
-            maxTagTextLength={16}
-            placeholder={t("themeShowcase.form.labelsPlaceholder")}
-          />
-        </FormField>
-      </Flex>
+              maxTagTextLength={16}
+              placeholder={t("themeShowcase.form.labelsPlaceholder")}
+            />
+          </FormField>
+        </Flex>
+      </Form>
 
       {/* 3 · dropdown + date */}
-      <Flex direction="col" gap="md">
-        <FormField id="board-plan" label={t("themeShowcase.form.plan")}>
-          <Select
-            id="board-plan"
-            value={plan}
-            onValueChange={setPlan}
-            options={[
-              { value: "starter", label: t("themeShowcase.plan.starter") },
-              { value: "standard", label: t("themeShowcase.plan.standard") },
-              { value: "scale", label: t("themeShowcase.plan.scale") },
-            ]}
-          />
-        </FormField>
-        <FormField id="board-date" label={t("themeShowcase.form.releaseDate")}>
-          <DatePicker id="board-date" defaultValue={new Date("2026-09-12T00:00:00Z")} />
-        </FormField>
-      </Flex>
+      <Form>
+        <Flex direction="col" gap="md">
+          <FormField id="board-plan" label={t("themeShowcase.form.plan")}>
+            <Select
+              id="board-plan"
+              value={plan}
+              onValueChange={setPlan}
+              options={[
+                { value: "starter", label: t("themeShowcase.plan.starter") },
+                { value: "standard", label: t("themeShowcase.plan.standard") },
+                { value: "scale", label: t("themeShowcase.plan.scale") },
+              ]}
+            />
+          </FormField>
+          <FormField id="board-date" label={t("themeShowcase.form.releaseDate")}>
+            <DatePicker id="board-date" defaultValue={new Date("2026-09-12T00:00:00Z")} />
+          </FormField>
+        </Flex>
+      </Form>
 
       {/* 4 · checkboxes — a three-line label beside a one-word one, and a disabled row */}
       <Flex direction="col" gap="md">
@@ -929,35 +936,37 @@ function ComponentsBoard(props: {
           <CardDescription>{t("themeShowcase.signup.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Flex direction="col" gap="md">
-            <FormField id="signup-email" label={t("themeShowcase.signup.email")}>
-              <Input
-                id="signup-email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.jp"
-              />
-            </FormField>
-            <FormField id="signup-secret" label={t("themeShowcase.signup.password")}>
-              <PasswordInput
-                id="signup-secret"
-                value={secret}
-                onChange={(event) => setSecret(event.target.value)}
-                autoComplete="new-password"
-              />
-            </FormField>
-            <PasswordStrength value={secret} />
-            <Button fullWidth>{t("themeShowcase.signup.submit")}</Button>
-            <AuthDivider label={t("themeShowcase.signup.or")} />
-            <Button variant="outline" fullWidth>
-              <ShieldCheck aria-hidden="true" />
-              {t("themeShowcase.signup.sso")}
-            </Button>
-            <Button variant="outline" fullWidth>
-              <Fingerprint aria-hidden="true" />
-              {t("themeShowcase.signup.passkey")}
-            </Button>
-          </Flex>
+          <Form>
+            <Flex direction="col" gap="md">
+              <FormField id="signup-email" label={t("themeShowcase.signup.email")}>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.jp"
+                />
+              </FormField>
+              <FormField id="signup-secret" label={t("themeShowcase.signup.password")}>
+                <PasswordInput
+                  id="signup-secret"
+                  value={secret}
+                  onChange={(event) => setSecret(event.target.value)}
+                  autoComplete="new-password"
+                />
+              </FormField>
+              <PasswordStrength value={secret} />
+              <Button fullWidth>{t("themeShowcase.signup.submit")}</Button>
+              <AuthDivider label={t("themeShowcase.signup.or")} />
+              <Button variant="outline" fullWidth>
+                <ShieldCheck aria-hidden="true" />
+                {t("themeShowcase.signup.sso")}
+              </Button>
+              <Button variant="outline" fullWidth>
+                <Fingerprint aria-hidden="true" />
+                {t("themeShowcase.signup.passkey")}
+              </Button>
+            </Flex>
+          </Form>
         </CardContent>
       </Card>
 

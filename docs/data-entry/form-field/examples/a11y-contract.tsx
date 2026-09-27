@@ -96,53 +96,55 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="ac-account" label="勘定科目" required helper="仕訳で使用する科目">
-                <Select
-                  id="ac-account"
-                  name="account"
-                  showSearch
-                  options={[
-                    { value: "sales", label: "売上高" },
-                    { value: "rent", label: "地代家賃" },
-                    { value: "misc", label: "雑費" },
-                  ]}
-                  onValueChange={() => {}}
-                />
-              </FormField>
-              <FormField id="ac-currency" label="通貨" helper="ISO 4217">
-                <Select
-                  id="ac-currency"
-                  name="currency"
-                  options={CURRENCIES}
-                  onValueChange={() => {}}
-                />
-              </FormField>
-              <FormField id="ac-region" label="地域" helper="都道府県まで選択">
-                <Cascader id="ac-region" options={REGIONS} onValueChange={() => {}} />
-              </FormField>
-              <FormField id="ac-category" label="カテゴリ" helper="ツリーから選択">
-                <TreeSelect id="ac-category" treeData={CATEGORIES} onValueChange={() => {}} />
-              </FormField>
-              <FormField id="ac-date" label="取引日" helper="yyyy-MM-dd">
-                <DatePicker id="ac-date" name="date" />
-              </FormField>
-              <FormField id="ac-month" label="対象月" helper="yyyy-MM">
-                <DatePicker picker="month" id="ac-month" name="month" />
-              </FormField>
-              <FormField id="ac-time" label="締め時刻" helper="24時間表記">
-                <TimePicker id="ac-time" name="time" />
-              </FormField>
-              <FormField id="ac-period" label="対象期間" helper="開始日と終了日">
-                <DatePicker range id="ac-period" name="period" />
-              </FormField>
-              <FormField id="ac-color" label="タグ色" helper="16進カラー">
-                <ColorPicker id="ac-color" onValueChange={() => {}} />
-              </FormField>
-              <FormField id="ac-search" label="取引先検索" helper="名称の一部で検索">
-                <SearchInput id="ac-search" />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="ac-account" label="勘定科目" required helper="仕訳で使用する科目">
+                  <Select
+                    id="ac-account"
+                    name="account"
+                    showSearch
+                    options={[
+                      { value: "sales", label: "売上高" },
+                      { value: "rent", label: "地代家賃" },
+                      { value: "misc", label: "雑費" },
+                    ]}
+                    onValueChange={() => {}}
+                  />
+                </FormField>
+                <FormField id="ac-currency" label="通貨" helper="ISO 4217">
+                  <Select
+                    id="ac-currency"
+                    name="currency"
+                    options={CURRENCIES}
+                    onValueChange={() => {}}
+                  />
+                </FormField>
+                <FormField id="ac-region" label="地域" helper="都道府県まで選択">
+                  <Cascader id="ac-region" options={REGIONS} onValueChange={() => {}} />
+                </FormField>
+                <FormField id="ac-category" label="カテゴリ" helper="ツリーから選択">
+                  <TreeSelect id="ac-category" treeData={CATEGORIES} onValueChange={() => {}} />
+                </FormField>
+                <FormField id="ac-date" label="取引日" helper="yyyy-MM-dd">
+                  <DatePicker id="ac-date" name="date" />
+                </FormField>
+                <FormField id="ac-month" label="対象月" helper="yyyy-MM">
+                  <DatePicker picker="month" id="ac-month" name="month" />
+                </FormField>
+                <FormField id="ac-time" label="締め時刻" helper="24時間表記">
+                  <TimePicker id="ac-time" name="time" />
+                </FormField>
+                <FormField id="ac-period" label="対象期間" helper="開始日と終了日">
+                  <DatePicker range id="ac-period" name="period" />
+                </FormField>
+                <FormField id="ac-color" label="タグ色" helper="16進カラー">
+                  <ColorPicker id="ac-color" onValueChange={() => {}} />
+                </FormField>
+                <FormField id="ac-search" label="取引先検索" helper="名称の一部で検索">
+                  <SearchInput id="ac-search" />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -155,36 +157,38 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="ac-method"
-                label="支払方法"
-                required
-                error="支払方法を選択してください"
-              >
-                <RadioGroup
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
                   id="ac-method"
-                  options={[
-                    { value: "bank", label: "銀行振込" },
-                    { value: "card", label: "クレジットカード" },
-                    { value: "cash", label: "現金" },
-                  ]}
-                  onValueChange={() => {}}
-                />
-              </FormField>
-              <FormField id="ac-tags" label="タグ" helper="複数選択できます">
-                <CheckboxGroup
-                  id="ac-tags"
-                  orientation="horizontal"
-                  options={[
-                    { value: "urgent", label: "至急" },
-                    { value: "review", label: "要確認" },
-                    { value: "archived", label: "アーカイブ" },
-                  ]}
-                  onValueChange={() => {}}
-                />
-              </FormField>
-            </Flex>
+                  label="支払方法"
+                  required
+                  error="支払方法を選択してください"
+                >
+                  <RadioGroup
+                    id="ac-method"
+                    options={[
+                      { value: "bank", label: "銀行振込" },
+                      { value: "card", label: "クレジットカード" },
+                      { value: "cash", label: "現金" },
+                    ]}
+                    onValueChange={() => {}}
+                  />
+                </FormField>
+                <FormField id="ac-tags" label="タグ" helper="複数選択できます">
+                  <CheckboxGroup
+                    id="ac-tags"
+                    orientation="horizontal"
+                    options={[
+                      { value: "urgent", label: "至急" },
+                      { value: "review", label: "要確認" },
+                      { value: "archived", label: "アーカイブ" },
+                    ]}
+                    onValueChange={() => {}}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

@@ -773,45 +773,47 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <Field
-                id="f-terms"
-                label="利用規約に同意する"
-                description="同意しないと送信できません"
-              >
-                <Checkbox id="f-terms" checked={terms} onCheckedChange={(c) => setTerms(!!c)} />
-              </Field>
-              <FormField id="f-channels" label="通知チャネル" helper="複数選択可">
-                <CheckboxGroup
-                  value={channels}
-                  onValueChange={setChannels}
-                  options={[
-                    { value: "email", label: "メール" },
-                    { value: "slack", label: "Slack" },
-                    { value: "sms", label: "SMS" },
-                  ]}
-                />
-              </FormField>
-              <FormField id="f-rounding" label="端数処理">
-                <RadioGroup
-                  value={rounding}
-                  onValueChange={setRounding}
-                  orientation="horizontal"
-                  options={[
-                    { value: "round", label: "四捨五入" },
-                    { value: "floor", label: "切り捨て" },
-                    { value: "ceil", label: "切り上げ" },
-                  ]}
-                />
-              </FormField>
-              <Field
-                id="f-active"
-                label="取引を有効にする"
-                description="無効にすると新規取引を登録できません"
-              >
-                <Switch id="f-active" checked={active} onCheckedChange={setActive} />
-              </Field>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <Field
+                  id="f-terms"
+                  label="利用規約に同意する"
+                  description="同意しないと送信できません"
+                >
+                  <Checkbox id="f-terms" checked={terms} onCheckedChange={(c) => setTerms(!!c)} />
+                </Field>
+                <FormField id="f-channels" label="通知チャネル" helper="複数選択可">
+                  <CheckboxGroup
+                    value={channels}
+                    onValueChange={setChannels}
+                    options={[
+                      { value: "email", label: "メール" },
+                      { value: "slack", label: "Slack" },
+                      { value: "sms", label: "SMS" },
+                    ]}
+                  />
+                </FormField>
+                <FormField id="f-rounding" label="端数処理">
+                  <RadioGroup
+                    value={rounding}
+                    onValueChange={setRounding}
+                    orientation="horizontal"
+                    options={[
+                      { value: "round", label: "四捨五入" },
+                      { value: "floor", label: "切り捨て" },
+                      { value: "ceil", label: "切り上げ" },
+                    ]}
+                  />
+                </FormField>
+                <Field
+                  id="f-active"
+                  label="取引を有効にする"
+                  description="無効にすると新規取引を登録できません"
+                >
+                  <Switch id="f-active" checked={active} onCheckedChange={setActive} />
+                </Field>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -823,28 +825,30 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="f-tax" label={`消費税率: ${taxRate[0]}%`} helper="0% / 8% / 10%">
-                <Slider
-                  id="f-tax"
-                  value={taxRate}
-                  onValueChange={setTaxRate}
-                  min={0}
-                  max={10}
-                  step={2}
-                  name="tax_rate"
-                  aria-label="消費税率"
-                />
-              </FormField>
-              <FormField id="f-score" label="取引先評価">
-                <Rating
-                  name="vendor_score"
-                  aria-label="取引先評価"
-                  value={score}
-                  onValueChange={setScore}
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="f-tax" label={`消費税率: ${taxRate[0]}%`} helper="0% / 8% / 10%">
+                  <Slider
+                    id="f-tax"
+                    value={taxRate}
+                    onValueChange={setTaxRate}
+                    min={0}
+                    max={10}
+                    step={2}
+                    name="tax_rate"
+                    aria-label="消費税率"
+                  />
+                </FormField>
+                <FormField id="f-score" label="取引先評価">
+                  <Rating
+                    name="vendor_score"
+                    aria-label="取引先評価"
+                    value={score}
+                    onValueChange={setScore}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -931,51 +935,53 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="f-tags" label="ラベル" helper="Enter またはカンマで追加">
-                <TagInput
-                  value={tags}
-                  onValueChange={setTags}
-                  placeholder="ラベルを追加…"
-                  name="labels"
-                />
-              </FormField>
-              <FormField id="f-period2" label="集計期間">
-                <ToggleGroup
-                  type="single"
-                  value={period2}
-                  onValueChange={(v) => {
-                    if (v) setPeriod2(v);
-                  }}
-                >
-                  <ToggleGroupItem value="daily">日次</ToggleGroupItem>
-                  <ToggleGroupItem value="monthly">月次</ToggleGroupItem>
-                  <ToggleGroupItem value="yearly">年次</ToggleGroupItem>
-                </ToggleGroup>
-              </FormField>
-              <FormField id="f-otp" label="認証コード" helper="メールに届いた6桁の数字">
-                <InputOTP id="f-otp" maxLength={6} value={otp} onChange={setOtp}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormField>
-              <FormField id="f-files" label="添付ファイル" helper="PDF・Excel（最大5件）">
-                <Upload
-                  variant="dropzone"
-                  value={files}
-                  onValueChange={setFiles}
-                  accept=".pdf,.xlsx,.csv"
-                  maxCount={5}
-                  onUpload={noopUpload}
-                />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="f-tags" label="ラベル" helper="Enter またはカンマで追加">
+                  <TagInput
+                    value={tags}
+                    onValueChange={setTags}
+                    placeholder="ラベルを追加…"
+                    name="labels"
+                  />
+                </FormField>
+                <FormField id="f-period2" label="集計期間">
+                  <ToggleGroup
+                    type="single"
+                    value={period2}
+                    onValueChange={(v) => {
+                      if (v) setPeriod2(v);
+                    }}
+                  >
+                    <ToggleGroupItem value="daily">日次</ToggleGroupItem>
+                    <ToggleGroupItem value="monthly">月次</ToggleGroupItem>
+                    <ToggleGroupItem value="yearly">年次</ToggleGroupItem>
+                  </ToggleGroup>
+                </FormField>
+                <FormField id="f-otp" label="認証コード" helper="メールに届いた6桁の数字">
+                  <InputOTP id="f-otp" maxLength={6} value={otp} onChange={setOtp}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormField>
+                <FormField id="f-files" label="添付ファイル" helper="PDF・Excel（最大5件）">
+                  <Upload
+                    variant="dropzone"
+                    value={files}
+                    onValueChange={setFiles}
+                    accept=".pdf,.xlsx,.csv"
+                    maxCount={5}
+                    onUpload={noopUpload}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

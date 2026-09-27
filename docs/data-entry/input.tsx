@@ -3,7 +3,14 @@ import { useState } from "react";
 import { Building2, CalendarDays, Hash, Link2, Mail, MapPin, Phone } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, Input, NumberInput, PasswordInput, SearchInput } from "@godxjp/ui/data-entry";
+import {
+  Form,
+  FormField,
+  Input,
+  NumberInput,
+  PasswordInput,
+  SearchInput,
+} from "@godxjp/ui/data-entry";
 import { Icon, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
@@ -123,49 +130,51 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="state-error"
-                label="メールアドレス"
-                required
-                error="メールアドレスの形式が正しくありません"
-              >
-                <Input id="state-error" type="email" defaultValue="keiri@godo-shoji" />
-              </FormField>
-              <FormField
-                id="state-warning"
-                label="請求先メールアドレス"
-                validateStatus="warning"
-                hasFeedback
-                helper="フリーメールは請求書の到達率が下がる場合がある"
-              >
-                <Input id="state-warning" type="email" defaultValue="godo.keiri@example.com" />
-              </FormField>
-              <FormField
-                id="state-success"
-                label="法人番号"
-                validateStatus="success"
-                hasFeedback
-                helper="国税庁の法人番号システムと照合済み"
-              >
-                <Input id="state-success" defaultValue="7010001008844" inputMode="numeric" />
-              </FormField>
-              <FormField
-                id="state-validating"
-                label="サブドメイン"
-                validateStatus="validating"
-                hasFeedback
-                helper="使用可能かどうかを照会中"
-              >
-                <Input id="state-validating" addonAfter=".godx.jp" defaultValue="godo-shoji" />
-              </FormField>
-              <Text size="sm" tone="muted">
-                status は Input が自分で塗る2値（error / warning）。error だけが aria-invalid
-                も立てるので、赤い枠とスクリーンリーダーが聞く内容が一致する。
-              </Text>
-              <Input aria-label="status=error" status="error" defaultValue="status=error" />
-              <Input aria-label="status=warning" status="warning" defaultValue="status=warning" />
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
+                  id="state-error"
+                  label="メールアドレス"
+                  required
+                  error="メールアドレスの形式が正しくありません"
+                >
+                  <Input id="state-error" type="email" defaultValue="keiri@godo-shoji" />
+                </FormField>
+                <FormField
+                  id="state-warning"
+                  label="請求先メールアドレス"
+                  validateStatus="warning"
+                  hasFeedback
+                  helper="フリーメールは請求書の到達率が下がる場合がある"
+                >
+                  <Input id="state-warning" type="email" defaultValue="godo.keiri@example.com" />
+                </FormField>
+                <FormField
+                  id="state-success"
+                  label="法人番号"
+                  validateStatus="success"
+                  hasFeedback
+                  helper="国税庁の法人番号システムと照合済み"
+                >
+                  <Input id="state-success" defaultValue="7010001008844" inputMode="numeric" />
+                </FormField>
+                <FormField
+                  id="state-validating"
+                  label="サブドメイン"
+                  validateStatus="validating"
+                  hasFeedback
+                  helper="使用可能かどうかを照会中"
+                >
+                  <Input id="state-validating" addonAfter=".godx.jp" defaultValue="godo-shoji" />
+                </FormField>
+                <Text size="sm" tone="muted">
+                  status は Input が自分で塗る2値（error / warning）。error だけが aria-invalid
+                  も立てるので、赤い枠とスクリーンリーダーが聞く内容が一致する。
+                </Text>
+                <Input aria-label="status=error" status="error" defaultValue="status=error" />
+                <Input aria-label="status=warning" status="warning" defaultValue="status=warning" />
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -301,65 +310,67 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="ct-email" label="担当者メールアドレス" required>
-                <Input
-                  id="ct-email"
-                  type="email"
-                  name="contact_email"
-                  autoComplete="email"
-                  leadingIcon={<Icon as={Mail} size="sm" tone="muted" />}
-                  defaultValue="keiri@godo-shoji.co.jp"
-                />
-              </FormField>
-              <FormField id="ct-tel" label="代表電話番号" helper="市外局番から半角で入力">
-                <Input
-                  id="ct-tel"
-                  type="tel"
-                  name="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  leadingIcon={<Icon as={Phone} size="sm" tone="muted" />}
-                  defaultValue="03-6205-3371"
-                />
-              </FormField>
-              <FormField id="ct-postal" label="郵便番号" helper="ハイフンなし7桁でも可">
-                <Input
-                  id="ct-postal"
-                  name="postal_code"
-                  inputMode="numeric"
-                  autoComplete="postal-code"
-                  leadingIcon={<Icon as={MapPin} size="sm" tone="muted" />}
-                  addonBefore="〒"
-                  defaultValue="105-0011"
-                />
-              </FormField>
-              <FormField id="ct-url" label="会社サイト">
-                <Input
-                  id="ct-url"
-                  type="url"
-                  name="website"
-                  autoComplete="url"
-                  leadingIcon={<Icon as={Link2} size="sm" tone="muted" />}
-                  addonBefore="https://"
-                  defaultValue="www.godo-shoji.co.jp"
-                />
-              </FormField>
-              <FormField
-                id="ct-machine"
-                label="連携キー"
-                helper="40文字。箱より長い値は折り返さず、箱の中で横スクロールする"
-              >
-                <Input
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="ct-email" label="担当者メールアドレス" required>
+                  <Input
+                    id="ct-email"
+                    type="email"
+                    name="contact_email"
+                    autoComplete="email"
+                    leadingIcon={<Icon as={Mail} size="sm" tone="muted" />}
+                    defaultValue="keiri@godo-shoji.co.jp"
+                  />
+                </FormField>
+                <FormField id="ct-tel" label="代表電話番号" helper="市外局番から半角で入力">
+                  <Input
+                    id="ct-tel"
+                    type="tel"
+                    name="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    leadingIcon={<Icon as={Phone} size="sm" tone="muted" />}
+                    defaultValue="03-6205-3371"
+                  />
+                </FormField>
+                <FormField id="ct-postal" label="郵便番号" helper="ハイフンなし7桁でも可">
+                  <Input
+                    id="ct-postal"
+                    name="postal_code"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    leadingIcon={<Icon as={MapPin} size="sm" tone="muted" />}
+                    addonBefore="〒"
+                    defaultValue="105-0011"
+                  />
+                </FormField>
+                <FormField id="ct-url" label="会社サイト">
+                  <Input
+                    id="ct-url"
+                    type="url"
+                    name="website"
+                    autoComplete="url"
+                    leadingIcon={<Icon as={Link2} size="sm" tone="muted" />}
+                    addonBefore="https://"
+                    defaultValue="www.godo-shoji.co.jp"
+                  />
+                </FormField>
+                <FormField
                   id="ct-machine"
-                  name="integration_key"
-                  readOnly
-                  allowClear={false}
-                  className="font-mono"
-                  defaultValue="a3f9c1e07b2d4856ab10ef93cd77420159be8d36"
-                />
-              </FormField>
-            </Flex>
+                  label="連携キー"
+                  helper="40文字。箱より長い値は折り返さず、箱の中で横スクロールする"
+                >
+                  <Input
+                    id="ct-machine"
+                    name="integration_key"
+                    readOnly
+                    allowClear={false}
+                    className="font-mono"
+                    defaultValue="a3f9c1e07b2d4856ab10ef93cd77420159be8d36"
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -404,30 +415,32 @@ export default function Demo() {
                 <Text size="sm" tone="muted">
                   NumberInput · ステッパー・クランプ・Intl 整形つき
                 </Text>
-                <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="md" align="start">
-                  <FormField id="num-amount" label="請求金額">
-                    <NumberInput
-                      id="num-amount"
-                      value={zeroNumber}
-                      onValueChange={setZeroNumber}
-                      min={0}
-                      step={1000}
-                      prefix="¥"
-                    />
-                  </FormField>
-                  <FormField id="num-rate" label="割引率">
-                    <NumberInput
-                      id="num-rate"
-                      value={emptyNumber}
-                      onValueChange={setEmptyNumber}
-                      min={0}
-                      max={100}
-                      step={5}
-                      suffix="%"
-                      placeholder="未設定"
-                    />
-                  </FormField>
-                </ResponsiveGrid>
+                <Form>
+                  <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="md" align="start">
+                    <FormField id="num-amount" label="請求金額">
+                      <NumberInput
+                        id="num-amount"
+                        value={zeroNumber}
+                        onValueChange={setZeroNumber}
+                        min={0}
+                        step={1000}
+                        prefix="¥"
+                      />
+                    </FormField>
+                    <FormField id="num-rate" label="割引率">
+                      <NumberInput
+                        id="num-rate"
+                        value={emptyNumber}
+                        onValueChange={setEmptyNumber}
+                        min={0}
+                        max={100}
+                        step={5}
+                        suffix="%"
+                        placeholder="未設定"
+                      />
+                    </FormField>
+                  </ResponsiveGrid>
+                </Form>
               </Flex>
             </Flex>
           </CardContent>
@@ -443,48 +456,50 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField id="pw-current" label="現在のパスワード" required>
-                <PasswordInput
-                  id="pw-current"
-                  name="current_password"
-                  autoComplete="current-password"
-                  placeholder="パスワードを入力"
-                />
-              </FormField>
-              {/* xs を PasswordInput でも一度は描く。size は Input の型をそのまま継いでいるので、
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField id="pw-current" label="現在のパスワード" required>
+                  <PasswordInput
+                    id="pw-current"
+                    name="current_password"
+                    autoComplete="current-password"
+                    placeholder="パスワードを入力"
+                  />
+                </FormField>
+                {/* xs を PasswordInput でも一度は描く。size は Input の型をそのまま継いでいるので、
                   片方だけ描いて済ませると frame-contracts が「宣言した分岐に証拠が無い」と落ちる
                   ── 公開した分岐は描いて証明する、というのがこのリポジトリの契約。 */}
-              <Flex width={220}>
-                <PasswordInput
-                  id="pw-pin"
-                  size="xs"
-                  name="pin"
-                  aria-label="PIN (xs)"
-                  autoComplete="off"
-                  defaultValue="8412"
+                <Flex width={220}>
+                  <PasswordInput
+                    id="pw-pin"
+                    size="xs"
+                    name="pin"
+                    aria-label="PIN (xs)"
+                    autoComplete="off"
+                    defaultValue="8412"
+                  />
+                </Flex>
+                <FormField id="pw-api" label="APIシークレット" helper="発行後は再表示できない">
+                  <PasswordInput
+                    id="pw-api"
+                    name="api_secret"
+                    autoComplete="new-password"
+                    defaultValue="sk_live_9f2c41ab77de"
+                  />
+                </FormField>
+                <SearchInput
+                  label="取引先を検索"
+                  value={partnerQuery}
+                  onValueChange={setPartnerQuery}
+                  onSearch={setPartnerQuery}
+                  placeholder="取引先名・法人番号で検索"
                 />
+                <Text size="sm" tone="muted">
+                  逆に、フォーム送信で name を伴う検索欄なら SearchInput ではなく FormField + Input
+                  が正しい。SearchInput は値を送らないフィルタ用のウィジェット。
+                </Text>
               </Flex>
-              <FormField id="pw-api" label="APIシークレット" helper="発行後は再表示できない">
-                <PasswordInput
-                  id="pw-api"
-                  name="api_secret"
-                  autoComplete="new-password"
-                  defaultValue="sk_live_9f2c41ab77de"
-                />
-              </FormField>
-              <SearchInput
-                label="取引先を検索"
-                value={partnerQuery}
-                onValueChange={setPartnerQuery}
-                onSearch={setPartnerQuery}
-                placeholder="取引先名・法人番号で検索"
-              />
-              <Text size="sm" tone="muted">
-                逆に、フォーム送信で name を伴う検索欄なら SearchInput ではなく FormField + Input
-                が正しい。SearchInput は値を送らないフィルタ用のウィジェット。
-              </Text>
-            </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -526,14 +541,16 @@ export default function Demo() {
                 <Text size="sm" tone="muted">
                   短い項目と長い項目を同じ行に · 比率は親のグリッドが決める
                 </Text>
-                <ResponsiveGrid columns={{ base: 1, md: 4 }} gap="md" align="start">
-                  <FormField id="w-short" label="階数" helper="数字のみ">
-                    <Input id="w-short" inputMode="numeric" defaultValue="3" />
-                  </FormField>
-                  <FormField id="w-long" label="建物名・部屋番号" colSpan={3}>
-                    <Input id="w-long" defaultValue="東京タワーフットタウン 経理部 請求管理課" />
-                  </FormField>
-                </ResponsiveGrid>
+                <Form>
+                  <ResponsiveGrid columns={{ base: 1, md: 4 }} gap="md" align="start">
+                    <FormField id="w-short" label="階数" helper="数字のみ">
+                      <Input id="w-short" inputMode="numeric" defaultValue="3" />
+                    </FormField>
+                    <FormField id="w-long" label="建物名・部屋番号" colSpan={3}>
+                      <Input id="w-long" defaultValue="東京タワーフットタウン 経理部 請求管理課" />
+                    </FormField>
+                  </ResponsiveGrid>
+                </Form>
               </Flex>
             </Flex>
           </CardContent>
@@ -549,37 +566,39 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <FormField
-                id="stress-overflow"
-                label="請求書送付先"
-                helper="46文字。末尾までキャレットを送ると先頭が隠れる"
-              >
-                <Input
+            <Form>
+              <Flex direction="col" gap="md">
+                <FormField
                   id="stress-overflow"
-                  value={overflow}
-                  onValueChange={setOverflow}
-                  allowClear
-                  onClear={() => setOverflow("")}
-                />
-              </FormField>
-              <FormField id="stress-overflow-sm" label="同じ値を sm の箱で">
-                <Input id="stress-overflow-sm" size="sm" readOnly defaultValue={overflow} />
-              </FormField>
-              <FormField
-                id="stress-overflow-addon"
-                label="アドオンがあると箱はさらに狭くなる"
-                helper="addon は固定幅を取り、残りが入力領域になる"
-              >
-                <Input
+                  label="請求書送付先"
+                  helper="46文字。末尾までキャレットを送ると先頭が隠れる"
+                >
+                  <Input
+                    id="stress-overflow"
+                    value={overflow}
+                    onValueChange={setOverflow}
+                    allowClear
+                    onClear={() => setOverflow("")}
+                  />
+                </FormField>
+                <FormField id="stress-overflow-sm" label="同じ値を sm の箱で">
+                  <Input id="stress-overflow-sm" size="sm" readOnly defaultValue={overflow} />
+                </FormField>
+                <FormField
                   id="stress-overflow-addon"
-                  addonBefore="送付先"
-                  addonAfter="宛"
-                  readOnly
-                  defaultValue={overflow}
-                />
-              </FormField>
-            </Flex>
+                  label="アドオンがあると箱はさらに狭くなる"
+                  helper="addon は固定幅を取り、残りが入力領域になる"
+                >
+                  <Input
+                    id="stress-overflow-addon"
+                    addonBefore="送付先"
+                    addonAfter="宛"
+                    readOnly
+                    defaultValue={overflow}
+                  />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 
@@ -595,38 +614,42 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="md" align="start">
-                <FormField
-                  id="empty-text"
-                  label="値引き額（テキスト）"
-                  helper={
-                    emptyText === "" ? "現在の値: 空文字（未入力）" : `現在の値: ${emptyText}`
-                  }
-                >
-                  <Input
+              <Form>
+                <ResponsiveGrid columns={{ base: 1, md: 2 }} gap="md" align="start">
+                  <FormField
                     id="empty-text"
-                    value={emptyText}
-                    onValueChange={setEmptyText}
-                    prefix="¥"
-                    placeholder="未入力"
-                    allowClear
-                  />
-                </FormField>
-                <FormField
-                  id="zero-text"
-                  label="値引き額（0が入っている）"
-                  helper={zeroText === "" ? "現在の値: 空文字（未入力）" : `現在の値: ${zeroText}`}
-                >
-                  <Input
+                    label="値引き額（テキスト）"
+                    helper={
+                      emptyText === "" ? "現在の値: 空文字（未入力）" : `現在の値: ${emptyText}`
+                    }
+                  >
+                    <Input
+                      id="empty-text"
+                      value={emptyText}
+                      onValueChange={setEmptyText}
+                      prefix="¥"
+                      placeholder="未入力"
+                      allowClear
+                    />
+                  </FormField>
+                  <FormField
                     id="zero-text"
-                    value={zeroText}
-                    onValueChange={setZeroText}
-                    prefix="¥"
-                    placeholder="未入力"
-                    allowClear
-                  />
-                </FormField>
-              </ResponsiveGrid>
+                    label="値引き額（0が入っている）"
+                    helper={
+                      zeroText === "" ? "現在の値: 空文字（未入力）" : `現在の値: ${zeroText}`
+                    }
+                  >
+                    <Input
+                      id="zero-text"
+                      value={zeroText}
+                      onValueChange={setZeroText}
+                      prefix="¥"
+                      placeholder="未入力"
+                      allowClear
+                    />
+                  </FormField>
+                </ResponsiveGrid>
+              </Form>
               <Text size="sm" tone="muted">
                 プレースホルダーが見えている側が「未入力」。✕
                 で空にすると、両者は見た目でも状態でも同じになる。
@@ -646,21 +669,23 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md" align="start">
-              <FormField id="label-short" label="都道" helper="2文字ラベル">
-                <Input id="label-short" defaultValue="東京都" />
-              </FormField>
-              <FormField
-                id="label-long"
-                label="請求書の送付先として登録されている経理担当部署の正式名称"
-                helper="3行になるラベル"
-              >
-                <Input id="label-long" defaultValue="経理部 請求管理課" />
-              </FormField>
-              <FormField id="label-mid" label="内線番号" helper="4桁">
-                <Input id="label-mid" inputMode="numeric" defaultValue="4182" />
-              </FormField>
-            </ResponsiveGrid>
+            <Form>
+              <ResponsiveGrid columns={{ base: 1, md: 3 }} gap="md" align="start">
+                <FormField id="label-short" label="都道" helper="2文字ラベル">
+                  <Input id="label-short" defaultValue="東京都" />
+                </FormField>
+                <FormField
+                  id="label-long"
+                  label="請求書の送付先として登録されている経理担当部署の正式名称"
+                  helper="3行になるラベル"
+                >
+                  <Input id="label-long" defaultValue="経理部 請求管理課" />
+                </FormField>
+                <FormField id="label-mid" label="内線番号" helper="4桁">
+                  <Input id="label-mid" inputMode="numeric" defaultValue="4182" />
+                </FormField>
+              </ResponsiveGrid>
+            </Form>
           </CardContent>
         </Card>
 
@@ -675,30 +700,32 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md" dir="rtl" lang="ar">
-              <FormField id="rtl-name" label="اسم الشركة" required>
-                <Input
-                  id="rtl-name"
-                  defaultValue="شركة غودو التجارية"
-                  leadingIcon={<Icon as={Building2} size="sm" tone="muted" />}
-                  allowClear
-                />
-              </FormField>
-              <FormField id="rtl-site" label="الموقع الإلكتروني">
-                <Input
-                  id="rtl-site"
-                  addonBefore="https://"
-                  addonAfter=".sa"
-                  defaultValue="godo-shoji"
-                />
-              </FormField>
-              <FormField id="rtl-rate" label="نسبة الخصم">
-                <Input id="rtl-rate" prefix="%" suffix="خصم" defaultValue="15" />
-              </FormField>
-              <FormField id="rtl-subject" label="الموضوع">
-                <Input id="rtl-subject" count={{ max: 20 }} defaultValue="فاتورة سبتمبر" />
-              </FormField>
-            </Flex>
+            <Form>
+              <Flex direction="col" gap="md" dir="rtl" lang="ar">
+                <FormField id="rtl-name" label="اسم الشركة" required>
+                  <Input
+                    id="rtl-name"
+                    defaultValue="شركة غودو التجارية"
+                    leadingIcon={<Icon as={Building2} size="sm" tone="muted" />}
+                    allowClear
+                  />
+                </FormField>
+                <FormField id="rtl-site" label="الموقع الإلكتروني">
+                  <Input
+                    id="rtl-site"
+                    addonBefore="https://"
+                    addonAfter=".sa"
+                    defaultValue="godo-shoji"
+                  />
+                </FormField>
+                <FormField id="rtl-rate" label="نسبة الخصم">
+                  <Input id="rtl-rate" prefix="%" suffix="خصم" defaultValue="15" />
+                </FormField>
+                <FormField id="rtl-subject" label="الموضوع">
+                  <Input id="rtl-subject" count={{ max: 20 }} defaultValue="فاتورة سبتمبر" />
+                </FormField>
+              </Flex>
+            </Form>
           </CardContent>
         </Card>
 

@@ -23,7 +23,15 @@ New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-
 `wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
 `break="anywhere"` as the prop for an email, code or id in a table cell.
 
-## [31.0.0] - 2026-09-27
+## [31.0.1] - 2026-09-27
+
+The first published 31.x. `v31.0.0` was tagged but **never published**: the release gate refused it
+because `CI · code` was red on that commit — the new `formfield-needs-form` rule flagged 153 sites in
+this repo's own docs, which a local `pnpm audit` (pnpm's built-in security audit, not the ui-audit
+script) had not run. The rule was narrowed to what the report describes (see below) and the docs
+were fixed; 31.0.1 carries everything listed under 31.0.0.
+
+## [31.0.0] - 2026-09-27 — tagged, not published
 
 MAJOR, for two reasons: an export moved (gh#996), and the consumer audit gains two `error` rules
 that most existing apps will trip (gh#998).
@@ -44,18 +52,21 @@ of every entry in `package.json#exports`; only `./react-router` may reach the ro
 
 ### 💥 ui-audit: the form layer is enforced (gh#998)
 
-- `formfield-needs-form` (**error**) — a `FormField` with no `<Form>` around it. Wrap fields in
-  `<Form layout="horizontal" labelWidth controlWidth>`; a row that belongs together is
-  `<SpaceCompact>` or `<Form columns>`. A component whose whole output is one FormField is exempt.
-- `dialog-form-too-big` (**error**) — three or more FormFields in a Dialog/Sheet body: give the
-  form its own page.
+- `formfield-needs-form` (**error**) — two or more `FormField`s under one parent with no `<Form>`
+  around them. Wrap fields in `<Form layout="horizontal" labelWidth controlWidth>`; a row that
+  belongs together is `<SpaceCompact>` or `<Form columns>`. A LONE field (a search box, a
+  type-to-confirm input, a field component whose whole output is one FormField) is not flagged.
+- `dialog-form-too-big` (**error**) — three or more FormFields in a Dialog body: give the form its
+  own page. A side Sheet (drawer) is not flagged — that is where a filter or edit form belongs.
 - `select-width-hint` (warn) — a `Select` with no `controlWidth` on its field or its Form.
 
 **Migration cost, measured:** across the consumers on the maintainer's machine (1,191 files that
-use `FormField`), `formfield-needs-form` finds 3,772 sites in 831 files and `dialog-form-too-big` 186.
-The PostToolUse hook and `ui-audit --changed` see only the files being edited, so new work is held
-to the rule immediately; a FULL scan stays red until the old forms are migrated. A deliberate
-exception is `// ui-audit-disable-next-line formfield-needs-form -- <reason>`.
+use `FormField`), `formfield-needs-form` finds 2,341 sites in 441 files and `dialog-form-too-big`
+184 in 172. The PostToolUse hook and `ui-audit --changed` see only the files being edited, so new
+work is held to the rule immediately; a FULL scan stays red until the old forms are migrated. A
+deliberate exception is a reasoned block:
+`// ui-audit-disable-begin formfield-needs-form — <reason>` … `// ui-audit-disable-end formfield-needs-form`.
+This repo's own docs had 153 such sites in 29 files; each group is now wrapped in `<Form>`.
 
 `get_component` for any data-entry component, and `search_components` when it returns one, now
 print a FORM RULES block naming these rules. `docs/CONSUMER-RULES.md` rule 5 carries the
