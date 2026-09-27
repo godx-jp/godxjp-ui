@@ -2557,7 +2557,7 @@
         "reason": "Executed mutation pending, error and completion state tests passed."
       }
     },
-    "query/prefetch-link": {
+    "react-router/prefetch-link": {
       "responsive": {
         "status": "pass",
         "reason": "Eight-width Chromium geometry passed."
@@ -2785,7 +2785,7 @@
         "query/data-state",
         "query/infinite-query-state",
         "query/mutation-feedback",
-        "query/prefetch-link"
+        "react-router/prefetch-link"
       ],
       "dimensions": {
         "props": {

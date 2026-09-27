@@ -10,7 +10,7 @@ describe("provider and query frame contracts", () => {
     ["docs/query/data-state.tsx", ["DataState"]],
     ["docs/query/infinite-query-state.tsx", ["InfiniteQueryState"]],
     ["docs/query/mutation-feedback.tsx", ["AlertMutationFeedback"]],
-    ["docs/query/prefetch-link.tsx", ["PrefetchLink"]],
+    ["docs/react-router/prefetch-link.tsx", ["PrefetchLink"]],
   ])("directly renders public contracts in %s", (file, names) => {
     const source = read(file as string);
     for (const name of names as string[]) expect(source).toMatch(new RegExp(`<${name}(?:<|\\s|>)`));
