@@ -23,9 +23,17 @@ New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-
 `wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
 `break="anywhere"` as the prop for an email, code or id in a table cell.
 
-## [31.0.1] - 2026-09-27
+## [31.0.2] - 2026-09-27
 
-The first published 31.x. `v31.0.0` was tagged but **never published**: the release gate refused it
+The first published 31.x — it carries everything listed under 31.0.1 and 31.0.0. `v31.0.1` was
+tagged but also **never published**: moving `PrefetchLink` to the `react-router` group had left
+`query/prefetch-link` named in `screen-reader-evidence.json`, `frame-coverage.json` and two prop-case
+fixtures, and `check:screen-reader-evidence` failed on it. Tags are never re-pushed, so the fixed
+tree ships as 31.0.2.
+
+## [31.0.1] - 2026-09-27 — tagged, not published
+
+Would have been the first published 31.x. `v31.0.0` was tagged but **never published**: the release gate refused it
 because `CI · code` was red on that commit — the new `formfield-needs-form` rule flagged 153 sites in
 this repo's own docs, which a local `pnpm audit` (pnpm's built-in security audit, not the ui-audit
 script) had not run. The rule was narrowed to what the report describes (see below) and the docs

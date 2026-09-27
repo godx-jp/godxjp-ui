@@ -100,6 +100,6 @@
     "mutation/pending/errorRenderer/retry": "docs/query/mutation-feedback.tsx plus idle/pending/error/success tests"
   },
   "PrefetchLink": {
-    "to/queryKey/queryFn/prefetchOn/staleTime/link props": "docs/query/prefetch-link.tsx plus hover/focus/both/none tests"
+    "to/queryKey/queryFn/prefetchOn/staleTime/link props": "docs/react-router/prefetch-link.tsx plus hover/focus/both/none tests"
   }
 }

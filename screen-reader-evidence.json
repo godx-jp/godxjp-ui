@@ -138,7 +138,7 @@
           "navigation/pagination",
           "navigation/steps",
           "navigation/tabs",
-          "query/prefetch-link"
+          "react-router/prefetch-link"
         ]
       },
       {
