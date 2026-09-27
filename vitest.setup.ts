@@ -2,6 +2,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 
+import { resetI18nLocale } from "./src/i18n/translate";
+
 /* THE TIMEOUT LIVES IN vitest.config.ts, AND THIS LINE USED TO MAKE THAT A LIE.
  *
  * `vi.setConfig({ testTimeout: 8_000 })` here overrides the config file at runtime, so the number
@@ -19,6 +21,12 @@ afterEach(() => {
   cleanup();
   vi.clearAllTimers();
   vi.useRealTimers();
+  // The module locale is shared state: AppProvider writes it through `syncI18nLocale`, and since
+  // gh#1005 a component rendered OUTSIDE a provider reads it. Without this reset a test that
+  // mounted `<AppProvider defaultLocale="ja">` decided the language of the next test in the file —
+  // measured on progress-breakdown, whose Japanese list separator "、" appeared in a test that
+  // renders no provider at all.
+  resetI18nLocale();
 });
 
 /** jsdom polyfills for Radix / cmdk */
