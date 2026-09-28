@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Badge,
@@ -13,7 +13,7 @@ import {
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import { SkeletonTable } from "@godxjp/ui/feedback";
-import { Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AuthExpiryProvider, DataState } from "@godxjp/ui/query";
 
@@ -51,15 +51,36 @@ function SuccessBlock() {
   );
 }
 
+/** Loads for 2s and comes back empty — the whole lifecycle: skeleton → EmptyState. */
+const LOAD_MS = 2000;
+
 function LoadingBlock() {
+  const client = useQueryClient();
   const query = useQuery({
     queryKey: ["ds-loading"],
-    queryFn: () => new Promise<Invoice[]>(() => {}),
+    queryFn: () => new Promise<Invoice[]>((resolve) => setTimeout(() => resolve([]), LOAD_MS)),
   });
   return (
-    <DataState query={query} skeleton={<SkeletonTable />}>
-      {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
-    </DataState>
+    <Flex direction="col" gap="sm">
+      <DataState
+        query={query}
+        skeleton={<SkeletonTable rows={4} columns={3} />}
+        isEmpty={(d) => d.length === 0}
+        empty={
+          <EmptyState title="データがありません" description="条件に合う請求書はありません。" />
+        }
+      >
+        {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
+      </DataState>
+      {/* resetQueries puts the query back to pending, so the skeleton plays again. */}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => void client.resetQueries({ queryKey: ["ds-loading"] })}
+      >
+        もう一度読み込む
+      </Button>
+    </Flex>
   );
 }
 
@@ -174,8 +195,11 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle level={2}>Loading (skeleton)</CardTitle>
-              <CardDescription>The skeleton prop renders during the pending phase.</CardDescription>
+              <CardTitle level={2}>Loading → empty</CardTitle>
+              <CardDescription>
+                The skeleton (animated) renders while pending; when the data arrives empty the
+                skeleton goes away and the `empty` slot renders.
+              </CardDescription>
             </CardHeader>
             <CardContent flush>
               <LoadingBlock />
