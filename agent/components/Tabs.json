@@ -25,6 +25,11 @@
       "type": "(value: string) => void"
     },
     {
+      "description": "Strip-only mode (gh#1021): the tabs drive content OUTSIDE the strip. No tabpanel is rendered, and the selected tab's `aria-controls` points at this id, which is the consumer's own region (give it `role=\"region\"` and a name). Content there is never remounted on a tab switch, so a typed draft survives. With the compound form it applies to triggers without a declared `TabsContent` (a declared panel wins). A pure filter with NO region to point at is not a tab strip; use `Segmented`. The root's `aria-label`/`aria-labelledby` name the `role=\"tablist\"` (gh#1020), and a compound `TabsTrigger` takes `count`/`overflowCount`/`showZero`/`countLabel`, drawn exactly like `items[].count`.",
+      "name": "controls",
+      "type": "IdProp"
+    },
+    {
       "defaultValue": "\"default\"",
       "description": "Trigger-strip appearance — this is Ant Design's `type` under the library's own `variant` vocabulary. `default` is the pill strip (antd has no equivalent). `line` is UNDERLINE-ONLY: the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. `card` gives each tab a boxed face on a rail (--tabs-card-*). `editable-card` is `card` plus the add button and per-tab remove shortcut, and needs `onEdit` to do anything. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant=\"line\">`.",
       "name": "variant",

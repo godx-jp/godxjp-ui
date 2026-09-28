@@ -16576,6 +16576,14 @@
           "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
+          "name": "controls",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -16775,6 +16783,22 @@
       "group": "navigation",
       "props": [
         {
+          "name": "count",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "countLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -16784,6 +16808,22 @@
             "node_modules/@types/react/index.d.ts",
             "src/components/navigation/tabs.tsx"
           ]
+        },
+        {
+          "name": "overflowCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
+        },
+        {
+          "name": "showZero",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [false, true],
+          "declaredIn": ["src/props/components/navigation.prop.ts"]
         },
         {
           "name": "value",
