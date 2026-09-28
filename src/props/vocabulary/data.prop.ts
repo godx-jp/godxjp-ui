@@ -5,6 +5,7 @@
 import type * as React from "react";
 import type { BreakpointProp, ColumnAlignProp, SortDirectionProp } from "./interaction.prop";
 import type { TableDensityProp } from "./layout.prop";
+import type { FlushProp } from "./shared.prop";
 
 /** Generic row identifier extractor for tables with selection. */
 export type GetRowIdProp<T> = (row: T) => string;
@@ -87,6 +88,13 @@ export type ColumnDefProp<T> = {
    */
   ellipsis?: boolean;
   /**
+   * The cell's CONTENT owns its inset (the same contract as `TableCell flush`): the column's body
+   * cells drop their padding so a self-padded row primitive — a `ListRow` in a selectable list —
+   * sits on the column's text axis instead of stacking a second inset on the cell's (gh#1016).
+   * The header cell keeps its padding, which lines the header label up with the row's own inset.
+   */
+  flush?: FlushProp;
+  /**
    * Sort declaration (antd `ColumnType.sorter`). `sorter: true` is the same opt-in as `sortable`;
    * a comparator sorts by it; `{ compare, multiple }` joins the MULTI-column sort, highest
    * `multiple` first.
@@ -134,12 +142,7 @@ export type OnTableDensityChangeProp = (density: TableDensityProp) => void;
  * is what makes that cell findable in a long table, not a replacement for it.
  */
 export type TableRowToneProp =
-  | "primary"
-  | "success"
-  | "warning"
-  | "info"
-  | "attention"
-  | "destructive";
+  "primary" | "success" | "warning" | "info" | "attention" | "destructive";
 
 /** Per-row tone resolver — return `undefined` for a row in the ordinary state. */
 export type RowToneProp<T> = (row: T) => TableRowToneProp | undefined;

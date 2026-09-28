@@ -2087,7 +2087,10 @@ DataTable.Content = function DataTableContent() {
                             {...fixedCellProps(col.key, fixedEdge(col))}
                             {...columnHideBelowProps(col)}
                             style={columnCellStyle(col)}
-                            className={cn(cellPadding, columnCellClass(col))}
+                            // A `flush` column's content owns the inset (gh#1016) — the block
+                            // padding utility would otherwise outrank the `[data-flush]` reset.
+                            flush={col.flush}
+                            className={cn(!col.flush && cellPadding, columnCellClass(col))}
                           >
                             {rendered}
                           </TableCell>

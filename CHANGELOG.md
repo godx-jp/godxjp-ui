@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ DataTable `columns[].flush` — a ListRow in a selectable table renders flush (gh#1016)
+
+MINOR. A column may set `flush: true` (the `FlushProp` word `TableCell` and `CardContent` already
+use): its body cells drop their padding, so a self-padded row primitive — `ListRow` in a selectable
+mail/notification list — owns the inset. Measured at 1142×805 on the new `selectable-inbox`
+example: cell padding `7.36px 16px` → `0`, checkbox → row content 48px → 25px, a two-line row
+68.25px → 53.53px. An unread `ListRow` in a flush cell now paints `--list-row-unread-background`
+across the whole table row, checkbox cell included.
+
+- **Fix:** the selection column's hug rule (`:has([role="checkbox"])`) had matched nothing since the
+  React Aria Checkbox: its native input carries no `role` attribute. It now also matches
+  `[data-slot="checkbox"]`, so every selectable table's checkbox cell loses its 16px inline-end
+  padding, as originally designed.
+
 ## [31.1.0] - 2026-09-28
 
 ### ✨ Cartesian charts take `onCategoryClick` — drill down or zoom to one bucket
