@@ -628,6 +628,7 @@ export function Upload({
           disabled={disabled}
           onClick={openPicker}
           aria-label={triggerAriaLabel}
+          className="ui-upload-trigger"
         >
           {/* `triggerIcon` swaps the GLYPH only: the class, the label spacing and the
               `aria-hidden` stay the library's, so a plus on a "create new" action measures the
@@ -693,7 +694,13 @@ export function Upload({
             {rejection}
           </p>
         )}
-        <Button type="button" disabled={disabled} variant={triggerVariant} onClick={openPicker}>
+        <Button
+          type="button"
+          disabled={disabled}
+          variant={triggerVariant}
+          onClick={openPicker}
+          className="ui-upload-trigger"
+        >
           {children ?? t("dataEntry.upload.addImage")}
         </Button>
         {list}
