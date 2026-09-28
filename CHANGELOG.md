@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.1.0] - 2026-09-28
+
 ### ✨ Cartesian charts take `onCategoryClick` — drill down or zoom to one bucket
 
 MINOR. `BarChart`, `LineChart` and `AreaChart` gain `onCategoryClick(datum, index)`.
