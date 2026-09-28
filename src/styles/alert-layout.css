@@ -342,6 +342,22 @@
     background: var(--skeleton-background, hsl(var(--muted)));
   }
 
+  /* The bar heights apply to EVERY skeleton that uses these shapes. They used to be nested inside
+   * the detail-box/stat/card rule below, so a SkeletonTable (and SkeletonDetail's own title and
+   * line, which sit outside its box) painted its bars at block-size 0: pulsing, and invisible
+   * (measured: 85 table bars, height 0). */
+  .ui-skeleton-line {
+    block-size: var(--skeleton-block-height);
+  }
+
+  .ui-skeleton-caption {
+    block-size: var(--skeleton-caption-height);
+  }
+
+  .ui-skeleton-title {
+    block-size: var(--skeleton-title-height);
+  }
+
   .ui-skeleton-table {
     overflow: hidden;
     border: var(--stroke-hairline) solid hsl(var(--border));
@@ -382,18 +398,6 @@
     border: var(--stroke-hairline) solid hsl(var(--border));
     border-radius: var(--skeleton-radius, var(--radius));
     padding: var(--skeleton-card-inset);
-
-    .ui-skeleton-line {
-      block-size: var(--skeleton-block-height);
-    }
-
-    .ui-skeleton-caption {
-      block-size: var(--skeleton-caption-height);
-    }
-
-    .ui-skeleton-title {
-      block-size: var(--skeleton-title-height);
-    }
 
     .ui-skeleton-detail-label {
       block-size: var(--skeleton-caption-height);

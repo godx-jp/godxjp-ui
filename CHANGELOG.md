@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🐛 SkeletonTable and SkeletonDetail bars are visible again — they were 0px tall
+
+PATCH. `.ui-skeleton-line`, `-caption` and `-title` took their block-size only when nested inside
+`.ui-skeleton-detail-box, .ui-skeleton-stat, .ui-skeleton-card`.
+
+- **SkeletonTable** is none of those. Measured on the DataState preview: **85 bars, height 0**. The
+  rows and the pulse were there, but nothing was visible, so "loading" looked like an empty, frozen
+  table.
+- **SkeletonDetail** places its title and first line outside its box, so those were 0 too.
+
+The three heights now apply wherever the shapes are used; measured after the fix: 12px captions and
+16px lines, pulsing. A Chromium regression test renders both skeletons and asserts that no bar is
+0 tall; it fails on the old stylesheet with nine zeros.
+
+The DataState preview's "Loading" demo used a promise that never settled. It is now **Loading →
+empty**: skeleton for 2s, then the `empty` slot. A button replays the load.
+
 ## [31.3.0] - 2026-09-28
 
 ### ✨ `AuthExpiryProvider` — an expired session is handled centrally, never painted as a page error (gh#1022)
