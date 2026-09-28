@@ -157,14 +157,14 @@
   --segmented-item-selected-border-color: initial; /* default = var(--input), resolved at the call site */
 
   /* Counter pill beside the label (gh#602). Geometry matches Button/Toggle count pills; COLOUR
-   * follows `Tabs` (gh#1019): resting = `--muted` / `--muted-foreground`, byte-identical to a
-   * resting `.ui-tabs-count`; the selected segment's pill = `--primary` / `--primary-foreground`,
-   * identical to the active tab's. gh#602 had painted EVERY pill primary so it would clear 3:1
-   * against the track — which made four identical blobs and dropped the one thing a count pill in
-   * a one-of-N control can say, "this is the chosen one". The resting pill is text, held to
-   * SC 1.4.3 (muted-foreground on muted ≥ 4.5:1 in both themes, measured in
-   * segmented-count-tabs-convention-1019.test.ts); it is not the selection indicator, so
-   * SC 1.4.11 does not ask its fill to stand off the track — the Tabs pill makes the same call.
+   * follows `Tabs` (gh#1019): resting = `--background` / `--muted-foreground`, byte-identical to a
+   * resting `.ui-tabs-count` on a CARD tab — the Tabs rule for a pill whose host surface is
+   * `--muted`, which the Segmented track is (a `--muted` pill there is 1.00:1, shape gone). The
+   * selected segment's pill = `--primary` / `--primary-foreground`, identical to the active tab's.
+   * gh#602 had painted EVERY pill primary — four identical blobs that dropped the one thing a
+   * count pill in a one-of-N control can say, "this is the chosen one". The resting number is held
+   * to SC 1.4.3 (≥ 4.5:1 in both themes, measured in segmented-count-tabs-convention-1019.test.ts);
+   * it is not the selection indicator, so its fill only has to stand off the track, not reach 3:1.
    * antd has no `count` on SegmentedItemType; this knob exists because every faceted filter in
    * the wild needs one and nesting Badge in `label` was the only API until now. */
   --segmented-count-min-width: var(--button-count-min-width);
@@ -172,7 +172,7 @@
   --segmented-count-font-size: var(--button-count-font-size);
   --segmented-count-radius: var(--radius-pill);
   --segmented-count-gap: var(--space-1);
-  --segmented-count-background: initial; /* default = hsl(var(--muted)) at the call site */
+  --segmented-count-background: initial; /* default = hsl(var(--background)) at the call site */
   --segmented-count-color: initial; /* default = hsl(var(--muted-foreground)) at the call site */
   --segmented-count-selected-background: initial; /* default = hsl(var(--primary)) at the call site */
   --segmented-count-selected-background-alpha: initial; /* default = 100% at the call site */

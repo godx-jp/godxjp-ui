@@ -1686,9 +1686,11 @@
     margin-inline-start: var(--segmented-count-gap);
     border-radius: var(--segmented-count-radius);
     padding-inline: var(--segmented-count-space-inline);
-    /* RESTING = muted, the `.ui-tabs-count` convention (gh#1019). Painting every pill primary made
-     * four identical blobs that said nothing about which segment is chosen. */
-    background: var(--segmented-count-background, hsl(var(--muted)));
+    /* RESTING = quiet, the `.ui-tabs-count` convention (gh#1019). Painting every pill primary made
+     * four identical blobs that said nothing about which segment is chosen. The fill is the page
+     * surface, not `--muted`: the track IS `--muted`, so a muted pill measured 1.00:1 and lost its
+     * shape — the same answer Tabs gives a pill on a muted card tab. */
+    background: var(--segmented-count-background, hsl(var(--background)));
     color: var(--segmented-count-color, hsl(var(--muted-foreground)));
     font-size: var(--segmented-count-font-size);
     line-height: 1;

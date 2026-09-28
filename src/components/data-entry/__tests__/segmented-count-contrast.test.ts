@@ -11,7 +11,8 @@ import { contrast, hsl, hslToRgb, NON_TEXT } from "@/tokens/__tests__/wcag-contr
  * gh#602 — Badge `secondary` nested in Segmented `label` measured 1.00:1 against the track
  * (`rgb(244,243,240)` on `rgb(244,243,240)`).
  *
- * gh#1019 changed the answer: the pill follows `Tabs` — resting = muted (its NUMBER held to
+ * gh#1019 changed the answer: the pill follows `Tabs` — resting = `--background`, the Tabs
+ * card-tab rule for a pill on a `--muted` surface (shape distinct from the track, NUMBER held to
  * SC 1.4.3, ≥ 4.5:1 on its own fill), selected = primary (clears SC 1.4.11 against the lifted
  * slab it sits on). Painting every pill primary made four identical blobs.
  *
@@ -75,9 +76,11 @@ describe.each(THEMES)("Segmented count pill non-text contrast ($name)", ({ selec
     expect(ratio(badgeSecondary, track)).toBeCloseTo(BEFORE_BADGE_ON_TRACK, 2);
   });
 
-  it("resting pill number is legible on its muted fill (>= 4.5:1, SC 1.4.3)", () => {
+  it("resting pill shape stands off the track and its number is legible (>= 4.5:1)", () => {
+    const restingFill = hslToRgb(hsl(body, "background"));
     const restingInk = hslToRgb(hsl(body, "muted-foreground"));
-    expect(ratio(restingInk, track)).toBeGreaterThanOrEqual(TEXT);
+    expect(ratio(restingFill, track)).toBeGreaterThan(1.05);
+    expect(ratio(restingInk, restingFill)).toBeGreaterThanOrEqual(TEXT);
   });
 
   it("selected pill background is distinguishable from the selected item slab (>= 3:1)", () => {
@@ -90,9 +93,9 @@ describe.each(THEMES)("Segmented count pill non-text contrast ($name)", ({ selec
 });
 
 describe("Segmented count pill contract (gh#602 → gh#1019)", () => {
-  it("rests muted and emphasises only the selected segment — the Tabs convention", () => {
+  it("rests on the page surface and emphasises only the selected segment — the Tabs convention", () => {
     expect(controlStyles).toMatch(
-      /\.ui-segmented-count\s*\{[^}]*background:\s*var\(\s*--segmented-count-background,\s*hsl\(var\(\s*--muted\)\)\)/,
+      /\.ui-segmented-count\s*\{[^}]*background:\s*var\(\s*--segmented-count-background,\s*hsl\(var\(\s*--background\)\)\)/,
     );
     expect(controlStyles).toMatch(
       /\.ui-segmented-item\[data-state="checked"\]\s+\.ui-segmented-count\s*\{[^}]*--segmented-count-selected-background,\s*hsl\(var\(--primary\)/,
@@ -186,8 +189,8 @@ describe("Segmented count — getComputedStyle (Chromium)", () => {
 
     await browser.close();
 
-    // gh#1019: the resting pill IS the track's muted — quiet by design, like a resting tab pill.
-    expect(measured.uncheckedOnTrack).toBeCloseTo(BEFORE_BADGE_ON_TRACK, 2);
+    // gh#1019: quiet, but its shape stays visible on the track (not the 1.00:1 of a muted pill).
+    expect(measured.uncheckedOnTrack).toBeGreaterThan(1.05);
     expect(measured.checkedOnSelected).toBeGreaterThanOrEqual(NON_TEXT);
     expect(parseFloat(measured.borderRadius)).toBeGreaterThan(8);
     expect(measured.countFont).toBeLessThan(measured.itemFont);

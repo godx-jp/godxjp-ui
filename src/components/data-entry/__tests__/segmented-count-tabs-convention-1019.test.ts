@@ -7,7 +7,9 @@ import { chromium } from "playwright";
  * gh#1019 — every Segmented count pill was painted solid `--primary`, the unselected ones and the
  * zero ones included: four pills, four identical rgb(122,0,255) blobs, so the pill said nothing
  * about which segment was chosen. `Tabs` already had the right convention (gh#762): the resting
- * pill is muted, and ONLY the selected tab's pill takes the primary emphasis.
+ * pill is quiet, and ONLY the selected tab's pill takes the primary emphasis. The Segmented track
+ * is `--muted`, so the Tabs rule that applies is the CARD one (a muted tab surface): the resting
+ * pill is `--background`, which keeps its shape visible on the track instead of 1.00:1.
  *
  * Measured in Chromium, side by side with a real Tabs strip in the same page, so "the same as
  * Tabs" is a byte comparison of computed colours rather than a claim about token names.
@@ -27,7 +29,7 @@ const STYLESHEETS = [
 const css = STYLESHEETS.map((path) => readFileSync(join(process.cwd(), path), "utf8")).join("\n");
 
 const MARKUP = `
-  <div data-slot="tabs" data-variant="line">
+  <div data-slot="tabs" data-variant="card">
     <button data-slot="tabs-trigger" data-state="active">未対応<span class="ui-tabs-count">12</span></button>
     <button data-slot="tabs-trigger" data-state="inactive">完了<span class="ui-tabs-count">3</span></button>
   </div>
@@ -49,8 +51,9 @@ const MARKUP = `
 type Measured = {
   tabsActive: { bg: string; fg: string };
   tabsResting: { bg: string; fg: string };
+  trackBg: string;
   segSelected: { bg: string; fg: string; textRatio: number };
-  segResting: Array<{ bg: string; fg: string; textRatio: number }>;
+  segResting: Array<{ bg: string; fg: string; textRatio: number; onTrack: number }>;
 };
 
 async function measure(theme: "light" | "dark"): Promise<Measured> {
@@ -87,6 +90,9 @@ async function measure(theme: "light" | "dark"): Promise<Measured> {
         const fg = rgb(s.color);
         return { bg: bg.join(","), fg: fg.join(","), textRatio: ratio(bg, fg) };
       };
+      const trackRgb = rgb(
+        getComputedStyle(document.querySelector(".ui-segmented")!).backgroundColor,
+      );
       const tabs = document.querySelectorAll(".ui-tabs-count");
       const segSelected = document.querySelector(
         '[data-state="checked"] [data-slot="segmented-count"]',
@@ -99,7 +105,11 @@ async function measure(theme: "light" | "dark"): Promise<Measured> {
         tabsActive: strip(read(tabs[0]!)),
         tabsResting: strip(read(tabs[1]!)),
         segSelected: read(segSelected),
-        segResting: segResting.map(read),
+        trackBg: trackRgb.join(","),
+        segResting: segResting.map((el) => {
+          const r = read(el);
+          return { ...r, onTrack: ratio(rgb(getComputedStyle(el).backgroundColor), trackRgb) };
+        }),
       };
     });
   } finally {
@@ -116,6 +126,9 @@ describe.each(["light", "dark"] as const)("Segmented count follows Tabs (gh#1019
       expect(pill.bg).not.toBe(m.segSelected.bg);
       expect({ bg: pill.bg, fg: pill.fg }).toEqual(m.tabsResting);
       expect(pill.textRatio).toBeGreaterThanOrEqual(4.5);
+      // The shape must survive on the track — a --muted pill on the --muted track is 1.00:1.
+      expect(pill.bg).not.toBe(m.trackBg);
+      expect(pill.onTrack).toBeGreaterThan(1.05);
     }
 
     expect({ bg: m.segSelected.bg, fg: m.segSelected.fg }).toEqual(m.tabsActive);
