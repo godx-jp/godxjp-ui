@@ -18008,6 +18008,71 @@ const messages: ChatMessageProp[] = [
     rules: [2, 6, 23, 44, 45],
   },
   {
+    name: "OrgChart",
+    group: "data-display",
+    tagline:
+      "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys).",
+    props: [
+      {
+        name: "data",
+        type: "OrgChartNodeProp[]",
+        description:
+          'The hierarchy: { key, name, title?, avatar?, extra?, variant?: "person" | "agent", children? }. `key` is unique across the chart. `avatar` is usually an <Avatar>; `extra` a Badge or status.',
+      },
+      {
+        name: "renderNode",
+        type: "(node: OrgChartNodeProp) => ReactNode",
+        description:
+          "Replace a box's content. The box, its border, the connectors and the keyboard stay the library's; the narrow Tree form uses it too.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          'Accessible name of the role="tree" (a plain string). Localized default "Organization chart".',
+      },
+      { name: "id", type: "string", description: "DOM id of the root." },
+      { name: "className", type: "string", description: "Root class." },
+    ],
+    usage: [
+      'DO mark AI agents with `variant: "agent"` \u2014 the box is dashed AND its accessible name ends in a localized "AI agent", so the kind is never carried by the stroke alone.',
+      "DO give it the width it has; the breakpoint is a container query, so a chart in a narrow side panel switches to the Tree form on a wide screen too.",
+      "DO retune boxes and lines through the --org-chart-* tokens (node size, gaps, line width/colour, agent border style).",
+      "DON'T wrap it in your own overflow-x scroller \u2014 it owns its scroll region, which only becomes a named tab stop when the chart actually overflows.",
+      "DON'T use it for an outline users expand and collapse \u2014 that is Tree. OrgChart always shows every node.",
+    ],
+    useCases: [
+      "A company or team org chart with people and AI agents side by side.",
+      "Reporting lines on an admin screen, falling back to an indented list in a narrow panel or on a phone.",
+    ],
+    related: [
+      "Tree \u2014 the indented, collapsible outline. OrgChart renders it as its narrow form.",
+      "Avatar \u2014 the mark in each box.",
+      "Badge \u2014 a status in a box's `extra` slot.",
+    ],
+    example: [
+      'import { Avatar, AvatarFallback, Badge, OrgChart } from "@godxjp/ui/data-display";',
+      "",
+      "<OrgChart",
+      '  label="Company org chart"',
+      "  data={[",
+      "    {",
+      '      key: "ceo", name: "Haruka Tanaka", title: "CEO",',
+      '      avatar: <Avatar size="sm"><AvatarFallback>HT</AvatarFallback></Avatar>,',
+      "      children: [",
+      '        { key: "cto", name: "Kenji Watanabe", title: "CTO" },',
+      '        { key: "bot", name: "Review Agent", title: "Code review", variant: "agent",',
+      '          extra: <Badge tone="success">Running</Badge> },',
+      "      ],",
+      "    },",
+      "  ]}",
+      "/>",
+    ].join("\n"),
+    docPath: "data-display/org-chart.tsx",
+    storyPath: "data-display/OrgChart.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
+  {
     name: "Attachments",
     group: "data-entry",
     tagline:
