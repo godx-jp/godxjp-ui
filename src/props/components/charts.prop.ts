@@ -81,6 +81,14 @@ type ChartCartesianBase = {
   numberFormat?: Intl.NumberFormatOptions;
   /** Message shown when `data` is empty. Defaults to a localized "no data". */
   emptyMessage?: EmptyMessageProp;
+  /**
+   * Called with the clicked category's datum and its index — drill-down, zoom-to-bucket. The whole
+   * category column is the target, not only the mark, so a zero-height bar is still clickable.
+   *
+   * A POINTER SHORTCUT, not the only way in: the plot is `role="img"`, which has no keyboard
+   * interaction, so the screen must offer the same action through a real control as well.
+   */
+  onCategoryClick?: (datum: ChartDatum, index: number) => void;
   className?: ClassNameProp;
   id?: IdProp;
 };

@@ -47,6 +47,7 @@ type CartesianChartProps = {
   valueTicks?: number[];
   numberFormat?: Intl.NumberFormatOptions;
   emptyMessage?: string;
+  onCategoryClick?: (datum: ChartDatum, index: number) => void;
   className?: string;
   id?: string;
   /** line/area */
@@ -75,6 +76,7 @@ export function CartesianChart({
   valueTicks,
   numberFormat,
   emptyMessage,
+  onCategoryClick,
   className,
   id,
   curved = false,
@@ -197,10 +199,36 @@ export function CartesianChart({
     </>
   );
 
+  const pickCategory = (raw: unknown) => {
+    // `Number(null)` is 0 — a miss must not read as the first category.
+    const index = raw === null || raw === undefined || raw === "" ? NaN : Number(raw);
+    if (onCategoryClick && Number.isInteger(index) && data[index])
+      onCategoryClick(data[index], index);
+  };
+  /**
+   * Line / area: recharts' chart-level click reports `activeTooltipIndex` — the category the
+   * TOOLTIP last settled on, which is updated from `mousemove` on an animation frame. A miss gives
+   * no index and is ignored.
+   */
+  const onChartClick = onCategoryClick
+    ? (state: { activeTooltipIndex?: number | string | null } | null) =>
+        pickCategory(state?.activeTooltipIndex)
+    : undefined;
+  /**
+   * Bar: the click comes from the bar itself, and from a transparent full-height background column
+   * behind it, with recharts' own data index. It does not read
+   * tooltip state, which is stale when no `mousemove` frame ran before the click — a tap, a
+   * scripted click, a background tab (measured in godx-logger: the chart-level index lagged the
+   * pointer by the whole previous hover).
+   */
+  const onBarClick = onCategoryClick
+    ? (_entry: unknown, index: number) => pickCategory(index)
+    : undefined;
+
   const chart = () => {
     if (kind === "line") {
       return (
-        <RLineChart data={data}>
+        <RLineChart data={data} onClick={onChartClick}>
           {axes(true)}
           {series.map((s, i) => (
             <Line
@@ -217,7 +245,7 @@ export function CartesianChart({
     }
     if (kind === "area") {
       return (
-        <RAreaChart data={data}>
+        <RAreaChart data={data} onClick={onChartClick}>
           {axes(true)}
           {series.map((s, i) => (
             <Area
@@ -245,6 +273,12 @@ export function CartesianChart({
             stackId={stacked ? "stack" : undefined}
             fill={chartColor(i, s.color)}
             radius={2}
+            onClick={onBarClick}
+            // A full-height hit column behind the mark, so a 1px bar is as easy to hit as a tall
+            // one. recharts drops zero-height entries before drawing backgrounds, so each series
+            // brings its own: a category is a target when ANY series has a value there. A fully
+            // empty category is not clickable (there is nothing in it to drill into).
+            background={onCategoryClick ? { fill: "transparent" } : undefined}
           />
         ))}
       </RBarChart>
@@ -260,7 +294,7 @@ export function CartesianChart({
       imgSummary={summary.img}
       hasData={hasData}
       height={resolvedHeight}
-      className={className}
+      className={cn(onCategoryClick && "ui-chart-clickable", className)}
       id={id}
       canvasRef={canvasRef}
       canvasExtra={
