@@ -5742,6 +5742,12 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "Lands on `data-language`. No highlighter is bundled — bring your own and tag its output with `data-code-token` (gh#784).",
       },
+      {
+        name: "copyable",
+        type: 'boolean | { text?: string | (() => string | Promise<string>); onCopy?: (event) => void; tooltips?: ReactNode | [ReactNode, ReactNode] | false; icon?: ReactNode | [ReactNode, ReactNode]; format?: "text/plain" | "text/html"; tabIndex?: number }',
+        description:
+          "antd Typography's `copyable`, same name and semantics (gh#1032): a copy button in the block's inline-end corner. `true` copies the block's text content (highlighter spans included); `text` overrides it. The block reserves the button's column, the confirmed state is announced politely, and `onCopy` fires only after the clipboard write succeeds.",
+      },
       { name: "className", type: "string", description: "Extra classes on the `pre`." },
     ],
     usage: [
@@ -5750,6 +5756,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO cap the height of anything that can be large (a 64 KB response body, a console dump) with `maxHeight`; the page keeps its rhythm and the block scrolls.",
       'DON\'T hand-roll `<pre className="max-h-64 overflow-auto rounded bg-muted p-2 whitespace-pre-wrap">`: every one of those values is a copy of a token this component reads.',
       'DON\'T reach for `Text as="code"` for a block: that is inline monospace with no wrapping axis. Use `Text as="code"` for an identifier inside a sentence, CodeBlock for a block.',
+      "DO use `copyable` for a command or snippet the reader will paste (gh#1032). DON'T hand-roll a copy Button next to or over a CodeBlock: `copyable` owns the clipboard call, the confirmed state, the placement and the polite announcement.",
       "DON'T use CodeBlock for a single value in a Descriptions row: `Descriptions.Item mono` owns that (it breaks the value, not the row).",
       "SYNTAX COLOUR (gh#784): CodeBlock does not highlight, but it DOES own the palette. Tag each span from your highlighter with `data-code-token` — the twelve names are Shiki createCssVariablesTheme's verbatim (comment, keyword, string, string-expression, function, constant, parameter, punctuation, link, inserted, deleted, changed, plus the block foreground) — and the package colours them. DON'T put `style={{ color }}` or a palette `className` on the spans: both are visual overrides, and the colour is not the consumer's to choose. Retheme with the `--code-block-token-*-color` knobs, which are role-mirrors, so light and dark follow the theme with no second palette.",
     ],
@@ -5768,7 +5775,8 @@ import { Flex } from "@godxjp/ui/layout";
     example: `import { CodeBlock } from "@godxjp/ui/data-display";
 
 <CodeBlock maxHeight="sm" language="json" aria-label="Response body">{body}</CodeBlock>
-<CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>`,
+<CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>
+<CodeBlock copyable language="bash">pnpm add @godxjp/ui</CodeBlock>`,
     storyPath: "data-display/CodeBlock.stories.tsx",
     rules: [],
   },
@@ -17997,6 +18005,71 @@ const messages: ChatMessageProp[] = [
     ].join("\n"),
     docPath: "data-display/thought-chain.tsx",
     storyPath: "data-display/ThoughtChain.stories.tsx",
+    rules: [2, 6, 23, 44, 45],
+  },
+  {
+    name: "OrgChart",
+    group: "data-display",
+    tagline:
+      "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys).",
+    props: [
+      {
+        name: "data",
+        type: "OrgChartNodeProp[]",
+        description:
+          'The hierarchy: { key, name, title?, avatar?, extra?, variant?: "person" | "agent", children? }. `key` is unique across the chart. `avatar` is usually an <Avatar>; `extra` a Badge or status.',
+      },
+      {
+        name: "renderNode",
+        type: "(node: OrgChartNodeProp) => ReactNode",
+        description:
+          "Replace a box's content. The box, its border, the connectors and the keyboard stay the library's; the narrow Tree form uses it too.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          'Accessible name of the role="tree" (a plain string). Localized default "Organization chart".',
+      },
+      { name: "id", type: "string", description: "DOM id of the root." },
+      { name: "className", type: "string", description: "Root class." },
+    ],
+    usage: [
+      'DO mark AI agents with `variant: "agent"` \u2014 the box is dashed AND its accessible name ends in a localized "AI agent", so the kind is never carried by the stroke alone.',
+      "DO give it the width it has; the breakpoint is a container query, so a chart in a narrow side panel switches to the Tree form on a wide screen too.",
+      "DO retune boxes and lines through the --org-chart-* tokens (node size, gaps, line width/colour, agent border style).",
+      "DON'T wrap it in your own overflow-x scroller \u2014 it owns its scroll region, which only becomes a named tab stop when the chart actually overflows.",
+      "DON'T use it for an outline users expand and collapse \u2014 that is Tree. OrgChart always shows every node.",
+    ],
+    useCases: [
+      "A company or team org chart with people and AI agents side by side.",
+      "Reporting lines on an admin screen, falling back to an indented list in a narrow panel or on a phone.",
+    ],
+    related: [
+      "Tree \u2014 the indented, collapsible outline. OrgChart renders it as its narrow form.",
+      "Avatar \u2014 the mark in each box.",
+      "Badge \u2014 a status in a box's `extra` slot.",
+    ],
+    example: [
+      'import { Avatar, AvatarFallback, Badge, OrgChart } from "@godxjp/ui/data-display";',
+      "",
+      "<OrgChart",
+      '  label="Company org chart"',
+      "  data={[",
+      "    {",
+      '      key: "ceo", name: "Haruka Tanaka", title: "CEO",',
+      '      avatar: <Avatar size="sm"><AvatarFallback>HT</AvatarFallback></Avatar>,',
+      "      children: [",
+      '        { key: "cto", name: "Kenji Watanabe", title: "CTO" },',
+      '        { key: "bot", name: "Review Agent", title: "Code review", variant: "agent",',
+      '          extra: <Badge tone="success">Running</Badge> },',
+      "      ],",
+      "    },",
+      "  ]}",
+      "/>",
+    ].join("\n"),
+    docPath: "data-display/org-chart.tsx",
+    storyPath: "data-display/OrgChart.stories.tsx",
     rules: [2, 6, 23, 44, 45],
   },
   {

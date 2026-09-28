@@ -21,6 +21,13 @@ export type CodeBlockProp = {
   size?: Extract<SizeProp, "xs" | "sm">;
   /** Lands on `data-language`; no highlighter is bundled — see `children` for colouring its output. */
   language?: string;
+  /**
+   * A copy button in the block's inline-end corner — antd `Typography`'s `copyable`, same name and
+   * semantics. `true` copies the block's text content; the object form sets `text`, `onCopy`,
+   * `tooltips` (`[copy, copied]`, or `false`), `icon` (`[copy, copied]`), `format` and `tabIndex`.
+   * The copy is announced politely to assistive technology.
+   */
+  copyable?: boolean | TypographyCopyConfigProp;
   className?: ClassNameProp;
 };
 
@@ -42,6 +49,7 @@ import type {
   DescriptionProp,
   IconProp,
   TitleProp,
+  ExtraProp,
   ColumnDefProp,
   GetRowIdProp,
   GetRowLabelProp,
@@ -82,6 +90,7 @@ import type {
   ValueProp,
   DefaultValueProp,
   OnValueChangeProp,
+  TypographyCopyConfigProp,
 } from "../vocabulary";
 // One tree model, two surfaces: `Tree` (on a page) and `TreeSelect` (in a Popover) take the SAME
 // node and the SAME field remap. Re-declaring them here would be the fork the model exists to
@@ -1231,4 +1240,50 @@ export type MarqueeProp = Omit<
    */
   label?: LabelProp;
   className?: ClassNameProp;
+};
+
+/**
+ * @see OrgChart — who a box stands for. `agent` draws the box with a DASHED border so an AI agent
+ * is told apart from a person at a glance, and adds a localized visually hidden "AI agent" to the
+ * node's accessible name, so the difference is never carried by the stroke alone (WCAG 1.4.1).
+ */
+export type OrgChartNodeVariantProp = "person" | "agent";
+
+/** @see OrgChart — one box of the chart. */
+export type OrgChartNodeProp = {
+  /** Identity of the node. Unique across the whole chart. */
+  key: string;
+  /** The person's or agent's name — the box's first line and the start of its accessible name. */
+  name: React.ReactNode;
+  /** Role / job title, the line under the name. */
+  title?: TitleProp;
+  /** The mark at the box's inline start — usually an `<Avatar>`. Decorative; the name carries identity. */
+  avatar?: React.ReactNode;
+  /** Free slot under the text — a Badge, a status, a count. */
+  extra?: ExtraProp;
+  /** `person` (default) or `agent` (dashed box). */
+  variant?: OrgChartNodeVariantProp;
+  children?: readonly OrgChartNodeProp[];
+};
+
+/**
+ * @see OrgChart — an organization chart: boxes joined by lines, top-down, with a horizontal scroll
+ * region of its own when the chart is wider than its container, and an indented `Tree` of the same
+ * data when the CONTAINER is narrow. It is the WAI-ARIA APG tree view in both forms.
+ */
+export type OrgChartProp = {
+  /** The hierarchy. Usually one root; several roots render side by side. */
+  data: readonly OrgChartNodeProp[];
+  /**
+   * Replace the box's content (avatar · name · title · extra) with your own. The box, its border,
+   * the connectors and the keyboard stay the library's. Used by the narrow `Tree` form too.
+   */
+  renderNode?: (node: OrgChartNodeProp) => React.ReactNode;
+  /**
+   * Accessible name of the chart (the `role="tree"`) — a plain string. A localized default
+   * ("Organization chart") applies when omitted.
+   */
+  label?: Extract<LabelProp, string>;
+  className?: ClassNameProp;
+  id?: IdProp;
 };

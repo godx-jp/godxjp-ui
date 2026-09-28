@@ -119,6 +119,13 @@ export type {
 } from "./chat-bubble";
 export { Tree } from "./tree";
 export type { TreeNodeProp, TreeProp, TreeProps } from "./tree";
+export { OrgChart } from "./org-chart";
+export type {
+  OrgChartNodeProp,
+  OrgChartNodeVariantProp,
+  OrgChartProp,
+  OrgChartProps,
+} from "./org-chart";
 export { Welcome } from "./welcome";
 export type { WelcomeProp, WelcomeProps, WelcomeVariantProp } from "./welcome";
 export { ThoughtChain, ThoughtChainItem } from "./thought-chain";

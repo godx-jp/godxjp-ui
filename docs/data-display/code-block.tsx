@@ -86,6 +86,33 @@ export default function Demo() {
         </Card>
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Copyable (gh#1032)</CardTitle>
+            <CardDescription>
+              antd Typography&apos;s copyable, same name and semantics. The button sits in the
+              inline-end corner, the block reserves that column so no line runs under it, and the
+              copy is announced politely. Pass copyable.text to copy something other than the
+              block&apos;s text content; the button stays in its corner while the block scrolls.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <CodeBlock copyable language="bash" aria-label="Install command">
+                pnpm add @godxjp/ui
+              </CodeBlock>
+              <CodeBlock
+                copyable={{ tooltips: ["Copy response", "Copied"] }}
+                maxHeight="sm"
+                language="json"
+                aria-label="Response body with a copy button"
+              >
+                {responseBody}
+              </CodeBlock>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Syntax colour · the package owns the palette (gh#784)</CardTitle>
             <CardDescription>
               CodeBlock bundles no highlighter. Bring your own, then tag each span with

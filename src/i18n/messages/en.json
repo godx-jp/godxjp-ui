@@ -371,6 +371,11 @@
         "abort": "stopped"
       }
     },
+    "orgChart": {
+      "label": "Organization chart",
+      "scrollRegion": "Scrollable organization chart",
+      "agent": "AI agent"
+    },
     "timeline": {
       "statusDone": "Completed: ",
       "statusCurrent": "Current: ",
@@ -419,6 +424,11 @@
       "edit": "Edit",
       "expand": "Expand",
       "collapse": "Collapse"
+    },
+    "codeBlock": {
+      "copy": "Copy code",
+      "copied": "Copied",
+      "copiedAnnounce": "Code copied to clipboard"
     }
   },
   "navigation": {

@@ -55,11 +55,11 @@ export const FRAME_COVERAGE_POLICY = {
   requiredViewports: [320,375,390,768,1024,1280,1440,1920],
   containerWidths: [240,320,480,640,960],
   totals: {
-    exports: 300,
-    dimensionCells: 4200,
+    exports: 301,
+    dimensionCells: 4214,
     covered: 93,
-    untested: 2306,
-    notApplicable: 1801,
+    untested: 2313,
+    notApplicable: 1808,
     exportsWithoutFrame: 0,
   },
   dimensions: [
@@ -259,6 +259,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"MobileShell","group":"layout","frame":"docs/layout/mobile-shell.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NavList","group":"layout","frame":"docs/layout/nav-list.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"NumberInput","group":"data-entry","frame":"docs/data-entry/number-input.tsx","covered":["sizes","variants"],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","tones"]},
+  {"name":"OrgChart","group":"data-display","frame":"docs/data-display/org-chart.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"OrgSwitcher","group":"layout","frame":"docs/layout/org-switcher.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","states"],"notApplicable":["density","shapes","sizes","tones","variants"]},
   {"name":"PageContainer","group":"layout","frame":"docs/layout/page-container.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},
   {"name":"Pagination","group":"navigation","frame":"docs/navigation/pagination.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","ownership","reducedMotion","responsive","rtl","sizes","states"],"notApplicable":["density","shapes","tones","variants"]},

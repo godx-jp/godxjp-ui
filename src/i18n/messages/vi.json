@@ -365,6 +365,11 @@
         "abort": "đã dừng"
       }
     },
+    "orgChart": {
+      "label": "Sơ đồ tổ chức",
+      "scrollRegion": "Sơ đồ tổ chức có thể cuộn",
+      "agent": "Tác tử AI"
+    },
     "timeline": {
       "statusDone": "Đã xong: ",
       "statusCurrent": "Hiện tại: ",
@@ -413,6 +418,11 @@
       "edit": "Sửa",
       "expand": "Mở rộng",
       "collapse": "Thu gọn"
+    },
+    "codeBlock": {
+      "copy": "Sao chép mã",
+      "copied": "Đã sao chép",
+      "copiedAnnounce": "Đã sao chép mã vào bộ nhớ tạm"
     }
   },
   "navigation": {

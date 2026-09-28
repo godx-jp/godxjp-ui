@@ -887,6 +887,11 @@
     "tagline": "The assistant's reasoning, step by step (Ant Design X ThoughtChain): an ORDERED list of steps, each with an ordinal or a glyph, a status, and a body it can collapse — where Ant X's own step is a <div onClick> with no role and no aria-expanded."
   },
   {
+    "group": "data-display",
+    "name": "OrgChart",
+    "tagline": "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys)."
+  },
+  {
     "group": "data-entry",
     "name": "Attachments",
     "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`."

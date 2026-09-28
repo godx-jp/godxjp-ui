@@ -364,6 +364,11 @@
         "abort": "中断"
       }
     },
+    "orgChart": {
+      "label": "組織図",
+      "scrollRegion": "スクロールできる組織図",
+      "agent": "AIエージェント"
+    },
     "timeline": {
       "statusDone": "完了: ",
       "statusCurrent": "現在: ",
@@ -412,6 +417,11 @@
       "edit": "編集",
       "expand": "展開",
       "collapse": "折りたたむ"
+    },
+    "codeBlock": {
+      "copy": "コードをコピー",
+      "copied": "コピーしました",
+      "copiedAnnounce": "コードをクリップボードにコピーしました"
     }
   },
   "navigation": {
