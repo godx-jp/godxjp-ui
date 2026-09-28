@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.3.0] - 2026-09-28
+
 ### ✨ `AuthExpiryProvider` — an expired session is handled centrally, never painted as a page error (gh#1022)
 
 MINOR. A 401 used to make `DataState` paint a full-width **destructive** alert
