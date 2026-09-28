@@ -6,16 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### 🐛 `TopbarItem` keeps a block floor outside a Topbar — it no longer collapses to its glyph (gh#1010)
-
-PATCH. `.ui-topbar-item` had an inline floor (`min-width: var(--topbar-item-min-width)`) but its height
-came only from `align-self: stretch`. Inside a `Topbar` the cell stretches to the bar, so nothing
-showed. Placed anywhere else it shrank to the glyph: measured **36 × 16px** for the GoDX Dock's
-notification bell, which axe reports as WCAG 2.2 `target-size` (2.5.8) on every viewport of
-godx-jp/id's hosted quality gate. The cell now also has `min-block-size: var(--topbar-item-min-width)`,
-the same `--control-height` measure. It never binds inside a Topbar, so nothing moves there. A geometry
-test pins both floors.
-
 ### ✨ `Text break="anywhere"` — a machine identifier can split to fit a table cell (gh#927)
 
 MINOR. `Text` gains a `break` axis (`"normal" | "anywhere"`, type `TextBreakProp`), separate from
@@ -32,6 +22,18 @@ sideways.** A real-engine regression pins all three numbers.
 New consumer audit rule `no-hand-rolled-break-anywhere` (warn) flags `[overflow-wrap:anywhere]` and
 `wrap-anywhere` in a class expression and points to the prop. The `Text` catalog entry now names
 `break="anywhere"` as the prop for an email, code or id in a table cell.
+
+## [31.0.4] - 2026-09-28
+
+### 🐛 `TopbarItem` keeps a block floor outside a Topbar — it no longer collapses to its glyph (gh#1010)
+
+PATCH. `.ui-topbar-item` had an inline floor (`min-width: var(--topbar-item-min-width)`) but its height
+came only from `align-self: stretch`. Inside a `Topbar` the cell stretches to the bar, so nothing
+showed. Placed anywhere else it shrank to the glyph: measured **36 × 16px** for the GoDX Dock's
+notification bell, which axe reports as WCAG 2.2 `target-size` (2.5.8) on every viewport of
+godx-jp/id's hosted quality gate. The cell now also has `min-block-size: var(--topbar-item-min-width)`,
+the same `--control-height` measure. It never binds inside a Topbar, so nothing moves there. A geometry
+test pins both floors.
 
 ## [31.0.3] - 2026-09-27
 
