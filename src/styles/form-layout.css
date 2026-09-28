@@ -106,6 +106,10 @@
     inline-size: 100%;
     /* Never stretch to a taller grid-row sibling (e.g. a field carrying a helper/error). */
     align-self: start;
+    /* The two private knobs of the horizontal label/control alignment (gh#1024), reset on EVERY
+     * field so a field nested inside another's control never inherits its parent's values. */
+    --form-field-control-band: initial;
+    --form-field-first-line: initial;
   }
 
   /* Inline layout is intentionally compact (Ant: layout="inline"): the field hugs its content so a
@@ -134,6 +138,57 @@
      * horizontal field instead of sitting high. */
     min-height: var(--control-height);
     align-content: center;
+    /* gh#1024 — in a HORIZONTAL field the control's first row is a control-height band and the
+     * control is centred in THAT row, not in the whole column. `min-height` + `align-content` above
+     * centre the column as a block, which only works while the column is the control alone: a
+     * Switch with a helper under it made the column taller than the band, the centring stopped
+     * doing anything, and the switch sat 5px above the label (measured in godx-mailer, 672 vs 677).
+     * The band is unset outside the horizontal layout, so `minmax(auto, auto)` changes nothing
+     * there. */
+    grid-template-rows: minmax(var(--form-field-control-band, auto), auto);
+    align-items: center;
+  }
+
+  /* A helper placed BEFORE the control is the first row; it keeps its own height. */
+  .ui-form-field-control:has(> .ui-form-field-note:first-child) {
+    grid-template-rows: none;
+  }
+
+  /* gh#1024 — a vertical choice list (RadioGroup / CheckboxGroup) or a choice with a description is
+   * taller than the band, so centring it would put its FIRST option at the top of the band and the
+   * field label 5px below it (measured: label 241, first option 236). Its first line box — one
+   * `.ui-choice-control` cell, the gh#709 geometry — is centred on the band instead, which is where
+   * the label's line sits. Outside the horizontal layout the band is unset and the margin is 0. */
+  .ui-form-field-control
+    > fieldset
+    > :is(.ui-choice-group[data-orientation="vertical"], .ui-choice-field) {
+    align-self: start;
+    margin-block-start: max(
+      0px,
+      calc(
+        (
+            var(--form-field-control-band, 0px) - var(--font-size-base) *
+              var(--control-label-line-height)
+          ) /
+          2
+      )
+    );
+  }
+
+  /* gh#1024 — a Textarea's first line is not centred in the band: it sits under the box's border
+   * and block padding. The label moves to it instead (the textarea cannot move — its box top is
+   * the row top): the label row is centred on `--form-field-first-line`, which for a textarea is
+   * border + padding + half a line. Half a line is the LABEL's `lh`, equal to the textarea's while
+   * the two share the font size (both 14px by default); was 5.3px low without this. */
+  .ui-form-field:has(
+    > .ui-form-field-control
+      > fieldset
+      > :is(.ui-control-multiline, [data-slot="textarea-affix-wrapper"])
+  ) {
+    --form-field-first-line: calc(
+      var(--control-border-width, var(--stroke-hairline)) + var(--control-multiline-padding-block) +
+        0.5lh
+    );
   }
 
   /* Let controls (and helper/error) shrink within the cell instead of forcing the column to their
@@ -151,6 +206,7 @@
     ) {
     grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
     align-items: start;
+    --form-field-control-band: var(--control-height);
     column-gap: var(--form-label-gap);
     row-gap: var(--space-stack-xs);
   }
@@ -158,7 +214,7 @@
    * under the label instead of squeezing it and spilling into the control column. */
   .ui-form-field[data-collapse-below="false"]:is([data-layout="horizontal"], [data-layout="inline"])
     > .ui-form-field-label {
-    min-block-size: var(--control-height);
+    min-block-size: calc(2 * var(--form-field-first-line, var(--control-height) / 2));
     flex-wrap: wrap;
   }
   .ui-form-field[data-collapse-below="false"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -188,12 +244,13 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
+      --form-field-control-band: var(--control-height);
       column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="sm"]:is([data-layout="horizontal"], [data-layout="inline"])
       > .ui-form-field-label {
-      min-block-size: var(--control-height);
+      min-block-size: calc(2 * var(--form-field-first-line, var(--control-height) / 2));
       flex-wrap: wrap;
     }
     .ui-form-field[data-collapse-below="sm"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -222,12 +279,13 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
+      --form-field-control-band: var(--control-height);
       column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="md"]:is([data-layout="horizontal"], [data-layout="inline"])
       > .ui-form-field-label {
-      min-block-size: var(--control-height);
+      min-block-size: calc(2 * var(--form-field-first-line, var(--control-height) / 2));
       flex-wrap: wrap;
     }
     .ui-form-field[data-collapse-below="md"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -256,12 +314,13 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
+      --form-field-control-band: var(--control-height);
       column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="lg"]:is([data-layout="horizontal"], [data-layout="inline"])
       > .ui-form-field-label {
-      min-block-size: var(--control-height);
+      min-block-size: calc(2 * var(--form-field-first-line, var(--control-height) / 2));
       flex-wrap: wrap;
     }
     .ui-form-field[data-collapse-below="lg"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -290,12 +349,13 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
+      --form-field-control-band: var(--control-height);
       column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="xl"]:is([data-layout="horizontal"], [data-layout="inline"])
       > .ui-form-field-label {
-      min-block-size: var(--control-height);
+      min-block-size: calc(2 * var(--form-field-first-line, var(--control-height) / 2));
       flex-wrap: wrap;
     }
     .ui-form-field[data-collapse-below="xl"]:is([data-layout="horizontal"], [data-layout="inline"])
