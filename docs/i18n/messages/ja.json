@@ -1438,5 +1438,11 @@
       "sample": "サンプル",
       "date": "2026年9月 · 予定日はデモ用"
     }
+  },
+  "authExpiryDocs": {
+    "membersTitle": "メンバー",
+    "nameColumn": "氏名",
+    "inviteTitle": "招待を送信",
+    "send": "送信"
   }
 }

@@ -12,6 +12,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { SkeletonTable } from "@godxjp/ui/feedback";
 import { Button, Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AlertMutationFeedback, AuthExpiryProvider, DataState } from "@godxjp/ui/query";
 
@@ -28,14 +29,14 @@ const queryClient = new QueryClient({
 
 type Member = { id: string; name: string };
 
-const columns: ColumnDef<Member>[] = [
-  { key: "id", header: "ID" },
-  { key: "name", header: "氏名" },
-];
-
 const expired = () => Object.assign(new Error("Access token expired"), { status: 401 });
 
 function MembersCard() {
+  const { t } = useTranslation();
+  const columns: ColumnDef<Member>[] = [
+    { key: "id", header: "ID" },
+    { key: "name", header: t("authExpiryDocs.nameColumn") },
+  ];
   const query = useQuery<Member[]>({
     queryKey: ["auth-expiry-members"],
     queryFn: async () => {
@@ -45,7 +46,7 @@ function MembersCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle level={2}>メンバー</CardTitle>
+        <CardTitle level={2}>{t("authExpiryDocs.membersTitle")}</CardTitle>
         <CardDescription>A 401 keeps the skeleton and announces the redirect.</CardDescription>
       </CardHeader>
       <CardContent flush>
@@ -58,6 +59,7 @@ function MembersCard() {
 }
 
 function InviteCard() {
+  const { t } = useTranslation();
   const mutation = useMutation({
     mutationFn: async () => {
       throw expired();
@@ -66,12 +68,12 @@ function InviteCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle level={2}>招待を送信</CardTitle>
+        <CardTitle level={2}>{t("authExpiryDocs.inviteTitle")}</CardTitle>
         <CardDescription>A 401 on submit shows a muted status line, not an alert.</CardDescription>
       </CardHeader>
       <CardContent>
         <Flex direction="col" gap="md" align="start">
-          <Button onClick={() => mutation.mutate()}>送信</Button>
+          <Button onClick={() => mutation.mutate()}>{t("authExpiryDocs.send")}</Button>
           <AlertMutationFeedback mutation={mutation} />
         </Flex>
       </CardContent>
