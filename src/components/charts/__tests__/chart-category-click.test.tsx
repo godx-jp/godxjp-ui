@@ -10,16 +10,22 @@ import { render } from "@testing-library/react";
  * category is ignored. The recharts chart roots are replaced by recorders for that reason only.
  */
 const clicks: Record<string, ((state: unknown) => void) | undefined> = {};
+const barProps: Array<{ onClick?: (entry: unknown, index: number) => void; background?: unknown }> =
+  [];
 vi.mock("../recharts-peer", async (importOriginal) => {
   const real = await importOriginal<typeof import("../recharts-peer")>();
   const recorder = (name: string) =>
-    function Recorder(props: { onClick?: (state: unknown) => void }) {
+    function Recorder(props: { onClick?: (state: unknown) => void; children?: React.ReactNode }) {
       clicks[name] = props.onClick;
-      return null;
+      return <>{props.children}</>;
     };
   return {
     ...real,
     ResponsiveContainer: ({ children }: { children: React.ReactNode }) => children,
+    Bar: (props: (typeof barProps)[number]) => {
+      barProps.push(props);
+      return null;
+    },
     BarChart: recorder("bar"),
     LineChart: recorder("line"),
     AreaChart: recorder("area"),
@@ -37,12 +43,13 @@ const data = [
 ];
 const series = [{ dataKey: "n", label: "N" }];
 
+const lastBar = () => barProps[barProps.length - 1];
+
 describe("cartesian charts · onCategoryClick", () => {
   it.each([
-    ["bar", BarChart],
     ["line", LineChart],
     ["area", AreaChart],
-  ] as const)("%s: a click on category i reports data[i] and i", (name, Chart) => {
+  ] as const)("%s: a chart-level click on category i reports data[i] and i", (name, Chart) => {
     const onCategoryClick = vi.fn();
     const { container } = render(
       <Chart
@@ -58,10 +65,10 @@ describe("cartesian charts · onCategoryClick", () => {
     expect(container.querySelector(".ui-chart-clickable")).not.toBeNull();
   });
 
-  it("ignores a click outside every category", () => {
+  it("line: a click outside every category is ignored (Number(null) is 0)", () => {
     const onCategoryClick = vi.fn();
     render(
-      <BarChart
+      <LineChart
         label="c"
         data={data}
         series={series}
@@ -69,17 +76,43 @@ describe("cartesian charts · onCategoryClick", () => {
         onCategoryClick={onCategoryClick}
       />,
     );
-    clicks.bar?.({ activeTooltipIndex: null });
-    clicks.bar?.(null);
-    clicks.bar?.({ activeTooltipIndex: 9 });
+    clicks.line?.({ activeTooltipIndex: null });
+    clicks.line?.(null);
+    clicks.line?.({ activeTooltipIndex: 9 });
     expect(onCategoryClick).not.toHaveBeenCalled();
   });
 
+  it("bar: the click comes from the bar with its own index, never from tooltip state", () => {
+    const onCategoryClick = vi.fn();
+    barProps.length = 0;
+    const { container } = render(
+      <BarChart
+        label="c"
+        data={data}
+        series={[series[0], { dataKey: "n", label: "M" }]}
+        categoryKey="at"
+        stacked
+        onCategoryClick={onCategoryClick}
+      />,
+    );
+    expect(clicks.bar).toBeUndefined();
+    // Every series draws a full-height hit column (recharts skips zero-height entries per series).
+    expect(barProps.map((b) => b.background)).toEqual([
+      { fill: "transparent" },
+      { fill: "transparent" },
+    ]);
+    barProps[1].onClick?.({}, 2);
+    expect(onCategoryClick).toHaveBeenCalledWith(data[2], 2);
+    expect(container.querySelector(".ui-chart-clickable")).not.toBeNull();
+  });
+
   it("without the prop the chart is not clickable", () => {
+    barProps.length = 0;
     const { container } = render(
       <BarChart label="c" data={data} series={series} categoryKey="at" />,
     );
-    expect(clicks.bar).toBeUndefined();
+    expect(lastBar().onClick).toBeUndefined();
+    expect(lastBar().background).toBeUndefined();
     expect(container.querySelector(".ui-chart-clickable")).toBeNull();
   });
 });

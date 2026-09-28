@@ -8,14 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Cartesian charts take `onCategoryClick` — drill down or zoom to one bucket
 
-MINOR. `BarChart`, `LineChart` and `AreaChart` gain `onCategoryClick(datum, index)`. The whole
-category column is the target, the same hit area as the tooltip, so a zero-height bar in an idle
-bucket can still be clicked. A click outside every category is ignored: recharts reports it as
-`activeTooltipIndex: null`, and `Number(null)` would otherwise have read as category 0 (caught by the
-new test). With the prop set, the plot gets a pointer cursor (`.ui-chart-clickable`). The prop
-documents that it is a pointer shortcut: the plot is `role="img"`, so a screen must also offer the
-action through a real control. First consumer: godx-logger's log histogram, which zooms the period
-to the clicked bucket, CloudWatch/Grafana style.
+MINOR. `BarChart`, `LineChart` and `AreaChart` gain `onCategoryClick(datum, index)`.
+
+- **Bar:** the click comes from the bar and from a transparent full-height column behind it, with
+  recharts' own data index. A 1px bar is as easy to hit as a tall one. A category with no value in
+  any series is not a target, because recharts drops zero-height entries.
+- **Line / area:** the chart-level click reports `activeTooltipIndex`. A miss (`null`) is ignored;
+  `Number(null)` would otherwise have read as category 0, and the new test caught that.
+- **Why bars do not use the chart-level click:** that index is the tooltip's last position, updated
+  on an animation frame after `mousemove`. Measured in godx-logger, a click with no frame in between
+  zoomed to the bucket of the previous hover. This happens on a tap, a scripted click, or in a
+  background tab.
+
+With the prop set, the plot shows a pointer cursor (`.ui-chart-clickable`). The prop is documented as
+a pointer shortcut: the plot is `role="img"`, so a screen must also offer the action through a real
+control. First consumer: godx-logger's log histogram, which zooms the period to the clicked bucket,
+CloudWatch/Grafana style.
 
 ### ✨ `Text break="anywhere"` — a machine identifier can split to fit a table cell (gh#927)
 
