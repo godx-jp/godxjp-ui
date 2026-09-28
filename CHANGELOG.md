@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.5.0] - 2026-09-29
+
+### ✨ CodeBlock: `copyable` (#1032)
+
+MINOR. antd Typography's `copyable`, with the same name, the same semantics and the same copy code:
+- A copy button sits in the block's inline-end corner, and the block reserves that column so no
+  wrapped line runs under it. Measured: 0 of 8 lines overlapped, in LTR and RTL.
+- It copies `copyable.text`, or the block's own text content, highlighter spans included.
+- It announces the copy politely and fires `onCopy` only after the clipboard write succeeds.
+- New strings `ui.codeBlock.{copy,copied,copiedAnnounce}` in en/ja/vi.
+- A block without `copyable` renders exactly as before.
+
+### ✨ OrgChart — an organization chart of people and AI agents (#1034)
+
+MINOR. A new component in data-display: boxes joined by CSS lines, top-down, with avatar, name,
+title, an `extra` slot and an optional `renderNode`.
+- **Agents:** `variant: "agent"` draws a dashed box and adds a localized "AI agent" to the node's
+  accessible name.
+- **Wide charts:** when wider than its container, the chart scrolls in its own named region. That
+  region becomes a tab stop only when it actually overflows.
+- **Narrow containers:** under a 40rem container, the same data renders as a `Tree`.
+- **Keyboard:** the APG tree-view pattern with arrow keys, RTL-aware.
+- Measured in Chromium: connectors meet box centres (±1px) in LTR and RTL; axe finds nothing on
+  the frame.
+- New `--org-chart-*` tokens and new i18n keys `dataDisplay.orgChart.*` in en/ja/vi.
+
+
 ## [31.4.0] - 2026-09-28
 
 ### 🐛 PageContainer: header actions keep one row; the title wraps first (#1025)

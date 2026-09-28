@@ -6119,6 +6119,96 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--org-chart-node-inline-size",
+    "value": "13rem",
+    "description": "The box. A fixed inline size, so siblings line up in even columns and the connector bus has a predictable pitch; long names wrap inside it instead of widening one box."
+  },
+  {
+    "name": "--org-chart-node-padding-block",
+    "value": "var(--space-3)",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-node-padding-inline",
+    "value": "var(--space-3)",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-node-gap",
+    "value": "var(--space-3)",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-node-text-gap",
+    "value": "var(--space-1)",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-node-radius",
+    "value": "initial",
+    "description": "gh#888 — φ tier freezes at :root; default = var(--radius)"
+  },
+  {
+    "name": "--org-chart-node-border-width",
+    "value": "initial",
+    "description": "default = var(--stroke-hairline)"
+  },
+  {
+    "name": "--org-chart-node-border-color",
+    "value": "initial",
+    "description": "default = hsl(var(--border))"
+  },
+  {
+    "name": "--org-chart-node-background",
+    "value": "initial",
+    "description": "default = hsl(var(--card))"
+  },
+  {
+    "name": "--org-chart-node-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--card-foreground))"
+  },
+  {
+    "name": "--org-chart-node-title-color",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--org-chart-node-font-size",
+    "value": "var(--font-size-sm, var(--font-size-base))",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-agent-border-style",
+    "value": "dashed",
+    "description": "The `agent` variant's stroke style. A dashed edge, not a second colour — the difference must survive greyscale, and the sr-only \"AI agent\" carries it for a screen reader."
+  },
+  {
+    "name": "--org-chart-level-gap",
+    "value": "var(--space-8)",
+    "description": "Spacing of the tree itself: the vertical run between a parent and its children's row, and the gutter between two siblings. The connector is drawn inside these gaps, half above the bus and half below it."
+  },
+  {
+    "name": "--org-chart-sibling-gap",
+    "value": "var(--space-4)",
+    "description": "ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`). Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a theme that retunes the edge colour retunes both kinds at once. ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md · \"Role-mirror knobs MUST be `initial`\"), so a scoped `[data-tenant]` / `.dark` override reaches them instead of freezing at `:root`."
+  },
+  {
+    "name": "--org-chart-line-width",
+    "value": "initial",
+    "description": "The connector. default = var(--stroke-hairline)"
+  },
+  {
+    "name": "--org-chart-line-color",
+    "value": "initial",
+    "description": "default = hsl(var(--border))"
+  },
+  {
+    "name": "--org-chart-padding",
+    "value": "var(--space-2)",
+    "description": "Room around the chart inside its scroll region, so an edge box's focus ring is not clipped."
+  },
+  {
     "name": "--scroll-area-scrollbar-width",
     "value": "thin",
     "description": "`thin` reproduces the old 10px rail closely on the platforms that draw a classic scrollbar; `auto` gives the full-width platform bar, which is what a touch/coarse-pointer console wants. Only `auto | thin | none` are valid — a length is not (that is the standard property's whole bargain, and the reason `--scroll-area-bar-size` could not survive as a rem)."

@@ -4917,6 +4917,14 @@
           "declaredIn": ["src/props/components/data-display.prop.ts"]
         },
         {
+          "name": "copyable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | TypographyCopyConfigProp | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
           "name": "language",
           "origin": "owned",
           "required": false,
@@ -10843,6 +10851,51 @@
           "type": "ControlVariantProp | undefined",
           "values": ["outlined", "filled", "borderless"],
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        }
+      ]
+    },
+    "OrgChart": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "data",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly OrgChartNodeProp[]",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
+        },
+        {
+          "name": "renderNode",
+          "origin": "owned",
+          "required": false,
+          "type": "((node: OrgChartNodeProp) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-display.prop.ts"]
         }
       ]
     },

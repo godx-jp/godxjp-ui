@@ -349,6 +349,9 @@
     },
     "CodeBlock": {
       "layers": [
+        "control.css",
+        "text-layout.css",
+        "dialog-layout.css",
         "data-display-layout.css"
       ]
     },
@@ -671,6 +674,16 @@
     "NumberInput": {
       "layers": [
         "control.css"
+      ]
+    },
+    "OrgChart": {
+      "layers": [
+        "layout.css",
+        "control.css",
+        "table-layout.css",
+        "alert-layout.css",
+        "data-display-layout.css",
+        "form-layout.css"
       ]
     },
     "OrgSwitcher": {
