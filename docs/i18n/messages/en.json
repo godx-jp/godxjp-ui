@@ -1444,5 +1444,11 @@
       "sample": "Sample",
       "date": "September 2026 · demo date"
     }
+  },
+  "authExpiryDocs": {
+    "membersTitle": "Members",
+    "nameColumn": "Name",
+    "inviteTitle": "Send invitation",
+    "send": "Send"
   }
 }

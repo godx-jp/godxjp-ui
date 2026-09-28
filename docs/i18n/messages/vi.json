@@ -1438,5 +1438,11 @@
       "sample": "Mẫu",
       "date": "Tháng 9/2026 · ngày dùng cho demo"
     }
+  },
+  "authExpiryDocs": {
+    "membersTitle": "Thành viên",
+    "nameColumn": "Họ tên",
+    "inviteTitle": "Gửi lời mời",
+    "send": "Gửi"
   }
 }
