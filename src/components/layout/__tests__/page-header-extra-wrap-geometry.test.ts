@@ -72,13 +72,16 @@ function desktopRule(selector: string): string {
 }
 
 describe("PageContainer header extra · desktop wrap geometry (gh#300)", () => {
-  it("lets the action group shrink at >=640px, so its own wrap can engage", () => {
-    // Browser: at 768/13 buttons the frozen box reported 842px on one row with 2 buttons past the
-    // viewport edge; shrinkable it reported 471px on two rows with nothing outside.
+  it("caps the action group at >=640px, so its own wrap can engage", () => {
+    // Browser: at 768/13 buttons the frozen, UNCAPPED box reported 842px on one row with 2 buttons
+    // past the viewport edge. gh#300 fixed that with `flex-shrink: 1`; gh#1025 showed the cost —
+    // the shrink was shared with the heading, so a 344px set that fits lost ~27px and wrapped.
+    // The box now keeps its content width (`flex-shrink: 0`) up to a percentage cap: 13 buttons
+    // at 768 → 432px on three rows, <h1> 272px, nothing outside (page-header-actions-one-row-1025).
     const desktop = desktopRule(".ui-page-header-extra");
-    expect(desktop).toMatch(/flex-shrink:\s*1;/);
-    // The exact regression: a non-shrinkable box has no narrower width to wrap into.
-    expect(desktop).not.toMatch(/flex-shrink:\s*0;/);
+    expect(desktop).toMatch(/flex-shrink:\s*0;/);
+    // The exact gh#300 regression is an uncapped non-shrinkable box: the cap must be a percentage.
+    expect(desktop).toMatch(/max-inline-size:\s*\d+%;/);
   });
 
   it("stops shrinking at what its content can present, whatever shape that child is (gh#813)", () => {
