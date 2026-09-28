@@ -60,7 +60,7 @@ export const FRAME_COVERAGE_POLICY = {
     covered: 93,
     untested: 2306,
     notApplicable: 1801,
-    exportsWithoutFrame: 1,
+    exportsWithoutFrame: 0,
   },
   dimensions: [
     { id: "variants", title: "Variants", axis: "visual" },
@@ -133,7 +133,7 @@ export const FRAME_COVERAGE: FrameCoverageEntry[] = [
   {"name":"Attachments","group":"data-entry","frame":"docs/data-entry/attachments.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AuthAccountSummary","group":"layout","frame":"docs/layout/auth-account-summary.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl","states"],"notApplicable":["density","ownership","shapes","sizes","tones","variants"]},
   {"name":"AuthDivider","group":"layout","frame":"docs/layout/auth-divider.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
-  {"name":"AuthExpiryProvider","group":"query","frame":null,"covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
+  {"name":"AuthExpiryProvider","group":"query","frame":"docs/feedback/auth-expiry.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AuthFooter","group":"layout","frame":"docs/layout/auth-footer.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AuthIdentity","group":"layout","frame":"docs/layout/auth-identity.tsx","covered":[],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["density","ownership","shapes","sizes","states","tones","variants"]},
   {"name":"AuthShell","group":"layout","frame":"docs/layout/auth-shell.tsx","covered":["density","variants"],"untested":["accessibleName","async","contentStress","keyboard","reducedMotion","responsive","rtl"],"notApplicable":["ownership","shapes","sizes","states","tones"]},

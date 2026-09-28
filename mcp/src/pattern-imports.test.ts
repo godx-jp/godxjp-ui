@@ -85,7 +85,7 @@ describe("the async data-state pattern covers the full state taxonomy", () => {
     "prerequisite",
     "skeleton",
     "empty",
-    "onAuthError",
+    "AuthExpiryProvider",
     "classifyQueryError",
     "transient",
     "forbidden",
