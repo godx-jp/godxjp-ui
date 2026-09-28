@@ -291,7 +291,11 @@ export type StepsSeparatorProp = "chevron" | "arrow";
 export type TabItemProp = {
   value: string;
   label: React.ReactNode;
-  content: React.ReactNode;
+  /**
+   * The panel body. Optional because a strip-only `Tabs` (`controls`, gh#1021) renders no panel
+   * at all — its content lives in the consumer's own region.
+   */
+  content?: React.ReactNode;
   disabled?: boolean;
   /** Leading glyph inside the trigger (Ant Design `Tab.icon`). */
   icon?: React.ReactNode;
@@ -567,6 +571,20 @@ export type TabsProp = {
    */
   /** Ant Design `onTabScroll`, on the logical axis. @see TabsOnScrollProp */
   onTabScroll?: TabsOnScrollProp;
+  /**
+   * STRIP-ONLY MODE (gh#1021) — the `id` of the element OUTSIDE this `Tabs` that the strip
+   * drives: a status strip (未対応 / 対応中 / 完了) over a MasterDetail, a saved-view ribbon over a
+   * grid. With it set the `items` API renders the tablist ONLY — no `tabpanel`, empty or
+   * otherwise — and the selected tab's `aria-controls` points at this id, so the WAI-ARIA APG
+   * tab → controlled-region relationship stays real. The consumer's region is never mounted by
+   * the strip, so switching tabs cannot remount it (an unsent reply draft survives).
+   *
+   * Give the region an accessible name (`aria-label`/`aria-labelledby`, e.g. a `<section>`). In
+   * the compound form it applies to every trigger with no `TabsContent` declared for its value; a
+   * declared panel always wins. A pure FILTER with no region to point at is a `Segmented`
+   * (`radiogroup`), not a strip-only `Tabs`.
+   */
+  controls?: IdProp;
   className?: ClassNameProp;
   listClassName?: ClassNameProp;
   contentClassName?: ClassNameProp;

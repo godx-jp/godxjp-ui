@@ -6,6 +6,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.4.0] - 2026-09-28
+
+### 🐛 PageContainer: header actions keep one row; the title wraps first (#1025)
+
+PATCH. At ≥640px, `.ui-page-header-extra` no longer shrinks in proportion to the title. It keeps
+its width up to 60% of the header row, and the title wraps into the rest.
+- Measured at 1142px with a sidebar: 3 buttons (344px) went from 2 rows (action box 230px) to 1
+  row (344px).
+- The gh#300 guarantee (the title keeps ≥40%) is unchanged.
+- Mobile layout is unchanged.
+- A Chromium regression test covers four cases.
+### 🐛 Segmented: count pills follow the Tabs convention (#1019)
+
+PATCH. A resting count pill is quiet: `--background` / `--muted-foreground`, the same as the
+Tabs card-tab pill. Only the selected segment's pill uses `--primary`.
+- Before: every pill, including zero counts, was solid primary (measured rgb(122,0,255) on all 4).
+- Text contrast is at least 5.65:1 at rest and 6.31:1 when selected, in light and dark.
+- New `initial` knobs: `--segmented-count-selected-background`, `-selected-background-alpha`,
+  `-selected-color` and `--segmented-count-forced-outline-width`.
+### 🎨 Follow-ups in the same batch
+
+- `--page-header-extra-max-measure` (`initial`, default 60% at the call site) is the PageHeader
+  action cap from #1025, now a theme knob instead of a literal.
+- The doc themes (flat, neubrutalism, glassmorphism) mirror their `--tabs-count-active-*` values
+  into the new `--segmented-count-selected-*` knobs, so a themed Segmented count matches its Tabs
+  count.
+
+### ✨ Tabs: the tablist gets its name; strip-only `controls` mode; `count` on TabsTrigger (#1020, #1021)
+
+MINOR.
+- **Name (#1020):** `aria-label` / `aria-labelledby` on the Tabs root now name the `role="tablist"`.
+  Before, they sat on a role-less div, which ARIA 1.2 prohibits. Measured on the Tabs preview:
+  named tablists went from 0 to 2.
+- **Strip-only mode (#1021):** the new `controls` prop renders no tabpanel, and the selected tab's
+  `aria-controls` points at the consumer's own region. Content outside the strip is never remounted
+  on a tab switch (a typed draft survives). A declared `TabsContent` still wins.
+  `TabItemProp.content` is now optional.
+- **Count on TabsTrigger (#1021):** `count`, `overflowCount`, `showZero` and `countLabel`, drawn
+  exactly like the items API.
+
+### 🐛 FormField: the label's first line matches the control's first line (#1024); Upload trigger keeps its width (#1023)
+
+PATCH.
+- **Label alignment (#1024):** in horizontal and inline forms, the label now lines up with the
+  control's first line for Textarea, Switch with a helper, and vertical RadioGroup / CheckboxGroup.
+  Measured in Chromium (vi and ja): off by 5.1–5.6px before, 0.4px after. Vertical choice lists sit
+  about 5.5px lower, because the list moved down rather than the label up.
+- **Upload trigger (#1023):** the `variant="button"` and multi-image `picture` trigger keeps its
+  natural width instead of stretching across the control column (576 → 117px and 576 → 91px). The
+  file list still spans the column.
+
+
 ### 🐛 SkeletonTable and SkeletonDetail bars are visible again — they were 0px tall
 
 PATCH. `.ui-skeleton-line`, `-caption` and `-title` took their block-size only when nested inside

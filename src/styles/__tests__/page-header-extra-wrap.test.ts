@@ -60,11 +60,13 @@ describe("PageContainer header — the action group wraps instead of covering th
     expect(depth).toBe(1);
   });
 
-  it("keeps the box shrinkable, which is the half of the fix that already shipped", () => {
+  it("keeps the box capped, which is the half of the fix that already shipped", () => {
     const extra = /@media \(min-width: 640px\)[\s\S]*?\.ui-page-header-extra\s*\{([^}]*)\}/.exec(
       css,
     );
-    expect(extra?.[1]).toMatch(/flex-shrink:\s*1/);
+    // gh#1025: no longer `flex-shrink: 1` (shared shrink wrapped a set that fit); the box keeps
+    // its content width up to a percentage of the row, and only a wider set wraps.
+    expect(extra?.[1]).toMatch(/max-inline-size:\s*(?:var\(--page-header-extra-max-measure,\s*)?\d+%/);
     // …but never past what its content can present. `min-inline-size: 0` was a floor of ZERO, so a
     // child that cannot wrap — a single `<Button>` as a DIRECT child, which this selector's rule
     // never reached — painted 41.8px outside the box, backwards over the title (gh#813). `auto`

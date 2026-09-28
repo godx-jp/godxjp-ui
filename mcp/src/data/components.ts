@@ -9156,6 +9156,12 @@ toast.error("保存に失敗しました");`,
         description: "Active-tab change handler.",
       },
       {
+        name: "controls",
+        type: "IdProp",
+        description:
+          "Strip-only mode (gh#1021): the tabs drive content OUTSIDE the strip. No tabpanel is rendered, and the selected tab's `aria-controls` points at this id, which is the consumer's own region (give it `role=\"region\"` and a name). Content there is never remounted on a tab switch, so a typed draft survives. With the compound form it applies to triggers without a declared `TabsContent` (a declared panel wins). A pure filter with NO region to point at is not a tab strip; use `Segmented`. The root's `aria-label`/`aria-labelledby` name the `role=\"tablist\"` (gh#1020), and a compound `TabsTrigger` takes `count`/`overflowCount`/`showZero`/`countLabel`, drawn exactly like `items[].count`.",
+      },
+      {
         name: "variant",
         type: '"default" | "line" | "card" | "editable-card"',
         defaultValue: '"default"',

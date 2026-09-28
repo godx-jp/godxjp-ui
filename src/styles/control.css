@@ -1686,11 +1686,32 @@
     margin-inline-start: var(--segmented-count-gap);
     border-radius: var(--segmented-count-radius);
     padding-inline: var(--segmented-count-space-inline);
-    background: var(--segmented-count-background, hsl(var(--primary)));
-    color: var(--segmented-count-color, hsl(var(--primary-foreground)));
+    /* RESTING = quiet, the `.ui-tabs-count` convention (gh#1019). Painting every pill primary made
+     * four identical blobs that said nothing about which segment is chosen. The fill is the page
+     * surface, not `--muted`: the track IS `--muted`, so a muted pill measured 1.00:1 and lost its
+     * shape — the same answer Tabs gives a pill on a muted card tab. */
+    background: var(--segmented-count-background, hsl(var(--background)));
+    color: var(--segmented-count-color, hsl(var(--muted-foreground)));
     font-size: var(--segmented-count-font-size);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* SELECTED — only the chosen segment's pill takes the emphasis, as the active tab's does. A
+   * second cue, never the only one: selection is already the slab + its ring (gh#843). */
+  .ui-segmented-item[data-state="checked"] .ui-segmented-count {
+    background: var(
+      --segmented-count-selected-background,
+      hsl(var(--primary) / var(--segmented-count-selected-background-alpha, 100%))
+    );
+    color: var(--segmented-count-selected-color, hsl(var(--primary-foreground)));
+  }
+
+  @media (forced-colors: active) {
+    .ui-segmented-item[data-state="checked"] .ui-segmented-count {
+      outline: var(--segmented-count-forced-outline-width, var(--stroke-hairline)) solid
+        currentColor;
+    }
   }
 
   /* TagInput */

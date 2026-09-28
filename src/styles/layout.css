@@ -1142,10 +1142,20 @@
      * above 720px; the rule above now wraps it at every width, so the floor is free. Re-measured
      * on `/isolate/layout-app-shell` with 4/8/10/13 JA buttons at 768/1024/1280: `<h1>` width and
      * line count, box width, row count and elements outside the viewport are IDENTICAL under `0`
-     * and under `auto`, all twelve. */
+     * and under `auto`, all twelve.
+     *
+     * KEEPS ITS WIDTH UP TO A CAP, THE HEADING YIELDS FIRST (gh#1025). `flex-shrink: 1` shared the
+     * row's deficit with the heading in proportion to their max-content widths, so an action set
+     * that FITS still lost a few px — and a row of buttons that loses 1px wraps. godx-mailer, three
+     * actions of 344px at 1142 + sidebar: box 230px, 2 rows. Now the box is `flex-shrink: 0` and
+     * capped at 60% of the row; the heading (which wraps) takes the rest: box 344px, 1 row. Only a
+     * set wider than the cap wraps, and the <h1> keeps >= 40% of the row — gh#300's 13 buttons at
+     * 768: <h1> 272px (was 228), box 432px on 3 rows, 0 off-screen. `min-inline-size: auto` still
+     * floors the box at its content's min-content (a single wide button never spills). */
     .ui-page-header-extra {
       width: auto;
-      flex-shrink: 1;
+      flex-shrink: 0;
+      max-inline-size: var(--page-header-extra-max-measure, 60%);
       min-inline-size: auto;
       justify-content: flex-end;
     }

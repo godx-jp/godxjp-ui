@@ -128,6 +128,9 @@
   /* Block-end inset of the page footer band; symmetric with its block-start rhythm. */
   --page-footer-pad-block-end: var(--space-stack-md);
   --page-header-divider: none;
+  /* The widest share of the header row the actions (`extra`) keep on ONE row before they wrap
+   * (gh#1025); the title keeps the rest. `initial` — default 60% at the call site. */
+  --page-header-extra-max-measure: initial;
 
   /* PageContainer `toolbar` — the fixed chrome band between the header and the (scrolling) body.
    * ALL THREE knobs are quiet by default (rule #44):

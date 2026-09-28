@@ -367,19 +367,14 @@ const DOT_CLASS: Record<SavedView["dot"], string> = {
   neutral: "bg-muted-foreground",
 };
 
-// TabsTrigger renders a <button>, whose content model is phrasing content only — so the row and
-// the count chip take `as="span"`. Before Flex/Badge had that seam the only valid shape here was a
-// raw `<span className="flex …">`, i.e. utility layout.
-function ViewTrigger({ view, count }: { view: SavedView; count: number }) {
+// TabsTrigger renders a <button>, whose content model is phrasing content only — so the row takes
+// `as="span"`. The count is the trigger's own `count` slot (gh#1021), drawn exactly as the `items`
+// API draws it, rather than a hand-placed Badge.
+function ViewTrigger({ view }: { view: SavedView }) {
   return (
     <Flex as="span" align="center" gap="sm">
       <span aria-hidden="true" className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`} />
       <span>{view.label}</span>
-      <Badge as="span" tone="neutral" shape="pill">
-        <Text as="span" size="2xs" weight="medium" tabular>
-          {count}
-        </Text>
-      </Badge>
     </Flex>
   );
 }
@@ -432,23 +427,30 @@ export default function Demo() {
       }
     >
       <Flex direction="col" gap="md">
-        {/* Saved-view ribbon — controlled Tabs; switching swaps the preset below. */}
-        <Tabs value={view} onValueChange={(v) => setView(v as ViewId)}>
+        {/* Saved-view ribbon — controlled, strip-only Tabs (gh#1021): `controls` points the
+            selected tab at the grid below, which lives outside the Tabs and is never remounted. */}
+        <Tabs
+          aria-label="保存ビュー"
+          controls="attendance-grid"
+          value={view}
+          onValueChange={(v) => setView(v as ViewId)}
+        >
           <TabsList variant="line" className="h-auto w-full flex-wrap justify-start border-b">
             {VIEWS.map((v) => (
               <TabsTrigger
                 key={v.id}
                 value={v.id}
+                count={counts[v.id]}
                 className="rounded-[var(--tabs-trigger-line-radius)] px-[var(--tabs-trigger-line-padding-x)] py-[var(--tabs-trigger-line-padding-y)]"
               >
-                <ViewTrigger view={v} count={counts[v.id]} />
+                <ViewTrigger view={v} />
               </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
 
         {/* The grid — columns + data both come from the active saved view. */}
-        <Card>
+        <Card id="attendance-grid" role="region" aria-label={active.label}>
           <CardContent flush>
             <DataTable
               data={rows}

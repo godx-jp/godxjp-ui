@@ -417,6 +417,15 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /* gh#1023 — the trigger Button of `variant="button"` (and of the multi-image `picture` list) is
+   * a flex item of the variant's `ui-stack-sm` column, whose default `align-items: stretch` made it
+   * as wide as the column: 576px in a `controlWidth="36rem"` form for a two-word button. The
+   * trigger keeps its own width; the file list, its sibling, still spans the column. `start` is
+   * the inline-start edge, so RTL is covered. */
+  .ui-upload-trigger {
+    align-self: start;
+  }
+
   .ui-upload-grid {
     display: flex;
     flex-wrap: wrap;

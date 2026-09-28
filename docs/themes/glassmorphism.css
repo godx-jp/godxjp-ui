@@ -613,7 +613,9 @@
   --conversations-item-active-background-alpha: 18%;
   --conversations-item-active-color: hsl(var(--glass-ink));
   --tabs-count-active-background-alpha: 24%;
+  --segmented-count-selected-background-alpha: 24%;
   --tabs-count-active-color: hsl(var(--glass-ink));
+  --segmented-count-selected-color: hsl(var(--glass-ink));
   --toggle-pressed-count-background-alpha: 26%;
   --toggle-pressed-count-color: hsl(var(--glass-ink));
   --toggle-pressed-border-color-alpha: 45%;

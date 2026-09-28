@@ -235,7 +235,9 @@
   --conversations-item-active-background: hsl(220 20% 90%);
   --conversations-item-active-color: hsl(220 26% 12%);
   --tabs-count-active-background: hsl(220 20% 86%);
+  --segmented-count-selected-background: hsl(220 20% 86%);
   --tabs-count-active-color: hsl(220 26% 12%);
+  --segmented-count-selected-color: hsl(220 26% 12%);
   --toggle-soft-hover-background: hsl(220 16% 90%);
   --toggle-pressed-count-background: hsl(220 20% 84%);
   --toggle-pressed-count-color: hsl(220 26% 12%);
@@ -419,7 +421,9 @@
   --conversations-item-active-background: hsl(220 16% 22%);
   --conversations-item-active-color: hsl(220 20% 94%);
   --tabs-count-active-background: hsl(220 16% 26%);
+  --segmented-count-selected-background: hsl(220 16% 26%);
   --tabs-count-active-color: hsl(220 20% 94%);
+  --segmented-count-selected-color: hsl(220 20% 94%);
   --toggle-soft-hover-background: hsl(220 14% 22%);
   --toggle-pressed-count-background: hsl(220 16% 26%);
   --toggle-pressed-count-color: hsl(220 20% 94%);
