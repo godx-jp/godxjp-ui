@@ -127,6 +127,9 @@
    * everything that is a stronger statement about the row still wins without a fight: the hover and
    * selected fills are utilities (a later layer), a consumer's `rowClassName` utility likewise, and
    * any class rule in this layer outranks it. The tone wash above layers on top of it. */
+  /* A SELECTED row shows the selection fill (`bg-muted/30`) over the stripe on purpose — same
+   * state, same look on odd and even rows (gh#1038; recorded as intentional in
+   * preview/frame-token-wins.baseline.json). */
   :where([data-slot="table"] > tbody > tr:nth-child(even of :not([data-expanded-row]))) {
     background-color: color-mix(
       in srgb,
@@ -277,9 +280,13 @@
   /* UNREAD ROW (gh#1016) — a flush cell hosting an unread `ListRow` (DataTable `columns[].flush`,
    * the selectable mail/notification list). The ListRow paints its unread surface on ITSELF, so
    * in a selectable table the band stopped at the checkbox cell. The row wears the SAME token, so
-   * the band spans the whole table row; the row-level hover / selected fills are utilities (a
-   * later layer) and still win over it. */
-  .ui-table-row:has(> [data-slot="table-cell"][data-flush] > [data-slot="list-row"][data-unread]) {
+   * the band spans the whole table row; the row-level hover fill is a utility (a later layer)
+   * and still wins over it. A SELECTED row shows the selection fill instead: the rule stops at
+   * `[data-state="selected"]` rather than being out-painted there, which the nightly
+   * frame-token-wins sweep reported as an inert token (gh#1038). */
+  .ui-table-row:not([data-state="selected"]):has(
+      > [data-slot="table-cell"][data-flush] > [data-slot="list-row"][data-unread]
+    ) {
     background-color: var(--list-row-unread-background, hsl(var(--muted)));
   }
 
