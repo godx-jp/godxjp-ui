@@ -111,5 +111,7 @@ export type {
   AlertQueryErrorProp,
   AlertQueryErrorProps,
 } from "./alert";
+export { AuthExpiryProvider } from "./auth-expiry";
+export type { AuthExpiryProviderProp, AuthExpiryProviderProps } from "./auth-expiry";
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";

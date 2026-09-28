@@ -53,6 +53,11 @@
     color: hsl(var(--foreground));
   }
 
+  /* AlertQueryError's expired-session fallback (gh#1022): capped, never a full-bleed panel. */
+  [data-slot="alert"][data-query-category="auth"] {
+    max-inline-size: var(--query-auth-alert-max-inline-size);
+  }
+
   /* variant="banner" (the <Banner> export) — the full-bleed page/shell attention strip. */
   [data-slot="alert"][data-variant="banner"] {
     border-radius: var(--banner-radius);

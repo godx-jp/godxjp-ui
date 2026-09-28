@@ -622,6 +622,9 @@
       "action": {
         "signIn": "再度サインイン"
       }
+    },
+    "authExpiry": {
+      "redirecting": "セッションの有効期限が切れました。サインイン画面へ移動しています…"
     }
   },
   "chart": {

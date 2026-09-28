@@ -24,6 +24,9 @@ export {
   AlertActions,
   AlertQueryError,
 } from "../feedback/alert";
+// AlertQueryError consults it, so it ships wherever AlertQueryError does (gh#1022).
+export { AuthExpiryProvider } from "../feedback/auth-expiry";
+export type { AuthExpiryProviderProps } from "../feedback/auth-expiry";
 export { SearchInput } from "../data-entry/search-input";
 export {
   Upload,

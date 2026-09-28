@@ -922,7 +922,7 @@ export const COMPONENT_PROP_REGISTRY = {
       {
         field: "vertical",
         local: true,
-        reason: "antd's boolean spelling of orientation=\"vertical\"; orientation wins over it.",
+        reason: 'antd\'s boolean spelling of orientation="vertical"; orientation wins over it.',
       },
       {
         field: "fullWidth",
@@ -2983,6 +2983,19 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["HandlerProp"],
   },
   PrefetchLinkProp: { group: "query", file: "components/query.prop.ts", vocabulary: [] },
+  AuthExpiryProviderProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [
+      {
+        field: "onAuthExpired",
+        local: true,
+        reason:
+          "App-wide session-expiry callback receiving the triggering error; fired once per expiry (gh#1022).",
+      },
+      "ChildrenProp",
+    ],
+  },
   AlertQueryErrorProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",

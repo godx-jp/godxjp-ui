@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { AlertQueryError } from "../feedback/alert";
+import { useAuthExpiry } from "../feedback/auth-expiry";
 import { useTranslation } from "../../i18n/use-translation";
 import { classifyQueryError } from "../../lib/query-error";
 import type { DataStateProp } from "../../props/components/query.prop";
@@ -46,6 +47,12 @@ export function DataState<T>({
     void query.refetch();
   }, [onRetry, query]);
 
+  // Under an AuthExpiryProvider an expired session is handled centrally (gh#1022): the provider's
+  // handler runs once for every simultaneous 401 and this view stays in its neutral pending state.
+  const showingAuthError =
+    query.isError && !query.isFetching && classifyQueryError(query.error).category === "auth";
+  const authExpiry = useAuthExpiry(showingAuthError, query.error);
+
   // Disabled/unstarted (`enabled:false`) reads as pending in TanStack Query but `fetchStatus` is
   // "idle" — no request is in flight. Render the prerequisite/idle slot, NOT an endless skeleton.
   if (query.isPending && query.fetchStatus === "idle") return <>{prerequisite}</>;
@@ -53,6 +60,16 @@ export function DataState<T>({
 
   if (query.isError) {
     if (query.isFetching) return <>{skeleton}</>;
+    if (authExpiry?.status === "redirecting") {
+      return (
+        <>
+          {skeleton}
+          <span role="status" aria-live="polite" className="sr-only">
+            {t("query.authExpiry.redirecting")}
+          </span>
+        </>
+      );
+    }
     if (errorRenderer) return <>{errorRenderer(query.error, retry)}</>;
     // Cause-aware recovery: Retry is offered ONLY for causes where retrying could help — transient
     // failures (auto), or an `unknown` cause the consumer explicitly opts into (showRetry/onRetry).

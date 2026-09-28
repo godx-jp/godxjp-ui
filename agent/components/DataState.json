@@ -28,7 +28,7 @@
       "type": "boolean"
     },
     {
-      "description": "Recovery for 401 / expired-token errors: renew the session or sign in again. A 401 renders this action instead of Retry.",
+      "description": "Per-instance sign-in button for 401 / expired-token errors when NO `AuthExpiryProvider` is mounted (clicked by the user, never auto-invoked). Prefer `AuthExpiryProvider onAuthExpired` at the app root, which handles every 401 automatically and once (gh#1022).",
       "name": "onAuthError",
       "type": "() => void"
     },
@@ -64,6 +64,8 @@
     "DO: provide `empty` + `isEmpty` together when the data can legitimately return 0 items — e.g. `isEmpty={(d) => d.items.length === 0}` paired with `empty={<EmptyState title=\"…\" />}`. Omitting `empty` means an empty array still falls through to `children`, silently rendering a blank table.",
     "DON'T: wrap DataState in your own conditional — e.g. `{query.isSuccess && <DataState …>}`. DataState IS the conditional; the outer guard is redundant and breaks the retry/refetch skeleton.",
     "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
+    "DO: mount `AuthExpiryProvider onAuthExpired={…}` once at the app root (SSO apps: redirect to the IdP with the current URL as return target). A 401 then never paints an alert: the handler runs automatically, once for any number of simultaneous 401s, and DataState keeps its `skeleton` with a polite live region announcing the redirect (gh#1022).",
+    "DON'T: rely on per-page `onAuthError` for session expiry — it is only a click-to-sign-in button in the fallback alert (no provider). An expired session is an app-wide concern, not a page error.",
     "DO: classify errors by cause. Use session renewal/sign-in for 401, access guidance for 403, contextual correction for domain errors, and opt into showRetry only for transient network/5xx errors.",
     "DO: pass prerequisite for enabled:false queries. Pending + fetchStatus idle is unstarted, not loading, and never renders a skeleton.",
     "DO: rely on the localized, cause-specific error message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",

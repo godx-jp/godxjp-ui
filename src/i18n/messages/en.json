@@ -635,6 +635,9 @@
       "action": {
         "signIn": "Sign in again"
       }
+    },
+    "authExpiry": {
+      "redirecting": "Your session has ended. Redirecting to sign-in…"
     }
   },
   "chart": {

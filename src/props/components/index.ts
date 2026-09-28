@@ -72,6 +72,7 @@ export type {
 } from "./charts.prop";
 export type {
   AlertQueryErrorProp,
+  AuthExpiryProviderProp,
   AlertProp,
   DialogProp,
   DialogContentProp,

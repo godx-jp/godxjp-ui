@@ -12,9 +12,11 @@ import {
 
 import { useTranslation } from "../../i18n/use-translation";
 import { humanError } from "../../lib/format";
-import { type QueryErrorCategory } from "../../lib/query-error";
+import { classifyQueryError, type QueryErrorCategory } from "../../lib/query-error";
 import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
+import { Text } from "../general/typography";
+import { useAuthExpiry } from "./auth-expiry";
 import type { AlertVariantProp, ToneProp } from "../../props/vocabulary";
 import type {
   AlertActionsProp,
@@ -191,6 +193,10 @@ function RetryButton({ onRetry }: { onRetry: NonNullable<AlertQueryErrorProp["on
  *   offer Retry (`onRetry`); permission/not-found/validation offer neither by default.
  * - **Legacy mode** (no `category`, e.g. mutation/infinite feedback): shows the cleaned domain
  *   message (`humanError`) + optional Retry — form-submit corrective guidance stays visible.
+ * - **Under an `AuthExpiryProvider`** an auth-class error (either mode) is never painted as an
+ *   alert: the provider's `onAuthExpired` runs once and this renders a small polite status
+ *   ("redirecting to sign-in") instead. If the handler fails, the sign-in alert comes back with its
+ *   button wired to the provider (gh#1022).
  */
 export function AlertQueryError({
   error,
@@ -200,8 +206,28 @@ export function AlertQueryError({
   className,
 }: AlertQueryErrorProp) {
   const { t } = useTranslation();
+  const resolved = category ?? classifyQueryError(error).category;
+  const expiry = useAuthExpiry(resolved === "auth", error);
 
-  if (!category) {
+  if (expiry?.status === "redirecting") {
+    return (
+      <Text
+        as="p"
+        size="sm"
+        tone="muted"
+        role="status"
+        aria-live="polite"
+        data-slot="alert-query-auth-pending"
+        className={className}
+      >
+        {t("query.authExpiry.redirecting")}
+      </Text>
+    );
+  }
+  // The provider's handler failed: keep the sign-in recovery, now wired to the provider.
+  const authAction = expiry ? expiry.retry : onAuthAction;
+
+  if (!category && !expiry) {
     return (
       <Alert tone="destructive" className={className}>
         <AlertTitle>{t("common.error")}</AlertTitle>
@@ -211,18 +237,22 @@ export function AlertQueryError({
     );
   }
 
-  const tone: ToneProp = WARNING_CATEGORIES.has(category) ? "warning" : "destructive";
+  // An expired session is an expected, recoverable condition, not a failure of the page: it reads
+  // in the neutral tone (polite status, not an assertive alert) at a capped reading width instead
+  // of a full-bleed destructive panel (gh#1022).
+  const tone: ToneProp =
+    resolved === "auth" ? "default" : WARNING_CATEGORIES.has(resolved) ? "warning" : "destructive";
   return (
-    <Alert tone={tone} className={className}>
-      <AlertTitle>{t(`query.error.title.${category}`)}</AlertTitle>
-      <AlertDescription>{t(`query.error.description.${category}`)}</AlertDescription>
-      {category === "auth" && onAuthAction && (
+    <Alert tone={tone} className={className} data-query-category={resolved}>
+      <AlertTitle>{t(`query.error.title.${resolved}`)}</AlertTitle>
+      <AlertDescription>{t(`query.error.description.${resolved}`)}</AlertDescription>
+      {resolved === "auth" && authAction && (
         <AlertActions>
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              void onAuthAction();
+              void authAction();
             }}
           >
             {/* Sized by `.ui-button--sm svg` — see RetryButton above. */}
@@ -233,7 +263,7 @@ export function AlertQueryError({
           </Button>
         </AlertActions>
       )}
-      {RETRYABLE_CATEGORIES.has(category) && onRetry && <RetryButton onRetry={onRetry} />}
+      {RETRYABLE_CATEGORIES.has(resolved) && onRetry && <RetryButton onRetry={onRetry} />}
     </Alert>
   );
 }

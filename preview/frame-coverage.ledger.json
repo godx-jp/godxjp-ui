@@ -516,12 +516,14 @@
   "baseline": {
     "recordedAt": "2026-09-12",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 298,
-    "dimensionCells": 4172,
+    "exports": 300,
+    "dimensionCells": 4200,
     "covered": 93,
-    "untested": 2292,
-    "notApplicable": 1787,
-    "knownMissingFrames": [],
+    "untested": 2306,
+    "notApplicable": 1801,
+    "knownMissingFrames": [
+      "feedback/auth-expiry"
+    ],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -1312,6 +1314,34 @@
         "reducedMotion": "untested"
       }
     },
+    "AlertMutationFeedbackProps": {
+      "group": "query",
+      "owner": "query/mutation-feedback",
+      "frames": [
+        "docs/query/mutation-feedback.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
     "AlertQueryError": {
       "group": "feedback",
       "owner": "feedback/alert",
@@ -1627,6 +1657,33 @@
       "frames": [
         "docs/layout/auth-divider.tsx"
       ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 7,
+        "untested": 7
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "AuthExpiryProvider": {
+      "group": "query",
+      "owner": "feedback/auth-expiry",
+      "frames": [],
+      "hasFrame": false,
       "baseline": {
         "covered": 0,
         "notApplicable": 7,

@@ -4259,6 +4259,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
+    "name": "--query-auth-alert-max-inline-size",
+    "value": "36rem",
+    "description": "The sign-in fallback a query surface paints for an expired session when no AuthExpiryProvider handles it (gh#1022). An expired session is an expected, recoverable condition, so it is capped at a reading measure instead of spanning the page body its DataState wraps. `none` restores the full-width alert."
+  },
+  {
     "name": "--tooltip-max-width",
     "value": "20rem",
     "description": "TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not retune tooltip density or measure without forking the component (rule #45). Defaults reproduce the previous look exactly, so adopting this changes nothing until a theme opts in."
