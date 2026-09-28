@@ -66,9 +66,7 @@ function LoadingBlock() {
         query={query}
         skeleton={<SkeletonTable rows={4} columns={3} />}
         isEmpty={(d) => d.length === 0}
-        empty={
-          <EmptyState title="データがありません" description="条件に合う請求書はありません。" />
-        }
+        empty={<EmptyState title="No invoices" description="No invoice matches the filter." />}
       >
         {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
       </DataState>
@@ -78,7 +76,7 @@ function LoadingBlock() {
         size="sm"
         onClick={() => void client.resetQueries({ queryKey: ["ds-loading"] })}
       >
-        もう一度読み込む
+        Load again
       </Button>
     </Flex>
   );
