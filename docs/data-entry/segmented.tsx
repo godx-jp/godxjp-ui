@@ -90,6 +90,8 @@ export default function Demo() {
             <CardDescription>
               一覧の上の状態フィルター。4 つが 1 行に収まらない幅では、トラックが 2 行目に折り返し
               ます。ラベルも件数も切り詰めません。`check:segmented-wrap` がこのカードを測ります。
+              件数は Tabs と同じ扱いで、選択中の項目だけ強調し、ほかは控えめな色です。0 件を隠す
+              ときは `showZero: false`。
             </CardDescription>
           </CardHeader>
           <CardContent>

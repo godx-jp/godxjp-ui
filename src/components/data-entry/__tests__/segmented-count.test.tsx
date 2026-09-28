@@ -43,4 +43,27 @@ describe("Segmented count pill (gh#602)", () => {
     expect(onValueChange).toHaveBeenCalledWith("week");
     expect(screen.getByRole("radio", { name: /今週/ })).toBeChecked();
   });
+
+  it("showZero: false hides a 0 pill; the default still shows it (gh#1019, as Tabs)", () => {
+    renderWithUi(
+      <Segmented
+        aria-label="状態"
+        defaultValue="all"
+        options={[
+          { value: "all", label: "すべて", count: 128 },
+          { value: "gone", label: "失踪・帰国", count: 0, showZero: false },
+          { value: "pending", label: "申請中", count: 0 },
+        ]}
+      />,
+    );
+
+    const gone = screen.getByRole("radio", { name: /失踪・帰国/ });
+    expect(gone).toHaveAccessibleName("失踪・帰国");
+    expect(gone.closest("label")?.querySelector('[data-slot="segmented-count"]')).toBeNull();
+
+    const pending = screen.getByRole("radio", { name: /申請中/ });
+    expect(
+      pending.closest("label")?.querySelector('[data-slot="segmented-count"]'),
+    ).toHaveTextContent("0");
+  });
 });
