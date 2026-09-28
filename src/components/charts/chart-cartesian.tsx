@@ -47,6 +47,7 @@ type CartesianChartProps = {
   valueTicks?: number[];
   numberFormat?: Intl.NumberFormatOptions;
   emptyMessage?: string;
+  onCategoryClick?: (datum: ChartDatum, index: number) => void;
   className?: string;
   id?: string;
   /** line/area */
@@ -75,6 +76,7 @@ export function CartesianChart({
   valueTicks,
   numberFormat,
   emptyMessage,
+  onCategoryClick,
   className,
   id,
   curved = false,
@@ -197,10 +199,24 @@ export function CartesianChart({
     </>
   );
 
+  /**
+   * recharts reports the category under the pointer as `activeTooltipIndex` on a chart-level click
+   * — the whole column, the same hit area the tooltip uses. A click outside any category gives no
+   * index and is ignored.
+   */
+  const onChartClick = onCategoryClick
+    ? (state: { activeTooltipIndex?: number | string | null } | null) => {
+        const raw = state?.activeTooltipIndex;
+        // `Number(null)` is 0 — a miss must not read as the first category.
+        const index = raw === null || raw === undefined || raw === "" ? NaN : Number(raw);
+        if (Number.isInteger(index) && data[index]) onCategoryClick(data[index], index);
+      }
+    : undefined;
+
   const chart = () => {
     if (kind === "line") {
       return (
-        <RLineChart data={data}>
+        <RLineChart data={data} onClick={onChartClick}>
           {axes(true)}
           {series.map((s, i) => (
             <Line
@@ -217,7 +233,7 @@ export function CartesianChart({
     }
     if (kind === "area") {
       return (
-        <RAreaChart data={data}>
+        <RAreaChart data={data} onClick={onChartClick}>
           {axes(true)}
           {series.map((s, i) => (
             <Area
@@ -235,7 +251,7 @@ export function CartesianChart({
       );
     }
     return (
-      <RBarChart data={data} layout={horizontal ? "vertical" : "horizontal"}>
+      <RBarChart data={data} layout={horizontal ? "vertical" : "horizontal"} onClick={onChartClick}>
         {axes(!horizontal)}
         {series.map((s, i) => (
           <Bar
@@ -260,7 +276,7 @@ export function CartesianChart({
       imgSummary={summary.img}
       hasData={hasData}
       height={resolvedHeight}
-      className={className}
+      className={cn(onCategoryClick && "ui-chart-clickable", className)}
       id={id}
       canvasRef={canvasRef}
       canvasExtra={

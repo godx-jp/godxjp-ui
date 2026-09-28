@@ -21,6 +21,11 @@
 }
 
 /* recharts legend/axis text inherits the design typography + muted tone. */
+/* `onCategoryClick` — the plot says it can be clicked. */
+.ui-chart-clickable .recharts-surface {
+  cursor: pointer;
+}
+
 .ui-chart .recharts-text,
 .ui-chart .recharts-legend-item-text {
   font-size: var(--font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)));

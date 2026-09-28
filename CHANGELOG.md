@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Cartesian charts take `onCategoryClick` — drill down or zoom to one bucket
+
+MINOR. `BarChart`, `LineChart` and `AreaChart` gain `onCategoryClick(datum, index)`. The whole
+category column is the target, the same hit area as the tooltip, so a zero-height bar in an idle
+bucket can still be clicked. A click outside every category is ignored: recharts reports it as
+`activeTooltipIndex: null`, and `Number(null)` would otherwise have read as category 0 (caught by the
+new test). With the prop set, the plot gets a pointer cursor (`.ui-chart-clickable`). The prop
+documents that it is a pointer shortcut: the plot is `role="img"`, so a screen must also offer the
+action through a real control. First consumer: godx-logger's log histogram, which zooms the period
+to the clicked bucket, CloudWatch/Grafana style.
+
 ### ✨ `Text break="anywhere"` — a machine identifier can split to fit a table cell (gh#927)
 
 MINOR. `Text` gains a `break` axis (`"normal" | "anywhere"`, type `TextBreakProp`), separate from
