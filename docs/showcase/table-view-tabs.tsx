@@ -430,7 +430,7 @@ export default function Demo() {
         {/* Saved-view ribbon — controlled, strip-only Tabs (gh#1021): `controls` points the
             selected tab at the grid below, which lives outside the Tabs and is never remounted. */}
         <Tabs
-          aria-label="保存ビュー"
+          aria-label="Saved views"
           controls="attendance-grid"
           value={view}
           onValueChange={(v) => setView(v as ViewId)}
