@@ -521,9 +521,7 @@
     "covered": 93,
     "untested": 2306,
     "notApplicable": 1801,
-    "knownMissingFrames": [
-      "feedback/auth-expiry"
-    ],
+    "knownMissingFrames": [],
     "geometryFailingCells": 0,
     "axeFailingFrames": 0
   },
@@ -1682,8 +1680,9 @@
     "AuthExpiryProvider": {
       "group": "query",
       "owner": "feedback/auth-expiry",
-      "frames": [],
-      "hasFrame": false,
+      "frames": [
+        "docs/feedback/auth-expiry.tsx"
+      ],
       "baseline": {
         "covered": 0,
         "notApplicable": 7,
