@@ -389,8 +389,14 @@ portable core; everything else is measurement.
 12. **Put the scope decision BEFORE the expensive step, and measure the cost of a SKIPPED job.**
     One repo's job spent 225 seconds deciding to skip: 218 of checkout, 2 of decision. Wherever
     scope is decided after the expensive step, every skipped job pays in full.
-13. **Enforce the ban with a MECHANISM, not prose.** A written rule survived weeks and was violated
-    twice in one session; a pre-execution hook that refuses an unscoped test command is what held.
+13. **Enforce the full-suite ban with a MECHANISM, not prose — and ONLY that kind of ban.** A
+    written rule survived weeks and was violated twice in one session; a pre-execution hook that
+    refuses an unscoped test command is what held. This applies to commands that are expensive or
+    destructive. It does **not** generalise to "every rule needs a gate": **never write a test or
+    CI gate over docs prose, numbers pinned in docs, wording, or another gate's wiring/index.** One
+    repo that did grew 28 such gates out of 260; a single docs-count gate forced ~21 number-fix
+    commits in a month and guarded nothing. Docs drift → fix or delete the text (write the counting
+    command, not the count).
 14. **A GUARD THAT READS TEXT TREATS YOUR PROSE AS INPUT.** Its own comments, its fixtures and
     its own error messages are inside the corpus it scans. Four separate instances in one session
     in one repo: a pattern matched a directory name; another matched an explanatory sentence; a
@@ -410,8 +416,8 @@ matches. That is the property to check, not to assume.
     nor willpower — change the SHAPE so the CI platform counts for you**: one gate per step or
     matrix entry, and declared-vs-observed becomes visible with no parser and no index. A
     log-scanner must know the gate _names_, so it needs an index — and the index is the thing that
-    drifts, so it cannot close the loop. Write exactly one **structural** gate: _no step may contain
-    more than one gate command._ Nobody writes a 46- or 56-command chain on purpose.
+    drifts, so it cannot close the loop. Fixing the shape is the whole fix — do **not** add a gate
+    that polices the shape; a gate-of-gates is the same drift problem one level up.
 
 ## What must NOT be generalised
 

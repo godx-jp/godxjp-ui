@@ -84,8 +84,7 @@ grep -rnE '(&&|;).*(&&|;)' <ci config>            # multi-command steps
   chain with a failure at position 33 of 56: **23 gates had not executed for weeks and nobody
   knew.**
 - A multi-command step is not N gates. Fix the **shape**: one gate per step or matrix entry, so the
-  platform counts for you. Then write the one structural gate: *no step may contain more than one
-  gate command.*
+  platform counts for you. Do not add a gate that polices the shape — gates-of-gates drift too.
 
 ## Step 8 — measure a SKIPPED job
 
@@ -104,10 +103,13 @@ fell back to the root commit and authorised an unasked run on its first read, an
 version still needed a paragraph to explain itself. A rule needing a paragraph gets applied
 wrongly, and this one fails **open** when it is.
 
-## Step 10 — write the mechanism, not just the document
+## Step 10 — a hook for the full-suite ban (and nothing else)
 
-A rule that exists only in prose will be violated. Add a pre-execution hook that refuses an
-unscoped test command. Design notes, both paid for in real failures:
+The full-suite ban is violated when it exists only in prose, so add a pre-execution hook that
+refuses an unscoped test command. That is the ONLY mechanism this step asks for. Do **not**
+extend it into gates over docs text, pinned numbers, wording, or other gates' wiring/indexes —
+those guard nothing at runtime and generate endless fix-the-number commits. Design notes for the
+hook, both paid for in real failures:
 
 - **Match at command position.** A pattern matching the tool's name anywhere blocks reading a
   directory that contains it, and a guard that blocks reading files gets disabled the same day.
