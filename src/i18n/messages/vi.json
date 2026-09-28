@@ -365,6 +365,11 @@
         "abort": "đã dừng"
       }
     },
+    "orgChart": {
+      "label": "Sơ đồ tổ chức",
+      "scrollRegion": "Sơ đồ tổ chức có thể cuộn",
+      "agent": "Tác tử AI"
+    },
     "timeline": {
       "statusDone": "Đã xong: ",
       "statusCurrent": "Hiện tại: ",

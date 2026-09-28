@@ -3050,3 +3050,173 @@
     flex-direction: column;
   }
 }
+
+@layer components {
+  /* ORG CHART — boxes joined by lines, top-down (tokens: src/tokens/components/org-chart.css).
+   *
+   * The root is a size CONTAINER: the breakpoint below reads the width the chart was GIVEN, not
+   * the viewport, so a chart in a narrow side panel of a wide screen still switches to the list. */
+  .ui-org-chart {
+    min-inline-size: 0;
+    container: org-chart / inline-size;
+  }
+
+  /* Its own horizontal scroll region: a chart wider than its container scrolls HERE, never the page. */
+  .ui-org-chart-scroll {
+    overflow-x: auto;
+    padding: var(--org-chart-padding);
+  }
+
+  /* `max-content` so the chart keeps its natural width (and the region scrolls), `min-inline-size`
+   * so a chart narrower than the region is centred in it. */
+  .ui-org-chart-tree,
+  .ui-org-chart-children {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-org-chart-tree {
+    inline-size: max-content;
+    min-inline-size: 100%;
+  }
+
+  .ui-org-chart-branch {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-inline: calc(var(--org-chart-sibling-gap) / 2);
+  }
+
+  /* THE CONNECTORS — all borders, drawn in the gaps, all from the same two tokens.
+   *
+   *   1. the children row's `::before` — the stem from the parent box down to the bus;
+   *   2. each child's `::before` — the bus's half on the child's inline-start side;
+   *   3. each child's `::after`  — the bus's half on its inline-end side AND the drop to its box.
+   *
+   * Every vertical sits at `50% - width / 2` on the inline axis, so it is centred on the box above
+   * or below it in both directions without a `translate` that would have to flip under RTL. */
+  .ui-org-chart-children {
+    position: relative;
+    padding-block-start: calc(var(--org-chart-level-gap) / 2);
+  }
+
+  .ui-org-chart-children::before,
+  .ui-org-chart-children > .ui-org-chart-branch::before,
+  .ui-org-chart-children > .ui-org-chart-branch::after {
+    position: absolute;
+    box-sizing: border-box;
+    inset-block-start: 0;
+    block-size: calc(var(--org-chart-level-gap) / 2);
+    border: 0 solid var(--org-chart-line-color, hsl(var(--border)));
+    content: "";
+  }
+
+  .ui-org-chart-children::before {
+    inset-inline-start: calc(50% - var(--org-chart-line-width, var(--stroke-hairline)) / 2);
+    border-inline-start-width: var(--org-chart-line-width, var(--stroke-hairline));
+  }
+
+  .ui-org-chart-children > .ui-org-chart-branch {
+    padding-block-start: calc(var(--org-chart-level-gap) / 2);
+  }
+
+  .ui-org-chart-children > .ui-org-chart-branch::before {
+    inset-inline: 0 50%;
+    border-block-start-width: var(--org-chart-line-width, var(--stroke-hairline));
+  }
+
+  .ui-org-chart-children > .ui-org-chart-branch::after {
+    inset-inline: calc(50% - var(--org-chart-line-width, var(--stroke-hairline)) / 2) 0;
+    border-block-start-width: var(--org-chart-line-width, var(--stroke-hairline));
+    border-inline-start-width: var(--org-chart-line-width, var(--stroke-hairline));
+  }
+
+  /* The bus stops at the first and the last child's centre. */
+  .ui-org-chart-children > .ui-org-chart-branch:first-child::before,
+  .ui-org-chart-children > .ui-org-chart-branch:last-child::after {
+    border-block-start-width: 0;
+  }
+
+  .ui-org-chart-node {
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    inline-size: var(--org-chart-node-inline-size);
+    align-items: flex-start;
+    gap: var(--org-chart-node-gap);
+    padding-block: var(--org-chart-node-padding-block);
+    padding-inline: var(--org-chart-node-padding-inline);
+    border: var(--org-chart-node-border-width, var(--stroke-hairline)) solid
+      var(--org-chart-node-border-color, hsl(var(--border)));
+    border-radius: var(--org-chart-node-radius, var(--radius));
+    background: var(--org-chart-node-background, hsl(var(--card)));
+    color: var(--org-chart-node-foreground, hsl(var(--card-foreground)));
+    font-size: var(--org-chart-node-font-size);
+    text-align: start;
+  }
+
+  .ui-org-chart-node[data-variant="agent"] {
+    border-style: var(--org-chart-agent-border-style);
+  }
+
+  .ui-org-chart-avatar {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .ui-org-chart-text {
+    display: flex;
+    min-inline-size: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--org-chart-node-text-gap);
+  }
+
+  .ui-org-chart-name {
+    font-weight: var(--font-weight-medium);
+    overflow-wrap: anywhere;
+  }
+
+  .ui-org-chart-title {
+    color: var(--org-chart-node-title-color, hsl(var(--muted-foreground)));
+    overflow-wrap: anywhere;
+  }
+
+  .ui-org-chart-extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--org-chart-node-text-gap);
+  }
+
+  /* The narrow form: the same data as an indented `Tree`. */
+  .ui-org-chart-list {
+    display: none;
+  }
+
+  .ui-org-chart-list-row {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: var(--org-chart-node-gap);
+  }
+
+  .ui-org-chart-list-row .ui-org-chart-extra {
+    display: inline-flex;
+  }
+
+  /* Below the breakpoint the boxes give way to the list. 40rem is the library's first container
+   * step (ResponsiveGrid, Alert), about three boxes and their gutters. */
+  @container org-chart (width < 40rem) {
+    .ui-org-chart-scroll {
+      display: none;
+    }
+
+    .ui-org-chart-list {
+      display: block;
+    }
+  }
+}

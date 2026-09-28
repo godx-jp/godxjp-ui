@@ -4995,6 +4995,58 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
+  OrgChartNodeVariantProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ControlVariantProp"],
+  },
+  OrgChartNodeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "ExtraProp",
+      "ControlVariantProp",
+      { field: "key", local: true, reason: "The node's identity, unique across the chart." },
+      {
+        field: "name",
+        local: true,
+        reason:
+          "The person's or agent's display name (a ReactNode), not a form field `name` — NameProp is the submitted-field key.",
+      },
+      {
+        field: "avatar",
+        local: true,
+        reason: "The mark at the box's inline start, usually an <Avatar>. Decorative.",
+      },
+      {
+        field: "children",
+        local: true,
+        reason: "The node's own reports — the hierarchy itself, not a slot.",
+      },
+    ],
+  },
+  OrgChartProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "ClassNameProp",
+      "IdProp",
+      {
+        field: "data",
+        local: true,
+        reason:
+          "The hierarchy of OrgChartNodeProp — the same shape feeds the boxes and the narrow Tree.",
+      },
+      {
+        field: "renderNode",
+        local: true,
+        reason:
+          "Escape hatch replacing a box's content; the box, connectors and keyboard stay the library's.",
+      },
+    ],
+  },
 } as const;
 
 export type ComponentPropName = keyof typeof COMPONENT_PROP_REGISTRY;

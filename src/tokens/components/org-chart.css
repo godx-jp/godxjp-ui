@@ -1,0 +1,45 @@
+/*
+ * ORG CHART — boxes joined by lines, top-down (`src/components/data-display/org-chart.tsx`).
+ *
+ * Every length the chart paints is a knob (cardinal rule #45) and the defaults are the quiet
+ * reading (#44): a hairline connector in the border hue, a card-coloured box with the hairline
+ * edge every other surface here has. An `agent` box differs by its STROKE STYLE only (dashed), so a
+ * theme that retunes the edge colour retunes both kinds at once.
+ *
+ * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md ·
+ * "Role-mirror knobs MUST be `initial`"), so a scoped `[data-tenant]` / `.dark` override reaches
+ * them instead of freezing at `:root`.
+ */
+
+:root {
+  /* The box. A fixed inline size, so siblings line up in even columns and the connector bus has a
+   * predictable pitch; long names wrap inside it instead of widening one box. */
+  --org-chart-node-inline-size: 13rem;
+  --org-chart-node-padding-block: var(--space-3);
+  --org-chart-node-padding-inline: var(--space-3);
+  --org-chart-node-gap: var(--space-3);
+  --org-chart-node-text-gap: var(--space-1);
+  --org-chart-node-radius: initial; /* gh#888 — φ tier freezes at :root; default = var(--radius) */
+  --org-chart-node-border-width: initial; /* default = var(--stroke-hairline) */
+  --org-chart-node-border-color: initial; /* default = hsl(var(--border)) */
+  --org-chart-node-background: initial; /* default = hsl(var(--card)) */
+  --org-chart-node-foreground: initial; /* default = hsl(var(--card-foreground)) */
+  --org-chart-node-title-color: initial; /* default = hsl(var(--muted-foreground)) */
+  --org-chart-node-font-size: var(--font-size-sm, var(--font-size-base));
+  /* The `agent` variant's stroke style. A dashed edge, not a second colour — the difference must
+   * survive greyscale, and the sr-only "AI agent" carries it for a screen reader. */
+  --org-chart-agent-border-style: dashed;
+
+  /* Spacing of the tree itself: the vertical run between a parent and its children's row, and the
+   * gutter between two siblings. The connector is drawn inside these gaps, half above the bus and
+   * half below it. */
+  --org-chart-level-gap: var(--space-8);
+  --org-chart-sibling-gap: var(--space-4);
+
+  /* The connector. */
+  --org-chart-line-width: initial; /* default = var(--stroke-hairline) */
+  --org-chart-line-color: initial; /* default = hsl(var(--border)) */
+
+  /* Room around the chart inside its scroll region, so an edge box's focus ring is not clipped. */
+  --org-chart-padding: var(--space-2);
+}

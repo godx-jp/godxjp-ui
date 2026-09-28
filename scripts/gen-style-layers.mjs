@@ -164,6 +164,7 @@ const OWNERS = {
     "FeatureList",
     "Legend",
     "ListRow",
+    "OrgChart",
     "PermissionMatrix",
     "Progress",
     "Prose",
