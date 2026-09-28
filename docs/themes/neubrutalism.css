@@ -279,7 +279,9 @@
   --conversations-item-active-background: hsl(48 90% 78%);
   --conversations-item-active-color: hsl(0 0% 0%);
   --tabs-count-active-background: hsl(48 90% 74%);
+  --segmented-count-selected-background: hsl(48 90% 74%);
   --tabs-count-active-color: hsl(0 0% 0%);
+  --segmented-count-selected-color: hsl(0 0% 0%);
   --toggle-soft-hover-background: hsl(48 90% 84%);
   --toggle-pressed-count-background: hsl(48 90% 74%);
   --toggle-pressed-count-color: hsl(0 0% 0%);
@@ -331,6 +333,7 @@
     --mega-menu-link-hover-background: hsl(from hsl(var(--primary)) h 90% 82%);
     --conversations-item-active-background: hsl(from hsl(var(--primary)) h 90% 78%);
     --tabs-count-active-background: hsl(from hsl(var(--primary)) h 90% 74%);
+    --segmented-count-selected-background: hsl(from hsl(var(--primary)) h 90% 74%);
     --toggle-soft-hover-background: hsl(from hsl(var(--primary)) h 90% 84%);
     --toggle-pressed-count-background: hsl(from hsl(var(--primary)) h 90% 74%);
   }
@@ -423,7 +426,9 @@
   --conversations-item-active-background: hsl(48 90% 26%);
   --conversations-item-active-color: hsl(0 0% 100%);
   --tabs-count-active-background: hsl(48 90% 26%);
+  --segmented-count-selected-background: hsl(48 90% 26%);
   --tabs-count-active-color: hsl(0 0% 100%);
+  --segmented-count-selected-color: hsl(0 0% 100%);
   --toggle-soft-hover-background: hsl(48 90% 24%);
   --toggle-pressed-count-background: hsl(48 90% 26%);
   --toggle-pressed-count-color: hsl(0 0% 100%);
@@ -469,6 +474,7 @@
     --mega-menu-link-hover-background: hsl(from hsl(var(--primary)) h 90% 26%);
     --conversations-item-active-background: hsl(from hsl(var(--primary)) h 90% 26%);
     --tabs-count-active-background: hsl(from hsl(var(--primary)) h 90% 26%);
+    --segmented-count-selected-background: hsl(from hsl(var(--primary)) h 90% 26%);
     --toggle-soft-hover-background: hsl(from hsl(var(--primary)) h 90% 24%);
     --toggle-pressed-count-background: hsl(from hsl(var(--primary)) h 90% 26%);
   }

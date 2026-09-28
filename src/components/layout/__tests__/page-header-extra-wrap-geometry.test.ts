@@ -81,7 +81,7 @@ describe("PageContainer header extra · desktop wrap geometry (gh#300)", () => {
     const desktop = desktopRule(".ui-page-header-extra");
     expect(desktop).toMatch(/flex-shrink:\s*0;/);
     // The exact gh#300 regression is an uncapped non-shrinkable box: the cap must be a percentage.
-    expect(desktop).toMatch(/max-inline-size:\s*\d+%;/);
+    expect(desktop).toMatch(/max-inline-size:\s*(?:var\(--page-header-extra-max-measure,\s*)?\d+%\)?;/);
   });
 
   it("stops shrinking at what its content can present, whatever shape that child is (gh#813)", () => {

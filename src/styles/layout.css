@@ -1155,7 +1155,7 @@
     .ui-page-header-extra {
       width: auto;
       flex-shrink: 0;
-      max-inline-size: 60%;
+      max-inline-size: var(--page-header-extra-max-measure, 60%);
       min-inline-size: auto;
       justify-content: flex-end;
     }

@@ -25,6 +25,14 @@ Tabs card-tab pill. Only the selected segment's pill uses `--primary`.
 - Text contrast is at least 5.65:1 at rest and 6.31:1 when selected, in light and dark.
 - New `initial` knobs: `--segmented-count-selected-background`, `-selected-background-alpha`,
   `-selected-color` and `--segmented-count-forced-outline-width`.
+### 🎨 Follow-ups in the same batch
+
+- `--page-header-extra-max-measure` (`initial`, default 60% at the call site) is the PageHeader
+  action cap from #1025, now a theme knob instead of a literal.
+- The doc themes (flat, neubrutalism, glassmorphism) mirror their `--tabs-count-active-*` values
+  into the new `--segmented-count-selected-*` knobs, so a themed Segmented count matches its Tabs
+  count.
+
 ### ✨ Tabs: the tablist gets its name; strip-only `controls` mode; `count` on TabsTrigger (#1020, #1021)
 
 MINOR.
