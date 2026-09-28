@@ -1491,6 +1491,31 @@
     max-block-size: var(--code-block-max-height-lg);
   }
 
+  /* COPYABLE (gh#1032) — the copy button is a sibling of the `pre`, pinned to the frame's
+   * inline-end corner so it stays put while the block scrolls. The `pre` reserves an inline-end
+   * column exactly one `icon-xs` button wide, so no line of code ever runs under the button. */
+  .ui-code-block-frame {
+    position: relative;
+    min-inline-size: 0;
+  }
+
+  .ui-code-block[data-copyable] {
+    padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-xs));
+  }
+
+  .ui-code-block-copy {
+    position: absolute;
+    inset-block-start: var(--space-1);
+    inset-inline-end: var(--space-1);
+  }
+
+  /* Tracks `.ui-button--icon-xs`, which widens to the default control height on a coarse pointer. */
+  @media (pointer: coarse) {
+    .ui-code-block[data-copyable] {
+      padding-inline-end: calc(var(--code-block-space-inset) + var(--control-height-default));
+    }
+  }
+
   /* SYNTAX COLOURS (gh#784) — keyed on `data-code-token`, which is what makes this usable.
    *
    * Declaring the knobs alone would NOT have unblocked anyone: a consumer still has to get the

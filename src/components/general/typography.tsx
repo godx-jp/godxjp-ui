@@ -98,8 +98,11 @@ import { isDevelopment } from "../../lib/dev";
  * ═══════════════════════════════════════════════════════════════════════════════════════════════
  */
 
+// The copy helpers below are also CodeBlock's `copyable` (gh#1032): exported to the module, not
+// to the public index, so there is one copy machinery rather than two.
+
 /** How long the copy button shows its confirmed state. antd's value (`useCopyClick`). */
-const COPIED_RESET_MS = 3000;
+export const COPIED_RESET_MS = 3000;
 
 /** antd's `wrapperDecorations` nesting order, outermost last. */
 const DECORATION_ELEMENTS = [
@@ -119,7 +122,7 @@ function toList<T>(value: T | T[] | undefined): (T | undefined)[] {
 }
 
 /** antd `getNode` — `true`/`undefined` take the default; `false` suppresses unless a DOM node is required. */
-function getNode(
+export function getNode(
   node: React.ReactNode | boolean | undefined,
   fallback: React.ReactNode,
   needDom = false,
@@ -130,7 +133,7 @@ function getNode(
 }
 
 /** antd `toCopyConfigList` — `false` suppresses BOTH states, otherwise index 0 = idle, 1 = copied. */
-function toCopyConfigList(value: React.ReactNode | false | undefined) {
+export function toCopyConfigList(value: React.ReactNode | false | undefined) {
   if (value === false) return [false, false] as const;
   return toList(value as React.ReactNode);
 }
@@ -139,7 +142,7 @@ function toCopyConfigList(value: React.ReactNode | false | undefined) {
  * antd `useMergedConfig` — `true` means "on, all defaults"; an object means "on, these overrides".
  * The boolean is the SUPPORT flag, so `copyable={false}` and `copyable={undefined}` are both off.
  */
-function useMergedConfig<T extends object>(
+export function useMergedConfig<T extends object>(
   propConfig: boolean | T | undefined,
   template?: Partial<T>,
 ): [boolean, T] {
@@ -194,7 +197,7 @@ const TYPE_TO_TONE = {
  * claims a copy that never happened. Here a refusal throws, `onCopy` never fires, and the button
  * never shows its confirmed state.
  */
-async function writeClipboard(text: string, format: "text/plain" | "text/html" | undefined) {
+export async function writeClipboard(text: string, format: "text/plain" | "text/html" | undefined) {
   if (format === "text/html" && typeof ClipboardItem !== "undefined") {
     await navigator.clipboard.write([
       new ClipboardItem({
@@ -220,7 +223,13 @@ function childrenToText(children: React.ReactNode): string {
  * antd wraps every action in `<Tooltip>`; this library's Tooltip is the house primitive and is
  * composed (`Tooltip > TooltipTrigger > TooltipContent`), so the wrapper lives here.
  */
-function ActionTooltip({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
+export function ActionTooltip({
+  title,
+  children,
+}: {
+  title: React.ReactNode;
+  children: React.ReactNode;
+}) {
   if (title === null || title === undefined || title === false || title === "") return children;
   return (
     <Tooltip>

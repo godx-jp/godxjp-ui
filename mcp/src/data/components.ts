@@ -5742,6 +5742,12 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "Lands on `data-language`. No highlighter is bundled — bring your own and tag its output with `data-code-token` (gh#784).",
       },
+      {
+        name: "copyable",
+        type: 'boolean | { text?: string | (() => string | Promise<string>); onCopy?: (event) => void; tooltips?: ReactNode | [ReactNode, ReactNode] | false; icon?: ReactNode | [ReactNode, ReactNode]; format?: "text/plain" | "text/html"; tabIndex?: number }',
+        description:
+          "antd Typography's `copyable`, same name and semantics (gh#1032): a copy button in the block's inline-end corner. `true` copies the block's text content (highlighter spans included); `text` overrides it. The block reserves the button's column, the confirmed state is announced politely, and `onCopy` fires only after the clipboard write succeeds.",
+      },
       { name: "className", type: "string", description: "Extra classes on the `pre`." },
     ],
     usage: [
@@ -5750,6 +5756,7 @@ import { Flex } from "@godxjp/ui/layout";
       "DO cap the height of anything that can be large (a 64 KB response body, a console dump) with `maxHeight`; the page keeps its rhythm and the block scrolls.",
       'DON\'T hand-roll `<pre className="max-h-64 overflow-auto rounded bg-muted p-2 whitespace-pre-wrap">`: every one of those values is a copy of a token this component reads.',
       'DON\'T reach for `Text as="code"` for a block: that is inline monospace with no wrapping axis. Use `Text as="code"` for an identifier inside a sentence, CodeBlock for a block.',
+      "DO use `copyable` for a command or snippet the reader will paste (gh#1032). DON'T hand-roll a copy Button next to or over a CodeBlock: `copyable` owns the clipboard call, the confirmed state, the placement and the polite announcement.",
       "DON'T use CodeBlock for a single value in a Descriptions row: `Descriptions.Item mono` owns that (it breaks the value, not the row).",
       "SYNTAX COLOUR (gh#784): CodeBlock does not highlight, but it DOES own the palette. Tag each span from your highlighter with `data-code-token` — the twelve names are Shiki createCssVariablesTheme's verbatim (comment, keyword, string, string-expression, function, constant, parameter, punctuation, link, inserted, deleted, changed, plus the block foreground) — and the package colours them. DON'T put `style={{ color }}` or a palette `className` on the spans: both are visual overrides, and the colour is not the consumer's to choose. Retheme with the `--code-block-token-*-color` knobs, which are role-mirrors, so light and dark follow the theme with no second palette.",
     ],
@@ -5768,7 +5775,8 @@ import { Flex } from "@godxjp/ui/layout";
     example: `import { CodeBlock } from "@godxjp/ui/data-display";
 
 <CodeBlock maxHeight="sm" language="json" aria-label="Response body">{body}</CodeBlock>
-<CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>`,
+<CodeBlock size="xs" maxHeight="md" aria-label="Console">{consoleText}</CodeBlock>
+<CodeBlock copyable language="bash">pnpm add @godxjp/ui</CodeBlock>`,
     storyPath: "data-display/CodeBlock.stories.tsx",
     rules: [],
   },

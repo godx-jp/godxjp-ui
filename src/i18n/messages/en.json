@@ -419,6 +419,11 @@
       "edit": "Edit",
       "expand": "Expand",
       "collapse": "Collapse"
+    },
+    "codeBlock": {
+      "copy": "Copy code",
+      "copied": "Copied",
+      "copiedAnnounce": "Code copied to clipboard"
     }
   },
   "navigation": {

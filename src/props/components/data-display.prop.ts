@@ -21,6 +21,13 @@ export type CodeBlockProp = {
   size?: Extract<SizeProp, "xs" | "sm">;
   /** Lands on `data-language`; no highlighter is bundled — see `children` for colouring its output. */
   language?: string;
+  /**
+   * A copy button in the block's inline-end corner — antd `Typography`'s `copyable`, same name and
+   * semantics. `true` copies the block's text content; the object form sets `text`, `onCopy`,
+   * `tooltips` (`[copy, copied]`, or `false`), `icon` (`[copy, copied]`), `format` and `tabIndex`.
+   * The copy is announced politely to assistive technology.
+   */
+  copyable?: boolean | TypographyCopyConfigProp;
   className?: ClassNameProp;
 };
 
@@ -82,6 +89,7 @@ import type {
   ValueProp,
   DefaultValueProp,
   OnValueChangeProp,
+  TypographyCopyConfigProp,
 } from "../vocabulary";
 // One tree model, two surfaces: `Tree` (on a page) and `TreeSelect` (in a Popover) take the SAME
 // node and the SAME field remap. Re-declaring them here would be the fork the model exists to

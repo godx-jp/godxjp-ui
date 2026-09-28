@@ -412,6 +412,11 @@
       "edit": "編集",
       "expand": "展開",
       "collapse": "折りたたむ"
+    },
+    "codeBlock": {
+      "copy": "コードをコピー",
+      "copied": "コピーしました",
+      "copiedAnnounce": "コードをクリップボードにコピーしました"
     }
   },
   "navigation": {
