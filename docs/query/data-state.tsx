@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 
 import {
@@ -12,8 +13,9 @@ import {
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import { SkeletonTable } from "@godxjp/ui/feedback";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { DataState } from "@godxjp/ui/query";
+import { AuthExpiryProvider, DataState } from "@godxjp/ui/query";
 
 /**
  * DataState · drives skeleton / error / empty / success for ONE useQuery block.
@@ -99,8 +101,40 @@ function PrerequisiteBlock() {
   );
 }
 
+function ExpiredSessionQuery({ queryKey }: { queryKey: string }) {
+  const query = useQuery<Invoice[]>({
+    queryKey: [queryKey],
+    queryFn: async () => {
+      throw Object.assign(new Error("Access token expired"), { status: 401 });
+    },
+  });
+  return (
+    <DataState query={query} skeleton={<SkeletonTable rows={3} />}>
+      {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
+    </DataState>
+  );
+}
+
+function AuthExpiryBlock() {
+  // The app root owns session expiry (gh#1022). A real app redirects to the IdP here:
+  //   window.location.assign(`/auth/login?return_to=${encodeURIComponent(location.href)}`)
+  // Two queries 401 at once — the handler still runs exactly once, and no alert is painted.
+  const [calls, setCalls] = useState(0);
+  return (
+    <AuthExpiryProvider onAuthExpired={() => setCalls((n) => n + 1)}>
+      <Flex direction="col" gap="md">
+        <Text size="sm" tone="muted">
+          onAuthExpired calls: {calls}
+        </Text>
+        <ExpiredSessionQuery queryKey="ds-auth-expiry-a" />
+        <ExpiredSessionQuery queryKey="ds-auth-expiry-b" />
+      </Flex>
+    </AuthExpiryProvider>
+  );
+}
+
 function AuthErrorBlock() {
-  // A 401 / expired token never resolves by retrying — DataState offers session renewal instead.
+  // Without an AuthExpiryProvider: the proportionate fallback — a neutral sign-in prompt.
   const query = useQuery<Invoice[]>({
     queryKey: ["ds-auth-error"],
     queryFn: async () => {
@@ -175,10 +209,24 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle level={2}>Error · auth (session renewal)</CardTitle>
+              <CardTitle level={2}>Session expired · AuthExpiryProvider (recommended)</CardTitle>
               <CardDescription>
-                A 401 / expired token routes to session renewal via `onAuthError`, never a blind
-                retry, and never surfaces the raw token message.
+                Mount `AuthExpiryProvider` once at the app root. A 401 calls `onAuthExpired`
+                automatically, once for any number of simultaneous 401s, while each DataState keeps
+                its skeleton and announces the redirect to sign-in through a live region.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AuthExpiryBlock />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>Session expired · fallback without a provider</CardTitle>
+              <CardDescription>
+                Without a provider a 401 renders a neutral, width-capped sign-in prompt whose button
+                calls `onAuthError`. It never offers a blind retry or shows the raw token message.
               </CardDescription>
             </CardHeader>
             <CardContent>

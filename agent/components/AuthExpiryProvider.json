@@ -1,0 +1,40 @@
+{
+  "example": "import { AuthExpiryProvider } from \"@godxjp/ui/query\";\n\nexport function Providers({ children }: { children: React.ReactNode }) {\n  return (\n    <AuthExpiryProvider\n      onAuthExpired={() => {\n        const returnTo = encodeURIComponent(window.location.href);\n        window.location.assign(`/auth/login?return_to=${returnTo}`);\n      }}\n    >\n      {children}\n    </AuthExpiryProvider>\n  );\n}",
+  "group": "feedback",
+  "importPath": "@godxjp/ui/query",
+  "name": "AuthExpiryProvider",
+  "props": [
+    {
+      "description": "Called ONCE per expiry — any number of simultaneous 401s share one call; re-armed after every auth-errored view has gone. Typically `window.location.assign(loginUrl(returnTo = location.href))`. Return a promise for a silent refresh (then invalidate queries); a throw/rejection brings back the sign-in alert, whose button calls this again.",
+      "name": "onAuthExpired",
+      "required": true,
+      "type": "(context: { error: unknown }) => void | Promise<void>"
+    },
+    {
+      "description": "The app.",
+      "name": "children",
+      "type": "ReactNode"
+    }
+  ],
+  "related": [
+    "DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError — the surfaces that consult this provider.",
+    "classifyQueryError — decides what is auth-class (401, or a status-less 'unauthenticated / access token invalid / token expired' message).",
+    "ErrorSurface — the whole-page error surface; a session expiry is neither a page error nor an inline one."
+  ],
+  "rules": [],
+  "storyPath": "query/DataState.stories.tsx",
+  "tagline": "App-root handler for an expired session (401 / invalid or expired token): every DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError calls it automatically, once, and shows a neutral pending state instead of an error alert. Also exported from @godxjp/ui.",
+  "usage": [
+    "DO: mount it ONCE near the root, inside the QueryClientProvider/AppProvider, and redirect to the IdP with the current URL as the return target. The IdP returns immediately while its own session is alive — the SSO norm (Google/Microsoft apps, OIDC SPA guidance): no page-level error for an expired session.",
+    "DO: expect the surfaces to keep their `skeleton` (DataState/InfiniteQueryState) or a small muted status line (AlertMutationFeedback/AlertQueryError) with `role=\"status\"` announcing 'redirecting to sign-in' — never a destructive alert.",
+    "DON'T: wire `onAuthError` on every DataState as the session strategy — that renders an alert and waits for a click. It is the no-provider fallback only.",
+    "DON'T: use it for 403 — forbidden is a permission state, not an expired session; it still renders the access-guidance alert.",
+    "DO: when there is no provider the 401 fallback is a neutral (tone=default, role=status) sign-in alert capped at `--query-auth-alert-max-inline-size` (36rem, `none` = full width) — backward compatible, but proportionate."
+  ],
+  "useCases": [
+    "An SSO app (GoDX ID / OIDC) whose access token expired while the tab was idle: the first 401 redirects to the IdP and back to the same URL, no error panel flashes.",
+    "A dashboard with five DataStates that all 401 in the same tick: exactly one redirect.",
+    "A form submit (`AlertMutationFeedback`) that 401s: a muted 'redirecting to sign-in' line instead of a red alert.",
+    "A silent token refresh: return a promise that refreshes and then `queryClient.invalidateQueries()`; the views recover from skeleton without ever showing an error."
+  ]
+}

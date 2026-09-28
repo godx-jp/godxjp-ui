@@ -96,6 +96,18 @@ export type AlertQueryErrorProp = {
   className?: ClassNameProp;
 };
 
+/** @see AuthExpiryProvider — central, deduplicated handling of an expired session (gh#1022). */
+export type AuthExpiryProviderProp = {
+  /**
+   * Called ONCE when a query/mutation surface under the provider meets an auth-class error (401 /
+   * invalid or expired token); simultaneous 401s share one call, re-armed after every auth-errored
+   * view has gone. Typically redirects to the IdP with the current URL as the return target.
+   * Return a promise for a silent refresh: a rejection brings back the sign-in alert.
+   */
+  onAuthExpired: (context: { error: unknown }) => void | Promise<void>;
+  children?: ChildrenProp;
+};
+
 /** @see Alert */
 export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
   variant?: AlertVariantProp;

@@ -271,6 +271,11 @@
    * Tailwind steps resolved to, so adopting this changes nothing until a theme opts in. */
   --query-load-more-space-block-start: var(--space-stack-md);
   --query-loading-more-space-block-start: var(--space-stack-sm);
+  /* The sign-in fallback a query surface paints for an expired session when no AuthExpiryProvider
+   * handles it (gh#1022). An expired session is an expected, recoverable condition, so it is capped
+   * at a reading measure instead of spanning the page body its DataState wraps. `none` restores
+   * the full-width alert. */
+  --query-auth-alert-max-inline-size: 36rem;
 
   /* TOOLTIP — the transient label surface. Every constant here was a Tailwind literal baked into
    * the component (`max-w-xs px-2 py-1 rounded-md text-xs shadow-md`), so a service could not

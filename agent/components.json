@@ -5220,7 +5220,7 @@
         "type": "boolean"
       },
       {
-        "description": "Recovery for 401 / expired-token errors: renew the session or sign in again. A 401 renders this action instead of Retry.",
+        "description": "Per-instance sign-in button for 401 / expired-token errors when NO `AuthExpiryProvider` is mounted (clicked by the user, never auto-invoked). Prefer `AuthExpiryProvider onAuthExpired` at the app root, which handles every 401 automatically and once (gh#1022).",
         "name": "onAuthError",
         "type": "() => void"
       },
@@ -5256,6 +5256,8 @@
       "DO: provide `empty` + `isEmpty` together when the data can legitimately return 0 items — e.g. `isEmpty={(d) => d.items.length === 0}` paired with `empty={<EmptyState title=\"…\" />}`. Omitting `empty` means an empty array still falls through to `children`, silently rendering a blank table.",
       "DON'T: wrap DataState in your own conditional — e.g. `{query.isSuccess && <DataState …>}`. DataState IS the conditional; the outer guard is redundant and breaks the retry/refetch skeleton.",
       "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
+      "DO: mount `AuthExpiryProvider onAuthExpired={…}` once at the app root (SSO apps: redirect to the IdP with the current URL as return target). A 401 then never paints an alert: the handler runs automatically, once for any number of simultaneous 401s, and DataState keeps its `skeleton` with a polite live region announcing the redirect (gh#1022).",
+      "DON'T: rely on per-page `onAuthError` for session expiry — it is only a click-to-sign-in button in the fallback alert (no provider). An expired session is an app-wide concern, not a page error.",
       "DO: classify errors by cause. Use session renewal/sign-in for 401, access guidance for 403, contextual correction for domain errors, and opt into showRetry only for transient network/5xx errors.",
       "DO: pass prerequisite for enabled:false queries. Pending + fetchStatus idle is unstarted, not loading, and never renders a skeleton.",
       "DO: rely on the localized, cause-specific error message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",
@@ -5267,6 +5269,46 @@
       "A sidebar panel that lazily loads related transactions for the selected entity — DataState keeps the panel in skeleton state during the background fetch without any manual `isPending` branching in the parent.",
       "A dashboard stat card that calls a summary API — DataState handles the loading/error/empty lifecycle so `<StatCard>` is only rendered with fully resolved numbers, preventing NaN or undefined rendering.",
       "Any page using `useQuery` where the empty state and loading state are visually different — DataState enforces the correct visual for each phase without scattered `if` statements across the component tree."
+    ]
+  },
+  {
+    "example": "import { AuthExpiryProvider } from \"@godxjp/ui/query\";\n\nexport function Providers({ children }: { children: React.ReactNode }) {\n  return (\n    <AuthExpiryProvider\n      onAuthExpired={() => {\n        const returnTo = encodeURIComponent(window.location.href);\n        window.location.assign(`/auth/login?return_to=${returnTo}`);\n      }}\n    >\n      {children}\n    </AuthExpiryProvider>\n  );\n}",
+    "group": "feedback",
+    "importPath": "@godxjp/ui/query",
+    "name": "AuthExpiryProvider",
+    "props": [
+      {
+        "description": "Called ONCE per expiry — any number of simultaneous 401s share one call; re-armed after every auth-errored view has gone. Typically `window.location.assign(loginUrl(returnTo = location.href))`. Return a promise for a silent refresh (then invalidate queries); a throw/rejection brings back the sign-in alert, whose button calls this again.",
+        "name": "onAuthExpired",
+        "required": true,
+        "type": "(context: { error: unknown }) => void | Promise<void>"
+      },
+      {
+        "description": "The app.",
+        "name": "children",
+        "type": "ReactNode"
+      }
+    ],
+    "related": [
+      "DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError — the surfaces that consult this provider.",
+      "classifyQueryError — decides what is auth-class (401, or a status-less 'unauthenticated / access token invalid / token expired' message).",
+      "ErrorSurface — the whole-page error surface; a session expiry is neither a page error nor an inline one."
+    ],
+    "rules": [],
+    "storyPath": "query/DataState.stories.tsx",
+    "tagline": "App-root handler for an expired session (401 / invalid or expired token): every DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError calls it automatically, once, and shows a neutral pending state instead of an error alert. Also exported from @godxjp/ui.",
+    "usage": [
+      "DO: mount it ONCE near the root, inside the QueryClientProvider/AppProvider, and redirect to the IdP with the current URL as the return target. The IdP returns immediately while its own session is alive — the SSO norm (Google/Microsoft apps, OIDC SPA guidance): no page-level error for an expired session.",
+      "DO: expect the surfaces to keep their `skeleton` (DataState/InfiniteQueryState) or a small muted status line (AlertMutationFeedback/AlertQueryError) with `role=\"status\"` announcing 'redirecting to sign-in' — never a destructive alert.",
+      "DON'T: wire `onAuthError` on every DataState as the session strategy — that renders an alert and waits for a click. It is the no-provider fallback only.",
+      "DON'T: use it for 403 — forbidden is a permission state, not an expired session; it still renders the access-guidance alert.",
+      "DO: when there is no provider the 401 fallback is a neutral (tone=default, role=status) sign-in alert capped at `--query-auth-alert-max-inline-size` (36rem, `none` = full width) — backward compatible, but proportionate."
+    ],
+    "useCases": [
+      "An SSO app (GoDX ID / OIDC) whose access token expired while the tab was idle: the first 401 redirects to the IdP and back to the same URL, no error panel flashes.",
+      "A dashboard with five DataStates that all 401 in the same tick: exactly one redirect.",
+      "A form submit (`AlertMutationFeedback`) that 401s: a muted 'redirecting to sign-in' line instead of a red alert.",
+      "A silent token refresh: return a promise that refreshes and then `queryClient.invalidateQueries()`; the views recover from skeleton without ever showing an error."
     ]
   },
   {
@@ -5313,7 +5355,7 @@
       "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",
       "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
       "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
-      "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; 401 routes to `onAuthError`, and raw backend/token text is never rendered.",
+      "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; a 401 is handled by the app-root `AuthExpiryProvider` (auto, once, skeleton + live region) or, without one, by the `onAuthError` sign-in button; raw backend/token text is never rendered.",
       "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
       "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
       "DON'T: Confuse the two generics: `TPage` is the raw page shape from the API, `TFlat` is what `flatten` returns (usually `TItem[]`). The `children` render-prop receives `TFlat`, not `TPage`. Pass `isEmpty` if `TFlat` is not a plain array so empty detection works correctly."

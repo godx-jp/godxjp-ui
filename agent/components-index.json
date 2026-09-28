@@ -322,6 +322,11 @@
     "tagline": "TanStack Query lifecycle widget — skeleton / error / empty / success for one useQuery block. Import from @godxjp/ui/query."
   },
   {
+    "group": "feedback",
+    "name": "AuthExpiryProvider",
+    "tagline": "App-root handler for an expired session (401 / invalid or expired token): every DataState / InfiniteQueryState / AlertMutationFeedback / AlertQueryError calls it automatically, once, and shows a neutral pending state instead of an error alert. Also exported from @godxjp/ui."
+  },
+  {
     "group": "data-display",
     "name": "InfiniteQueryState",
     "tagline": "useInfiniteQuery widget — flatten pages, skeleton/empty/error, load-more footer. Import from @godxjp/ui/query."

@@ -197,7 +197,9 @@ describe("Alert.QueryError — cause-aware (category) mode", () => {
         onRetry={onRetry}
       />,
     );
-    expect(screen.getByRole("alert")).toBeInTheDocument();
+    // gh#1022: an expired session is neutral + polite, not an assertive destructive alert.
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveAttribute("data-tone", "default");
     expect(screen.queryByText(/access token/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /đăng nhập lại/i }));

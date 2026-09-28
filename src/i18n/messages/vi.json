@@ -623,6 +623,9 @@
       "action": {
         "signIn": "Đăng nhập lại"
       }
+    },
+    "authExpiry": {
+      "redirecting": "Phiên đăng nhập đã hết hạn. Đang chuyển đến trang đăng nhập…"
     }
   },
   "chart": {

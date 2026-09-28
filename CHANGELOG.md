@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ `AuthExpiryProvider` — an expired session is handled centrally, never painted as a page error (gh#1022)
+
+MINOR. A 401 used to make `DataState` paint a full-width **destructive** alert
+(「セッションの有効期限が切れました」 + 「再度サインイン」) and call `onAuthError` only on a click.
+In an SSO app that panel covered the whole page body. The SSO norm (Google/Microsoft apps, OIDC SPA
+guidance, GOV.UK service timeout) is the reverse: send the user back through the IdP, which
+returns at once while its session is alive, with no error banner.
+
+- **New `AuthExpiryProvider onAuthExpired={({ error }) => …}`** from `@godxjp/ui/query` (and
+  `@godxjp/ui`). `DataState`, `InfiniteQueryState`, `AlertMutationFeedback` and `AlertQueryError`
+  all consult it. On an auth-class error (`classifyQueryError` → `"auth"`: 401, or a status-less
+  "unauthenticated / access token invalid / token expired" message) the handler runs
+  **automatically and once**. Any number of simultaneous 401s share that one call, and StrictMode
+  does not double it. The call re-arms once every auth-errored view has gone.
+- While the handler runs, a query surface keeps its `skeleton` and a polite `role="status"` live
+  region announces 「セッションの有効期限が切れました。サインイン画面へ移動しています…」 (en/vi/ja). A
+  mutation surface shows that line as a small muted status. There is no alert and no button.
+- If the handler throws or rejects (for example, a failed silent refresh), the surfaces fall back to
+  the sign-in alert, and its button calls the handler again. The user never gets an endless spinner.
+- **Without a provider** the fallback keeps its behaviour but is sized to fit. It uses the neutral
+  tone (`role="status"`, not an assertive destructive `alert`), capped by the new
+  `--query-auth-alert-max-inline-size` token (36rem; `none` restores full width). Measured on the
+  docs page at 1464px: alert width 1430px → 576px. `onAuthError` is still click-only.
+- Non-auth errors are unchanged. A 503 still offers Retry and never calls the handler.
+
 ## [31.2.0] - 2026-09-28
 
 ### ✨ DataTable `columns[].flush` — a ListRow in a selectable table renders flush (gh#1016)

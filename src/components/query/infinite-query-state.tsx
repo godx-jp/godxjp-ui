@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { AlertQueryError } from "../feedback/alert";
+import { useAuthExpiry } from "../feedback/auth-expiry";
 import { Button } from "../general/button";
 import { useTranslation } from "../../i18n/use-translation";
 import type { InfiniteQueryStateProp } from "../../props/components/query.prop";
@@ -70,10 +71,28 @@ export function InfiniteQueryState<
     void query.refetch();
   }, [onRetry, query]);
 
+  // Under an AuthExpiryProvider an expired session is handled centrally (gh#1022): the provider's
+  // handler runs once for every simultaneous 401 and this view stays in its neutral pending state.
+  const showingAuthError =
+    query.isError &&
+    !(query.isFetching && !query.isFetchingNextPage) &&
+    classifyQueryError(query.error).category === "auth";
+  const authExpiry = useAuthExpiry(showingAuthError, query.error);
+
   if (query.isPending) return <>{skeleton}</>;
 
   if (query.isError) {
     if (query.isFetching && !query.isFetchingNextPage) return <>{skeleton}</>;
+    if (authExpiry?.status === "redirecting") {
+      return (
+        <>
+          {skeleton}
+          <span role="status" aria-live="polite" className="sr-only">
+            {t("query.authExpiry.redirecting")}
+          </span>
+        </>
+      );
+    }
     if (errorRenderer) return <>{errorRenderer(query.error, retry)}</>;
     const info = classifyQueryError(query.error);
     const canRetry =

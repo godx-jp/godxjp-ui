@@ -810,15 +810,15 @@ import { Building2, Inbox } from "lucide-react";
 // announces the busy state politely — stale/placeholder refresh is handled for you.
 //
 // Errors are classified by CAUSE, not blanket-retried:
-//   auth (401)         → onAuthError: renew session / sign in again  (NOT a retry)
+//   auth (401)         → handled app-wide by <AuthExpiryProvider onAuthExpired> at the root:
+//                        auto-redirect to sign-in ONCE, skeleton stays (NOT a retry, NOT an alert)
 //   forbidden (403)    → permission message + access path            (no retry)
 //   notFound (404)     → contextual not-found                        (no retry)
 //   validation (400/422)→ corrective guidance                        (no retry)
 //   transient (408/429/5xx/network) → Retry offered automatically
 //   unknown            → neutral; opt into Retry via showRetry/onRetry only if it can help
-export function MembersPanel({ query, orgId, onSignIn }: {
-  query: any; orgId?: string; onSignIn: () => void;
-}) {
+// App root (once): <AuthExpiryProvider onAuthExpired={() => redirectToSignIn(location.href)}>
+export function MembersPanel({ query, orgId }: { query: any; orgId?: string }) {
   return (
     <DataState
       query={query}
@@ -828,7 +828,6 @@ export function MembersPanel({ query, orgId, onSignIn }: {
       empty={<EmptyState icon={Inbox} variant="section" title="メンバーがいません"
         description="この組織にはまだメンバーが登録されていません。" />}
       isEmpty={(data) => data.items.length === 0}
-      onAuthError={onSignIn}
     >
       {(data) => <MemberTable items={data.items} />}
     </DataState>
@@ -839,7 +838,6 @@ export function MembersPanel({ query, orgId, onSignIn }: {
 // default detail is always a localized message (never raw token / endpoint / stack text):
 //   errorRenderer={(error, retry) => {
 //     const { category } = classifyQueryError(error);
-//     if (category === "auth") return <SessionExpired onRenew={onSignIn} />;
 //     if (category === "forbidden") return <NoAccess />;
 //     if (category === "transient") return <Retryable onRetry={retry} />;
 //     return <GenericError />;
