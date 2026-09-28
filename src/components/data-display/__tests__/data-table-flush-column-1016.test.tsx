@@ -112,7 +112,8 @@ describe("DataTable columns[].flush (gh#1016)", () => {
 
   it("paints the ListRow unread token across the whole table row, not only the ListRow's cell", () => {
     const rule = TABLE_CSS.match(
-      /\.ui-table-row:has\(\s*>\s*\[data-slot="table-cell"\]\[data-flush\]\s*>\s*\[data-slot="list-row"\]\[data-unread\]\s*\)\s*\{([^}]*)\}/,
+      // A selected row keeps the selection fill: the unread rule stops there (gh#1038).
+      /\.ui-table-row:not\(\[data-state="selected"\]\):has\(\s*>\s*\[data-slot="table-cell"\]\[data-flush\]\s*>\s*\[data-slot="list-row"\]\[data-unread\]\s*\)\s*\{([^}]*)\}/,
     );
     expect(rule).not.toBeNull();
     expect(rule![1]).toContain("var(--list-row-unread-background, hsl(var(--muted)))");
