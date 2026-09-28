@@ -3215,6 +3215,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "SizeProp",
       "ExtraProp",
+      "IdProp",
       {
         field: "bodied",
         local: true,

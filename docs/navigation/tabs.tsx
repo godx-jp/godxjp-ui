@@ -146,6 +146,7 @@ export default function Demo() {
     },
   ]);
   const [editableTab, setEditableTab] = useState("je-0042");
+  const [inboxStatus, setInboxStatus] = useState("open");
 
   return (
     <PageContainer
@@ -643,6 +644,48 @@ export default function Demo() {
               tabPlacement="start"
               items={settingItems}
             />
+          </CardContent>
+        </Card>
+
+        {/* STRIP-ONLY (gh#1021). The strip drives a region OUTSIDE the Tabs, so no tabpanel is
+            rendered and the view below is never remounted by a tab switch. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>controls · タブ列だけ(外部の領域を切り替える)</CardTitle>
+            <CardDescription>
+              controls に外部領域の id を渡すと tabpanel を描かず、選択中のタブの aria-controls
+              がその領域を指す。領域は Tabs の外にあるのでタブを切り替えても再マウントされない。
+              compound の TabsTrigger も items と同じ count を描く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Tabs
+                aria-label="対応状況"
+                controls="tabs-inbox-view"
+                variant="line"
+                value={inboxStatus}
+                onValueChange={setInboxStatus}
+                items={[
+                  { value: "open", label: "未対応", count: 12, countLabel: "件" },
+                  { value: "doing", label: "対応中", count: 3, countLabel: "件" },
+                  { value: "done", label: "完了", count: 128, countLabel: "件" },
+                ]}
+              />
+              <section id="tabs-inbox-view" aria-label="スレッド一覧">
+                <Text as="p">表示中: {inboxStatus}</Text>
+              </section>
+              <Tabs aria-label="保存ビュー" controls="tabs-inbox-view" defaultValue="mine">
+                <TabsList variant="line">
+                  <TabsTrigger value="mine" count={4} countLabel="件">
+                    自分の担当
+                  </TabsTrigger>
+                  <TabsTrigger value="all" count={143} countLabel="件">
+                    すべて
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </Flex>
           </CardContent>
         </Card>
 

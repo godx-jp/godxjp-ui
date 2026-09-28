@@ -103,6 +103,18 @@ type TabsFrame = {
    * So a trigger claims a panel only when a `TabsContent` is declared for its value.
    */
   panels: ReadonlySet<string> | null;
+  /**
+   * The consumer region a panel-less trigger controls (`TabsProp.controls`, gh#1021). A trigger
+   * with no declared `TabsContent` points its `aria-controls` here instead of dropping it, so a
+   * strip-only `Tabs` keeps the APG tab → region relationship.
+   */
+  controls: string | undefined;
+  /**
+   * The root's `aria-label` / `aria-labelledby`, handed to the TABLIST (gh#1020). On the root
+   * `<div>` — which has no role — the name was prohibited ARIA 1.2 and the tablist itself stayed
+   * unnamed; the APG names the tablist. A `TabsList` that carries its own name keeps it.
+   */
+  listLabel: { "aria-label"?: string; "aria-labelledby"?: string };
 };
 
 /**
@@ -166,11 +178,15 @@ function TabCount({
   return pill;
 }
 
+const NO_LIST_LABEL: TabsFrame["listLabel"] = {};
+
 const TabsFrameContext = React.createContext<TabsFrame>({
   orientation: "horizontal",
   selectionSuppressed: false,
   size: "md",
   panels: null,
+  controls: undefined,
+  listLabel: NO_LIST_LABEL,
 });
 
 /**
@@ -360,9 +376,12 @@ export function Tabs({
   indicator,
   moreIcon,
   onTabScroll,
+  controls,
   listClassName,
   contentClassName,
   children,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
   ...props
 }: TabsProps) {
   const { t } = useTranslation();
@@ -396,9 +415,23 @@ export function Tabs({
         return next;
       });
   }, []);
+  const listLabel = React.useMemo<TabsFrame["listLabel"]>(
+    () =>
+      ariaLabel === undefined && ariaLabelledby === undefined
+        ? NO_LIST_LABEL
+        : { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby },
+    [ariaLabel, ariaLabelledby],
+  );
   const frame = React.useMemo<TabsFrame>(
-    () => ({ orientation: resolvedOrientation, selectionSuppressed, size, panels }),
-    [resolvedOrientation, selectionSuppressed, size, panels],
+    () => ({
+      orientation: resolvedOrientation,
+      selectionSuppressed,
+      size,
+      panels,
+      controls,
+      listLabel,
+    }),
+    [resolvedOrientation, selectionSuppressed, size, panels, controls, listLabel],
   );
   const editable = variant === "editable-card";
 
@@ -828,30 +861,34 @@ export function Tabs({
               ) : (
                 list
               )}
-              {items.map((item) => {
-                // `destroyOnHidden={false}` keeps EVERY panel mounted; antd's per-item
-                // `forceRender` keeps exactly THIS one mounted while the rest are still destroyed.
-                // Both land on the same two attributes, so they are resolved to one flag here.
-                //
-                // `forceMount` alone is not enough: Radix writes `hidden: !present` and `present` is
-                // `forceMount || isSelected`, so a force-mounted panel would paint on top of the
-                // active one. The attribute is therefore driven from the selection mirror.
-                const keepMounted = !destroyOnHidden || item.forceRender === true;
-                return (
-                  <TabsContent
-                    key={item.value}
-                    value={item.value}
-                    data-slot="tabs-panel"
-                    forceMount={keepMounted ? true : undefined}
-                    hidden={keepMounted ? item.value !== activeValue : undefined}
-                    // No variant geometry: the panel has never carried a top margin (the root is a flex
-                    // column with --tabs-root-gap).
-                    className={contentClassName}
-                  >
-                    {item.content}
-                  </TabsContent>
-                );
-              })}
+              {/* STRIP-ONLY (gh#1021): `controls` names the consumer's own region, so no panel
+                  is rendered at all — an empty `tabpanel` is a landmark with nothing in it. */}
+              {controls !== undefined
+                ? null
+                : items.map((item) => {
+                    // `destroyOnHidden={false}` keeps EVERY panel mounted; antd's per-item
+                    // `forceRender` keeps exactly THIS one mounted while the rest are still destroyed.
+                    // Both land on the same two attributes, so they are resolved to one flag here.
+                    //
+                    // `forceMount` alone is not enough: Radix writes `hidden: !present` and `present` is
+                    // `forceMount || isSelected`, so a force-mounted panel would paint on top of the
+                    // active one. The attribute is therefore driven from the selection mirror.
+                    const keepMounted = !destroyOnHidden || item.forceRender === true;
+                    return (
+                      <TabsContent
+                        key={item.value}
+                        value={item.value}
+                        data-slot="tabs-panel"
+                        forceMount={keepMounted ? true : undefined}
+                        hidden={keepMounted ? item.value !== activeValue : undefined}
+                        // No variant geometry: the panel has never carried a top margin (the root is a flex
+                        // column with --tabs-root-gap).
+                        className={contentClassName}
+                      >
+                        {item.content}
+                      </TabsContent>
+                    );
+                  })}
             </>
           ) : (
             children
@@ -889,6 +926,14 @@ type TabsListProps = React.ComponentPropsWithoutRef<"div"> & {
 
 export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, variant = "default", loop: _loop, children, ...props }, ref) => {
+    // gh#1020: the root's name belongs HERE, on role=tablist. The list's own name wins.
+    const { listLabel } = React.useContext(TabsFrameContext);
+    // Handed to RAC itself rather than laid down as a raw DOM prop: RAC's own labelling props
+    // come second in `withDomProps` and would otherwise overwrite it with `undefined`.
+    const ownName = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
+    const name = ownName
+      ? { "aria-label": props["aria-label"], "aria-labelledby": props["aria-labelledby"] }
+      : listLabel;
     // Own a node ref regardless of what the caller passes, so the keep-visible observers always have
     // the strip to measure; the caller's ref is still populated (object or callback form).
     const listRef = React.useRef<HTMLDivElement | null>(null);
@@ -907,6 +952,8 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
     return (
       <AriaTabList
         ref={setListRef}
+        aria-label={name["aria-label"]}
+        aria-labelledby={name["aria-labelledby"]}
         className={cn(
           // `min-w-0 max-w-full` let the list shrink to (and never exceed) whatever width its
           // ancestors actually give it instead of forcing them wider; horizontal orientation then
@@ -948,11 +995,27 @@ type TabsTriggerProps = Omit<React.ComponentPropsWithoutRef<"button">, "value"> 
   value: string;
   /** RAC `isDisabled`; ALSO written to the button so `disabled:` utilities keep matching. */
   disabled?: boolean;
-};
+} & Pick<TabItemProp, "count" | "overflowCount" | "showZero" | "countLabel">;
 
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, disabled, children, onKeyDown, onClick, ...props }, ref) => {
-    const { orientation, selectionSuppressed, size, panels } = React.useContext(TabsFrameContext);
+  (
+    {
+      className,
+      value,
+      disabled,
+      count,
+      overflowCount,
+      showZero,
+      countLabel,
+      children,
+      onKeyDown,
+      onClick,
+      ...props
+    },
+    ref,
+  ) => {
+    const { orientation, selectionSuppressed, size, panels, controls } =
+      React.useContext(TabsFrameContext);
     // No `Tabs` root above this trigger (`panels === null`) leaves RAC's attribute alone; a root
     // that has no panel declared for this value means the trigger controls nothing and says so.
     const controlsAPanel = panels === null || panels.has(value);
@@ -1014,10 +1077,14 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
             // here for BOTH states, exactly as Radix did.
             "data-state": renderProps.isSelected && !selectionSuppressed ? "active" : "inactive",
             "aria-selected": renderProps.isSelected && !selectionSuppressed,
-            // RAC writes this unconditionally; see `TabsFrame.panels` (gh#643).
+            // RAC writes this unconditionally; see `TabsFrame.panels` (gh#643). With no panel
+            // declared, a strip-only root's `controls` region takes its place — on the SELECTED
+            // tab only, the same rule RAC applies to a real panel (gh#1021).
             "aria-controls": controlsAPanel
               ? (domProps as { "aria-controls"?: string })["aria-controls"]
-              : undefined,
+              : renderProps.isSelected && !selectionSuppressed
+                ? controls
+                : undefined,
             "data-orientation": orientation,
             disabled,
             // CHAINED, not spread — the same reason `onKeyDown` below is. `withDomProps` lays the
@@ -1047,6 +1114,13 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
         }
       >
         {children}
+        {/* gh#1021: the compound trigger draws the SAME counter the `items` API does. */}
+        <TabCount
+          count={count}
+          overflowCount={overflowCount}
+          showZero={showZero}
+          countLabel={countLabel}
+        />
       </AriaTab>
     );
   },
