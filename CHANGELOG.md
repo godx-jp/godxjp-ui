@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.10.3] - 2026-09-29
+
+### 🐛 DatePicker `showTime`: Enter in the time box confirms, never drops the pick (#1076)
+
+PATCH. Under `showTime` (where `needConfirm` is on by default), picking a day, typing a time in the
+popover's time box and pressing Enter closed the popover and threw the pick away, leaving the field
+on its placeholder (production: godx-task #412). Enter there now does what OK does, as in antd: the
+day at the typed time becomes the value and the popover closes.
+
+- The OK button and Enter share one confirm path, so both refuse the same out-of-bounds values.
+- Escape in the time box still leaves a confirmed value untouched.
+
 ## [31.10.2] - 2026-09-29
 
 ### 🐛 Tabs: the `bodied` extra is centred on the tab faces, off the panel border (#1073)

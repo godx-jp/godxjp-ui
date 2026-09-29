@@ -345,6 +345,24 @@ export function DatePicker(props: DatePickerProp) {
     }
   };
 
+  /** antd's OK: emit the pending pick and close. The OK button and Enter in the time box share it. */
+  const confirm = (next: Date | Date[] | DateRange | undefined) => {
+    if (range) {
+      const nextRange = next as DateRange | undefined;
+      if (!validRange(nextRange)) return;
+      emit(nextRange);
+      setFromText(display(nextRange?.from));
+      setToText(display(nextRange?.to));
+    } else {
+      const first = Array.isArray(next) ? next[0] : (next as Date | undefined);
+      if (!first || !allowed(first) || !timeAllowed(first)) return;
+      emit(next);
+      setText(displayAll(next as Date | Date[] | undefined));
+    }
+    setOpen(false);
+  };
+  const timeEnterRef = React.useRef(false);
+
   const commit = (raw: string) => {
     if (!raw.trim()) {
       choose(undefined);
@@ -723,7 +741,24 @@ export function DatePicker(props: DatePickerProp) {
       ) : null}
       {isPeriod ? renderPeriodPanel() : renderDayPanel()}
       {showTime ? (
-        <Flex pad="sm">
+        <Flex
+          pad="sm"
+          // gh#1076: Enter in the time box is antd's OK. The embedded TimePicker handles Enter itself
+          // (commits its own value, closes its own list) and the outer popover then closed on a
+          // pending pick that nothing had emitted, so the picked date vanished. Capture marks the
+          // keystroke before the TimePicker sees it; the TimePicker's synchronous `onValueChange`
+          // then confirms the NEW time, and the bubble phase confirms when it emitted nothing.
+          onKeyDownCapture={(event) => {
+            if (event.key === "Enter" && !isImeComposing(event)) timeEnterRef.current = true;
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter" || !timeEnterRef.current) return;
+            timeEnterRef.current = false;
+            event.preventDefault();
+            if (needConfirm) confirm(working);
+            else setOpen(false);
+          }}
+        >
           <TimePicker
             {...(typeof showTime === "object" ? showTime : {})}
             aria-label={t("dataEntry.timePicker.openPicker")}
@@ -745,7 +780,16 @@ export function DatePicker(props: DatePickerProp) {
               const date = new Date(selectedDate ?? new Date());
               const [h, m, sec = 0] = time.split(":").map(Number);
               date.setHours(h, m, sec, 0);
-              choose(date);
+              if (!timeEnterRef.current) {
+                choose(date);
+                return;
+              }
+              timeEnterRef.current = false;
+              if (needConfirm) confirm(date);
+              else {
+                choose(date);
+                setOpen(false);
+              }
             }}
           />
         </Flex>
@@ -759,18 +803,7 @@ export function DatePicker(props: DatePickerProp) {
                 ? !validRange(rangeValue)
                 : !selectedDate || !allowed(selectedDate) || !timeAllowed(selectedDate)
             }
-            onClick={() => {
-              if (range ? validRange(rangeValue) : selectedDate && allowed(selectedDate)) {
-                emit(working);
-                if (range) {
-                  setFromText(display(rangeValue?.from));
-                  setToText(display(rangeValue?.to));
-                } else {
-                  setText(displayAll(working as Date | Date[] | undefined));
-                }
-                setOpen(false);
-              }
-            }}
+            onClick={() => confirm(working)}
           >
             {t("dataEntry.timePicker.confirm")}
           </Button>
