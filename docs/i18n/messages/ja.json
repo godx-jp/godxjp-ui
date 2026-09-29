@@ -1444,5 +1444,23 @@
     "nameColumn": "氏名",
     "inviteTitle": "招待を送信",
     "send": "送信"
+  },
+  "treeDocs": {
+    "longList": {
+      "title": "長い子リスト（height · virtual · filterTreeNode）",
+      "description": "2 スイート → 28 セクション → 最大 421 ケース。height を渡すとツリー自身がその高さでスクロールし、見えている行だけを描画します（antd の height + virtual）。検索語に一致するノードは filterTreeNode で強調されるだけで、隠れません。セクション 2 は初回の loadData が失敗し、もう一度開くと再取得します。セクション 3 は API がページングされている場合の組み立て例で、末尾の葉を選ぶと次の 100 件を読み込みます。",
+      "searchLabel": "ケースを検索",
+      "searchPlaceholder": "ケース名で強調（例: 042）",
+      "treeLabel": "テストスイート",
+      "suiteIntegration": "結合テスト",
+      "suiteAcceptance": "受入テスト",
+      "section": "セクション {number}",
+      "sectionFailing": "セクション {number}（初回の読み込みが失敗）",
+      "sectionPaged": "セクション {number}（{count} 件ずつ）",
+      "case": "ケース {number}",
+      "loadMore": {
+        "other": "さらに {count} 件を読み込む"
+      }
+    }
   }
 }

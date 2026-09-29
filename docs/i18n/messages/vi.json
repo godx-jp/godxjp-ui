@@ -1444,5 +1444,23 @@
     "nameColumn": "Họ tên",
     "inviteTitle": "Gửi lời mời",
     "send": "Gửi"
+  },
+  "treeDocs": {
+    "longList": {
+      "title": "Danh sách con dài (height · virtual · filterTreeNode)",
+      "description": "2 bộ → 28 mục → tối đa 421 ca. Với height, cây cuộn trong chiều cao đó và chỉ vẽ các hàng đang thấy (antd height + virtual). Nút khớp từ tìm kiếm được filterTreeNode làm nổi bật, không bị ẩn. Mục 2 thất bại ở lần loadData đầu và tải lại khi mở lần nữa. Mục 3 là ví dụ ghép cho API phân trang: chọn lá cuối để tải thêm 100 ca.",
+      "searchLabel": "Tìm ca kiểm thử",
+      "searchPlaceholder": "Làm nổi bật theo tên ca (vd: 042)",
+      "treeLabel": "Bộ kiểm thử",
+      "suiteIntegration": "Kiểm thử tích hợp",
+      "suiteAcceptance": "Kiểm thử chấp nhận",
+      "section": "Mục {number}",
+      "sectionFailing": "Mục {number} (lần tải đầu thất bại)",
+      "sectionPaged": "Mục {number} (mỗi lần {count} ca)",
+      "case": "Ca {number}",
+      "loadMore": {
+        "other": "Tải thêm {count} ca"
+      }
+    }
   }
 }
