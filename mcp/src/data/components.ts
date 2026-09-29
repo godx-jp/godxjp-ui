@@ -7589,7 +7589,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "allowCreate",
         type: "boolean | ((text: string) => boolean)",
-        default: "true",
+        defaultValue: "true",
         description:
           'mode="tags" — whether typed text may become a NEW value (gh#1052). false, or a predicate returning false for the text, hides the create row and drops unknown tokenSeparators tokens; values already held stay listed so they can be removed. Not an antd prop.',
       },
@@ -7608,7 +7608,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
       {
         name: "caseSensitive",
         type: "boolean",
-        default: "false",
+        defaultValue: "false",
         description:
           'Compare typed text case-sensitively (gh#1053). Default false: the built-in filter, the tags create row and a tokenSeparators run all case-fold, so typing "bug" when "Bug" exists finds Bug instead of offering a duplicate. antd folds its filter but compares the create row exactly; true restores that. A custom filterOption is unaffected.',
       },
@@ -11594,7 +11594,7 @@ export function AvatarField() {
           "The current hex color string (3- or 6-digit, with leading #). Component auto-prepends # if missing. Invalid hex values are discarded and the previous valid value is kept.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(hex: string) => void",
         defaultValue: "undefined",
         description:
@@ -11629,11 +11629,6 @@ export function AvatarField() {
           "DOM id applied to the hidden native <input type='color'>. Pass the FormField id here so the label's htmlFor targets this control correctly.",
       },
       {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Fires with the committed hex string.",
-      },
-      {
         name: "presets",
         type: "{ label: ReactNode; colors: string[]; defaultOpen?: boolean; key?: Key }[]",
         defaultValue: "undefined",
@@ -11650,9 +11645,9 @@ export function AvatarField() {
     ],
     usage: [
       "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onValueChange={setV} /></FormField>`.",
-      "DO use controlled mode (value + onChange) — there is no defaultValue/uncontrolled path; always supply value.",
+      "Use it controlled (value + onValueChange) or uncontrolled (defaultValue + onValueChange); both paths commit only validated hex.",
       "DON'T pass an invalid or empty string to value — the component will flash the invalid color on the preview swatch. Always initialize state to a valid 3- or 6-digit hex (e.g. '#2563eb').",
-      "The hex Input is a live draft field — onChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onChange firing on every keystroke.",
+      "The hex Input is a live draft field — onValueChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onValueChange firing on every keystroke.",
       "Set showHexInput={false} only for compact/inline contexts (icon pickers, table cells) where space is tight and keyboard hex entry is not needed.",
       "DO use `presets` when the value must come from a fixed palette (tag / label colours) — add `panelRender={(_, { components: { Presets } }) => <Presets />}` to remove free hex entry entirely. NEVER rebuild a palette from a ToggleGroup of swatches.",
       "NEVER hand-roll a color picker with raw <input type='color'> — always use this component; it normalizes hex, debounces draft state, and respects the design-token control styles.",
