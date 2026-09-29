@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.10.2] - 2026-09-29
+
+### 🐛 Tabs: the `bodied` extra is centred on the tab faces, off the panel border (#1073)
+
+PATCH. Under `bodied`, an `extra` taller than a tab face was bottom-aligned onto the panel's top
+border and 1px into it (production: godx-task /TEMPO/issues). It now follows antd
+`tabBarExtraContent`: centred on the tab strip and never touching the body.
+
+- The bar keeps `align-items: center`. The strip and its tabs stretch to the bar's height, as
+  antd's nav list does, so the tabs stay joined to the body. A taller extra now grows the tab faces
+  instead of hanging across the rail.
+- The extra keeps one border width clear of each bar edge; only the add button sits on the rail.
+- Measured in Chromium, consumer shape at 1440px: extra bottom 50 → 49 with the panel top at 49,
+  and the extra centre within 0px of the tab-face centre.
+- `tabPlacement="bottom"` is fixed the same way; `start` / `end` and non-bodied tabs are unchanged.
+
 ## [31.10.1] - 2026-09-29
 
 ### 🐛 Table: the action-collection column fit is cheaper, and the actions wrapper is scoped to that preset (#1069, #1070)

@@ -59,7 +59,7 @@
       "type": "boolean"
     },
     {
-      "description": "Ant Design `tabBarExtraContent`, renamed to the library's `extra` slot and made logical: antd's `left`/`right` keys are `start`/`end` here. A bare node goes to `end` (antd's own default). Renders a bar row beside the strip; without it — and without an add button — no extra wrapper is emitted at all. Under `bodied` the bar row aligns its contents to the JOINED edge instead of centring them, so the add button and the extra sit on the rail rather than hanging across it.",
+      "description": "Ant Design `tabBarExtraContent`, renamed to the library's `extra` slot and made logical: antd's `left`/`right` keys are `start`/`end` here. A bare node goes to `end` (antd's own default). Renders a bar row beside the strip; without it — and without an add button — no extra wrapper is emitted at all. Centred on the tab faces (antd `.ant-tabs-nav { align-items: center }`). Under `bodied` the tabs stretch to the bar's height (antd's stretched nav list), so they stay joined to the body while the extra stays centred and off the body's border; only the add button sits on the rail (gh#1073).",
       "name": "extra",
       "type": "React.ReactNode | { start?: React.ReactNode; end?: React.ReactNode }"
     },
