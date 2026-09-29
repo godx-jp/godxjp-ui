@@ -56,7 +56,8 @@
     },
     "colorPicker": {
       "ariaLabel": "Chọn màu",
-      "hexLabel": "Mã màu hex"
+      "hexLabel": "Mã màu hex",
+      "presetEmpty": "Trống"
     },
     "upload": {
       "dropzoneLabel": "Tải file lên",

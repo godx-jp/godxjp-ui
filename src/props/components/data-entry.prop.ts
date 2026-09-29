@@ -1213,6 +1213,38 @@ export type ColorPickerProp = FieldA11yProps & {
   className?: ClassNameProp;
   id?: IdProp;
   showHexInput?: boolean;
+  /**
+   * antd `presets` (gh#1055) — named groups of fixed swatches under the picker. Each group is a
+   * collapsible section (antd renders a ghost `Collapse`); `defaultOpen` (default `true`) is its
+   * initial state and `key` its stable identity (falls back to the index). Each swatch is a radio
+   * named by its hex; the one equal to `value` (case- and shorthand-insensitive) is checked.
+   * Colours are hex strings (`#rgb`/`#rrggbb`) because the value is — antd also takes a colour
+   * object or a gradient, which this picker has no model for.
+   */
+  presets?: ColorPickerPresetProp[];
+  /**
+   * antd `panelRender` — replace the picker's body. `panel` is the default body (the swatch + hex
+   * row, then the presets); `extra.components` hands back each part on its own, so
+   * `panelRender={(_, { components: { Presets } }) => <Presets />}` is the PRESETS-ONLY mode —
+   * the palette with no free-colour entry (antd's own recipe for it). The hidden `name` input
+   * is outside the panel and always submits.
+   */
+  panelRender?: (
+    panel: React.ReactNode,
+    extra: { components: { Picker: React.FC; Presets: React.FC } },
+  ) => React.ReactNode;
+};
+
+/** One `ColorPicker presets` group — antd `PresetsItem` (gh#1055). */
+export type ColorPickerPresetProp = {
+  /** Group heading; also names the group's radiogroup. */
+  label: LabelProp;
+  /** Hex colours (`#rgb` / `#rrggbb`), in display order. Empty → antd's "Empty" line. */
+  colors: string[];
+  /** Initial expanded state of the group (antd default `true`). */
+  defaultOpen?: DefaultOpenProp;
+  /** Stable identity of the group (antd `key`); defaults to its index. */
+  key?: React.Key;
 };
 
 /** A SearchSelect option row. `group` buckets it under an optgroup-style heading. */

@@ -1474,6 +1474,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "ColorPicker — width of the hex text field beside the swatch."
   },
   {
+    "name": "--color-picker-preset-size",
+    "value": "var(--touch-target-min)",
+    "description": "ColorPicker `presets` (gh#1055). The swatch box IS the radio's pointer target, so it sits on the WCAG 2.2 SC 2.5.8 floor (antd's own preset block is 24px too) and never rides --scaling below it. The gap leaves room for the checked ring, which is drawn outside the box."
+  },
+  {
+    "name": "--color-picker-preset-gap",
+    "value": "var(--space-2)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--color-picker-presets-gap",
+    "value": "var(--space-1)",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
     "description": "Command / CommandPalette — list height, inner paddings and the palette's own box."
@@ -1575,6 +1590,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--color-picker-hex-font-size",
+    "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
+    "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
+  },
+  {
+    "name": "--color-picker-presets-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },

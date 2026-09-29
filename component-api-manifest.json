@@ -5089,6 +5089,22 @@
           "declaredIn": ["src/props/components/data-entry.prop.ts"]
         },
         {
+          "name": "panelRender",
+          "origin": "owned",
+          "required": false,
+          "type": "((panel: React.ReactNode, extra: { components: { Picker: React.FC; Presets: React.FC; }; }) => React.ReactNode) | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
+          "name": "presets",
+          "origin": "owned",
+          "required": false,
+          "type": "ColorPickerPresetProp[] | undefined",
+          "values": [],
+          "declaredIn": ["src/props/components/data-entry.prop.ts"]
+        },
+        {
           "name": "showHexInput",
           "origin": "owned",
           "required": false,

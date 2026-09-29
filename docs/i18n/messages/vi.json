@@ -544,6 +544,17 @@
       "createField": "Nhãn",
       "createdHelper": "Đã tạo trong phiên này: {list}",
       "createdNone": "Chưa tạo gì"
+    },
+    "colorPicker": {
+      "presetsTitle": "Màu thẻ chọn từ bảng màu",
+      "presetsDescription": "presets — các nhóm ô màu cố định dưới bộ chọn; mỗi nhóm thu gọn được, bộ chọn tự do vẫn còn.",
+      "paletteLabel": "Màu nhãn",
+      "recommendedGroup": "Đề xuất",
+      "recentGroup": "Dùng gần đây",
+      "presetsOnlyTitle": "Chỉ bảng màu",
+      "presetsOnlyDescription": "panelRender chỉ trả về Presets — người dùng chọn trong bảng màu, không gõ được mã hex tuỳ ý.",
+      "tagColorLabel": "Màu thẻ",
+      "tagColorHelper": "Phím mũi tên di chuyển giữa các ô màu; ô đang chọn được đọc lên."
     }
   },
   "serviceLauncherShowcase": {

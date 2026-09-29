@@ -1018,6 +1018,93 @@
     text-transform: uppercase;
   }
 
+  /* `presets` / `panelRender` (gh#1055): the root stacks the picker row over the palette. Without
+   * either prop the root keeps its original inline row — no `data-panel`, none of this applies. */
+  .ui-color-picker[data-panel] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ui-color-picker-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--control-gap);
+  }
+
+  .ui-color-picker-presets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--color-picker-presets-gap);
+  }
+
+  .ui-color-picker-presets-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-block-size: var(--touch-target-min);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--color-picker-presets-font-size);
+    text-align: start;
+  }
+
+  .ui-color-picker-presets-chevron {
+    width: var(--control-icon-size);
+    height: var(--control-icon-size);
+    flex-shrink: 0;
+    transition: rotate 150ms;
+  }
+
+  /* antd: a caret pointing along the reading direction while collapsed, down while open. */
+  .ui-color-picker-presets-trigger[data-state="closed"] .ui-color-picker-presets-chevron {
+    rotate: -90deg;
+  }
+
+  .ui-color-picker-presets-trigger[data-state="closed"]:dir(rtl) .ui-color-picker-presets-chevron {
+    rotate: 90deg;
+  }
+
+  .ui-color-picker-presets-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--color-picker-preset-gap);
+    padding-block: var(--space-1);
+  }
+
+  /* The swatch paints a colour the consumer chose, so the colour IS the content: keep it under
+   * forced colours, where a background would otherwise be flattened to Canvas and every swatch
+   * would read the same. The hairline keeps a white swatch visible on a white card. */
+  .ui-color-picker-presets-color {
+    display: inline-block;
+    flex-shrink: 0;
+    inline-size: var(--color-picker-preset-size);
+    block-size: var(--color-picker-preset-size);
+    border: var(--stroke-hairline) solid hsl(var(--input) / var(--input-alpha, 100%));
+    border-radius: var(--control-radius);
+    background-color: var(--color-picker-preset-color);
+    cursor: pointer;
+    forced-color-adjust: none;
+  }
+
+  /* Checked = a ring OUTSIDE the swatch (a shape change, not a colour change — WCAG 1.4.1); the
+   * inner band in --background separates the ring from a swatch of the same hue. */
+  .ui-color-picker-presets-color[data-selected] {
+    box-shadow:
+      0 0 0 var(--stroke-md) hsl(var(--background)),
+      0 0 0 calc(var(--stroke-md) * 2) hsl(var(--foreground));
+  }
+
+  .ui-color-picker-presets-color[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-color-picker-presets-empty {
+    display: block;
+    padding-block: var(--space-1);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--color-picker-presets-font-size);
+  }
+
   .ui-query-refetch-icon[data-fetching="true"] {
     animation: spin 1s linear infinite;
   }

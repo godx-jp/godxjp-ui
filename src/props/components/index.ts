@@ -42,6 +42,7 @@ export type {
   DatePickerProp,
   TimePickerProp,
   ColorPickerProp,
+  ColorPickerPresetProp,
   UploadProp,
   UploadFileItemProp,
   UploadVariantProp,

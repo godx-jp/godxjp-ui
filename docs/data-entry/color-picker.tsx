@@ -3,19 +3,33 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { ColorPicker, FormField } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
+import { useTranslation } from "@godxjp/ui/i18n";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+
+/** A fixed tag palette (gh#1055): tags pick from it, never from free hex. */
+const TAG_PALETTE = ["#dc2626", "#ea580c", "#ca8a04", "#16a34a", "#0891b2", "#2563eb", "#9333ea"];
 
 /**
  * ColorPicker — hex color swatch + optional editable hex input.
  * Always initialize state to a valid 3- or 6-digit hex string.
  * Use controlled mode (value + onValueChange); no uncontrolled path.
  * Composed only from real @godxjp/ui components.
+ *
+ * `presets` / `panelRender` port antd ColorPicker (gh#1055). Deviations from antd, on purpose:
+ * - `colors` are hex strings only — the value is hex; antd also takes colour objects/gradients.
+ * - There is no popover: the picker is inline, so `panelRender` replaces the inline body. The
+ *   presets-only recipe is antd's own: `panelRender={(_, { components: { Presets } }) => <Presets />}`.
+ * - Each swatch is a real radio (APG radio group, named by its hex, arrow keys select); antd's
+ *   preset blocks are click-only divs.
  */
 export default function Demo() {
   const [brandColor, setBrandColor] = useState("#2563eb");
   const [accentColor, setAccentColor] = useState("#16a34a");
   const [categoryColor, setCategoryColor] = useState("#dc2626");
   const [validatedColor, setValidatedColor] = useState("#9333ea");
+  const [labelColor, setLabelColor] = useState("#16a34a");
+  const [tagColor, setTagColor] = useState("#2563eb");
+  const { t } = useTranslation();
 
   return (
     <PageContainer title="ColorPicker" subtitle="カラーピッカー · スウォッチ＋Hex入力">
@@ -71,6 +85,64 @@ export default function Demo() {
                 />
                 <Text tone="muted">選択中: {categoryColor}</Text>
               </Flex>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.colorPicker.presetsTitle")}</CardTitle>
+            <CardDescription>{t("showcase.colorPicker.presetsDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="label-color" label={t("showcase.colorPicker.paletteLabel")}>
+              <ColorPicker
+                id="label-color"
+                value={labelColor}
+                onValueChange={setLabelColor}
+                presets={[
+                  {
+                    key: "recommended",
+                    label: t("showcase.colorPicker.recommendedGroup"),
+                    colors: TAG_PALETTE,
+                  },
+                  {
+                    key: "recent",
+                    label: t("showcase.colorPicker.recentGroup"),
+                    colors: ["#2563eb", "#16a34a"],
+                    defaultOpen: false,
+                  },
+                ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>{t("showcase.colorPicker.presetsOnlyTitle")}</CardTitle>
+            <CardDescription>{t("showcase.colorPicker.presetsOnlyDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="tag-color"
+              label={t("showcase.colorPicker.tagColorLabel")}
+              helper={t("showcase.colorPicker.tagColorHelper")}
+            >
+              <ColorPicker
+                id="tag-color"
+                name="tag_color"
+                value={tagColor}
+                onValueChange={setTagColor}
+                presets={[
+                  {
+                    key: "tags",
+                    label: t("showcase.colorPicker.recommendedGroup"),
+                    colors: TAG_PALETTE,
+                  },
+                ]}
+                panelRender={(_, { components: { Presets } }) => <Presets />}
+              />
             </FormField>
           </CardContent>
         </Card>
