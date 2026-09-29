@@ -118,8 +118,8 @@ const ACTIONS_CONTENT_WIDTH = "--table-action-collection-actions-content-width";
  * or, in its default `auto` layout, by content — this restores the content rule for this one
  * column only.
  *
- * So the content is measured: every actions cell wraps its children in a shrink-to-content box
- * (`.ui-table-actions-content`, see TableCell), and when the widest one would reach past its cell
+ * So the content is measured: in this preset every actions cell wraps its children in a
+ * shrink-to-content box (`.ui-table-actions-content`, see TableCell), and when the widest one would reach past its cell
  * at the token measure, its width (plus the cell's own inset) is published as
  * `--table-action-collection-actions-content-width`, which the column reads in place of the
  * token. When everything fits — an icon-only actions column — nothing is published and the column
@@ -130,6 +130,10 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
   React.useLayoutEffect(() => {
     const box = ref.current;
     if (!enabled || !box || typeof ResizeObserver === "undefined") return undefined;
+    // The width each content box had at the last measure; a ResizeObserver report of the same
+    // width (e.g. the initial report for a box the frame below just measured) is not a change.
+    const measuredWidths = new WeakMap<Element, number>();
+    const observedContents = new Set<HTMLElement>();
     const measure = () => {
       // Measure against the TOKEN measure, never against a width this hook published earlier —
       // otherwise a column that once grew could never shrink back when its content does.
@@ -141,6 +145,7 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
         const style = getComputedStyle(cell);
         const inset = parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd);
         const width = content.getBoundingClientRect().width;
+        measuredWidths.set(content, width);
         // Fits the cell's PADDING box: it reaches no neighbour. The inset is the gutter an icon
         // target has always been allowed to use — the docs' xs `…` trigger is 26.7px in a 24px
         // content box — so an icon-only column keeps its exact token measure.
@@ -155,26 +160,83 @@ function useActionsColumnFit(ref: React.RefObject<HTMLDivElement | null>, enable
       });
       if (needed > 0) box.style.setProperty(ACTIONS_CONTENT_WIDTH, `${needed}px`);
     };
-    const resize = new ResizeObserver(measure);
-    const observeAll = () => {
-      resize.disconnect();
-      resize.observe(box);
-      box
-        .querySelectorAll<HTMLElement>(".ui-table-actions-content")
-        .forEach((content) => resize.observe(content));
-      measure();
+
+    // gh#1069 — every re-measure (rows changed, a box resized) is coalesced into ONE frame: a
+    // measure forces layout on every actions cell, so a burst of changes pays for it once.
+    let frame = 0;
+    let rowsChanged = false;
+    const schedule = () => {
+      if (frame !== 0) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (rowsChanged) {
+          rowsChanged = false;
+          observeStructure();
+          observeContents();
+        }
+        measure();
+      });
     };
-    // Rows arrive and leave (paging, filtering, async data) without the box changing size.
-    const mutations = new MutationObserver(observeAll);
-    mutations.observe(box, { childList: true, subtree: true });
-    observeAll();
+
+    const resize = new ResizeObserver((entries) => {
+      if (entries.some((entry) => measuredWidths.get(entry.target) !== entry.contentRect.width)) {
+        schedule();
+      }
+    });
+    const observeContents = () => {
+      observedContents.forEach((content) => {
+        if (content.isConnected) return;
+        resize.unobserve(content);
+        observedContents.delete(content);
+      });
+      box.querySelectorAll<HTMLElement>(".ui-table-actions-content").forEach((content) => {
+        if (observedContents.has(content)) return;
+        observedContents.add(content);
+        resize.observe(content);
+      });
+    };
+
+    // Rows arrive and leave (paging, filtering, async data) without the box changing size. Only
+    // that is watched — `childList` of the table (a section replaced), of each section (a row
+    // added or removed) and of each row (a cell added or removed), never `subtree`: a cell's own
+    // content changing is not a new actions cell, and a resized one is the ResizeObserver's job.
+    const mutations = new MutationObserver(() => {
+      rowsChanged = true;
+      schedule();
+    });
+    const observeStructure = () => {
+      mutations.disconnect();
+      const table = box.querySelector(":scope > table");
+      if (!table) return;
+      mutations.observe(table, { childList: true });
+      for (const section of Array.from(table.children)) {
+        mutations.observe(section, { childList: true });
+        for (const row of Array.from(section.children)) {
+          mutations.observe(row, { childList: true });
+        }
+      }
+    };
+
+    resize.observe(box);
+    observeStructure();
+    observeContents();
+    // The first measure is synchronous, so the first paint already has the fitted column.
+    measure();
     return () => {
+      if (frame !== 0) cancelAnimationFrame(frame);
       resize.disconnect();
       mutations.disconnect();
       box.style.removeProperty(ACTIONS_CONTENT_WIDTH);
     };
   }, [ref, enabled]);
 }
+
+/**
+ * gh#1070 — the preset a `TableCell` is rendered under. Only `action-collection` measures the
+ * actions content, so only there does an actions cell wrap its children; every other table keeps
+ * the plain `td > children` markup.
+ */
+const TablePresetContext = React.createContext<TablePresetProp>("default");
 
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
   (
@@ -233,16 +295,18 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
           ? { role: "group", "aria-label": scrollRegionLabel(label, t), tabIndex: 0 }
           : {})}
       >
-        {/* ui-audit-disable-next-line no-raw-table — this IS the Table primitive; it renders the native element. */}
-        <table
-          ref={ref}
-          data-slot="table"
-          // Tri-state on purpose: no attribute inherits the theme's `--table-row-striped-alpha`.
-          data-striped={striped === undefined ? undefined : striped ? "" : "false"}
-          // Type metrics live on `[data-slot="table"]` in table-layout.css
-          className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
-          {...props}
-        />
+        <TablePresetContext.Provider value={preset}>
+          {/* ui-audit-disable-next-line no-raw-table — this IS the Table primitive; it renders the native element. */}
+          <table
+            ref={ref}
+            data-slot="table"
+            // Tri-state on purpose: no attribute inherits the theme's `--table-row-striped-alpha`.
+            data-striped={striped === undefined ? undefined : striped ? "" : "false"}
+            // Type metrics live on `[data-slot="table"]` in table-layout.css
+            className={cn("w-full caption-bottom", bordered && "ui-table-bordered", className)}
+            {...props}
+          />
+        </TablePresetContext.Provider>
       </div>
     );
   },
@@ -425,42 +489,45 @@ export const TableCell = React.forwardRef<
       ...props
     },
     ref,
-  ) => (
-    <td
-      ref={ref}
-      data-slot="table-cell"
-      data-priority={priority}
-      data-flush={flush ? "" : undefined}
-      data-indent={indent === undefined ? undefined : indent}
-      data-align={align}
-      data-numeric={numeric ? "" : undefined}
-      data-wrap={wrap ? "" : undefined}
-      className={cn(className)}
-      style={
-        indent === undefined && width === undefined
-          ? style
-          : ({
-              ...style,
-              ...(indent === undefined ? null : { "--table-cell-indent-level": indent }),
-              ...(width === undefined ? null : { inlineSize: cellWidth(width) }),
-            } as React.CSSProperties)
-      }
-      {...props}
-    >
-      {label !== undefined ? (
-        <span className="ui-table-stacked-collection-label" aria-hidden="true">
-          {label}
-        </span>
-      ) : null}
-      {/* gh#1067 — the box `Table preset="action-collection"` measures to size the actions column
-       * to its content (see useActionsColumnFit). `display: contents` everywhere else, so it
-       * lays out nothing outside that preset. */}
-      {priority === "actions" ? (
-        <span className="ui-table-actions-content">{children}</span>
-      ) : (
-        children
-      )}
-    </td>
-  ),
+  ) => {
+    const preset = React.useContext(TablePresetContext);
+    return (
+      <td
+        ref={ref}
+        data-slot="table-cell"
+        data-priority={priority}
+        data-flush={flush ? "" : undefined}
+        data-indent={indent === undefined ? undefined : indent}
+        data-align={align}
+        data-numeric={numeric ? "" : undefined}
+        data-wrap={wrap ? "" : undefined}
+        className={cn(className)}
+        style={
+          indent === undefined && width === undefined
+            ? style
+            : ({
+                ...style,
+                ...(indent === undefined ? null : { "--table-cell-indent-level": indent }),
+                ...(width === undefined ? null : { inlineSize: cellWidth(width) }),
+              } as React.CSSProperties)
+        }
+        {...props}
+      >
+        {label !== undefined ? (
+          <span className="ui-table-stacked-collection-label" aria-hidden="true">
+            {label}
+          </span>
+        ) : null}
+        {/* gh#1067 — the box `Table preset="action-collection"` measures to size the actions column
+         * to its content (see useActionsColumnFit). Rendered only in that preset (gh#1070): every
+         * other table keeps the plain `td > children` markup. */}
+        {priority === "actions" && preset === "action-collection" ? (
+          <span className="ui-table-actions-content">{children}</span>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  },
 );
 TableCell.displayName = "TableCell";

@@ -225,8 +225,13 @@ export function SearchSelect(props: SearchSelectProp) {
   const hasSelection = multiple ? values.length > 0 : Boolean(value);
 
   const reqId = React.useRef(0);
-  /** Set when a fresh (non-appended) page lands: the next drawn list picks its first row. */
-  const resetActiveRef = React.useRef(false);
+  /**
+   * Bumped once per fresh (non-appended) page that lands: the drawn list then re-picks its first
+   * row exactly once. A counter, not a flag — a cached page (`loadOptions` resolving the SAME
+   * array) leaves the drawn list unchanged, and a flag waiting for the list to change would fire
+   * later on an unrelated change and yank the active row back to the top (gh#1071).
+   */
+  const [freshPage, setFreshPage] = React.useState(0);
 
   /** The client-side filter — the static list's, and the tags-mode rows for held values'. */
   const matchesQuery = React.useCallback(
@@ -283,7 +288,7 @@ export function SearchSelect(props: SearchSelectProp) {
         // The active row is re-chosen against the rows actually DRAWN (below), not this page:
         // in `tags` a create row and held values join the list, so this page's index 0 is not
         // the panel's (gh#1064).
-        if (!append) resetActiveRef.current = true;
+        if (!append) setFreshPage((tick) => tick + 1);
         setHasMore(Boolean(result.hasMore));
         setPage(nextPage);
       } catch {
@@ -395,14 +400,16 @@ export function SearchSelect(props: SearchSelectProp) {
   // the list — so while text is typed the active row (the Enter target) is the create row or the
   // best match, never whatever index the previous list left behind (gh#1064).
   const lastTypedRef = React.useRef(typedText);
+  const lastFreshPageRef = React.useRef(freshPage);
   React.useEffect(() => {
     const typedChanged = lastTypedRef.current !== typedText;
+    const pageChanged = lastFreshPageRef.current !== freshPage;
     lastTypedRef.current = typedText;
-    if (!typedChanged && !resetActiveRef.current) return;
-    resetActiveRef.current = false;
+    lastFreshPageRef.current = freshPage;
+    if (!typedChanged && !pageChanged) return;
     const firstEnabled = flatOrdered.findIndex((option) => !option.disabled);
     setActiveIndex(firstEnabled >= 0 ? firstEnabled : 0);
-  }, [flatOrdered, typedText]);
+  }, [flatOrdered, typedText, freshPage]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchSelect.placeholder");
   /**

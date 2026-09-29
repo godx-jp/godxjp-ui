@@ -902,15 +902,10 @@
     text-align: end;
   }
 
-  /* Wraps every actions cell's children (TableCell). Outside this preset it is `display:
-   * contents` and lays out nothing. Inside it, it is a shrink-to-content box that does not wrap —
-   * the width Table measures — and, being inline content, any overflow before that measurement
-   * lands at the line box's END edge (CSS Text 3 start-aligns an overflowing line), never over
-   * the previous column. */
-  .ui-table-actions-content {
-    display: contents;
-  }
-
+  /* Wraps an actions cell's children (TableCell renders it only in this preset, gh#1070). A
+   * shrink-to-content box that does not wrap — the width Table measures — and, being inline
+   * content, any overflow before that measurement lands at the line box's END edge (CSS Text 3
+   * start-aligns an overflowing line), never over the previous column. */
   .ui-table-collection .ui-table-actions-content {
     display: inline-block;
     white-space: nowrap;
