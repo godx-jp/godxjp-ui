@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.11.1] - 2026-09-30
+
+### 🐛 Image: a preview opened from the keyboard takes focus at once (#1077)
+
+PATCH. Opening an `Image` preview with Enter left focus on `<body>` until the thumbnail veil's
+fade ended, so the first ←/→ and Esc were lost (found adopting 31.11.0 in godx-task). The preview
+now takes focus as it opens, and the first key lands.
+
+- Regression test: `image-preview-browser-1077.test.tsx` — Enter, then at once →, then Esc; focus
+  back on the thumbnail. Fails on 31.11.0.
+
 ## [31.11.0] - 2026-09-30
 
 ### ✨ Image + ImagePreviewGroup: antd image preview (#1077)

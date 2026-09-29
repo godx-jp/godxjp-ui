@@ -1,4 +1,5 @@
 import * as React from "react";
+import { mergeRefs } from "@react-aria/utils";
 import { Dialog as RacDialog, Modal, ModalOverlay } from "react-aria-components";
 import {
   ChevronLeft,
@@ -160,6 +161,21 @@ function ImagePreviewDialog({
   const portalContainer = useOverlayPortalContainer();
   useOverlayCloseFocus(open);
 
+  /*
+   * Focus goes in NOW, not when react-aria gets to it. Its `useDialog` focuses through
+   * `focusSafely`, which waits for every running CSS transition to end — and the thumbnail veil is
+   * mid-transition the moment its button is pressed. Meanwhile the thumbnail turns inert under the
+   * modal and focus drops to <body>, so the first ←/→ or Esc from the keyboard went nowhere.
+   * Child effects run first, so react-aria's own effect then finds focus inside and stands down.
+   */
+  const sectionRef = React.useRef<HTMLElement | null>(null);
+  React.useEffect(() => {
+    const section = sectionRef.current;
+    if (open && section && !section.contains(document.activeElement)) {
+      section.focus({ preventScroll: true });
+    }
+  }, [open]);
+
   const total = items.length;
   const index = total === 0 ? 0 : Math.min(Math.max(current, 0), total - 1);
   const entry = items[index];
@@ -306,11 +322,14 @@ function ImagePreviewDialog({
           data-slot="image-preview"
           className="ui-image-preview"
           render={(racProps) => {
-            const { "data-rac": _rac, ...rest } =
-              racProps as React.ComponentPropsWithRef<"section"> & {
-                "data-rac"?: string;
-              };
-            return <section {...rest} onKeyDown={onKeyDown} />;
+            const {
+              "data-rac": _rac,
+              ref: racRef,
+              ...rest
+            } = racProps as React.ComponentPropsWithRef<"section"> & {
+              "data-rac"?: string;
+            };
+            return <section {...rest} ref={mergeRefs(racRef, sectionRef)} onKeyDown={onKeyDown} />;
           }}
         >
           <div
