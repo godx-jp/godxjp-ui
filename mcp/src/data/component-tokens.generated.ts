@@ -5449,6 +5449,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Ant Design `BreadcrumbItemType.menu` — the sibling picker hung off a segment. The trigger is the segment's own text plus a disclosure chevron, so it only needs the gap between them."
   },
   {
+    "name": "--breadcrumb-item-max-inline-size",
+    "value": "none",
+    "description": "`BreadcrumbItemProp.ellipsis` (gh#1046) — the widest a truncating crumb may grow. `none` = it only cuts when the one-line trail runs out of room; a theme may cap it (e.g. `16em`)."
+  },
+  {
     "name": "--menu-shortcut-font-size",
     "value": "var( --font-size-xs, calc(var(--font-size-base) / var(--font-size-ratio)) )",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."

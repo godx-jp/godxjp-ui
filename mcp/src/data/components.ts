@@ -687,7 +687,8 @@ export const COMPONENTS: ComponentEntry[] = [
       {
         name: "breadcrumb",
         type: "BreadcrumbItemProp[]",
-        description: "Ordered trail of { label, to? } segments above the title.",
+        description:
+          "Ordered trail of { label, to?, ellipsis? } segments above the title. `ellipsis: true` on a segment keeps the trail on one line and cuts that label with an ellipsis, the full label in a tooltip on hover and on keyboard focus of the crumb link — same contract as `Breadcrumb` items.",
       },
       {
         name: "breadcrumbAriaLabel",
@@ -2843,7 +2844,7 @@ export function TermsPage() {
         type: "BreadcrumbItemProp[]",
         required: true,
         description:
-          'Array of { label, to?, menu? } — omit `to` on the last (current) segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role="menuitem"`.',
+          "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       },
       {
         name: "separator",
@@ -3286,7 +3287,7 @@ import { Trash2 } from "lucide-react";
         name: "ellipsis",
         type: "boolean | { suffix, symbol, defaultExpanded, expanded, onEllipsis, tooltip }",
         description:
-          "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip.",
+          "Single-line truncation, antd's spelling. antd drops `rows` / `expandable` / `onExpand` on `Text` — an inline run has no second line to expand into — and that omission is ported; reach for `Paragraph` when you want them. It is the SAME axis as `truncate` / `clamp` and OUTRANKS both (dev builds warn), because it is the only spelling that can also carry a suffix or a tooltip. `tooltip: true` (the children) or a node shows the full text in a Tooltip ONLY while the run is actually clipped — on pointer hover, and on keyboard focus of the Text itself (`asChild` link) or of the nearest focusable control around it (a Tree `treeitem`, a DataTable sort button, a link); the Text never becomes a tab stop of its own and its accessible name stays the full text. With `asChild` the child element is the truncated box (one `<a>`, not `<a><a>`). A `<Text ellipsis>` in `ColumnDef.header` truncates inside its column like a cell.",
       },
       {
         name: "actions",

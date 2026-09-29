@@ -6,7 +6,18 @@
     "breakDescription": "メールアドレス・クーポンコード・ログイン ID のような区切りのない識別子は break=\"anywhere\"。表のセルでも列が画面幅に収まります。whitespace=\"pre-wrap\" は人が入力した改行のためのもので、表のセルでは識別子を折り返せません。",
     "breakColumnOwner": "担当者",
     "breakColumnEmail": "メールアドレス",
-    "breakSampleName": "佐藤"
+    "breakSampleName": "佐藤",
+    "ellipsisTitle": "ellipsis · 省略中は全文をツールチップで",
+    "ellipsisDescription": "ellipsis={{ tooltip: true }} は 1 行に収め、ホバーと、置かれたコントロール（リンク・ツリー項目・並べ替えボタン）へのキーボードフォーカスで全文を表示します。収まるタイトルにはツールチップを出さず、Text 自体はタブ移動先になりません。",
+    "ellipsisPlain": "通常の Text",
+    "ellipsisLink": "Text asChild · リンク",
+    "ellipsisTree": "Tree の titleRender",
+    "ellipsisTable": "テストスイート",
+    "ellipsisBreadcrumb": "省略付きパンくずリスト",
+    "ellipsisCrumbHome": "ホーム",
+    "ellipsisLongTitle": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオと受入基準のレビュー",
+    "ellipsisShortTitle": "ログインのスモークテスト",
+    "ellipsisLongHeader": "最新の実行名（2026年9月 リリース候補）"
   },
   "themeShowcase": {
     "page": {
@@ -1462,5 +1473,13 @@
         "other": "さらに {count} 件を読み込む"
       }
     }
+  },
+  "breadcrumbExamples": {
+    "ellipsisTitle": "ellipsis · 長いセグメントを 1 行に",
+    "ellipsisDescription": "セグメントに ellipsis を付けるとパンくずは 1 行のまま、そのラベルを「…」で省略します。全文はホバーと、パンくずのリンクへのキーボードフォーカスでツールチップに出ます。antd の Breadcrumb に項目単位の省略はなく、形は Typography に合わせています。PageContainer の breadcrumb も同じ項目フィールドを受け付けます。",
+    "ellipsisAria": "省略付きパンくずリスト",
+    "home": "ホーム",
+    "longSuite": "第3四半期 結合テスト 決済モジュール 請求書再発行シナリオ",
+    "longSection": "2026年9月 リリース候補の受入基準レビュー"
   }
 }

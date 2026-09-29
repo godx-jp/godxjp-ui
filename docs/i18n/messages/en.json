@@ -6,7 +6,18 @@
     "breakDescription": "An identifier with nowhere to break — an email address, a coupon code, a login ID — takes break=\"anywhere\", and the column stays inside the viewport even in a table cell. whitespace=\"pre-wrap\" is for newlines a person typed; it cannot wrap an identifier in a table cell.",
     "breakColumnOwner": "Owner",
     "breakColumnEmail": "Email address",
-    "breakSampleName": "Sato"
+    "breakSampleName": "Sato",
+    "ellipsisTitle": "ellipsis · the full text in a tooltip while it is cut",
+    "ellipsisDescription": "ellipsis={{ tooltip: true }} keeps one line and shows the whole text on hover and on keyboard focus of the control it sits in (the link, the tree item, the sort button). A title that fits shows no tooltip, and the Text never becomes a tab stop of its own.",
+    "ellipsisPlain": "Plain Text",
+    "ellipsisLink": "Text asChild · link",
+    "ellipsisTree": "Tree titleRender",
+    "ellipsisTable": "Test suites",
+    "ellipsisBreadcrumb": "Truncated breadcrumb",
+    "ellipsisCrumbHome": "Home",
+    "ellipsisLongTitle": "Q3 integration test · payment module · invoice re-issue scenarios and acceptance criteria review",
+    "ellipsisShortTitle": "Login smoke test",
+    "ellipsisLongHeader": "Latest run name (release candidate 2026-09)"
   },
   "themeShowcase": {
     "page": {
@@ -1469,5 +1480,13 @@
         "other": "Load {count} more"
       }
     }
+  },
+  "breadcrumbExamples": {
+    "ellipsisTitle": "ellipsis · a long segment on one line",
+    "ellipsisDescription": "ellipsis on a segment keeps the trail on one line and cuts that label with \"…\"; the full label shows in a tooltip on hover and when the crumb link takes keyboard focus. antd Breadcrumb has no per-item ellipsis — the shape is Typography’s. PageContainer breadcrumb takes the same item field.",
+    "ellipsisAria": "Truncated breadcrumb",
+    "home": "Home",
+    "longSuite": "Q3 integration test · payment module · invoice re-issue scenarios",
+    "longSection": "Acceptance criteria review for the release candidate of September 2026"
   }
 }

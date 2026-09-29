@@ -310,6 +310,10 @@
     font: inherit;
     cursor: pointer;
     outline: none;
+    /* Bounded by its cell, so a `<Text ellipsis>` header truncates inside the column instead of
+     * painting over the next one (gh#1045). A short label still hugs its text. */
+    max-inline-size: 100%;
+    min-inline-size: 0;
   }
 
   /* THE HIT AREA IS NOT THE PAINT, and this button had only the paint.
@@ -480,10 +484,20 @@
     padding: var(--card-space-header-y) var(--card-space-inset);
   }
 
+  /* `min-inline-size: 0` + `max-inline-size: 100%` are the header half of gh#1045: an inline-flex box
+   * keeps `min-width: auto`, whose floor is its content, so a long `<Text ellipsis>` header made the
+   * label as wide as the text (277px in a 120px column) and nothing ever clipped. Bounded, the Text
+   * (a flex item with `min-width: 0` of its own) shrinks and draws its "…"; the sort glyph keeps
+   * its size. */
   .ui-data-table-sort-label {
     display: inline-flex;
     align-items: center;
     gap: var(--space-inline-xs);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+  .ui-data-table-sort-label > .ui-data-table-sort-icon {
+    flex-shrink: 0;
   }
 
   /* A centred header centres its LABEL, not its button. */

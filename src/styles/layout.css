@@ -1287,6 +1287,32 @@
     color: hsl(var(--foreground));
   }
 
+  /* `BreadcrumbItemProp.ellipsis` (gh#1046). A crumb that asks for it gives up its content floor
+   * (`min-inline-size: 0`, which a flex item otherwise keeps at min-content) and cuts its label with
+   * "…"; the trail stops wrapping so the cut happens instead of a second line, and every OTHER crumb
+   * holds its width and its one line. The separator glyph never shrinks. */
+  .ui-breadcrumb-list[data-ellipsis] {
+    flex-wrap: nowrap;
+  }
+  .ui-breadcrumb-list[data-ellipsis] > .ui-breadcrumb-item:not([data-ellipsis]) {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .ui-breadcrumb-item[data-ellipsis] {
+    min-inline-size: 0;
+    max-inline-size: var(--breadcrumb-item-max-inline-size);
+  }
+  .ui-breadcrumb-item[data-ellipsis] > svg,
+  .ui-breadcrumb-item[data-ellipsis] > .ui-breadcrumb-separator {
+    flex-shrink: 0;
+  }
+  .ui-breadcrumb-ellipsis {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .ui-empty-state {
     display: flex;
     flex-direction: column;

@@ -702,7 +702,8 @@
     },
     "PageContainer": {
       "layers": [
-        "layout.css"
+        "layout.css",
+        "dialog-layout.css"
       ]
     },
     "Pagination": {

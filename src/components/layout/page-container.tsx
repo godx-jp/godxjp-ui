@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { useTranslation } from "../../i18n/use-translation";
 import { scrollParent, useInView } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
+import { BreadcrumbCrumbText, trailEllipsis } from "./breadcrumb-ellipsis";
 import { densityClass, pageContainerVariantClass, padStyle } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
 
@@ -166,7 +167,7 @@ function PageContainerRoot({
             }
             className="ui-breadcrumb"
           >
-            <ol className="ui-breadcrumb-list">
+            <ol className="ui-breadcrumb-list" data-ellipsis={trailEllipsis(breadcrumb)}>
               {breadcrumb.map((item, i) => {
                 const isLast = i === breadcrumb.length - 1;
                 return (
@@ -175,22 +176,30 @@ function PageContainerRoot({
                   // longer carries a `size-3` literal. It also drops `.ui-inline-xs`'s
                   // `flex-wrap: wrap` — a crumb must not break between its label and its
                   // chevron; the LIST wraps instead, exactly as <Breadcrumb> already behaves.
-                  <li key={i} className="ui-breadcrumb-item">
+                  <li
+                    key={i}
+                    className="ui-breadcrumb-item"
+                    data-ellipsis={item.ellipsis ? "" : undefined}
+                  >
                     {item.to && !isLast ? (
-                      <LinkComponent
-                        href={item.to}
-                        to={item.to}
-                        className="hover:text-foreground hover:underline"
-                      >
-                        {item.label}
-                      </LinkComponent>
+                      <BreadcrumbCrumbText item={item}>
+                        <LinkComponent
+                          href={item.to}
+                          to={item.to}
+                          className="hover:text-foreground hover:underline"
+                        >
+                          {item.label}
+                        </LinkComponent>
+                      </BreadcrumbCrumbText>
                     ) : (
-                      <span
-                        className={isLast ? "text-foreground" : ""}
-                        aria-current={isLast ? "page" : undefined}
-                      >
-                        {item.label}
-                      </span>
+                      <BreadcrumbCrumbText item={item}>
+                        <span
+                          className={isLast ? "text-foreground" : ""}
+                          aria-current={isLast ? "page" : undefined}
+                        >
+                          {item.label}
+                        </span>
+                      </BreadcrumbCrumbText>
                     )}
                     {!isLast && <ChevronRight aria-hidden="true" />}
                   </li>

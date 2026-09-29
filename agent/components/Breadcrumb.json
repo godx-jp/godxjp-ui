@@ -5,7 +5,7 @@
   "name": "Breadcrumb",
   "props": [
     {
-      "description": "Array of { label, to?, menu? } — omit `to` on the last (current) segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
+      "description": "Array of { label, to?, menu?, ellipsis? } — omit `to` on the last (current) segment. `ellipsis` (`boolean | { tooltip?: ReactNode }`, gh#1046; antd Breadcrumb has none, the shape is antd Typography's) keeps the trail on one line and cuts that segment's label with an ellipsis, showing the full label in a tooltip on hover and on keyboard focus of the crumb link; `{ tooltip: false }` drops the tooltip. Link and current segments only. `--breadcrumb-item-max-inline-size` (default `none`) caps such a segment. `menu` (Ant Design `BreadcrumbItemType.menu`) hangs a sibling picker off that segment: `{ items: { value, label, to?, disabled? }[], onSelect? }`. The segment then renders as a menu button, not a link — an entry with `to` becomes a real anchor inside the menu while keeping `role=\"menuitem\"`.",
       "name": "items",
       "required": true,
       "type": "BreadcrumbItemProp[]"

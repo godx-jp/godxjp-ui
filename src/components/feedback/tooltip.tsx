@@ -55,6 +55,14 @@ type Align = "start" | "center" | "end";
 /** Delay mặc định của kho — nhanh hơn hẳn 1500ms của React Aria và 700ms của Radix. */
 const DEFAULT_DELAY_DURATION = 200;
 
+/**
+ * Anchors `TooltipContent` to an element that is NOT a `TooltipTrigger` (gh#1045). `TooltipTrigger`
+ * wraps its child in RAC's `Focusable`, which stamps `tabIndex=0` on it — right for a button, wrong for a truncated `Text` inside a `treeitem`, where it
+ * would add a second tab stop. The ellipsis tooltip drives `open` itself and hands its own element
+ * here as the positioning target (RAC `Tooltip`'s `triggerRef`).
+ */
+const TooltipAnchorContext = React.createContext<React.RefObject<Element | null> | null>(null);
+
 /** `side` + `align` của Radix → `placement` của RAC (trục ngang chỉ nhận `top`/`bottom`). */
 function toPlacement(side: Side, align: Align): Placement {
   if (align === "center") return side;
@@ -195,9 +203,11 @@ export function TooltipContent({
   ...props
 }: TooltipContentProps) {
   const overlayPortalContainer = useOverlayPortalContainer();
+  const anchorRef = React.useContext(TooltipAnchorContext);
 
   return (
     <AriaTooltip
+      {...(anchorRef ? { triggerRef: anchorRef } : null)}
       UNSTABLE_portalContainer={overlayPortalContainer}
       placement={toPlacement(side, align)}
       offset={sideOffset}
@@ -241,5 +251,142 @@ export function TooltipContent({
         );
       }}
     />
+  );
+}
+
+/**
+ * The roles on which a focused element is a control the user is ON — WAI-ARIA's widget roles, the
+ * same list RAC's `Focusable` accepts. A focusable SCROLL REGION (`tabIndex=0`, role `region`) is
+ * not one: focusing it must not open the tooltip of every truncated cell inside it.
+ */
+const FOCUS_HOST =
+  'a[href], button, input, select, textarea, summary, [tabindex]:is([role="treeitem"], [role="gridcell"], [role="row"], [role="option"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="tab"], [role="link"], [role="button"], [role="checkbox"], [role="radio"], [role="switch"])';
+
+/** Is this box clipping its text right now? The clipped box is the content wrapper when there is one. */
+function isClipping(node: HTMLElement): boolean {
+  const box = node.querySelector<HTMLElement>(':scope > [data-slot="typography-content"]') ?? node;
+  return box.scrollWidth > box.clientWidth || box.scrollHeight > box.clientHeight;
+}
+
+/** `:focus-visible`, the same modality rule RAC applies to its own triggers. */
+function isFocusVisible(node: Element): boolean {
+  try {
+    return node.matches(":focus-visible");
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * antd's ellipsis tooltip (`Base/Ellipsis` + `useTooltipProps`), ported for gh#1045 / gh#1046.
+ * Module-internal (not in the public index): `Text`/`Paragraph`/`Title` `ellipsis.tooltip` and
+ * `BreadcrumbItemProp.ellipsis` render it. It lives here, not in typography, so Breadcrumb does not
+ * pull the Typography module (and its Textarea) into its bundle and stylesheet layers.
+ *
+ * Open while the anchor is ACTUALLY clipping — measured at the moment of the pointer or the focus,
+ * so a box that fits never shows one — on pointer hover of the anchor, and on keyboard focus of the
+ * anchor itself (`Text asChild` link, a breadcrumb link) or of the nearest focusable ANCESTOR that is
+ * a control (`treeitem`, a sort `button`, a link). The anchor never becomes focusable, so a Text in
+ * a treeitem stays inside that item's single tab stop, and the accessible name stays the full text
+ * node — the truncation is paint only. Escape dismisses (WCAG 1.4.13); hovering the tooltip keeps
+ * it open.
+ *
+ * When the focus host is ALREADY a tooltip trigger (a DataTable sort button carries the sort hint on
+ * top), this one opens underneath so the two never cover each other.
+ */
+export function EllipsisTooltip({
+  anchorRef,
+  title,
+}: {
+  anchorRef: React.RefObject<HTMLElement | null>;
+  title: React.ReactNode;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [side, setSide] = React.useState<"top" | "bottom">("top");
+  const timer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  React.useEffect(() => {
+    const node = anchorRef.current;
+    if (!node) return undefined;
+    const host = node.matches(FOCUS_HOST) ? node : node.parentElement?.closest(FOCUS_HOST);
+
+    const schedule = (next: boolean, delay: number) => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        setOpen(next);
+      }, delay);
+    };
+    const show = (delay: number) => {
+      if (!isClipping(node)) return;
+      setSide(host && host !== node && host.hasAttribute("data-state") ? "bottom" : "top");
+      schedule(true, delay);
+    };
+    // A short grace on the way out, so the pointer can cross onto the tooltip (WCAG 1.4.13 hoverable).
+    const hide = () => {
+      schedule(false, 100);
+    };
+    const onPointerEnter = () => {
+      show(DEFAULT_DELAY_DURATION);
+    };
+    const onFocusIn = () => {
+      const active = document.activeElement;
+      if (active && (active === host || node.contains(active)) && isFocusVisible(active)) show(0);
+    };
+
+    node.addEventListener("pointerenter", onPointerEnter);
+    node.addEventListener("pointerleave", hide);
+    node.addEventListener("focusin", onFocusIn);
+    node.addEventListener("focusout", hide);
+    host?.addEventListener("focusin", onFocusIn);
+    host?.addEventListener("focusout", hide);
+    return () => {
+      clearTimeout(timer.current);
+      node.removeEventListener("pointerenter", onPointerEnter);
+      node.removeEventListener("pointerleave", hide);
+      node.removeEventListener("focusin", onFocusIn);
+      node.removeEventListener("focusout", hide);
+      host?.removeEventListener("focusin", onFocusIn);
+      host?.removeEventListener("focusout", hide);
+    };
+  }, [anchorRef]);
+
+  // Escape dismisses (WCAG 1.4.13). Listened for only while open — a table of truncated cells must
+  // not hang one document listener per cell.
+  React.useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        clearTimeout(timer.current);
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <Tooltip
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) setOpen(false);
+      }}
+    >
+      <TooltipAnchorContext.Provider value={anchorRef}>
+        <TooltipContent
+          side={side}
+          data-ellipsis-tooltip=""
+          onPointerEnter={() => {
+            clearTimeout(timer.current);
+          }}
+          onPointerLeave={() => {
+            setOpen(false);
+          }}
+        >
+          {title}
+        </TooltipContent>
+      </TooltipAnchorContext.Provider>
+    </Tooltip>
   );
 }

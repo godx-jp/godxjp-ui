@@ -116,6 +116,7 @@ export type {
   BreadcrumbItemProp,
   BreadcrumbProp,
   BreadcrumbItemMenuProp,
+  BreadcrumbItemEllipsisProp,
   BreadcrumbItemMenuEntryProp,
   BreadcrumbSeparatorProp,
   BreadcrumbItemRenderProp,

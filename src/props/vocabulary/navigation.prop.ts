@@ -37,7 +37,20 @@ export type BreadcrumbItemProp = {
   to?: string;
   /** Ant Design `menu` — a sibling dropdown on this segment. @see BreadcrumbItemMenuProp */
   menu?: BreadcrumbItemMenuProp;
+  /**
+   * One line, a long label cut with "…" (gh#1046). antd's Breadcrumb has no per-item ellipsis;
+   * the name and shape are antd Typography's `ellipsis`. The full label shows in a tooltip on hover
+   * and on keyboard focus of the crumb link — `true` / `{}` use the label, `{ tooltip: node }`
+   * replaces it, `{ tooltip: false }` drops it. Applies to link and current crumbs, not to a
+   * `menu` segment or an `itemRender` body. The trail then stays on one line; a theme may cap
+   * each such crumb with `--breadcrumb-item-max-inline-size`.
+   * @see BreadcrumbItemEllipsisProp
+   */
+  ellipsis?: BreadcrumbItemEllipsisProp;
 };
+
+/** `BreadcrumbItemProp.ellipsis` — on, or on with an explicit tooltip (gh#1046). */
+export type BreadcrumbItemEllipsisProp = boolean | { tooltip?: React.ReactNode };
 
 /** Ordered breadcrumb trail above page title. */
 export type BreadcrumbProp = BreadcrumbItemProp[];
