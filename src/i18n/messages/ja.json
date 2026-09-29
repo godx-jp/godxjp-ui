@@ -377,6 +377,25 @@
       "statusDone": "完了: ",
       "statusCurrent": "現在: ",
       "statusPending": "予定: "
+    },
+    "image": {
+      "preview": "プレビュー",
+      "previewLabel": "プレビュー: {alt}",
+      "previewUnnamed": "画像をプレビュー",
+      "dialog": "画像プレビュー",
+      "close": "プレビューを閉じる",
+      "previous": "前の画像",
+      "next": "次の画像",
+      "counter": "{current} / {total}",
+      "position": "{total} 枚中 {current} 枚目",
+      "toolbar": "画像ツール",
+      "flipX": "左右反転",
+      "flipY": "上下反転",
+      "rotateLeft": "左に回転",
+      "rotateRight": "右に回転",
+      "zoomIn": "拡大",
+      "zoomOut": "縮小",
+      "reset": "リセット"
     }
   },
   "ui": {

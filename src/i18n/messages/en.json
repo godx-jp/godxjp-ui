@@ -384,6 +384,25 @@
       "statusDone": "Completed: ",
       "statusCurrent": "Current: ",
       "statusPending": "Upcoming: "
+    },
+    "image": {
+      "preview": "Preview",
+      "previewLabel": "Preview: {alt}",
+      "previewUnnamed": "Preview image",
+      "dialog": "Image preview",
+      "close": "Close preview",
+      "previous": "Previous image",
+      "next": "Next image",
+      "counter": "{current} / {total}",
+      "position": "Image {current} of {total}",
+      "toolbar": "Image tools",
+      "flipX": "Flip horizontally",
+      "flipY": "Flip vertically",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset"
     }
   },
   "ui": {

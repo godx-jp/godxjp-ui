@@ -892,6 +892,11 @@
     "tagline": "An organization chart: boxes (avatar, name, title, extra) joined by CSS connector lines, top-down; `agent` nodes are dashed. Scrolls horizontally in its own named region when wider than its container, and turns into an indented Tree when the CONTAINER is under 40rem. APG tree view (tree/treeitem/group, roving tabindex, arrow keys)."
   },
   {
+    "group": "data-display",
+    "name": "Image",
+    "tagline": "antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a \"2 / 3\" counter. Esc closes; focus is trapped and returned to the picture."
+  },
+  {
     "group": "data-entry",
     "name": "Attachments",
     "tagline": "The chat-surface attachment collection (Ant Design X Attachments): file cards, inline placeholder, optional full-screen drop target, and ref.select/ref.upload — inherits antd Upload props but names the list `items`."

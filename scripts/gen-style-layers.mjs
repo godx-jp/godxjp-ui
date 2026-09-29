@@ -162,6 +162,7 @@ const OWNERS = {
     "CredentialReveal",
     "Descriptions",
     "FeatureList",
+    "Image",
     "Legend",
     "ListRow",
     "OrgChart",

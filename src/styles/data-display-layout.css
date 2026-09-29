@@ -3316,3 +3316,214 @@
     }
   }
 }
+
+@layer components {
+  /* IMAGE (antd `Image`) — the thumbnail is a real button hugging its picture, so it opens from the
+   * keyboard; the veil is its hover/focus affordance. Layout only: the picture keeps whatever size
+   * its attributes (or a surrounding `.ui-prose img` rule) give it. */
+  .ui-image {
+    position: relative;
+    display: inline-block;
+    max-inline-size: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--image-radius, var(--radius));
+    background: none;
+    color: inherit;
+    font: inherit;
+    line-height: 0;
+    vertical-align: middle;
+  }
+
+  .ui-image[data-preview] {
+    cursor: zoom-in;
+  }
+
+  .ui-image-img {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+    border-radius: inherit;
+  }
+
+  .ui-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    border-radius: inherit;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-image-mask {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--image-mask-gap);
+    border-radius: inherit;
+    background: var(--image-mask-background, var(--overlay-background));
+    color: var(--image-mask-foreground, hsl(var(--background)));
+    font-size: var(--font-size-sm, var(--font-size-base));
+    line-height: var(--line-height-normal, 1.5);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+    pointer-events: none;
+  }
+
+  .ui-image-mask-icon {
+    inline-size: var(--image-preview-icon-size);
+    block-size: var(--image-preview-icon-size);
+  }
+
+  .ui-image:hover .ui-image-mask,
+  .ui-image:focus-visible .ui-image-mask {
+    opacity: 1;
+  }
+
+  /* THE PREVIEW — full viewport, above every other overlay layer. */
+  .ui-image-preview-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--overlay-z-index);
+    background-color: color-mix(
+      in srgb,
+      var(--overlay-background) var(--image-preview-background-alpha),
+      black
+    );
+  }
+
+  .ui-image-preview {
+    position: fixed;
+    inset: 0;
+    z-index: var(--overlay-z-index);
+    color: var(--image-preview-foreground, hsl(var(--background)));
+    outline: none;
+  }
+
+  .ui-image-preview-stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: calc(var(--image-preview-button-size) + var(--image-preview-inset) * 2);
+  }
+
+  .ui-image-preview-img {
+    max-inline-size: 100%;
+    max-block-size: 100%;
+    object-fit: contain;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    transition: transform var(--duration-base) var(--ease-standard);
+  }
+
+  .ui-image-preview-stage[data-dragging] .ui-image-preview-img {
+    cursor: grabbing;
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-image-preview-img,
+    .ui-image-mask {
+      transition: none;
+    }
+  }
+
+  .ui-image-preview-button {
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--image-preview-button-size);
+    block-size: var(--image-preview-button-size);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: color-mix(
+      in srgb,
+      currentColor var(--image-preview-button-background-alpha),
+      transparent
+    );
+    color: inherit;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .ui-image-preview-button:hover:not(:disabled) {
+    background: color-mix(
+      in srgb,
+      currentColor var(--image-preview-button-hover-background-alpha),
+      transparent
+    );
+  }
+
+  .ui-image-preview-button:disabled {
+    opacity: var(--disabled-opacity, 0.5);
+    cursor: not-allowed;
+  }
+
+  .ui-image-preview-button svg {
+    inline-size: var(--image-preview-icon-size);
+    block-size: var(--image-preview-icon-size);
+  }
+
+  .ui-image-preview-close {
+    position: absolute;
+    inset-block-start: var(--image-preview-inset);
+    inset-inline-end: var(--image-preview-inset);
+  }
+
+  .ui-image-preview-switch {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ui-image-preview-switch[data-direction="previous"] {
+    inset-inline-start: var(--image-preview-inset);
+  }
+
+  .ui-image-preview-switch[data-direction="next"] {
+    inset-inline-end: var(--image-preview-inset);
+  }
+
+  /* The chevrons point along the reading direction. */
+  [dir="rtl"] .ui-image-preview-switch svg {
+    transform: scaleX(-1);
+  }
+
+  .ui-image-preview-footer {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: var(--image-preview-inset);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--image-preview-gap);
+    pointer-events: none;
+  }
+
+  .ui-image-preview-footer > * {
+    pointer-events: auto;
+  }
+
+  .ui-image-preview-counter {
+    font-size: var(--font-size-sm, var(--font-size-base));
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ui-image-preview-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--image-preview-gap);
+  }
+
+  .ui-image-preview-icon {
+    display: contents;
+  }
+}

@@ -1,0 +1,30 @@
+/*
+ * IMAGE — a picture that opens large, and its full-viewport preview
+ * (`src/components/data-display/image.tsx`, antd `Image` + `Image.PreviewGroup`).
+ *
+ * The preview is a dark stage whatever the theme, as in antd: a screenshot is judged against a
+ * neutral surround, not the page's colour. Its scrim is the shared `--overlay-background`, only
+ * denser, so a brand that retunes every overlay's scrim retunes this one too.
+ *
+ * ROLE-MIRROR KNOBS ARE `initial`, WITH THE DEFAULT AT THE CALL SITE (docs/TOKENS.md ·
+ * "Role-mirror knobs MUST be `initial`").
+ */
+
+:root {
+  /* The hover/focus veil over the thumbnail. */
+  --image-mask-background: initial; /* default = --overlay-background */
+  --image-mask-foreground: initial; /* default = hsl(var(--background)) */
+  --image-mask-gap: var(--space-1);
+  --image-radius: initial; /* default = var(--radius) */
+
+  /* The preview stage. */
+  --image-preview-background-alpha: 85%;
+  --image-preview-foreground: initial; /* default = hsl(var(--background)) */
+  --image-preview-inset: var(--space-4);
+  --image-preview-gap: var(--space-2);
+  /* Every round control on the stage (close, prev/next, tools). ≥ the 24px WCAG 2.5.8 floor. */
+  --image-preview-button-size: 2.5rem;
+  --image-preview-button-background-alpha: 10%;
+  --image-preview-button-hover-background-alpha: 20%;
+  --image-preview-icon-size: var(--icon-size-lg);
+}

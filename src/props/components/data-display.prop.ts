@@ -1306,3 +1306,78 @@ export type OrgChartProp = {
   className?: ClassNameProp;
   id?: IdProp;
 };
+
+/**
+ * @see ImagePreviewGroup — one picture of a group's `items`. A plain string is its `src` (antd
+ * `PreviewGroup items: string[] | { src, … }[]`).
+ */
+export type ImagePreviewItemProp = string | { src: string; alt?: string };
+
+/**
+ * @see Image — the object form of `preview` (antd `Image preview: PreviewType`).
+ *
+ * `visible` / `onVisibleChange(visible, prevVisible)` keep antd's names on purpose: the whole
+ * component is a port of antd `Image`, and a Markdown renderer ported from an antd screen passes
+ * these through unchanged.
+ */
+export type ImagePreviewConfigProp = {
+  /** Controlled: is the preview open. */
+  visible?: boolean;
+  /** Called with the next and the previous open state (antd order). */
+  onVisibleChange?: (visible: boolean, prevVisible: boolean) => void;
+  /** A different (usually larger) file to show in the preview than the one on the page. */
+  src?: string;
+  /** Replaces the hover/focus veil's content (default: an eye + "Preview"). */
+  mask?: React.ReactNode;
+  /** Zoom factor per step, as a fraction: `0.5` means ×1.5 per zoom-in. Default `0.5`. */
+  scaleStep?: number;
+  /** Smallest zoom. Default `1`. */
+  minScale?: number;
+  /** Largest zoom. Default `50`. */
+  maxScale?: number;
+};
+
+/** @see ImagePreviewGroup — the group's `preview` object (antd `PreviewGroup preview`). */
+export type ImagePreviewGroupConfigProp = Omit<ImagePreviewConfigProp, "src" | "mask"> & {
+  /** Controlled: index of the picture on show. */
+  current?: number;
+  /** Called with the next and the previous index (antd order). */
+  onChange?: (current: number, prevCurrent: number) => void;
+};
+
+/**
+ * @see Image — a picture that opens large in a full-viewport preview (antd `Image`): zoom, rotate,
+ * flip, and — inside an `ImagePreviewGroup` — prev/next across every picture of the group.
+ */
+export type ImageProp = Omit<React.ImgHTMLAttributes<HTMLImageElement>, "alt" | "placeholder"> & {
+  /** Image URL. */
+  src: string;
+  /**
+   * Required, as on `Thumbnail`: `""` is a decision, a missing `alt` an omission (WCAG 1.1.1). It
+   * also names the preview trigger ("Preview: {alt}").
+   */
+  alt: string;
+  /** Shown instead when `src` fails to load. A failed picture does not open a preview (antd). */
+  fallback?: string;
+  /** Painted over the frame until the picture loads. `true` = the plain muted block. */
+  placeholder?: React.ReactNode | boolean;
+  /** `false` = a plain picture, not clickable, not in its group. Default `true`. */
+  preview?: boolean | ImagePreviewConfigProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ImagePreviewGroup — pages the preview across a set of pictures (antd `Image.PreviewGroup`).
+ *
+ * Every `Image` rendered anywhere under it joins the group in DOCUMENT order, however deep — so a
+ * Markdown renderer's `img` override is enough to make a whole article one gallery.
+ */
+export type ImagePreviewGroupProp = {
+  /** An explicit list instead of the pictures rendered under the group. */
+  items?: readonly ImagePreviewItemProp[];
+  /** Shown in the preview instead of a picture that fails to load. */
+  fallback?: string;
+  /** `false` turns the whole group's previews off; an object controls it (antd shape). */
+  preview?: boolean | ImagePreviewGroupConfigProp;
+  children?: React.ReactNode;
+};

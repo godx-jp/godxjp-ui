@@ -1,0 +1,87 @@
+{
+  "docPath": "data-display/image.tsx",
+  "example": "import { Image, ImagePreviewGroup, Prose } from \"@godxjp/ui/data-display\";\n\n<ImagePreviewGroup>\n  <Prose>\n    <p><Image src=\"/shots/before.png\" alt=\"Before the fix\" width={320} /></p>\n    <p><Image src=\"/shots/after.png\" alt=\"After the fix\" width={320} /></p>\n    <p><Image src=\"/logo.svg\" alt=\"\" width={24} preview={false} /></p>\n  </Prose>\n</ImagePreviewGroup>",
+  "group": "data-display",
+  "importPath": "@godxjp/ui/data-display",
+  "name": "Image",
+  "props": [
+    {
+      "description": "Image URL.",
+      "name": "src",
+      "type": "string"
+    },
+    {
+      "description": "Required (as on Thumbnail). Also names the trigger \"Preview: {alt}\". Pass \"\" for a decorative picture.",
+      "name": "alt",
+      "type": "string"
+    },
+    {
+      "description": "antd shape. `false` = a plain, non-clickable picture that also leaves its group. `src` shows a different (larger) file in the preview. Defaults: scaleStep 0.5, minScale 1, maxScale 50.",
+      "name": "preview",
+      "type": "boolean | { visible?, onVisibleChange?(visible, prevVisible), src?, mask?, scaleStep?, minScale?, maxScale? }"
+    },
+    {
+      "description": "Shown when `src` fails. A failed picture does not open a preview (antd).",
+      "name": "fallback",
+      "type": "string"
+    },
+    {
+      "description": "Painted over the frame until the picture loads; `true` = a muted block.",
+      "name": "placeholder",
+      "type": "ReactNode | boolean"
+    },
+    {
+      "description": "Native img attributes.",
+      "name": "width / height",
+      "type": "number | string"
+    },
+    {
+      "description": "Class on the wrapper (the button).",
+      "name": "className",
+      "type": "string"
+    },
+    {
+      "description": "Explicit gallery instead of the Images rendered under the group. A clicked child opens at the item with its own src.",
+      "name": "ImagePreviewGroup.items",
+      "type": "(string | { src, alt? })[]"
+    },
+    {
+      "description": "antd shape and argument order. `false` turns every Image under the group into a plain picture.",
+      "name": "ImagePreviewGroup.preview",
+      "type": "boolean | { current?, onChange?(current, prevCurrent), visible?, onVisibleChange?(visible, prevVisible), scaleStep?, minScale?, maxScale? }"
+    },
+    {
+      "description": "Shown in the preview for a picture that fails to load.",
+      "name": "ImagePreviewGroup.fallback",
+      "type": "string"
+    }
+  ],
+  "related": [
+    "Thumbnail — a framed picture at a fixed height, with no preview.",
+    "Prose — the Markdown body the group usually wraps.",
+    "Carousel — slides on the page itself, not a full-viewport preview."
+  ],
+  "rules": [
+    2,
+    6,
+    23,
+    44,
+    45
+  ],
+  "storyPath": "data-display/Image.stories.tsx",
+  "subParts": [
+    "ImagePreviewGroup"
+  ],
+  "tagline": "antd `Image` + `Image.PreviewGroup`: a picture that opens in a full-viewport preview (zoom in/out by button, wheel or double-click; rotate; flip; reset; drag to pan). Inside an `ImagePreviewGroup` every Image at any depth joins one gallery in document order — prev/next buttons, ←/→, a \"2 / 3\" counter. Esc closes; focus is trapped and returned to the picture.",
+  "usage": [
+    "DO wrap a rendered Markdown body in ImagePreviewGroup and map its `img` to `<Image>` — every screenshot of the article then pages in one preview, in reading order.",
+    "DO pass `preview={false}` for a logo or icon inside that body so it neither opens nor counts.",
+    "DO use `Image.PreviewGroup` or `ImagePreviewGroup` — the same component.",
+    "DON'T hand-roll a lightbox from Dialog + Carousel: it has no zoom, no arrow keys and a 32rem box. That composition is what this replaces.",
+    "DON'T nest an Image inside a link or button: the thumbnail is itself a button."
+  ],
+  "useCases": [
+    "Screenshots in a test result or wiki page that the reader opens large and pages through.",
+    "A product or evidence gallery with zoom and rotate."
+  ]
+}
