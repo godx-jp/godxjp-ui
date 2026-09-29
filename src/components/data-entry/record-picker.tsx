@@ -753,7 +753,7 @@ const DialogPicker = React.forwardRef<HTMLButtonElement, DialogPickerProps>(func
                         size="sm"
                         onClick={() => void load(query, filterValues)}
                       >
-                        {t("dataEntry.recordPicker.more")}
+                        {t("common.retry")}
                       </Button>
                     }
                   />
