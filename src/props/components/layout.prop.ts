@@ -421,7 +421,10 @@ export type SpaceCompactProp = Omit<React.HTMLAttributes<HTMLDivElement>, "child
   orientation?: OrientationProp;
   /** antd's boolean spelling of `orientation="vertical"`. `orientation` wins when both are set. */
   vertical?: boolean;
-  /** Row fills its parent's inline size (antd `block`, renamed to match `Button.fullWidth`). */
+  /**
+   * Row fills its parent's inline size (antd `block`, renamed to match `Button.fullWidth`). Field
+   * children grow to fill it; a Button (any non-field child) keeps its content width (gh#1062).
+   */
   fullWidth?: boolean;
   /** Scoped control density for the whole row (antd `Space.Compact` `size`). */
   density?: DensityProp;

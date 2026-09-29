@@ -1261,7 +1261,7 @@
     },
     "search": {
       "title": "Tìm kiếm và nút của nó",
-      "body": "Gõ và chạy là một thao tác liền mạch nên bỏ đường nối. Nút vẫn là Button thật — vòng focus và disabled vẫn hoạt động.",
+      "body": "Gõ và chạy là một thao tác liền mạch nên bỏ đường nối. Nút vẫn là Button thật — vòng focus và disabled vẫn hoạt động. Với `fullWidth`, ô nhập lấp phần còn lại của hàng, nút giữ đúng bề rộng của nó (antd `block`).",
       "row": "Tìm nhân viên",
       "term": "Từ khoá",
       "run": "Chạy tìm kiếm",

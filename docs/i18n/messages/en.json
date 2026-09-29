@@ -1267,7 +1267,7 @@
     },
     "search": {
       "title": "Search and its button",
-      "body": "Typing and running are one continuous action, so the seam goes. The button is still a real Button — focus ring and disabled keep working.",
+      "body": "Typing and running are one continuous action, so the seam goes. The button is still a real Button — focus ring and disabled keep working. With `fullWidth` the field fills the row and the button keeps its own width (antd `block`).",
       "row": "Search employees",
       "term": "Search term",
       "run": "Run the search",

@@ -170,6 +170,20 @@
     min-inline-size: 0;
   }
 
+  /* antd `Space.Compact block` sets no per-child flex: its Input is `width: 100%` and grows, a
+   * Button keeps its content width (gh#1062 — every item at `1 1 0%` split Input + Button 50/50).
+   * So in a full-width ROW only an item holding a FIELD keeps the grow above; anything else —
+   * Button, icon button, a text addon — sits at its content width. The field test is the classes
+   * the controls already carry: `.ui-control` (Input and everything built on it — affix wrapper,
+   * Password, Search, NumberInput, the Date/Time pickers, ColorPicker's hex field — plus the
+   * Select/Cascader/TreeSelect/SearchSelect trigger), `.ui-control-multiline` (Textarea) and
+   * `.ui-tag-input`. Two fields (NumberInput + Select, gh#917) therefore still share the row
+   * evenly. A browser without `:has()` drops this rule and keeps the even split. Horizontal only:
+   * a vertical stack's items are unchanged. */
+  .ui-space-compact[data-orientation="horizontal"][data-full-width="true"] > [data-slot="space-compact-item"]:not(:has(.ui-control, .ui-control-multiline, .ui-tag-input)) {
+    flex: none;
+  }
+
   .ui-space-compact[data-orientation="vertical"] {
     flex-direction: column;
   }

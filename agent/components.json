@@ -964,7 +964,7 @@
       },
       {
         "defaultValue": "false",
-        "description": "The row fills its parent's inline size (antd `block`, renamed to match Button.fullWidth — the same rename, the same reason: this library's controlled vocabulary wins on values).",
+        "description": "The row fills its parent's inline size (antd `block`, renamed to match Button.fullWidth — the same rename, the same reason: this library's controlled vocabulary wins on values). Field children grow to fill it; a Button keeps its content width.",
         "name": "fullWidth",
         "type": "boolean"
       },
@@ -996,7 +996,7 @@
       "DON'T reach for `className=\"rounded-none\"` / `[&>*:not(:first-child)]` utilities to join controls yourself — `ui-audit`'s `no-utility-layout` rule blocks exactly that, and it is precisely the corner-radius seam this component owns.",
       "DO set `size` on each CHILD individually, not on SpaceCompact — the row has no size prop of its own by design (see `density`); every control already owns its own `size` axis (`xs|sm|md|lg`).",
       "DO use `fullWidth` inside a narrow form card so the joined row spans the field column, exactly like a lone Input would.",
-      "`fullWidth` gives EVERY child an equal share of the row — each item carries `flex: 1 1 0%`, so the split is even no matter what the children would size to on their own. Measured at a 1169px row: NumberInput+Select 585/585, and Select+Button ALSO 585/585, i.e. a Button under `fullWidth` is stretched to half the row, not left at its content width. Want the Button at content width and the field absorbing the rest? Omit `fullWidth` — the row is then `inline-flex` and sizes to content (measured 223/40). Do NOT remove the per-child `flex` to chase antd's block style: without it the items collapse to their content and the row stops filling at all (measured 203/73.6 in a 1169px column), which defeats `fullWidth`.",
+      "`fullWidth` is antd `Space.Compact block` (gh#1062): in a row, a FIELD child (Input and its affix/Password/Search forms, NumberInput, Textarea, TagInput, the Date/Time pickers, and the Select/Cascader/TreeSelect/SearchSelect trigger) grows to fill the row, and every other child — a Button, an icon button — keeps its content width. So `[Input][+ Add]` is a full-width field with its submit at content width, and two fields (NumberInput + Select) share the row evenly between them. Deviation from antd, written down: antd grows only its Input family (`width: 100%`); Select/InputNumber/DatePicker keep their own width there. Here every field grows, so two fields never leave an empty tail. `orientation=\"vertical\"` + `fullWidth` stacks full-width children as before.",
       "DON'T expect corner-radius welding on `orientation=\"vertical\"` yet — the shared border still collapses, but each child keeps all four of its own corners rounded until a block-axis radius knob exists on the Input/trigger families (documented gap, not a silent one)."
     ],
     "useCases": [

@@ -110,7 +110,7 @@ export default function SpaceCompactShowcase() {
             <CardDescription>{t("spaceCompactDocs.search.body")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <SpaceCompact aria-label={t("spaceCompactDocs.search.row")}>
+            <SpaceCompact fullWidth aria-label={t("spaceCompactDocs.search.row")}>
               <SearchInput
                 value={query}
                 onValueChange={setQuery}
