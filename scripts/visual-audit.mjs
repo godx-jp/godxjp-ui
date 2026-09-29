@@ -13,6 +13,7 @@ import {
   alertControlIssues,
   missingCssLayers,
   controlHeightMismatches,
+  mixedButtonHeights,
   tightCardPairs,
   starvedRowTexts,
 } from "./visual-audit-rules.mjs";
@@ -261,6 +262,27 @@ function collectInPage() {
       heights: controls.map((c) => Math.round(c.getBoundingClientRect().height)),
     });
   }
+  // Button rows — every flex row (any container, not only .ui-flex: CardFooter, a dialog footer,
+  // PageHeader actions) whose Buttons render at more than one height. A child counts when it IS a
+  // Button or directly wraps one (a Tooltip trigger span). `h-auto` opts a Button out of the
+  // control tier on purpose (a two-line list item), so it is not a row member.
+  const buttonRows = [];
+  const isRowButton = (el) => el.matches("[data-slot=button]") && !el.classList.contains("h-auto");
+  for (const row of document.querySelectorAll("body *")) {
+    const cs = getComputedStyle(row);
+    if (!cs.display.includes("flex") || !cs.flexDirection.startsWith("row") || !visible(row))
+      continue;
+    const buttons = [...row.children]
+      .filter(visible)
+      .map((c) => (isRowButton(c) ? c : c.querySelector(":scope > [data-slot=button]")))
+      .filter((b) => b && isRowButton(b) && visible(b));
+    if (buttons.length < 2) continue;
+    buttonRows.push({
+      name: (row.className || row.tagName).toString().slice(0, 40),
+      heights: buttons.map((b) => b.getBoundingClientRect().height),
+      sizes: buttons.map((b) => b.getAttribute("data-size") || "?"),
+    });
+  }
   // Sibling cards — the gap between consecutive cards in one parent.
   const cardPairs = [];
   const seen = new Set();
@@ -295,7 +317,7 @@ function collectInPage() {
       });
     }
   }
-  return { accents, targets, text, alerts, layers, rows, cardPairs, rowTexts };
+  return { accents, targets, text, alerts, layers, rows, buttonRows, cardPairs, rowTexts };
 }
 /* c8 ignore stop */
 
@@ -393,6 +415,14 @@ async function audit(targets, { chromium }) {
               "control-height-mismatch",
               url,
               `row "${r.name}" mixes control heights ${[...new Set(r.heights)].join("/")}px`,
+            ),
+          );
+        for (const r of mixedButtonHeights(m.buttonRows || []))
+          findings.push(
+            buildFinding(
+              "mixed-button-height",
+              url,
+              `row "${r.name}" mixes Button heights ${r.heights.map((h) => +h.toFixed(1)).join("/")}px (sizes ${r.sizes.join("/")})`,
             ),
           );
         const tight = tightCardPairs(m.cardPairs || []);

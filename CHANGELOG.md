@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [31.12.0] - 2026-09-30
+
+### ✨ Audit: one Button size per action row — `mixed-button-size` / `mixed-button-height` (#1084)
+
+MINOR. A consumer shipped 「AIスコアを編集」 at `size="sm"` beside 裁定する at the default size in one
+action row, and nothing flagged it. Two new **error** rules:
+
+- `mixed-button-size` (`ui-audit.mjs`, consumer code): sibling `<Button>`s under one JSX parent must
+  share one `size`; a missing size is `default`. Siblings are seen through fragments,
+  `{cond && …}`, ternaries, `.map(…)` and Tooltip / TooltipTrigger; buttons in an attribute
+  (`PageHeader actions={…}`) are their own row. `icon-sm` pairs with `sm`, `icon-xs` with `xs`,
+  `icon` with default — `xs` beside `icon-sm` still fails. A non-literal `size={expr}` is skipped.
+- `mixed-button-height` (`visual-audit.mjs`): Buttons in any flex row (CardFooter, dialog footer,
+  PageHeader actions, not only `Flex`) must render within 0.5px of one height. Catches rows built
+  from variables (`{editButton}`), which a static scan cannot see.
+- Both are in the MCP `list_audit_rules` / `list_visual_checks` catalogs and CONSUMER-RULES.md §5.
+- Tests: `ui-audit-mixed-button-size.test.ts`, `visual-audit-rules.test.ts` (`mixedButtonHeights`).
+
 ## [31.11.1] - 2026-09-30
 
 ### 🐛 Image: a preview opened from the keyboard takes focus at once (#1077)
