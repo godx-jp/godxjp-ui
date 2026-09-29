@@ -66,7 +66,7 @@
 
   /* Label of a node `filterTreeNode` matched (antd `.filter-node` title: primary colour, strong
    * weight). A role mirror, so `initial` with the role at the call site.
-   * Documented default: --tree-node-filter-foreground = hsl(var(--primary)). */
+   * Documented default: --tree-node-filter-foreground = hsl(var(--text-brand, var(--primary))). */
   --tree-node-filter-foreground: initial;
 
   /* Width of the indeterminate bar shown while `loadData` resolves a branch. A fraction, not a

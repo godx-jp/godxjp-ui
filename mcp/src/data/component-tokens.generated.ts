@@ -8596,7 +8596,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--tree-node-filter-foreground",
     "value": "initial",
-    "description": "Label of a node `filterTreeNode` matched (antd `.filter-node` title: primary colour, strong weight). A role mirror, so `initial` with the role at the call site. Documented default: --tree-node-filter-foreground = hsl(var(--primary))."
+    "description": "Label of a node `filterTreeNode` matched (antd `.filter-node` title: primary colour, strong weight). A role mirror, so `initial` with the role at the call site. Documented default: --tree-node-filter-foreground = hsl(var(--text-brand, var(--primary)))."
   },
   {
     "name": "--tree-loading-bar-inline-size",

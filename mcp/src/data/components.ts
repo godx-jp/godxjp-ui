@@ -7139,7 +7139,7 @@ const form = useForm({ customer_nm: "", action_mode: "regist" });
         name: "notFoundContent",
         type: "ReactNode",
         description:
-          "antd `notFoundContent` — shown when the search finds nothing, in the dropdown shape and the dialog alike (default: localized `dataEntry.recordPicker.empty`). Name WHAT was not found, e.g. 「該当するファイルはありません」.",
+          "antd `notFoundContent` — shown when the search finds nothing, in the dropdown shape and the dialog alike (default: localized `dataEntry.recordPicker.empty`). Say WHAT has no match, e.g. 「該当するファイルはありません」.",
       },
       {
         name: "loadMoreLabel",

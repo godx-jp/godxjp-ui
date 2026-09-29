@@ -2803,7 +2803,7 @@
    * .ant-tree-title`). The weight is the non-colour cue (WCAG 1.4.1); antd's 600 is not on this
    * scale (docs: 400 · 500 · 700), so it is the label weight, 500. */
   .ui-tree-node[data-filter-node="true"]:not([data-disabled]) .ui-tree-label {
-    color: var(--tree-node-filter-foreground, hsl(var(--primary)));
+    color: var(--tree-node-filter-foreground, hsl(var(--text-brand, var(--primary))));
     font-weight: var(--font-weight-medium);
   }
 
