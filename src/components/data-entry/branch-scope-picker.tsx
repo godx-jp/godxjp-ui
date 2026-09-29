@@ -43,6 +43,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
       error,
       loading = false,
       empty,
+      notFoundContent,
       listError,
       denied,
       allLabel,
@@ -215,7 +216,7 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
             )}
             {filtered.length === 0 ? (
               <Text size="xs" tone="muted" aria-live="polite">
-                {t("dataEntry.branchScope.noMatches")}
+                {notFoundContent ?? t("dataEntry.branchScope.noMatches")}
               </Text>
             ) : (
               // A bounded list is a scroll container, so it MUST be reachable and scrollable

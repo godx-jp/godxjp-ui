@@ -54,6 +54,7 @@ function Block() {
       flatten={flattenItemPages}
       isEmpty={(items) => items.length === 0}
       empty={<EmptyState title="アクティビティがありません" />}
+      loadMoreLabel="Show older activity"
     >
       {(items) => (
         <Timeline
@@ -80,7 +81,10 @@ export default function Demo() {
           <Card>
             <CardHeader>
               <CardTitle level={2}>アクティビティ</CardTitle>
-              <CardDescription>Click 「もっと見る」 to append the next page.</CardDescription>
+              <CardDescription>
+                Click “Show older activity” to append the next page. loadMoreLabel renames the
+                built-in button; its pending state stays the component&apos;s.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Block />

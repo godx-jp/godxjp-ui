@@ -104,6 +104,7 @@ export default function Demo() {
               defaultValue={[]}
               showSearch
               pagination={{ pageSize: 3 }}
+              locale={{ notFoundContent: ["No matching accounts", "Nothing selected yet"] }}
               name="accounts[]"
             />
           </CardContent>

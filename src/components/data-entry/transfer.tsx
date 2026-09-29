@@ -44,7 +44,7 @@ function TransferPanel({
   pagination?: TransferProp["pagination"];
   disabled?: boolean;
   searchPlaceholder: string;
-  emptyText: string;
+  emptyText: React.ReactNode;
   direction: "left" | "right";
 }) {
   const { t } = useTranslation();
@@ -219,6 +219,7 @@ export function Transfer({
   className,
   selectedKeys: selectedKeysProp,
   onSelectChange,
+  locale,
   ...ariaProps
 }: TransferProp) {
   const { t } = useTranslation();
@@ -268,6 +269,9 @@ export function Transfer({
     onSelectChange?.(cleared[0], cleared[1]);
   };
 
+  const notFound = locale?.notFoundContent;
+  const [leftNotFound, rightNotFound] = Array.isArray(notFound) ? notFound : [notFound, notFound];
+
   const leftTitle = titles?.[0] ?? t("dataEntry.transfer.source");
   const rightTitle = titles?.[1] ?? t("dataEntry.transfer.target");
 
@@ -295,7 +299,7 @@ export function Transfer({
         disabled={disabled || readOnly}
         pagination={pagination}
         searchPlaceholder={t("dataEntry.transfer.searchPlaceholder")}
-        emptyText={t("dataEntry.transfer.empty")}
+        emptyText={leftNotFound ?? t("dataEntry.transfer.empty")}
       />
 
       <div className="ui-transfer-actions">
@@ -336,7 +340,7 @@ export function Transfer({
         disabled={disabled || readOnly}
         pagination={pagination}
         searchPlaceholder={t("dataEntry.transfer.searchPlaceholder")}
-        emptyText={t("dataEntry.transfer.empty")}
+        emptyText={rightNotFound ?? t("dataEntry.transfer.empty")}
       />
     </div>
   );

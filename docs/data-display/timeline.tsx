@@ -230,6 +230,39 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* sticky sits OUTSIDE a Card on purpose: Card clips (`overflow: hidden`), and a clipping
+            ancestor becomes the box the header sticks to — the same limit as antd Table sticky. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>sticky · the axis stays on screen (gh#1044)</CardTitle>
+            <CardDescription>
+              A long schedule scrolled by the page, placed as a page section rather than inside a
+              Card (a Card clips, which would pin the header to the card instead of the viewport).
+              With sticky the band and tick rows stay at the top of the viewport — offsetHeader
+              clears a fixed app topbar — and still scroll sideways with the body.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+        <RangeTimeline
+          data-testid="range-timeline-sticky"
+          label={t("rangeTimeline.schedule")}
+          sticky={{ offsetHeader: 0 }}
+          today={8}
+          bands={[{ label: monthLabel(8), units: 30 }]}
+          columns={Array.from({ length: 30 }, (_, index) => ({
+            label: new Intl.NumberFormat(locale).format(index + 1),
+            units: 1,
+          }))}
+          rows={Array.from({ length: 40 }, (_, index) => ({
+            id: `task-${index + 1}`,
+            label: `Task ${index + 1}`,
+            start: index % 20,
+            end: (index % 20) + 5,
+            startLabel: dayLabel((index % 20) + 1),
+            endLabel: dayLabel((index % 20) + 6),
+          }))}
+        />
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>月をまたぐ日単位の軸（bands）</CardTitle>
